@@ -45,12 +45,12 @@ void report_t::print_profiles( sim_t* sim )
     k++;
     FILE* file = NULL;
 
-    if ( !p -> save_gear_str.empty() ) // Save gear
+    if ( !p -> report_information.save_gear_str.empty() ) // Save gear
     {
-      file = fopen( p -> save_gear_str.c_str(), "w" );
+      file = fopen( p -> report_information.save_gear_str.c_str(), "w" );
       if ( ! file )
       {
-        sim -> errorf( "Unable to save gear profile %s for player %s\n", p -> save_gear_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save gear profile %s for player %s\n", p -> report_information.save_gear_str.c_str(), p -> name() );
       }
       else
       {
@@ -61,12 +61,12 @@ void report_t::print_profiles( sim_t* sim )
       }
     }
 
-    if ( !p -> save_talents_str.empty() ) // Save talents
+    if ( !p -> report_information.save_talents_str.empty() ) // Save talents
     {
-      file = fopen( p -> save_talents_str.c_str(), "w" );
+      file = fopen( p -> report_information.save_talents_str.c_str(), "w" );
       if ( ! file )
       {
-        sim -> errorf( "Unable to save talents profile %s for player %s\n", p -> save_talents_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save talents profile %s for player %s\n", p -> report_information.save_talents_str.c_str(), p -> name() );
       }
       else
       {
@@ -77,12 +77,12 @@ void report_t::print_profiles( sim_t* sim )
       }
     }
 
-    if ( !p -> save_actions_str.empty() ) // Save actions
+    if ( !p -> report_information.save_actions_str.empty() ) // Save actions
     {
-      file = fopen( p -> save_actions_str.c_str(), "w" );
+      file = fopen( p -> report_information.save_actions_str.c_str(), "w" );
       if ( ! file )
       {
-        sim -> errorf( "Unable to save actions profile %s for player %s\n", p -> save_actions_str.c_str(), p -> name() );
+        sim -> errorf( "Unable to save actions profile %s for player %s\n", p -> report_information.save_actions_str.c_str(), p -> name() );
       }
       else
       {
@@ -93,7 +93,7 @@ void report_t::print_profiles( sim_t* sim )
       }
     }
 
-    std::string file_name = p -> save_str;
+    std::string file_name = p -> report_information.save_str;
 
     if ( file_name.empty() && sim -> save_profiles )
     {
@@ -141,7 +141,7 @@ void report_t::print_profiles( sim_t* sim )
       player_t* p = sim -> actor_list[ i ];
       if ( p -> is_pet() ) continue;
 
-      std::string file_name = p -> save_str;
+      std::string file_name = p -> report_information.save_str;
       std::string profile_name;
 
       if ( file_name.empty() && sim -> save_profiles )
@@ -225,4 +225,364 @@ void report_t::print_suite( sim_t* sim )
   report_t::print_html( sim );
   report_t::print_xml( sim );
   report_t::print_profiles( sim );
+}
+
+void report_utility::print_html_rng_information( FILE* file, rng_t* rng )
+{
+  fprintf( file,
+           "\t\t\t\t\t\t\t<table>\n"
+           "\t\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">RNG %s</a></th>\n"
+           "\t\t\t\t\t\t\t\t\t<th></th>\n"
+           "\t\t\t\t\t\t\t\t</tr>\n", rng->name_str.c_str(), rng->name_str.c_str() );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
+           "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t<table class=\"details\">\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Actual Roll / Expected Roll / Diff%%</td>\n"
+           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.8f / %.8f / %.8f%%</td>\n"
+           "\t\t\t\t\t\t\t\t</tr>\n",
+           rng->actual_roll, rng->expected_roll,
+           rng->expected_roll ? fabs( ( rng->actual_roll-rng->expected_roll ) / rng->expected_roll ) * 100.0 : 0 );
+
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</table>\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</td>\n"
+           "\t\t\t\t\t\t\t</tr>\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</table>\n" );
+
+}
+void report_utility::print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
+{
+  // Print Statistics of a Sample Data Container
+
+  fprintf( file,
+           "\t\t\t\t\t\t\t<table>\n"
+           "\t\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">%s</a></th>\n"
+           "\t\t\t\t\t\t\t\t\t<th></th>\n"
+           "\t\t\t\t\t\t\t\t</tr>\n", name.c_str(), name.c_str() );
+
+  if ( data.basics_analyzed() )
+  {
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
+             "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t<table class=\"details\">\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Sample Data</b></td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n" );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.size() );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
+             "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+             "\t\t\t\t\t\t\t\t</tr>\n",
+             data.mean );
+
+    if ( !data.simple || data.min_max )
+    {
+
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+               "\t\t\t\t\t\t\t\t</tr>\n",
+               data.min );
+
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+               "\t\t\t\t\t\t\t\t</tr>\n",
+               data.max );
+
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+               "\t\t\t\t\t\t\t\t</tr>\n",
+               data.max - data.min );
+
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+               "\t\t\t\t\t\t\t\t</tr>\n",
+               data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
+      if ( data.variance_analyzed() )
+      {
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 data.std_dev );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 data.percentile( 0.05 ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 data.percentile( 0.95 ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 data.percentile( 0.95 ) - data.percentile( 0.05 ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n" );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 data.mean_std_dev );
+
+        double mean_error = data.mean_std_dev * p -> sim -> confidence_estimator;
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 p -> sim -> confidence * 100.0,
+                 data.mean - mean_error,
+                 data.mean + mean_error );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 p -> sim -> confidence * 100.0,
+                 data.mean ? 100 - mean_error * 100 / data.mean : 0,
+                 data.mean ? 100 + mean_error * 100 / data.mean : 0 );
+
+
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n" );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
+
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
+      }
+    }
+
+  }
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</table>\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</td>\n"
+           "\t\t\t\t\t\t\t</tr>\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t</table>\n" );
+
+}
+
+void report_utility::generate_player_report_information( const player_t*  p, player_t::report_information_t& ri )
+{
+  if ( ri.charts_generated )
+    return;
+
+  // Pet Chart Adjustment ===================================================
+  size_t max_buckets = static_cast<size_t>( p -> fight_length.max );
+
+  // Make the pet graphs the same length as owner's
+  if ( p -> is_pet() )
+  {
+    player_t* o = const_cast<player_t*>( p ) -> cast_pet() -> owner;
+    max_buckets = static_cast<size_t>( o -> fight_length.max );
+  }
+
+  std::vector<stats_t*> stats_list;
+
+  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+    stats_list.push_back( s );
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+      stats_list.push_back( s );
+
+  int num_stats = ( int ) stats_list.size();
+
+  if ( ! p -> is_pet() )
+  {
+    for ( int i=0; i < num_stats; i++ )
+    {
+      stats_t* s = stats_list[ i ];
+      s -> analyze();
+
+      // Create Stats Timeline Chart
+      s -> timeline_aps.clear();
+      s -> timeline_aps.reserve( max_buckets );
+      s -> timeline_amount.resize( max_buckets );
+      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
+      assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
+      s -> timeline_aps_chart = chart::timeline( p, s -> timeline_aps, s -> name_str + " APS", s -> aps );
+  s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
+
+    }
+  }
+  ri.action_dpet_chart = chart::action_dpet ( p );
+  ri.action_dmg_chart  = chart::aps_portion ( p );
+  ri.time_spent_chart  = chart::time_spent  ( p );
+
+  ri.scaling_dps_chart = chart::scaling_dps( p );
+
+
+  ri.reforge_dps_chart = chart::reforge_dps( p );
+
+  ri.scale_factors_chart = chart::scale_factors( p );
+        // Charts =================================================================
+
+
+
+        std::string encoded_name;
+        http_t::format( encoded_name, p -> name_str );
+
+        for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+        {
+          ri.timeline_resource_chart[ i ] = chart::timeline        ( p,
+                                     p -> timeline_resource[ i ],
+                                     encoded_name + ' ' + util_t::resource_type_string( i ),
+                                     0,
+                                     chart::resource_color( i ) );
+          ri.gains_chart = chart::gains( p, i );
+
+        }
+
+        ri.timeline_dps_chart = chart::timeline          (  p,
+                                     p -> timeline_dps,
+                                     encoded_name + " DPS",
+                                     p -> dps.mean );
+
+        ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
+        ri.dps_error_chart = chart::dps_error         ( p );
+
+        if ( p -> primary_role() == ROLE_HEAL )
+        {
+          ri.distribution_dps_chart = chart::distribution      ( p -> sim,
+                                       p -> hps.distribution, encoded_name + " HPS",
+                                       p -> hps.mean,
+                                       p -> hps.min,
+                                       p -> hps.max );
+        }
+        else
+        {
+          ri.distribution_dps_chart = chart::distribution      ( p -> sim,
+                                       p -> dps.distribution, encoded_name + " DPS",
+                                       p -> dps.mean,
+                                       p -> dps.min,
+                                       p -> dps.max );
+        }
+
+        ri.distribution_deaths_chart = chart::distribution      ( p -> sim,
+                                     p -> deaths.distribution, encoded_name + " Death",
+                                     p -> deaths.mean,
+                                     p -> deaths.min,
+                                     p -> deaths.max );
+
+        ri.charts_generated = true;
+}
+
+void report_utility::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
+{
+  if ( ri.charts_generated )
+    return;
+
+   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, true );
+   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );
+   chart::raid_dpet    ( ri.dpet_charts, s );
+   chart::raid_gear    ( ri.gear_charts, s );
+   ri.timeline_chart = chart::distribution( s,
+                        s -> simulation_length.distribution, "Timeline",
+                        s -> simulation_length.mean,
+                        s -> simulation_length.min,
+                        s -> simulation_length.max );
+
+   ri.charts_generated = true;
+}
+
+void scaling_t::analyze_gear_weights()
+{
+  if ( num_scaling_stats <= 0 ) return;
+
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> quiet ) continue;
+
+    if ( p -> is_pet() ) continue;
+
+    p -> report_information.gear_weights_lootrank_link = chart::gear_weights_lootrank  ( p );
+    p -> report_information.gear_weights_wowhead_link  = chart::gear_weights_wowhead   ( p );
+    p -> report_information.gear_weights_wowreforge_link = chart::gear_weights_wowreforge( p );
+    p -> report_information.gear_weights_pawn_std_string = chart::gear_weights_pawn      ( p, true  );
+    p -> report_information.gear_weights_pawn_alt_string = chart::gear_weights_pawn      ( p, false );
+  }
 }

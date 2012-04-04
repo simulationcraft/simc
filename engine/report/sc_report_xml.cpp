@@ -186,7 +186,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
 void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
 void print_xml_performance( sim_t* sim, xml_writer_t & writer );
-void print_xml_summary( sim_t* sim, xml_writer_t & writer );
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_information_t& );
 void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p );
@@ -197,9 +197,9 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
 void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
 void print_xml_player_procs( xml_writer_t & writer, player_t * p );
 void print_xml_player_gains( xml_writer_t & writer, player_t * p );
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p );
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const player_t::report_information_t& );
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
-void print_xml_player_charts( xml_writer_t & writer, player_t * p );
+void print_xml_player_charts( xml_writer_t & writer, const player_t::report_information_t& );
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -278,6 +278,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
+  report_utility::generate_player_report_information( p, p->report_information );
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
   if ( owner )
@@ -332,9 +333,9 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   print_xml_player_uptime( writer, p );
   print_xml_player_procs( writer, p );
   print_xml_player_gains( writer, p );
-  print_xml_player_scale_factors( writer, p );
+  print_xml_player_scale_factors( writer, p, p->report_information );
   print_xml_player_dps_plots( writer, p );
-  print_xml_player_charts( writer, p );
+  print_xml_player_charts( writer, p->report_information );
 
   writer.end_tag(); // </player>
 }
@@ -679,7 +680,7 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
   writer.end_tag();
 }
 
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p )
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const player_t::report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -747,9 +748,9 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p )
   }
 
 
-  std::string lootrank   = p -> gear_weights_lootrank_link;
-  std::string wowhead    = p -> gear_weights_wowhead_link;
-  std::string wowreforge = p -> gear_weights_wowreforge_link;
+  std::string lootrank   = ri.gear_weights_lootrank_link;
+  std::string wowhead    = ri.gear_weights_wowhead_link;
+  std::string wowreforge = ri.gear_weights_wowreforge_link;
   //std::string pawn_std   = p -> gear_weights_pawn_std_string;
   //std::string pawn_alt   = p -> gear_weights_pawn_alt_string;
 
@@ -812,71 +813,71 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.end_tag(); // </dps_plot_data>
 }
 
-void print_xml_player_charts( xml_writer_t & writer, player_t * p )
+void print_xml_player_charts( xml_writer_t & writer, const player_t::report_information_t& ri )
 {
   writer.begin_tag( "charts" );
 
-  if ( ! p -> action_dpet_chart.empty() )
+  if ( ! ri.action_dpet_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
-    writer.print_attribute_unescaped( "href", p -> action_dmg_chart );
+    writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> action_dmg_chart.empty() )
+  if ( ! ri.action_dmg_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dmg" );
-    writer.print_attribute_unescaped( "href", p -> action_dmg_chart );
+    writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> scaling_dps_chart.empty() )
+  if ( ! ri.scaling_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scaling_dps" );
-    writer.print_attribute_unescaped( "href", p -> scaling_dps_chart );
+    writer.print_attribute_unescaped( "href", ri.scaling_dps_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> reforge_dps_chart.empty() )
+  if ( ! ri.reforge_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "reforge_dps" );
-    writer.print_attribute_unescaped( "href", p -> reforge_dps_chart );
+    writer.print_attribute_unescaped( "href", ri.reforge_dps_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> scale_factors_chart.empty() )
+  if ( ! ri.scale_factors_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scale_factors" );
-    writer.print_attribute_unescaped( "href", p -> scale_factors_chart );
+    writer.print_attribute_unescaped( "href", ri.scale_factors_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> timeline_dps_chart.empty() )
+  if ( ! ri.timeline_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "timeline_dps" );
-    writer.print_attribute_unescaped( "href", p -> timeline_dps_chart );
+    writer.print_attribute_unescaped( "href", ri.timeline_dps_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> distribution_dps_chart.empty() )
+  if ( ! ri.distribution_dps_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "distribution_dps" );
-    writer.print_attribute_unescaped( "href", p -> distribution_dps_chart );
+    writer.print_attribute_unescaped( "href", ri.distribution_dps_chart );
     writer.end_tag(); // </chart>
   }
 
-  if ( ! p -> time_spent_chart.empty() )
+  if ( ! ri.time_spent_chart.empty() )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "time_spent" );
-    writer.print_attribute_unescaped( "href", p -> time_spent_chart );
+    writer.print_attribute_unescaped( "href", ri.time_spent_chart );
     writer.end_tag(); // </chart>
   }
 
@@ -995,7 +996,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </config>
 }
 
-void print_xml_summary( sim_t* sim, xml_writer_t & writer )
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_information_t& ri )
 {
   writer.begin_tag( "summary" );
 
@@ -1060,38 +1061,38 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer )
     writer.end_tag(); // </lag>
   }
 
-  size_t count = sim -> dps_charts.size();
+  size_t count = ri.dps_charts.size();
   writer.begin_tag( "charts" );
   writer.print_attribute( "max_players_per_chart", util_t::to_string( MAX_PLAYERS_PER_CHART ) );
   for ( size_t i=0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dps" );
-    writer.print_attribute_unescaped( "img_src", sim -> dps_charts[ i ] );
+    writer.print_attribute_unescaped( "img_src", ri.dps_charts[ i ] );
     writer.end_tag(); // </chart>
   }
-  count = sim -> hps_charts.size();
+  count = ri.hps_charts.size();
   for ( size_t i=0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "hps" );
-    writer.print_attribute_unescaped( "img_src", sim -> hps_charts[ i ] );
+    writer.print_attribute_unescaped( "img_src", ri.hps_charts[ i ] );
     writer.end_tag(); // </chart>
   }
-  count = sim -> gear_charts.size();
+  count = ri.gear_charts.size();
   for ( size_t i=0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "gear" );
-    writer.print_attribute_unescaped( "img_src", sim -> gear_charts[ i ] );
+    writer.print_attribute_unescaped( "img_src", ri.gear_charts[ i ] );
     writer.end_tag(); // </chart>
   }
-  count = sim -> dpet_charts.size();
+  count = ri.dpet_charts.size();
   for ( size_t i=0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
-    writer.print_attribute_unescaped( "img_src", sim -> dpet_charts[ i ] );
+    writer.print_attribute_unescaped( "img_src", ri.dpet_charts[ i ] );
     writer.end_tag(); // </chart>
   }
   writer.end_tag();
@@ -1286,6 +1287,8 @@ void report_t::print_xml( sim_t* sim )
     return;
   }
 
+  report_utility::generate_sim_report_information( sim, sim->report_information );
+
   writer.init_document( sim -> xml_stylesheet_file_str );
   writer.begin_tag( "simulationcraft" );
 
@@ -1302,7 +1305,7 @@ void report_t::print_xml( sim_t* sim )
 #endif
 
   print_xml_config( sim, writer );
-  print_xml_summary( sim, writer );
+  print_xml_summary( sim, writer, sim->report_information );
 
   print_xml_raid_events( sim, writer );
   print_xml_roster( sim, writer );

@@ -401,6 +401,7 @@ player_t::player_t( sim_t*             s,
   heal( s -> statistics_level < 2 ), compound_heal( s -> statistics_level < 2 ),
   hps( s -> statistics_level < 1 ), hpse( s -> statistics_level < 2 ),
   htps( s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
+  report_information( report_information_t() ),
   // Gear
   sets( 0 ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -455,6 +456,8 @@ player_t::player_t( sim_t*             s,
 
   range::fill( scales_with, false );
   range::fill( over_cap, 0 );
+
+  range::fill( timeline_resource, std::vector<double>() );
 
   items.resize( SLOT_MAX );
   for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
@@ -1159,19 +1162,14 @@ void player_t::init_resources( bool force )
     resources.current[ i ] = resources.max[ i ] = resources.initial[ i ];
   }
 
-  if ( timeline_resource.empty() )
-  {
-    timeline_resource.resize( RESOURCE_MAX );
-    timeline_resource_chart.resize( RESOURCE_MAX );
 
-    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
-    if ( size <= 0 ) size = 600; // Default to 10 minutes
-    size *= 2;
-    size += 3; // Buffer against rounding.
+  int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
+  if ( size <= 0 ) size = 600; // Default to 10 minutes
+  size *= 2;
+  size += 3; // Buffer against rounding.
 
-    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-      timeline_resource[i].assign( size, 0 );
-  }
+  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+    timeline_resource[i].assign( size, 0 );
 }
 
 // player_t::init_professions ===============================================
@@ -1529,8 +1527,8 @@ void player_t::init_actions()
   }
 
   int capacity = std::max( 1200, ( int ) ( sim -> max_time.total_seconds() / 2.0 ) );
-  action_sequence.reserve( capacity );
-  action_sequence.clear();
+  report_information.action_sequence.reserve( capacity );
+  report_information.action_sequence.clear();
 }
 
 // player_t::init_rating ====================================================
@@ -2804,7 +2802,7 @@ void player_t::combat_begin()
   if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
     new ( sim ) vengeance_t( this );
 
-  action_sequence = "";
+  report_information.action_sequence = "";
 
   iteration_fight_length = timespan_t::zero;
   iteration_waiting_time = timespan_t::zero;
@@ -3414,7 +3412,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     iteration_executed_foreground_actions++;
-    if ( action -> marker ) action_sequence += action -> marker;
+    if ( action -> marker ) report_information.action_sequence += action -> marker;
     if ( ! action -> label_str.empty() )
       action_map[ action -> label_str ] += 1;
   }
@@ -6373,9 +6371,9 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     profile_str += "#!./simc " + term + term;
   }
 
-  if ( ! comment_str.empty() )
+  if ( ! report_information.comment_str.empty() )
   {
-    profile_str += "# " + comment_str + term;
+    profile_str += "# " + report_information.comment_str + term;
   }
 
   if ( stype == SAVE_ALL )
@@ -6640,11 +6638,11 @@ void player_t::create_options()
     { "action_list",                          OPT_STRING,   &( choose_action_list                     ) },
     { "sleeping",                             OPT_BOOL,     &( initial_sleeping                       ) },
     { "quiet",                                OPT_BOOL,     &( quiet                                  ) },
-    { "save",                                 OPT_STRING,   &( save_str                               ) },
-    { "save_gear",                            OPT_STRING,   &( save_gear_str                          ) },
-    { "save_talents",                         OPT_STRING,   &( save_talents_str                       ) },
-    { "save_actions",                         OPT_STRING,   &( save_actions_str                       ) },
-    { "comment",                              OPT_STRING,   &( comment_str                            ) },
+    { "save",                                 OPT_STRING,   &( report_information.save_str            ) },
+    { "save_gear",                            OPT_STRING,   &( report_information.save_gear_str       ) },
+    { "save_talents",                         OPT_STRING,   &( report_information.save_talents_str    ) },
+    { "save_actions",                         OPT_STRING,   &( report_information.save_actions_str    ) },
+    { "comment",                              OPT_STRING,   &( report_information.comment_str         ) },
     { "bugs",                                 OPT_BOOL,     &( bugs                                   ) },
     { "world_lag",                            OPT_FUNC,     ( void* ) ::parse_world_lag                 },
     { "world_lag_stddev",                     OPT_FUNC,     ( void* ) ::parse_world_lag_stddev          },

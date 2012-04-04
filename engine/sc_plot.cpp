@@ -187,12 +187,6 @@ void plot_t::analyze()
 
   analyze_stats();
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> quiet ) continue;
-
-    chart_t::scaling_dps( p -> scaling_dps_chart, p );
-  }
 }
 
 // plot_t::create_options ===================================================

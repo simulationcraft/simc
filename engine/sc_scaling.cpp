@@ -445,23 +445,7 @@ void scaling_t::analyze_lag()
 
 // scaling_t::analyze_gear_weights ==========================================
 
-void scaling_t::analyze_gear_weights()
-{
-  if ( num_scaling_stats <= 0 ) return;
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> quiet ) continue;
-
-    if ( p -> is_pet() ) continue;
-
-    chart_t::gear_weights_lootrank  ( p -> gear_weights_lootrank_link,   p );
-    chart_t::gear_weights_wowhead   ( p -> gear_weights_wowhead_link,    p );
-    chart_t::gear_weights_wowreforge( p -> gear_weights_wowreforge_link, p );
-    chart_t::gear_weights_pawn      ( p -> gear_weights_pawn_std_string, p, true  );
-    chart_t::gear_weights_pawn      ( p -> gear_weights_pawn_alt_string, p, false );
-  }
-}
 
 // scaling_t::normalize =====================================================
 
@@ -506,7 +490,7 @@ void scaling_t::analyze()
   {
     if ( p -> quiet ) continue;
 
-    chart_t::scale_factors( p -> scale_factors_chart, p );
+
 
     // Sort scaling results
     for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )

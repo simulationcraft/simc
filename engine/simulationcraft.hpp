@@ -3761,11 +3761,8 @@ public:
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
-  std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
-  std::string downtime_chart;
   std::vector<timespan_t> iteration_timeline;
   std::vector<int> divisor_timeline;
-  std::string timeline_chart;
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string path_str;
@@ -3784,6 +3781,13 @@ public:
   int save_raid_summary;
   int statistics_level;
   int separate_stats_by_actions;
+
+  struct report_information_t
+  {
+    bool charts_generated;
+    std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
+    std::string timeline_chart;
+  } report_information;
 
   std::unordered_map<std::string, std::pair<player_type_e, size_t> > targetdata_items[DATA_COUNT];
   std::vector<std::pair<size_t, std::string> > targetdata_dots[PLAYER_MAX];
@@ -4508,7 +4512,7 @@ struct player_t : public noncopyable
   uptime_t* uptime_list;
   std::vector<double> dps_plot_data[ STAT_MAX ];
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
-  std::vector<std::vector<double> > timeline_resource;
+  std::array<std::vector<double>, RESOURCE_MAX > timeline_resource;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken;
@@ -4534,20 +4538,24 @@ struct player_t : public noncopyable
   sample_data_t htps;
   sample_data_t heal_taken;
 
-  std::string action_sequence;
-  std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
-  std::vector<std::string> timeline_resource_chart;
-  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
-  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
-  std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
-  std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
-  std::string save_str;
-  std::string save_gear_str;
-  std::string save_talents_str;
-  std::string save_actions_str;
-  std::string comment_str;
-  std::string thumbnail_url;
+  struct report_information_t
+  {
+    bool charts_generated;
+    std::string action_sequence;
+    std::string action_dpet_chart, action_dmg_chart, time_spent_chart, gains_chart;
+    std::array<std::string, RESOURCE_MAX> timeline_resource_chart;
+    std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+    std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
+    std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
+    std::string gear_weights_lootrank_link, gear_weights_wowhead_link, gear_weights_wowreforge_link;
+    std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
+    std::string save_str;
+    std::string save_gear_str;
+    std::string save_talents_str;
+    std::string save_actions_str;
+    std::string comment_str;
+    std::string thumbnail_url;
+  } report_information;
 
   // Gear
   std::string items_str, meta_gem_str;
@@ -6326,30 +6334,8 @@ struct report_t
 
 struct chart_t
 {
-  static int raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>, bool dps );
-  static int raid_dpet( std::vector<std::string>& images, sim_t* );
-  static int raid_gear( std::vector<std::string>& images, sim_t* );
+  // This struct will be abandoned, please migrate functions to namespace chart in report/sc_report.hpp and report/sc_chart.cpp
 
-  static std::string raid_downtime    ( sim_t* );
-  static const char* action_dpet      ( std::string& s, player_t* );
-  static const char* aps_portion       ( std::string& s, player_t* );
-  static const char* time_spent       ( std::string& s, player_t* );
-  static const char* gains            ( std::string& s, player_t*, resource_type_e );
-  static const char* timeline         ( std::string& s, player_t*, const std::vector<double>&, const std::string&, double avg=0, const char* color="FDD017" );
-  static const char* timeline_dps_error( std::string& s, player_t* );
-  static const char* scale_factors    ( std::string& s, player_t* );
-  static const char* scaling_dps      ( std::string& s, player_t* );
-  static const char* reforge_dps      ( std::string& s, player_t* );
-  static const char* distribution ( std::string& s, sim_t*, const std::vector<int>&, const std::string&, double, double, double );
-
-  static const char* gear_weights_lootrank  ( std::string& s, player_t* );
-  static const char* gear_weights_wowhead   ( std::string& s, player_t* );
-  static const char* gear_weights_wowreforge( std::string& s, player_t* );
-  static const char* gear_weights_pawn      ( std::string& s, player_t*, bool hit_expertise=true );
-
-  static const char* dps_error( std::string& s, player_t* );
-
-  static const char* resource_color( int type );
 };
 
 // Log ======================================================================

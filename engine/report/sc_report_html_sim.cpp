@@ -172,7 +172,7 @@ void print_html_contents( FILE*  file, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( FILE*  file, sim_t* sim )
+void print_html_sim_summary( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
 {
 
   fprintf( file,
@@ -287,7 +287,7 @@ void print_html_sim_summary( FILE*  file, sim_t* sim )
 
   }
 
-  print_html_rng_information( file, sim -> rng );
+  report_utility::print_html_rng_information( file, sim -> rng );
 
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
@@ -297,26 +297,27 @@ void print_html_sim_summary( FILE*  file, sim_t* sim )
   fprintf( file,
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
   // Timeline Distribution Chart
-  if ( sim -> iterations > 1 && ! sim -> timeline_chart.empty() )
+  if ( sim -> iterations > 1 && ! ri.timeline_chart.empty() )
   {
     fprintf( file,
              "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
-             sim -> timeline_chart.c_str() );
+             ri.timeline_chart.c_str() );
   }
   // Gear Charts
-  int count = ( int ) sim -> gear_charts.size();
+  int count = ( int ) ri.gear_charts.size();
   for ( int i=0; i < count; i++ )
   {
     fprintf( file,
              "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
-             sim -> gear_charts[ i ].c_str() );
+             ri.gear_charts[ i ].c_str() );
   }
   // Raid Downtime Chart
-  if ( ! sim -> downtime_chart.empty() )
+  std::string downtime_chart = chart::raid_downtime( sim -> players_by_name, sim -> print_styles );
+  if ( !  downtime_chart.empty() )
   {
     fprintf( file,
-             "\t\t\t\t\t<img src=\"%s\" alt=\"Player Downtime Chart\" />\n",
-             sim -> downtime_chart.c_str() );
+             "\t\t\t\t\t<img src=\"%s\" alt=\"Raid Downtime Chart\" />\n",
+             downtime_chart.c_str() );
   }
 
   fprintf( file,
@@ -325,12 +326,12 @@ void print_html_sim_summary( FILE*  file, sim_t* sim )
   // Right side charts: dpet
   fprintf( file,
            "\t\t\t\t<div class=\"charts\">\n" );
-  count = ( int ) sim -> dpet_charts.size();
+  count = ( int ) ri.dpet_charts.size();
   for ( int i=0; i < count; i++ )
   {
     fprintf( file,
              "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
-             sim -> dpet_charts[ i ].c_str() );
+             ri.dpet_charts[ i ].c_str() );
   }
 
   fprintf( file,
@@ -346,7 +347,7 @@ void print_html_sim_summary( FILE*  file, sim_t* sim )
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( FILE*  file, sim_t* sim )
+void print_html_raid_summary( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
 {
   fprintf( file,
            "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n" );
@@ -377,13 +378,13 @@ void print_html_raid_summary( FILE*  file, sim_t* sim )
   // Left side charts: dps, raid events
   fprintf( file,
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
-  int count = ( int ) sim -> dps_charts.size();
+  int count = ( int ) ri.dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     fprintf( file, "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", i, i );
     fprintf( file,
              "\t\t\t\t\t<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
-             i, sim -> dps_charts[ i ].c_str() );
+             i, ri.dps_charts[ i ].c_str() );
   }
 
   if ( ! sim -> raid_events_str.empty() )
@@ -422,13 +423,13 @@ void print_html_raid_summary( FILE*  file, sim_t* sim )
   fprintf( file,
            "\t\t\t\t<div class=\"charts\">\n" );
 
-  count = ( int ) sim -> hps_charts.size();
+  count = ( int ) ri.hps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     fprintf( file, "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", i, i );
     fprintf( file,
              "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
-             i, sim -> hps_charts[ i ].c_str() );
+             i, ri.hps_charts[ i ].c_str() );
   }
   // RNG chart
   if ( sim -> report_rng )
@@ -507,7 +508,7 @@ void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
            imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
+void print_html_raid_imagemaps( FILE*  file, sim_t* sim, const sim_t::report_information_t& ri )
 {
 
   fprintf( file,
@@ -527,13 +528,13 @@ void print_html_raid_imagemaps( FILE*  file, sim_t* sim )
            "\t\t\t\t});\n"
            "\t\t\t}\n\n" );
 
-  int count = ( int ) sim -> dps_charts.size();
+  int count = ( int ) ri.dps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     print_html_raid_imagemap( file, sim, i, true );
   }
 
-  count = ( int ) sim -> hps_charts.size();
+  count = ( int ) ri.hps_charts.size();
   for ( int i=0; i < count; i++ )
   {
     print_html_raid_imagemap( file, sim, i, false );
@@ -621,8 +622,8 @@ void print_html_scale_factors( FILE*  file, sim_t* sim )
              "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
              "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
              "\t\t\t\t\t</tr>\n",
-             p -> gear_weights_wowhead_link.c_str(),
-             p -> gear_weights_lootrank_link.c_str() );
+             p -> report_information.gear_weights_wowhead_link.c_str(),
+             p -> report_information.gear_weights_lootrank_link.c_str() );
   }
   fprintf( file,
            "\t\t\t\t</table>\n" );
@@ -1255,6 +1256,8 @@ void print_html_( sim_t* sim )
     return;
   }
 
+  report_utility::generate_sim_report_information( sim, sim->report_information );
+
   fprintf( file,
            "<!DOCTYPE html>\n\n" );
   fprintf( file,
@@ -1328,7 +1331,7 @@ void print_html_( sim_t* sim )
 
   if ( num_players > 1 )
   {
-    print_html_raid_summary( file, sim );
+    print_html_raid_summary( file, sim, sim -> report_information );
     print_html_scale_factors( file, sim );
   }
 
@@ -1349,7 +1352,7 @@ void print_html_( sim_t* sim )
   }
 
   // Sim Summary
-  print_html_sim_summary( file, sim );
+  print_html_sim_summary( file, sim, sim -> report_information );
 
   // Report Targets
   if ( sim -> report_targets )
@@ -1512,7 +1515,7 @@ void print_html_( sim_t* sim )
              "\t\t</script>\n\n" );
   }
 
-  if ( num_players > 1 ) print_html_raid_imagemaps( file, sim );
+  if ( num_players > 1 ) print_html_raid_imagemaps( file, sim, sim -> report_information );
 
   fprintf( file,
            "\t</body>\n\n"

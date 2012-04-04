@@ -315,11 +315,11 @@ parse_player( sim_t*             sim,
     http_t::format( p -> origin_str );
   }
 
-  if ( js_t::get_value( p -> thumbnail_url, profile, "thumbnail" ) )
+  if ( js_t::get_value( p -> report_information.thumbnail_url, profile, "thumbnail" ) )
   {
-    p -> thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
-                         p -> region_str + '/' + p -> thumbnail_url;
-    http_t::format( p -> thumbnail_url );
+    p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
+                         p -> region_str + '/' + p -> report_information.thumbnail_url;
+    http_t::format( p -> report_information.thumbnail_url );
   }
 
   parse_profession( p -> professions_str, profile, 0 );

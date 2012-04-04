@@ -576,7 +576,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-void print_text_scale_factors( FILE* file, player_t* p )
+void print_text_scale_factors( FILE* file, player_t* p, const player_t::report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -606,11 +606,11 @@ void print_text_scale_factors( FILE* file, player_t* p )
   util_t::fprintf( file, "\n" );
 
 
-  std::string lootrank   = p -> gear_weights_lootrank_link;
-  std::string wowhead    = p -> gear_weights_wowhead_link;
-  std::string wowreforge = p -> gear_weights_wowreforge_link;
-  std::string pawn_std   = p -> gear_weights_pawn_std_string;
-  std::string pawn_alt   = p -> gear_weights_pawn_alt_string;
+  std::string lootrank   = ri.gear_weights_lootrank_link;
+  std::string wowhead    = ri.gear_weights_wowhead_link;
+  std::string wowreforge = ri.gear_weights_wowreforge_link;
+  std::string pawn_std   = ri.gear_weights_pawn_std_string;
+  std::string pawn_alt   = ri.gear_weights_pawn_alt_string;
 
   simplify_html( lootrank   );
   simplify_html( wowhead    );
@@ -812,7 +812,7 @@ void print_text_player( FILE* file, player_t* p )
   print_text_procs        ( file, p );
   print_text_player_gains ( file, p );
   print_text_pet_gains    ( file, p );
-  print_text_scale_factors( file, p );
+  print_text_scale_factors( file, p, p -> report_information );
   print_text_dps_plots    ( file, p );
 
 }

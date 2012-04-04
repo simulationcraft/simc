@@ -172,9 +172,9 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t</table>\n" );
     if ( ! s -> portion_aps.simple || ! s -> actual_amount.simple )
     {
-      print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
+      report_utility::print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
 
-      print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
+      report_utility::print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
 
       if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
       {
@@ -398,7 +398,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t<h4>Action details: %s </h4>\n", a -> name() );
 
       if ( a->sim->separated_rng )
-        print_html_rng_information( file, a->rng_result );
+        report_utility::print_html_rng_information( file, a->rng_result );
 
       fprintf ( file,
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
@@ -970,7 +970,7 @@ void print_html_talents( FILE* file, player_t* p )
 
 // print_html_player_scale_factors ==========================================
 
-void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, const player_t::report_information_t& ri )
 {
 
   if ( !p -> is_pet() )
@@ -1067,8 +1067,8 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
                "\t\t\t\t\t\t\t\t</td>\n"
                "\t\t\t\t\t\t\t</tr>\n",
                colspan,
-               p -> gear_weights_wowhead_link.c_str(),
-               p -> gear_weights_lootrank_link.c_str() );
+               ri.gear_weights_wowhead_link.c_str(),
+               ri.gear_weights_lootrank_link.c_str() );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th>Optimizers</th>\n"
@@ -1079,7 +1079,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p )
                "\t\t\t\t\t\t\t\t</td>\n"
                "\t\t\t\t\t\t\t</tr>\n",
                colspan,
-               p -> gear_weights_wowreforge_link.c_str() );
+               ri.gear_weights_wowreforge_link.c_str() );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th>Stat Ranking</th>\n"
@@ -1158,9 +1158,9 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );
 
-  if ( ! p -> action_sequence.empty() )
+  if ( ! p -> report_information.action_sequence.empty() )
   {
-    std::string& seq = p -> action_sequence;
+    std::string& seq = p -> report_information.action_sequence;
     if ( seq.size() > 0 )
     {
       fprintf( file,
@@ -1191,7 +1191,7 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
 
 // print_html_player_statistics =============================================
 
-void print_html_player_statistics( FILE* file, player_t* p )
+void print_html_player_statistics( FILE* file, player_t* p, const player_t::report_information_t& ri )
 {
 
 // Statistics & Data Analysis
@@ -1204,34 +1204,34 @@ void print_html_player_statistics( FILE* file, player_t* p )
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t<td>\n" );
 
-  print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
+  report_utility::print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
 
-  print_html_sample_data( file, p, p -> dps, "DPS" );
+  report_utility::print_html_sample_data( file, p, p -> dps, "DPS" );
 
-  print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
+  report_utility::print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
 
-  print_html_sample_data( file, p, p -> dmg, "Damage" );
+  report_utility::print_html_sample_data( file, p, p -> dmg, "Damage" );
 
-  print_html_sample_data( file, p, p -> dtps, "DTPS" );
+  report_utility::print_html_sample_data( file, p, p -> dtps, "DTPS" );
 
-  print_html_sample_data( file, p, p -> hps, "HPS" );
+  report_utility::print_html_sample_data( file, p, p -> hps, "HPS" );
 
-  print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
+  report_utility::print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
 
-  print_html_sample_data( file, p, p -> heal, "Heal" );
+  report_utility::print_html_sample_data( file, p, p -> heal, "Heal" );
 
-  print_html_sample_data( file, p, p -> htps, "HTPS" );
+  report_utility::print_html_sample_data( file, p, p -> htps, "HTPS" );
 
-  print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
+  report_utility::print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
 
   char buffer[ 1024 ];
 
-  if ( ! p -> timeline_dps_error_chart.empty() )
+  if ( ! ri.timeline_dps_error_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Timeline DPS Error Chart\" />\n", p -> timeline_dps_error_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Timeline DPS Error Chart\" />\n", ri.timeline_dps_error_chart.c_str() );
     timeline_dps_error_str = buffer;
   }
 
@@ -1239,9 +1239,9 @@ void print_html_player_statistics( FILE* file, player_t* p )
            "%s\n",
            timeline_dps_error_str.c_str() );
 
-  if ( ! p -> dps_error_chart.empty() )
+  if ( ! ri.dps_error_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Error Chart\" />\n", p -> dps_error_chart.c_str() );
+    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Error Chart\" />\n", ri.dps_error_chart.c_str() );
     dps_error_str = buffer;
   }
   fprintf( file,
@@ -1257,7 +1257,7 @@ void print_html_player_statistics( FILE* file, player_t* p )
 void print_html_gain( FILE* file, gain_t* g )
 {
 
-  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
@@ -1279,7 +1279,7 @@ void print_html_gain( FILE* file, gain_t* g )
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                "\t\t\t\t\t\t\t</tr>\n",
                g -> name(),
-               util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
+               util_t::resource_type_string( i ),
                g -> count[ i ],
                g -> actual[ i ],
                g -> actual[ i ] / g -> count[ i ],
@@ -1291,7 +1291,7 @@ void print_html_gain( FILE* file, gain_t* g )
 }
 // print_html_player_resources ==============================================
 
-void print_html_player_resources( FILE* file, player_t* p )
+void print_html_player_resources( FILE* file, player_t* p, const player_t::report_information_t& ri )
 {
 // Resources Section
 
@@ -1393,25 +1393,24 @@ void print_html_player_resources( FILE* file, player_t* p )
 
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
-  for ( i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( resource_type_e j = RESOURCE_NONE; j < RESOURCE_MAX; ++j )
   {
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
-    if ( i == RESOURCE_RUNE_BLOOD || i == RESOURCE_RUNE_UNHOLY || i == RESOURCE_RUNE_FROST ) continue;
+    if ( j == RESOURCE_RUNE_BLOOD || j == RESOURCE_RUNE_UNHOLY || j == RESOURCE_RUNE_FROST ) continue;
     double total_gain=0;
     for ( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      if ( g -> actual[ i ] > 0 )
-        total_gain += g -> actual[ i ];
+      if ( g -> actual[ j ] > 0 )
+        total_gain += g -> actual[ j ];
     }
 
     if ( total_gain > 0 )
     {
-      chart_t::gains( p -> gains_chart, p, ( resource_type_e ) i );
-      if ( ! p -> gains_chart.empty() )
+      if ( ! ri.gains_chart.empty() )
       {
         fprintf( file,
                  "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Gains Chart\" />\n",
-                 p -> gains_chart.c_str() );
+                 ri.gains_chart.c_str() );
       }
     }
   }
@@ -1423,11 +1422,11 @@ void print_html_player_resources( FILE* file, player_t* p )
            "\t\t\t\t\t\t<div class=\"charts\">\n" );
   for ( int j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
   {
-    if ( p -> resources.max[ j ] > 0 && ! p -> timeline_resource_chart[ j ].empty() )
+    if ( p -> resources.max[ j ] > 0 && ! ri.timeline_resource_chart[ j ].empty() )
     {
       fprintf( file,
                "\t\t\t\t\t\t<img src=\"%s\" alt=\"Resource Timeline Chart\" />\n",
-               p -> timeline_resource_chart[ j ].c_str() );
+               ri.timeline_resource_chart[ j ].c_str() );
     }
   }
   fprintf( file,
@@ -1441,7 +1440,7 @@ void print_html_player_resources( FILE* file, player_t* p )
 
 // print_html_player_charts =================================================
 
-void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
+void print_html_player_charts( FILE* file, sim_t* sim, player_t* p, const player_t::report_information_t& ri )
 {
   const size_t num_players = sim -> players_by_name.size();
 
@@ -1450,40 +1449,40 @@ void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
          "\t\t\t\t\t<div class=\"toggle-content\">\n"
          "\t\t\t\t\t\t<div class=\"charts charts-left\">\n", file );
 
-  if ( ! p -> action_dpet_chart.empty() )
+  if ( ! ri.action_dpet_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action DPET Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> action_dpet_chart.c_str() );
+    fprintf( file, fmt, ri.action_dpet_chart.c_str() );
   }
 
-  if ( ! p -> action_dmg_chart.empty() )
+  if ( ! ri.action_dmg_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action Damage Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> action_dmg_chart.c_str() );
+    fprintf( file, fmt, ri.action_dmg_chart.c_str() );
   }
 
-  if ( ! p -> scaling_dps_chart.empty() )
+  if ( ! ri.scaling_dps_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scaling DPS Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> scaling_dps_chart.c_str() );
+    fprintf( file, fmt, ri.scaling_dps_chart.c_str() );
   }
 
   fputs( "\t\t\t\t\t\t</div>\n"
          "\t\t\t\t\t\t<div class=\"charts\">\n", file );
 
-  if ( ! p -> reforge_dps_chart.empty() )
+  if ( ! ri.reforge_dps_chart.empty() )
   {
     const char* fmt;
     if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
@@ -1505,47 +1504,47 @@ void print_html_player_charts( FILE* file, sim_t* sim, player_t* p )
           fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
       }
     }
-    fprintf( file, fmt, p -> reforge_dps_chart.c_str() );
+    fprintf( file, fmt, ri.reforge_dps_chart.c_str() );
   }
 
-  if ( ! p -> scale_factors_chart.empty() )
+  if ( ! ri.scale_factors_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scale Factors Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> scale_factors_chart.c_str() );
+    fprintf( file, fmt, ri.scale_factors_chart.c_str() );
   }
 
-  if ( ! p -> timeline_dps_chart.empty() )
+  if ( ! ri.timeline_dps_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> timeline_dps_chart.c_str() );
+    fprintf( file, fmt, ri.timeline_dps_chart.c_str() );
   }
 
-  if ( ! p -> distribution_dps_chart.empty() )
+  if ( ! ri.distribution_dps_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Distribution Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> distribution_dps_chart.c_str() );
+    fprintf( file, fmt, ri.distribution_dps_chart.c_str() );
   }
 
-  if ( ! p -> time_spent_chart.empty() )
+  if ( ! ri.time_spent_chart.empty() )
   {
     const char* fmt;
     if ( num_players == 1 )
       fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Time Spent Chart\" />\n";
     else
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">%s</span>\n";
-    fprintf( file, fmt, p -> time_spent_chart.c_str() );
+    fprintf( file, fmt, ri.time_spent_chart.c_str() );
   }
 
   fputs( "\t\t\t\t\t\t</div>\n"
@@ -1807,11 +1806,11 @@ void print_html_player_description( FILE* file, sim_t* sim, player_t* p, int j, 
   }
   fprintf( file, "\">\n" );
 
-  if ( ! p -> thumbnail_url.empty()  )
+  if ( ! p -> report_information.thumbnail_url.empty()  )
     fprintf( file,
              "\t\t\t<a href=\"%s\" class=\"toggle-thumbnail%s\"><img src=\"%s\" alt=\"%s\" class=\"player-thumbnail\"/></a>\n",
              p -> origin_str.c_str(), ( num_players == 1 ) ? "" : " hide",
-             p -> thumbnail_url.c_str(), p -> name_str.c_str() );
+             p -> report_information.thumbnail_url.c_str(), p -> name_str.c_str() );
 
   fprintf( file,
            "\t\t\t<h2 class=\"toggle" );
@@ -2278,16 +2277,16 @@ void print_html_player_procs( FILE* file, player_t* p )
 
 // print_html_player_deaths ========================================================
 
-void print_html_player_deaths( FILE* file, player_t* p )
+void print_html_player_deaths( FILE* file, player_t* p, const player_t::report_information_t& ri )
 {
   // Death Analysis
 
   if ( p -> deaths.size() > 0 )
   {
     std::string distribution_deaths_str                = "";
-    if ( ! p -> distribution_deaths_chart.empty() )
+    if ( ! ri.distribution_deaths_chart.empty() )
     {
-      distribution_deaths_str = "<img src=\"" + p -> distribution_deaths_chart + "\" alt=\"Deaths Distribution Chart\" />\n";
+      distribution_deaths_str = "<img src=\"" + ri.distribution_deaths_chart + "\" alt=\"Deaths Distribution Chart\" />\n";
     }
 
     fprintf( file,
@@ -2356,7 +2355,7 @@ void print_html_player_deaths( FILE* file, player_t* p )
 
 // print_html_player_gear_weights ========================================================
 
-void print_html_player_gear_weights( FILE* file, player_t* p )
+void print_html_player_gear_weights( FILE* file, player_t* p, const player_t::report_information_t& ri )
 {
   if ( p -> sim -> scaling -> has_scale_factors() && !p -> is_pet() )
   {
@@ -2374,11 +2373,11 @@ void print_html_player_gear_weights( FILE* file, player_t* p )
              "\t\t\t\t\t\t\t\t\t\t<td>%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n"
              "\t\t\t\t\t\t\t\t</table>\n",
-             p -> gear_weights_pawn_std_string.c_str(),
-             p -> gear_weights_pawn_alt_string.c_str() );
+             ri.gear_weights_pawn_std_string.c_str(),
+             ri.gear_weights_pawn_alt_string.c_str() );
 
-    std::string rhada_std = p -> gear_weights_pawn_std_string;
-    std::string rhada_alt = p -> gear_weights_pawn_alt_string;
+    std::string rhada_std = ri.gear_weights_pawn_std_string;
+    std::string rhada_alt = ri.gear_weights_pawn_alt_string;
 
     if ( rhada_std.size() > 10 ) rhada_std.replace( 2, 8, "RhadaTip" );
     if ( rhada_alt.size() > 10 ) rhada_alt.replace( 2, 8, "RhadaTip" );
@@ -2409,18 +2408,19 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
   std::string n = p -> name();
   util_t::format_text( n, true );
 
+  report_utility::generate_player_report_information( p, p->report_information );
 
   print_html_player_description( file, sim, p, j, n );
 
   print_html_player_results_spec_gear( file, sim, p );
 
-  print_html_player_scale_factors( file, sim, p );
+  print_html_player_scale_factors( file, sim, p, p -> report_information );
 
-  print_html_player_charts( file, sim, p );
+  print_html_player_charts( file, sim, p, p -> report_information );
 
   print_html_player_abilities( file, sim, p, n );
 
-  print_html_player_resources( file, p );
+  print_html_player_resources( file, p, p -> report_information );
 
   print_html_player_buffs( file, p );
 
@@ -2428,9 +2428,9 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
   print_html_player_procs( file, p );
 
-  print_html_player_deaths( file, p );
+  print_html_player_deaths( file, p, p -> report_information );
 
-  print_html_player_statistics( file, p );
+  print_html_player_statistics( file, p, p -> report_information );
 
   print_html_player_action_priority_list( file, sim, p );
 
@@ -2442,7 +2442,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
   print_html_profile( file, p );
 
-  print_html_player_gear_weights( file, p );
+  print_html_player_gear_weights( file, p, p -> report_information );
 
 
   fprintf( file,

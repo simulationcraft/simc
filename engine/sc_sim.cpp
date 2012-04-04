@@ -72,7 +72,7 @@ static bool need_to_save_profiles( sim_t* sim )
   if ( sim -> save_profiles ) return true;
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
-    if ( ! p -> save_str.empty() )
+    if ( ! p -> report_information.save_str.empty() )
       return true;
 
   return false;
@@ -626,6 +626,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ),
+  report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
@@ -1415,8 +1416,6 @@ void sim_t::analyze_player( player_t* p )
       range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
       assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
 
-      chart_t::timeline( s -> timeline_aps_chart, p, s -> timeline_aps, s -> name_str + " APS", s -> aps );
-      chart_t::distribution( s -> aps_distribution_chart,this, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
 
       if ( s -> type == STATS_DMG )
       {
@@ -1544,54 +1543,7 @@ void sim_t::analyze_player( player_t* p )
     p -> dps_convergence = convergence_error / ( p -> dps_error * convergence_scale );
 
 
-  // Charts =================================================================
 
-  chart_t::action_dpet       ( p -> action_dpet_chart,               p );
-  chart_t::aps_portion       ( p -> action_dmg_chart,                p );
-  chart_t::time_spent        ( p -> time_spent_chart,                p );
-
-  std::string encoded_name;
-  http_t::format( encoded_name, p -> name_str );
-
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-  {
-    chart_t::timeline        ( p -> timeline_resource_chart[ i ],      p,
-                               p -> timeline_resource[ i ],
-                               encoded_name + ' ' + util_t::resource_type_string( i ),
-                               0,
-                               chart_t::resource_color( i ) );
-  }
-
-  chart_t::timeline          ( p -> timeline_dps_chart,              p,
-                               p -> timeline_dps,
-                               encoded_name + " DPS",
-                               p -> dps.mean );
-
-  chart_t::timeline_dps_error( p -> timeline_dps_error_chart,        p );
-  chart_t::dps_error         ( p -> dps_error_chart,                 p );
-
-  if ( p -> primary_role() == ROLE_HEAL )
-  {
-    chart_t::distribution      ( p -> distribution_dps_chart,          this,
-                                 p -> hps.distribution, encoded_name + " HPS",
-                                 p -> hps.mean,
-                                 p -> hps.min,
-                                 p -> hps.max );
-  }
-  else
-  {
-    chart_t::distribution      ( p -> distribution_dps_chart,          this,
-                                 p -> dps.distribution, encoded_name + " DPS",
-                                 p -> dps.mean,
-                                 p -> dps.min,
-                                 p -> dps.max );
-  }
-
-  chart_t::distribution      ( p -> distribution_deaths_chart,       this,
-                               p -> deaths.distribution, encoded_name + " Death",
-                               p -> deaths.mean,
-                               p -> deaths.min,
-                               p -> deaths.max );
 }
 
 // sim_t::analyze ===========================================================
@@ -1634,16 +1586,7 @@ void sim_t::analyze()
   range::sort( players_by_name, compare_name() );
   range::sort( targets_by_name, compare_name() );
 
-  chart_t::raid_aps     ( dps_charts,     this, players_by_dps, true );
-  chart_t::raid_aps     ( hps_charts,     this, players_by_hps, false );
-  chart_t::raid_dpet    ( dpet_charts,    this );
-  chart_t::raid_gear    ( gear_charts,    this );
-  downtime_chart = chart_t::raid_downtime( this );
-  chart_t::distribution( timeline_chart, this,
-                         simulation_length.distribution, "Timeline",
-                         simulation_length.mean,
-                         simulation_length.min,
-                         simulation_length.max );
+
 }
 
 // sim_t::iterate ===========================================================
