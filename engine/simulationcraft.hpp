@@ -3141,16 +3141,18 @@ public:
   buff_creator_t( actor_pair_t p, const std::string& n ) :
     _player( p ), _name( n ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero ), _cooldown( timespan_t::zero ), _id( 0 )
   {}
-  buff_creator_t& set_duration( timespan_t d )
+  buff_creator_t& duration( timespan_t d )
   { _duration=d; return *this; }
-  buff_creator_t& set_chance( double c )
+  buff_creator_t& chance( double c )
   { _chance=c; return *this; }
-  buff_creator_t& set_max_stack( unsigned ms )
+  buff_creator_t& max_stack( unsigned ms )
   { _max_stack=ms; return *this; }
-  buff_creator_t& set_cd( timespan_t t )
+  buff_creator_t& cd( timespan_t t )
   { _cooldown=t; return *this; }
-  buff_creator_t& set_id( uint32_t i )
+  buff_creator_t& id( uint32_t i )
   { _id=i; return *this; }
+
+  operator buff_t* () const;
 };
 
 struct buff_t : public spell_id_t
@@ -3197,7 +3199,7 @@ struct buff_t : public spell_id_t
           int max_stack=1, timespan_t buff_duration=timespan_t::zero, timespan_t buff_cooldown=timespan_t::zero,
           double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
 
-  buff_t( buff_creator_t params );
+  buff_t( const buff_creator_t& params );
 
   // Player Buff with extracted data
 private:
@@ -3266,6 +3268,9 @@ public:
   const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
   const spelleffect_data_t& effect3() const { return s_data -> effect3(); }
 };
+
+inline buff_creator_t::operator buff_t* () const
+{ return new buff_t( *this ); }
 
 struct stat_buff_t : public buff_t
 {

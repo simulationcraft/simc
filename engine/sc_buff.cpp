@@ -91,8 +91,8 @@ buff_t::buff_t( actor_pair_t       p,
   init();
 }
 
-buff_t::buff_t( buff_creator_t params ) :
-    spell_id_t( params._player.source, params._name.c_str() ),
+buff_t::buff_t( const buff_creator_t& params ) :
+    spell_id_t( params._player.source, params._name.c_str(), params._id ),
     buff_duration( params._duration ), buff_cooldown( params._cooldown ), default_chance( params._chance ),
     name_str( params._name ), sim( params._player.target -> sim ), player( params._player.target ),
     source( params._player.source ), initial_source( params._player.source ),
