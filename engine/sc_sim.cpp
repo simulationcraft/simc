@@ -771,11 +771,7 @@ sim_t::~sim_t()
     delete r;
   }
 
-  while ( buff_t* b = buff_list )
-  {
-    buff_list = b -> next;
-    delete b;
-  }
+  range::dispose( buff_list );
 
   while ( cooldown_t* d = cooldown_list )
   {
@@ -1063,10 +1059,10 @@ void sim_t::reset()
   id = 0;
   current_time = timespan_t::zero;
   last_event = timespan_t::zero;
-  for ( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> reset();
-  }
+
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> reset();
+
   for ( player_t* t = target_list; t; t = t -> next )
   {
     t -> reset();
@@ -1093,8 +1089,8 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
-    b -> combat_begin();
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> combat_begin();
 
   player_t::combat_begin( this );
 
@@ -1170,8 +1166,9 @@ void sim_t::combat_end()
     p -> combat_end();
   }
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < buff_list.size(); ++i )
   {
+    buff_t* b = buff_list[ i ];
     b -> expire();
     b -> combat_end();
   }
@@ -1414,8 +1411,8 @@ void sim_t::analyze_player( player_t* p )
   p -> dtps_error = p -> dtps.mean_std_dev * confidence_estimator;
   p -> hps_error = p -> hps.mean_std_dev * confidence_estimator;
 
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
-    b -> analyze();
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+    p -> buff_list[ i ] -> analyze();
 
   for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
     u -> analyze();
@@ -1554,8 +1551,8 @@ void sim_t::analyze()
     for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
-    b -> analyze();
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> analyze();
 
   total_dmg.analyze();
   raid_dps.analyze();
@@ -1621,9 +1618,9 @@ void sim_t::merge( sim_t& other_sim )
 
   range::copy( other_sim.iteration_timeline, std::back_inserter( iteration_timeline ) );
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < buff_list.size(); ++i )
   {
-    b -> merge( buff_t::find( &other_sim, b -> name_str.c_str() ) );
+    buff_list[ i ] -> merge( buff_t::find( &other_sim, buff_list[ i ] -> name_str.c_str() ) );
   }
 
   for ( unsigned int i = 0; i < actor_list.size(); i++ )

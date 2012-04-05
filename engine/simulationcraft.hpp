@@ -3260,7 +3260,7 @@ public:
   action_expr_t* create_expression( action_t*, const std::string& type );
   std::string    to_str() const;
 
-  static buff_t* find(   buff_t*, const std::string& name );
+  static buff_t* find( const std::vector<buff_t*>&, const std::string& name );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
@@ -3749,7 +3749,7 @@ public:
   auras_t auras;
 
   // Auras and De-Buffs
-  buff_t* buff_list;
+  std::vector<buff_t*> buff_list;
   timespan_t aura_delay;
 
   // Global aura related delay
@@ -4512,8 +4512,7 @@ struct player_t : public noncopyable
 
   } buffed;
 
-  buff_t*   buff_list;
-  std::list<buff_t*> buff_list2;
+  std::vector<buff_t*> buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;

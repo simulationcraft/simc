@@ -1563,16 +1563,27 @@ void print_html_player_buffs( FILE* file, const player_t* p )
            "\t\t\t\t\t\t\t</tr>\n" );
 
   std::vector< buff_t* > dynamic_buffs;
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> buff_list[ i ];
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
       dynamic_buffs.push_back( b );
+  }
+
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
+    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+    {
+      buff_t* b = pet -> buff_list[ i ];
       if ( ! b -> quiet && b -> start_count && ! b -> constant )
         dynamic_buffs.push_back( b );
-  for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
+    }
+  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> sim -> buff_list[ i ];
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
       dynamic_buffs.push_back( b );
+  }
 
   std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), report::buff_comp );
 
@@ -1676,12 +1687,26 @@ void print_html_player_buffs( FILE* file, const player_t* p )
     size_t i = 1;
     std::vector< buff_t* > constant_buffs;
 
-    for ( buff_t* b = p -> buff_list; b; b = b -> next )
+    for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+    {
+      buff_t* b = p -> buff_list[ i ];
       if ( ! b -> quiet && b -> start_count && b -> constant )
         constant_buffs.push_back( b );
-    for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
+    }
+
+    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+      for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+      {
+        buff_t* b = pet -> buff_list[ i ];
+        if ( ! b -> quiet && b -> start_count && b -> constant )
+          constant_buffs.push_back( b );
+      }
+    for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
+    {
+      buff_t* b = p -> sim -> buff_list[ i ];
       if ( ! b -> quiet && b -> start_count && b -> constant )
         constant_buffs.push_back( b );
+    }
 
     std::sort( constant_buffs.begin(), constant_buffs.end(), report::buff_comp );
 

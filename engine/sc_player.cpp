@@ -525,11 +525,7 @@ player_t::~player_t()
     dot_list = d -> next;
     delete d;
   }
-  while ( buff_t* d = buff_list )
-  {
-    buff_list = d -> next;
-    delete d;
-  }
+  range::dispose( buff_list );
   while ( cooldown_t* d = cooldown_list )
   {
     cooldown_list = d -> next;
@@ -2743,8 +2739,8 @@ void player_t::combat_begin()
   iteration_dmg_taken = 0;
   iteration_heal_taken = 0;
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
-    b -> combat_begin();
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> combat_begin();
 
   for ( stats_t* s = stats_list; s; s = s -> next )
     s -> combat_begin();
@@ -2825,10 +2821,8 @@ void player_t::combat_end()
   heal_taken.add( iteration_heal_taken );
   htps.add( iteration_fight_length != timespan_t::zero ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> combat_end();
-  }
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ] -> combat_end();
 }
 
 // player_t::merge ==========================================================
@@ -2869,8 +2863,9 @@ void player_t::merge( player_t& other )
     resource_gained[ i ] += other.resource_gained[ i ];
   }
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < buff_list.size(); ++i )
   {
+    buff_t* b = buff_list[ i ];
     buff_t *otherbuff = buff_t::find( &other, b -> name_str.c_str() );
     if ( otherbuff )
     { b -> merge( otherbuff ); }
@@ -2969,10 +2964,8 @@ void player_t::reset()
   dodge_per_agility         = initial_dodge_per_agility;
   parry_rating_per_strength = initial_parry_rating_per_strength;
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
-  {
-    b -> reset();
-  }
+  for ( size_t i = 0; i < buff_list.size(); ++i )
+    buff_list[ i ]-> reset();
 
   last_foreground_action = 0;
 
@@ -3197,11 +3190,13 @@ void player_t::demise()
 
   event_t::cancel( off_gcd );
 
-  for ( buff_t* b = buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < buff_list.size(); ++i )
   {
+    buff_t* b = buff_list[ i ];
     b -> expire();
     // Dead actors speak no lies .. or proc aura delayed buffs
-    if ( b -> delay ) event_t::cancel( b -> delay );
+    if ( b -> delay )
+      event_t::cancel( b -> delay );
   }
   for ( action_t* a = action_list; a; a = a -> next )
   {

@@ -177,20 +177,25 @@ void print_text_buffs( FILE* file, player_t* p )
   std::vector< buff_t* > buff_list;
   std::string full_name;
 
-  for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
-    if ( b -> quiet || ! b -> start_count || ! b -> constant )
-      continue;
-
-    buff_list.push_back( b );
+    buff_t* b = p -> buff_list[ i ];
+    if ( ! b -> quiet && b -> start_count && b -> constant )
+      buff_list.push_back( b );
   }
 
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+    {
+      buff_t* b = pet -> buff_list[ i ];
+      if ( ! b -> quiet && b -> start_count && b -> constant )
+        buff_list.push_back( b );
+    }
+  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
   {
-    if ( b -> quiet || ! b -> start_count || ! b -> constant )
-      continue;
-
-    buff_list.push_back( b );
+    buff_t* b = p -> sim -> buff_list[ i ];
+    if ( ! b -> quiet && b -> start_count && b -> constant )
+      buff_list.push_back( b );
   }
 
   std::sort( buff_list.begin(), buff_list.end(), report::buff_comp );
@@ -220,33 +225,25 @@ void print_text_buffs( FILE* file, player_t* p )
   int max_length = 0;
 
   // Consolidate player buffs, first auras
-  for ( buff_t* b = p -> sim -> buff_list; b; b = b -> next )
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
   {
-    if ( b -> quiet || ! b -> start_count || b -> constant )
-      continue;
-
-    buff_list.push_back( b );
-  }
-
-  // Then player buffs
-  for ( buff_t* b = p -> buff_list; b; b = b -> next )
-  {
-    if ( b -> quiet || ! b -> start_count || b -> constant )
-      continue;
-
-    buff_list.push_back( b );
-  }
-
-  // Then pet buffs
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-  {
-    for ( buff_t* b = pet -> buff_list; b; b = b -> next )
-    {
-      if ( b -> quiet || ! b -> start_count || b -> constant )
-        continue;
-
+    buff_t* b = p -> buff_list[ i ];
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
       buff_list.push_back( b );
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+    {
+      buff_t* b = pet -> buff_list[ i ];
+      if ( ! b -> quiet && b -> start_count && ! b -> constant )
+        buff_list.push_back( b );
     }
+  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> sim -> buff_list[ i ];
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
+      buff_list.push_back( b );
   }
 
   for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();

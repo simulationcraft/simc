@@ -256,7 +256,6 @@ void buff_t::init()
 {
   init_buff_shared();
 
-  buff_t** tail=0;
 
   if ( initial_source )
   {
@@ -264,20 +263,15 @@ void buff_t::init()
     if ( initial_source != player )
       name_str = name_str + ':' + initial_source->name_str;
     rng = initial_source-> get_rng( name_str );
-    tail = &( player -> buff_list );
+    player -> buff_list.push_back( this );
   }
   else
   {
     cooldown = sim -> get_cooldown( "buff_" + name_str );
     rng = sim -> get_rng( name_str );
-    tail = &( sim -> buff_list );
+    sim -> buff_list.push_back( this );
   }
   cooldown -> duration = buff_cooldown;
-
-  assert( tail );
-
-  while ( *tail ) tail = &( ( *tail ) -> next );
-  *tail = this;
 }
 
 // buff_t::buff_t ===========================================================
@@ -371,9 +365,7 @@ void buff_t::init_buff_t_()
 
   init_buff_shared();
 
-  buff_t** last = &(  player -> buff_list );
-  while ( *last ) last = &( ( *last ) -> next );
-  *last = this;
+  player -> buff_list.push_back( this );
 }
 
 // buff_t::~buff_t ==========================================================
@@ -896,12 +888,15 @@ void buff_t::analyze()
 
 // buff_t::find =============================================================
 
-buff_t* buff_t::find( buff_t* b, const std::string& name_str )
+buff_t* buff_t::find( const std::vector<buff_t*>& b, const std::string& name_str )
 {
-  while ( b && name_str != b -> name_str )
-    b = b -> next;
+  for( size_t i = 0; i < b.size(); i++ )
+  {
+    if ( name_str == b[ i ]->name_str )
+      return b[ i ];
+  }
 
-  return b;
+  return NULL;
 }
 
 // buff_t::to_str ===========================================================
