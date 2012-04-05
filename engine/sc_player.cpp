@@ -4079,7 +4079,7 @@ void player_t::register_resource_loss_callback( resource_type_e resource_type,
 void player_t::register_attack_callback( int64_t mask,
                                          action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4093,7 +4093,7 @@ void player_t::register_attack_callback( int64_t mask,
 void player_t::register_spell_callback( int64_t mask,
                                         action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4108,7 +4108,7 @@ void player_t::register_spell_callback( int64_t mask,
 void player_t::register_tick_callback( int64_t mask,
                                        action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4122,7 +4122,7 @@ void player_t::register_tick_callback( int64_t mask,
 void player_t::register_heal_callback( int64_t mask,
                                        action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4136,7 +4136,7 @@ void player_t::register_heal_callback( int64_t mask,
 void player_t::register_absorb_callback( int64_t mask,
                                        action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4150,7 +4150,7 @@ void player_t::register_absorb_callback( int64_t mask,
 void player_t::register_harmful_spell_callback( int64_t mask,
                                                 action_callback_t* cb )
 {
-  for ( int64_t i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4164,7 +4164,7 @@ void player_t::register_harmful_spell_callback( int64_t mask,
 void player_t::register_tick_damage_callback( int64_t mask,
                                               action_callback_t* cb )
 {
-  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4178,7 +4178,7 @@ void player_t::register_tick_damage_callback( int64_t mask,
 void player_t::register_direct_damage_callback( int64_t mask,
                                                 action_callback_t* cb )
 {
-  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4192,7 +4192,7 @@ void player_t::register_direct_damage_callback( int64_t mask,
 void player_t::register_tick_heal_callback( int64_t mask,
                                             action_callback_t* cb )
 {
-  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -4206,7 +4206,7 @@ void player_t::register_tick_heal_callback( int64_t mask,
 void player_t::register_direct_heal_callback( int64_t mask,
                                               action_callback_t* cb )
 {
-  for ( int64_t i=0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
@@ -6115,7 +6115,7 @@ action_expr_t* player_t::create_expression( action_t* a,
           duration_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_duration", TOK_NUM ), dot( d ) {}
           virtual int evaluate() {
             double haste = ( dot -> state ) ? dot -> state -> haste : action -> player_haste;
-            result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM; 
+            result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM;
           }
         };
         return new duration_expr_t( a, dot );
