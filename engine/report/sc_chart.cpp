@@ -1285,7 +1285,7 @@ std::string chart::scaling_dps( const player_t* p )
 {
   double max_dps=0, min_dps=std::numeric_limits<double>::max();
 
-  for ( size_t i=0; i < sizeof_array( p -> dps_plot_data ); ++i )
+  for ( size_t i=0; i < p -> dps_plot_data.size(); ++i )
   {
     const std::vector<double>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();

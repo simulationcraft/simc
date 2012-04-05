@@ -539,7 +539,7 @@ player_t::~player_t()
   range::sort( all_callbacks );
   dispose( all_callbacks.begin(), range::unique( all_callbacks ) );
 
-  for ( size_t i=0; i < sizeof_array( talent_trees ); i++ )
+  for ( size_t i=0; i < talent_trees.size(); i++ )
     range::dispose( talent_trees[ i ] );
 
   range::dispose( glyphs );
