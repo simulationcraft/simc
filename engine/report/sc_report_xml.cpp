@@ -278,7 +278,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
-  report::generate_player_report_information( p, p->report_information );
+  report::generate_player_charts( p, p->report_information );
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
   if ( owner )

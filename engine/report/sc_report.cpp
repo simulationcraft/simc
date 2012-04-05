@@ -424,7 +424,56 @@ void report::print_html_sample_data( FILE* file, const player_t* p, const sample
 
 }
 
-void report::generate_player_report_information( const player_t*  p, player_t::report_information_t& ri )
+bool buff_is_dynamic( buff_t* b )
+{
+  if ( ! b -> quiet && b -> start_count && ! b -> constant )
+    return false;
+
+  return true;
+}
+
+bool buff_is_constant( buff_t* b )
+{
+  if ( ! b -> quiet && b -> start_count && b -> constant )
+    return false;
+
+  return true;
+}
+void report::generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
+{
+  if ( ri.buff_lists_generated )
+    return;
+
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> buff_list[ i ];
+    ri.buff_list.push_back( b );
+  }
+
+  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+    {
+      buff_t* b = pet -> buff_list[ i ];
+      ri.buff_list.push_back( b );
+    }
+  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
+  {
+    buff_t* b = p -> sim -> buff_list[ i ];
+    ri.buff_list.push_back( b );
+  }
+
+  // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
+  range::sort( ri.dynamic_buffs, report::buff_comp );
+
+  // Filter out non-constant buffs, copy them into ri.constant_buffs and sort
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.constant_buffs ), buff_is_constant );
+  range::sort( ri.constant_buffs, report::buff_comp );
+
+  ri.buff_lists_generated = true;
+}
+
+void report::generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;

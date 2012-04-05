@@ -35,7 +35,8 @@ struct chart {
 };
 
 struct report {
-  static void generate_player_report_information  ( const player_t*, player_t::report_information_t& );
+  static void generate_player_charts  ( const player_t*, player_t::report_information_t& );
+  static void generate_player_buff_lists ( const player_t*, player_t::report_information_t& );
   static void generate_sim_report_information     ( const sim_t*,       sim_t::report_information_t& );
 
   static void print_html_rng_information  ( FILE*, const rng_t* );

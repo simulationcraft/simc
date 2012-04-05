@@ -169,41 +169,17 @@ void print_text_actions( FILE* file, player_t* p )
 // print_text_buffs =========================================================
 
 
-void print_text_buffs( FILE* file, player_t* p )
+void print_text_buffs( FILE* file, const player_t::report_information_t& ri )
 {
   bool first=true;
   char prefix = ' ';
   int total_length = 100;
-  std::vector< buff_t* > buff_list;
   std::string full_name;
 
-  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+  for ( size_t i = 0; i < ri.constant_buffs.size(); i++ )
   {
-    buff_t* b = p -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && b -> constant )
-      buff_list.push_back( b );
-  }
-
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
-    {
-      buff_t* b = pet -> buff_list[ i ];
-      if ( ! b -> quiet && b -> start_count && b -> constant )
-        buff_list.push_back( b );
-    }
-  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
-  {
-    buff_t* b = p -> sim -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && b -> constant )
-      buff_list.push_back( b );
-  }
-
-  std::sort( buff_list.begin(), buff_list.end(), report::buff_comp );
-
-  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
-        b < buff_list.end(); b++ )
-  {
-    int length = ( int ) ( *b ) -> name_str.length();
+    buff_t* b = ri.constant_buffs[ i ];
+    int length = ( int ) b -> name_str.length();
     if ( ( total_length + length ) > 100 )
     {
       if ( ! first )
@@ -213,70 +189,47 @@ void print_text_buffs( FILE* file, player_t* p )
       prefix = ' ';
       total_length = 0;
     }
-    util_t::fprintf( file, "%c%s", prefix, ( *b ) -> name_str.c_str() );
+    util_t::fprintf( file, "%c%s", prefix, b -> name_str.c_str() );
     prefix = '/';
     total_length += length;
   }
 
   util_t::fprintf( file, "\n" );
 
-  buff_list.clear();
 
   int max_length = 0;
 
-  // Consolidate player buffs, first auras
-  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
-  {
-    buff_t* b = p -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      buff_list.push_back( b );
-  }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
-    {
-      buff_t* b = pet -> buff_list[ i ];
-      if ( ! b -> quiet && b -> start_count && ! b -> constant )
-        buff_list.push_back( b );
-    }
-  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
+  for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )
   {
-    buff_t* b = p -> sim -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      buff_list.push_back( b );
-  }
-
-  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
-        b < buff_list.end(); b++ )
-  {
-    if ( ( *b ) -> player && ( *b ) -> player -> is_pet() )
-      full_name = ( *b ) -> player -> name_str + "-" + ( *b ) -> name_str;
+    buff_t* b = ri.dynamic_buffs[ i ];
+    if ( b -> player && b -> player -> is_pet() )
+      full_name = b -> player -> name_str + "-" + b -> name_str;
     else
-      full_name = ( *b ) -> name_str;
+      full_name = b -> name_str;
 
     int length = ( int ) full_name.length();
     if ( length > max_length ) max_length = length;
   }
 
-  std::sort( buff_list.begin(), buff_list.end(), report::buff_comp );
 
-  if ( buff_list.size() > 0 )
+  if ( ri.dynamic_buffs.size() > 0 )
     util_t::fprintf( file, "  Dynamic Buffs:\n" );
 
-  for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
-        b < buff_list.end(); b++ )
+  for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )
   {
-    if ( ( *b ) -> player && ( *b ) -> player -> is_pet() )
-      full_name = ( *b ) -> player -> name_str + "-" + ( *b ) -> name_str;
+    buff_t* b = ri.dynamic_buffs[ i ];
+    if ( b -> player && b -> player -> is_pet() )
+      full_name = b -> player -> name_str + "-" + b -> name_str;
     else
-      full_name = ( *b ) -> name_str;
+      full_name = b -> name_str;
 
     util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
-                     max_length, full_name.c_str(), ( *b ) -> avg_start, ( *b ) -> avg_refresh,
-                     ( *b ) -> avg_start_interval, ( *b ) -> avg_trigger_interval, ( *b ) -> uptime_pct.mean );
+                     max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
+                     b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
 
-    if ( ( *b ) -> benefit_pct > 0 && ( *b ) -> benefit_pct < 100 )
-      util_t::fprintf( file, "  benefit=%2.0f%%", ( *b ) -> benefit_pct );
+    if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
+      util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
 
     util_t::fprintf( file, "\n" );
   }
@@ -754,6 +707,8 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
 
 void print_text_player( FILE* file, player_t* p )
 {
+  report::generate_player_buff_lists( p, p->report_information );
+
   util_t::fprintf( file, "\n%s: %s %s %s %s %d\n",
                    p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
                    p -> name(), p -> race_str.c_str(),
@@ -784,7 +739,7 @@ void print_text_player( FILE* file, player_t* p )
   print_text_defense_stats( file, p );
   print_text_actions      ( file, p );
 
-  print_text_buffs        ( file, p );
+  print_text_buffs        ( file, p -> report_information );
   print_text_uptime       ( file, p );
   print_text_procs        ( file, p );
   print_text_player_gains ( file, p );

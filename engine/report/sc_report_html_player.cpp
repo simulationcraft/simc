@@ -1541,7 +1541,7 @@ void print_html_player_charts( FILE* file, const sim_t* sim, const player_t* p, 
 
 // print_html_player_buffs ==================================================
 
-void print_html_player_buffs( FILE* file, const player_t* p )
+void print_html_player_buffs( FILE* file, const player_t* p, const player_t::report_information_t& ri )
 {
   // Buff Section
   fprintf( file,
@@ -1562,34 +1562,9 @@ void print_html_player_buffs( FILE* file, const player_t* p )
            "\t\t\t\t\t\t\t\t<th>Benefit</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
 
-  std::vector< buff_t* > dynamic_buffs;
-
-  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+  for ( size_t i = 0; i < ri.dynamic_buffs.size(); i++ )
   {
-    buff_t* b = p -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      dynamic_buffs.push_back( b );
-  }
-
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
-    {
-      buff_t* b = pet -> buff_list[ i ];
-      if ( ! b -> quiet && b -> start_count && ! b -> constant )
-        dynamic_buffs.push_back( b );
-    }
-  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
-  {
-    buff_t* b = p -> sim -> buff_list[ i ];
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      dynamic_buffs.push_back( b );
-  }
-
-  std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), report::buff_comp );
-
-  for ( size_t i = 0; i < dynamic_buffs.size(); i++ )
-  {
-    buff_t* b = dynamic_buffs[ i ];
+    buff_t* b = ri.dynamic_buffs[ i ];
 
     std::string buff_name;
     if ( b -> player && b -> player -> is_pet() )
@@ -1684,35 +1659,9 @@ void print_html_player_buffs( FILE* file, const player_t* p )
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<th class=\"left\"><a href=\"#help-constant-buffs\" class=\"help\">Constant Buffs</a></th>\n"
              "\t\t\t\t\t\t\t\t</tr>\n" );
-    size_t i = 1;
-    std::vector< buff_t* > constant_buffs;
-
-    for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+    for ( size_t i = 0; i < ri.constant_buffs.size(); i++ )
     {
-      buff_t* b = p -> buff_list[ i ];
-      if ( ! b -> quiet && b -> start_count && b -> constant )
-        constant_buffs.push_back( b );
-    }
-
-    for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-      for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
-      {
-        buff_t* b = pet -> buff_list[ i ];
-        if ( ! b -> quiet && b -> start_count && b -> constant )
-          constant_buffs.push_back( b );
-      }
-    for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
-    {
-      buff_t* b = p -> sim -> buff_list[ i ];
-      if ( ! b -> quiet && b -> start_count && b -> constant )
-        constant_buffs.push_back( b );
-    }
-
-    std::sort( constant_buffs.begin(), constant_buffs.end(), report::buff_comp );
-
-    for ( std::vector< buff_t* >::const_iterator b = constant_buffs.begin();
-          b < constant_buffs.end(); b++ )
-    {
+      buff_t* b = ri.constant_buffs[ i ];
       fprintf( file,
                "\t\t\t\t\t\t\t<tr" );
       if ( !( i & 1 ) )
@@ -1725,7 +1674,7 @@ void print_html_player_buffs( FILE* file, const player_t* p )
         fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( *b ) -> name_str.c_str() );
+                 b -> name_str.c_str() );
 
 
         fprintf( file,
@@ -1743,21 +1692,19 @@ void print_html_player_buffs( FILE* file, const player_t* p )
                  "\t\t\t\t\t\t\t\t\t\t</ul>\n"
                  "\t\t\t\t\t\t\t\t\t</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( *b ) -> s_id,
-                 ( *b ) -> cooldown -> name_str.c_str(),
-                 ( *b ) -> tooltip(),
-                 ( *b ) -> max_stack,
-                 ( *b ) -> buff_duration.total_seconds(),
-                 ( *b ) -> cooldown -> duration.total_seconds(),
-                 ( *b ) -> default_chance * 100 );
+                 b -> s_id,
+                 b -> cooldown -> name_str.c_str(),
+                 b -> tooltip(),
+                 b -> max_stack,
+                 b -> buff_duration.total_seconds(),
+                 b -> cooldown -> duration.total_seconds(),
+                 b -> default_chance * 100 );
       }
       else
         fprintf( file,
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( *b ) -> name_str.c_str() );
-
-      i++;
+                 b -> name_str.c_str() );
     }
     fprintf( file,
              "\t\t\t\t\t\t\t</table>\n" );
@@ -2398,7 +2345,8 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
-  report::generate_player_report_information( p, p->report_information );
+  report::generate_player_charts( p, p->report_information );
+  report::generate_player_buff_lists( p, p->report_information );
 
   std::string n = p -> name();
   util_t::format_text( n, true );
@@ -2415,7 +2363,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 
   print_html_player_resources( file, p, p -> report_information );
 
-  print_html_player_buffs( file, p );
+  print_html_player_buffs( file, p, p -> report_information );
 
   print_html_player_benefits_uptimes( file, p );
 

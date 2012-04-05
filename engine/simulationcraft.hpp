@@ -1278,6 +1278,10 @@ template <typename Range, typename F>
 inline F for_each( Range& r, F f )
 { return std::for_each( range::begin( r ), range::end( r ), f ); }
 
+template <typename Range, typename Out, typename Predicate>
+inline Out remove_copy_if( Range& r, Out o, Predicate p )
+{ return std::remove_copy_if( range::begin( r ), range::end( r ), o, p ); }
+
 template <typename Range1, typename Range2, typename Out>
 inline Out set_difference( const Range1& left, const Range2& right, Out o )
 {
@@ -4548,7 +4552,7 @@ struct player_t : public noncopyable
 
   struct report_information_t
   {
-    bool charts_generated;
+    bool charts_generated, buff_lists_generated;
     std::string action_sequence;
     std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
     std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
@@ -4563,6 +4567,7 @@ struct player_t : public noncopyable
     std::string save_actions_str;
     std::string comment_str;
     std::string thumbnail_url;
+    std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
   } report_information;
 
   // Gear
