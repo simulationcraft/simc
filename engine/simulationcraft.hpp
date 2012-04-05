@@ -3136,7 +3136,7 @@ private:
   unsigned _max_stack;
   timespan_t _duration, _cooldown;
   uint32_t _id;
-  friend class buff_t;
+  friend struct buff_t;
 public:
   buff_creator_t( actor_pair_t p, const std::string& n ) :
     _player( p ), _name( n ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero ), _cooldown( timespan_t::zero ), _id( 0 )
@@ -5376,7 +5376,7 @@ public:
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   snapshot();
-  virtual result_type_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( 0 ); }
+  virtual result_type_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual bool   result_is_hit ( result_type_e = RESULT_UNKNOWN ) const;
   virtual bool   result_is_miss( result_type_e = RESULT_UNKNOWN ) const;
   virtual double calculate_direct_damage( result_type_e, int chain_target, unsigned target_level,
