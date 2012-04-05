@@ -5367,7 +5367,7 @@ public:
   virtual double haste() const        { return 1.0;               }
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
-  virtual timespan_t tick_time( double /* haste */ ) const;
+  virtual timespan_t tick_time( double haste ) const;
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min ) const;
   virtual timespan_t travel_time();
   virtual void   player_buff();
@@ -5375,11 +5375,12 @@ public:
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   snapshot();
   virtual result_type_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( 0 ); }
-  virtual bool   result_is_hit ( result_type_e=RESULT_UNKNOWN ) const;
-  virtual bool   result_is_miss( result_type_e=RESULT_UNKNOWN ) const;
-  virtual double calculate_direct_damage( result_type_e /* result */, int /* chain_target */, unsigned /* target_level */, double /* attack_power */,  double /* spell_power */, double /* multiplier */ );
-  virtual double calculate_tick_damage( result_type_e /* result */, double /* power */, double /* multiplier */ );
-  virtual double calculate_weapon_damage( double /* attack_power */ );
+  virtual bool   result_is_hit ( result_type_e = RESULT_UNKNOWN ) const;
+  virtual bool   result_is_miss( result_type_e = RESULT_UNKNOWN ) const;
+  virtual double calculate_direct_damage( result_type_e, int chain_target, unsigned target_level,
+                                          double attack_power,  double spell_power, double multiplier );
+  virtual double calculate_tick_damage( result_type_e, double power, double multiplier );
+  virtual double calculate_weapon_damage( double attack_power );
   virtual double armor() const;
   virtual double resistance() const;
   virtual void   consume_resource();
@@ -5576,10 +5577,10 @@ public:
   virtual result_type_e calculate_result( double, unsigned );
   virtual void   init();
 
-  virtual double   miss_chance( double /* hit */, int delta_level ) const;
+  virtual double   miss_chance( double hit, int delta_level ) const;
   virtual double  block_chance( int /* delta_level */ ) const { return 0.0; }
   virtual double  crit_block_chance( int delta_level ) const;
-  virtual double   crit_chance( double /* crit */, int delta_level ) const;
+  virtual double   crit_chance( double crit, int delta_level ) const;
 
   /* New stuffs */
   virtual double composite_hit() const { return action_t::composite_hit() + player -> composite_attack_hit(); }
