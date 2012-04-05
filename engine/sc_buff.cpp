@@ -239,6 +239,7 @@ void buff_t::init_buff_shared()
   overridden = false;
   expiration = 0;
   delay = 0;
+  next = NULL;
 
   buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
@@ -273,11 +274,9 @@ void buff_t::init()
   }
   cooldown -> duration = buff_cooldown;
 
-  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-  next = *tail;
+  assert( tail );
+
+  while ( *tail ) tail = &( ( *tail ) -> next );
   *tail = this;
 }
 
@@ -372,14 +371,9 @@ void buff_t::init_buff_t_()
 
   init_buff_shared();
 
-  buff_t** tail = &(  player -> buff_list );
-
-  while ( *tail && name_str > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-  next = *tail;
-  *tail = this;
+  buff_t** last = &(  player -> buff_list );
+  while ( *last ) last = &( ( *last ) -> next );
+  *last = this;
 }
 
 // buff_t::~buff_t ==========================================================

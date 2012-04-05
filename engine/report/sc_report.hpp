@@ -41,6 +41,8 @@ struct report {
   static void print_html_rng_information  ( FILE*, const rng_t* );
   static void print_html_sample_data      ( FILE*, const player_t*, const sample_data_t&, const std::string& name );
 
+  static bool buff_comp( const buff_t* i, const buff_t* j );
+
   static void print_spell_query ( sim_t*, unsigned level = MAX_LEVEL );
   static void print_profiles    ( sim_t* );
   static void print_text        ( FILE*, sim_t*, bool detail=true );
@@ -49,6 +51,26 @@ struct report {
   static void print_xml         ( sim_t* );
   static void print_suite       ( sim_t* );
 };
+
+inline bool report::buff_comp( const buff_t* i, const buff_t* j )
+{
+  // Aura&Buff / Pet
+  if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
+    return true;
+  // Pet / Aura&Buff
+  else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
+    return false;
+  // Pet / Pet
+  else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
+  {
+    if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
+      return ( i -> name_str.compare( j -> name_str ) < 0 );
+    else
+      return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
+  }
+
+  return ( i -> name_str.compare( j -> name_str ) < 0 );
+}
 
 #if SC_BETA
 namespace {

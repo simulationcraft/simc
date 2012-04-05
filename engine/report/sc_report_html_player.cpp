@@ -1541,26 +1541,6 @@ void print_html_player_charts( FILE* file, const sim_t* sim, const player_t* p, 
 
 // print_html_player_buffs ==================================================
 
-inline bool buff_comp( const buff_t* i, const buff_t* j )
-{
-  // Aura & Buff / Pet
-  if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
-    return true;
-  // Pet / Aura & Buff
-  else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
-    return false;
-  // Pet / Pet
-  else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
-  {
-    if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
-      return ( i -> name_str.compare( j -> name_str ) < 0 );
-    else
-      return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
-  }
-
-  return ( i -> name_str.compare( j -> name_str ) < 0 );
-}
-
 void print_html_player_buffs( FILE* file, const player_t* p )
 {
   // Buff Section
@@ -1594,7 +1574,7 @@ void print_html_player_buffs( FILE* file, const player_t* p )
     if ( ! b -> quiet && b -> start_count && ! b -> constant )
       dynamic_buffs.push_back( b );
 
-  std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), buff_comp );
+  std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), report::buff_comp );
 
   for ( size_t i = 0; i < dynamic_buffs.size(); i++ )
   {
@@ -1703,7 +1683,7 @@ void print_html_player_buffs( FILE* file, const player_t* p )
       if ( ! b -> quiet && b -> start_count && b -> constant )
         constant_buffs.push_back( b );
 
-    std::sort( constant_buffs.begin(), constant_buffs.end(), buff_comp );
+    std::sort( constant_buffs.begin(), constant_buffs.end(), report::buff_comp );
 
     for ( std::vector< buff_t* >::const_iterator b = constant_buffs.begin();
           b < constant_buffs.end(); b++ )

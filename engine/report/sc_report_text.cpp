@@ -168,25 +168,6 @@ void print_text_actions( FILE* file, player_t* p )
 
 // print_text_buffs =========================================================
 
-inline bool buff_comp( const buff_t* i, const buff_t* j )
-{
-  // Aura&Buff / Pet
-  if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
-    return true;
-  // Pet / Aura&Buff
-  else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
-    return false;
-  // Pet / Pet
-  else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
-  {
-    if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
-      return ( i -> name_str.compare( j -> name_str ) < 0 );
-    else
-      return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
-  }
-
-  return ( i -> name_str.compare( j -> name_str ) < 0 );
-}
 
 void print_text_buffs( FILE* file, player_t* p )
 {
@@ -212,7 +193,7 @@ void print_text_buffs( FILE* file, player_t* p )
     buff_list.push_back( b );
   }
 
-  std::sort( buff_list.begin(), buff_list.end(), buff_comp );
+  std::sort( buff_list.begin(), buff_list.end(), report::buff_comp );
 
   for ( std::vector< buff_t* >::const_iterator b = buff_list.begin();
         b < buff_list.end(); b++ )
@@ -280,7 +261,7 @@ void print_text_buffs( FILE* file, player_t* p )
     if ( length > max_length ) max_length = length;
   }
 
-  std::sort( buff_list.begin(), buff_list.end(), buff_comp );
+  std::sort( buff_list.begin(), buff_list.end(), report::buff_comp );
 
   if ( buff_list.size() > 0 )
     util_t::fprintf( file, "  Dynamic Buffs:\n" );
