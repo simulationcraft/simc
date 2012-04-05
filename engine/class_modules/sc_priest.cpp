@@ -3618,8 +3618,8 @@ void priest_t::init_buffs()
   buffs.glyph_of_shadow_word_death = buff_creator_t( this, "glyph_of_shadow_word_death").
                                                  max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
   //buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
-  buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effect2().trigger_spell_id(), "mind_spike"                 );
-  buffs.mind_spike                 = new buff_t( this, "mind_spike",                 3, timespan_t::from_seconds( 12.0 ) );
+  buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effect2().trigger_spell_id(), "glyph_mind_spike" );
+  buffs.mind_spike                 = new buff_t( this, "mind_spike", 3, timespan_t::from_seconds( 12.0 ) );
   buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );
   buffs.shadowfiend                = new buff_t( this, "shadowfiend", 1, timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
   buffs.glyph_of_atonement        = new buff_t( this, 81301, "glyph_of_atonement" ); // FIXME: implement actual mechanics

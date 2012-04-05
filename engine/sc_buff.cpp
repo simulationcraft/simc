@@ -427,7 +427,7 @@ int buff_t::stack_react()
 {
   int stack = 0;
 
-  for ( int i=1; i <= current_stack; i++ )
+  for ( int i = 1; i <= current_stack; i++ )
   {
     if ( stack_react_time[ i ] > sim -> current_time ) break;
     stack++;
@@ -732,7 +732,7 @@ void buff_t::bump( int    stacks,
 
     timespan_t now = sim -> current_time;
     timespan_t react = now + ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
-    for ( int i=before_stack+1; i <= current_stack; i++ )
+    for ( int i = before_stack+1; i <= current_stack; i++ )
     {
       stack_occurrence[ i ] = now;
       stack_react_time[ i ] = react;
@@ -779,7 +779,7 @@ void buff_t::expire()
       constant = false;
     }
 
-  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+  for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ].update( false );
 }
 
@@ -863,8 +863,12 @@ void buff_t::merge( const buff_t* other )
 
   uptime_pct.merge( other -> uptime_pct );
 
-  assert( stack_uptime.size() == other -> stack_uptime.size() );
-  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+  if ( stack_uptime.size() != other -> stack_uptime.size() )
+  {
+    sim->errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
+    assert( 0 );
+  }
+  for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ].merge ( other -> stack_uptime[ i ] );
 }
 
@@ -892,7 +896,7 @@ void buff_t::analyze()
   avg_refresh = refresh_count / ( double ) sim -> iterations;
   uptime_pct.analyze();
 
-  for ( unsigned int i = 0; i < stack_uptime.size(); i++ )
+  for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ].analyze();
 }
 

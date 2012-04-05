@@ -3296,10 +3296,10 @@ std::string player_t::print_action_map( const int iterations, int precision ) co
   ret.precision( precision );
   ret << "Label: Number of executes (Average number of executes per iteration)<br />\n";
 
-  for ( std::map<std::string,int>::const_iterator it = action_map.begin(), end = action_map.end(); it != end; ++it )
+  for ( std::map< std::string, int >::const_iterator it = action_map.begin(), end = action_map.end(); it != end; ++it )
   {
     ret << it -> first << ": " << it -> second;
-    if ( iterations > 0 ) ret << " (" << ( ( double )it -> second ) / iterations << ')';
+    if ( iterations > 0 ) ret << " (" << static_cast<double>( it -> second ) / iterations << ')';
     ret << "<br />\n";
   }
 
@@ -3544,7 +3544,7 @@ talent_tab_type_e player_t::primary_tab() const
 {
   int best = 0;
 
-  for ( int i = 1; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 1; i < talent_tab_points.size(); i++ )
     if ( talent_tab_points[ i ] > talent_tab_points[ best ] )
       best = i;
 
@@ -3823,7 +3823,9 @@ void player_t::cost_reduction_gain( school_type_e school,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount, util_t::school_type_string( school ) );
+  if ( sim -> log )
+    log_t::output( sim, "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
+                   util_t::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
@@ -3849,7 +3851,9 @@ void player_t::cost_reduction_loss( school_type_e school,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s loses a cost reduction %.0f on abilities of school %s", name(), amount, util_t::school_type_string( school ) );
+  if ( sim -> log )
+    log_t::output( sim, "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
+                   util_t::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
@@ -4267,9 +4271,9 @@ dot_t* player_t::find_dot( const std::string& name ) const
 
 action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
 {
-  for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+  for ( size_t i = 0; i < action_priority_list.size(); i++ )
   {
-    action_priority_list_t* a = action_priority_list[i];
+    action_priority_list_t* a = action_priority_list[ i ];
     if ( a -> name_str == name )
       return a;
   }
@@ -4491,7 +4495,8 @@ rng_t* player_t::get_rng( const std::string& n )
 {
   assert( sim -> rng );
 
-  if ( ! sim -> separated_rng ) return sim -> default_rng();
+  if ( ! sim -> separated_rng )
+    return sim -> default_rng();
 
   rng_t* rng=0;
 
@@ -4567,7 +4572,9 @@ struct start_moving_t : public action_t
   {
     player -> buffs.self_movement -> trigger();
 
-    if ( sim -> log ) log_t::output( sim, "%s starts moving.", player -> name() );
+    if ( sim -> log )
+      log_t::output( sim, "%s starts moving.", player -> name() );
+
     update_ready();
   }
 
@@ -5006,10 +5013,10 @@ struct snapshot_stats_t : public action_t
 
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
-    for ( int i=ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
-      p -> buffed.attribute[ i ] = floor( p -> get_attribute( static_cast<attribute_type_e>( i ) ) );
+    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
+      p -> buffed.attribute[ i ] = floor( p -> get_attribute( i ) );
 
-    range::copy( p -> resources.max, p -> buffed.resource );
+    p -> buffed.resource = p -> resources.max;
 
     p -> buffed.spell_haste  = p -> composite_spell_haste();
     p -> buffed.attack_haste = p -> composite_attack_haste();
@@ -5425,15 +5432,13 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 
 // player_t::parse_talent_trees =============================================
 
-bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
+bool player_t::parse_talent_trees( const std::array< int, MAX_TALENT_SLOTS > encoding )
 {
   int index=0;
 
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 0; i < talent_trees.size(); i++ )
   {
-    size_t tree_size = talent_trees[ i ].size();
-
-    for ( size_t j=0; j < tree_size; j++ )
+    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
     {
       talent_trees[ i ][ j ] -> set_rank( encoding[ index++ ] );
     }
@@ -5446,11 +5451,11 @@ bool player_t::parse_talent_trees( const int encoding[ MAX_TALENT_SLOTS ] )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  int encoding[ MAX_TALENT_SLOTS ];
+  std::array< int, MAX_TALENT_SLOTS > encoding;
 
   size_t i;
-  size_t i_max = std::min( talent_string.size(),
-                           static_cast< size_t >( MAX_TALENT_SLOTS ) );
+  size_t i_max = std::min( talent_string.size(), encoding.size() );
+
   for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
@@ -5462,7 +5467,8 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     encoding[ i ] = c - '0';
   }
 
-  while ( i < MAX_TALENT_SLOTS ) encoding[ i++ ] = 0;
+  while ( i < encoding.size() )
+    encoding[ i++ ] = 0;
 
   return parse_talent_trees( encoding );
 }
@@ -5490,16 +5496,16 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     { '\0', '\0', '\0' }
   };
 
-  int encoding[ MAX_TALENT_SLOTS ];
-  unsigned tree_count[ MAX_TALENT_TREES ];
+  std::array< int, MAX_TALENT_SLOTS > encoding;
+  std::array< unsigned, MAX_TALENT_TREES > tree_count;
 
-  for ( int i=0; i < MAX_TALENT_SLOTS; i++ ) encoding[ i ] = 0;
-  for ( int i=0; i < MAX_TALENT_TREES; i++ ) tree_count[ i ] = 0;
+  range::fill( encoding, 0 );
+  range::fill( tree_count, 0 );
 
   int tree = 0;
   size_t count = 0;
 
-  for ( unsigned int i=1; i < talent_string.length(); i++ )
+  for ( size_t i = 1; i < talent_string.length(); i++ )
   {
     if ( tree >= MAX_TALENT_TREES )
     {
@@ -5514,14 +5520,14 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     if ( c == 'Z' )
     {
       count = 0;
-      for ( int j=0; j <= tree; j++ )
+      for ( int j = 0; j <= tree; j++ )
         count += talent_trees[ j ].size();
       tree++;
       continue;
     }
 
     const decode_t* decode = 0;
-    for ( int j=0; decoding[ j ].key != '\0'; j++ )
+    for ( int j = 0; decoding[ j ].key != '\0'; j++ )
     {
       if ( decoding[ j ].key == c )
       {
@@ -5553,9 +5559,11 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   if ( sim -> debug )
   {
-    std::string str_out;
-    for ( size_t i = 0; i < count; i++ ) str_out += ( char )encoding[i];
-    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.c_str() );
+    std::ostringstream str_out;
+    for ( size_t i = 0; i < count; i++ )
+      str_out << encoding[ i ];
+
+    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.str().c_str() );
   }
 
   return parse_talent_trees( encoding );
@@ -5568,7 +5576,7 @@ void player_t::create_talents()
   int cid_mask = util_t::class_id_mask( type );
   talent_data_t* talent_data = talent_data_t::list( dbc.ptr );
 
-  for ( int i=0; talent_data[ i ].name_cstr(); i++ )
+  for ( size_t i = 0; talent_data[ i ].name_cstr(); i++ )
   {
     talent_data_t& td = talent_data[ i ];
 
@@ -5583,7 +5591,7 @@ void player_t::create_talents()
     }
     else if ( td.mask_pet() )
     {
-      for ( int j=0; j < MAX_TALENT_TREES; j++ )
+      for ( size_t j = 0; j < talent_trees.size(); j++ )
       {
         if ( td.mask_pet() & ( 1 << j ) )
         {
@@ -5595,7 +5603,7 @@ void player_t::create_talents()
     }
   }
 
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 0; i < talent_trees.size(); i++ )
   {
     std::vector<talent_t*>& tree = talent_trees[ i ];
     if ( ! tree.empty() ) range::sort( tree, compare_talents() );
@@ -5607,13 +5615,12 @@ void player_t::create_talents()
 talent_t* player_t::find_talent( const std::string& n,
                                  int tree )
 {
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 0; i < talent_trees.size(); i++ )
   {
-    if ( tree != TALENT_TAB_NONE && tree != i )
+    if ( tree != TALENT_TAB_NONE && tree != static_cast<int>( i ) )
       continue;
 
-    size_t size=talent_trees[ i ].size();
-    for ( size_t j=0; j < size; j++ )
+    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
     {
       talent_t* t = talent_trees[ i ][ j ];
 
@@ -5634,17 +5641,17 @@ void player_t::create_glyphs()
 {
   std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), dbc.ptr );
 
-  size_t size=glyph_ids.size();
-  for ( size_t i=0; i < size; i++ )
+  for ( size_t i = 0; i < glyph_ids.size(); i++ )
+  {
     glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], dbc.ptr ) ) );
+  }
 }
 
 // player_t::find_glyph =====================================================
 
 glyph_t* player_t::find_glyph( const std::string& n )
 {
-  size_t size=glyphs.size();
-  for ( size_t i=0; i < size; i++ )
+  for ( size_t i = 0; i < glyphs.size(); i++ )
   {
     glyph_t* g = glyphs[ i ];
     if ( n == g -> sd -> name_cstr() ) return g;
@@ -5661,7 +5668,9 @@ glyph_t* player_t::find_glyph( const std::string& n )
 spell_id_t* player_t::find_specialization_spell( const char* name, const char* token, talent_tree_type_e tree )
 {
   spell_id_t* spec_spell = 0;
+
   unsigned spell_id = dbc.specialization_ability_id( type, name, util_t::spec_id( type, tree ) );
+
   if ( spell_id > 0 )
     spec_spell = new spell_id_t( this, token, name );
 
@@ -5673,7 +5682,9 @@ spell_id_t* player_t::find_specialization_spell( const char* name, const char* t
 spell_id_t* player_t::find_mastery_spell( const char* name, const char* token, talent_tree_type_e tree )
 {
   spell_id_t* mastery_spell = 0;
+
   unsigned spell_id = dbc.mastery_ability_id( type, name, util_t::spec_id( type, tree ) );
+
   if ( spell_id > 0 )
     mastery_spell = new spell_id_t( this, token, name );
 
@@ -5685,6 +5696,7 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 {
   p -> sim -> errorf( "Use of \"%s\" in action expressions is deprecated: use \"%s\" instead.\n",
                       old_name.c_str(), new_name.c_str() );
+
   return p -> create_expression( a, new_name );
 }
 }
@@ -5694,6 +5706,8 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 action_expr_t* player_t::create_expression( action_t* a,
                                             const std::string& name_str )
 {
+  // FIXME: Do not access player through action -> player, instead each expression should accept a player pointer 'this'.
+
   int resource_type_e = util_t::parse_resource_type( name_str );
   if ( resource_type_e != RESOURCE_NONE )
   {
@@ -6336,9 +6350,9 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     talents_str += util_t::player_type_string( type );
     talents_str += "-";
     // This is necessary because sometimes the talent trees change shape between live/ptr.
-    for ( int i=0; i < MAX_TALENT_TREES; i++ )
+    for ( size_t i = 0; i < talent_trees.size(); i++ )
     {
-      for ( unsigned j = 0; j < talent_trees[ i ].size(); j++ )
+      for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
       {
         talent_t* t = talent_trees[ i ][ j ];
         std::stringstream ss;
@@ -6379,7 +6393,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
 
   if ( stype == SAVE_ALL || stype == SAVE_GEAR )
   {
-    for ( int i=0; i < SLOT_MAX; i++ )
+    for ( int i = 0; i < SLOT_MAX; i++ )
     {
       const item_t& item = items[ i ];
 
@@ -6516,9 +6530,9 @@ void player_t::copy_from( player_t* source )
   talents_str += util_t::player_type_string( type );
   talents_str += "-";
   // This is necessary because sometimes the talent trees change shape between live/ptr.
-  for ( int i=0; i < MAX_TALENT_TREES; i++ )
+  for ( size_t i = 0; i < talent_trees.size(); i++ )
   {
-    for ( unsigned j = 0; j < talent_trees[ i ].size(); j++ )
+    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
     {
       talent_t* t = talent_trees[ i ][ j ];
       talent_t* source_t = source -> find_talent( t -> td -> name_cstr() );
@@ -6531,16 +6545,18 @@ void player_t::copy_from( player_t* source )
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   action_priority_list.clear();
-  for ( unsigned int i = 0; i < source -> action_priority_list.size(); i++ )
+
+  for ( size_t i = 0; i < source -> action_priority_list.size(); i++ )
   {
     action_priority_list.push_back( source -> action_priority_list[ i ] );
   }
-  int num_items = ( int ) items.size();
-  for ( int i=0; i < num_items; i++ )
+
+  for ( size_t i = 0; i < items.size(); i++ )
   {
     items[ i ] = source -> items[ i ];
     items[ i ].player = this;
   }
+
   gear = source -> gear;
   enchant = source -> enchant;
 }

@@ -262,7 +262,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
-      for ( result_type_e i=RESULT_MAX; --i >= RESULT_NONE; )
+      for ( result_type_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( s -> direct_results[ i ].count.mean )
         {
@@ -381,8 +381,8 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
               "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
     // Action Details
     std::vector<std::string> processed_actions;
-    size_t size = s -> action_list.size();
-    for ( size_t i = 0; i < size; i++ )
+
+    for ( size_t i = 0; i < s -> action_list.size(); i++ )
     {
       action_t* a = s -> action_list[ i ];
 
@@ -536,7 +536,7 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
     if ( ! a -> background ) break;
   }
 
-  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i =RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if (  s -> rpe[  i ] <= 0 )
       continue;
@@ -549,7 +549,7 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
              "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
              s -> name_str.c_str(),
-             util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
+             util_t::resource_type_string( i ),
              s -> resource_portion[  i ] * 100,
              s -> apr[ i ],
              s -> rpe[ i ] );
@@ -912,7 +912,7 @@ void print_html_talents( FILE* file, const player_t* p )
              "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
              "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
-    for ( int i = 0; i < MAX_TALENT_TREES; i++ )
+    for ( size_t i = 0; i < p -> talent_trees.size(); i++ )
     {
       size_t tree_size = p -> talent_trees[ i ].size();
 
@@ -1073,8 +1073,8 @@ void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player
                "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
                "\t\t\t\t\t\t\t\t\t\t<li>",
                colspan );
-      size_t num_scaling_stats = p -> scaling_stats.size();
-      for ( size_t i=0; i < num_scaling_stats; i++ )
+
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
       {
         if ( i > 0 )
         {
@@ -1405,7 +1405,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
 
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"charts\">\n" );
-  for ( int j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
+  for ( unsigned j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
   {
     if ( p -> resources.max[ j ] > 0 && ! ri.timeline_resource_chart[ j ].empty() )
     {
@@ -1563,7 +1563,6 @@ inline bool buff_comp( const buff_t* i, const buff_t* j )
 
 void print_html_player_buffs( FILE* file, const player_t* p )
 {
-  int i=0;
   // Buff Section
   fprintf( file,
            "\t\t\t\t<div class=\"player-section buffs\">\n"
@@ -1597,7 +1596,7 @@ void print_html_player_buffs( FILE* file, const player_t* p )
 
   std::sort( dynamic_buffs.begin(), dynamic_buffs.end(), buff_comp );
 
-  for ( i=0; i < ( int ) dynamic_buffs.size(); i++ )
+  for ( size_t i = 0; i < dynamic_buffs.size(); i++ )
   {
     buff_t* b = dynamic_buffs[ i ];
 
@@ -1694,7 +1693,7 @@ void print_html_player_buffs( FILE* file, const player_t* p )
              "\t\t\t\t\t\t\t\t<tr>\n"
              "\t\t\t\t\t\t\t\t\t<th class=\"left\"><a href=\"#help-constant-buffs\" class=\"help\">Constant Buffs</a></th>\n"
              "\t\t\t\t\t\t\t\t</tr>\n" );
-    i = 1;
+    size_t i = 1;
     std::vector< buff_t* > constant_buffs;
 
     for ( buff_t* b = p -> buff_list; b; b = b -> next )
@@ -2230,6 +2229,7 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
            "\t\t\t\t\t\t\t\t\t<th>Count</th>\n"
            "\t\t\t\t\t\t\t\t\t<th>Interval</th>\n"
            "\t\t\t\t\t\t\t\t</tr>\n" );
+  {
   int i = 1;
   for ( const proc_t* proc = pr; proc; proc = proc -> next )
   {
@@ -2252,6 +2252,7 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
                proc -> frequency );
       i++;
     }
+  }
   }
   fprintf( file,
            "\t\t\t\t\t\t\t</table>\n"

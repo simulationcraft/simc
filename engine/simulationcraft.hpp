@@ -4246,7 +4246,7 @@ struct item_database_t
 
 struct set_bonus_t
 {
-  int count[ SET_MAX ];
+  std::array<int,SET_MAX> count;
   int tier13_2pc_caster() const; int tier13_2pc_melee() const; int tier13_2pc_tank() const; int tier13_2pc_heal() const;
   int tier13_4pc_caster() const; int tier13_4pc_melee() const; int tier13_4pc_tank() const; int tier13_4pc_heal() const;
   int tier14_2pc_caster() const; int tier14_2pc_melee() const; int tier14_2pc_tank() const; int tier14_2pc_heal() const;
@@ -4313,7 +4313,7 @@ struct player_t : public noncopyable
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
   timespan_t  reaction_mean,reaction_stddev,reaction_nu;
-  int         infinite_resource[ RESOURCE_MAX ];
+  std::array<int, RESOURCE_MAX> infinite_resource;
   std::vector<buff_t*> absorb_buffs;
   int         scale_player;
   bool        has_dtr;
@@ -4333,9 +4333,9 @@ struct player_t : public noncopyable
   std::vector<option_t> options;
 
   // Talent Parsing
-  talent_tree_type_e tree_type[ MAX_TALENT_TREES ];
-  int talent_tab_points[ MAX_TALENT_TREES ];
-  std::vector<talent_t*> talent_trees[ MAX_TALENT_TREES ];
+  std::array<talent_tree_type_e,MAX_TALENT_TREES> tree_type;
+  std::array<int,MAX_TALENT_TREES> talent_tab_points;
+  std::array< std::vector<talent_t*>,MAX_TALENT_TREES> talent_trees;
   std::vector<glyph_t*> glyphs;
 
   std::list<spell_id_t*> spell_list;
@@ -4401,7 +4401,7 @@ struct player_t : public noncopyable
   double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
   double armor_coeff;
   double half_resistance_rating;
-  int spell_resistance[ SCHOOL_MAX ];
+  std::array< int, SCHOOL_MAX > spell_resistance;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -4454,18 +4454,20 @@ struct player_t : public noncopyable
 
   // Callbacks
   std::vector<action_callback_t*> all_callbacks;
-  std::vector<action_callback_t*> attack_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>  spell_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>  harmful_spell_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>  heal_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>  absorb_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*>   tick_callbacks[ RESULT_MAX ];
-  std::vector<action_callback_t*> direct_damage_callbacks[ SCHOOL_MAX ];
-  std::vector<action_callback_t*>   tick_damage_callbacks[ SCHOOL_MAX ];
-  std::vector<action_callback_t*>   direct_heal_callbacks[ SCHOOL_MAX ];
-  std::vector<action_callback_t*>     tick_heal_callbacks[ SCHOOL_MAX ];
-  std::vector<action_callback_t*> resource_gain_callbacks[ RESOURCE_MAX ];
-  std::vector<action_callback_t*> resource_loss_callbacks[ RESOURCE_MAX ];
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > attack_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > spell_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > heal_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > tick_callbacks;
+
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage_callbacks;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage_callbacks;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal_callbacks;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal_callbacks;
+
+  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain_callbacks;
+  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss_callbacks;
 
   // Action Priority List
   action_t*   action_list;
@@ -4487,8 +4489,7 @@ struct player_t : public noncopyable
   sample_data_t fight_length, waiting_time, executed_foreground_actions;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
-  double    resource_lost  [ RESOURCE_MAX ];
-  double    resource_gained[ RESOURCE_MAX ];
+  std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
   double    rps_gain, rps_loss;
   sample_data_t deaths;
   double    deaths_error;
@@ -4496,8 +4497,8 @@ struct player_t : public noncopyable
   // Buffed snapshot_stats (for reporting)
   struct buffed_stats_t
   {
-    double attribute[ ATTRIBUTE_MAX ];
-    double resource[ RESOURCE_MAX ];
+    std::array< double, ATTRIBUTE_MAX > attribute;
+    std::array< double, RESOURCE_MAX > resource;
 
     double spell_power, spell_hit, spell_crit, mp5;
 
@@ -4512,14 +4513,15 @@ struct player_t : public noncopyable
   } buffed;
 
   buff_t*   buff_list;
+  std::list<buff_t*> buff_list2;
   proc_t*   proc_list;
   gain_t*   gain_list;
   stats_t*  stats_list;
   benefit_t* benefit_list;
   uptime_t* uptime_list;
-  std::vector<double> dps_plot_data[ STAT_MAX ];
+  std::array< std::vector<double>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
-  std::array<std::vector<double>, RESOURCE_MAX > timeline_resource;
+  std::array< std::vector<double>, RESOURCE_MAX > timeline_resource;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken;
@@ -4894,7 +4896,7 @@ struct player_t : public noncopyable
   virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
 
-  virtual bool parse_talent_trees( const int talents[MAX_TALENT_SLOTS] );
+  virtual bool parse_talent_trees( const std::array< int, MAX_TALENT_SLOTS > encoding );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
@@ -5284,7 +5286,7 @@ struct action_t : public spell_id_t
   double weapon_power_mod, direct_power_mod, tick_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
-  double base_costs[ RESOURCE_MAX ];
+  std::array< double, RESOURCE_MAX > base_costs;
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;
@@ -5658,7 +5660,7 @@ public:
   virtual void   player_buff();
   virtual result_type_e   calculate_result( double, unsigned );
   virtual void   execute();
-  virtual double crit_chance( double /* crit */, int delta_level ) const;
+  virtual double crit_chance( double crit, int delta_level ) const;
   virtual void   schedule_execute();
   virtual void   init();
 
@@ -5687,7 +5689,7 @@ public:
   virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_type_e );
   virtual void   execute();
-  virtual double miss_chance( double /* hit */, int delta_level ) const;
+  virtual double miss_chance( double hit, int delta_level ) const;
 
   /* New stuffs */
   virtual double composite_hit() const { return action_t::composite_hit() + player -> composite_spell_hit(); }
