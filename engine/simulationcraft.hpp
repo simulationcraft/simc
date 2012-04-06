@@ -4474,7 +4474,7 @@ struct player_t : public noncopyable
   std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss_callbacks;
 
   // Action Priority List
-  action_t*   action_list;
+  std::vector<action_t*>  action_list;
   std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
   std::string choose_action_list;

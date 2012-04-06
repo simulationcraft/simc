@@ -443,8 +443,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
     if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
       int id = 0;
-      for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+      for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
       {
+        action_t* a = s -> player -> action_list[ i ];
         if ( a -> stats != s ) continue;
         id = a -> id;
         if ( ! a -> background ) break;

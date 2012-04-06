@@ -386,8 +386,9 @@ struct druid_t : public player_t
 
   void reset_gcd()
   {
-    for ( action_t* a=action_list; a; a = a -> next )
+    for ( size_t i = 0; i < action_list.size(); ++i )
     {
+      action_t* a = action_list[ i ];
       if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = base_gcd;
     }
   }

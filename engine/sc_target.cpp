@@ -482,8 +482,9 @@ void enemy_t::init_actions()
   player_t::init_actions();
 
   // Small hack to increase waiting time for target without any actions
-  for ( action_t* action = action_list; action; action = action -> next )
+  for ( size_t i = 0; i < action_list.size(); ++i )
   {
+    action_t* action = action_list[ i ];
     if ( action -> background ) continue;
     if ( action -> name_str == "snapshot_stats" ) continue;
     if ( action -> name_str.find( "auto_attack" ) != std::string::npos )

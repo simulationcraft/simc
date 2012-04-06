@@ -123,8 +123,9 @@ struct vengeance_t : public event_t
 
 static bool has_foreground_actions( player_t* p )
 {
-  for ( action_t* a = p -> action_list; a; a = a -> next )
+  for ( size_t i = 0; i < p -> action_list.size(); ++i )
   {
+    action_t* a = p -> action_list[ i ];
     if ( ! a -> background ) return true;
   }
   return false;
@@ -485,11 +486,8 @@ player_t::~player_t()
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
     delete *i;
 
-  while ( action_t* a = action_list )
-  {
-    action_list = a -> next;
-    delete a;
-  }
+  range::dispose( action_list );
+
   while ( proc_t* p = proc_list )
   {
     proc_list = p -> next;
@@ -1272,12 +1270,13 @@ struct execute_pet_action_t : public action_t
 
   virtual void reset()
   {
-    for ( action_t* action = pet -> action_list; action; action = action -> next )
+    for ( size_t i = 0; i < pet -> action_list.size(); ++i )
     {
-      if ( action -> name_str == action_str )
+      action_t* a = pet -> action_list[ i ];
+      if ( a -> name_str == action_str )
       {
-        action -> background = true;
-        pet_action = action;
+        a -> background = true;
+        pet_action = a;
       }
     }
   }
@@ -1515,8 +1514,9 @@ void player_t::init_actions()
     }
   }
 
-  for ( action_t* action = action_list; action; action = action -> next )
+  for ( size_t i = 0; i < action_list.size(); ++i )
   {
+    action_t* action = action_list[ i ];
     action -> init();
     if ( action -> trigger_gcd == timespan_t::zero && ! action -> background && action -> use_off_gcd )
       off_gcd_actions.push_back( action );
@@ -3017,8 +3017,8 @@ void player_t::reset()
 
   init_resources( true );
 
-  for ( action_t* a = action_list; a; a = a -> next )
-    a -> reset();
+  for ( size_t i = 0; i < action_list.size(); ++i )
+    action_list[ i ] -> reset();
 
   for ( cooldown_t* c = cooldown_list; c; c = c -> next )
     c -> reset();
@@ -3198,10 +3198,8 @@ void player_t::demise()
     if ( b -> delay )
       event_t::cancel( b -> delay );
   }
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    a -> cancel();
-  }
+  for ( size_t i = 0; i < action_list.size(); ++i )
+    action_list[ i ] -> cancel();
 
   //sim -> cancel_events( this );
 
@@ -3270,8 +3268,9 @@ void player_t::clear_debuffs()
 
   if ( sim -> log ) log_t::output( sim, "%s clears debuffs from %s", name(), sim -> target -> name() );
 
-  for ( action_t* a = action_list; a; a = a -> next )
+  for ( size_t i = 0; i < action_list.size(); ++i )
   {
+    action_t* a = action_list[ i ];
     if ( a -> action_dot && a -> action_dot -> ticking )
       a -> action_dot -> cancel();
   }
@@ -3310,8 +3309,9 @@ action_t* player_t::execute_action()
 
   action_t* action=0;
 
-  for ( action = action_list; action; action = action -> next )
+  for ( size_t i = 0; i < action_list.size(); ++i )
   {
+    action_t* action = action_list[ i ];
     if ( action -> background ||
          action -> sequence )
       continue;
@@ -4229,9 +4229,12 @@ bool player_t::recent_cast() const
 
 action_t* player_t::find_action( const std::string& str )
 {
-  for ( action_t* a = action_list; a; a = a -> next )
+  for ( size_t i = 0; i < action_list.size(); ++i )
+  {
+    action_t* a = action_list[ i ];
     if ( str == a -> name_str )
       return a;
+  }
 
   return 0;
 }
@@ -4922,8 +4925,9 @@ struct restart_sequence_t : public action_t
   {
     if ( ! seq )
     {
-      for ( action_t* a = player -> action_list; a && ! seq; a = a -> next )
+      for ( size_t i = 0; i < player -> action_list.size() && !seq; ++i )
       {
+        action_t* a = player -> action_list[ i ];
         if ( a -> type != ACTION_SEQUENCE )
           continue;
 
@@ -5123,8 +5127,9 @@ struct wait_until_ready_t : public wait_fixed_t
     timespan_t wait = wait_fixed_t::execute_time();
     timespan_t remains = timespan_t::zero;
 
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
+      action_t* a = player -> action_list[ i ];
       if ( a -> background ) continue;
 
       remains = a -> cooldown -> remains();
@@ -5267,8 +5272,9 @@ struct use_item_t : public action_t
   {
     if ( duration <= timespan_t::zero ) return;
     timespan_t ready = sim -> current_time + duration;
-    for ( action_t* a = player -> action_list; a; a = a -> next )
+    for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
+      action_t* a = player -> action_list[ i ];
       if ( a -> name_str.substr( 0, 8 ) == "use_item" )
       {
         if ( ready > a -> cooldown -> ready )
@@ -6245,8 +6251,9 @@ action_expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "action" )
     {
       std::vector<action_t*> in_flight_list;
-      for ( action_t* action = action_list; action; action = action -> next )
+      for ( size_t i = 0; i < action_list.size(); ++i )
       {
+        action_t* action = action_list[ i ];
         if ( action -> name_str == splits[ 1 ] )
         {
           if ( splits[ 2 ] == "in_flight" )
@@ -6371,9 +6378,9 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   {
     if ( action_list_str.size() > 0 )
     {
-      int i = 0;
-      for ( action_t* a = action_list; a; a = a -> next )
+      for ( size_t i = 0; i < action_list.size(); ++i )
       {
+        action_t* a = action_list[ i ];
         if ( a -> signature_str.empty() ) continue;
         profile_str += "actions";
         profile_str += i ? "+=/" : "=";
@@ -6381,7 +6388,6 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
         if ( save_html )
           util_t::encode_html( encoded_action );
         profile_str += encoded_action + term;
-        i++;
       }
     }
   }

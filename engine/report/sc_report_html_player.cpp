@@ -40,8 +40,9 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
   }
   fprintf( file, ">\n" );
 
-  for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
+    action_t* a = s -> player -> action_list[ i ];
     if ( a -> stats != s ) continue;
     id = a -> id;
     if ( ! a -> background ) break;
@@ -530,8 +531,9 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
   }
   fprintf( file, ">\n" );
 
-  for ( action_t* a = s -> player -> action_list; a; a = a -> next )
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
+    action_t* a = s -> player -> action_list[ i ];
     if ( a -> stats != s ) continue;
     if ( ! a -> background ) break;
   }
@@ -1121,13 +1123,14 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
            "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">#</th>\n"
            "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
            "\t\t\t\t\t\t\t\t\t</tr>\n" );
-  int i = 1;
-  for ( action_t* a = p -> action_list; a; a = a -> next )
+
+  for ( size_t i = 0; i < p -> action_list.size(); ++i )
   {
+    action_t* a = p -> action_list[ i ];
     if ( a -> signature_str.empty() || ! a -> marker ) continue;
     fprintf( file,
              "\t\t\t\t\t\t\t\t<tr" );
-    if ( !( i & 1 ) )
+    if ( ( i & 1 ) )
     {
       fprintf( file, " class=\"odd\"" );
     }
@@ -1138,7 +1141,6 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              a -> marker,
              util_t::encode_html( a -> signature_str ).c_str() );
-    i++;
   }
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );

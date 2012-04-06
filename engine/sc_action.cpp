@@ -160,9 +160,7 @@ void action_t::init_action_t_()
     sim -> cancel();
   }
 
-  action_t** last = &( player -> action_list );
-  while ( *last ) last = &( ( *last ) -> next );
-  *last = this;
+  player -> action_list.push_back( this );
 
   cooldown = player -> get_cooldown( name_str );
 

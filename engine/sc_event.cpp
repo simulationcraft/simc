@@ -293,8 +293,9 @@ void dot_tick_event_t::execute()
     if ( dot -> action -> interrupt )
     {
       // Interrupt if any higher priority action is ready.
-      for ( action_t* a = dot -> action -> player -> action_list; a != dot -> action; a = a -> next )
+      for ( size_t i = 0; dot -> action -> player -> action_list[ i ] != dot -> action; ++i )
       {
+        action_t* a = dot -> action -> player -> action_list[ i ];
         if ( a -> background ) continue;
         if ( a -> ready() )
         {
