@@ -20,11 +20,7 @@
 #include <unistd.h>
 #define THREAD_POSIX
 #else
-#if defined( __MINGW32__ ) || defined( _MSC_VER )
-#pragma message( "WARNING: Unable to detect thread API, compiling with no threads support." );
-#else
-#error "WARNING: Unable to detect thread API, compiling with no threads support."
-#endif
+#error "Unable to detect thread API."
 #endif
 
 // Cross-Platform Support for Multi-Threading ===============================
