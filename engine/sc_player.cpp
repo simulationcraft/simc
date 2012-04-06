@@ -3308,20 +3308,20 @@ action_t* player_t::execute_action()
   off_gcd = 0;
 
   action_t* action=0;
+  size_t actions = action_list.size();
 
-  for ( size_t i = 0; i < action_list.size(); ++i )
+  for ( size_t i = 0; i < actions; ++i )
   {
-    action_t* action = action_list[ i ];
-    if ( action -> background ||
-         action -> sequence )
+    action_t* a = action_list[ i ];
+    if ( a -> background || a -> sequence )
       continue;
 
-    if ( action -> ready() )
+    if ( unlikely( a -> wait_on_ready == 1 ) )
       break;
 
-    if ( action -> wait_on_ready == 1 )
+    if ( a -> ready() )
     {
-      action = 0;
+      action = a;
       break;
     }
   }
@@ -5046,7 +5046,11 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
-      if ( ! spell ) spell = new spell_t( "snapshot_spell", p );
+      if ( ! spell )
+      {
+        spell = new spell_t( "snapshot_spell", p );
+        spell -> init();
+      }
       spell -> background = true;
       spell -> player_buff();
       spell -> target_debuff( target, DMG_DIRECT );
@@ -5056,7 +5060,11 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
-      if ( ! attack ) attack = new melee_attack_t( "snapshot_attack", p );
+      if ( ! attack )
+      {
+        attack = new melee_attack_t( "snapshot_attack", p );
+        attack -> init();
+      }
       attack -> background = true;
       attack -> player_buff();
       attack -> target_debuff( target, DMG_DIRECT );

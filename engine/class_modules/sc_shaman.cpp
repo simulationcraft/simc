@@ -4,11 +4,36 @@
 // ==========================================================================
 
 // ==========================================================================
-// TODO
+// MoP TODO
 // ==========================================================================
-// Does flametongue's AP coefficient scale with level? Our values are at 85.
-// Fire Nova for 4.1.0 works wrong, for now; flares only on single target,
-// fix this later.
+// Code:
+// - Ascendancy
+// - Redo Totem system
+// - Talents Call of the Elements, Totemic Restoration, Ancestral Swiftness
+//
+// General:
+// - Class base stats for 87..90
+// - Unleashed fury
+//   * Flametongue: Additive or Multiplicative modifier (has a new spell data aura type)
+//   * Windfury: Static Shock proc% (same as normal proc%?)
+// - (Fire|Earth) Elemental scaling with and without Primal Elementalist
+// - Echo of Elements proc%
+// - Searing totem base damage scaling
+// - Glyph of Telluric Currents
+//   * Additive or Multiplicative with other modifiers (spell data indicates additive)
+// - Glyph of Lava Burst:
+//   * Additive or Multiplicative with Unleash Flame (spell data indicates additive)
+//
+// Enhancement:
+// - Lava Lash damage formula, currently weapon_dmg * ( 1.0 + ft_bonus + sf_stack * sf_bonus )
+// - Spirit Wolves scaling
+// - Maelstrom Weapon PPM (presumed to be 10ppm)
+// 
+// Elemental:
+// - Shamanism
+//   * Additive or Multiplicative with others (spell data indicates additive)
+//   * Affects overloads? (spell data indicates so)
+//
 // ==========================================================================
 // BUGS
 // ==========================================================================
@@ -2156,10 +2181,10 @@ struct chain_lightning_t : public shaman_spell_t
     glyph_targets( 0 )
   {
     maelstrom             = true;
-    direct_power_mod     += p() -> spec.shamanism      -> effectN( 2 ).percent();
-    base_execute_time    += p() -> spec.shamanism      -> effectN( 3 ).time_value();
-    cooldown -> duration += p() -> spec.elemental_fury -> effectN( 2 ).time_value();
-    base_multiplier      *= 1.0 + p() -> glyph.chain_lightning   -> effectN( 2 ).percent();
+    base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
+    cooldown -> duration += p() -> spec.elemental_fury   -> effectN( 2 ).time_value();
+    base_multiplier      += p() -> glyph.chain_lightning -> effectN( 2 ).percent() + 
+                            p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier   = effect_chain_multiplier( 1 );
 
@@ -2400,15 +2425,13 @@ struct earthquake_t : public shaman_spell_t
 struct lava_burst_t : public shaman_spell_t
 {
   lava_burst_overload_t* overload;
-  double                m_additive;
 
   lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr=false ) :
-    shaman_spell_t( "lava_burst", "Lava Burst", player, options_str ),
-    m_additive( 0 )
+    shaman_spell_t( "lava_burst", "Lava Burst", player, options_str )
   {
-    stateless   = true;
-    m_additive += p() -> glyph.lava_burst -> effectN( 1 ).percent();
-    overload    = new lava_burst_overload_t( player );
+    stateless        = true;
+    base_multiplier += p() -> glyph.lava_burst -> effectN( 1 ).percent();
+    overload         = new lava_burst_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2417,9 +2440,19 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
   
-  virtual double composite_da_multiplier()
+  virtual double action_multiplier() const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.unleash_flame -> up() )
+      m += p() -> buff.unleash_flame -> effectN( 2 ).percent();
+
+    return m;
+  }
+
+  virtual double action_da_multiplier() const
+  {
+    double m = shaman_spell_t::action_da_multiplier();
     
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
@@ -2448,16 +2481,6 @@ struct lava_burst_t : public shaman_spell_t
       return timespan_t::zero;
 
     return shaman_spell_t::execute_time();
-  }
-
-  double action_da_multiplier() const
-  {
-    double m = 1.0 + m_additive;
-
-    if ( p() -> buff.unleash_flame -> up() )
-      m += p() -> buff.unleash_flame -> effectN( 2 ).percent();
-
-    return m;
   }
 
   virtual void impact_s( action_state_t* state )
@@ -2490,8 +2513,8 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     maelstrom          = true;
     stateless          = true;
-    direct_power_mod  += p() -> spec.shamanism -> effectN( 1 ).percent();
-    base_multiplier   *= 1.0 + p() -> glyph.telluric_currents -> effectN( 1 ).percent();
+    base_multiplier   += p() -> glyph.telluric_currents -> effectN( 1 ).percent() + 
+                         p() -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += p() -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + p() -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload           = new lightning_bolt_overload_t( p() );
@@ -2503,9 +2526,9 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
   
-  virtual double composite_da_multiplier()
+  virtual double action_da_multiplier() const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::action_da_multiplier();
     
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
@@ -2555,8 +2578,8 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p() -> glyph.telluric_currents -> ok() )
       {
         p() -> resource_gain( RESOURCE_MANA,
-                                state -> result_amount * p() -> glyph.telluric_currents -> effectN( 2 ).percent(),
-                                p() -> gain.telluric_currents );
+                              state -> result_amount * p() -> glyph.telluric_currents -> effectN( 2 ).percent(),
+                              p() -> gain.telluric_currents );
       }
     }
   }
@@ -4206,6 +4229,8 @@ double shaman_t::composite_player_multiplier( const school_type_e school, action
     else if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + off_hand_weapon.buff_value;
   }
+  
+  m *= 1.0 + composite_mastery() * mastery.enhanced_elements -> effectN( 2 ).base_value() / 10000.0;
 
   return m;
 }
