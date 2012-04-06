@@ -26,6 +26,9 @@
 // Cross-Platform Support for Multi-Threading ===============================
 
 namespace thread_impl { // ==================================================
+  
+  // mutex_native_handle_t ==================================================
+
   struct mutex_native_handle_t
   {
 #if defined(THREAD_NONE)
@@ -35,6 +38,8 @@ namespace thread_impl { // ==================================================
     pthread_mutex_t m;
 #endif
   };
+
+  // thread_native_handle_t =================================================
 
   struct thread_native_handle_t
   {
@@ -46,6 +51,7 @@ namespace thread_impl { // ==================================================
 #endif
   };
 
+  // static execute =========================================================
 #if defined(THREAD_NONE)
 #elif defined(THREAD_WIN32)
   static unsigned WINAPI execute( LPVOID t )
