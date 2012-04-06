@@ -89,17 +89,6 @@ namespace std {using namespace tr1; }
 #  endif
 #endif
 
-#if defined( NO_THREADS )
-#elif defined( __MINGW32__ ) || defined( _MSC_VER )
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
-#else // POSIX
-#include <pthread.h>
-#include <unistd.h>
-#endif
-
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
 
@@ -3451,88 +3440,39 @@ struct spell_data_expr_t
 };
 
 namespace thread_impl { // ===================================================
+  struct mutex_native_handle_t;
+  struct thread_native_handle_t;
+} // namespace thread_impl ===================================================
 
-#if defined( NO_THREADS )
-
-class mutex : public nonmoveable
-{
-public:
-  void lock() {}
-  void unlock() {}
-};
-
-class thread : public noncopyable
-{
-public:
-  virtual void run() = 0;
-
-  void launch() { run(); } // Run sequentially in foreground.
-  void wait() {}
-
-  static void sleep( int seconds );
-};
-
-#elif defined( __MINGW32__ ) || defined( _MSC_VER )
-
-class mutex : public nonmoveable
-{
-  CRITICAL_SECTION cs;
-public:
-  mutex() { InitializeCriticalSection( &cs ); }
-  ~mutex() { DeleteCriticalSection( &cs ); }
-  void lock() { EnterCriticalSection( &cs ); }
-  void unlock() { LeaveCriticalSection( &cs ); }
-};
-
-class thread : public noncopyable
+class mutex_t : public nonmoveable
 {
 private:
-  HANDLE handle;
+  thread_impl::mutex_native_handle_t* native_handle;
+
+public:
+  mutex_t();
+  ~mutex_t();
+
+  void lock();
+  void unlock();
+}; 
+
+class thread_t : public noncopyable
+{
+private:
+  thread_impl::thread_native_handle_t* native_handle;
+
+protected:
+  thread_t();
+  virtual ~thread_t();
 public:
   virtual void run() = 0;
 
   void launch();
   void wait();
 
-  static void sleep( int seconds ) { Sleep( seconds * 1000 ); }
-};
+  static void sleep( int seconds );
 
-#else // POSIX
-
-class mutex : public nonmoveable
-{
-  pthread_mutex_t m;
-public:
-  mutex() { pthread_mutex_init( &m, NULL ); }
-  ~mutex() { pthread_mutex_destroy( &m ); }
-  void lock() { pthread_mutex_lock( &m ); }
-  void unlock() { pthread_mutex_unlock( &m ); }
-};
-
-class thread : public noncopyable
-{
-  pthread_t t;
-public:
-  virtual void run() = 0;
-
-  void launch();
-  void wait() { pthread_join( t, NULL ); }
-
-  static void sleep( int seconds ) { ::sleep( seconds ); }
-};
-
-#endif
-
-} // namespace thread_impl ===================================================
-
-typedef thread_impl::mutex mutex_t;
-
-class thread_t : public thread_impl::thread
-{
-protected:
-  thread_t() {}
-  virtual ~thread_t() {}
-public:
   static void init() {}
   static void de_init() {}
 };
