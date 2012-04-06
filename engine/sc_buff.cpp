@@ -512,7 +512,7 @@ bool buff_t::trigger( int    stacks,
       delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value, duration );
   }
   else
-    execute( stacks, value );
+    execute( stacks, value, duration );
 
   return true;
 }
@@ -694,11 +694,12 @@ void buff_t::refresh( int    stacks,
     event_t::cancel( expiration );
   else
   {
+    assert( d > timespan_t::zero );
     // Infinite duration -> duration of d
     if ( unlikely( ! expiration ) )
       expiration = new ( sim ) expiration_t( sim, player, this, d );
     else
-      extend_duration( player, d );
+      expiration -> reschedule( d );
   }
 }
 
