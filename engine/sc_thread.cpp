@@ -14,13 +14,17 @@
 #include <windows.h>
 #include <process.h>
 #define THREAD_WIN32
-#elif !defined( _POSIX_THREADS) || _POSIX_THREADS <= 0
+#elif defined( _POSIX_THREADS ) && _POSIX_THREADS > 0
 // POSIX
 #include <pthread.h>
 #include <unistd.h>
-#define THREAD_PTHREAD
+#define THREAD_POSIX
 #else
+#if defined( __MINGW32__ ) || defined( _MSC_VER )
 #pragma message( "WARNING: Unable to detect thread API, compiling with no threads support." );
+#else
+#error "WARNING: Unable to detect thread API, compiling with no threads support."
+#endif
 #endif
 
 // Cross-Platform Support for Multi-Threading ===============================
