@@ -1331,7 +1331,7 @@ struct frenzied_regeneration_buff_t : public buff_t
     buff_t( p, 22842, "frenzied_regeneration" ), health_gain( 0 )
   { }
 
-  virtual void start( int stacks, double value )
+  virtual void start( int stacks, double value, const timespan_t& duration )
   {
     druid_t* p = player -> cast_druid();
 
@@ -1384,7 +1384,7 @@ struct frenzied_regeneration_buff_t : public buff_t
       p -> resource_gain( RESOURCE_HEALTH, health_gain - p -> resources.current[ RESOURCE_HEALTH ], p -> gains_frenzied_regeneration );
     }
 
-    buff_t::start( stacks, value );
+    buff_t::start( stacks, value, duration );
   }
 
   virtual void expire()
@@ -3289,7 +3289,7 @@ struct innervate_buff_t : public buff_t
     buff_t ( p, 29166, "innervate" )
   {}
 
-  virtual void start( int stacks, double value )
+  virtual void start( int stacks, double value, const timespan_t& duration )
   {
     struct innervate_event_t : public event_t
     {
@@ -3309,7 +3309,7 @@ struct innervate_buff_t : public buff_t
 
     new ( sim ) innervate_event_t( player );
 
-    buff_t::start( stacks, value );
+    buff_t::start( stacks, value, duration );
   }
 };
 

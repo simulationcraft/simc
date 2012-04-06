@@ -53,9 +53,9 @@ struct hymn_of_hope_buff_t : public buff_t
     buff_t ( p, id, n ), mana_gain( 0 )
   { }
 
-  virtual void start( int stacks, double value )
+  virtual void start( int stacks, double value, const timespan_t& duration )
   {
-    buff_t::start( stacks, value );
+    buff_t::start( stacks, value, duration );
 
     // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
     // Extra Mana is set by current max_mana, doesn't change when max_mana changes.

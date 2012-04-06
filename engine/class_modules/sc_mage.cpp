@@ -2651,13 +2651,13 @@ struct mage_armor_buff_t : public buff_t
     buff_t( p, p -> spells.mage_armor, NULL )
   {}
 
-  virtual void start( int stacks, double value )
+  virtual void start( int stacks, double value, const timespan_t& duration = timespan_t::min )
   {
     mage_t* p = player -> cast_mage();
     timespan_t d = p -> rng_mage_armor_start -> real() * timespan_t::from_seconds( 5.0 ); // Random start of the first mana regen tick.
     p -> mage_armor_timer = sim -> current_time + d - timespan_t::from_seconds( 5.0 );
     new ( sim ) mage_armor_event_t( player, d );
-    buff_t::start( stacks, value );
+    buff_t::start( stacks, value, duration );
   }
 };
 

@@ -4701,9 +4701,9 @@ void death_knight_t::init_buffs()
   {
     bloodworms_buff_t( death_knight_t* p ) :
       buff_t( p, "bloodworms", 1, timespan_t::from_seconds( 19.99 ), timespan_t::zero, p -> talents.blood_parasite -> rank() * 0.05 ) {}
-    virtual void start( int stacks, double value )
+    virtual void start( int stacks, double value, const timespan_t& duration = timespan_t::min )
     {
-      buff_t::start( stacks, value );
+      buff_t::start( stacks, value, duration );
       death_knight_t* p = player -> cast_death_knight();
       p -> active_bloodworms -> summon();
     }

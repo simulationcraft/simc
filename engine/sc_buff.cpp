@@ -23,12 +23,13 @@ struct expiration_t : public event_t
 
 struct buff_delay_t : public event_t
 {
-  double  value;
-  buff_t* buff;
-  int     stacks;
+  double     value;
+  buff_t*    buff;
+  int        stacks;
+  timespan_t duration;
 
-  buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value ) :
-    event_t( sim, p, b -> name_str.c_str() ), value( value ), buff( b ), stacks( stacks )
+  buff_delay_t( sim_t* sim, player_t* p, buff_t* b, int stacks, double value, const timespan_t& d ) :
+    event_t( sim, p, b -> name_str.c_str() ), value( value ), buff( b ), stacks( stacks ), duration( d )
   {
     timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
     sim -> add_event( this, delay_duration );
@@ -465,18 +466,20 @@ bool buff_t::remains_lt( timespan_t time )
 
 bool buff_t::trigger( action_t* a,
                       int       stacks,
-                      double    value )
+                      double    value,
+                      const     timespan_t& duration )
 {
   double chance = default_chance;
   if ( chance < 0 ) chance = a -> ppm_proc_chance( -chance );
-  return trigger( stacks, value, chance );
+  return trigger( stacks, value, chance, duration );
 }
 
 // buff_t::trigger ==========================================================
 
 bool buff_t::trigger( int    stacks,
                       double value,
-                      double chance )
+                      double chance,
+                      const timespan_t& duration )
 {
   if ( max_stack == 0 || chance == 0 ) return false;
 
@@ -506,7 +509,7 @@ bool buff_t::trigger( int    stacks,
       d -> value = value;
     }
     else
-      delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value );
+      delay = new ( sim ) buff_delay_t( sim, player, this, stacks, value, duration );
   }
   else
     execute( stacks, value );
@@ -516,7 +519,7 @@ bool buff_t::trigger( int    stacks,
 
 // buff_t::execute ==========================================================
 
-void buff_t::execute( int stacks, double value )
+void buff_t::execute( int stacks, double value, const timespan_t& duration )
 {
   if ( last_trigger > timespan_t::zero )
   {
@@ -531,7 +534,7 @@ void buff_t::execute( int stacks, double value )
   }
   else
   {
-    increment( stacks, value );
+    increment( stacks, value, duration );
   }
 
   // new buff cooldown impl
@@ -550,7 +553,8 @@ void buff_t::execute( int stacks, double value )
 // buff_t::increment ========================================================
 
 void buff_t::increment( int    stacks,
-                        double value )
+                        double value,
+                        const timespan_t& duration )
 {
   if ( overridden ) return;
 
@@ -558,11 +562,11 @@ void buff_t::increment( int    stacks,
 
   if ( current_stack == 0 )
   {
-    start( stacks, value );
+    start( stacks, value, duration );
   }
   else
   {
-    refresh( stacks, value );
+    refresh( stacks, value, duration );
   }
 }
 
@@ -640,7 +644,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 // buff_t::start ============================================================
 
 void buff_t::start( int    stacks,
-                    double value )
+                    double value,
+                    const timespan_t& duration )
 {
   if ( max_stack == 0 ) return;
 
@@ -663,16 +668,18 @@ void buff_t::start( int    stacks,
   }
   last_start = sim -> current_time;
 
-  if ( buff_duration > timespan_t::zero )
+  timespan_t d = ( duration != timespan_t::min ) ? duration : buff_duration;
+  if ( d > timespan_t::zero )
   {
-    expiration = new ( sim ) expiration_t( sim, player, this, buff_duration );
+    expiration = new ( sim ) expiration_t( sim, player, this, d );
   }
 }
 
 // buff_t::refresh ==========================================================
 
 void buff_t::refresh( int    stacks,
-                      double value )
+                      double value,
+                      const timespan_t& duration )
 {
   if ( max_stack == 0 ) return;
 
@@ -680,13 +687,18 @@ void buff_t::refresh( int    stacks,
 
   bump( stacks, value );
 
-  if ( buff_duration > timespan_t::zero )
+  timespan_t d = ( duration != timespan_t::min ) ? duration : buff_duration;
+  // Make sure we always cancel the expiration event if we get an
+  // infinite duration
+  if ( d == timespan_t::zero )
+    event_t::cancel( expiration );
+  else
   {
-    assert( expiration );
-    if ( expiration -> occurs() < sim -> current_time + buff_duration )
-    {
-      expiration -> reschedule( buff_duration );
-    }
+    // Infinite duration -> duration of d
+    if ( unlikely( ! expiration ) )
+      expiration = new ( sim ) expiration_t( sim, player, this, d );
+    else
+      extend_duration( player, d );
   }
 }
 
@@ -1197,7 +1209,8 @@ void cost_reduction_buff_t::expire()
 // cost_reduction_buff_t::refresh ===========================================
 
 void cost_reduction_buff_t::refresh( int    stacks,
-                                     double value )
+                                     double value,
+                                     const timespan_t& duration )
 {
   if ( ! refreshes )
   {
@@ -1209,7 +1222,7 @@ void cost_reduction_buff_t::refresh( int    stacks,
     return;
   }
 
-  buff_t::refresh( stacks, value );
+  buff_t::refresh( stacks, value, duration );
 }
 
 // ==========================================================================

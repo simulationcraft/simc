@@ -2957,12 +2957,12 @@ struct buff_last_stand_t : public buff_t
     buff_t( p, id, n ), health_gain( 0 )
   { }
 
-  virtual bool trigger( int stacks, double value, double chance )
+  virtual bool trigger( int stacks, double value, double chance, const timespan_t& duration )
   {
     health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * 0.3 );
     player -> stat_gain( STAT_MAX_HEALTH, health_gain );
 
-    return buff_t::trigger( stacks, value, chance );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire()

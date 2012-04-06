@@ -2992,7 +2992,7 @@ struct adrenaline_rush_buff_t : public buff_t
       buff_duration += p -> spells.tier13_4pc -> effect2().time_value();
   }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     // we keep haste % as current_value
     return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_319 ) );
@@ -3004,7 +3004,7 @@ struct envenom_buff_t : public buff_t
   envenom_buff_t( rogue_t* p ) :
     buff_t( p, 32645, "envenom" ) { }
 
-  virtual bool trigger( int cp, double, double )
+  virtual bool trigger( int cp, double, double, const timespan_t& )
   {
     timespan_t new_duration = timespan_t::from_seconds( 1.0 ) + timespan_t::from_seconds( cp );
 
@@ -3032,7 +3032,7 @@ struct find_weakness_buff_t : public buff_t
     init_buff_shared();
   }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     return buff_t::trigger( 1, effect1().percent() );
   }
@@ -3066,7 +3066,7 @@ struct killing_spree_buff_t : public buff_t
     cooldown -> duration = timespan_t::zero;
   }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -3085,7 +3085,7 @@ struct master_of_subtlety_buff_t : public buff_t
     buff_duration = timespan_t::from_seconds( 6.0 );
   }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     return buff_t::trigger( 1, effect1().percent() );
   }
@@ -3096,7 +3096,7 @@ struct revealing_strike_buff_t : public buff_t
   revealing_strike_buff_t( rogue_t* p, uint32_t id ) :
     buff_t( p, id, "revealing_strike" ) { }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -3112,7 +3112,7 @@ struct shadowstep_buff_t : public buff_t
   shadowstep_buff_t( rogue_t* p, uint32_t id ) :
     buff_t( p, id, "shadowstep" ) { }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_ADD_PCT_MODIFIER ) );
   }
@@ -3125,7 +3125,7 @@ struct slice_and_dice_buff_t : public buff_t
   slice_and_dice_buff_t( rogue_t* p ) :
     buff_t( p, 5171, "slice_and_dice" ), id( 5171 ) { }
 
-  virtual bool trigger( int cp, double, double )
+  virtual bool trigger( int cp, double, double, const timespan_t& )
   {
     rogue_t* p = player -> cast_rogue();
 
@@ -3155,7 +3155,7 @@ struct vendetta_buff_t : public buff_t
       buff_duration += p -> spells.tier13_4pc -> effect3().time_value();
   }
 
-  virtual bool trigger( int, double, double )
+  virtual bool trigger( int, double, double, const timespan_t& )
   {
     return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_MOD_DAMAGE_FROM_CASTER ) );
   }
