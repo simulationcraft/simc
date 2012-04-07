@@ -1679,7 +1679,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       virtual int evaluate()
       {
         dot_t* dot = action -> dot();
-        if ( dot -> miss_time == timespan_t::min() ||
+        if ( dot -> miss_time < timespan_t::zero() ||
              action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ) )
         {
           result_num = 1;
@@ -1875,16 +1875,16 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
 
   if ( flags & STATE_AP )
     state -> attack_power = floor( composite_attack_power() * composite_attack_power_multiplier() );
-  
+
   if ( flags & STATE_SP )
     state -> spell_power = floor( composite_spell_power() * composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
     state -> da_multiplier = composite_da_multiplier();
-  
+
   if ( flags & STATE_MUL_TA )
     state -> ta_multiplier = composite_ta_multiplier();
-  
+
   if ( flags & STATE_MUL_TARGET )
     state -> target_multiplier = state -> target -> composite_player_vulnerability( school );
 }

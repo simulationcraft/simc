@@ -5601,10 +5601,10 @@ struct cooldown_t
   timespan_t ready;
   cooldown_t* next;
 
-  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( timespan_t::min() ), next( 0 ) {}
-  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( timespan_t::min() ), next( 0 ) {}
+  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), next( 0 ) {}
+  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), next( 0 ) {}
 
-  void reset() { ready=timespan_t::min(); }
+  void reset() { ready=ready_init(); }
   void start( timespan_t override=timespan_t::min(), timespan_t delay=timespan_t::zero() )
   {
     if ( override >= timespan_t::zero() ) duration = override;
@@ -5617,6 +5617,10 @@ struct cooldown_t
     return diff;
   }
   const char* name() { return name_str.c_str(); }
+
+private:
+  static timespan_t ready_init()
+  { return timespan_t::from_seconds( -60 * 60 ); }
 };
 
 // DoT ======================================================================
