@@ -3308,13 +3308,11 @@ action_t* player_t::execute_action()
   off_gcd = 0;
 
   action_t* action=0;
-  size_t actions = action_list.size();
+  size_t actions = foreground_action_list.size();
 
   for ( size_t i = 0; i < actions; ++i )
   {
-    action_t* a = action_list[ i ];
-    if ( a -> background || a -> sequence )
-      continue;
+    action_t* a = foreground_action_list[ i ];
 
     if ( unlikely( a -> wait_on_ready == 1 ) )
       break;
@@ -5049,9 +5047,9 @@ struct snapshot_stats_t : public action_t
       if ( ! spell )
       {
         spell = new spell_t( "snapshot_spell", p );
+        spell -> background = true;
         spell -> init();
       }
-      spell -> background = true;
       spell -> player_buff();
       spell -> target_debuff( target, DMG_DIRECT );
       double chance = spell -> miss_chance( spell -> composite_hit(), delta_level );
@@ -5063,9 +5061,9 @@ struct snapshot_stats_t : public action_t
       if ( ! attack )
       {
         attack = new melee_attack_t( "snapshot_attack", p );
+        attack -> background = true;
         attack -> init();
       }
-      attack -> background = true;
       attack -> player_buff();
       attack -> target_debuff( target, DMG_DIRECT );
       double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
