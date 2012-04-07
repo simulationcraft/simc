@@ -362,7 +362,7 @@ struct stance_t : public monk_spell_t
     }
 
     harmful = false;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
 

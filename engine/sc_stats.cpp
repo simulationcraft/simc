@@ -16,10 +16,10 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   // Variables used both during combat and for reporting
   num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
-  total_execute_time( timespan_t::zero ), total_tick_time( timespan_t::zero ),
+  total_execute_time( timespan_t::zero() ), total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
-  total_intervals( timespan_t::zero ), num_intervals( 0 ),
-  last_execute( timespan_t::min ),
+  total_intervals( timespan_t::zero() ), num_intervals( 0 ),
+  last_execute( timespan_t::min() ),
   iteration_actual_amount( 0 ), actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), opportunity_cost( 0 ),
@@ -27,7 +27,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   // Reporting only
   rpe_sum( 0 ),frequency( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
-  total_time( timespan_t::zero )
+  total_time( timespan_t::zero() )
 {
   int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
   if ( size <= 0 )size = 600; // Default to 10 minutes
@@ -70,7 +70,7 @@ void stats_t::consume_resource( resource_type_e resource_type, double resource_a
 
 void stats_t::reset()
 {
-  last_execute = timespan_t::min;
+  last_execute = timespan_t::min();
 }
 
 // stats_t::add_result ======================================================
@@ -113,7 +113,7 @@ void stats_t::add_execute( timespan_t time )
   num_executes++;
   total_execute_time += time;
 
-  if ( likely( last_execute > timespan_t::zero &&
+  if ( likely( last_execute > timespan_t::zero() &&
                last_execute != sim -> current_time ) )
   {
     num_intervals++;
@@ -154,7 +154,7 @@ void stats_t::combat_end()
   {
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
-  portion_aps.add( player -> iteration_fight_length != timespan_t::zero ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
+  portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
 
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -252,16 +252,16 @@ void stats_t::analyze()
     ape  = ( num_executes > 0 ) ? ( compound_amount / num_executes ) : 0;
 
     total_time = total_execute_time + total_tick_time;
-    aps  = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
+    aps  = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
-    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
-    apet = ( total_time > timespan_t::zero ) ? ( compound_amount / total_time.total_seconds() ) : 0;
+    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero() );
+    apet = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
       apr[ i ]  = ( resource_gain.actual[ i ] > 0 ) ? ( compound_amount / resource_gain.actual[ i ] ) : 0;
   }
   else
-    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero );
+    total_time = total_execute_time + ( channeled ? total_tick_time : timespan_t::zero() );
 
   ttpt = num_ticks ? total_tick_time.total_seconds() / num_ticks : 0;
   etpe = num_executes? ( total_execute_time.total_seconds() + ( channeled ? total_tick_time.total_seconds() : 0 ) ) / num_executes : 0;

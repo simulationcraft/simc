@@ -205,7 +205,7 @@ public:
 
     spell_t::player_buff();
 
-    if ( base_execute_time > timespan_t::zero && s_tree == TREE_DESTRUCTION && p -> buffs.demon_soul_imp -> up() )
+    if ( base_execute_time > timespan_t::zero() && s_tree == TREE_DESTRUCTION && p -> buffs.demon_soul_imp -> up() )
     {
       player_crit += p -> buffs.demon_soul_imp -> effect1().percent();
     }
@@ -578,7 +578,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs.shadow_trance -> up() ) h = timespan_t::zero;
+    if ( p -> buffs.shadow_trance -> up() ) h = timespan_t::zero();
     if ( p -> buffs.backdraft -> up() )
     {
       h *= 1.0 + p -> buffs.backdraft -> effect1().percent();
@@ -773,7 +773,7 @@ struct shadowburn_t : public warlock_spell_t
 
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
+      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
       {
         cooldown -> reset();
         cd_glyph_of_shadowburn -> start();
@@ -798,7 +798,7 @@ struct shadowfury_t : public warlock_spell_t
 
   shadowfury_t( warlock_t* p, const std::string& options_str ) :
     warlock_spell_t( "shadowfury", p, "Shadowfury" ),
-    cast_gcd( timespan_t::zero )
+    cast_gcd( timespan_t::zero() )
   {
     check_talent( p -> talent_shadowfury -> rank() );
 
@@ -810,7 +810,7 @@ struct shadowfury_t : public warlock_spell_t
     parse_options( options, options_str );
 
     // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    trigger_gcd = ( cast_gcd >= timespan_t::zero ) ? cast_gcd : timespan_t::from_seconds( 0.5 );
+    trigger_gcd = ( cast_gcd >= timespan_t::zero() ) ? cast_gcd : timespan_t::from_seconds( 0.5 );
   }
 };
 
@@ -1486,11 +1486,11 @@ struct soul_fire_t : public warlock_spell_t
     }
     if ( p -> buffs.empowered_imp -> up() )
     {
-      t = timespan_t::zero;
+      t = timespan_t::zero();
     }
     if ( p -> buffs.soulburn -> up() )
     {
-      t = timespan_t::zero;
+      t = timespan_t::zero();
     }
 
     return t;
@@ -1689,13 +1689,13 @@ private:
 
 public:
   summon_pet_t( const char* n, warlock_t* p, const char* sname, const std::string& options_str="" ) :
-    warlock_spell_t( n, p, sname ), summoning_duration ( timespan_t::zero ), pet( 0 )
+    warlock_spell_t( n, p, sname ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
     _init_summon_pet_t( options_str, n );
   }
 
   summon_pet_t( const char* n, warlock_t* p, int id, const std::string& options_str="" ) :
-    warlock_spell_t( n, p, id ), summoning_duration ( timespan_t::zero ), pet( 0 )
+    warlock_spell_t( n, p, id ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
     _init_summon_pet_t( options_str, n );
   }
@@ -1741,7 +1741,7 @@ struct summon_main_pet_t : public summon_pet_t
     warlock_t* p = player -> cast_warlock();
 
     if ( p -> buffs.soulburn -> up() )
-      return timespan_t::zero;
+      return timespan_t::zero();
 
     return warlock_spell_t::execute_time();
   }
@@ -1802,7 +1802,7 @@ struct infernal_awakening_t : public warlock_spell_t
     aoe        = -1;
     background = true;
     proc       = true;
-    trigger_gcd= timespan_t::zero;
+    trigger_gcd= timespan_t::zero();
   }
 };
 
@@ -1816,14 +1816,14 @@ struct summon_infernal_t : public summon_pet_t
     summon_pet_t( "infernal", p, "Summon Infernal", options_str ),
     infernal_awakening( 0 )
   {
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero();
 
     summoning_duration = ( duration() + p -> talent_ancient_grimoire -> effect1().time_value() );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> talent_summon_felguard -> ok() ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) )
-                          ) : timespan_t::zero;
+                          ) : timespan_t::zero();
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -1854,7 +1854,7 @@ struct summon_doomguard2_t : public summon_pet_t
                           ( p -> talent_summon_felguard -> ok() ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 1 ) ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 2 ) )
-                          ) : timespan_t::zero;
+                          ) : timespan_t::zero();
   }
 
   virtual void execute()
@@ -1879,7 +1879,7 @@ struct summon_doomguard_t : public warlock_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero;
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effect_base_value( 3 ) ) : timespan_t::zero();
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );
@@ -1974,7 +1974,7 @@ struct metamorphosis_t : public warlock_spell_t
 
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
@@ -2902,11 +2902,11 @@ void warlock_t::init_buffs()
   buffs.eradication           = new buff_t( this, talent_eradication -> effect_trigger_spell( 1 ), "eradication", talent_eradication -> proc_chance() );
   buffs.metamorphosis         = new buff_t( this, 47241, "metamorphosis", talent_metamorphosis -> rank() );
   buffs.metamorphosis -> buff_duration += timespan_t::from_millis( glyphs.metamorphosis -> base_value() );
-  buffs.metamorphosis -> cooldown -> duration = timespan_t::zero;
+  buffs.metamorphosis -> cooldown -> duration = timespan_t::zero();
   buffs.molten_core           = new buff_t( this, talent_molten_core -> effect_trigger_spell( 1 ), "molten_core", talent_molten_core -> rank() * 0.02 );
   buffs.shadow_trance         = new buff_t( this, 17941, "shadow_trance", talent_nightfall -> proc_chance() +  glyphs.corruption -> base_value() / 100.0 );
 
-  buffs.hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, timespan_t::from_seconds( 15.0 ), timespan_t::zero, talent_hand_of_guldan -> rank() );
+  buffs.hand_of_guldan        = new buff_t( this, "hand_of_guldan",        1, timespan_t::from_seconds( 15.0 ), timespan_t::zero(), talent_hand_of_guldan -> rank() );
   buffs.improved_soul_fire    = new buff_t( this, 85383, "improved_soul_fire", ( talent_improved_soul_fire -> rank() > 0 ) );
   buffs.soulburn              = new buff_t( this, 74434, "soulburn" );
   buffs.demon_soul_imp        = new buff_t( this, 79459, "demon_soul_imp" );

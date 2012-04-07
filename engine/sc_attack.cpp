@@ -99,11 +99,11 @@ double attack_t::haste() const
 
 timespan_t attack_t::execute_time() const
 {
-  if ( base_execute_time == timespan_t::zero )
-    return timespan_t::zero;
+  if ( base_execute_time == timespan_t::zero() )
+    return timespan_t::zero();
 
   if ( ! harmful && ! player -> in_combat )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   //log_t::output( sim, "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
   return base_execute_time * swing_haste();

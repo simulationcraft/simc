@@ -31,7 +31,7 @@ struct flask_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     type = util_t::parse_flask_type( type_str );
     if ( type == FLASK_NONE )
@@ -184,7 +184,7 @@ struct food_t : public action_t
     };
     parse_options( options, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
 
     type = util_t::parse_food_type( type_str );
@@ -399,7 +399,7 @@ struct destruction_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -449,7 +449,7 @@ struct speed_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -499,7 +499,7 @@ struct wild_magic_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -552,7 +552,7 @@ struct earthen_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -601,7 +601,7 @@ struct golemblood_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -650,7 +650,7 @@ struct tolvir_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -699,7 +699,7 @@ struct volcanic_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 60.0 );
@@ -748,7 +748,7 @@ struct indestructible_potion_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Assume the player would not chose to overwrite the buff early.
@@ -820,7 +820,7 @@ struct mana_potion_t : public action_t
     if ( trigger == 0 ) trigger = max;
     assert( max > 0 && trigger > 0 );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
@@ -872,7 +872,7 @@ struct health_stone_t : public action_t
     cooldown = p -> get_cooldown( "rune" );
     cooldown -> duration = timespan_t::from_minutes( 15 );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
@@ -922,7 +922,7 @@ struct dark_rune_t : public action_t
     cooldown = p -> get_cooldown( "rune" );
     cooldown -> duration = timespan_t::from_minutes( 15 );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 

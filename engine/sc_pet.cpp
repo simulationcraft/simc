@@ -139,7 +139,7 @@ void pet_t::summon( timespan_t duration )
     expiration = 0;
   }
 
-  if ( duration > timespan_t::zero )
+  if ( duration > timespan_t::zero() )
   {
     struct expiration_t : public event_t
     {

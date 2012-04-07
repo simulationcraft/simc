@@ -12,7 +12,7 @@
 dot_t::dot_t( const std::string& n, player_t* p ) :
   sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ), next( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-  added_seconds( timespan_t::zero ), ready( timespan_t::min ), miss_time( timespan_t::min ),time_to_tick( timespan_t::zero ), name_str( n ), prev_tick_amount( 0.0 ), state( 0 )
+  added_seconds( timespan_t::zero() ), ready( timespan_t::min() ), miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ), name_str( n ), prev_tick_amount( 0.0 ), state( 0 )
 {}
 // dot_t::cancel ===================================================
 
@@ -157,7 +157,7 @@ void dot_t::refresh_duration()
 
   current_tick = 0;
   added_ticks = 0;
-  added_seconds = timespan_t::zero;
+  added_seconds = timespan_t::zero();
   if ( ! state )
     num_ticks = action -> hasted_num_ticks( action ->  player_haste );
   else
@@ -174,8 +174,8 @@ void dot_t::refresh_duration()
 
 timespan_t dot_t::remains()
 {
-  if ( ! action ) return timespan_t::zero;
-  if ( ! ticking ) return timespan_t::zero;
+  if ( ! action ) return timespan_t::zero();
+  if ( ! ticking ) return timespan_t::zero();
   return ready - player -> sim -> current_time;
 }
 
@@ -187,9 +187,9 @@ void dot_t::reset()
   current_tick=0;
   added_ticks=0;
   ticking=0;
-  added_seconds=timespan_t::zero;
-  ready=timespan_t::min;
-  miss_time=timespan_t::min;
+  added_seconds=timespan_t::zero();
+  ready=timespan_t::min();
+  miss_time=timespan_t::min();
   prev_tick_amount = 0.0;
   if ( state )
   {
@@ -210,7 +210,7 @@ void dot_t::schedule_tick()
     prev_tick_amount = 0.0;
     if ( action -> tick_zero )
     {
-      time_to_tick = timespan_t::zero;
+      time_to_tick = timespan_t::zero();
       action -> tick( this );
     }
   }

@@ -720,7 +720,7 @@ struct mirror_image_pet_t : public pet_t
     return 0;
   }
 
-  virtual void summon( timespan_t duration=timespan_t::zero )
+  virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
 
@@ -1078,7 +1078,7 @@ void mage_spell_t::execute()
   if ( ( base_dd_max > 0 || base_td > 0 ) && ! background )
     p -> buffs_arcane_potency -> decrement();
 
-  if ( ! channeled && spell_t::execute_time() > timespan_t::zero )
+  if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
     p -> buffs_presence_of_mind -> expire();
 
   if ( fof_frozen )
@@ -1121,8 +1121,8 @@ timespan_t mage_spell_t::execute_time() const
 
   timespan_t t = spell_t::execute_time();
 
-  if ( ! channeled && t > timespan_t::zero && p -> buffs_presence_of_mind -> up() )
-    return timespan_t::zero;
+  if ( ! channeled && t > timespan_t::zero() && p -> buffs_presence_of_mind -> up() )
+    return timespan_t::zero();
 
   return t;
 }
@@ -1502,7 +1502,7 @@ struct arcane_power_buff_t : public buff_t
   arcane_power_buff_t( mage_t* p ) :
     buff_t( p, p -> spells.arcane_power, NULL )
   {
-    cooldown -> duration = timespan_t::zero; // CD is managed by the spell
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
   virtual void expire()
@@ -1520,7 +1520,7 @@ struct arcane_power_t : public mage_spell_t
   timespan_t orig_duration;
 
   arcane_power_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_power", 12042, p ), orig_duration( timespan_t::zero )
+    mage_spell_t( "arcane_power", 12042, p ), orig_duration( timespan_t::zero() )
   {
     check_talent( p -> talents.arcane_power -> rank() );
     parse_options( NULL, options_str );
@@ -1587,7 +1587,7 @@ struct blink_t : public mage_spell_t
   virtual timespan_t gcd() const
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero;
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero();
     return mage_spell_t::gcd();
   }
 };
@@ -1633,7 +1633,7 @@ struct combustion_t : public mage_spell_t
   timespan_t orig_duration;
 
   combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "combustion", 11129, p ), orig_duration( timespan_t::zero )
+    mage_spell_t( "combustion", 11129, p ), orig_duration( timespan_t::zero() )
   {
     check_talent( p -> talents.combustion -> rank() );
     parse_options( NULL, options_str );
@@ -1930,7 +1930,7 @@ struct fireball_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
-      return timespan_t::zero;
+      return timespan_t::zero();
     return mage_spell_t::execute_time();
   }
 
@@ -2080,7 +2080,7 @@ struct focus_magic_t : public mage_spell_t
       }
     }
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
 
     struct focus_magic_feedback_callback_t : public action_callback_t
     {
@@ -2190,7 +2190,7 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     mage_spell_t::schedule_execute();
-    if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero )
+    if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero() )
     {
       p -> procs_early_frost -> occur();
       p -> cooldowns_early_frost -> start( timespan_t::from_seconds( 15.0 ) );
@@ -2229,7 +2229,7 @@ struct frostbolt_t : public mage_spell_t
     timespan_t ct = mage_spell_t::execute_time();
     if ( p -> talents.early_frost -> rank() )
     {
-      if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero )
+      if ( p -> cooldowns_early_frost -> remains() == timespan_t::zero() )
       {
         ct += p -> talents.early_frost -> effect1().time_value();
       }
@@ -2242,7 +2242,7 @@ struct frostbolt_t : public mage_spell_t
     mage_t* p = player -> cast_mage();
 
     if ( p -> talents.early_frost -> rank() )
-      if ( p -> cooldowns_early_frost -> remains() != timespan_t::zero )
+      if ( p -> cooldowns_early_frost -> remains() != timespan_t::zero() )
         return timespan_t::from_seconds( 1.0 );
 
     return mage_spell_t::gcd();
@@ -2305,7 +2305,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_t* p = player -> cast_mage();
     if ( p -> buffs_brain_freeze -> check() )
-      return timespan_t::zero;
+      return timespan_t::zero();
     return mage_spell_t::execute_time();
   }
 
@@ -2484,7 +2484,7 @@ struct icy_veins_buff_t : public buff_t
   icy_veins_buff_t( mage_t* p ) :
     buff_t( p, p -> spells.icy_veins, NULL )
   {
-    cooldown -> duration = timespan_t::zero; // CD is managed by the spell
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
 
   virtual void expire()
@@ -2502,7 +2502,7 @@ struct icy_veins_t : public mage_spell_t
   timespan_t orig_duration;
 
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", 12472, p ), orig_duration( timespan_t::zero )
+    mage_spell_t( "icy_veins", 12472, p ), orig_duration( timespan_t::zero() )
   {
     check_talent( p -> talents.icy_veins -> rank() );
     parse_options( NULL, options_str );
@@ -2626,7 +2626,7 @@ struct mage_armor_buff_t : public buff_t
     mage_armor_event_t( player_t* player, timespan_t tick_time ) :
       event_t( player -> sim, player, "mage_armor" )
     {
-      if ( tick_time < timespan_t::zero ) tick_time = timespan_t::zero;
+      if ( tick_time < timespan_t::zero() ) tick_time = timespan_t::zero();
       if ( tick_time > timespan_t::from_seconds( 5 ) ) tick_time = timespan_t::from_seconds( 5 );
       sim -> add_event( this, tick_time );
     }
@@ -2684,7 +2684,7 @@ struct mana_gem_t : public action_t
 
     cooldown = p -> cooldowns_mana_gem;
     cooldown -> duration = timespan_t::from_seconds( 120.0 );
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
@@ -2751,7 +2751,7 @@ struct mirror_image_t : public mage_spell_t
   virtual timespan_t gcd() const
   {
     mage_t* p = player -> cast_mage();
-    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero;
+    if ( p -> buffs_arcane_power -> check() && p -> glyphs.arcane_power -> ok() ) return timespan_t::zero();
     return mage_spell_t::gcd();
   }
 };
@@ -3005,7 +3005,7 @@ struct water_elemental_spell_t : public mage_spell_t
     check_spec( TREE_FROST );
     parse_options( NULL, options_str );
     harmful = false;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -3063,7 +3063,7 @@ struct choose_rotation_t : public action_t
       cooldown -> duration = timespan_t::from_seconds( 1.0 );
     }
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
@@ -3221,7 +3221,7 @@ struct choose_rotation_t : public action_t
 
   virtual bool ready()
   {
-    if ( cooldown -> remains() > timespan_t::zero )
+    if ( cooldown -> remains() > timespan_t::zero() )
       return false;
 
     if ( sim -> current_time < cooldown -> duration )
@@ -3518,9 +3518,9 @@ void mage_t::init_buffs()
   buffs_mage_armor           = new mage_armor_buff_t( this );
   buffs_molten_armor         = new buff_t( this, spells.molten_armor,          NULL );
 
-  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2, timespan_t::zero, timespan_t::zero, talents.arcane_potency ->rank() );
+  buffs_arcane_potency       = new buff_t( this, "arcane_potency",       2, timespan_t::zero(), timespan_t::zero(), talents.arcane_potency ->rank() );
   buffs_focus_magic_feedback = new buff_t( this, "focus_magic_feedback", 1, timespan_t::from_seconds( 10.0 ) );
-  buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2, timespan_t::zero, timespan_t::zero, 1.0, true );
+  buffs_hot_streak_crits     = new buff_t( this, "hot_streak_crits",     2, timespan_t::zero(), timespan_t::zero(), 1.0, true );
   buffs_presence_of_mind     = new buff_t( this, "presence_of_mind",     1 );
 
   buffs_tier13_2pc           = new stat_buff_t( this, "tier13_2pc", STAT_HASTE_RATING, 50.0, 10, timespan_t::from_seconds( 30.0 ) );
@@ -4233,7 +4233,7 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_
 
 void player_t::mage_init( sim_t* sim )
 {
-  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, timespan_t::zero );
+  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, timespan_t::zero() );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {

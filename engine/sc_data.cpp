@@ -101,7 +101,7 @@ timespan_t spell_data_t::cast_time( uint32_t level ) const
   if ( _cast_div < 0 )
   {
     if ( _cast_min < 0 )
-      return timespan_t::zero;
+      return timespan_t::zero();
     return timespan_t::from_millis( _cast_min );
   }
 

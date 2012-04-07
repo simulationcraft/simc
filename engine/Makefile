@@ -106,7 +106,6 @@ SRC = \
 	sc_talent.cpp \
 	sc_target.cpp \
 	sc_thread.cpp \
-	sc_timespan.cpp \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
 	sc_weapon.cpp \

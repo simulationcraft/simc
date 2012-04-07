@@ -109,7 +109,7 @@ void action_t::schedule_travel_s( action_state_t* s )
 
   state -> copy_state( s );
 
-  if ( time_to_travel == timespan_t::zero )
+  if ( time_to_travel == timespan_t::zero() )
   {
     impact_s( s );
     release_state( s );
@@ -138,7 +138,7 @@ void action_t::impact_s( action_state_t* s )
       dot -> action = this;
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
-      dot -> added_seconds = timespan_t::zero;
+      dot -> added_seconds = timespan_t::zero();
       // Snapshot the stats
       if ( ! dot -> state )
         dot -> state = get_state( s );

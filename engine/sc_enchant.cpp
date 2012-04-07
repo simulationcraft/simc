@@ -596,7 +596,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type_e school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero ) :
+  weapon_discharge_proc_callback_t( const std::string& n, player_t* p, weapon_t* w, int ms, const school_type_e school, double dmg, double fc, double ppm=0, timespan_t cd=timespan_t::zero() ) :
     action_callback_t( p ),
     name_str( n ), weapon( w ), stacks( 0 ), max_stacks( ms ), fixed_chance( fc ), PPM( ppm )
   {
@@ -605,7 +605,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
       discharge_spell_t( const char* n, player_t* p, double dmg, const school_type_e s ) :
         spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = dmg;
         base_dd_max = dmg;
         may_crit = ( s != SCHOOL_DRAIN );
@@ -634,7 +634,7 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
     if ( a -> proc ) return;
     if ( weapon && a -> weapon != weapon ) return;
 
-    if ( cooldown -> remains() > timespan_t::zero )
+    if ( cooldown -> remains() > timespan_t::zero() )
       return;
 
     double chance = fixed_chance;
@@ -725,13 +725,13 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero, 0, false, false );
+    buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero, 0, false, false );
+    buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
@@ -747,7 +747,7 @@ void enchant_t::init( player_t* p )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
-    buff_t* buff = new stat_buff_t( p, "executioner", STAT_CRIT_RATING, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero, 0, false, false );
+    buff_t* buff = new stat_buff_t( p, "executioner", STAT_CRIT_RATING, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
     buff -> activated = false;
 
     if ( mh_enchant == "executioner" )
@@ -764,14 +764,14 @@ void enchant_t::init( player_t* p )
     buff_t *mh_buff=0, *oh_buff=0;
     if ( mh_enchant == "hurricane" )
     {
-      mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero, 0, false, false );
+      mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
       mh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
-      oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero, 0, false, false );
+      oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
       oh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
@@ -790,7 +790,7 @@ void enchant_t::init( player_t* p )
       }
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
-        if ( s_buff -> cooldown -> remains() > timespan_t::zero ) return;
+        if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
         if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
         if ( mh_buff && mh_buff -> check() )
         {
@@ -814,25 +814,25 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, timespan_t::from_seconds( 12 ), timespan_t::zero, 0, false, false );
+    buff_t* buff = new stat_buff_t( p, "landslide_mh", STAT_ATTACK_POWER, 1000, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "landslide" )
   {
-    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, timespan_t::from_seconds( 12 ), timespan_t::zero, 0, false, false );
+    buff_t* buff = new stat_buff_t( p, "landslide_oh", STAT_ATTACK_POWER, 1000, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "mongoose" )
   {
-    p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero, 0, false, false );
+    p -> buffs.mongoose_mh = new stat_buff_t( p, "mongoose_main_hand", STAT_AGILITY, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
     p -> buffs.mongoose_mh -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "mongoose" )
   {
-    p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero, 0, false, false );
+    p -> buffs.mongoose_oh = new stat_buff_t( p, "mongoose_off_hand" , STAT_AGILITY, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
     p -> buffs.mongoose_oh -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, p -> buffs.mongoose_oh, 1.0/*PPM*/ ) );
   }

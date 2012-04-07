@@ -112,7 +112,7 @@ struct melee_t : public attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     base_dd_min = 260000;
     base_execute_time = timespan_t::from_seconds( 2.4 );
     aoe = -1;
@@ -172,7 +172,7 @@ struct auto_attack_t : public attack_t
     stats -> school = school;
     name_str = name_str + "_" + target -> name();
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -215,7 +215,7 @@ struct spell_nuke_t : public spell_t
     parse_options( options, options_str );
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < timespan_t::zero )
+    if ( base_execute_time < timespan_t::zero() )
       base_execute_time = timespan_t::from_seconds( 3.0 );
 
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
@@ -311,7 +311,7 @@ struct summon_add_t : public spell_t
 
   summon_add_t( player_t* p, const std::string& options_str ) :
     spell_t( "summon_add", player, RESOURCE_MANA, SCHOOL_PHYSICAL ),
-    add_name( "" ), summoning_duration( timespan_t::zero ), pet( 0 )
+    add_name( "" ), summoning_duration( timespan_t::zero() ), pet( 0 )
   {
     option_t options[] =
     {
@@ -567,7 +567,7 @@ double enemy_t::health_percentage() const
 
   if ( resources.base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
-    timespan_t remainder = std::max( timespan_t::zero, ( sim -> expected_time - sim -> current_time ) );
+    timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_time - sim -> current_time ) );
 
     return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
@@ -579,7 +579,7 @@ double enemy_t::health_percentage() const
 
 void enemy_t::recalculate_health()
 {
-  if ( sim -> expected_time <= timespan_t::zero || fixed_health > 0 ) return;
+  if ( sim -> expected_time <= timespan_t::zero() || fixed_health > 0 ) return;
 
   if ( initial_health == 0 ) // first iteration
   {

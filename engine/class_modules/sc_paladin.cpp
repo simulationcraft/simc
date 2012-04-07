@@ -358,7 +358,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       weapon_multiplier = 1.0;
       background = true;
       repeating  = true;
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
 
       owner = p -> cast_pet() -> owner -> cast_paladin();
     }
@@ -399,7 +399,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       owner -> cast_paladin() -> ancient_fury_explosion -> execute();
   }
 
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false )
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! melee -> execute_event ) melee -> execute();
@@ -816,7 +816,7 @@ static void trigger_beacon_of_light( heal_t* h )
         background = true;
         may_crit = false;
         proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
 
         target = p -> beacon_target;
 
@@ -855,7 +855,7 @@ static void trigger_enlightened_judgements( paladin_t* p )
       {
         background = true;
         proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
 
         init();
       }
@@ -914,7 +914,7 @@ static void trigger_illuminated_healing( heal_t* h )
       {
         background = true;
         proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
 
         init();
       }
@@ -948,7 +948,7 @@ static void trigger_protector_of_the_innocent( paladin_t* p )
       {
         background = true;
         proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
 
         init();
       }
@@ -991,7 +991,7 @@ struct melee_t : public paladin_melee_attack_t
     trigger_seal      = true;
     background        = true;
     repeating         = true;
-    trigger_gcd       = timespan_t::zero;
+    trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
     base_execute_time = p -> main_hand_weapon.swing_time;
   }
@@ -1035,7 +1035,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
 
     parse_options( NULL, options_str );
   }
@@ -1135,7 +1135,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 {
   timespan_t base_cooldown;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( timespan_t::zero )
+    : paladin_melee_attack_t( "crusader_strike", "Crusader Strike", p ), base_cooldown( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
 
@@ -1189,7 +1189,7 @@ struct divine_storm_t : public paladin_melee_attack_t
   timespan_t base_cooldown;
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( timespan_t::zero )
+    : paladin_melee_attack_t( "divine_storm", "Divine Storm", p ), base_cooldown( timespan_t::zero() )
   {
     check_talent( p -> talents.divine_storm -> rank() );
 
@@ -1347,7 +1347,7 @@ struct hand_of_light_proc_t : public melee_attack_t
     may_parry   = false;
     proc        = true;
     background  = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void player_buff()
@@ -1434,7 +1434,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   {
     background  = true;
     proc        = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
 
     target = player;
   }
@@ -1484,7 +1484,7 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
   {
     background        = true;
     proc              = true;
-    trigger_gcd       = timespan_t::zero;
+    trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
   }
@@ -1533,7 +1533,7 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
     proc        = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
 
     aoe              = ( int ) p -> talents.seals_of_command -> mod_additive( P_TARGET );
     base_multiplier *= p -> main_hand_weapon.swing_time.total_seconds(); // Note that tooltip changes with haste, but actual damage doesn't
@@ -2124,7 +2124,7 @@ struct exorcism_t : public paladin_spell_t
   virtual timespan_t execute_time() const
   {
     paladin_t* p = player->cast_paladin();
-    if ( p -> buffs_the_art_of_war -> check() ) return timespan_t::zero;
+    if ( p -> buffs_the_art_of_war -> check() ) return timespan_t::zero();
     return paladin_spell_t::execute_time();
   }
 
@@ -2294,7 +2294,7 @@ struct inquisition_t : public paladin_spell_t
 {
   timespan_t base_duration;
   inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( timespan_t::zero )
+    : paladin_spell_t( "inquisition", "Inquisition", p ), base_duration( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
 
@@ -2575,7 +2575,7 @@ struct holy_shock_heal_t : public paladin_heal_t
   timespan_t cd_duration;
 
   holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( timespan_t::zero )
+    paladin_heal_t( "holy_shock_heal", p, 20473 ), cd_duration( timespan_t::zero() )
   {
     check_spec( TREE_HOLY );
 
@@ -2595,7 +2595,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     paladin_t* p = player -> cast_paladin();
 
     if ( p -> buffs_daybreak -> up() )
-      cooldown -> duration = timespan_t::zero;
+      cooldown -> duration = timespan_t::zero();
 
     paladin_heal_t::execute();
 
@@ -2700,7 +2700,7 @@ struct word_of_glory_t : public paladin_heal_t
     {
       // Hot is built into the spell, but only becomes active with the glyph
       base_td = 0;
-      base_tick_time = timespan_t::zero;
+      base_tick_time = timespan_t::zero();
       num_ticks = 0;
     }
   }
@@ -2996,15 +2996,15 @@ void paladin_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs_ancient_power          = new buff_t( this, 86700, "ancient_power" );
-  buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, timespan_t::zero ); // Let the ability handle the CD
+  buffs_avenging_wrath         = new buff_t( this, 31884, "avenging_wrath",  1, timespan_t::zero() ); // Let the ability handle the CD
   buffs_conviction             = new buff_t( this, talents.conviction -> effect1().trigger_spell_id(), "conviction", talents.conviction -> rank() );
   buffs_daybreak               = new buff_t( this, talents.daybreak -> effect_trigger_spell( 1 ), "daybreak", talents.daybreak -> proc_chance() );
-  buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, timespan_t::zero ); // Let the ability handle the CD
+  buffs_divine_favor           = new buff_t( this, talents.divine_favor -> spell_id(), "divine_favor", 1.0, timespan_t::zero() ); // Let the ability handle the CD
   buffs_divine_favor -> buff_duration += glyphs.divine_favor -> effect1().time_value();
-  buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, timespan_t::zero ); // Let the ability handle the CD
-  buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, timespan_t::zero ); // Let the ability handle the CD
+  buffs_divine_plea            = new buff_t( this, 54428, "divine_plea", 1, timespan_t::zero() ); // Let the ability handle the CD
+  buffs_divine_protection      = new buff_t( this,   498, "divine_protection", 1, timespan_t::zero() ); // Let the ability handle the CD
   buffs_divine_purpose         = new buff_t( this, 90174, "divine_purpose", talents.divine_purpose -> effect1().percent() );
-  buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, timespan_t::zero ); // Let the ability handle the CD
+  buffs_divine_shield          = new buff_t( this,   642, "divine_shield", 1.0, timespan_t::zero() ); // Let the ability handle the CD
   buffs_gotak_prot             = new buff_t( this, 86659, "guardian_of_the_ancient_kings" );
   buffs_grand_crusader         = new buff_t( this, talents.grand_crusader -> effect_trigger_spell( 1 ), "grand_crusader", talents.grand_crusader -> proc_chance() );
   buffs_holy_shield            = new buff_t( this, 20925, "holy_shield" );
@@ -3600,7 +3600,7 @@ double paladin_t::assess_damage( double        amount,
       timespan_t swing_time = main_hand_attack -> time_to_execute;
       timespan_t max_reschedule = ( main_hand_attack -> execute_event -> occurs() - 0.20 * swing_time ) - sim -> current_time;
 
-      if ( max_reschedule > timespan_t::zero )
+      if ( max_reschedule > timespan_t::zero() )
       {
         main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs_parry_haste -> occur();

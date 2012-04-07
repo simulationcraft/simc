@@ -13,9 +13,9 @@
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   action_t( ACTION_SEQUENCE, "default", p ),
-  current_action( -1 ), restarted( false ), last_restart( timespan_t::min )
+  current_action( -1 ), restarted( false ), last_restart( timespan_t::min() )
 {
-  trigger_gcd = timespan_t::zero;
+  trigger_gcd = timespan_t::zero();
 
   std::vector<std::string> splits;
   size_t size = util_t::string_split( splits, sub_action_str, ":" );
@@ -78,7 +78,7 @@ void sequence_t::reset()
   }
   current_action = 0;
   restarted = false;
-  last_restart = timespan_t::min;
+  last_restart = timespan_t::min();
 }
 
 // sequence_t::ready ========================================================

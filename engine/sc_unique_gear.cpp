@@ -17,7 +17,7 @@ struct stat_proc_callback_t : public action_callback_t
 
   stat_proc_callback_t( const std::string& n, player_t* p, stat_type_e s, int max_stacks, double a,
                         double proc_chance, timespan_t duration, timespan_t cooldown,
-                        timespan_t t=timespan_t::zero, bool reverse=false, bool activated=true ) :
+                        timespan_t t=timespan_t::zero(), bool reverse=false, bool activated=true ) :
     action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
@@ -43,7 +43,7 @@ struct stat_proc_callback_t : public action_callback_t
   {
     if ( buff -> trigger( a ) )
     {
-      if ( tick > timespan_t::zero ) // The buff stacks over time.
+      if ( tick > timespan_t::zero() ) // The buff stacks over time.
       {
         struct tick_stack_t : public event_t
         {
@@ -137,7 +137,7 @@ struct discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -161,7 +161,7 @@ struct discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -203,7 +203,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    if ( cooldown -> remains() != timespan_t::zero )
+    if ( cooldown -> remains() != timespan_t::zero() )
       return;
 
     if ( ! allow_self_procs && ( a == discharge_action ) ) return;
@@ -264,7 +264,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -288,7 +288,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -331,7 +331,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
     /* Always adds a stack if not on cooldown. The proc chance is the chance to discharge */
-    if ( cooldown -> remains() > timespan_t::zero )
+    if ( cooldown -> remains() > timespan_t::zero() )
       return;
 
     if ( ! allow_self_procs && ( a == discharge_action ) ) return;
@@ -397,7 +397,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -423,7 +423,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       {
         discharge_proc = true;
         item_proc = true;
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         base_dd_min = amount;
         base_dd_max = amount;
         may_trigger_dtr = false;
@@ -507,7 +507,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
 
       if ( apparatus_of_khazgoroth -> trigger() )
       {
-        if ( blessing_of_khazgoroth -> cooldown -> remains() > timespan_t::zero ) return;
+        if ( blessing_of_khazgoroth -> cooldown -> remains() > timespan_t::zero() ) return;
 
         // FIXME: This really should be a /use action
         if ( apparatus_of_khazgoroth -> check() == 5 )
@@ -563,7 +563,7 @@ static void register_darkmoon_card_greatness( item_t* item )
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
-  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero, false, false );
+  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero(), false, false );
 
   p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -597,7 +597,7 @@ static void register_fury_of_angerforge( item_t* item )
 
       if ( raw_fury -> trigger() )
       {
-        if ( blackwing_dragonkin -> cooldown -> remains() > timespan_t::zero ) return;
+        if ( blackwing_dragonkin -> cooldown -> remains() > timespan_t::zero() ) return;
 
         // FIXME: This really should be a /use action
         if ( raw_fury -> check() == 5 )
@@ -626,7 +626,7 @@ static void register_heart_of_ignacious( item_t* item )
     bool heroic;
 
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero, false, false ), heroic( h )
+      stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero(), false, false ), heroic( h )
     {
       haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, timespan_t::from_seconds( 20.0 ), timespan_t::from_seconds( 120.0 ) );
     }
@@ -665,7 +665,7 @@ static void register_matrix_restabilizer( item_t* item )
     stat_buff_t* buff_matrix_restabilizer_mastery;
 
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero, timespan_t::zero, timespan_t::zero, false, false ),
+      stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
       heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
     {
       buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, timespan_t::from_seconds( 30 ), timespan_t::from_seconds( 105 ), .15, false, RNG_DEFAULT, false );
@@ -675,7 +675,7 @@ static void register_matrix_restabilizer( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      if ( buff -> cooldown -> remains() > timespan_t::zero ) return;
+      if ( buff -> cooldown -> remains() > timespan_t::zero() ) return;
 
       player_t* p = a -> player;
 
@@ -737,7 +737,7 @@ static void register_sorrowsong( item_t* item )
   struct sorrowsong_callback_t : public stat_proc_callback_t
   {
     sorrowsong_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 20.0 ), timespan_t::zero, false, false )
+      stat_proc_callback_t( "sorrowsong", p, STAT_SPELL_POWER, 1, h ? 1710 : 1512, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 20.0 ), timespan_t::zero(), false, false )
     {}
 
     virtual void trigger( action_t* a, void* call_data )
@@ -767,7 +767,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
     tyrandes_spell_t( player_t* p, double max_mana ) :
       spell_t( "tyrandes_doll", p, RESOURCE_NONE, SCHOOL_ARCANE )
     {
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
       base_dd_min = max_mana;
       base_dd_max = max_mana;
       may_crit = true;
@@ -806,7 +806,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
       if ( mana_stored > max_mana ) mana_stored = max_mana;
 
       // FIXME! For now trigger as soon as the cooldown is up.
-      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= timespan_t::zero ) )
+      if ( ( mana_stored >= max_mana ) && ( discharge_spell -> cooldown -> remains() <= timespan_t::zero() ) )
       {
         discharge_spell -> execute();
         player -> resource_gain( RESOURCE_MANA, mana_stored, gain_source, discharge_spell );
@@ -831,7 +831,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     rng_t* rng;
 
     dragonwrath_tarecgosas_rest_callback_t( player_t* p, double pc ) :
-      discharge_proc_callback_t( "dragonwrath_tarecgosas_rest", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero, true, true, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
+      discharge_proc_callback_t( "dragonwrath_tarecgosas_rest", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), true, true, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
     {
       rng = p -> get_rng( "dragonwrath_tarecgosas_rest" );
     }
@@ -882,7 +882,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
         {
           log_t::output(  listener -> sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
         }
-        new (  listener -> sim ) action_execute_event_t(  listener -> sim, a -> dtr_action, timespan_t::zero /* Add DTR Proc Delay here */ );
+        new (  listener -> sim ) action_execute_event_t(  listener -> sim, a -> dtr_action, timespan_t::zero() /* Add DTR Proc Delay here */ );
       }
     }
   };
@@ -963,7 +963,7 @@ static void register_blazing_power( item_t* item )
     blazing_power_heal_t( player_t* p, bool heroic ) :
       heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
     {
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
       background  = true;
       may_miss = false;
       may_crit = true;
@@ -996,7 +996,7 @@ static void register_blazing_power( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > timespan_t::zero )
+      if ( cd -> remains() > timespan_t::zero() )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1026,7 +1026,7 @@ static void register_windward_heart( item_t* item )
     windward_heart_heal_t( player_t* p, bool heroic, bool lfr ) :
       heal_t( "windward", p, heroic ? 109825 : lfr ? 109822 : 108000 )
     {
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
       background  = true;
       may_miss = false;
       may_crit = true;
@@ -1059,7 +1059,7 @@ static void register_windward_heart( item_t* item )
            ! a -> harmful   )
         return;
 
-      if ( cd -> remains() > timespan_t::zero )
+      if ( cd -> remains() > timespan_t::zero() )
         return;
 
       if ( rng -> roll( 0.10 ) )
@@ -1086,7 +1086,7 @@ static void register_symbiotic_worm( item_t* item )
   struct symbiotic_worm_callback_t : public stat_proc_callback_t
   {
     symbiotic_worm_callback_t( player_t* p, bool h ) :
-      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 30.0 ), timespan_t::zero, false, false )
+      stat_proc_callback_t( "symbiotic_worm", p, STAT_MASTERY_RATING, 1, h ? 1089 : 963, 1.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 30.0 ), timespan_t::zero(), false, false )
     {}
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1131,7 +1131,7 @@ static void register_indomitable_pride( item_t* item )
 
     virtual void trigger( action_t* /* a */, void*  call_data )
     {
-      if ( cd -> remains() <= timespan_t::zero && listener -> health_percentage() < 50 )
+      if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 50 )
       {
         cd -> start();
         double amount = heroic ? 0.56 : lfr ? 0.43 : 0.50;
@@ -1141,7 +1141,7 @@ static void register_indomitable_pride( item_t* item )
           assert( 0 );
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
-        stats -> add_execute( timespan_t::zero );
+        stats -> add_execute( timespan_t::zero() );
       }
     }
   };
@@ -1177,13 +1177,13 @@ static void register_spidersilk_spindle( item_t* item )
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( cd -> remains() <= timespan_t::zero && listener -> health_percentage() < 35 )
+      if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 35 )
       {
         cd -> start();
         double amount = buff -> effect1().base_value();
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
-        stats -> add_execute( timespan_t::zero );
+        stats -> add_execute( timespan_t::zero() );
       }
     }
   };
@@ -1214,7 +1214,7 @@ static void register_bonelink_fetish( item_t* item )
       whirling_maw_t( player_t* p, uint32_t spell_id ) :
         attack_t( "bonelink_fetish", spell_id, p )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         background = true;
         may_miss = false;
         may_glance = false;
@@ -1242,7 +1242,7 @@ static void register_bonelink_fetish( item_t* item )
       if ( a -> proc )
         return;
 
-      if ( cooldown -> remains() > timespan_t::zero )
+      if ( cooldown -> remains() > timespan_t::zero() )
         return;
 
       if ( rng -> roll( chance ) )
@@ -1309,7 +1309,7 @@ static void register_fury_of_the_beast( item_t* item )
       if ( ! a -> weapon ) return;
       if ( a -> proc ) return;
 
-      if ( fury_of_the_beast -> cooldown -> remains() > timespan_t::zero ) return;
+      if ( fury_of_the_beast -> cooldown -> remains() > timespan_t::zero() ) return;
 
       if ( fury_of_the_beast -> trigger() )
       {
@@ -1353,7 +1353,7 @@ static void register_gurthalak( item_t* item )
       gurthalak_t( player_t* p, uint32_t tick_damage, const char* name ) :
         spell_t( name, 52586, p )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         background = true;
         tick_may_crit = true;
         hasted_ticks = false;
@@ -1470,7 +1470,7 @@ static void register_nokaled( item_t* item )
       nokaled_fire_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_fireblast", spell_id, p )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1484,7 +1484,7 @@ static void register_nokaled( item_t* item )
       nokaled_frost_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_iceblast", spell_id, p )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1498,7 +1498,7 @@ static void register_nokaled( item_t* item )
       nokaled_shadow_t( player_t* p, uint32_t spell_id ) :
         spell_t( "nokaled_shadowblast", spell_id, p )
       {
-        trigger_gcd = timespan_t::zero;
+        trigger_gcd = timespan_t::zero();
         background = true;
         may_miss = false;
         may_crit = true;
@@ -1561,7 +1561,7 @@ static void register_rathrak( item_t* item )
     rathrak_poison_t( player_t* p, uint32_t spell_id ) :
       spell_t( "rathrak", spell_id, p )
     {
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
       background = true;
       may_miss = false; // FIXME: Verify this
       tick_may_crit = true;
@@ -1586,7 +1586,7 @@ static void register_rathrak( item_t* item )
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( ( spell -> cooldown -> remains() <= timespan_t::zero ) && rng -> roll( 0.15 ) )
+      if ( ( spell -> cooldown -> remains() <= timespan_t::zero() ) && rng -> roll( 0.15 ) )
       {
         spell -> execute();
       }
@@ -1610,7 +1610,7 @@ static void register_souldrinker( item_t* item )
     souldrinker_spell_t( player_t* p, bool h, bool lfr ) :
       spell_t( "souldrinker", h ? 109831 : lfr ? 109828 : 108022, p )
     {
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
       background = true;
       may_miss = false;
       may_crit = false;
@@ -1699,7 +1699,7 @@ static void register_titahk( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if ( ( buff_self -> cooldown -> remains() <= timespan_t::zero ) && rng -> roll( proc_chance ) )
+      if ( ( buff_self -> cooldown -> remains() <= timespan_t::zero() ) && rng -> roll( proc_chance ) )
       {
         buff_self -> trigger();
         buff_radius -> trigger();

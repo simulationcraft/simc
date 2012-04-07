@@ -56,7 +56,7 @@ double spell_base_t::haste() const
 timespan_t spell_base_t::gcd() const
 {
   timespan_t t = action_t::gcd();
-  if ( t == timespan_t::zero ) return timespan_t::zero;
+  if ( t == timespan_t::zero() ) return timespan_t::zero();
 
   t *= haste();
   if ( t < min_gcd ) t = min_gcd;
@@ -71,9 +71,9 @@ timespan_t spell_base_t::execute_time() const
   timespan_t t = base_execute_time;
 
   if ( ! harmful && ! player -> in_combat )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
-  if ( t <= timespan_t::zero ) return timespan_t::zero;
+  if ( t <= timespan_t::zero() ) return timespan_t::zero();
   t *= haste();
 
   return t;
@@ -163,7 +163,7 @@ void spell_base_t::schedule_execute()
 {
   action_t::schedule_execute();
 
-  if ( time_to_execute > timespan_t::zero )
+  if ( time_to_execute > timespan_t::zero() )
     player -> debuffs.casting -> trigger();
 }
 

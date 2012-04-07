@@ -1025,7 +1025,7 @@ std::string chart::time_spent( const player_t* p )
   for ( stats_t* st = p -> stats_list; st; st = st -> next )
   {
     if ( st -> quiet ) continue;
-    if ( st -> total_time <= timespan_t::zero ) continue;
+    if ( st -> total_time <= timespan_t::zero() ) continue;
     if ( st -> background ) continue;
 
     stats_list.push_back( st );

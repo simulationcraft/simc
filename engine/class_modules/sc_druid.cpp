@@ -49,7 +49,7 @@ struct druid_targetdata_t : public targetdata_t
   {
     buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
 
-    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero ) );
+    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero() ) );
     buffs_lifebloom -> buff_duration = timespan_t::from_seconds( 11.0 ); // Override duration so the bloom works correctly
   }
 };
@@ -389,7 +389,7 @@ struct druid_t : public player_t
     for ( size_t i = 0; i < action_list.size(); ++i )
     {
       action_t* a = action_list[ i ];
-      if ( a -> trigger_gcd != timespan_t::zero ) a -> trigger_gcd = base_gcd;
+      if ( a -> trigger_gcd != timespan_t::zero() ) a -> trigger_gcd = base_gcd;
     }
   }
 };
@@ -605,7 +605,7 @@ struct treants_pet_t : public pet_t
     return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero,
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false )
   {
     pet_t::schedule_ready( delta_time, waiting );
@@ -823,7 +823,7 @@ static void trigger_fury_swipes( action_t* a )
   if ( ! p -> talents.fury_swipes -> rank() )
     return;
 
-  if ( p -> cooldowns_fury_swipes -> remains() > timespan_t::zero )
+  if ( p -> cooldowns_fury_swipes -> remains() > timespan_t::zero() )
     return;
 
   if ( p -> rng_fury_swipes -> roll( p -> talents.fury_swipes -> proc_chance() ) )
@@ -837,7 +837,7 @@ static void trigger_fury_swipes( action_t* a )
         {
           background  = true;
           proc        = true;
-          trigger_gcd = timespan_t::zero;
+          trigger_gcd = timespan_t::zero();
           init();
         }
       };
@@ -907,7 +907,7 @@ static void trigger_lotp( action_t* a )
   if ( ! p -> talents.leader_of_the_pack -> ok() )
     return;
 
-  if ( p -> cooldowns_lotp -> remains() > timespan_t::zero )
+  if ( p -> cooldowns_lotp -> remains() > timespan_t::zero() )
     return;
 
   // Has to do damage and can't be a proc
@@ -1124,7 +1124,7 @@ struct cat_melee_t : public druid_cat_melee_attack_t
     background  = true;
     repeating   = true;
     may_crit    = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void player_buff()
@@ -1175,7 +1175,7 @@ struct feral_charge_cat_t : public druid_cat_melee_attack_t
 
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
     druid_cat_melee_attack_t( "feral_charge_cat", 49376, p ),
-    stampede_cost_reduction( 0.0 ), stampede_duration( timespan_t::zero )
+    stampede_cost_reduction( 0.0 ), stampede_duration( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
 
@@ -2005,7 +2005,7 @@ struct bear_melee_t : public druid_bear_melee_attack_t
   {
     background  = true;
     repeating   = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     may_crit    = true;
   }
 
@@ -2069,7 +2069,7 @@ struct feral_charge_bear_t : public druid_bear_melee_attack_t
 
   feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
     druid_bear_melee_attack_t( "feral_charge_bear", 16979, p ),
-    stampede_haste( 0.0 ), stampede_duration( timespan_t::zero )
+    stampede_haste( 0.0 ), stampede_duration( timespan_t::zero() )
   {
     parse_options( NULL, options_str );
 
@@ -2399,7 +2399,7 @@ void druid_heal_t::execute()
 
   heal_t::execute();
 
-  if ( base_execute_time > timespan_t::zero && p -> buffs_natures_swiftness -> up() )
+  if ( base_execute_time > timespan_t::zero() && p -> buffs_natures_swiftness -> up() )
   {
     p -> buffs_natures_swiftness -> expire();
   }
@@ -2417,7 +2417,7 @@ timespan_t druid_heal_t::execute_time() const
   druid_t* p = player -> cast_druid();
 
   if ( p -> buffs_natures_swiftness -> check() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   return heal_t::execute_time();
 }
@@ -2455,7 +2455,7 @@ void druid_heal_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs_harmony -> value();
   }
 
-  if ( p -> buffs_natures_swiftness -> check() && base_execute_time > timespan_t::zero )
+  if ( p -> buffs_natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
   {
     player_multiplier *= 1.0 + p -> talents.natures_swiftness -> effect2().percent();
   }
@@ -2661,7 +2661,7 @@ struct regrowth_t : public druid_heal_t
     druid_t* p = player -> cast_druid();
 
     if ( p -> buffs_tree_of_life -> check() )
-      return timespan_t::zero;
+      return timespan_t::zero();
 
     return druid_heal_t::execute_time();
   }
@@ -2854,7 +2854,7 @@ double druid_spell_t::cost() const
 {
   druid_t* p = player -> cast_druid();
 
-  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero )
+  if ( harmful && p -> buffs_omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
 
   double c = spell_t::cost();
@@ -2886,7 +2886,7 @@ timespan_t druid_spell_t::execute_time() const
   druid_t* p = player -> cast_druid();
 
   if ( p -> buffs_natures_swiftness -> check() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   return spell_t::execute_time();
 }
@@ -2898,7 +2898,7 @@ void druid_spell_t::schedule_execute()
   spell_t::schedule_execute();
   druid_t* p = player -> cast_druid();
 
-  if ( base_execute_time > timespan_t::zero )
+  if ( base_execute_time > timespan_t::zero() )
     p -> buffs_natures_swiftness -> expire();
 }
 
@@ -2919,7 +2919,7 @@ void druid_spell_t::consume_resource()
   spell_t::consume_resource();
   druid_t* p = player -> cast_druid();
 
-  if ( harmful && p -> buffs_omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero )
+  if ( harmful && p -> buffs_omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
@@ -2972,7 +2972,7 @@ struct auto_melee_attack_t : public action_t
   auto_melee_attack_t( player_t* player, const std::string& /* options_str */ ) :
     action_t( ACTION_OTHER, "auto_attack", player )
   {
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -3026,8 +3026,8 @@ struct bear_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override these as we can do it before combat
-    trigger_gcd       = timespan_t::zero;
-    base_execute_time = timespan_t::zero;
+    trigger_gcd       = timespan_t::zero();
+    base_execute_time = timespan_t::zero();
     harmful           = false;
 
     if ( ! p -> bear_melee_attack )
@@ -3133,8 +3133,8 @@ struct cat_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override for precombat casting
-    trigger_gcd       = timespan_t::zero;
-    base_execute_time = timespan_t::zero;
+    trigger_gcd       = timespan_t::zero();
+    base_execute_time = timespan_t::zero();
     harmful           = false;
 
     if ( ! p -> cat_melee_attack )
@@ -3435,7 +3435,7 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     id          = 1126;
     base_costs[ current_resource() ]  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
@@ -3588,8 +3588,8 @@ struct moonkin_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     // Override these as we can precast before combat begins
-    trigger_gcd       = timespan_t::zero;
-    base_execute_time = timespan_t::zero;
+    trigger_gcd       = timespan_t::zero();
+    base_execute_time = timespan_t::zero();
     harmful           = false;
   }
 
@@ -3650,11 +3650,11 @@ struct druids_swiftness_t : public druid_spell_t
   virtual bool ready()
   {
     if ( sub_cooldown )
-      if ( sub_cooldown -> remains() > timespan_t::zero )
+      if ( sub_cooldown -> remains() > timespan_t::zero() )
         return false;
 
     if ( sub_dot )
-      if ( sub_dot -> remains() > timespan_t::zero )
+      if ( sub_dot -> remains() > timespan_t::zero() )
         return false;
 
     return druid_spell_t::ready();
@@ -3709,14 +3709,14 @@ struct starfire_t : public druid_spell_t
           if ( mf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
             mf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
           else
-            mf -> extend_duration_seconds( timespan_t::zero );
+            mf -> extend_duration_seconds( timespan_t::zero() );
         }
         else if ( sf -> ticking )
         {
           if ( sf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
             sf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
           else
-            sf -> extend_duration_seconds( timespan_t::zero );
+            sf -> extend_duration_seconds( timespan_t::zero() );
         }
       }
 
@@ -3928,7 +3928,7 @@ struct starsurge_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( p -> buffs_shooting_stars -> up() )
-      return timespan_t::zero;
+      return timespan_t::zero();
 
     return druid_spell_t::execute_time();
   }
@@ -3964,7 +3964,7 @@ struct stealth_t : public spell_t
   {
     parse_options( NULL, options_str );
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     harmful     = false;
   }
 
@@ -4669,15 +4669,15 @@ void druid_t::init_buffs()
 
   // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
   // These have either incorrect or no values in the DBC or don't really exist
-  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, glyphs.innervate -> enabled() );
+  buffs_glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), glyphs.innervate -> enabled() );
   buffs_natures_grace      = new buff_t( this, "natures_grace"     , 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ), talents.natures_grace -> ok() );
-  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1, timespan_t::from_seconds( 15.0 ), timespan_t::zero, 3.5 / 60.0 );
+  buffs_omen_of_clarity    = new buff_t( this, "omen_of_clarity"   , 1, timespan_t::from_seconds( 15.0 ), timespan_t::zero(), 3.5 / 60.0 );
   buffs_pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds( 10.0 ) + talents.endless_carnage -> effect2().time_value() );
   buffs_revitalize         = new buff_t( this, "revitalize"        , 1, timespan_t::from_seconds( 1.0 ), timespan_t::from_seconds( talents.revitalize -> spell( 1 ).effect2().base_value() ), talents.revitalize -> ok() ? 0.20 : 0, true );
-  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0 ), timespan_t::zero, talents.stampede -> ok() );
-  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, talents.stampede -> ok() );
-  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero, ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
-  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero, 1.0, true );
+  buffs_stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0 ), timespan_t::zero(), talents.stampede -> ok() );
+  buffs_stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talents.stampede -> ok() );
+  buffs_t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
+  buffs_wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero(), 1.0, true );
 
   // buff_t ( sim, id, name, chance, cooldown, quiet, reverse )
   buffs_barkskin              = new buff_t( this, 22812, "barkskin" );
@@ -4685,12 +4685,12 @@ void druid_t::init_buffs()
   buffs_eclipse_solar         = new buff_t( this, 48517, "solar_eclipse" );
   buffs_enrage                = new buff_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
   buffs_frenzied_regeneration = new frenzied_regeneration_buff_t( this );
-  buffs_frenzied_regeneration -> cooldown -> duration = timespan_t::zero; //CD is handled by the ability
+  buffs_frenzied_regeneration -> cooldown -> duration = timespan_t::zero(); //CD is handled by the ability
   buffs_harmony               = new buff_t( this, 100977, "harmony" );
   buffs_lacerate              = new buff_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
   buffs_lunar_shower          = new buff_t( this, talents.lunar_shower -> effect_trigger_spell( 1 ), "lunar_shower" );
   buffs_natures_swiftness     = new buff_t( this, talents.natures_swiftness ->spell_id(), "natures_swiftness" );
-  buffs_natures_swiftness -> cooldown -> duration = timespan_t::zero;// CD is handled by the ability
+  buffs_natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
   buffs_savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buffs_shooting_stars        = new buff_t( this, talents.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talents.shooting_stars -> proc_chance() );
   buffs_survival_instincts    = new buff_t( this, talents.survival_instincts -> spell_id(), "survival_instincts" );

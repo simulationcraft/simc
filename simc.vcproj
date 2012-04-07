@@ -510,10 +510,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_timespan.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_unique_gear.cpp"
 			>
 		</File>

@@ -430,7 +430,7 @@ struct shaman_spell_t : public spell_t
   virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
-    if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero )
+    if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero() )
       return true;
 
     return spell_t::usable_moving();
@@ -568,7 +568,7 @@ struct spirit_wolf_pet_t : public pet_t
     return ap + ap_per_owner * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
   }
 
-  virtual void summon( timespan_t duration=timespan_t::zero )
+  virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
     melee -> execute(); // Kick-off repeating attack
@@ -616,7 +616,7 @@ struct earth_elemental_pet_t : public pet_t
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = new melee_t( player );
 
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
     }
 
     virtual void execute()
@@ -787,7 +787,7 @@ struct fire_elemental_pet_t : public pet_t
     virtual void execute() { player -> distance = 1; }
     virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> distance / 10.0 ); }
     virtual bool ready() { return ( player -> distance > 1 ); }
-    virtual timespan_t gcd() const { return timespan_t::zero; }
+    virtual timespan_t gcd() const { return timespan_t::zero(); }
     virtual bool usable_moving() { return true; }
   };
 
@@ -900,7 +900,7 @@ struct fire_elemental_pet_t : public pet_t
 
       may_crit             = true;
       base_costs[ RESOURCE_MANA ]            = ( player -> level ) * 3.554;
-      base_execute_time    = timespan_t::zero;
+      base_execute_time    = timespan_t::zero();
       direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
 
@@ -935,7 +935,7 @@ struct fire_elemental_pet_t : public pet_t
       may_crit                     = true;
       background                   = true;
       repeating                    = true;
-      trigger_gcd                  = timespan_t::zero;
+      trigger_gcd                  = timespan_t::zero();
       direct_power_mod             = 1.0;
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
@@ -960,7 +960,7 @@ struct fire_elemental_pet_t : public pet_t
     virtual void execute()
     {
       // If we're casting Fire Nova, we should clip a swing
-      if ( time_to_execute > timespan_t::zero && player -> executing )
+      if ( time_to_execute > timespan_t::zero() && player -> executing )
         schedule_execute();
       else
         melee_attack_t::execute();
@@ -976,7 +976,7 @@ struct fire_elemental_pet_t : public pet_t
       player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
       player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
 
-      trigger_gcd = timespan_t::zero;
+      trigger_gcd = timespan_t::zero();
     }
 
     virtual void execute()
@@ -1161,7 +1161,7 @@ static bool trigger_windfury_weapon( melee_attack_t* a )
   else
     wf = p -> windfury_oh;
 
-  if ( p -> cooldown.windfury_weapon -> remains() > timespan_t::zero ) return false;
+  if ( p -> cooldown.windfury_weapon -> remains() > timespan_t::zero() ) return false;
 
   if ( p -> rng.windfury_weapon -> roll( wf -> proc_chance() ) )
   {
@@ -1242,7 +1242,7 @@ static bool trigger_improved_lava_lash( melee_attack_t* a )
       imp_ll_rng = sim -> get_rng( "improved_ll" );
       imp_ll_rng -> average_range = false;
       imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
-      imp_ll_fs_cd -> duration = timespan_t::zero;
+      imp_ll_fs_cd -> duration = timespan_t::zero();
       fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );
     }
 
@@ -1563,7 +1563,7 @@ struct unleash_flame_t : public shaman_spell_t
     stateless            = true;
 
     // Don't cooldown here, unleash elements ability will handle it
-    cooldown -> duration = timespan_t::zero;
+    cooldown -> duration = timespan_t::zero();
   }
 
   virtual void execute()
@@ -1664,7 +1664,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
     stateless             = true;
 
     // Don't cooldown here, unleash elements will handle it
-    cooldown -> duration = timespan_t::zero;
+    cooldown -> duration = timespan_t::zero();
   }
 
   void execute()
@@ -1773,7 +1773,7 @@ struct melee_t : public shaman_melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
     stateless   = true;
 
     if ( p() -> dual_wield() ) base_hit -= 0.19;
@@ -1791,7 +1791,7 @@ struct melee_t : public shaman_melee_attack_t
 
   void execute()
   {
-    if ( time_to_execute > timespan_t::zero && p() -> executing )
+    if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
       if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
       schedule_execute();
@@ -1814,7 +1814,7 @@ struct melee_t : public shaman_melee_attack_t
   {
     shaman_melee_attack_t::schedule_execute();
     // Clipped swings do not eat unleash wind buffs
-    if ( time_to_execute > timespan_t::zero && ! p() -> executing )
+    if ( time_to_execute > timespan_t::zero() && ! p() -> executing )
     {
       p() -> buff.unleash_wind -> decrement();
       p() -> buff.flurry       -> decrement();
@@ -1852,7 +1852,7 @@ struct auto_melee_attack_t : public shaman_melee_attack_t
       p() -> off_hand_attack -> base_execute_time = p() -> off_hand_weapon.swing_time;
     }
 
-    trigger_gcd = timespan_t::zero;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -2015,7 +2015,7 @@ double shaman_spell_t::cost_reduction() const
   if ( harmful && callbacks && ! proc && p() -> buff.elemental_focus -> up() )
     cr += p() -> buff.elemental_focus -> effectN( 1 ).percent();
 
-  if ( base_execute_time == timespan_t::zero )
+  if ( base_execute_time == timespan_t::zero() )
     cr += p() -> spec.mental_quickness -> effectN( 2 ).percent();
 
   return cr;
@@ -2058,7 +2058,7 @@ void shaman_spell_t::execute()
   // Shamans have specialized swing timer reset system, where every cast time spell
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
   // weapon stack is zero.
-  if ( execute_time() > timespan_t::zero )
+  if ( execute_time() > timespan_t::zero() )
   {
     if ( ! maelstrom || p() -> buff.maelstrom_weapon -> check() == 0 )
     {
@@ -2162,7 +2162,7 @@ struct bloodlust_t : public shaman_spell_t
     if ( p() -> buffs.exhaustion -> check() )
       return false;
 
-    if (  p() -> buffs.bloodlust -> cooldown -> remains() > timespan_t::zero )
+    if (  p() -> buffs.bloodlust -> cooldown -> remains() > timespan_t::zero() )
       return false;
 
     return shaman_spell_t::ready();
@@ -2478,7 +2478,7 @@ struct lava_burst_t : public shaman_spell_t
   virtual timespan_t execute_time() const
   {
     if ( p() -> buff.lava_surge -> up() )
-      return timespan_t::zero;
+      return timespan_t::zero();
 
     return shaman_spell_t::execute_time();
   }
@@ -2902,7 +2902,7 @@ struct shaman_totem_t : public shaman_spell_t
   totem_type_e totem;
 
   shaman_totem_t( const char * name, const char * totem_name, shaman_t* player, const std::string& options_str, totem_type_e t ) :
-    shaman_spell_t( name, totem_name, player, options_str ), totem_duration( timespan_t::zero ), totem_bonus( 0 ), totem( t )
+    shaman_spell_t( name, totem_name, player, options_str ), totem_duration( timespan_t::zero() ), totem_bonus( 0 ), totem( t )
   {
     is_totem             = true;
     harmful              = false;
@@ -3016,7 +3016,7 @@ struct shaman_totem_t : public shaman_spell_t
     if ( harmful )
       return shaman_spell_t::gcd();
 
-    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero;
+    return player -> in_combat ? shaman_spell_t::gcd() : timespan_t::zero();
   }
 
   virtual bool ready()
@@ -3483,7 +3483,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 struct lightning_shield_buff_t : public buff_t
 {
   lightning_shield_buff_t( player_t* p, uint32_t id, const char* n ) :
-    buff_t( p, id, n, 1.0, timespan_t::min, false )
+    buff_t( p, id, n, 1.0, timespan_t::min(), false )
   {
     shaman_t* s = player -> cast_shaman();
 
@@ -3498,7 +3498,7 @@ struct lightning_shield_buff_t : public buff_t
 struct searing_flames_buff_t : public buff_t
 {
   searing_flames_buff_t( actor_pair_t pair, uint32_t id, const char* n ) :
-    buff_t( pair, id, n, 1.0, timespan_t::min, true ) // Quiet buff, dont show in report
+    buff_t( pair, id, n, 1.0, timespan_t::min(), true ) // Quiet buff, dont show in report
   {
     default_chance = player -> dbc.spell( 77661 ) -> proc_chance();
     buff_duration  = player -> dbc.spell( 77661 ) -> duration();
@@ -3800,13 +3800,13 @@ void shaman_t::init_buffs()
   buff.flurry              = new buff_t                 ( this, spec.flurry -> effect_trigger_spell( 1 ),           "flurry",              1.0 );
   buff.flurry -> activated = false;
   // TBD how this is handled for reals
-  buff.lava_surge          = new buff_t                 ( this, spec.lava_surge -> spell_id(),                      "lava_surge",          1.0, timespan_t::min, true );
+  buff.lava_surge          = new buff_t                 ( this, spec.lava_surge -> spell_id(),                      "lava_surge",          1.0, timespan_t::min(), true );
   buff.lava_surge -> activated = false;
   buff.lightning_shield    = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),             "lightning_shield"         );
   buff.maelstrom_weapon    = new buff_t                 ( this, spec.maelstrom_weapon -> effect_trigger_spell( 1 ), "maelstrom_weapon"         );
   buff.maelstrom_weapon -> activated = false;
   buff.shamanistic_rage    = new buff_t                 ( this, spec.shamanistic_rage -> spell_id(),                "shamanistic_rage"         );
-  buff.spiritwalkers_grace = new buff_t                 ( this, dbc.class_ability_id( type, "Spiritwalker's Grace" ),         "spiritwalkers_grace", 1.0, timespan_t::zero );
+  buff.spiritwalkers_grace = new buff_t                 ( this, dbc.class_ability_id( type, "Spiritwalker's Grace" ),         "spiritwalkers_grace", 1.0, timespan_t::zero() );
   buff.unleash_flame       = new unleash_flame_buff_t   ( this );
   buff.unleash_wind        = new buff_t                 ( this, 73681,                                                        "unleash_wind"             );
   buff.water_shield        = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),                 "water_shield"             );
@@ -4110,7 +4110,7 @@ void shaman_t::moving()
     if ( swg &&
          executing &&
          sim -> roll( skill ) &&
-         swg -> cooldown -> remains() == timespan_t::zero &&
+         swg -> cooldown -> remains() == timespan_t::zero() &&
          resource_available( swg -> current_resource(), swg -> cost() ) )
     {
       // Elemental has to do some additional checking here
@@ -4346,14 +4346,14 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_typ
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.burning_wrath    = new aura_t( sim, "burning_wrath",    1, timespan_t::zero );
-  sim -> auras.grace_of_air     = new aura_t( sim, "grace_of_air",     1, timespan_t::zero );
+  sim -> auras.burning_wrath    = new aura_t( sim, "burning_wrath",    1, timespan_t::zero() );
+  sim -> auras.grace_of_air     = new aura_t( sim, "grace_of_air",     1, timespan_t::zero() );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, timespan_t::from_seconds( 40.0 ) );
-    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, timespan_t::from_seconds( 600.0 ), timespan_t::zero, 1.0, true );
+    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, timespan_t::from_seconds( 600.0 ), timespan_t::zero(), 1.0, true );
     p -> buffs.mana_tide  = new buff_t( p, 16190, "mana_tide" );
   }
 }

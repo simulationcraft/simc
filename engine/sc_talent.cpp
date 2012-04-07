@@ -566,7 +566,7 @@ bool spell_id_t::in_range() const
 timespan_t spell_id_t::cooldown() const
 {
   if ( ! ok() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   double d = s_data -> cooldown().total_seconds();
 
@@ -579,7 +579,7 @@ timespan_t spell_id_t::cooldown() const
 timespan_t spell_id_t::gcd() const
 {
   if ( ! ok() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   return s_data -> gcd();
 }
@@ -595,7 +595,7 @@ uint32_t spell_id_t::category() const
 timespan_t spell_id_t::duration() const
 {
   if ( ! ok() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   timespan_t d = s_data -> duration();
   timespan_t player_wheel_seconds = timespan_t::from_seconds( s_player -> sim -> wheel_seconds - 2.0 );
@@ -656,7 +656,7 @@ double spell_id_t::proc_chance() const
 timespan_t spell_id_t::cast_time() const
 {
   if ( ! ok() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   return s_data -> cast_time( s_player -> level );
 }
@@ -826,7 +826,7 @@ double spell_id_t::effect_coeff( uint32_t effect_num ) const
 timespan_t spell_id_t::effect_period( uint32_t effect_num ) const
 {
   if ( ! ok() )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   uint32_t effect_id = s_data -> effect_id( effect_num );
 
@@ -1000,7 +1000,7 @@ timespan_t spell_id_t::mod_additive_time( property_type_t p_type ) const
   const spelleffect_data_t* effect = get_effect( p_type );
 
   if ( effect == NULL )
-    return timespan_t::zero;
+    return timespan_t::zero();
 
   assert( effect -> subtype() == A_ADD_FLAT_MODIFIER );
 

@@ -101,7 +101,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
                      s -> tick_results[ RESULT_CRIT ].pct );
   }
 
-  if ( s -> total_tick_time > timespan_t::zero )
+  if ( s -> total_tick_time > timespan_t::zero() )
   {
     util_t::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.total_seconds() / s -> player -> fight_length.mean  );
   }

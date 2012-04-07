@@ -99,7 +99,7 @@ struct _weapon_list_t
 const _weapon_list_t imp_weapon[]=
 {
   { 81, 116.7, 176.7, timespan_t::from_seconds( 2.0 ) },
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t felguard_weapon[]=
@@ -107,7 +107,7 @@ const _weapon_list_t felguard_weapon[]=
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
   { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t felhunter_weapon[]=
@@ -115,7 +115,7 @@ const _weapon_list_t felhunter_weapon[]=
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 678.4, 1010.4, timespan_t::from_seconds( 2.0 ) },
   { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t succubus_weapon[]=
@@ -123,26 +123,26 @@ const _weapon_list_t succubus_weapon[]=
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
   { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t infernal_weapon[]=
 {
   { 85, 1072.0, 1072.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
   { 80, 924.0, 924.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t doomguard_weapon[]=
 {
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t ebon_imp_weapon[]=
 {
   { 85, 1110.0, 1110.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
   { 80, 956.0, 956.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 const _weapon_list_t voidwalker_weapon[]=
@@ -150,7 +150,7 @@ const _weapon_list_t voidwalker_weapon[]=
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
   { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
-  { 0, 0, 0, timespan_t::zero }
+  { 0, 0, 0, timespan_t::zero() }
 };
 
 }
@@ -703,7 +703,7 @@ timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type 
 {
   const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
 
-  timespan_t r = timespan_t::zero;
+  timespan_t r = timespan_t::zero();
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
   {
     if ( level == weapon_list[ i ].id )
@@ -717,7 +717,7 @@ timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type 
       break;
     }
   }
-  if ( r == timespan_t::zero )
+  if ( r == timespan_t::zero() )
     r = timespan_t::from_seconds( 1.0 ); // set swing-time to 1.00 if there is no weapon
   return r;
 }
@@ -735,7 +735,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
   main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   main_hand_weapon.swing_time = get_weapon_swing_time( level, pet_type );
-  if ( main_hand_weapon.swing_time == timespan_t::zero )
+  if ( main_hand_weapon.swing_time == timespan_t::zero() )
   {
     sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
     assert( 0 );

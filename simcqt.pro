@@ -37,6 +37,7 @@ INCLUDEPATH += engine
 DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.hpp
+HEADERS += engine/class_modules/sc_warlock.hpp
 HEADERS += engine/dbc/data_enums.hh
 HEADERS += engine/dbc/data_definitions.hh
 HEADERS += engine/utf8.h
@@ -80,7 +81,6 @@ SOURCES += engine/sc_stats.cpp
 SOURCES += engine/sc_talent.cpp
 SOURCES += engine/sc_target.cpp
 SOURCES += engine/sc_thread.cpp
-SOURCES += engine/sc_timespan.cpp
 SOURCES += engine/sc_unique_gear.cpp
 SOURCES += engine/sc_util.cpp
 SOURCES += engine/sc_weapon.cpp

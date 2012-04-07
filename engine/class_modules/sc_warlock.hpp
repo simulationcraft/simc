@@ -295,9 +295,9 @@ public:
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
   virtual void init_resources( bool force );
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero,
+  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual void summon( timespan_t duration=timespan_t::zero );
+  virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
   virtual double composite_spell_haste() const;
   virtual double composite_attack_haste() const;
@@ -316,7 +316,7 @@ public:
 struct warlock_main_pet_t : public warlock_pet_t
 {
   warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
-  virtual void summon( timespan_t duration=timespan_t::zero );
+  virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
   virtual double composite_attack_expertise( const weapon_t* ) const;
   virtual resource_type_e primary_resource() const;
@@ -333,7 +333,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
 
   warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
-  virtual void summon( timespan_t duration=timespan_t::zero );
+  virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_attack_expertise( const weapon_t* ) const;
   virtual double composite_attack_haste() const;
@@ -379,7 +379,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual void summon( timespan_t duration=timespan_t::zero );
+  virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
 };
 

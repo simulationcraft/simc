@@ -222,7 +222,7 @@ void action_execute_event_t::execute()
   {
     if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
 
-    player -> schedule_ready( timespan_t::zero );
+    player -> schedule_ready( timespan_t::zero() );
   }
 
   if ( player -> off_gcd_actions.size() == 0 )
@@ -232,7 +232,7 @@ void action_execute_event_t::execute()
   if ( player -> off_gcd )
     event_t::cancel( player -> off_gcd );
 
-  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero );
+  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );
 }
 
 // ==========================================================================
@@ -308,14 +308,14 @@ void dot_tick_event_t::execute()
 
   if ( dot -> current_tick == dot -> num_ticks )
   {
-    dot -> time_to_tick = timespan_t::zero;
+    dot -> time_to_tick = timespan_t::zero();
     dot -> action -> last_tick( dot );
 
     if ( dot -> action -> channeled )
     {
       if ( dot -> action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
 
-      dot -> action -> player -> schedule_ready( timespan_t::zero );
+      dot -> action -> player -> schedule_ready( timespan_t::zero() );
     }
   }
   else dot -> schedule_tick();
