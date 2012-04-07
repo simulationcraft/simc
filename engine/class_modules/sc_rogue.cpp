@@ -2416,10 +2416,12 @@ struct pool_energy_t : public action_t
 {
   timespan_t wait;
   int for_next;
+  const std::vector<action_t*>::iterator action_list_position;
 
   pool_energy_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "pool_energy", p ),
-    wait( timespan_t::from_seconds( 0.5 ) ), for_next( 0 )
+    wait( timespan_t::from_seconds( 0.5 ) ), for_next( 0 ),
+    action_list_position( p -> action_list.end()-- )
   {
     option_t options[] =
     {
@@ -2446,7 +2448,7 @@ struct pool_energy_t : public action_t
   {
     if ( for_next )
     {
-      if ( next -> ready() )
+      if ( (*(action_list_position + 1)) -> ready() )
         return false;
 
       // If the next action in the list would be "ready" if it was not constrained by energy,
@@ -2454,7 +2456,7 @@ struct pool_energy_t : public action_t
 
       player -> resources.current[ RESOURCE_ENERGY ] += 100;
 
-      bool energy_limited = next -> ready();
+      bool energy_limited = (*(action_list_position + 1)) -> ready();
 
       player -> resources.current[ RESOURCE_ENERGY ] -= 100;
 

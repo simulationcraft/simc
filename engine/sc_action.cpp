@@ -132,7 +132,6 @@ void action_t::init_action_t_()
   interrupt_if_expr              = NULL;
   sync_str.clear();
   sync_action                    = NULL;
-  next                           = NULL;
   marker                         = 0;
   last_reaction_time             = timespan_t::zero();
   dtr_action                     = 0;

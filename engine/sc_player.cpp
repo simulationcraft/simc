@@ -4816,50 +4816,6 @@ struct stoneform_t : public action_t
   }
 };
 
-// Cycle Action =============================================================
-
-struct cycle_t : public action_t
-{
-  action_t* current_action;
-
-  cycle_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "cycle", player ), current_action( 0 )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void reset()
-  {
-    action_t::reset();
-
-    if ( ! current_action )
-    {
-      current_action = next;
-      if ( ! current_action )
-      {
-        sim -> errorf( "Player %s has no actions after 'cycle'\n", player -> name() );
-        sim -> cancel();
-      }
-      for ( action_t* a = next; a; a = a -> next ) a -> background = true;
-    }
-  }
-
-  virtual void schedule_execute()
-  {
-    player -> last_foreground_action = current_action;
-    current_action -> schedule_execute();
-    current_action = current_action -> next;
-    if ( ! current_action ) current_action = next;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! current_action ) return false;
-
-    return current_action -> ready();
-  }
-};
-
 // Lifeblood ================================================================
 
 struct lifeblood_t : public action_t
@@ -5409,7 +5365,6 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
   if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
-  if ( name == "cycle"            ) return new            cycle_t( this, options_str );
   if ( name == "lifeblood"        ) return new        lifeblood_t( this, options_str );
   if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
   if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );

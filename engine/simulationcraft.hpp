@@ -5163,7 +5163,6 @@ struct action_t : public spell_id_t
   action_expr_t* interrupt_if_expr;
   std::string sync_str;
   action_t* sync_action;
-  action_t* next;
   char marker;
   std::string signature_str;
   std::string target_str;
