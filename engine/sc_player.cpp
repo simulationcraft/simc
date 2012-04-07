@@ -53,7 +53,7 @@ struct hymn_of_hope_buff_t : public buff_t
     buff_t ( p, id, n ), mana_gain( 0 )
   { }
 
-  virtual void start( int stacks, double value, const timespan_t& duration )
+  virtual void start( int stacks, double value, timespan_t duration )
   {
     buff_t::start( stacks, value, duration );
 

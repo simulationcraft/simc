@@ -3108,15 +3108,15 @@ public:
   timespan_t remains();
   bool   remains_gt( timespan_t time );
   bool   remains_lt( timespan_t time );
-  bool   trigger  ( action_t*, int stacks=1, double value=-1.0, const timespan_t& duration = timespan_t::min );
-  virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0, const timespan_t& duration = timespan_t::min );
-  virtual void   execute ( int stacks=1, double value=-1.0, const timespan_t& duration = timespan_t::min );
-  virtual void   increment( int stacks=1, double value=-1.0, const timespan_t& duration = timespan_t::min );
+  bool   trigger  ( action_t*, int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
+  virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0, timespan_t duration = timespan_t::min() );
+  virtual void   execute ( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
+  virtual void   increment( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
   void   decrement( int stacks=1, double value=-1.0 );
   void   extend_duration( player_t* p, timespan_t seconds );
 
-  virtual void start    ( int stacks=1, double value=-1.0, const timespan_t& duration = timespan_t::min );
-  virtual void refresh  ( int stacks=0, double value=-1.0, const timespan_t& duration = timespan_t::min );
+  virtual void start    ( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
+  virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void override ( int stacks=1, double value=-1.0 );
   virtual bool may_react( int stacks=1 );
@@ -3185,7 +3185,7 @@ struct cost_reduction_buff_t : public buff_t
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
-  virtual void refresh  ( int stacks=0, double value=-1.0, const timespan_t& duration = timespan_t::min );
+  virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
 };
 
 struct debuff_t : public buff_t
@@ -3340,7 +3340,7 @@ public:
 
   void lock();
   void unlock();
-}; 
+};
 
 class thread_t : public noncopyable
 {

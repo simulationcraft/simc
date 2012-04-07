@@ -756,7 +756,7 @@ static double calculate_dot_dps( dot_t* dot )
   action_t* a = dot -> action;
 
   a -> result = RESULT_HIT;
-  
+
   return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier() ) / a -> base_tick_time.total_seconds() );
 }
 
@@ -2651,7 +2651,7 @@ struct mage_armor_buff_t : public buff_t
     buff_t( p, p -> spells.mage_armor, NULL )
   {}
 
-  virtual void start( int stacks, double value, const timespan_t& duration = timespan_t::min )
+  virtual void start( int stacks, double value, timespan_t duration = timespan_t::min() )
   {
     mage_t* p = player -> cast_mage();
     timespan_t d = p -> rng_mage_armor_start -> real() * timespan_t::from_seconds( 5.0 ); // Random start of the first mana regen tick.

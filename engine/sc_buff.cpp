@@ -464,10 +464,10 @@ bool buff_t::remains_lt( timespan_t time )
 
 // buff_t::trigger ==========================================================
 
-bool buff_t::trigger( action_t* a,
-                      int       stacks,
-                      double    value,
-                      const     timespan_t& duration )
+bool buff_t::trigger( action_t*  a,
+                      int        stacks,
+                      double     value,
+                      timespan_t duration )
 {
   double chance = default_chance;
   if ( chance < 0 ) chance = a -> ppm_proc_chance( -chance );
@@ -476,10 +476,10 @@ bool buff_t::trigger( action_t* a,
 
 // buff_t::trigger ==========================================================
 
-bool buff_t::trigger( int    stacks,
-                      double value,
-                      double chance,
-                      const timespan_t& duration )
+bool buff_t::trigger( int        stacks,
+                      double     value,
+                      double     chance,
+                      timespan_t duration )
 {
   if ( max_stack == 0 || chance == 0 ) return false;
 
@@ -519,7 +519,7 @@ bool buff_t::trigger( int    stacks,
 
 // buff_t::execute ==========================================================
 
-void buff_t::execute( int stacks, double value, const timespan_t& duration )
+void buff_t::execute( int stacks, double value, timespan_t duration )
 {
   if ( last_trigger > timespan_t::zero() )
   {
@@ -552,9 +552,9 @@ void buff_t::execute( int stacks, double value, const timespan_t& duration )
 
 // buff_t::increment ========================================================
 
-void buff_t::increment( int    stacks,
-                        double value,
-                        const timespan_t& duration )
+void buff_t::increment( int        stacks,
+                        double     value,
+                        timespan_t duration )
 {
   if ( overridden ) return;
 
@@ -643,9 +643,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
 // buff_t::start ============================================================
 
-void buff_t::start( int    stacks,
-                    double value,
-                    const timespan_t& duration )
+void buff_t::start( int        stacks,
+                    double     value,
+                    timespan_t duration )
 {
   if ( max_stack == 0 ) return;
 
@@ -668,8 +668,8 @@ void buff_t::start( int    stacks,
   }
   last_start = sim -> current_time;
 
-  timespan_t d = ( duration != timespan_t::min ) ? duration : buff_duration;
-  if ( d > timespan_t::zero )
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+  if ( d > timespan_t::zero() )
   {
     expiration = new ( sim ) expiration_t( sim, player, this, d );
   }
@@ -677,9 +677,9 @@ void buff_t::start( int    stacks,
 
 // buff_t::refresh ==========================================================
 
-void buff_t::refresh( int    stacks,
-                      double value,
-                      const timespan_t& duration )
+void buff_t::refresh( int        stacks,
+                      double     value,
+                      timespan_t duration )
 {
   if ( max_stack == 0 ) return;
 
@@ -687,14 +687,14 @@ void buff_t::refresh( int    stacks,
 
   bump( stacks, value );
 
-  timespan_t d = ( duration != timespan_t::min ) ? duration : buff_duration;
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
   // Make sure we always cancel the expiration event if we get an
   // infinite duration
-  if ( d == timespan_t::zero )
+  if ( d == timespan_t::zero() )
     event_t::cancel( expiration );
   else
   {
-    assert( d > timespan_t::zero );
+    assert( d > timespan_t::zero() );
     // Infinite duration -> duration of d
     if ( unlikely( ! expiration ) )
       expiration = new ( sim ) expiration_t( sim, player, this, d );
@@ -1209,9 +1209,9 @@ void cost_reduction_buff_t::expire()
 
 // cost_reduction_buff_t::refresh ===========================================
 
-void cost_reduction_buff_t::refresh( int    stacks,
-                                     double value,
-                                     const timespan_t& duration )
+void cost_reduction_buff_t::refresh( int        stacks,
+                                     double     value,
+                                     timespan_t duration )
 {
   if ( ! refreshes )
   {
