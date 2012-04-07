@@ -3057,7 +3057,6 @@ struct buff_t : public spell_id_t
   event_t* delay;
   rng_t* rng;
   cooldown_t* cooldown;
-  buff_t* next;
   int current_stack, max_stack;
   int aura_id;
   bool activated;

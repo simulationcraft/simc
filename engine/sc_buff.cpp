@@ -240,7 +240,6 @@ void buff_t::init_buff_shared()
   overridden = false;
   expiration = 0;
   delay = 0;
-  next = NULL;
 
   buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
