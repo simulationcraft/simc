@@ -165,6 +165,8 @@ struct priest_t : public player_t
     gain_t* shadow_orb_mb;
     gain_t* shadow_orb_tier13_4pc;
     gain_t* shadow_orb_mastery_refund;
+    gain_t* vampiric_touch_health;
+    gain_t* vampiric_touch_mana;
   } gains;
 
   // Benefits
@@ -2048,7 +2050,16 @@ struct vampiric_touch_t : public priest_spell_t
     may_crit   = false;
   }
 
-  // FIXME: implement self-heal on tick()
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
+
+    double h = tick_dmg * data().effect3().percent();
+    player -> resource_gain( RESOURCE_HEALTH, h, p() -> gains.vampiric_touch_health, this );
+
+    double m = player->resources.max[ RESOURCE_MANA ] * data().effect1().percent();
+    player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
+  }
 };
 
 // Holy Fire Spell ==========================================================
@@ -3445,6 +3456,8 @@ void priest_t::init_gains()
   gains.shadow_orb_mb = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_tier13_4pc = get_gain( "Shadow Orbs from Tier13 4pc" );
   gains.shadow_orb_mastery_refund = get_gain( "Shadow Orbs refunded from Shadow Orb Mastery" );
+  gains.vampiric_touch_health = get_gain( "Vampiric Touch Health" );
+  gains.vampiric_touch_mana = get_gain( "Vampiric Touch Mana" );
 }
 
 // priest_t::init_procs. =====================================================
