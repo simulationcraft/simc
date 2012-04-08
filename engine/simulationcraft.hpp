@@ -3323,10 +3323,10 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
-class mutex_t : public nonmoveable
+class mutex_t : public noncopyable
 {
 private:
-  struct native_t;
+  class native_t;
   native_t* native_handle;
 
 public:
@@ -3340,7 +3340,7 @@ public:
 class thread_t : public noncopyable
 {
 private:
-  struct native_t;
+  class native_t;
   native_t* native_handle;
 
 protected:

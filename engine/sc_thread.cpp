@@ -5,164 +5,171 @@
 
 #include "simulationcraft.hpp"
 
+// Cross-Platform Support for Multi-Threading ===============================
+
 #if defined( NO_THREADS )
-#define THREAD_NONE
+// mutex_t::native_t ========================================================
+
+class mutex_t::native_t
+{
+public:
+  void lock()   {}
+  void unlock() {}
+};
+
+// thread_t::native_t =======================================================
+
+class thread_t::native_t
+{
+public:
+  void launch( thread_t* thr ) { thr -> run(); }
+  void join() {}
+
+  static void sleep( timespan_t t )
+  {
+    const std::time_t finish = std::time() + t.total_seconds();
+    while ( std::time() < finish )
+      ;
+  }
+};
+
 #elif defined( __MINGW32__ ) || defined( _MSC_VER )
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
 #include <windows.h>
 #include <process.h>
-#define THREAD_WIN32
-#elif defined( _POSIX_THREADS ) && _POSIX_THREADS > 0
-// POSIX
-#include <pthread.h>
-#include <unistd.h>
-#define THREAD_POSIX
-#else
-#error "Unable to detect thread API."
-#endif
-
-// Cross-Platform Support for Multi-Threading ===============================
 
 // mutex_t::native_t ========================================================
 
-struct mutex_t::native_t
+class mutex_t::native_t : public nonmoveable
 {
-#if defined(THREAD_WIN32)
   CRITICAL_SECTION cs;
-#elif defined(THREAD_POSIX)
-  pthread_mutex_t m;
-#endif
+
+public:
+  native_t()    { InitializeCriticalSection( &cs ); }
+  ~native_t()   { DeleteCriticalSection( &cs ); }
+
+  void lock()   { EnterCriticalSection( &cs ); }
+  void unlock() { LeaveCriticalSection( &cs ); }
 };
 
 // thread_t::native_t =======================================================
 
-struct thread_t::native_t
+class thread_t::native_t
 {
-#if defined(THREAD_WIN32)
   HANDLE handle;
-#elif defined(THREAD_POSIX)
-  pthread_t t;
-#endif
+
+  static unsigned WINAPI execute( LPVOID t )
+  {
+    static_cast<thread_t*>( t ) -> run();
+    return 0;
+  }
+
+public:
+  void launch( thread_t* thr )
+  {
+    // MinGW wiki suggests using _beginthreadex over CreateThread,
+    // and there's no reason NOT to do so with MSVC.
+    handle = reinterpret_cast<HANDLE>( _beginthreadex( NULL, 0, execute,
+                                                       thr, 0, NULL ) );
+  }
+
+  void join()
+  {
+    WaitForSingleObject( handle, INFINITE );
+    CloseHandle( handle );
+  }
+
+  static void sleep( timespan_t t )
+  { ::Sleep( t.total_millis() ); }
 };
 
-namespace { // ANONYMOUS ====================================================
+#elif defined( _POSIX_THREADS ) && _POSIX_THREADS > 0
+// POSIX
+#include <pthread.h>
+#include <unistd.h>
 
-// execute ==================================================================
+// mutex_t::native_t ========================================================
 
-#if defined(THREAD_WIN32)
-unsigned WINAPI execute( LPVOID t )
+class mutex_t::native_t : public nonmoveable
 {
-  static_cast<thread_t*>( t ) -> run();
-  return 0;
-}
-#elif defined(THREAD_POSIX)
-void* execute( void* t )
+  pthread_mutex_t m;
+
+public:
+  native_t()    { pthread_mutex_init( &m, NULL ); }
+  ~native_t()   { pthread_mutex_destroy( &m ); }
+
+  void lock()   { pthread_mutex_lock( &m ); }
+  void unlock() { pthread_mutex_unlock( &m ); }
+};
+
+
+// thread_t::native_t =======================================================
+
+class thread_t::native_t
 {
-  static_cast<thread_t*>( t ) -> run();
-  return NULL;
-}
+  pthread_t t;
+
+  static void* execute( void* t )
+  {
+    static_cast<thread_t*>( t ) -> run();
+    return NULL;
+  }
+
+public:
+  void launch( thread_t* thr ) { pthread_create( &t, NULL, execute, thr ); }
+  void join() { pthread_join( t, NULL ); }
+
+  static void sleep( timespan_t t )
+  { ::sleep( t.total_seconds() ); }
+};
+
+#else
+#error "Unable to detect thread API."
 #endif
-
-} // ANONYMOUS namespace ====================================================
 
 // mutex_t::mutex_t() =======================================================
 
-mutex_t::mutex_t() :
-  native_handle( new native_t() )
-{
-#if defined(THREAD_WIN32)
-  InitializeCriticalSection( &native_handle->cs );
-#elif defined(THREAD_POSIX)
-  pthread_mutex_init( &native_handle->m, NULL );
-#endif
-}
+mutex_t::mutex_t() : native_handle( new native_t() )
+{}
 
 // mutex_t::~mutex_t() ======================================================
 
 mutex_t::~mutex_t()
-{
-#if defined(THREAD_WIN32)
-  DeleteCriticalSection( &native_handle->cs );
-#elif defined(THREAD_POSIX)
-  pthread_mutex_destroy( &native_handle->m );
-#endif
-  delete native_handle;
-}
+{ delete native_handle; }
 
 // mutex_t::lock() ==========================================================
 
 void mutex_t::lock()
-{
-#if defined(THREAD_WIN32)
-  EnterCriticalSection( &native_handle->cs );
-#elif defined(THREAD_POSIX)
-  pthread_mutex_lock( &native_handle->m );
-#endif
-}
+{ native_handle -> lock(); }
 
 // mutex_t::unlock() ========================================================
 
 void mutex_t::unlock()
-{
-#if defined(THREAD_WIN32)
-  LeaveCriticalSection( &native_handle->cs );
-#elif defined(THREAD_POSIX)
-  pthread_mutex_unlock( &native_handle->m );
-#endif
-}
+{ native_handle -> unlock(); }
 
 // thread_t::thread_t() =====================================================
 
-thread_t::thread_t() :
-  native_handle( new native_t() )
+thread_t::thread_t() : native_handle( new native_t() )
 {}
 
 // thread_t::~thread_t() ====================================================
 
 thread_t::~thread_t()
-{
-  delete native_handle;
-}
+{ delete native_handle; }
 
 // thread_t::launch() =======================================================
 
 void thread_t::launch()
-{
-#if defined(THREAD_WIN32)
-  // MinGW wiki suggests using _beginthreadex over CreateThread,
-  // and there's no reason NOT to do so with MSVC.
-  native_handle->handle =
-      reinterpret_cast<HANDLE>( _beginthreadex( NULL, 0, execute, this, 0, NULL ) );
-#elif defined(THREAD_POSIX)
-  pthread_create( &native_handle->t, NULL, execute, this );
-#endif
-}
+{ native_handle -> launch( this ); }
 
 // thread_t::wait() =========================================================
 
 void thread_t::wait()
-{
-#if defined(THREAD_WIN32)
-  WaitForSingleObject( native_handle->handle, INFINITE );
-  CloseHandle( native_handle->handle );
-#elif defined(THREAD_POSIX)
-  pthread_join( native_handle->t, NULL );
-#endif
-}
+{ native_handle -> join(); }
 
 // thread_t::sleep() =========================================================
 
 void thread_t::sleep( timespan_t t )
-{
-#if defined(THREAD_NONE)
-  const std::time_t finish = std::time() + t.total_seconds();
-  while ( std::time() < finish )
-    ;
-#elif defined(THREAD_WIN32)
-  ::Sleep( t.total_millis() );
-#elif defined(THREAD_POSIX)
-  ::sleep( t.total_seconds() );
-#endif
-}
+{ native_t::sleep( t ); }
