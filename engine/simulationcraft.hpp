@@ -3323,15 +3323,11 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
-namespace thread_impl { // ===================================================
-  struct mutex_native_handle_t;
-  struct thread_native_handle_t;
-} // namespace thread_impl ===================================================
-
 class mutex_t : public nonmoveable
 {
 private:
-  thread_impl::mutex_native_handle_t* native_handle;
+  struct native_t;
+  native_t* native_handle;
 
 public:
   mutex_t();
@@ -3344,7 +3340,8 @@ public:
 class thread_t : public noncopyable
 {
 private:
-  thread_impl::thread_native_handle_t* native_handle;
+  struct native_t;
+  native_t* native_handle;
 
 protected:
   thread_t();
@@ -3355,10 +3352,7 @@ public:
   void launch();
   void wait();
 
-  static void sleep( int seconds );
-
-  static void init() {}
-  static void de_init() {}
+  static void sleep( timespan_t );
 };
 
 class auto_lock_t

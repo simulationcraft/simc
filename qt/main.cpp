@@ -13,7 +13,6 @@ int main( int argc, char *argv[] )
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
 
-  thread_t::init();
   dbc_t::init();
 
   QApplication a( argc, argv );

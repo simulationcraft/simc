@@ -275,9 +275,9 @@ public:
 
     option_t base_options[] =
     {
-      { "region", OPT_STRING,  &region    },
-      { "server", OPT_STRING,  &server    },
-      { "cache",  OPT_BOOL,    &use_cache },
+      { "region", OPT_STRING, &region    },
+      { "server", OPT_STRING, &server    },
+      { "cache",  OPT_BOOL,   &use_cache },
     };
 
     std::vector<option_t> options;
@@ -2312,7 +2312,6 @@ int sim_t::main( int argc, char** argv )
 {
   sim_signal_handler_t handler( this );
 
-  thread_t::init();
   http_t::cache_load();
   dbc_t::init();
 
@@ -2377,7 +2376,6 @@ int sim_t::main( int argc, char** argv )
   if ( output_file != stdout ) fclose( output_file );
 
   http_t::cache_save();
-  thread_t::de_init();
   dbc_t::de_init();
 
   return 0;
