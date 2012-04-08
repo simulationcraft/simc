@@ -2416,21 +2416,38 @@ struct pool_energy_t : public action_t
 {
   timespan_t wait;
   int for_next;
-  const std::vector<action_t*>::iterator action_list_position;
+  action_t* next_action;
 
   pool_energy_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "pool_energy", p ),
     wait( timespan_t::from_seconds( 0.5 ) ), for_next( 0 ),
-    action_list_position( p -> action_list.end()-- )
+    next_action( 0 )
   {
     option_t options[] =
     {
-      { "wait",     OPT_TIMESPAN,  &wait     },
-      { "for_next", OPT_BOOL, &for_next },
-      { NULL, OPT_UNKNOWN, NULL }
+      { "wait",     OPT_TIMESPAN, &wait     },
+      { "for_next", OPT_BOOL,     &for_next },
+      { 0,   		OPT_UNKNOWN,  0 }
     };
     parse_options( options, options_str );
+  }
 
+  virtual void init()
+  {
+    action_t::init();
+
+    if ( for_next )
+    {
+      std::vector<action_t*>::iterator pos = range::find( player -> action_list, this );
+      assert( pos != player -> action_list.end() );
+      if ( ++pos != player -> action_list.end() )
+        next_action = *pos;
+      else
+      {
+        sim -> errorf( "%s: can't find next action.\n", __FUNCTION__ );
+        sim -> cancel();
+      }
+    }
   }
 
   virtual void execute()
@@ -2446,9 +2463,9 @@ struct pool_energy_t : public action_t
 
   virtual bool ready()
   {
-    if ( for_next )
+    if ( next_action )
     {
-      if ( (*(action_list_position + 1)) -> ready() )
+      if ( next_action -> ready() )
         return false;
 
       // If the next action in the list would be "ready" if it was not constrained by energy,
@@ -2456,7 +2473,7 @@ struct pool_energy_t : public action_t
 
       player -> resources.current[ RESOURCE_ENERGY ] += 100;
 
-      bool energy_limited = (*(action_list_position + 1)) -> ready();
+      bool energy_limited = next_action -> ready();
 
       player -> resources.current[ RESOURCE_ENERGY ] -= 100;
 
