@@ -464,13 +464,11 @@ void report::generate_player_buff_lists( const player_t*  p, player_t::report_in
 
   // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
   //range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
-  ri.dynamic_buffs.reserve( ri.buff_list.size() );
-  range::remove_copy_if( ri.buff_list, ri.dynamic_buffs.begin(), buff_is_dynamic );
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
   range::sort( ri.dynamic_buffs, report::buff_comp );
 
   // Filter out non-constant buffs, copy them into ri.constant_buffs and sort
-  ri.constant_buffs.reserve( ri.buff_list.size() );
-  range::remove_copy_if( ri.buff_list, ri.constant_buffs.begin(), buff_is_constant );
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.constant_buffs ), buff_is_constant );
   range::sort( ri.constant_buffs, report::buff_comp );
 
   ri.buff_lists_generated = true;
