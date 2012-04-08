@@ -1938,11 +1938,11 @@ struct shadow_word_death_t : public priest_spell_t
 
   virtual void execute()
   {
-    p() -> was_sub_25 = ! is_dtr_action && ( target -> health_percentage() <= 25 );
+    p() -> was_sub_25 = ! is_dtr_action && ( target -> health_percentage() < 20 );
 
     priest_spell_t::execute();
 
-    if ( result_is_hit() && p() -> was_sub_25 && ( target -> health_percentage() > 0 ) )
+    if ( result_is_hit() && p() -> was_sub_25 && ( target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
     {
       cooldown -> reset();
       p() -> buffs.glyph_of_shadow_word_death -> trigger();
@@ -1972,7 +1972,7 @@ struct shadow_word_death_t : public priest_spell_t
       player_multiplier *= 1.0 + p() -> glyphs.mind_spike -> effect1().percent();
 
     // Hardcoded into the tooltip
-    if ( target -> health_percentage() <= 25 )
+    if ( target -> health_percentage() < 20 )
       player_multiplier *= 3.0;
   }
 
