@@ -2438,9 +2438,9 @@ struct pool_energy_t : public action_t
 
     if ( for_next )
     {
-      std::vector<action_t*>::iterator pos = range::find( player -> action_list, this );
-      assert( pos != player -> action_list.end() );
-      if ( ++pos != player -> action_list.end() )
+      std::vector<action_t*>::iterator pos = range::find( player -> foreground_action_list, this );
+      assert( pos != player -> foreground_action_list.end() );
+      if ( ++pos != player -> foreground_action_list.end() )
         next_action = *pos;
       else
       {
