@@ -1444,9 +1444,7 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_MUL_TARGET;
 
-  if ( background || sequence )
-    player->background_action_list.push_back( this );
-  else
+  if ( ! ( background || sequence ) )
     player->foreground_action_list.push_back( this );
 
   initialized = true;

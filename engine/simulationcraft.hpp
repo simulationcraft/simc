@@ -4294,7 +4294,6 @@ struct player_t : public noncopyable
   // Action Priority List
   std::vector<action_t*>  action_list;
   std::vector<action_t*>  foreground_action_list;
-  std::vector<action_t*>  background_action_list;
   std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
   std::string choose_action_list;
