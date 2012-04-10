@@ -150,7 +150,7 @@ void stats_t::combat_end()
   else
     player -> iteration_heal += iteration_actual_amount;
 
-  for ( size_t i=0; i < children.size(); i++ )
+  for ( size_t i = 0; i < children.size(); i++ )
   {
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
@@ -349,6 +349,6 @@ void stats_t::merge( const stats_t* other )
   }
 
   size_t i_max = std::min( timeline_amount.size(), other -> timeline_amount.size() );
-  for ( size_t i=0; i < i_max; i++ )
+  for ( size_t i = 0; i < i_max; i++ )
     timeline_amount[ i ] += other -> timeline_amount[ i ];
 }

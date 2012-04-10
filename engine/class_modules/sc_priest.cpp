@@ -692,6 +692,8 @@ struct priest_heal_t : public heal_t
     std::vector<option_t> merged_options;
     heal_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
+
+  void consume_inner_focus();
 };
 
 // Atonement heal ===========================================================
@@ -1300,6 +1302,21 @@ void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned numbe
 
   s -> player -> resource_gain( RESOURCE_SHADOW_ORB, number, g, s );
 }
+
+void trigger_chakra( priest_t* p, buff_t* chakra_buff )
+{
+  if ( p -> buffs.chakra_pre -> up() )
+  {
+    chakra_buff -> trigger();
+
+    p -> buffs.chakra_pre -> expire();
+
+    p -> cooldowns.chakra -> reset();
+    p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> data().cooldown();
+    p -> cooldowns.chakra -> start();
+  }
+}
+
 
 // ==========================================================================
 // Priest Abilities
@@ -2194,17 +2211,8 @@ struct smite_t : public priest_spell_t
 
     p() -> buffs.holy_evangelism -> trigger();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_chastise -> trigger();
 
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_chastise );
 
     // Train of Thought
     if ( p() -> spec.train_of_thought -> ok() )
@@ -2308,6 +2316,17 @@ void priest_heal_t::player_buff()
   player_multiplier *= 1.0 + p() -> buffs.holy_archangel -> value();
 }
 
+void priest_heal_t::consume_inner_focus()
+{
+  if ( p() -> buffs.inner_focus -> up() )
+  {
+    // Inner Focus cooldown starts when consumed.
+    p() -> cooldowns.inner_focus -> reset();
+    p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
+    p() -> cooldowns.inner_focus -> start();
+    p() -> buffs.inner_focus -> expire();
+  }
+}
 
 // Binding Heal Spell =======================================================
 
@@ -2325,27 +2344,9 @@ struct binding_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    // Inner Focus
-    if ( p() -> buffs.inner_focus -> up() )
-    {
-      // Inner Focus cooldown starts when consumed.
-      p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
-      p() -> cooldowns.inner_focus -> start();
-      p() -> buffs.inner_focus -> expire();
-    }
+    priest_heal_t::consume_inner_focus();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_serenity -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void player_buff()
@@ -2463,27 +2464,9 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    // Inner Focus
-    if ( p() -> buffs.inner_focus -> up() )
-    {
-      // Inner Focus cooldown starts when consumed.
-      p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
-      p() -> cooldowns.inner_focus -> start();
-      p() -> buffs.inner_focus -> expire();
-    }
+    priest_heal_t::consume_inner_focus();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_serenity -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -2562,27 +2545,9 @@ struct greater_heal_t : public priest_heal_t
         p() -> cooldowns.inner_focus -> reset();
     }
 
-    // Inner Focus
-    if ( p() -> buffs.inner_focus -> up() )
-    {
-      // Inner Focus cooldown starts when consumed.
-      p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
-      p() -> cooldowns.inner_focus -> start();
-      p() -> buffs.inner_focus -> expire();
-    }
+    priest_heal_t::consume_inner_focus();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_serenity -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -2626,17 +2591,7 @@ struct _heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    // Trigger Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_serenity -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -3052,27 +3007,9 @@ struct prayer_of_healing_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    // Inner Focus
-    if ( p() -> buffs.inner_focus -> up() )
-    {
-      // Inner Focus cooldown starts when consumed.
-      p() -> cooldowns.inner_focus -> reset();
-      p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
-      p() -> cooldowns.inner_focus -> start();
-      p() -> buffs.inner_focus -> expire();
-    }
+    priest_heal_t::consume_inner_focus();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_sanctuary -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -3144,17 +3081,7 @@ struct prayer_of_mending_t : public priest_heal_t
 
     priest_heal_t::execute();
 
-    // Chakra
-    if ( p() -> buffs.chakra_pre -> up() )
-    {
-      p() -> buffs.chakra_sanctuary -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
-    }
+    trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dt )

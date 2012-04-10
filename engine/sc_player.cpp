@@ -2689,14 +2689,13 @@ void player_t::merge( player_t& other )
 
   deaths.merge( other.deaths );
 
-  for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
-    int num_buckets = ( int ) std::min(       timeline_resource[i].size(),
-                                        other.timeline_resource[i].size() );
+    size_t num_buckets = std::min( timeline_resource[ i ].size(), other.timeline_resource[ i ].size() );
 
-    for ( int j=0; j < num_buckets; j++ )
+    for ( size_t j = 0; j < num_buckets; ++j )
     {
-      timeline_resource[i][ j ] += other.timeline_resource[i][ j ];
+      timeline_resource[ i ][ j ] += other.timeline_resource[ i ][ j ];
     }
 
     resource_lost  [ i ] += other.resource_lost  [ i ];
