@@ -85,7 +85,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
            s -> portion_aps.mean,
            s -> portion_amount * 100,
            s -> num_executes,
-           s -> frequency,
+           s -> total_intervals.mean,
            s -> ape,
            s -> apet,
            s -> direct_results[ RESULT_HIT  ].actual_amount.mean,

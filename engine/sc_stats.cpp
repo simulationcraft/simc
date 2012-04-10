@@ -18,7 +18,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( timespan_t::zero() ), total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
-  total_intervals( 0.0 ), num_intervals( 0 ),
+  total_intervals( p -> sim -> statistics_level < 7 ),
   last_execute( timespan_t::min() ),
   iteration_actual_amount( 0 ), iteration_total_amount( 0 ),
   actual_amount( p -> sim -> statistics_level < 3 ),
@@ -26,7 +26,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   compound_actual( 0 ), opportunity_cost( 0 ),
   direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),tick_results( RESULT_MAX, stats_results_t( p -> sim ) ),
   // Reporting only
-  rpe_sum( 0 ),frequency( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
+  rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() )
 {
@@ -117,9 +117,7 @@ void stats_t::add_execute( timespan_t time )
   if ( likely( last_execute > timespan_t::zero() &&
                last_execute != sim -> current_time ) )
   {
-    num_intervals++;
- 
-    total_intervals += sim -> current_time.total_seconds() - last_execute.total_seconds();
+    total_intervals.add( sim -> current_time.total_seconds() - last_execute.total_seconds() );
   }
   last_execute = sim -> current_time;
 }
@@ -232,7 +230,7 @@ void stats_t::analyze()
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
-  frequency = num_intervals ? total_intervals / num_intervals : 0;
+  total_intervals.analyze();
 
   total_execute_time /= num_iterations;
   total_tick_time    /= num_iterations;

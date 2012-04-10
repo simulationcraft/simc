@@ -456,7 +456,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       writer.print_attribute( "id", util_t::to_string( id ) );
       writer.print_attribute( "name", s -> name_str );
       writer.print_attribute( "count", util_t::to_string( s -> num_executes ) );
-      writer.print_attribute( "frequency", util_t::to_string( s -> frequency ) );
+      writer.print_attribute( "frequency", util_t::to_string( s -> total_intervals.mean ) );
       writer.print_attribute( "dpe", util_t::to_string( s -> ape, 0 ) );
       writer.print_attribute( "dpe_pct", util_t::to_string( s -> portion_amount * 100.0 ) );
       writer.print_attribute( "dpet", util_t::to_string( s -> apet ) );

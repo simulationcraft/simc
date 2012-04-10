@@ -4738,8 +4738,7 @@ struct stats_t
   double num_direct_results, num_tick_results;
   timespan_t total_execute_time, total_tick_time;
   double portion_amount;
-  double total_intervals;
-  double num_intervals;
+  sample_data_t total_intervals;
   timespan_t last_execute;
   double iteration_actual_amount, iteration_total_amount;
   sample_data_t actual_amount, total_amount, portion_aps;
@@ -4765,7 +4764,7 @@ struct stats_t
 
   // Reporting only
   std::array<double,RESOURCE_MAX> resource_portion, apr, rpe;
-  double rpe_sum, frequency, compound_amount, overkill_pct;
+  double rpe_sum, compound_amount, overkill_pct;
   double aps, ape, apet, etpe, ttpt;
   timespan_t total_time;
   std::string aps_distribution_chart;

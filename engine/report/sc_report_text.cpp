@@ -28,7 +28,7 @@ void print_text_action( FILE* file, const stats_t* s, int max_name_length=0 )
                    max_name_length,
                    s -> name_str.c_str(),
                    s -> num_executes,
-                   s -> frequency,
+                   s -> total_intervals.mean,
                    s -> ape,
                    s -> portion_amount * 100.0,
                    s -> apet,
