@@ -11,10 +11,13 @@
 
 // attack_t::attack_t =======================================================
 
-void attack_t::init_attack_t_()
+// == Attack Constructor ===============
+attack_t::attack_t( const std::string&  n,
+                    player_t*           p,
+                    const spell_data_t* s,
+                    school_type_e       school ) :
+  action_t( ACTION_ATTACK, n, p, s, school )
 {
-  player_t* p = player;
-
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
 
@@ -32,53 +35,6 @@ void attack_t::init_attack_t_()
   {
     crit_multiplier *= 1.03;
   }
-}
-
-// == Attack Constructor by spell_id_t ===============
-
-attack_t::attack_t( const spell_id_t&   s,
-                    talent_tree_type_e  t,
-                    bool                special ) :
-  action_t( ACTION_ATTACK, s, t, special )
-{
-  init_attack_t_();
-}
-
-// == Attack Constructor by without database access ===============
-
-attack_t::attack_t( const std::string&  n,
-                    player_t*           p,
-                    resource_type_e     rt,
-                    school_type_e       s,
-                    talent_tree_type_e  tree,
-                    bool                special ) :
-  action_t( ACTION_ATTACK, n, p, rt, s, tree, special )
-{
-  init_attack_t_();
-}
-
-// == Attack Constructor by Spell Name ===============
-
-attack_t::attack_t( const std::string&  n,
-                    const char*         sname,
-                    player_t*           p,
-                    talent_tree_type_e  t,
-                    bool                special ) :
-  action_t( ACTION_ATTACK, n, sname, p, t, special )
-{
-  init_attack_t_();
-}
-
-// == Attack Constructor by Spell ID ===============
-
-attack_t::attack_t( const std::string&  n,
-                    const uint32_t      id,
-                    player_t*           p,
-                    talent_tree_type_e  t,
-                    bool                special ) :
-  action_t( ACTION_ATTACK, n, id, p, t, special )
-{
-  init_attack_t_();
 }
 
 // attack_t::swing_haste ====================================================
@@ -356,7 +312,14 @@ void attack_t::init()
 
 // melee_attack_t::melee_attack_t =======================================================
 
-void melee_attack_t::init_melee_attack_t_()
+// == Melee Attack Constructor ===============
+
+melee_attack_t::melee_attack_t( const std::string&  n,
+                                player_t*           p,
+                                const spell_data_t* s,
+                                school_type_e       sc ) :
+  attack_t( n, p, s, sc ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   may_miss = may_dodge = may_parry = may_glance = may_block = true;
 
@@ -371,53 +334,6 @@ void melee_attack_t::init_melee_attack_t_()
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 ) range = 5;
-}
-
-// == Melee Attack Constructor by spell_id_t ===============
-
-melee_attack_t::melee_attack_t( const spell_id_t&   s,
-                                talent_tree_type_e  t,
-                                bool                special ) :
-  attack_t( s, t, special )
-{
-  init_melee_attack_t_();
-}
-
-// == Melee Attack Constructor by without database access ===============
-
-melee_attack_t::melee_attack_t( const std::string&  n,
-                                player_t*           p,
-                                resource_type_e     rt,
-                                school_type_e       s,
-                                talent_tree_type_e  tree,
-                                bool                special ) :
-  attack_t( n, p, rt, s, tree, special )
-{
-  init_melee_attack_t_();
-}
-
-// == Melee Attack Constructor by Spell Name ===============
-
-melee_attack_t::melee_attack_t( const std::string&  n,
-                                const char*         sname,
-                                player_t*           p,
-                                talent_tree_type_e  t,
-                                bool                special ) :
-  attack_t( n, sname, p, t, special )
-{
-  init_melee_attack_t_();
-}
-
-// == Melee Attack Constructor by Spell ID ===============
-
-melee_attack_t::melee_attack_t( const std::string&  n,
-                                const uint32_t      id,
-                                player_t*           p,
-                                talent_tree_type_e  t,
-                                bool                special ) :
-  attack_t( n, id, p, t, special )
-{
-  init_melee_attack_t_();
 }
 
 // melee_attack_t::player_buff ====================================================
@@ -490,64 +406,43 @@ double melee_attack_t::glance_chance( int delta_level ) const
 
 // ranged_attack_t::ranged_attack_t =======================================================
 
-void ranged_attack_t::init_ranged_attack_t_()
+// == Ranged Attack Constructor by spell_id_t ===============
+
+ranged_attack_t::ranged_attack_t( const std::string& token,
+                                  player_t* p,
+                                  const spell_data_t* s,
+                                  school_type_e sc ) :
+  attack_t( token, p, s, sc ),
+  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
-  may_miss = true;
+  may_miss  = true;
+  may_dodge = true;
 
   if ( player -> position == POSITION_RANGED_FRONT )
     may_block = true;
 }
 
-// == Ranged Attack Constructor by spell_id_t ===============
+// ranged_attack_t::player_buff ====================================================
 
-ranged_attack_t::ranged_attack_t( const spell_id_t&   s,
-                                  talent_tree_type_e  t,
-                                  bool                special ) :
-  attack_t( s, t, special )
+void ranged_attack_t::player_buff()
 {
-  init_ranged_attack_t_();
-}
+  attack_t::player_buff();
 
-// == Ranged Attack Constructor by without database access ===============
+  if ( !no_buffs )
+  {
+    player_expertise = player -> composite_attack_expertise( weapon );
+  }
 
-ranged_attack_t::ranged_attack_t( const std::string&  n,
-                                  player_t*           p,
-                                  resource_type_e     rt,
-                                  school_type_e       s,
-                                  talent_tree_type_e  tree,
-                                  bool                special ) :
-  attack_t( n, p, rt, s, tree, special )
-{
-  init_ranged_attack_t_();
-}
-
-// == Ranged Attack Constructor by Spell Name ===============
-
-ranged_attack_t::ranged_attack_t( const std::string&  n,
-                                  const char*         sname,
-                                  player_t*           p,
-                                  talent_tree_type_e  t,
-                                  bool                special ) :
-  attack_t( n, sname, p, t, special )
-{
-  init_ranged_attack_t_();
-}
-
-// == Ranged Attack Constructor by Spell ID ===============
-
-ranged_attack_t::ranged_attack_t( const std::string&  n,
-                                  const uint32_t      id,
-                                  player_t*           p,
-                                  talent_tree_type_e  t,
-                                  bool                special ) :
-  attack_t( n, id, p, t, special )
-{
-  init_ranged_attack_t_();
+  if ( sim -> debug )
+    log_t::output( sim, "ranged_attack_t::player_buff: %s expertise=%.2f",
+                   name(), player_expertise );
 }
 
 void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
 {
   attack_t::target_debuff( t, dt );
+
+  target_expertise = 0;
 
   if ( !no_debuffs )
   {
@@ -559,3 +454,38 @@ void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
                    name(), target_multiplier );
 }
 
+// ranged_attack_t::total_expertise ================================================
+
+double ranged_attack_t::total_expertise() const
+{
+  double e = base_expertise + player_expertise + target_expertise;
+
+  // FIXME
+  // Round down to dicrete units of Expertise?  Not according to EJ:
+  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
+  if ( false ) e = floor( 100.0 * e ) / 100.0;
+
+  return e;
+}
+
+// ranged_attack_t::dodge_chance ===================================================
+
+double ranged_attack_t::dodge_chance( double expertise, int delta_level ) const
+{
+  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * expertise );
+}
+
+// ranged_attack_t::parry_chance ===================================================
+
+double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ ) const
+{
+  // Assumed impossible to parry ranged. Needs checking.
+  return 0.0;
+}
+
+// ranged_attack_t::glance_chance ==================================================
+
+double ranged_attack_t::glance_chance( int delta_level ) const
+{
+  return (  delta_level  + 1 ) * 0.06;
+}

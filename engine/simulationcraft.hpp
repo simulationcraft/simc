@@ -118,17 +118,17 @@ namespace std {using namespace tr1; }
 #endif
 
 // Enabled classes
-#define SC_DEATH_KNIGHT 1
-#define SC_DRUID        1
-#define SC_HUNTER       1
-#define SC_MAGE         1
-#define SC_MONK         1
-#define SC_PALADIN      1
+#define SC_DEATH_KNIGHT 0
+#define SC_DRUID        0
+#define SC_HUNTER       0
+#define SC_MAGE         0
+#define SC_MONK         0
+#define SC_PALADIN      0
 #define SC_PRIEST       1
-#define SC_ROGUE        1
-#define SC_SHAMAN       1
-#define SC_WARLOCK      1
-#define SC_WARRIOR      1
+#define SC_ROGUE        0
+#define SC_SHAMAN       0
+#define SC_WARLOCK      0
+#define SC_WARRIOR      0
 
 #define BLOCKED_CLASS( sim, name_str, pt, r_type ) { \
   ( void ) name_str; ( void ) r_type; \
@@ -263,8 +263,6 @@ struct spell_id_t;
 struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
-struct talent_t;
-struct talent_translation_t;
 struct unique_gear_t;
 struct uptime_t;
 struct warlock_t;
@@ -393,7 +391,7 @@ enum race_type_e
   // Player Races
   RACE_NIGHT_ELF, RACE_HUMAN, RACE_GNOME, RACE_DWARF, RACE_DRAENEI, RACE_WORGEN,
   RACE_ORC, RACE_TROLL, RACE_UNDEAD, RACE_BLOOD_ELF, RACE_TAUREN, RACE_GOBLIN,
-  RACE_PANDAREN,
+  RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE,
   RACE_MAX
 };
 
@@ -426,7 +424,7 @@ enum pet_type_e
   PET_WASP,
   PET_WOLF,
 
-  PET_FEROCITY,
+  PET_FEROCITY_TYPE,
 
   // Tenacity
   PET_BEAR,
@@ -442,7 +440,7 @@ enum pet_type_e
   PET_WARP_STALKER,
   PET_WORM,
 
-  PET_TENACITY,
+  PET_TENACITY_TYPE,
 
   // Cunning
   PET_BAT,
@@ -458,7 +456,7 @@ enum pet_type_e
   PET_SPOREBAT,
   PET_WIND_SERPENT,
 
-  PET_CUNNING,
+  PET_CUNNING_TYPE,
 
   PET_HUNTER,
 
@@ -620,39 +618,7 @@ const int64_t SCHOOL_MAGIC_MASK  ( ( int64_t( 1 ) << SCHOOL_ARCANE )         |
                                    ( int64_t( 1 ) << SCHOOL_NATURE )         | ( int64_t( 1 ) << SCHOOL_SHADOW ) );
 #define SCHOOL_ALL_MASK    ( int64_t( -1 ) )
 
-enum talent_tree_type_e
-{
-  TREE_NONE=0,
-  TREE_BLOOD,         TREE_UNHOLY,                         // DEATH KNIGHT
-  TREE_BALANCE,       TREE_FERAL,        TREE_GUARDIAN, TREE_RESTORATION, // DRUID
-  TREE_BEAST_MASTERY, TREE_MARKSMANSHIP, TREE_SURVIVAL,    // HUNTER
-  TREE_ARCANE,        TREE_FIRE,         TREE_FROST,       // MAGE
-  TREE_BREWMASTER,    TREE_MISTWEAVER,   TREE_WINDWALKER,  // FIXME tank/heal/dd
-                                         TREE_RETRIBUTION, // PALADIN
-  TREE_DISCIPLINE,    TREE_HOLY,         TREE_SHADOW,      // PRIEST
-  TREE_ASSASSINATION, TREE_COMBAT,       TREE_SUBTLETY,    // ROGUE
-  TREE_ELEMENTAL,     TREE_ENHANCEMENT,                    // SHAMAN
-  TREE_AFFLICTION,    TREE_DEMONOLOGY,   TREE_DESTRUCTION, // WARLOCK
-  TREE_ARMS,          TREE_FURY,         TREE_PROTECTION,  // WARRIOR
-  TALENT_TREE_MAX
-};
-
-enum talent_tab_type_e
-{
-  TALENT_TAB_NONE = -1,
-  DEATH_KNIGHT_BLOOD = 0,   DEATH_KNIGHT_FROST,  DEATH_KNIGHT_UNHOLY, // DEATH KNIGHT
-  DRUID_BALANCE = 0,        DRUID_FERAL,         DRUID_GUARDIAN, DRUID_RESTORATION,   // DRUID
-  HUNTER_BEAST_MASTERY = 0, HUNTER_MARKSMANSHIP, HUNTER_SURVIVAL,     // HUNTER
-  MAGE_ARCANE = 0,          MAGE_FIRE,           MAGE_FROST,          // MAGE
-  MONK_BREWMASTER = 0,      MONK_WINDWALKER,     MONK_MISTWEAVER,     // MONK tank/dd/heal
-  PALADIN_HOLY = 0,         PALADIN_PROTECTION,  PALADIN_RETRIBUTION, // PALADIN
-  PRIEST_DISCIPLINE = 0,    PRIEST_HOLY,         PRIEST_SHADOW,       // PRIEST
-  ROGUE_ASSASSINATION = 0,  ROGUE_COMBAT,        ROGUE_SUBTLETY,      // ROGUE
-  SHAMAN_ELEMENTAL = 0,     SHAMAN_ENHANCEMENT,  SHAMAN_RESTORATION,  // SHAMAN
-  WARLOCK_AFFLICTION = 0,   WARLOCK_DEMONOLOGY,  WARLOCK_DESTRUCTION, // WARLOCK
-  WARRIOR_ARMS = 0,         WARRIOR_FURY,        WARRIOR_PROTECTION,  // WARRIOR
-  PET_TAB_FEROCITY = 0,     PET_TAB_TENACITY,    PET_TAB_CUNNING,     // PET
-};
+#include "dbc/specialization.hpp"
 
 enum weapon_type_e
 {
@@ -700,6 +666,7 @@ enum slot_type_e   // these enum values match armory settings
 
 // Tiers 13..16 + PVP
 #define N_TIER 5
+#define MIN_TIER ( 13 )
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
@@ -731,7 +698,7 @@ enum set_type_e
   SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
-static_assert( SET_MAX == 1 + N_TIER * 3 * N_TIER_BONUS / 2, "enum set_type_e must be structured correctly." );
+//static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_type_e must be structured correctly." );
 
 enum gem_type_e
 {
@@ -985,20 +952,8 @@ enum format_type_e
 #define MAX_LEVEL (90)
 #endif
 
-#ifndef MAX_RANK
-#define MAX_RANK (3)
-#endif
-
 #ifndef NUM_SPELL_FLAGS
 #define NUM_SPELL_FLAGS (10)
-#endif
-
-#ifndef MAX_TALENT_TABS
-#define MAX_TALENT_TABS (4)
-#endif
-
-#ifndef MAX_TALENTS
-#define MAX_TALENTS (100)
 #endif
 
 enum power_type_e
@@ -1900,6 +1855,7 @@ enum spell_attribute_e
 
 // DBC related classes ======================================================
 
+
 // SpellPower.dbc
 struct spellpower_data_t
 {
@@ -1996,12 +1952,7 @@ public:
   spell_data_t*    _spell;
   spell_data_t*    _trigger_spell;
 
-  bool                       is_used() const { return ( _flags & FLAG_USED ) != 0; }
-  void                       set_used( bool value );
-
-  bool                       is_enabled() const { return ( _flags & FLAG_ENABLED ) != 0; }
-  void                       set_enabled( bool value );
-
+  bool                       ok() const { return _id != 0; }
   unsigned                   id() const { return _id; }
   unsigned                   index() const { return _index; }
   unsigned                   spell_id() const { return _spell_id; }
@@ -2013,7 +1964,7 @@ public:
   int                        base_value() const { return _base_value; }
   double                     percent() const { return _base_value * ( 1 / 100.0 ); }
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
-  resource_type_e              resource_gain_type() const;
+  resource_type_e            resource_gain_type() const;
 
   double resource( resource_type_e resource_type ) const
   {
@@ -2052,8 +2003,14 @@ public:
 
   int                        die_sides() const { return _die_sides; }
 
-  spell_data_t& spell()   const { return *_spell; }
-  spell_data_t& trigger() const { return *_trigger_spell; }
+  double                     average( const player_t* p, unsigned level=0 ) const;
+  double                     delta( const player_t* p, unsigned level=0 ) const;
+  double                     bonus( const player_t* p, unsigned level=0 ) const;
+  double                     min( const player_t* p, unsigned level=0 ) const;
+  double                     max( const player_t* p, unsigned level=0 ) const;
+
+  spell_data_t*              spell()   const;
+  spell_data_t*              trigger() const;
 
   static spelleffect_data_t* nil();
   static spelleffect_data_t* find( unsigned, bool ptr = false );
@@ -2157,14 +2114,13 @@ public:
     return *spellpower_data_t::nil();
   }
 
-  bool                 is_used() const { return _flags & FLAG_USED; }
-  void                 set_used( bool value );
-
-  bool                 is_enabled() const { return ! ( _flags & FLAG_DISABLED ); }
-  void                 set_enabled( bool value );
+  bool                 ok() const { return _id != 0; }
 
   unsigned             id() const { return _id; }
   uint32_t             school_mask() const { return _school; }
+  static uint32_t      get_school_mask( school_type_e s );
+  school_type_e        get_school_type() const;
+  static bool          is_school( school_type_e s, school_type_e s2 );
 
   bool                 is_class( player_type_e c ) const;
   uint32_t             class_mask() const { return _class_mask; }
@@ -2207,13 +2163,16 @@ public:
 
   bool                 flags( spell_attribute_e f ) const;
 
-  const char*          name_cstr() const { return _name; }
-  const char*          desc() const { return _desc; }
-  const char*          tooltip() const { return _tooltip; }
+  const char*          name_cstr() const { return ok() ? _name : ""; }
+  const char*          desc() const { return ok() ? _desc : ""; }
+  const char*          tooltip() const { return ok() ? _tooltip : ""; }
 
   double               scaling_multiplier() const { return _c_scaling; }
   unsigned             scaling_threshold() const { return _c_scaling_level; }
   double               extra_coeff() const { return _extra_coeff; }
+
+
+  std::string          to_str() const;
 
   static spell_data_t* nil();
   static spell_data_t* find( const char* name, bool ptr = false );
@@ -2239,61 +2198,42 @@ inline spell_data_t* spell_data_t::nil()
 
 struct talent_data_t
 {
-private:
-  static const unsigned FLAG_USED = 0x01;
-  static const unsigned FLAG_DISABLED = 0x02;
-
 public:
   const char * _name;        // Talent name
   unsigned     _id;          // Talent id
   unsigned     _flags;       // Unused for now, 0x00 for all
-  unsigned     _tab_page;    // Talent tab page
   unsigned     _m_class;     // Class mask
   unsigned     _m_pet;       // Pet mask
-  unsigned     _dependance;  // Talent depends on this talent id
-  unsigned     _depend_rank; // Requires this rank of depended talent
+  unsigned     _is_pet;      // Is Pet?
   unsigned     _col;         // Talent column
   unsigned     _row;         // Talent row
-  unsigned     _rank_id[MAX_RANK]; // Talent spell rank identifiers for ranks 1..3
+  unsigned     _spell_id;    // Talent spell
+  unsigned     _replace_id;  // Talent replaces the following spell id
 
   // Pointers for runtime linking
   spell_data_t* spell1;
-  spell_data_t* spell2;
-  spell_data_t* spell3;
-
-  bool                  is_used() const { return ( _flags & FLAG_USED ) != 0; }
-  bool                  is_enabled() const { return ( _flags & FLAG_DISABLED ) == 0; }
-  void                  set_used( bool value );
-  void                  set_enabled( bool value );
 
   inline unsigned       id() const { return _id; }
   const char*           name_cstr() const { return _name; }
-  unsigned              tab_page() const { return _tab_page; }
   bool                  is_class( player_type_e c ) const;
   bool                  is_pet( pet_type_e p ) const;
-  unsigned              depends_id() const { return _dependance; }
-  unsigned              depends_rank() const { return _depend_rank + 1; }
-
   unsigned              col() const { return _col; }
   unsigned              row() const { return _row; }
-  unsigned              rank_spell_id( unsigned rank ) const;
+  unsigned              spell_id() const { return _spell_id; }
+  unsigned              replace_id() const { return _replace_id; }
   unsigned              mask_class() const { return _m_class; }
   unsigned              mask_pet() const { return _m_pet; }
 
-  unsigned              max_rank() const;
-
-  spell_data_t& spell( unsigned r )
+  spell_data_t* spell()
   {
-    if ( r == 0 ) return *spell1;
-    if ( r == 1 ) return *spell2;
-    if ( r == 2 ) return *spell3;
-    return *spell_data_t::nil();
+    return spell1 ? spell1 : spell_data_t::nil();
   }
 
   static talent_data_t* nil();
   static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
   static talent_data_t* find( const char* name, bool ptr = false );
+  static talent_data_t* find( player_type_e c, unsigned int row, unsigned int col, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
 };
@@ -2313,12 +2253,15 @@ class dbc_t
 public:
   bool ptr;
 
+  std::map< uint32_t, uint32_t > replaced_ids;
+  uint32_t replaced_id( uint32_t id_spell ) const;
+  bool replace_id( uint32_t id_spell, uint32_t replaced_by_id );
+
   dbc_t( bool ptr=false ) : ptr( ptr ) { }
 
   // Static Initialization
   static void init();
   static void de_init() {}
-  static std::vector<unsigned> glyphs( int cid, bool ptr = false );
 
   static const char* build_level( bool ptr = false );
   static const char* wow_version( bool ptr = false );
@@ -2383,16 +2326,20 @@ public:
 
   // Derived data access
   unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
+  unsigned pet_ability( unsigned class_id, unsigned n ) const;
   unsigned class_ability_tree_size() const;
   unsigned class_ability_size() const;
+  unsigned class_max_size() const;
 
   unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) const;
   unsigned race_ability_size() const;
+  unsigned race_ability_tree_size() const;
 
   unsigned specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-  unsigned specialization_ability_tree_size() const;
   unsigned specialization_ability_size() const;
-  int      specialization_ability_tree( player_type_e c, uint32_t spell_id ) const;
+  unsigned specialization_max_per_class() const;
+  unsigned specialization_max_class() const;
+  specialization_e ability_specialization( uint32_t spell_id ) const;
 
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;
@@ -2414,14 +2361,20 @@ public:
   double   effect_max( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
 
-  unsigned class_ability_id( player_type_e c, const char* spell_name, int tree = -1 ) const;
+  unsigned talent_ability_id( player_type_e c, const char* spell_name ) const;
+  unsigned class_ability_id( player_type_e c, specialization_e spec_id, const char* spell_name ) const;
+  unsigned pet_ability_id( player_type_e c, const char* spell_name ) const;
   unsigned race_ability_id( player_type_e c, race_type_e r, const char* spell_name ) const;
-  unsigned specialization_ability_id( player_type_e c, const char* spell_name, int tree = -1 ) const;
-  unsigned mastery_ability_id( player_type_e c, const char* spell_name, int spec = -1 ) const;
+  unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
+  unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
+  unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
+  specialization_e mastery_specialization( const player_type_e c, uint32_t spell_id ) const;
+
   unsigned glyph_spell_id( player_type_e c, const char* spell_name ) const;
   unsigned set_bonus_spell_id( player_type_e c, const char* spell_name, int tier = -1 ) const;
 
   int      class_ability_tree( player_type_e c, uint32_t spell_id ) const;
+  specialization_e class_ability_specialization( const player_type_e c, uint32_t spell_id ) const;
 
   bool     is_class_ability( uint32_t spell_id ) const;
   bool     is_race_ability( uint32_t spell_id ) const;
@@ -2430,8 +2383,15 @@ public:
   bool     is_glyph_spell( uint32_t spell_id ) const;
   bool     is_set_bonus_spell( uint32_t spell_id ) const;
 
+  bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
+  specialization_e spec_by_idx( const player_type_e c, uint32_t& idx ) const;
+
   // Static helper methods
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
+
+
+  static const std::string& get_token( unsigned int id_spell );
+  static bool add_token( unsigned int id_spell, std::string token_name, bool ptr = false );
 };
 
 // Options ==================================================================
@@ -2480,25 +2440,18 @@ struct option_t
 
 // Talent Translation =======================================================
 
-#define MAX_TALENT_POINTS 41
-#define MAX_TALENT_ROW ((MAX_TALENT_POINTS+4)/5)
-#define MAX_TALENT_TREES 4
-#define MAX_TALENT_COL 4
-#define MAX_TALENT_SLOTS (MAX_TALENT_TREES*MAX_TALENT_ROW*MAX_TALENT_COL)
-#define MAX_TALENT_RANK_SLOTS ( 90 )
+#ifndef MAX_TALENT_ROWS
+#define MAX_TALENT_ROWS ( 6 )
+#endif
 
-#define MAX_CLASS ( 12 )
+#ifndef MAX_TALENT_COLS
+#define MAX_TALENT_COLS ( 3 )
+#endif
 
-struct talent_translation_t
-{
-  int  index;
-  int  max;
-  int* address;
-  int  row;
-  int  req;
-  int  tree;
-  std::string name;
-};
+#ifndef MAX_TALENT_SLOTS
+#define MAX_TALENT_SLOTS ( MAX_TALENT_ROWS * MAX_TALENT_COLS )
+#endif
+
 
 // Utilities ================================================================
 
@@ -2565,19 +2518,18 @@ public:
   static const char* school_type_string        ( school_type_e type );
   static const char* armor_type_string         ( player_type_e ptype, slot_type_e );
   static const char* set_bonus_string          ( set_type_e type );
+
   static const char* slot_type_string          ( slot_type_e type );
   static const char* stat_type_string          ( stat_type_e type );
   static const char* stat_type_abbrev          ( stat_type_e type );
-  static const char* stat_type_wowhead         ( stat_type_e type );
-  static talent_tree_type_e talent_tree        ( talent_tab_type_e tree, player_type_e ptype );
-  static int         spec_id                   ( player_type_e ptype, talent_tree_type_e tree );
-  static talent_tree_type_e translate_spec_str ( player_type_e ptype, const std::string& spec_str );
-  static talent_tree_type_e translate_spec_id  ( player_type_e ptype, int spec_id );
+  static const char* stat_type_wowhead         ( stat_type_e type ); 
+  static specialization_e translate_spec_str   ( player_type_e ptype, const std::string& spec_str );
+  static const char* specialization_string     ( specialization_e spec, bool armory_format = true );
   static resource_type_e translate_power_type  ( power_type_e );
-  static const char* talent_tree_string        ( talent_tree_type_e tree, bool armory_format = true );
   static const char* weapon_type_string        ( weapon_type_e type );
   static const char* weapon_class_string       ( inventory_type class_ );
   static const char* weapon_subclass_string    ( item_subclass_weapon subclass );
+
   static const char* set_item_type_string      ( int item_set );
   static const char* item_quality_string       ( int item_quality );
 
@@ -2601,8 +2553,9 @@ public:
   static slot_type_e parse_slot_type           ( const std::string& name );
   static stat_type_e parse_stat_type           ( const std::string& name );
   static stat_type_e parse_reforge_type        ( const std::string& name );
-  static talent_tree_type_e parse_talent_tree  ( const std::string& name );
+
   static weapon_type_e parse_weapon_type       ( const std::string& name );
+
   static int parse_item_quality                ( const std::string& quality );
 
   static bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
@@ -2665,6 +2618,7 @@ public:
   { html_special_char_decode_( str ); return str; }
 
   static bool str_compare_ci( const std::string& l, const std::string& r );
+  static std::string& glyph_name( std::string& n );
   static bool str_in_str_ci ( const std::string& l, const std::string& r );
   static bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
@@ -2702,187 +2656,6 @@ enum s_type_e
   T_ITEM
 };
 
-struct spell_id_t
-{
-  s_type_e                   s_type;
-  uint32_t                   s_id;
-  const spell_data_t*        s_data;
-  bool                       s_enabled;
-  player_t*                  s_player;
-  bool                       s_overridden;      // Spell enable/disable status was manually overridden
-  std::string                s_token;
-  const talent_t*            s_required_talent;
-  std::vector< const spelleffect_data_t* >  s_effects;
-  const spelleffect_data_t*  s_single;
-  talent_tree_type_e         s_tree;
-
-  std::list<spell_id_t*>* s_list;
-  std::list<spell_id_t*>::iterator s_list_iter;
-  void queue();
-
-  // Construction & deconstruction
-  // spell_id_t( const spell_id_t& copy ) = default;
-  spell_id_t( player_t* player = 0, const char* t_name = 0 );
-  spell_id_t( player_t* player, const char* t_name, const uint32_t id, talent_t* talent = 0 );
-  spell_id_t( player_t* player, const char* t_name, const char* s_name, talent_t* talent = 0 );
-  virtual ~spell_id_t();
-
-  // Generic spell data initialization
-  bool initialize( const char* s_name = 0 );
-  virtual bool enable( bool override_value );
-
-  // Spell data object validity check
-  virtual bool ok() const;
-
-  // Spell state output
-  std::string to_str() const;
-
-  // Access methods
-  virtual uint32_t spell_id() const { return ( s_player && s_data ) ? s_id : 0; }
-  virtual const char* real_name() const;
-  virtual const std::string token() const;
-  virtual double missile_speed() const;
-  virtual uint32_t school_mask() const;
-  virtual school_type_e get_school_type() const;
-  virtual double min_range() const;
-  virtual double max_range() const;
-  virtual double extra_coeff() const;
-  virtual bool in_range() const;
-  virtual timespan_t cooldown() const;
-  virtual timespan_t gcd() const;
-  virtual uint32_t category() const;
-  virtual timespan_t duration() const;
-  virtual double power_cost( power_type_e pt ) const;
-  virtual uint32_t rune_cost() const;
-  virtual double runic_power_gain() const;
-  virtual uint32_t max_stacks() const;
-  virtual uint32_t initial_stacks() const;
-  virtual double proc_chance() const;
-  virtual timespan_t cast_time() const;
-  virtual uint32_t effect_id( uint32_t effect_num ) const;
-  virtual bool flags( spell_attribute_e f ) const;
-  virtual const char* desc() const;
-  virtual const char* tooltip() const;
-  virtual int32_t effect_type( uint32_t effect_num ) const;
-  virtual int32_t effect_subtype( uint32_t effect_num ) const;
-  virtual int32_t effect_base_value( uint32_t effect_num ) const;
-  virtual int32_t effect_misc_value1( uint32_t effect_num ) const;
-  virtual int32_t effect_misc_value2( uint32_t effect_num ) const;
-  virtual uint32_t effect_trigger_spell( uint32_t effect_num ) const;
-  virtual double effect_chain_multiplier( uint32_t effect_num ) const;
-  virtual double effect_average( uint32_t effect_num ) const;
-  virtual double effect_delta( uint32_t effect_num ) const;
-  virtual double effect_bonus( uint32_t effect_num ) const;
-  virtual double effect_min( uint32_t effect_num ) const;
-  virtual double effect_max( uint32_t effect_num ) const;
-  virtual double effect_coeff( uint32_t effect_num ) const;
-  virtual timespan_t effect_period( uint32_t effect_num ) const;
-  virtual double effect_radius( uint32_t effect_num ) const;
-  virtual double effect_radius_max( uint32_t effect_num ) const;
-  virtual double effect_pp_combo_points( uint32_t effect_num ) const;
-  virtual double effect_real_ppl( uint32_t effect_num ) const;
-  virtual int    effect_die_sides( uint32_t effect_num ) const;
-
-  // Generalized access API
-  virtual double base_value( effect_type_t type = E_MAX, effect_subtype_t sub_type = A_MAX, int misc_value = DEFAULT_MISC_VALUE, int misc_value2 = DEFAULT_MISC_VALUE ) const;
-
-  // Return an additive modifier from the spell (E_APPLY_AURA -> A_ADD_PCT_MODIFIER|A_ADD_FLAT_MODIFIER ),
-  // based on the property of the modifier (as defined by misc_value)
-  virtual double mod_additive( property_type_t = P_MAX ) const;
-  timespan_t mod_additive_time( property_type_t = P_MAX ) const;
-  const spelleffect_data_t* get_effect( property_type_t p_type ) const;
-
-  // Spell data specific static methods
-  static uint32_t get_school_mask( school_type_e s );
-  static school_type_e get_school_type( const uint32_t mask );
-  static bool is_school( school_type_e s, school_type_e s2 );
-
-  const spell_data_t& spell() const { return ( ok() ? *s_data : *spell_data_t::nil() ); }
-  const spelleffect_data_t& effect1() const { return ( ok() ? s_data -> effect1(): *spelleffect_data_t::nil() ); }
-  const spelleffect_data_t& effect2() const { return ( ok() ? s_data -> effect2(): *spelleffect_data_t::nil() ); }
-  const spelleffect_data_t& effect3() const { return ( ok() ? s_data -> effect3(): *spelleffect_data_t::nil() ); }
-  const spelleffect_data_t& effectN( unsigned idx ) const { return ( ok() ? s_data -> effectN( idx ) : *spelleffect_data_t::nil() ); }
-private:
-};
-
-// Talent class
-
-struct talent_t : spell_id_t
-{
-  const talent_data_t* t_data;
-  unsigned             t_rank;
-  bool                 t_enabled;
-  bool                 t_overridden;
-  const spell_id_t*    t_rank_spells[ MAX_RANK ];
-  const spell_id_t*    t_default_rank;
-
-  talent_t( player_t* p, talent_data_t* td );
-  virtual ~talent_t();
-  virtual bool set_rank( uint32_t value, bool overridden = false );
-  virtual bool ok() const;
-  std::string to_str() const;
-  virtual uint32_t rank() const;
-
-  virtual uint32_t spell_id() const;
-  virtual uint32_t max_rank() const;
-  virtual uint32_t rank_spell_id( const uint32_t r ) const;
-  virtual const spell_id_t* rank_spell( uint32_t r = 0 ) const;
-
-  // Future trimmed down access
-  talent_data_t* td;
-  spell_data_t* sd;
-  spell_data_t* trigger;
-  // unsigned rank;
-
-  talent_data_t& data() { return *td; }
-  spell_data_t& spell( unsigned r=0 )
-  {
-    if ( r >= 1 && r - 1 < MAX_RANK )
-      return td -> spell( r - 1 );
-    return *sd;
-  }
-  const spelleffect_data_t& effect1() const { return sd -> effect1(); }
-  const spelleffect_data_t& effect2() const { return sd -> effect2(); }
-  const spelleffect_data_t& effect3() const { return sd -> effect3(); }
-};
-
-// Glyph
-
-struct glyph_t : public spell_id_t
-{
-  // Future trimmed down access
-  spell_data_t* sd;
-  spell_data_t* sd_enabled;
-
-  glyph_t( player_t* p, spell_data_t* sd );
-
-  virtual bool enable( bool override_value = true );
-  bool enabled() const { return ( sd == sd_enabled ); }
-
-  const spell_data_t& spell() const { return *sd_enabled; }
-  const spelleffect_data_t& effect1() const { return sd_enabled -> effect1(); }
-  const spelleffect_data_t& effect2() const { return sd_enabled -> effect2(); }
-  const spelleffect_data_t& effect3() const { return sd_enabled -> effect3(); }
-};
-
-// Mastery
-
-struct mastery_t : public spell_id_t
-{
-  int m_tree;
-
-  mastery_t( player_t* player = 0, const char* t_name = 0 ) : spell_id_t( player, t_name ) { }
-  mastery_t( player_t* player, const char* t_name, const uint32_t id, int tree );
-  mastery_t( player_t* player, const char* t_name, const char* s_name, int tree );
-
-  std::string to_str() const;
-
-  virtual bool ok() const;
-  virtual double base_value( effect_type_t type = E_MAX,
-                             effect_subtype_t sub_type = A_MAX,
-                             int misc_value = DEFAULT_MISC_VALUE,
-                             int misc_value2 = DEFAULT_MISC_VALUE ) const;
-};
 
 // Raid Event
 
@@ -3026,6 +2799,7 @@ struct buff_creator_t
 private:
   actor_pair_t _player;
   std::string _name;
+  const spell_data_t* s_data;
   double _chance;
   unsigned _max_stack;
   timespan_t _duration, _cooldown;
@@ -3033,7 +2807,7 @@ private:
   friend struct buff_t;
 public:
   buff_creator_t( actor_pair_t p, const std::string& n ) :
-    _player( p ), _name( n ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _id( 0 )
+    _player( p ), _name( n ), s_data( spell_data_t::nil() ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _id( 0 )
   {}
   buff_creator_t& duration( timespan_t d )
   { _duration=d; return *this; }
@@ -3045,12 +2819,15 @@ public:
   { _cooldown=t; return *this; }
   buff_creator_t& id( uint32_t i )
   { _id=i; return *this; }
+  buff_creator_t& spell( spell_data_t* s )
+  { s_data = s ? s : spell_data_t::nil(); return *this; }
 
   operator buff_t* () const;
 };
 
-struct buff_t : public spell_id_t
+struct buff_t
 {
+  const spell_data_t* s_data;
   double current_value, react;
   timespan_t buff_duration, buff_cooldown;
   double default_chance;
@@ -3079,7 +2856,7 @@ struct buff_t : public spell_id_t
   bool reverse, constant, quiet, overridden;
   sample_data_t uptime_pct;
 
-  buff_t() : sim( 0 ) {}
+  buff_t() : s_data( spell_data_t::nil() ), sim( 0 ) {}
   virtual ~buff_t();
 
   // Raid Aura
@@ -3096,10 +2873,8 @@ struct buff_t : public spell_id_t
 
   // Player Buff with extracted data
 private:
-  void init_from_talent_( player_t*, talent_t* );
   void init_from_spell_( player_t*, spell_data_t* );
 public:
-  buff_t( actor_pair_t pair, talent_t*, ... );
   buff_t( actor_pair_t pair, spell_data_t*, ... );
 
   // Player Buff as spell_id_t by name
@@ -3115,7 +2890,7 @@ public:
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
 
-  const spell_data_t& data() const { return ( ok() ? *s_data : *spell_data_t::nil() ); } // FIXME: Althor, please replace me!
+  const spell_data_t& data() const { return *s_data; } 
   int    check() { return current_stack; }
   inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
@@ -4059,17 +3834,17 @@ struct set_bonus_t
 struct set_bonus_array_t
 {
 private:
-  const std::smart_ptr<spell_id_t> default_value;
-  std::smart_ptr<spell_id_t> set_bonuses[ SET_MAX ];
+  const spell_data_t* default_value;
+  const spell_data_t* set_bonuses[ SET_MAX ];
   player_t* p;
 
-  spell_id_t* create_set_bonus( uint32_t spell_id );
+  const spell_data_t* create_set_bonus( uint32_t spell_id );
 
 public:
   set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
 
   bool              has_set_bonus( set_type_e s ) const;
-  const spell_id_t* set( set_type_e s ) const;
+  const spell_data_t* set( set_type_e s ) const;
 };
 
 // Player ===================================================================
@@ -4094,8 +3869,7 @@ struct player_t : public noncopyable
   rating_t    rating;
   pet_t*      pet_list;
   int         bugs;
-  talent_tab_type_e  specialization;
-  talent_tree_type_e spec;
+  specialization_e spec;
   int         invert_scaling;
   bool        vengeance_enabled;
   double      vengeance_damage, vengeance_value, vengeance_max;
@@ -4124,12 +3898,10 @@ struct player_t : public noncopyable
   std::vector<option_t> options;
 
   // Talent Parsing
-  std::array<talent_tree_type_e,MAX_TALENT_TREES> tree_type;
-  std::array<int,MAX_TALENT_TREES> talent_tab_points;
-  std::array< std::vector<talent_t*>,MAX_TALENT_TREES> talent_trees;
-  std::vector<glyph_t*> glyphs;
+  std::array<uint32_t,MAX_TALENT_SLOTS> talent_list;
 
-  std::list<spell_id_t*> spell_list;
+  // Glyph Parsing
+  std::vector<const spell_data_t*> glyph_list;
 
   // Profs
   std::string professions_str;
@@ -4219,9 +3991,6 @@ struct player_t : public noncopyable
 
   double  mana_per_intellect;
   uptime_t* primary_resource_cap;
-
-  // Callbacks
-  action_callback_t* dark_intent_cb;
 
   // Consumables
   std::string flask_str, elixirs_str, food_str;
@@ -4520,7 +4289,6 @@ struct player_t : public noncopyable
   virtual void init_actions();
   virtual void init_rating();
   virtual void init_scaling();
-  virtual void init_talents();
   virtual void init_spells();
   virtual void init_buffs();
   virtual void init_gains();
@@ -4614,10 +4382,9 @@ struct player_t : public noncopyable
   virtual void   recalculate_resource_max( resource_type_e resource_type );
   virtual bool   resource_available( resource_type_e resource_type, double cost ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_NONE; }
-  virtual role_type_e primary_role() const;
-  talent_tree_type_e primary_tree() const;
-  talent_tab_type_e primary_tab() const;
-  const char* primary_tree_name() const;
+  virtual role_type_e   primary_role() const;
+  virtual specialization_e primary_tree() const;
+  virtual const char* primary_tree_name() const;
   virtual stat_type_e normalize_by() const;
 
   virtual double health_percentage() const;
@@ -4657,17 +4424,20 @@ struct player_t : public noncopyable
   virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
   virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
 
-  virtual bool parse_talent_trees( const std::array< int, MAX_TALENT_SLOTS > encoding );
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
 
-  virtual void create_talents();
-  virtual void create_glyphs();
+  virtual void replace_spells();
 
-  virtual talent_t* find_talent( const std::string& name, int tree = TALENT_TAB_NONE );
-  virtual glyph_t*  find_glyph ( const std::string& name );
-  virtual spell_id_t* find_specialization_spell( const char* name, const char* token = "", talent_tree_type_e tree = TREE_NONE );
-  virtual spell_id_t* find_mastery_spell( const char* name, const char* token = "", talent_tree_type_e tree = TREE_NONE );
+  virtual const spell_data_t* find_glyph( const std::string& name );
+  virtual const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
+  virtual const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_mastery_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
+  virtual const spell_data_t* find_spell( const unsigned int id,const std::string& token = std::string() );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
   action_expr_t* create_resource_expression( action_t*, player_t*, const std::string& name );
@@ -4908,6 +4678,8 @@ public:
 
   virtual const char* name() const { return full_name_str.c_str(); }
   virtual const char* id();
+
+  virtual const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 };
 
 // Gain =====================================================================
@@ -4966,7 +4738,7 @@ struct stats_t
   double num_direct_results, num_tick_results;
   timespan_t total_execute_time, total_tick_time;
   double portion_amount;
-  timespan_t total_intervals;
+  double total_intervals;
   double num_intervals;
   timespan_t last_execute;
   double iteration_actual_amount, iteration_total_amount;
@@ -5021,17 +4793,17 @@ struct stats_t
 
 // Action ===================================================================
 
-struct action_t : public spell_id_t
+struct action_t
 {
+  const spell_data_t* s_data;
   sim_t* const sim;
   const action_type_e type;
   std::string name_str;
   player_t* const player;
   player_t* target;
   uint32_t id;
-  school_type_e school;
-  talent_tree_type_e tree;
   result_type_e result;
+  school_type_e school;
   int aoe;
   bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
@@ -5107,22 +4879,15 @@ private:
   mutable player_t* cached_targetdata_target;
   mutable targetdata_t* cached_targetdata;
 
-  void init_action_t_();
-
 public:
-  action_t( action_type_e, const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-            school_type_e = SCHOOL_NONE, talent_tree_type_e = TREE_NONE, bool special = false );
-  action_t( action_type_e, const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
-  action_t( action_type_e, const std::string& name, const char* sname, player_t*,
-            talent_tree_type_e = TREE_NONE, bool special = false );
-  action_t( action_type_e, const std::string& name, const uint32_t id, player_t*,
-            talent_tree_type_e = TREE_NONE, bool special = false );
+  action_t( action_type_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e school = SCHOOL_NONE );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
-  const spell_data_t& data() const { return ( ok() ? *s_data : *spell_data_t::nil() ); } // FIXME: Althor, please replace me!
+  const spell_data_t& data() const { return ( *s_data ); }
   virtual void   parse_spell_data( const spell_data_t& );
   virtual void   parse_effect_data( const spelleffect_data_t& );
+
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() const;
   virtual double total_haste() const  { return haste();           }
@@ -5170,7 +4935,7 @@ public:
   virtual void   cancel();
   virtual void   interrupt_action();
   virtual void   check_talent( int talent_rank );
-  virtual void   check_spec( talent_tree_type_e necessary_spec );
+  virtual void   check_spec( specialization_e necessary_spec );
   virtual void   check_race( race_type_e race );
   virtual const char* name() const { return name_str.c_str(); }
 
@@ -5316,15 +5081,8 @@ struct action_state_t
 
 struct attack_t : public action_t
 {
-private:
-  void init_attack_t_();
-
 public:
-  attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
-  attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-            school_type_e=SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE, bool special = false );
-  attack_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
-  attack_t( const std::string& name, uint32_t id, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
+  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   // Attack Overrides
   virtual double haste() const;
@@ -5358,15 +5116,8 @@ struct melee_attack_t : public attack_t
 {
   double base_expertise, player_expertise, target_expertise;
 
-private:
-  void init_melee_attack_t_();
-
 public:
-  melee_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = false );
-  melee_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-                  school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = false );
-  melee_attack_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
-  melee_attack_t( const std::string& name, uint32_t id, player_t*, talent_tree_type_e = TREE_NONE, bool special = false );
+  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   // Melee Attack Overrides
   virtual void   player_buff();
@@ -5385,34 +5136,30 @@ public:
 
 struct ranged_attack_t : public attack_t
 {
-private:
-  void init_ranged_attack_t_();
+  double base_expertise, player_expertise, target_expertise;
 
 public:
-  ranged_attack_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE, bool special = true );
-  ranged_attack_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-                   school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e=TREE_NONE, bool special = true );
-  ranged_attack_t( const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
-  ranged_attack_t( const std::string& name, uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE, bool special = true );
+  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   // Ranged Attack Overrides
+  virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual double total_expertise() const;
+
+  virtual double  dodge_chance( double /* expertise */, int delta_level ) const;
+  virtual double  parry_chance( double /* expertise */, int delta_level ) const;
+  virtual double glance_chance( int delta_level ) const;
+
+  /* New stuffs */
+  virtual double composite_expertise() const { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Spell Base ====================================================================
 
 struct spell_base_t : public action_t
 {
-private:
-  void init_spell_base_t_();
-
 public:
-  spell_base_t( action_type_e, const spell_id_t& s, talent_tree_type_e = TREE_NONE );
-  spell_base_t( action_type_e, const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-                school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
-  spell_base_t( action_type_e, const std::string& name, const char* sname, player_t* p, talent_tree_type_e = TREE_NONE );
-  spell_base_t( action_type_e, const std::string& name, const uint32_t id, player_t* p, talent_tree_type_e = TREE_NONE );
-
+  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
   // Spell Overrides
   virtual double haste() const;
   virtual timespan_t gcd() const;
@@ -5435,15 +5182,8 @@ public:
 
 struct spell_t : public spell_base_t
 {
-private:
-  void init_spell_t_();
-
 public:
-  spell_t( const spell_id_t& s, talent_tree_type_e = TREE_NONE );
-  spell_t( const std::string& name, player_t*, resource_type_e = RESOURCE_NONE,
-           school_type_e = SCHOOL_PHYSICAL, talent_tree_type_e = TREE_NONE );
-  spell_t( const std::string& name, const char* sname, player_t*, talent_tree_type_e = TREE_NONE );
-  spell_t( const std::string& name, const uint32_t id, player_t*, talent_tree_type_e = TREE_NONE );
+  spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   // Harmful Spell Overrides
   virtual void   player_buff();
@@ -5463,12 +5203,8 @@ struct heal_t : public spell_base_t
   // Reporting
   double total_heal, total_actual;
 
-private:
-  void init_heal_t_();
-
 public:
-  heal_t( const std::string& name, player_t*, const char* sname, talent_tree_type_e = TREE_NONE );
-  heal_t( const std::string& name, player_t*, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   virtual void player_buff();
   virtual void execute();
@@ -5485,12 +5221,8 @@ struct absorb_t : public spell_base_t
   // Reporting
   double total_heal, total_actual;
 
-private:
-  void init_absorb_t_();
-
 public:
-  absorb_t( const std::string& name, player_t*, const char* sname, talent_tree_type_e = TREE_NONE );
-  absorb_t( const std::string& name, player_t*, const uint32_t id, talent_tree_type_e = TREE_NONE );
+  absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
 
   virtual void player_buff();
   virtual void execute();

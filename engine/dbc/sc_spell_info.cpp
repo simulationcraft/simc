@@ -233,7 +233,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     switch ( e -> type() )
     {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
+      s << ": " << util_t::school_type_string( spell -> get_school_type() );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
@@ -262,7 +262,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       switch ( e -> subtype() )
       {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util_t::school_type_string( spell_id_t::get_school_type( spell -> school_mask() ) );
+        s << ": " << util_t::school_type_string( spell -> get_school_type() );
         if ( e -> period() != timespan_t::zero() )
           s << " every " << e -> period().total_seconds() << " seconds";
         break;
@@ -578,6 +578,8 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
 {
   std::ostringstream s;
 
+  (void)sim;
+
   s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
 
   if ( talent -> mask_class() )
@@ -593,27 +595,11 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
     s << std::endl;
   }
 
-  s << "Talent Tab   : " << talent -> tab_page() + 1 << std::endl;
-  if ( talent -> depends_id() )
-  {
-    const talent_data_t* d = sim -> dbc.talent( talent -> depends_id() );
-    if ( d -> id() > 0 )
-    {
-      s << "Depends on   : " << d -> name_cstr();
-      if ( talent -> depends_rank() > 0 )
-        s << " (Rank " << talent -> depends_rank() + 1 << ")";
-    }
-
-    s << std::endl;
-  }
-
-  s << "Column       : " << talent -> col() + 1 << std::endl;
-  s << "Row          : " << talent -> row() + 1 << std::endl;
-  for ( int i = 0; i < 3; i++ )
-  {
-    if ( talent -> _rank_id[ i ] )
-      s << "Rank " << i + 1 << " Spell : " << talent -> _rank_id[ i ] << std::endl;
-  }
+  s << "Column       : " << talent -> col() + 1    << std::endl;
+  s << "Row          : " << talent -> row() + 1    << std::endl;
+  s << "Spell : "        << talent -> spell_id()   << std::endl;
+  if ( talent -> replace_id() > 0 )
+    s << "Replaces : "   << talent -> replace_id() << std::endl;
 
   s << std::endl;
 

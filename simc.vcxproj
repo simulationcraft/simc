@@ -235,7 +235,6 @@
     <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
     <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
-    <ClCompile Include="engine\sc_talent.cpp" />
     <ClCompile Include="engine\sc_target.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
@@ -263,30 +262,32 @@
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />
     <None Include="engine\dbc\data_enums.hh" />
+    <None Include="engine\dbc\specialization.hpp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\checked.h" />
     <None Include="engine\utf8\core.h" />
     <None Include="engine\utf8\unchecked.h" />
-    <None Include="engine\sc_extra_data.inc" />
-    <None Include="engine\sc_extra_data_ptr.inc" />
-    <None Include="engine\sc_item_data.inc" />
-    <None Include="engine\sc_item_data_ptr.inc" />
-    <None Include="engine\sc_scale_data.inc">
+    <None Include="engine\dbc\sc_extra_data.inc" />
+    <None Include="engine\dbc\sc_extra_data_ptr.inc" />
+    <None Include="engine\dbc\sc_item_data.inc" />
+    <None Include="engine\dbc\sc_item_data_ptr.inc" />
+    <None Include="engine\dbc\c_scale_data.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_scale_data_ptr.inc">
+    <None Include="engine\dbc\sc_scale_data_ptr.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_data.inc">
+    <None Include="engine\dbc\sc_spec_list.inc" />
+    <None Include="engine\dbc\sc_spell_data.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_data_ptr.inc">
+    <None Include="engine\dbc\sc_spell_data_ptr.inc">
       <FileType>Document</FileType>
     </None>
-    <None Include="engine\sc_spell_lists.inc" />
-    <None Include="engine\sc_spell_lists_ptr.inc" />
-    <None Include="engine\sc_talent_data.inc" />
-    <None Include="engine\sc_talent_data_ptr.inc" />
+    <None Include="engine\dbc\sc_spell_lists.inc" />
+    <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
+    <None Include="engine\dbc\sc_talent_data.inc" />
+    <None Include="engine\dbc\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

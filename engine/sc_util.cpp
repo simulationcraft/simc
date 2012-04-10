@@ -38,6 +38,16 @@ bool util_t::str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
+std::string& util_t::glyph_name( std::string& n )
+{
+  armory_t::format( n, FORMAT_ASCII_MASK ); 
+
+  if ( n.substr( 0, 9 ) == "glyph_of_" ) n.erase( 0, 9 );
+  if ( n.substr( 0, 7 ) == "glyph__" )   n.erase( 0, 7 );
+
+  return n;
+}
+
 // util_t::str_prefix_ci ====================================================
 
 bool util_t::str_prefix_ci( const std::string& str,
@@ -366,14 +376,13 @@ const char* util_t::player_type_string( player_type_e type )
 player_type_e util_t::parse_player_type( const std::string& name )
 { return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name ); }
 
-// util_t::translate_class_str ==============================================
+// util_t::translate_class_str ================================================
 
 player_type_e util_t::translate_class_str( std::string& s )
-{
-  std::string fmt_s = armory_t::format( s );
-  if ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
-  return parse_player_type( fmt_s );
+{ 
+  return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s ); 
 }
+
 
 // util_t::pet_type_string ==================================================
 
@@ -638,8 +647,8 @@ resource_type_e util_t::parse_resource_type( const std::string& name )
 
 uint32_t util_t::school_type_component( school_type_e s_type, school_type_e c_type )
 {
-  return spell_id_t::get_school_mask( s_type )
-      & spell_id_t::get_school_mask( c_type );
+  return spell_data_t::get_school_mask( s_type )
+      & spell_data_t::get_school_mask( c_type );
 }
 
 // util_t::school_type_string ===============================================
@@ -689,548 +698,302 @@ const char* util_t::school_type_string( school_type_e school )
 // util_t::parse_school_type ================================================
 
 school_type_e util_t::parse_school_type( const std::string& name )
-{ return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name ); }
-
-// util_t::talent_tree ======================================================
-
-talent_tree_type_e util_t::talent_tree( talent_tab_type_e tree,
-                                        player_type_e     ptype )
-{
-  switch ( ptype )
-  {
-  case DEATH_KNIGHT:
-    switch ( tree )
-    {
-    case DEATH_KNIGHT_BLOOD:    return TREE_BLOOD;
-    case DEATH_KNIGHT_FROST:    return TREE_FROST;
-    case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
-    default: break;
-    }
-    break;
-  case DRUID:
-    switch ( tree )
-    {
-    case DRUID_BALANCE:         return TREE_BALANCE;
-    case DRUID_FERAL:           return TREE_FERAL;
-    case DRUID_RESTORATION:     return TREE_RESTORATION;
-    default: break;
-    }
-    break;
-  case HUNTER:
-    switch ( tree )
-    {
-    case HUNTER_BEAST_MASTERY:  return TREE_BEAST_MASTERY;
-    case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
-    case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
-    default: break;
-    }
-    break;
-  case MAGE:
-    switch ( tree )
-    {
-    case MAGE_ARCANE:           return TREE_ARCANE;
-    case MAGE_FIRE:             return TREE_FIRE;
-    case MAGE_FROST:            return TREE_FROST;
-    default: break;
-    }
-    break;
-  case MONK:
-    switch ( tree )
-    {
-    case MONK_BREWMASTER:       return TREE_BREWMASTER;
-    case MONK_MISTWEAVER:       return TREE_MISTWEAVER;
-    case MONK_WINDWALKER:       return TREE_WINDWALKER;
-    default: break;
-    }
-    break;
-  case PALADIN:
-    switch ( tree )
-    {
-    case PALADIN_HOLY:          return TREE_HOLY;
-    case PALADIN_PROTECTION:    return TREE_PROTECTION;
-    case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
-    default: break;
-    }
-    break;
-  case PRIEST:
-    switch ( tree )
-    {
-    case PRIEST_DISCIPLINE:     return TREE_DISCIPLINE;
-    case PRIEST_HOLY:           return TREE_HOLY;
-    case PRIEST_SHADOW:         return TREE_SHADOW;
-    default: break;
-    }
-    break;
-  case ROGUE:
-    switch ( tree )
-    {
-    case ROGUE_ASSASSINATION:   return TREE_ASSASSINATION;
-    case ROGUE_COMBAT:          return TREE_COMBAT;
-    case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
-    default: break;
-    }
-    break;
-  case SHAMAN:
-    switch ( tree )
-    {
-    case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
-    case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
-    case SHAMAN_RESTORATION:    return TREE_RESTORATION;
-    default: break;
-    }
-    break;
-  case WARLOCK:
-    switch ( tree )
-    {
-    case WARLOCK_AFFLICTION:    return TREE_AFFLICTION;
-    case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
-    case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
-    default: break;
-    }
-    break;
-  case WARRIOR:
-    switch ( tree )
-    {
-    case WARRIOR_ARMS:          return TREE_ARMS;
-    case WARRIOR_FURY:          return TREE_FURY;
-    case WARRIOR_PROTECTION:    return TREE_PROTECTION;
-    default: break;
-    }
-    break;
-  default:
-    break;
-  }
-  return TREE_NONE;
-}
-
-int util_t::spec_id( player_type_e ptype, talent_tree_type_e tree )
-{
-  switch ( ptype )
-  {
-  case DEATH_KNIGHT:
-    switch ( tree )
-    {
-    case TREE_BLOOD:    return 0;
-    case TREE_FROST:    return 1;
-    case TREE_UNHOLY:   return 2;
-    default: break;
-    }
-    break;
-  case DRUID:
-    switch ( tree )
-    {
-    case TREE_BALANCE:         return 0;
-    case TREE_FERAL:           return 1;
-    case TREE_GUARDIAN:        return 2;
-    case TREE_RESTORATION:     return 3;
-    default: break;
-    }
-    break;
-  case HUNTER:
-    switch ( tree )
-    {
-    case TREE_BEAST_MASTERY:  return 0;
-    case TREE_MARKSMANSHIP:   return 1;
-    case TREE_SURVIVAL:       return 2;
-    default: break;
-    }
-    break;
-  case MAGE:
-    switch ( tree )
-    {
-    case TREE_ARCANE:           return 0;
-    case TREE_FIRE:             return 1;
-    case TREE_FROST:            return 2;
-    default: break;
-    }
-    break;
-  case MONK:
-    switch ( tree )
-    {
-    case TREE_BREWMASTER:       return 0;
-    case TREE_MISTWEAVER:       return 1;
-    case TREE_WINDWALKER:       return 2;
-    default: break;
-    }
-    break;
-  case PALADIN:
-    switch ( tree )
-    {
-    case TREE_HOLY:          return 0;
-    case TREE_PROTECTION:    return 1;
-    case TREE_RETRIBUTION:   return 2;
-    default: break;
-    }
-    break;
-  case PRIEST:
-    switch ( tree )
-    {
-    case TREE_DISCIPLINE:     return 0;
-    case TREE_HOLY:           return 1;
-    case TREE_SHADOW:         return 2;
-    default: break;
-    }
-    break;
-  case ROGUE:
-    switch ( tree )
-    {
-    case TREE_ASSASSINATION:   return 0;
-    case TREE_COMBAT:          return 1;
-    case TREE_SUBTLETY:        return 2;
-    default: break;
-    }
-    break;
-  case SHAMAN:
-    switch ( tree )
-    {
-    case TREE_ELEMENTAL:      return 0;
-    case TREE_ENHANCEMENT:    return 1;
-    case TREE_RESTORATION:    return 2;
-    default: break;
-    }
-    break;
-  case WARLOCK:
-    switch ( tree )
-    {
-    case TREE_AFFLICTION:    return 0;
-    case TREE_DEMONOLOGY:    return 1;
-    case TREE_DESTRUCTION:   return 2;
-    default: break;
-    }
-    break;
-  case WARRIOR:
-    switch ( tree )
-    {
-    case TREE_ARMS:          return 0;
-    case TREE_FURY:          return 1;
-    case TREE_PROTECTION:    return 2;
-    default: break;
-    }
-    break;
-  default:
-    break;
-  }
-  return -1;
-}
-
-// util_t::translate_spec_id ================================================
-
-talent_tree_type_e util_t::translate_spec_id( player_type_e ptype, int tree )
-{
-  switch ( ptype )
-  {
-  case DEATH_KNIGHT:
-    switch ( tree )
-    {
-    case 0: return TREE_BLOOD;
-    case 1: return TREE_FROST;
-    case 2: return TREE_UNHOLY;
-    default: break;
-    }
-    break;
-  case DRUID:
-    switch ( tree )
-    {
-    case 0: return TREE_BALANCE;
-    case 1: return TREE_FERAL;
-    case 2: return TREE_GUARDIAN;
-    case 3: return TREE_RESTORATION;
-    default: break;
-    }
-    break;
-  case HUNTER:
-    switch ( tree )
-    {
-    case 0: return TREE_BEAST_MASTERY;
-    case 1: return TREE_MARKSMANSHIP;
-    case 2: return TREE_SURVIVAL;
-    default: break;
-    }
-    break;
-  case MAGE:
-    switch ( tree )
-    {
-    case 0: return TREE_ARCANE;
-    case 1: return TREE_FIRE;
-    case 2: return TREE_FROST;
-    default: break;
-    }
-    break;
-  case MONK:
-    switch ( tree )
-    {
-    case 0: return TREE_BREWMASTER;
-    case 1: return TREE_MISTWEAVER;
-    case 2: return TREE_WINDWALKER;
-    default: break;
-    }
-    break;
-  case PALADIN:
-    switch ( tree )
-    {
-    case 0: return TREE_HOLY;
-    case 1: return TREE_PROTECTION;
-    case 2: return TREE_RETRIBUTION;
-    default: break;
-    }
-    break;
-  case PRIEST:
-    switch ( tree )
-    {
-    case 0: return TREE_DISCIPLINE;
-    case 1: return TREE_HOLY;
-    case 2: return TREE_SHADOW;
-    default: break;
-    }
-    break;
-  case ROGUE:
-    switch ( tree )
-    {
-    case 0: return TREE_ASSASSINATION;
-    case 1: return TREE_COMBAT;
-    case 2: return TREE_SUBTLETY;
-    default: break;
-    }
-    break;
-  case SHAMAN:
-    switch ( tree )
-    {
-    case 0: return TREE_ELEMENTAL;
-    case 1: return TREE_ENHANCEMENT;
-    case 2: return TREE_RESTORATION;
-    default: break;
-    }
-    break;
-  case WARLOCK:
-    switch ( tree )
-    {
-    case 0: return TREE_AFFLICTION;
-    case 1: return TREE_DEMONOLOGY;
-    case 2: return TREE_DESTRUCTION;
-    default: break;
-    }
-    break;
-  case WARRIOR:
-    switch ( tree )
-    {
-    case 0: return TREE_ARMS;
-    case 1: return TREE_FURY;
-    case 2: return TREE_PROTECTION;
-    default: break;
-    }
-    break;
-  default:
-    break;
-  }
-  return TREE_NONE;
+{ 
+  return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name ); 
 }
 
 // util_t::translate_spec_str ===============================================
 
-talent_tree_type_e util_t::translate_spec_str( player_type_e ptype, const std::string& spec_str )
+specialization_e util_t::translate_spec_str( player_type_e ptype, const std::string& spec_str )
 {
   switch ( ptype )
   {
-  case DEATH_KNIGHT:
-  {
-    if ( util_t::str_compare_ci( spec_str, "blood" ) )
-      return TREE_BLOOD;
-    if ( util_t::str_compare_ci( spec_str, "tank" ) )
-      return TREE_BLOOD;
-    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
-      return TREE_FROST;
-    else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
-      return TREE_UNHOLY;
+    case DEATH_KNIGHT:
+    {
+      if ( util_t::str_compare_ci( spec_str, "blood" ) )
+        return DEATH_KNIGHT_BLOOD;
+      if ( util_t::str_compare_ci( spec_str, "tank" ) )
+        return DEATH_KNIGHT_BLOOD;
+      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+        return DEATH_KNIGHT_FROST;
+      else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
+        return DEATH_KNIGHT_UNHOLY;    
+      break;
+    }
+    case DRUID:
+    {
+      if ( util_t::str_compare_ci( spec_str, "balance" ) )
+        return DRUID_BALANCE;
+      if ( util_t::str_compare_ci( spec_str, "caster" ) )
+        return DRUID_BALANCE;
+      else if ( util_t::str_compare_ci( spec_str, "feral" ) )
+        return DRUID_FERAL;
+      else if ( util_t::str_compare_ci( spec_str, "cat" ) )
+        return DRUID_FERAL;
+      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+        return DRUID_FERAL;
+      else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
+        return DRUID_GUARDIAN;
+      else if ( util_t::str_compare_ci( spec_str, "bear" ) )
+        return DRUID_GUARDIAN;
+      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+        return DRUID_GUARDIAN;
+      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+        return DRUID_RESTORATION;
+      else if ( util_t::str_compare_ci( spec_str, "resto" ) )
+        return DRUID_RESTORATION;
+      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+        return DRUID_RESTORATION;
+      
+      break;
+    }
+    case HUNTER:
+    {
+      if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
+        return HUNTER_BEAST_MASTERY;
+      if ( util_t::str_compare_ci( spec_str, "bm" ) )
+        return HUNTER_BEAST_MASTERY;
+      else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
+        return HUNTER_MARKSMANSHIP;
+      else if ( util_t::str_compare_ci( spec_str, "mm" ) )
+        return HUNTER_MARKSMANSHIP;
+      else if ( util_t::str_compare_ci( spec_str, "survival" ) )
+        return HUNTER_SURVIVAL;
+      else if ( util_t::str_compare_ci( spec_str, "sv" ) )
+        return HUNTER_SURVIVAL;
+      break;
+    }
+    case MAGE:
+    {
+      if ( util_t::str_compare_ci( spec_str, "arcane" ) )
+        return MAGE_ARCANE;
+      else if ( util_t::str_compare_ci( spec_str, "fire" ) )
+        return MAGE_FIRE;
+      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+        return MAGE_FROST;
+      break;
+    }
+    case MONK:
+    {
+      if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
+        return MONK_BREWMASTER;
+      if ( util_t::str_compare_ci( spec_str, "tank" ) )
+        return MONK_BREWMASTER;
+      else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
+        return MONK_MISTWEAVER;
+      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+        return MONK_MISTWEAVER;
+      else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
+        return MONK_WINDWALKER;
+      else if ( util_t::str_compare_ci( spec_str, "dps" ) )
+        return MONK_WINDWALKER;
+      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+        return MONK_WINDWALKER;
+      break;
+    }
+    case PALADIN:
+    {
+      if ( util_t::str_compare_ci( spec_str, "holy" ) )
+        return PALADIN_HOLY;
+      if ( util_t::str_compare_ci( spec_str, "healer" ) )
+        return PALADIN_HOLY;
+      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+        return PALADIN_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "prot" ) )
+        return PALADIN_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+        return PALADIN_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
+        return PALADIN_RETRIBUTION;
+      else if ( util_t::str_compare_ci( spec_str, "ret" ) )
+        return PALADIN_RETRIBUTION;
+      else if ( util_t::str_compare_ci( spec_str, "dps" ) )
+        return PALADIN_RETRIBUTION;
+      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+        return PALADIN_RETRIBUTION;
+      break;
+    }
+    case PRIEST:
+    {
+      if ( util_t::str_compare_ci( spec_str, "discipline" ) )
+        return PRIEST_DISCIPLINE;
+      if ( util_t::str_compare_ci( spec_str, "disc" ) )
+        return PRIEST_DISCIPLINE;
+      else if ( util_t::str_compare_ci( spec_str, "holy" ) )
+        return PRIEST_HOLY;
+      else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
+        return PRIEST_SHADOW;
+      else if ( util_t::str_compare_ci( spec_str, "caster" ) )
+        return PRIEST_SHADOW;
+      break;
+    }
+    case ROGUE:
+    {
+      if ( util_t::str_compare_ci( spec_str, "assassination" ) )
+        return ROGUE_ASSASSINATION;
+      if ( util_t::str_compare_ci( spec_str, "ass" ) )
+        return ROGUE_ASSASSINATION;
+      if ( util_t::str_compare_ci( spec_str, "mut" ) )
+        return ROGUE_ASSASSINATION;
+      else if ( util_t::str_compare_ci( spec_str, "combat" ) )
+        return ROGUE_COMBAT;
+      else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
+        return ROGUE_SUBTLETY;
+      else if ( util_t::str_compare_ci( spec_str, "sub" ) )
+        return ROGUE_SUBTLETY;
+      break;
+    }
+    case SHAMAN:
+    {
+      if ( util_t::str_compare_ci( spec_str, "elemental" ) )
+        return SHAMAN_ELEMENTAL;
+      if ( util_t::str_compare_ci( spec_str, "ele" ) )
+        return SHAMAN_ELEMENTAL;
+      if ( util_t::str_compare_ci( spec_str, "caster" ) )
+        return SHAMAN_ELEMENTAL;
+      else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
+        return SHAMAN_ENHANCEMENT;
+      else if ( util_t::str_compare_ci( spec_str, "enh" ) )
+        return SHAMAN_ENHANCEMENT;
+      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+        return SHAMAN_ENHANCEMENT;
+      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+        return SHAMAN_RESTORATION;
+      else if ( util_t::str_compare_ci( spec_str, "resto" ) )
+        return SHAMAN_RESTORATION;
+      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+        return SHAMAN_RESTORATION;
+      break;
+    }
+    case WARLOCK:
+    {
+      if ( util_t::str_compare_ci( spec_str, "affliction" ) )
+        return WARLOCK_AFFLICTION;
+      if ( util_t::str_compare_ci( spec_str, "affl" ) )
+        return WARLOCK_AFFLICTION;
+      if ( util_t::str_compare_ci( spec_str, "aff" ) )
+        return WARLOCK_AFFLICTION;
+      else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
+        return WARLOCK_DEMONOLOGY;
+      else if ( util_t::str_compare_ci( spec_str, "demo" ) )
+        return WARLOCK_DEMONOLOGY;
+      else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
+        return WARLOCK_DESTRUCTION;
+      else if ( util_t::str_compare_ci( spec_str, "destro" ) )
+        return WARLOCK_DESTRUCTION;
+      break;
+    }
+    case WARRIOR:
+    {
+      if ( util_t::str_compare_ci( spec_str, "arms" ) )
+        return WARRIOR_ARMS;
+      else if ( util_t::str_compare_ci( spec_str, "fury" ) )
+        return WARRIOR_FURY;
+      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+        return WARRIOR_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "prot" ) )
+        return WARRIOR_PROTECTION;
+      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+        return WARRIOR_PROTECTION;
+      break;
+    }
+    default: break;
+  }
+  return SPEC_NONE;
+}
 
-    break;
-  }
-  case DRUID:
-  {
-    if ( util_t::str_compare_ci( spec_str, "balance" ) )
-      return TREE_BALANCE;
-    if ( util_t::str_compare_ci( spec_str, "caster" ) )
-      return TREE_BALANCE;
-    else if ( util_t::str_compare_ci( spec_str, "feral" ) )
-      return TREE_FERAL;
-    else if ( util_t::str_compare_ci( spec_str, "cat" ) )
-      return TREE_FERAL;
-    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-      return TREE_FERAL;
-    else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
-      return TREE_GUARDIAN;
-    else if ( util_t::str_compare_ci( spec_str, "bear" ) )
-      return TREE_GUARDIAN;
-    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-      return TREE_GUARDIAN;
-    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
-      return TREE_RESTORATION;
-    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
-      return TREE_RESTORATION;
-    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-      return TREE_RESTORATION;
+// util_t::specialization_string ===============================================
 
-    break;
-  }
-  case HUNTER:
+const char* util_t::specialization_string( specialization_e spec, bool armory_format )
+{
+  if ( armory_format )
   {
-    if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
-      return TREE_BEAST_MASTERY;
-    if ( util_t::str_compare_ci( spec_str, "bm" ) )
-      return TREE_BEAST_MASTERY;
-    else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
-      return TREE_MARKSMANSHIP;
-    else if ( util_t::str_compare_ci( spec_str, "mm" ) )
-      return TREE_MARKSMANSHIP;
-    else if ( util_t::str_compare_ci( spec_str, "survival" ) )
-      return TREE_SURVIVAL;
-    else if ( util_t::str_compare_ci( spec_str, "sv" ) )
-      return TREE_SURVIVAL;
-
-    break;
+    switch ( spec )
+    {
+    case WARRIOR_ARMS: return "arms";
+    case WARRIOR_FURY: return "fury";
+    case WARRIOR_PROTECTION: return "protection";
+    case PALADIN_HOLY: return "holy";
+    case PALADIN_PROTECTION: return "protection";
+    case PALADIN_RETRIBUTION: return "retribution";
+    case HUNTER_BEAST_MASTERY: return "beast_mastery";
+    case HUNTER_MARKSMANSHIP: return "marksmanship";
+    case HUNTER_SURVIVAL: return "survival";
+    case ROGUE_ASSASSINATION: return "assassination";
+    case ROGUE_COMBAT: return "combat";
+    case ROGUE_SUBTLETY: return "subtlety";
+    case PRIEST_DISCIPLINE: return "discipline";
+    case PRIEST_HOLY: return "holy";
+    case PRIEST_SHADOW: return "shadow";
+    case DEATH_KNIGHT_BLOOD: return "blood";
+    case DEATH_KNIGHT_FROST: return "frost";
+    case DEATH_KNIGHT_UNHOLY: return "unholy";
+    case SHAMAN_ELEMENTAL: return "elemental";
+    case SHAMAN_ENHANCEMENT: return "enhancement";
+    case SHAMAN_RESTORATION: return "restoration";
+    case MAGE_ARCANE: return "arcane";
+    case MAGE_FIRE: return "fire";
+    case MAGE_FROST: return "frost";
+    case WARLOCK_AFFLICTION: return "affliction";
+    case WARLOCK_DEMONOLOGY: return "demonology";
+    case WARLOCK_DESTRUCTION: return "destruction";
+    case MONK_BREWMASTER: return "brewmaster";
+    case MONK_MISTWEAVER: return "mistweaver";
+    case MONK_WINDWALKER: return "windwalker";
+    case DRUID_BALANCE: return "balance";
+    case DRUID_FERAL: return "feral";
+    case DRUID_GUARDIAN: return "guardian";
+    case DRUID_RESTORATION: return "restoration";
+    case PET_FEROCITY: return "ferocity";
+    case PET_TENACITY: return "tenacity";
+    case PET_CUNNING: return "cunning";
+    default: return "unknown";
+    }
   }
-  case MAGE:
+  else
   {
-    if ( util_t::str_compare_ci( spec_str, "arcane" ) )
-      return TREE_ARCANE;
-    else if ( util_t::str_compare_ci( spec_str, "fire" ) )
-      return TREE_FIRE;
-    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
-      return TREE_FROST;
-
-    break;
+    switch ( spec )
+    {
+    case WARRIOR_ARMS: return "Arms";
+    case WARRIOR_FURY: return "Fury";
+    case WARRIOR_PROTECTION: return "Protection";
+    case PALADIN_HOLY: return "Holy";
+    case PALADIN_PROTECTION: return "Protection";
+    case PALADIN_RETRIBUTION: return "Retribution";
+    case HUNTER_BEAST_MASTERY: return "Beast Mastery";
+    case HUNTER_MARKSMANSHIP: return "Marksmanship";
+    case HUNTER_SURVIVAL: return "Survival";
+    case ROGUE_ASSASSINATION: return "Assassination";
+    case ROGUE_COMBAT: return "Combat";
+    case ROGUE_SUBTLETY: return "Subtlety";
+    case PRIEST_DISCIPLINE: return "Discipline";
+    case PRIEST_HOLY: return "Holy";
+    case PRIEST_SHADOW: return "Shadow";
+    case DEATH_KNIGHT_BLOOD: return "Blood";
+    case DEATH_KNIGHT_FROST: return "Frost";
+    case DEATH_KNIGHT_UNHOLY: return "Unholy";
+    case SHAMAN_ELEMENTAL: return "Elemental";
+    case SHAMAN_ENHANCEMENT: return "Enhancement";
+    case SHAMAN_RESTORATION: return "Restoration";
+    case MAGE_ARCANE: return "Arcane";
+    case MAGE_FIRE: return "Fire";
+    case MAGE_FROST: return "Frost";
+    case WARLOCK_AFFLICTION: return "Affliction";
+    case WARLOCK_DEMONOLOGY: return "Demonology";
+    case WARLOCK_DESTRUCTION: return "Destruction";
+    case MONK_BREWMASTER: return "Brewmaster";
+    case MONK_MISTWEAVER: return "Mistweaver";
+    case MONK_WINDWALKER: return "Windwalker";
+    case DRUID_BALANCE: return "Balance";
+    case DRUID_FERAL: return "Feral";
+    case DRUID_GUARDIAN: return "Guardian";
+    case DRUID_RESTORATION: return "Restoration";
+    case PET_FEROCITY: return "Ferocity";
+    case PET_TENACITY: return "Tenacity";
+    case PET_CUNNING: return "Cunning";
+    default:                 return "Unknown";
+    }
   }
-  case MONK:
-  {
-    if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
-      return TREE_BREWMASTER;
-    if ( util_t::str_compare_ci( spec_str, "tank" ) )
-      return TREE_BREWMASTER;
-    else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
-      return TREE_MISTWEAVER;
-    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-      return TREE_MISTWEAVER;
-    else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
-      return TREE_WINDWALKER;
-    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
-      return TREE_WINDWALKER;
-    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-      return TREE_WINDWALKER;
-
-    break;
-  }
-  case PALADIN:
-  {
-    if ( util_t::str_compare_ci( spec_str, "holy" ) )
-      return TREE_HOLY;
-    if ( util_t::str_compare_ci( spec_str, "healer" ) )
-      return TREE_HOLY;
-    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
-      return TREE_PROTECTION;
-    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
-      return TREE_PROTECTION;
-    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-      return TREE_PROTECTION;
-    else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
-      return TREE_RETRIBUTION;
-    else if ( util_t::str_compare_ci( spec_str, "ret" ) )
-      return TREE_RETRIBUTION;
-    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
-      return TREE_RETRIBUTION;
-    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-      return TREE_RETRIBUTION;
-    break;
-  }
-  case PRIEST:
-  {
-    if ( util_t::str_compare_ci( spec_str, "discipline" ) )
-      return TREE_DISCIPLINE;
-    if ( util_t::str_compare_ci( spec_str, "disc" ) )
-      return TREE_DISCIPLINE;
-    else if ( util_t::str_compare_ci( spec_str, "holy" ) )
-      return TREE_HOLY;
-    else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
-      return TREE_SHADOW;
-    else if ( util_t::str_compare_ci( spec_str, "caster" ) )
-      return TREE_SHADOW;
-
-    break;
-  }
-  case ROGUE:
-  {
-    if ( util_t::str_compare_ci( spec_str, "assassination" ) )
-      return TREE_ASSASSINATION;
-    if ( util_t::str_compare_ci( spec_str, "ass" ) )
-      return TREE_ASSASSINATION;
-    if ( util_t::str_compare_ci( spec_str, "mut" ) )
-      return TREE_ASSASSINATION;
-    else if ( util_t::str_compare_ci( spec_str, "combat" ) )
-      return TREE_COMBAT;
-    else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
-      return TREE_SUBTLETY;
-    else if ( util_t::str_compare_ci( spec_str, "sub" ) )
-      return TREE_SUBTLETY;
-
-    break;
-  }
-  case SHAMAN:
-  {
-    if ( util_t::str_compare_ci( spec_str, "elemental" ) )
-      return TREE_ELEMENTAL;
-    if ( util_t::str_compare_ci( spec_str, "ele" ) )
-      return TREE_ELEMENTAL;
-    if ( util_t::str_compare_ci( spec_str, "caster" ) )
-      return TREE_ELEMENTAL;
-    else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
-      return TREE_ENHANCEMENT;
-    else if ( util_t::str_compare_ci( spec_str, "enh" ) )
-      return TREE_ENHANCEMENT;
-    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-      return TREE_ENHANCEMENT;
-    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
-      return TREE_RESTORATION;
-    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
-      return TREE_RESTORATION;
-    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-      return TREE_RESTORATION;
-    break;
-  }
-  case WARLOCK:
-  {
-    if ( util_t::str_compare_ci( spec_str, "afflication" ) )
-      return TREE_AFFLICTION;
-    if ( util_t::str_compare_ci( spec_str, "affl" ) )
-      return TREE_AFFLICTION;
-    if ( util_t::str_compare_ci( spec_str, "aff" ) )
-      return TREE_AFFLICTION;
-    else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
-      return TREE_DEMONOLOGY;
-    else if ( util_t::str_compare_ci( spec_str, "demo" ) )
-      return TREE_DEMONOLOGY;
-    else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
-      return TREE_DESTRUCTION;
-    else if ( util_t::str_compare_ci( spec_str, "destro" ) )
-      return TREE_DESTRUCTION;
-
-    break;
-  }
-  case WARRIOR:
-  {
-    if ( util_t::str_compare_ci( spec_str, "arms" ) )
-      return TREE_ARMS;
-    else if ( util_t::str_compare_ci( spec_str, "fury" ) )
-      return TREE_FURY;
-    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
-      return TREE_PROTECTION;
-    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
-      return TREE_PROTECTION;
-    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-      return TREE_PROTECTION;
-
-    break;
-  }
-  default: break;
-  }
-  return TREE_NONE;
 }
 
 resource_type_e util_t::translate_power_type( power_type_e pt )
@@ -1252,117 +1015,6 @@ resource_type_e util_t::translate_power_type( power_type_e pt )
   case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
   default:                  return RESOURCE_NONE;
   }
-}
-
-// util_t::talent_tree_string ===============================================
-
-const char* util_t::talent_tree_string( talent_tree_type_e tree, bool armory_format )
-{
-  if ( armory_format )
-  {
-    switch ( tree )
-    {
-    case TREE_BLOOD:         return "blood";
-    case TREE_UNHOLY:        return "unholy";
-
-    case TREE_BALANCE:       return "balance";
-    case TREE_FERAL:         return "feral";
-    case TREE_GUARDIAN:      return "guardian";
-    case TREE_RESTORATION:   return "restoration";
-
-    case TREE_BEAST_MASTERY: return "beast_mastery";
-    case TREE_MARKSMANSHIP:  return "marksmanship";
-    case TREE_SURVIVAL:      return "survival";
-
-    case TREE_ARCANE:        return "arcane";
-    case TREE_FIRE:          return "fire";
-    case TREE_FROST:         return "frost";
-
-    case TREE_BREWMASTER:    return "brewmaster";
-    case TREE_MISTWEAVER:    return "mistweaver";
-    case TREE_WINDWALKER:    return "windwalker";
-
-    case TREE_RETRIBUTION:   return "retribution";
-
-    case TREE_DISCIPLINE:    return "discipline";
-    case TREE_HOLY:          return "holy";
-    case TREE_SHADOW:        return "shadow";
-
-    case TREE_ASSASSINATION: return "assassination";
-    case TREE_COMBAT:        return "combat";
-    case TREE_SUBTLETY:      return "subtlety";
-
-    case TREE_ELEMENTAL:     return "elemental";
-    case TREE_ENHANCEMENT:   return "enhancement";
-
-    case TREE_AFFLICTION:    return "affliction";
-    case TREE_DEMONOLOGY:    return "demonology";
-    case TREE_DESTRUCTION:   return "destruction";
-
-    case TREE_ARMS:          return "arms";
-    case TREE_FURY:          return "fury";
-    case TREE_PROTECTION:    return "protection";
-
-    default:                 return "unknown";
-    }
-  }
-  else
-  {
-    switch ( tree )
-    {
-    case TREE_BLOOD:         return "Blood";
-    case TREE_UNHOLY:        return "Unholy";
-
-    case TREE_BALANCE:       return "Balance";
-    case TREE_FERAL:         return "Feral";
-    case TREE_GUARDIAN:      return "Guardian";
-    case TREE_RESTORATION:   return "Restoration";
-
-    case TREE_BEAST_MASTERY: return "Beast Mastery";
-    case TREE_MARKSMANSHIP:  return "Marksmanship";
-    case TREE_SURVIVAL:      return "Survival";
-
-    case TREE_ARCANE:        return "Arcane";
-    case TREE_FIRE:          return "Fire";
-    case TREE_FROST:         return "Frost";
-
-    case TREE_BREWMASTER:    return "Brewmaster";
-    case TREE_MISTWEAVER:    return "Mistweaver";
-    case TREE_WINDWALKER:    return "Windwalker";
-
-    case TREE_RETRIBUTION:   return "Retribution";
-
-    case TREE_DISCIPLINE:    return "Discipline";
-    case TREE_HOLY:          return "Holy";
-    case TREE_SHADOW:        return "Shadow";
-
-    case TREE_ASSASSINATION: return "Assassination";
-    case TREE_COMBAT:        return "Combat";
-    case TREE_SUBTLETY:      return "Subtlety";
-
-    case TREE_ELEMENTAL:     return "Elemental";
-    case TREE_ENHANCEMENT:   return "Enhancement";
-
-    case TREE_AFFLICTION:    return "Affliction";
-    case TREE_DEMONOLOGY:    return "Demonology";
-    case TREE_DESTRUCTION:   return "Destruction";
-
-    case TREE_ARMS:          return "Arms";
-    case TREE_FURY:          return "Fury";
-    case TREE_PROTECTION:    return "Protection";
-    default:                 return "Unknown";
-    }
-  }
-}
-
-// util_t::parse_talent_tree ================================================
-
-talent_tree_type_e util_t::parse_talent_tree( const std::string& name )
-{
-  for ( talent_tree_type_e i = TREE_NONE; i < TALENT_TREE_MAX; ++i )
-    if ( util_t::str_compare_ci( name, talent_tree_string( i ) ) )
-      return i;
-  return TREE_NONE;
 }
 
 // util_t::weapon_type_string ===============================================
@@ -2006,6 +1658,9 @@ unsigned util_t::race_id( race_type_e r )
   case RACE_BLOOD_ELF: return 10;
   case RACE_TAUREN: return 6;
   case RACE_GOBLIN: return 9;
+  case RACE_PANDAREN: return 24;
+  case RACE_PANDAREN_ALLIANCE: return 25;
+  case RACE_PANDAREN_HORDE: return 26;
   default: return 0;
   }
 }
@@ -2052,11 +1707,11 @@ player_type_e util_t::pet_class_type( pet_type_e c )
 
 unsigned util_t::pet_mask( pet_type_e p )
 {
-  if ( p <= PET_FEROCITY )
+  if ( p <= PET_FEROCITY_TYPE )
     return 0x1;
-  if ( p <= PET_TENACITY )
+  if ( p <= PET_TENACITY_TYPE )
     return 0x2;
-  if ( p <= PET_CUNNING )
+  if ( p <= PET_CUNNING_TYPE )
     return 0x4;
 
   return 0x0;
@@ -2138,6 +1793,9 @@ race_type_e util_t::translate_race_id( int rid )
   case 10: return RACE_BLOOD_ELF;
   case 11: return RACE_DRAENEI;
   case 22: return RACE_WORGEN;
+  case 24: return RACE_PANDAREN;
+  case 25: return RACE_PANDAREN_ALLIANCE;
+  case 26: return RACE_PANDAREN_HORDE;
   }
 
   return RACE_NONE;

@@ -159,7 +159,7 @@ action_expr_t* set_bonus_t::create_expression( action_t* action,
   return 0;
 }
 
-inline spell_id_t* set_bonus_array_t::create_set_bonus( uint32_t spell_id )
+inline const spell_data_t* set_bonus_array_t::create_set_bonus( uint32_t spell_id )
 {
   if ( ! p -> dbc.spell( spell_id ) )
   {
@@ -168,16 +168,16 @@ inline spell_id_t* set_bonus_array_t::create_set_bonus( uint32_t spell_id )
       p -> sim -> errorf( "Set bonus spell identifier %u for %s not found in spell data.",
                           spell_id, p -> name_str.c_str() );
     }
-    return 0;
+    return spell_data_t::nil();
   }
 
-  return new spell_id_t( p, "", spell_id );
+  return ( p -> dbc.spell( spell_id ) );
 }
 
 // set_bonus_array_t::set_bonus_array_t =====================================
 
 set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :
-  default_value( new spell_id_t( p, 0 ) ), set_bonuses(), p( p )
+  default_value( spell_data_t::nil() ), p( p )
 {
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
   // array, based on set_type_e enum
@@ -186,7 +186,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
     for ( int j = 0; j < N_TIER_BONUS; j++ )
     {
       int b = 3 * j / 2 + 1;
-      set_bonuses[ 1 + tier * 12 + b ].reset( create_set_bonus( a_bonus[ tier ][ j ] ) );
+      set_bonuses[ 1 + tier * 12 + b ] = create_set_bonus( a_bonus[ tier ][ j ] );
     }
   }
 }
@@ -211,10 +211,10 @@ bool set_bonus_array_t::has_set_bonus( set_type_e s ) const
   return false;
 }
 
-const spell_id_t* set_bonus_array_t::set( set_type_e s ) const
+const spell_data_t* set_bonus_array_t::set( set_type_e s ) const
 {
-  if ( has_set_bonus( s ) && set_bonuses[ s ].get() )
-    return set_bonuses[ s ].get();
+  if ( has_set_bonus( s ) && set_bonuses[ s ] )
+    return set_bonuses[ s ];
 
-  return default_value.get();
+  return default_value;
 }

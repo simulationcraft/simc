@@ -8,6 +8,8 @@
 #ifndef SC_WARLOCK_HPP
 #define SC_WARLOCK_HPP
 
+#if SC_WARLOCK == 1
+
 struct warlock_targetdata_t : public targetdata_t
 {
   dot_t*  dots_corruption;
@@ -442,5 +444,7 @@ struct ebon_imp_pet_t : public warlock_guardian_pet_t
   virtual double composite_attack_power() const;
   virtual void init_base();
 };
+
+#endif
 
 #endif

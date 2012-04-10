@@ -75,7 +75,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/dbc/sc_spell_data.cpp"
   "engine/dbc/sc_spell_info.cpp"
   "engine/sc_stats.cpp"
-  "engine/sc_talent.cpp"
   "engine/sc_target.cpp"
   "engine/sc_thread.cpp"
   "engine/sc_unique_gear.cpp"
@@ -101,6 +100,7 @@ SET(SIMC_ENGINE_SOURCE
 
 SET(SIMC_ENGINE_HEADERS
   "engine/simulationcraft.hpp"
+  "engine/dbc/specialization.hpp"
   "engine/utf8.h"
   "engine/utf8/checked.h"
   "engine/utf8/core.h"

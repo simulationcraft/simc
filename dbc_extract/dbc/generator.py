@@ -146,10 +146,9 @@ class SpecializationEnumGenerator(DataGenerator):
 
                 enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_name }
         
-        s  = '#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1)
-        s += '#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids)
-        s += 'enum specialization_t {\n'
+        s  = 'enum specialization_e {\n'
         s += '  SPEC_NONE            = 0,\n'
+        s += '  SPEC_PET             = 1,\n'
         for cls in xrange(0, len(enum_ids)):
             if enum_ids[cls][0] == None:
                 continue
@@ -165,8 +164,82 @@ class SpecializationEnumGenerator(DataGenerator):
                 
                 s += enum_str
         s += '};\n\n'
+               
+        return s
+
+class SpecializationListGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ChrSpecialization' ]
         
-        s += 'static specialization_t __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = \n{\n'
+        DataGenerator.__init__(self, options)
+    
+    
+    def generate(self, ids = None):
+        enum_ids = [
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ], # pets come here
+        ]
+        
+        spec_translations = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+        ]
+        
+        max_specialization = 0
+        for spec_id, spec_data in self._chrspecialization_db.iteritems():
+            if spec_data.class_id > 0:
+                spec_name = '%s_%s' % (
+                    DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
+                    spec_data.name.upper().replace(" ", "_"),
+                )
+                
+                if spec_data.spec_id > max_specialization:
+                    max_specialization = spec_data.spec_id
+                
+                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
+                    enum_ids[ spec_data.class_id ].append( None )
+                
+                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
+            else:
+                spec_name = 'PET_%s' % (
+                    spec_data.name.upper().replace(" ", "_")
+                )
+
+                if spec_data.spec_id > max_specialization:
+                    max_specialization = spec_data.spec_id
+
+                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ -1 ] ) ):
+                    enum_ids[ -1 ].append( None )
+
+                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_name }
+        
+        
+        s  = '#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1)
+        s += '#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids)
+
+        s += 'static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = \n{\n'
         for cls in xrange(0, len(enum_ids)):
             if enum_ids[cls][0] == None:
                 s += '  {\n'
@@ -187,6 +260,7 @@ class SpecializationEnumGenerator(DataGenerator):
         s += '};\n\n'
         
         return s
+
 
 class BaseScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
@@ -436,12 +510,11 @@ class TalentDataGenerator(DataGenerator):
                 continue
 
             if( index % 20 == 0 ):
-                s += '//{ Name                                ,    Id, Flgs,Tab,  Class,  Pet, Depend,DR ,Col,Row, {  Rank1,  Rank2,  Rank3 },S1,S2,S3 },\n'
+                s += '//{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },\n'
 
             fields = spell.field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
-            fields += [ '%2u' % 0 ]
             # These are now the pet talents
             if talent.spec_id > 0:
                 fields += [ '%#.04x' % 0 ]
@@ -458,11 +531,10 @@ class TalentDataGenerator(DataGenerator):
                 fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
                 fields += [ '%#.02x' % 0 ]
                            
-            fields += self._talent_db[0].field('id_replace', 'unk_15464_3')
-            fields += talent.field('col','row')
-            fields += [ '{ %s }' % ', '.join(talent.field( 'id_spell' ) + self._talent_db[0].field( 'id_spell', 'id_spell' )) ]
+            fields += talent.field('pet','col','row')
+            fields += talent.field( 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
-            fields += [ '0', '0', '0' ]
+            fields += [ ' 0' ]
         
             s += '  { %s },\n' % (', '.join(fields))
 
@@ -1598,7 +1670,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -1614,14 +1686,7 @@ class SpellDataGenerator(DataGenerator):
             fields += spell.field('extra_coeff')
 
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
-            if self._options.build >= 12694 and self._options.build < 12942:
-                range = self._spellrange_db[spell.id_range]
-                if range.id_range > 0:
-                    range = self._spellrange_db[range.id_range]
-                
-                fields += range.field('max_range')
-            else:
-                fields += self._spellrange_db[spell.id_range].field('min_range')
+            fields += self._spellrange_db[spell.id_range].field('min_range')
             fields += self._spellrange_db[spell.id_range].field('max_range')
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
             fields += self._spellcategories_db[spell.id_categories].field('category')
@@ -1815,7 +1880,7 @@ class MasteryAbilityGenerator(DataGenerator):
             max_ids
         )
         s += '// Class mastery abilities, wow build %d\n' % self._options.build
-        s += 'static unsigned __%s_data[][MAX_TALENT_TABS][%s_SIZE] = {\n' % (
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
         )
@@ -2016,7 +2081,7 @@ class SpecializationSpellGenerator(DataGenerator):
         )
 
         s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build 
-        s += 'static unsigned __%s_data[][MAX_TALENT_TABS][%s_SIZE] = {\n' % (
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
         )
@@ -2087,7 +2152,7 @@ class TalentSpecializationGenerator(DataGenerator):
         )
 
         s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build 
-        s += 'static unsigned __%s_data[][MAX_TALENT_TABS][%s_SIZE] = {\n' % (
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
             data_str,
             data_str.upper(),
         )

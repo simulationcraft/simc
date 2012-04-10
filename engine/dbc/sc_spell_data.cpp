@@ -281,19 +281,15 @@ struct spell_list_expr_t : public spell_data_expr_t
     {
       for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
       {
-        for ( int j = 0; j < 3; j++ )
-        {
-          if ( ! talent -> _rank_id[ j ] )
-            continue;
-
-          result_spell_list.push_back( talent -> _rank_id[ j ] );
-        }
+        if ( ! talent -> spell_id() )
+          continue;
+        result_spell_list.push_back( talent -> spell_id() );
       }
       break;
     }
     case DATA_CLASS_SPELL:
     {
-      for ( unsigned cls = 0; cls < 12; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class() - 1; cls++ )
       {
         for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
         {
@@ -310,9 +306,9 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_RACIAL_SPELL:
     {
-      for ( unsigned race = 0; race < 24; race++ )
+      for ( unsigned race = 0; race < sim -> dbc.race_ability_tree_size(); race++ )
       {
-        for ( unsigned cls = 0; cls < 12; cls++ )
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class()-1; cls++ )
         {
           for ( unsigned n = 0; n < sim -> dbc.race_ability_size(); n++ )
           {
@@ -327,9 +323,9 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_MASTERY_SPELL:
     {
-      for ( unsigned cls = 0; cls < 12; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class() - 1; cls++ )
       {
-        for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
+        for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
         {
           for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
           {
@@ -344,9 +340,9 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_SPECIALIZATION_SPELL:
     {
-      for ( unsigned cls = 0; cls < 12; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class()-1; cls++ )
       {
-        for ( unsigned tree = 0; tree < MAX_TALENT_TABS; tree++ )
+        for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
         {
           for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
           {
@@ -361,7 +357,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_GLYPH_SPELL:
     {
-      for ( unsigned cls = 0; cls < 12; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class()-1; cls++ )
       {
         for ( unsigned type = 0; type < GLYPH_MAX; type++ )
         {
@@ -378,7 +374,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_SET_BONUS_SPELL:
     {
-      for ( unsigned cls = 0; cls < 12; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class()-1; cls++ )
       {
         for ( unsigned tier = 0; tier < N_TIER; tier++ )
         {

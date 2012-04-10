@@ -291,7 +291,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   if ( p -> is_pet() )
     writer.print_attribute( "subtype", util_t::pet_type_string( p -> cast_pet() -> pet_type ) );
   writer.end_tag(); // </class>
-  writer.print_tag( "talent_tree", util_t::talent_tree_string( p -> primary_tree() ) );
+  writer.print_tag( "specialization", util_t::specialization_string( p -> primary_tree() ) );
   writer.print_tag( "primary_role", util_t::role_type_string( p -> primary_role() ) );
   writer.print_tag( "position", p -> position_str );
   writer.begin_tag( "dps" );
@@ -1199,7 +1199,6 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_attribute( "name", a -> name() );
         writer.print_tag( "school", util_t::school_type_string( a-> school ) );
         writer.print_tag( "resource", util_t::resource_type_string( a -> current_resource() ) );
-        writer.print_tag( "tree", util_t::talent_tree_string( a -> tree ) );
         writer.print_tag( "range", util_t::to_string( a -> range ) );
         writer.print_tag( "travel_speed", util_t::to_string( a -> travel_speed ) );
         writer.print_tag( "trigger_gcd", util_t::to_string( a -> trigger_gcd.total_seconds() ) );
@@ -1213,11 +1212,12 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "target", a -> target -> name() );
         }
-        if ( a -> tooltip() )
+        if ( a -> data().tooltip() )
         {
-          writer.print_tag( "tooltip", a -> tooltip() );
+          writer.print_tag( "tooltip", a -> data().tooltip() );
         }
-        writer.print_tag( "description", util_t::encode_html( a -> desc() ).c_str() );
+
+        writer.print_tag( "description", util_t::encode_html( a -> data().desc() ).c_str() );
 
         if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
@@ -1248,9 +1248,9 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         if ( a -> player -> type == DEATH_KNIGHT )
         {
           writer.begin_tag( "runes" );
-          writer.print_tag( "blood", util_t::to_string( a -> rune_cost() & 0x1 ) );
-          writer.print_tag( "frost", util_t::to_string( ( a -> rune_cost() >> 4 ) & 0x1 ) );
-          writer.print_tag( "unholy", util_t::to_string( ( a -> rune_cost() >> 2 ) & 0x1 ) );
+          writer.print_tag( "blood", util_t::to_string( a -> data().rune_cost() & 0x1 ) );
+          writer.print_tag( "frost", util_t::to_string( ( a -> data().rune_cost() >> 4 ) & 0x1 ) );
+          writer.print_tag( "unholy", util_t::to_string( ( a -> data().rune_cost() >> 2 ) & 0x1 ) );
           writer.print_tag( "runic_power_gain", util_t::to_string( a -> rp_gain ) );
           writer.end_tag(); // </runes>
         }

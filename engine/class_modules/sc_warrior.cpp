@@ -3852,6 +3852,7 @@ void player_t::warrior_init( sim_t* sim )
 
 // player_t::warrior_combat_begin ===========================================
 
-void player_t::warrior_combat_begin( sim_t* )
+void player_t::warrior_combat_begin( sim_t* /* s */ )
 {
+
 }

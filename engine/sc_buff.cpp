@@ -60,7 +60,7 @@ buff_t::buff_t( sim_t*             s,
                 bool               q,
                 bool               r,
                 int                id ) :
-  spell_id_t( 0, n.c_str() ),
+  s_data( spell_data_t::find( id, s -> dbc.ptr ) ),
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
   max_stack( ms ), aura_id( id ),
@@ -82,7 +82,7 @@ buff_t::buff_t( actor_pair_t       p,
                 bool               r,
                 int                id,
                 bool               act ) :
-  spell_id_t( p.source, n.c_str() ),
+  s_data( p.target->find_spell( id ) ),
   buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( ms ), aura_id( id ),
@@ -93,52 +93,14 @@ buff_t::buff_t( actor_pair_t       p,
 }
 
 buff_t::buff_t( const buff_creator_t& params ) :
-    spell_id_t( params._player.source, params._name.c_str(), params._id ),
+    s_data( params.s_data ),
     buff_duration( params._duration ), buff_cooldown( params._cooldown ), default_chance( params._chance ),
     name_str( params._name ), sim( params._player.target -> sim ), player( params._player.target ),
     source( params._player.source ), initial_source( params._player.source ),
-    max_stack( params._max_stack ), aura_id( 0 ),
+    max_stack( params._max_stack ), aura_id( params._id ),
     activated( true ), reverse( false ), constant( false ), quiet( false ),
     uptime_pct()
 {
-init();
-}
-// buff_t::init_buff_from_talent_ ===========================================
-
-void buff_t::init_from_talent_( player_t* /* p */, talent_t* talent )
-{
-  if ( talent -> rank() )
-  {
-    default_chance = talent -> sd -> proc_chance();
-    if ( default_chance <= 0 ) default_chance = 1.0;
-
-    spell_data_t* spell = talent -> trigger ? talent -> trigger : talent -> sd;
-
-    max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
-    buff_duration = spell -> duration();
-    buff_cooldown = spell -> cooldown();
-    aura_id = spell -> id();
-  }
-}
-
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( actor_pair_t p,
-                talent_t* talent, ... ) :
-  spell_id_t( p.source, talent -> trigger ? talent -> trigger -> name_cstr() : talent -> td -> name_cstr() ),
-  buff_duration( timespan_t::zero() ), buff_cooldown( timespan_t::zero() ), default_chance( 0 ),
-  name_str( s_token ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( 0 ),
-  activated( true ), reverse( false ), constant( false ), quiet( false ),
-  uptime_pct()
-{
-  init_from_talent_( p.source, talent );
-
-  va_list vap;
-  va_start( vap, talent );
-  parse_options( vap );
-  va_end( vap );
-
   init();
 }
 
@@ -157,14 +119,16 @@ void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
 
 buff_t::buff_t( actor_pair_t  p,
                 spell_data_t* spell, ... ) :
-  spell_id_t( p.source, spell -> name_cstr(), spell -> id() ),
-  buff_duration( timespan_t::zero() ), buff_cooldown( timespan_t::zero() ), default_chance( 0 ), name_str( s_token ),
+  s_data( spell ),
+  buff_duration( timespan_t::zero() ), buff_cooldown( timespan_t::zero() ), default_chance( 0 ), name_str( spell -> name_cstr() ),
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
   uptime_pct()
 {
   init_from_spell_( p.source, spell );
+
+  armory_t::format( name_str, FORMAT_ASCII_MASK );
 
   va_list vap;
   va_start( vap, spell );
@@ -284,12 +248,12 @@ buff_t::buff_t( actor_pair_t       p,
                 bool               q,
                 bool               r,
                 bool               act ) :
-  spell_id_t( p.source, n.c_str(), sname, 0 ),
-  buff_duration( duration() ),
-  default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
+  s_data( spell_data_t::find( sname, p.source -> dbc.ptr ) ),
+  buff_duration( data().duration() ),
+  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ) ,
   name_str( n ),
   sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
-  max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
+  max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
   aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
@@ -299,7 +263,7 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = initial_source -> get_cooldown( "buff_" + name_str );
   if ( cd < timespan_t::zero() )
   {
-    cooldown -> duration = p.source -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = data().cooldown();
   }
   else
   {
@@ -326,11 +290,11 @@ buff_t::buff_t( actor_pair_t       p,
                 bool               q,
                 bool               r,
                 bool               act ) :
-  spell_id_t( p.source, n.c_str(), id ),
-  buff_duration( duration() ),
-  default_chance( ( chance != -1 ) ? chance : ( ( proc_chance() != 0 ) ? proc_chance() : 1.0 ) ) ,
+  s_data( p.target -> find_spell( id ) ),
+  buff_duration( data().duration() ),
+  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ) ,
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
-  max_stack( ( max_stacks()!=0 ) ? max_stacks() : ( initial_stacks() != 0 ? initial_stacks() : 1 ) ),
+  max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
   aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
   uptime_pct()
@@ -340,7 +304,7 @@ buff_t::buff_t( actor_pair_t       p,
   cooldown = player -> get_cooldown( "buff_" + name_str );
   if ( cd < timespan_t::zero() )
   {
-    cooldown -> duration = player -> dbc.spell( spell_id() ) -> cooldown();
+    cooldown -> duration = data().cooldown();
   }
   else
   {
@@ -917,9 +881,9 @@ std::string buff_t::to_str() const
 {
   std::ostringstream s;
 
-  s << spell_id_t::to_str();
+  s << data().to_str();
   s << " max_stack=" << max_stack;
-  s << " initial_stack=" << initial_stacks();
+  s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown -> duration.total_seconds();
   s << " duration=" << buff_duration.total_seconds();
   s << " default_chance=" << default_chance;

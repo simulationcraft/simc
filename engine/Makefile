@@ -103,7 +103,6 @@ SRC = \
 	sc_harmful_spell.cpp \
 	sc_absorb.cpp \
 	sc_stats.cpp \
-	sc_talent.cpp \
 	sc_target.cpp \
 	sc_thread.cpp \
 	sc_unique_gear.cpp \

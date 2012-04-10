@@ -15,9 +15,13 @@
 // heal_target is set to player for now.
 // ==========================================================================
 
-// heal_t::init_heal_t_ == Heal Constructor Initializations =================
+// heal_t::heal_t ======== Heal Constructor ===================
 
-void heal_t::init_heal_t_()
+heal_t::heal_t( const std::string&  token,
+                player_t*           p,
+                const spell_data_t* s,
+                school_type_e       sc ) :
+  spell_base_t( ACTION_HEAL, token, p, s, sc )
 {
   if ( target -> is_enemy() || target -> is_add() )
     target = player;
@@ -41,28 +45,6 @@ void heal_t::init_heal_t_()
   {
     crit_multiplier *= 1.03;
   }
-}
-
-// heal_t::heal_t ======== Heal Constructor by Spell Name ===================
-
-heal_t::heal_t( const std::string&  n,
-                player_t*           p,
-                const char*         sname,
-                talent_tree_type_e  t ) :
-  spell_base_t( ACTION_HEAL, n, sname, p, t )
-{
-  init_heal_t_();
-}
-
-// heal_t::heal_t ======== Heal Constructor by Spell ID =====================
-
-heal_t::heal_t( const std::string&  n,
-                player_t*           p,
-                const uint32_t      id,
-                talent_tree_type_e  t ) :
-  spell_base_t( ACTION_HEAL, n, id, p, t )
-{
-  init_heal_t_();
 }
 
 // heal_t::player_buff ======================================================

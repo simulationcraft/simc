@@ -11,7 +11,13 @@
 
 // spell_t::spell_t =========================================================
 
-void spell_t::init_spell_t_()
+// == Harmful Spell Constructor ===============
+
+spell_t::spell_t( const std::string&  token,
+                  player_t*           p,
+                  const spell_data_t* s,
+                  school_type_e       sc ) :
+  spell_base_t( ACTION_SPELL, token, p, s, sc )
 {
   may_miss = true;
 
@@ -30,49 +36,6 @@ void spell_t::init_spell_t_()
   {
     crit_multiplier *= 1.03;
   }
-}
-
-// == Spell Constructor by spell_id_t ===============
-
-spell_t::spell_t( const spell_id_t&   s,
-                  talent_tree_type_e  t ) :
-  spell_base_t( ACTION_SPELL, s, t )
-{
-  init_spell_t_();
-}
-
-// == Spell Constructor by without database access ===============
-
-spell_t::spell_t( const std::string&  n,
-                  player_t*           p,
-                  resource_type_e     r,
-                  school_type_e       s,
-                  talent_tree_type_e  t ) :
-  spell_base_t( ACTION_SPELL, n, p, r, s, t )
-{
-  init_spell_t_();
-}
-
-// == Spell Constructor by Spell Name ===============
-
-spell_t::spell_t( const std::string&  n,
-                  const char*         sname,
-                  player_t*           p,
-                  talent_tree_type_e  t ) :
-  spell_base_t( ACTION_SPELL, n, sname, p, t )
-{
-  init_spell_t_();
-}
-
-// == Spell Constructor by Spell ID ===============
-
-spell_t::spell_t( const std::string&  n,
-                  const uint32_t      id,
-                  player_t*           p,
-                  talent_tree_type_e  t ) :
-  spell_base_t( ACTION_SPELL, n, id, p, t )
-{
-  init_spell_t_();
 }
 
 // spell_t::player_buff =====================================================

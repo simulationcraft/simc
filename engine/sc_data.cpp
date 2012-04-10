@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+
 // ==========================================================================
 // Spell Data
 // ==========================================================================
@@ -14,26 +15,6 @@ spell_data_nil_t spell_data_nil_t::singleton;
 spell_data_nil_t::spell_data_nil_t() : spell_data_t()
 {
   _effects = new std::vector< const spelleffect_data_t* >();
-}
-
-// spell_data_t::set_used ===================================================
-
-void spell_data_t::set_used( bool value )
-{
-  if ( value )
-    _flags |= FLAG_USED;
-  else
-    _flags &= ~FLAG_USED;
-}
-
-// spell_data_t::set_enabled ================================================
-
-void spell_data_t::set_enabled( bool value )
-{
-  if ( value )
-    _flags &= ~FLAG_DISABLED;
-  else
-    _flags |= FLAG_DISABLED;
 }
 
 // spell_data_t::is_class ===================================================
@@ -71,6 +52,7 @@ player_type_e spell_data_t::scaling_class() const
   case 7:  return SHAMAN;
   case 8:  return MAGE;
   case 9:  return WARLOCK;
+  case 10: return MONK;
   case 11: return DRUID;
   default: break;
   }
@@ -124,6 +106,17 @@ bool spell_data_t::flags( spell_attribute_e f ) const
   return ( _attributes[ index ] & mask ) != 0;
 }
 
+std::string spell_data_t::to_str() const
+{
+  std::ostringstream s;
+
+  s << " (ok=" << ( ok() ? "true" : "false" ) << ")";
+  s << " id=" << id();
+  s << " name=" << name_cstr();
+  s << " school=" << util_t::school_type_string( get_school_type() );
+  return s.str();
+}
+
 // ==========================================================================
 // Spell Effect Data
 // ==========================================================================
@@ -133,22 +126,6 @@ spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 spelleffect_data_nil_t::spelleffect_data_nil_t() :
   spelleffect_data_t()
 { _spell = _trigger_spell = spell_data_t::nil(); }
-
-void spelleffect_data_t::set_used( bool value )
-{
-  if ( value )
-    _flags |= FLAG_USED;
-  else
-    _flags &= ~FLAG_USED;
-}
-
-void spelleffect_data_t::set_enabled( bool value )
-{
-  if ( value )
-    _flags |= FLAG_ENABLED;
-  else
-    _flags &= ~FLAG_ENABLED;
-}
 
 resource_type_e spelleffect_data_t::resource_gain_type() const
 {
@@ -180,23 +157,8 @@ talent_data_nil_t talent_data_nil_t::singleton;
 
 talent_data_nil_t::talent_data_nil_t() :
   talent_data_t()
-{ spell1 = spell2 = spell3 = spell_data_t::nil(); }
+{ spell1 = spell_data_t::nil(); }
 
-void talent_data_t::set_used( bool value )
-{
-  if ( value )
-    _flags |= FLAG_USED;
-  else
-    _flags &= ~FLAG_USED;
-}
-
-void talent_data_t::set_enabled( bool value )
-{
-  if ( value )
-    _flags &= ~FLAG_DISABLED;
-  else
-    _flags |= FLAG_DISABLED;
-}
 
 bool talent_data_t::is_class( player_type_e c ) const
 {
@@ -216,27 +178,4 @@ bool talent_data_t::is_pet( pet_type_e p ) const
     return false;
 
   return ( ( _m_pet & mask ) == mask );
-}
-
-unsigned talent_data_t::rank_spell_id( unsigned rank ) const
-{
-  assert( rank <= MAX_RANK );
-
-  if ( rank == 0 )
-    return 0;
-
-  return _rank_id[ rank - 1 ];
-}
-
-unsigned talent_data_t::max_rank() const
-{
-  unsigned i;
-
-  for ( i = 0; i < MAX_RANK; i++ )
-  {
-    if ( _rank_id[ i ] == 0 )
-      break;
-  }
-
-  return i;
 }

@@ -2141,7 +2141,7 @@ std::string chart::gear_weights_wowreforge( const player_t*    p )
   s += "for:";
   s += util_t::player_type_string( p -> type );
   s += "-";
-  s += util_t::talent_tree_string( p -> primary_tree() );
+  s += util_t::specialization_string( p -> primary_tree() );
 
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {

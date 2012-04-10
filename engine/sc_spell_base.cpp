@@ -11,37 +11,19 @@
 
 // spell_base_t::spell_base_t =========================================================
 
-void spell_base_t::init_spell_base_t_()
+spell_base_t::spell_base_t( action_type_e at,
+                            const std::string& token, 
+                            player_t* p,
+                            const spell_data_t* s,
+                            school_type_e sc ) :
+  action_t( at, token, p, s, sc )
 {
   base_spell_power_multiplier = 1.0;
 
   min_gcd = timespan_t::from_seconds( 1.0 );
 
   hasted_ticks = true;
-}
-
-spell_base_t::spell_base_t( action_type_e at, const spell_id_t& s, talent_tree_type_e t ) :
-  action_t( at, s, t, true )
-{
-  init_spell_base_t_();
-}
-
-spell_base_t::spell_base_t( action_type_e at, const std::string& n, player_t* p, resource_type_e r, school_type_e s, talent_tree_type_e t ) :
-  action_t( at, n, p, r, s, t, true )
-{
-  init_spell_base_t_();
-}
-
-spell_base_t::spell_base_t( action_type_e at, const std::string& n, const char* sname, player_t* p, talent_tree_type_e t ) :
-  action_t( at, n, sname, p, t, true )
-{
-  init_spell_base_t_();
-}
-
-spell_base_t::spell_base_t( action_type_e at, const std::string& n, const uint32_t id, player_t* p, talent_tree_type_e t ) :
-  action_t( at, n, id, p, t, true )
-{
-  init_spell_base_t_();
+  special = true;
 }
 
 // spell_base_t::haste ===========================================================

@@ -304,7 +304,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_extra_data.inc"
+				RelativePath="engine\dbc\sc_extra_data.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -330,7 +330,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_extra_data_ptr.inc"
+				RelativePath="engine\dbc\sc_extra_data_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -380,7 +380,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_item_data.inc"
+				RelativePath="engine\dbc\sc_item_data.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -406,7 +406,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_item_data_ptr.inc"
+				RelativePath="engine\dbc\sc_item_data_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -524,7 +524,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_scale_data.inc"
+				RelativePath="engine\dbc\sc_scale_data.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -550,7 +550,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_scale_data_ptr.inc"
+				RelativePath="engine\dbc\sc_scale_data_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -612,7 +612,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_spell_data.inc"
+				RelativePath="engine\dbc\sc_spec_list.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -638,7 +638,33 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_spell_data_ptr.inc"
+				RelativePath="engine\dbc\sc_spell_data.inc"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="engine\dbc\sc_spell_data_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -668,7 +694,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_spell_lists.inc"
+				RelativePath="engine\dbc\sc_spell_lists.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -694,7 +720,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_spell_lists_ptr.inc"
+				RelativePath="engine\dbc\sc_spell_lists_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -724,11 +750,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_talent.cpp"
-				>
-			</File>
-			<File
-				RelativePath="engine\sc_talent_data.inc"
+				RelativePath="engine\dbc\sc_talent_data.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -754,7 +776,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_talent_data_ptr.inc"
+				RelativePath="engine\dbc\sc_talent_data_ptr.inc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -865,6 +887,18 @@
 			</File>
 			<File
 				RelativePath=".\engine\report\sc_report.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\data_definitions.hh"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\data_enums.hh"
+				>
+			</File>
+			<File
+				RelativePath=".\engine\dbc\specialization.hpp"
 				>
 			</File>
 			<File

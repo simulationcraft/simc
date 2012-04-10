@@ -27,8 +27,6 @@ struct enemy_t : public player_t
     *last = this;
     next = 0;
 
-    create_talents();
-    create_glyphs();
     create_options();
   }
 
@@ -105,7 +103,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct melee_t : public attack_t
 {
   melee_t( const std::string& name, player_t* player ) :
-    attack_t( name, player, RESOURCE_MANA, SCHOOL_PHYSICAL )
+    attack_t( name, player, spell_data_t::nil(), SCHOOL_PHYSICAL )
   {
     may_crit    = true;
     background  = true;
@@ -140,7 +138,7 @@ struct melee_t : public attack_t
 struct auto_attack_t : public attack_t
 {
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    attack_t( "auto_attack", p, RESOURCE_MANA, SCHOOL_PHYSICAL )
+    attack_t( "auto_attack", p, spell_data_t::nil(), SCHOOL_PHYSICAL )
   {
     p -> main_hand_attack = new melee_t( "melee_main_hand", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
@@ -194,7 +192,7 @@ struct auto_attack_t : public attack_t
 struct spell_nuke_t : public spell_t
 {
   spell_nuke_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_nuke", p, RESOURCE_MANA, SCHOOL_FIRE )
+    spell_t( "spell_nuke", p, spell_data_t::nil(), SCHOOL_FIRE )
   {
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
@@ -250,7 +248,7 @@ struct spell_nuke_t : public spell_t
 struct spell_aoe_t : public spell_t
 {
   spell_aoe_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_aoe", p, RESOURCE_MANA, SCHOOL_FIRE )
+    spell_t( "spell_aoe", p, spell_data_t::nil(), SCHOOL_FIRE )
   {
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
@@ -308,7 +306,7 @@ struct summon_add_t : public spell_t
   pet_t* pet;
 
   summon_add_t( player_t* p, const std::string& options_str ) :
-    spell_t( "summon_add", player, RESOURCE_MANA, SCHOOL_PHYSICAL ),
+    spell_t( "summon_add", player, spell_data_t::nil(), SCHOOL_PHYSICAL ),
     add_name( "" ), summoning_duration( timespan_t::zero() ), pet( 0 )
   {
     option_t options[] =

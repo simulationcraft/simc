@@ -408,7 +408,6 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">school:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">resource:</span>%s</li>\n"
-                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tree:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">range:</span>%.1f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
@@ -427,7 +426,6 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 a -> id,
                 util_t::school_type_string( a-> school ),
                 util_t::resource_type_string( a -> current_resource() ),
-                util_t::talent_tree_string( a -> tree ),
                 a -> range,
                 a -> travel_speed,
                 a -> trigger_gcd.total_seconds(),
@@ -438,8 +436,8 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
                 a -> harmful ? "true" : "false",
-                a -> tooltip(),
-                util_t::encode_html( a -> desc() ? std::string( a -> desc() ) : std::string() ).c_str() );
+                a -> data().tooltip(),
+                util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
@@ -489,9 +487,9 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                   "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Unholy Cost:</span>%d</li>\n"
                   "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Runic Power Gain:</span>%.2f</li>\n"
                   "\t\t\t\t\t\t\t\t\t\t</ul>\n",
-                  a -> rune_cost() & 0x1,
-                  ( a -> rune_cost() >> 4 ) & 0x1,
-                  ( a -> rune_cost() >> 2 ) & 0x1,
+                  a -> data().rune_cost() & 0x1,
+                  ( a -> data().rune_cost() >> 4 ) & 0x1,
+                  ( a -> data().rune_cost() >> 2 ) & 0x1,
                   a -> rp_gain );
       }
       if ( a -> weapon )
@@ -914,6 +912,8 @@ void print_html_talents( FILE* file, const player_t* p )
              "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
              "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
 
+#if 0
+// TO-DO
     for ( size_t i = 0; i < p -> talent_trees.size(); i++ )
     {
       size_t tree_size = p -> talent_trees[ i ].size();
@@ -945,6 +945,7 @@ void print_html_talents( FILE* file, const player_t* p )
                "\t\t\t\t\t\t\t\t\t</table>\n"
                "\t\t\t\t\t\t\t\t</div>\n" );
     }
+#endif
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
@@ -1620,9 +1621,9 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
                "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
                "\t\t\t\t\t\t\t\t\t</ul>\n"
                "\t\t\t\t\t\t\t\t</td>\n",
-               b -> s_id,
+               b -> data().id(),
                b -> cooldown -> name_str.c_str(),
-               b -> tooltip(),
+               b -> data().tooltip(),
                b -> max_stack,
                b -> buff_duration.total_seconds(),
                b -> cooldown -> duration.total_seconds(),
@@ -1693,9 +1694,9 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
                  "\t\t\t\t\t\t\t\t\t\t</ul>\n"
                  "\t\t\t\t\t\t\t\t\t</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 b -> s_id,
+                 b -> data().id(),
                  b -> cooldown -> name_str.c_str(),
-                 b -> tooltip(),
+                 b -> data().tooltip(),
                  b -> max_stack,
                  b -> buff_duration.total_seconds(),
                  b -> cooldown -> duration.total_seconds(),
@@ -1784,10 +1785,10 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
            pt
          );
 
-  if ( p -> primary_tree() != TREE_NONE )
+  if ( p -> primary_tree() != SPEC_NONE )
     fprintf( file,
-             "\t\t\t\t\t<li><b>Tree:</b> %s</li>\n",
-             util_t::talent_tree_string( p -> primary_tree() ) );
+             "\t\t\t\t\t<li><b>Spec:</b> %s</li>\n",
+             util_t::specialization_string( p -> primary_tree() ) );
 
   fprintf( file,
            "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"

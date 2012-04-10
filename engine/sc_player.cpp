@@ -7,31 +7,6 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// compare_talents ==========================================================
-
-struct compare_talents
-{
-  bool operator()( const talent_t* left, const talent_t* right ) const
-  {
-    const talent_data_t* l = left  -> t_data;
-    const talent_data_t* r = right -> t_data;
-
-    if ( l -> tab_page() == r -> tab_page() )
-    {
-      if ( l -> row() == r -> row() )
-      {
-        if ( l -> col() == r -> col() )
-        {
-          return ( l -> id() > r -> id() ); // not a typo: Dive comes before Dash in pet talent string!
-        }
-        return ( l -> col() < r -> col() );
-      }
-      return ( l -> row() < r -> row() );
-    }
-    return ( l -> tab_page() < r -> tab_page() );
-  }
-};
-
 // hymn_of_hope_buff ========================================================
 
 struct hymn_of_hope_buff_t : public buff_t
@@ -272,7 +247,7 @@ static bool parse_specialization( sim_t* sim,
 {
   sim -> active_player -> spec = util_t::translate_spec_str( sim -> active_player -> type, value );
 
-  if ( sim -> active_player -> spec == TREE_NONE )
+  if ( sim -> active_player -> spec == SPEC_NONE )
     sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
 
   return true;
@@ -296,7 +271,7 @@ player_t::player_t( sim_t*             s,
   party( 0 ), member( 0 ),
   skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
-  pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), spec( TREE_NONE ), invert_scaling( 0 ),
+  pet_list( 0 ), bugs( true ), spec( SPEC_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
@@ -456,9 +431,6 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.top();
 
-  range::fill( talent_tab_points, 0 );
-  range::fill( tree_type, TREE_NONE );
-
   if ( reaction_stddev == timespan_t::zero() ) reaction_stddev = reaction_mean * 0.25;
 }
 
@@ -514,11 +486,7 @@ player_t::~player_t()
   range::sort( all_callbacks );
   dispose( all_callbacks.begin(), range::unique( all_callbacks ) );
 
-  for ( size_t i=0; i < talent_trees.size(); i++ )
-    range::dispose( talent_trees[ i ] );
-
-  range::dispose( glyphs );
-  range::dispose( spell_list );
+  glyph_list.clear();
 
   delete sets;
 }
@@ -648,11 +616,11 @@ void player_t::init()
 
   initialized = 1;
   init_target();
-  init_talents();
-  init_spells();
-  init_glyphs();
-  init_rating();
   init_race();
+  init_glyphs();
+  replace_spells();
+  init_spells();
+  init_rating();
   init_base();
   init_racials();
   init_position();
@@ -1510,24 +1478,6 @@ void player_t::init_rating()
   rating.init( sim, dbc, level, type );
 }
 
-// player_t::init_talents ===================================================
-
-void player_t::init_talents()
-{
-  for ( size_t i = 0; i < MAX_TALENT_TREES; i++ )
-  {
-    talent_tab_points[ i ] = 0;
-
-    size_t size=talent_trees[ i ].size();
-    for ( size_t j = 0; j < size; j++ )
-    {
-      talent_tab_points[ i ] += talent_trees[ i ][ j ] -> rank();
-    }
-  }
-
-  specialization = primary_tab();
-}
-
 // player_t::init_glyphs ====================================================
 
 void player_t::init_glyphs()
@@ -1537,10 +1487,12 @@ void player_t::init_glyphs()
 
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
-    glyph_t* g = find_glyph( glyph_names[ i ] );
+    const spell_data_t* g = find_glyph( glyph_names[ i ] );
 
-    if ( g )
-      g -> enable();
+    if ( g && g -> ok() )
+    {
+      glyph_list.push_back( g );
+    }
   }
 }
 
@@ -3347,19 +3299,6 @@ void player_t::recalculate_resource_max( resource_type_e resource_type )
   }
 }
 
-// player_t::primary_tab ====================================================
-
-talent_tab_type_e player_t::primary_tab() const
-{
-  int best = 0;
-
-  for ( size_t i = 1; i < talent_tab_points.size(); i++ )
-    if ( talent_tab_points[ i ] > talent_tab_points[ best ] )
-      best = i;
-
-  return static_cast<talent_tab_type_e>( best );
-}
-
 // player_t::primary_role ===================================================
 
 role_type_e player_t::primary_role() const
@@ -3369,19 +3308,13 @@ role_type_e player_t::primary_role() const
 
 const char* player_t::primary_tree_name() const
 {
-  return util_t::talent_tree_string( primary_tree() );
+  return util_t::specialization_string( primary_tree() );
 }
 
 // player_t::primary_tree ===================================================
 
-talent_tree_type_e player_t::primary_tree() const
+specialization_e player_t::primary_tree() const
 {
-  /*
-  if ( specialization == TALENT_TAB_NONE )
-    return TREE_NONE;
-
-  return tree_type[ specialization ];
-  */
   return spec;
 }
 
@@ -4552,13 +4485,13 @@ struct blood_fury_t : public action_t
 struct rocket_barrage_t : public spell_t
 {
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
-    spell_t( "rocket_barrage", 69041, p )
+    spell_t( "rocket_barrage", p, ( p -> dbc.spell( 69041 ) ) )
   {
     check_race( RACE_GOBLIN );
     parse_options( NULL, options_str );
 
     base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = extra_coeff();
+    base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
   }
 
@@ -4789,9 +4722,9 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
-      if ( ! spell )
+      if ( ! spell ) 
       {
-        spell = new spell_t( "snapshot_spell", p );
+        spell = new spell_t( "snapshot_spell", p  );
         spell -> background = true;
         spell -> init();
       }
@@ -4984,7 +4917,7 @@ struct use_item_t : public action_t
       struct discharge_spell_t : public spell_t
       {
         discharge_spell_t( const char* n, player_t* p, double a, const school_type_e s, unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-          spell_t( n, p, RESOURCE_NONE, s )
+          spell_t( n, p, spell_data_t::nil(), s )
         {
           trigger_gcd = timespan_t::zero();
           base_dd_min = a;
@@ -5181,36 +5114,28 @@ pet_t* player_t::find_pet( const std::string& pet_name )
   return 0;
 }
 
-// player_t::parse_talent_trees =============================================
-
-bool player_t::parse_talent_trees( const std::array< int, MAX_TALENT_SLOTS > encoding )
-{
-  int index=0;
-
-  for ( size_t i = 0; i < talent_trees.size(); i++ )
-  {
-    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
-    {
-      talent_trees[ i ][ j ] -> set_rank( encoding[ index++ ] );
-    }
-  }
-
-  return true;
-}
-
 // player_t::parse_talents_armory ===========================================
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  std::array< int, MAX_TALENT_SLOTS > encoding;
+  std::array<int,MAX_TALENT_SLOTS> encoding;
 
-  size_t i;
-  size_t i_max = std::min( talent_string.size(), encoding.size() );
+  size_t i, j;
+  size_t i_max = std::min( talent_string.size(),
+                           static_cast< size_t >( MAX_TALENT_SLOTS ) );
+
+  for ( j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( i = 0; i < MAX_TALENT_COLS; i++ )
+    {
+      talent_list[ j * MAX_TALENT_COLS + i ] = 0;
+    }
+  }
 
   for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
-    if ( c < '0' || c > '5' )
+    if ( c < '0' || c > '1' )
     {
       sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
@@ -5221,7 +5146,29 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   while ( i < encoding.size() )
     encoding[ i++ ] = 0;
 
-  return parse_talent_trees( encoding );
+  for ( i = 0; i < encoding.size(); )
+  {
+    bool talent_on_row = encoding[ i++ ] != 0;
+    for ( ; ( i ) % MAX_TALENT_COLS ; i++ )
+    {
+      if ( encoding[ i ] )
+      {
+        if ( talent_on_row )
+        {
+          sim -> errorf( "Player %s has more than 1 talent on row %d in talent encoding.\n", name(), ( i / MAX_TALENT_COLS ) + 1 );
+          return false;
+        }
+        talent_on_row = true;
+      }
+    }
+  }
+
+  for ( j = 0; j < talent_list.size(); j++ )
+  {
+    talent_list[ j ] = encoding[ j ];
+  }
+
+  return true;
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -5231,7 +5178,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   // wowhead format: [tree_1]Z[tree_2]Z[tree_3] where the trees are character encodings
   // each character expands to a pair of numbers [0-5][0-5]
   // unused deeper talents are simply left blank instead of filling up the string with zero-zero encodings
-
+#if 0
   static const struct decode_t
   {
     char key, first, second;
@@ -5318,129 +5265,245 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   }
 
   return parse_talent_trees( encoding );
+#else
+  (void)talent_string;
+  return false;
+#endif
 }
 
-// player_t::create_talents =================================================
+// player_t::replace_spells ======================================================
 
-void player_t::create_talents()
+void player_t::replace_spells()
 {
-  int cid_mask = util_t::class_id_mask( type );
-  talent_data_t* talent_data = talent_data_t::list( dbc.ptr );
+  unsigned id;
+  unsigned int class_idx, spec_index;
 
-  for ( size_t i = 0; talent_data[ i ].name_cstr(); i++ )
+  if ( ! dbc.spec_idx( spec, class_idx, spec_index ) )
+    return;
+
+  // Search spec spells for spells to replace.
+  if ( spec != SPEC_NONE )
   {
-    talent_data_t& td = talent_data[ i ];
-
-    if ( cid_mask )
+    for ( unsigned int i = 0; i < dbc.specialization_ability_size(); i++ )
     {
-      if ( cid_mask & td.mask_class() )
+      if ( ( id = dbc.specialization_ability( class_idx, spec_index, i ) ) == 0 )
       {
-        talent_t* t = new talent_t( this, &td );
-        talent_trees[ td.tab_page() ].push_back( t );
-        option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, ( void* ) t );
+        break;
+      }
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id  )
+      {
+        // Found a spell we should replace
+        dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
       }
     }
-    else if ( td.mask_pet() )
+  }
+
+  // Search talents for spells to replace.
+  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      for ( size_t j = 0; j < talent_trees.size(); j++ )
+      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
       {
-        if ( td.mask_pet() & ( 1 << j ) )
+        talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+        if ( td && td -> replace_id() )
         {
-          talent_t* t = new talent_t( this, &td );
-          talent_trees[ j ].push_back( t );
-          option_t::add( options, t -> s_token.c_str(), OPT_TALENT_RANK, ( void* ) t );
+          dbc.replace_id( td -> replace_id(), td -> spell_id() );
+          break;
         }
       }
     }
   }
 
-  for ( size_t i = 0; i < talent_trees.size(); i++ )
+  // Search glyph spells for spells to replace.
+  for ( unsigned int j = 0; j < GLYPH_MAX; j++)
   {
-    std::vector<talent_t*>& tree = talent_trees[ i ];
-    if ( ! tree.empty() ) range::sort( tree, compare_talents() );
+    for ( unsigned int i = 0; i < dbc.glyph_spell_size(); i++ )
+    {
+      if ( ( id = dbc.glyph_spell( class_idx, j, i ) ) == 0 )
+      {
+        break;
+      }
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id )
+      {
+        // Found a spell that might need replacing. Check to see if we have that glyph activated
+        for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
+        {
+          if ( (*it) && (*it) -> id() == id )
+          {
+            dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
+          }
+        }
+      }
+    }
   }
 }
 
-// player_t::find_talent ====================================================
 
-talent_t* player_t::find_talent( const std::string& n,
-                                 int tree )
+// player_t::find_talent_spell ====================================================
+
+const spell_data_t* player_t::find_talent_spell( const std::string& n,
+                                                const std::string& token )
 {
-  for ( size_t i = 0; i < talent_trees.size(); i++ )
+  unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    if ( tree != TALENT_TAB_NONE && tree != static_cast<int>( i ) )
-      continue;
+    sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
+    return ( spell_data_t::nil() );
+  }
 
-    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
+  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_t* t = talent_trees[ i ][ j ];
-
-      if ( n == t -> td -> name_cstr() )
+      talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+      if ( td && ( td -> spell_id() == spell_id ) )
       {
-        return t;
+        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] )
+        {
+          return ( spell_data_t::nil() );
+        }
+        // We have that talent enabled.
+        dbc_t::add_token( spell_id, token, dbc.ptr );
+
+        return ( dbc.spell( spell_id ) );
       }
     }
   }
 
-  sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
-  return 0;
-}
-
-// player_t::create_glyphs ==================================================
-
-void player_t::create_glyphs()
-{
-  std::vector<unsigned> glyph_ids = dbc_t::glyphs( util_t::class_id( type ), dbc.ptr );
-
-  for ( size_t i = 0; i < glyph_ids.size(); i++ )
-  {
-    glyphs.push_back( new glyph_t( this, spell_data_t::find( glyph_ids[ i ], dbc.ptr ) ) );
-  }
+  /* Talent not enabled */
+  return ( spell_data_t::nil() );
 }
 
 // player_t::find_glyph =====================================================
 
-glyph_t* player_t::find_glyph( const std::string& n )
+const spell_data_t* player_t::find_glyph( const std::string& n )
 {
-  for ( size_t i = 0; i < glyphs.size(); i++ )
+  unsigned spell_id = dbc.glyph_spell_id( type, n.c_str() );
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    glyph_t* g = glyphs[ i ];
-    if ( n == g -> sd -> name_cstr() ) return g;
-    if ( n == g -> s_token ) return g; // Armory-ized
+    sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
+    return ( spell_data_t::nil() );
   }
 
-  sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
+  return ( dbc.spell( spell_id ) );
+}
 
-  return 0;
+
+// player_t::find_glyph_spell =====================================================
+
+const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std::string& token )
+{
+  const spell_data_t* g = find_glyph( n );
+
+  if ( ! g )
+    return ( spell_data_t::nil() );
+
+  for ( std::vector<const spell_data_t*>::iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
+  {
+    if ( (*i) && (*i) -> id() == g -> id() )
+    {
+      dbc_t::add_token( g -> id(), token, dbc.ptr );
+      return g;
+    }
+  }
+
+  return ( spell_data_t::nil() );
 }
 
 // player_t::find_specialization_spell ======================================
 
-spell_id_t* player_t::find_specialization_spell( const char* name, const char* token, talent_tree_type_e tree )
+const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token )
 {
-  spell_id_t* spec_spell = 0;
+  unsigned spell_id = dbc.specialization_ability_id( spec, name.c_str() );
 
-  unsigned spell_id = dbc.specialization_ability_id( type, name, util_t::spec_id( type, tree ) );
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+    return ( spell_data_t::nil() );
 
-  if ( spell_id > 0 )
-    spec_spell = new spell_id_t( this, token, name );
+  dbc_t::add_token( spell_id, token, dbc.ptr );
 
-  return spec_spell;
+  return ( dbc.spell( spell_id ) );
 }
 
 // player_t::find_mastery_spell =============================================
 
-spell_id_t* player_t::find_mastery_spell( const char* name, const char* token, talent_tree_type_e tree )
+const spell_data_t* player_t::find_mastery_spell( const std::string& name, const std::string& token )
 {
-  spell_id_t* mastery_spell = 0;
+  unsigned spell_id = dbc.mastery_ability_id( spec, name.c_str() );
 
-  unsigned spell_id = dbc.mastery_ability_id( type, name, util_t::spec_id( type, tree ) );
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+    return ( spell_data_t::nil() );
 
-  if ( spell_id > 0 )
-    mastery_spell = new spell_id_t( this, token, name );
+  dbc_t::add_token( spell_id, token, dbc.ptr );
 
-  return mastery_spell;
+  return ( dbc.spell( spell_id ) );
 }
+
+// player_t::find_mastery_spell =============================================
+
+const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx )
+{
+  unsigned spell_id = dbc.mastery_ability_id( s, idx );
+
+  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) )
+    return ( spell_data_t::nil() );
+
+  dbc_t::add_token( spell_id, token, dbc.ptr );
+
+  return ( dbc.spell( spell_id ) );
+}
+
+
+// player_t::find_class_spell =============================================
+
+const spell_data_t* player_t::find_class_spell( const std::string& name, const std::string& token, specialization_e s )
+{
+  unsigned spell_id = dbc.class_ability_id( type, spec, name.c_str() );
+
+  if ( s != SPEC_NONE && s != spec )
+    return spell_data_t::nil();
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  {
+    // Try find_specialization_spell() instead
+    return find_specialization_spell( name, token );
+  }
+
+  dbc_t::add_token( spell_id, token, dbc.ptr );
+
+  return ( dbc.spell( spell_id ) );
+}
+
+// player_t::find_pet_spell =============================================
+
+const spell_data_t* player_t::find_pet_spell( const std::string& name, const std::string& token )
+{
+  unsigned spell_id = dbc.pet_ability_id( type, name.c_str() );
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  {
+    return spell_data_t::nil();
+  }
+
+  dbc_t::add_token( spell_id, token, dbc.ptr );
+
+  return ( dbc.spell( spell_id ) );
+}
+
+// player_t::find_spell =============================================
+
+const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token )
+{
+  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() )
+    return ( spell_data_t::nil() );
+
+  dbc_t::add_token( id, token, dbc.ptr );
+
+  return ( dbc.spell( id ) );
+}
+
 
 namespace {
 action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )
@@ -6027,13 +6090,13 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     talents_str += util_t::player_type_string( type );
     talents_str += "-";
     // This is necessary because sometimes the talent trees change shape between live/ptr.
-    for ( size_t i = 0; i < talent_trees.size(); i++ )
+    for ( int j=0; j < MAX_TALENT_ROWS; j++ )
     {
-      for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
+      for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
       {
-        talent_t* t = talent_trees[ i ][ j ];
+        int t = talent_list[ j * MAX_TALENT_COLS + i ];
         std::stringstream ss;
-        ss << t -> rank();
+        ss << t;
         talents_str += ss.str();
       }
     }
@@ -6206,15 +6269,13 @@ void player_t::copy_from( player_t* source )
   talents_str += util_t::player_type_string( type );
   talents_str += "-";
   // This is necessary because sometimes the talent trees change shape between live/ptr.
-  for ( size_t i = 0; i < talent_trees.size(); i++ )
+  for ( int j=0; j < MAX_TALENT_ROWS; j++ )
   {
-    for ( size_t j = 0; j < talent_trees[ i ].size(); j++ )
+    for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_t* t = talent_trees[ i ][ j ];
-      talent_t* source_t = source -> find_talent( t -> td -> name_cstr() );
-      if ( source_t ) t -> set_rank( source_t -> rank() );
+      talent_list[ j * MAX_TALENT_COLS + i ] = source -> talent_list[ j * MAX_TALENT_COLS + i ];
       std::stringstream ss;
-      ss << t -> rank();
+      ss << talent_list[ j * MAX_TALENT_COLS + i ];
       talents_str += ss.str();
     }
   }

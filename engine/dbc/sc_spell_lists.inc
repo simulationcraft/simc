@@ -879,7 +879,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 #define TREE_SPECIALIZATION_SIZE (20)
 
 // Talent tree specialization abilities, wow build 15544
-static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATION_SIZE] = {
+static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
            0,
@@ -1563,7 +1563,7 @@ static unsigned __tree_specialization_data[][MAX_TALENT_TABS][TREE_SPECIALIZATIO
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
 // Class mastery abilities, wow build 15544
-static unsigned __class_mastery_ability_data[][MAX_TALENT_TABS][CLASS_MASTERY_ABILITY_SIZE] = {
+static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
            0,

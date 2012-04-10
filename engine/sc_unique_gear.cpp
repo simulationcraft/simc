@@ -133,7 +133,7 @@ struct discharge_proc_callback_t : public action_callback_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -157,7 +157,7 @@ struct discharge_proc_callback_t : public action_callback_t
     {
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -260,7 +260,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -284,7 +284,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
     {
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -393,7 +393,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       discharge_spell_t( const char* n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        spell_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -419,7 +419,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
       discharge_attack_t( const char* n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        attack_t( n, p, RESOURCE_NONE, ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
         discharge_proc = true;
         item_proc = true;
@@ -765,7 +765,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
   struct tyrandes_spell_t : public spell_t
   {
     tyrandes_spell_t( player_t* p, double max_mana ) :
-      spell_t( "tyrandes_doll", p, RESOURCE_NONE, SCHOOL_ARCANE )
+      spell_t( "tyrandes_doll", p, spell_data_t::nil(), SCHOOL_ARCANE )
     {
       trigger_gcd = timespan_t::zero();
       base_dd_min = max_mana;
@@ -887,7 +887,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     }
   };
 
-  double chance = 0.10;
+  double chance = 0.0;
 
   if ( p -> sim -> dtr_proc_chance >= 0.0 )
   {
@@ -901,41 +901,13 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   // FIXME: Need the proper chances here
   switch ( p -> type )
   {
-  case DRUID:
-  case MAGE:
-  case PRIEST:
-  case SHAMAN:
-  case WARLOCK:
-    switch ( p -> primary_tree() )
-    {
-    // Until we get actual numbers adjust each spec's chance based off testing done against Tier 11 sets.
-    // Should probably be re-done when all the Tier 12 sets are available.
-    case TREE_BALANCE:      chance = 0.11; break; // http://elitistjerks.com/f73/t110353-balance_cataclysm_4_2_a/p13/#post1998686
-    case TREE_ARCANE:       chance *= 1.25; break;
-    case TREE_FIRE:         chance *= 1.25; break;
-    case TREE_FROST:        chance *= 1.25; break;
-    case TREE_SHADOW:
-    case TREE_DISCIPLINE:   chance = 0.136; break;
-    case TREE_ELEMENTAL:    chance = 0.17; break; // Needs more data
-    case TREE_AFFLICTION:   chance = 0.17; break;
-    case TREE_DEMONOLOGY:   chance = 0.17; break;
-    case TREE_DESTRUCTION:  chance = 0.17; break;
-    default:
-      // Get a real spec...
-      break;
-    }
-    break;
-  default:
-    // Seriously?
-    break;
+  case DRUID:   chance = 0.08; break;
+  case MAGE:    chance = 0.08375; break;
+  case PRIEST:  chance = 0.09112; break;
+  case SHAMAN:  chance = 0.1139; break;
+  case WARLOCK: chance = 0.1139; break;
+  default: break;
   }
-
-  // 4.3 PTR nerf seems to be roughly a 2/3rding of the proc chance - only tested warlocks so far, 2011/10/26
-  chance *= 0.67;
-
-  // Moonkin was nerfed to 8% http://elitistjerks.com/f73/t114017-balance_wrathcalcs/p14/#post2041883 and followup posts
-  if ( p -> primary_tree() == TREE_BALANCE )
-    chance = 0.08;
 
   // Allow for override
   if ( p -> dtr_proc_chance >= 0.0 )
@@ -961,7 +933,7 @@ static void register_blazing_power( item_t* item )
   struct blazing_power_heal_t : public heal_t
   {
     blazing_power_heal_t( player_t* p, bool heroic ) :
-      heal_t( "blaze_of_life", p, heroic ? 97136 : 96966 )
+      heal_t( "blaze_of_life", p, ( p -> dbc.spell( heroic ? 97136 : 96966 ) ) )
     {
       trigger_gcd = timespan_t::zero();
       background  = true;
@@ -1024,7 +996,7 @@ static void register_windward_heart( item_t* item )
   struct windward_heart_heal_t : public heal_t
   {
     windward_heart_heal_t( player_t* p, bool heroic, bool lfr ) :
-      heal_t( "windward", p, heroic ? 109825 : lfr ? 109822 : 108000 )
+      heal_t( "windward", p, ( p -> dbc.spell( heroic ? 109825 : lfr ? 109822 : 108000 ) ) )
     {
       trigger_gcd = timespan_t::zero();
       background  = true;
@@ -1212,7 +1184,7 @@ static void register_bonelink_fetish( item_t* item )
     struct whirling_maw_t : public attack_t
     {
       whirling_maw_t( player_t* p, uint32_t spell_id ) :
-        attack_t( "bonelink_fetish", spell_id, p )
+        attack_t( "bonelink_fetish", p, ( p -> dbc.spell( spell_id ) ) )
       {
         trigger_gcd = timespan_t::zero();
         background = true;
@@ -1221,7 +1193,7 @@ static void register_bonelink_fetish( item_t* item )
         may_crit = true;
         proc = true;
         aoe = -1;
-        direct_power_mod = extra_coeff();
+        direct_power_mod = data().extra_coeff();
         init();
       }
     };
@@ -1351,7 +1323,7 @@ static void register_gurthalak( item_t* item )
     struct gurthalak_t : public spell_t
     {
       gurthalak_t( player_t* p, uint32_t tick_damage, const char* name ) :
-        spell_t( name, 52586, p )
+        spell_t( name, p, ( p -> dbc.spell( 52586 ) ) )
       {
         trigger_gcd = timespan_t::zero();
         background = true;
@@ -1468,7 +1440,7 @@ static void register_nokaled( item_t* item )
     struct nokaled_fire_t : public spell_t
     {
       nokaled_fire_t( player_t* p, uint32_t spell_id ) :
-        spell_t( "nokaled_fireblast", spell_id, p )
+        spell_t( "nokaled_fireblast", p, ( p -> dbc.spell( spell_id ) ) )
       {
         trigger_gcd = timespan_t::zero();
         background = true;
@@ -1482,7 +1454,7 @@ static void register_nokaled( item_t* item )
     struct nokaled_frost_t : public spell_t
     {
       nokaled_frost_t( player_t* p, uint32_t spell_id ) :
-        spell_t( "nokaled_iceblast", spell_id, p )
+        spell_t( "nokaled_iceblast", p, ( p -> dbc.spell( spell_id ) ) )
       {
         trigger_gcd = timespan_t::zero();
         background = true;
@@ -1496,7 +1468,7 @@ static void register_nokaled( item_t* item )
     struct nokaled_shadow_t : public spell_t
     {
       nokaled_shadow_t( player_t* p, uint32_t spell_id ) :
-        spell_t( "nokaled_shadowblast", spell_id, p )
+        spell_t( "nokaled_shadowblast", p, ( p -> dbc.spell( spell_id ) ) )
       {
         trigger_gcd = timespan_t::zero();
         background = true;
@@ -1559,7 +1531,7 @@ static void register_rathrak( item_t* item )
   struct rathrak_poison_t : public spell_t
   {
     rathrak_poison_t( player_t* p, uint32_t spell_id ) :
-      spell_t( "rathrak", spell_id, p )
+      spell_t( "rathrak", p, ( p -> dbc.spell( spell_id ) ) )
     {
       trigger_gcd = timespan_t::zero();
       background = true;
@@ -1608,7 +1580,7 @@ static void register_souldrinker( item_t* item )
   struct souldrinker_spell_t : public spell_t
   {
     souldrinker_spell_t( player_t* p, bool h, bool lfr ) :
-      spell_t( "souldrinker", h ? 109831 : lfr ? 109828 : 108022, p )
+      spell_t( "souldrinker", p, ( p -> dbc.spell( h ? 109831 : lfr ? 109828 : 108022 ) ) )
     {
       trigger_gcd = timespan_t::zero();
       background = true;
@@ -2292,7 +2264,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
   else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
   else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnSpellDamage_3978.8+35.3Shadow_45%_9Cd" : lfr ? "OnSpellDamage_3122.6+27.7Shadow_45%_9Cd" : "OnSpellDamage_3524.5+31.3Shadow_45%_9Cd" );
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_-6770+40.55Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : lfr ? "OnAttackHit_-5313+31.81Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : "OnAttackHit_-5997+35.92Physical_45%_9Cd_NoDodge_NoParry_NoBlock" ); // ICD, base damage, and ap coeff determined experimentally on heroic version. Assuming dbc has wrong base damage. Normal and LFR assumed to be changed by the same %
+  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_-5682+33.90Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : lfr ? "OnAttackHit_-4460.5+26.60Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : "OnAttackHit_-5035+30.00Physical_45%_9Cd_NoDodge_NoParry_NoBlock" ); // ICD, base damage, and ap coeff determined experimentally on heroic version. Assuming dbc has wrong base damage. Normal and LFR assumed to be changed by the same %
   else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
   else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_18MP5_8Stack_10Dur" : "OnSpellCast_16MP5_8Stack_10Dur" );

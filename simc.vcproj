@@ -198,6 +198,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_absorb.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_action.cpp"
 			>
 		</File>
@@ -275,6 +279,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_gear_stats.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_harmful_spell.cpp"
 			>
 		</File>
 		<File
@@ -450,15 +458,11 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\dbc\sc_spec_list.inc"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_spell_base.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_harmful_spell.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_absorb.cpp"
 			>
 		</File>
 		<File
@@ -487,10 +491,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_stats.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_talent.cpp"
 			>
 		</File>
 		<File
@@ -547,6 +547,10 @@
 		</File>
 		<File
 			RelativePath=".\engine\simulationcraft.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\dbc\specialization.hpp"
 			>
 		</File>
 		<File

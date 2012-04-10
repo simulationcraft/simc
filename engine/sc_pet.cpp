@@ -107,7 +107,7 @@ void pet_t::init_target()
 
 void pet_t::init_talents()
 {
-  specialization = primary_tab();
+  spec = primary_tree();
 }
 // pet_t::reset =============================================================
 
@@ -214,4 +214,23 @@ double pet_t::composite_player_multiplier( const school_type_e school, action_t*
   }
 
   return m;
+}
+
+// pet_t::find_pet_spell =============================================
+
+const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::string& token )
+{
+  unsigned spell_id = dbc.pet_ability_id( type, name.c_str() );
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  {
+    if ( ! owner )
+      return spell_data_t::nil();
+
+    return owner -> find_pet_spell( name, token );
+  }
+
+  dbc_t::add_token( spell_id, token, dbc.ptr );
+
+  return ( dbc.spell( spell_id ) );
 }

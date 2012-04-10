@@ -14,7 +14,7 @@ parser.add_option("-t", "--type", dest = "type",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum' ]), 
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [90]", 
                   default = 90, action = "store", type = "int")
@@ -190,6 +190,14 @@ elif options.type == 'spec_enum':
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
+
+    print g.generate(ids)
+elif options.type == 'spec_list':
+    g = dbc.generator.SpecializationListGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
     
     print g.generate(ids)
 elif options.type == 'set_list':

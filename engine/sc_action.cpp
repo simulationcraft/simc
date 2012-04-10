@@ -11,11 +11,26 @@
 
 // action_t::action_t =======================================================
 
-void action_t::init_action_t_()
+void action_t::init_dot( const std::string& name )
 {
-  target                         = player -> target;
-  id                             = 0;
+  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator doti = sim->targetdata_items[ 0 ].find( name );
+  if ( doti != sim -> targetdata_items[ 0 ].end() && doti -> second.first == player->type )
+    targetdata_dot_offset = ( int ) doti->second.second;
+}
+
+action_t::action_t( action_type_e       ty,
+                    const std::string&  token,
+                    player_t*           p,
+                    const spell_data_t* s,
+                    school_type_e       school ) :
+  s_data( s ? s : spell_data_t::nil() ),
+  sim( p->sim ), type( ty ), name_str( token ),
+  player( p ), target( p -> target ),
+  school( school )
+{
+  special                        = false;
   result                         = RESULT_NONE;
+  id                             = 0;
   aoe                            = 0;
   dual                           = false;
   callbacks                      = true;
@@ -149,6 +164,21 @@ void action_t::init_action_t_()
 
   range::fill( base_costs, 0.0 );
 
+  if ( name_str.empty() )
+  {
+    assert( data().ok() );
+
+    name_str = dbc_t::get_token( data().id() );
+
+    if ( name_str.empty() )
+    {
+      name_str = data().name_cstr();
+      armory_t::format( name_str, FORMAT_ASCII_MASK );
+      assert( ! name_str.empty() );
+      dbc_t::add_token( data().id(), name_str );
+    }
+  }
+
   init_dot( name_str );
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
@@ -165,99 +195,28 @@ void action_t::init_action_t_()
 
   stats = player -> get_stats( name_str , this );
 
-  id = data().id();
-  if ( tree == TREE_NONE )
-    tree = s_tree;
-  else if ( s_tree != TREE_NONE && s_tree != tree )
-  {
-    sim -> errorf( "Weirdness in action_t(): specified tree '%s' does not agree with ability tree '%s'.\n",
-                   util_t::talent_tree_string( tree ), util_t::talent_tree_string( s_tree ) );
-  }
-
-  if ( data().id() ) // FIXME: Replace with ok() check once it is in there
+  if ( data().ok() ) 
     parse_spell_data( data() );
 
-  if ( id && s_type == T_CLASS && ! data().is_level( player -> level ) && data().level() <= MAX_LEVEL )
+  if ( data().id() && ! data().is_level( player -> level ) && data().level() <= MAX_LEVEL )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n",
                    player -> name(), name(), player -> level, data().level() );
 
     background = true; // prevent action from being executed
   }
-  if ( id && s_type == T_SPEC &&
-       ( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) != player->spec ) )
+  if ( data().id() && ( player -> dbc.ability_specialization( data().id() ) != player -> primary_tree() ) &&
+                      ( player -> dbc.ability_specialization( data().id() ) != SPEC_NONE ) )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec (%s (%d) != %s (%d) ).\n",
                    player -> name(), name(),
-                   util_t::talent_tree_string( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
-                   static_cast<int>( util_t::translate_spec_id( player -> type, player->dbc.specialization_ability_tree( player -> type, id ) ) ),
-                   util_t::talent_tree_string( player->spec ),
-                   static_cast<int>( player->spec ) );
+                   util_t::specialization_string( player -> dbc.ability_specialization( data().id() ) ),
+                   static_cast<int>( player -> dbc.ability_specialization( data().id() ) ),
+                   util_t::specialization_string( player -> primary_tree() ),
+                   static_cast<int>( player -> primary_tree() ) );
 
     background = true; // prevent action from being executed
   }
-}
-
-void action_t::init_dot( const std::string& name )
-{
-  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator doti = sim->targetdata_items[ 0 ].find( name );
-  if ( doti != sim -> targetdata_items[ 0 ].end() && doti -> second.first == player->type )
-    targetdata_dot_offset = ( int ) doti->second.second;
-}
-
-action_t::action_t( action_type_e      ty,
-                    const std::string& n,
-                    player_t*          p,
-                    resource_type_e,
-                    school_type_e      s,
-                    talent_tree_type_e tr,
-                    bool               sp ) :
-  spell_id_t( p, n.c_str() ),
-  sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( s ),
-  tree( tr ), special( sp )
-{
-  init_action_t_();
-}
-
-action_t::action_t( action_type_e      ty,
-                    const std::string& n,
-                    const char*        sname,
-                    player_t*          p,
-                    talent_tree_type_e t,
-                    bool               sp ) :
-  spell_id_t( p, n.c_str(), sname ),
-  sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ),
-  tree( t ), special( sp )
-{
-  init_action_t_();
-}
-
-action_t::action_t( action_type_e      ty,
-                    const spell_id_t&  s,
-                    talent_tree_type_e t,
-                    bool               sp ) :
-  spell_id_t( s ),
-  sim( s_player->sim ), type( ty ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ),
-  tree( t ), special( sp )
-{
-  init_action_t_();
-}
-
-action_t::action_t( action_type_e      type,
-                    const std::string& n,
-                    const uint32_t     id,
-                    player_t*          p,
-                    talent_tree_type_e t,
-                    bool               sp ) :
-  spell_id_t( p, n.c_str(), id ),
-  sim( s_player->sim ), type( type ), name_str( s_token ),
-  player( s_player ), target( s_player -> target ), school( get_school_type() ),
-  tree( t ), special( sp )
-{
-  init_action_t_();
 }
 
 action_t::~action_t()
@@ -288,12 +247,12 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     return;
   }
 
+  id                   = spell_data.id();
   base_execute_time    = spell_data.cast_time( player -> level );
   cooldown -> duration = spell_data.cooldown();
   range                = spell_data.max_range();
   travel_speed         = spell_data.missile_speed();
   trigger_gcd          = spell_data.gcd();
-  school               = spell_id_t::get_school_type( spell_data.school_mask() );
   stats -> school      = school;
   rp_gain              = spell_data.runic_power_gain();
 
@@ -316,7 +275,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
-  if ( ! spelleffect_data.id() ) // FIXME: Replace/augment with ok() check once it is in there
+  if ( ! spelleffect_data.ok() ) 
   {
     sim -> errorf( "%s %s: parse_effect_data: no effect to parse.\n", player -> name(), name() );
     return;
@@ -1549,12 +1508,12 @@ void action_t::check_race( race_type_e race )
 
 // action_t::check_spec =====================================================
 
-void action_t::check_spec( talent_tree_type_e necessary_spec )
+void action_t::check_spec( specialization_e necessary_spec )
 {
   if ( player -> primary_tree() != necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
-                   player -> name(), name(), util_t::talent_tree_string( necessary_spec ) );
+                   player -> name(), name(), util_t::specialization_string( necessary_spec ) );
 
     background = true; // prevent action from being executed
   }
