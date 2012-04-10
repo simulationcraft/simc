@@ -135,13 +135,17 @@ void print_text_actions( FILE* file, player_t* p )
   util_t::fprintf( file, "  Actions:\n" );
 
   int max_length=0;
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> total_amount.mean > 0 )
       if ( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
+  }
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
       print_text_action( file, s, max_length );
@@ -151,8 +155,9 @@ void print_text_actions( FILE* file, player_t* p )
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
     bool first=true;
-    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
+      stats_t* s = pet -> stats_list[ i ];
       if ( s -> num_executes || s -> compound_amount > 0 )
       {
         if ( first )

@@ -713,8 +713,9 @@ int chart::raid_dpet( std::vector<std::string>& images,
   {
     player_t* p = sim -> players_by_dps[ i ];
 
-    for ( stats_t* st = p -> stats_list; st; st = st -> next )
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
+      stats_t* st = p -> stats_list[ i ];
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
       if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
@@ -810,8 +811,9 @@ std::string chart::action_dpet( const player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( stats_t* st = p -> stats_list; st; st = st -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
     if ( st -> apet <= 0 ) continue;
     if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
@@ -822,8 +824,9 @@ std::string chart::action_dpet( const player_t* p )
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    for ( stats_t* st = pet -> stats_list; st; st = st -> next )
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
+      stats_t* st = pet -> stats_list[ i ];
       if ( st -> quiet ) continue;
       if ( st -> apet <= 0 ) continue;
       if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
@@ -915,8 +918,9 @@ std::string chart::aps_portion( const player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( stats_t* st = p -> stats_list; st; st = st -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
     if ( st -> portion_aps.mean <= 0 ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
@@ -925,8 +929,9 @@ std::string chart::aps_portion( const player_t* p )
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
-    for ( stats_t* st = pet -> stats_list; st; st = st -> next )
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
+      stats_t* st = pet -> stats_list[ i ];
       if ( st -> quiet ) continue;
       if ( st -> portion_aps.mean <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
@@ -1022,8 +1027,9 @@ std::string chart::time_spent( const player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( stats_t* st = p -> stats_list; st; st = st -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
     if ( st -> total_time <= timespan_t::zero() ) continue;
     if ( st -> background ) continue;

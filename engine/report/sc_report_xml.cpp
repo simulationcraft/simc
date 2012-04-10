@@ -438,8 +438,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
 
   writer.begin_tag( "actions" );
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
       int id = 0;
@@ -1141,8 +1142,9 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
 
 void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions )
 {
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       // Action Details
@@ -1172,8 +1174,9 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "action_definitions" );
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 )
     {
       // Action Details

@@ -8,7 +8,7 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  name_str( n ), sim( p -> sim ), player( p ), next( 0 ), parent( 0 ),
+  name_str( n ), sim( p -> sim ), player( p ), parent( 0 ),
   school( SCHOOL_NONE ), type( STATS_DMG ),
   resource_gain( gain_t( "stats_gain_" + n ) ),
   //Flags

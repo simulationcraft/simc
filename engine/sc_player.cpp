@@ -123,12 +123,7 @@ struct vengeance_t : public event_t
 
 static bool has_foreground_actions( player_t* p )
 {
-  for ( size_t i = 0; i < p -> action_list.size(); ++i )
-  {
-    action_t* a = p -> action_list[ i ];
-    if ( ! a -> background ) return true;
-  }
-  return false;
+  return ( p -> foreground_action_list.size() > 0 );
 }
 
 // parse_talent_url =========================================================
@@ -498,11 +493,9 @@ player_t::~player_t()
     gain_list = g -> next;
     delete g;
   }
-  while ( stats_t* s = stats_list )
-  {
-    stats_list = s -> next;
-    delete s;
-  }
+
+  range::dispose( stats_list );
+
   while ( uptime_t* u = uptime_list )
   {
     uptime_list = u -> next;
@@ -577,9 +570,9 @@ bool player_t::init( sim_t* sim )
   bool too_quiet = true; // Check for at least 1 active player
   bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
 
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
-    player_t* p = sim -> actor_list[i];
+    player_t* p = sim -> actor_list[ i ];
     if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
     p -> init();
     if ( ! p -> quiet ) too_quiet = false;
@@ -601,7 +594,7 @@ bool player_t::init( sim_t* sim )
     log_t::output( sim, "Building Parties." );
 
   int party_index=0;
-  for ( unsigned i=0; i < sim -> party_encoding.size(); i++ )
+  for ( size_t i = 0; i < sim -> party_encoding.size(); i++ )
   {
     std::string& party_str = sim -> party_encoding[ i ];
 
@@ -624,10 +617,10 @@ bool player_t::init( sim_t* sim )
       party_index++;
 
       std::vector<std::string> player_names;
-      int num_players = util_t::string_split( player_names, party_str, ",;/" );
+      size_t num_players = util_t::string_split( player_names, party_str, ",;/" );
       int member_index=0;
 
-      for ( int j=0; j < num_players; j++ )
+      for ( size_t j=0; j < num_players; j++ )
       {
         player_t* p = sim -> find_player( player_names[ j ] );
         if ( ! p )
@@ -650,9 +643,9 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug )
     log_t::output( sim, "Registering Callbacks." );
 
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
-    player_t* p = sim -> actor_list[i];
+    player_t* p = sim -> actor_list[ i ];
     p -> register_callbacks();
   }
 
@@ -740,9 +733,8 @@ void player_t::init_items()
   if ( sim -> debug ) log_t::output( sim, "Initializing items for player (%s)", name() );
 
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, items_str, "/" );
-  int num_ilvl_items = 0;
-  for ( int i=0; i < num_splits; i++ )
+  util_t::string_split( splits, items_str, "/" );
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     if ( find_item( splits[ i ] ) )
     {
@@ -757,8 +749,8 @@ void player_t::init_items()
   for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util_t::armor_type_string( type, i );
 
-  size_t num_items = items.size();
-  for ( size_t i=0; i < num_items; i++ )
+  unsigned num_ilvl_items = 0;
+  for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
 
@@ -998,8 +990,8 @@ void player_t::init_spell()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing spells for player (%s)", name() );
 
-  initial_stats.spell_power       = gear.spell_power       + enchant.spell_power       + ( is_pet() ? 0 : sim -> enchant.spell_power );
-  initial_stats.mp5               = gear.mp5               + enchant.mp5               + ( is_pet() ? 0 : sim -> enchant.mp5 );
+  initial_stats.spell_power = gear.spell_power + enchant.spell_power + ( is_pet() ? 0 : sim -> enchant.spell_power );
+  initial_stats.mp5         = gear.mp5         + enchant.mp5         + ( is_pet() ? 0 : sim -> enchant.mp5 );
 
   initial_spell_power[ SCHOOL_MAX ] = base_spell_power + initial_stats.spell_power;
 
@@ -1068,19 +1060,19 @@ void player_t::init_defense()
   if ( type != ENEMY && type != ENEMY_ADD )
     base_dodge = dbc.dodge_base( type );
 
-  initial_stats.armor          = gear.armor          + enchant.armor          + ( is_pet() ? 0 : sim -> enchant.armor );
-  initial_stats.bonus_armor    = gear.bonus_armor    + enchant.bonus_armor    + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
-  initial_stats.dodge_rating   = gear.dodge_rating   + enchant.dodge_rating   + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
-  initial_stats.parry_rating   = gear.parry_rating   + enchant.parry_rating   + ( is_pet() ? 0 : sim -> enchant.parry_rating );
-  initial_stats.block_rating   = gear.block_rating   + enchant.block_rating   + ( is_pet() ? 0 : sim -> enchant.block_rating );
+  initial_stats.armor        = gear.armor        + enchant.armor        + ( is_pet() ? 0 : sim -> enchant.armor );
+  initial_stats.bonus_armor  = gear.bonus_armor  + enchant.bonus_armor  + ( is_pet() ? 0 : sim -> enchant.bonus_armor );
+  initial_stats.dodge_rating = gear.dodge_rating + enchant.dodge_rating + ( is_pet() ? 0 : sim -> enchant.dodge_rating );
+  initial_stats.parry_rating = gear.parry_rating + enchant.parry_rating + ( is_pet() ? 0 : sim -> enchant.parry_rating );
+  initial_stats.block_rating = gear.block_rating + enchant.block_rating + ( is_pet() ? 0 : sim -> enchant.block_rating );
 
-  initial_armor             = base_armor       + initial_stats.armor;
-  initial_bonus_armor       = base_bonus_armor + initial_stats.bonus_armor;
-  initial_miss              = base_miss;
-  initial_dodge             = base_dodge       + initial_stats.dodge_rating / rating.dodge;
-  initial_parry             = base_parry       + initial_stats.parry_rating / rating.parry;
-  initial_block             = base_block       + initial_stats.block_rating / rating.block;
-  initial_block_reduction   = base_block_reduction;
+  initial_armor           = base_armor       + initial_stats.armor;
+  initial_bonus_armor     = base_bonus_armor + initial_stats.bonus_armor;
+  initial_miss            = base_miss;
+  initial_dodge           = base_dodge       + initial_stats.dodge_rating / rating.dodge;
+  initial_parry           = base_parry       + initial_stats.parry_rating / rating.parry;
+  initial_block           = base_block       + initial_stats.block_rating / rating.block;
+  initial_block_reduction = base_block_reduction;
 
   if ( type != ENEMY && type != ENEMY_ADD )
   {
@@ -1107,6 +1099,7 @@ void player_t::init_weapon( weapon_t* w )
 void player_t::init_unique_gear()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing unique gear for player (%s)", name() );
+
   unique_gear_t::init( this );
 }
 
@@ -1115,6 +1108,7 @@ void player_t::init_unique_gear()
 void player_t::init_enchant()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing enchants for player (%s)", name() );
+
   enchant_t::init( this );
 }
 
@@ -1123,7 +1117,6 @@ void player_t::init_enchant()
 void player_t::init_resources( bool force )
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing resources for player (%s)", name() );
-  // The first 20pts of intellect/stamina only provide 1pt of mana/health.
 
   for ( int i=0; i < RESOURCE_MAX; i++ )
   {
@@ -1138,6 +1131,7 @@ void player_t::init_resources( bool force )
       }
       if ( i == RESOURCE_HEALTH )
       {
+        // The first 20pts of stamina only provide 1pt of health.
         double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
         resources.initial[ i ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
 
@@ -2742,8 +2736,8 @@ void player_t::combat_begin()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> combat_begin();
 
-  for ( stats_t* s = stats_list; s; s = s -> next )
-    s -> combat_begin();
+  for ( size_t i = 0; i < stats_list.size(); ++i )
+    stats_list[ i ] -> combat_begin();
 }
 
 // player_t::combat_end =====================================================
@@ -2784,8 +2778,8 @@ void player_t::combat_end()
   executed_foreground_actions.add( iteration_executed_foreground_actions );
   waiting_time.add( iteration_waiting_time.total_seconds() );
 
-  for ( stats_t* s = stats_list; s; s = s -> next )
-    s -> combat_end();
+  for ( size_t i = 0; i < stats_list.size(); ++i )
+    stats_list[ i ] -> combat_end();
 
   // DMG
   dmg.add( iteration_dmg );
@@ -2881,10 +2875,8 @@ void player_t::merge( player_t& other )
     gain -> merge( *other.get_gain( gain -> name_str ) );
   }
 
-  for ( stats_t* stats = stats_list; stats; stats = stats -> next )
-  {
-    stats -> merge( other.get_stats( stats -> name_str ) );
-  }
+  for ( size_t i = 0; i < stats_list.size(); ++i )
+    stats_list[ i ] -> merge( other.get_stats( stats_list[ i ] -> name_str ) );
 
   for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
   {
@@ -3032,8 +3024,8 @@ void player_t::reset()
       ( *i )->reset();
   }
 
-  for ( stats_t* s = stats_list; s; s = s -> next )
-    s -> reset();
+  for ( size_t i = 0; i < stats_list.size(); ++i )
+    stats_list[ i ] -> reset();
 
   potion_used = 0;
 
@@ -3880,27 +3872,24 @@ double player_t::assess_damage( double        amount,
 
   double mitigated_amount = target_mitigation( amount, school, type, result, action );
 
-  size_t num_absorbs = absorb_buffs.size();
   double absorbed_amount = 0;
-  if ( num_absorbs > 0 )
+  for ( size_t i = 0; i < absorb_buffs.size(); i++ )
   {
-    for ( size_t i = 0; i < num_absorbs; i++ )
+    double buff_value = absorb_buffs[ i ] -> value();
+    double value = std::min( mitigated_amount - absorbed_amount, buff_value );
+    absorbed_amount += value;
+    if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
+                                       name(), absorb_buffs[ i ] -> name_str.c_str(), value );
+    if ( value == buff_value )
+      absorb_buffs[ i ] -> expire();
+    else
     {
-      double buff_value = absorb_buffs[ i ] -> value();
-      double value = std::min( mitigated_amount - absorbed_amount, buff_value );
-      absorbed_amount += value;
-      if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
-                                         name(), absorb_buffs[ i ] -> name_str.c_str(), value );
-      if ( value == buff_value )
-        absorb_buffs[ i ] -> expire();
-      else
-      {
-        absorb_buffs[ i ] -> current_value -= value;
-        if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
-                                           name(), absorb_buffs[ i ] -> name_str.c_str(), absorb_buffs[ i ] -> current_value );
-      }
+      absorb_buffs[ i ] -> current_value -= value;
+      if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
+                                         name(), absorb_buffs[ i ] -> name_str.c_str(), absorb_buffs[ i ] -> current_value );
     }
   }
+
   mitigated_amount -= absorbed_amount;
 
   iteration_dmg_taken += mitigated_amount;
@@ -4283,10 +4272,10 @@ stats_t* player_t::find_stats( const std::string& n )
 {
   stats_t* stats = 0;
 
-  for ( stats = stats_list; stats; stats = stats -> next )
+  for ( size_t i = 0; i < stats_list.size(); ++i )
   {
-    if ( stats -> name_str == n )
-      break;
+    if ( stats_list[ i ] -> name_str == n )
+    { stats = stats_list[ i ]; break; }
   }
 
   return stats;
@@ -4350,7 +4339,7 @@ dot_t* player_t::get_dot( const std::string& name )
 
 gain_t* player_t::get_gain( const std::string& name )
 {
-  gain_t* g=0;
+  gain_t* g = 0;
 
   for ( g = gain_list; g; g = g -> next )
   {
@@ -4377,7 +4366,7 @@ gain_t* player_t::get_gain( const std::string& name )
 
 proc_t* player_t::get_proc( const std::string& name )
 {
-  proc_t* p=0;
+  proc_t* p = 0;
 
   for ( p = proc_list; p; p = p -> next )
   {
@@ -4404,30 +4393,20 @@ proc_t* player_t::get_proc( const std::string& name )
 
 stats_t* player_t::get_stats( const std::string& n, action_t* a )
 {
-  stats_t* stats;
-
-  for ( stats = stats_list; stats; stats = stats -> next )
-  {
-    if ( stats -> name_str == n )
-      break;
-  }
+  stats_t* stats = find_stats( n );
 
   if ( ! stats )
   {
     stats = new stats_t( n, this );
 
-    stats_t** tail= &stats_list;
-    while ( *tail && n > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-    stats -> next = *tail;
-    *tail = stats;
+    stats_list.push_back( stats );
   }
 
   assert( stats -> player == this );
 
-  if ( a ) stats -> action_list.push_back( a );
+  if ( a )
+    stats -> action_list.push_back( a );
+
   return stats;
 }
 

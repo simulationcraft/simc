@@ -1302,9 +1302,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t</tr>\n",
            p -> name() );
 
-  int i = 0;
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> rpe_sum > 0 )
     {
       print_html_action_resource( file, s, i );
@@ -1316,9 +1316,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
   {
     bool first=true;
 
-    i = 0;
-    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
+      stats_t* s = p -> stats_list[ i ];
       if ( s -> rpe_sum > 0 )
       {
         if ( first )
@@ -1332,7 +1332,6 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
                    pet -> name_str.c_str() );
         }
         print_html_action_resource( file, s, i );
-        i++;
       }
     }
   }
@@ -1351,7 +1350,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t\t<th>Average</th>\n"
            "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
-  i = 1;
+
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
     print_html_gain( file, g );
@@ -1998,9 +1997,9 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
            name.c_str(),
            p -> dps.mean );
 
-  int i = 0;
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       print_html_action_damage( file, s, p, i );
@@ -2012,9 +2011,9 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
   {
     bool first=true;
 
-    i = 0;
-    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
+      stats_t* s = p -> stats_list[ i ];
       if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
       {
         if ( first )

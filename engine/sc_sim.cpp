@@ -1319,6 +1319,16 @@ struct compare_name
   }
 };
 
+// compare_name =============================================================
+
+struct compare_stats_name
+{
+  bool operator()( stats_t* l, stats_t* r ) const
+  {
+    return l -> name_str <= r -> name_str;
+  }
+};
+
 namespace {
 
 void player_convergence( const int& iterations, const int& convergence_scale, const double& confidence_estimator,
@@ -1420,6 +1430,8 @@ void sim_t::analyze_player( player_t* p )
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
     u -> analyze();
 
+  range::sort( p -> stats_list, compare_stats_name() );
+
   if ( p -> quiet ) return;
   if ( p -> fight_length.mean == 0 ) return;
 
@@ -1436,12 +1448,12 @@ void sim_t::analyze_player( player_t* p )
   // Stats Analysis =========================================================
   std::vector<stats_t*> stats_list;
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
-    stats_list.push_back( s );
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+    stats_list.push_back( p -> stats_list[ i ] );
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
-      stats_list.push_back( s );
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      stats_list.push_back( pet -> stats_list[ i ] );
 
   int num_stats = ( int ) stats_list.size();
 

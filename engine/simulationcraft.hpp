@@ -4338,7 +4338,7 @@ struct player_t : public noncopyable
   std::vector<buff_t*> buff_list;
   proc_t*   proc_list;
   gain_t*   gain_list;
-  stats_t*  stats_list;
+  std::vector<stats_t*> stats_list;
   benefit_t* benefit_list;
   uptime_t* uptime_list;
   std::array< std::vector<double>, STAT_MAX > dps_plot_data;
@@ -5009,7 +5009,6 @@ struct stats_t
   const std::string name_str;
   sim_t* const sim;
   player_t* const player;
-  stats_t* next;
   stats_t* parent;
   // We should make school and type const or const-like, and either stricly define when, where and who defines the values,
   // or make sure that it is equal to the value of all it's actions.

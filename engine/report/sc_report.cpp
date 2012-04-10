@@ -493,18 +493,16 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
   // Stats Charts
   std::vector<stats_t*> stats_list;
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
-    stats_list.push_back( s );
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  stats_list.push_back( p -> stats_list[ i ] );
 
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( stats_t* s = pet -> stats_list; s; s = s -> next )
-      stats_list.push_back( s );
-
-  int num_stats = ( int ) stats_list.size();
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      stats_list.push_back( pet -> stats_list[ i ] );
 
   if ( ! p -> is_pet() )
   {
-    for ( int i=0; i < num_stats; i++ )
+    for ( size_t i = 0; i < stats_list.size(); i++ )
     {
       stats_t* s = stats_list[ i ];
 

@@ -363,8 +363,9 @@ void scaling_t::analyze_ability_stats( stat_type_e stat, double delta, player_t*
   if ( p -> sim -> statistics_level < 3 )
     return;
 
-  for ( stats_t* s = p -> stats_list; s; s = s -> next )
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
+    stats_t* s = p -> stats_list[ i ];
     stats_t* ref_s = ref_p -> find_stats( s -> name_str );
     stats_t* delta_s = delta_p -> find_stats( s -> name_str );
     assert( ref_s && delta_s );
