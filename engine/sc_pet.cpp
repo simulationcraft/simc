@@ -18,10 +18,7 @@ void pet_t::init_pet_t_()
   full_name_str = owner -> name_str + '_' + name_str;
   expiration = 0;
 
-  pet_t** last = &( owner -> pet_list );
-  while ( *last ) last = &( ( *last ) -> next_pet );
-  *last = this;
-  next_pet = 0;
+  owner -> pet_list.push_back( this );
 
   // Pets have inherent 5% critical strike chance if not overridden.
   base_spell_crit  = 0.05;
@@ -39,7 +36,8 @@ pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
               bool               g ) :
-  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( PET_NONE )
+  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
+  owner( o ), summoned( false ), pet_type( PET_NONE )
 {
   init_pet_t_();
 }
@@ -49,7 +47,8 @@ pet_t::pet_t( sim_t*             s,
               const std::string& n,
               pet_type_e         pt,
               bool               g ) :
-  player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ), owner( o ), next_pet( 0 ), summoned( false ), pet_type( pt )
+  player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
+  owner( o ), summoned( false ), pet_type( pt )
 {
   init_pet_t_();
 }

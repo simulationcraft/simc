@@ -152,8 +152,9 @@ void print_text_actions( FILE* file, const player_t* p )
     }
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     bool first=true;
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
@@ -343,8 +344,9 @@ void print_text_player_gains( FILE* file, const player_t* p )
 
 void print_text_pet_gains( FILE* file, const player_t* p )
 {
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     if ( pet -> dmg.mean <= 0 ) continue;
 
     int max_length = 0;
@@ -817,8 +819,10 @@ void report::print_text( FILE* file, sim_t* sim, bool detail )
     // Pets
     if ( sim -> report_pets_separately )
     {
-      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      const std::vector<pet_t*> pl = sim -> players_by_name[ i ] -> pet_list;
+      for ( size_t i = 0; i < pl.size(); ++i )
       {
+        pet_t* pet = pl[ i ];
         if ( pet -> summoned )
           print_text_player( file, pet );
       }
@@ -837,8 +841,10 @@ void report::print_text( FILE* file, sim_t* sim, bool detail )
       // Pets
       if ( sim -> report_pets_separately )
       {
-        for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+        const std::vector<pet_t*> pl = sim -> targets_by_name[ i ] -> pet_list;
+        for ( size_t i = 0; i < pl.size(); ++i )
         {
+          pet_t* pet = pl[ i ];
           if ( pet -> summoned )
             print_text_player( file, pet );
         }

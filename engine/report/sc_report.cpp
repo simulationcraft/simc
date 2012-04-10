@@ -457,12 +457,14 @@ void report::generate_player_buff_lists( const player_t*  p, player_t::report_in
     ri.buff_list.push_back( b );
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( size_t i = 0; i < pet -> buff_list.size(); ++i )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    for ( size_t k = 0; k < p -> pet_list[ i ] -> buff_list.size(); ++k )
     {
-      buff_t* b = pet -> buff_list[ i ];
+      buff_t* b = p -> pet_list[ i ] -> buff_list[ k ];
       ri.buff_list.push_back( b );
     }
+  }
   for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
   {
     buff_t* b = p -> sim -> buff_list[ i ];
@@ -503,9 +505,9 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   stats_list.push_back( p -> stats_list[ i ] );
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
-      stats_list.push_back( pet -> stats_list[ i ] );
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    for ( size_t k = 0; k < p -> pet_list[ i ] -> stats_list.size(); ++k )
+      stats_list.push_back( p -> pet_list[ i ] -> stats_list[ k ] );
 
   if ( ! p -> is_pet() )
   {

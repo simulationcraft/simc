@@ -60,7 +60,6 @@ virtual void combat_begin()
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
-  virtual pet_t* find_pet( const std::string& add_name );
   virtual double health_percentage() const;
   virtual void combat_end();
   virtual void recalculate_health();
@@ -542,17 +541,6 @@ void enemy_t::create_pets()
 
     create_pet( buffer );
   }
-}
-
-// enemy_t::find_add ========================================================
-
-pet_t* enemy_t::find_pet( const std::string& add_name )
-{
-  for ( pet_t* p = pet_list; p; p = p -> next_pet )
-    if ( p -> name_str == add_name )
-      return p;
-
-  return 0;
 }
 
 // enemy_t::health_percentage() =============================================

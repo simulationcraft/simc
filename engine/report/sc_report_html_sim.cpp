@@ -25,8 +25,10 @@ void print_html_contents( FILE*  file, const sim_t* sim )
   {
     for ( int i=0; i < num_players; i++ )
     {
-      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      for ( size_t i = 0; i < sim -> players_by_name[ i ] -> pet_list.size(); ++i )
       {
+        pet_t* pet = sim -> players_by_name[ i ] -> pet_list[ i ];
+
         if ( pet -> summoned )
           ++c;
       }
@@ -113,8 +115,9 @@ void print_html_contents( FILE*  file, const sim_t* sim )
         if ( sim -> report_pets_separately )
         {
           fputs( "\n\t\t\t\t\t\t<ul>\n", file );
-          for ( pet_t* pet = sim -> players_by_name[ pi ] -> pet_list; pet; pet = pet -> next_pet )
+          for ( size_t k = 0; k < sim -> players_by_name[ pi ] -> pet_list.size(); ++k )
           {
+            pet_t* pet = sim -> players_by_name[ pi ] -> pet_list[ k ];
             if ( pet -> summoned )
             {
               fprintf( file,
@@ -1475,8 +1478,10 @@ void print_html_( FILE* file, const sim_t* sim )
     // Pets
     if ( sim -> report_pets_separately )
     {
-      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      const std::vector<pet_t*> pl = sim -> players_by_name[ i ] -> pet_list;
+      for ( size_t i = 0; i < pl.size(); ++i )
       {
+        pet_t* pet = pl[ i ];
         if ( pet -> summoned )
           report::print_html_player( file, pet, 1 );
       }
@@ -1496,8 +1501,10 @@ void print_html_( FILE* file, const sim_t* sim )
       // Pets
       if ( sim -> report_pets_separately )
       {
-        for ( pet_t* pet = sim -> targets_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+        const std::vector<pet_t*> pl = sim -> targets_by_name[ i ] -> pet_list;
+        for ( size_t i = 0; i < pl.size(); ++i )
         {
+          pet_t* pet = pl[ i ];
           //if ( pet -> summoned )
           report::print_html_player( file, pet, 1 );
         }

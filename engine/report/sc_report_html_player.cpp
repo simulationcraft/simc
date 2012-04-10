@@ -1313,8 +1313,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
     }
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     bool first=true;
 
     for ( size_t i = 0; i < p -> stats_list.size(); ++i )
@@ -1356,8 +1357,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
   {
     print_html_gain( file, g );
   }
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     if ( pet -> fight_length.mean <= 0 ) continue;
     bool first = true;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
@@ -2008,8 +2010,9 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
     }
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     bool first=true;
 
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
@@ -2078,8 +2081,9 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
     }
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     for ( benefit_t* u = pet -> benefit_list; u; u = u -> next )
     {
       if ( u -> ratio > 0 )
@@ -2132,8 +2136,9 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
     }
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     for ( uptime_t* u = pet -> uptime_list; u; u = u -> next )
     {
       if ( u -> uptime > 0 )

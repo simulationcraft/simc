@@ -3867,7 +3867,7 @@ struct player_t : public noncopyable
   timespan_t  base_gcd;
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
-  pet_t*      pet_list;
+  std::vector<pet_t*> pet_list;
   int         bugs;
   specialization_e spec;
   int         invert_scaling;
@@ -4643,7 +4643,6 @@ struct pet_t : public player_t
 {
   std::string full_name_str;
   player_t* owner;
-  pet_t* next_pet;
   double stamina_per_owner;
   double intellect_per_owner;
   bool summoned;

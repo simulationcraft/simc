@@ -586,8 +586,9 @@ bool player_t::init( sim_t* sim )
         }
         p -> party = party_index;
         p -> member = member_index++;
-        for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+        for ( size_t i = 0; i < p -> pet_list.size(); ++i )
         {
+          pet_t* pet = p -> pet_list[ i ];
           pet -> party = party_index;
           pet -> member = member_index++;
         }
@@ -2559,9 +2560,9 @@ void player_t::combat_end( sim_t* sim )
 
 void player_t::combat_end()
 {
-  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
-    pet -> combat_end();
+    pet_list[ i ] -> combat_end();
   }
 
   if ( ! is_pet() )
@@ -2583,9 +2584,10 @@ void player_t::combat_end()
   dmg.add( iteration_dmg );
   if ( ! is_enemy() && ! is_add() )
     sim -> iteration_dmg += iteration_dmg;
-  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
-    iteration_dmg += pet -> iteration_dmg;
+    ;
+    iteration_dmg += pet_list[ i ] -> iteration_dmg;
   }
   compound_dmg.add( iteration_dmg );
 
@@ -2598,9 +2600,9 @@ void player_t::combat_end()
   heal.add( iteration_heal );
   if ( ! is_enemy() && ! is_add() )
     sim -> iteration_heal += iteration_heal;
-  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
-    iteration_heal += pet -> iteration_heal;
+    iteration_heal += pet_list[ i ] -> iteration_heal;
   }
   compound_heal.add( iteration_heal );
 
@@ -2994,9 +2996,9 @@ void player_t::demise()
 
   //sim -> cancel_events( this );
 
-  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
-    pet -> demise();
+    pet_list[ i ] -> demise();
   }
 }
 
@@ -3762,8 +3764,9 @@ player_t::heal_info_t player_t::assess_heal( double        amount,
 void player_t::summon_pet( const char* pet_name,
                            timespan_t  duration )
 {
-  for ( pet_t* p = pet_list; p; p = p -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
+    pet_t* p = pet_list[ i ];
     if ( p -> name_str == pet_name )
     {
       p -> summon( duration );
@@ -3777,8 +3780,9 @@ void player_t::summon_pet( const char* pet_name,
 
 void player_t::dismiss_pet( const char* pet_name )
 {
-  for ( pet_t* p = pet_list; p; p = p -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
+    pet_t* p = pet_list[ i ];
     if ( p -> name_str == pet_name )
     {
       p -> dismiss();
@@ -5107,9 +5111,12 @@ action_t* player_t::create_action( const std::string& name,
 
 pet_t* player_t::find_pet( const std::string& pet_name )
 {
-  for ( pet_t* p = pet_list; p; p = p -> next_pet )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
+  {
+    pet_t* p = pet_list[ i ];
     if ( p -> name_str == pet_name )
       return p;
+  }
 
   return 0;
 }

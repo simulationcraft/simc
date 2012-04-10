@@ -247,8 +247,10 @@ void print_xml_roster( sim_t* sim, xml_writer_t & writer )
   {
     player_t * current_player = sim -> players_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
-    for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+    const std::vector<pet_t*> pl = sim -> players_by_name[ i ] -> pet_list;
+    for ( size_t i = 0; i < pl.size(); ++i )
     {
+      pet_t* pet = pl[ i ];
       if ( pet -> summoned )
         print_xml_player( sim, writer, pet, current_player );
     }
@@ -266,8 +268,9 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
   {
     player_t * current_player = sim -> targets_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
-    for ( pet_t* pet = current_player -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < current_player -> pet_list.size(); ++i )
     {
+      pet_t* pet = current_player -> pet_list[ i ];
       if ( pet -> summoned )
         print_xml_player( sim, writer, pet, current_player );
     }

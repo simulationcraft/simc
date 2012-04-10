@@ -1504,15 +1504,18 @@ void sim_t::analyze_player( player_t* p )
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     stats_list.push_back( p -> stats_list[ i ] );
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    pet_t* pet = p -> pet_list[ i ];
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
       stats_list.push_back( pet -> stats_list[ i ] );
+  }
 
-  int num_stats = ( int ) stats_list.size();
+  size_t num_stats = stats_list.size();
 
   if ( ! p -> is_pet() )
   {
-    for ( int i=0; i < num_stats; i++ )
+    for ( size_t i = 0; i < num_stats; i++ )
     {
       stats_t* s = stats_list[ i ];
       s -> analyze();
@@ -1560,8 +1563,9 @@ void sim_t::analyze_player( player_t* p )
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
     g -> analyze( this );
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
       g -> analyze( this );
   }
@@ -1574,7 +1578,7 @@ void sim_t::analyze_player( player_t* p )
   // Damage Timelines =======================================================
 
   p -> timeline_dmg.assign( max_buckets, 0 );
-  for ( int i=0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
+  for ( size_t i = 0, is_hps = ( p -> primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = stats_list[ i ];
     if ( ( s -> type != STATS_DMG ) == is_hps )

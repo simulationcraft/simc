@@ -11,7 +11,7 @@
 
 struct adds_event_t : public raid_event_t
 {
-  int count;
+  unsigned count;
   double health;
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ), count( 1 ), health( 100000 )
@@ -24,11 +24,11 @@ struct adds_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
     {
-      pet -> resources.base[ RESOURCE_HEALTH ] = health;
+        sim -> target -> pet_list[ i ] -> resources.base[ RESOURCE_HEALTH ] = health;
     }
-    if ( count > sim -> target_adds )
+    if ( count > static_cast<unsigned>( sim -> target_adds ) )
     {
       sim -> target_adds = count;
     }
@@ -37,23 +37,19 @@ struct adds_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int i = 0;
-    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
     {
       if ( i >= count ) continue;
-      pet -> summon();
-      i++;
+      sim -> target -> pet_list[ i ] -> summon();
     }
   }
 
   virtual void finish()
   {
-    int i = 0;
-    for ( pet_t* pet = sim -> target -> pet_list; pet; pet = pet -> next_pet )
+    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
     {
       if ( i >= count ) continue;
-      pet -> dismiss();
-      i++;
+      sim -> target -> pet_list[ i ] -> dismiss();
     }
     raid_event_t::finish();
   }

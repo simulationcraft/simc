@@ -822,8 +822,9 @@ std::string chart::action_dpet( const player_t* p )
     stats_list.push_back( st );
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* st = pet -> stats_list[ i ];
@@ -927,8 +928,9 @@ std::string chart::aps_portion( const player_t* p )
     stats_list.push_back( st );
   }
 
-  for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
+    pet_t* pet = p -> pet_list[ i ];
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* st = pet -> stats_list[ i ];

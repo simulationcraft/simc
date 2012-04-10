@@ -818,12 +818,10 @@ public:
       double a = amount;
       p() -> resource_gain( RESOURCE_HEALTH, a * 0.06, player -> gains.vampiric_embrace );
 
-      pet_t* r = p() -> pet_list;
-
-      while ( r )
+      for ( size_t i = 0; i < player -> pet_list.size(); ++i )
       {
+        pet_t* r = player -> pet_list[ i ];
         r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
-        r = r -> next_pet;
       }
 
       int num_players = ( int ) p() -> party_list.size();
@@ -834,11 +832,10 @@ public:
 
         q -> resource_gain( RESOURCE_HEALTH, a * 0.03, q -> gains.vampiric_embrace );
 
-        r = q -> pet_list;
-        while ( r )
+        for ( size_t i = 0; i < player -> pet_list.size(); ++i )
         {
+          pet_t* r = player -> pet_list[ i ];
           r -> resource_gain( RESOURCE_HEALTH, a * 0.03, r -> gains.vampiric_embrace );
-          r = r -> next_pet;
         }
       }
     }
