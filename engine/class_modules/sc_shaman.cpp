@@ -26,7 +26,7 @@
 // - Lava Lash damage formula, currently weapon_dmg * ( 1.0 + ft_bonus + sf_stack * sf_bonus )
 // - Spirit Wolves scaling
 // - Maelstrom Weapon PPM (presumed to be 10ppm)
-// 
+//
 // Elemental:
 // - Shamanism
 //   * Additive or Multiplicative with others (spell data indicates additive)
@@ -433,37 +433,37 @@ struct shaman_spell_t : public spell_t
 
     return spell_t::usable_moving();
   }
-  
+
   virtual double composite_crit() const
   {
     double c = spell_t::composite_crit();
-    
+
     if ( school == SCHOOL_NATURE && td -> debuffs_stormstrike -> up() )
       c += td -> debuffs_stormstrike -> effectN( 1 ).percent();
-    
+
     return c;
   }
-  
+
   virtual double composite_haste() const
   {
     double h = spell_t::composite_haste();
-    
+
     if ( p() -> buff.elemental_mastery -> up() )
       h *= 1.0 / ( 1.0 + p() -> buff.elemental_mastery -> effectN( 1 ).percent() );
-    
+
     if ( p() -> buff.tier13_4pc_healer -> up() )
       h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> effect1().percent() );
 
     return h;
   }
-  
+
   virtual double composite_da_multiplier()
   {
     double m = spell_t::composite_da_multiplier();
-    
+
     if ( maelstrom && p() -> buff.maelstrom_weapon -> stack() > 0 )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
-    
+
     return m;
   }
 };
@@ -1366,8 +1366,8 @@ struct lava_burst_overload_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
-  virtual double composite_crit() const 
+
+  virtual double composite_crit() const
   {
     if ( td -> dots_flame_shock -> ticking )
       return 1.0;
@@ -1463,15 +1463,15 @@ struct searing_flames_t : public shaman_spell_t
     base_td          = 0.0;
     tick_power_mod   = 0.0;
   }
-  
+
   virtual void init()
   {
     shaman_spell_t::init();
-    
+
     // Override snapshot flags
     snapshot_flags   = STATE_CRIT | STATE_MUL_TA;
   }
-  
+
   virtual double composite_ta_multiplier()
   {
     return td -> debuffs_searing_flames -> stack();
@@ -1487,7 +1487,7 @@ struct searing_flames_t : public shaman_spell_t
 struct lightning_charge_t : public shaman_spell_t
 {
   int threshold;
-  
+
   lightning_charge_t( shaman_t* player, const std::string& n, bool dtr=false ) :
     shaman_spell_t( n.c_str(), 26364, player ),
     threshold( static_cast< int >( player -> spec.fulmination -> effectN( 1 ).base_value() ) )
@@ -1503,18 +1503,18 @@ struct lightning_charge_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual double composite_da_multiplier()
   {
     double m = spell_t::composite_da_multiplier();
-    
+
     if ( threshold > 0 )
     {
       int consuming_stack =  p() -> buff.lightning_shield -> check() - threshold;
       if ( consuming_stack > 0 )
         m *= consuming_stack;
     }
-    
+
     return m;
   }
 };
@@ -1576,22 +1576,22 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
 
     init();
   }
-  
+
   virtual double composite_attack_power() const
   {
     double ap = shaman_spell_t::composite_attack_power();
-    
+
     ap += p() -> composite_attack_power();
-    
+
     return ap;
   }
-  
+
   virtual double composite_attack_power_multiplier() const
   {
     double m = shaman_spell_t::composite_attack_power_multiplier();
-    
+
     m *= p() -> composite_attack_power_multiplier();
-    
+
     return m;
   }
 };
@@ -1610,11 +1610,11 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 
     init();
   }
-  
+
   virtual double composite_attack_power() const
   {
     double ap = shaman_melee_attack_t::composite_attack_power();
-    
+
     return ap + weapon -> buff_value;
   }
 };
@@ -1841,7 +1841,7 @@ struct lava_lash_t : public shaman_melee_attack_t
 {
   double ft_bonus;
   double sf_bonus;
-  
+
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
     shaman_melee_attack_t( "lava_lash", "Lava Lash", player ),
     ft_bonus( effectN( 2 ).percent() ),
@@ -1857,7 +1857,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     if ( weapon -> type == WEAPON_NONE )
       background        = true; // Do not allow execution.
   }
-  
+
   // Lava Lash multiplier calculation from
   // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
   // MoP: Vastly simplified, most bonuses are gone
@@ -1865,7 +1865,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   {
     double m = shaman_melee_attack_t::composite_da_multiplier();
 
-    m *= 1.0 + ( td -> debuffs_searing_flames -> check() * sf_bonus ) + 
+    m *= 1.0 + ( td -> debuffs_searing_flames -> check() * sf_bonus ) +
                ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
@@ -2149,7 +2149,7 @@ struct chain_lightning_t : public shaman_spell_t
     maelstrom             = true;
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     cooldown -> duration += p() -> spec.elemental_fury   -> effectN( 2 ).time_value();
-    base_multiplier      += p() -> glyph.chain_lightning -> effectN( 2 ).percent() + 
+    base_multiplier      += p() -> glyph.chain_lightning -> effectN( 2 ).percent() +
                             p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = ( 2 + ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value() );
     base_add_multiplier   = effect_chain_multiplier( 1 );
@@ -2339,13 +2339,13 @@ struct earthquake_rumble_t : public shaman_spell_t
     callbacks = false;
     stateless = true;
   }
-  
+
   virtual double composite_spell_power() const
   {
     double sp = shaman_spell_t::composite_spell_power();
-    
+
     sp += player -> composite_spell_power( SCHOOL_NATURE );
-    
+
     return sp;
   }
 
@@ -2404,7 +2404,7 @@ struct lava_burst_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual double action_multiplier() const
   {
     double m = shaman_spell_t::action_multiplier();
@@ -2418,13 +2418,13 @@ struct lava_burst_t : public shaman_spell_t
   virtual double action_da_multiplier() const
   {
     double m = shaman_spell_t::action_da_multiplier();
-    
+
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
-    
+
     return m;
   }
-  
+
   virtual double composite_crit() const
   {
     if ( td -> dots_flame_shock -> ticking )
@@ -2478,7 +2478,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     maelstrom          = true;
     stateless          = true;
-    base_multiplier   += p() -> glyph.telluric_currents -> effectN( 1 ).percent() + 
+    base_multiplier   += p() -> glyph.telluric_currents -> effectN( 1 ).percent() +
                          p() -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += p() -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + p() -> glyph.unleashed_lightning -> effectN( 2 ).percent();
@@ -2490,14 +2490,14 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual double action_da_multiplier() const
   {
     double m = shaman_spell_t::action_da_multiplier();
-    
+
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> effectN( 1 ).percent();
-    
+
     return m;
   }
 
@@ -2766,11 +2766,11 @@ struct earth_shock_t : public shaman_spell_t
       }
     }
   }
-  
+
   virtual void impact_s( action_state_t* state )
   {
     shaman_spell_t::impact_s( state );
-    
+
     if ( result_is_hit( state -> result ) )
     {
       if ( ! sim -> overrides.weakened_blows )
@@ -4239,10 +4239,10 @@ void shaman_t::arise()
 {
   player_t::arise();
 
-  if ( ! sim -> overrides.mastery && level >= dbc.spell( 116956 ) -> level() ) 
+  if ( ! sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( level ) )
     sim -> auras.mastery -> trigger();
 
-  if ( ! sim -> overrides.spell_power_multiplier && level >= dbc.spell( 77747 ) -> level )
+  if ( ! sim -> overrides.spell_power_multiplier && dbc.spell( 77747 ) -> is_level( level ) )
     sim -> auras.spell_power_multiplier -> trigger();
 
   // MoP TODO: Add level checks when the auras appear in spell data

@@ -1588,26 +1588,26 @@ void player_t::init_buffs()
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
   debuffs.flying       = new debuff_t( this, "flying",   -1 );
-  
+
   // MOP Debuffs
   debuffs.slowed_casting           = new debuff_t( this, 115803, "slowed_casting"         );
   debuffs.slowed_casting -> current_value = dbc.spell( 115803 ) -> effectN( 1 ).percent();
 
   debuffs.magic_vulnerability     = new debuff_t( this, 104225, "magic_vulnerability"    );
   debuffs.magic_vulnerability -> current_value = dbc.spell( 104225 ) -> effectN( 1 ).percent();
-  
+
   debuffs.physical_vulnerability  = new debuff_t( this,  81326, "physical_vulnerability" );
   debuffs.physical_vulnerability -> current_value = dbc.spell( 81326 ) -> effectN( 1 ).percent();
-  
+
   debuffs.ranged_vulnerability    = new debuff_t( this,   1130, "ranged_vulnerability"   );
   debuffs.ranged_vulnerability -> current_value = dbc.spell( 1130 ) -> effectN( 2 ).percent();
-  
+
   debuffs.mortal_wounds           = new debuff_t( this, 115804, "mortal_wounds"          );
   debuffs.mortal_wounds -> current_value = dbc.spell( 115804 ) -> effectN( 1 ).percent();
-  
+
   debuffs.weakened_armor          = new debuff_t( this, 113746, "weakened_armor"         );
   debuffs.weakened_armor -> current_value = dbc.spell( 113746 ) -> effectN( 1 ).percent();
-  
+
   debuffs.weakened_blows          = new debuff_t( this, 115798, "weakened_blows"         );
   debuffs.weakened_blows -> current_value = dbc.spell( 115798 ) -> effectN( 1 ).percent();
 }
@@ -2092,7 +2092,7 @@ double player_t::composite_armor() const
   a *= composite_armor_multiplier();
 
   a += bonus_armor;
-  
+
   if ( debuffs.weakened_armor -> check() )
     a *= 1.0 + debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
@@ -2522,7 +2522,7 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 // player_t::get_attribute() ================================================
 
 double player_t::get_attribute( attribute_type_e a ) const
-{ 
+{
   return composite_attribute( a ) * composite_attribute_multiplier( a );
 }
 
@@ -6640,11 +6640,11 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 {
   double m = 1.0;
 
-  if ( debuffs.magic_vulnerability -> check() && 
+  if ( debuffs.magic_vulnerability -> check() &&
       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
     m *= 1.0 + debuffs.magic_vulnerability -> value();
-  else if ( debuffs.physical_vulnerability -> check() && 
-      school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+  else if ( debuffs.physical_vulnerability -> check() &&
+      ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
     m *= 1.0 + debuffs.physical_vulnerability -> value();
 
   if ( debuffs.vulnerable -> check() )
