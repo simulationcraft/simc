@@ -4670,6 +4670,7 @@ struct player_t : public noncopyable
   virtual spell_id_t* find_mastery_spell( const char* name, const char* token = "", talent_tree_type_e tree = TREE_NONE );
 
   virtual action_expr_t* create_expression( action_t*, const std::string& name );
+  action_expr_t* create_resource_expression( action_t*, player_t*, const std::string& name );
 
   virtual void create_options();
   virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -5580,9 +5581,9 @@ struct dot_t
   void   recalculate_ready();
   void   refresh_duration();
   void   reset();
-  timespan_t remains();
+  timespan_t remains() const;
   void   schedule_tick();
-  int    ticks();
+  int    ticks() const;
   action_expr_t* create_expression( action_t* a, const std::string& name_str );
 
   const char* name() { return name_str.c_str(); }

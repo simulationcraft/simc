@@ -5452,6 +5452,15 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 }
 }
 
+struct player_action_expr_t : public action_expr_t
+{
+  const player_t* player;
+
+  player_action_expr_t( action_t* a, player_t* p, const std::string& n, token_type_e t ) :
+    action_expr_t( a, n, t ), player( p )
+  {}
+};
+
 // player_t::create_expression ==============================================
 
 action_expr_t* player_t::create_expression( action_t* a,
@@ -5459,17 +5468,6 @@ action_expr_t* player_t::create_expression( action_t* a,
 {
   // FIXME: Do not access player through action -> player, instead each expression should accept a player pointer 'this'.
 
-  int resource_type_e = util_t::parse_resource_type( name_str );
-  if ( resource_type_e != RESOURCE_NONE )
-  {
-    struct resource_expr_t : public action_expr_t
-    {
-      int resource_type_e;
-      resource_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-      virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ]; return TOK_NUM; }
-    };
-    return new resource_expr_t( a, name_str, resource_type_e );
-  }
   if ( name_str == "level" )
   {
     struct level_expr_t : public action_expr_t
@@ -5584,130 +5582,14 @@ action_expr_t* player_t::create_expression( action_t* a,
     };
     return new position_back_expr_t( a );
   }
+
+  if ( action_expr_t* q = create_resource_expression( a, this, name_str ) )
+    return q;
+
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
 
-  if ( num_splits == 2 && ( resource_type_e = util_t::parse_resource_type( splits[ 0 ] ) ) != RESOURCE_NONE )
-  {
-    if ( splits[ 1 ] == "deficit" )
-    {
-      struct resource_deficit_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        resource_deficit_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-        virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_e ] - action -> player -> resources.current[ resource_type_e ]; return TOK_NUM; }
-      };
-      return new resource_deficit_expr_t( a, name_str, resource_type_e );
-    }
-
-    else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
-    {
-      struct resource_pct_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        player_t* player;
-        resource_pct_expr_t( action_t* a, player_t* p, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ), player( p ) {}
-        virtual int evaluate() { result_num = player -> resources.current[ resource_type_e ] / player -> resources.max[ resource_type_e ] * 100.0; return TOK_NUM; }
-      };
-      return new resource_pct_expr_t( a, this, name_str, resource_type_e );
-    }
-
-    else if ( splits[ 1 ] == "max" )
-    {
-      struct resource_max_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        resource_max_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-        virtual int evaluate() { result_num = action -> player -> resources.max[ resource_type_e ]; return TOK_NUM; }
-      };
-      return new resource_max_expr_t( a, name_str, resource_type_e );
-    }
-    else if ( splits[ 1 ] == "max_nonproc" )
-    {
-      struct resource_max_nonproc_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        resource_max_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-        virtual int evaluate() { result_num = action -> player -> buffed.resource[ resource_type_e ]; return TOK_NUM; }
-      };
-      return new resource_max_nonproc_expr_t( a, name_str, resource_type_e );
-    }
-    else if ( splits[ 1 ] == "pct_nonproc" )
-    {
-      struct resource_pct_nonproc_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        resource_pct_nonproc_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-        virtual int evaluate() { result_num = action -> player -> resources.current[ resource_type_e ] / action -> player -> buffed.resource[ resource_type_e ] * 100.0; return TOK_NUM; }
-      };
-      return new resource_pct_nonproc_expr_t( a, name_str, resource_type_e );
-    }
-    else if ( splits[ 1 ] == "net_regen" )
-    {
-      struct resource_net_regen_expr_t : public action_expr_t
-      {
-        int resource_type_e;
-        resource_net_regen_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-        virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ resource_type_e ] - action -> player -> resource_lost[ resource_type_e ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
-      };
-      return new resource_net_regen_expr_t( a, name_str, resource_type_e );
-    }
-    else if ( splits[ 1 ] == "regen" )
-    {
-      if ( resource_type_e == RESOURCE_ENERGY )
-      {
-        struct resource_regen_energy_expr_t : public action_expr_t
-        {
-          int resource_type_e;
-          resource_regen_energy_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-          virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
-        };
-        return new resource_regen_energy_expr_t( a, name_str, resource_type_e );
-      }
-      else if ( resource_type_e == RESOURCE_FOCUS )
-      {
-        struct resource_regen_focus_expr_t : public action_expr_t
-        {
-          int resource_type_e;
-          resource_regen_focus_expr_t( action_t* a, const std::string& n, int r ) : action_expr_t( a, n, TOK_NUM ), resource_type_e( r ) {}
-          virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
-        };
-        return new resource_regen_focus_expr_t( a, name_str, resource_type_e );
-      }
-    }
-
-    else if ( splits[ 1 ] == "time_to_max" )
-    {
-      if ( resource_type_e == RESOURCE_ENERGY )
-      {
-        struct time_to_max_energy_expr_t : public action_expr_t
-        {
-          time_to_max_energy_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_energy", TOK_NUM ) {}
-          virtual int evaluate()
-          {
-            result_num = ( action -> player -> resources.max[ RESOURCE_ENERGY ] -
-                           action -> player -> resources.current[ RESOURCE_ENERGY ] ) /
-                         action -> player -> energy_regen_per_second(); return TOK_NUM;
-          }
-        };
-        return new time_to_max_energy_expr_t( a );
-      }
-      else if ( resource_type_e == RESOURCE_FOCUS )
-      {
-        struct time_to_max_focus_expr_t : public action_expr_t
-        {
-          time_to_max_focus_expr_t( action_t* a ) : action_expr_t( a, "time_to_max_focus", TOK_NUM ) {}
-          virtual int evaluate()
-          {
-            result_num = ( action -> player -> resources.max[ RESOURCE_FOCUS ] -
-                           action -> player -> resources.current[ RESOURCE_FOCUS ] ) /
-                         action -> player -> focus_regen_per_second(); return TOK_NUM;
-          }
-        };
-      }
-    }
-  }
-  else if ( splits[ 0 ] == "pet" )
+  if ( splits[ 0 ] == "pet" )
   {
     pet_t* pet = find_pet( splits[ 1 ] );
     if ( pet )
@@ -5943,6 +5825,159 @@ action_expr_t* player_t::create_expression( action_t* a,
   }
 
   return sim -> create_expression( a, name_str );
+}
+
+struct player_resource_action_expr_t : public player_action_expr_t
+{
+  const resource_type_e rt;
+
+  player_resource_action_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n, token_type_e t ) :
+    player_action_expr_t( a, p, n, t ), rt( r )
+  {}
+};
+
+action_expr_t* player_t::create_resource_expression( action_t* a, player_t* p , const std::string& name_str )
+{
+  resource_type_e r = util_t::parse_resource_type( name_str );
+
+  if ( r != RESOURCE_NONE )
+    {
+      struct resource_expr_t : public player_resource_action_expr_t
+      {
+        resource_expr_t( action_t* a, player_t* p, resource_type_e r ) :
+          player_resource_action_expr_t( a, p, r, "current_resource", TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> player -> resources.current[ rt ]; return TOK_NUM; }
+      };
+      return new resource_expr_t( a, p, r );
+    }
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
+
+  if ( num_splits == 2 && ( r = util_t::parse_resource_type( splits[ 0 ] ) ) != RESOURCE_NONE )
+  {
+    if ( splits[ 1 ] == "deficit" )
+    {
+      struct resource_deficit_expr_t : public player_resource_action_expr_t
+      {
+        resource_deficit_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> player -> resources.max[ rt ] - action -> player -> resources.current[ rt ]; return TOK_NUM; }
+      };
+      return new resource_deficit_expr_t( a, p, r, name_str );
+    }
+
+    else if ( splits[ 1 ] == "pct" || splits[ 1 ] == "percent" )
+    {
+      struct resource_pct_expr_t : public player_resource_action_expr_t
+      {
+        resource_pct_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = player -> resources.current[ rt ] / player -> resources.max[ rt ] * 100.0; return TOK_NUM; }
+      };
+      return new resource_pct_expr_t( a, p, r, name_str );
+    }
+
+    else if ( splits[ 1 ] == "max" )
+    {
+      struct resource_max_expr_t : public player_resource_action_expr_t
+      {
+        resource_max_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> player -> resources.max[ rt ]; return TOK_NUM; }
+      };
+      return new resource_max_expr_t( a, p, r, name_str );
+    }
+    else if ( splits[ 1 ] == "max_nonproc" )
+    {
+      struct resource_max_nonproc_expr_t : public player_resource_action_expr_t
+      {
+        resource_max_nonproc_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> player -> buffed.resource[ rt ]; return TOK_NUM; }
+      };
+      return new resource_max_nonproc_expr_t( a, p, r, name_str );
+    }
+    else if ( splits[ 1 ] == "pct_nonproc" )
+    {
+      struct resource_pct_nonproc_expr_t : public player_resource_action_expr_t
+      {
+        resource_pct_nonproc_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> player -> resources.current[ rt ] / action -> player -> buffed.resource[ rt ] * 100.0; return TOK_NUM; }
+      };
+      return new resource_pct_nonproc_expr_t( a, p, r, name_str );
+    }
+    else if ( splits[ 1 ] == "net_regen" )
+    {
+      struct resource_net_regen_expr_t : public player_resource_action_expr_t
+      {
+        resource_net_regen_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+          player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+        virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds() ? ( action -> player -> resource_gained[ rt ] - action -> player -> resource_lost[ rt ] ) / action -> sim -> current_time.total_seconds() : 0.0; return TOK_NUM; }
+      };
+      return new resource_net_regen_expr_t( a, p, r, name_str );
+    }
+    else if ( splits[ 1 ] == "regen" )
+    {
+      if ( r == RESOURCE_ENERGY )
+      {
+        struct resource_regen_energy_expr_t : public player_resource_action_expr_t
+        {
+          resource_regen_energy_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+            player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> player -> energy_regen_per_second(); return TOK_NUM; }
+        };
+        return new resource_regen_energy_expr_t( a, p, r, name_str );
+      }
+      else if ( r == RESOURCE_FOCUS )
+      {
+        struct resource_regen_focus_expr_t : public player_resource_action_expr_t
+        {
+          resource_regen_focus_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
+            player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
+          virtual int evaluate() { result_num = action -> player -> focus_regen_per_second(); return TOK_NUM; }
+        };
+        return new resource_regen_focus_expr_t( a, p, r, name_str );
+      }
+    }
+
+    else if ( splits[ 1 ] == "time_to_max" )
+    {
+      if ( r == RESOURCE_ENERGY )
+      {
+        struct time_to_max_energy_expr_t : public player_resource_action_expr_t
+        {
+          time_to_max_energy_expr_t( action_t* a, player_t* p, resource_type_e r ) :
+            player_resource_action_expr_t( a, p, r, "time_to_max_energy", TOK_NUM ) {}
+          virtual int evaluate()
+          {
+            result_num = ( action -> player -> resources.max[ RESOURCE_ENERGY ] -
+                           action -> player -> resources.current[ RESOURCE_ENERGY ] ) /
+                         action -> player -> energy_regen_per_second(); return TOK_NUM;
+          }
+        };
+        return new time_to_max_energy_expr_t( a, p, r );
+      }
+      else if ( r == RESOURCE_FOCUS )
+      {
+        struct time_to_max_focus_expr_t : public player_resource_action_expr_t
+        {
+          time_to_max_focus_expr_t( action_t* a, player_t* p, resource_type_e r ) :
+            player_resource_action_expr_t( a, p, r, "time_to_max_focus", TOK_NUM ) {}
+          virtual int evaluate()
+          {
+            result_num = ( action -> player -> resources.max[ RESOURCE_FOCUS ] -
+                           action -> player -> resources.current[ RESOURCE_FOCUS ] ) /
+                         action -> player -> focus_regen_per_second(); return TOK_NUM;
+          }
+        };
+        return new time_to_max_focus_expr_t( a, p, r );
+      }
+    }
+  }
+
+  return 0;
 }
 
 // player_t::create_profile =================================================

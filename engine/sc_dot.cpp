@@ -172,7 +172,7 @@ void dot_t::refresh_duration()
 
 // dot_t::remains ===========================================================
 
-timespan_t dot_t::remains()
+timespan_t dot_t::remains() const
 {
   if ( ! action ) return timespan_t::zero();
   if ( ! ticking ) return timespan_t::zero();
@@ -229,7 +229,7 @@ void dot_t::schedule_tick()
 
 // dot_t::ticks =============================================================
 
-int dot_t::ticks()
+int dot_t::ticks() const
 {
   if ( ! action ) return 0;
   if ( ! ticking ) return 0;
@@ -238,7 +238,7 @@ int dot_t::ticks()
 
 struct dot_action_expr_t : public action_expr_t
 {
-  dot_t* dot;
+  const dot_t* dot;
 
   dot_action_expr_t( action_t* a, dot_t* d, const std::string& n, token_type_e t ) :
     action_expr_t( a, n, t ), dot( d )
