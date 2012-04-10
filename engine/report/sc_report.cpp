@@ -424,21 +424,28 @@ void report::print_html_sample_data( FILE* file, const player_t* p, const sample
 
 }
 
-bool buff_is_dynamic( buff_t* b )
+struct buff_is_dynamic
 {
-  if ( ! b -> quiet && b -> start_count && ! b -> constant )
-    return false;
+  bool operator() ( const buff_t* b ) const
+  {
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
+      return false;
 
-  return true;
-}
+    return true;
+  }
+};
 
-bool buff_is_constant( buff_t* b )
+struct buff_is_constant
 {
-  if ( ! b -> quiet && b -> start_count && b -> constant )
-    return false;
+  bool operator() ( const buff_t* b ) const
+  {
+    if ( ! b -> quiet && b -> start_count && b -> constant )
+      return false;
 
-  return true;
-}
+    return true;
+  }
+};
+
 void report::generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
@@ -464,11 +471,11 @@ void report::generate_player_buff_lists( const player_t*  p, player_t::report_in
 
   // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
   //range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
-  range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic() );
   range::sort( ri.dynamic_buffs, report::buff_comp );
 
   // Filter out non-constant buffs, copy them into ri.constant_buffs and sort
-  range::remove_copy_if( ri.buff_list, back_inserter( ri.constant_buffs ), buff_is_constant );
+  range::remove_copy_if( ri.buff_list, back_inserter( ri.constant_buffs ), buff_is_constant() );
   range::sort( ri.constant_buffs, report::buff_comp );
 
   ri.buff_lists_generated = true;

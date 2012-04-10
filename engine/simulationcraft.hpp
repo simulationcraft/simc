@@ -1334,6 +1334,10 @@ template <typename Range>
 inline bool is_valid_utf8( const Range& r )
 { return utf8::is_valid( range::begin( r ), range::end( r ) ); }
 
+template <typename Range>
+inline typename range::traits<Range>::iterator max_element( Range& r )
+{ return std::max_element( range::begin( r ), range::end( r ) ); }
+
 } // namespace range ========================================================
 
 // timespan_t ===============================================================
@@ -3633,8 +3637,8 @@ public:
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
   double    iteration_adjust();
-  player_t* find_player( const std::string& name );
-  player_t* find_player( int index );
+  player_t* find_player( const std::string& name ) const;
+  player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   action_expr_t* create_expression( action_t*, const std::string& name );
@@ -4823,7 +4827,7 @@ struct compare_scale_factors
 
   compare_scale_factors( const player_t* p ) : player( p ) {}
 
-  bool operator()( stat_type_e l, stat_type_e r ) const
+  bool operator()( const stat_type_e& l, const stat_type_e& r ) const
   {
     return player -> scaling.get_stat( l ) >
            player -> scaling.get_stat( r );

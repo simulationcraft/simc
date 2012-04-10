@@ -12,7 +12,7 @@ struct chart {
   static std::string resource_color( int type );
 
   static std::string raid_downtime ( const std::vector<player_t*> &players_by_name, int print_styles );
-  static int raid_aps ( std::vector<std::string>& images, const sim_t*, std::vector<player_t*>, bool dps );
+  static int raid_aps ( std::vector<std::string>& images, const sim_t*, const std::vector<player_t*>&, bool dps );
   static int raid_dpet( std::vector<std::string>& images, const sim_t* );
   static int raid_gear( std::vector<std::string>& images, const sim_t* );
 

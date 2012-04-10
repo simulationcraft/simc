@@ -1760,11 +1760,11 @@ bool sim_t::execute()
 
 // sim_t::find_player =======================================================
 
-player_t* sim_t::find_player( const std::string& name )
+player_t* sim_t::find_player( const std::string& name ) const
 {
-  for ( unsigned int i = 0; i < actor_list.size(); i++ )
+  for ( size_t i = 0; i < actor_list.size(); i++ )
   {
-    player_t* p = actor_list[i];
+    player_t* p = actor_list[ i ];
     if ( name == p -> name() ) return p;
   }
   return 0;
@@ -1772,11 +1772,11 @@ player_t* sim_t::find_player( const std::string& name )
 
 // sim_t::find_player =======================================================
 
-player_t* sim_t::find_player( int index )
+player_t* sim_t::find_player( int index ) const
 {
-  for ( unsigned int i = 0; i < actor_list.size(); i++ )
+  for ( size_t i = 0; i < actor_list.size(); i++ )
   {
-    player_t* p = actor_list[i];
+    player_t* p = actor_list[ i ];
     if ( index == p -> index ) return p;
   }
   return 0;

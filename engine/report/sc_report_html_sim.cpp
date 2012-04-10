@@ -1236,32 +1236,8 @@ void print_html_masthead( FILE* file, const sim_t* sim )
   // End masthead section
 }
 
-
-// print_html =====================================================
-void print_html_( FILE* file, const sim_t* sim )
+void print_html_errors( FILE* file, const sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_name.size();
-
-  fprintf( file,
-           "<!DOCTYPE html>\n\n" );
-  fprintf( file,
-           "<html>\n\n" );
-
-  fprintf( file,
-           "\t<head>\n\n" );
-  fprintf( file,
-           "\t\t<title>Simulationcraft Results</title>\n\n" );
-  fprintf( file,
-           "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n" );
-
-  print_html_styles( file, sim );
-
-  fprintf( file,
-           "\t</head>\n\n" );
-
-  fprintf( file,
-           "\t<body>\n\n" );
-
   if ( ! sim -> error_list.empty() )
   {
     fprintf( file,
@@ -1273,18 +1249,10 @@ void print_html_( FILE* file, const sim_t* sim )
     fprintf( file,
              "\t\t</pre>\n\n" );
   }
+}
 
-  // Prints div wrappers for help popups
-  fprintf( file,
-           "\t\t<div id=\"active-help\">\n"
-           "\t\t\t<div id=\"active-help-dynamic\">\n"
-           "\t\t\t\t<div class=\"help-box\"></div>\n"
-           "\t\t\t\t<a href=\"#\" class=\"close\"><span class=\"hide\">close</span></a>\n"
-           "\t\t\t</div>\n"
-           "\t\t</div>\n\n" );
-
-  print_html_masthead( file, sim );
-
+void print_html_beta_warning( FILE* file )
+{
 #if SC_BETA
   fprintf( file,
            "\t\t<div id=\"notice\" class=\"section section-open\">\n" );
@@ -1307,63 +1275,10 @@ void print_html_( FILE* file, const sim_t* sim )
   fprintf( file,
            "\t\t</div>\n\n" );
 #endif
+}
 
-  if ( num_players > 1 )
-  {
-    print_html_contents( file, sim );
-  }
-
-  if ( num_players > 1 )
-  {
-    print_html_raid_summary( file, sim, sim -> report_information );
-    print_html_scale_factors( file, sim );
-  }
-
-  // Players
-  for ( int i=0; i < num_players; i++ )
-  {
-    report::print_html_player( file, sim -> players_by_name[ i ], i );
-
-    // Pets
-    if ( sim -> report_pets_separately )
-    {
-      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-      {
-        if ( pet -> summoned )
-          report::print_html_player( file, pet, 1 );
-      }
-    }
-  }
-
-  // Sim Summary
-  print_html_sim_summary( file, sim, sim -> report_information );
-
-  // Report Targets
-  if ( sim -> report_targets )
-  {
-    for ( int i=0; i < ( int ) sim -> targets_by_name.size(); i++ )
-    {
-      report::print_html_player( file, sim -> targets_by_name[ i ], i );
-
-      // Pets
-      if ( sim -> report_pets_separately )
-      {
-        for ( pet_t* pet = sim -> targets_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
-        {
-          //if ( pet -> summoned )
-          report::print_html_player( file, pet, 1 );
-        }
-      }
-    }
-  }
-
-  // Help Boxes
-  print_html_help_boxes( file, sim );
-
-  // jQuery
-  fprintf ( file,
-            "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>\n" );
-
+void print_html_image_load_scripts( FILE* file, const sim_t* sim )
+{
   // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
   // hosted_html=1, otherwise embed
   if ( sim -> hosted_html )
@@ -1498,6 +1413,106 @@ void print_html_( FILE* file, const sim_t* sim )
              "\t\t\t});\n"
              "\t\t</script>\n\n" );
   }
+}
+
+
+// print_html =====================================================
+void print_html_( FILE* file, const sim_t* sim )
+{
+  fprintf( file,
+           "<!DOCTYPE html>\n\n" );
+  fprintf( file,
+           "<html>\n\n" );
+
+  fprintf( file,
+           "\t<head>\n\n" );
+  fprintf( file,
+           "\t\t<title>Simulationcraft Results</title>\n\n" );
+  fprintf( file,
+           "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n\n" );
+
+  print_html_styles( file, sim );
+
+  fprintf( file,
+           "\t</head>\n\n" );
+
+  fprintf( file,
+           "\t<body>\n\n" );
+
+  print_html_errors( file, sim );
+
+  // Prints div wrappers for help popups
+  fprintf( file,
+           "\t\t<div id=\"active-help\">\n"
+           "\t\t\t<div id=\"active-help-dynamic\">\n"
+           "\t\t\t\t<div class=\"help-box\"></div>\n"
+           "\t\t\t\t<a href=\"#\" class=\"close\"><span class=\"hide\">close</span></a>\n"
+           "\t\t\t</div>\n"
+           "\t\t</div>\n\n" );
+
+  print_html_masthead( file, sim );
+
+  print_html_beta_warning( file );
+
+  size_t num_players = sim -> players_by_name.size();
+
+  if ( num_players > 1 )
+  {
+    print_html_contents( file, sim );
+  }
+
+  if ( num_players > 1 )
+  {
+    print_html_raid_summary( file, sim, sim -> report_information );
+    print_html_scale_factors( file, sim );
+  }
+
+  // Report Players
+  for ( size_t i = 0; i < num_players; ++i )
+  {
+    report::print_html_player( file, sim -> players_by_name[ i ], i );
+
+    // Pets
+    if ( sim -> report_pets_separately )
+    {
+      for ( pet_t* pet = sim -> players_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+      {
+        if ( pet -> summoned )
+          report::print_html_player( file, pet, 1 );
+      }
+    }
+  }
+
+  // Sim Summary
+  print_html_sim_summary( file, sim, sim -> report_information );
+
+  // Report Targets
+  if ( sim -> report_targets )
+  {
+    for ( size_t i = 0; i < sim -> targets_by_name.size(); ++i )
+    {
+      report::print_html_player( file, sim -> targets_by_name[ i ], i );
+
+      // Pets
+      if ( sim -> report_pets_separately )
+      {
+        for ( pet_t* pet = sim -> targets_by_name[ i ] -> pet_list; pet; pet = pet -> next_pet )
+        {
+          //if ( pet -> summoned )
+          report::print_html_player( file, pet, 1 );
+        }
+      }
+    }
+  }
+
+  // Help Boxes
+  print_html_help_boxes( file, sim );
+
+  // jQuery
+  fprintf ( file,
+            "\t\t<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>\n" );
+
+  print_html_image_load_scripts( file, sim );
 
   if ( num_players > 1 ) print_html_raid_imagemaps( file, sim, sim -> report_information );
 

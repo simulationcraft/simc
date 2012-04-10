@@ -421,7 +421,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 
 int chart::raid_aps( std::vector<std::string>& images,
                        const sim_t* sim,
-                       std::vector<player_t*> players_by_aps,
+                       const std::vector<player_t*>& players_by_aps,
                        bool dps )
 {
   int num_players = static_cast<int>( players_by_aps.size() );
@@ -431,9 +431,9 @@ int chart::raid_aps( std::vector<std::string>& images,
 
   double max_aps = 0;
   if ( dps )
-    max_aps = players_by_aps[ 0 ] -> dps.mean;
+    max_aps = players_by_aps[ 0 ]->dps.mean;
   else
-    max_aps = players_by_aps[ 0 ] -> hps.mean;
+    max_aps = players_by_aps[ 0 ]->hps.mean;
 
   std::string s = std::string();
   char buffer[ 1024 ];
@@ -693,7 +693,7 @@ int chart::raid_gear( std::vector<std::string>& images,
 
 struct compare_dpet
 {
-  bool operator()( stats_t* l, stats_t* r ) const
+  bool operator()( const stats_t* l, const stats_t* r ) const
   {
     return l -> apet > r -> apet;
   }
@@ -908,7 +908,7 @@ std::string chart::action_dpet( const player_t* p )
 
 struct compare_amount
 {
-  bool operator()( stats_t* l, stats_t* r ) const
+  bool operator()( const stats_t* l, const stats_t* r ) const
   {
     return l -> actual_amount.mean > r -> actual_amount.mean;
   }
@@ -1011,9 +1011,8 @@ std::string chart::aps_portion( const player_t* p )
 
 // chart_t::spent_time ======================================================
 
-namespace {
 
-struct compare_time
+struct compare_stats_time
 {
   bool operator()( const stats_t* l, const stats_t* r ) const
   {
@@ -1021,28 +1020,31 @@ struct compare_time
   }
 };
 
-}
+
+struct filter_waiting_stats
+{
+  bool operator()( const stats_t* st ) const
+  {
+    if ( st -> quiet ) return true;
+    if ( st -> total_time <= timespan_t::zero() ) return true;
+    if ( st -> background ) return true;
+
+    return false;
+  }
+};
 
 std::string chart::time_spent( const player_t* p )
 {
-  std::vector<stats_t*> stats_list;
+  std::vector<stats_t*> filtered_waiting_stats;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  {
-    stats_t* st = p -> stats_list[ i ];
-    if ( st -> quiet ) continue;
-    if ( st -> total_time <= timespan_t::zero() ) continue;
-    if ( st -> background ) continue;
+  // Filter stats we do not want in the chart ( quiet, background, zero total_time ) and copy them to filtered_waiting_stats
+  range::remove_copy_if( p->stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
-    stats_list.push_back( st );
-  }
-
-  assert( stats_list.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
-  int num_stats = static_cast<int>( stats_list.size() );
+  size_t num_stats = filtered_waiting_stats.size();
   if ( num_stats == 0 && p -> waiting_time.mean == 0 )
     return 0;
 
-  range::sort( stats_list, compare_time() );
+  range::sort( filtered_waiting_stats, compare_stats_time() );
 
   char buffer[ 1024 ];
 
@@ -1058,9 +1060,9 @@ std::string chart::time_spent( const player_t* p )
     s += "&amp;";
   }
   s += "chd=t:";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i = 0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * stats_list[ i ] -> total_time.total_seconds() / p -> fight_length.mean ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean ); s += buffer;
   }
   if ( p -> waiting_time.mean > 0 )
   {
@@ -1072,14 +1074,14 @@ std::string chart::time_spent( const player_t* p )
   s += "chdls=ffffff";
   s += "&amp;";
   s += "chco=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i = 0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
 
-    std::string school = school_color( stats_list[ i ] -> school );
+    std::string school = school_color( filtered_waiting_stats[ i ] -> school );
     if ( school.empty() )
     {
-      p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      p -> sim -> errorf( "chart_t::time_spent assertion error! School unknown, stats %s from %s.\n", filtered_waiting_stats[ i ] -> name_str.c_str(), p -> name() );
       assert( 0 );
     }
     s += school;
@@ -1091,9 +1093,9 @@ std::string chart::time_spent( const player_t* p )
   }
   s += "&amp;";
   s += "chl=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( size_t i = 0; i < num_stats; i++ )
   {
-    stats_t* st = stats_list[ i ];
+    stats_t* st = filtered_waiting_stats[ i ];
     if ( i ) s += "|";
     s += st -> name_str.c_str();
     snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time.total_seconds() ); s += buffer;
@@ -1126,7 +1128,7 @@ std::string chart::time_spent( const player_t* p )
 
 struct compare_gain
 {
-  bool operator()( gain_t* l, gain_t* r ) const
+  bool operator()( const gain_t* l, const gain_t* r ) const
   {
     return l -> actual > r -> actual;
   }
@@ -1211,7 +1213,7 @@ std::string chart::scale_factors( const player_t* p )
   }
 
   assert( scaling_stats.size() <= static_cast<std::size_t>( std::numeric_limits<int>::max() ) );
-  int num_scaling_stats = static_cast<int>( scaling_stats.size() );
+  size_t num_scaling_stats = scaling_stats.size();
   if ( num_scaling_stats == 0 )
     return std::string();
 
@@ -1235,19 +1237,19 @@ std::string chart::scale_factors( const player_t* p )
     s += "&amp;";
   }
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - p -> scaling_error.get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + p -> scaling_error.get_stat( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
@@ -1260,7 +1262,7 @@ std::string chart::scale_factors( const player_t* p )
   s += "&amp;";
   s += "chm=";
   snprintf( buffer, sizeof( buffer ), "E,FF0000,1:0,,1:20|" ); s += buffer;
-  for ( int i=0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util_t::stat_type_abbrev( scaling_stats[ i ] );
@@ -1289,9 +1291,9 @@ std::string chart::scale_factors( const player_t* p )
 
 std::string chart::scaling_dps( const player_t* p )
 {
-  double max_dps=0, min_dps=std::numeric_limits<double>::max();
+  double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
-  for ( size_t i=0; i < p -> dps_plot_data.size(); ++i )
+  for ( size_t i = 0; i < p -> dps_plot_data.size(); ++i )
   {
     const std::vector<double>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
@@ -1435,10 +1437,11 @@ std::string color_temperature_gradient( double n, double min, double range )
 
 std::string chart::reforge_dps( const player_t* p )
 {
-  double dps_range=0, min_dps=FLT_MAX, max_dps=0;
+  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
 
   if ( ! p )
     return std::string();
+
   const std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.size() == 0 )
     return std::string();
@@ -1637,13 +1640,13 @@ std::string chart::reforge_dps( const player_t* p )
     }
 
     s += "<input type='hidden' name='chd' value='t:";
-    for ( int j=0; j < 2; j++ )
+    for ( size_t j = 0; j < 2; j++ )
     {
-      for ( int i=0; i < ( int ) triangle_points.size(); i++ )
+      for ( size_t i=0; i < triangle_points.size(); i++ )
       {
         snprintf( buffer, sizeof( buffer ), "%f", triangle_points[ i ][ j ] );
         s += buffer;
-        if ( i < ( int ) triangle_points.size() - 1 )
+        if ( i < triangle_points.size() - 1 )
           s+= ",";
       }
       if ( j == 0 )
@@ -1724,7 +1727,7 @@ std::string chart::timeline( const player_t* p,
                     1 );
 
   double timeline_max = ( max_buckets ?
-                          *std::max_element( timeline_data.begin(), timeline_data.end() ) :
+                          *range::max_element( timeline_data ) :
                           0 );
 
   double timeline_adjust = timeline_range / timeline_max;
@@ -1751,7 +1754,7 @@ std::string chart::timeline( const player_t* p,
   s += "chg=100,20";
   s += "&amp;";
   s += "chd=s:";
-  for ( size_t i=0; i < max_buckets; i += increment )
+  for ( size_t i = 0; i < max_buckets; i += increment )
   {
     s += simple_encoding( ( int ) ( timeline_data[ i ] * timeline_adjust ) );
   }
@@ -1885,7 +1888,7 @@ std::string chart::distribution( const sim_t* sim,
   if ( ! max_buckets )
     return std::string();
 
-  int count_max = *std::max_element( dist_data.begin(), dist_data.end() );
+  int count_max = *range::max_element( dist_data );
 
   char buffer[ 1024 ];
 
@@ -2160,7 +2163,9 @@ std::string chart::gear_weights_pawn( const player_t*    p,
                                         bool hit_expertise )
 {
   std::vector<stat_type_e> stats;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ ) stats.push_back( i );
+  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    stats.push_back( i );
+
   range::sort( stats, compare_scale_factors( p ) );
 
   std::string s = std::string();

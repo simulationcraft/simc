@@ -17,7 +17,7 @@ void simplify_html( std::string& buffer )
 
 // print_text_action ========================================================
 
-void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
+void print_text_action( FILE* file, const stats_t* s, int max_name_length=0 )
 {
   if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
@@ -111,7 +111,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length=0 )
 
 // print_text_actions =======================================================
 
-void print_text_actions( FILE* file, player_t* p )
+void print_text_actions( FILE* file, const player_t* p )
 {
   if ( ! p -> glyphs_str.empty() ) util_t::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
@@ -242,7 +242,7 @@ void print_text_buffs( FILE* file, const player_t::report_information_t& ri )
 
 // print_text_core_stats ====================================================
 
-void print_text_core_stats( FILE* file, player_t* p )
+void print_text_core_stats( FILE* file, const player_t* p )
 {
   util_t::fprintf( file,
                    "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
@@ -258,7 +258,7 @@ void print_text_core_stats( FILE* file, player_t* p )
 
 // print_text_spell_stats ===================================================
 
-void print_text_spell_stats( FILE* file, player_t* p )
+void print_text_spell_stats( FILE* file, const player_t* p )
 {
   util_t::fprintf( file,
                    "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
@@ -271,7 +271,7 @@ void print_text_spell_stats( FILE* file, player_t* p )
 
 // print_text_attack_stats ==================================================
 
-void print_text_attack_stats( FILE* file, player_t* p )
+void print_text_attack_stats( FILE* file, const player_t* p )
 {
   util_t::fprintf( file,
                    "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f/%.2f|%.2f/%.2f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
@@ -287,7 +287,7 @@ void print_text_attack_stats( FILE* file, player_t* p )
 
 // print_text_defense_stats =================================================
 
-void print_text_defense_stats( FILE* file, player_t* p )
+void print_text_defense_stats( FILE* file, const player_t* p )
 {
   util_t::fprintf( file,
                    "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
@@ -299,7 +299,7 @@ void print_text_defense_stats( FILE* file, player_t* p )
                    100 * p -> buffed.crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
-void print_text_gains( FILE* file, gain_t* g, int max_length )
+void print_text_gains( FILE* file, const gain_t* g, int max_length )
 {
 
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
@@ -315,7 +315,7 @@ void print_text_gains( FILE* file, gain_t* g, int max_length )
 }
 // print_text_gains =========================================================
 
-void print_text_player_gains( FILE* file, player_t* p )
+void print_text_player_gains( FILE* file, const player_t* p )
 {
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
@@ -341,7 +341,7 @@ void print_text_player_gains( FILE* file, player_t* p )
 
 // print_text_pet_gains =====================================================
 
-void print_text_pet_gains( FILE* file, player_t* p )
+void print_text_pet_gains( FILE* file, const player_t* p )
 {
   for ( pet_t* pet = p -> pet_list; pet; pet = pet -> next_pet )
   {
@@ -373,7 +373,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
 
 // print_text_procs =========================================================
 
-void print_text_procs( FILE* file, player_t* p )
+void print_text_procs( FILE* file, const player_t* p )
 {
   bool first=true;
 
@@ -390,7 +390,7 @@ void print_text_procs( FILE* file, player_t* p )
 
 // print_text_uptime ========================================================
 
-void print_text_uptime( FILE* file, player_t* p )
+void print_text_uptime( FILE* file, const player_t* p )
 {
   bool first=true;
 
@@ -416,7 +416,7 @@ void print_text_uptime( FILE* file, player_t* p )
 
 // print_text_waiting =======================================================
 
-void print_text_waiting( FILE* file, sim_t* sim )
+void print_text_waiting( FILE* file, const sim_t* sim )
 {
   util_t::fprintf( file, "\nWaiting:\n" );
 
@@ -439,7 +439,7 @@ void print_text_waiting( FILE* file, sim_t* sim )
 
 // print_text_performance ===================================================
 
-void print_text_performance( FILE* file, sim_t* sim )
+void print_text_performance( FILE* file, const sim_t* sim )
 {
   util_t::fprintf( file,
                    "\nBaseline Performance:\n"
@@ -461,7 +461,7 @@ void print_text_performance( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-void print_text_scale_factors( FILE* file, sim_t* sim )
+void print_text_scale_factors( FILE* file, const sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
@@ -469,9 +469,6 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
   int num_players = ( int ) sim -> players_by_name.size();
   int max_length=0;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   for ( int i=0; i < num_players; i++ )
   {
@@ -511,7 +508,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-void print_text_scale_factors( FILE* file, player_t* p, const player_t::report_information_t& ri )
+void print_text_scale_factors( FILE* file, const player_t* p, const player_t::report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -520,7 +517,7 @@ void print_text_scale_factors( FILE* file, player_t* p, const player_t::report_i
 
   util_t::fprintf( file, "  Scale Factors:\n" );
 
-  gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
+  const gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
   util_t::fprintf( file, "    Weights :" );
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
@@ -558,7 +555,7 @@ void print_text_scale_factors( FILE* file, player_t* p, const player_t::report_i
 
 // print_text_dps_plots =====================================================
 
-void print_text_dps_plots( FILE* file, player_t* p )
+void print_text_dps_plots( FILE* file, const player_t* p )
 {
   sim_t* sim = p -> sim;
 
@@ -575,7 +572,7 @@ void print_text_dps_plots( FILE* file, player_t* p )
 
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    std::vector<double>& pd = p -> dps_plot_data[ i ];
+    const std::vector<double>& pd = p -> dps_plot_data[ i ];
 
     if ( ! pd.empty() )
     {
@@ -595,9 +592,6 @@ void print_text_dps_plots( FILE* file, player_t* p )
 void print_text_reference_dps( FILE* file, sim_t* sim )
 {
   if ( sim -> reference_player_str.empty() ) return;
-
-  if ( sim -> report_precision < 0 )
-    sim -> report_precision = 2;
 
   util_t::fprintf( file, "\nReference DPS:\n" );
 
@@ -680,7 +674,7 @@ struct compare_hat_donor_interval
   }
 };
 
-void print_text_hat_donors( FILE* file, sim_t* sim )
+void print_text_hat_donors( FILE* file, const sim_t* sim )
 {
   std::vector<player_t*> hat_donors;
 

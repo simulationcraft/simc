@@ -81,7 +81,6 @@ struct priest_t : public player_t
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* shadowfiend;
-    buff_t* glyph_of_atonement;
     buff_t* vampiric_embrace;
 
     // Set Bonus
@@ -2122,12 +2121,13 @@ struct penance_t : public priest_spell_t
 {
   struct penance_tick_t : public priest_spell_t
   {
-    penance_tick_t( priest_t* player ) :
-      priest_spell_t( "penance_tick", player, 47666 )
+    penance_tick_t( priest_t* p ) :
+      priest_spell_t( "penance_tick", p, 47666 )
     {
       background  = true;
       dual        = true;
       direct_tick = true;
+      base_hit += p -> glyphs.atonement -> effectN( 1 ).percent();
     }
 
     virtual void player_buff()
@@ -2211,7 +2211,6 @@ struct smite_t : public priest_spell_t
 
     p() -> buffs.holy_evangelism -> trigger();
 
-
     trigger_chakra( p(), p() -> buffs.chakra_chastise );
 
     // Train of Thought
@@ -2257,8 +2256,6 @@ struct shadowy_apparition_t : priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit = false;
-
-
   }
 
   virtual void init()
@@ -3555,7 +3552,6 @@ void priest_t::init_buffs()
   buffs.mind_spike                 = new buff_t( this, "mind_spike", 3, timespan_t::from_seconds( 12.0 ) );
   buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );
   buffs.shadowfiend                = new buff_t( this, "shadowfiend", 1, timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
-  buffs.glyph_of_atonement        = new buff_t( this, 81301, "glyph_of_atonement" ); // FIXME: implement actual mechanics
   buffs.vampiric_embrace           = new buff_t( this, "vampiric_embrace", "Vampiric Embrace" );
 
   // Set Bonus
