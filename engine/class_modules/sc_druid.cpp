@@ -2154,7 +2154,6 @@ struct maul_t : public druid_bear_melee_attack_t
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
     druid_bear_melee_attack_t::target_debuff( t, dtype );
-    druid_t* p = player -> cast_druid();
 
     if ( t -> debuffs.bleeding -> up() )
       target_multiplier *= 1.0 + 0.20;
