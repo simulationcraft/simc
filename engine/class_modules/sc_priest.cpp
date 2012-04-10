@@ -107,26 +107,6 @@ struct priest_t : public player_t
     const spell_data_t* cascade;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
-
-    talents_list_t() :
-      void_tendrils( spell_data_t::nil() ),
-      psyfiend( spell_data_t::nil() ),
-      dominate_mind( spell_data_t::nil() ),
-      body_and_soul( spell_data_t::nil() ),
-      feathers_from_heaven( spell_data_t::nil() ),
-      phantasm( spell_data_t::nil() ),
-      from_darkness_comes_light( spell_data_t::nil() ),
-      archangel( spell_data_t::nil() ),
-      desperate_prayer( spell_data_t::nil() ),
-      void_shift( spell_data_t::nil() ),
-      angelic_bulwark( spell_data_t::nil() ),
-      twist_of_fate( spell_data_t::nil() ),
-      power_infusion( spell_data_t::nil() ),
-      divine_insight( spell_data_t::nil() ),
-      cascade( spell_data_t::nil() ),
-      divine_star( spell_data_t::nil() ),
-      halo( spell_data_t::nil() )
-    { }
   };
   talents_list_t talents;
 
@@ -150,21 +130,6 @@ struct priest_t : public player_t
     const spell_data_t* shadow_orbs;
     const spell_data_t* twisted_faith;
     const spell_data_t* shadowform;
-
-    specialization_spells_t() :
-      enlightenment( spell_data_t::nil() ),
-      meditation_disc( spell_data_t::nil() ),
-      divine_aegis( spell_data_t::nil() ),
-      grace( spell_data_t::nil() ),
-      evangelism( spell_data_t::nil() ),
-      train_of_thought( spell_data_t::nil() ),
-      meditation_holy( spell_data_t::nil() ),
-      revelations( spell_data_t::nil() ),
-      shadow_power( spell_data_t::nil() ),
-      shadow_orbs( spell_data_t::nil() ),
-      twisted_faith( spell_data_t::nil() ),
-      shadowform( spell_data_t::nil() )  
-    {}
   };
   specialization_spells_t spec;
 
@@ -174,12 +139,6 @@ struct priest_t : public player_t
     const spell_data_t* shield_discipline;
     const spell_data_t* echo_of_light;
     const spell_data_t* shadow_orb_power;
-
-    mastery_spells_t() :
-      shield_discipline( spell_data_t::nil() ),
-      echo_of_light( spell_data_t::nil() ),
-      shadow_orb_power( spell_data_t::nil() )
-    {}
   };
   mastery_spells_t mastery_spells;
 
@@ -268,23 +227,6 @@ struct priest_t : public player_t
     const spell_data_t* mind_blast;
     const spell_data_t* vampiric_touch;
     const spell_data_t* shadowy_apparition;
-    
-    glyphs_t() :
-      circle_of_healing( spell_data_t::nil() ),
-      dispersion( spell_data_t::nil() ),
-      holy_nova( spell_data_t::nil() ),
-      inner_fire( spell_data_t::nil() ),
-      lightwell( spell_data_t::nil() ),
-      penance( spell_data_t::nil() ),
-      power_word_shield( spell_data_t::nil() ),
-      prayer_of_mending( spell_data_t::nil() ),
-      renew( spell_data_t::nil() ),
-      smite( spell_data_t::nil() ),
-      atonement( spell_data_t::nil() ),
-      mind_spike( spell_data_t::nil() ),
-      strength_of_soul( spell_data_t::nil() ),
-      inner_sanctum( spell_data_t::nil() )
-    {}
   };
   glyphs_t glyphs;
 
