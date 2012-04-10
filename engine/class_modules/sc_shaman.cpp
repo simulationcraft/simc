@@ -4239,8 +4239,13 @@ void shaman_t::arise()
 {
   player_t::arise();
 
-  if ( ! sim -> overrides.mastery                                            ) sim -> auras.mastery                -> trigger();
-  if ( ! sim -> overrides.spell_power_multiplier                             ) sim -> auras.spell_power_multiplier -> trigger();
+  if ( ! sim -> overrides.mastery && level >= dbc.spell( 116956 ) -> level() ) 
+    sim -> auras.mastery -> trigger();
+
+  if ( ! sim -> overrides.spell_power_multiplier && level >= dbc.spell( 77747 ) -> level )
+    sim -> auras.spell_power_multiplier -> trigger();
+
+  // MoP TODO: Add level checks when the auras appear in spell data
   if ( primary_tree() == TREE_ENHANCEMENT && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste           -> trigger();
   if ( primary_tree() == TREE_ELEMENTAL   && ! sim -> overrides.spell_haste  ) sim -> auras.spell_haste            -> trigger();
 }

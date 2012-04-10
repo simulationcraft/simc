@@ -345,7 +345,7 @@ struct curse_of_elements_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
-      if ( sim -> overrides.magic_vulnerability )
+      if ( ! sim -> overrides.magic_vulnerability )
         target -> debuffs.magic_vulnerability -> trigger( 1, -1, -1, duration() );
     }
   }
