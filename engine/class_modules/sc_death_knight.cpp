@@ -1741,7 +1741,7 @@ static void trigger_blood_caked_blade( action_t* a )
 
 // Trigger Ebon Plaguebringer ===============================================
 
-static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
+static void trigger_ebon_plaguebringer( action_t* a, player_t* )
 {
   death_knight_t* p = a -> player -> cast_death_knight();
   death_knight_targetdata_t* td = a -> targetdata() -> cast_death_knight();
@@ -1751,17 +1751,6 @@ static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
 
   // Each DK gets their own ebon plaguebringer debuff, but we only track one a time, so fake it
   td -> debuffs_ebon_plaguebringer -> trigger();
-
-  if ( a -> sim -> overrides.ebon_plaguebringer )
-    return;
-
-  timespan_t duration = timespan_t::from_seconds( 21.0 ) + p -> talents.epidemic -> effect1().time_value();
-  if ( t -> debuffs.ebon_plaguebringer -> remains_lt( duration ) )
-  {
-    t -> debuffs.ebon_plaguebringer -> buff_duration = duration;
-    t -> debuffs.ebon_plaguebringer -> trigger( 1, 8.0 );
-    t -> debuffs.ebon_plaguebringer -> source = p;
-  }
 }
 
 // Trigger Unholy Blight ====================================================
