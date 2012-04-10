@@ -235,3 +235,123 @@ int dot_t::ticks()
   if ( ! ticking ) return 0;
   return ( num_ticks - current_tick );
 }
+
+struct dot_action_expr_t : public action_expr_t
+{
+  dot_t* dot;
+
+  dot_action_expr_t( action_t* a, dot_t* d, const std::string& n, token_type_e t ) :
+    action_expr_t( a, n, t ), dot( d )
+  {}
+};
+
+action_expr_t* dot_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "ticks" )
+  {
+    struct ticks_expr_t : public dot_action_expr_t
+    {
+      ticks_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "ticks", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> current_tick; return TOK_NUM; }
+    };
+    return new ticks_expr_t( a, this );
+  }
+  else if ( name_str == "duration" )
+  {
+    struct duration_expr_t : public dot_action_expr_t
+    {
+      duration_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_duration", TOK_NUM ) {}
+      virtual int evaluate() {
+        double haste = ( dot -> state ) ? dot -> state -> haste : action -> player_haste;
+        result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM;
+      }
+    };
+    return new duration_expr_t( a, this );
+  }
+  else if ( name_str == "remains" )
+  {
+    struct dot_remains_expr_t : public dot_action_expr_t
+    {
+      dot_remains_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_remains", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> remains().total_seconds(); return TOK_NUM; }
+    };
+    return new dot_remains_expr_t( a, this );
+  }
+  else if ( name_str == "tick_dmg" )
+  {
+    struct dot_tick_dmg_expr_t : public dot_action_expr_t
+    {
+      dot_tick_dmg_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_tick_dmg", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> prev_tick_amount; return TOK_NUM; }
+    };
+    return new dot_tick_dmg_expr_t( a, this );
+  }
+  else if ( name_str == "ticks_remain" )
+  {
+    struct dot_ticks_remain_expr_t : public dot_action_expr_t
+    {
+      dot_ticks_remain_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_ticks_remain", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> ticks(); return TOK_NUM; }
+    };
+    return new dot_ticks_remain_expr_t( a, this );
+  }
+  else if ( name_str == "ticking" )
+  {
+    struct dot_ticking_expr_t : public dot_action_expr_t
+    {
+      dot_ticking_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_ticking", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> ticking; return TOK_NUM; }
+    };
+    return new dot_ticking_expr_t( a, this );
+  }
+  else if ( name_str == "spell_power" )
+  {
+    struct dot_spell_power_expr_t : public dot_action_expr_t
+    {
+      dot_spell_power_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_spell_power", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> spell_power : 0; return TOK_NUM; }
+    };
+    return new dot_spell_power_expr_t( a, this );
+  }
+  else if ( name_str == "attack_power" )
+  {
+    struct dot_attack_power_expr_t : public dot_action_expr_t
+    {
+      dot_attack_power_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_attack_power", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> attack_power : 0; return TOK_NUM; }
+    };
+    return new dot_attack_power_expr_t( a, this );
+  }
+
+  /*
+  else if ( name_str == "mastery" )
+  {
+    struct dot_mastery_expr_t : public dot_action_expr_t
+    {
+      dot_mastery_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_mastery", TOK_NUM ), dot( d ) {}
+      virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> total_mastery() : 0; return TOK_NUM; }
+    };
+    return new dot_mastery_expr_t( a, this );
+  }
+  */
+  else if ( name_str == "haste_pct" )
+  {
+    struct dot_haste_pct_expr_t : public dot_action_expr_t
+    {
+      dot_haste_pct_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_haste_pct", TOK_NUM ) {}
+      virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> haste : 0; return TOK_NUM; }
+    };
+    return new dot_haste_pct_expr_t( a, this );
+  }
+  else if ( name_str == "current_ticks" )
+  {
+    struct dot_current_ticks_expr_t : public dot_action_expr_t
+    {
+      dot_current_ticks_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_current_ticks", TOK_NUM ) {}
+      virtual int evaluate() { result_num = dot -> num_ticks; return TOK_NUM; }
+    };
+    return new dot_current_ticks_expr_t( a, this );
+  }
+
+  return 0;
+}

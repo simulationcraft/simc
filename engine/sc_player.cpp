@@ -5855,123 +5855,13 @@ action_expr_t* player_t::create_expression( action_t* a,
       dot_t* dot = 0;
       dot = sim->get_targetdata_dot( a -> player, this, splits[1] );
       if ( ! dot )
+      {
         dot = get_dot( splits[ 1 ] );
+      }
       if ( ! dot )
         return 0;
-      if ( splits[ 2 ] == "duration" )
-      {
-        struct duration_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          duration_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_duration", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() {
-            double haste = ( dot -> state ) ? dot -> state -> haste : action -> player_haste;
-            result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM;
-          }
-        };
-        return new duration_expr_t( a, dot );
-      }
-      if ( splits[ 2 ] == "multiplier" )
-      {
-        struct multiplier_expr_t : public action_expr_t
-        {
-          multiplier_expr_t( action_t* a ) : action_expr_t( a, "dot_multiplier", TOK_NUM ) {}
-          virtual int evaluate() { result_num = action -> player_multiplier; return TOK_NUM; }
-        };
-        return new multiplier_expr_t( a );
-      }
-      if ( splits[ 2 ] == "remains" )
-      {
-        struct dot_remains_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_remains_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_remains", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> remains().total_seconds(); return TOK_NUM; }
-        };
-        return new dot_remains_expr_t( a, dot );
-      }
-      if ( splits[ 2 ] == "tick_dmg" )
-      {
-        struct dot_tick_dmg_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_tick_dmg_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_tick_dmg", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> prev_tick_amount; return TOK_NUM; }
-        };
-        return new dot_tick_dmg_expr_t( a, dot );
-      }
-      if ( splits[ 2 ] == "ticks_remain" )
-      {
-        struct dot_ticks_remain_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_ticks_remain_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_ticks_remain", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> ticks(); return TOK_NUM; }
-        };
-        return new dot_ticks_remain_expr_t( a, dot );
-      }
-      else if ( splits[ 2 ] == "ticking" )
-      {
-        struct dot_ticking_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_ticking_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_ticking", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> ticking; return TOK_NUM; }
-        };
-        return new dot_ticking_expr_t( a, dot );
-      }
-      else if ( splits[ 2 ] == "spell_power" )
-      {
-        struct dot_spell_power_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_spell_power_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_spell_power", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> spell_power : 0; return TOK_NUM; }
-        };
-        return new dot_spell_power_expr_t( a, dot );
-      }
-      else if ( splits[ 2 ] == "attack_power" )
-      {
-        struct dot_attack_power_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_attack_power_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_attack_power", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> attack_power : 0; return TOK_NUM; }
-        };
-        return new dot_attack_power_expr_t( a, dot );
-      }
-      /*
-      else if ( splits[ 2 ] == "mastery" )
-      {
-        struct dot_mastery_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_mastery_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_mastery", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> total_mastery() : 0; return TOK_NUM; }
-        };
-        return new dot_mastery_expr_t( a, dot );
-      }
-      */
-      else if ( splits[ 2 ] == "haste_pct" )
-      {
-        struct dot_haste_pct_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_haste_pct_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_haste_pct", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = ( dot -> state ) ? dot -> state -> haste : 0; return TOK_NUM; }
-        };
-        return new dot_haste_pct_expr_t( a, dot );
-      }
-      else if ( splits[ 2 ] == "current_ticks" )
-      {
-        struct dot_current_ticks_expr_t : public action_expr_t
-        {
-          dot_t* dot;
-          dot_current_ticks_expr_t( action_t* a, dot_t* d ) : action_expr_t( a, "dot_current_ticks", TOK_NUM ), dot( d ) {}
-          virtual int evaluate() { result_num = dot -> num_ticks; return TOK_NUM; }
-        };
-        return new dot_current_ticks_expr_t( a, dot );
-      }
+
+      return dot -> create_expression( a, splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "swing" )
     {

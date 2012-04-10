@@ -1564,24 +1564,6 @@ void action_t::check_spec( talent_tree_type_e necessary_spec )
 
 action_expr_t* action_t::create_expression( const std::string& name_str )
 {
-  if ( name_str == "ticking" )
-  {
-    struct ticking_expr_t : public action_expr_t
-    {
-      ticking_expr_t( action_t* a ) : action_expr_t( a, "ticking", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> ticking; return TOK_NUM; }
-    };
-    return new ticking_expr_t( this );
-  }
-  if ( name_str == "ticks" )
-  {
-    struct ticks_expr_t : public action_expr_t
-    {
-      ticks_expr_t( action_t* a ) : action_expr_t( a, "ticks", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> current_tick; return TOK_NUM; }
-    };
-    return new ticks_expr_t( this );
-  }
   if ( name_str == "n_ticks" )
   {
     struct n_ticks_expr_t : public action_expr_t
@@ -1591,25 +1573,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new n_ticks_expr_t( this );
   }
-  if ( name_str == "ticks_remain" )
-  {
-    struct ticks_remain_expr_t : public action_expr_t
-    {
-      ticks_remain_expr_t( action_t* a ) : action_expr_t( a, "ticks_remain", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> ticks(); return TOK_NUM; }
-    };
-    return new ticks_remain_expr_t( this );
-  }
-  if ( name_str == "remains" )
-  {
-    struct remains_expr_t : public action_expr_t
-    {
-      remains_expr_t( action_t* a ) : action_expr_t( a, "remains", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> remains().total_seconds(); return TOK_NUM; }
-    };
-    return new remains_expr_t( this );
-  }
-  if ( name_str == "cast_time" )
+  else if ( name_str == "cast_time" )
   {
     struct cast_time_expr_t : public action_expr_t
     {
@@ -1618,7 +1582,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_time_expr_t( this );
   }
-  if ( name_str == "cooldown" )
+  else if ( name_str == "cooldown" )
   {
     struct cooldown_expr_t : public action_expr_t
     {
@@ -1627,7 +1591,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cooldown_expr_t( this );
   }
-  if ( name_str == "tick_time" )
+  else if ( name_str == "tick_time" )
   {
     struct tick_time_expr_t : public action_expr_t
     {
@@ -1636,16 +1600,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new tick_time_expr_t( this );
   }
-  if ( name_str == "tick_dmg" )
-  {
-    struct tick_dmg_expr_t : public action_expr_t
-    {
-      tick_dmg_expr_t( action_t* a ) : action_expr_t( a, "tick_dmg", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> dot() -> prev_tick_amount; return TOK_NUM; }
-    };
-    return new tick_dmg_expr_t( this );
-  }
-  if ( name_str == "gcd" )
+  else if ( name_str == "gcd" )
   {
     struct cast_time_expr_t : public action_expr_t
     {
@@ -1654,7 +1609,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_time_expr_t( this );
   }
-  if ( name_str == "travel_time" )
+  else if ( name_str == "travel_time" )
   {
     struct travel_time_expr_t : public action_expr_t
     {
@@ -1663,7 +1618,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new travel_time_expr_t( this );
   }
-  if ( name_str == "in_flight" )
+  else if ( name_str == "in_flight" )
   {
     struct in_flight_expr_t : public action_expr_t
     {
@@ -1672,7 +1627,11 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new in_flight_expr_t( this );
   }
-  if ( name_str == "miss_react" )
+
+  else if ( action_expr_t* q = this->dot()->create_expression( this, name_str ) )
+    return q;
+
+  else if ( name_str == "miss_react" )
   {
     struct miss_react_expr_t : public action_expr_t
     {
@@ -1694,7 +1653,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new miss_react_expr_t( this );
   }
-  if ( name_str == "cast_delay" )
+  else if ( name_str == "cast_delay" )
   {
     struct cast_delay_expr_t : public action_expr_t
     {

@@ -5583,6 +5583,7 @@ struct dot_t
   timespan_t remains();
   void   schedule_tick();
   int    ticks();
+  action_expr_t* create_expression( action_t* a, const std::string& name_str );
 
   const char* name() { return name_str.c_str(); }
   /* New stuff */
