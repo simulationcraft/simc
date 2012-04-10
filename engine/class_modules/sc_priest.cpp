@@ -1375,24 +1375,24 @@ struct dispersion_t : public priest_spell_t
 
 struct fortitude_t : public priest_spell_t
 {
-  double bonus;
-
   fortitude_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "fortitude", player, "Power Word: Fortitude" ), bonus( 0 )
+    priest_spell_t( "fortitude", player, "Power Word: Fortitude" )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
-
-    background = ( sim -> overrides.fortitude != 0 );
-
-    bonus = floor( player -> dbc.effect_average( player -> dbc.spell( data().effectN( 1 ).base_value() ) -> effectN( 1 ).id() , player -> level ) );
+    
+    background = ( sim -> overrides.stamina != 0 );
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
+    
+    if ( ! sim -> overrides.stamina )
+      sim -> auras.stamina -> trigger();
 
+    /*
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> ooc_buffs() )
@@ -1403,15 +1403,7 @@ struct fortitude_t : public priest_spell_t
         p -> stat_gain( STAT_HEALTH, after - before );
       }
     }
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> buffs.fortitude -> current_value >= bonus ||
-         sim -> auras.qiraji_fortitude -> check() )
-      return false;
-
-    return priest_spell_t::ready();
+    */
   }
 };
 
@@ -1634,8 +1626,9 @@ struct shadowform_t : public priest_spell_t
     priest_spell_t::execute();
 
     p() -> buffs.shadowform -> trigger();
-
-    sim -> auras.mind_quickening -> trigger();
+    
+    if ( ! sim -> overrides.spell_haste )
+      sim -> auras.spell_haste -> trigger();
   }
 
   virtual bool ready()
@@ -3664,7 +3657,7 @@ void priest_t::init_actions()
       buffer = "flask,type=frost_wyrm/food,type=fish_feast";
     }
 
-    buffer += "/fortitude/inner_fire";
+    buffer += "/fortitude,if=!aura.stamina.up/inner_fire";
 
     buffer += "/shadowform";
 
@@ -4155,12 +4148,9 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_typ
 
 void player_t::priest_init( sim_t* sim )
 {
-  sim -> auras.mind_quickening = new aura_t( sim, "mind_quickening", 1, timespan_t::zero() );
-
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.fortitude        = new stat_buff_t( p, "fortitude", STAT_STAMINA, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effectN( 1 ).id(), sim -> max_player_level ) ), ! p -> is_pet() );
     p -> buffs.guardian_spirit  = new      buff_t( p, 47788, "guardian_spirit", 1.0, timespan_t::zero() ); // Let the ability handle the CD
     p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression", 1.0, timespan_t::zero() ); // Let the ability handle the CD
     p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, timespan_t::from_seconds( 15.0 ), timespan_t::zero() );
@@ -4170,16 +4160,6 @@ void player_t::priest_init( sim_t* sim )
 
 // player_t::priest_combat_begin ============================================
 
-void player_t::priest_combat_begin( sim_t* sim )
+void player_t::priest_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.mind_quickening ) sim -> auras.mind_quickening -> override();
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> ooc_buffs() )
-    {
-      if ( sim -> overrides.fortitude )
-        p -> buffs.fortitude -> override( 1, floor( sim -> dbc.effect_average( sim -> dbc.spell( 79104 ) -> effectN( 1 ).id(), sim -> max_player_level ) ) );
-    }
-  }
 }

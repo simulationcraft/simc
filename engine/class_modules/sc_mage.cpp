@@ -19,10 +19,13 @@ struct mage_targetdata_t : public targetdata_t
   dot_t* dots_ignite;
   dot_t* dots_living_bomb;
   dot_t* dots_pyroblast;
+  
+  buff_t* debuffs_slow;
 
   mage_targetdata_t( player_t* source, player_t* target )
     : targetdata_t( source, target )
   {
+    debuffs_slow = add_aura( new buff_t( this, "slow", 31589 ) );
   }
 };
 
@@ -35,6 +38,8 @@ void register_mage_targetdata( sim_t* sim )
   REGISTER_DOT( ignite );
   REGISTER_DOT( living_bomb );
   REGISTER_DOT( pyroblast );
+  
+  REGISTER_DEBUFF( slow );
 }
 
 struct mage_t : public player_t
@@ -1182,10 +1187,6 @@ void mage_spell_t::player_buff()
 
   if ( school == SCHOOL_ARCANE )
   {
-    if ( target -> debuffs.snared() && p -> talents.torment_the_weak -> rank() )
-    {
-      player_multiplier *= 1.0 + p -> talents.torment_the_weak -> effect1().percent();
-    }
     player_multiplier *= 1.0 + p -> specializations.arcane;
   }
   if ( school == SCHOOL_FIRE || school == SCHOOL_FROSTFIRE )
@@ -1324,15 +1325,6 @@ struct arcane_blast_t : public mage_spell_t
     {
       if ( p -> set_bonus.tier13_2pc_caster() )
         p -> buffs_tier13_2pc -> trigger( 1, -1, 1 );
-
-      if ( ! target -> debuffs.snared() )
-      {
-        if ( p -> rng_nether_vortex -> roll( p -> talents.nether_vortex -> proc_chance() ) )
-        {
-          target -> debuffs.slow -> trigger();
-          target -> debuffs.slow -> source = p;
-        }
-      }
     }
   }
 
@@ -1358,38 +1350,25 @@ struct arcane_blast_t : public mage_spell_t
 
 struct arcane_brilliance_t : public mage_spell_t
 {
-  double bonus;
-
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_brilliance", 1459, p ), bonus( 0 )
+    mage_spell_t( "arcane_brilliance", 1459, p )
   {
     parse_options( NULL, options_str );
 
-    bonus      = p -> dbc.effect_average( p -> dbc.spell( 79058 ) -> effect1().id(), p -> level );
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.arcane_brilliance -> effect1().percent();
     harmful = false;
-
-    background = ( sim -> overrides.arcane_brilliance != 0 );
+    background = ( sim -> overrides.spell_power_multiplier != 0 && sim -> overrides.critical_strike != 0 );
   }
 
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> ooc_buffs() )
-      {
-        p -> buffs.arcane_brilliance -> trigger( 1, bonus );
-      }
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> buffs.arcane_brilliance -> current_value >= bonus )
-      return false;
-    return mage_spell_t::ready();
+    
+    if ( ! sim -> overrides.spell_power_multiplier )
+      sim -> auras.spell_power_multiplier -> trigger();
+    
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
   }
 };
 
@@ -2037,100 +2016,6 @@ struct flame_orb_t : public mage_spell_t
     if ( p -> rng_fire_power -> roll( p -> talents.fire_power -> proc_chance() ) )
     {
       explosion_spell -> execute();
-    }
-  }
-};
-
-// Focus Magic Spell ========================================================
-
-struct focus_magic_t : public mage_spell_t
-{
-  player_t*          focus_magic_target;
-  action_callback_t* focus_magic_cb;
-
-  focus_magic_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "focus_magic", 54646, p ),
-    focus_magic_target( 0 ), focus_magic_cb( 0 )
-  {
-    check_talent( p -> talents.focus_magic -> rank() );
-
-    std::string target_str = p -> focus_magic_target_str;
-
-    option_t options[] =
-    {
-      { "target", OPT_STRING, &target_str },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    if ( target_str.empty() )
-    {
-      // If no target specified, assume 100% up-time by forcing "buffs.focus_magic_feedback = 1"
-      focus_magic_target = p;
-    }
-    else
-    {
-      focus_magic_target = sim -> find_player( target_str );
-
-      if ( focus_magic_target == 0 || focus_magic_target == p )
-      {
-        // Warn we didn't find the FM target and default to the player
-        sim -> errorf( "Warning couldn't find %s for %s's Focus Magic, defaulting to SomebodySomewhere", target_str.c_str(), p -> name() );
-        focus_magic_target = p;
-      }
-    }
-
-    trigger_gcd = timespan_t::zero();
-
-    struct focus_magic_feedback_callback_t : public action_callback_t
-    {
-      focus_magic_feedback_callback_t( player_t* p ) : action_callback_t( p, true ) {}
-
-      virtual void trigger( action_t* /* a */, void* /* call_data */ )
-      {
-        listener -> cast_mage() -> buffs_focus_magic_feedback -> trigger();
-      }
-    };
-
-    focus_magic_cb = new focus_magic_feedback_callback_t( p );
-    focus_magic_cb -> active = false;
-    focus_magic_target -> register_spell_callback( RESULT_CRIT_MASK, focus_magic_cb );
-  }
-
-  virtual void execute()
-  {
-    mage_t* p = player -> cast_mage();
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
-
-    if ( focus_magic_target == p )
-    {
-      if ( sim -> log )
-        log_t::output( sim, "%s grants SomebodySomewhere Focus Magic", p -> name() );
-
-      p -> buffs_focus_magic_feedback -> override();
-    }
-    else
-    {
-      if ( sim -> log )
-        log_t::output( sim, "%s grants %s Focus Magic", p -> name(), focus_magic_target -> name() );
-
-      focus_magic_target -> buffs.focus_magic -> trigger();
-      focus_magic_cb -> active = true;
-    }
-  }
-
-  virtual bool ready()
-  {
-    mage_t* p = player -> cast_mage();
-
-    if ( focus_magic_target == p )
-    {
-      return ! p -> buffs_focus_magic_feedback -> check();
-    }
-    else
-    {
-      return ! focus_magic_target -> buffs.focus_magic -> check();
     }
   }
 };
@@ -2951,14 +2836,8 @@ struct slow_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-    target -> debuffs.slow -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( target -> debuffs.snared() )
-      return false;
-    return mage_spell_t::ready();
+    mage_targetdata_t* td = targetdata_t::get( player, target ) -> cast_mage();
+    td -> debuffs_slow -> trigger();
   }
 };
 
@@ -3270,7 +3149,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flame_orb"         ) return new               flame_orb_t( this, options_str );
-  if ( name == "focus_magic"       ) return new             focus_magic_t( this, options_str );
   if ( name == "frost_armor"       ) return new             frost_armor_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
@@ -3622,7 +3500,7 @@ void mage_t::init_actions()
     // Focus Magic
     if ( talents.focus_magic -> rank() ) action_list_str += "/focus_magic";
     // Arcane Brilliance
-    if ( level >= 58 ) action_list_str += "/arcane_brilliance";
+    if ( level >= 58 ) action_list_str += "/arcane_brilliance,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
 
     // Armor
     if ( primary_tree() == TREE_ARCANE )
@@ -3985,8 +3863,6 @@ double mage_t::matching_gear_multiplier( const attribute_type_e attr ) const
 void mage_t::combat_begin()
 {
   player_t::combat_begin();
-
-  if ( talents.arcane_tactics -> rank() ) sim -> auras.arcane_tactics -> trigger();
 }
 
 // mage_t::reset ============================================================
@@ -4231,32 +4107,13 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_
 
 // player_t::mage_init ======================================================
 
-void player_t::mage_init( sim_t* sim )
+void player_t::mage_init( sim_t* )
 {
-  sim -> auras.arcane_tactics = new aura_t( sim, "arcane_tactics", 1, timespan_t::zero() );
-
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.arcane_brilliance = new stat_buff_t( p, "arcane_brilliance", STAT_MAX_MANA, p -> level < MAX_LEVEL ? sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) : 0, !p -> is_pet() );
-    p -> buffs.focus_magic       = new      buff_t( p, 54646, "focus_magic" );
-    p -> debuffs.slow            = new debuff_t( p, 31589, "slow" );
-  }
 }
 
 // player_t::mage_combat_begin ==============================================
 
-void player_t::mage_combat_begin( sim_t* sim )
+void player_t::mage_combat_begin( sim_t* )
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> ooc_buffs() )
-    {
-      if ( sim -> overrides.arcane_brilliance ) p -> buffs.arcane_brilliance -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 79058 ) -> effect1().id(), sim -> max_player_level ) );
-      if ( sim -> overrides.focus_magic       ) p -> buffs.focus_magic       -> override();
-    }
-  }
-
-  if ( sim -> overrides.arcane_tactics ) sim -> auras.arcane_tactics -> override( 1 );
 }
 

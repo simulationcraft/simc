@@ -904,7 +904,7 @@ buff_t* buff_t::find( const std::vector<buff_t*>& b, const std::string& name_str
 {
   for( size_t i = 0; i < b.size(); i++ )
   {
-    if ( name_str == b[ i ]->name_str )
+    if ( name_str == b[ i ] -> name_str )
       return b[ i ];
   }
 

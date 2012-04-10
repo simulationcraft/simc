@@ -85,14 +85,15 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "max_stack"     },
   { SD_TYPE_UNSIGNED, "proc_chance"   },
   { SD_TYPE_UNSIGNED, "initial_stack" },
+  { SD_TYPE_UNSIGNED, "equip_class"   },
+  { SD_TYPE_UNSIGNED, "equip_imask"   },
+  { SD_TYPE_UNSIGNED, "equip_scmask"  },
   { SD_TYPE_INT,      "cast_min"      },
   { SD_TYPE_INT,      "cast_max"      },
   { SD_TYPE_INT,      "cast_div"      },
   { SD_TYPE_DOUBLE,   "m_scaling"     },
   { SD_TYPE_UNSIGNED, "scaling_level" },
-  { SD_TYPE_UNSIGNED, ""              }, // Effects, 0..2, not done for now
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
+  { SD_TYPE_UNSIGNED, "replace_spellid" },
   { SD_TYPE_UNSIGNED, ""              }, // Attributes, 0..9, not done for now
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
@@ -105,7 +106,8 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_STR,      "desc"          },
   { SD_TYPE_STR,      "tooltip"       },
-  { SD_TYPE_STR,      ""              },
+  { SD_TYPE_STR,      "desc_vars"     },
+  { SD_TYPE_STR,      "icon"          },
 };
 
 static const std::string _class_strings[] =

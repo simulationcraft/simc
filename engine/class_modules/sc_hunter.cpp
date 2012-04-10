@@ -815,12 +815,9 @@ static void trigger_piercing_shots( action_t* a, double dmg )
 
     void player_buff() {}
 
-    void target_debuff( player_t* t, dmg_type_e )
+    void target_debuff( player_t*, dmg_type_e )
     {
-      if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() || t -> debuffs.tendon_rip -> up() )
-      {
-        target_multiplier = 1.30;
-      }
+      target_multiplier = 1.30;
     }
 
     virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
@@ -1458,19 +1455,15 @@ struct furious_howl_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
+    background = ( sim -> overrides.critical_strike != 0 );
   }
 
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-
-    for ( player_t* pl = sim -> player_list; pl; pl = pl -> next )
-    {
-      if ( pl -> is_pet() )
-        continue;
-
-      pl -> buffs.furious_howl -> trigger();
-    }
+    
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger( 1, -1.0, -1.0, duration() );
   }
 };
 
@@ -1478,8 +1471,6 @@ struct furious_howl_t : public hunter_pet_spell_t
 
 struct roar_of_courage_t : public hunter_pet_spell_t
 {
-  double bonus;
-
   roar_of_courage_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "roar_of_courage", player, "Roar of Courage" )
   {
@@ -1491,18 +1482,15 @@ struct roar_of_courage_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
-    bonus = effect1().base_value();
+    background = ( sim -> overrides.str_agi_int != 0 );
   }
 
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-
-    if ( ! sim -> overrides.roar_of_courage )
-    {
-      sim -> auras.roar_of_courage -> buff_duration = duration();
-      sim -> auras.roar_of_courage -> trigger( 1, bonus );
-    }
+    
+    if ( ! sim -> overrides.str_agi_int )
+      sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, duration() );
   }
 };
 
@@ -1510,8 +1498,6 @@ struct roar_of_courage_t : public hunter_pet_spell_t
 
 struct qiraji_fortitude_t : public hunter_pet_spell_t
 {
-  double bonus;
-
   qiraji_fortitude_t( player_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "qiraji_fortitude", player, "Qiraji Fortitude" )
   {
@@ -1523,25 +1509,15 @@ struct qiraji_fortitude_t : public hunter_pet_spell_t
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
 
     harmful = false;
-    bonus = effect1().base_value();
+    background = ( sim -> overrides.stamina != 0 );
   }
 
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
 
-    if ( ! sim -> overrides.qiraji_fortitude )
-    {
-      sim -> auras.qiraji_fortitude -> trigger( 1, bonus );
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( sim -> auras.qiraji_fortitude -> check() )
-      return false;
-
-    return hunter_pet_spell_t::ready();
+    if ( ! sim -> overrides.stamina )
+      sim -> auras.stamina -> trigger();
   }
 };
 
@@ -1559,21 +1535,16 @@ struct lightning_breath_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
+    background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      t -> debuffs.lightning_breath -> expire();
-      t -> debuffs.lightning_breath -> trigger( 1, effect1().base_value() );
-      t -> debuffs.lightning_breath -> source = p;
-    }
+    if ( result_is_hit( impact_result ) && ! sim -> overrides.magic_vulnerability )
+      t -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, duration() );
   }
-
 };
 
 // Serpent Corrosive Spit  ==================================================
@@ -1590,14 +1561,15 @@ struct corrosive_spit_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
+    background = ( sim -> overrides.weakened_armor != 0 );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( impact_result ) )
-      t -> debuffs.corrosive_spit -> trigger( 1, -1*effect1().base_value() );
+    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_armor )
+      t -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, duration() );
   }
 };
 
@@ -1615,20 +1587,16 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
+    background = ( sim -> overrides.weakened_blows != 0 );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
-    //TODO: Is actually an aoe ability
-    if ( result_is_hit( impact_result ) )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      t -> debuffs.demoralizing_screech -> expire();
-      t -> debuffs.demoralizing_screech -> trigger( 1, effect1().base_value() );
-      t -> debuffs.demoralizing_screech -> source = p;
-    }
+    // TODO: Is actually an aoe ability
+    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_blows )
+      t -> debuffs.weakened_blows -> trigger( 1, -1.0, -1.0, duration() );
   }
 };
 
@@ -1650,37 +1618,6 @@ struct ravage_t : public hunter_pet_spell_t
 
 };
 
-// Fox Tailspin  ============================================================
-
-struct tailspin_t : public hunter_pet_spell_t
-{
-  tailspin_t( player_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "tailspin", player, 90314 )
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-    hunter_t*     o = p -> owner -> cast_hunter();
-
-    parse_options( 0, options_str );
-
-    cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
-    auto_cast = true;
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    //TODO: Is actually an aoe ability
-    if ( result_is_hit( impact_result ) )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      t -> debuffs.tailspin -> expire();
-      t -> debuffs.tailspin -> trigger( 1, effect1().base_value() );
-      t -> debuffs.tailspin -> source = p;
-    }
-  }
-};
-
 // Raptor Tear Armor  =======================================================
 
 struct tear_armor_t : public hunter_pet_spell_t
@@ -1695,16 +1632,16 @@ struct tear_armor_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
+    
+    background = ( sim -> overrides.weakened_armor != 0 );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      t -> debuffs.tear_armor -> trigger( 1, -1*effect1().base_value() );
-    }
+    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_armor )
+      t -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, duration() );
   }
 };
 
@@ -1722,19 +1659,6 @@ struct tendon_rip_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-      t -> debuffs.tendon_rip -> expire();
-      t -> debuffs.tendon_rip -> trigger( 1, effect1().base_value() );
-      t -> debuffs.tendon_rip -> source = p;
-    }
   }
 };
 
@@ -1955,8 +1879,7 @@ struct auto_shot_t : public hunter_ranged_attack_t
   {
     double h = 1.0;
 
-    h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
-                                 sim -> auras.improved_icy_talons -> value() ) );
+    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
 
     return hunter_ranged_attack_t::execute_time() * h;
   }
@@ -2687,22 +2610,6 @@ struct serpent_sting_t : public hunter_ranged_attack_t
       serpent_sting_burst -> execute();
     }
   }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-      t -> debuffs.poisoned -> increment();
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::last_tick( d );
-
-    // FIXME: change to dot target once they are on the target
-    target -> debuffs.poisoned -> decrement();
-  }
 };
 
 struct serpent_sting_spread_t : public serpent_sting_t
@@ -2733,14 +2640,6 @@ struct serpent_sting_spread_t : public serpent_sting_t
       serpent_sting_burst -> base_dd_max = t;
       serpent_sting_burst -> execute();
     }
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-      t -> debuffs.poisoned -> increment();
   }
 };
 
@@ -3220,31 +3119,21 @@ struct focus_fire_t : public hunter_spell_t
 
 struct hunters_mark_t : public hunter_spell_t
 {
-  double ap_bonus;
-
   hunters_mark_t( player_t* player, const std::string& options_str ) :
-    hunter_spell_t( "hunters_mark", player, "Hunter's Mark" ), ap_bonus( 0 )
+    hunter_spell_t( "hunters_mark", player, "Hunter's Mark" )
   {
     parse_options( NULL, options_str );
 
-    ap_bonus = effect_average( 2 );
     harmful = false;
+    background = ( sim -> overrides.ranged_vulnerability != 0 );
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_spell_t::impact( t, impact_result, travel_dmg );
-
-    t -> debuffs.hunters_mark -> trigger( 1, ap_bonus );
-    t -> debuffs.hunters_mark -> source = player;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! hunter_spell_t::ready() )
-      return false;
-
-    return ap_bonus > target -> debuffs.hunters_mark -> current_value;
+    
+    if ( ! sim -> overrides.ranged_vulnerability )
+      t -> debuffs.ranged_vulnerability -> trigger();
   }
 };
 
@@ -3461,26 +3350,18 @@ struct trueshot_aura_t : public hunter_spell_t
     check_talent( p -> talents.trueshot_aura -> rank() );
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    background = ( sim -> overrides.attack_power_multiplier != 0 && sim -> overrides.critical_strike != 0 );
   }
 
   virtual void execute()
   {
-    hunter_t* p = player -> cast_hunter();
-
     hunter_spell_t::execute();
-
-    p -> buffs_trueshot_aura -> trigger();
-    sim -> auras.trueshot -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    hunter_t* p = player -> cast_hunter();
-
-    if ( p -> buffs_trueshot_aura -> check() )
-      return false;
-
-    return hunter_spell_t::ready();
+    
+    if ( ! sim -> overrides.attack_power_multiplier )
+      sim -> auras.attack_power_multiplier -> trigger();
+    
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
   }
 };
 
@@ -3539,7 +3420,6 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
   if ( name == "demoralizing_screech"  ) return new demoralizing_screech_t( this, options_str );
   if ( name == "ravage"                ) return new               ravage_t( this, options_str );
-  if ( name == "tailspin"              ) return new             tailspin_t( this, options_str );
   if ( name == "tear_armor"            ) return new           tear_armor_t( this, options_str );
   if ( name == "tendon_rip"            ) return new           tendon_rip_t( this, options_str );
   if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
@@ -3910,10 +3790,10 @@ void hunter_t::init_actions()
     action_list_str = "flask,type=winds";
     action_list_str += "/food,type=seafood_magnifique_feast";
 
-    action_list_str += "/hunters_mark,if=target.time_to_die>=21";
+    action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     action_list_str += "/summon_pet";
     if ( talents.trueshot_aura -> rank() )
-      action_list_str += "/trueshot_aura";
+      action_list_str += "/trueshot_aura,if=!aura.attack_power_multiplier.up|!aura.critical_strike.up";
     action_list_str += "/snapshot_stats";
     action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
     if ( glyphs.rapid_fire -> ok() )
@@ -4068,12 +3948,6 @@ void hunter_t::register_callbacks()
 void hunter_t::combat_begin()
 {
   player_t::combat_begin();
-
-  if ( talents.ferocious_inspiration -> rank() )
-    sim -> auras.ferocious_inspiration -> trigger();
-
-  if ( talents.hunting_party -> rank() )
-    sim -> auras.hunting_party -> trigger( 1, talents.hunting_party -> effect2().percent(), 1 );
 
   if ( talents.sniper_training -> rank() )
   {
@@ -4450,46 +4324,12 @@ player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_typ
 
 // player_t::hunter_init ====================================================
 
-void player_t::hunter_init( sim_t* sim )
+void player_t::hunter_init( sim_t* )
 {
-  sim -> auras.trueshot              = new aura_t( sim, "trueshot" );
-  sim -> auras.ferocious_inspiration = new aura_t( sim, "ferocious_inspiration" );
-  sim -> auras.hunting_party         = new aura_t( sim, "hunting_party" );
-  sim -> auras.roar_of_courage       = new aura_t( sim, "roar_of_courage" );
-  sim -> auras.qiraji_fortitude      = new aura_t( sim, "qiraji_fortitude" );
-
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> debuffs.hunters_mark         = new debuff_t( p, 1130,  "hunters_mark" );
-    p -> debuffs.corrosive_spit       = new debuff_t( p, 95466, "corrosive_spit" );
-    p -> debuffs.demoralizing_screech = new debuff_t( p, 24423, "demoralizing_screech" );
-    p -> debuffs.lightning_breath     = new debuff_t( p, 24844, "lightning_breath" );
-    p -> debuffs.tailspin             = new debuff_t( p, 90315, "tailspin" );
-    p -> debuffs.tear_armor           = new debuff_t( p, 95467, "tear_armor" );
-    p -> debuffs.tendon_rip           = new debuff_t( p, 50271, "tendon_rip" );
-  }
 }
 
 // player_t::hunter_combat_begin ============================================
 
-void player_t::hunter_combat_begin( sim_t* sim )
+void player_t::hunter_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.trueshot_aura         ) sim -> auras.trueshot -> override();
-  if ( sim -> overrides.ferocious_inspiration ) sim -> auras.ferocious_inspiration -> override();
-  if ( sim -> overrides.hunting_party         ) sim -> auras.hunting_party -> override( 1, 0.10 );
-  if ( sim -> overrides.roar_of_courage       ) sim -> auras.roar_of_courage -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 93435 ) -> effect1().id(), sim -> max_player_level ) );
-  if ( sim -> overrides.qiraji_fortitude      ) sim -> auras.qiraji_fortitude -> override( 1, sim -> dbc.effect_min( sim -> dbc.spell( 90364 ) -> effect1().id(), sim -> max_player_level ) );
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    double v = sim -> dbc.effect_average( sim -> dbc.spell( 1130 ) -> effect2().id(), sim -> max_player_level );
-    if ( sim -> overrides.hunters_mark           ) t -> debuffs.hunters_mark -> override( 1, v );
-    if ( sim -> overrides.lightning_breath       ) t -> debuffs.lightning_breath -> override( 1, 8 );
-    if ( sim -> overrides.corrosive_spit         ) t -> debuffs.corrosive_spit -> override( 1, 12 );
-    if ( sim -> overrides.demoralizing_screech   ) t -> debuffs.demoralizing_screech -> override( 1, 10 );
-    if ( sim -> overrides.tailspin               ) t -> debuffs.tailspin -> override( 1, 20 );
-    if ( sim -> overrides.tear_armor             ) t -> debuffs.tear_armor -> override( 1, 12 );
-    if ( sim -> overrides.tendon_rip             ) t -> debuffs.tendon_rip -> override( 1, 30 );
-  }
 }

@@ -13,7 +13,7 @@ talents=http://www.wowhead.com/talent#priest-03221200000000000000000000000000000
 glyphs=
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/fortitude
+actions+=/fortitude,if=!aura.stamina.up
 actions+=/inner_fire
 actions+=/shadowform
 actions+=/vampiric_embrace

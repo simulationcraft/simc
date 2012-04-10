@@ -327,23 +327,6 @@ public:
 };
 
 
-// Curse of Elements Debuff =================================================
-
-struct coe_debuff_t : public debuff_t
-{
-  coe_debuff_t( player_t* t ) : debuff_t( t, 1490, "curse_of_elements" )
-  {}
-
-  virtual void expire()
-  {
-    if ( player )
-    {
-      player = 0;
-    }
-    debuff_t::expire();
-  }
-};
-
 // Curse of Elements Spell ==================================================
 
 struct curse_of_elements_t : public warlock_spell_t
@@ -354,6 +337,7 @@ struct curse_of_elements_t : public warlock_spell_t
     parse_options( NULL, options_str );
 
     trigger_gcd -= p -> constants_pandemic_gcd * p -> talent_pandemic -> rank();
+    background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
   virtual void execute()
@@ -361,19 +345,9 @@ struct curse_of_elements_t : public warlock_spell_t
     warlock_spell_t::execute();
     if ( result_is_hit() )
     {
-      warlock_t* p = player -> cast_warlock();
-      target -> debuffs.curse_of_elements -> expire();
-      target -> debuffs.curse_of_elements -> trigger( 1, effect2().base_value() );
-      target -> debuffs.curse_of_elements -> source = p;
+      if ( sim -> overrides.magic_vulnerability )
+        target -> debuffs.magic_vulnerability -> trigger( 1, -1, -1, duration() );
     }
-  }
-
-  virtual bool ready()
-  {
-    if ( target -> debuffs.curse_of_elements -> check() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -2108,80 +2082,21 @@ struct fel_flame_t : public warlock_spell_t
 
 struct dark_intent_t : public warlock_spell_t
 {
-  player_t* dark_intent_target;
-
   dark_intent_t( warlock_t* p, const std::string& options_str ) :
-    warlock_spell_t( "dark_intent", p, "Dark Intent" ),
-    dark_intent_target( 0 )
+    warlock_spell_t( "dark_intent", p, "Dark Intent" )
   {
-    std::string target_str = p -> dark_intent_target_str;
-    option_t options[] =
-    {
-      { "target", OPT_STRING, &target_str },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( 0, options_str );
 
     harmful = false;
-
-    if ( target_str.empty() )
-    {
-      dark_intent_target = p;
-    }
-    else
-    {
-      dark_intent_target = sim -> find_player( target_str );
-      if ( ! dark_intent_target )
-      {
-        sim -> errorf( "%s Dark Intent Target: Can't find player %s, setting Dark Intent Target to %s.\n", player -> name(), target_str.c_str(), player -> name() );
-        dark_intent_target = p;
-      }
-    }
-
-    assert ( dark_intent_target != 0 );
+    background = ( sim -> overrides.spell_power_multiplier != 0 );
   }
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
-    if ( dark_intent_target == p )
-    {
-      if ( sim -> log ) log_t::output( sim, "%s grants SomebodySomewhere Dark Intent", p -> name() );
-      p -> buffs.dark_intent_feedback -> override( 3 );
-      if ( player -> buffs.dark_intent -> check() ) player -> buffs.dark_intent -> expire();
-      player -> buffs.dark_intent -> override( 1, 0.03 );
-    }
-    else
-    {
-      if ( sim -> log ) log_t::output( sim, "%s grants %s Dark Intent", p -> name(), dark_intent_target -> name() );
-      dark_intent_target -> buffs.dark_intent -> trigger( 1, 0.01 );
-      dark_intent_target -> dark_intent_cb -> active = true;
-      dark_intent_target -> dark_intent_cb -> listener = p;
-
-      player -> buffs.dark_intent -> trigger( 1, 0.03 );
-      p -> dark_intent_cb -> active = true;
-      p -> dark_intent_cb -> listener = dark_intent_target;
-    }
-  }
-
-  virtual bool ready()
-  {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( dark_intent_target == p )
-    {
-      if ( p -> buffs.dark_intent_feedback -> check() )
-        return false;
-    }
-    else
-    {
-      if ( dark_intent_target -> buffs.dark_intent -> check() )
-        return false;
-    }
-
-    return warlock_spell_t::ready();
+    warlock_spell_t::execute();
+    
+    if ( ! sim -> overrides.spell_power_multiplier )
+      sim -> auras.spell_power_multiplier -> trigger();
   }
 };
 
@@ -3054,7 +2969,7 @@ void warlock_t::init_actions()
 
     // Dark Intent
     if ( level >= 83 )
-      action_list_str += "/dark_intent";
+      action_list_str += "/dark_intent,if=!aura.spell_power_multiplier.up";
 
     // Pre soulburn
     if ( use_pre_soulburn && !set_bonus.tier13_4pc_caster() )
@@ -3292,7 +3207,6 @@ void warlock_t::create_options()
   option_t warlock_options[] =
   {
     { "use_pre_soulburn",    OPT_BOOL,   &( use_pre_soulburn       ) },
-    { "dark_intent_target",  OPT_STRING, &( dark_intent_target_str ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -3308,7 +3222,6 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
   if ( stype == SAVE_ALL )
   {
     if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
-    if ( ! dark_intent_target_str.empty() ) profile_str += "dark_intent_target=" + dark_intent_target_str + "\n";
   }
 
   return true;
@@ -3320,7 +3233,6 @@ void warlock_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
   warlock_t* p = source -> cast_warlock();
-  dark_intent_target_str = p -> dark_intent_target_str;
   use_pre_soulburn       = p -> use_pre_soulburn;
 }
 
@@ -3361,42 +3273,13 @@ player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_ty
 
 // player_t::warlock_init ===================================================
 
-void player_t::warlock_init( sim_t* sim )
+void player_t::warlock_init( sim_t* )
 {
-  sim -> auras.demonic_pact         = new aura_t( sim, "demonic_pact", 1 );
-  sim -> auras.fel_intelligence     = new aura_t( sim, "fel_intelligence", 1 );
-
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-#if SC_WARLOCK == 1
-    p -> debuffs.curse_of_elements    = new coe_debuff_t( p );
-#else
-    p -> debuffs.curse_of_elements = new debuff_t( p, 1490, "curse_of_elements_dummy_buff" );
-#endif // SC_WARLOCK
-  }
 }
 
 // player_t::warlock_combat_begin ===========================================
 
-void player_t::warlock_combat_begin( sim_t* sim )
+void player_t::warlock_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.demonic_pact     ) sim -> auras.demonic_pact     -> override();
-  if ( sim -> overrides.fel_intelligence ) sim -> auras.fel_intelligence -> override();
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( sim -> overrides.dark_intent && ! p -> is_pet() )
-    {
-      p -> buffs.dark_intent          -> override( 1, p -> type == WARLOCK ? 0.03 : 0.01 );
-      p -> buffs.dark_intent_feedback -> override( 3 );
-      p -> dark_intent_cb -> active = true;
-    }
-  }
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.curse_of_elements ) t -> debuffs.curse_of_elements -> override( 1, 8 );
-  }
 }
 

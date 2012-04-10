@@ -91,8 +91,10 @@ namespace std {using namespace tr1; }
 // GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
 #ifdef _MSC_VER
 #define nonpod_offsetof(t, m) offsetof(t, m)
+#define sc_packed_struct
 #else
 #define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
+#define sc_packed_struct __attribute__((packed))
 #endif
 
 #if defined(__GNUC__)
@@ -2065,6 +2067,11 @@ public:
 inline spelleffect_data_t* spelleffect_data_t::nil()
 { return &spelleffect_data_nil_t::singleton; }
 
+#ifdef __OpenBSD__
+#pragma pack(1)
+#else
+#pragma pack( push, 1 )
+#endif
 struct spell_data_t
 {
 private:
@@ -2209,7 +2216,12 @@ public:
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
-};
+} sc_packed_struct;
+#ifdef __OpenBSD__
+#pragma pack()
+#else
+#pragma pack( pop )
+#endif
 
 class spell_data_nil_t : public spell_data_t
 {
@@ -3480,93 +3492,46 @@ public:
   // Buffs and Debuffs Overrides
   struct overrides_t
   {
-    int abominations_might;
-    int arcane_brilliance;
-    int arcane_tactics;
-    int battle_shout;
-    int bleeding;
-    int blessing_of_kings;
-    int blessing_of_might;
-    int blood_frenzy_bleed;
-    int bloodlust;
-    int burning_wrath;
-    int communion;
-    int corrosive_spit;
-    int curse_of_elements;
-    int dark_intent;
-    int demonic_pact;
-    int demoralizing_roar;
-    int demoralizing_screech;
-    int demoralizing_shout;
-    int devotion_aura;
-    int earth_and_moon;
-    int ebon_plaguebringer;
-    int essence_of_the_red;
-    int exhaustion;
-    int expose_armor;
-    int faerie_fire;
-    int fel_intelligence;
-    int ferocious_inspiration;
-    int focus_magic;
-    int fortitude;
-    int grace_of_air;
-    int hellscreams_warsong;
-    int hemorrhage;
-    int honor_among_thieves;
-    int horn_of_winter;
-    int hunters_mark;
-    int hunting_party;
-    int improved_icy_talons;
-    int infected_wounds;
-    int insect_swarm;
-    int judgements_of_the_just;
-    int leader_of_the_pack;
-    int lightning_breath;
-    int mangle;
-    int mark_of_the_wild;
-    int master_poisoner;
-    int mind_quickening;
-    int moonkin_aura;
+    // Buff overrides
+    int attack_haste;
+    int attack_power_multiplier;
+    int critical_strike;
+    int mastery;
+    int spell_haste;
+    int spell_power_multiplier;
+    int stamina;
+    int str_agi_int;
+    
+    // Debuff overrides
+    int slowed_casting;
+    int magic_vulnerability;
+    int mortal_wounds;
     int physical_vulnerability;
-    int poisoned;
-    int qiraji_fortitude;
-    int rampage;
-    int roar_of_courage;
-    int scarlet_fever;
-    int strength_of_wrynn;
-    int sunder_armor;
-    int tailspin;
-    int tear_armor;
-    int tendon_rip;
-    int thunder_clap;
-    int trueshot_aura;
-    int vindication;
+    int ranged_vulnerability;
+    int weakened_armor;
+    int weakened_blows;
+    
+    // Misc stuff needs resolving
+    int bloodlust;
+    int honor_among_thieves;
   };
   overrides_t overrides;
 
   // Auras
   struct auras_t
   {
-    aura_t* abominations_might;
-    aura_t* arcane_tactics;
-    aura_t* burning_wrath;
-    aura_t* communion;
-    aura_t* demonic_pact;
-    aura_t* devotion_aura;
-    aura_t* fel_intelligence;
-    aura_t* ferocious_inspiration;
-    aura_t* grace_of_air;
+    // Raid-wide auras from various classes
+    aura_t* attack_haste;
+    aura_t* attack_power_multiplier;
+    aura_t* critical_strike;
+    aura_t* mastery;
+    aura_t* spell_haste;
+    aura_t* spell_power_multiplier;
+    aura_t* stamina;
+    aura_t* str_agi_int;
+    
+    // Honor Among Thieves hackery
     aura_t* honor_among_thieves;
-    aura_t* horn_of_winter;
-    aura_t* hunting_party;
-    aura_t* improved_icy_talons;
-    aura_t* leader_of_the_pack;
-    aura_t* mind_quickening;
-    aura_t* moonkin;
-    aura_t* qiraji_fortitude;
-    aura_t* rampage;
-    aura_t* roar_of_courage;
-    aura_t* trueshot;
   };
   auras_t auras;
 
@@ -4415,31 +4380,18 @@ struct player_t : public noncopyable
 
   struct buffs_t
   {
-    buff_t* arcane_brilliance;
-    buff_t* battle_shout;
     buff_t* beacon_of_light;
     buff_t* berserking;
-    buff_t* blessing_of_kings;
-    buff_t* blessing_of_might;
-    buff_t* blessing_of_might_regen; // the mana regen part of BoM
     buff_t* blood_fury_ap;
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
-    buff_t* commanding_shout;
-    buff_t* dark_intent;
-    buff_t* dark_intent_feedback;
     buff_t* destruction_potion;
     buff_t* earthen_potion;
-    buff_t* essence_of_the_red;
     buff_t* exhaustion;
-    buff_t* focus_magic;
-    buff_t* fortitude;
-    buff_t* furious_howl;
     buff_t* golemblood_potion;
     buff_t* grace;
     buff_t* guardian_spirit;
-    buff_t* hellscreams_warsong;
     buff_t* heroic_presence;
     buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
@@ -4447,7 +4399,6 @@ struct player_t : public noncopyable
     buff_t* innervate;
     buff_t* lifeblood;
     buff_t* mana_tide;
-    buff_t* mark_of_the_wild;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* pain_supression;
@@ -4456,7 +4407,6 @@ struct player_t : public noncopyable
     buff_t* self_movement;
     buff_t* speed_potion;
     buff_t* stoneform;
-    buff_t* strength_of_wrynn;
     buff_t* stunned;
     buff_t* tolvir_potion;
     buff_t* tricks_of_the_trade;
@@ -4465,47 +4415,31 @@ struct player_t : public noncopyable
     buff_t* weakened_soul;
     buff_t* wild_magic_potion_crit;
     buff_t* wild_magic_potion_sp;
+    
+    // MoP buffs
   } buffs;
 
   struct debuffs_t
   {
     debuff_t* bleeding;
-    debuff_t* blood_frenzy_bleed;
     debuff_t* casting;
-    debuff_t* corrosive_spit;
-    debuff_t* curse_of_elements; // mop ready
-    debuff_t* demoralizing_roar;
-    debuff_t* demoralizing_screech;
-    debuff_t* demoralizing_shout;
-    debuff_t* earth_and_moon;
-    debuff_t* ebon_plaguebringer;
-    debuff_t* expose_armor;
-    debuff_t* faerie_fire;
     debuff_t* flying;
     debuff_t* forbearance;
-    debuff_t* hemorrhage;
-    debuff_t* hunters_mark; // mop ready
-    debuff_t* infected_wounds;
-    debuff_t* insect_swarm;
     debuff_t* invulnerable;
-    debuff_t* judgements_of_the_just;
-    debuff_t* lightning_breath;
-    debuff_t* mangle;
-    debuff_t* master_poisoner;
-    debuff_t* physical_vulnerability; // mop ready
-    debuff_t* poisoned;
-    debuff_t* scarlet_fever;
-    debuff_t* shattering_throw;
-    debuff_t* slow;
-    debuff_t* sunder_armor;
-    debuff_t* tailspin;
-    debuff_t* tear_armor;
-    debuff_t* tendon_rip;
-    debuff_t* thunder_clap;
-    debuff_t* vindication;
     debuff_t* vulnerable;
 
-    bool snared();
+    // MoP debuffs
+    debuff_t* slowed_casting;
+    debuff_t* magic_vulnerability;
+    debuff_t* mortal_wounds;
+    debuff_t* physical_damage;
+    debuff_t* physical_vulnerability;
+    debuff_t* ranged_vulnerability;
+    debuff_t* weakened_blows;
+    debuff_t* weakened_armor;
+    
+    // Class specific "general" debuffs
+    debuff_t* shattering_throw;
   } debuffs;
 
   struct gains_t

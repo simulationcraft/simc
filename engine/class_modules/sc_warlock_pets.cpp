@@ -799,10 +799,7 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 
 void warlock_pet_t::summon( timespan_t duration )
 {
-  warlock_t*  o = owner -> cast_warlock();
   pet_t::summon( duration );
-  if ( o -> talent_demonic_pact -> rank() )
-    sim -> auras.demonic_pact -> trigger();
 }
 
 void warlock_pet_t::dismiss()
@@ -820,11 +817,6 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
   h *= owner -> spell_haste;
-
-  // According to Issue 881, DI on the owner doesn't increase pet haste, only when cast directly on the pet. 28/09/11
-  if ( owner -> buffs.dark_intent -> check() )
-    h *= 1.03;
-
   return h;
 }
 
@@ -853,20 +845,12 @@ double warlock_pet_t::composite_attack_crit( const weapon_t* ) const
 {
   double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
-  // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
-  if ( owner -> buffs.focus_magic -> check() )
-    ac -= 0.03;
-
   return ac;
 }
 
 double warlock_pet_t::composite_spell_crit() const
 {
   double sc = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-
-  // According to Issue 881, FM on the owner doesn't increase pet crit, only when cast directly on the pet. 28/09/11
-  if ( owner -> buffs.focus_magic -> check() )
-    sc -= 0.03;
 
   return sc;
 }
@@ -1094,16 +1078,12 @@ action_t* felhunter_pet_t::create_action( const std::string& name,
 
 void felhunter_pet_t::summon( timespan_t duration )
 {
-  sim -> auras.fel_intelligence -> trigger();
-
   warlock_main_pet_t::summon( duration );
 }
 
 void felhunter_pet_t::dismiss()
 {
   warlock_main_pet_t::dismiss();
-
-  sim -> auras.fel_intelligence -> expire();
 }
 
 // ==========================================================================

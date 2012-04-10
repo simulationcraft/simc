@@ -21,8 +21,6 @@
 // - Searing totem base damage scaling
 // - Glyph of Telluric Currents
 //   * Additive or Multiplicative with other modifiers (spell data indicates additive)
-// - Glyph of Lava Burst:
-//   * Additive or Multiplicative with Unleash Flame (spell data indicates additive)
 //
 // Enhancement:
 // - Lava Lash damage formula, currently weapon_dmg * ( 1.0 + ft_bonus + sf_stack * sf_bonus )
@@ -231,7 +229,6 @@ struct shaman_t : public player_t
     glyph_t* chain_lightning;
     glyph_t* fire_elemental_totem;
     glyph_t* flame_shock;
-    glyph_t* lava_burst;
     glyph_t* lava_lash;
     glyph_t* spiritwalkers_grace;
     glyph_t* telluric_currents;
@@ -318,6 +315,7 @@ struct shaman_t : public player_t
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
+  virtual void      arise();
 
   // Event Tracking
   virtual void regen( timespan_t periodicity );
@@ -739,20 +737,6 @@ struct earth_elemental_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-  virtual double composite_player_multiplier( school_type_e /* school */, action_t* /* a */ ) const
-  {
-    double m = 1.0;
-
-    // 10/14 21:18:26.413  SPELL_AURA_APPLIED,0x0000000000000000,nil,0x80000000,0xF1303C4E0000E927,"Greater Fire Elemental",0x2111,73828,"Strength of Wrynn",0x1,BUFF
-    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
-    {
-      // ICC buff.
-      m *= 1.3;
-    }
-
-    return m;
-  }
 };
 
 // ==========================================================================
@@ -1094,20 +1078,6 @@ struct fire_elemental_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-  virtual double composite_player_multiplier( school_type_e /* school */, action_t* /* a */ ) const
-  {
-    double m = 1.0;
-
-    // 10/14 21:18:26.413  SPELL_AURA_APPLIED,0x0000000000000000,nil,0x80000000,0xF1303C4E0000E927,"Greater Fire Elemental",0x2111,73828,"Strength of Wrynn",0x1,BUFF
-    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
-    {
-      // ICC buff.
-      m *= 1.3;
-    }
-
-    return m;
-  }
 };
 
 // ==========================================================================
@@ -1390,10 +1360,6 @@ struct lava_burst_overload_t : public shaman_spell_t
     background           = true;
     stateless            = true;
 
-    // TODO: Does Glyph of Lava Burst affect overload lava bursts?
-    if ( p() -> glyph.lava_burst -> ok() )
-      base_multiplier *= 1.0 + p() -> glyph.lava_burst -> effect1().percent();
-
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new lava_burst_overload_t( player, true );
@@ -1403,7 +1369,7 @@ struct lava_burst_overload_t : public shaman_spell_t
   
   virtual double composite_crit() const 
   {
-    if ( td -> dots_flame_shock -> ticking || p() -> glyph.lava_burst -> ok() )
+    if ( td -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit();
@@ -2430,7 +2396,6 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t( "lava_burst", "Lava Burst", player, options_str )
   {
     stateless        = true;
-    base_multiplier += p() -> glyph.lava_burst -> effectN( 1 ).percent();
     overload         = new lava_burst_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
@@ -2462,7 +2427,7 @@ struct lava_burst_t : public shaman_spell_t
   
   virtual double composite_crit() const
   {
-    if ( td -> dots_flame_shock -> ticking || p() -> glyph.lava_burst -> ok() )
+    if ( td -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit();
@@ -2799,6 +2764,17 @@ struct earth_shock_t : public shaman_spell_t
           new ( p() -> sim ) lightning_charge_delay_t( sim, p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
       }
+    }
+  }
+  
+  virtual void impact_s( action_state_t* state )
+  {
+    shaman_spell_t::impact_s( state );
+    
+    if ( result_is_hit( state -> result ) )
+    {
+      if ( ! sim -> overrides.weakened_blows )
+        state -> target -> debuffs.weakened_blows -> trigger();
     }
   }
 };
@@ -3720,7 +3696,6 @@ void shaman_t::init_spells()
   glyph.chain_lightning              = find_glyph( "Glyph of Chain Lightning" );
   glyph.fire_elemental_totem         = find_glyph( "Glyph of Fire Elemental Totem" );
   glyph.flame_shock                  = find_glyph( "Glyph of Flame Shock" );
-  glyph.lava_burst                   = find_glyph( "Glyph of Lava Burst" );
   glyph.lava_lash                    = find_glyph( "Glyph of Lava Lash" );
   glyph.spiritwalkers_grace          = find_glyph( "Glyph of Spiritwalker's Grace" );
   glyph.telluric_currents            = find_glyph( "Glyph of Telluric Currents" );
@@ -3730,7 +3705,6 @@ void shaman_t::init_spells()
   glyph.water_shield                 = find_glyph( "Glyph of Water Shield" );
 
   player_t::init_spells();
-
 }
 
 // shaman_t::init_base ======================================================
@@ -4229,8 +4203,9 @@ double shaman_t::composite_player_multiplier( const school_type_e school, action
     else if ( off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
       m *= 1.0 + off_hand_weapon.buff_value;
   }
-  
-  m *= 1.0 + composite_mastery() * mastery.enhanced_elements -> effectN( 2 ).base_value() / 10000.0;
+
+  if ( school == SCHOOL_FIRE || school == SCHOOL_FROST || school == SCHOOL_NATURE )
+    m *= 1.0 + composite_mastery() * mastery.enhanced_elements -> effectN( 2 ).base_value() / 10000.0;
 
   return m;
 }
@@ -4256,6 +4231,18 @@ void shaman_t::combat_begin()
   player_t::combat_begin();
 
   // TODO: Trigger Shaman auras based on specialization
+}
+
+// shaman_t::arise() ========================================================
+
+void shaman_t::arise()
+{
+  player_t::arise();
+
+  if ( ! sim -> overrides.mastery                                            ) sim -> auras.mastery                -> trigger();
+  if ( ! sim -> overrides.spell_power_multiplier                             ) sim -> auras.spell_power_multiplier -> trigger();
+  if ( primary_tree() == TREE_ENHANCEMENT && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste           -> trigger();
+  if ( primary_tree() == TREE_ELEMENTAL   && ! sim -> overrides.spell_haste  ) sim -> auras.spell_haste            -> trigger();
 }
 
 // shaman_t::decode_set =====================================================
@@ -4346,9 +4333,6 @@ player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_typ
 
 void player_t::shaman_init( sim_t* sim )
 {
-  sim -> auras.burning_wrath    = new aura_t( sim, "burning_wrath",    1, timespan_t::zero() );
-  sim -> auras.grace_of_air     = new aura_t( sim, "grace_of_air",     1, timespan_t::zero() );
-
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
@@ -4360,10 +4344,8 @@ void player_t::shaman_init( sim_t* sim )
 
 // player_t::shaman_combat_begin ============================================
 
-void player_t::shaman_combat_begin( sim_t* sim )
+void player_t::shaman_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.burning_wrath ) sim -> auras.burning_wrath -> override( 1, 0.10 );
-  if ( sim -> overrides.grace_of_air  ) sim -> auras.grace_of_air  -> override( 1, 5.0  );
 }
 
 #if SC_SHAMAN == 1

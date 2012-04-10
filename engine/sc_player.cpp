@@ -32,18 +32,6 @@ struct compare_talents
   }
 };
 
-// dark_intent_callback =====================================================
-
-struct dark_intent_callback_t : public action_callback_t
-{
-  dark_intent_callback_t( player_t* p ) : action_callback_t( p ) {}
-
-  virtual void trigger( action_t* /* a */, void* /* call_data */ )
-  {
-    listener -> buffs.dark_intent_feedback -> trigger();
-  }
-};
-
 // hymn_of_hope_buff ========================================================
 
 struct hymn_of_hope_buff_t : public buff_t
@@ -315,7 +303,7 @@ player_t::player_t( sim_t*             s,
   scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
-  brain_lag( timespan_t::min() ), brain_lag_stddev( timespan_t::min() ),
+  brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
   dbc( s -> dbc ),
@@ -1124,22 +1112,11 @@ void player_t::init_resources( bool force )
     {
       resources.initial[ i ] = resources.base[ i ] * resources.base_multiplier[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
       resources.initial[ i ] *= resources.initial_multiplier[ i ];
-      if ( i == RESOURCE_MANA )
-      {
-        if ( type != PLAYER_GUARDIAN )
-          resources.initial[ i ] += buffs.arcane_brilliance -> value();
-      }
       if ( i == RESOURCE_HEALTH )
       {
         // The first 20pts of stamina only provide 1pt of health.
         double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
         resources.initial[ i ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
-
-        if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
-        {
-          // ICC buff.
-          resources.initial[ i ] *= 1.30;
-        }
       }
     }
   }
@@ -1578,16 +1555,10 @@ void player_t::init_buffs()
 {
   buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
   buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds( 4.0 ) );
-  buffs.dark_intent               = new buff_t( this, 85767, "dark_intent"                  );
-  buffs.dark_intent_feedback      = new buff_t( this, 85759, "dark_intent_feedback"         );
-  buffs.essence_of_the_red        = new buff_t( this,        "essence_of_the_red"           );
-  buffs.furious_howl              = new buff_t( this, 24604, "furious_howl"                 );
   buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds( 15.0 ) );
-  buffs.hellscreams_warsong       = new buff_t( this,        "hellscreams_warsong", 1       );
   buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
   buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
   buffs.stoneform                 = new buff_t( this, 65116, "stoneform"                    );
-  buffs.strength_of_wrynn         = new buff_t( this,        "strength_of_wrynn",   1       );
 
   buffs.raid_movement = new buff_t( this, "raid_movement", 1 );
   buffs.self_movement = new buff_t( this, "self_movement", 1 );
@@ -1617,7 +1588,28 @@ void player_t::init_buffs()
   debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
   debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
   debuffs.flying       = new debuff_t( this, "flying",   -1 );
-  debuffs.physical_vulnerability = new debuff_t( this, 81326, "physical_vulnerability" );
+  
+  // MOP Debuffs
+  debuffs.slowed_casting           = new debuff_t( this, 115803, "slowed_casting"         );
+  debuffs.slowed_casting -> current_value = dbc.spell( 115803 ) -> effectN( 1 ).percent();
+
+  debuffs.magic_vulnerability     = new debuff_t( this, 104225, "magic_vulnerability"    );
+  debuffs.magic_vulnerability -> current_value = dbc.spell( 104225 ) -> effectN( 1 ).percent();
+  
+  debuffs.physical_vulnerability  = new debuff_t( this,  81326, "physical_vulnerability" );
+  debuffs.physical_vulnerability -> current_value = dbc.spell( 81326 ) -> effectN( 1 ).percent();
+  
+  debuffs.ranged_vulnerability    = new debuff_t( this,   1130, "ranged_vulnerability"   );
+  debuffs.ranged_vulnerability -> current_value = dbc.spell( 1130 ) -> effectN( 2 ).percent();
+  
+  debuffs.mortal_wounds           = new debuff_t( this, 115804, "mortal_wounds"          );
+  debuffs.mortal_wounds -> current_value = dbc.spell( 115804 ) -> effectN( 1 ).percent();
+  
+  debuffs.weakened_armor          = new debuff_t( this, 113746, "weakened_armor"         );
+  debuffs.weakened_armor -> current_value = dbc.spell( 113746 ) -> effectN( 1 ).percent();
+  
+  debuffs.weakened_blows          = new debuff_t( this, 115798, "weakened_blows"         );
+  debuffs.weakened_blows -> current_value = dbc.spell( 115798 ) -> effectN( 1 ).percent();
 }
 
 // player_t::init_gains =====================================================
@@ -1919,17 +1911,9 @@ double player_t::composite_attack_haste() const
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( buffs.dark_intent -> up() )
-      h *= 1.0 / 1.03;
-
     if ( buffs.bloodlust -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.30 );
-    }
-
-    if ( buffs.essence_of_the_red -> up() )
-    {
-      h *= 1.0 / ( 1.0 + 1.0 );
     }
 
     if ( buffs.unholy_frenzy -> up() )
@@ -1963,9 +1947,8 @@ double player_t::composite_attack_speed() const
     h *= 1.0 / ( 1.0 + 0.01 );
   }
 
-  if ( ! is_enemy() && ! is_add() )
-    h *= 1.0 / ( 1.0 + std::max( sim -> auras.hunting_party       -> value(),
-                                 sim -> auras.improved_icy_talons -> value() ) );
+  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_haste -> check() )
+    h *= 1.0 / ( 1.0 + sim -> auras.attack_haste -> value() );
 
   return h;
 }
@@ -1991,21 +1974,11 @@ double player_t::composite_attack_crit( const weapon_t* weapon ) const
 {
   double ac = attack_crit + ( agility() / attack_crit_per_agility / 100.0 );
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() )
-  {
-    if ( sim -> auras.leader_of_the_pack -> up()  ||
-         sim -> auras.honor_among_thieves -> up() ||
-         sim -> auras.rampage -> up()             ||
-         buffs.furious_howl -> up() )
-    {
-      ac += 0.05;
-    }
-  }
+  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
+    ac += sim -> auras.critical_strike -> value();
 
   if ( race == RACE_WORGEN )
-  {
     ac += 0.01;
-  }
 
   switch ( race )
   {
@@ -2119,16 +2092,9 @@ double player_t::composite_armor() const
   a *= composite_armor_multiplier();
 
   a += bonus_armor;
-
-  if ( sim -> auras.devotion_aura -> check() && ! is_enemy() && ! is_add() )
-    a += sim -> auras.devotion_aura -> value();
-
-  a *= 1.0 - std::max( debuffs.sunder_armor -> stack() * 0.04,
-             std::max( debuffs.faerie_fire  -> check() * debuffs.faerie_fire -> value(),
-             std::max( debuffs.expose_armor -> value(),
-             std::max( debuffs.corrosive_spit -> check() * debuffs.corrosive_spit -> value() * 0.01,
-                       debuffs.tear_armor -> check() * debuffs.tear_armor -> value() * 0.01 ) ) ) )
-             - debuffs.shattering_throw -> stack() * 0.20;
+  
+  if ( debuffs.weakened_armor -> check() )
+    a *= 1.0 + debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
   return a;
 }
@@ -2278,9 +2244,6 @@ double player_t::composite_spell_haste() const
 
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
   {
-    if ( buffs.dark_intent -> up() )
-      h *= 1.0 / 1.03;
-
     if ( buffs.bloodlust -> up() )
     {
       h *= 1.0 / ( 1.0 + 0.30 );
@@ -2290,18 +2253,12 @@ double player_t::composite_spell_haste() const
       h *= 1.0 / ( 1.0 + 0.20 );
     }
 
-    if ( buffs.essence_of_the_red -> up() )
-      h *= 1.0 / ( 1.0 + 1.0 );
-
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
 
-    if ( ! is_pet() && ! is_enemy() && ! is_add() )
+    if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.spell_haste -> check() )
     {
-      if ( sim -> auras.moonkin -> up() || sim -> auras.mind_quickening -> up() )
-      {
-        h *= 1.0 / ( 1.0 + 0.05 );
-      }
+      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
     }
 
     if ( race == RACE_GOBLIN )
@@ -2355,14 +2312,8 @@ double player_t::composite_spell_power_multiplier() const
 {
   double m = spell_power_multiplier;
 
-  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
-  {
-    if ( sim -> auras.demonic_pact -> up() )
-      m *= 1.10;
-    else
-      m *= 1.0 + std::max( sim -> auras.burning_wrath -> value(),
-                           buffs.arcane_brilliance -> up() * 0.06 );
-  }
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() && sim -> auras.spell_power_multiplier -> check() )
+    m *= 1.0 + sim -> auras.spell_power_multiplier -> value();
   return m;
 }
 
@@ -2374,16 +2325,8 @@ double player_t::composite_spell_crit() const
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
-    if ( buffs.focus_magic -> up() )
-      sc += 0.03;
-
-    if ( sim -> auras.leader_of_the_pack -> up() ||
-         sim -> auras.honor_among_thieves -> up() ||
-         sim -> auras.rampage -> up() ||
-         buffs.furious_howl -> up() )
-    {
-      sc += 0.05;
-    }
+    if ( sim -> auras.critical_strike -> check() )
+      sc += sim -> auras.critical_strike -> value();
 
     if ( buffs.destruction_potion -> check() )
       sc += 0.02;
@@ -2420,8 +2363,8 @@ double player_t::composite_mastery() const
 {
   double m = floor( ( mastery * 100.0 ) + 0.5 ) / 100.0;
 
-  if ( sim -> auras.grace_of_air -> check() )
-    m += sim -> auras.grace_of_air -> value();
+  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.mastery -> value() )
+    m += sim -> auras.mastery -> value();
 
   return m;
 }
@@ -2432,19 +2375,8 @@ double player_t::composite_attack_power_multiplier() const
 {
   double m = attack_power_multiplier;
 
-  if ( ! is_pet() )
-  {
-    if ( ( sim -> auras.trueshot -> up() && ! is_enemy() && ! is_add() ) || buffs.blessing_of_might -> up() )
-    {
-      //FIXME: Since we don't currently model the difference between ranged and melee
-      //       attack power, this ugly hack just checks if the player is a hunter instead.
-      m *= ( type != HUNTER ) ? 1.20 : 1.10;
-    }
-    else if ( ! is_enemy() && ! is_add() )
-    {
-      m *= 1.0 + sim -> auras.abominations_might -> value();
-    }
-  }
+  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.attack_power_multiplier -> value() )
+    m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
 
   return m;
 }
@@ -2457,37 +2389,14 @@ double player_t::composite_player_multiplier( const school_type_e school, action
 
   if ( type != PLAYER_GUARDIAN )
   {
-    if ( school == SCHOOL_PHYSICAL )
-    {
-      if ( debuffs.demoralizing_roar    -> up() ||
-           debuffs.demoralizing_shout   -> up() ||
-           debuffs.demoralizing_screech -> up() ||
-           debuffs.scarlet_fever        -> up() ||
-           debuffs.vindication          -> up() )
-      {
-        m *= 0.90;
-      }
-    }
-
-    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
-    {
-      // ICC buff.
-      m *= 1.30;
-    }
+    if ( school == SCHOOL_PHYSICAL && debuffs.weakened_blows -> check() )
+      m *= 1.0 + debuffs.weakened_blows -> value();
 
     if ( buffs.tricks_of_the_trade -> check() )
     {
       // because of the glyph we now track the damage % increase in the buff value
       m *= 1.0 + buffs.tricks_of_the_trade -> value();
     }
-
-    if ( ! is_enemy() && ! is_add() )
-      if ( sim -> auras.ferocious_inspiration -> up() ||
-           sim -> auras.communion             -> up() ||
-           sim -> auras.arcane_tactics        -> up() )
-      {
-        m *= 1.03;
-      }
   }
 
   if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
@@ -2502,58 +2411,28 @@ double player_t::composite_player_multiplier( const school_type_e school, action
 
 double player_t::composite_player_td_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + buffs.dark_intent -> value() * buffs.dark_intent_feedback -> stack();
-
-  return m;
+  return 1.0;
 }
 
 // player_t::composite_player_heal_multiplier ===============================
 
 double player_t::composite_player_heal_multiplier( const school_type_e /* school */ ) const
 {
-  double m = 1.0;
-
-  if ( type != PLAYER_GUARDIAN )
-  {
-    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
-    {
-      // ICC buff.
-      m *= 1.30;
-    }
-  }
-
-  return m;
+  return 1.0;
 }
 
 // player_t::composite_player_th_multiplier =================================
 
 double player_t::composite_player_th_multiplier( const school_type_e /* school */ ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + buffs.dark_intent -> value() * buffs.dark_intent_feedback -> stack();
-
-  return m;
+  return 1.0;
 }
 
 // player_t::composite_player_absorb_multiplier =============================
 
 double player_t::composite_player_absorb_multiplier( const school_type_e /* school */ ) const
 {
-  double m = 1.0;
-
-  if ( type != PLAYER_GUARDIAN )
-  {
-    if ( buffs.hellscreams_warsong -> up() || buffs.strength_of_wrynn -> up() )
-    {
-      // ICC buff.
-      m *= 1.30;
-    }
-  }
-
-  return m;
+  return 1.0;
 }
 
 // player_t::composite_movement_speed =======================================
@@ -2600,33 +2479,9 @@ double player_t::composite_attribute( attribute_type_e attr ) const
 
   switch ( attr )
   {
-  case ATTR_STRENGTH:
-    if ( ! is_pet() && ! is_enemy() && ! is_add() )
-    {
-      a += std::max(           sim -> auras.horn_of_winter    -> value(),
-                     std::max( buffs.battle_shout             -> value(),
-                               sim -> auras.roar_of_courage   -> value() ) );
-    }
-    break;
-  case ATTR_AGILITY:
-    if ( ! is_pet() && ! is_enemy() && ! is_add() )
-    {
-      a += std::max(           sim -> auras.horn_of_winter    -> value(),
-                     std::max( buffs.battle_shout             -> value(),
-                               sim -> auras.roar_of_courage   -> value() ) );
-    }
-    break;
-  case ATTR_STAMINA:
-    if ( ! is_pet() && ! is_enemy() && ! is_add() )
-    {
-      a += sim -> auras.qiraji_fortitude -> value();
-    }
-    break;
-  case ATTR_SPIRIT:
-    if ( race == RACE_HUMAN )
-    {
-      a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
-    }
+    case ATTR_SPIRIT:
+      if ( race == RACE_HUMAN )
+        a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
     break;
   default:
     break;
@@ -2643,20 +2498,22 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
   switch ( attr )
   {
-  case ATTR_STRENGTH:
-  case ATTR_AGILITY:
-  case ATTR_STAMINA:
-  case ATTR_INTELLECT:
-    // MotW / BoK
-    // ... increasing Strength, Agility, Stamina, and Intellect by 5%
-    if ( buffs.blessing_of_kings -> up() || buffs.mark_of_the_wild -> up() )
-      m *= 1.05;
-    break;
-  case ATTR_SPIRIT:
-    m *= 1.0 + buffs.mana_tide -> value();
-    break;
-  default:
-    break;
+    case ATTR_STRENGTH:
+    case ATTR_AGILITY:
+    case ATTR_INTELLECT:
+      if ( sim -> auras.str_agi_int -> check() )
+        m *= 1.0 + sim -> auras.str_agi_int -> value();
+      break;
+    case ATTR_STAMINA:
+      if ( sim -> auras.stamina -> check() )
+        m *= 1.0 + sim -> auras.stamina -> value();
+      break;
+    case ATTR_SPIRIT:
+      if ( buffs.mana_tide -> check() )
+        m *= 1.0 + buffs.mana_tide -> value();
+      break;
+    default:
+      break;
   }
 
   return m;
@@ -2665,7 +2522,9 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 // player_t::get_attribute() ================================================
 
 double player_t::get_attribute( attribute_type_e a ) const
-{ return composite_attribute( a ) * composite_attribute_multiplier( a ); }
+{ 
+  return composite_attribute( a ) * composite_attribute_multiplier( a );
+}
 
 // player_t::combat_begin ===================================================
 
@@ -2693,19 +2552,6 @@ void player_t::combat_begin()
   if ( ! is_pet() && ! is_add() )
   {
     arise();
-  }
-
-  if ( sim -> overrides.essence_of_the_red )
-  {
-    buffs.essence_of_the_red -> trigger();
-  }
-  if ( sim -> overrides.strength_of_wrynn )
-  {
-    buffs.strength_of_wrynn -> trigger();
-  }
-  if ( sim -> overrides.hellscreams_warsong )
-  {
-    buffs.hellscreams_warsong -> trigger();
   }
 
   if ( race == RACE_DRAENEI )
@@ -2920,10 +2766,12 @@ void player_t::reset()
   attribute_multiplier = attribute_multiplier_initial;
 
   if ( ( level >= 50 ) && matching_gear )
+  {
     for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     {
         attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
     }
+  }
   spell_power = initial_spell_power;
   resource_reduction = initial_resource_reduction;
 
@@ -3358,19 +3206,6 @@ void player_t::regen( const timespan_t periodicity )
   case RESOURCE_MANA:
     base = composite_mp5() / 5.0;
     gain = gains.mp5_regen;
-
-    {
-      if ( buffs.essence_of_the_red -> up() )
-      {
-        const double essence_regen = periodicity.total_seconds() * resources.max[ RESOURCE_MANA ] * 0.05;
-
-        resource_gain( RESOURCE_MANA, essence_regen, gains.essence_of_the_red );
-      }
-
-      double bow = buffs.blessing_of_might_regen -> current_value;
-
-      resource_gain( RESOURCE_MANA, periodicity.total_seconds() * bow / 5.0, gains.blessing_of_might );
-    }
     break;
 
   default:
@@ -3501,22 +3336,12 @@ void player_t::recalculate_resource_max( resource_type_e resource_type )
   {
   case RESOURCE_MANA:
   {
-    // Arcane Brilliance needs to be done here as a generic resource, otherwise override will
-    // not (and did not previously) work
-    if ( type != PLAYER_GUARDIAN )
-      resources.max[ resource_type ] += buffs.arcane_brilliance -> value();
     break;
   }
   case RESOURCE_HEALTH:
   {
     double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
     resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
-
-    if ( buffs.hellscreams_warsong -> check() || buffs.strength_of_wrynn -> check() )
-    {
-      // ICC buff.
-      resources.max[ resource_type ] *= 1.30;
-    }
     break;
   }
   default: break;
@@ -4035,9 +3860,6 @@ void player_t::dismiss_pet( const char* pet_name )
 
 void player_t::register_callbacks()
 {
-  dark_intent_cb = new dark_intent_callback_t( this );
-  dark_intent_cb -> active = false;
-  register_tick_callback( RESULT_CRIT_MASK, dark_intent_cb );
 }
 
 // player_t::register_resource_gain_callback ================================
@@ -4517,17 +4339,6 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
     action_priority_list.push_back( a );
   }
   return a;
-}
-
-// player_t::debuffs_t::snared ==============================================
-
-bool player_t::debuffs_t::snared()
-{
-  if ( infected_wounds -> check() ) return true;
-  if ( judgements_of_the_just -> check() ) return true;
-  if ( slow -> check() ) return true;
-  if ( thunder_clap -> check() ) return true;
-  return false;
 }
 
 // Chosen Movement Actions ==================================================
@@ -6017,7 +5828,7 @@ action_expr_t* player_t::create_expression( action_t* a,
 
   else if ( num_splits == 3 )
   {
-    if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" || splits[ 0 ] == "aura" )
+    if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
       buff_t* buff;
       buff = sim->get_targetdata_aura( a -> player, this, splits[1] );
@@ -6830,22 +6641,10 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 {
   double m = 1.0;
 
-  // MoP COE: increases "magic" damage taken by 5%
-  if ( school != SCHOOL_NONE && ( school & SCHOOL_MAGIC_MASK ) )
-    m *= 1.0 + debuffs.curse_of_elements  -> up() * debuffs.curse_of_elements -> data().effect1().percent();
-
-  if ( school == SCHOOL_PHYSICAL ||
-       school == SCHOOL_BLEED    )
-  {
-    m *= 1.0 + debuffs.physical_vulnerability -> up() * debuffs.physical_vulnerability->data().effect1().percent();
-
-  }
-  else
-  {
-    m *= 1.0 + ( std::max( debuffs.earth_and_moon     -> value(),
-                                     std::max( debuffs.ebon_plaguebringer -> value(),
-                                               debuffs.lightning_breath   -> value() ) ) * 0.01 );
-  }
+  if ( school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+    m *= 1.0 + debuffs.magic_vulnerability -> value();
+  else if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+    m *= 1.0 + debuffs.physical_vulnerability -> value();
 
   m *= 1.0 + debuffs.vulnerable -> value();
 
@@ -6854,10 +6653,6 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 
 double player_t::composite_ranged_attack_player_vulnerability() const
 {
-  double m = 1.0;
-
   // MoP: Increase ranged damage taken by 5%. make sure
-  m *= 1.0 + debuffs.hunters_mark -> up() * debuffs.hunters_mark -> data().effect2().percent();
-
-  return m;
+  return 1.0 + debuffs.ranged_vulnerability -> value();
 }

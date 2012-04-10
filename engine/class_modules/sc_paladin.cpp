@@ -1293,6 +1293,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     {
       proc -> execute();
       trigger_grand_crusader( this );
+      
+      // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
+      if ( ! sim -> overrides.weakened_blows )
+        target -> debuffs.weakened_blows -> trigger();
     }
   }
 };
@@ -1363,9 +1367,7 @@ struct hand_of_light_proc_t : public melee_attack_t
   {
     melee_attack_t::target_debuff( t, dt );
     // not *= since we don't want to double dip in other effects (like vunerability)
-    target_multiplier = 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
-                                std::max( t -> debuffs.earth_and_moon     -> value(),
-                                          t -> debuffs.ebon_plaguebringer -> value() ) ) * 0.01 );
+    target_multiplier = 1.0 + t -> debuffs.magic_vulnerability -> value();
   }
 };
 
@@ -1760,12 +1762,6 @@ struct judgement_t : public paladin_melee_attack_t
 
     if ( seal -> result_is_hit() )
     {
-      if ( p -> talents.judgements_of_the_just -> rank() )
-      {
-        target -> debuffs.judgements_of_the_just -> trigger();
-        target -> debuffs.judgements_of_the_just -> source = p;
-      }
-
       p -> buffs_divine_purpose -> trigger();
       p -> buffs_judgements_of_the_pure -> trigger();
       p -> buffs_sacred_duty-> trigger();
@@ -1777,10 +1773,15 @@ struct judgement_t : public paladin_melee_attack_t
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
+    
+    // Mists of Pandaria: Retribution Paladin Judgments trigger Physical Vulnerability
+    if ( p -> primary_tree() == TREE_RETRIBUTION && ! sim -> overrides.physical_vulnerability )
+        target -> debuffs.physical_vulnerability -> trigger();
 
     p -> buffs_judgements_of_the_wise -> trigger();
 
     p -> last_foreground_action = seal; // Necessary for DPET calculations.
+    
   }
 
   virtual bool ready()
@@ -3683,8 +3684,6 @@ void paladin_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( talents.communion -> rank() ) sim -> auras.communion -> trigger();
-
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
 }
 
@@ -3733,50 +3732,17 @@ player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_ty
 
 void player_t::paladin_init( sim_t* sim )
 {
-  sim -> auras.communion     = new aura_t( sim, "communion",     1 );
-  sim -> auras.devotion_aura = new aura_t( sim, "devotion_aura", 1 );
-
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.beacon_of_light          = new buff_t( p, 53563, "beacon_of_light" );
-    p -> buffs.blessing_of_kings        = new buff_t( p, "blessing_of_kings",       ! p -> is_pet() );
-    p -> buffs.blessing_of_might        = new buff_t( p, "blessing_of_might",       ! p -> is_pet() );
-    p -> buffs.blessing_of_might_regen  = new buff_t( p, "blessing_of_might_regen", ! p -> is_pet() );
     p -> buffs.illuminated_healing      = new buff_t( p, 86273, "illuminated_healing" );
     p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
-    p -> debuffs.judgements_of_the_just = new debuff_t( p, "judgements_of_the_just", 1, timespan_t::from_seconds( 20.0 ) );
-    p -> debuffs.vindication            = new debuff_t( p, "vindication",            1, timespan_t::from_seconds( 30.0 ) );
   }
 }
 
 // player_t::paladin_combat_begin ===========================================
 
-void player_t::paladin_combat_begin( sim_t* sim )
+void player_t::paladin_combat_begin( sim_t* )
 {
-  double devo = sim -> dbc.effect_average( sim -> dbc.spell( 465   ) -> effect1().id(), sim -> max_player_level );
-  double bow  = sim -> dbc.effect_average( sim -> dbc.spell( 79101 ) -> effect3().id(), sim -> max_player_level );
-
-  if ( sim -> overrides.communion     ) sim -> auras.communion     -> override();
-  if ( sim -> overrides.devotion_aura ) sim -> auras.devotion_aura -> override( 1, devo );
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> ooc_buffs() )
-    {
-      if ( sim -> overrides.blessing_of_kings )
-        p -> buffs.blessing_of_kings -> override();
-      if ( sim -> overrides.blessing_of_might )
-      {
-        p -> buffs.blessing_of_might       -> override();
-        p -> buffs.blessing_of_might_regen -> override( 1, bow );
-      }
-    }
-  }
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.judgements_of_the_just ) t -> debuffs.judgements_of_the_just -> override();
-    if ( sim -> overrides.vindication            ) t -> debuffs.vindication            -> override();
-  }
 }

@@ -1092,6 +1092,25 @@ void sim_t::combat_begin()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> combat_begin();
 
+  if ( overrides.attack_haste            ) auras.attack_haste            -> override();
+  if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
+  if ( overrides.critical_strike         ) auras.critical_strike         -> override();
+  if ( overrides.mastery                 ) auras.mastery                 -> override();
+  if ( overrides.spell_haste             ) auras.spell_haste             -> override();
+  if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override();
+  if ( overrides.stamina                 ) auras.stamina                 -> override();
+  if ( overrides.str_agi_int             ) auras.str_agi_int             -> override();
+  
+  for ( player_t* t = target_list; t; t = t -> next )
+  {
+    if ( overrides.slowed_casting          ) t -> debuffs.slowed_casting          -> override();
+    if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override();
+    if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override();
+    if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
+    if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override( 3 );
+    if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
+  }
+
   player_t::combat_begin( this );
 
   raid_event_t::combat_begin( this );
@@ -1227,6 +1246,40 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
+  // MoP aura initialization
+  
+  // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
+  auras.attack_haste = new aura_t( this, "attack_haste" );
+  auras.attack_haste -> current_value = dbc.spell( 113742 ) -> effectN( 1 ).percent();
+  
+  // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
+  auras.attack_power_multiplier = new aura_t( this, "attack_power_multiplier" );
+  auras.attack_power_multiplier -> current_value = dbc.spell( 19506 ) -> effectN( 1 ).percent();
+  
+  // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
+  auras.critical_strike = new aura_t( this, "critical_strike" );
+  auras.critical_strike -> current_value = dbc.spell( 19506 ) -> effectN( 3 ).percent();
+  
+  // Mastery, value from Grace of Air (id=116956) (Shaman)
+  auras.mastery = new aura_t( this, "mastery" );
+  auras.mastery -> current_value = dbc.spell( 116956 ) -> effectN( 1 ).base_value();
+  
+  // Spell Haste, value from Mind Quickening (id=49868) (Priest)
+  auras.spell_haste = new aura_t( this, "spell_haste" );
+  auras.spell_haste -> current_value = dbc.spell( 49868 ) -> effectN( 1 ).percent();
+  
+  // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
+  auras.spell_power_multiplier = new aura_t( this, "spell_power_multiplier" );
+  auras.spell_power_multiplier -> current_value = dbc.spell( 77747 ) -> effectN( 1 ).percent();
+  
+  // Stamina, value from fortitude (id=79104) (Priest)
+  auras.stamina = new aura_t( this, "stamina" );
+  auras.stamina -> current_value = dbc.spell( 79104 ) -> effectN( 1 ).percent();
+  
+  // Strength, Agility, and Intellect, value from Blessing of Kings (id=79062) (Paladin)
+  auras.str_agi_int = new aura_t( this, "str_agi_int" );
+  auras.str_agi_int -> current_value = dbc.spell( 79062 ) -> effectN( 1 ).percent();
+
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     log_t::output( this, "Creating Enemies." );
@@ -1277,7 +1330,7 @@ bool sim_t::init()
   raid_hps.reserve( iterations );
   total_heal.reserve( iterations );
   simulation_length.reserve( iterations );
-
+  
   return canceled ? false : true;
 }
 
@@ -1761,60 +1814,25 @@ cooldown_t* sim_t::get_cooldown( const std::string& name )
 void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
-
-  overrides.abominations_might     = optimal_raid;
-  overrides.arcane_brilliance      = optimal_raid;
-  overrides.arcane_tactics         = optimal_raid;
-  overrides.battle_shout           = optimal_raid;
-  overrides.bleeding               = optimal_raid;
-  overrides.blessing_of_kings      = optimal_raid;
-  overrides.blessing_of_might      = optimal_raid;
-  overrides.blood_frenzy_bleed     = optimal_raid;
+  
+  overrides.attack_haste           = optimal_raid;
+  overrides.attack_power_multiplier= optimal_raid;
+  overrides.critical_strike        = optimal_raid;
+  overrides.mastery                = optimal_raid;
+  overrides.spell_haste            = optimal_raid;
+  overrides.spell_power_multiplier = optimal_raid;
+  overrides.stamina                = optimal_raid;
+  overrides.str_agi_int            = optimal_raid;
+  
+  overrides.slowed_casting          = optimal_raid;
+  overrides.magic_vulnerability    = optimal_raid;
+  overrides.mortal_wounds          = optimal_raid;
   overrides.physical_vulnerability = optimal_raid;
+  overrides.weakened_armor         = optimal_raid;
+  overrides.weakened_blows         = optimal_raid;
+
   overrides.bloodlust              = optimal_raid;
-  overrides.burning_wrath          = optimal_raid;
-  overrides.communion              = optimal_raid;
-  overrides.corrosive_spit         = optimal_raid;
-  overrides.curse_of_elements      = optimal_raid;
-  overrides.demonic_pact           = optimal_raid;
-  overrides.demoralizing_roar      = optimal_raid;
-  overrides.demoralizing_screech   = optimal_raid;
-  overrides.demoralizing_shout     = optimal_raid;
-  overrides.devotion_aura          = optimal_raid;
-  overrides.earth_and_moon         = optimal_raid;
-  overrides.ebon_plaguebringer     = optimal_raid;
-  overrides.expose_armor           = optimal_raid;
-  overrides.faerie_fire            = optimal_raid;
-  overrides.fel_intelligence       = optimal_raid;
-  overrides.ferocious_inspiration  = optimal_raid;
-  overrides.fortitude              = optimal_raid;
-  overrides.grace_of_air           = optimal_raid;
-  overrides.hemorrhage             = optimal_raid;
   overrides.honor_among_thieves    = optimal_raid;
-  overrides.horn_of_winter         = optimal_raid;
-  overrides.hunters_mark           = optimal_raid;
-  overrides.improved_icy_talons    = optimal_raid;
-  overrides.hunting_party          = optimal_raid;
-  overrides.roar_of_courage        = optimal_raid;
-  overrides.infected_wounds        = optimal_raid;
-  overrides.judgements_of_the_just = optimal_raid;
-  overrides.leader_of_the_pack     = optimal_raid;
-  overrides.lightning_breath       = optimal_raid;
-  overrides.mangle                 = optimal_raid;
-  overrides.mark_of_the_wild       = optimal_raid;
-  overrides.master_poisoner        = optimal_raid;
-  overrides.moonkin_aura           = optimal_raid;
-  overrides.poisoned               = optimal_raid;
-  overrides.qiraji_fortitude       = optimal_raid;
-  overrides.rampage                = optimal_raid;
-  overrides.scarlet_fever          = optimal_raid;
-  overrides.sunder_armor           = optimal_raid;
-  overrides.tailspin               = optimal_raid;
-  overrides.tear_armor             = optimal_raid;
-  overrides.tendon_rip             = optimal_raid;
-  overrides.thunder_clap           = optimal_raid;
-  overrides.trueshot_aura          = optimal_raid;
-  overrides.vindication            = optimal_raid;
 }
 
 // sim_t::time_to_think =====================================================
@@ -2021,66 +2039,12 @@ void sim_t::create_options()
     { "path",                             OPT_STRING, &( path_str                                 ) },
     { "path+",                            OPT_APPEND, &( path_str                                 ) },
     { "save_raid_summary",                OPT_BOOL,   &( save_raid_summary                        ) },
-    // Overrides"
-    { "override.abominations_might",      OPT_BOOL,   &( overrides.abominations_might             ) },
-    { "override.arcane_brilliance",       OPT_BOOL,   &( overrides.arcane_brilliance              ) },
-    { "override.arcane_tactics",          OPT_BOOL,   &( overrides.arcane_tactics                 ) },
-    { "override.battle_shout",            OPT_BOOL,   &( overrides.battle_shout                   ) },
-    { "override.bleeding",                OPT_BOOL,   &( overrides.bleeding                       ) },
-    { "override.blessing_of_kings",       OPT_BOOL,   &( overrides.blessing_of_kings              ) },
-    { "override.blessing_of_might",       OPT_BOOL,   &( overrides.blessing_of_might              ) },
-    { "override.blood_frenzy_bleed",      OPT_BOOL,   &( overrides.blood_frenzy_bleed             ) },
-    { "override.physical_vulnerability",  OPT_BOOL,   &( overrides.physical_vulnerability         ) },
-    { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
-    { "override.burning_wrath",           OPT_BOOL,   &( overrides.burning_wrath                  ) },
+    // Bloodlust
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
     { "bloodlust_time",                   OPT_INT,    &( bloodlust_time                           ) },
-    { "override.communion",               OPT_BOOL,   &( overrides.communion                      ) },
-    { "override.corrosive_spit",          OPT_BOOL,   &( overrides.corrosive_spit                 ) },
-    { "override.curse_of_elements",       OPT_BOOL,   &( overrides.curse_of_elements              ) },
-    { "override.dark_intent",             OPT_BOOL,   &( overrides.dark_intent                    ) },
-    { "override.demonic_pact",            OPT_BOOL,   &( overrides.demonic_pact                   ) },
-    { "override.demoralizing_roar",       OPT_BOOL,   &( overrides.demoralizing_roar              ) },
-    { "override.demoralizing_screech",    OPT_BOOL,   &( overrides.demoralizing_screech           ) },
-    { "override.demoralizing_shout",      OPT_BOOL,   &( overrides.demoralizing_shout             ) },
-    { "override.devotion_aura",           OPT_BOOL,   &( overrides.devotion_aura                  ) },
-    { "override.earth_and_moon",          OPT_BOOL,   &( overrides.earth_and_moon                 ) },
-    { "override.ebon_plaguebringer",      OPT_BOOL,   &( overrides.ebon_plaguebringer             ) },
-    { "override.essence_of_the_red",      OPT_BOOL,   &( overrides.essence_of_the_red             ) },
-    { "override.expose_armor",            OPT_BOOL,   &( overrides.expose_armor                   ) },
-    { "override.faerie_fire",             OPT_BOOL,   &( overrides.faerie_fire                    ) },
-    { "override.ferocious_inspiration",   OPT_BOOL,   &( overrides.ferocious_inspiration          ) },
-    { "override.focus_magic",             OPT_BOOL,   &( overrides.focus_magic                    ) },
-    { "override.fortitude",               OPT_BOOL,   &( overrides.fortitude                      ) },
-    { "override.grace_of_air",            OPT_BOOL,   &( overrides.grace_of_air                   ) },
-    { "override.hemorrhage",              OPT_BOOL,   &( overrides.hemorrhage                     ) },
+    // Overrides"
+    { "override.bloodlust",               OPT_BOOL,   &( overrides.bloodlust                      ) },
     { "override.honor_among_thieves",     OPT_BOOL,   &( overrides.honor_among_thieves            ) },
-    { "override.horn_of_winter",          OPT_BOOL,   &( overrides.horn_of_winter                 ) },
-    { "override.hellscreams_warsong",     OPT_BOOL,   &( overrides.hellscreams_warsong            ) },
-    { "override.hunters_mark",            OPT_BOOL,   &( overrides.hunters_mark                   ) },
-    { "override.improved_icy_talons",     OPT_BOOL,   &( overrides.improved_icy_talons            ) },
-    { "override.hunting_party",           OPT_BOOL,   &( overrides.hunting_party                  ) },
-    { "override.infected_wounds",         OPT_BOOL,   &( overrides.infected_wounds                ) },
-    { "override.judgements_of_the_just",  OPT_BOOL,   &( overrides.judgements_of_the_just         ) },
-    { "override.leader_of_the_pack",      OPT_BOOL,   &( overrides.leader_of_the_pack             ) },
-    { "override.lightning_breath",        OPT_BOOL,   &( overrides.lightning_breath               ) },
-    { "override.mangle",                  OPT_BOOL,   &( overrides.mangle                         ) },
-    { "override.mark_of_the_wild",        OPT_BOOL,   &( overrides.mark_of_the_wild               ) },
-    { "override.master_poisoner",         OPT_BOOL,   &( overrides.master_poisoner                ) },
-    { "override.moonkin_aura",            OPT_BOOL,   &( overrides.moonkin_aura                   ) },
-    { "override.poisoned",                OPT_BOOL,   &( overrides.poisoned                       ) },
-    { "override.qiraji_fortitude",        OPT_BOOL,   &( overrides.qiraji_fortitude               ) },
-    { "override.rampage",                 OPT_BOOL,   &( overrides.rampage                        ) },
-    { "override.roar_of_courage",         OPT_BOOL,   &( overrides.roar_of_courage                ) },
-    { "override.scarlet_fever",           OPT_BOOL,   &( overrides.scarlet_fever                  ) },
-    { "override.strength_of_wrynn",       OPT_BOOL,   &( overrides.strength_of_wrynn              ) },
-    { "override.sunder_armor",            OPT_BOOL,   &( overrides.sunder_armor                   ) },
-    { "override.tailspin",                OPT_BOOL,   &( overrides.tailspin                       ) },
-    { "override.tear_armor",              OPT_BOOL,   &( overrides.tear_armor                     ) },
-    { "override.tendon_rip",              OPT_BOOL,   &( overrides.tendon_rip                     ) },
-    { "override.thunder_clap",            OPT_BOOL,   &( overrides.thunder_clap                   ) },
-    { "override.trueshot_aura",           OPT_BOOL,   &( overrides.trueshot_aura                  ) },
-    { "override.vindication",             OPT_BOOL,   &( overrides.vindication                    ) },
     // Regen
     { "regen_periodicity",                OPT_TIMESPAN, &( regen_periodicity                      ) },
     // RNG

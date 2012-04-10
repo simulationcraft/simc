@@ -426,33 +426,6 @@ struct warrior_attack_t : public melee_attack_t
 // Static Functions
 // ==========================================================================
 
-// trigger_blood_frenzy =====================================================
-
-static void trigger_blood_frenzy( action_t* a )
-{
-  warrior_t* p = a -> player -> cast_warrior();
-
-  if ( ! p -> talents.blood_frenzy -> ok() )
-    return;
-
-  player_t* t = a -> target;
-
-  // Don't alter the duration if it is set to 0 (override/optimal_raid)
-
-  if ( t -> debuffs.blood_frenzy_bleed -> buff_duration > timespan_t::zero() )
-  {
-    t -> debuffs.blood_frenzy_bleed -> buff_duration = a -> num_ticks * a -> base_tick_time;
-  }
-
-  double rank = p -> talents.blood_frenzy -> rank();
-
-  if ( rank * 15 >= t -> debuffs.blood_frenzy_bleed -> current_value )
-  {
-    t -> debuffs.blood_frenzy_bleed -> trigger( 1, rank * 15 );
-    t -> debuffs.blood_frenzy_bleed -> source = p;
-  }
-}
-
 // trigger_bloodsurge =======================================================
 
 static void trigger_bloodsurge( action_t* a )
@@ -488,7 +461,6 @@ struct deep_wounds_t : public warrior_attack_t
     if ( result_is_hit( impact_result ) )
     {
       base_td = travel_dmg / dot() -> num_ticks;
-      trigger_blood_frenzy( this );
     }
   }
 };
@@ -1423,6 +1395,9 @@ struct colossus_smash_t : public warrior_attack_t
     {
       warrior_targetdata_t* td = targetdata() -> cast_warrior();
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
+      
+      if ( ! sim -> overrides.physical_vulnerability )
+        target -> debuffs.physical_vulnerability -> trigger();
     }
   }
 };
@@ -1439,32 +1414,6 @@ struct concussion_blow_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     direct_power_mod  = effect3().percent();
-  }
-};
-
-// Demoralizing Shout =======================================================
-
-struct demoralizing_shout_t : public warrior_attack_t
-{
-  demoralizing_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "demoralizing_shout", "Demoralizing Shout", p )
-  {
-    parse_options( NULL, options_str );
-
-    may_dodge  = false;
-    may_parry  = false;
-    may_block  = false;
-    may_glance = false;
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      t -> debuffs.demoralizing_shout -> trigger();
-    }
   }
 };
 
@@ -1502,18 +1451,12 @@ struct devastate_t : public warrior_attack_t
     }
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
-  {
-    warrior_attack_t::target_debuff( t, dtype );
-
-    target_dd_adder = t -> debuffs.sunder_armor -> stack() * effect_average( 2 );
-  }
-
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
-    t -> debuffs.sunder_armor -> trigger();
+    if ( ! sim -> overrides.weakened_blows )
+      t -> debuffs.weakened_blows -> trigger();
   }
 };
 
@@ -1754,6 +1697,14 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
   }
+  
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    warrior_attack_t::impact( t, impact_result, travel_dmg );
+    
+    if ( sim -> overrides.mortal_wounds && result_is_hit( impact_result ) )
+      t -> debuffs.mortal_wounds -> trigger();
+  }
 
   virtual void player_buff()
   {
@@ -1966,9 +1917,6 @@ struct rend_dot_t : public warrior_attack_t
       base_td += ( sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> swing_time.total_seconds() * weapon_power_mod * total_attack_power() ) * 0.25;
 
     warrior_attack_t::execute();
-
-    if ( result_is_hit() )
-      trigger_blood_frenzy( this );
   }
 
   virtual void tick( dot_t* d )
@@ -2349,7 +2297,7 @@ struct sunder_armor_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.furious_sundering -> effect1().percent();
-
+    background = ( sim -> overrides.weakened_armor != 0 );
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
@@ -2359,7 +2307,8 @@ struct sunder_armor_t : public warrior_attack_t
 
     if ( result_is_hit( impact_result ) )
     {
-      t -> debuffs.sunder_armor -> trigger();
+      if ( ! sim -> overrides.weakened_armor )
+        t -> debuffs.weakened_armor -> trigger();
     }
   }
 };
@@ -2396,6 +2345,9 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
       td -> dots_rend -> refresh_duration();
+
+    if ( ! sim -> overrides.weakened_blows )
+      target -> debuffs.weakened_blows -> trigger();
   }
 };
 
@@ -2559,15 +2511,8 @@ struct battle_shout_t : public warrior_spell_t
 
     warrior_t* p = player -> cast_warrior();
 
-    if ( ! sim -> overrides.battle_shout )
-    {
-      for ( player_t* q = sim -> player_list; q; q = q -> next )
-      {
-        q -> buffs.battle_shout -> buff_duration = duration() + p -> glyphs.battle -> effect1().time_value();
-        q -> buffs.battle_shout -> trigger( 1, effect_average( 1 ) );
-      }
-
-    }
+    if ( ! sim -> overrides.attack_power_multiplier )
+      sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, duration() );
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_battle_shout );
   }
@@ -2597,11 +2542,9 @@ struct commanding_shout_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     warrior_t* p = player -> cast_warrior();
-    for ( player_t* q = sim -> player_list; q; q = q -> next )
-    {
-      q -> buffs.commanding_shout -> buff_duration = timespan_t::from_seconds( 120 ) /* include commanding glyph */;
-      q -> buffs.commanding_shout -> trigger( 1, effect_average( 1 ) );
-    }
+    
+    if ( ! sim -> overrides.stamina )
+      sim -> auras.stamina -> trigger( 1, -1.0, -1.0, duration() );
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );
   }
@@ -2995,7 +2938,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
   if ( name == "deadly_calm"        ) return new deadly_calm_t        ( this, options_str );
   if ( name == "death_wish"         ) return new death_wish_t         ( this, options_str );
-  if ( name == "demoralizing_shout" ) return new demoralizing_shout_t ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
   if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
@@ -3466,7 +3408,7 @@ void warrior_t::init_actions()
       action_list_str += "/heroic_strike,use_off_gcd=1,if=rage>85";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct>20&(rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))";
       action_list_str += "/heroic_strike,use_off_gcd=1,if=buff.inner_rage.up&target.health_pct<=20&((rage>=60|(set_bonus.tier13_2pc_melee&rage>=50))|buff.battle_trance.up)";
-      action_list_str += "/battle_shout,if=rage<60";
+      action_list_str += "/battle_shout,if=rage<60|!aura.attack_power_multiplier.up";
     }
 
     // Fury
@@ -3500,7 +3442,7 @@ void warrior_t::init_actions()
           action_list_str += "/berserker_rage,if=!(buff.death_wish.up|buff.enrage.up|buff.unholy_frenzy.up)&rage>15&cooldown.raging_blow.remains<1,use_off_gcd=1";
           action_list_str += "/raging_blow";
         }
-        action_list_str += "/battle_shout,if=rage<70";
+        action_list_str += "/battle_shout,if=rage<70|!aura.attack_power_multiplier.up";
         if ( ! talents.raging_blow -> ok() && glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage";
       }
       else
@@ -3535,7 +3477,7 @@ void warrior_t::init_actions()
           action_list_str += "/raging_blow,if=rage>90&buff.inner_rage.up&cooldown.bloodthirst.remains>0.2";
           action_list_str += "/raging_blow,if=buff.colossus_smash.up&rage>50";
         }
-        action_list_str += "/battle_shout,if=rage<70&cooldown.bloodthirst.remains>0.2";
+        action_list_str += "/battle_shout,if=(rage<70&cooldown.bloodthirst.remains>0.2)|!aura.attack_power_multiplier.up";
       }
     }
 
@@ -3582,9 +3524,6 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && ! buffs_battle_stance -> check() )
     buffs_battle_stance -> trigger();
-
-  if ( talents.rampage -> ok() )
-    sim -> auras.rampage -> trigger();
 }
 
 // warrior_t::register_callbacks ==============================================
@@ -3904,37 +3843,15 @@ player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_ty
 
 void player_t::warrior_init( sim_t* sim )
 {
-  sim -> auras.rampage      = new aura_t( sim, "rampage",      1, timespan_t::zero() );
-
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.blood_frenzy_bleed    = new debuff_t( p, "blood_frenzy_bleed",    1, timespan_t::from_seconds( 60.0 ) );
-    p -> debuffs.demoralizing_shout    = new debuff_t( p, "demoralizing_shout",    1, timespan_t::from_seconds( 30.0 ) );
     p -> debuffs.shattering_throw      = new debuff_t( p, 64382, "shattering_throw" );
-    p -> debuffs.sunder_armor          = new debuff_t( p, 58567, "sunder_armor" );
-    p -> debuffs.thunder_clap          = new debuff_t( p, "thunder_clap",          1, timespan_t::from_seconds( 30.0 ) );
-    p -> buffs.commanding_shout        = new   buff_t( p, 469, "commanding_shout" );
-    p -> buffs.battle_shout            = new   buff_t( p, 6673, "battle_shout" );
   }
 }
 
 // player_t::warrior_combat_begin ===========================================
 
-void player_t::warrior_combat_begin( sim_t* sim )
+void player_t::warrior_combat_begin( sim_t* )
 {
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( sim -> overrides.battle_shout )
-      p -> buffs.battle_shout -> override( 1, p -> buffs.battle_shout -> effect_average( 1 ) );
-  }
-  if ( sim -> overrides.rampage      ) sim -> auras.rampage      -> override();
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.blood_frenzy_bleed    ) t -> debuffs.blood_frenzy_bleed    -> override( 1, 30 );
-    if ( sim -> overrides.demoralizing_shout    ) t -> debuffs.demoralizing_shout    -> override();
-    if ( sim -> overrides.sunder_armor          ) t -> debuffs.sunder_armor          -> override( 3 );
-    if ( sim -> overrides.thunder_clap          ) t -> debuffs.thunder_clap          -> override();
-  }
 }

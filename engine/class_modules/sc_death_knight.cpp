@@ -399,6 +399,7 @@ struct death_knight_t : public player_t
   virtual double    composite_tank_crit( school_type_e school ) const;
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
+  virtual void      arise();
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual void      combat_begin();
   virtual void      create_options();
@@ -1738,17 +1739,6 @@ static void trigger_blood_caked_blade( action_t* a )
   }
 }
 
-// Trigger Brittle Bones ====================================================
-
-static void trigger_brittle_bones( spell_t* s, player_t* )
-{
-  death_knight_t* p = s -> player -> cast_death_knight();
-
-  if ( ! p -> talents.brittle_bones -> rank() )
-    return;
-
-}
-
 // Trigger Ebon Plaguebringer ===============================================
 
 static void trigger_ebon_plaguebringer( action_t* a, player_t* t )
@@ -2302,6 +2292,19 @@ struct blood_plague_t : public death_knight_spell_t
     may_crit         = false;
     hasted_ticks     = false;
   }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  {
+    death_knight_spell_t::impact( t, impact_result, impact_dmg );
+
+    if ( ! sim -> overrides.weakened_blows && player -> primary_tree() == TREE_BLOOD && 
+      result_is_hit( impact_result ) )
+      t -> debuffs.weakened_blows -> trigger();
+    
+    if ( ! sim -> overrides.physical_vulnerability && player -> primary_tree() == TREE_UNHOLY &&
+      result_is_hit( impact_result ) )
+      t -> debuffs.physical_vulnerability -> trigger();
+  }
 };
 
 // Blood Strike =============================================================
@@ -2784,8 +2787,9 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
-    if ( result_is_hit( impact_result ) )
-      trigger_brittle_bones( this, t );
+    if ( ! sim -> overrides.physical_vulnerability && player -> primary_tree() == TREE_FROST &&
+         result_is_hit( impact_result ) )
+      t -> debuffs.physical_vulnerability -> trigger();
   }
 
 };
@@ -2925,15 +2929,12 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
 struct horn_of_winter_t : public death_knight_spell_t
 {
-  double bonus;
-
   horn_of_winter_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "horn_of_winter", 57330, p ), bonus( 0 )
+    death_knight_spell_t( "horn_of_winter", 57330, p )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
-    bonus   = player -> dbc.effect_average( effect_id( 1 ), player -> level );
   }
 
   virtual void execute()
@@ -2944,18 +2945,10 @@ struct horn_of_winter_t : public death_knight_spell_t
     update_ready();
 
     death_knight_t* p = player -> cast_death_knight();
-    if ( ! sim -> overrides.horn_of_winter )
-    {
-      sim -> auras.horn_of_winter -> buff_duration = timespan_t::from_seconds( 120.0 ) + p -> glyphs.horn_of_winter -> effect1().time_value();
-      sim -> auras.horn_of_winter -> trigger( 1, bonus );
-    }
+    if ( ! sim -> overrides.attack_power_multiplier )
+      sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, duration() + p -> glyphs.horn_of_winter -> effect1().time_value() );
 
     player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains_horn_of_winter );
-  }
-
-  virtual timespan_t gcd() const
-  {
-    return player -> in_combat ? death_knight_spell_t::gcd() : timespan_t::zero();
   }
 };
 
@@ -3167,6 +3160,14 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( this, &cost_blood, &cost_frost, &cost_unholy );
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  {
+    death_knight_melee_attack_t::impact( t, impact_result, impact_dmg );
+
+    if ( ! sim -> overrides.slowed_casting && result_is_hit( result ) )
+      t -> debuffs.slowed_casting -> trigger();
   }
 };
 
@@ -3743,9 +3744,8 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
 
       target_multiplier = td -> diseases() * 0.18;
-
-      if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
-        target_multiplier *= 1.08;
+      if ( t -> debuffs.magic_vulnerability -> check() )
+        target_multiplier *= 1.0 + t -> debuffs.magic_vulnerability -> value();
     }
   };
 
@@ -4807,10 +4807,6 @@ void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
 
-  double am_value = talents.abominations_might -> effect1().percent();
-  if ( am_value > 0 && am_value >= sim -> auras.abominations_might -> current_value )
-    sim -> auras.abominations_might -> trigger( 1, am_value );
-
   if ( talents.butchery -> rank() )
     new ( sim ) butchery_event_t( this, timespan_t::from_seconds( 5.0 / talents.butchery -> rank() ) );
 }
@@ -5225,6 +5221,14 @@ bool death_knight_t::runes_depleted( rune_type rt, int position )
   return rune -> is_depleted();
 }
 
+void death_knight_t::arise()
+{
+  player_t::arise();
+  
+  if ( primary_tree() == TREE_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+  if ( primary_tree() == TREE_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+}
+
 #endif // SC_DEATH_KNIGHT
 
 // ==========================================================================
@@ -5242,35 +5246,15 @@ player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, ra
 
 void player_t::death_knight_init( sim_t* sim )
 {
-  sim -> auras.abominations_might  = new aura_t( sim, "abominations_might",  1, timespan_t::zero() );
-  sim -> auras.horn_of_winter      = new aura_t( sim, "horn_of_winter",      1, timespan_t::from_seconds( 120.0 ) );
-  sim -> auras.improved_icy_talons = new aura_t( sim, "improved_icy_talons", 1, timespan_t::zero() );
-
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.unholy_frenzy        = new   buff_t( p, 49016, "unholy_frenzy" );
-    p -> debuffs.ebon_plaguebringer = new debuff_t( p, 65142, "ebon_plaguebringer" );
-    p -> debuffs.scarlet_fever      = new debuff_t( p, "scarlet_fever",      1, timespan_t::from_seconds( 21.0 ) );
+    p -> buffs.unholy_frenzy = new buff_t( p, 49016, "unholy_frenzy" );
   }
 }
 
 // player_t::death_knight_combat_begin ======================================
 
-void player_t::death_knight_combat_begin( sim_t* sim )
+void player_t::death_knight_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.abominations_might  )
-    sim -> auras.abominations_might  -> override( 1, 0.10 );
-
-  if ( sim -> overrides.horn_of_winter      )
-    sim -> auras.horn_of_winter      -> override( 1, sim -> dbc.effect_average( sim -> dbc.spell( 57330 ) -> effect1().id(), sim -> max_player_level ) );
-
-  if ( sim -> overrides.improved_icy_talons )
-    sim -> auras.improved_icy_talons -> override( 1, 0.10 );
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.ebon_plaguebringer ) t -> debuffs.ebon_plaguebringer -> override( 1,  8.0 );
-    if ( sim -> overrides.scarlet_fever      ) t -> debuffs.scarlet_fever      -> override();
-  }
 }

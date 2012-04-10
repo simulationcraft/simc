@@ -626,18 +626,6 @@ static void add_combo_point( druid_t* p, druid_targetdata_t* td )
   td -> buffs_combo_points -> trigger();
 }
 
-// trigger_earth_and_moon ===================================================
-
-static void trigger_earth_and_moon( spell_t* s )
-{
-  druid_t* p = s -> player -> cast_druid();
-
-  if ( p -> talents.earth_and_moon -> rank() == 0 ) return;
-
-  s -> target -> debuffs.earth_and_moon -> trigger( 1, 8 );
-  s -> target -> debuffs.earth_and_moon -> source = p;
-}
-
 // trigger_eclipse_proc =====================================================
 
 static void trigger_eclipse_proc( druid_t* p )
@@ -847,19 +835,6 @@ static void trigger_fury_swipes( action_t* a )
     p -> active_fury_swipes    -> execute();
     p -> cooldowns_fury_swipes -> start( timespan_t::from_seconds( 3.0 ) );
     p -> procs_fury_swipes     -> occur();
-  }
-}
-
-// trigger_infected_wounds ==================================================
-
-static void trigger_infected_wounds( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( p -> talents.infected_wounds -> rank() )
-  {
-    a -> target -> debuffs.infected_wounds -> trigger();
-    a -> target -> debuffs.infected_wounds -> source = p;
   }
 }
 
@@ -1484,18 +1459,6 @@ struct mangle_cat_t : public druid_cat_melee_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
-  {
-    druid_cat_melee_attack_t::impact( t, impact_result, impact_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      trigger_infected_wounds( this );
-      t -> debuffs.mangle -> trigger();
-      t -> debuffs.mangle -> source = player;
-    }
-  }
-
   virtual bool ready()
   {
     druid_t* p = player -> cast_druid();
@@ -1591,9 +1554,6 @@ struct ravage_t : public druid_cat_melee_attack_t
     p -> buffs_t13_4pc_melee -> decrement();
     requires_stealth = true;
     requires_position = POSITION_BACK;
-
-    if ( result_is_hit() )
-      trigger_infected_wounds( this );
 
     p -> buffs_stampede_cat -> up();
   }
@@ -1800,20 +1760,15 @@ struct shred_t : public druid_cat_melee_attack_t
         int extra_ticks = ( td -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
         td -> dots_rip -> extend_duration( extra_ticks );
       }
-      trigger_infected_wounds( this );
     }
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
     druid_cat_melee_attack_t::target_debuff( t, dtype );
-    druid_t* p = player -> cast_druid();
-
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
-      target_multiplier *= 1.30;
 
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect1().percent();
+      target_multiplier *= 1.20;
   }
 
   virtual bool ready()
@@ -2046,18 +2001,6 @@ struct demoralizing_roar_t : public druid_bear_melee_attack_t
     may_block  = false;
     may_glance = false;
   }
-
-  virtual void execute()
-  {
-    druid_bear_melee_attack_t::execute();
-    druid_t* p = player -> cast_druid();
-
-    if ( ! p -> sim -> overrides.demoralizing_roar )
-    {
-      target -> debuffs.demoralizing_roar -> trigger();
-      target -> debuffs.demoralizing_roar -> source = p;
-    }
-  }
 };
 
 // Feral Charge (Bear) ======================================================
@@ -2187,18 +2130,6 @@ struct mangle_bear_t : public druid_bear_melee_attack_t
     if ( p -> buffs_berserk -> up() )
       cooldown -> reset();
   }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
-  {
-    druid_bear_melee_attack_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      target -> debuffs.mangle -> trigger();
-      target -> debuffs.mangle -> source = player;
-      trigger_infected_wounds( this );
-    }
-  }
 };
 
 // Maul =====================================================================
@@ -2220,27 +2151,13 @@ struct maul_t : public druid_bear_melee_attack_t
     direct_power_mod = 0.19;
   }
 
-  virtual void execute()
-  {
-    druid_bear_melee_attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      // trigger_omen_of_clarity( this ); //FIX ME is this still true?
-      trigger_infected_wounds( this );
-    }
-  }
-
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
     druid_bear_melee_attack_t::target_debuff( t, dtype );
     druid_t* p = player -> cast_druid();
 
-    if ( t -> debuffs.mangle -> up() || t -> debuffs.blood_frenzy_bleed -> up() || t -> debuffs.hemorrhage -> up() )
-      target_multiplier *= 1.30;
-
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + p -> talents.rend_and_tear -> effect1().percent();
+      target_multiplier *= 1.0 + 0.20;
   }
 };
 
@@ -2333,6 +2250,17 @@ struct thrash_t : public druid_bear_melee_attack_t
     tick_power_mod    = 0.0167;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    druid_bear_melee_attack_t::impact( t, impact_result, travel_dmg );
+    
+    if ( result_is_hit( impact_result ) )
+    {
+      if ( ! sim -> overrides.weakened_blows )
+        t -> debuffs.weakened_blows -> trigger();
+    }
   }
 };
 
@@ -3067,10 +2995,8 @@ struct bear_form_t : public druid_spell_t
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
 
-    if ( p -> talents.leader_of_the_pack -> rank() )
-    {
-      sim -> auras.leader_of_the_pack -> trigger();
-    }
+    if ( ! sim -> overrides.critical_strike && ! sim -> auras.critical_strike -> check() )
+      sim -> auras.critical_strike -> trigger();
   }
 
   virtual bool ready()
@@ -3174,10 +3100,8 @@ struct cat_form_t : public druid_spell_t
     p -> base_gcd = timespan_t::from_seconds( 1.0 );
     p -> reset_gcd();
 
-    if ( p -> talents.leader_of_the_pack -> rank() )
-    {
-      sim -> auras.leader_of_the_pack -> trigger();
-    }
+    if ( ! sim -> overrides.critical_strike && ! sim -> auras.critical_strike -> check() )
+      sim -> auras.critical_strike -> trigger();
   }
 
   virtual bool ready()
@@ -3254,7 +3178,8 @@ struct faerie_fire_feral_t : public druid_spell_t
       update_ready();
     }
 
-    target -> debuffs.faerie_fire -> trigger( 1 + p -> talents.feral_aggression -> rank(), 0.04 );
+    if ( ! sim -> overrides.weakened_armor )
+      target -> debuffs.weakened_armor -> trigger( 3 );
   }
 };
 
@@ -3266,18 +3191,15 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t( "faerie_fire", 770, player )
   {
     parse_options( NULL, options_str );
+    background = ( sim -> overrides.weakened_armor != 0 );
   }
 
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t*  p = player -> cast_druid();
 
-    if ( result_is_hit() )
-    {
-      target -> debuffs.faerie_fire -> trigger( 1, 0.04 );
-      target -> debuffs.faerie_fire -> source = p;
-    }
+    if ( result_is_hit() && ! sim -> overrides.weakened_armor )
+      target -> debuffs.weakened_armor -> trigger( 3 );
   }
 };
 
@@ -3439,28 +3361,17 @@ struct mark_of_the_wild_t : public druid_spell_t
     id          = 1126;
     base_costs[ current_resource() ]  *= 1.0 + p -> glyphs.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
-
-    background = ( sim -> overrides.mark_of_the_wild != 0 );
+    background  = ( sim -> overrides.str_agi_int != 0 );
   }
 
   virtual void execute()
   {
+    druid_spell_t::execute();
+    
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> ooc_buffs() )
-      {
-        p -> buffs.mark_of_the_wild -> trigger();
-        if ( ! p -> in_combat )
-          p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] - p -> resources.current[ RESOURCE_MANA ], 0, this );
-      }
-    }
-  }
-
-  virtual bool ready()
-  {
-    return ! player -> buffs.mark_of_the_wild -> check();
+    
+    if ( ! sim -> overrides.str_agi_int )
+      sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, player -> dbc.spell( 79060 ) -> duration() );
   }
 };
 
@@ -3602,8 +3513,9 @@ struct moonkin_form_t : public druid_spell_t
     if ( p -> buffs_cat_form  -> check() ) p -> buffs_cat_form  -> expire();
 
     p -> buffs_moonkin_form -> start();
-
-    sim -> auras.moonkin -> trigger();
+    
+    if ( ! sim -> overrides.spell_haste && ! sim -> auras.spell_haste -> check() )
+      sim -> auras.spell_haste -> trigger();
   }
 
   virtual bool ready()
@@ -3700,8 +3612,6 @@ struct starfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      trigger_earth_and_moon( this );
-
       if ( p -> glyphs.starfire -> enabled() )
       {
         if ( mf -> ticking )
@@ -4251,9 +4161,6 @@ struct wild_mushroom_detonate_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     p -> buffs_wild_mushroom -> expire();
-
-    if ( result_is_hit() )
-      trigger_earth_and_moon( this );
   }
 
   virtual void player_buff()
@@ -4339,8 +4246,6 @@ struct wrath_t : public druid_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      trigger_earth_and_moon( this );
-
       if ( p -> eclipse_bar_direction <= 0 )
       {
         // Wrath's Eclipse gain is a bit tricky, as it is NOT just 40/3 or
@@ -4864,13 +4769,13 @@ void druid_t::init_actions()
         {
           action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
         }
-        action_list_str += "/mark_of_the_wild";
+        action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
         action_list_str += "/bear_form";
         action_list_str += "/auto_attack";
         action_list_str += "/snapshot_stats";
         action_list_str += init_use_racial_actions();
         action_list_str += "/skull_bash_bear";
-        action_list_str += "/faerie_fire_feral,if=!debuff.faerie_fire.up";
+        action_list_str += "/faerie_fire_feral,if=debuff.weakened_armor.stack<3";
         action_list_str += "/survival_instincts"; // For now use it on CD
         action_list_str += "/barkskin"; // For now use it on CD
         action_list_str += "/enrage";
@@ -4878,7 +4783,6 @@ void druid_t::init_actions()
         action_list_str += init_use_profession_actions();
         action_list_str += "/maul,if=rage>=75";
         action_list_str += "/mangle_bear";
-        action_list_str += "/demoralizing_roar,if=!debuff.demoralizing_roar.up";
         action_list_str += "/lacerate,if=!ticking";
         action_list_str += "/thrash";
         action_list_str += "/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2";
@@ -4899,7 +4803,7 @@ void druid_t::init_actions()
           action_list_str += "flask,type=endless_rage";
           action_list_str += "/food,type=hearty_rhino";
         }
-        action_list_str += "/mark_of_the_wild";
+        action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
         action_list_str += "/cat_form";
         action_list_str += "/snapshot_stats";
 
@@ -4993,13 +4897,13 @@ void druid_t::init_actions()
       {
         action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
       }
-      action_list_str += "/mark_of_the_wild";
+      action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
       if ( talents.moonkin_form -> rank() )
         action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      action_list_str += "/faerie_fire,if=debuff.faerie_fire.stack<3&!(debuff.sunder_armor.up|debuff.expose_armor.up)";
+      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       action_list_str += init_use_racial_actions();
       action_list_str += "/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)";
@@ -5053,7 +4957,7 @@ void druid_t::init_actions()
       {
         action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
       }
-      action_list_str += "/mark_of_the_wild";
+      action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
       action_list_str += "/snapshot_stats";
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
@@ -5294,7 +5198,7 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
     }
     break;
   case ATTR_INTELLECT:
-    if ( buffs.mark_of_the_wild -> check() || buffs.blessing_of_kings -> check() )
+    if ( sim -> auras.str_agi_int -> check() )
       m *= 1.05;
     break;
   default:
@@ -5540,9 +5444,6 @@ player_t* player_t::create_druid( sim_t*             sim,
 
 void player_t::druid_init( sim_t* sim )
 {
-  sim -> auras.leader_of_the_pack = new aura_t( sim, "leader_of_the_pack" );
-  sim -> auras.moonkin            = new aura_t( sim, "moonkin" );
-
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
@@ -5551,38 +5452,13 @@ void player_t::druid_init( sim_t* sim )
 #else
     p -> buffs.innervate = new buff_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
-    p -> buffs.mark_of_the_wild       = new buff_t( p, "mark_of_the_wild", !p -> is_pet() );
-    p -> debuffs.demoralizing_roar    = new debuff_t( p, 99, "demoralizing_roar" );
-    p -> debuffs.earth_and_moon       = new debuff_t( p, 60433, "earth_and_moon" );
-    p -> debuffs.faerie_fire          = new debuff_t( p, 91565, "faerie_fire" );
-    p -> debuffs.infected_wounds      = new debuff_t( p, "infected_wounds",      1, timespan_t::from_seconds( 12.0 ) );
-    p -> debuffs.mangle               = new debuff_t( p, "mangle",               1, timespan_t::from_seconds( 60.0 ) );
   }
 
 }
 
 // player_t::druid_combat_begin =============================================
 
-void player_t::druid_combat_begin( sim_t* sim )
+void player_t::druid_combat_begin( sim_t* )
 {
-  if ( sim -> overrides.leader_of_the_pack     ) sim -> auras.leader_of_the_pack -> override();
-  if ( sim -> overrides.moonkin_aura           ) sim -> auras.moonkin            -> override();
-
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
-  {
-    if ( p -> ooc_buffs() )
-    {
-      if ( sim -> overrides.mark_of_the_wild ) p -> buffs.mark_of_the_wild -> override();
-    }
-  }
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.demoralizing_roar    ) t -> debuffs.demoralizing_roar    -> override();
-    if ( sim -> overrides.earth_and_moon       ) t -> debuffs.earth_and_moon       -> override( 1, 8 );
-    if ( sim -> overrides.faerie_fire          ) t -> debuffs.faerie_fire          -> override( 3, 0.04 );
-    if ( sim -> overrides.infected_wounds      ) t -> debuffs.infected_wounds      -> override();
-    if ( sim -> overrides.mangle               ) t -> debuffs.mangle               -> override();
-  }
 }
 

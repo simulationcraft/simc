@@ -28,23 +28,19 @@ static OptionEntry* getBuffOptions()
 {
   static OptionEntry options[] =
   {
-    { "Toggle All Buffs",       "",                                "Toggle all buffs on/off"                                                                         },
-    { "Dark Intent",            "override.dark_intent",            "Dark Intent"                                                                                     },
-    { "Focus Magic",            "override.focus_magic",            "Focus Magic"                                                                                     },
-    //{ "Agility and Strength",   "override.strength_of_earth",      "Battle Shout\nHorn of Winter\nRoar of Courage\nStrength of Earth Totem"                          },
-    { "All Damage",             "override.communion",              "Arcane Tactics\nCommunion\nFerocious Inspiration"                                                },
-    { "Armor",                  "override.devotion_aura",          "Devotion Aura\nStoneskin Totem"                                                                  },
-    { "Attack Power (%)",       "override.blessing_of_might",      "Abomination's Might\nBlessing of Might\nTrueshot Aura\nUnleashed Rage"                           },
-    { "Bloodlust",              "override.bloodlust",              "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp"                                                 },
-    { "Critical Strike",        "override.leader_of_the_pack",     "Elemental Oath\nFurious Howl\nHonor Among Thieves\nLeader of the Pack\nRampage\nTerrifying Roar" },
-    { "Mana",                   "override.arcane_brilliance",      "Arcane Brilliance\nFel Intelligence"                                                             },
-    //{ "Mana Regen",             "override.mana_spring_totem",      "Blessing of Might\nFel Intelligence\nMana Spring Totem"                                          },
-    //{ "Melee and Ranged Haste", "override.windfury_totem",         "Hunting Party\nImproved Icy Talons\nWindfury Totem"                                             },
-    //{ "Spell Haste",            "override.wrath_of_air",           "Moonkin Form\nShadowform\nWrath of Air Totem"                                                    },
-    { "Spell Power 6%",         "override.arcane_brilliance",      "Arcane Brilliance\nFlametongue Totem"                                                            },
-    { "Spell Power 10%",        "override.demonic_pact",           "Demonic Pact\nTotemic Wrath"                                                                     },
-    { "Stamina",                "override.fortitude",              "Blood Pact\nCommanding Shout\nPower Word: Fortitude\nQiraji Fortitude"                           },
-    { "Stat Multiplier",        "override.blessing_of_kings",      "Blessing of Kings\nEmbrace of the Shale Spider\nMark of the Wild"                                },
+    { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
+    { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
+    { "Attack Speed",                 "override.attack_haste",            "+5% Attack Speed"                                },
+    { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
+    { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+
+    { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
+    { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
+
+    { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
+    { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
+
+    { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
     { NULL, NULL, NULL }
   };
   return options;
@@ -70,16 +66,17 @@ static OptionEntry* getDebuffOptions()
 {
   static OptionEntry options[] =
   {
-    { "Toggle All Debuffs",     "",                               "Toggle all debuffs on/off"                                                                                     },
-    { "Armor Reduction",        "override.sunder_armor",          "Corrosive Spit\nExpose Armor\nFaerie Fire\nSunder Armor\nTear Armor"                                           },
-    { "Bleed Damage",           "override.mangle",                "Blood Frenzy\nGore\nHemorrhage\nMangle\nStampede\nTendon Rip"                                                  },
-    { "Bleeding",               "override.bleeding",              "Rip\nRupture\nPiercing Shots"                                                                                  },
-    { "Physical Damage Done",   "override.demoralizing_roar",     "Curse of Weakness\nDemoralizing Roar\nDemoralizing Shout\nScarlet Fever\nVindication"                          },
-    { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability ( 4 % )"                                                 },
-    { "Poisoned",               "override.poisoned",              "Deadly Poison\nSerpent Sting"                                                                                  },
-    { "Ranged Attack Power",    "override.hunters_mark",          "Hunter's Mark"                                                                                                 },
-    { "Reduced Attack Speed",   "override.thunder_clap",          "Dust Cloud\nEarth Shock\nFrost Fever\nInfected Wounds\nJudgements of the Just\nTailspin\nThunder Clap\nWaylay" },
-    { "Spell Damage",           "override.earth_and_moon",        "Curse of the Elements\nEarth and Moon\nEbon Plaguebriger\nFire Breath\nLightning Breath\nMaster Poisoner"      },
+    { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
+
+    { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
+
+    { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
+    { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
+    { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
+
+    { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
+    { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
+
     { NULL, NULL, NULL }
   };
   return options;
@@ -633,7 +630,7 @@ void SimulationCraftWindow::createBuffsTab()
   for ( int i=0; buffs[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( buffs[ i ].label );
-    if ( i>2 ) checkBox->setChecked( true );
+    if ( i>0 ) checkBox->setChecked( true );
     checkBox->setToolTip( buffs[ i ].tooltip );
     buffsButtonGroup->addButton( checkBox );
     buffsLayout->addWidget( checkBox );

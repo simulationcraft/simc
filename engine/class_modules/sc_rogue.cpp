@@ -423,6 +423,7 @@ struct rogue_t : public player_t
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
+  virtual void      arise();
   virtual double    energy_regen_per_second() const;
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available() const;
@@ -925,10 +926,11 @@ static void trigger_venomous_wounds( rogue_melee_attack_t* a )
 
 static void apply_poison_debuff( rogue_t* p, player_t* t )
 {
-  if ( p -> talents.master_poisoner -> rank() )
-    t -> debuffs.master_poisoner -> increment();
-
-  t -> debuffs.poisoned -> increment();
+  if ( ! p -> sim -> overrides.magic_vulnerability )
+  {
+    const spell_data_t* mp = p -> dbc.spell( 93068 );
+    t -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, mp -> duration() );
+  }
 }
 
 // remove_poison_debuff =====================================================
@@ -936,11 +938,7 @@ static void apply_poison_debuff( rogue_t* p, player_t* t )
 static void remove_poison_debuff( rogue_t* p )
 {
   player_t* t = p -> sim -> target;
-
-  if ( p -> talents.master_poisoner -> rank() )
-    t -> debuffs.master_poisoner -> decrement();
-
-  t -> debuffs.poisoned -> decrement();
+  t -> debuffs.magic_vulnerability -> expire();
 }
 
 // ==========================================================================
@@ -1718,23 +1716,14 @@ struct eviscerate_t : public rogue_melee_attack_t
 
 struct expose_armor_t : public rogue_melee_attack_t
 {
-  int override_sunder;
-
   expose_armor_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "expose_armor", 8647, p ), override_sunder( 0 )
+    rogue_melee_attack_t( "expose_armor", 8647, p )
   {
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    requires_combo_points = true;
-
-    option_t options[] =
-    {
-      { "override_sunder", OPT_BOOL, &override_sunder },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( 0, options_str );
   }
 
   virtual void execute()
@@ -1745,49 +1734,15 @@ struct expose_armor_t : public rogue_melee_attack_t
 
     if ( result_is_hit() )
     {
-      timespan_t duration = timespan_t::from_seconds( 10 ) * combo_points_spent;
+      if ( ! sim -> overrides.weakened_armor )
+        target -> debuffs.weakened_armor -> trigger();
 
-      duration += p -> glyphs.expose_armor -> mod_additive_time( P_DURATION );
-
-      if ( p -> buffs_revealing_strike -> up() )
-        duration *= 1.0 + p -> buffs_revealing_strike -> value();
-
-      if ( target -> debuffs.expose_armor -> remains_lt( duration ) )
-      {
-        target -> debuffs.expose_armor -> buff_duration = duration;
-        target -> debuffs.expose_armor -> trigger( 1, 0.12 );
-        target -> debuffs.expose_armor -> source = p;
-      }
-
-      if ( p -> talents.improved_expose_armor -> rank() )
-      {
-        double chance = p -> talents.improved_expose_armor -> rank() * 0.50; // XXX
-        rogue_targetdata_t* td = targetdata() -> cast_rogue();
-        if ( p -> rng_improved_expose_armor -> roll( chance ) )
-          td -> combo_points -> add( combo_points_spent, p -> talents.improved_expose_armor );
-      }
+      rogue_targetdata_t* td = targetdata() -> cast_rogue();
+      td -> combo_points -> add( 1 );
 
       p -> buffs_revealing_strike -> expire();
     }
   };
-
-  virtual bool ready()
-  {
-
-    if ( target -> debuffs.expose_armor -> check() )
-      return false;
-
-    if ( ! override_sunder )
-    {
-      if ( target -> debuffs.sunder_armor -> check() ||
-           target -> debuffs.faerie_fire -> check() )
-      {
-        return false;
-      }
-    }
-
-    return rogue_melee_attack_t::ready();
-  }
 };
 
 // Fan of Knives ============================================================
@@ -1949,9 +1904,6 @@ struct hemorrhage_t : public rogue_melee_attack_t
 
     if ( result_is_hit() )
     {
-      target -> debuffs.hemorrhage -> trigger();
-      target -> debuffs.hemorrhage -> source = p;
-
       if ( p -> glyphs.hemorrhage -> ok() )
       {
         // Dot can crit and double dips in player multipliers
@@ -2071,15 +2023,6 @@ struct mutilate_strike_t : public rogue_melee_attack_t
     base_multiplier  *= 1.0 + p -> talents.opportunity -> mod_additive( P_GENERIC );
     base_crit        += p -> talents.puncturing_wounds -> effect2().percent();
     crit_bonus_multiplier *= 1.0 + p -> talents.lethality -> mod_additive( P_CRIT_DAMAGE );
-  }
-
-  virtual void player_buff()
-  {
-    rogue_melee_attack_t::player_buff();
-
-    rogue_t* p = player -> cast_rogue();
-
-    p -> uptimes_poisoned -> update( target -> debuffs.poisoned-> check() );
   }
 };
 
@@ -3940,6 +3883,15 @@ void rogue_t::reset()
   expirations_.reset();
 }
 
+// rogue_t::arise ===========================================================
+
+void rogue_t::arise()
+{
+  player_t::arise();
+
+  if ( ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+}
+
 // rogue_t::energy_regen_per_second =========================================
 
 double rogue_t::energy_regen_per_second() const
@@ -4092,10 +4044,6 @@ void player_t::rogue_init( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, timespan_t::from_seconds( 6.0 ) );
-    p -> debuffs.expose_armor       = new debuff_t( p, "expose_armor",     1 );
-    p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, timespan_t::from_seconds( 60.0 ) );
-    p -> debuffs.master_poisoner    = new debuff_t( p, "master_poisoner", -1 );
-    p -> debuffs.poisoned           = new debuff_t( p, "poisoned",        -1 );
   }
 }
 
@@ -4105,12 +4053,4 @@ void player_t::rogue_combat_begin( sim_t* sim )
 {
   if ( sim -> overrides.honor_among_thieves )
     sim -> auras.honor_among_thieves -> override();
-
-  for ( player_t* t = sim -> target_list; t; t = t -> next )
-  {
-    if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
-    if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
-    if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
-    if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
-  }
 }

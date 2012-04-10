@@ -34,12 +34,10 @@ struct enemy_t : public player_t
 
 // target_t::combat_begin ===================================================
 
-  virtual void combat_begin()
-  {
-    player_t::combat_begin();
-
-    if ( sim -> overrides.bleeding ) debuffs.bleeding -> override();
-  }
+virtual void combat_begin()
+{
+  player_t::combat_begin();
+}
 
 // target_t::primary_role ===================================================
 
