@@ -2013,7 +2013,7 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
 
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
-      stats_t* s = p -> stats_list[ i ];
+      stats_t* s = pet -> stats_list[ i ];
       if ( s -> num_executes || s -> compound_amount > 0 || sim -> debug )
       {
         if ( first )
