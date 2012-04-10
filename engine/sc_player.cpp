@@ -2363,7 +2363,7 @@ double player_t::composite_mastery() const
 {
   double m = floor( ( mastery * 100.0 ) + 0.5 ) / 100.0;
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.mastery -> value() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value();
 
   return m;
@@ -2375,7 +2375,7 @@ double player_t::composite_attack_power_multiplier() const
 {
   double m = attack_power_multiplier;
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.attack_power_multiplier -> value() )
+  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.attack_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
 
   return m;
@@ -6641,12 +6641,15 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 {
   double m = 1.0;
 
-  if ( school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+  if ( debuffs.magic_vulnerability -> check() && 
+      school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
     m *= 1.0 + debuffs.magic_vulnerability -> value();
-  else if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+  else if ( debuffs.physical_vulnerability -> check() && 
+      school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
     m *= 1.0 + debuffs.physical_vulnerability -> value();
 
-  m *= 1.0 + debuffs.vulnerable -> value();
+  if ( debuffs.vulnerable -> check() )
+    m *= 1.0 + debuffs.vulnerable -> value();
 
   return m;
 }
@@ -6654,5 +6657,8 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
 double player_t::composite_ranged_attack_player_vulnerability() const
 {
   // MoP: Increase ranged damage taken by 5%. make sure
-  return 1.0 + debuffs.ranged_vulnerability -> value();
+  if ( debuffs.ranged_vulnerability -> check() )
+      return 1.0 + debuffs.ranged_vulnerability -> value();
+
+  return 1.0;
 }
