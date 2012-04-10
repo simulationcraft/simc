@@ -1547,7 +1547,7 @@ void sim_t::analyze_player( player_t* p )
 
     for ( size_t j = 0; j < max_buckets; j++ )
     {
-      p -> timeline_resource[ i ][ j ] /= divisor_timeline[ j ];
+      p -> timeline_resource[ i ][ j ] /= divisor_timeline[ j ] * regen_periodicity.total_seconds();
     }
     p -> resource_lost  [ i ] /= iterations;
     p -> resource_gained[ i ] /= iterations;

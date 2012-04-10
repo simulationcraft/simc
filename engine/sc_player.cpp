@@ -346,6 +346,7 @@ player_t::player_t( sim_t*             s,
   deaths(), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
   buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
+  timeline_resource_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
@@ -1100,8 +1101,20 @@ void player_t::init_resources( bool force )
     size *= 2;
     size += 3; // Buffer against rounding.
 
-    for ( int i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-      timeline_resource[i].assign( size, 0 );
+    for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      timeline_resource[ i ].assign( size, 0 );
+  }
+
+  if ( timeline_resource_count == 0 )
+  {
+    for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+    {
+      if ( resources.max[ i ] > 0 )
+      {
+        timeline_resource_translation.insert( std::pair<size_t,resource_type_e>( timeline_resource_count, i ) );
+        ++timeline_resource_count;
+      }
+    }
   }
 }
 
@@ -3170,10 +3183,11 @@ void player_t::regen( const timespan_t periodicity )
 
   const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( size_t j = 0; j < timeline_resource_count; ++j )
   {
-    if ( resources.max[ i ] != 0 )
-      timeline_resource[ i ][ index ] += resources.current[ i ] * periodicity.total_seconds();
+    std::map<size_t,resource_type_e>::iterator i = timeline_resource_translation.find( j );
+    assert( i != timeline_resource_translation.end() );
+    timeline_resource[ (*i).second ][ index ] += resources.current[ (*i).second ];
   }
 }
 

@@ -4081,6 +4081,8 @@ struct player_t : public noncopyable
   uptime_t* uptime_list;
   std::array< std::vector<double>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
+  std::map< size_t, resource_type_e > timeline_resource_translation;
+  size_t timeline_resource_count;
   std::array< std::vector<double>, RESOURCE_MAX > timeline_resource;
 
   // Damage
