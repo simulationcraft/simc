@@ -3452,23 +3452,23 @@ void priest_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
   // Discipline
-  const spell_data_t* he = spec.evangelism -> ok() ? find_spell( 81661 ) : spell_data_t::nil();
-  buffs.holy_evangelism            = buff_creator_t( this, "holy_evangelism", he );
-  buffs.holy_evangelism -> activated = false;
+  buffs.holy_evangelism            = buff_creator_t( this, 81661, "holy_evangelism" )
+                                     .chance( spec.evangelism -> ok() )
+                                     .activated( false );
   buffs.dark_archangel             = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
   buffs.holy_archangel             = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
   buffs.inner_fire                 = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
-  buffs.inner_focus                = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) );
-  buffs.inner_focus -> cooldown -> duration = timespan_t::zero();
+  buffs.inner_focus                = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
+                                     .cd( timespan_t::zero() );
   buffs.inner_will                 = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
   // Holy
   buffs.chakra_pre                 = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
   buffs.chakra_chastise            = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
   buffs.chakra_sanctuary           = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
   buffs.chakra_serenity            = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
-  buffs.serenity                   = buff_creator_t( this, "serenity", find_spell( 88684 ) );
-  buffs.serenity -> cooldown -> duration = timespan_t::zero();
-  // TEST: buffs.serenity -> activated = false;
+  buffs.serenity                   = buff_creator_t( this, "serenity", find_spell( 88684 ) )
+                                     .cd( timespan_t::zero() )
+                                     .activated( false );
 
   // Shadow
   buffs.shadowform                = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );

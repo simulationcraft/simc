@@ -2807,7 +2807,7 @@ private:
   double _chance;
   int _max_stack;
   timespan_t _duration, _cooldown;
-  int _quiet, _reverse;
+  int _quiet, _reverse, _activated;
   friend struct buff_t;
   friend struct debuff_t;
 private:
@@ -2829,6 +2829,8 @@ public:
   { _reverse=r; return *this; }
   buff_creator_t& quiet( bool q )
   { _quiet=q; return *this; }
+  buff_creator_t& activated( bool a )
+  { _activated=a; return *this; }
 
   operator buff_t* () const;
   operator debuff_t* () const;

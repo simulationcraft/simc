@@ -111,6 +111,10 @@ buff_t::buff_t( const buff_creator_t& params ) :
   if ( params._quiet != -1 )
     quiet = params._quiet;
 
+  // Set Activated flag
+  if ( params._activated != -1 )
+    quiet = params._activated;
+
   init();
 
 }
@@ -974,8 +978,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 
 debuff_t::debuff_t( const buff_creator_t& params ) :
   buff_t( params )
-{
-}
+{}
 
 void buff_creator_t::init()
 {
@@ -985,7 +988,7 @@ void buff_creator_t::init()
   _cooldown = timespan_t::min();
   _quiet = -1;
   _reverse = -1;
-  {}
+  _activated = -1;
 }
 
 buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :

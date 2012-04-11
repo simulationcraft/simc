@@ -1520,8 +1520,12 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
-  buffs.body_and_soul             = buff_creator_t( this,        "body_and_soul" ).max_stack( 1 ).duration( timespan_t::from_seconds( 4.0 ) );
-  buffs.grace                     = buff_creator_t( this,        "grace" ).max_stack( 3 ).duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
+                                    .max_stack( 1 )
+                                    .duration( timespan_t::from_seconds( 4.0 ) );
+  buffs.grace                     = buff_creator_t( this,  "grace" )
+                                    .max_stack( 3 )
+                                    .duration( timespan_t::from_seconds( 15.0 ) );
   buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
   buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
   buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );

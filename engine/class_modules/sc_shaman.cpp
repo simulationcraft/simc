@@ -3768,31 +3768,35 @@ void shaman_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buff.elemental_focus     = new buff_t                 ( this, spec.elemental_focus -> effect_trigger_spell( 1 ), "elemental_focus"           );
-  buff.elemental_focus -> activated = false;
-  buff.elemental_mastery   = new buff_t                 ( this, talent.elemental_mastery -> spell_id(),                       "elemental_mastery",   1.0 );
-  buff.flurry              = new buff_t                 ( this, spec.flurry -> effect_trigger_spell( 1 ),           "flurry",              1.0 );
-  buff.flurry -> activated = false;
+  buff.elemental_focus     = buff_creator_t                 ( this, spec.elemental_focus -> effect_trigger_spell( 1 ), "elemental_focus"           )
+                             .activated( false );
+  buff.elemental_mastery   = buff_creator_t                 ( this, talent.elemental_mastery -> spell_id(), "elemental_mastery" ).chance(1.0 );
+  buff.flurry              = buff_creator_t                 ( this, spec.flurry -> effect_trigger_spell( 1 ), "flurry" ).chance( 1.0 )
+                             .activated( false );
   // TBD how this is handled for reals
-  buff.lava_surge          = new buff_t                 ( this, spec.lava_surge -> spell_id(),                      "lava_surge",          1.0, timespan_t::min(), true );
+  buff.lava_surge          = buff_creator_t                 ( this, spec.lava_surge -> spell_id(), "lava_surge",          1.0, timespan_t::min(), true );
   buff.lava_surge -> activated = false;
   buff.lightning_shield    = new lightning_shield_buff_t( this, dbc.class_ability_id( type, "Lightning Shield" ),             "lightning_shield"         );
-  buff.maelstrom_weapon    = new buff_t                 ( this, spec.maelstrom_weapon -> effect_trigger_spell( 1 ), "maelstrom_weapon"         );
+  buff.maelstrom_weapon    = buff_creator_t                 ( this, spec.maelstrom_weapon -> effect_trigger_spell( 1 ), "maelstrom_weapon"         );
   buff.maelstrom_weapon -> activated = false;
-  buff.shamanistic_rage    = new buff_t                 ( this, spec.shamanistic_rage -> spell_id(),                "shamanistic_rage"         );
-  buff.spiritwalkers_grace = new buff_t                 ( this, dbc.class_ability_id( type, "Spiritwalker's Grace" ),         "spiritwalkers_grace", 1.0, timespan_t::zero() );
+  buff.shamanistic_rage    = buff_creator_t                 ( this, spec.shamanistic_rage -> spell_id(),                "shamanistic_rage"         );
+  buff.spiritwalkers_grace = buff_creator_t                 ( this, dbc.class_ability_id( type, "Spiritwalker's Grace" ),         "spiritwalkers_grace", 1.0, timespan_t::zero() );
   buff.unleash_flame       = new unleash_flame_buff_t   ( this );
-  buff.unleash_wind        = new buff_t                 ( this, 73681,                                                        "unleash_wind"             );
-  buff.water_shield        = new buff_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),                 "water_shield"             );
+  buff.unleash_wind        = buff_creator_t                 ( this, 73681,                                                        "unleash_wind"             );
+  buff.water_shield        = buff_creator_t                 ( this, dbc.class_ability_id( type, "Water Shield" ),                 "water_shield"             );
 
   // Elemental Tier13 set bonuses
-  buff.tier13_2pc_caster   = new stat_buff_t            ( this, 105779, "tier13_2pc_caster", STAT_MASTERY_RATING, dbc.spell( 105779 ) -> effect1().base_value() );
-  buff.tier13_4pc_caster   = new stat_buff_t            ( this, 105821, "tier13_4pc_caster", STAT_HASTE_RATING,   dbc.spell( 105821 ) -> effect1().base_value() );
-  buff.tier13_4pc_healer   = new buff_t                 ( this, 105877, "tier13_4pc_healer" );
+  buff.tier13_2pc_caster   = stat_buff_creator_t            ( buff_creator_t( this, 105779, "tier13_2pc_caster" ) )
+                             .stat( STAT_MASTERY_RATING )
+                             .amount( dbc.spell( 105779 ) -> effect1().base_value() );
+  buff.tier13_4pc_caster   = stat_buff_creator_t            ( buff_creator_t( this, 105821, "tier13_4pc_caster" ) )
+                             .stat( STAT_HASTE_RATING )
+                             .amount( dbc.spell( 105821 ) -> effect1().base_value() );
+  buff.tier13_4pc_healer   = buff_creator_t                 ( this, 105877, "tier13_4pc_healer" );
 
   // MoP stuff
-  buff.elemental_blast     = new buff_t                 ( this, 118522, "elemental_blast" );
-  buff.unleashed_fury_wf   = new buff_t                 ( this, 118472, "unleashed_fury_wf" );
+  buff.elemental_blast     = buff_creator_t                 ( this, 118522, "elemental_blast" );
+  buff.unleashed_fury_wf   = buff_creator_t                 ( this, 118472, "unleashed_fury_wf" );
 }
 
 // shaman_t::init_values ====================================================
@@ -4344,12 +4348,14 @@ void player_t::shaman_init( sim_t* sim )
     p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust" )
                             .max_stack( 1 )
                             .duration( timespan_t::from_seconds( 40.0 ) );
+
     p -> buffs.exhaustion = buff_creator_t( p, "exhaustion" )
                             .max_stack( 1 )
                             .duration( timespan_t::from_seconds( 600.0 ) )
                             .cd( timespan_t::zero() )
                             .chance( 1.0 )
                             .quiet( true );
+
     p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( 16190 ) );
   }
 }
