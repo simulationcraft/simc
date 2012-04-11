@@ -23,34 +23,34 @@
 #include "sc_item_data_ptr.inc"
 #endif
 
-// Global spell token map 
+// Global spell token map
 namespace spelltoken {
-  static std::map< unsigned int, std::string > _tokstr;
-  static std::string empty = "";
-  const std::string& token( unsigned int id_spell )
-  {
-    std::map< unsigned int, std::string >::iterator it;
+static std::map< unsigned int, std::string > _tokstr;
+static std::string empty = "";
+const std::string& token( unsigned int id_spell )
+{
+  std::map< unsigned int, std::string >::iterator it;
 
-    it = _tokstr.find( id_spell );
-    if ( it == _tokstr.end() )
-      return empty;
+  it = _tokstr.find( id_spell );
+  if ( it == _tokstr.end() )
+    return empty;
 
-    return (*it).second;
-  }
-  bool add( unsigned int id_spell, std::string token_name )
-  {
-    typedef std::pair< unsigned int, std::string > Pair;
-    std::pair< std::map< unsigned int, std::string >::iterator, bool > pr;
-    pr = _tokstr.insert( Pair( id_spell, token_name ) );
-    // New entry
-    if ( pr.second )
-      return true;
-    // Already exists with that token
-    if ( ( pr.first ) -> second == token_name )
-      return true;
-    // Trying to specify a new token for an existing spell id
-    return false;
-  }
+  return ( *it ).second;
+}
+bool add( unsigned int id_spell, std::string token_name )
+{
+  typedef std::pair< unsigned int, std::string > Pair;
+  std::pair< std::map< unsigned int, std::string >::iterator, bool > pr;
+  pr = _tokstr.insert( Pair( id_spell, token_name ) );
+  // New entry
+  if ( pr.second )
+    return true;
+  // Already exists with that token
+  if ( ( pr.first ) -> second == token_name )
+    return true;
+  // Trying to specify a new token for an existing spell id
+  return false;
+}
 };
 
 namespace { // ANONYMOUS namespace ==========================================
@@ -199,7 +199,7 @@ uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
   if ( it == replaced_ids.end() )
     return 0;
 
-  return (*it).second;
+  return ( *it ).second;
 }
 
 bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
@@ -935,33 +935,33 @@ spellpower_data_t* spellpower_data_t::list( bool ptr )
 }
 
 double spelleffect_data_t::average( const player_t* p, unsigned level ) const
-{ 
+{
   assert( p );
-  return p -> dbc.effect_average( _id, level ? level : p -> level ); 
+  return p -> dbc.effect_average( _id, level ? level : p -> level );
 }
 
-double spelleffect_data_t::delta( const player_t* p, unsigned level ) const 
-{ 
+double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
+{
   assert( p );
-  return p -> dbc.effect_delta( _id, level ? level : p -> level ); 
+  return p -> dbc.effect_delta( _id, level ? level : p -> level );
 }
 
-double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const 
-{ 
+double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const
+{
   assert( p );
-  return p -> dbc.effect_bonus( _id, level ? level : p -> level ); 
+  return p -> dbc.effect_bonus( _id, level ? level : p -> level );
 }
 
-double spelleffect_data_t::min( const player_t* p, unsigned level ) const 
-{ 
+double spelleffect_data_t::min( const player_t* p, unsigned level ) const
+{
   assert( p );
-  return p -> dbc.effect_min( _id, level ? level : p -> level ); 
+  return p -> dbc.effect_min( _id, level ? level : p -> level );
 }
 
-double spelleffect_data_t::max( const player_t* p, unsigned level ) const 
-{ 
+double spelleffect_data_t::max( const player_t* p, unsigned level ) const
+{
   assert( p );
-  return p -> dbc.effect_max( _id, level ? level : p -> level ); 
+  return p -> dbc.effect_max( _id, level ? level : p -> level );
 }
 
 talent_data_t* talent_data_t::list( bool ptr )
@@ -976,9 +976,9 @@ talent_data_t* talent_data_t::list( bool ptr )
 }
 
 spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
-{ 
+{
   spell_data_t* sp = idx_sd.get( ptr, spell_id );
-    
+
   return sp;
 }
 
@@ -1113,7 +1113,7 @@ talent_data_t* talent_data_t::find( player_type_e c, unsigned int row, unsigned 
 }
 
 talent_data_t* talent_data_t::find( unsigned id, bool ptr )
-{ 
+{
   talent_data_t* sp = idx_td.get( ptr, id );
   return sp;
 }
@@ -1163,14 +1163,14 @@ void spelleffect_data_t::link( bool ptr )
   }
 }
 
-spell_data_t* spelleffect_data_t::spell()   const 
-{ 
-  return _spell ? _spell : spell_data_t::nil(); 
+spell_data_t* spelleffect_data_t::spell()   const
+{
+  return _spell ? _spell : spell_data_t::nil();
 }
 
-spell_data_t* spelleffect_data_t::trigger() const 
-{ 
-  return _trigger_spell ? _trigger_spell : spell_data_t::nil(); 
+spell_data_t* spelleffect_data_t::trigger() const
+{
+  return _trigger_spell ? _trigger_spell : spell_data_t::nil();
 }
 
 void spellpower_data_t::link( bool ptr )
@@ -1181,10 +1181,10 @@ void spellpower_data_t::link( bool ptr )
   {
     spellpower_data_t& pd = spellpower_data[ i ];
     spell_data_t*      sd = spell_data_t::find( pd._spell_id, ptr );
-    
+
     if ( sd -> _power == 0 )
       sd -> _power = new std::vector< const spellpower_data_t* >();
-    
+
     sd -> _power -> push_back( &pd );
   }
 }
@@ -1394,7 +1394,7 @@ unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, con
   {
     if ( ! spec_idx( spec_id, class_idx, spec_index ) )
       return 0;
-    
+
     if ( class_idx == ( specialization_max_class() - 1 ) ) // pet
     {
       class_idx = cid;
@@ -1560,7 +1560,7 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
   if ( ! spec_idx( spec_id, class_idx, spec_index ) )
     return 0;
 
-  assert( (int)class_idx >= 0 && class_idx < specialization_max_class() && (int)spec_index >= 0 && spec_index < specialization_max_per_class() );
+  assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() && ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
 
   for ( unsigned n = 0; n < specialization_ability_size(); n++ )
   {
@@ -1634,7 +1634,7 @@ specialization_e dbc_t::mastery_specialization( const player_type_e c, uint32_t 
   unsigned cid = util_t::class_id( c );
   int t = mastery_ability_tree( c, spell_id );
 
-  if ( ! spell_id || ( t < 0 ) || ( t >= (int)specialization_max_per_class() ) )
+  if ( ! spell_id || ( t < 0 ) || ( t >= ( int )specialization_max_per_class() ) )
     return SPEC_NONE;
 
   return __class_spec_id[ cid ][ t ];
@@ -1682,7 +1682,7 @@ unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
       util_t::glyph_name( token2 );
 
       if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) ||
-        util_t::str_compare_ci( token2, token ) )
+           util_t::str_compare_ci( token2, token ) )
       {
         // Spell has been replaced by another, so don't return id
         if ( ! replaced_id( spell_id ) )

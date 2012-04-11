@@ -2286,12 +2286,12 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
-    if ( ! sim -> overrides.weakened_blows && player -> primary_tree() == TREE_BLOOD && 
-      result_is_hit( impact_result ) )
+    if ( ! sim -> overrides.weakened_blows && player -> primary_tree() == TREE_BLOOD &&
+         result_is_hit( impact_result ) )
       t -> debuffs.weakened_blows -> trigger();
-    
+
     if ( ! sim -> overrides.physical_vulnerability && player -> primary_tree() == TREE_UNHOLY &&
-      result_is_hit( impact_result ) )
+         result_is_hit( impact_result ) )
       t -> debuffs.physical_vulnerability -> trigger();
   }
 };
@@ -5213,7 +5213,7 @@ bool death_knight_t::runes_depleted( rune_type rt, int position )
 void death_knight_t::arise()
 {
   player_t::arise();
-  
+
   if ( primary_tree() == TREE_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
   if ( primary_tree() == TREE_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
 }

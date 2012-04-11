@@ -19,7 +19,7 @@ struct mage_targetdata_t : public targetdata_t
   dot_t* dots_ignite;
   dot_t* dots_living_bomb;
   dot_t* dots_pyroblast;
-  
+
   buff_t* debuffs_slow;
 
   mage_targetdata_t( player_t* source, player_t* target )
@@ -38,7 +38,7 @@ void register_mage_targetdata( sim_t* sim )
   REGISTER_DOT( ignite );
   REGISTER_DOT( living_bomb );
   REGISTER_DOT( pyroblast );
-  
+
   REGISTER_DEBUFF( slow );
 }
 
@@ -1363,10 +1363,10 @@ struct arcane_brilliance_t : public mage_spell_t
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-    
+
     if ( ! sim -> overrides.spell_power_multiplier )
       sim -> auras.spell_power_multiplier -> trigger();
-    
+
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
   }

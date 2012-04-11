@@ -22,7 +22,7 @@ absorb_t::absorb_t( const std::string&  token,
                     player_t*           p,
                     const spell_data_t* s,
                     school_type_e       sc ) :
-  spell_base_t( ACTION_ABSORB, token, p, s, sc ) 
+  spell_base_t( ACTION_ABSORB, token, p, s, sc )
 {
   if ( target -> is_enemy() || target -> is_add() )
     target = player;

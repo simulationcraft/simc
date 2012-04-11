@@ -193,8 +193,8 @@ void stats_t::analyze()
     if ( school != SCHOOL_NONE && school != a -> school )
     {
       sim -> errorf( "stats_t::analyze() stats %s school %s and action %s school %s are not equal",
-                      name_str.c_str(), util_t::school_type_string( school),
-                      a->name(), util_t::school_type_string( a->school) );
+                     name_str.c_str(), util_t::school_type_string( school ),
+                     a->name(), util_t::school_type_string( a->school ) );
     }
     if ( a -> channeled ) channeled = true;
     school   = a -> school;
@@ -210,7 +210,7 @@ void stats_t::analyze()
   for ( int i=0; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].analyze( *this );
-    tick_results[ i ].analyze( *this);
+    tick_results[ i ].analyze( *this );
   }
 
   portion_aps.analyze( true, true, true, 50 );

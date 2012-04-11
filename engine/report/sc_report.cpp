@@ -503,7 +503,7 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
   std::vector<stats_t*> stats_list;
 
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  stats_list.push_back( p -> stats_list[ i ] );
+    stats_list.push_back( p -> stats_list[ i ] );
 
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     for ( size_t k = 0; k < p -> pet_list[ i ] -> stats_list.size(); ++k )
@@ -560,20 +560,20 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
                                                      p -> dps.max );
   }
 
-  ri.distribution_deaths_chart = chart::distribution      ( p -> sim,
-                               p -> deaths.distribution, encoded_name + " Death",
-                               p -> deaths.mean,
-                               p -> deaths.min,
-                               p -> deaths.max );
+  ri.distribution_deaths_chart = chart::distribution( p -> sim,
+                                                      p -> deaths.distribution, encoded_name + " Death",
+                                                      p -> deaths.mean,
+                                                      p -> deaths.min,
+                                                      p -> deaths.max );
 
   // Resource Charts
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    ri.timeline_resource_chart[ i ] = chart::timeline        ( p,
-                               p -> timeline_resource[ i ],
-                               encoded_name + ' ' + util_t::resource_type_string( i ),
-                               0,
-                               chart::resource_color( i ) );
+    ri.timeline_resource_chart[ i ] = chart::timeline( p,
+                                                       p -> timeline_resource[ i ],
+                                                       encoded_name + ' ' + util_t::resource_type_string( i ),
+                                                       0,
+                                                       chart::resource_color( i ) );
     ri.gains_chart[ i ] = chart::gains( p, i );
 
   }
@@ -596,17 +596,17 @@ void report::generate_sim_report_information( const sim_t* s , sim_t::report_inf
   if ( ri.charts_generated )
     return;
 
-   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, true );
-   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );
-   chart::raid_dpet    ( ri.dpet_charts, s );
-   chart::raid_gear    ( ri.gear_charts, s );
-   ri.timeline_chart = chart::distribution( s,
-                        s -> simulation_length.distribution, "Timeline",
-                        s -> simulation_length.mean,
-                        s -> simulation_length.min,
-                        s -> simulation_length.max );
+  chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, true );
+  chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );
+  chart::raid_dpet    ( ri.dpet_charts, s );
+  chart::raid_gear    ( ri.gear_charts, s );
+  ri.timeline_chart = chart::distribution( s,
+                                           s -> simulation_length.distribution, "Timeline",
+                                           s -> simulation_length.mean,
+                                           s -> simulation_length.min,
+                                           s -> simulation_length.max );
 
-   ri.charts_generated = true;
+  ri.charts_generated = true;
 }
 
 void report_t::print_spell_query( sim_t* s , unsigned level )

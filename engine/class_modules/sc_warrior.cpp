@@ -1395,7 +1395,7 @@ struct colossus_smash_t : public warrior_attack_t
     {
       warrior_targetdata_t* td = targetdata() -> cast_warrior();
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
-      
+
       if ( ! sim -> overrides.physical_vulnerability )
         target -> debuffs.physical_vulnerability -> trigger();
     }
@@ -1697,11 +1697,11 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
   }
-  
+
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
-    
+
     if ( sim -> overrides.mortal_wounds && result_is_hit( impact_result ) )
       t -> debuffs.mortal_wounds -> trigger();
   }
@@ -2542,7 +2542,7 @@ struct commanding_shout_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     warrior_t* p = player -> cast_warrior();
-    
+
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger( 1, -1.0, -1.0, duration() );
 

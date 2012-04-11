@@ -1247,35 +1247,35 @@ bool sim_t::init()
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
   // MoP aura initialization
-  
+
   // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
   auras.attack_haste = buff_creator_t( this, "attack_haste" );
   auras.attack_haste -> current_value = dbc.spell( 113742 ) -> effectN( 1 ).percent();
-  
+
   // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
   auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" );
   auras.attack_power_multiplier -> current_value = dbc.spell( 19506 ) -> effectN( 1 ).percent();
-  
+
   // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
   auras.critical_strike = buff_creator_t( this, "critical_strike" );
   auras.critical_strike -> current_value = dbc.spell( 19506 ) -> effectN( 3 ).percent();
-  
+
   // Mastery, value from Grace of Air (id=116956) (Shaman)
   auras.mastery = buff_creator_t( this, "mastery" );
   auras.mastery -> current_value = dbc.spell( 116956 ) -> effectN( 1 ).base_value();
-  
+
   // Spell Haste, value from Mind Quickening (id=49868) (Priest)
   auras.spell_haste = buff_creator_t( this, "spell_haste" );
   auras.spell_haste -> current_value = dbc.spell( 49868 ) -> effectN( 1 ).percent();
-  
+
   // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
   auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" );
   auras.spell_power_multiplier -> current_value = dbc.spell( 77747 ) -> effectN( 1 ).percent();
-  
+
   // Stamina, value from fortitude (id=79104) (Priest)
   auras.stamina = buff_creator_t( this, "stamina" );
   auras.stamina -> current_value = dbc.spell( 79104 ) -> effectN( 1 ).percent();
-  
+
   // Strength, Agility, and Intellect, value from Blessing of Kings (id=79062) (Paladin)
   auras.str_agi_int = buff_creator_t( this, "str_agi_int" );
   auras.str_agi_int -> current_value = dbc.spell( 79062 ) -> effectN( 1 ).percent();
@@ -1330,7 +1330,7 @@ bool sim_t::init()
   raid_hps.reserve( iterations );
   total_heal.reserve( iterations );
   simulation_length.reserve( iterations );
-  
+
   return canceled ? false : true;
 }
 
@@ -1385,54 +1385,54 @@ struct compare_stats_name
 namespace {
 
 void player_convergence( const int& iterations, const int& convergence_scale, const double& confidence_estimator,
-                  const sample_data_t& dps, std::vector<double>& dps_convergence_error, const double& dps_error, double& dps_convergence )
+                         const sample_data_t& dps, std::vector<double>& dps_convergence_error, const double& dps_error, double& dps_convergence )
 {
   // Error Convergence ======================================================
 
-    int    convergence_iterations = 0;
-    double convergence_dps = 0;
-    double convergence_min = +1.0E+50;
-    double convergence_max = -1.0E+50;
-    double convergence_std_dev = 0;
+  int    convergence_iterations = 0;
+  double convergence_dps = 0;
+  double convergence_min = +1.0E+50;
+  double convergence_max = -1.0E+50;
+  double convergence_std_dev = 0;
 
-    if ( iterations > 1 && convergence_scale > 1 && !dps.simple )
+  if ( iterations > 1 && convergence_scale > 1 && !dps.simple )
+  {
+    for ( int i=0; i < iterations; i += convergence_scale )
     {
-      for ( int i=0; i < iterations; i += convergence_scale )
-      {
-        double i_dps = dps.data()[ i ];
-        convergence_dps += i_dps;
-        if ( convergence_min > i_dps ) convergence_min = i_dps;
-        if ( convergence_max < i_dps ) convergence_max = i_dps;
-      }
-      convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
-      convergence_dps /= convergence_iterations;
-
-      assert( dps_convergence_error.empty() );
-      dps_convergence_error.reserve( iterations );
-
-      double sum_of_squares = 0;
-
-      for ( int i=0; i < iterations; i++ )
-      {
-        dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
-
-        double delta = dps.data()[ i ] - convergence_dps;
-        double delta_squared = delta * delta;
-
-        sum_of_squares += delta_squared;
-
-        if ( ( i % convergence_scale ) == 0 )
-          convergence_std_dev += delta_squared;
-      }
+      double i_dps = dps.data()[ i ];
+      convergence_dps += i_dps;
+      if ( convergence_min > i_dps ) convergence_min = i_dps;
+      if ( convergence_max < i_dps ) convergence_max = i_dps;
     }
+    convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
+    convergence_dps /= convergence_iterations;
 
-    if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
-    convergence_std_dev = sqrt( convergence_std_dev );
-    double convergence_error = confidence_estimator * convergence_std_dev;
-    if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
+    assert( dps_convergence_error.empty() );
+    dps_convergence_error.reserve( iterations );
 
-    if ( convergence_error > 0 )
-      dps_convergence = convergence_error / ( dps_error * convergence_scale );
+    double sum_of_squares = 0;
+
+    for ( int i=0; i < iterations; i++ )
+    {
+      dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+
+      double delta = dps.data()[ i ] - convergence_dps;
+      double delta_squared = delta * delta;
+
+      sum_of_squares += delta_squared;
+
+      if ( ( i % convergence_scale ) == 0 )
+        convergence_std_dev += delta_squared;
+    }
+  }
+
+  if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
+  convergence_std_dev = sqrt( convergence_std_dev );
+  double convergence_error = confidence_estimator * convergence_std_dev;
+  if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
+
+  if ( convergence_error > 0 )
+    dps_convergence = convergence_error / ( dps_error * convergence_scale );
 }
 }
 // sim_t::analyze_player ====================================================
@@ -1596,7 +1596,7 @@ void sim_t::analyze_player( player_t* p )
 
   // Error Convergence ======================================================
   player_convergence( iterations, convergence_scale, confidence_estimator,
-                    p -> dps, p -> dps_convergence_error, p -> dps_error, p -> dps_convergence );
+                      p -> dps, p -> dps_convergence_error, p -> dps_error, p -> dps_convergence );
 
 }
 
@@ -1818,7 +1818,7 @@ cooldown_t* sim_t::get_cooldown( const std::string& name )
 void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
-  
+
   overrides.attack_haste           = optimal_raid;
   overrides.attack_power_multiplier= optimal_raid;
   overrides.critical_strike        = optimal_raid;
@@ -1827,7 +1827,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.spell_power_multiplier = optimal_raid;
   overrides.stamina                = optimal_raid;
   overrides.str_agi_int            = optimal_raid;
-  
+
   overrides.slowed_casting          = optimal_raid;
   overrides.magic_vulnerability    = optimal_raid;
   overrides.mortal_wounds          = optimal_raid;

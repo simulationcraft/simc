@@ -1461,7 +1461,7 @@ struct furious_howl_t : public hunter_pet_spell_t
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-    
+
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger( 1, -1.0, -1.0, duration() );
   }
@@ -1488,7 +1488,7 @@ struct roar_of_courage_t : public hunter_pet_spell_t
   virtual void execute()
   {
     hunter_pet_spell_t::execute();
-    
+
     if ( ! sim -> overrides.str_agi_int )
       sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, duration() );
   }
@@ -1632,7 +1632,7 @@ struct tear_armor_t : public hunter_pet_spell_t
 
     cooldown -> duration *=  ( 1.0 + o -> talents.longevity -> effect1().percent() );
     auto_cast = true;
-    
+
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
@@ -3131,7 +3131,7 @@ struct hunters_mark_t : public hunter_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     hunter_spell_t::impact( t, impact_result, travel_dmg );
-    
+
     if ( ! sim -> overrides.ranged_vulnerability )
       t -> debuffs.ranged_vulnerability -> trigger();
   }
@@ -3356,10 +3356,10 @@ struct trueshot_aura_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
-    
+
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger();
-    
+
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
   }

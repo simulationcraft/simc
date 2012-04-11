@@ -2254,7 +2254,7 @@ struct thrash_t : public druid_bear_melee_attack_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     druid_bear_melee_attack_t::impact( t, impact_result, travel_dmg );
-    
+
     if ( result_is_hit( impact_result ) )
     {
       if ( ! sim -> overrides.weakened_blows )
@@ -3366,9 +3366,9 @@ struct mark_of_the_wild_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    
+
     if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-    
+
     if ( ! sim -> overrides.str_agi_int )
       sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, player -> dbc.spell( 79060 ) -> duration() );
   }
@@ -3512,7 +3512,7 @@ struct moonkin_form_t : public druid_spell_t
     if ( p -> buffs_cat_form  -> check() ) p -> buffs_cat_form  -> expire();
 
     p -> buffs_moonkin_form -> start();
-    
+
     if ( ! sim -> overrides.spell_haste && ! sim -> auras.spell_haste -> check() )
       sim -> auras.spell_haste -> trigger();
   }
@@ -4488,7 +4488,7 @@ void druid_t::init_spells()
   if ( talents.primal_madness -> rank() )
   {
     spells.primal_madness_cat = spell_data_t::find( talents.primal_madness -> rank() > 1 ? 80886 : 80879,
-                                                   "Primal Madness", dbc.ptr );
+                                                    "Primal Madness", dbc.ptr );
   }
   else
     spells.primal_madness_cat = spell_data_t::nil();

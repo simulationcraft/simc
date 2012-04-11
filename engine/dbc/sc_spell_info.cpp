@@ -578,7 +578,7 @@ std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent
 {
   std::ostringstream s;
 
-  (void)sim;
+  ( void )sim;
 
   s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
 

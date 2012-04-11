@@ -731,7 +731,7 @@ void enchant_t::init( player_t* p )
                           .duration( timespan_t::from_seconds( 15 ) )
                           .cd( timespan_t::zero() )
                           .chance( 0 ) )
-                        .stat( STAT_ATTACK_POWER)
+                        .stat( STAT_ATTACK_POWER )
                         .amount( 400.0 );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );

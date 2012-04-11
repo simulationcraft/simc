@@ -12,7 +12,7 @@
 // spell_base_t::spell_base_t =========================================================
 
 spell_base_t::spell_base_t( action_type_e at,
-                            const std::string& token, 
+                            const std::string& token,
                             player_t* p,
                             const spell_data_t* s,
                             school_type_e sc ) :
@@ -78,7 +78,7 @@ void spell_base_t::player_buff()
 // spell_base_t::crit_chance =====================================================
 
 double spell_base_t::crit_chance( double crit, int /* delta_level */ ) const
-{ 
+{
   return crit;
 }
 
@@ -113,7 +113,7 @@ result_type_e spell_base_t::calculate_result( double crit, unsigned target_level
   }
 
   if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
-  
+
   return result;
 }
 

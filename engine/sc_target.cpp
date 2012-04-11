@@ -32,10 +32,10 @@ struct enemy_t : public player_t
 
 // target_t::combat_begin ===================================================
 
-virtual void combat_begin()
-{
-  player_t::combat_begin();
-}
+  virtual void combat_begin()
+  {
+    player_t::combat_begin();
+  }
 
 // target_t::primary_role ===================================================
 
@@ -331,7 +331,7 @@ struct summon_add_t : public spell_t
 
   virtual void execute()
   {
-spell_t::execute();
+    spell_t::execute();
 
     player -> summon_pet( add_name.c_str(), summoning_duration );
   }

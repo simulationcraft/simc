@@ -1520,7 +1520,7 @@ void player_t::init_spells()
 void player_t::init_buffs()
 {
   buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
-  buffs.body_and_soul             = buff_creator_t( this,        "body_and_soul").max_stack( 1 ).duration( timespan_t::from_seconds( 4.0 ) );
+  buffs.body_and_soul             = buff_creator_t( this,        "body_and_soul" ).max_stack( 1 ).duration( timespan_t::from_seconds( 4.0 ) );
   buffs.grace                     = buff_creator_t( this,        "grace" ).max_stack( 3 ).duration( timespan_t::from_seconds( 15.0 ) );
   buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
   buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
@@ -1555,7 +1555,7 @@ void player_t::init_buffs()
                          buff_creator_t( this, "speed_potion" )
                          .max_stack( 1 )
                          .duration( timespan_t::from_seconds( 15.0 ) )
-                       .cd( timespan_t::from_seconds( 60.0 ) ) )
+                         .cd( timespan_t::from_seconds( 60.0 ) ) )
                        .stat( STAT_HASTE_RATING )
                        .amount( 500.0 );
 
@@ -2459,9 +2459,9 @@ double player_t::composite_attribute( attribute_type_e attr ) const
 
   switch ( attr )
   {
-    case ATTR_SPIRIT:
-      if ( race == RACE_HUMAN )
-        a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
+  case ATTR_SPIRIT:
+    if ( race == RACE_HUMAN )
+      a += ( a - attribute_base[ ATTR_SPIRIT ] ) * 0.03;
     break;
   default:
     break;
@@ -2478,22 +2478,22 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
   switch ( attr )
   {
-    case ATTR_STRENGTH:
-    case ATTR_AGILITY:
-    case ATTR_INTELLECT:
-      if ( sim -> auras.str_agi_int -> check() )
-        m *= 1.0 + sim -> auras.str_agi_int -> value();
-      break;
-    case ATTR_STAMINA:
-      if ( sim -> auras.stamina -> check() )
-        m *= 1.0 + sim -> auras.stamina -> value();
-      break;
-    case ATTR_SPIRIT:
-      if ( buffs.mana_tide -> check() )
-        m *= 1.0 + buffs.mana_tide -> value();
-      break;
-    default:
-      break;
+  case ATTR_STRENGTH:
+  case ATTR_AGILITY:
+  case ATTR_INTELLECT:
+    if ( sim -> auras.str_agi_int -> check() )
+      m *= 1.0 + sim -> auras.str_agi_int -> value();
+    break;
+  case ATTR_STAMINA:
+    if ( sim -> auras.stamina -> check() )
+      m *= 1.0 + sim -> auras.stamina -> value();
+    break;
+  case ATTR_SPIRIT:
+    if ( buffs.mana_tide -> check() )
+      m *= 1.0 + buffs.mana_tide -> value();
+    break;
+  default:
+    break;
   }
 
   return m;
@@ -2752,7 +2752,7 @@ void player_t::reset()
   {
     for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     {
-        attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
+      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
     }
   }
   spell_power = initial_spell_power;
@@ -3204,7 +3204,7 @@ void player_t::regen( const timespan_t periodicity )
   {
     std::map<size_t,resource_type_e>::iterator i = timeline_resource_translation.find( j );
     assert( i != timeline_resource_translation.end() );
-    timeline_resource[ (*i).second ][ index ] += resources.current[ (*i).second ];
+    timeline_resource[ ( *i ).second ][ index ] += resources.current[ ( *i ).second ];
   }
 }
 
@@ -3905,7 +3905,7 @@ void player_t::register_heal_callback( int64_t mask,
 // player_t::register_absorb_callback =========================================
 
 void player_t::register_absorb_callback( int64_t mask,
-                                       action_callback_t* cb )
+                                         action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -4757,7 +4757,7 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
-      if ( ! spell ) 
+      if ( ! spell )
       {
         spell = new spell_t( "snapshot_spell", p  );
         spell -> background = true;
@@ -5311,7 +5311,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   return parse_talent_trees( encoding );
 #else
-  (void)talent_string;
+  ( void )talent_string;
   return false;
 #endif
 }
@@ -5361,7 +5361,7 @@ void player_t::replace_spells()
   }
 
   // Search glyph spells for spells to replace.
-  for ( unsigned int j = 0; j < GLYPH_MAX; j++)
+  for ( unsigned int j = 0; j < GLYPH_MAX; j++ )
   {
     for ( unsigned int i = 0; i < dbc.glyph_spell_size(); i++ )
     {
@@ -5374,7 +5374,7 @@ void player_t::replace_spells()
         // Found a spell that might need replacing. Check to see if we have that glyph activated
         for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
         {
-          if ( (*it) && (*it) -> id() == id )
+          if ( ( *it ) && ( *it ) -> id() == id )
           {
             dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
           }
@@ -5448,7 +5448,7 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
 
   for ( std::vector<const spell_data_t*>::iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
   {
-    if ( (*i) && (*i) -> id() == g -> id() )
+    if ( ( *i ) && ( *i ) -> id() == g -> id() )
     {
       dbc_t::add_token( g -> id(), token, dbc.ptr );
       return g;
@@ -5949,15 +5949,15 @@ action_expr_t* player_t::create_resource_expression( action_t* a, player_t* p , 
   resource_type_e r = util_t::parse_resource_type( name_str );
 
   if ( r != RESOURCE_NONE )
+  {
+    struct resource_expr_t : public player_resource_action_expr_t
     {
-      struct resource_expr_t : public player_resource_action_expr_t
-      {
-        resource_expr_t( action_t* a, player_t* p, resource_type_e r ) :
-          player_resource_action_expr_t( a, p, r, "current_resource", TOK_NUM ) {}
-        virtual int evaluate() { result_num = action -> player -> resources.current[ rt ]; return TOK_NUM; }
-      };
-      return new resource_expr_t( a, p, r );
-    }
+      resource_expr_t( action_t* a, player_t* p, resource_type_e r ) :
+        player_resource_action_expr_t( a, p, r, "current_resource", TOK_NUM ) {}
+      virtual int evaluate() { result_num = action -> player -> resources.current[ rt ]; return TOK_NUM; }
+    };
+    return new resource_expr_t( a, p, r );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
@@ -6000,7 +6000,7 @@ action_expr_t* player_t::create_resource_expression( action_t* a, player_t* p , 
     {
       struct resource_max_nonproc_expr_t : public player_resource_action_expr_t
       {
-        resource_max_nonproc_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n) :
+        resource_max_nonproc_expr_t( action_t* a, player_t* p, resource_type_e r, const std::string& n ) :
           player_resource_action_expr_t( a, p, r, n, TOK_NUM ) {}
         virtual int evaluate() { result_num = action -> player -> buffed.resource[ rt ]; return TOK_NUM; }
       };
@@ -6672,10 +6672,10 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
   double m = 1.0;
 
   if ( debuffs.magic_vulnerability -> check() &&
-      school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
+       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL && school != SCHOOL_BLEED )
     m *= 1.0 + debuffs.magic_vulnerability -> value();
   else if ( debuffs.physical_vulnerability -> check() &&
-      ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
+            ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
     m *= 1.0 + debuffs.physical_vulnerability -> value();
 
   if ( debuffs.vulnerable -> check() )
@@ -6688,7 +6688,7 @@ double player_t::composite_ranged_attack_player_vulnerability() const
 {
   // MoP: Increase ranged damage taken by 5%. make sure
   if ( debuffs.ranged_vulnerability -> check() )
-      return 1.0 + debuffs.ranged_vulnerability -> value();
+    return 1.0 + debuffs.ranged_vulnerability -> value();
 
   return 1.0;
 }

@@ -2094,7 +2094,7 @@ struct dark_intent_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    
+
     if ( ! sim -> overrides.spell_power_multiplier )
       sim -> auras.spell_power_multiplier -> trigger();
   }

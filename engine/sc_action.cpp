@@ -195,7 +195,7 @@ action_t::action_t( action_type_e       ty,
 
   stats = player -> get_stats( name_str , this );
 
-  if ( data().ok() ) 
+  if ( data().ok() )
     parse_spell_data( data() );
 
   if ( data().id() && ! data().is_level( player -> level ) && data().level() <= MAX_LEVEL )
@@ -275,7 +275,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 // action_t::parse_effect_data ==============================================
 void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
-  if ( ! spelleffect_data.ok() ) 
+  if ( ! spelleffect_data.ok() )
   {
     sim -> errorf( "%s %s: parse_effect_data: no effect to parse.\n", player -> name(), name() );
     return;

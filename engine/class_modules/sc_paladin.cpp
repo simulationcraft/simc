@@ -1293,7 +1293,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     {
       proc -> execute();
       trigger_grand_crusader( this );
-      
+
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
         target -> debuffs.weakened_blows -> trigger();
@@ -1773,15 +1773,15 @@ struct judgement_t : public paladin_melee_attack_t
     }
 
     p -> buffs_judgements_of_the_bold -> trigger();
-    
+
     // Mists of Pandaria: Retribution Paladin Judgments trigger Physical Vulnerability
     if ( p -> primary_tree() == TREE_RETRIBUTION && ! sim -> overrides.physical_vulnerability )
-        target -> debuffs.physical_vulnerability -> trigger();
+      target -> debuffs.physical_vulnerability -> trigger();
 
     p -> buffs_judgements_of_the_wise -> trigger();
 
     p -> last_foreground_action = seal; // Necessary for DPET calculations.
-    
+
   }
 
   virtual bool ready()

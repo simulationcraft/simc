@@ -993,7 +993,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_buffs();
 
-    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl").max_stack( 1 ).duration( shadowcrawl -> duration() );
+    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl" ).max_stack( 1 ).duration( shadowcrawl -> duration() );
   }
 
   virtual double composite_spell_power( school_type_e school ) const
@@ -1342,14 +1342,14 @@ struct fortitude_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    
+
     background = ( sim -> overrides.stamina != 0 );
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
-    
+
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger();
 
@@ -1587,7 +1587,7 @@ struct shadowform_t : public priest_spell_t
     priest_spell_t::execute();
 
     p() -> buffs.shadowform -> trigger();
-    
+
     if ( ! sim -> overrides.spell_haste )
       sim -> auras.spell_haste -> trigger();
   }
@@ -3421,7 +3421,7 @@ void priest_t::init_spells()
   glyphs.prayer_of_mending            = find_glyph_spell( "Glyph of Prayer of Mending" );
   glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
   glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
-  glyphs.atonement                    = find_glyph_spell( "Atonement" ); 
+  glyphs.atonement                    = find_glyph_spell( "Atonement" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
   glyphs.strength_of_soul             = find_glyph_spell( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );

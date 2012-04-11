@@ -360,7 +360,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
     double waiting = 100.0 * p -> waiting_time.mean / p -> fight_length.mean;
     if ( waiting > max_waiting ) max_waiting = waiting;
     s << ( i?"|":"" );
-    s << std::setprecision(2) << waiting;
+    s << std::setprecision( 2 ) << waiting;
   }
   s << amp;
 
@@ -420,9 +420,9 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 // chart_t::raid_dps ========================================================
 
 int chart::raid_aps( std::vector<std::string>& images,
-                       const sim_t* sim,
-                       const std::vector<player_t*>& players_by_aps,
-                       bool dps )
+                     const sim_t* sim,
+                     const std::vector<player_t*>& players_by_aps,
+                     bool dps )
 {
   int num_players = static_cast<int>( players_by_aps.size() );
 
@@ -527,7 +527,7 @@ int chart::raid_aps( std::vector<std::string>& images,
 // chart_t::raid_gear =======================================================
 
 int chart::raid_gear( std::vector<std::string>& images,
-                        const sim_t* sim )
+                      const sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -1715,10 +1715,10 @@ std::string chart::reforge_dps( const player_t* p )
 // chart_t::timeline_dps ====================================================
 
 std::string chart::timeline( const player_t* p,
-                               const std::vector<double>& timeline_data,
-                               const std::string& timeline_name,
-                               double avg,
-                               std::string color )
+                             const std::vector<double>& timeline_data,
+                             const std::string& timeline_name,
+                             double avg,
+                             std::string color )
 {
   static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
@@ -1881,9 +1881,9 @@ std::string chart::timeline_dps_error( const player_t* p )
 // chart_t::distribution_dps ================================================
 
 std::string chart::distribution( const sim_t* sim,
-                                   const std::vector<int>& dist_data,
-                                   const std::string& distribution_name,
-                                   double avg, double min, double max )
+                                 const std::vector<int>& dist_data,
+                                 const std::string& distribution_name,
+                                 double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
 
@@ -2162,7 +2162,7 @@ std::string chart::gear_weights_wowreforge( const player_t*    p )
 // chart_t::gear_weights_pawn ===============================================
 
 std::string chart::gear_weights_pawn( const player_t*    p,
-                                        bool hit_expertise )
+                                      bool hit_expertise )
 {
   std::vector<stat_type_e> stats;
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )

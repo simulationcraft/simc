@@ -46,21 +46,20 @@ struct buff_delay_t : public event_t
 }
 
 buff_t::buff_t( const buff_creator_t& params ) :
-    sim( params._sim ), player( params._player.target ), name_str( params._name ),
-    s_data( params.s_data ),
-    buff_duration( timespan_t::zero() ),
-    buff_cooldown( timespan_t::zero() ),
-    default_chance( 1.0 ),
-    source( params._player.source ),
-    initial_source( params._player.source ),
-    max_stack( 1 ),
-    //max_stack( params._max_stack ),
-    activated( true ),
-    reverse( false ),
-    constant( false ),
-    quiet( false ),
-
-    uptime_pct(), start_intervals(), trigger_intervals()
+  sim( params._sim ), player( params._player.target ), name_str( params._name ),
+  s_data( params.s_data ),
+  buff_duration( timespan_t::zero() ),
+  buff_cooldown( timespan_t::zero() ),
+  default_chance( 1.0 ),
+  source( params._player.source ),
+  initial_source( params._player.source ),
+  max_stack( 1 ),
+  //max_stack( params._max_stack ),
+  activated( true ),
+  reverse( false ),
+  constant( false ),
+  quiet( false ),
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
@@ -675,7 +674,7 @@ void buff_t::merge( const buff_t* other )
     assert( 0 );
   }
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> merge ( *(other -> stack_uptime[ i ]) );
+    stack_uptime[ i ] -> merge ( *( other -> stack_uptime[ i ] ) );
 }
 
 // buff_t::analyze ==========================================================
@@ -704,7 +703,7 @@ void buff_t::analyze()
 
 buff_t* buff_t::find( const std::vector<buff_t*>& b, const std::string& name_str )
 {
-  for( size_t i = 0; i < b.size(); i++ )
+  for ( size_t i = 0; i < b.size(); i++ )
   {
     if ( name_str == b[ i ] -> name_str )
       return b[ i ];
@@ -836,7 +835,7 @@ action_expr_t* buff_t::create_expression( action_t* action,
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
-    buff_t( params.bc ), amount( params._amount ), stat( params._stat )
+  buff_t( params.bc ), amount( params._amount ), stat( params._stat )
 {
 }
 
@@ -896,7 +895,7 @@ void stat_buff_t::expire()
 // ==========================================================================
 
 cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params ) :
-    buff_t( params.bc ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
+  buff_t( params.bc ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
 {
 }
 
@@ -974,7 +973,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 // ==========================================================================
 
 debuff_t::debuff_t( const buff_creator_t& params ) :
-    buff_t( params )
+  buff_t( params )
 {
 }
 
@@ -986,7 +985,7 @@ void buff_creator_t::init()
   _cooldown = timespan_t::min();
   _quiet = -1;
   _reverse = -1;
- {}
+  {}
 }
 
 buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
@@ -994,7 +993,7 @@ buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spel
 { init(); }
 
 buff_creator_t::buff_creator_t( actor_pair_t p , uint32_t id, const std::string& n ) :
-_player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() )
+  _player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() )
 { init(); }
 
 buff_creator_t::buff_creator_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :

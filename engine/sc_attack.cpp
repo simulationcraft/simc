@@ -294,7 +294,7 @@ result_type_e attack_t::calculate_result( double crit, unsigned target_level )
 
   if ( sim -> debug )
     log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util_t::result_type_string( result ) );
-  
+
   return result;
 }
 

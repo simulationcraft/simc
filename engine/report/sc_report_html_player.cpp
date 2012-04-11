@@ -2189,29 +2189,29 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
            "\t\t\t\t\t\t\t\t\t<th>Interval</th>\n"
            "\t\t\t\t\t\t\t\t</tr>\n" );
   {
-  int i = 1;
-  for ( const proc_t* proc = pr; proc; proc = proc -> next )
-  {
-    if ( proc -> count > 0 )
+    int i = 1;
+    for ( const proc_t* proc = pr; proc; proc = proc -> next )
     {
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr" );
-      if ( !( i & 1 ) )
+      if ( proc -> count > 0 )
       {
-        fprintf( file, " class=\"odd\"" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t<tr" );
+        if ( !( i & 1 ) )
+        {
+          fprintf( file, " class=\"odd\"" );
+        }
+        fprintf( file, ">\n" );
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                 "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
+                 "\t\t\t\t\t\t\t\t</tr>\n",
+                 proc -> name(),
+                 proc -> count,
+                 proc -> interval_sum.mean );
+        i++;
       }
-      fprintf( file, ">\n" );
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-               "\t\t\t\t\t\t\t\t</tr>\n",
-               proc -> name(),
-               proc -> count,
-               proc -> interval_sum.mean );
-      i++;
     }
-  }
   }
   fprintf( file,
            "\t\t\t\t\t\t\t</table>\n"

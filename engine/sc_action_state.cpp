@@ -45,7 +45,7 @@ void action_state_t::copy_state( const action_state_t* o )
   haste = o -> haste; crit = o -> crit;
   attack_power = o -> attack_power;
   spell_power = o -> spell_power;
-  
+
   da_multiplier = o -> da_multiplier;
   ta_multiplier = o -> ta_multiplier;
 }

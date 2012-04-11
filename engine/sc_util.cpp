@@ -40,7 +40,7 @@ bool util_t::str_compare_ci( const std::string& l,
 
 std::string& util_t::glyph_name( std::string& n )
 {
-  armory_t::format( n, FORMAT_ASCII_MASK ); 
+  armory_t::format( n, FORMAT_ASCII_MASK );
 
   if ( n.substr( 0, 9 ) == "glyph_of_" ) n.erase( 0, 9 );
   if ( n.substr( 0, 7 ) == "glyph__" )   n.erase( 0, 7 );
@@ -379,8 +379,8 @@ player_type_e util_t::parse_player_type( const std::string& name )
 // util_t::translate_class_str ================================================
 
 player_type_e util_t::translate_class_str( std::string& s )
-{ 
-  return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s ); 
+{
+  return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s );
 }
 
 
@@ -648,7 +648,7 @@ resource_type_e util_t::parse_resource_type( const std::string& name )
 uint32_t util_t::school_type_component( school_type_e s_type, school_type_e c_type )
 {
   return spell_data_t::get_school_mask( s_type )
-      & spell_data_t::get_school_mask( c_type );
+         & spell_data_t::get_school_mask( c_type );
 }
 
 // util_t::school_type_string ===============================================
@@ -698,8 +698,8 @@ const char* util_t::school_type_string( school_type_e school )
 // util_t::parse_school_type ================================================
 
 school_type_e util_t::parse_school_type( const std::string& name )
-{ 
-  return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name ); 
+{
+  return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name );
 }
 
 // util_t::translate_spec_str ===============================================
@@ -708,196 +708,196 @@ specialization_e util_t::translate_spec_str( player_type_e ptype, const std::str
 {
   switch ( ptype )
   {
-    case DEATH_KNIGHT:
-    {
-      if ( util_t::str_compare_ci( spec_str, "blood" ) )
-        return DEATH_KNIGHT_BLOOD;
-      if ( util_t::str_compare_ci( spec_str, "tank" ) )
-        return DEATH_KNIGHT_BLOOD;
-      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
-        return DEATH_KNIGHT_FROST;
-      else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
-        return DEATH_KNIGHT_UNHOLY;    
-      break;
-    }
-    case DRUID:
-    {
-      if ( util_t::str_compare_ci( spec_str, "balance" ) )
-        return DRUID_BALANCE;
-      if ( util_t::str_compare_ci( spec_str, "caster" ) )
-        return DRUID_BALANCE;
-      else if ( util_t::str_compare_ci( spec_str, "feral" ) )
-        return DRUID_FERAL;
-      else if ( util_t::str_compare_ci( spec_str, "cat" ) )
-        return DRUID_FERAL;
-      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-        return DRUID_FERAL;
-      else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
-        return DRUID_GUARDIAN;
-      else if ( util_t::str_compare_ci( spec_str, "bear" ) )
-        return DRUID_GUARDIAN;
-      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-        return DRUID_GUARDIAN;
-      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
-        return DRUID_RESTORATION;
-      else if ( util_t::str_compare_ci( spec_str, "resto" ) )
-        return DRUID_RESTORATION;
-      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-        return DRUID_RESTORATION;
-      
-      break;
-    }
-    case HUNTER:
-    {
-      if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
-        return HUNTER_BEAST_MASTERY;
-      if ( util_t::str_compare_ci( spec_str, "bm" ) )
-        return HUNTER_BEAST_MASTERY;
-      else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
-        return HUNTER_MARKSMANSHIP;
-      else if ( util_t::str_compare_ci( spec_str, "mm" ) )
-        return HUNTER_MARKSMANSHIP;
-      else if ( util_t::str_compare_ci( spec_str, "survival" ) )
-        return HUNTER_SURVIVAL;
-      else if ( util_t::str_compare_ci( spec_str, "sv" ) )
-        return HUNTER_SURVIVAL;
-      break;
-    }
-    case MAGE:
-    {
-      if ( util_t::str_compare_ci( spec_str, "arcane" ) )
-        return MAGE_ARCANE;
-      else if ( util_t::str_compare_ci( spec_str, "fire" ) )
-        return MAGE_FIRE;
-      else if ( util_t::str_compare_ci( spec_str, "frost" ) )
-        return MAGE_FROST;
-      break;
-    }
-    case MONK:
-    {
-      if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
-        return MONK_BREWMASTER;
-      if ( util_t::str_compare_ci( spec_str, "tank" ) )
-        return MONK_BREWMASTER;
-      else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
-        return MONK_MISTWEAVER;
-      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-        return MONK_MISTWEAVER;
-      else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
-        return MONK_WINDWALKER;
-      else if ( util_t::str_compare_ci( spec_str, "dps" ) )
-        return MONK_WINDWALKER;
-      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-        return MONK_WINDWALKER;
-      break;
-    }
-    case PALADIN:
-    {
-      if ( util_t::str_compare_ci( spec_str, "holy" ) )
-        return PALADIN_HOLY;
-      if ( util_t::str_compare_ci( spec_str, "healer" ) )
-        return PALADIN_HOLY;
-      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
-        return PALADIN_PROTECTION;
-      else if ( util_t::str_compare_ci( spec_str, "prot" ) )
-        return PALADIN_PROTECTION;
-      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-        return PALADIN_PROTECTION;
-      else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
-        return PALADIN_RETRIBUTION;
-      else if ( util_t::str_compare_ci( spec_str, "ret" ) )
-        return PALADIN_RETRIBUTION;
-      else if ( util_t::str_compare_ci( spec_str, "dps" ) )
-        return PALADIN_RETRIBUTION;
-      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-        return PALADIN_RETRIBUTION;
-      break;
-    }
-    case PRIEST:
-    {
-      if ( util_t::str_compare_ci( spec_str, "discipline" ) )
-        return PRIEST_DISCIPLINE;
-      if ( util_t::str_compare_ci( spec_str, "disc" ) )
-        return PRIEST_DISCIPLINE;
-      else if ( util_t::str_compare_ci( spec_str, "holy" ) )
-        return PRIEST_HOLY;
-      else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
-        return PRIEST_SHADOW;
-      else if ( util_t::str_compare_ci( spec_str, "caster" ) )
-        return PRIEST_SHADOW;
-      break;
-    }
-    case ROGUE:
-    {
-      if ( util_t::str_compare_ci( spec_str, "assassination" ) )
-        return ROGUE_ASSASSINATION;
-      if ( util_t::str_compare_ci( spec_str, "ass" ) )
-        return ROGUE_ASSASSINATION;
-      if ( util_t::str_compare_ci( spec_str, "mut" ) )
-        return ROGUE_ASSASSINATION;
-      else if ( util_t::str_compare_ci( spec_str, "combat" ) )
-        return ROGUE_COMBAT;
-      else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
-        return ROGUE_SUBTLETY;
-      else if ( util_t::str_compare_ci( spec_str, "sub" ) )
-        return ROGUE_SUBTLETY;
-      break;
-    }
-    case SHAMAN:
-    {
-      if ( util_t::str_compare_ci( spec_str, "elemental" ) )
-        return SHAMAN_ELEMENTAL;
-      if ( util_t::str_compare_ci( spec_str, "ele" ) )
-        return SHAMAN_ELEMENTAL;
-      if ( util_t::str_compare_ci( spec_str, "caster" ) )
-        return SHAMAN_ELEMENTAL;
-      else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
-        return SHAMAN_ENHANCEMENT;
-      else if ( util_t::str_compare_ci( spec_str, "enh" ) )
-        return SHAMAN_ENHANCEMENT;
-      else if ( util_t::str_compare_ci( spec_str, "melee" ) )
-        return SHAMAN_ENHANCEMENT;
-      else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
-        return SHAMAN_RESTORATION;
-      else if ( util_t::str_compare_ci( spec_str, "resto" ) )
-        return SHAMAN_RESTORATION;
-      else if ( util_t::str_compare_ci( spec_str, "healer" ) )
-        return SHAMAN_RESTORATION;
-      break;
-    }
-    case WARLOCK:
-    {
-      if ( util_t::str_compare_ci( spec_str, "affliction" ) )
-        return WARLOCK_AFFLICTION;
-      if ( util_t::str_compare_ci( spec_str, "affl" ) )
-        return WARLOCK_AFFLICTION;
-      if ( util_t::str_compare_ci( spec_str, "aff" ) )
-        return WARLOCK_AFFLICTION;
-      else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
-        return WARLOCK_DEMONOLOGY;
-      else if ( util_t::str_compare_ci( spec_str, "demo" ) )
-        return WARLOCK_DEMONOLOGY;
-      else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
-        return WARLOCK_DESTRUCTION;
-      else if ( util_t::str_compare_ci( spec_str, "destro" ) )
-        return WARLOCK_DESTRUCTION;
-      break;
-    }
-    case WARRIOR:
-    {
-      if ( util_t::str_compare_ci( spec_str, "arms" ) )
-        return WARRIOR_ARMS;
-      else if ( util_t::str_compare_ci( spec_str, "fury" ) )
-        return WARRIOR_FURY;
-      else if ( util_t::str_compare_ci( spec_str, "protection" ) )
-        return WARRIOR_PROTECTION;
-      else if ( util_t::str_compare_ci( spec_str, "prot" ) )
-        return WARRIOR_PROTECTION;
-      else if ( util_t::str_compare_ci( spec_str, "tank" ) )
-        return WARRIOR_PROTECTION;
-      break;
-    }
-    default: break;
+  case DEATH_KNIGHT:
+  {
+    if ( util_t::str_compare_ci( spec_str, "blood" ) )
+      return DEATH_KNIGHT_BLOOD;
+    if ( util_t::str_compare_ci( spec_str, "tank" ) )
+      return DEATH_KNIGHT_BLOOD;
+    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+      return DEATH_KNIGHT_FROST;
+    else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
+      return DEATH_KNIGHT_UNHOLY;
+    break;
+  }
+  case DRUID:
+  {
+    if ( util_t::str_compare_ci( spec_str, "balance" ) )
+      return DRUID_BALANCE;
+    if ( util_t::str_compare_ci( spec_str, "caster" ) )
+      return DRUID_BALANCE;
+    else if ( util_t::str_compare_ci( spec_str, "feral" ) )
+      return DRUID_FERAL;
+    else if ( util_t::str_compare_ci( spec_str, "cat" ) )
+      return DRUID_FERAL;
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+      return DRUID_FERAL;
+    else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
+      return DRUID_GUARDIAN;
+    else if ( util_t::str_compare_ci( spec_str, "bear" ) )
+      return DRUID_GUARDIAN;
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+      return DRUID_GUARDIAN;
+    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+      return DRUID_RESTORATION;
+    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
+      return DRUID_RESTORATION;
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+      return DRUID_RESTORATION;
+
+    break;
+  }
+  case HUNTER:
+  {
+    if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
+      return HUNTER_BEAST_MASTERY;
+    if ( util_t::str_compare_ci( spec_str, "bm" ) )
+      return HUNTER_BEAST_MASTERY;
+    else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
+      return HUNTER_MARKSMANSHIP;
+    else if ( util_t::str_compare_ci( spec_str, "mm" ) )
+      return HUNTER_MARKSMANSHIP;
+    else if ( util_t::str_compare_ci( spec_str, "survival" ) )
+      return HUNTER_SURVIVAL;
+    else if ( util_t::str_compare_ci( spec_str, "sv" ) )
+      return HUNTER_SURVIVAL;
+    break;
+  }
+  case MAGE:
+  {
+    if ( util_t::str_compare_ci( spec_str, "arcane" ) )
+      return MAGE_ARCANE;
+    else if ( util_t::str_compare_ci( spec_str, "fire" ) )
+      return MAGE_FIRE;
+    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
+      return MAGE_FROST;
+    break;
+  }
+  case MONK:
+  {
+    if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
+      return MONK_BREWMASTER;
+    if ( util_t::str_compare_ci( spec_str, "tank" ) )
+      return MONK_BREWMASTER;
+    else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
+      return MONK_MISTWEAVER;
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+      return MONK_MISTWEAVER;
+    else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
+      return MONK_WINDWALKER;
+    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
+      return MONK_WINDWALKER;
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+      return MONK_WINDWALKER;
+    break;
+  }
+  case PALADIN:
+  {
+    if ( util_t::str_compare_ci( spec_str, "holy" ) )
+      return PALADIN_HOLY;
+    if ( util_t::str_compare_ci( spec_str, "healer" ) )
+      return PALADIN_HOLY;
+    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+      return PALADIN_PROTECTION;
+    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
+      return PALADIN_PROTECTION;
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+      return PALADIN_PROTECTION;
+    else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( util_t::str_compare_ci( spec_str, "ret" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
+      return PALADIN_RETRIBUTION;
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+      return PALADIN_RETRIBUTION;
+    break;
+  }
+  case PRIEST:
+  {
+    if ( util_t::str_compare_ci( spec_str, "discipline" ) )
+      return PRIEST_DISCIPLINE;
+    if ( util_t::str_compare_ci( spec_str, "disc" ) )
+      return PRIEST_DISCIPLINE;
+    else if ( util_t::str_compare_ci( spec_str, "holy" ) )
+      return PRIEST_HOLY;
+    else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
+      return PRIEST_SHADOW;
+    else if ( util_t::str_compare_ci( spec_str, "caster" ) )
+      return PRIEST_SHADOW;
+    break;
+  }
+  case ROGUE:
+  {
+    if ( util_t::str_compare_ci( spec_str, "assassination" ) )
+      return ROGUE_ASSASSINATION;
+    if ( util_t::str_compare_ci( spec_str, "ass" ) )
+      return ROGUE_ASSASSINATION;
+    if ( util_t::str_compare_ci( spec_str, "mut" ) )
+      return ROGUE_ASSASSINATION;
+    else if ( util_t::str_compare_ci( spec_str, "combat" ) )
+      return ROGUE_COMBAT;
+    else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
+      return ROGUE_SUBTLETY;
+    else if ( util_t::str_compare_ci( spec_str, "sub" ) )
+      return ROGUE_SUBTLETY;
+    break;
+  }
+  case SHAMAN:
+  {
+    if ( util_t::str_compare_ci( spec_str, "elemental" ) )
+      return SHAMAN_ELEMENTAL;
+    if ( util_t::str_compare_ci( spec_str, "ele" ) )
+      return SHAMAN_ELEMENTAL;
+    if ( util_t::str_compare_ci( spec_str, "caster" ) )
+      return SHAMAN_ELEMENTAL;
+    else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( util_t::str_compare_ci( spec_str, "enh" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
+      return SHAMAN_ENHANCEMENT;
+    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
+      return SHAMAN_RESTORATION;
+    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
+      return SHAMAN_RESTORATION;
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
+      return SHAMAN_RESTORATION;
+    break;
+  }
+  case WARLOCK:
+  {
+    if ( util_t::str_compare_ci( spec_str, "affliction" ) )
+      return WARLOCK_AFFLICTION;
+    if ( util_t::str_compare_ci( spec_str, "affl" ) )
+      return WARLOCK_AFFLICTION;
+    if ( util_t::str_compare_ci( spec_str, "aff" ) )
+      return WARLOCK_AFFLICTION;
+    else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
+      return WARLOCK_DEMONOLOGY;
+    else if ( util_t::str_compare_ci( spec_str, "demo" ) )
+      return WARLOCK_DEMONOLOGY;
+    else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
+      return WARLOCK_DESTRUCTION;
+    else if ( util_t::str_compare_ci( spec_str, "destro" ) )
+      return WARLOCK_DESTRUCTION;
+    break;
+  }
+  case WARRIOR:
+  {
+    if ( util_t::str_compare_ci( spec_str, "arms" ) )
+      return WARRIOR_ARMS;
+    else if ( util_t::str_compare_ci( spec_str, "fury" ) )
+      return WARRIOR_FURY;
+    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
+      return WARRIOR_PROTECTION;
+    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
+      return WARRIOR_PROTECTION;
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
+      return WARRIOR_PROTECTION;
+    break;
+  }
+  default: break;
   }
   return SPEC_NONE;
 }

@@ -2525,7 +2525,7 @@ public:
   static const char* slot_type_string          ( slot_type_e type );
   static const char* stat_type_string          ( stat_type_e type );
   static const char* stat_type_abbrev          ( stat_type_e type );
-  static const char* stat_type_wowhead         ( stat_type_e type ); 
+  static const char* stat_type_wowhead         ( stat_type_e type );
   static specialization_e translate_spec_str   ( player_type_e ptype, const std::string& spec_str );
   static const char* specialization_string     ( specialization_e spec, bool armory_format = true );
   static resource_type_e translate_power_type  ( power_type_e );
@@ -2917,7 +2917,7 @@ public:
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
 
-  const spell_data_t& data() const { return *s_data; } 
+  const spell_data_t& data() const { return *s_data; }
   int    check() { return current_stack; }
   inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
@@ -3300,7 +3300,7 @@ public:
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
-    
+
     // Debuff overrides
     int slowed_casting;
     int magic_vulnerability;
@@ -3309,7 +3309,7 @@ public:
     int ranged_vulnerability;
     int weakened_armor;
     int weakened_blows;
-    
+
     // Misc stuff needs resolving
     int bloodlust;
     int honor_among_thieves;
@@ -3328,7 +3328,7 @@ public:
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
-    
+
     // Honor Among Thieves hackery
     aura_t* honor_among_thieves;
   };
@@ -4202,7 +4202,7 @@ struct player_t : public noncopyable
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
     buff_t* weakened_soul;
-    
+
     // MoP buffs
   } buffs;
 
@@ -4224,7 +4224,7 @@ struct player_t : public noncopyable
     debuff_t* ranged_vulnerability;
     debuff_t* weakened_blows;
     debuff_t* weakened_armor;
-    
+
     // Class specific "general" debuffs
     debuff_t* shattering_throw;
   } debuffs;
@@ -5035,12 +5035,14 @@ public:
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
   virtual double composite_spell_power() const { return base_spell_power; }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
-  virtual double composite_da_multiplier() {
+  virtual double composite_da_multiplier()
+  {
     return action_multiplier() * action_da_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_dd_multiplier( school, this );
   }
-  virtual double composite_ta_multiplier() {
+  virtual double composite_ta_multiplier()
+  {
     return action_multiplier() * action_ta_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_td_multiplier( school, this );
@@ -5262,7 +5264,7 @@ struct sequence_t : public action_t
   virtual bool ready();
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
   bool can_restart()
-  { return ! restarted || last_restart + timespan_t::from_millis(1) < sim -> current_time; }
+  { return ! restarted || last_restart + timespan_t::from_millis( 1 ) < sim -> current_time; }
 };
 
 // Cooldown =================================================================
@@ -5587,8 +5589,10 @@ struct uptime_common_t
   }
 
   void combat_end()
-  { uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
-    iteration_uptime_sum = timespan_t::zero(); }
+  {
+    uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
+    iteration_uptime_sum = timespan_t::zero();
+  }
 
   void reset() { last_start = timespan_t::min(); }
 

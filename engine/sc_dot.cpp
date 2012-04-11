@@ -261,7 +261,8 @@ action_expr_t* dot_t::create_expression( action_t* a, const std::string& name_st
     struct duration_expr_t : public dot_action_expr_t
     {
       duration_expr_t( action_t* a, dot_t* d ) : dot_action_expr_t( a, d, "dot_duration", TOK_NUM ) {}
-      virtual int evaluate() {
+      virtual int evaluate()
+      {
         double haste = ( dot -> state ) ? dot -> state -> haste : action -> player_haste;
         result_num = action -> num_ticks * action -> tick_time( haste ).total_seconds(); return TOK_NUM;
       }

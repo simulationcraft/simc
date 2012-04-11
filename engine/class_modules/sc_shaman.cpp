@@ -394,7 +394,7 @@ struct shaman_spell_t : public spell_t
   /* Class spell data based construction, spell name in s_name */
   shaman_spell_t( const char* n, const char* s_name, shaman_t* p, const std::string& options_str = std::string() ) :
     spell_t( n, s_name, p ), base_cost_reduction( 0.0 ), maelstrom( false ), overload( false ), is_totem( false ),
-      td( targetdata_t::get( player, target ) -> cast_shaman() )
+    td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     parse_options( NULL, options_str );
 
@@ -2648,8 +2648,8 @@ struct thunderstorm_t : public shaman_spell_t
     shaman_spell_t::impact_s( state );
 
     p() -> resource_gain( effectN( 2 ).resource_gain_type(),
-                            p() -> resources.max[ effectN( 2 ).resource_gain_type() ] * bonus,
-                            p() -> gain.thunderstorm );
+                          p() -> resources.max[ effectN( 2 ).resource_gain_type() ] * bonus,
+                          p() -> gain.thunderstorm );
   }
 };
 
@@ -4341,7 +4341,7 @@ void player_t::shaman_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust")
+    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust" )
                             .max_stack( 1 )
                             .duration( timespan_t::from_seconds( 40.0 ) );
     p -> buffs.exhaustion = buff_creator_t( p, "exhaustion" )
