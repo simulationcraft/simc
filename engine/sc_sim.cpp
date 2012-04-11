@@ -1100,7 +1100,7 @@ void sim_t::combat_begin()
   if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override();
   if ( overrides.stamina                 ) auras.stamina                 -> override();
   if ( overrides.str_agi_int             ) auras.str_agi_int             -> override();
-  
+
   for ( player_t* t = target_list; t; t = t -> next )
   {
     if ( overrides.slowed_casting          ) t -> debuffs.slowed_casting          -> override();
@@ -1539,16 +1539,18 @@ void sim_t::analyze_player( player_t* p )
 
 
   // Resources & Gains ======================================================
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < p -> resource_timeline_count; ++i )
   {
-    size_t num_buckets = p -> timeline_resource[ i ].size();
+    std::vector<double>& timeline = p -> resource_timelines[ i ].timeline;
+    if ( timeline.size() > max_buckets ) timeline.resize( max_buckets );
 
-    if ( num_buckets > max_buckets ) p -> timeline_resource[ i ].resize( max_buckets );
-
+    assert( timeline.size() == max_buckets );
     for ( size_t j = 0; j < max_buckets; j++ )
-    {
-      p -> timeline_resource[ i ][ j ] /= divisor_timeline[ j ] * regen_periodicity.total_seconds();
-    }
+      timeline[ j ] /= divisor_timeline[ j ] * regen_periodicity.total_seconds();
+  }
+
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  {
     p -> resource_lost  [ i ] /= iterations;
     p -> resource_gained[ i ] /= iterations;
   }

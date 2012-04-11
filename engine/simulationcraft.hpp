@@ -4101,9 +4101,18 @@ struct player_t : public noncopyable
   uptime_t* uptime_list;
   std::array< std::vector<double>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
-  std::map< size_t, resource_type_e > timeline_resource_translation;
-  size_t timeline_resource_count;
-  std::array< std::vector<double>, RESOURCE_MAX > timeline_resource;
+
+  struct resource_timeline_t
+  {
+    resource_type_e type;
+    std::vector<double> timeline;
+
+    resource_timeline_t( resource_type_e t = RESOURCE_NONE ) : type( t ) {}
+  };
+
+   // Health/primary/secondary makes 3 resources, does any class/spec need more?
+  std::array<resource_timeline_t,3> resource_timelines;
+  size_t resource_timeline_count;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken;

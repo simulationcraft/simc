@@ -567,15 +567,16 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
                                                       p -> deaths.max );
 
   // Resource Charts
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( size_t i = 0; i < p -> resource_timeline_count; ++i )
   {
-    ri.timeline_resource_chart[ i ] = chart::timeline( p,
-                                                       p -> timeline_resource[ i ],
-                                                       encoded_name + ' ' + util_t::resource_type_string( i ),
-                                                       0,
-                                                       chart::resource_color( i ) );
-    ri.gains_chart[ i ] = chart::gains( p, i );
-
+    resource_type_e rt = p -> resource_timelines[ i ].type;
+    ri.timeline_resource_chart[ rt ] =
+        chart::timeline( p,
+                         p -> resource_timelines[ i ].timeline,
+                         encoded_name + ' ' + util_t::resource_type_string( rt ),
+                         0,
+                         chart::resource_color( rt ) );
+    ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
 
   // Scaling charts
