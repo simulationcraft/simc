@@ -141,7 +141,7 @@ struct flask_t : public action_t
     case FLASK_WINDS:
       p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
       break;
-    default: assert( 0 );
+    default: assert( 0 ); break;
     }
 
     // Cap Health / Mana for flasks if they are used outside of combat
@@ -368,7 +368,7 @@ struct food_t : public action_t
       p -> stat_gain( STAT_SPELL_POWER, 46 * food_stat_multiplier );
       stamina = 40 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
-    default: assert( 0 );
+    default: assert( 0 ); break;
     }
 
     // Cap Health / Mana for food if they are used outside of combat
@@ -385,56 +385,6 @@ struct food_t : public action_t
   virtual bool ready()
   {
     return( player -> food == FOOD_NONE );
-  }
-};
-
-// ==========================================================================
-// Speed Potion
-// ==========================================================================
-
-struct speed_potion_t : public action_t
-{
-  speed_potion_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "speed_potion", p )
-  {
-    parse_options( NULL, options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = timespan_t::from_seconds( 60.0 );
-  }
-
-  virtual void execute()
-  {
-    if ( player -> in_combat )
-    {
-      player -> buffs.speed_potion -> trigger();
-    }
-    else
-    {
-      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
-      player -> buffs.speed_potion -> buff_duration -= timespan_t::from_seconds( 5.0 );
-      player -> buffs.speed_potion -> trigger();
-      cooldown -> duration += timespan_t::from_seconds( 5.0 );
-      player -> buffs.speed_potion -> buff_duration += timespan_t::from_seconds( 5.0 );
-    }
-
-    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-
-    if ( player -> in_combat ) player -> potion_used = 1;
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
-      return false;
-
-    if ( player -> potion_used )
-      return false;
-
-    return action_t::ready();
   }
 };
 
@@ -597,6 +547,57 @@ struct dark_rune_t : public action_t
     return action_t::ready();
   }
 };
+// ==========================================================================
+//  Potion Base
+// ==========================================================================
+
+struct potion_base_t : public action_t
+{
+  buff_t* potion_buff;
+  const timespan_t cd;
+
+  potion_base_t( player_t* p, const std::string& n, buff_t* pb, const std::string& options_str ) :
+    action_t( ACTION_USE, n, p ),
+    potion_buff( pb ),
+    cd( timespan_t::from_seconds( 60.0 ) )
+  {
+    parse_options( NULL, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    cooldown = p -> get_cooldown( "potion" );
+    cooldown -> duration = cd;
+  }
+
+  virtual void execute()
+  {
+    if ( player -> in_combat )
+    {
+      potion_buff -> trigger();
+    }
+    else
+    {
+      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
+      potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance, ( potion_buff->buff_duration - timespan_t::from_seconds( 5.0 ) ) );
+    }
+
+    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( player -> in_combat ) player -> potion_used = 1;
+    update_ready();
+    cooldown -> duration = cd;
+  }
+
+  virtual bool ready()
+  {
+    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+      return false;
+
+    if ( player -> potion_used )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 // ==========================================================================
 // consumable_t::create_action
@@ -612,7 +613,7 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
   if ( name == "mythical_mana_potion"  ) return new           mana_potion_t( p, options_str );
-  if ( name == "speed_potion"          ) return new          speed_potion_t( p, options_str );
+  if ( name == "speed_potion"          ) return new  potion_base_t( p, "speed_potion", p -> buffs.speed_potion, options_str );
 
   return 0;
 }

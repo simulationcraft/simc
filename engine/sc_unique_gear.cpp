@@ -15,35 +15,46 @@ struct stat_proc_callback_t : public action_callback_t
   timespan_t tick;
   stat_buff_t* buff;
 
-  stat_proc_callback_t( const std::string& n, player_t* p, stat_type_e s, int ms, double a,
-                        double proc_chance, timespan_t duration, timespan_t cooldown,
-                        timespan_t t=timespan_t::zero(), bool r=false, bool activated=true ) :
+  stat_proc_callback_t( const std::string& n,
+                        player_t* p,
+                        stat_type_e s,
+                        int max_stack,
+                        double a,
+                        double proc_chance,
+                        timespan_t duration,
+                        timespan_t cooldown,
+                        timespan_t t = timespan_t::zero(),
+                        bool r = false,
+                        bool activated = true ) :
     action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
   {
-    if ( ms == 0 ) ms = 1;
+    if ( max_stack == 0 ) max_stack = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
     buff = stat_buff_creator_t(
-             buff_creator_t( p, n )
-             .max_stack( ms )
+             buff_creator_t( p, name_str )
+             .max_stack( max_stack )
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
-             .reverse( r ) )
+             .reverse( r )
+             .activated( activated ) )
            .stat( stat )
-           .amount( a );
-    buff -> activated = activated;
+           .amount( amount );
   }
 
   virtual void activate()
   {
     action_callback_t::activate();
-    if ( buff -> reverse ) buff -> trigger( buff -> max_stack );
+
+    if ( buff -> reverse )
+      buff -> trigger( buff -> max_stack );
   }
 
   virtual void deactivate()
   {
     action_callback_t::deactivate();
+
     buff -> expire();
   }
 
@@ -88,36 +99,47 @@ struct cost_reduction_proc_callback_t : public action_callback_t
   double amount;
   cost_reduction_buff_t* buff;
 
-  cost_reduction_proc_callback_t( const std::string& n, player_t* p, school_type_e s, int max_stacks, double a,
-                                  double proc_chance, timespan_t duration, timespan_t cooldown,
-                                  bool refreshes=false, bool reverse=false, bool activated=true ) :
+  cost_reduction_proc_callback_t( const std::string& n,
+                                  player_t* p,
+                                  school_type_e s,
+                                  int max_stacks,
+                                  double a,
+                                  double proc_chance,
+                                  timespan_t duration,
+                                  timespan_t cooldown,
+                                  bool refreshes = false,
+                                  bool reverse = false,
+                                  bool activated = true ) :
     action_callback_t( p ), name_str( n ), school( s ), amount( a )
   {
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
     buff = cost_reduction_buff_creator_t(
-             buff_creator_t( p, n )
+             buff_creator_t( p, name_str )
              .max_stack( max_stacks )
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
-             .reverse( reverse ) )
-           .amount( a )
-           .school( s )
+             .reverse( reverse )
+             .activated( activated ) )
+           .amount( amount )
+           .school( school )
            .refreshes( refreshes );
-    buff -> activated = activated;
   }
 
   virtual void activate()
   {
     action_callback_t::activate();
-    if ( buff -> reverse ) buff -> trigger( buff -> max_stack );
+
+    if ( buff -> reverse )
+      buff -> trigger( buff -> max_stack );
   }
 
   virtual void deactivate()
   {
     action_callback_t::deactivate();
+
     buff -> expire();
   }
 
@@ -139,16 +161,25 @@ struct discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
-                             const school_type_e school, double amount, double scaling,
-                             double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
-                             unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+  discharge_proc_callback_t( const std::string& n,
+                             player_t* p,
+                             int ms,
+                             const school_type_e school,
+                             double amount,
+                             double scaling,
+                             double pc,
+                             timespan_t cd,
+                             bool no_buffs,
+                             bool no_debuffs,
+                             unsigned int override_result_type_es_mask = 0,
+                             unsigned int result_type_es_mask = 0 ) :
     action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc ),
     cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
+
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+      discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -172,7 +203,7 @@ struct discharge_proc_callback_t : public action_callback_t
 
     struct discharge_attack_t : public attack_t
     {
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -203,11 +234,11 @@ struct discharge_proc_callback_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
 
     proc = p -> get_proc( name_str.c_str() );
@@ -267,15 +298,23 @@ struct chance_discharge_proc_callback_t : public action_callback_t
   proc_t* proc;
   rng_t* rng;
 
-  chance_discharge_proc_callback_t( const std::string& n, player_t* p, int ms,
-                                    const school_type_e school, double amount, double scaling,
-                                    double pc, timespan_t cd, bool no_buffs, bool no_debuffs,
-                                    unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+  chance_discharge_proc_callback_t( const std::string& n,
+                                    player_t* p,
+                                    int ms,
+                                    const school_type_e school,
+                                    double amount,
+                                    double scaling,
+                                    double pc,
+                                    timespan_t cd,
+                                    bool no_buffs,
+                                    bool no_debuffs,
+                                    unsigned int override_result_type_es_mask = 0,
+                                    unsigned int result_type_es_mask = 0 ) :
     action_callback_t( p ), name_str( n ), stacks( 0 ), max_stacks( ms ), proc_chance( pc )
   {
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+      discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -299,7 +338,7 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_attack_t : public attack_t
     {
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -330,15 +369,15 @@ struct chance_discharge_proc_callback_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
 
-    proc = p -> get_proc( name_str.c_str() );
-    rng  = p -> get_rng ( name_str.c_str() );  // default is CYCLIC since discharge should not have duration
+    proc = p -> get_proc( name_str );
+    rng  = p -> get_rng ( name_str );  // default is CYCLIC since discharge should not have duration
   }
 
   virtual void reset() { stacks=0; }
@@ -393,11 +432,22 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   stat_buff_t* buff;
   action_t* discharge_action;
 
-  stat_discharge_proc_callback_t( const std::string& n, player_t* p,
-                                  stat_type_e stat, int ms, double stat_amount,
-                                  const school_type_e school, double discharge_amount, double discharge_scaling,
-                                  double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool activated=true,
-                                  unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+  stat_discharge_proc_callback_t( const std::string& n,
+                                  player_t* p,
+                                  stat_type_e stat,
+                                  int ms,
+                                  double stat_amount,
+                                  const school_type_e school,
+                                  double discharge_amount,
+                                  double discharge_scaling,
+                                  double proc_chance,
+                                  timespan_t duration,
+                                  timespan_t cooldown,
+                                  bool no_buffs,
+                                  bool no_debuffs,
+                                  bool activated = true,
+                                  unsigned int override_result_type_es_mask = 0,
+                                  unsigned int result_type_es_mask = 0 ) :
     action_callback_t( p ), name_str( n )
   {
     if ( ms == 0 ) ms = 1;
@@ -408,14 +458,14 @@ struct stat_discharge_proc_callback_t : public action_callback_t
              .max_stack( ms )
              .duration( duration )
              .cd( cooldown )
-             .chance( proc_chance ) )
+             .chance( proc_chance )
+             .activated( activated ))
            .stat( stat )
            .amount( stat_amount );
-    buff -> activated = activated;
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const char* n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
+      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -441,7 +491,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       bool no_buffs;
 
-      discharge_attack_t( const char* n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
       {
@@ -469,11 +519,11 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str.c_str(), p, discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str.c_str(), p, -discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
   }
 
@@ -1715,9 +1765,7 @@ void unique_gear_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
-  int num_items = ( int ) p -> items.size();
-
-  for ( int i=0; i < num_items; i++ )
+  for ( size_t i = 0; i < p -> items.size(); i++ )
   {
     item_t& item = p -> items[ i ];
 
@@ -2101,7 +2149,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( proc_type_e     
 action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
                                                       item_t::special_effect_t& e )
 {
-  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
   return register_stat_proc( e.trigger_type, e.trigger_mask, name, i.player,
                              e.stat, e.max_stacks, e.stat_amount,
@@ -2116,7 +2164,7 @@ action_callback_t* unique_gear_t::register_stat_proc( item_t& i,
 action_callback_t* unique_gear_t::register_cost_reduction_proc( item_t& i,
                                                                 item_t::special_effect_t& e )
 {
-  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
   return register_cost_reduction_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.school, e.max_stacks, e.discharge_amount,
@@ -2130,7 +2178,7 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( item_t& i,
 action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
                                                            item_t::special_effect_t& e )
 {
-  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
@@ -2144,7 +2192,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( item_t& i,
 action_callback_t* unique_gear_t::register_chance_discharge_proc( item_t& i,
                                                                   item_t::special_effect_t& e )
 {
-  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
   return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
@@ -2158,7 +2206,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( item_t& i,
 action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
                                                                 item_t::special_effect_t& e )
 {
-  const char* name = e.name_str.empty() ? i.name() : e.name_str.c_str();
+  const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.max_stacks, e.stat, e.stat_amount,
