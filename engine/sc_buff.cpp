@@ -45,139 +45,21 @@ struct buff_delay_t : public event_t
 };
 }
 
-// ==========================================================================
-// BUFF
-// ==========================================================================
-
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( sim_t*             s,
-                const std::string& n,
-                int                ms,
-                timespan_t         d,
-                timespan_t         cd,
-                double             ch,
-                bool               q,
-                bool               r,
-                int                id ) :
-  s_data( spell_data_t::find( id, s -> dbc.ptr ) ),
-  buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
-  name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
-  max_stack( ms ), aura_id( id ),
-  activated( true ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct(), start_intervals(), trigger_intervals()
-{
-  init();
-}
-
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( actor_pair_t       p,
-                const std::string& n,
-                int                ms,
-                timespan_t         d,
-                timespan_t         cd,
-                double             ch,
-                bool               q,
-                bool               r,
-                int                id,
-                bool               act ) :
-  s_data( p.target->find_spell( id ) ),
-  buff_duration( d ), buff_cooldown( cd ), default_chance( ch ),
-  name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( ms ), aura_id( id ),
-  activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct(), start_intervals(), trigger_intervals()
-{
-  init();
-}
-
 buff_t::buff_t( const buff_creator_t& params ) :
+    sim( params._sim ), player( params._player.target ), name_str( params._name ),
     s_data( params.s_data ),
     buff_duration( params._duration ), buff_cooldown( params._cooldown ), default_chance( params._chance ),
-    name_str( params._name ), sim( params._player.target -> sim ), player( params._player.target ),
     source( params._player.source ), initial_source( params._player.source ),
-    max_stack( params._max_stack ), aura_id( params._id ),
-    activated( true ), reverse( false ), constant( false ), quiet( false ),
+    max_stack( params._max_stack ),
+    activated( true ), reverse( params._reverse ), constant( false ), quiet( false ),
     uptime_pct(), start_intervals(), trigger_intervals()
 {
   init();
 }
 
-// buff_t::init_from_spell_ =================================================
+// buff_t::init =============================================================
 
-void buff_t::init_from_spell_( player_t* /* p */, spell_data_t* spell )
-{
-  max_stack = std::max( ( int ) spell -> max_stacks(), 1 );
-  default_chance = spell -> proc_chance() ? spell -> proc_chance() : 1.0;
-  buff_duration = spell -> duration();
-  buff_cooldown = spell -> cooldown();
-  aura_id = spell -> id();
-}
-
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( actor_pair_t  p,
-                spell_data_t* spell, ... ) :
-  s_data( spell ),
-  buff_duration( timespan_t::zero() ), buff_cooldown( timespan_t::zero() ), default_chance( 0 ), name_str( spell -> name_cstr() ),
-  sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
-  max_stack( 0 ),
-  activated( true ), reverse( false ), constant( false ), quiet( false ),
-  uptime_pct(), start_intervals(), trigger_intervals()
-{
-  init_from_spell_( p.source, spell );
-
-  armory_t::format( name_str, FORMAT_ASCII_MASK );
-
-  va_list vap;
-  va_start( vap, spell );
-  parse_options( vap );
-  va_end( vap );
-
-  init();
-}
-
-// buff_t::parse_options ====================================================
-
-void buff_t::parse_options( va_list vap )
-{
-  while ( true )
-  {
-    const char* parm = ( const char * ) va_arg( vap, const char * );
-    if ( ! parm ) break;
-
-    if ( ! strcmp( parm, "stacks" ) )
-    {
-      max_stack = ( int ) va_arg( vap, int );
-    }
-    else if ( ! strcmp( parm, "chance" ) )
-    {
-      default_chance = ( double ) va_arg( vap, double );
-    }
-    else if ( ! strcmp( parm, "duration" ) )
-    {
-      buff_duration = timespan_t::from_seconds( ( double ) va_arg( vap, double ) );
-    }
-    else if ( ! strcmp( parm, "cooldown" ) )
-    {
-      buff_cooldown = timespan_t::from_seconds( ( double ) va_arg( vap, double ) );
-    }
-    else if ( ! strcmp( parm, "reverse" ) )
-    {
-      reverse = va_arg( vap, int ) ? true : false;
-    }
-    else if ( ! strcmp( parm, "quiet" ) )
-    {
-      quiet = va_arg( vap, int ) ? true : false;
-    }
-  }
-  va_end( vap );
-}
-
-// buff_t::init_buff_shared =============================================================
-
-void buff_t::init_buff_shared()
+void buff_t::init()
 {
   current_stack = 0;
   current_value = 0;
@@ -212,15 +94,8 @@ void buff_t::init_buff_shared()
   if ( static_cast<int>( stack_uptime.size() ) < max_stack )
     for ( int i = stack_uptime.size(); i <= max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim ) );
-}
-// buff_t::init =============================================================
 
-void buff_t::init()
-{
-  init_buff_shared();
-
-
-  if ( initial_source )
+  if ( initial_source ) // Player Buffs
   {
     cooldown = initial_source-> get_cooldown( "buff_" + name_str );
     if ( initial_source != player )
@@ -228,107 +103,14 @@ void buff_t::init()
     rng = initial_source-> get_rng( name_str );
     player -> buff_list.push_back( this );
   }
-  else
+  else // Sim Buffs
   {
     cooldown = sim -> get_cooldown( "buff_" + name_str );
     rng = sim -> get_rng( name_str );
     sim -> buff_list.push_back( this );
   }
   cooldown -> duration = buff_cooldown;
-}
 
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( actor_pair_t       p,
-                const std::string& n,
-                const char*        sname,
-                double             chance,
-                timespan_t         cd,
-                bool               q,
-                bool               r,
-                bool               act ) :
-  s_data( spell_data_t::find( sname, p.source -> dbc.ptr ) ),
-  buff_duration( data().duration() ),
-  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ),
-  name_str( n ),
-  sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
-  max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
-  aura_id( 0 ),
-  activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct(), start_intervals(), trigger_intervals()
-{
-  init_buff_t_();
-
-  cooldown = initial_source -> get_cooldown( "buff_" + name_str );
-  if ( cd < timespan_t::zero() )
-  {
-    cooldown -> duration = data().cooldown();
-  }
-  else
-  {
-    cooldown -> duration = cd;
-  }
-
-  if ( initial_source != player )
-    name_str = name_str + ':' + initial_source->name_str;
-
-  rng = initial_source -> get_rng( name_str );
-
-
-  if ( sim -> debug )
-    log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
-}
-
-// buff_t::buff_t ===========================================================
-
-buff_t::buff_t( actor_pair_t       p,
-                const uint32_t     id,
-                const std::string& n,
-                double             chance,
-                timespan_t         cd,
-                bool               q,
-                bool               r,
-                bool               act ) :
-  s_data( p.target -> find_spell( id ) ),
-  buff_duration( data().duration() ),
-  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ) ,
-  name_str( n ), sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
-  max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
-  aura_id( 0 ),
-  activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct(), start_intervals(), trigger_intervals()
-{
-  init_buff_t_();
-
-  cooldown = player -> get_cooldown( "buff_" + name_str );
-  if ( cd < timespan_t::zero() )
-  {
-    cooldown -> duration = data().cooldown();
-  }
-  else
-  {
-    cooldown -> duration = cd;
-  }
-
-  if ( initial_source != player )
-    name_str = name_str + ':' + initial_source->name_str;
-
-  rng = initial_source -> get_rng( name_str );
-
-  if ( sim -> debug )
-    log_t::output( sim, "Buff Spell status: %s", to_str().c_str() );
-}
-
-// buff_t::init_buff_t_ =====================================================
-
-void buff_t::init_buff_t_()
-{
-  // FIXME! For the love of all that is holy.... FIXME!
-  // This routine will disappear once data-access rework is complete
-
-  init_buff_shared();
-
-  player -> buff_list.push_back( this );
 }
 
 // buff_t::~buff_t ==========================================================
@@ -991,35 +773,8 @@ action_expr_t* buff_t::create_expression( action_t* action,
 
 // stat_buff_t::stat_buff_t =================================================
 
-stat_buff_t::stat_buff_t( player_t*          p,
-                          const std::string& n,
-                          stat_type_e        st,
-                          double             a,
-                          int                ms,
-                          timespan_t         d,
-                          timespan_t         cd,
-                          double             ch,
-                          bool               q,
-                          bool               r,
-                          int                id,
-                          bool               act ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, id, act ), amount( a ), stat( st )
-{
-}
-
-// stat_buff_t::stat_buff_t =================================================
-
-stat_buff_t::stat_buff_t( player_t*          p,
-                          const uint32_t     id,
-                          const std::string& n,
-                          stat_type_e        st,
-                          double             a,
-                          double             ch,
-                          timespan_t         cd,
-                          bool               q,
-                          bool               r,
-                          bool               act ) :
-  buff_t( p, id, n, ch, cd, q, r, act ), amount( a ), stat( st )
+stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
+    buff_t( params.bc ), amount( params._amount ), stat( params._stat )
 {
 }
 
@@ -1078,39 +833,8 @@ void stat_buff_t::expire()
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
-// cost_reduction_buff_t::cost_reduction_buff_t =============================
-
-cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
-                                              const std::string& n,
-                                              school_type_e      sch,
-                                              double             a,
-                                              int                ms,
-                                              timespan_t         d,
-                                              timespan_t         cd,
-                                              double             ch,
-                                              bool               re,
-                                              bool               q,
-                                              bool               r,
-                                              int                id,
-                                              bool               act ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, id, act ), amount( a ), school( sch ), refreshes( re )
-{
-}
-
-// cost_reduction_buff_t::cost_reduction_buff_t =============================
-
-cost_reduction_buff_t::cost_reduction_buff_t( player_t*          p,
-                                              const uint32_t     id,
-                                              const std::string& n,
-                                              school_type_e      sch,
-                                              double             a,
-                                              double             ch,
-                                              timespan_t         cd,
-                                              bool               re,
-                                              bool               q,
-                                              bool               r,
-                                              bool               act ) :
-  buff_t( p, id, n, ch, cd, q, r, act ), amount( a ), school( sch ), refreshes( re )
+cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params ) :
+    buff_t( params.bc ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
 {
 }
 
@@ -1187,28 +911,16 @@ void cost_reduction_buff_t::refresh( int        stacks,
 // DEBUFF
 // ==========================================================================
 
-// debuff_t::debuff_t =======================================================
-
-debuff_t::debuff_t( player_t*          p,
-                    const std::string& n,
-                    int                ms,
-                    timespan_t         d,
-                    timespan_t         cd,
-                    double             ch,
-                    bool               q,
-                    bool               r,
-                    int                id ) :
-  buff_t( p, n, ms, d, cd, ch, q, r, id )
+debuff_t::debuff_t( const buff_creator_t& params ) :
+    buff_t( params )
 {
 }
 
-debuff_t::debuff_t( player_t*          p,
-                    const uint32_t     id,
-                    const std::string& n,
-                    double             chance,
-                    timespan_t         cd,
-                    bool               q,
-                    bool               r ) :
-  buff_t( p, id, n, chance, cd, q, r )
-{
-}
+
+buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
+  _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _quiet( false ), _reverse( false )
+{}
+
+buff_creator_t::buff_creator_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :
+  _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _quiet( false ), _reverse( false )
+{}

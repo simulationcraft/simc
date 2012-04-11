@@ -27,9 +27,9 @@ struct priest_targetdata_t : public targetdata_t
   priest_targetdata_t( player_t* source, player_t* target )
     : targetdata_t( source, target ), remove_dots_event( NULL )
   {
-    buffs_power_word_shield = add_aura( new buff_t( this, 17, "power_word_shield" ) );
+    buffs_power_word_shield = add_aura( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) );
     target -> absorb_buffs.push_back( buffs_power_word_shield );
-    buffs_divine_aegis = add_aura( new buff_t( this, 47753, "divine_aegis" ) );
+    buffs_divine_aegis = add_aura( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) );
     target -> absorb_buffs.push_back( buffs_divine_aegis );
   }
 };
@@ -993,7 +993,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_buffs();
 
-    buffs.shadowcrawl = new buff_t( this, "shadowcrawl", 1, shadowcrawl -> duration() );
+    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl").max_stack( 1 ).duration( shadowcrawl -> duration() );
   }
 
   virtual double composite_spell_power( school_type_e school ) const
@@ -3452,32 +3452,36 @@ void priest_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
   // Discipline
-  buffs.holy_evangelism            = new buff_t( this, 81660, "holy_evangelism", spec.evangelism -> ok() );
+  const spell_data_t* he = spec.evangelism -> ok() ? find_spell( 81661 ) : spell_data_t::nil();
+  buffs.holy_evangelism            = buff_creator_t( this, "holy_evangelism", he );
   buffs.holy_evangelism -> activated = false;
-  buffs.dark_archangel             = new buff_t( this, 87153, "dark_archangel" );
-  buffs.holy_archangel             = new buff_t( this, 81700, "holy_archangel" );
-  buffs.inner_fire                 = new buff_t( this, "inner_fire", "Inner Fire" );
-  buffs.inner_focus                = new buff_t( this, "inner_focus", "Inner Focus" );
+  buffs.dark_archangel             = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
+  buffs.holy_archangel             = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
+  buffs.inner_fire                 = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
+  buffs.inner_focus                = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) );
   buffs.inner_focus -> cooldown -> duration = timespan_t::zero();
-  buffs.inner_will                 = new buff_t( this, "inner_will", "Inner Will" );
+  buffs.inner_will                 = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
   // Holy
-  buffs.chakra_pre                 = new buff_t( this, 14751, "chakra_pre" );
-  buffs.chakra_chastise            = new buff_t( this, 81209, "chakra_chastise" );
-  buffs.chakra_sanctuary           = new buff_t( this, 81206, "chakra_sanctuary" );
-  buffs.chakra_serenity            = new buff_t( this, 81208, "chakra_serenity" );
-  buffs.serenity                   = new buff_t( this, 88684, "serenity" );
+  buffs.chakra_pre                 = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
+  buffs.chakra_chastise            = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
+  buffs.chakra_sanctuary           = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
+  buffs.chakra_serenity            = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
+  buffs.serenity                   = buff_creator_t( this, "serenity", find_spell( 88684 ) );
   buffs.serenity -> cooldown -> duration = timespan_t::zero();
   // TEST: buffs.serenity -> activated = false;
 
   // Shadow
+  buffs.shadowform                = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
+  buffs.vampiric_embrace           = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
+  buffs.glyph_mind_spike           = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
+
   buffs.glyph_of_shadow_word_death = buff_creator_t( this, "glyph_of_shadow_word_death").
-                                                 max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
-  //buffs.glyph_of_shadow_word_death = new buff_t( this, "glyph_of_shadow_word_death", 1, timespan_t::from_seconds( 6.0 )  );
-  buffs.glyph_mind_spike                  = new buff_t( this, glyphs.mind_spike -> effectN( 2 ).trigger_spell_id(), "glyph_mind_spike" );
-  buffs.mind_spike                 = new buff_t( this, "mind_spike", 3, timespan_t::from_seconds( 12.0 ) );
-  buffs.shadowform                = new buff_t( this, "shadowform", "Shadowform" );
-  buffs.shadowfiend                = new buff_t( this, "shadowfiend", 1, timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
-  buffs.vampiric_embrace           = new buff_t( this, "vampiric_embrace", "Vampiric Embrace" );
+                                                     max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.mind_spike                 = buff_creator_t( this, "mind_spike" ).
+                                                     max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
+  buffs.shadowfiend                = buff_creator_t( this, "shadowfiend" ).
+                                                     max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
+
 
   // Set Bonus
 }
@@ -3996,13 +4000,13 @@ player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_typ
 
 void player_t::priest_init( sim_t* sim )
 {
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.guardian_spirit  = new      buff_t( p, 47788, "guardian_spirit", 1.0, timespan_t::zero() ); // Let the ability handle the CD
-    p -> buffs.pain_supression  = new      buff_t( p, 33206, "pain_supression", 1.0, timespan_t::zero() ); // Let the ability handle the CD
-    p -> buffs.power_infusion   = new      buff_t( p, "power_infusion", 1, timespan_t::from_seconds( 15.0 ), timespan_t::zero() );
-    p -> buffs.weakened_soul    = new      buff_t( p, 6788, "weakened_soul" );
+    player_t* p = sim -> actor_list[ i ];
+    p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
+    p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
+    p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
+    p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul", p -> find_spell( 6788 ) );
   }
 }
 

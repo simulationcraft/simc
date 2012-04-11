@@ -15,15 +15,23 @@ struct stat_proc_callback_t : public action_callback_t
   timespan_t tick;
   stat_buff_t* buff;
 
-  stat_proc_callback_t( const std::string& n, player_t* p, stat_type_e s, int max_stacks, double a,
+  stat_proc_callback_t( const std::string& n, player_t* p, stat_type_e s, int ms, double a,
                         double proc_chance, timespan_t duration, timespan_t cooldown,
-                        timespan_t t=timespan_t::zero(), bool reverse=false, bool activated=true ) :
+                        timespan_t t=timespan_t::zero(), bool r=false, bool activated=true ) :
     action_callback_t( p ), name_str( n ), stat( s ), amount( a ), tick( t )
   {
-    if ( max_stacks == 0 ) max_stacks = 1;
+    if ( ms == 0 ) ms = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = new stat_buff_t( p, n, stat, amount, max_stacks, duration, cooldown, proc_chance, false, reverse );
+    buff = stat_buff_creator_t(
+             buff_creator_t( p, n )
+             .max_stack( ms )
+             .duration( duration )
+             .cd( cooldown )
+             .chance( proc_chance )
+             .reverse( r ) )
+           .stat( stat )
+           .amount( a );
     buff -> activated = activated;
   }
 
@@ -88,7 +96,16 @@ struct cost_reduction_proc_callback_t : public action_callback_t
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = new cost_reduction_buff_t( p, n, school, amount, max_stacks, duration, cooldown, proc_chance, refreshes, false, reverse );
+    buff = cost_reduction_buff_creator_t(
+             buff_creator_t( p, n )
+             .max_stack( max_stacks )
+             .duration( duration )
+             .cd( cooldown )
+             .chance( proc_chance )
+             .reverse( reverse ) )
+           .amount( a )
+           .school( s )
+           .refreshes( refreshes );
     buff -> activated = activated;
   }
 
@@ -377,16 +394,23 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   action_t* discharge_action;
 
   stat_discharge_proc_callback_t( const std::string& n, player_t* p,
-                                  stat_type_e stat, int max_stacks, double stat_amount,
+                                  stat_type_e stat, int ms, double stat_amount,
                                   const school_type_e school, double discharge_amount, double discharge_scaling,
                                   double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool activated=true,
                                   unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     action_callback_t( p ), name_str( n )
   {
-    if ( max_stacks == 0 ) max_stacks = 1;
+    if ( ms == 0 ) ms = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = new stat_buff_t( p, n, stat, stat_amount, max_stacks, duration, cooldown, proc_chance );
+    buff = stat_buff_creator_t(
+             buff_creator_t( p, n )
+             .max_stack( ms )
+             .duration( duration )
+             .cd( cooldown )
+             .chance( proc_chance ) )
+           .stat( stat )
+           .amount( stat_amount );
     buff -> activated = activated;
 
     struct discharge_spell_t : public spell_t
@@ -468,7 +492,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     }
   }
 };
-
+#if 0
 // register_apparatus_of_khazgoroth =========================================
 
 static void register_apparatus_of_khazgoroth( item_t* item )
@@ -1681,6 +1705,7 @@ static void register_titahk( item_t* item )
 
   p -> register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
+#endif
 
 // ==========================================================================
 // unique_gear_t::init
@@ -1716,7 +1741,7 @@ void unique_gear_t::init( player_t* p )
     {
       register_discharge_proc( item, item.equip );
     }
-
+#if 0
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
@@ -1738,6 +1763,7 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
+#endif
   }
 }
 

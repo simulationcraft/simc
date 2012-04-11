@@ -4341,9 +4341,16 @@ void player_t::shaman_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = new buff_t( p, "bloodlust", 1, timespan_t::from_seconds( 40.0 ) );
-    p -> buffs.exhaustion = new buff_t( p, "exhaustion", 1, timespan_t::from_seconds( 600.0 ), timespan_t::zero(), 1.0, true );
-    p -> buffs.mana_tide  = new buff_t( p, 16190, "mana_tide" );
+    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust")
+                            .max_stack( 1 )
+                            .duration( timespan_t::from_seconds( 40.0 ) );
+    p -> buffs.exhaustion = buff_creator_t( p, "exhaustion" )
+                            .max_stack( 1 )
+                            .duration( timespan_t::from_seconds( 600.0 ) )
+                            .cd( timespan_t::zero() )
+                            .chance( 1.0 )
+                            .quiet( true );
+    p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( 16190 ) );
   }
 }
 

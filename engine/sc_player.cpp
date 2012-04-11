@@ -12,8 +12,8 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct hymn_of_hope_buff_t : public buff_t
 {
   double mana_gain;
-  hymn_of_hope_buff_t( player_t* p, const uint32_t id, const std::string& n ) :
-    buff_t ( p, id, n ), mana_gain( 0 )
+  hymn_of_hope_buff_t( player_t* p, const std::string& n, const spell_data_t* sp ) :
+    buff_t ( buff_creator_t( p, n, sp ) ), mana_gain( 0 )
   { }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1519,63 +1519,80 @@ void player_t::init_spells()
 
 void player_t::init_buffs()
 {
-  buffs.berserking                = new buff_t( this, 26297, "berserking"                   );
-  buffs.body_and_soul             = new buff_t( this,        "body_and_soul",       1, timespan_t::from_seconds( 4.0 ) );
-  buffs.grace                     = new buff_t( this,        "grace",               3, timespan_t::from_seconds( 15.0 ) );
-  buffs.heroic_presence           = new buff_t( this,        "heroic_presence",     1       );
-  buffs.hymn_of_hope = new hymn_of_hope_buff_t( this, 64904, "hymn_of_hope"                 );
-  buffs.stoneform                 = new buff_t( this, 65116, "stoneform"                    );
+  buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
+  buffs.body_and_soul             = buff_creator_t( this,        "body_and_soul").max_stack( 1 ).duration( timespan_t::from_seconds( 4.0 ) );
+  buffs.grace                     = buff_creator_t( this,        "grace" ).max_stack( 3 ).duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
+  buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
+  buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
 
-  buffs.raid_movement = new buff_t( this, "raid_movement", 1 );
-  buffs.self_movement = new buff_t( this, "self_movement", 1 );
+  buffs.raid_movement = buff_creator_t( this, "raid_movement" ).max_stack( 1 );
+  buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap          = new stat_buff_t( this, "blood_fury_ap",          STAT_ATTACK_POWER, is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds( 15.0 ) );
-  buffs.blood_fury_sp          = new stat_buff_t( this, "blood_fury_sp",          STAT_SPELL_POWER,  is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ), 1, timespan_t::from_seconds( 15.0 ) );
-  buffs.destruction_potion     = new stat_buff_t( this, "destruction_potion",     STAT_SPELL_POWER,   120.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.earthen_potion         = new stat_buff_t( this, "earthen_potion",         STAT_ARMOR,        4800.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.golemblood_potion      = new stat_buff_t( this, "golemblood_potion",      STAT_STRENGTH,     1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.indestructible_potion  = new stat_buff_t( this, "indestructible_potion",  STAT_ARMOR,        3500.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.lifeblood              = new stat_buff_t( this, "lifeblood",              STAT_HASTE_RATING,  480.0, 1, timespan_t::from_seconds( 20.0 ) );
-  buffs.speed_potion           = new stat_buff_t( this, "speed_potion",           STAT_HASTE_RATING,  500.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.tolvir_potion          = new stat_buff_t( this, "tolvir_potion",          STAT_AGILITY,      1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.volcanic_potion        = new stat_buff_t( this, "volcanic_potion",        STAT_INTELLECT,    1200.0, 1, timespan_t::from_seconds( 25.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.wild_magic_potion_crit = new stat_buff_t( this, "wild_magic_potion_crit", STAT_CRIT_RATING,   200.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
-  buffs.wild_magic_potion_sp   = new stat_buff_t( this, "wild_magic_potion_sp",   STAT_SPELL_POWER,   200.0, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 60.0 ) );
+  buffs.blood_fury_ap = stat_buff_creator_t(
+                          buff_creator_t( this, "blood_fury_ap" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15.0 ) ) )
+                        .stat( STAT_ATTACK_POWER )
+                        .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
+
+  buffs.blood_fury_sp = stat_buff_creator_t(
+                          buff_creator_t( this, "blood_fury_sp" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15.0 ) ) )
+                        .stat( STAT_SPELL_POWER )
+                        .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
+
+  buffs.lifeblood = stat_buff_creator_t(
+                      buff_creator_t( this, "lifeblood" )
+                      .max_stack( 1 )
+                      .duration( timespan_t::from_seconds( 20.0 ) ) )
+                    .stat( STAT_HASTE_RATING )
+                    .amount( 480.0 );
+
+  buffs.speed_potion = stat_buff_creator_t(
+                         buff_creator_t( this, "speed_potion" )
+                         .max_stack( 1 )
+                         .duration( timespan_t::from_seconds( 15.0 ) )
+                       .cd( timespan_t::from_seconds( 60.0 ) ) )
+                       .stat( STAT_HASTE_RATING )
+                       .amount( 500.0 );
+
 
   buffs.mongoose_mh = NULL;
   buffs.mongoose_oh = NULL;
 
   // Infinite-Stacking Buffs and De-Buffs
 
-  buffs.stunned        = new   buff_t( this, "stunned",      -1 );
-  debuffs.bleeding     = new debuff_t( this, "bleeding",     -1 );
-  debuffs.casting      = new debuff_t( this, "casting",      -1 );
-  debuffs.invulnerable = new debuff_t( this, "invulnerable", -1 );
-  debuffs.vulnerable   = new debuff_t( this, "vulnerable",   -1 );
-  debuffs.flying       = new debuff_t( this, "flying",   -1 );
+  buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( -1 );
+  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( -1 );
+  debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( -1 );
+  debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( -1 );
+  debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( -1 );
+  debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( -1 );
 
   // MOP Debuffs
-  debuffs.slowed_casting           = new debuff_t( this, 115803, "slowed_casting"         );
-  debuffs.slowed_casting -> current_value = dbc.spell( 115803 ) -> effectN( 1 ).percent();
+  debuffs.slowed_casting           = buff_creator_t( this, "slowed_casting", find_spell( 115803 ) );
+  debuffs.slowed_casting -> current_value = debuffs.slowed_casting -> data().effectN( 1 ).percent();
 
-  debuffs.magic_vulnerability     = new debuff_t( this, 104225, "magic_vulnerability"    );
-  debuffs.magic_vulnerability -> current_value = dbc.spell( 104225 ) -> effectN( 1 ).percent();
+  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) );
+  debuffs.magic_vulnerability -> current_value = debuffs.magic_vulnerability -> data().effectN( 1 ).percent();
 
-  debuffs.physical_vulnerability  = new debuff_t( this,  81326, "physical_vulnerability" );
-  debuffs.physical_vulnerability -> current_value = dbc.spell( 81326 ) -> effectN( 1 ).percent();
+  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) );
+  debuffs.physical_vulnerability -> current_value = debuffs.physical_vulnerability -> data().effectN( 1 ).percent();
 
-  debuffs.ranged_vulnerability    = new debuff_t( this,   1130, "ranged_vulnerability"   );
-  debuffs.ranged_vulnerability -> current_value = dbc.spell( 1130 ) -> effectN( 2 ).percent();
+  debuffs.ranged_vulnerability    = buff_creator_t( this, "ranged_vulnerability", find_spell( 1130 ) );
+  debuffs.ranged_vulnerability -> current_value = debuffs.ranged_vulnerability -> data().effectN( 2 ).percent();
 
-  debuffs.mortal_wounds           = new debuff_t( this, 115804, "mortal_wounds"          );
-  debuffs.mortal_wounds -> current_value = dbc.spell( 115804 ) -> effectN( 1 ).percent();
+  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) );
+  debuffs.mortal_wounds -> current_value = debuffs.mortal_wounds -> data().effectN( 1 ).percent();
 
-  debuffs.weakened_armor          = new debuff_t( this, 113746, "weakened_armor"         );
-  debuffs.weakened_armor -> current_value = dbc.spell( 113746 ) -> effectN( 1 ).percent();
+  debuffs.weakened_armor          = buff_creator_t( this, "weakened_armor", find_spell( 113746 ) );
+  debuffs.weakened_armor -> current_value = debuffs.weakened_armor -> data().effectN( 1 ).percent();
 
-  debuffs.weakened_blows          = new debuff_t( this, 115798, "weakened_blows"         );
-  debuffs.weakened_blows -> current_value = dbc.spell( 115798 ) -> effectN( 1 ).percent();
+  debuffs.weakened_blows          = buff_creator_t( this, "weakened_blows", find_spell( 115798 ) );
+  debuffs.weakened_blows -> current_value = debuffs.weakened_blows -> data().effectN( 1 ).percent();
 }
 
 // player_t::init_gains =====================================================
@@ -2293,9 +2310,6 @@ double player_t::composite_spell_crit() const
   {
     if ( sim -> auras.critical_strike -> check() )
       sc += sim -> auras.critical_strike -> value();
-
-    if ( buffs.destruction_potion -> check() )
-      sc += 0.02;
   }
 
   if ( race == RACE_WORGEN )
@@ -4958,7 +4972,14 @@ struct use_item_t : public action_t
       if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = new stat_buff_t( player, use_name, e.stat, e.stat_amount, e.max_stacks, e.duration, timespan_t::zero(), e.proc_chance, false, e.reverse );
+      buff = stat_buff_creator_t(
+               buff_creator_t( player, use_name ).max_stack( e.max_stacks )
+               .duration( e.duration )
+               .cd( timespan_t::zero() )
+               .chance( e.proc_chance )
+               .reverse( e.reverse ) )
+             .stat( e.stat )
+             .amount( e.stat_amount );
     }
     else assert( false );
 

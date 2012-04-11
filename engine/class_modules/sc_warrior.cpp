@@ -3846,7 +3846,7 @@ void player_t::warrior_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> debuffs.shattering_throw      = new debuff_t( p, 64382, "shattering_throw" );
+    p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) );
   }
 }
 

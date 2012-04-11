@@ -4038,12 +4038,12 @@ player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type
 
 void player_t::rogue_init( sim_t* sim )
 {
-  sim -> auras.honor_among_thieves = new aura_t( sim, "honor_among_thieves" );
+  sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
 
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, timespan_t::from_seconds( 6.0 ) );
+    p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" ).max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
   }
 }
 

@@ -3735,9 +3735,9 @@ void player_t::paladin_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.beacon_of_light          = new buff_t( p, 53563, "beacon_of_light" );
-    p -> buffs.illuminated_healing      = new buff_t( p, 86273, "illuminated_healing" );
-    p -> debuffs.forbearance            = new debuff_t( p, 25771, "forbearance" );
+    p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
+    p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
+    p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
   }
 }
 

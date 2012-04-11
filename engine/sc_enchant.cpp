@@ -725,13 +725,27 @@ void enchant_t::init( player_t* p )
   }
   if ( mh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_mh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
+    stat_buff_t* buff = stat_buff_creator_t(
+                          buff_creator_t( p, "berserking_mh" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15 ) )
+                          .cd( timespan_t::zero() )
+                          .chance( 0 ) )
+                        .stat( STAT_ATTACK_POWER)
+                        .amount( 400.0 );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "berserking" )
   {
-    buff_t* buff = new stat_buff_t( p, "berserking_oh", STAT_ATTACK_POWER, 400, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
+    stat_buff_t* buff = stat_buff_creator_t(
+                          buff_creator_t( p, "berserking_oh" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15 ) )
+                          .cd( timespan_t::zero() )
+                          .chance( 0 ) )
+                        .stat( STAT_ATTACK_POWER )
+                        .amount( 400.0 );
     buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
@@ -747,7 +761,14 @@ void enchant_t::init( player_t* p )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
-    buff_t* buff = new stat_buff_t( p, "executioner", STAT_CRIT_RATING, 120, 1, timespan_t::from_seconds( 15 ), timespan_t::zero(), 0, false, false );
+    stat_buff_t* buff = stat_buff_creator_t(
+                          buff_creator_t( p, "executioner" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15 ) )
+                          .cd( timespan_t::zero() )
+                          .chance( 0 ) )
+                        .stat( STAT_CRIT_RATING )
+                        .amount( 120 );
     buff -> activated = false;
 
     if ( mh_enchant == "executioner" )
@@ -759,19 +780,32 @@ void enchant_t::init( player_t* p )
       p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
     }
   }
+#if 0
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
   {
     buff_t *mh_buff=0, *oh_buff=0;
     if ( mh_enchant == "hurricane" )
     {
-      mh_buff = new stat_buff_t( p, "hurricane_mh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
+      mh_buff = stat_buff_creator_t( p, "hurricane_mh" )
+                .stat( STAT_HASTE_RATING )
+                .amount( 450.0 )
+                .max_stack( 1 )
+                .duration( timespan_t::from_seconds( 12 ) )
+                .cd( timespan_t::zero() )
+                .chance( 0 ) );
       mh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
-      oh_buff = new stat_buff_t( p, "hurricane_oh", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::zero(), 0, false, false );
+      oh_buff = stat_buff_creator_t( p, "hurricane_oh" )
+                .stat( STAT_HASTE_RATING )
+                .amount( 450.0 )
+                .max_stack( 1 )
+                .duration( timespan_t::from_seconds( 12 ) )
+                .cd( timespan_t::zero() )
+                .chance( 0 ) );
       oh_buff -> activated = false;
       p -> register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       p -> register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
@@ -805,7 +839,7 @@ void enchant_t::init( player_t* p )
         else s_buff -> trigger();
       }
     };
-    buff_t* s_buff = new stat_buff_t( p, "hurricane_s", STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::from_seconds( 45.0 ) );
+    buff_t* s_buff = new stat_buff_t( p, "hurricane_s" )STAT_HASTE_RATING, 450, 1, timespan_t::from_seconds( 12 ), timespan_t::from_seconds( 45.0 ) );
     s_buff -> activated = false;
     p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
     p -> register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
@@ -893,7 +927,7 @@ void enchant_t::init( player_t* p )
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
-
+#endif
   int num_items = ( int ) p -> items.size();
   for ( int i=0; i < num_items; i++ )
   {

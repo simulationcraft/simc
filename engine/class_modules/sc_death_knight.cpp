@@ -5238,7 +5238,7 @@ void player_t::death_knight_init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.unholy_frenzy = new buff_t( p, 49016, "unholy_frenzy" );
+    p -> buffs.unholy_frenzy = buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) );
   }
 }
 

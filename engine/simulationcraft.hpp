@@ -225,8 +225,10 @@ struct buff_creator_t;
 struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
+struct cost_reduction_buff_t;
 class  dbc_t;
 struct death_knight_t;
+struct debuff_t;
 struct dot_t;
 struct druid_t;
 struct effect_t;
@@ -263,6 +265,7 @@ struct spell_id_t;
 struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
+struct stat_buff_t;
 struct unique_gear_t;
 struct uptime_t;
 struct warlock_t;
@@ -2798,17 +2801,19 @@ struct buff_creator_t
 {
 private:
   actor_pair_t _player;
+  sim_t* const _sim;
   std::string _name;
   const spell_data_t* s_data;
   double _chance;
   unsigned _max_stack;
   timespan_t _duration, _cooldown;
-  uint32_t _id;
+  bool _quiet, _reverse;
   friend struct buff_t;
+  friend struct debuff_t;
 public:
-  buff_creator_t( actor_pair_t p, const std::string& n ) :
-    _player( p ), _name( n ), s_data( spell_data_t::nil() ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _id( 0 )
-  {}
+  buff_creator_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  buff_creator_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+
   buff_creator_t& duration( timespan_t d )
   { _duration=d; return *this; }
   buff_creator_t& chance( double c )
@@ -2817,16 +2822,62 @@ public:
   { _max_stack=ms; return *this; }
   buff_creator_t& cd( timespan_t t )
   { _cooldown=t; return *this; }
-  buff_creator_t& id( uint32_t i )
-  { _id=i; return *this; }
-  buff_creator_t& spell( spell_data_t* s )
-  { s_data = s ? s : spell_data_t::nil(); return *this; }
+  buff_creator_t& reverse( bool r )
+  { _reverse=r; return *this; }
+  buff_creator_t& quiet( bool q )
+  { _quiet=q; return *this; }
 
   operator buff_t* () const;
+  operator debuff_t* () const;
+};
+
+struct stat_buff_creator_t
+{
+private:
+  buff_creator_t bc;
+  double _amount;
+  stat_type_e _stat;
+  friend struct stat_buff_t;
+public:
+  stat_buff_creator_t( buff_creator_t a ) :
+    bc( a ), _amount( 0 ), _stat( STAT_NONE ) {}
+
+  stat_buff_creator_t& amount( double a )
+  { _amount=a; return *this; }
+  stat_buff_creator_t& stat( stat_type_e s )
+  { _stat=s; return *this; }
+
+  operator stat_buff_t* () const;
+};
+
+struct cost_reduction_buff_creator_t
+{
+private:
+  buff_creator_t bc;
+  double _amount;
+  school_type_e _school;
+  bool _refreshes;
+  friend struct cost_reduction_buff_t;
+public:
+  cost_reduction_buff_creator_t( buff_creator_t a ) :
+    bc( a ), _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
+  {}
+
+  cost_reduction_buff_creator_t& amount( double a )
+  { _amount=a; return *this; }
+  cost_reduction_buff_creator_t& school( school_type_e s )
+  { _school=s; return *this; }
+  cost_reduction_buff_creator_t& refreshes( bool r )
+  { _refreshes=r; return *this; }
+
+  operator cost_reduction_buff_t* () const;
 };
 
 struct buff_t
 {
+  sim_t* const sim;
+  player_t* const player;
+  std::string name_str;
   const spell_data_t* s_data;
   double current_value, react;
   timespan_t buff_duration, buff_cooldown;
@@ -2837,11 +2888,8 @@ struct buff_t
   int64_t up_count, down_count, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
   double benefit_pct, trigger_pct, avg_start, avg_refresh;
-  std::string name_str;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<buff_uptime_t*> stack_uptime;
-  sim_t* sim;
-  player_t* player;
   player_t* source;
   player_t* initial_source;
   event_t* expiration;
@@ -2856,36 +2904,12 @@ struct buff_t
   sample_data_t start_intervals;
   sample_data_t trigger_intervals;
 
-  buff_t() : s_data( spell_data_t::nil() ), sim( 0 ) {}
   virtual ~buff_t();
 
-  // Raid Aura
-  buff_t( sim_t*, const std::string& name,
-          int max_stack=1, timespan_t buff_duration=timespan_t::zero(), timespan_t buff_cooldown=timespan_t::zero(),
-          double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0 );
-
-  // Player Buff
-  buff_t( actor_pair_t pair, const std::string& name,
-          int max_stack=1, timespan_t buff_duration=timespan_t::zero(), timespan_t buff_cooldown=timespan_t::zero(),
-          double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
-
+protected:
   buff_t( const buff_creator_t& params );
-
-  // Player Buff with extracted data
-private:
-  void init_from_spell_( player_t*, spell_data_t* );
+  friend struct buff_creator_t;
 public:
-  buff_t( actor_pair_t pair, spell_data_t*, ... );
-
-  // Player Buff as spell_id_t by name
-  buff_t( actor_pair_t pair, const std::string& name, const char* sname,
-          double chance=-1, timespan_t cd=timespan_t::min(),
-          bool quiet=false, bool reverse=false, bool activated=true );
-
-  // Player Buff as spell_id_t by id
-  buff_t( actor_pair_t pair, const uint32_t id, const std::string& name,
-          double chance=-1, timespan_t cd=timespan_t::min(),
-          bool quiet=false, bool reverse=false, bool activated=true );
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
@@ -2920,8 +2944,6 @@ public:
   virtual void analyze();
   void init_buff_shared();
   void init();
-  void init_buff_t_();
-  virtual void parse_options( va_list vap );
   virtual void combat_begin();
   virtual void combat_end();
 
@@ -2945,18 +2967,17 @@ struct stat_buff_t : public buff_t
   double amount;
   stat_type_e stat;
 
-  stat_buff_t( player_t*, const std::string& name,
-               stat_type_e stat, double amount,
-               int max_stack=1, timespan_t buff_duration=timespan_t::zero(), timespan_t buff_cooldown=timespan_t::zero(),
-               double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
-  stat_buff_t( player_t*, const uint32_t id, const std::string& name,
-               stat_type_e stat, double amount,
-               double chance=1.0, timespan_t buff_cooldown=timespan_t::min(), bool quiet=false, bool reverse=false, bool activated=true );
-
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
+
+private:
+  stat_buff_t( const stat_buff_creator_t& params );
+  friend struct stat_buff_creator_t;
 };
+
+inline stat_buff_creator_t::operator stat_buff_t* () const
+{ return new stat_buff_t( *this ); }
 
 struct cost_reduction_buff_t : public buff_t
 {
@@ -2964,32 +2985,28 @@ struct cost_reduction_buff_t : public buff_t
   school_type_e school;
   bool refreshes;
 
-  cost_reduction_buff_t( player_t*, const std::string& name,
-                         school_type_e school, double amount,
-                         int max_stack=1, timespan_t buff_duration=timespan_t::zero(), timespan_t buff_cooldown=timespan_t::zero(),
-                         double chance=1.0, bool refreshes=false, bool quiet=false, bool reverse=false, int aura_id=0, bool activated=true );
-  cost_reduction_buff_t( player_t*, const uint32_t id, const std::string& name,
-                         school_type_e school, double amount,
-                         double chance=1.0, timespan_t buff_cooldown=timespan_t::min(), bool refreshes=false, bool quiet=false, bool reverse=false, bool activated=true );
-
+private:
+  cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
+  friend struct cost_reduction_buff_creator_t;
+public:
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
   virtual void expire();
   virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
 };
 
+inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
+{ return new cost_reduction_buff_t( *this ); }
+
 struct debuff_t : public buff_t
 {
-  // Player De-Buff
-  debuff_t( player_t*, const std::string& name,
-            int max_stack=1, timespan_t buff_duration=timespan_t::zero(), timespan_t buff_cooldown=timespan_t::zero(),
-            double chance=1.0, bool quiet=false, bool reverse=false, int aura_id=0 );
-
-  // Player De-Buff as spell_id_t by id
-  debuff_t( player_t*, const uint32_t id, const std::string& name,
-            double chance=-1, timespan_t duration=timespan_t::min(),
-            bool quiet=false, bool reverse=false );
+private:
+  debuff_t( const buff_creator_t& params );
+  friend struct buff_creator_t;
 };
+
+inline buff_creator_t::operator debuff_t* () const
+{ return new debuff_t( *this ); }
 
 typedef struct buff_t aura_t;
 
@@ -4161,16 +4178,12 @@ struct player_t : public noncopyable
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
-    buff_t* destruction_potion;
-    buff_t* earthen_potion;
     buff_t* exhaustion;
-    buff_t* golemblood_potion;
     buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* heroic_presence;
     buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
-    buff_t* indestructible_potion;
     buff_t* innervate;
     buff_t* lifeblood;
     buff_t* mana_tide;
@@ -4183,13 +4196,9 @@ struct player_t : public noncopyable
     buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* stunned;
-    buff_t* tolvir_potion;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
-    buff_t* volcanic_potion;
     buff_t* weakened_soul;
-    buff_t* wild_magic_potion_crit;
-    buff_t* wild_magic_potion_sp;
     
     // MoP buffs
   } buffs;
