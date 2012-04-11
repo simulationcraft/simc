@@ -39,8 +39,7 @@ struct xml_cache_entry_t
   cache::era_t era;
 };
 
-// Ideally TR1/boost unordered_map
-typedef std::map<std::string, xml_cache_entry_t> xml_cache_t;
+typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;
 
 static xml_cache_t xml_cache;
 static mutex_t xml_mutex;

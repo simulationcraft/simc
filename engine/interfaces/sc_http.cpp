@@ -8,12 +8,6 @@
 
 #include <fstream>
 
-#ifdef USE_TR1
-#include <unordered_map>
-#else
-#include <map>
-#endif
-
 // Cross-Platform Support for HTTP-Download =================================
 
 // ==========================================================================
@@ -48,11 +42,7 @@ struct url_cache_entry_t
   {}
 };
 
-#ifdef USE_TR1
-typedef std::tr1::unordered_map<std::string, url_cache_entry_t> url_db_t;
-#else
-typedef std::map<std::string, url_cache_entry_t> url_db_t;
-#endif // USE_TR1
+typedef std::unordered_map<std::string, url_cache_entry_t> url_db_t;
 static url_db_t url_db;
 
 // cache_clear ==============================================================

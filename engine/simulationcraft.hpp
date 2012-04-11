@@ -2254,7 +2254,10 @@ class dbc_t
 public:
   bool ptr;
 
-  std::map< uint32_t, uint32_t > replaced_ids;
+private:
+  typedef std::unordered_map<uint32_t, uint32_t> id_map_t;
+  id_map_t replaced_ids;
+public:
   uint32_t replaced_id( uint32_t id_spell ) const;
   bool replace_id( uint32_t id_spell, uint32_t replaced_by_id );
 
@@ -2392,7 +2395,7 @@ public:
 
 
   static const std::string& get_token( unsigned int id_spell );
-  static bool add_token( unsigned int id_spell, std::string token_name, bool ptr = false );
+  static bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr = false );
 };
 
 // Options ==================================================================
@@ -3253,7 +3256,7 @@ struct sim_t : private thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
-  std::map<std::string,std::string> var_map;
+  std::unordered_map<std::string,std::string> var_map;
   std::vector<option_t> options;
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;

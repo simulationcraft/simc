@@ -23,43 +23,55 @@
 #include "sc_item_data_ptr.inc"
 #endif
 
-// Global spell token map
-namespace spelltoken {
-static std::map< unsigned int, std::string > _tokstr;
-static std::string empty = "";
-const std::string& token( unsigned int id_spell )
-{
-  std::map< unsigned int, std::string >::iterator it;
-
-  it = _tokstr.find( id_spell );
-  if ( it == _tokstr.end() )
-    return empty;
-
-  return ( *it ).second;
-}
-bool add( unsigned int id_spell, std::string token_name )
-{
-  typedef std::pair< unsigned int, std::string > Pair;
-  std::pair< std::map< unsigned int, std::string >::iterator, bool > pr;
-  pr = _tokstr.insert( Pair( id_spell, token_name ) );
-  // New entry
-  if ( pr.second )
-    return true;
-  // Already exists with that token
-  if ( ( pr.first ) -> second == token_name )
-    return true;
-  // Trying to specify a new token for an existing spell id
-  return false;
-}
-};
-
 namespace { // ANONYMOUS namespace ==========================================
+
+// Global spell token map
+class spelltoken_t
+{
+private:
+  typedef std::unordered_map< unsigned int, std::string > token_map_t;
+  token_map_t map;
+  mutex_t mutex;
+
+public:
+  const std::string& get( unsigned int id_spell )
+  {
+    static const std::string empty;
+
+    auto_lock_t lock( mutex );
+
+    token_map_t::iterator it = map.find( id_spell );
+    if ( it == map.end() )
+      return empty;
+
+    return ( *it ).second;
+  }
+
+  bool add( unsigned int id_spell, const std::string& token_name )
+  {
+    auto_lock_t lock( mutex );
+
+    std::pair<token_map_t::iterator, bool> pr =
+        map.insert( std::make_pair( id_spell, token_name ) );
+
+    // New entry
+    if ( pr.second )
+      return true;
+
+    // Already exists with that token
+    if ( ( pr.first ) -> second == token_name )
+      return true;
+
+    // Trying to specify a new token for an existing spell id
+    return false;
+  }
+};
+spelltoken_t tokens;
 
 random_suffix_data_t nil_rsd;
 item_enchantment_data_t nil_ied;
 gem_property_data_t nil_gpd;
 
-#if 1
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
 template <typename T>
 class dbc_index_t
@@ -111,51 +123,6 @@ public:
     return T::nil();
   }
 };
-#else
-// Indices to provide constant time, linear space access to spells, effects, and talents by id.
-template <typename T>
-class dbc_index_t
-{
-private:
-  typedef std::vector<T*> index_t;
-  index_t idx[2];
-
-  void populate( index_t& idx, T* list )
-  {
-    unsigned max_id = 0;
-    for ( T* p = list; p -> id(); ++p )
-    {
-      if ( max_id < p -> id() )
-        max_id = p -> id();
-    }
-
-    idx.assign( max_id + 1, T::nil() );
-    for ( T* p = list; p -> id(); ++p )
-      idx[ p -> id() ] = p;
-  }
-
-public:
-  void init()
-  {
-    assert( ! initialized( false ) );
-    populate( idx[ false ], T::list( false ) );
-    if ( SC_USE_PTR )
-      populate( idx[ true ], T::list( true ) );
-  }
-
-  bool initialized( bool ptr = false ) const
-  { return ! idx[ ptr ].empty(); }
-
-  T* get( bool ptr, unsigned id ) const
-  {
-    assert( initialized( ptr ) );
-    if ( id < idx[ ptr ].size() )
-      return idx[ ptr ][ id ];
-    else
-      return T::nil();
-  }
-};
-#endif
 
 dbc_index_t<spell_data_t> idx_sd;
 dbc_index_t<spelleffect_data_t> idx_sed;
@@ -193,9 +160,7 @@ void dbc_t::init()
 
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 {
-  std::map< uint32_t, uint32_t >::const_iterator it;
-
-  it = replaced_ids.find( id_spell );
+  id_map_t::const_iterator it = replaced_ids.find( id_spell );
   if ( it == replaced_ids.end() )
     return 0;
 
@@ -204,9 +169,8 @@ uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 
 bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
 {
-  typedef std::pair< uint32_t, uint32_t > Pair;
-  std::pair< std::map< uint32_t, uint32_t >::iterator, bool > pr;
-  pr = replaced_ids.insert( Pair( id_spell, replaced_by_id ) );
+  std::pair< id_map_t::iterator, bool > pr =
+      replaced_ids.insert( std::make_pair( id_spell, replaced_by_id ) );
   // New entry
   if ( pr.second )
     return true;
@@ -2069,23 +2033,23 @@ specialization_e dbc_t::spec_by_idx( const player_type_e c, uint32_t& idx ) cons
 
 const std::string& dbc_t::get_token( unsigned int id_spell )
 {
-  return spelltoken::token( id_spell );
+  return tokens.get( id_spell );
 }
 
-bool dbc_t::add_token( unsigned int id_spell, std::string token, bool ptr )
+bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr )
 {
   spell_data_t* sp = idx_sd.get( ptr, id_spell );
   if ( sp && sp -> ok() )
   {
     if ( ! token.empty() )
     {
-      return spelltoken::add( id_spell, token );
+      return tokens.add( id_spell, token );
     }
     else
     {
       std::string t = sp -> name_cstr();
       armory_t::format( t, FORMAT_ASCII_MASK );
-      return spelltoken::add( id_spell, t );
+      return tokens.add( id_spell, t );
     }
   }
   return false;
