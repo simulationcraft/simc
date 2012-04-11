@@ -91,4 +91,12 @@ static const std::string beta_warnings[] =
 }
 #endif // SC_BETA
 
+struct compare_hat_donor_interval
+{
+  bool operator()( const player_t* l, const player_t* r ) const
+  {
+    return ( l -> procs.hat_donor -> interval_sum.mean < r -> procs.hat_donor -> interval_sum.mean );
+  }
+};
+
 #endif // SC_REPORT_HPP

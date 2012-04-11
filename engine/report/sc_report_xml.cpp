@@ -592,8 +592,8 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
     {
       writer.print_attribute( "start", util_t::to_string( b -> avg_start, 1 ) );
       writer.print_attribute( "refresh", util_t::to_string( b -> avg_refresh, 1 ) );
-      writer.print_attribute( "interval", util_t::to_string( b -> avg_start_interval, 1 ) );
-      writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
+      writer.print_attribute( "interval", util_t::to_string( b -> start_intervals.mean, 1 ) );
+      writer.print_attribute( "trigger", util_t::to_string( b -> trigger_intervals.mean, 1 ) );
       writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
       if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
@@ -629,11 +629,11 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
 
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 )
+    if ( u -> uptime_sum.mean > 0 )
     {
       writer.begin_tag( "uptime" );
       writer.print_attribute( "name", u -> name_str );
-      writer.print_attribute( "pct", util_t::to_string( u -> uptime * 100.0, 1 ) );
+      writer.print_attribute( "pct", util_t::to_string( u -> uptime_sum.mean * 100.0, 1 ) );
       writer.end_tag();
     }
   }
@@ -652,7 +652,7 @@ void print_xml_player_procs( xml_writer_t & writer, player_t * p )
       writer.begin_tag( "proc" );
       writer.print_attribute( "name", proc -> name() );
       writer.print_attribute( "count", util_t::to_string( proc -> count, 1 ) );
-      writer.print_attribute( "frequency", util_t::to_string( proc -> frequency, 2 ) );
+      writer.print_attribute( "frequency", util_t::to_string( proc -> interval_sum.mean, 2 ) );
       writer.end_tag(); // </proc>
     }
   }
@@ -906,8 +906,8 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
     {
       writer.print_attribute( "start", util_t::to_string( b -> avg_start, 1 ) );
       writer.print_attribute( "refresh", util_t::to_string( b -> avg_refresh, 1 ) );
-      writer.print_attribute( "interval", util_t::to_string( b -> avg_start_interval, 1 ) );
-      writer.print_attribute( "trigger", util_t::to_string( b -> avg_trigger_interval, 1 ) );
+      writer.print_attribute( "interval", util_t::to_string( b -> start_intervals.mean, 1 ) );
+      writer.print_attribute( "trigger", util_t::to_string( b -> trigger_intervals.mean, 1 ) );
       writer.print_attribute( "uptime", util_t::to_string( b -> uptime_pct.mean, 0 ) );
 
       if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
@@ -926,13 +926,7 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
   writer.end_tag(); // </buffs>
 }
 
-struct compare_hat_donor_interval
-{
-  bool operator()( const player_t* l, const player_t* r ) const
-  {
-    return( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
-  }
-};
+
 
 void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
 {
@@ -959,8 +953,8 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
       player_t* p = hat_donors[ i ];
       proc_t* proc = p -> procs.hat_donor;
       writer.print_attribute( "name", p -> name() );
-      writer.print_attribute( "frequency_sec", util_t::to_string( proc -> frequency, 2 ) );
-      writer.print_attribute( "frequency_pct", util_t::to_string( ( 1.0 / proc -> frequency ), 3 ) );
+      writer.print_attribute( "frequency_sec", util_t::to_string( proc -> interval_sum.mean, 2 ) );
+      writer.print_attribute( "frequency_pct", util_t::to_string( ( 1.0 / proc -> interval_sum.mean ), 3 ) );
       writer.end_tag(); // </donors>
     }
 

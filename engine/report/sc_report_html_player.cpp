@@ -1318,9 +1318,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
     pet_t* pet = p -> pet_list[ i ];
     bool first=true;
 
-    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
-      stats_t* s = p -> stats_list[ i ];
+      stats_t* s = pet -> stats_list[ i ];
       if ( s -> rpe_sum > 0 )
       {
         if ( first )
@@ -1602,8 +1602,8 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
              "\t\t\t\t\t\t\t</tr>\n",
              b -> avg_start,
              b -> avg_refresh,
-             b -> avg_start_interval,
-             b -> avg_trigger_interval,
+             b -> start_intervals.mean,
+             b -> trigger_intervals.mean,
              b -> uptime_pct.mean,
              ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
 
@@ -1637,7 +1637,7 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
                "\t\t\t\t\t\t\t\t\t<ul>\n" );
       for ( unsigned int j= 0; j < b -> stack_uptime.size(); j++ )
       {
-        double uptime = b -> stack_uptime[ j ].uptime;
+        double uptime = b -> stack_uptime[ j ] -> uptime_sum.mean;
         if ( uptime > 0 )
         {
           fprintf( file,
@@ -2117,7 +2117,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
            "\t\t\t\t\t\t\t\t</tr>\n" );
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 )
+    if ( u -> uptime_sum.mean > 0 )
     {
       fprintf( file,
                "\t\t\t\t\t\t\t\t<tr" );
@@ -2131,7 +2131,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
                "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                "\t\t\t\t\t\t\t\t</tr>\n",
                u -> name(),
-               u -> uptime * 100.0 );
+               u -> uptime_sum.mean * 100.0 );
       i++;
     }
   }
@@ -2141,7 +2141,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
     pet_t* pet = p -> pet_list[ i ];
     for ( uptime_t* u = pet -> uptime_list; u; u = u -> next )
     {
-      if ( u -> uptime > 0 )
+      if ( u -> uptime_sum.mean > 0 )
       {
         std::string uptime_name;
         uptime_name += pet -> name_str + '-';
@@ -2159,7 +2159,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  uptime_name.c_str(),
-                 u -> uptime * 100.0 );
+                 u -> uptime_sum.mean * 100.0 );
 
         i++;
       }
@@ -2208,7 +2208,7 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
                "\t\t\t\t\t\t\t\t</tr>\n",
                proc -> name(),
                proc -> count,
-               proc -> frequency );
+               proc -> interval_sum.mean );
       i++;
     }
   }

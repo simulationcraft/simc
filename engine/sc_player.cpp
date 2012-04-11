@@ -2630,6 +2630,9 @@ void player_t::combat_end()
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> combat_end();
+
+  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
+    uptime -> combat_end();
 }
 
 // player_t::merge ==========================================================

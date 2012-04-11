@@ -232,7 +232,7 @@ void print_text_buffs( FILE* file, const player_t::report_information_t& ri )
 
     util_t::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
                      max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
-                     b -> avg_start_interval, b -> avg_trigger_interval, b -> uptime_pct.mean );
+                     b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
 
     if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       util_t::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
@@ -385,7 +385,7 @@ void print_text_procs( FILE* file, const player_t* p )
     {
       if ( first ) util_t::fprintf( file, "  Procs:\n" ); first = false;
       util_t::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
-                       proc -> count, proc -> frequency, proc -> name() );
+                       proc -> count, proc -> interval_sum.mean, proc -> name() );
     }
   }
 }
@@ -408,10 +408,10 @@ void print_text_uptime( FILE* file, const player_t* p )
   first=true;
   for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
   {
-    if ( u -> uptime > 0 )
+    if ( u -> uptime_sum.mean > 0 )
     {
       if ( first ) util_t::fprintf( file, "  Up-Times:\n" ); first = false;
-      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime * 100.0, u -> name() );
+      util_t::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime_sum.mean * 100.0, u -> name() );
     }
   }
 }
@@ -668,14 +668,6 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 }
 
-struct compare_hat_donor_interval
-{
-  bool operator()( const player_t* l, const player_t* r ) const
-  {
-    return ( l -> procs.hat_donor -> frequency < r -> procs.hat_donor -> frequency );
-  }
-};
-
 void print_text_hat_donors( FILE* file, const sim_t* sim )
 {
   std::vector<player_t*> hat_donors;
@@ -699,7 +691,7 @@ void print_text_hat_donors( FILE* file, const sim_t* sim )
     {
       player_t* p = hat_donors[ i ];
       proc_t* proc = p -> procs.hat_donor;
-      util_t::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> frequency, ( 1.0 / proc -> frequency ), p -> name() );
+      util_t::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> interval_sum.mean, ( 1.0 / proc -> interval_sum.mean ), p -> name() );
     }
   }
 }

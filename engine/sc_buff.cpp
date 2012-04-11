@@ -65,7 +65,7 @@ buff_t::buff_t( sim_t*             s,
   name_str( n ), sim( s ), player( 0 ), source( 0 ), initial_source( 0 ),
   max_stack( ms ), aura_id( id ),
   activated( true ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct()
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   init();
 }
@@ -87,7 +87,7 @@ buff_t::buff_t( actor_pair_t       p,
   name_str( n ), sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( ms ), aura_id( id ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct()
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   init();
 }
@@ -99,7 +99,7 @@ buff_t::buff_t( const buff_creator_t& params ) :
     source( params._player.source ), initial_source( params._player.source ),
     max_stack( params._max_stack ), aura_id( params._id ),
     activated( true ), reverse( false ), constant( false ), quiet( false ),
-    uptime_pct()
+    uptime_pct(), start_intervals(), trigger_intervals()
 {
   init();
 }
@@ -124,7 +124,7 @@ buff_t::buff_t( actor_pair_t  p,
   sim( p.target -> sim ), player( p.target ), source( p.source ), initial_source( p.source ),
   max_stack( 0 ),
   activated( true ), reverse( false ), constant( false ), quiet( false ),
-  uptime_pct()
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   init_from_spell_( p.source, spell );
 
@@ -183,21 +183,15 @@ void buff_t::init_buff_shared()
   current_value = 0;
   last_start = timespan_t::min();
   last_trigger = timespan_t::min();
-  start_intervals_sum = timespan_t::zero();
-  trigger_intervals_sum = timespan_t::zero();
   iteration_uptime_sum = timespan_t::zero();
   up_count = 0;
   down_count = 0;
-  start_intervals = 0;
-  trigger_intervals = 0;
   start_count = 0;
   refresh_count = 0;
   trigger_attempts = 0;
   trigger_successes = 0;
   benefit_pct = 0;
   trigger_pct = 0;
-  avg_start_interval = 0;
-  avg_trigger_interval = 0;
   avg_start = 0;
   avg_refresh = 0;
   constant = false;
@@ -205,14 +199,19 @@ void buff_t::init_buff_shared()
   expiration = 0;
   delay = 0;
 
+  // Keep non hidden reported numbers clean
+  start_intervals.mean = 0; trigger_intervals.mean = 0;
+
   buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
   if ( max_stack >= 0 )
   {
     stack_occurrence.resize( max_stack + 1 );
     stack_react_time.resize( max_stack + 1 );
-    stack_uptime.resize( max_stack + 1, buff_uptime_t( sim ) );
   }
+  if ( static_cast<int>( stack_uptime.size() ) < max_stack )
+    for ( int i = stack_uptime.size(); i <= max_stack; ++i )
+      stack_uptime.push_back( new buff_uptime_t( sim ) );
 }
 // buff_t::init =============================================================
 
@@ -250,13 +249,13 @@ buff_t::buff_t( actor_pair_t       p,
                 bool               act ) :
   s_data( spell_data_t::find( sname, p.source -> dbc.ptr ) ),
   buff_duration( data().duration() ),
-  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ) ,
+  default_chance( ( chance != -1 ) ? chance : ( ( data().proc_chance() != 0 ) ? data().proc_chance() : 1.0 ) ),
   name_str( n ),
   sim( p.target -> sim ), player( p.target ), source( 0 ), initial_source( p.source ),
   max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
   aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct()
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   init_buff_t_();
 
@@ -297,7 +296,7 @@ buff_t::buff_t( actor_pair_t       p,
   max_stack( ( data().max_stacks()!=0 ) ? data().max_stacks() : ( data().initial_stacks() != 0 ? data().initial_stacks() : 1 ) ),
   aura_id( 0 ),
   activated( act ), reverse( r ), constant( false ), quiet( q ),
-  uptime_pct()
+  uptime_pct(), start_intervals(), trigger_intervals()
 {
   init_buff_t_();
 
@@ -335,7 +334,9 @@ void buff_t::init_buff_t_()
 // buff_t::~buff_t ==========================================================
 
 buff_t::~buff_t()
-{}
+{
+  range::dispose( stack_uptime );
+}
 
 // buff_t::combat_begin ==========================================================
 
@@ -352,6 +353,9 @@ void buff_t::combat_end()
     uptime_pct.add( player -> iteration_fight_length != timespan_t::zero() ? 100.0 * iteration_uptime_sum / player -> iteration_fight_length : 0 );
   else
     uptime_pct.add( sim -> current_time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / sim -> current_time : 0 );
+
+  for ( size_t i = 0; i < stack_uptime.size(); i++ )
+    stack_uptime[ i ] -> combat_end();
 }
 
 // buff_t::may_react ========================================================
@@ -486,8 +490,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
 {
   if ( last_trigger > timespan_t::zero() )
   {
-    trigger_intervals_sum += sim -> current_time - last_trigger;
-    trigger_intervals++;
+    trigger_intervals.add( ( sim -> current_time - last_trigger ).total_seconds() );
   }
   last_trigger = sim -> current_time;
 
@@ -549,13 +552,13 @@ void buff_t::decrement( int    stacks,
   else
   {
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ].update( false );
+      stack_uptime[ current_stack ] -> update( false );
 
     current_stack -= stacks;
     if ( value >= 0 ) current_value = value;
 
     if ( static_cast<std::size_t>( current_stack ) < stack_uptime.size() )
-      stack_uptime[ current_stack ].update( true );
+      stack_uptime[ current_stack ] -> update( true );
 
     if ( sim -> debug )
       log_t::output( sim, "buff %s decremented by %d to %d stacks",
@@ -626,8 +629,7 @@ void buff_t::start( int        stacks,
 
   if ( last_start >= timespan_t::zero() )
   {
-    start_intervals_sum += sim -> current_time - last_start;
-    start_intervals++;
+    start_intervals.add( ( sim -> current_time - last_start ).total_seconds() );
   }
   last_start = sim -> current_time;
 
@@ -682,13 +684,13 @@ void buff_t::bump( int    stacks,
   else if ( current_stack < max_stack )
   {
     int before_stack = current_stack;
-    stack_uptime[ current_stack ].update( false );
+    stack_uptime[ current_stack ] -> update( false );
 
     current_stack += stacks;
     if ( current_stack > max_stack )
       current_stack = max_stack;
 
-    stack_uptime[ current_stack ].update( true );
+    stack_uptime[ current_stack ] -> update( true );
 
     aura_gain();
 
@@ -742,7 +744,7 @@ void buff_t::expire()
     }
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ].update( false );
+    stack_uptime[ i ] -> update( false );
 }
 
 // buff_t::predict ==========================================================
@@ -812,12 +814,10 @@ void buff_t::reset()
 
 void buff_t::merge( const buff_t* other )
 {
-  start_intervals_sum   += other -> start_intervals_sum;
-  trigger_intervals_sum += other -> trigger_intervals_sum;
+  start_intervals.merge( other -> start_intervals );
+  trigger_intervals.merge( other -> trigger_intervals );
   up_count              += other -> up_count;
   down_count            += other -> down_count;
-  start_intervals       += other -> start_intervals;
-  trigger_intervals     += other -> trigger_intervals;
   start_count           += other -> start_count;
   refresh_count         += other -> refresh_count;
   trigger_attempts      += other -> trigger_attempts;
@@ -831,7 +831,7 @@ void buff_t::merge( const buff_t* other )
     assert( 0 );
   }
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ].merge ( other -> stack_uptime[ i ] );
+    stack_uptime[ i ] -> merge ( *(other -> stack_uptime[ i ]) );
 }
 
 // buff_t::analyze ==========================================================
@@ -846,20 +846,14 @@ void buff_t::analyze()
   {
     trigger_pct = 100.0 * trigger_successes / trigger_attempts;
   }
-  if ( start_intervals > 0 )
-  {
-    avg_start_interval = start_intervals_sum.total_seconds() / start_intervals;
-  }
-  if ( trigger_intervals > 0 )
-  {
-    avg_trigger_interval = trigger_intervals_sum.total_seconds() / trigger_intervals;
-  }
+  start_intervals.analyze();
+  trigger_intervals.analyze();
   avg_start   =   start_count / ( double ) sim -> iterations;
   avg_refresh = refresh_count / ( double ) sim -> iterations;
   uptime_pct.analyze();
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ].analyze();
+    stack_uptime[ i ] -> analyze();
 }
 
 // buff_t::find =============================================================

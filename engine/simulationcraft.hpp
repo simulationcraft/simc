@@ -2833,15 +2833,13 @@ struct buff_t
   double default_chance;
   timespan_t last_start;
   timespan_t last_trigger;
-  timespan_t start_intervals_sum;
-  timespan_t trigger_intervals_sum;
   timespan_t iteration_uptime_sum;
-  int64_t up_count, down_count, start_intervals, trigger_intervals, start_count, refresh_count;
+  int64_t up_count, down_count, start_count, refresh_count;
   int64_t trigger_attempts, trigger_successes;
-  double benefit_pct, trigger_pct, avg_start_interval, avg_trigger_interval, avg_start, avg_refresh;
+  double benefit_pct, trigger_pct, avg_start, avg_refresh;
   std::string name_str;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
-  std::vector<buff_uptime_t> stack_uptime;
+  std::vector<buff_uptime_t*> stack_uptime;
   sim_t* sim;
   player_t* player;
   player_t* source;
@@ -2855,6 +2853,8 @@ struct buff_t
   bool activated;
   bool reverse, constant, quiet, overridden;
   sample_data_t uptime_pct;
+  sample_data_t start_intervals;
+  sample_data_t trigger_intervals;
 
   buff_t() : s_data( spell_data_t::nil() ), sim( 0 ) {}
   virtual ~buff_t();
@@ -5552,14 +5552,12 @@ public:
 struct uptime_common_t
 {
   timespan_t last_start;
-  timespan_t uptime_sum;
-  sim_t* sim;
-
-  double uptime;
+  timespan_t iteration_uptime_sum;
+  sample_data_t uptime_sum;
+  sim_t* const sim;
 
   uptime_common_t( sim_t* s ) :
-    last_start( timespan_t::min() ), uptime_sum( timespan_t::zero() ), sim( s ),
-    uptime( std::numeric_limits<double>::quiet_NaN() )
+    last_start( timespan_t::min() ), iteration_uptime_sum( timespan_t::zero() ), uptime_sum( s -> statistics_level < 6 ), sim( s )
   {}
 
   void update( bool is_up )
@@ -5571,18 +5569,22 @@ struct uptime_common_t
     }
     else if ( last_start >= timespan_t::zero() )
     {
-      uptime_sum += sim -> current_time - last_start;
+      iteration_uptime_sum += sim -> current_time - last_start;
       last_start = timespan_t::min();
     }
   }
 
+  void combat_end()
+  { uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
+    iteration_uptime_sum = timespan_t::zero(); }
+
   void reset() { last_start = timespan_t::min(); }
 
   void analyze()
-  { uptime = uptime_sum.total_seconds() / sim -> iterations / sim -> simulation_length.mean; }
+  { uptime_sum.analyze(); }
 
   void merge( const uptime_common_t& other )
-  { uptime_sum += other.uptime_sum; }
+  { uptime_sum.merge( other.uptime_sum ); }
 };
 
 struct uptime_t : public uptime_common_t
@@ -5610,15 +5612,13 @@ struct proc_t
 
   double count;
   timespan_t last_proc;
-  timespan_t interval_sum;
-  double interval_count;
-  double frequency;
+  sample_data_t interval_sum;
   proc_t* next;
 
   proc_t( sim_t* s, player_t* p, const std::string& n ) :
     sim( s ), player( p ), name_str( n ),
-    count( 0.0 ), last_proc( timespan_t::zero() ), interval_sum( timespan_t::zero() ), interval_count( 0.0 ),
-    frequency( 0.0 ),  next( NULL )
+    count( 0.0 ), last_proc( timespan_t::zero() ), interval_sum( s -> statistics_level < 6 ),
+    next( NULL )
   {}
 
   void occur()
@@ -5626,8 +5626,7 @@ struct proc_t
     count++;
     if ( last_proc > timespan_t::zero() && last_proc < sim -> current_time )
     {
-      interval_sum += sim -> current_time - last_proc;
-      interval_count++;
+      interval_sum.add( sim -> current_time.total_seconds() - last_proc.total_seconds() );
     }
     last_proc = sim -> current_time;
   }
@@ -5635,14 +5634,13 @@ struct proc_t
   void merge( const proc_t& other )
   {
     count          += other.count;
-    interval_sum   += other.interval_sum;
-    interval_count += other.interval_count;
+    interval_sum.merge( other.interval_sum );
   }
 
   void analyze()
   {
     count /= sim -> iterations;
-    if ( interval_count > 0 ) frequency = interval_sum.total_seconds() / interval_count;
+    interval_sum.analyze();
   }
 
   const char* name() const { return name_str.c_str(); }
