@@ -69,14 +69,9 @@ namespace std {using namespace tr1; }
 namespace std {using namespace tr1; }
 #endif
 
-#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define smart_ptr unique_ptr
-#else
-#define smart_ptr auto_ptr
-#define static_assert( condition, message )
-#endif
-
 #include "dbc/data_enums.hh"
+#include "dbc/data_definitions.hh"
+#include "utf8.h"
 
 #if __BSD_VISIBLE
 #  include <netinet/in.h>
@@ -85,16 +80,18 @@ namespace std {using namespace tr1; }
 #  endif
 #endif
 
-#include "dbc/data_definitions.hh"
-#include "utf8.h"
+#if _MSC_VER >= 1600 || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#define smart_ptr unique_ptr
+#else
+#define smart_ptr auto_ptr
+#define static_assert( condition, message )
+#endif
 
 // GCC (and probably the C++ standard in general) doesn't like offsetof on non-POD types
 #ifdef _MSC_VER
 #define nonpod_offsetof(t, m) offsetof(t, m)
-#define sc_packed_struct
 #else
 #define nonpod_offsetof(t, m) ((size_t) ( (volatile char *)&((volatile t *)(size_t)0x10000)->m - (volatile char *)(size_t)0x10000 ))
-#define sc_packed_struct __attribute__((packed))
 #endif
 
 #if defined(__GNUC__)
@@ -106,6 +103,7 @@ namespace std {using namespace tr1; }
 #  define __attribute__(x)
 #endif
 
+#define SC_PACKED_STRUCT      __attribute__((packed))
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
 #define SC_MAJOR_VERSION "500"
@@ -2105,7 +2103,7 @@ public:
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
 
-  const spellpower_data_t& powerN( int pt ) const
+  const spellpower_data_t& powerN( power_type_e pt ) const
   {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
     for ( size_t i = 0; i < _power -> size(); i++ )
@@ -2182,7 +2180,7 @@ public:
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
-} sc_packed_struct;
+} SC_PACKED_STRUCT;
 #ifdef __OpenBSD__
 #pragma pack()
 #else
