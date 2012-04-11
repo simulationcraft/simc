@@ -48,13 +48,72 @@ struct buff_delay_t : public event_t
 buff_t::buff_t( const buff_creator_t& params ) :
     sim( params._sim ), player( params._player.target ), name_str( params._name ),
     s_data( params.s_data ),
-    buff_duration( params._duration ), buff_cooldown( params._cooldown ), default_chance( params._chance ),
-    source( params._player.source ), initial_source( params._player.source ),
-    max_stack( params._max_stack ),
-    activated( true ), reverse( params._reverse ), constant( false ), quiet( false ),
+    buff_duration( timespan_t::zero() ),
+    buff_cooldown( timespan_t::zero() ),
+    default_chance( 1.0 ),
+    source( params._player.source ),
+    initial_source( params._player.source ),
+    max_stack( 1 ),
+    //max_stack( params._max_stack ),
+    activated( true ),
+    reverse( false ),
+    constant( false ),
+    quiet( false ),
+
     uptime_pct(), start_intervals(), trigger_intervals()
 {
+  // Set Buff duration
+  if ( params._duration == timespan_t::min() )
+  {
+    if ( data().ok() )
+      buff_duration = data().duration();
+  }
+  else
+    buff_duration = params._duration;
+
+  // Set Buff Cooldown
+  if ( params._cooldown == timespan_t::min() )
+  {
+    if ( data().ok() )
+      buff_cooldown = data().cooldown();
+  }
+  else
+    buff_cooldown = params._cooldown;
+
+  // Set Max stacks
+  if ( params._max_stack == -1 )
+  {
+    if ( data().ok() )
+    {
+      if ( data().max_stacks() != 0 )
+        max_stack = data().max_stacks();
+      else if ( data().initial_stacks() != 0 )
+        max_stack = data().initial_stacks();
+    }
+  }
+  else
+    max_stack = params._max_stack;
+
+  // Set Proc Chance
+  if ( params._chance == -1.0 )
+  {
+    if ( data().ok() )
+      if ( data().proc_chance() != 0 )
+        default_chance = data().proc_chance();
+  }
+  else
+    default_chance = params._chance;
+
+  // Set Reverse flag
+  if ( params._reverse != -1 )
+    reverse = params._reverse;
+
+  // Set Quiet flag
+  if ( params._quiet != -1 )
+    quiet = params._quiet;
+
   init();
+
 }
 
 // buff_t::init =============================================================
@@ -80,6 +139,9 @@ void buff_t::init()
   overridden = false;
   expiration = 0;
   delay = 0;
+
+  if ( max_stack < 1 )
+    max_stack = 1;
 
   // Keep non hidden reported numbers clean
   start_intervals.mean = 0; trigger_intervals.mean = 0;
@@ -916,11 +978,25 @@ debuff_t::debuff_t( const buff_creator_t& params ) :
 {
 }
 
+void buff_creator_t::init()
+{
+  _chance = -1.0;
+  _max_stack = -1;
+  _duration = timespan_t::min();
+  _cooldown = timespan_t::min();
+  _quiet = -1;
+  _reverse = -1;
+ {}
+}
 
 buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
-  _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _quiet( false ), _reverse( false )
-{}
+  _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp )
+{ init(); }
+
+buff_creator_t::buff_creator_t( actor_pair_t p , uint32_t id, const std::string& n ) :
+_player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() )
+{ init(); }
 
 buff_creator_t::buff_creator_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :
-  _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp ), _chance( 1.0 ), _max_stack( 1 ), _duration( timespan_t::zero() ), _cooldown( timespan_t::zero() ), _quiet( false ), _reverse( false )
-{}
+  _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp )
+{ init(); }

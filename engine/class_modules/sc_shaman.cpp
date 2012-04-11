@@ -3459,7 +3459,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 struct lightning_shield_buff_t : public buff_t
 {
   lightning_shield_buff_t( player_t* p, uint32_t id, const char* n ) :
-    buff_t( p, id, n, 1.0, timespan_t::min(), false )
+    buff_t( buff_creator( p, id, n ).chance( 1.0 ).cd( timespan_t::min() ) )
   {
     shaman_t* s = player -> cast_shaman();
 
@@ -3474,7 +3474,7 @@ struct lightning_shield_buff_t : public buff_t
 struct searing_flames_buff_t : public buff_t
 {
   searing_flames_buff_t( actor_pair_t pair, uint32_t id, const char* n ) :
-    buff_t( pair, id, n, 1.0, timespan_t::min(), true ) // Quiet buff, dont show in report
+    buff_t( buff_creator( pair, id, n ).chance( 1.0 ).cd( timespan_t::min() ).quiet( true ) ) // Quiet buff, dont show in report
   {
     default_chance = player -> dbc.spell( 77661 ) -> proc_chance();
     buff_duration  = player -> dbc.spell( 77661 ) -> duration();
@@ -3516,7 +3516,7 @@ struct unleash_flame_expiration_delay_t : public event_t
 };
 
 unleash_flame_buff_t::unleash_flame_buff_t( player_t* p ) :
-  buff_t( p, 73683, "unleash_flame" ), expiration_delay( 0 )
+  buff_t( buff_creator( p, 73683, "unleash_flame" ) ), expiration_delay( 0 )
 {
 }
 

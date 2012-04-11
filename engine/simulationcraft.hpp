@@ -2805,13 +2805,16 @@ private:
   std::string _name;
   const spell_data_t* s_data;
   double _chance;
-  unsigned _max_stack;
+  int _max_stack;
   timespan_t _duration, _cooldown;
-  bool _quiet, _reverse;
+  int _quiet, _reverse;
   friend struct buff_t;
   friend struct debuff_t;
+private:
+  void init();
 public:
   buff_creator_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  buff_creator_t( actor_pair_t, uint32_t id, const std::string& name );
   buff_creator_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 
   buff_creator_t& duration( timespan_t d )
