@@ -323,7 +323,7 @@ struct mage_t : public player_t
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const { return ROLE_SPELL; }
   virtual double    composite_armor_multiplier() const;
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_resistance( school_type_e school ) const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
@@ -3181,7 +3181,7 @@ double mage_t::composite_armor_multiplier() const
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
+double mage_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 

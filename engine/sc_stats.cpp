@@ -150,7 +150,7 @@ void stats_t::combat_end()
   else
     player -> iteration_heal += iteration_actual_amount;
 
-  for ( size_t i = 0; i < children.size(); i++ )
+  for ( size_t i = 0, num_children = children.size(); i < num_children; i++ )
   {
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
@@ -186,8 +186,7 @@ void stats_t::analyze()
   analyzed = true;
 
   bool channeled = false;
-  size_t num_actions = action_list.size();
-  for ( size_t i=0; i < num_actions; i++ )
+  for ( size_t i = 0; i < action_list.size(); i++ )
   {
     action_t* a = action_list[ i ];
     if ( school != SCHOOL_NONE && school != a -> school )
@@ -207,7 +206,7 @@ void stats_t::analyze()
   num_direct_results /= num_iterations;
   num_tick_results   /= num_iterations;
 
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].analyze( *this );
     tick_results[ i ].analyze( *this );

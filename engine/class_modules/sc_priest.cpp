@@ -116,6 +116,9 @@ struct priest_t : public player_t
     // Holy
     const spell_data_t* meditation_holy;
     const spell_data_t* revelations;
+    const spell_data_t* chakra_chastise;
+    const spell_data_t* chakra_sanctuary;
+    const spell_data_t* chakra_serenity;
 
     // Shadow
     const spell_data_t* spiritual_precision;
@@ -177,7 +180,13 @@ struct priest_t : public player_t
   // Special
   std::queue<spell_t*> shadowy_apparition_free_list;
   std::list<spell_t*>  shadowy_apparition_active_list;
-  heal_t* heals_echo_of_light;
+
+  struct active_spells_t
+  {
+    heal_t* echo_of_light;
+    active_spells_t() { memset( this, 0, sizeof( *this ) ); }
+  } active_spells;
+
   bool echo_of_light_merged;
 
   // Random Number Generators
@@ -246,8 +255,6 @@ struct priest_t : public player_t
     was_sub_20                           = false;
     echo_of_light_merged                 = false;
 
-    heals_echo_of_light                  = NULL;
-
     distance                             = 40.0;
     default_distance                     = 40.0;
 
@@ -291,8 +298,8 @@ struct priest_t : public player_t
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( school_type_e school, action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
+  virtual double    composite_player_td_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_movement_speed() const;
 
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
@@ -469,57 +476,39 @@ struct priest_heal_t : public heal_t
 
   void trigger_echo_of_light( priest_heal_t* a, player_t* /* t */ )
   {
-    if ( ! a -> p() -> mastery_spells.echo_of_light -> ok() ) return;
+    if ( ! p() -> mastery_spells.echo_of_light -> ok() )
+      return;
 
-    struct echo_of_light_t : public priest_heal_t
-    {
-      echo_of_light_t( priest_t* p ) :
-        priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
-      {
-        base_tick_time = timespan_t::from_seconds( 1.0 );
-        num_ticks      = 6;
-
-        background     = true;
-        tick_may_crit  = false;
-        hasted_ticks   = false;
-        may_crit       = false;
-
-        init();
-      }
-    };
-
-    if ( ! p() -> heals_echo_of_light ) p() -> heals_echo_of_light = new echo_of_light_t( a -> p() );
-
-    if ( p() -> heals_echo_of_light -> dot() -> ticking )
+    if ( p() -> active_spells.echo_of_light -> dot() -> ticking )
     {
       if ( p() -> echo_of_light_merged )
       {
         // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
-        p() -> heals_echo_of_light -> base_td = ( p() -> heals_echo_of_light -> base_td *
-                                                p() -> heals_echo_of_light -> dot() -> ticks() +
+        p() -> active_spells.echo_of_light -> base_td = ( p() -> active_spells.echo_of_light -> base_td *
+                                                p() -> active_spells.echo_of_light -> dot() -> ticks() +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> heals_echo_of_light -> num_ticks;
-        p() -> heals_echo_of_light -> dot() -> refresh_duration();
+                                                p() -> active_spells.echo_of_light -> num_ticks;
+        p() -> active_spells.echo_of_light -> dot() -> refresh_duration();
       }
       else
       {
         // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
-        p() -> heals_echo_of_light -> base_td = ( p() -> heals_echo_of_light -> base_td *
-                                                ( p() -> heals_echo_of_light -> dot() -> ticks() - 1 ) +
+        p() -> active_spells.echo_of_light -> base_td = ( p() -> active_spells.echo_of_light -> base_td *
+                                                ( p() -> active_spells.echo_of_light -> dot() -> ticks() - 1 ) +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> heals_echo_of_light -> num_ticks;
-        p() -> heals_echo_of_light -> dot() -> refresh_duration();
+                                                p() -> active_spells.echo_of_light -> num_ticks;
+        p() -> active_spells.echo_of_light -> dot() -> refresh_duration();
         p() -> echo_of_light_merged = true;
       }
     }
     else
     {
-      p() -> heals_echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
+      p() -> active_spells.echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
                                               p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 /
-                                              p() -> heals_echo_of_light -> num_ticks;
-      p() -> heals_echo_of_light -> execute();
+                                              p() -> active_spells.echo_of_light -> num_ticks;
+      p() -> active_spells.echo_of_light -> execute();
       p() -> echo_of_light_merged = false;
     }
   }
@@ -667,6 +656,21 @@ struct priest_heal_t : public heal_t
   void consume_inner_focus();
 };
 
+struct echo_of_light_t : public priest_heal_t
+{
+  echo_of_light_t( priest_t* p ) :
+    priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
+  {
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    num_ticks      = ( int ) ( data().duration() / base_tick_time );
+
+    background     = true;
+    tick_may_crit  = false;
+    hasted_ticks   = false;
+    may_crit       = false;
+
+  }
+};
 // Atonement heal ===========================================================
 
 struct atonement_heal_t : public priest_heal_t
@@ -740,6 +744,13 @@ struct atonement_heal_t : public priest_heal_t
 // Priest Spell
 // ==========================================================================
 
+struct priest_spell_state_t : public action_state_t
+{
+  priest_spell_state_t( action_t* a, priest_t* t ) :
+    action_state_t( a, t )
+  { }
+};
+
 struct priest_spell_t : public spell_t
 {
   atonement_heal_t* atonement;
@@ -752,6 +763,7 @@ struct priest_spell_t : public spell_t
   {
     may_crit          = true;
     tick_may_crit     = true;
+    stateless         = true;
 
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
@@ -1151,23 +1163,22 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     init();
   }
 
-  virtual void impact( player_t* t, result_type_e result, double dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    priest_spell_t::impact( t, result, dmg );
+    priest_spell_t::impact_s( s );
 
     // Cleanup. Re-add to free list.
     p() -> shadowy_apparition_active_list.remove( this );
     p() -> shadowy_apparition_free_list.push( this );
   }
 
-  virtual double composite_da_multiplier()
-  { 
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = priest_spell_t::action_multiplier( s );
+
     // Bug: Last tested Build 15589
-    double m = priest_spell_t::composite_da_multiplier();
-
     if ( p() -> buffs.shadowform -> check() )
-      m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
-
+     m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
     return m;
   }
 };
@@ -1651,11 +1662,13 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dt )
+  virtual double composite_crit( const action_state_t* s ) const
   {
-    priest_spell_t::target_debuff( t, dt );
+    double c = priest_spell_t::composite_crit( s );
 
-    target_crit += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
+    c += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
+
+    return c;
   }
 
   virtual timespan_t execute_time() const
@@ -1709,11 +1722,6 @@ struct mind_flay_t : public priest_spell_t
       return 0.0;
 
     return priest_spell_t::calculate_tick_damage( r, power, multiplier );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    priest_spell_t::tick( d );
   }
 
   virtual bool ready()
@@ -1771,16 +1779,17 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    priest_spell_t::impact( t, impact_result, dmg );
+    priest_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      priest_targetdata_t* td = targetdata() -> cast_priest();
       p() -> buffs.mind_spike -> trigger( 1, 1.0 );
 
       p() -> buffs.mind_spike -> trigger( 1, data().effectN( 2 ).percent() );
+
+      priest_targetdata_t* td = targetdata() -> cast_priest();
 
       if ( ! td -> remove_dots_event )
       {
@@ -1869,11 +1878,11 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    priest_spell_t::impact( t, impact_result, travel_dmg );
+    priest_spell_t::impact_s( s );
 
-    double health_loss = travel_dmg;
+    double health_loss = s -> result_amount;
 
     // Needs testing
     if ( p() -> set_bonus.tier13_2pc_caster() )
@@ -1884,16 +1893,17 @@ struct shadow_word_death_t : public priest_spell_t
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier( const action_state_t* s ) const
   {
-    priest_spell_t::player_buff();
+    double am = priest_spell_t::action_multiplier( s );
 
-    if ( p() -> glyphs.mind_spike -> ok() && ( target -> health_percentage() <= p() -> glyphs.mind_spike -> effectN( 3 ).base_value() ) )
-      player_multiplier *= 1.0 + p() -> glyphs.mind_spike -> effectN( 1 ).percent();
+    if ( p() -> glyphs.mind_spike -> ok() && ( s -> target -> health_percentage() <= p() -> glyphs.mind_spike -> effectN( 3 ).base_value() ) )
+      am *= 1.0 + p() -> glyphs.mind_spike -> effectN( 1 ).percent();
 
-    // Hardcoded into the tooltip
-    if ( target -> health_percentage() < 20 )
-      player_multiplier *= 3.0;
+    if ( s -> target -> health_percentage() < 20 )
+      am *= 3.0;
+
+    return am;
   }
 
   virtual bool ready()
@@ -2011,11 +2021,13 @@ struct holy_fire_t : public priest_spell_t
     p() -> buffs.holy_evangelism  -> trigger();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier( const action_state_t* s ) const
   {
-    priest_spell_t::player_buff();
+    double m = priest_spell_t::action_multiplier( s );
 
-    player_multiplier *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+
+    return m;
   }
 
   virtual double cost() const
@@ -2043,11 +2055,13 @@ struct penance_t : public priest_spell_t
       base_hit += p -> glyphs.atonement -> effectN( 1 ).percent();
     }
 
-    virtual void player_buff()
+    virtual double action_multiplier( const action_state_t* s ) const
     {
-      priest_spell_t::player_buff();
+      double m = priest_spell_t::action_multiplier( s );
 
-      player_multiplier *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+      m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+
+      return m;
     }
   };
 
@@ -2180,9 +2194,9 @@ struct shadowy_apparition_t : priest_spell_t
       stats -> add_child( s );
   }
 
-  virtual void schedule_travel( player_t* t )
+  virtual void schedule_travel_s( action_state_t* s )
   {
-    priest_spell_t::schedule_travel( t );
+    priest_spell_t::schedule_travel_s( s );
 
     triggered_shadow_orb_mastery = trigger_shadowy_apparition( p() );
   }
@@ -3114,7 +3128,7 @@ double priest_t::composite_spell_hit() const
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
+double priest_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3135,7 +3149,7 @@ double priest_t::composite_player_multiplier( const school_type_e school, action
 
 // priest_t::composite_player_td_multiplier =================================
 
-double priest_t::composite_player_td_multiplier( const school_type_e school, action_t* a ) const
+double priest_t::composite_player_td_multiplier( const school_type_e school, const action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_td_multiplier( school, a );
 
@@ -3374,6 +3388,9 @@ void priest_t::init_spells()
   // Holy
   spec.meditation_holy                = find_class_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
   spec.revelations                    = find_class_spell( "Revelations" );
+  spec.chakra_chastise                = find_class_spell( "Chakra: Chastise" );
+  spec.chakra_sanctuary               = find_class_spell( "Chakra: Sanctuary" );
+  spec.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
 
   // Shadow
   spec.spiritual_precision            = find_class_spell( "Spiritual Precision" );
@@ -3404,6 +3421,11 @@ void priest_t::init_spells()
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
   glyphs.vampiric_touch               = find_glyph_spell( "Glyph of Vampiric Touch" );
   glyphs.shadowy_apparition           = find_glyph_spell( "Glyph of Shadowy Apparition" );
+
+  if ( mastery_spells.echo_of_light -> ok() )
+    active_spells.echo_of_light = new echo_of_light_t( this );
+  else
+    active_spells.echo_of_light = NULL;
 
   // Set Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -3772,8 +3794,6 @@ void priest_t::reset()
   echo_of_light_merged = false;
 
   was_sub_20 = false;
-
-  heals_echo_of_light = 0;
 
   init_party();
 }

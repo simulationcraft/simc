@@ -326,7 +326,7 @@ player_t::player_t( sim_t*             s,
   // Attacks
   main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
   // Resources
-  mana_per_intellect( 0 ),
+  mana_per_intellect( 0 ), mp5_from_spirit_multiplier( 1.0 ),
   // Consumables
   elixir_guardian( ELIXIR_NONE ),
   elixir_battle( ELIXIR_NONE ),
@@ -470,11 +470,7 @@ player_t::~player_t()
     rng_list = r -> next;
     delete r;
   }
-  while ( dot_t* d = dot_list )
-  {
-    dot_list = d -> next;
-    delete d;
-  }
+  range::dispose( dot_list );
   range::dispose( buff_list );
   while ( cooldown_t* d = cooldown_list )
   {
@@ -1078,8 +1074,10 @@ void player_t::init_resources( bool force )
   {
     if ( force || resources.initial[ i ] == 0 )
     {
-      resources.initial[ i ] = resources.base[ i ] * resources.base_multiplier[ i ] + gear.resource[ i ] + enchant.resource[ i ] + ( is_pet() ? 0 : sim -> enchant.resource[ i ] );
-      resources.initial[ i ] *= resources.initial_multiplier[ i ];
+      resources.initial[ i ] = (   resources.base[ i ] * resources.base_multiplier[ i ]
+                                 + gear.resource[ i ] + enchant.resource[ i ]
+                                 + ( is_pet() ? 0 : sim -> enchant.resource[ i ] )
+                                ) * resources.initial_multiplier[ i ];
       if ( i == RESOURCE_HEALTH )
       {
         // The first 20pts of stamina only provide 1pt of health.
@@ -2335,7 +2333,7 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mp5() const
 {
-  return mp5 + spirit() * dbc.mp5_per_spirit( type, level );
+  return mp5 + spirit() * dbc.mp5_per_spirit( type, level ) * mp5_from_spirit_multiplier;
 }
 
 double player_t::composite_mastery() const
@@ -2362,7 +2360,7 @@ double player_t::composite_attack_power_multiplier() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( const school_type_e school, action_t* /* a */ ) const
+double player_t::composite_player_multiplier( const school_type_e school, const action_t* /* a */ ) const
 {
   double m = 1.0;
 
@@ -2388,7 +2386,7 @@ double player_t::composite_player_multiplier( const school_type_e school, action
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( const school_type_e /* school */, action_t* /* a */ ) const
+double player_t::composite_player_td_multiplier( const school_type_e /* school */, const action_t* /* a */ ) const
 {
   return 1.0;
 }
@@ -2853,8 +2851,8 @@ void player_t::reset()
   for ( cooldown_t* c = cooldown_list; c; c = c -> next )
     c -> reset();
 
-  for ( dot_t* d = dot_list; d; d = d -> next )
-    d -> reset();
+  for ( size_t i = 0; i < dot_list.size(); ++i )
+    dot_list[ i ] -> reset();
 
   for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
   {
@@ -3137,10 +3135,9 @@ action_t* player_t::execute_action()
   readying = 0;
   off_gcd = 0;
 
-  action_t* action=0;
-  size_t actions = foreground_action_list.size();
+  action_t* action = 0;
 
-  for ( size_t i = 0; i < actions; ++i )
+  for ( size_t i = 0, num_actions = foreground_action_list.size(); i < num_actions; ++i )
   {
     action_t* a = foreground_action_list[ i ];
 
@@ -4038,8 +4035,9 @@ cooldown_t* player_t::find_cooldown( const std::string& name ) const
 
 dot_t* player_t::find_dot( const std::string& name ) const
 {
-  for ( dot_t* d = dot_list; d; d = d -> next )
+  for ( size_t i = 0; i < dot_list.size(); ++i )
   {
+    dot_t* d = dot_list[ i ];
     if ( d -> name_str == name )
       return d;
   }
@@ -4107,25 +4105,14 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 
 dot_t* player_t::get_dot( const std::string& name )
 {
-  dot_t* d=0;
+  dot_t* d = find_dot( name );
 
-  for ( d = dot_list; d; d = d -> next )
+  if ( !d )
   {
-    if ( d -> name_str == name )
-      return d;
+    d = new dot_t( name, this );
+
+    dot_list.push_back( d );
   }
-
-  d = new dot_t( name, this );
-
-  dot_t** tail = &dot_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  d -> next = *tail;
-  *tail = d;
 
   return d;
 }
@@ -6614,7 +6601,7 @@ targetdata_t* targetdata_t::get( player_t* source, player_t* target )
 }
 
 targetdata_t::targetdata_t( player_t* source, player_t* target )
-  : source( ( player_t* )source ), target( ( player_t* )target ), dot_list( NULL )
+  : source( ( player_t* )source ), target( ( player_t* )target )
 {
   std::vector<std::pair<size_t, std::string> >& v = source->sim->targetdata_dots[source->type];
   for ( std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i )
@@ -6625,31 +6612,26 @@ targetdata_t::targetdata_t( player_t* source, player_t* target )
 
 targetdata_t::~targetdata_t()
 {
-  while ( dot_t* d = dot_list )
-  {
-    dot_list = d -> next;
-    delete d;
-  }
+  range::dispose( dot_list );
 }
 
 void targetdata_t::reset()
 {
-  for ( dot_t* d = dot_list; d; d = d->next )
-    d -> reset();
+  for ( size_t i = 0; i < dot_list.size(); ++i )
+    dot_list[ i ] -> reset();
 }
 
 void targetdata_t::clear_debuffs()
 {
   // FIXME: should clear debuffs as well according to similar FIXME in player_t::clear_debuffs()
 
-  for ( dot_t* d = dot_list; d; d = d->next )
-    d -> cancel();
+  for ( size_t i = 0; i < dot_list.size(); ++i )
+    dot_list[ i ] -> cancel();
 }
 
 dot_t* targetdata_t::add_dot( dot_t* d )
 {
-  d -> next = dot_list;
-  dot_list = d;
+  dot_list.push_back( d );
 
   return d;
 }

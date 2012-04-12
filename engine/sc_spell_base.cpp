@@ -156,6 +156,6 @@ void spell_base_t::init()
   if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
     snapshot_flags |= STATE_SP;
 
-  if ( num_ticks > 0 && hasted_ticks )
+  if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
 }

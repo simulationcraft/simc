@@ -795,7 +795,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
   tl.push_back( target );
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
     if ( ! sim -> actor_list[ i ] -> sleeping &&
          ( ( type == ACTION_HEAL && !sim -> actor_list[ i ] -> is_enemy() ) || ( type != ACTION_HEAL && sim -> actor_list[ i ] -> is_enemy() ) ) &&
@@ -860,7 +860,7 @@ void action_t::execute()
     {
       std::vector< player_t* > tl = target_list();
 
-      for ( size_t t = 0; t < tl.size(); t++ )
+      for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
       {
         target_debuff( tl[ t ], DMG_DIRECT );
 
@@ -886,11 +886,11 @@ void action_t::execute()
   }
   else
   {
-    if ( aoe == -1 || aoe > 0 )
+    if ( aoe == -1 || aoe > 0 ) // stateless aoe
     {
       std::vector< player_t* > tl = target_list();
 
-      for ( size_t t = 0; t < tl.size(); t++ )
+      for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
       {
         action_state_t* s = get_state();
         s -> target = tl[ t ];
@@ -906,7 +906,7 @@ void action_t::execute()
         schedule_travel_s( s );
       }
     }
-    else
+    else // stateless single target
     {
       action_state_t* s = get_state();
       s -> target = target;
@@ -1789,7 +1789,7 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
   assert( state );
 
   if ( flags & STATE_CRIT )
-    state -> crit = composite_crit();
+    state -> crit = composite_crit( state );
 
   if ( flags & STATE_HASTE )
     state -> haste = composite_haste();
@@ -1801,10 +1801,10 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> spell_power = floor( composite_spell_power() * composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
-    state -> da_multiplier = composite_da_multiplier();
+    state -> da_multiplier = composite_da_multiplier( state );
 
   if ( flags & STATE_MUL_TA )
-    state -> ta_multiplier = composite_ta_multiplier();
+    state -> ta_multiplier = composite_ta_multiplier( state );
 
   if ( flags & STATE_MUL_TARGET )
     state -> target_multiplier = state -> target -> composite_player_vulnerability( school );

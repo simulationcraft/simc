@@ -71,7 +71,7 @@ void gear_stats_t::add_stat( stat_type_e stat,
     { attribute[ i ] += value; }
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
@@ -137,7 +137,7 @@ void gear_stats_t::set_stat( stat_type_e stat,
     { attribute[ i ] = value; }
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
@@ -199,7 +199,7 @@ double gear_stats_t::get_stat( stat_type_e stat ) const
 
   case STAT_ALL: return 0;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
   return 0;
 }

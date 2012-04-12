@@ -33,9 +33,9 @@ static bool only_white_space( char* s )
 static FILE* open_file( sim_t* sim, const std::string& name )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, sim -> path_str, ",;|" );
+  util_t::string_split( splits, sim -> path_str, ",;|" );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < splits.size(); i++ )
   {
     if ( FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" ) )
       return f;
@@ -119,7 +119,9 @@ void option_t::save( FILE* file )
     if ( ! v.empty() )
     {
       util_t::fprintf( file, "%s=", name );
-      for ( unsigned i=0; i < v.size(); i++ ) util_t::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+      for ( size_t i = 0; i < v.size(); i++ )
+        util_t::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+
       util_t::fprintf( file, "\n" );
     }
   }

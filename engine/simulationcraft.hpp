@@ -4014,6 +4014,7 @@ struct player_t : public noncopyable
   } resources;
 
   double  mana_per_intellect;
+  double mp5_from_spirit_multiplier;
   uptime_t* primary_resource_cap;
 
   // Consumables
@@ -4063,7 +4064,7 @@ struct player_t : public noncopyable
   std::string modify_action;
   int         action_list_default;
   cooldown_t* cooldown_list;
-  dot_t*      dot_list;
+  std::vector<dot_t*> dot_list;
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
 
@@ -4215,8 +4216,7 @@ struct player_t : public noncopyable
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
     buff_t* weakened_soul;
-
-    // MoP buffs
+    buffs_t() { memset( this, 0, sizeof( *this ) ); }
   } buffs;
 
   struct debuffs_t
@@ -4240,6 +4240,7 @@ struct player_t : public noncopyable
 
     // Class specific "general" debuffs
     debuff_t* shattering_throw;
+    debuffs_t() { memset( this, 0, sizeof( *this ) ); }
   } debuffs;
 
   struct gains_t
@@ -4262,11 +4263,13 @@ struct player_t : public noncopyable
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
+    gains_t()  { memset( this, 0, sizeof( *this ) ); }
   } gains;
 
   struct procs_t
   {
     proc_t* hat_donor;
+    procs_t() { memset( this, 0, sizeof( *this ) ); }
   } procs;
 
   rng_t* rng_list;
@@ -4280,6 +4283,7 @@ struct player_t : public noncopyable
     rng_t* lag_queue;
     rng_t* lag_reaction;
     rng_t* lag_world;
+    rngs_t() { memset( this, 0, sizeof( *this ) ); }
   } rngs;
 
   int targetdata_id;
@@ -4368,9 +4372,9 @@ struct player_t : public noncopyable
 
   virtual double matching_gear_multiplier( attribute_type_e /* attr */ ) const { return 0; }
 
-  virtual double composite_player_multiplier   ( school_type_e, action_t* a = NULL ) const;
-  virtual double composite_player_dd_multiplier( school_type_e, action_t* /* a */ = NULL ) const { return 1; }
-  virtual double composite_player_td_multiplier( school_type_e, action_t* a = NULL ) const;
+  virtual double composite_player_multiplier   ( school_type_e, const action_t* a = NULL ) const;
+  virtual double composite_player_dd_multiplier( school_type_e, const action_t* /* a */ = NULL ) const { return 1; }
+  virtual double composite_player_td_multiplier( school_type_e, const action_t* a = NULL ) const;
 
   virtual double composite_player_heal_multiplier( school_type_e school ) const;
   virtual double composite_player_dh_multiplier( school_type_e /* school */ ) const { return 1; }
@@ -4637,7 +4641,7 @@ struct targetdata_t : public noncopyable
   player_t* const source;
   player_t* const target;
 
-  dot_t* dot_list;
+  std::vector<dot_t*> dot_list;
 
   targetdata_t( player_t* source, player_t* target );
 
@@ -4688,7 +4692,7 @@ public:
   virtual double composite_attack_expertise( const weapon_t* ) const { return floor( floor( 100.0 * owner -> attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
   virtual double composite_attack_hit() const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
   virtual double composite_spell_hit() const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
-  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 
   virtual double composite_attribute( attribute_type_e attr ) const;
 
@@ -5036,27 +5040,27 @@ public:
 
   virtual void   snapshot_state( action_state_t*, uint32_t );
 
-  virtual double action_multiplier() const { return base_multiplier; }
+  virtual double action_multiplier( const action_state_t* ) const { return base_multiplier; }
   virtual double action_da_multiplier() const { return base_dd_multiplier; }
   virtual double action_ta_multiplier() const { return base_td_multiplier; }
 
   virtual double composite_hit() const { return base_hit; }
   virtual double composite_expertise() const { return 0.0; }
-  virtual double composite_crit() const { return base_crit; }
+  virtual double composite_crit( const action_state_t* ) const { return base_crit; }
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power; }
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
   virtual double composite_spell_power() const { return base_spell_power; }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_da_multiplier() *
+    return action_multiplier( s ) * action_da_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_dd_multiplier( school, this );
   }
-  virtual double composite_ta_multiplier()
+  virtual double composite_ta_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_ta_multiplier() *
+    return action_multiplier( s ) * action_ta_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_td_multiplier( school, this );
   }
@@ -5130,9 +5134,12 @@ public:
   virtual double   crit_chance( double crit, int delta_level ) const;
 
   /* New stuffs */
-  virtual double composite_hit() const { return action_t::composite_hit() + player -> composite_attack_hit(); }
-  virtual double composite_crit() const { return action_t::composite_crit() + player -> composite_attack_crit( weapon ); }
-  virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_attack_haste(); }
+  virtual double composite_hit() const
+  { return action_t::composite_hit() + player -> composite_attack_hit(); }
+  virtual double composite_crit( const action_state_t* s ) const
+  { return action_t::composite_crit( s ) + player -> composite_attack_crit( weapon ); }
+  virtual double composite_haste() const
+  { return action_t::composite_haste() * player -> composite_attack_haste(); }
   virtual double composite_attack_power() const { return action_t::composite_attack_power() + player -> composite_attack_power(); }
   virtual double composite_attack_power_multiplier() const { return action_t::composite_attack_power_multiplier() * player -> composite_attack_power_multiplier(); }
 };
@@ -5199,7 +5206,8 @@ public:
   virtual void   init();
 
   /* New stuffs */
-  virtual double composite_crit() const { return action_t::composite_crit() + player -> composite_spell_crit(); }
+  virtual double composite_crit( const action_state_t* s ) const
+  { return action_t::composite_crit( s ) + player -> composite_spell_crit(); }
   virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_spell_haste(); }
   virtual double composite_spell_power() const { return action_t::composite_spell_power() + player -> composite_spell_power( school ); }
   virtual double composite_spell_power_multiplier() const { return action_t::composite_spell_power_multiplier() * player -> composite_spell_power_multiplier(); }
@@ -5321,7 +5329,6 @@ struct dot_t
   player_t* const player;
   action_t* action;
   event_t* tick_event;
-  dot_t* next;
   int num_ticks, current_tick, added_ticks, ticking;
   timespan_t added_seconds;
   timespan_t ready;

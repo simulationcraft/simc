@@ -10,9 +10,11 @@
 // ==========================================================================
 
 dot_t::dot_t( const std::string& n, player_t* p ) :
-  sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ), next( 0 ),
+  sim( p -> sim ), player( p ), action( 0 ), tick_event( 0 ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
-  added_seconds( timespan_t::zero() ), ready( timespan_t::min() ), miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ), name_str( n ), prev_tick_amount( 0.0 ), state( 0 )
+  added_seconds( timespan_t::zero() ), ready( timespan_t::min() ),
+  miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
+  name_str( n ), prev_tick_amount( 0.0 ), state( 0 )
 {}
 // dot_t::cancel ===================================================
 
@@ -37,7 +39,8 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
   assert( tick_event );
 
   if ( sim -> log )
-    log_t::output( sim, "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks", action -> player -> name(), name(), player -> name(), extra_ticks, num_ticks + extra_ticks );
+    log_t::output( sim, "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks",
+                   action -> player -> name(), name(), player -> name(), extra_ticks, num_ticks + extra_ticks );
 
   if ( cap )
   {
@@ -120,7 +123,8 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
   }
   else if ( sim -> log )
   {
-    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s).", action -> player -> name(), name(), player -> name(), extra_seconds.total_seconds() );
+    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s).",
+                   action -> player -> name(), name(), player -> name(), extra_seconds.total_seconds() );
   }
 
   recalculate_ready();
@@ -176,6 +180,7 @@ timespan_t dot_t::remains() const
 {
   if ( ! action ) return timespan_t::zero();
   if ( ! ticking ) return timespan_t::zero();
+
   return ready - player -> sim -> current_time;
 }
 
