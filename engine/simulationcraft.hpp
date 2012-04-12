@@ -38,6 +38,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <iterator>
@@ -3146,7 +3147,7 @@ inline expr_t* make_fn_expr( const std::string& name, F f )
 // Shortcut to create an expr_t that calls a member function f on reference t.
 template <typename F, typename T>
 inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
-{ return make_fn_expr( name, std::bind( std::mem_fn( f ), std::ref( t ) ) ); }
+{ return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) ); }
 
 
 // Spell query expression types =============================================
