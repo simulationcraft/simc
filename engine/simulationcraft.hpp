@@ -119,7 +119,7 @@ namespace std {using namespace tr1; }
 #define SC_DEATH_KNIGHT 0
 #define SC_DRUID        0
 #define SC_HUNTER       0
-#define SC_MAGE         0
+#define SC_MAGE         1
 #define SC_MONK         0
 #define SC_PALADIN      0
 #define SC_PRIEST       1
@@ -4290,7 +4290,7 @@ struct player_t : public noncopyable
 
   virtual const char* name() const { return name_str.c_str(); }
 
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target );
+  virtual targetdata_t* new_targetdata( player_t* target );
   virtual void init();
   virtual void init_glyphs();
   virtual void init_base() = 0;
@@ -4633,8 +4633,8 @@ struct compare_scale_factors
 
 struct targetdata_t : public noncopyable
 {
-  player_t* source;
-  player_t* target;
+  player_t* const source;
+  player_t* const target;
 
   dot_t* dot_list;
 

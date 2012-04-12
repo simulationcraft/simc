@@ -61,7 +61,7 @@ struct shaman_targetdata_t : public targetdata_t
   buff_t* debuffs_stormstrike;
   buff_t* debuffs_unleashed_fury_ft;
 
-  shaman_targetdata_t( player_t* source, player_t* target );
+  shaman_targetdata_t( shaman_t* source, player_t* target );
 };
 
 void register_shaman_targetdata( sim_t* sim )
@@ -289,7 +289,8 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new shaman_targetdata_t( source, target );}
+  virtual shaman_targetdata_t* new_targetdata( player_t* target )
+  { return new shaman_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -4368,10 +4369,9 @@ void player_t::shaman_combat_begin( sim_t* )
 
 #if SC_SHAMAN == 1
 
-shaman_targetdata_t::shaman_targetdata_t( player_t* source, player_t* target )
-  : targetdata_t( source, target )
+shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
+  : targetdata_t( p, target )
 {
-  shaman_t* p = source -> cast_shaman();
   debuffs_searing_flames = add_aura( new searing_flames_buff_t( this, p -> dbc.specialization_ability_id( p -> type, "Searing Flames" ), "searing_flames" ) );
   debuffs_stormstrike    = add_aura( new buff_t( this, p -> dbc.specialization_ability_id( p -> type, "Stormstrike" ), "stormstrike" ) );
   debuffs_unleashed_fury_ft = add_aura( new buff_t( this, 118470, "unleashed_fury_ft" ) );

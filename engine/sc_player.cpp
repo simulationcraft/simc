@@ -6590,10 +6590,8 @@ player_t* player_t::create( sim_t*             sim,
   return 0;
 }
 
-targetdata_t* player_t::new_targetdata( player_t* source, player_t* target )
-{
-  return new targetdata_t( source, target );
-}
+targetdata_t* player_t::new_targetdata( player_t* target )
+{ return new targetdata_t( this, target ); }
 
 // ==========================================================================
 // Target data
@@ -6610,7 +6608,7 @@ targetdata_t* targetdata_t::get( player_t* source, player_t* target )
 
   targetdata_t* p = target->targetdata[id];
   if ( ! p )
-    target -> targetdata[id] = p = source -> new_targetdata( source, target );
+    target -> targetdata[id] = p = source -> new_targetdata( target );
 
   return p;
 }

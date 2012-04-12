@@ -19,10 +19,7 @@ struct hunter_targetdata_t : public targetdata_t
 {
   dot_t* dots_serpent_sting;
 
-  hunter_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-  }
+  hunter_targetdata_t( hunter_t* source, player_t* target );
 };
 
 void register_hunter_targetdata( sim_t* sim )
@@ -241,7 +238,8 @@ struct hunter_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new hunter_targetdata_t( source, target );}
+  virtual hunter_targetdata_t* new_targetdata( player_t* target )
+  { return new hunter_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -277,6 +275,10 @@ struct hunter_t : public player_t
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 };
+
+hunter_targetdata_t::hunter_targetdata_t( hunter_t* source, player_t* target ) :
+  targetdata_t( source, target )
+{}
 
 // ==========================================================================
 // Hunter Pet

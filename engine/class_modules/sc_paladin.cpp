@@ -30,11 +30,7 @@ struct paladin_targetdata_t : public targetdata_t
 
   buff_t* debuffs_censure;
 
-  paladin_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-    debuffs_censure = add_aura( new buff_t( this, 31803, "censure" ) );
-  }
+  paladin_targetdata_t( paladin_t* source, player_t* target );
 };
 
 void register_paladin_targetdata( sim_t* sim )
@@ -295,7 +291,8 @@ struct paladin_t : public player_t
     create_options();
   }
 
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new paladin_targetdata_t( source, target );}
+  virtual paladin_targetdata_t* new_targetdata( player_t* target )
+  { return new paladin_targetdata_t( this, target ); }
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_gains();
@@ -336,6 +333,12 @@ struct paladin_t : public player_t
   double            get_hand_of_light() const;
   double            jotp_haste() const;
 };
+
+paladin_targetdata_t::paladin_targetdata_t( paladin_t* source, player_t* target ) :
+  targetdata_t( source, target )
+{
+  debuffs_censure = add_aura( new buff_t( this, 31803, "censure" ) );
+}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 

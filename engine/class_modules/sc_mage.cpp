@@ -22,11 +22,7 @@ struct mage_targetdata_t : public targetdata_t
 
   buff_t* debuffs_slow;
 
-  mage_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-    debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> find_spell( 31589 ) ) );
-  }
+  mage_targetdata_t( mage_t* source, player_t* target );
 };
 
 void register_mage_targetdata( sim_t* sim )
@@ -282,7 +278,8 @@ struct mage_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new mage_targetdata_t( source, target );}
+  virtual mage_targetdata_t* new_targetdata( player_t* target )
+  { return new mage_targetdata_t( this, target ); }
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -320,6 +317,12 @@ struct mage_t : public player_t
   virtual double resource_gain( resource_type_e resource, double amount, gain_t* source=0, action_t* action=0 );
   virtual double resource_loss( resource_type_e resource, double amount, action_t* action=0 );
 };
+
+mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target )
+  : targetdata_t( source, target )
+{
+  debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> find_spell( 31589 ) ) );
+}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -2893,9 +2896,9 @@ void mage_t::init_buffs()
   buffs_mage_armor           = new mage_armor_buff_t( this );
   buffs_molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
   buffs_presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind );
-  
+
   buffs_hot_streak_crits     = buff_creator_t( this, "hot_streak_crits" ).max_stack( 2 ).quiet( true );
-  
+
   buffs_tier13_2pc           = stat_buff_creator_t(
                                  buff_creator_t( this, "tier13_2pc" ).duration( timespan_t::from_seconds( 30.0 ) ).max_stack( 10 )
                                ).stat( STAT_HASTE_RATING ).amount( 50.0 );

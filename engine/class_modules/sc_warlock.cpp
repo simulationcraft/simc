@@ -73,10 +73,9 @@ void register_warlock_targetdata( sim_t* sim )
   REGISTER_DEBUFF( shadow_embrace );
 }
 
-warlock_targetdata_t::warlock_targetdata_t( player_t* source, player_t* target )
-  : targetdata_t( source, target )
+warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
+  : targetdata_t( p, target )
 {
-  warlock_t* p = this->source->cast_warlock();
   debuffs_haunted               = add_aura( new buff_t( this, p -> talent_haunt -> spell_id(), "haunted", p -> talent_haunt -> rank() ) );
   debuffs_shadow_embrace        = add_aura( new buff_t( this, p -> talent_shadow_embrace -> effect_trigger_spell( 1 ), "shadow_embrace", p -> talent_shadow_embrace -> rank() ) );
 }

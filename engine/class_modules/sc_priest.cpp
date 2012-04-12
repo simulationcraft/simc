@@ -24,14 +24,7 @@ struct priest_targetdata_t : public targetdata_t
 
   remove_dots_event_t* remove_dots_event;
 
-  priest_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target ), remove_dots_event( NULL )
-  {
-    buffs_power_word_shield = add_aura( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) );
-    target -> absorb_buffs.push_back( buffs_power_word_shield );
-    buffs_divine_aegis = add_aura( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) );
-    target -> absorb_buffs.push_back( buffs_divine_aegis );
-  }
+  priest_targetdata_t( priest_t* p, player_t* target );
 };
 
 void register_priest_targetdata( sim_t* sim )
@@ -278,8 +271,8 @@ struct priest_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target )
-  { return new priest_targetdata_t( source, target ); }
+  virtual priest_targetdata_t* new_targetdata( player_t* target )
+  { return new priest_targetdata_t( this, target ); }
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_benefits();
@@ -319,7 +312,16 @@ struct priest_t : public player_t
   virtual void pre_analyze_hook();
 };
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
+priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
+  targetdata_t( p, target ), remove_dots_event( NULL )
+{
+  buffs_power_word_shield = add_aura( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) );
+  target -> absorb_buffs.push_back( buffs_power_word_shield );
+  buffs_divine_aegis = add_aura( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) );
+  target -> absorb_buffs.push_back( buffs_divine_aegis );
+}
+
+namespace // ANONYMOUS NAMESPACE ============================================
 {
 
 struct remove_dots_event_t : public event_t

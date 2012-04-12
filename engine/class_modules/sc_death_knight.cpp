@@ -24,7 +24,7 @@ struct death_knight_targetdata_t : public targetdata_t
     return disease_count;
   }
 
-  death_knight_targetdata_t( player_t* source, player_t* target );
+  death_knight_targetdata_t( death_knight_t* source, player_t* target );
 };
 
 void register_death_knight_targetdata( sim_t* sim )
@@ -371,7 +371,8 @@ struct death_knight_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new death_knight_targetdata_t( source, target );}
+  virtual death_knight_targetdata_t* new_targetdata( player_t* target )
+  { return new death_knight_targetdata_t( this, target ); }
   virtual void      init();
   virtual void      init_talents();
   virtual void      init_spells();
@@ -427,10 +428,9 @@ struct death_knight_t : public player_t
   }
 };
 
-death_knight_targetdata_t::death_knight_targetdata_t( player_t* source, player_t* target )
-  : targetdata_t( source, target )
+death_knight_targetdata_t::death_knight_targetdata_t( death_knight_t* p, player_t* target )
+  : targetdata_t( p, target )
 {
-  death_knight_t* p = this->source -> cast_death_knight();
   debuffs_ebon_plaguebringer  = add_aura( new buff_t( this, 65142, "ebon_plaguebringer_track", -1, timespan_t::min(), true ) );
   debuffs_ebon_plaguebringer -> buff_duration += p -> talents.epidemic -> effect1().time_value();
 }

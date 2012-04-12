@@ -44,14 +44,7 @@ struct druid_targetdata_t : public targetdata_t
     return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
   }
 
-  druid_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-    buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
-
-    buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( this->source->type, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero() ) );
-    buffs_lifebloom -> buff_duration = timespan_t::from_seconds( 11.0 ); // Override duration so the bloom works correctly
-  }
+  druid_targetdata_t( druid_t* source, player_t* target );
 };
 
 void register_druid_targetdata( sim_t* sim )
@@ -343,7 +336,8 @@ struct druid_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new druid_targetdata_t( source, target );}
+  virtual druid_targetdata_t* new_targetdata( player_t* target )
+  { return new druid_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -393,6 +387,15 @@ struct druid_t : public player_t
     }
   }
 };
+
+druid_targetdata_t::druid_targetdata_t( druid_t* source, player_t* target )
+  : targetdata_t( source, target )
+{
+  buffs_combo_points = add_aura( new buff_t( this, "combo_points", 5 ) );
+
+  buffs_lifebloom = add_aura( new buff_t( this, this->source->dbc.class_ability_id( DRUID, "Lifebloom" ), "lifebloom", 1.0, timespan_t::zero() ) );
+  buffs_lifebloom -> buff_duration = timespan_t::from_seconds( 11.0 ); // Override duration so the bloom works correctly
+}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 

@@ -29,7 +29,7 @@ struct warlock_targetdata_t : public targetdata_t
   int affliction_effects();
   int active_dots();
 
-  warlock_targetdata_t( player_t* source, player_t* target );
+  warlock_targetdata_t( warlock_t* source, player_t* target );
 };
 
 struct warlock_pet_t;
@@ -232,7 +232,8 @@ struct warlock_t : public player_t
 
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new warlock_targetdata_t( source, target );}
+  virtual warlock_targetdata_t* new_targetdata( player_t* target )
+  { return new warlock_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();

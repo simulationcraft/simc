@@ -82,11 +82,7 @@ struct warrior_targetdata_t : public targetdata_t
 
   buff_t* debuffs_colossus_smash;
 
-  warrior_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-    debuffs_colossus_smash            = add_aura( new buff_t( this, "colossus_smash",            1,  timespan_t::from_seconds( 6.0 ) ) );
-  }
+  warrior_targetdata_t( warrior_t* source, player_t* target );
 };
 
 void register_warrior_targetdata( sim_t* sim )
@@ -331,7 +327,8 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new warrior_targetdata_t( source, target );}
+  virtual warrior_targetdata_t* new_targetdata( player_t* target )
+  { return new warrior_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_defense();
@@ -365,6 +362,12 @@ struct warrior_t : public player_t
   virtual double    assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a );
   virtual void      copy_from( player_t* source );
 };
+
+warrior_targetdata_t::warrior_targetdata_t( warrior_t* source, player_t* target ) :
+  targetdata_t( source, target )
+{
+  debuffs_colossus_smash = add_aura( new buff_t( this, "colossus_smash", 1, timespan_t::from_seconds( 6.0 ) ) );
+}
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {

@@ -122,13 +122,7 @@ struct rogue_targetdata_t : public targetdata_t
 
   combo_points_t* combo_points;
 
-  rogue_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-    combo_points = new combo_points_t( this->target );
-
-    debuffs_poison_doses = add_aura( new buff_t( this, "poison_doses",  5  ) );
-  }
+  rogue_targetdata_t( rogue_t* source, player_t* target );
 
   virtual void reset()
   {
@@ -408,7 +402,8 @@ struct rogue_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new rogue_targetdata_t( source, target );}
+  virtual rogue_targetdata_t* new_targetdata( player_t* target )
+  { return new rogue_targetdata_t( this, target ); }
   virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
@@ -442,6 +437,13 @@ struct rogue_t : public player_t
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
 };
+
+rogue_targetdata_t::rogue_targetdata_t( rogue_t* source, player_t* target ) :
+  targetdata_t( source, target )
+{
+  combo_points = new combo_points_t( target );
+  debuffs_poison_doses = add_aura( new buff_t( this, "poison_doses",  5  ) );
+}
 
 namespace // ANONYMOUS NAMESPACE ============================================
 {

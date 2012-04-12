@@ -15,10 +15,7 @@ enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_targetdata_t : public targetdata_t
 {
-  monk_targetdata_t( player_t* source, player_t* target )
-    : targetdata_t( source, target )
-  {
-  }
+  monk_targetdata_t( monk_t* source, player_t* target );
 };
 
 void register_monk_targetdata( sim_t* /* sim */ )
@@ -97,7 +94,8 @@ struct monk_t : public player_t
   }
 
   // Character Definition
-  virtual targetdata_t* new_targetdata( player_t* source, player_t* target ) {return new monk_targetdata_t( source, target );}
+  virtual monk_targetdata_t* new_targetdata( player_t* target )
+  { return new monk_targetdata_t( this, target ); }
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      init_talents();
   virtual void      init_spells();
@@ -114,6 +112,10 @@ struct monk_t : public player_t
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
 };
+
+monk_targetdata_t::monk_targetdata_t( monk_t* source, player_t* target ) :
+  targetdata_t( source, target )
+{}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
