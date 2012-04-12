@@ -677,11 +677,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30146, // Summon Felguard (Summon)
            0,
     },
-    // Destruction tree, 8 abilities
+    // Destruction tree, 9 abilities
     {
        17962, // Conflagrate
       114635, // Ember Tap
       108683, // Fire and Brimstone
+      120451, // Flames of A'lar
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
@@ -860,10 +861,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        61336, // Survival Instincts (Bear Form)
            0,
     },
-    // Restoration tree, 7 abilities
+    // Restoration tree, 8 abilities
     {
       102342, // Ironbark
        33763, // Lifebloom
+       88423, // Nature's Cure
        50464, // Nourish
         8936, // Regrowth
        18562, // Swiftmend

@@ -43,8 +43,10 @@ _DIFF_DATA = {
             ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
         ],
         'SpellPower.dbc' : [
+            ( 'id_spell', _REMOVE_FIELD ),
             ( 'id_spell', _ADD_FIELD, 'id' ),
             ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+            ( 'unk_15589_2', _ADD_FIELD, 'aura_id' ),
         ],
         'SpellLevels.dbc' : [
             ( 'id_spell', _ADD_FIELD, 'id' ),
