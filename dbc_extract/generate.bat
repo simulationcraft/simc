@@ -24,6 +24,9 @@ echo.
 goto usage
 :okay
 
+
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum                  > %OUTPATH%\specialization.hpp
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_list                  > %OUTPATH%\sc_spec_list.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% --itemcache=%INPATH% -b %BUILD% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t scale                   > %OUTPATH%\sc_scale_data%PTREXT%.inc
