@@ -2006,7 +2006,6 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
     if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
     {
       print_html_action_damage( file, s, p, i );
-      i++;
     }
   }
 
@@ -2034,7 +2033,6 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
                    pet -> dpse.mean );
         }
         print_html_action_damage( file, s, p, i );
-        i++;
       }
     }
   }

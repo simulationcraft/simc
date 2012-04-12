@@ -1546,7 +1546,10 @@ void sim_t::analyze_player( player_t* p )
 
     assert( timeline.size() == max_buckets );
     for ( size_t j = 0; j < max_buckets; j++ )
-      timeline[ j ] /= divisor_timeline[ j ] * regen_periodicity.total_seconds();
+    {
+      timeline[ j ] /= divisor_timeline[ j ];
+      timeline[ j ] *= regen_periodicity.total_seconds();
+    }
   }
 
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )

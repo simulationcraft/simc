@@ -5209,7 +5209,7 @@ public:
 struct spell_t : public spell_base_t
 {
 public:
-  spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE );
 
   // Harmful Spell Overrides
   virtual void   player_buff();
@@ -5230,7 +5230,7 @@ struct heal_t : public spell_base_t
   double total_heal, total_actual;
 
 public:
-  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
 
   virtual void player_buff();
   virtual void execute();
@@ -5248,7 +5248,7 @@ struct absorb_t : public spell_base_t
   double total_heal, total_actual;
 
 public:
-  absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
 
   virtual void player_buff();
   virtual void execute();
