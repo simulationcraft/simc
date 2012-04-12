@@ -23,8 +23,6 @@ if [ ! -d $INPUT ]; then
 fi
 
 
-./dbc_extract.py -p $INPUT -b $BUILD     -t spec_enum               > $OUTPATH/specialization.hpp
-./dbc_extract.py -p $INPUT -b $BUILD     -t spec_list               > $OUTPATH/sc_spec_list.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t talent                  > $OUTPATH/sc_talent_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT --itemcache=$INPUT -b $BUILD$PTR -t spell> $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t scale                   > $OUTPATH/sc_scale_data${PTR:+_ptr}.inc
@@ -41,3 +39,22 @@ fi
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t item_armor             >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t weapon_damage          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT -b $BUILD$PTR -t gem_properties         >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT -b $BUILD     -t spec_list               > $OUTPATH/sc_spec_list.inc
+
+(
+cat << zz1234
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+#ifndef SPECIALIZATION_HPP
+#define SPECIALIZATION_HPP
+
+zz1234
+) > $OUTPATH/specialization.hpp
+
+./dbc_extract.py -p $INPUT -b $BUILD     -t spec_enum               >> $OUTPATH/specialization.hpp
+
+echo "#endif\n" >> $OUTPATH/specialization.hpp
+
+

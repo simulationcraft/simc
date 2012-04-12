@@ -8,7 +8,65 @@ _ADD_FIELD    = 0x01
 _DIFF_DATA = {
     # MoP Beta build 1
     15464: { 
-    },     
+    },
+    15589: {
+        'Spell.dbc' : [
+            ( 'flags', _REMOVE_FIELD ),
+            ( 'flags_1', _REMOVE_FIELD ),
+            ( 'flags_2', _REMOVE_FIELD ),
+            ( 'flags_3', _REMOVE_FIELD ),
+            ( 'flags_4', _REMOVE_FIELD ),
+            ( 'flags_5', _REMOVE_FIELD ),
+            ( 'flags_6', _REMOVE_FIELD ),
+            ( 'flags_7', _REMOVE_FIELD ),
+            ( 'flags_12694', _REMOVE_FIELD ),
+            ( 'flags_8', _REMOVE_FIELD ),
+            ( 'unk_14002', _REMOVE_FIELD ),
+            ( 'id_cast_time', _REMOVE_FIELD ),
+            ( 'id_duration', _REMOVE_FIELD ),
+            ( 'id_range', _REMOVE_FIELD ),
+            ( 'prj_speed', _REMOVE_FIELD ),
+            ( 'unk_15', _REMOVE_FIELD ),
+            ( 'unk_16', _REMOVE_FIELD ),
+            ( 'id_icon', _REMOVE_FIELD ),
+            ( 'id_active_icon', _REMOVE_FIELD ),
+            ( 'mask_school', _REMOVE_FIELD ),
+            ( 'id_difficulty', _REMOVE_FIELD ),
+            ( 'id_misc', _ADD_FIELD, 'id_totems' ),
+        ],
+        'SpellEffect.dbc': [
+            ( 'unk_15589_1', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_2', _ADD_FIELD, 'trigger_spell' ),
+        ],
+        'SpellCooldowns.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        'SpellPower.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        'SpellLevels.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        'SpellCategories.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        'SpellAuraOptions.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        'SpellRadius.dbc' : [
+            ( ( 'unk_15589_1', '%f' ), _ADD_FIELD, 'radius_2' )
+        ],
+        'SpellEquippedItems.dbc' : [
+            ( 'id_spell', _ADD_FIELD, 'id' ),
+            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
+        ],
+        
+    }
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
@@ -204,6 +262,13 @@ _DBC_FIELDS = {
         ( 'id_class_opts', '%5u' ),( 'id_cooldowns', '%5u' ), ( 'id_equip_items', '%5u' ), ( 'id_interrupts', '%5u' ),  ( 'id_levels', '%5u' ),
         ( 'id_power', '%5u' ),     ( 'id_reagents', '%5u' ),  ( 'id_shapeshift', '%5u' ),  ( 'id_tgt_rest', '%5u' ),    ( 'id_totems', '%5u' )
           
+    ],
+    'SpellMisc.dbc' : [
+        'id', 'id_spell', 'unk_1', ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
+        ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_12694', '%#.8x' ),
+        ( 'flags_8', '%#.8x' ), 'unk_2', 'id_cast_time', 'id_duration',
+        'id_range', ( 'prj_speed', '%f' ), 'id_spell_visual_1', 'id_spell_visual_2', 'id_icon',
+        'id_active_icon', ( 'mask_school', '%#.2x' )
     ],
     'SpellAuraOptions.dbc' : [
           'id', ( 'stack_amount', '%3u' ), ( 'proc_chance', '%3u' ), ( 'proc_charges', '%2u' ), ( 'proc_flags', '%#.8x' )
@@ -528,6 +593,7 @@ class Spell(DBCRecord):
         self.rank     = 0
         self.max_effect_index = 0
         self._powers  = []
+        self._misc    = []
 
     def add_effect(self, spell_effect):
         if spell_effect.index > self.max_effect_index:
@@ -545,6 +611,9 @@ class Spell(DBCRecord):
                 self._powers.append( None )
             
             self._powers[ spell_power.type_power + 2 ] = spell_power
+    
+    def add_misc(self, misc):
+        self._misc.append( misc )
     
     def __getattr__(self, name):
         # Hack to get effect default values if spell has no effect_x, as those fields 

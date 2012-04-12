@@ -1,7 +1,7 @@
-#define CLASS_ABILITY_SIZE (46)
+#define CLASS_ABILITY_SIZE (45)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15544
+// Class based active abilities, wow build 15589
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -25,7 +25,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 29 abilities
+    // General tree, 30 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -54,6 +54,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        23920, // Spell Reflection
         7386, // Sunder Armor
          355, // Taunt
+      122475, // Throw
         6343, // Thunder Clap
        34428, // Victory Rush
            0,
@@ -169,7 +170,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 35 abilities
+    // General tree, 36 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
@@ -201,6 +202,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19503, // Scatter Shot
         1978, // Serpent Sting
        34600, // Snake Trap (Nature)
+      121818, // Stampede
        56641, // Steady Shot
         1515, // Tame Beast
        19801, // Tranquilizing Shot
@@ -550,7 +552,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 24 abilities
+    // General tree, 25 abilities
     {
       108978, // Alter Time
       120145, // Ancient Teleport: Dalaran
@@ -561,6 +563,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          120, // Cone of Cold
          759, // Conjure Mana Gem
         2139, // Counterspell
+       61316, // Dalaran Brilliance
        44572, // Deep Freeze
        12051, // Evocation
         2136, // Fire Blast
@@ -653,7 +656,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Affliction tree, 9 abilities
     {
-         980, // Bane of Agony
+         980, // Agony
        18223, // Curse of Exhaustion
         1120, // Drain Soul
        48181, // Haunt
@@ -664,24 +667,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 7 abilities
+    // Demonology tree, 6 abilities
     {
-         603, // Bane of Doom
+       47897, // Breath of Gul'dan
       109151, // Demonic Leap
       105174, // Hand of Gul'dan
         1949, // Hellfire
       103958, // Metamorphosis
-       47897, // Shadowflame
        30146, // Summon Felguard (Summon)
            0,
     },
-    // Destruction tree, 9 abilities
+    // Destruction tree, 8 abilities
     {
        17962, // Conflagrate
       114635, // Ember Tap
       108683, // Fire and Brimstone
-      120451, // Flames of A'lar
-       80240, // Havoc (NYI)
+       80240, // Havoc
          348, // Immolate
        29722, // Incinerate
         5740, // Rain of Fire
@@ -729,10 +730,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       119996, // Transcendence: Transfer
            0,
     },
-    // Brewmaster tree, 11 abilities
+    // Brewmaster tree, 12 abilities
     {
       115213, // Avert Harm
       115181, // Breath of Fire
+      122057, // Clashing Ox Charge <NNF>
       115180, // Dizzying Haze
       115308, // Elusive Brew
       115295, // Guard
@@ -762,11 +764,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Windwalker tree, 8 abilities
     {
       115288, // Energizing Brew
-      115073, // Fire Blossom
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
       116781, // Legacy of the White Tiger
       107428, // Rising Sun Kick
+      115073, // Spinning Fire Blossom
       115316, // Summon White Tiger Statue
       116740, // Tigereye Brew <PH>
            0,
@@ -780,7 +782,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 46 abilities
+    // General tree, 45 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -819,7 +821,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       108238, // Renewal
         2908, // Soothe
       106898, // Stampeding Roar
-        2912, // Starfire
        40120, // Swift Flight Form (Shapeshift)
       106785, // Swipe
       110309, // Symbiosis
@@ -829,11 +830,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102793, // Ursol's Vortex
         5176, // Wrath
     },
-    // Balance tree, 6 abilities
+    // Balance tree, 7 abilities
     {
        24858, // Moonkin Form (Shapeshift)
        78675, // Solar Beam
        48505, // Starfall
+        2912, // Starfire
        78674, // Starsurge
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
@@ -858,11 +860,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        61336, // Survival Instincts (Bear Form)
            0,
     },
-    // Restoration tree, 8 abilities
+    // Restoration tree, 7 abilities
     {
       102342, // Ironbark
        33763, // Lifebloom
-       88423, // Nature's Cure
        50464, // Nourish
         8936, // Regrowth
        18562, // Swiftmend
@@ -878,7 +879,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (20)
 
-// Talent tree specialization abilities, wow build 15544
+// Talent tree specialization abilities, wow build 15589
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -946,6 +947,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         2565, // Shield Block
        23922, // Shield Slam
        46953, // Sword and Board
+      122509, // Ultimatum
        29144, // Unwavering Sentinel
        93098, // Vengeance
            0,
@@ -1075,7 +1077,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        32645, // Envenom
        14117, // Improved Poisons
         1329, // Mutilate
-       58426, // Overkill
        14190, // Seal Fate
        79140, // Vendetta
        79134, // Venomous Wounds
@@ -1117,6 +1118,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Discipline tree
     {
        47515, // Divine Aegis
+      122098, // Divine Fury
        81662, // Evangelism
        47517, // Grace
         2060, // Greater Heal
@@ -1137,6 +1139,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81206, // Chakra: Sanctuary
        81208, // Chakra: Serenity
        34861, // Circle of Healing
+      122098, // Divine Fury
        64843, // Divine Hymn
        81662, // Evangelism
         2060, // Greater Heal
@@ -1164,7 +1167,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        78204, // Shadowy Apparition
        15487, // Silence
        47573, // Spiritual Precision
-       47577, // Twisted Faith
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
       114884, // Vampiric Touch <DND>
@@ -1337,9 +1339,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Affliction tree
     {
-         980, // Bane of Agony
+         980, // Agony
        18223, // Curse of Exhaustion
-      115112, // Dark Soul: Misery
+      113860, // Dark Soul: Misery
+      115099, // Dark Soul: Misery
         1120, // Drain Soul
        48181, // Haunt
        53759, // Improved Fear
@@ -1347,7 +1350,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       108558, // Nightfall
        27243, // Seed of Corruption
       117198, // Soul Shards
-      117199, // Soul Shards
        86121, // Soul Swap
        74434, // Soulburn
       103112, // Soulburn: Curse
@@ -1360,15 +1362,15 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Demonology tree
     {
-         603, // Bane of Doom
-      115113, // Dark Soul: Knowledge
+       47897, // Breath of Gul'dan
+      113861, // Dark Soul: Knowledge
+      115103, // Dark Soul: Knowledge
       108869, // Decimation
       104315, // Demonic Fury
       109151, // Demonic Leap
       108559, // Demonic Rebirth
       103134, // Felguard: Felstorm
       103129, // Felguard: Pursuit
-      114597, // Gul'dan's Grasp
       105174, // Hand of Gul'dan
         1949, // Hellfire
       103958, // Metamorphosis
@@ -1376,8 +1378,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116208, // Metamorphosis: Cursed Auras
       112089, // Metamorphosis: Demonic Slash
       109797, // Metamorphosis: Immolation Aura
+      122351, // Molten Core
       114129, // Nether Plating
-       47897, // Shadowflame
        30146, // Summon Felguard
       105224, // Wild Imps
     },
@@ -1390,7 +1392,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       111546, // Chaotic Energy
       113387, // Chaotic Energy
        17962, // Conflagrate
-      115114, // Dark Soul: Instability
+      113858, // Dark Soul: Instability
+      115107, // Dark Soul: Instability
       114635, // Ember Tap
       108683, // Fire and Brimstone
       120451, // Flames of A'lar
@@ -1398,7 +1401,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          348, // Immolate
        29722, // Incinerate
         5740, // Rain of Fire
-      116852, // Self Burning Trigger 1
+      116852, // Self Burning Triggers
        17877, // Shadowburn
            0,
     },
@@ -1414,6 +1417,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       115181, // Breath of Fire
       117967, // Brewmaster Training
       118772, // Brewmaster Training
+      122057, // Clashing Ox Charge <NNF>
       115180, // Dizzying Haze
       115308, // Elusive Brew
       115295, // Guard
@@ -1435,6 +1439,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       115294, // Cherry Mana Tea
       115869, // Cherry Mana Tea Driver <DND>
       115098, // Chi Wave
+      122464, // Demateralize
       115451, // Internal Medicine
       115205, // Jasmine Force Tea
       120224, // Leather Specialization
@@ -1450,19 +1455,19 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       118672, // Teachings of the Monastery
       116680, // Thunder Focus Tea
       116670, // Uplift
-           0,
     },
     // Specialization abilities for Windwalker tree
     {
       116092, // Afterlife
       115288, // Energizing Brew
-      115073, // Fire Blossom
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
       120227, // Leather Specialization
       116781, // Legacy of the White Tiger
+      116012, // Muscle Memory
       107428, // Rising Sun Kick
       116023, // Sparring
+      115073, // Spinning Fire Blossom
       115316, // Summon White Tiger Statue
       116740, // Tigereye Brew <PH>
            0,
@@ -1490,6 +1495,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        93399, // Shooting Stars
        78675, // Solar Beam
        48505, // Starfall
+        2912, // Starfire
        78674, // Starsurge
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
@@ -1531,6 +1537,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        61336, // Survival Instincts
        16931, // Thick Hide
       106832, // Thrash
+      115800, // Thrash
        84840, // Vengeance
            0,
     },
@@ -1562,7 +1569,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15544
+// Class mastery abilities, wow build 15589
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -1788,7 +1795,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15544
+// Racial abilities, wow build 15589
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -1889,7 +1896,6 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     // Racial abilities for Monk class
     {
       33697, // Blood Fury
-      65222, // Command
       21563, // Command
           0,
     },
@@ -1963,7 +1969,11 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
           0,
     },
     {     0, },
-    {     0, },
+    // Racial abilities for Monk class
+    {
+      21009, // Elusiveness
+          0,
+    },
     // Racial abilities for Druid class
     {
       21009, // Elusiveness
@@ -2497,7 +2507,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (32)
 
-// Glyph spells for classes, wow build 15544
+// Glyph spells for classes, wow build 15589
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2512,7 +2522,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warrior
   {
-    // Major Glyphs (27 spells)
+    // Major Glyphs (28 spells)
     {
        58377, // Glyph of Blitz
        58367, // Glyph of Bloodthirst
@@ -2527,6 +2537,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58388, // Glyph of Heavy Repercussions (NYI)
        58387, // Glyph of Hoase Voice
        58364, // Glyph of Hold the Line
+      122013, // Glyph of Incite
        58097, // Glyph of Long Charge
        58368, // Glyph of Mortal Strike (NYI)
        58386, // Glyph of Overpower
@@ -2562,7 +2573,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (30 spells)
+    // Major Glyphs (31 spells)
     {
        54927, // Glyph of Avenging Wrath
        63218, // Glyph of Beacon of Light
@@ -2587,6 +2598,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56416, // Glyph of Immediate Truth
        63225, // Glyph of Inquisition
        54940, // Glyph of Light of Dawn
+      122028, // Glyph of Mass Exorcism
        93466, // Glyph of Protector of the Innocent
        54925, // Glyph of Rebuke
        54931, // Glyph of Turn Evil
@@ -2616,9 +2628,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Hunter
   {
-    // Major Glyphs (24 spells)
+    // Major Glyphs (23 spells)
     {
-      119406, // Glyph of Aimed Shot
        20895, // Glyph of Animal Bond
        56851, // Glyph of Arcane Shot
       119449, // Glyph of Camouflage
@@ -2644,10 +2655,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       119384, // Glyph of Tranquilizing Shot
            0,
     },
-    // Minor Glyphs (7 spells)
+    // Minor Glyphs (8 spells)
     {
       119462, // Glyph of Aspect of the Cheetah
        57904, // Glyph of Aspect of the Pack
+      122492, // Glyph of Aspects
        57903, // Glyph of Feign Death
        57870, // Glyph of Lesser Proportion
        57866, // Glyph of Revive Pet
@@ -2661,11 +2673,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Rogue
   {
-    // Major Glyphs (22 spells)
+    // Major Glyphs (24 spells)
     {
        56813, // Glyph of Ambush
        56818, // Glyph of Blade Flurry
        91299, // Glyph of Blind
+       56801, // Glyph of Cheap Shot
        63269, // Glyph of Cloak of Shadows
        56820, // Glyph of Crippling Poison
        56802, // Glyph of Debilitation
@@ -2675,25 +2688,27 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56804, // Glyph of Feint
        56812, // Glyph of Garrote
        56809, // Glyph of Gouge
-       56807, // Glyph of Hemorrhage
        56805, // Glyph of Kick
        56806, // Glyph of Recuperate
        56798, // Glyph of Sap
        56808, // Glyph of Shadow Walk
+       56810, // Glyph of Shiv
        56821, // Glyph of Sinister Strike
        56819, // Glyph of Smoke Bomb
        56811, // Glyph of Sprint
+       63253, // Glyph of Stealth
        89758, // Glyph of Vanish
        63249, // Glyph of Vendetta
            0,
     },
-    // Minor Glyphs (11 spells)
+    // Minor Glyphs (12 spells)
     {
        56814, // Detection
        58039, // Glyph of Blurred Speed
        56800, // Glyph of Decoy
        63268, // Glyph of Disguise
        58032, // Glyph of Distract
+       56807, // Glyph of Hemorrhage
        63252, // Glyph of Killing Spree
        58027, // Glyph of Pick Lock
        58017, // Glyph of Pick Pocket
@@ -2702,11 +2717,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63256, // Glyph of Tricks of the Trade
            0,
     },
-    // Prime Glyphs (3 spells)
     {
-       56801, // Glyph of Rupture
-       63253, // Glyph of Shadow Dance
-       56810, // Glyph of Slice and Dice
            0,
     },
   },
@@ -2788,13 +2799,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     },
     // Minor Glyphs (7 spells)
     {
-       58640, // Glyph of Blood Tap
        60200, // Glyph of Death Gate
        58677, // Glyph of Death's Embrace
        58680, // Glyph of Horn of Winter
        59307, // Glyph of Path of Frost
        59309, // Glyph of Resilient Grip
        63335, // Glyph of Tranquil Grip
+       58640, // Glyph of the Geist
            0,
     },
     // Prime Glyphs (4 spells)
@@ -2813,7 +2824,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        55442, // Glyph of Capacitor Totem
        55437, // Glyph of Chain Heal
        55449, // Glyph of Chain Lightning
-       55452, // Glyph of Chaining [NYI]
+       55452, // Glyph of Chaining
        55445, // Glyph of Cleansing Waters
        63271, // Glyph of Feral Spirit
        55455, // Glyph of Fire Elemental Totem
@@ -2858,7 +2869,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Mage
   {
-    // Major Glyphs (23 spells)
+    // Major Glyphs (22 spells)
     {
       115718, // Glyph of Arcane Explosion
        62210, // Glyph of Arcane Power
@@ -2869,7 +2880,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       115703, // Glyph of Counterspell
       115710, // Glyph of Deep Freeze
        56380, // Glyph of Evocation
-       56370, // Glyph of Fingers of Frost
        89926, // Glyph of Fire Blast
        56376, // Glyph of Frost Nova
        61205, // Glyph of Frostfire Bolt
@@ -2900,13 +2910,15 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        52648, // Glyph of the Penguin
            0,
     },
+    // Prime Glyphs (1 spells)
     {
+       56370, // Glyph of Fingers of Frost
            0,
     },
   },
   // Glyph spells for Warlock
   {
-    // Major Glyphs (15 spells)
+    // Major Glyphs (16 spells)
     {
        63304, // Glyph of Burning Embers
        56235, // Glyph of Conflagrate
@@ -2914,6 +2926,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63303, // Glyph of Demon Hunting
        56249, // Glyph of Demon Training
        63309, // Glyph of Demonic Circle
+       70947, // Glyph of Doom
        58070, // Glyph of Drain Soul
        56244, // Glyph of Fear
        56224, // Glyph of Healthstone
@@ -2938,7 +2951,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58079, // Glyph of Unending Breath
            0,
     },
-    // Prime Glyphs (11 spells)
+    // Prime Glyphs (10 spells)
     {
       111546, // Chaotic Energy
        56241, // Glyph of Bane of Agony
@@ -2947,7 +2960,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56228, // Glyph of Immolate
        56248, // Glyph of Imp
        56242, // Glyph of Incinerate
-       70947, // Glyph of Lash of Pain
        56229, // Glyph of Shadowburn
        63312, // Glyph of Soul Link
        56247, // Glyph of Voidwalker
@@ -2956,8 +2968,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Monk
   {
-    // Major Glyphs (1 spells)
+    // Major Glyphs (2 spells)
     {
+      122136, // Glyph of Chi Wave
       119724, // Glyph of Expel Harm
            0,
     },
@@ -2970,9 +2983,10 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (31 spells)
+    // Major Glyphs (32 spells)
     {
        63057, // Glyph of Barkskin
+      121840, // Glyph of Blooming
        47180, // Glyph of Cat Form
        48514, // Glyph of Cyclone
        59219, // Glyph of Dash
@@ -2985,7 +2999,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        54831, // Glyph of Hurricane
        54832, // Glyph of Innervate
       114228, // Glyph of Lifebloom
-      116172, // Glyph of Master Shapeshifter
        54811, // Glyph of Maul
       116238, // Glyph of Might of Ursoc
       116203, // Glyph of Nature's Grasp
@@ -3001,17 +3014,16 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       114222, // Glyph of Stampeding Roar
       114223, // Glyph of Survival Instincts
        62970, // Glyph of Wild Growth
+      116172, // Glyph of the Master Shapeshifter
        48484, // Infected Wounds
       116209, // The Moonbeast
-           0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (9 spells)
     {
        57856, // Glyph of Aquatic Form
       114295, // Glyph of Grace
        57855, // Glyph of Mark of the Wild
       114301, // Glyph of Stars
-       57857, // Glyph of Unburdened Rebirth
       107059, // Glyph of the Chameleon
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
@@ -3030,7 +3042,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15544
+// Tier item set bonuses for class, wow build 15589
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {

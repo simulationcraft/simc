@@ -1,3 +1,10 @@
+// ==========================================================================
+// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Send questions to natehieter@gmail.com
+// ==========================================================================
+#ifndef SPECIALIZATION_HPP
+#define SPECIALIZATION_HPP
+
 enum specialization_e {
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
@@ -40,4 +47,6 @@ enum specialization_e {
   PET_CUNNING          = 79,
 };
 
+
+#endif
 

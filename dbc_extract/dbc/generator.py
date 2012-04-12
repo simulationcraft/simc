@@ -1163,11 +1163,10 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'Item', 'SpellEquippedItems', 'SpellIcon' ]
-
-        self._dbc.append( 'SpecializationSpells')
-        self._dbc.append( 'ChrSpecialization' )
-        self._dbc.append( 'SpellEffectScaling' )
+            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling' ]
+        
+        if options.build >= 15589:
+            self._dbc.append( 'SpellMisc' )
         
         DataGenerator.__init__(self, options)
 
@@ -1230,6 +1229,17 @@ class SpellDataGenerator(DataGenerator):
                 continue
         
             spell.add_power(spell_power_data)
+        
+        # For builds 15589+, map SpellMisc.dbc to spell ids
+        for spell_misc_id, spell_misc_data in self._spellmisc_db.iteritems():
+            if not spell_misc_data.id_spell:
+                continue
+            
+            spell = self._spell_db[spell_misc_data.id_spell]
+            if not spell.id:
+                continue
+            
+            spell.add_misc(spell_misc_data)
         
         return True
     
@@ -1663,6 +1673,10 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
             
+            if len(spell._misc) > 1:
+                sys.stderr.write('SPell id %u (%s) has more than one SpellMisc.dbc entry' % ( spell.id, spell.name ) )
+                continue
+
             for power in spell._powers:
                 if power == None:
                     continue
@@ -1674,7 +1688,7 @@ class SpellDataGenerator(DataGenerator):
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
-            fields += spell.field('prj_speed', 'mask_school')
+            fields += self._spellmisc_db[spell.id_misc].field('prj_speed', 'mask_school')
 
             # Hack in the combined class from the id_tuples dict
             fields += [ '%#.3x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
@@ -1686,11 +1700,11 @@ class SpellDataGenerator(DataGenerator):
             fields += spell.field('extra_coeff')
 
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
-            fields += self._spellrange_db[spell.id_range].field('min_range')
-            fields += self._spellrange_db[spell.id_range].field('max_range')
+            fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
+            fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
             fields += self._spellcategories_db[spell.id_categories].field('category')
-            fields += self._spellduration_db[spell.id_duration].field('duration_1')
+            fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')
             fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.3x'),
             fields += self._spellrunecost_db[spell.id_rune_cost].field('rune_power_gain')
             fields += self._spellauraoptions_db[spell.id_aura_opt].field(
@@ -1703,7 +1717,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellscaling_db[spell.id_scaling].field('cast_min', 'cast_max', 'cast_div')
                 fields += self._spellscaling_db[spell.id_scaling].field('c_scaling', 'c_scaling_threshold')
             else:
-                fields += self._spellcasttimes_db[spell.id_cast_time].field('min_cast_time', 'cast_time')
+                fields += self._spellcasttimes_db[self._spellmisc_db[spell.id_misc].id_cast_time].field('min_cast_time', 'cast_time')
                 # Use default values, i.e., zeros
                 fields += self._spellscaling_db[0].field('cast_div', 'c_scaling', 'c_scaling_threshold' )
 
@@ -1720,14 +1734,14 @@ class SpellDataGenerator(DataGenerator):
                     effect_ids.append( '%u' % effect.id )
 
             # Add spell flags
-            fields += [ '{ %s }' % ', '.join(spell.field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
+            fields += [ '{ %s }' % ', '.join(self._spellmisc_db[spell.id_misc].field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8')) ]
             fields += spell.field('desc', 'tt')
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')
             else:
                 fields += [ '0' ]
-            if spell.id_icon and self._spellicon_db.get(spell.id_icon):
-                fields += self._spellicon_db[spell.id_icon].field('name')
+            if spell.id_icon and self._spellicon_db.get(self._spellmisc_db[spell.id_misc].id_icon):
+                fields += self._spellicon_db[self._spellmisc_db[spell.id_misc].id_icon].field('name')
             else:
                 fields += [ '0' ]
             # Pad struct with empty pointers for direct access to spell effect data
@@ -1823,9 +1837,10 @@ class MasteryAbilityGenerator(DataGenerator):
     def __init__(self, options):
         DataGenerator.__init__(self, options)
         
-        self._dbc = [ 'Spell' ]
+        self._dbc = [ 'Spell', 'ChrSpecialization' ]
 
-        self._dbc.append( 'ChrSpecialization' )
+        if options.build >= 15589:
+            self._dbc.append( 'SpellMisc' )
 
     def filter(self):
         ids = {}
@@ -1837,7 +1852,7 @@ class MasteryAbilityGenerator(DataGenerator):
             if s.id == 0:
                 continue
             
-            if s.flags_12694 & 0x20000000:
+            if self._spellmisc_db[s.id_misc].flags_12694 & 0x20000000:
                 ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.spec_id, 'spec_name' : v.name }
             
         return ids
@@ -2182,9 +2197,6 @@ class SpellListGenerator(SpellDataGenerator):
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
 
-        # Add SkillLine so we can fancy output
-        self._dbc += [ 'ChrSpecialization' ]
-        
         # Blacklist glyphs for this
         #SpellDataGenerator._skill_category_blacklist += [ 810 ]
         #SpellDataGenerator._spell_name_blacklist += [ '^Glyph of' ]
@@ -2208,12 +2220,12 @@ class SpellListGenerator(SpellDataGenerator):
             return False
             
         # Skip passive spells
-        if spell.flags & 0x40:
+        if self._spellmisc_db[spell.id_misc].flags & 0x40:
             self.debug( "Spell id %u (%s) marked as passive" % ( spell.id, spell.name ) )
             return False
             
         # Skip by possible indicator for spellbook visibility
-        if spell.flags_4 & 0x8000:
+        if self._spellmisc_db[spell.id_misc].flags_4 & 0x8000:
             self.debug( "Spell id %u (%s) marked as hidden in spellbook" % ( spell.id, spell.name ) )
             return False;
         
@@ -2246,8 +2258,8 @@ class SpellListGenerator(SpellDataGenerator):
             return False
         
         # Let's not accept spells that have over 100y range, as they cannot really be base abilities then
-        if spell.id_range > 0:
-            range = self._spellrange_db[spell.id_range]
+        if self._spellmisc_db[spell.id_misc].id_range > 0:
+            range = self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range]
             if range.max_range > 100.0 or range.max_range_2 > 100.0:
                 self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range.max_range, range.max_range_2 ) )
                 return False
