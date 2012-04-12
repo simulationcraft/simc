@@ -468,7 +468,7 @@ timespan_t action_t::gcd() const
 
 // action_t::travel_time ====================================================
 
-timespan_t action_t::travel_time()
+timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
@@ -1374,12 +1374,12 @@ void action_t::init()
 
   if ( ! if_expr_str.empty() && ! is_dtr_action )
   {
-    if_expr = action_expr_t::parse( this, if_expr_str );
+    if_expr = expr_t::parse( this, if_expr_str );
   }
 
   if ( ! interrupt_if_expr_str.empty() )
   {
-    interrupt_if_expr = action_expr_t::parse( this, interrupt_if_expr_str );
+    interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str );
   }
 
   if ( sim -> travel_variance && travel_speed && player -> distance )
@@ -1523,14 +1523,23 @@ void action_t::check_spec( specialization_e necessary_spec )
 
 // action_t::create_expression ==============================================
 
-action_expr_t* action_t::create_expression( const std::string& name_str )
+expr_t* action_t::create_expression( const std::string& name_str )
 {
+  class action_expr_t : public expr_t
+  {
+  public:
+    const action_t& action;
+
+    action_expr_t( const std::string& name, action_t* a ) :
+      expr_t( name ), action( *a ) { assert( a ); }
+  };
+
   if ( name_str == "n_ticks" )
   {
     struct n_ticks_expr_t : public action_expr_t
     {
-      n_ticks_expr_t( action_t* a ) : action_expr_t( a, "n_ticks", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> hasted_num_ticks( action -> player -> composite_spell_haste() ); return TOK_NUM; }
+      n_ticks_expr_t( action_t* a ) : action_expr_t( "n_ticks", a ) {}
+      virtual double evaluate() { return action.hasted_num_ticks( action.player -> composite_spell_haste() ); }
     };
     return new n_ticks_expr_t( this );
   }
@@ -1538,8 +1547,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cast_time_expr_t : public action_expr_t
     {
-      cast_time_expr_t( action_t* a ) : action_expr_t( a, "cast_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> execute_time().total_seconds(); return TOK_NUM; }
+      cast_time_expr_t( action_t* a ) : action_expr_t( "cast_time", a ) {}
+      virtual double evaluate() { return action.execute_time().total_seconds(); }
     };
     return new cast_time_expr_t( this );
   }
@@ -1547,8 +1556,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cooldown_expr_t : public action_expr_t
     {
-      cooldown_expr_t( action_t* a ) : action_expr_t( a, "cooldown", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> cooldown -> duration.total_seconds(); return TOK_NUM; }
+      cooldown_expr_t( action_t* a ) : action_expr_t( "cooldown", a ) {}
+      virtual double evaluate() { return action.cooldown -> duration.total_seconds(); }
     };
     return new cooldown_expr_t( this );
   }
@@ -1556,8 +1565,15 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct tick_time_expr_t : public action_expr_t
     {
-      tick_time_expr_t( action_t* a ) : action_expr_t( a, "tick_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( ( action -> dot() -> ticking ) ? action -> dot() -> action -> tick_time( action -> player_haste ) : timespan_t::zero() ).total_seconds(); return TOK_NUM; }
+      tick_time_expr_t( action_t* a ) : action_expr_t( "tick_time", a ) {}
+      virtual double evaluate()
+      {
+        dot_t* dot = action.dot();
+        if ( dot -> ticking )
+          return action.tick_time( action.player_haste ).total_seconds();
+        else
+          return 0;
+      }
     };
     return new tick_time_expr_t( this );
   }
@@ -1565,8 +1581,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cast_time_expr_t : public action_expr_t
     {
-      cast_time_expr_t( action_t* a ) : action_expr_t( a, "gcd", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> gcd().total_seconds(); return TOK_NUM; }
+      cast_time_expr_t( action_t* a ) : action_expr_t( "gcd", a ) {}
+      virtual double evaluate() { return action.gcd().total_seconds(); }
     };
     return new cast_time_expr_t( this );
   }
@@ -1574,8 +1590,8 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct travel_time_expr_t : public action_expr_t
     {
-      travel_time_expr_t( action_t* a ) : action_expr_t( a, "travel_time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> travel_time().total_seconds(); return TOK_NUM; }
+      travel_time_expr_t( action_t* a ) : action_expr_t( "travel_time", a ) {}
+      virtual double evaluate() { return action.travel_time().total_seconds(); }
     };
     return new travel_time_expr_t( this );
   }
@@ -1583,33 +1599,28 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct in_flight_expr_t : public action_expr_t
     {
-      in_flight_expr_t( action_t* a ) : action_expr_t( a, "in_flight", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> travel_event != NULL; return TOK_NUM; }
+      in_flight_expr_t( action_t* a ) : action_expr_t( "in_flight", a ) {}
+      virtual double evaluate() { return action.travel_event != NULL; }
     };
     return new in_flight_expr_t( this );
   }
 
-  else if ( action_expr_t* q = this->dot()->create_expression( this, name_str ) )
+  else if ( expr_t* q = dot() -> create_expression( name_str ) )
     return q;
 
   else if ( name_str == "miss_react" )
   {
     struct miss_react_expr_t : public action_expr_t
     {
-      miss_react_expr_t( action_t* a ) : action_expr_t( a, "miss_react", TOK_NUM ) {}
-      virtual int evaluate()
+      miss_react_expr_t( action_t* a ) : action_expr_t( "miss_react", a ) {}
+      virtual double evaluate()
       {
-        dot_t* dot = action -> dot();
+        dot_t* dot = action.dot();
         if ( dot -> miss_time < timespan_t::zero() ||
-             action -> sim -> current_time >= ( dot -> miss_time + action -> last_reaction_time ) )
-        {
-          result_num = 1;
-        }
+             action.sim -> current_time >= ( dot -> miss_time + action.last_reaction_time ) )
+          return true;
         else
-        {
-          result_num = 0;
-        }
-        return TOK_NUM;
+          return false;
       }
     };
     return new miss_react_expr_t( this );
@@ -1618,28 +1629,23 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cast_delay_expr_t : public action_expr_t
     {
-      cast_delay_expr_t( action_t* a ) : action_expr_t( a, "cast_delay", TOK_NUM ) {}
-      virtual int evaluate()
+      cast_delay_expr_t( action_t* a ) : action_expr_t( "cast_delay", a ) {}
+      virtual double evaluate()
       {
-        if ( action -> sim -> debug )
+        if ( action.sim -> debug )
         {
-          log_t::output( action -> sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
-                         action -> player -> name_str.c_str(),
-                         action -> name_str.c_str(),
-                         ( action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction ).total_seconds(),
-                         action -> sim -> current_time.total_seconds() );
+          log_t::output( action.sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
+                         action.player -> name_str.c_str(),
+                         action.name_str.c_str(),
+                         ( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
+                         action.sim -> current_time.total_seconds() );
         }
 
-        if ( action -> player -> cast_delay_occurred == timespan_t::zero() ||
-             action -> player -> cast_delay_occurred + action -> player -> cast_delay_reaction < action -> sim -> current_time )
-        {
-          result_num = 1;
-        }
+        if ( action.player -> cast_delay_occurred == timespan_t::zero() ||
+             action.player -> cast_delay_occurred + action.player -> cast_delay_reaction < action.sim -> current_time )
+          return true;
         else
-        {
-          result_num = 0;
-        }
-        return TOK_NUM;
+          return false;
       }
     };
     return new cast_delay_expr_t( this );
@@ -1655,11 +1661,12 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_expr_t : public action_expr_t
       {
         std::string prev_action;
-        prev_expr_t( action_t* a, const std::string& prev_action ) : action_expr_t( a, "prev", TOK_NUM ), prev_action( prev_action ) {}
-        virtual int evaluate()
+        prev_expr_t( action_t* a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
+        virtual double evaluate()
         {
-          result_num = ( action -> player -> last_foreground_action ) ? action -> player -> last_foreground_action -> name_str == prev_action : 0;
-          return TOK_NUM;
+          if ( action.player -> last_foreground_action )
+            return action.player -> last_foreground_action -> name_str == prev_action;
+          return false;
         }
       };
 
@@ -1671,7 +1678,7 @@ action_expr_t* action_t::create_expression( const std::string& name_str )
   {
     buff_t* buff = sim -> get_targetdata_aura( player, target, splits[1] );
     if ( buff )
-      return buff -> create_expression( this, splits[ 2 ] );
+      return buff -> create_expression( splits[ 2 ] );
   }
 
   if ( num_splits >= 2 && ( splits[ 0 ] == "debuff" || splits[ 0 ] == "dot" ) )

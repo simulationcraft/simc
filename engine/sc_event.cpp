@@ -285,7 +285,7 @@ void dot_tick_event_t::execute()
 
   if ( dot -> action -> channeled && ( dot -> ticks() > 0 ) )
   {
-    action_expr_t* expr = dot -> action -> interrupt_if_expr;
+    expr_t* expr = dot -> action -> interrupt_if_expr;
     if ( expr && expr -> success() )
     {
       dot -> current_tick = dot -> num_ticks;

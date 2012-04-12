@@ -207,7 +207,7 @@ void buff_t::combat_end()
 
 // buff_t::may_react ========================================================
 
-bool buff_t::may_react( int stack )
+bool buff_t::may_react( int stack ) const
 {
   if ( current_stack == 0    ) return false;
   if ( stack > current_stack ) return false;
@@ -224,7 +224,7 @@ bool buff_t::may_react( int stack )
 
 // buff_t::stack_react ======================================================
 
-int buff_t::stack_react()
+int buff_t::stack_react() const
 {
   int stack = 0;
 
@@ -239,7 +239,7 @@ int buff_t::stack_react()
 
 // buff_t::remains ==========================================================
 
-timespan_t buff_t::remains()
+timespan_t buff_t::remains() const
 {
   if ( current_stack <= 0 )
   {
@@ -254,7 +254,7 @@ timespan_t buff_t::remains()
 
 // buff_t::remains_gt =======================================================
 
-bool buff_t::remains_gt( timespan_t time )
+bool buff_t::remains_gt( timespan_t time ) const
 {
   timespan_t time_remaining = remains();
 
@@ -267,7 +267,7 @@ bool buff_t::remains_gt( timespan_t time )
 
 // buff_t::remains_lt =======================================================
 
-bool buff_t::remains_lt( timespan_t time )
+bool buff_t::remains_lt( timespan_t time ) const
 {
   timespan_t time_remaining = remains();
 
@@ -734,99 +734,93 @@ std::string buff_t::to_str() const
 
 // buff_t::create_expression ================================================
 
-action_expr_t* buff_t::create_expression( action_t* action,
-                                          const std::string& type )
+expr_t* buff_t::create_expression( const std::string& type )
 {
+  class buff_expr_t : public expr_t
+  {
+  public:
+    buff_t& buff;
+    buff_expr_t( const std::string& name, buff_t* b ) :
+      expr_t( name ), buff( *b ) { assert( b ); }
+  };
+
   if ( type == "remains" )
   {
-    struct buff_remains_expr_t : public action_expr_t
+    struct buff_remains_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> remains().total_seconds(); return TOK_NUM; }
+      buff_remains_expr_t( buff_t* b ) : buff_expr_t( "buff_remains", b ) {}
+      virtual double evaluate() { return buff.remains().total_seconds(); }
     };
-    return new buff_remains_expr_t( action, this );
+    return new buff_remains_expr_t( this );
   }
   else if ( type == "cooldown_remains" )
   {
-    struct buff_cooldown_remains_expr_t : public action_expr_t
+    struct buff_cooldown_remains_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_cooldown_remains_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_remains", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> cooldown -> remains().total_seconds(); return TOK_NUM; }
+      buff_cooldown_remains_expr_t( buff_t* b ) : buff_expr_t( "buff_cooldown_remains", b ) {}
+      virtual double evaluate() { return buff.cooldown -> remains().total_seconds(); }
     };
-    return new buff_cooldown_remains_expr_t( action, this );
+    return new buff_cooldown_remains_expr_t( this );
   }
   else if ( type == "up" )
   {
-    struct buff_up_expr_t : public action_expr_t
+    struct buff_up_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_up_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_up", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = ( buff -> check() > 0 ) ? 1.0 : 0.0; return TOK_NUM; }
+      buff_up_expr_t( buff_t* b ) : buff_expr_t( "buff_up", b ) {}
+      virtual double evaluate() { return buff.check() > 0; }
     };
-    return new buff_up_expr_t( action, this );
+    return new buff_up_expr_t( this );
   }
   else if ( type == "down" )
   {
-    struct buff_down_expr_t : public action_expr_t
+    struct buff_down_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_down_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_down", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = ( buff -> check() <= 0 ) ? 1.0 : 0.0; return TOK_NUM; }
+      buff_down_expr_t( buff_t* b ) : buff_expr_t( "buff_down", b ) {}
+      virtual double evaluate() { return buff.check() <= 0; }
     };
-    return new buff_down_expr_t( action, this );
+    return new buff_down_expr_t( this );
   }
   else if ( type == "stack" )
   {
-    struct buff_stack_expr_t : public action_expr_t
+    struct buff_stack_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_stack_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_stack", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> check(); return TOK_NUM; }
+      buff_stack_expr_t( buff_t* b ) : buff_expr_t( "buff_stack", b ) {}
+      virtual double evaluate() { return buff.check(); }
     };
-    return new buff_stack_expr_t( action, this );
+    return new buff_stack_expr_t( this );
   }
   else if ( type == "value" )
   {
-    struct buff_value_expr_t : public action_expr_t
+    struct buff_value_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_value_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_value", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> value(); return TOK_NUM; }
+      buff_value_expr_t( buff_t* b ) : buff_expr_t( "buff_value", b ) {}
+      virtual double evaluate() { return buff.value(); }
     };
-    return new buff_value_expr_t( action, this );
+    return new buff_value_expr_t( this );
   }
   else if ( type == "react" )
   {
-    struct buff_react_expr_t : public action_expr_t
+    struct buff_react_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_react_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_react", TOK_NUM ), buff( b ) {}
-      virtual int evaluate() { result_num = buff -> stack_react(); return TOK_NUM; }
+      buff_react_expr_t( buff_t* b ) : buff_expr_t( "buff_react", b ) {}
+      virtual double evaluate() { return buff.stack_react(); }
     };
-    return new buff_react_expr_t( action, this );
+    return new buff_react_expr_t( this );
   }
   else if ( type == "cooldown_react" )
   {
-    struct buff_cooldown_react_expr_t : public action_expr_t
+    struct buff_cooldown_react_expr_t : public buff_expr_t
     {
-      buff_t* buff;
-      buff_cooldown_react_expr_t( action_t* a, buff_t* b ) : action_expr_t( a, "buff_cooldown_react", TOK_NUM ), buff( b ) {}
-      virtual int evaluate()
+      buff_cooldown_react_expr_t( buff_t* b ) : buff_expr_t( "buff_cooldown_react", b ) {}
+      virtual double evaluate()
       {
-        if ( buff -> check() && ! buff -> may_react() )
-        {
-          result_num = 0;
-        }
+        if ( buff.check() && ! buff.may_react() )
+          return 0;
         else
-        {
-          result_num = buff -> cooldown -> remains().total_seconds();
-        }
-        return TOK_NUM;
+          return buff.cooldown -> remains().total_seconds();
       }
     };
-    return new buff_cooldown_react_expr_t( action, this );
+    return new buff_cooldown_react_expr_t( this );
   }
 
   return 0;

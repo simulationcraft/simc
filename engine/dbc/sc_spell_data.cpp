@@ -1191,34 +1191,10 @@ struct spell_school_expr_t : public spell_list_expr_t
   }
 };
 
-template <typename Container, typename Disposer=delete_disposer_t>
-class auto_dispose_t : public Container
-{
-private:
-  template <typename D>
-  void dispose_( D disposer )
-  { range::dispose( *this, disposer ); }
-
-  void dispose_()
-  { dispose_( Disposer() ); }
-
-public:
-  ~auto_dispose_t() { dispose_(); }
-
-  using Container::clear;
-
-  void dispose()
-  { dispose_(); clear(); }
-
-  template <typename D>
-  void dispose( D disposer )
-  { dispose_( disposer ); clear(); }
-};
-
 static spell_data_expr_t* build_expression_tree( sim_t* sim,
                                                  const std::vector<expr_token_t>& tokens )
 {
-  auto_dispose_t< std::vector<spell_data_expr_t*> > stack;
+  auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
@@ -1394,11 +1370,11 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
-  expression_t::convert_to_unary( 0, tokens );
+  expression_t::convert_to_unary( tokens );
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 
-  if ( ! expression_t::convert_to_rpn( 0, tokens ) )
+  if ( ! expression_t::convert_to_rpn( tokens ) )
   {
     sim -> errorf( "Unable to convert %s into RPN\n", expr_str.c_str() );
     sim -> cancel();

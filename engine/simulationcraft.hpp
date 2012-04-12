@@ -211,7 +211,6 @@ namespace std {using namespace tr1; }
 // Forward Declarations =====================================================
 
 struct action_callback_t;
-struct action_expr_t;
 struct action_priority_list_t;
 struct action_state_t;
 struct action_t;
@@ -233,6 +232,7 @@ struct effect_t;
 struct enchant_t;
 struct enemy_t;
 struct event_t;
+class  expr_t;
 struct gain_t;
 struct heal_t;
 struct hunter_t;
@@ -1295,6 +1295,24 @@ inline typename range::traits<Range>::iterator max_element( Range& r )
 { return std::max_element( range::begin( r ), range::end( r ) ); }
 
 } // namespace range ========================================================
+
+// Adapter for container of owned pointers; automatically deletes the
+// pointers on destruction.
+template <typename Container>
+class auto_dispose : public Container
+{
+private:
+  void dispose_()
+  { range::dispose( *this ); }
+
+public:
+  ~auto_dispose() { dispose_(); }
+
+  using Container::clear;
+
+  void dispose()
+  { dispose_(); clear(); }
+};
 
 // timespan_t ===============================================================
 
@@ -2922,13 +2940,13 @@ public:
   // Use up() where the presence of the buff affects the action mechanics.
 
   const spell_data_t& data() const { return *s_data; }
-  int    check() { return current_stack; }
+  int    check() const { return current_stack; }
   inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   inline double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
-  timespan_t remains();
-  bool   remains_gt( timespan_t time );
-  bool   remains_lt( timespan_t time );
+  timespan_t remains() const;
+  bool   remains_gt( timespan_t time ) const;
+  bool   remains_lt( timespan_t time ) const;
   bool   trigger  ( action_t*, int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
   virtual bool   trigger  ( int stacks=1, double value=-1.0, double chance=-1.0, timespan_t duration = timespan_t::min() );
   virtual void   execute ( int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );
@@ -2940,8 +2958,8 @@ public:
   virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void override ( int stacks=1, double value=-1.0 );
-  virtual bool may_react( int stacks=1 );
-  virtual int stack_react();
+  virtual bool may_react( int stacks=1 ) const;
+  virtual int stack_react() const;
   virtual void expire();
   virtual void predict();
   virtual void reset();
@@ -2954,8 +2972,8 @@ public:
   virtual void combat_begin();
   virtual void combat_end();
 
-  action_expr_t* create_expression( action_t*, const std::string& type );
-  std::string    to_str() const;
+  expr_t* create_expression( const std::string& type );
+  std::string to_str() const;
 
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name );
   static buff_t* find(    sim_t*, const std::string& name );
@@ -3051,9 +3069,55 @@ enum token_type_e
 
 struct expr_token_t
 {
-  int type;
+  token_type_e type;
   std::string label;
 };
+
+struct expression_t
+{
+  static int precedence( token_type_e );
+  static bool is_unary( token_type_e );
+  static bool is_binary( token_type_e );
+  static token_type_e next_token( action_t* action, const std::string& expr_str, int& current_index,
+                                  std::string& token_str, token_type_e prev_token );
+  static std::vector<expr_token_t> parse_tokens( action_t* action, const std::string& expr_str );
+  static void print_tokens( const std::vector<expr_token_t>& tokens, sim_t* sim );
+  static void convert_to_unary( std::vector<expr_token_t>& tokens );
+  static bool convert_to_rpn( std::vector<expr_token_t>& tokens );
+};
+
+class expr_t
+{
+  std::string name_;
+
+protected:
+  virtual double evaluate() = 0;
+
+public:
+  expr_t( const std::string& name ) : name_( name ) {}
+  virtual ~expr_t() {}
+
+  const std::string& name() const { return name_; }
+
+  double eval() { return evaluate(); }
+  bool success() { return eval() != 0; }
+
+  static expr_t* parse( action_t*, const std::string& expr_str );
+};
+
+template <typename T>
+class ref_expr_t : public expr_t
+{
+  const T& t;
+  virtual double evaluate() { return t; }
+
+public:
+  ref_expr_t( const std::string& name, const T& t_ ) : expr_t( name ), t( t_ ) {}
+};
+
+template <typename T>
+inline expr_t* make_ref_expr( const std::string& name, const T& t )
+{ return new ref_expr_t<T>( name, t ); }
 
 enum expr_data_type_e
 {
@@ -3067,37 +3131,6 @@ enum expr_data_type_e
   DATA_SPECIALIZATION_SPELL,
   DATA_GLYPH_SPELL,
   DATA_SET_BONUS_SPELL
-};
-
-struct expression_t
-{
-  static int precedence( int token_type );
-  static int is_unary( int token_type );
-  static int is_binary( int token_type );
-  static int next_token( action_t* action, const std::string& expr_str, int& current_index, std::string& token_str, token_type_e prev_token );
-  static void parse_tokens( action_t* action, std::vector<expr_token_t>& tokens, const std::string& expr_str );
-  static void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
-  static void convert_to_unary( action_t* action, std::vector<expr_token_t>& tokens );
-  static bool convert_to_rpn( action_t* action, std::vector<expr_token_t>& tokens );
-};
-
-struct action_expr_t
-{
-  action_t* action;
-  std::string name_str;
-
-  token_type_e token_type;
-  double result_num;
-  std::string result_str;
-
-  action_expr_t( action_t* a, const std::string& n, token_type_e t=TOK_UNKNOWN ) : action( a ), name_str( n ), token_type( t ), result_num( 0 ) {}
-  action_expr_t( action_t* a, const std::string& n, double       constant_value ) : action( a ), name_str( n ) { token_type = TOK_NUM; result_num = constant_value; }
-  action_expr_t( action_t* a, const std::string& n, std::string& constant_value ) : action( a ), name_str( n ) { token_type = TOK_STR; result_str = constant_value; }
-  virtual ~action_expr_t() {}
-  virtual int evaluate() { return token_type; }
-  bool success() { return ( evaluate() == TOK_NUM ) && ( result_num != 0 ); }
-
-  static action_expr_t* parse( action_t*, const std::string& expr_str );
 };
 
 struct spell_data_expr_t
@@ -3440,7 +3473,7 @@ public:
   player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
-  action_expr_t* create_expression( action_t*, const std::string& name );
+  expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   void register_targetdata_item( int kind, const char* name, player_type_e type, size_t offset );
   void* get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name );
@@ -3852,7 +3885,7 @@ struct set_bonus_t
 
   set_bonus_t();
 
-  action_expr_t* create_expression( action_t*, const std::string& type );
+  expr_t* create_expression( action_t*, const std::string& type );
 };
 
 struct set_bonus_array_t
@@ -4470,8 +4503,8 @@ struct player_t : public noncopyable
   virtual const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
   virtual const spell_data_t* find_spell( const unsigned int id,const std::string& token = std::string() );
 
-  virtual action_expr_t* create_expression( action_t*, const std::string& name );
-  action_expr_t* create_resource_expression( action_t*, player_t*, const std::string& name );
+  virtual expr_t* create_expression( action_t*, const std::string& name );
+  expr_t* create_resource_expression( action_t*, player_t*, const std::string& name );
 
   virtual void create_options();
   virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -4889,9 +4922,9 @@ struct action_t
   bool round_base_dmg;
   bool class_flag1;
   std::string if_expr_str;
-  action_expr_t* if_expr;
+  expr_t* if_expr;
   std::string interrupt_if_expr_str;
-  action_expr_t* interrupt_if_expr;
+  expr_t* interrupt_if_expr;
   std::string sync_str;
   action_t* sync_action;
   char marker;
@@ -4925,7 +4958,7 @@ public:
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time( double haste ) const;
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() ) const;
-  virtual timespan_t travel_time();
+  virtual timespan_t travel_time() const;
   virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, dmg_type_e );
@@ -4990,7 +5023,7 @@ public:
 
   virtual double bonus_damage() const { return base_dd_adder; }
 
-  virtual action_expr_t* create_expression( const std::string& name );
+  virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) const;
 
@@ -5308,13 +5341,13 @@ struct cooldown_t
     if ( override >= timespan_t::zero() ) duration = override;
     if ( duration > timespan_t::zero() ) ready = sim -> current_time + duration + delay;
   }
-  timespan_t remains()
+  timespan_t remains() const
   {
     timespan_t diff = ready - sim -> current_time;
     if ( diff < timespan_t::zero() ) diff = timespan_t::zero();
     return diff;
   }
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 
 private:
   static timespan_t ready_init()
@@ -5350,9 +5383,9 @@ struct dot_t
   timespan_t remains() const;
   void   schedule_tick();
   int    ticks() const;
-  action_expr_t* create_expression( action_t* a, const std::string& name_str );
+  expr_t* create_expression( const std::string& name_str );
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
   /* New stuff */
   void schedule_new_tick();
 };

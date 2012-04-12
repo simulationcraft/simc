@@ -4797,7 +4797,7 @@ struct snapshot_stats_t : public action_t
 
 struct wait_fixed_t : public wait_action_base_t
 {
-  action_expr_t* time_expr;
+  expr_t* time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
     wait_action_base_t( player, "wait" )
@@ -4811,17 +4811,13 @@ struct wait_fixed_t : public wait_action_base_t
     };
     parse_options( options, options_str );
 
-    time_expr = action_expr_t::parse( this, sec_str );
+    time_expr = expr_t::parse( this, sec_str );
   }
 
   virtual timespan_t execute_time() const
   {
-    int result = time_expr -> evaluate();
-    assert( result == TOK_NUM ); ( void )result;
-    timespan_t wait = timespan_t::from_seconds( time_expr -> result_num );
-
+    timespan_t wait = timespan_t::from_seconds( time_expr -> eval() );
     if ( wait <= timespan_t::zero() ) wait = player -> available();
-
     return wait;
   }
 };
@@ -5544,7 +5540,7 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
 
 
 namespace {
-action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )
+expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )
 {
   p -> sim -> errorf( "Use of \"%s\" in action expressions is deprecated: use \"%s\" instead.\n",
                       old_name.c_str(), new_name.c_str() );
@@ -5553,75 +5549,60 @@ action_expr_t* deprecate_expression( player_t* p, action_t* a, const std::string
 }
 }
 
-struct player_action_expr_t : public action_expr_t
-{
-  const player_t* player;
-
-  player_action_expr_t( action_t* a, player_t* p, const std::string& n, token_type_e t ) :
-    action_expr_t( a, n, t ), player( p )
-  {}
-};
-
 // player_t::create_expression ==============================================
 
-action_expr_t* player_t::create_expression( action_t* a,
-                                            const std::string& name_str )
+expr_t* player_t::create_expression( action_t* a,
+                                     const std::string& name_str )
 {
-  // FIXME: Do not access player through action -> player, instead each expression should accept a player pointer 'this'.
+  struct player_action_expr_t : public expr_t
+  {
+    const player_t& player;
+
+    player_action_expr_t( const std::string& n, player_t* p ) :
+      expr_t( n ), player( *p ) { assert( p ); }
+  };
 
   if ( name_str == "level" )
+    return make_ref_expr( "level", level );
+  else if ( name_str == "multiplier" )
   {
-    struct level_expr_t : public action_expr_t
+    struct multiplier_expr_t : public player_expr_t
     {
-      level_expr_t( action_t* a ) : action_expr_t( a, "level", TOK_NUM ) {}
-      virtual int evaluate() { player_t* p = action -> player; result_num = p -> level; return TOK_NUM; }
+      const action_t& action;
+      multiplier_expr_t( player_t* p, action_t* a ) :
+        player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
+      virtual double evaluate() { return player.composite_player_multiplier( action.school, &action ); }
     };
-    return new level_expr_t( a );
+    return new multiplier_expr_t( this, a );
   }
-  if ( name_str == "multiplier" )
+  else if ( name_str == "in_combat" )
+    return make_ref_expr( "in_combat", in_combat );
+  else if ( name_str == "attack_haste" )
   {
-    struct multiplier_expr_t : public action_expr_t
+    struct attack_haste_expr_t : public player_expr_t
     {
-      multiplier_expr_t( action_t* a ) : action_expr_t( a, "multiplier", TOK_NUM ) {}
-      virtual int evaluate() { player_t* p = action -> player; result_num = p -> composite_player_multiplier( action -> school, action ); return TOK_NUM; }
+      attack_haste_expr_t( player_t* p ) : player_expr_t( "attack_haste", p ) {}
+      virtual double evaluate() { return player.composite_attack_haste(); }
     };
-    return new multiplier_expr_t( a );
+    return new attack_haste_expr_t( this );
   }
-  if ( name_str == "in_combat" )
+  else if ( name_str == "attack_speed" )
   {
-    struct in_combat_expr_t : public action_expr_t
+    struct attack_speed_expr_t : public player_expr_t
     {
-      in_combat_expr_t( action_t* a ) : action_expr_t( a, "in_combat", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> player -> in_combat  ? 1 : 0 ); return TOK_NUM; }
+      attack_speed_expr_t( player_t* p ) : player_expr_t( "attack_speed", p ) {}
+      virtual double evaluate() { return player.composite_attack_speed(); }
     };
-    return new in_combat_expr_t( a );
-  }
-  if ( name_str == "attack_haste" )
-  {
-    struct attack_haste_expr_t : public action_expr_t
-    {
-      attack_haste_expr_t( action_t* a ) : action_expr_t( a, "attack_haste", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> composite_attack_haste(); return TOK_NUM; }
-    };
-    return new attack_haste_expr_t( a );
-  }
-  if ( name_str == "attack_speed" )
-  {
-    struct attack_speed_expr_t : public action_expr_t
-    {
-      attack_speed_expr_t( action_t* a ) : action_expr_t( a, "attack_speed", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> composite_attack_speed(); return TOK_NUM; }
-    };
-    return new attack_speed_expr_t( a );
+    return new attack_speed_expr_t( this );
   }
   if ( name_str == "spell_haste" )
   {
-    struct spell_haste_expr_t : public action_expr_t
+    struct spell_haste_expr_t : public player_expr_t
     {
-      spell_haste_expr_t( action_t* a ) : action_expr_t( a, "spell_haste", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> composite_spell_haste(); return TOK_NUM; }
+      spell_haste_expr_t( player_t* p ) : player_expr_t( "spell_haste", p ) {}
+      virtual double evaluate() { return player.composite_spell_haste(); }
     };
-    return new spell_haste_expr_t( a );
+    return new spell_haste_expr_t( this );
   }
   if ( name_str == "time_to_die" )
   {
@@ -5630,7 +5611,7 @@ action_expr_t* player_t::create_expression( action_t* a,
       player_t* player;
       time_to_die_expr_t( action_t* a, player_t* p ) :
         action_expr_t( a, "target_time_to_die", TOK_NUM ), player( p ) {}
-      virtual int evaluate() { result_num = player -> time_to_die().total_seconds();  return TOK_NUM; }
+      virtual int evaluate() { result_num = player.time_to_die().total_seconds();  return TOK_NUM; }
     };
     return new time_to_die_expr_t( a, this );
   }
@@ -5661,7 +5642,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct ptr_expr_t : public action_expr_t
     {
       ptr_expr_t( action_t* a ) : action_expr_t( a, "ptr", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> dbc.ptr ? 1 : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = action -> player.dbc.ptr ? 1 : 0; return TOK_NUM; }
     };
     return new ptr_expr_t( a );
   }
@@ -5670,7 +5651,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct position_front_expr_t : public action_expr_t
     {
       position_front_expr_t( action_t* a ) : action_expr_t( a, "position_front", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> player -> position == POSITION_FRONT || action -> player -> position == POSITION_RANGED_FRONT ) ? 1 : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> player.position == POSITION_FRONT || action -> player.position == POSITION_RANGED_FRONT ) ? 1 : 0; return TOK_NUM; }
     };
     return new position_front_expr_t( a );
   }
@@ -5679,7 +5660,7 @@ action_expr_t* player_t::create_expression( action_t* a,
     struct position_back_expr_t : public action_expr_t
     {
       position_back_expr_t( action_t* a ) : action_expr_t( a, "position_back", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> player -> position == POSITION_BACK || action -> player -> position == POSITION_RANGED_BACK ) ? 1 : 0; return TOK_NUM; }
+      virtual int evaluate() { result_num = ( action -> player.position == POSITION_BACK || action -> player.position == POSITION_RANGED_BACK ) ? 1 : 0; return TOK_NUM; }
     };
     return new position_back_expr_t( a );
   }
@@ -5744,22 +5725,22 @@ action_expr_t* player_t::create_expression( action_t* a,
 
       switch ( stat )
       {
-      case STAT_STRENGTH:         p_stat = &( a -> player -> temporary.attribute[ ATTR_STRENGTH  ] ); attr = ATTR_STRENGTH;  break;
-      case STAT_AGILITY:          p_stat = &( a -> player -> temporary.attribute[ ATTR_AGILITY   ] ); attr = ATTR_AGILITY;   break;
-      case STAT_STAMINA:          p_stat = &( a -> player -> temporary.attribute[ ATTR_STAMINA   ] ); attr = ATTR_STAMINA;   break;
-      case STAT_INTELLECT:        p_stat = &( a -> player -> temporary.attribute[ ATTR_INTELLECT ] ); attr = ATTR_INTELLECT; break;
-      case STAT_SPIRIT:           p_stat = &( a -> player -> temporary.attribute[ ATTR_SPIRIT    ] ); attr = ATTR_SPIRIT;    break;
-      case STAT_SPELL_POWER:      p_stat = &( a -> player -> temporary.spell_power                 ); break;
-      case STAT_ATTACK_POWER:     p_stat = &( a -> player -> temporary.attack_power                ); break;
-      case STAT_EXPERTISE_RATING: p_stat = &( a -> player -> temporary.expertise_rating            ); break;
-      case STAT_HIT_RATING:       p_stat = &( a -> player -> temporary.hit_rating                  ); break;
-      case STAT_CRIT_RATING:      p_stat = &( a -> player -> temporary.crit_rating                 ); break;
-      case STAT_HASTE_RATING:     p_stat = &( a -> player -> temporary.haste_rating                ); break;
-      case STAT_ARMOR:            p_stat = &( a -> player -> temporary.armor                       ); break;
-      case STAT_DODGE_RATING:     p_stat = &( a -> player -> temporary.dodge_rating                ); break;
-      case STAT_PARRY_RATING:     p_stat = &( a -> player -> temporary.parry_rating                ); break;
-      case STAT_BLOCK_RATING:     p_stat = &( a -> player -> temporary.block_rating                ); break;
-      case STAT_MASTERY_RATING:   p_stat = &( a -> player -> temporary.mastery_rating              ); break;
+      case STAT_STRENGTH:         p_stat = &( a -> player.temporary.attribute[ ATTR_STRENGTH  ] ); attr = ATTR_STRENGTH;  break;
+      case STAT_AGILITY:          p_stat = &( a -> player.temporary.attribute[ ATTR_AGILITY   ] ); attr = ATTR_AGILITY;   break;
+      case STAT_STAMINA:          p_stat = &( a -> player.temporary.attribute[ ATTR_STAMINA   ] ); attr = ATTR_STAMINA;   break;
+      case STAT_INTELLECT:        p_stat = &( a -> player.temporary.attribute[ ATTR_INTELLECT ] ); attr = ATTR_INTELLECT; break;
+      case STAT_SPIRIT:           p_stat = &( a -> player.temporary.attribute[ ATTR_SPIRIT    ] ); attr = ATTR_SPIRIT;    break;
+      case STAT_SPELL_POWER:      p_stat = &( a -> player.temporary.spell_power                 ); break;
+      case STAT_ATTACK_POWER:     p_stat = &( a -> player.temporary.attack_power                ); break;
+      case STAT_EXPERTISE_RATING: p_stat = &( a -> player.temporary.expertise_rating            ); break;
+      case STAT_HIT_RATING:       p_stat = &( a -> player.temporary.hit_rating                  ); break;
+      case STAT_CRIT_RATING:      p_stat = &( a -> player.temporary.crit_rating                 ); break;
+      case STAT_HASTE_RATING:     p_stat = &( a -> player.temporary.haste_rating                ); break;
+      case STAT_ARMOR:            p_stat = &( a -> player.temporary.armor                       ); break;
+      case STAT_DODGE_RATING:     p_stat = &( a -> player.temporary.dodge_rating                ); break;
+      case STAT_PARRY_RATING:     p_stat = &( a -> player.temporary.parry_rating                ); break;
+      case STAT_BLOCK_RATING:     p_stat = &( a -> player.temporary.block_rating                ); break;
+      case STAT_MASTERY_RATING:   p_stat = &( a -> player.temporary.mastery_rating              ); break;
       default: break;
       }
 
@@ -5778,26 +5759,26 @@ action_expr_t* player_t::create_expression( action_t* a,
           {
             result_num = stat;
             if ( attr != ATTRIBUTE_NONE )
-              result_num *= action -> player -> composite_attribute_multiplier( attr );
+              result_num *= action -> player.composite_attribute_multiplier( attr );
             else if ( stype == STAT_SPELL_POWER )
             {
-              result_num += action -> player -> temporary.attribute[ ATTR_INTELLECT ] *
-                            action -> player -> composite_attribute_multiplier( ATTR_INTELLECT ) *
-                            action -> player -> spell_power_per_intellect;
+              result_num += action -> player.temporary.attribute[ ATTR_INTELLECT ] *
+                            action -> player.composite_attribute_multiplier( ATTR_INTELLECT ) *
+                            action -> player.spell_power_per_intellect;
 
-              result_num *= action -> player -> composite_spell_power_multiplier();
+              result_num *= action -> player.composite_spell_power_multiplier();
               //log_t::output( action -> sim, "temporary_bonus.spell_power=%f", result_num );
             }
             else if ( stype == STAT_ATTACK_POWER )
             {
-              result_num += action -> player -> temporary.attribute[ ATTR_STRENGTH ] *
-                            action -> player -> composite_attribute_multiplier( ATTR_STRENGTH ) *
-                            action -> player -> attack_power_per_strength +
-                            action -> player -> temporary.attribute[ ATTR_AGILITY ] *
-                            action -> player -> composite_attribute_multiplier( ATTR_AGILITY ) *
-                            action -> player -> attack_power_per_agility;
+              result_num += action -> player.temporary.attribute[ ATTR_STRENGTH ] *
+                            action -> player.composite_attribute_multiplier( ATTR_STRENGTH ) *
+                            action -> player.attack_power_per_strength +
+                            action -> player.temporary.attribute[ ATTR_AGILITY ] *
+                            action -> player.composite_attribute_multiplier( ATTR_AGILITY ) *
+                            action -> player.attack_power_per_agility;
 
-              result_num *= action -> player -> composite_attack_power_multiplier();
+              result_num *= action -> player.composite_attack_power_multiplier();
             }
 
             return TOK_NUM;
@@ -5913,7 +5894,7 @@ action_expr_t* player_t::create_expression( action_t* a,
   {
     if ( splits[ 0 ] == "set_bonus" )
     {
-      return a -> player -> set_bonus.create_expression( a, splits[ 1 ] );
+      return a -> player.set_bonus.create_expression( a, splits[ 1 ] );
     }
   }
 
