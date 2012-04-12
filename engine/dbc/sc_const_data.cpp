@@ -137,6 +137,24 @@ const char* dbc_t::build_level( bool ptr )
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.0.1" : "5.0.1"; }
 
+void dbc_t::apply_hotfixes()
+{
+  // Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
+  spell_data_t* s;
+
+  // PRIEST
+  // Build Last Checked: 15589
+  // Description: Shadowy Apparition avg and coeff values are off.
+  s = spell_data_t::find( 87532, false );
+  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
+  {
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.552;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.520;
+  }
+
+
+}
+
 void dbc_t::init()
 {
   idx_sd.init();
@@ -156,6 +174,8 @@ void dbc_t::init()
     spellpower_data_t::link( true );
     talent_data_t::link( true );
   }
+
+  dbc_t::apply_hotfixes();
 }
 
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const

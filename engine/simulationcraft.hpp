@@ -2264,6 +2264,7 @@ public:
   dbc_t( bool ptr=false ) : ptr( ptr ) { }
 
   // Static Initialization
+  static void apply_hotfixes();
   static void init();
   static void de_init() {}
 

@@ -196,7 +196,9 @@ action_t::action_t( action_type_e       ty,
   stats = player -> get_stats( name_str , this );
 
   if ( data().ok() )
+  {
     parse_spell_data( data() );
+  }
 
   if ( data().id() && ! data().is_level( player -> level ) && data().level() <= MAX_LEVEL )
   {

@@ -15,7 +15,6 @@ struct priest_targetdata_t : public targetdata_t
 {
   dot_t*  dots_shadow_word_pain;
   dot_t*  dots_vampiric_touch;
-  dot_t*  dots_devouring_plague;
   dot_t*  dots_holy_fire;
   dot_t*  dots_renew;
 
@@ -32,7 +31,6 @@ void register_priest_targetdata( sim_t* sim )
   player_type_e t = PRIEST;
   typedef priest_targetdata_t type;
 
-  REGISTER_DOT( devouring_plague );
   REGISTER_DOT( holy_fire );
   REGISTER_DOT( renew );
   REGISTER_DOT( shadow_word_pain );
@@ -105,6 +103,8 @@ struct priest_t : public player_t
   // Specialization Spells
   struct specs_t
   {
+    // General
+
     // Discipline
     const spell_data_t* enlightenment;
     const spell_data_t* meditation_disc;
@@ -118,11 +118,10 @@ struct priest_t : public player_t
     const spell_data_t* revelations;
 
     // Shadow
-    const spell_data_t* shadow_power;
-    const spell_data_t* shadow_orbs;
-    const spell_data_t* twisted_faith;
+    const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparition;
+
     specs_t() { memset( this, 0, sizeof( *this ) ); }
   } spec;
 
@@ -234,26 +233,17 @@ struct priest_t : public player_t
     double meditation_value;
 
     // Discipline
-    double inner_will_value;
 
     // Shadow
-    double shadow_power_damage_value;
-    double shadow_power_crit_value;
-
-    double twisted_faith_static_value;
-    double twisted_faith_dynamic_value;
-    double shadowform_value;
-
-    double devouring_plague_health_mod;
   } constants;
 
-  bool   was_sub_25;
+  bool   was_sub_20;
 
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     constants( constants_t() )
   {
-    was_sub_25                           = false;
+    was_sub_20                           = false;
     echo_of_light_merged                 = false;
 
     heals_echo_of_light                  = NULL;
@@ -353,7 +343,6 @@ public:
     td -> remove_dots_event = 0;
     cancel_dot( td -> dots_shadow_word_pain );
     cancel_dot( td -> dots_vampiric_touch );
-    cancel_dot( td -> dots_devouring_plague );
   }
 };
 
@@ -767,8 +756,6 @@ struct priest_spell_t : public spell_t
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
 
-    crit_bonus_multiplier *= 1.0 + p() -> constants.shadow_power_crit_value;
-
     can_trigger_atonement = false;
   }
 
@@ -1161,13 +1148,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     base_crit += 0.05; // estimated.
 
-    // FIXME: check if this systematic damage modification still occurs in mop
-    if ( player -> bugs )
-    {
-      base_dd_min *= 1.0625;
-      base_dd_max *= 1.0625;
-    }
-
     init();
   }
 
@@ -1180,14 +1160,15 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     p() -> shadowy_apparition_free_list.push( this );
   }
 
-  virtual void player_buff()
-  {
-    priest_spell_t::player_buff();
+  virtual double composite_da_multiplier()
+  { 
+    // Bug: Last tested Build 15589
+    double m = priest_spell_t::composite_da_multiplier();
 
-    if ( player -> bugs )
-    {
-      player_multiplier /= 1.0 + p() -> constants.twisted_faith_static_value;
-    }
+    if ( p() -> buffs.shadowform -> check() )
+      m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
+
+    return m;
   }
 };
 
@@ -1196,9 +1177,9 @@ unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
   // Trigger Shadowy apparitions and report back the number of successful Shadow Orb refunds
   unsigned shadow_orb_procs = 0;
 
-  assert ( p -> spec.shadowy_apparition->ok() );
+  assert ( p -> spec.shadowy_apparition -> ok() );
 
-  if ( !p -> shadowy_apparition_free_list.empty() )
+  if ( ! p -> shadowy_apparition_free_list.empty() )
   {
     for ( int i = static_cast<int>( p -> resources.current[ RESOURCE_SHADOW_ORB ] ); i > 0; i-- )
     {
@@ -1304,7 +1285,7 @@ struct chakra_t : public priest_spell_t
 struct dispersion_t : public priest_spell_t
 {
   dispersion_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "dispersion", player, player -> find_class_spell ( "Dispersion" ) )
+    priest_spell_t( "dispersion", player, player -> find_class_spell( "Dispersion" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1877,11 +1858,11 @@ struct shadow_word_death_t : public priest_spell_t
 
   virtual void execute()
   {
-    p() -> was_sub_25 = ! is_dtr_action && ( target -> health_percentage() < 20 );
+    p() -> was_sub_20 = ! is_dtr_action && ( target -> health_percentage() < 20 );
 
     priest_spell_t::execute();
 
-    if ( result_is_hit() && p() -> was_sub_25 && ( target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
+    if ( result_is_hit() && p() -> was_sub_20 && ( target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
     {
       cooldown -> reset();
       p() -> buffs.glyph_of_shadow_word_death -> trigger();
@@ -2182,7 +2163,7 @@ struct shadowy_apparition_t : priest_spell_t
   unsigned triggered_shadow_orb_mastery;
 
   shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadowy_apparition", player, player -> spec.shadowy_apparition ),
+    priest_spell_t( "shadowy_apparition", player, player -> find_class_spell( "Shadowy Apparition" ) ),
     triggered_shadow_orb_mastery( 0 )
   {
     parse_options( NULL, options_str );
@@ -3126,7 +3107,7 @@ double priest_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * constants.twisted_faith_dynamic_value ) / rating.spell_hit;
+  hit += ( ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -3139,8 +3120,7 @@ double priest_t::composite_player_multiplier( const school_type_e school, action
 
   if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
   {
-    m *= 1.0 + buffs.shadowform -> check() * constants.shadowform_value;
-    m *= 1.0 + constants.twisted_faith_static_value;
+    m *= 1.0 + buffs.shadowform -> check() * spec.shadowform -> effectN( 2 ).percent();
   }
   if ( spell_data_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
   {
@@ -3148,10 +3128,6 @@ double priest_t::composite_player_multiplier( const school_type_e school, action
     {
       m *= 1.0 + 0.15;
     }
-  }
-  if ( spell_data_t::is_school( school, SCHOOL_MAGIC ) )
-  {
-    m *= 1.0 + constants.shadow_power_damage_value;
   }
 
   return m;
@@ -3166,7 +3142,7 @@ double priest_t::composite_player_td_multiplier( const school_type_e school, act
   if ( school == SCHOOL_SHADOW )
   {
     // Shadow TD
-    player_multiplier += shadow_orb_amount();
+    player_multiplier *= 1.0 + shadow_orb_amount();
   }
 
   return player_multiplier;
@@ -3209,7 +3185,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "inner_will"             ) return new inner_will_t            ( this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( this, options_str );
-  if ( name == "shadowform"            ) return new shadowform_t           ( this, options_str );
+  if ( name == "shadowform"             ) return new shadowform_t            ( this, options_str );
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
 
   // Damage
@@ -3325,7 +3301,7 @@ void priest_t::init_scaling()
   scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
-  if ( ( spec.twisted_faith -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+  if ( ( spec.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
   {
     double v = sim -> scaling -> scale_value;
 
@@ -3385,6 +3361,8 @@ void priest_t::init_spells()
 
   // Passive Spells
 
+  // General Spells
+
   // Discipline
   spec.enlightenment                  = find_class_spell( "Enlightenment" );
   spec.meditation_disc                = find_class_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
@@ -3398,9 +3376,7 @@ void priest_t::init_spells()
   spec.revelations                    = find_class_spell( "Revelations" );
 
   // Shadow
-  spec.shadow_power                   = find_class_spell( "Shadow Power" );
-  spec.shadow_orbs                    = find_class_spell( "Shadow Orbs" );
-  spec.twisted_faith                  = find_class_spell( "Twisted Faith" );
+  spec.spiritual_precision            = find_class_spell( "Spiritual Precision" );
   spec.shadowform                     = find_class_spell( "Shadowform" );
   spec.shadowy_apparition             = find_class_spell( "Shadowy Apparition" );
 
@@ -3490,7 +3466,6 @@ void priest_t::init_actions()
 {
   std::string& list_default = get_action_priority_list( "default" ) -> action_list_str;
 
-  std::string& list_double_dot = get_action_priority_list( "double_dot" ) -> action_list_str;
   std::string& list_pws = get_action_priority_list( "pws" ) -> action_list_str;
   //std::string& list_aaa = get_action_priority_list( "aaa" ) -> action_list_str;
   //std::string& list_poh = get_action_priority_list( "poh" ) -> action_list_str;
@@ -3507,11 +3482,19 @@ void priest_t::init_actions()
       buffer = "flask,type=frost_wyrm/food,type=fish_feast";
     }
 
-    buffer += "/fortitude,if=!aura.stamina.up/inner_fire";
+    if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
+      buffer += "/fortitude,if=!aura.stamina.up";
+    
+    if ( find_class_spell( "Inner Fire" ) -> ok() )
+      buffer += "/inner_fire";
 
-    buffer += "/shadowform";
+    if ( find_class_spell( "Shadowform" ) -> ok() )
+      buffer += "/shadowform";
 
-    buffer += "/vampiric_embrace";
+    /*
+    if ( find_class_spell( "Vampiric Embrace" ) -> ok() )
+      buffer += "/vampiric_embrace";
+    */
 
     buffer += "/snapshot_stats";
 
@@ -3532,64 +3515,46 @@ void priest_t::init_actions()
     {
       // SHADOW =============================================================
     case PRIEST_SHADOW:
+/*
       if ( level > 80 )
       {
         buffer += "/volcanic_potion,if=!in_combat";
         buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
-      else if ( level >= 70 )
-      {
-        buffer += "/wild_magic_potion,if=!in_combat";
-        buffer += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
-      }
+*/
+      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+        buffer += "/shadow_word_death,health_percentage<=20";
 
-      buffer += "/mind_blast";
+      if ( find_class_spell( "Mind Blast" ) -> ok() )
+        buffer += "/mind_blast";
+
       buffer += init_use_racial_actions();
-      buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      if ( level >= 28 )
-        buffer += "/devouring_plague,if=(!ticking|dot.devouring_plague.remains<gcd+1.0)&miss_react";
+      if ( find_class_spell( "Vampiric Touch" ) -> ok() )
+        buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
-      buffer += "/stop_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains>=0.2";
+      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
+        buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      buffer += "|dot.vampiric_touch.remains<cast_time+2.5";
-
-      buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
-
-      // Save  & reset buffer ===============================================
-      for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
-      {
-        action_priority_list_t* a = action_priority_list[i];
-        a -> action_list_str += buffer;
-      }
-      buffer.clear();
-      // ====================================================================
-
-      list_double_dot += "/vampiric_touch_2,if=(!ticking|dot.vampiric_touch_2.remains<cast_time+2.5)&miss_react";
-
-      list_double_dot += "/shadow_word_pain_2,if=(!ticking|dot.shadow_word_pain_2.remains<gcd+0.5)&miss_react";
-
-      buffer += "/start_moving,health_percentage<=25,if=cooldown.shadow_word_death.remains<=0.1";
-
-      buffer += "/shadow_word_death,health_percentage<=25";
-      if ( level >= 66 )
+      if ( find_class_spell( "Shadowfiend" ) -> ok() )
         buffer += "/shadow_fiend";
 
-      // Save  & reset buffer ===============================================
-      for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
+      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
+        buffer += "/shadowy_apparition,if=shadow_orb=3";
+
+      if ( find_class_spell( "Mind Flay" ) -> ok() )
+        buffer += "/mind_flay";
+
+      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
       {
-        action_priority_list_t* a = action_priority_list[i];
-        a -> action_list_str += buffer;
+        buffer += "/shadow_word_death,moving=1";
       }
-      buffer.clear();
-      // ====================================================================
 
-      list_double_dot += "/mind_flay_2,if=(dot.shadow_word_pain_2.remains<dot.shadow_word_pain.remains)&miss_react";
+      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
+        buffer += "/shadow_word_pain,moving=1";
 
-      buffer += "/shadow_word_death,if=mana_pct<10";
-      buffer += "/mind_flay";
-      buffer += "/shadow_word_death,moving=1";
-      buffer += "/dispersion";
+      if ( find_class_spell( "Dispersion" ) -> ok() )
+        buffer += "/dispersion";
       break;
       // SHADOW END =========================================================
 
@@ -3613,9 +3578,6 @@ void priest_t::init_actions()
           buffer += "/berserking";
         buffer += "/power_infusion";
         buffer += "/power_word_shield,if=buff.weakened_soul.down";
-
-        if ( level >= 28 )
-          buffer += "/devouring_plague,if=miss_react&(remains<tick_time|!ticking)";
 
         buffer += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
 
@@ -3694,7 +3656,6 @@ void priest_t::init_actions()
         if ( race == RACE_TROLL )                        list_default += "/berserking";
                                                          list_default += "/chakra";
                                                          list_default += "/holy_fire";
-        if ( level >= 28 )                               list_default += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          list_default += "/mind_blast";
                                                          list_default += "/smite";
@@ -3718,7 +3679,6 @@ void priest_t::init_actions()
       if ( race == RACE_TROLL )                          list_default += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      list_default += "/arcane_torrent,if=mana_pct<=90";
                                                          list_default += "/holy_fire";
-      if ( level >= 28 )                                 list_default += "/devouring_plague,if=remains<tick_time|!ticking";
                                                          list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          list_default += "/mind_blast";
                                                          list_default += "/smite";
@@ -3775,16 +3735,7 @@ void priest_t::init_values()
                                               spec.meditation_disc -> effectN( 1 ).base_value() :
                                               spec.meditation_holy -> effectN( 1 ).base_value();
 
-  // Shadow Core
-  constants.shadow_power_damage_value       = spec.shadow_power -> effectN( 1 ).percent();
-  constants.shadow_power_crit_value         = spec.shadow_power -> effectN( 2 ).percent();
-
   // Shadow
-  constants.twisted_faith_static_value      = spec.twisted_faith -> effectN( 2 ).percent();
-  constants.twisted_faith_dynamic_value     = spec.twisted_faith -> effectN( 1 ).percent();
-  constants.shadowform_value                = spec.shadowform -> effectN( 2 ).percent();
-  constants.devouring_plague_health_mod     = 0.15;
-
   if ( set_bonus.pvp_2pc_caster() )
     attribute_initial[ ATTR_INTELLECT ] += 70;
 
@@ -3820,7 +3771,7 @@ void priest_t::reset()
 
   echo_of_light_merged = false;
 
-  was_sub_25 = false;
+  was_sub_20 = false;
 
   heals_echo_of_light = 0;
 

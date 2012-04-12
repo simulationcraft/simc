@@ -23,7 +23,7 @@ spell_t::spell_t( const std::string&  token,
 
   may_trigger_dtr                = true;
 
-  crit_bonus = 0.5;
+  crit_bonus = 1.0;
 
   if ( player -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
        player -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
