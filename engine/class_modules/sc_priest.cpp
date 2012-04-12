@@ -847,7 +847,10 @@ struct priest_spell_t : public spell_t
   }
 
   static unsigned trigger_shadowy_apparition( priest_t* player );
+private:
   static void add_more_shadowy_apparitions( priest_t*, size_t );
+  friend void priest_t::init_spells();
+public:
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
 };
 
