@@ -247,8 +247,8 @@ expr_t* dot_t::create_expression( const std::string& name_str )
   {
     const dot_t& dot;
 
-    dot_expr_t( const std::string& n, dot_t* d ) :
-      expr_t( n ), dot( *d ) { assert( d ); }
+    dot_expr_t( const std::string& n, const dot_t& d ) :
+      expr_t( n ), dot( d ) {}
   };
 
   if ( name_str == "ticks" )
@@ -257,7 +257,7 @@ expr_t* dot_t::create_expression( const std::string& name_str )
   {
     struct duration_expr_t : public dot_expr_t
     {
-      duration_expr_t( dot_t* d ) : dot_expr_t( "dot_duration", d ) {}
+      duration_expr_t( const dot_t& d ) : dot_expr_t( "dot_duration", d ) {}
       virtual double evaluate()
       {
         // FIXME: What exactly is this supposed to be calculating?
@@ -265,47 +265,33 @@ expr_t* dot_t::create_expression( const std::string& name_str )
         return ( dot.action -> num_ticks * dot.action -> tick_time( haste ) ).total_seconds();
       }
     };
-    return new duration_expr_t( this );
+    return new duration_expr_t( *this );
   }
   else if ( name_str == "remains" )
-  {
-    struct dot_remains_expr_t : public dot_expr_t
-    {
-      dot_remains_expr_t( dot_t* d ) : dot_expr_t( "dot_remains", d ) {}
-      virtual double evaluate() { return dot.remains().total_seconds(); }
-    };
-    return new dot_remains_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &dot_t::remains );
   else if ( name_str == "tick_dmg" )
     return make_ref_expr( "dot_tick_dmg", prev_tick_amount );
   else if ( name_str == "ticks_remain" )
-  {
-    struct dot_ticks_remain_expr_t : public dot_expr_t
-    {
-      dot_ticks_remain_expr_t( dot_t* d ) : dot_expr_t( "dot_ticks_remain", d ) {}
-      virtual double evaluate() { return dot.ticks(); }
-    };
-    return new dot_ticks_remain_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &dot_t::ticks );
   else if ( name_str == "ticking" )
     return make_ref_expr( "dot_ticking", ticking );
   else if ( name_str == "spell_power" )
   {
     struct dot_spell_power_expr_t : public dot_expr_t
     {
-      dot_spell_power_expr_t( dot_t* d ) : dot_expr_t( "dot_spell_power", d ) {}
+      dot_spell_power_expr_t( const dot_t& d ) : dot_expr_t( "dot_spell_power", d ) {}
       virtual double evaluate() { return dot.state ? dot.state -> spell_power : 0; }
     };
-    return new dot_spell_power_expr_t( this );
+    return new dot_spell_power_expr_t( *this );
   }
   else if ( name_str == "attack_power" )
   {
     struct dot_attack_power_expr_t : public dot_expr_t
     {
-      dot_attack_power_expr_t( dot_t* d ) : dot_expr_t( "dot_attack_power", d ) {}
+      dot_attack_power_expr_t( const dot_t& d ) : dot_expr_t( "dot_attack_power", d ) {}
       virtual double evaluate() { return dot.state ? dot.state -> attack_power : 0; }
     };
-    return new dot_attack_power_expr_t( this );
+    return new dot_attack_power_expr_t( *this );
   }
 
 #if 0
@@ -313,10 +299,10 @@ expr_t* dot_t::create_expression( const std::string& name_str )
   {
     struct dot_mastery_expr_t : public dot_expr_t
     {
-      dot_mastery_expr_t( dot_t* d ) : dot_expr_t( "dot_mastery", d ) {}
+      dot_mastery_expr_t( const dot_t& d ) : dot_expr_t( "dot_mastery", d ) {}
       virtual double evaluate() { return dot.state ? dot.state -> total_mastery() : 0; }
     };
-    return new dot_mastery_expr_t( this );
+    return new dot_mastery_expr_t( *this );
   }
 #endif
 
@@ -324,10 +310,10 @@ expr_t* dot_t::create_expression( const std::string& name_str )
   {
     struct dot_haste_pct_expr_t : public dot_expr_t
     {
-      dot_haste_pct_expr_t( dot_t* d ) : dot_expr_t( "dot_haste_pct", d ) {}
+      dot_haste_pct_expr_t( const dot_t& d ) : dot_expr_t( "dot_haste_pct", d ) {}
       virtual double evaluate() { return dot.state ? dot.state -> haste : 0; }
     };
-    return new dot_haste_pct_expr_t( this );
+    return new dot_haste_pct_expr_t( *this );
   }
   else if ( name_str == "current_ticks" )
     return make_ref_expr( "dot_current_ticks", num_ticks );

@@ -63,7 +63,7 @@ struct enemy_t : public player_t
   virtual double health_percentage() const;
   virtual void combat_end();
   virtual void recalculate_health();
-  virtual action_expr_t* create_expression( action_t* action, const std::string& type );
+  virtual expr_t* create_expression( action_t* action, const std::string& type );
   virtual timespan_t available() const { return waiting_time; }
 };
 
@@ -586,20 +586,11 @@ void enemy_t::recalculate_health()
 
 // enemy_t::create_expression ===============================================
 
-action_expr_t* enemy_t::create_expression( action_t* action,
-    const std::string& name_str )
+expr_t* enemy_t::create_expression( action_t* action,
+                                    const std::string& name_str )
 {
   if ( name_str == "adds" )
-  {
-    struct target_adds_expr_t : public action_expr_t
-    {
-      player_t* target;
-      target_adds_expr_t( action_t* a, player_t* t ) :
-        action_expr_t( a, "target_adds", TOK_NUM ), target( t ) {}
-      virtual int evaluate() { result_num = target -> active_pets;  return TOK_NUM; }
-    };
-    return new target_adds_expr_t( action, this );
-  }
+    return make_ref_expr( name_str, active_pets );
 
   return player_t::create_expression( action, name_str );
 }

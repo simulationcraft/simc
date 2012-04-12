@@ -745,23 +745,11 @@ expr_t* buff_t::create_expression( const std::string& type )
   };
 
   if ( type == "remains" )
-  {
-    struct buff_remains_expr_t : public buff_expr_t
-    {
-      buff_remains_expr_t( buff_t* b ) : buff_expr_t( "buff_remains", b ) {}
-      virtual double evaluate() { return buff.remains().total_seconds(); }
-    };
-    return new buff_remains_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &buff_t::remains );
+
   else if ( type == "cooldown_remains" )
-  {
-    struct buff_cooldown_remains_expr_t : public buff_expr_t
-    {
-      buff_cooldown_remains_expr_t( buff_t* b ) : buff_expr_t( "buff_cooldown_remains", b ) {}
-      virtual double evaluate() { return buff.cooldown -> remains().total_seconds(); }
-    };
-    return new buff_cooldown_remains_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::remains );
+
   else if ( type == "up" )
   {
     struct buff_up_expr_t : public buff_expr_t
@@ -771,6 +759,7 @@ expr_t* buff_t::create_expression( const std::string& type )
     };
     return new buff_up_expr_t( this );
   }
+
   else if ( type == "down" )
   {
     struct buff_down_expr_t : public buff_expr_t
@@ -780,38 +769,22 @@ expr_t* buff_t::create_expression( const std::string& type )
     };
     return new buff_down_expr_t( this );
   }
+
   else if ( type == "stack" )
-  {
-    struct buff_stack_expr_t : public buff_expr_t
-    {
-      buff_stack_expr_t( buff_t* b ) : buff_expr_t( "buff_stack", b ) {}
-      virtual double evaluate() { return buff.check(); }
-    };
-    return new buff_stack_expr_t( this );
-  }
+    return make_mem_fn_expr( type, *this, &buff_t::check );
+
   else if ( type == "value" )
-  {
-    struct buff_value_expr_t : public buff_expr_t
-    {
-      buff_value_expr_t( buff_t* b ) : buff_expr_t( "buff_value", b ) {}
-      virtual double evaluate() { return buff.value(); }
-    };
-    return new buff_value_expr_t( this );
-  }
+    return make_mem_fn_expr( type, *this, &buff_t::value );
+
   else if ( type == "react" )
-  {
-    struct buff_react_expr_t : public buff_expr_t
-    {
-      buff_react_expr_t( buff_t* b ) : buff_expr_t( "buff_react", b ) {}
-      virtual double evaluate() { return buff.stack_react(); }
-    };
-    return new buff_react_expr_t( this );
-  }
+    return make_mem_fn_expr( type, *this, &buff_t::stack_react );
+
   else if ( type == "cooldown_react" )
   {
     struct buff_cooldown_react_expr_t : public buff_expr_t
     {
-      buff_cooldown_react_expr_t( buff_t* b ) : buff_expr_t( "buff_cooldown_react", b ) {}
+      buff_cooldown_react_expr_t( buff_t* b ) :
+        buff_expr_t( "buff_cooldown_react", b ) {}
       virtual double evaluate()
       {
         if ( buff.check() && ! buff.may_react() )

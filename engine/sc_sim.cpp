@@ -1922,28 +1922,14 @@ double sim_t::iteration_adjust()
 
 // sim_t::create_expression =================================================
 
-action_expr_t* sim_t::create_expression( action_t* a,
-                                         const std::string& name_str )
+expr_t* sim_t::create_expression( action_t* a,
+                                  const std::string& name_str )
 {
   if ( name_str == "time" )
-  {
-    struct time_expr_t : public action_expr_t
-    {
-      time_expr_t( action_t* a ) : action_expr_t( a, "time", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> sim -> current_time.total_seconds();  return TOK_NUM; }
-    };
-    return new time_expr_t( a );
-  }
+    return make_ref_expr( name_str, current_time );
 
   if ( util_t::str_compare_ci( name_str, "enemies" ) )
-  {
-    struct enemy_amount_expr_t : public action_expr_t
-    {
-      enemy_amount_expr_t( action_t* a ) : action_expr_t( a, "enemy_amount", TOK_NUM ) { }
-      virtual int evaluate() { result_num = action -> sim -> num_enemies; return TOK_NUM; }
-    };
-    return new enemy_amount_expr_t( a );
-  }
+    return make_ref_expr( name_str, num_enemies );
 
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, name_str, "." );
@@ -1954,7 +1940,7 @@ action_expr_t* sim_t::create_expression( action_t* a,
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) return 0;
-      return buff -> create_expression( a, splits[ 2 ] );
+      return buff -> create_expression( splits[ 2 ] );
     }
   }
   if ( num_splits >= 3 && splits[ 0 ] == "actors" )

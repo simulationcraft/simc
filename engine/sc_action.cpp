@@ -1530,42 +1530,28 @@ expr_t* action_t::create_expression( const std::string& name_str )
   public:
     const action_t& action;
 
-    action_expr_t( const std::string& name, action_t* a ) :
-      expr_t( name ), action( *a ) { assert( a ); }
+    action_expr_t( const std::string& name, const action_t& a ) :
+      expr_t( name ), action( a ) {}
   };
 
   if ( name_str == "n_ticks" )
   {
     struct n_ticks_expr_t : public action_expr_t
     {
-      n_ticks_expr_t( action_t* a ) : action_expr_t( "n_ticks", a ) {}
+      n_ticks_expr_t( const action_t& a ) : action_expr_t( "n_ticks", a ) {}
       virtual double evaluate() { return action.hasted_num_ticks( action.player -> composite_spell_haste() ); }
     };
-    return new n_ticks_expr_t( this );
+    return new n_ticks_expr_t( *this );
   }
   else if ( name_str == "cast_time" )
-  {
-    struct cast_time_expr_t : public action_expr_t
-    {
-      cast_time_expr_t( action_t* a ) : action_expr_t( "cast_time", a ) {}
-      virtual double evaluate() { return action.execute_time().total_seconds(); }
-    };
-    return new cast_time_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
   else if ( name_str == "cooldown" )
-  {
-    struct cooldown_expr_t : public action_expr_t
-    {
-      cooldown_expr_t( action_t* a ) : action_expr_t( "cooldown", a ) {}
-      virtual double evaluate() { return action.cooldown -> duration.total_seconds(); }
-    };
-    return new cooldown_expr_t( this );
-  }
+    return make_ref_expr( name_str, cooldown -> duration );
   else if ( name_str == "tick_time" )
   {
     struct tick_time_expr_t : public action_expr_t
     {
-      tick_time_expr_t( action_t* a ) : action_expr_t( "tick_time", a ) {}
+      tick_time_expr_t( const action_t& a ) : action_expr_t( "tick_time", a ) {}
       virtual double evaluate()
       {
         dot_t* dot = action.dot();
@@ -1575,34 +1561,20 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return 0;
       }
     };
-    return new tick_time_expr_t( this );
+    return new tick_time_expr_t( *this );
   }
   else if ( name_str == "gcd" )
-  {
-    struct cast_time_expr_t : public action_expr_t
-    {
-      cast_time_expr_t( action_t* a ) : action_expr_t( "gcd", a ) {}
-      virtual double evaluate() { return action.gcd().total_seconds(); }
-    };
-    return new cast_time_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "travel_time" )
-  {
-    struct travel_time_expr_t : public action_expr_t
-    {
-      travel_time_expr_t( action_t* a ) : action_expr_t( "travel_time", a ) {}
-      virtual double evaluate() { return action.travel_time().total_seconds(); }
-    };
-    return new travel_time_expr_t( this );
-  }
+    return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
   else if ( name_str == "in_flight" )
   {
     struct in_flight_expr_t : public action_expr_t
     {
-      in_flight_expr_t( action_t* a ) : action_expr_t( "in_flight", a ) {}
+      in_flight_expr_t( const action_t& a ) : action_expr_t( "in_flight", a ) {}
       virtual double evaluate() { return action.travel_event != NULL; }
     };
-    return new in_flight_expr_t( this );
+    return new in_flight_expr_t( *this );
   }
 
   else if ( expr_t* q = dot() -> create_expression( name_str ) )
@@ -1612,7 +1584,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct miss_react_expr_t : public action_expr_t
     {
-      miss_react_expr_t( action_t* a ) : action_expr_t( "miss_react", a ) {}
+      miss_react_expr_t( const action_t& a ) : action_expr_t( "miss_react", a ) {}
       virtual double evaluate()
       {
         dot_t* dot = action.dot();
@@ -1623,13 +1595,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
       }
     };
-    return new miss_react_expr_t( this );
+    return new miss_react_expr_t( *this );
   }
   else if ( name_str == "cast_delay" )
   {
     struct cast_delay_expr_t : public action_expr_t
     {
-      cast_delay_expr_t( action_t* a ) : action_expr_t( "cast_delay", a ) {}
+      cast_delay_expr_t( const action_t& a ) : action_expr_t( "cast_delay", a ) {}
       virtual double evaluate()
       {
         if ( action.sim -> debug )
@@ -1648,7 +1620,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
       }
     };
-    return new cast_delay_expr_t( this );
+    return new cast_delay_expr_t( *this );
   }
 
   std::vector<std::string> splits;
@@ -1661,7 +1633,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_expr_t : public action_expr_t
       {
         std::string prev_action;
-        prev_expr_t( action_t* a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
+        prev_expr_t( const action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
         virtual double evaluate()
         {
           if ( action.player -> last_foreground_action )
@@ -1670,7 +1642,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         }
       };
 
-      return new prev_expr_t( this, splits[ 1 ] );
+      return new prev_expr_t( *this, splits[ 1 ] );
     }
   }
 

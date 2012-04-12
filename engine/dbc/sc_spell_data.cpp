@@ -1364,9 +1364,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 {
   if ( expr_str.empty() ) return 0;
 
-  std::vector<expr_token_t> tokens;
-
-  expression_t::parse_tokens( 0, tokens, expr_str );
+  std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, expr_str );
 
   if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
 

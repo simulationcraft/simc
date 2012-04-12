@@ -64,6 +64,7 @@ namespace std {using namespace tr1; }
 #else
 // Use TR1
 #include <tr1/array>
+#include <tr1/functional>
 #include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
@@ -3086,11 +3087,16 @@ struct expression_t
   static bool convert_to_rpn( std::vector<expr_token_t>& tokens );
 };
 
+// Action expression types ==================================================
+
 class expr_t
 {
   std::string name_;
 
 protected:
+  template <typename T> static double coerce( T t ) { return t; }
+  static double coerce( timespan_t t ) { return t.total_seconds(); }
+
   virtual double evaluate() = 0;
 
 public:
@@ -3109,15 +3115,41 @@ template <typename T>
 class ref_expr_t : public expr_t
 {
   const T& t;
-  virtual double evaluate() { return t; }
+  virtual double evaluate() { return coerce( t ); }
 
 public:
   ref_expr_t( const std::string& name, const T& t_ ) : expr_t( name ), t( t_ ) {}
 };
 
+// Turn an arbitrary reference into an expr_t.
 template <typename T>
 inline expr_t* make_ref_expr( const std::string& name, const T& t )
 { return new ref_expr_t<T>( name, t ); }
+
+template <typename F>
+class fn_expr_t : public expr_t
+{
+  F f;
+
+  virtual double evaluate() { return coerce( f() ); }
+
+public:
+  fn_expr_t( const std::string& name, F f_ ) :
+    expr_t( name ), f( f_ ) {}
+};
+
+// Wrap an arbitrary functor as an expr_t.
+template <typename F>
+inline expr_t* make_fn_expr( const std::string& name, F f )
+{ return new fn_expr_t<F>( name, f ); }
+
+// Shortcut to create an expr_t that calls a member function f on reference t.
+template <typename F, typename T>
+inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
+{ return make_fn_expr( name, std::bind( std::mem_fn( f ), std::ref( t ) ) ); }
+
+
+// Spell query expression types =============================================
 
 enum expr_data_type_e
 {
@@ -3885,7 +3917,7 @@ struct set_bonus_t
 
   set_bonus_t();
 
-  expr_t* create_expression( action_t*, const std::string& type );
+  expr_t* create_expression( player_t*, const std::string& type );
 };
 
 struct set_bonus_array_t
@@ -4504,7 +4536,7 @@ struct player_t : public noncopyable
   virtual const spell_data_t* find_spell( const unsigned int id,const std::string& token = std::string() );
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
-  expr_t* create_resource_expression( action_t*, player_t*, const std::string& name );
+  expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
   virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );

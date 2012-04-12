@@ -140,23 +140,26 @@ bool set_bonus_t::init( player_t* p )
   return true;
 }
 
-action_expr_t* set_bonus_t::create_expression( action_t* action,
-                                               const std::string& type )
+expr_t* set_bonus_t::create_expression( player_t* player,
+                                        const std::string& type )
 {
   set_type_e bonus_type = util_t::parse_set_bonus( type );
 
-  if ( bonus_type != SET_NONE )
-  {
-    struct set_bonus_expr_t : public action_expr_t
-    {
-      set_type_e set_bonus_type;
-      set_bonus_expr_t( action_t* a, set_type_e bonus_type ) : action_expr_t( a, util_t::set_bonus_string( bonus_type ), TOK_NUM ), set_bonus_type( bonus_type ) {}
-      virtual int evaluate() { result_num = action -> player -> sets -> has_set_bonus( set_bonus_type ); return TOK_NUM; }
-    };
-    return new set_bonus_expr_t( action, bonus_type );
-  }
+  if ( bonus_type == SET_NONE )
+    return 0;
 
-  return 0;
+  struct set_bonus_expr_t : public expr_t
+  {
+    player_t& player;
+    set_type_e set_bonus_type;
+    set_bonus_expr_t( player_t& p, set_type_e t ) :
+      expr_t( util_t::set_bonus_string( t ) ), player( p ), set_bonus_type( t ) {}
+    virtual double evaluate()
+    { return player.sets -> has_set_bonus( set_bonus_type ); }
+  };
+
+  assert( player );
+  return new set_bonus_expr_t( *player, bonus_type );
 }
 
 inline const spell_data_t* set_bonus_array_t::create_set_bonus( uint32_t spell_id )

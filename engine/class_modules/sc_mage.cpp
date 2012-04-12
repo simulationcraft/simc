@@ -312,7 +312,7 @@ struct mage_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
-  virtual action_expr_t* create_expression( action_t*, const std::string& name );
+  virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -856,7 +856,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 
           base_td = travel_dmg;
         }
-        virtual timespan_t travel_time()
+        virtual timespan_t travel_time() const
         {
           mage_t* p = static_cast<mage_t*>( player );
           return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
@@ -3324,85 +3324,76 @@ void mage_t::stun()
 
 // mage_t::create_expression ================================================
 
-action_expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 {
+  struct mage_expr_t : public expr_t
+  {
+    mage_t& mage;
+    mage_expr_t( const std::string& n, mage_t& m ) :
+      expr_t( n ), mage( m ) {}
+  };
+
+  struct rotation_expr_t : public mage_expr_t
+  {
+    mage_rotation_e rt;
+    rotation_expr_t( const std::string& n, mage_t& m, mage_rotation_e r ) :
+      mage_expr_t( n, m ), rt( r ) {}
+    virtual double evaluate() { return mage.rotation.current == rt; }
+  };
+
   if ( name_str == "dps" )
-  {
-    struct dps_rotation_expr_t : public action_expr_t
-    {
-      dps_rotation_expr_t( action_t* a ) : action_expr_t( a, "dps_rotation", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPS ) ? 1.0 : 0.0; return TOK_NUM; }
-    };
-    return new dps_rotation_expr_t( a );
-  }
-  else if ( name_str == "dpm" )
-  {
-    struct dpm_rotation_expr_t : public action_expr_t
-    {
-      dpm_rotation_expr_t( action_t* a ) : action_expr_t( a, "dpm_rotation", TOK_NUM ) {}
-      virtual int evaluate() { result_num = ( action -> player -> cast_mage() -> rotation.current == ROTATION_DPM ) ? 1.0 : 0.0; return TOK_NUM; }
-    };
-    return new dpm_rotation_expr_t( a );
-  }
+    return new rotation_expr_t( name_str, *this, ROTATION_DPS );
+
+  if ( name_str == "dpm" )
+    return new rotation_expr_t( name_str, *this, ROTATION_DPM );
 
   if ( name_str == "mana_gem_charges" )
-  {
-    struct mana_gem_charges_expr_t : public action_expr_t
-    {
-      mana_gem_charges_expr_t( action_t* a ) : action_expr_t( a, "mana_gem_charges", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mana_gem_charges; return TOK_NUM; }
-    };
-    return new mana_gem_charges_expr_t( a );
-  }
+    return make_ref_expr( name_str, mana_gem_charges );
 
   if ( name_str == "mage_armor_timer" )
   {
-    struct mage_armor_timer_expr_t : public action_expr_t
+    struct mage_armor_timer_expr_t : public mage_expr_t
     {
-      mage_armor_timer_expr_t( action_t* a ) : action_expr_t( a, "mage_armor_timer", TOK_NUM ) {}
-      virtual int evaluate() { result_num = action -> player -> cast_mage() -> mage_armor_timer.total_seconds() + 5 - action -> sim -> current_time.total_seconds(); return TOK_NUM; }
+      mage_armor_timer_expr_t( mage_t& m ) : mage_expr_t( "mage_armor_timer", m ) {}
+      virtual double evaluate() { return 5 + ( mage.mage_armor_timer - mage.sim -> current_time ).total_seconds(); }
     };
-    return new mage_armor_timer_expr_t( a );
+    return new mage_armor_timer_expr_t( *this );
   }
 
   if ( name_str == "burn_mps" )
   {
-    struct burn_mps_expr_t : public action_expr_t
+    struct burn_mps_expr_t : public mage_expr_t
     {
-      burn_mps_expr_t( action_t* a ) : action_expr_t( a, "burn_mps", TOK_NUM ) {}
-      virtual int evaluate()
+      burn_mps_expr_t( mage_t& m ) : mage_expr_t( "burn_mps", m ) {}
+      virtual double evaluate()
       {
-        mage_t* p = action -> player -> cast_mage();
-        if ( p -> rotation.current == ROTATION_DPS )
-        {
-          p -> rotation.dps_time += ( action -> sim -> current_time - p -> rotation.last_time );
-        }
-        else if ( p -> rotation.current == ROTATION_DPM )
-        {
-          p -> rotation.dpm_time += ( action -> sim -> current_time - p -> rotation.last_time );
-        }
-        p -> rotation.last_time = action -> sim -> current_time;
+        timespan_t now = mage.sim -> current_time;
+        timespan_t delta = now - mage.rotation.last_time;
+        mage.rotation.last_time = now;
+        if ( mage.rotation.current == ROTATION_DPS )
+          mage.rotation.dps_time += delta;
+        else if ( mage.rotation.current == ROTATION_DPM )
+          mage.rotation.dpm_time += delta;
 
-        result_num = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / action -> sim -> current_time.total_seconds() );
-        return TOK_NUM;
+        return ( mage.rotation.dps_mana_loss / mage.rotation.dps_time.total_seconds() ) -
+            ( mage.rotation.mana_gain / mage.sim -> current_time.total_seconds() );
       }
     };
-    return new burn_mps_expr_t( a );
+    return new burn_mps_expr_t( *this );
   }
 
   if ( name_str == "regen_mps" )
   {
-    struct regen_mps_expr_t : public action_expr_t
+    struct regen_mps_expr_t : public mage_expr_t
     {
-      regen_mps_expr_t( action_t* a ) : action_expr_t( a, "regen_mps", TOK_NUM ) {}
-      virtual int evaluate()
+      regen_mps_expr_t( mage_t& m ) : mage_expr_t( "regen_mps", m ) {}
+      virtual double evaluate()
       {
-        mage_t* p = action -> player -> cast_mage();
-        result_num = ( p -> rotation.mana_gain / action -> sim -> current_time.total_seconds() );
-        return TOK_NUM;
+        return mage.rotation.mana_gain /
+            mage.sim -> current_time.total_seconds();
       }
     };
-    return new regen_mps_expr_t( a );
+    return new regen_mps_expr_t( *this );
   }
 
   return player_t::create_expression( a, name_str );
