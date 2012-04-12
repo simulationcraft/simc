@@ -166,7 +166,7 @@ _DBC_FIELDS = {
           ( 'property_pct_1', '%5u' ), ( 'property_pct_2', '%5u' ), ( 'property_pct_3', '%5u' ), ( 'property_pct_4', '%5u' ), ( 'property_pct_5', '%5u' )
     ],
     'OverrideSpellData.dbc' : [
-        'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', 'f13'
+        'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', ( 'f13', '%8d' )
     ],
     'RandPropPoints.dbc' : [
           ( 'id', '%3u' ),
