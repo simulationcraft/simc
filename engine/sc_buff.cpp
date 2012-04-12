@@ -105,15 +105,15 @@ buff_t::buff_t( const buff_creator_t& params ) :
 
   // Set Reverse flag
   if ( params._reverse != -1 )
-    reverse = params._reverse;
+    reverse = params._reverse != 0;
 
   // Set Quiet flag
   if ( params._quiet != -1 )
-    quiet = params._quiet;
+    quiet = params._quiet != 0;
 
   // Set Activated flag
   if ( params._activated != -1 )
-    quiet = params._activated;
+    quiet = params._activated != 0;
 
   init();
 
