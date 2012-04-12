@@ -2672,22 +2672,24 @@ void player_t::merge( player_t& other )
 
   deaths.merge( other.deaths );
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  assert( resource_timeline_count == other.resource_timeline_count );
+  for ( size_t i = 0; i < resource_timeline_count; ++i )
   {
     assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
+    assert( resource_timelines[ i ].type != RESOURCE_NONE );
 
-    if ( resource_timelines[ i ].type != RESOURCE_NONE )
-    {
-      std::vector<double>& mine = resource_timelines[ i ].timeline;
-      const std::vector<double>& theirs = other.resource_timelines[ i ].timeline;
+    std::vector<double>& mine = resource_timelines[ i ].timeline;
+    const std::vector<double>& theirs = other.resource_timelines[ i ].timeline;
 
-      if ( mine.size() < theirs.size() )
-        mine.resize( theirs.size() );
+    if ( mine.size() < theirs.size() )
+      mine.resize( theirs.size() );
 
-      for ( size_t j = 0, num_buckets = std::min( mine.size(), theirs.size() ); j < num_buckets; ++j )
-        mine[ j ] += theirs[ j ];
-    }
+    for ( size_t j = 0, num_buckets = std::min( mine.size(), theirs.size() ); j < num_buckets; ++j )
+      mine[ j ] += theirs[ j ];
+  }
 
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  {
     resource_lost  [ i ] += other.resource_lost  [ i ];
     resource_gained[ i ] += other.resource_gained[ i ];
   }
@@ -2695,9 +2697,8 @@ void player_t::merge( player_t& other )
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
     buff_t* b = buff_list[ i ];
-    buff_t *otherbuff = buff_t::find( &other, b -> name_str.c_str() );
-    if ( otherbuff )
-    { b -> merge( otherbuff ); }
+    if ( buff_t* otherbuff = buff_t::find( &other, b -> name_str.c_str() ) )
+      b -> merge( otherbuff );
   }
 
   for ( proc_t* proc = proc_list; proc; proc = proc -> next )
