@@ -847,7 +847,7 @@ struct priest_spell_t : public spell_t
   }
 
   static unsigned trigger_shadowy_apparition( priest_t* player );
-  static void add_more_shadowy_apparitions( priest_t* player );
+  static void add_more_shadowy_apparitions( priest_t*, size_t );
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
 };
 
@@ -1159,8 +1159,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     travel_speed      = 3.5;
 
     base_crit += 0.05; // estimated.
-
-    init();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1213,13 +1211,13 @@ unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
   return shadow_orb_procs;
 }
 
-void priest_spell_t::add_more_shadowy_apparitions( priest_t* p )
+void priest_spell_t::add_more_shadowy_apparitions( priest_t* p, size_t n )
 {
   spell_t* s = NULL;
 
   if ( ! p -> shadowy_apparition_free_list.size() )
   {
-    for ( size_t i = 0; i < static_cast<size_t>( 5 * p -> resources.max[ RESOURCE_SHADOW_ORB ] ); i++ )
+    for ( size_t i = 0; i < n; i++ )
     {
       s = new shadowy_apparition_spell_t( p );
       p -> shadowy_apparition_free_list.push( s );
@@ -3427,6 +3425,11 @@ void priest_t::init_spells()
   else
     active_spells.echo_of_light = NULL;
 
+  if ( spec.shadowy_apparition -> ok() )
+  {
+    priest_spell_t::add_more_shadowy_apparitions( this, 15 );
+  }
+
   // Set Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -3787,8 +3790,6 @@ void priest_t::reset()
 
       shadowy_apparition_free_list.push( s );
     }
-
-    priest_spell_t::add_more_shadowy_apparitions( this );
   }
 
   echo_of_light_merged = false;
