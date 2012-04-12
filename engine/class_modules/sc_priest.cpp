@@ -73,7 +73,6 @@ struct priest_t : public player_t
     buff_t* shadowform;
     buff_t* shadowfiend;
     buff_t* vampiric_embrace;
-    buffs_t() { memset( this, 0, sizeof( *this ) ); }
   } buffs;
 
   // Talents
@@ -97,7 +96,6 @@ struct priest_t : public player_t
     const spell_data_t* cascade;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
-    talents_t() { memset( this, 0, sizeof( *this ) ); }
   } talents;
 
   // Specialization Spells
@@ -124,8 +122,6 @@ struct priest_t : public player_t
     const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparition;
-
-    specs_t() { memset( this, 0, sizeof( *this ) ); }
   } spec;
 
   // Mastery Spells
@@ -134,7 +130,6 @@ struct priest_t : public player_t
     const spell_data_t* shield_discipline;
     const spell_data_t* echo_of_light;
     const spell_data_t* shadow_orb_power;
-    mastery_spells_t() { memset( this, 0, sizeof( *this ) ); }
   } mastery_spells;
 
   // Cooldowns
@@ -145,7 +140,6 @@ struct priest_t : public player_t
     cooldown_t* chakra;
     cooldown_t* inner_focus;
     cooldown_t* penance;
-    cooldowns_t() { memset( this, 0, sizeof( *this ) ); }
   } cooldowns;
 
   // Gains
@@ -160,21 +154,18 @@ struct priest_t : public player_t
     gain_t* shadow_orb_mastery_refund;
     gain_t* vampiric_touch_health;
     gain_t* vampiric_touch_mana;
-    gains_t() { memset( this, 0, sizeof( *this ) ); }
   } gains;
 
   // Benefits
   struct benefits_t
   {
     benefit_t* mind_spike[ 4 ];
-    benefits_t() { memset( this, 0, sizeof( *this ) ); }
   } benefits;
 
   // Procs
   struct procs_t
   {
     proc_t* sa_shadow_orb_mastery;
-    procs_t() { memset( this, 0, sizeof( *this ) ); }
   } procs;
 
   // Special
@@ -184,7 +175,6 @@ struct priest_t : public player_t
   struct active_spells_t
   {
     heal_t* echo_of_light;
-    active_spells_t() { memset( this, 0, sizeof( *this ) ); }
   } active_spells;
 
   bool echo_of_light_merged;
@@ -193,7 +183,6 @@ struct priest_t : public player_t
   struct rngs_t
   {
     rng_t* sa_shadow_orb_mastery;
-    rngs_t() { memset( this, 0, sizeof( *this ) ); }
   } rngs;
 
   // Pets
@@ -201,7 +190,6 @@ struct priest_t : public player_t
   {
     pet_t* shadow_fiend;
     pet_t* lightwell;
-    pets_t() { memset( this, 0, sizeof( *this ) ); }
   } pets;
 
   // Options
@@ -233,7 +221,6 @@ struct priest_t : public player_t
     const spell_data_t* mind_blast;
     const spell_data_t* vampiric_touch;
     const spell_data_t* shadowy_apparition;
-    glyphs_t() { memset( this, 0, sizeof( *this ) ); }
   } glyphs;
 
   // Constants
@@ -250,6 +237,19 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
+    // default initialize things ( set all elements to 0 )
+    buffs( buffs_t() ),
+    talents( talents_t() ),
+    spec( specs_t() ),
+    mastery_spells( mastery_spells_t() ),
+    cooldowns( cooldowns_t() ),
+    gains( gains_t() ),
+    benefits( benefits_t() ),
+    procs( procs_t() ),
+    active_spells( active_spells_t() ),
+    rngs( rngs_t() ),
+    pets( pets_t() ),
+    glyphs( glyphs_t() ),
     constants( constants_t() )
   {
     was_sub_20                           = false;

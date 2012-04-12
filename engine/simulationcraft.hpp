@@ -3112,6 +3112,8 @@ public:
   static expr_t* parse( action_t*, const std::string& expr_str );
 };
 
+// Reference Expression - ref_expr_t
+// Class Template to create a expression with a reference ( ref ) of arbitrary type T, and evaluate that reference
 template <typename T>
 class ref_expr_t : public expr_t
 {
@@ -3122,11 +3124,13 @@ public:
   ref_expr_t( const std::string& name, const T& t_ ) : expr_t( name ), t( t_ ) {}
 };
 
-// Turn an arbitrary reference into an expr_t.
+// Template to return a reference expression
 template <typename T>
 inline expr_t* make_ref_expr( const std::string& name, const T& t )
 { return new ref_expr_t<T>( name, t ); }
 
+// Function Expression - fn_expr_t
+// Class Template to create a function ( fn ) expression with arbitrary functor f, which gets evaluated
 template <typename F>
 class fn_expr_t : public expr_t
 {
@@ -3139,12 +3143,13 @@ public:
     expr_t( name ), f( f_ ) {}
 };
 
-// Wrap an arbitrary functor as an expr_t.
+// Template to return a function expression
 template <typename F>
 inline expr_t* make_fn_expr( const std::string& name, F f )
 { return new fn_expr_t<F>( name, f ); }
 
-// Shortcut to create an expr_t that calls a member function f on reference t.
+// Make member function expression - make_mem_fn_expr
+// Template to return function expression that calls a member ( mem ) function ( fn ) f on reference t.
 template <typename F, typename T>
 inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
 { return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) ); }
