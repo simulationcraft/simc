@@ -2422,14 +2422,14 @@ typedef bool ( *option_function_t )( sim_t* sim, const std::string& name, const 
 struct option_t
 {
   const char* name;
-  int type;
+  option_type_e type;
   void* address;
 
   void print( FILE* );
   void save ( FILE* );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
-  static void add( std::vector<option_t>&, const char* name, int type, void* address );
+  static void add( std::vector<option_t>&, const char* name, option_type_e type, void* address );
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
@@ -2437,8 +2437,8 @@ struct option_t
   static bool parse( sim_t*, const char* context, const option_t*,        const std::vector<std::string>& strings );
   static bool parse( sim_t*, const char* context, const option_t*,        const std::string& options_str );
   static bool parse_file( sim_t*, FILE* file );
-  static bool parse_line( sim_t*, char* line );
-  static bool parse_token( sim_t*, std::string& token );
+  static bool parse_line( sim_t*, const char* line );
+  static bool parse_token( sim_t*, const std::string& token );
   static option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 };
 
@@ -3648,7 +3648,7 @@ struct weapon_t
   double buff_value;
   double bonus_dmg;
 
-  int    group() const;
+  weapon_type_e group() const;
   timespan_t normalized_weapon_speed() const;
   double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero() ) const;
 

@@ -32,23 +32,13 @@ static bool only_white_space( char* s )
 
 static FILE* open_file( sim_t* sim, const std::string& name )
 {
-  if ( sim -> path_str.empty() )
-  {
-    return fopen( name.c_str(), "r" );
-  }
-
-  std::string buffer;
   std::vector<std::string> splits;
   int num_splits = util_t::string_split( splits, sim -> path_str, ",;|" );
 
   for ( int i=0; i < num_splits; i++ )
   {
-    buffer = splits[ i ];
-    buffer += DIRECTORY_DELIMITER;
-    buffer += name;
-
-    FILE* f = fopen( buffer.c_str(), "r" );
-    if ( f ) return f;
+    if ( FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" ) )
+      return f;
   }
 
   return fopen( name.c_str(), "r" );
@@ -63,12 +53,12 @@ void option_t::print( FILE* file )
   if ( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    util_t::fprintf( file, "%s=%s\n", name, v.empty() ? "" : v.c_str() );
+    util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
   else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    util_t::fprintf( file, "%s=%d\n", name, ( v>0 ) ? 1 : 0 );
+    util_t::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
   else if ( type == OPT_INT )
   {
@@ -106,7 +96,7 @@ void option_t::save( FILE* file )
   else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    if ( v > 0 ) util_t::fprintf( file, "%s=1\n", name );
+    if ( v != 0 ) util_t::fprintf( file, "%s=1\n", name );
   }
   else if ( type == OPT_INT )
   {
@@ -139,10 +129,10 @@ void option_t::save( FILE* file )
 
 void option_t::add( std::vector<option_t>& options,
                     const                  char* name,
-                    int                    type,
+                    option_type_e          type,
                     void*                  address )
 {
-  int size = ( int ) options.size();
+  size_t size = options.size();
   options.resize( size+1 );
   options[ size ].name = name;
   options[ size ].type = type;
@@ -211,9 +201,9 @@ bool option_t::parse( sim_t*                 sim,
                       const std::string&     name,
                       const std::string&     value )
 {
-  int num_options = ( int ) options.size();
+  size_t num_options = options.size();
 
-  for ( int i=0; i < num_options; i++ )
+  for ( size_t i=0; i < num_options; i++ )
     if ( options[ i ].parse( sim, name, value ) )
       return true;
 
@@ -294,7 +284,7 @@ bool option_t::parse_file( sim_t* sim,
 {
   char buffer[ 1024 ];
   bool first = true;
-  while ( fgets( buffer, 1024, file ) )
+  while ( fgets( buffer, sizeof( buffer ), file ) )
   {
     char *b = buffer;
     if ( first )
@@ -317,15 +307,12 @@ bool option_t::parse_file( sim_t* sim,
 // option_t::parse_line =====================================================
 
 bool option_t::parse_line( sim_t* sim,
-                           char*  line )
+                           const char*  line )
 {
   if ( *line == '#' ) return true;
 
-  std::string buffer = line;
-
   std::vector<std::string> tokens;
-
-  int num_tokens = util_t::string_split( tokens, buffer, " \t\n\r", true );
+  int num_tokens = util_t::string_split( tokens, line, " \t\n\r", true );
 
   for ( int i=0; i < num_tokens; i++ )
     if ( ! parse_token( sim, tokens[ i ] ) )
@@ -337,7 +324,7 @@ bool option_t::parse_line( sim_t* sim,
 // option_t::parse_token ====================================================
 
 bool option_t::parse_token( sim_t*       sim,
-                            std::string& token )
+                            const std::string& token )
 {
   if ( token == "-" )
   {

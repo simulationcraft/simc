@@ -659,8 +659,8 @@ struct priest_heal_t : public heal_t
   {
     const option_t base_options[] =
     {
-      { "min_interval", OPT_TIMESPAN,     &( min_interval -> duration ) },
-      { NULL,           OPT_UNKNOWN, NULL      }
+      { "min_interval", OPT_TIMESPAN, &( min_interval -> duration ) },
+      { NULL,           OPT_UNKNOWN,  NULL      }
     };
 
     std::vector<option_t> merged_options;

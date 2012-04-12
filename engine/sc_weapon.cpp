@@ -11,7 +11,7 @@
 
 // weapon_t::group ==========================================================
 
-int weapon_t::group() const
+weapon_type_e weapon_t::group() const
 {
   switch ( type )
   {

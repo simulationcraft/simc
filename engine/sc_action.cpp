@@ -391,13 +391,13 @@ void action_t::parse_options( option_t*          options,
     { "target",                 OPT_STRING, &target_str            },
     { "label",                  OPT_STRING, &label_str             },
     { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
-    { NULL,                     0,          NULL                   }
+    { NULL,                     OPT_NONE,   NULL                   }
   };
 
   std::vector<option_t> merged_options;
   option_t::merge( merged_options, options, base_options );
 
-  std::string::size_type cut_pt = options_str.find_first_of( ":" );
+  std::string::size_type cut_pt = options_str.find( ':' );
 
   std::string options_buffer;
   if ( cut_pt != options_str.npos )
