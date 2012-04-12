@@ -291,7 +291,6 @@ struct priest_t : public player_t
   virtual void      init_procs();
   virtual void      init_scaling();
   virtual void      reset();
-  virtual void      demise();
   virtual void      init_party();
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -319,7 +318,6 @@ struct priest_t : public player_t
   void fixup_atonement_stats( const char* trigger_spell_name, const char* atonement_spell_name );
   virtual void pre_analyze_hook();
 };
-
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
 {
@@ -683,7 +681,6 @@ struct atonement_heal_t : public priest_heal_t
     background     = true;
     round_base_dmg = false;
 
-
     // HACK: Setting may_crit = true will force crits.
     may_crit = false;
     base_crit = 1.0;
@@ -753,7 +750,6 @@ struct priest_spell_t : public spell_t
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
 
-public:
   priest_spell_t( const std::string& n, priest_t* player,
                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_SHADOW ) :
     spell_t( n.c_str(), player, s, sc ),
@@ -1261,11 +1257,9 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
   }
 }
 
-
 // ==========================================================================
 // Priest Abilities
 // ==========================================================================
-
 
 // ==========================================================================
 // Priest Non-Harmful Spells
@@ -1329,7 +1323,6 @@ struct dispersion_t : public priest_spell_t
 
     priest_spell_t::tick( d );
   }
-
 };
 
 // Fortitude Spell ==========================================================
@@ -3067,9 +3060,7 @@ struct renew_t : public priest_heal_t
 
 double priest_t::shadow_orb_amount() const
 {
-  double a = mastery_spells.shadow_orb_power -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
-
-  return a;
+  return mastery_spells.shadow_orb_power -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
 }
 
 // priest_t::primary_role ===================================================
@@ -3091,6 +3082,8 @@ role_type_e priest_t::primary_role() const
 
   return ROLE_SPELL;
 }
+
+// priest_t::combat_begin ===================================================
 
 void priest_t::combat_begin()
 {
@@ -3158,6 +3151,8 @@ double priest_t::composite_player_multiplier( const school_type_e school, action
 
   return m;
 }
+
+// priest_t::composite_player_td_multiplier =================================
 
 double priest_t::composite_player_td_multiplier( const school_type_e school, action_t* a ) const
 {
@@ -3287,7 +3282,6 @@ void priest_t::init_base()
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
-
 }
 
 // priest_t::init_gains =====================================================
@@ -3471,7 +3465,7 @@ void priest_t::init_buffs()
                                      .activated( false );
 
   // Shadow
-  buffs.shadowform                = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
+  buffs.shadowform                 = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace           = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
   buffs.glyph_mind_spike           = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
 
@@ -3481,7 +3475,6 @@ void priest_t::init_buffs()
                                                      max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
   buffs.shadowfiend                = buff_creator_t( this, "shadowfiend" ).
                                                      max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
-
 
   // Set Bonus
 }
@@ -3787,7 +3780,6 @@ void priest_t::init_values()
   constants.shadowform_value                = spec.shadowform -> effectN( 2 ).percent();
   constants.devouring_plague_health_mod     = 0.15;
 
-
   if ( set_bonus.pvp_2pc_caster() )
     attribute_initial[ ATTR_INTELLECT ] += 70;
 
@@ -3825,16 +3817,9 @@ void priest_t::reset()
 
   was_sub_25 = false;
 
-  heals_echo_of_light                  = 0;
+  heals_echo_of_light = 0;
 
   init_party();
-}
-
-// priest_t::demise =========================================================
-
-void priest_t::demise()
-{
-  player_t::demise();
 }
 
 // priest_t::fixup_atonement_stats  =========================================
@@ -3966,9 +3951,6 @@ int priest_t::decode_set( const item_t& item ) const
 
     if ( is_caster ) return SET_T13_CASTER;
 
-
-
-
     is_healer = ( strstr( s, "cowl"          ) ||
                   strstr( s, "mantle"        ) ||
                   strstr( s, "robes"         ) ||
@@ -4013,5 +3995,4 @@ void player_t::priest_init( sim_t* sim )
 // player_t::priest_combat_begin ============================================
 
 void player_t::priest_combat_begin( sim_t* )
-{
-}
+{}
