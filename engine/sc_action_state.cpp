@@ -104,10 +104,10 @@ void action_t::schedule_travel_s( action_state_t* s )
 {
   time_to_travel = travel_time();
 
-  if ( ! state )
-    state = get_state();
+  if ( ! execute_state )
+    execute_state = get_state();
 
-  state -> copy_state( s );
+  execute_state -> copy_state( s );
 
   if ( time_to_travel == timespan_t::zero() )
   {

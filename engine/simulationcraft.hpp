@@ -5105,7 +5105,7 @@ public:
 
   /* New stuff */
   action_state_t* state_cache;
-  action_state_t* state; /* State of the last execute() */
+  action_state_t* execute_state; /* State of the last execute() */
   uint32_t snapshot_flags;
   uint32_t update_flags;
 

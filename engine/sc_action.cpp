@@ -160,7 +160,7 @@ action_t::action_t( action_type_e       ty,
   snapshot_flags = 0;
   update_flags = STATE_MUL_TARGET;
   state_cache = 0;
-  state = 0;
+  execute_state = 0;
 
   range::fill( base_costs, 0.0 );
 
@@ -223,7 +223,8 @@ action_t::action_t( action_type_e       ty,
 
 action_t::~action_t()
 {
-  delete state;
+  if ( execute_state )
+    delete execute_state;
 
   if ( ! is_dtr_action )
   {
@@ -971,7 +972,7 @@ void action_t::tick( dot_t* d )
 
     if ( tick_may_crit )
     {
-      if ( rng_result -> roll( crit_chance( state -> crit, state -> target -> level - player -> level ) ) )
+      if ( rng_result -> roll( crit_chance( d -> state -> crit, d -> state -> target -> level - player -> level ) ) )
         d -> state -> result = RESULT_CRIT;
     }
 
