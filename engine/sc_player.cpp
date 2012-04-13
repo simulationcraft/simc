@@ -326,6 +326,7 @@ player_t::player_t( sim_t*             s,
   // Attacks
   main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
   // Resources
+  resources( resources_t() ),
   mana_per_intellect( 0 ), mp5_from_spirit_multiplier( 1.0 ),
   // Consumables
   elixir_guardian( ELIXIR_NONE ),
@@ -1072,7 +1073,7 @@ void player_t::init_resources( bool force )
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing resources for player (%s)", name() );
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( force || resources.initial[ i ] == 0 )
     {

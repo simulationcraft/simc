@@ -1663,23 +1663,21 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return sim -> create_expression( this, name_str );
   }
 
-  if ( num_splits == 2 && splits[ 0 ] == "target" )
-  {
-    return target -> create_expression( this, splits[ 1 ] );
-  }
-
   if ( num_splits > 2 && splits[ 0 ] == "target" )
   {
     // Find target
     player_t* expr_target = sim -> find_player( splits[ 1 ] );
+    size_t start_rest = 2;
     if ( ! expr_target )
     {
-      sim -> errorf( "Unable to find target for %s", name_str.c_str() );
-      sim -> cancel();
+      expr_target = target;
+      start_rest = 1;
     }
 
-    std::string rest = splits[ 2 ];
-    for ( int i = 3; i < num_splits; ++i )
+    assert( expr_target );
+
+    std::string rest = splits[ start_rest ];
+    for ( int i = start_rest + 1; i < num_splits; ++i )
       rest += '.' + splits[ i ];
 
     return expr_target -> create_expression( this, rest );

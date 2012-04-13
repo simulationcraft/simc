@@ -1849,11 +1849,8 @@ struct mind_sear_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
-  timespan_t mb_min_wait;
-  timespan_t mb_max_wait;
-
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) ), mb_min_wait( timespan_t::zero() ), mb_max_wait( timespan_t::zero() )
+    priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1866,13 +1863,13 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void schedule_travel_s( action_state_t* s )
   {
-    p() -> was_sub_20 = ! is_dtr_action && ( target -> health_percentage() < 20 );
+    p() -> was_sub_20 = ! is_dtr_action && ( s -> target -> health_percentage() < 20 );
 
-    priest_spell_t::execute();
+    priest_spell_t::schedule_travel_s( s );
 
-    if ( result_is_hit() && p() -> was_sub_20 && ( target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
+    if ( result_is_hit( s -> result ) && p() -> was_sub_20 && ( s -> target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
     {
       cooldown -> reset();
       p() -> buffs.glyph_of_shadow_word_death -> trigger();
@@ -1898,26 +1895,10 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier( s );
 
-    if ( p() -> glyphs.mind_spike -> ok() && ( s -> target -> health_percentage() <= p() -> glyphs.mind_spike -> effectN( 3 ).base_value() ) )
-      am *= 1.0 + p() -> glyphs.mind_spike -> effectN( 1 ).percent();
-
     if ( s -> target -> health_percentage() < 20 )
       am *= 4.0;
 
     return am;
-  }
-
-  virtual bool ready()
-  {
-    if ( mb_min_wait != timespan_t::zero() )
-      if ( p() -> cooldowns.mind_blast -> remains() < mb_min_wait )
-        return false;
-
-    if ( mb_max_wait != timespan_t::zero() )
-      if ( p() -> cooldowns.mind_blast -> remains() > mb_max_wait )
-        return false;
-
-    return priest_spell_t::ready();
   }
 };
 
