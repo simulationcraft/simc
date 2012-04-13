@@ -157,7 +157,10 @@ void dot_t::refresh_duration()
   if ( sim -> log )
     log_t::output( sim, "%s refreshes duration of %s on %s", action -> player -> name(), name(), player -> name() );
 
-  action -> player_buff();
+  if ( ! state )
+    action -> player_buff();
+  else
+    action -> snapshot_state( state, action -> snapshot_flags );
 
   current_tick = 0;
   added_ticks = 0;
