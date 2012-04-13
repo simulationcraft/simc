@@ -2853,6 +2853,8 @@ public:
   { _quiet=q; return *this; }
   buff_creator_t& activated( bool a )
   { _activated=a; return *this; }
+  buff_creator_t& spell( const spell_data_t* s )
+  { s_data=s; return *this; }
 
   operator buff_t* () const;
   operator debuff_t* () const;
