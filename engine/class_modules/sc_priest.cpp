@@ -67,12 +67,13 @@ struct priest_t : public player_t
     buff_t* serenity;
 
     // Shadow
-    buff_t* glyph_of_shadow_word_death;
+    buff_t* shadow_word_death_reset_cooldown;
     buff_t* mind_spike;
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* shadowfiend;
     buff_t* vampiric_embrace;
+    buff_t* divine_insight_shadow;
   } buffs;
 
   // Talents
@@ -1663,6 +1664,16 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
+  virtual void impact_s( action_state_t* s )
+  {
+    priest_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buffs.divine_insight_shadow -> trigger();
+    }
+  }
+
   virtual double composite_crit( const action_state_t* s ) const
   {
     double c = priest_spell_t::composite_crit( s );
@@ -1849,6 +1860,19 @@ struct mind_sear_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
+  struct swd_state_t : public action_state_t
+  {
+    double target_health;
+    bool talent_proc;
+    bool was_dtr_action;
+
+    swd_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+      target_health( 100.0 ), talent_proc ( false ), was_dtr_action( false )
+    {
+
+    }
+  };
+
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) )
   {
@@ -1863,31 +1887,49 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void schedule_travel_s( action_state_t* s )
+  virtual action_state_t* new_state()
   {
-    p() -> was_sub_20 = ! is_dtr_action && ( s -> target -> health_percentage() < 20 );
+    return new swd_state_t( this, target );
+  }
 
-    priest_spell_t::schedule_travel_s( s );
+  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  {
+    swd_state_t* swd = static_cast< swd_state_t* >( state );
 
-    if ( result_is_hit( s -> result ) && p() -> was_sub_20 && ( s -> target -> health_percentage() > 0 ) && ! p() -> buffs.glyph_of_shadow_word_death -> up() )
-    {
-      cooldown -> reset();
-      p() -> buffs.glyph_of_shadow_word_death -> trigger();
-    }
+    swd -> target_health = target -> health_percentage();
+    swd -> talent_proc = p() -> buffs.divine_insight_shadow -> up();
+    swd -> was_dtr_action = is_dtr_action;
+
+    priest_spell_t::snapshot_state( state, flags );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    p() -> buffs.divine_insight_shadow -> expire();
   }
 
   virtual void impact_s( action_state_t* s )
   {
+    swd_state_t* swds = static_cast< swd_state_t* >( s );
+
     priest_spell_t::impact_s( s );
 
     double health_loss = s -> result_amount;
 
-    // Needs testing
-    if ( p() -> set_bonus.tier13_2pc_caster() )
+
+    if ( ( swds -> target_health < 20.0 ) || ( swds -> talent_proc ) )
     {
-      health_loss *= 1.0 - p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).percent();
+      health_loss *= 0.25;
     }
 
+    if ( ! swds -> was_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
+    {
+      cooldown -> reset();
+      p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
+    }
+    
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
@@ -1895,8 +1937,12 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier( s );
 
-    if ( s -> target -> health_percentage() < 20 )
+    const swd_state_t* swds = static_cast< const swd_state_t* >( s );
+
+    if ( ( swds -> target_health < 20.0 ) || ( swds -> talent_proc ) )
+    {
       am *= 4.0;
+    }
 
     return am;
   }
@@ -3092,7 +3138,7 @@ double priest_t::composite_spell_power( const school_type_e school ) const
   double sp = player_t::composite_spell_power( school );
 
   if ( buffs.inner_fire -> up() )
-    sp += buffs.inner_fire -> data().effectN( 2 ).min( this );
+    sp *= 1.0 + buffs.inner_fire -> data().effectN( 2 ).percent();
 
   return sp;
 }
@@ -3436,35 +3482,39 @@ void priest_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
   // Discipline
-  buffs.holy_evangelism            = buff_creator_t( this, 81661, "holy_evangelism" )
-                                     .chance( spec.evangelism -> ok() )
-                                     .activated( false );
-  buffs.dark_archangel             = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
-  buffs.holy_archangel             = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
-  buffs.inner_fire                 = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
-  buffs.inner_focus                = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
-                                     .cd( timespan_t::zero() );
-  buffs.inner_will                 = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
+  buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
+                                           .chance( spec.evangelism -> ok() )
+                                           .activated( false );
+  buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
+  buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
+  buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
+  buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
+                                                           .cd( timespan_t::zero() );
+  buffs.inner_will                       = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
   // Holy
-  buffs.chakra_pre                 = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
-  buffs.chakra_chastise            = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
-  buffs.chakra_sanctuary           = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
-  buffs.chakra_serenity            = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
-  buffs.serenity                   = buff_creator_t( this, "serenity", find_spell( 88684 ) )
-                                     .cd( timespan_t::zero() )
-                                     .activated( false );
+  buffs.chakra_pre                       = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
+  buffs.chakra_chastise                  = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
+  buffs.chakra_sanctuary                 = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
+  buffs.chakra_serenity                  = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
+  buffs.serenity                         = buff_creator_t( this, "serenity", find_spell( 88684 ) )
+                                                           .cd( timespan_t::zero() )
+                                                           .activated( false );
 
   // Shadow
-  buffs.shadowform                 = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
-  buffs.vampiric_embrace           = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
-  buffs.glyph_mind_spike           = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
+  buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
+  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
+  buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
 
-  buffs.glyph_of_shadow_word_death = buff_creator_t( this, "glyph_of_shadow_word_death").
-                                                     max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
-  buffs.mind_spike                 = buff_creator_t( this, "mind_spike" ).
-                                                     max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
-  buffs.shadowfiend                = buff_creator_t( this, "shadowfiend" ).
-                                                     max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
+  buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown").
+                                                           max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.mind_spike                       = buff_creator_t( this, "mind_spike" ).
+                                                           max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
+  buffs.shadowfiend                      = buff_creator_t( this, "shadowfiend" ).
+                                                           max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
+  buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", talents.divine_insight )
+                                                           .chance( talents.divine_insight -> effectN( 1 ).percent() )
+                                                           .max_stack( 1 )
+                                                           .duration( timespan_t::from_seconds( 10.0 ) );
 
   // Set Bonus
 }
