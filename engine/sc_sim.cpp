@@ -1103,7 +1103,7 @@ void sim_t::combat_begin()
 
   for ( player_t* t = target_list; t; t = t -> next )
   {
-    if ( overrides.slowed_casting          ) t -> debuffs.slowed_casting          -> override();
+    if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override();
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override();
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override();
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
@@ -1824,24 +1824,24 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
-  overrides.attack_haste           = optimal_raid;
-  overrides.attack_power_multiplier= optimal_raid;
-  overrides.critical_strike        = optimal_raid;
-  overrides.mastery                = optimal_raid;
-  overrides.spell_haste            = optimal_raid;
-  overrides.spell_power_multiplier = optimal_raid;
-  overrides.stamina                = optimal_raid;
-  overrides.str_agi_int            = optimal_raid;
+  overrides.attack_haste            = optimal_raid;
+  overrides.attack_power_multiplier = optimal_raid;
+  overrides.critical_strike         = optimal_raid;
+  overrides.mastery                 = optimal_raid;
+  overrides.spell_haste             = optimal_raid;
+  overrides.spell_power_multiplier  = optimal_raid;
+  overrides.stamina                 = optimal_raid;
+  overrides.str_agi_int             = optimal_raid;
 
   overrides.slowed_casting          = optimal_raid;
-  overrides.magic_vulnerability    = optimal_raid;
-  overrides.mortal_wounds          = optimal_raid;
-  overrides.physical_vulnerability = optimal_raid;
-  overrides.weakened_armor         = optimal_raid;
-  overrides.weakened_blows         = optimal_raid;
+  overrides.magic_vulnerability     = optimal_raid;
+  overrides.mortal_wounds           = optimal_raid;
+  overrides.physical_vulnerability  = optimal_raid;
+  overrides.weakened_armor          = optimal_raid;
+  overrides.weakened_blows          = optimal_raid;
 
-  overrides.bloodlust              = optimal_raid;
-  overrides.honor_among_thieves    = optimal_raid;
+  overrides.bloodlust               = optimal_raid;
+  overrides.honor_among_thieves     = optimal_raid;
 }
 
 // sim_t::time_to_think =====================================================
