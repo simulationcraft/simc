@@ -483,6 +483,8 @@ player_t::~player_t()
 
   glyph_list.clear();
 
+  range::dispose( action_priority_list );
+
   delete sets;
 }
 
