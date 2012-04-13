@@ -5539,6 +5539,7 @@ struct stateless_travel_event_t : public event_t
   action_t* const action;
   action_state_t* const state;
   stateless_travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
+  virtual ~stateless_travel_event_t() { if ( unlikely( state && canceled ) ) action -> release_state( state ); }
   virtual void execute();
 };
 
