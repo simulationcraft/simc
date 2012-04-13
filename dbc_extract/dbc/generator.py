@@ -1460,7 +1460,7 @@ class SpellDataGenerator(DataGenerator):
             if s.id == 0:
                 continue
             
-            if s.flags_12694 & 0x20000000:
+            if self._spellmisc_db[s.id_misc].flags_12694 & 0x20000000:
                 self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0)
         
 
