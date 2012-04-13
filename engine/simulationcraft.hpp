@@ -4232,6 +4232,8 @@ struct player_t : public noncopyable
     std::string comment_str;
     std::string thumbnail_url;
     std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
+
+    report_information_t() { charts_generated = buff_lists_generated = false; }
   } report_information;
 
   // Gear
