@@ -1902,7 +1902,7 @@ struct shadow_word_death_t : public priest_spell_t
       am *= 1.0 + p() -> glyphs.mind_spike -> effectN( 1 ).percent();
 
     if ( s -> target -> health_percentage() < 20 )
-      am *= 3.0;
+      am *= 4.0;
 
     return am;
   }
