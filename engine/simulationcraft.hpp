@@ -4268,7 +4268,9 @@ struct player_t : public noncopyable
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
+    stat_buff_t* earthen_potion;
     buff_t* exhaustion;
+    stat_buff_t* golemblood_potion;
     buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* heroic_presence;
@@ -4283,11 +4285,13 @@ struct player_t : public noncopyable
     buff_t* power_infusion;
     buff_t* raid_movement;
     buff_t* self_movement;
-    buff_t* speed_potion;
+    stat_buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* stunned;
+    stat_buff_t* tolvir_potion;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
+    stat_buff_t* volcanic_potion;
     buff_t* weakened_soul;
     buffs_t() { memset( this, 0, sizeof( *this ) ); }
   } buffs;

@@ -613,7 +613,11 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
   if ( name == "mythical_mana_potion"  ) return new           mana_potion_t( p, options_str );
-  if ( name == "speed_potion"          ) return new  potion_base_t( p, "speed_potion", p -> buffs.speed_potion, options_str );
+  if ( name == "speed_potion"          ) return new  potion_base_t( p, name, p -> buffs.speed_potion, options_str );
+  if ( name == "volcanic_potion"       ) return new  potion_base_t( p, name, p -> buffs.volcanic_potion, options_str );
+  if ( name == "earthen_potion"        ) return new  potion_base_t( p, name, p -> buffs.earthen_potion, options_str );
+  if ( name == "golemblood_potion"     ) return new  potion_base_t( p, name, p -> buffs.golemblood_potion, options_str );
+  if ( name == "tolvir_potion"         ) return new  potion_base_t( p, name, p -> buffs.tolvir_potion, options_str );
 
   return 0;
 }

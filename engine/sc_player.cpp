@@ -1551,13 +1551,41 @@ void player_t::init_buffs()
                     .stat( STAT_HASTE_RATING )
                     .amount( 480.0 );
 
-  buffs.speed_potion = stat_buff_creator_t(
-                         buff_creator_t( this, "speed_potion" )
-                         .max_stack( 1 )
-                         .duration( timespan_t::from_seconds( 15.0 ) )
-                         .cd( timespan_t::from_seconds( 60.0 ) ) )
+  // Potions
+  struct potions_common_buff_creator
+  {
+    buff_creator_t operator()( player_t* p,
+                               const std::string& n,
+                               timespan_t d = timespan_t::from_seconds( 25.0 ),
+                               timespan_t cd = timespan_t::from_seconds( 60.0 ) )
+    {
+      return ( buff_creator_t ( p,  n + "_potion" )
+               .max_stack( 1 )
+               .duration( d )
+               .cd( cd ) );
+    }
+  };
+
+  buffs.speed_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
                        .stat( STAT_HASTE_RATING )
                        .amount( 500.0 );
+
+  buffs.volcanic_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
+                          .stat( STAT_INTELLECT )
+                          .amount( 1200.0 );
+
+  buffs.earthen_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
+                              .stat( STAT_ARMOR )
+                              .amount( 4800.0 );
+
+  buffs.golemblood_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
+                              .stat( STAT_STRENGTH )
+                              .amount( 1200.0 );
+
+  buffs.tolvir_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
+                              .stat( STAT_AGILITY )
+                              .amount( 1200.0 );
+
 
 
   buffs.mongoose_mh = NULL;
