@@ -592,6 +592,10 @@ expr_t* enemy_t::create_expression( action_t* action,
   if ( name_str == "adds" )
     return make_ref_expr( name_str, active_pets );
 
+  // override enemy health.pct expression
+  if ( name_str == "health.pct" )
+    return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
+
   return player_t::create_expression( action, name_str );
 }
 
