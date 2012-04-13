@@ -542,7 +542,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     }
   }
 };
-#if 0
+
 // register_apparatus_of_khazgoroth =========================================
 
 static void register_apparatus_of_khazgoroth( item_t* item )
@@ -566,9 +566,11 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     {
       double amount = heroic ? 2875 : 2540;
 
-      apparatus_of_khazgoroth = new buff_t( p, 96923, "titanic_power" ); // TODO: Duration, cd, etc.?
+      apparatus_of_khazgoroth = buff_creator_t( p, 96923, "titanic_power" ); // TODO: Duration, cd, etc.?
       apparatus_of_khazgoroth -> activated = false;
-      blessing_of_khazgoroth  = new stat_buff_t( p, "blessing_of_khazgoroth", STAT_CRIT_RATING, amount, 1, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 120.0 ) );
+      blessing_of_khazgoroth  = stat_buff_creator_t(
+                                  buff_creator_t( p, "blessing_of_khazgoroth" ).duration( timespan_t::from_seconds( 15.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+                                .stat( STAT_CRIT_RATING ).amount( amount );
       proc_apparatus_of_khazgoroth_haste   = p -> get_proc( "apparatus_of_khazgoroth_haste"   );
       proc_apparatus_of_khazgoroth_crit    = p -> get_proc( "apparatus_of_khazgoroth_crit"    );
       proc_apparatus_of_khazgoroth_mastery = p -> get_proc( "apparatus_of_khazgoroth_mastery" );
@@ -659,9 +661,12 @@ static void register_fury_of_angerforge( item_t* item )
     fury_of_angerforge_callback_t( player_t* p ) :
       action_callback_t( p )
     {
-      raw_fury = new buff_t( p, "raw_fury", 5, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 5.0 ), 0.5, true );
+      raw_fury = buff_creator_t( p, "raw_fury" ).max_stack( 5 ).duration( timespan_t::from_seconds( 15.0 ) )
+                 .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true );
       raw_fury -> activated = false;
-      blackwing_dragonkin = new stat_buff_t( p, "blackwing_dragonkin", STAT_STRENGTH, 1926, 1, timespan_t::from_seconds( 20.0 ), timespan_t::from_seconds( 120.0 ) );
+      blackwing_dragonkin = stat_buff_creator_t( buff_creator_t( p, 91836, "blackwing_dragonkin").
+                                                 duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+                            .stat( STAT_STRENGTH ).amount( 1926 );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -702,7 +707,9 @@ static void register_heart_of_ignacious( item_t* item )
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero(), false, false ), heroic( h )
     {
-      haste_buff = new stat_buff_t( p, "hearts_judgement", STAT_HASTE_RATING, heroic ? 363 : 321, 5, timespan_t::from_seconds( 20.0 ), timespan_t::from_seconds( 120.0 ) );
+      haste_buff = stat_buff_creator_t( buff_creator_t( p, "hearts_judgement" )
+                                        .max_stack( 5 ).duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+                   .stat( STAT_HASTE_RATING ).amount( heroic ? 363 : 321 );
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
@@ -731,6 +738,8 @@ static void register_matrix_restabilizer( item_t* item )
 
   item -> unique = true;
 
+
+
   struct matrix_restabilizer_callback_t : public stat_proc_callback_t
   {
     bool heroic;
@@ -738,13 +747,26 @@ static void register_matrix_restabilizer( item_t* item )
     stat_buff_t* buff_matrix_restabilizer_haste;
     stat_buff_t* buff_matrix_restabilizer_mastery;
 
+
     matrix_restabilizer_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "matrix_restabilizer", p, STAT_CRIT_RATING, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
       heroic( h ), buff_matrix_restabilizer_crit( 0 ), buff_matrix_restabilizer_haste( 0 ), buff_matrix_restabilizer_mastery( 0 )
     {
-      buff_matrix_restabilizer_crit     = new stat_buff_t( p, "matrix_restabilizer_crit",    STAT_CRIT_RATING,    heroic ? 1834 : 1624, 1, timespan_t::from_seconds( 30 ), timespan_t::from_seconds( 105 ), .15, false, RNG_DEFAULT, false );
-      buff_matrix_restabilizer_haste    = new stat_buff_t( p, "matrix_restabilizer_haste",   STAT_HASTE_RATING,   heroic ? 1834 : 1624, 1, timespan_t::from_seconds( 30 ), timespan_t::from_seconds( 105 ), .15, false, RNG_DEFAULT, false );
-      buff_matrix_restabilizer_mastery  = new stat_buff_t( p, "matrix_restabilizer_mastery", STAT_MASTERY_RATING, heroic ? 1834 : 1624, 1, timespan_t::from_seconds( 30 ), timespan_t::from_seconds( 105 ), .15, false, RNG_DEFAULT, false );
+      double amount = heroic ? 1834 : 1624;
+
+      struct common_buff_creator {
+      buff_creator_t operator()( player_t* p, const std::string& n ) {
+        return ( buff_creator_t ( p, "matrix_restabilizer_" + n )
+                 .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )
+                 .chance( .15 ).activated( false ) ); }
+      };
+
+      buff_matrix_restabilizer_crit     = stat_buff_creator_t( common_buff_creator()( p, "crit" ) )
+                                          .stat( STAT_CRIT_RATING ).amount( amount );
+      buff_matrix_restabilizer_haste    = stat_buff_creator_t( common_buff_creator()( p, "haste" ) )
+                                          .stat( STAT_HASTE_RATING ).amount( amount );
+      buff_matrix_restabilizer_mastery  = stat_buff_creator_t( common_buff_creator()( p, "mastery" ) )
+                                          .stat( STAT_MASTERY_RATING ).amount( amount );
     }
 
     virtual void trigger( action_t* a, void* call_data )
@@ -1166,7 +1188,7 @@ static void register_indomitable_pride( item_t* item )
       action_callback_t( p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
       // Looks like there is no spell_id_t for the buff
-      buff = new buff_t( p, "indomitable_pride", 1, timespan_t::from_seconds( 6.0 ) );
+      buff = buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) );
       buff -> activated = false;
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
@@ -1212,7 +1234,7 @@ static void register_spidersilk_spindle( item_t* item )
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
       action_callback_t( p ), cd ( 0 ), stats( 0 )
     {
-      buff = new buff_t( p, h ? 97129 : 96945, "loom_of_fate" );
+      buff = buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" );
       buff -> activated = false;
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
@@ -1344,10 +1366,12 @@ static void register_fury_of_the_beast( item_t* item )
     {
       double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
-      fury_of_the_beast = new buff_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast", 0.15 );
-      fury_of_the_beast -> cooldown -> duration = timespan_t::from_seconds( 55.0 ); // FIXME: Confirm ICD
-      fury_of_the_beast_stack  = new stat_buff_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack", STAT_AGILITY, amount );
-      fury_of_the_beast_stack -> activated = false;
+      fury_of_the_beast = buff_creator_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast" )
+                          .chance( 0.15 ).cd( timespan_t::from_seconds( 55.0 ) );// FIXME: Confirm ICD
+
+      fury_of_the_beast_stack  = stat_buff_creator_t(
+                                   buff_creator_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack" ).activated( false ) )
+                                 .stat( STAT_AGILITY ).amount( amount );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1736,10 +1760,15 @@ static void register_titahk( item_t* item )
       rng( p -> get_rng( "titahk" ) )
     {
       timespan_t duration = buff -> duration();
-      buff_self   = new stat_buff_t( p, "titahk_self", STAT_HASTE_RATING, buff -> effect1().base_value(), 1, duration );
-      buff_self -> cooldown -> duration = timespan_t::from_seconds( 45.0 ); // FIXME: Confirm ICD
-      buff_radius = new stat_buff_t( p, "titahk_aoe",  STAT_HASTE_RATING, buff -> effect2().base_value(), 1, duration ); // FIXME: Apply aoe buff to other players
-      buff_radius -> cooldown -> duration = timespan_t::from_seconds( 45.0 ); // FIXME: Confirm ICD
+      buff_self   = stat_buff_creator_t(
+                      buff_creator_t( p, "titahk_self" ).duration( duration )
+                      .cd( timespan_t::from_seconds( 45.0 ) ) ) // FIXME: Confirm ICD
+                    .stat( STAT_HASTE_RATING ).amount( buff -> effect1().base_value() );
+
+      buff_radius = stat_buff_creator_t(
+                      buff_creator_t( p, "titahk_aoe" ).duration( duration )
+                      .cd( timespan_t::from_seconds( 45.0 ) ) )// FIXME: Confirm ICD
+                    .stat( STAT_HASTE_RATING ).amount( buff -> effect2().base_value() ); // FIXME: Apply aoe buff to other players
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
@@ -1755,7 +1784,6 @@ static void register_titahk( item_t* item )
 
   p -> register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
-#endif
 
 // ==========================================================================
 // unique_gear_t::init
@@ -1789,7 +1817,7 @@ void unique_gear_t::init( player_t* p )
     {
       register_discharge_proc( item, item.equip );
     }
-#if 0
+
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
@@ -1811,7 +1839,6 @@ void unique_gear_t::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
-#endif
   }
 }
 
