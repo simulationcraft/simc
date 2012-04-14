@@ -2257,11 +2257,11 @@ double player_t::composite_spell_haste() const
   {
     if ( buffs.bloodlust -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.30 );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust -> effect1().percent() );
     }
     else if ( buffs.power_infusion -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.20 );
+      h *= 1.0 / ( 1.0 + buffs.power_infusion -> effect1().percent() );
     }
 
     if ( buffs.berserking -> up() )

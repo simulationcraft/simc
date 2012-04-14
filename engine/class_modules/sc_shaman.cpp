@@ -4346,7 +4346,7 @@ void player_t::shaman_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust" )
+    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 )
                             .duration( timespan_t::from_seconds( 40.0 ) );
 

@@ -4070,7 +4070,7 @@ void player_t::priest_init( sim_t* sim )
     player_t* p = sim -> actor_list[ i ];
     p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
     p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
-    p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
+    p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion", p  -> find_spell( 10060 ) ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
     p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul", p -> find_spell( 6788 ) );
   }
 }
