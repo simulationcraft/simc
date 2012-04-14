@@ -30,7 +30,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   }
 
   // First token is sequence options, so skip
-  for ( size_t i=1; i < size; ++i )
+  for ( size_t i = 1; i < size; ++i )
   {
     std::string::size_type cut_pt = splits[ i ].find( ',' );
     std::string action_name( splits[ i ], 0, cut_pt );
@@ -57,8 +57,13 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 void sequence_t::schedule_execute()
 {
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
-  if ( sim -> log ) log_t::output( sim, "Player %s executes Schedule %s action #%d \"%s\"", player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
+
+  if ( sim -> log )
+    log_t::output( sim, "Player %s executes Schedule %s action #%d \"%s\"",
+                   player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
+
   sub_actions[ current_action++ ] -> schedule_execute();
+
   // No longer restarted
   restarted = false;
 }
@@ -68,6 +73,7 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
+
   if ( current_action == -1 )
   {
     for ( size_t i = 0; i < sub_actions.size(); ++i )
@@ -89,7 +95,7 @@ bool sequence_t::ready()
 
   wait_on_ready = 0;
 
-  for ( ; current_action < static_cast<int>( sub_actions.size() ); ++current_action )
+  for ( int num_sub_actions = static_cast<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
     action_t* a = sub_actions[ current_action ];
 

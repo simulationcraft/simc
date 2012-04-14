@@ -74,21 +74,6 @@ double pet_t::composite_attribute( attribute_type_e attr ) const
   return a;
 }
 
-// player_t::id =============================================================
-
-const char* pet_t::id()
-{
-  if ( id_str.empty() )
-  {
-    // create artifical unit ID, format type+subtype+id= TTTSSSSSSSIIIIII
-    char buffer[ 1024 ];
-    snprintf( buffer, sizeof( buffer ), "0xF140601FC5%06X,\"%s\",0x1111", index, name_str.c_str() );
-    id_str = buffer;
-  }
-
-  return id_str.c_str();
-}
-
 // pet_t::init_base =========================================================
 
 void pet_t::init_base()
@@ -113,6 +98,7 @@ void pet_t::init_talents()
 void pet_t::reset()
 {
   player_t::reset();
+
   expiration = 0;
 }
 
@@ -142,7 +128,8 @@ void pet_t::summon( timespan_t duration )
   {
     struct expiration_t : public event_t
     {
-      expiration_t( sim_t* sim, pet_t* p, timespan_t duration ) : event_t( sim, p )
+      expiration_t( sim_t* sim, pet_t* p, timespan_t duration ) :
+        event_t( sim, p )
       {
         sim -> add_event( this, duration );
       }

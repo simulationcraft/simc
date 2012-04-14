@@ -2605,8 +2605,8 @@ public:
 
   static bool socket_gem_match( gem_type_e socket, gem_type_e gem );
 
-  static int string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false )
-  { string_split_( results, str, delim, allow_quotes ); return static_cast<int>( results.size() ); }
+  static size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false )
+  { string_split_( results, str, delim, allow_quotes ); return results.size(); }
   static int string_split( const std::string& str, const char* delim, const char* format, ... );
   static void string_strip_quotes( std::string& str );
   static std::string& replace_all( std::string& s, const char* from, char to )
@@ -4794,7 +4794,6 @@ public:
   virtual void combat_begin();
 
   virtual const char* name() const { return full_name_str.c_str(); }
-  virtual const char* id();
 
   virtual const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 };

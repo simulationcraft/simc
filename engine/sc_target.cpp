@@ -30,22 +30,11 @@ struct enemy_t : public player_t
     create_options();
   }
 
-// target_t::combat_begin ===================================================
-
-  virtual void combat_begin()
-  {
-    player_t::combat_begin();
-  }
-
-// target_t::primary_role ===================================================
-
   virtual role_type_e primary_role() const
   { return ROLE_TANK; }
 
   virtual resource_type_e primary_resource() const
   { return RESOURCE_NONE; }
-
-// target_t::base_armor =====================================================
 
   virtual double base_armor() const
   { return armor; }
@@ -73,7 +62,7 @@ struct enemy_t : public player_t
 
 struct enemy_add_t : public pet_t
 {
-  enemy_add_t( sim_t* s, player_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
+  enemy_add_t( sim_t* s, enemy_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
     create_options();
@@ -120,7 +109,7 @@ struct melee_t : public attack_t
 
     tl.push_back( target );
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
       if ( ! sim -> actor_list[ i ] -> sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
@@ -229,7 +218,7 @@ struct spell_nuke_t : public spell_t
 
     tl.push_back( target );
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
     {
       if ( ! sim -> actor_list[ i ] -> sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
@@ -283,7 +272,7 @@ struct spell_aoe_t : public spell_t
 
     tl.push_back( target );
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
     {
       if ( ! sim -> actor_list[ i ] -> sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() &&
@@ -536,10 +525,8 @@ void enemy_t::create_pets()
 {
   for ( int i=0; i < sim -> target_adds; i++ )
   {
-    char buffer[ 1024 ];
-    snprintf( buffer, sizeof( buffer ), "add_%i", i );
-
-    create_pet( buffer );
+    std::string s = "add" + i;
+    create_pet( s );
   }
 }
 

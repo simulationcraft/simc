@@ -928,8 +928,7 @@ void enchant_t::init( player_t* p )
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
 #endif
-  int num_items = ( int ) p -> items.size();
-  for ( int i=0; i < num_items; i++ )
+  for ( size_t i = 0; i < p -> items.size(); i++ )
   {
     item_t& item = p -> items[ i ];
 
@@ -965,7 +964,7 @@ bool enchant_t::get_encoding( std::string& name,
                               const std::string& enchant_id,
                               const bool ptr )
 {
-  for ( int i=0; enchant_db[ i ].id; i++ )
+  for ( size_t i = 0; enchant_db[ i ].id; i++ )
   {
     enchant_data_t& enchant = enchant_db[ i ];
 
@@ -994,7 +993,7 @@ bool enchant_t::get_addon_encoding( std::string& name,
                                     const std::string& addon_id,
                                     const bool ptr )
 {
-  for ( int i=0; addon_db[ i ].id; i++ )
+  for ( size_t i = 0; addon_db[ i ].id; i++ )
   {
     enchant_data_t& addon = addon_db[ i ];
 

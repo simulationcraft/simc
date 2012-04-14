@@ -24,7 +24,7 @@ struct adds_event_t : public raid_event_t
     };
     parse_options( options, options_str );
 
-    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
+    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
     {
       sim -> target -> pet_list[ i ] -> resources.base[ RESOURCE_HEALTH ] = health;
     }
@@ -37,7 +37,7 @@ struct adds_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
+    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
     {
       if ( i >= count ) continue;
       sim -> target -> pet_list[ i ] -> summon();
@@ -46,7 +46,7 @@ struct adds_event_t : public raid_event_t
 
   virtual void finish()
   {
-    for ( size_t i = 0; i < sim -> target -> pet_list.size(); ++i )
+    for ( size_t i = 0, pets = sim -> target -> pet_list.size(); i < pets; ++i )
     {
       if ( i >= count ) continue;
       sim -> target -> pet_list[ i ] -> dismiss();
@@ -103,8 +103,8 @@ struct distraction_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       p -> skill -= skill;
@@ -113,8 +113,7 @@ struct distraction_event_t : public raid_event_t
 
   virtual void finish()
   {
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       p -> skill += skill;
@@ -136,7 +135,9 @@ struct invulnerable_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
+
     sim -> target -> debuffs.invulnerable -> increment();
+
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
       if ( p -> sleeping ) continue;
@@ -149,10 +150,12 @@ struct invulnerable_event_t : public raid_event_t
   virtual void finish()
   {
     sim -> target -> debuffs.invulnerable -> decrement();
+
     if ( ! sim -> target -> debuffs.invulnerable -> check() )
     {
       // FIXME! restoring optimal_raid target debuffs?
     }
+
     raid_event_t::finish();
   }
 };
@@ -208,8 +211,8 @@ struct movement_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int )affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> is_pet() && players_only ) continue;
@@ -256,8 +259,8 @@ struct stun_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
@@ -269,8 +272,7 @@ struct stun_event_t : public raid_event_t
 
   virtual void finish()
   {
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
@@ -300,8 +302,8 @@ struct interrupt_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
@@ -354,8 +356,7 @@ struct damage_event_t : public raid_event_t
   {
     raid_event_t::start();
 
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
@@ -390,8 +391,8 @@ struct heal_event_t : public raid_event_t
   virtual void start()
   {
     raid_event_t::start();
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> sleeping ) continue;
@@ -447,8 +448,7 @@ struct position_event_t : public raid_event_t
   {
     raid_event_t::start();
 
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( p -> position == POSITION_BACK )
@@ -460,8 +460,7 @@ struct position_event_t : public raid_event_t
 
   virtual void finish()
   {
-    int num_affected = ( int ) affected_players.size();
-    for ( int i=0; i < num_affected; i++ )
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
 
@@ -661,10 +660,10 @@ void raid_event_t::parse_options( option_t*          options,
   std::vector<option_t> merged_options;
 
   if ( options )
-    for ( int i=0; options[ i ].name; i++ )
+    for ( unsigned i = 0; options[ i ].name; i++ )
       merged_options.push_back( options[ i ] );
 
-  for ( int i=0; base_options[ i ].name; i++ )
+  for ( unsigned i = 0; base_options[ i ].name; i++ )
     merged_options.push_back( base_options[ i ] );
 
   if ( ! option_t::parse( sim, name_str.c_str(), merged_options, options_str ) )
@@ -704,9 +703,9 @@ raid_event_t* raid_event_t::create( sim_t* sim,
 void raid_event_t::init( sim_t* sim )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, sim -> raid_events_str, "/\\" );
+  size_t num_splits = util_t::string_split( splits, sim -> raid_events_str, "/\\" );
 
-  for ( int i=0; i < num_splits; i++ )
+  for ( size_t i = 0; i < num_splits; i++ )
   {
     std::string name = splits[ i ];
     std::string options = "";
@@ -741,8 +740,7 @@ void raid_event_t::init( sim_t* sim )
 
 void raid_event_t::reset( sim_t* sim )
 {
-  int num_events = ( int ) sim -> raid_events.size();
-  for ( int i=0; i < num_events; i++ )
+  for ( size_t i = 0; i < sim -> raid_events.size(); i++ )
   {
     sim -> raid_events[ i ] -> reset();
   }
@@ -752,8 +750,7 @@ void raid_event_t::reset( sim_t* sim )
 
 void raid_event_t::combat_begin( sim_t* sim )
 {
-  int num_events = ( int ) sim -> raid_events.size();
-  for ( int i=0; i < num_events; i++ )
+  for ( size_t i = 0; i < sim -> raid_events.size(); i++ )
   {
     sim -> raid_events[ i ] -> schedule();
   }
