@@ -125,6 +125,7 @@ void buff_t::init()
 {
   current_stack = 0;
   current_value = 0;
+  default_value = 0.0;
   last_start = timespan_t::min();
   last_trigger = timespan_t::min();
   iteration_uptime_sum = timespan_t::zero();
@@ -561,6 +562,11 @@ void buff_t::override( int    stacks,
   {
     sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
     assert( 0 );
+  }
+
+  if ( value < 0.0 )
+  {
+    value = default_value;
   }
 
   buff_duration = timespan_t::zero();

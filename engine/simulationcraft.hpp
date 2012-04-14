@@ -2908,6 +2908,7 @@ struct buff_t
   player_t* const player;
   std::string name_str;
   const spell_data_t* s_data;
+  double default_value;
   double current_value, react;
   timespan_t buff_duration, buff_cooldown;
   double default_chance;
