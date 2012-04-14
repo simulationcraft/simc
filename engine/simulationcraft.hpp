@@ -3995,6 +3995,9 @@ struct player_t : public noncopyable
   // Option Parsing
   std::vector<option_t> options;
 
+  // Misc values
+  int autoUnshift;
+
   // Talent Parsing
   std::array<uint32_t,MAX_TALENT_SLOTS> talent_list;
 
@@ -5047,7 +5050,7 @@ public:
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( specialization_e necessary_spec );
   virtual void   check_race( race_type_e race );
-  virtual void   check_spell();
+  virtual void   check_spell( const spell_data_t* sp = spell_data_t::nil() );
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) const { return 0; }

@@ -1524,9 +1524,9 @@ void action_t::check_spec( specialization_e necessary_spec )
 
 // action_t::check_spec =====================================================
 
-void action_t::check_spell()
+void action_t::check_spell( const spell_data_t* sp )
 {
-  if ( ! data().ok() )
+  if ( ! sp -> ok() && ! data().ok() )
   {
     sim -> errorf( "Player %s attempting to execute action %s without spell ok().\n",
                    player -> name(), name() );

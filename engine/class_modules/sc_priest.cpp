@@ -357,6 +357,8 @@ public:
 struct priest_absorb_t : public absorb_t
 {
   cooldown_t* min_interval;
+  bool can_cancel_shadowform;
+  bool castable_in_shadowform;
 
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
@@ -367,10 +369,23 @@ public:
     tick_may_crit     = false;
     may_miss          = false;
     min_interval      = player -> get_cooldown( "min_interval_" + name_str );
+    can_cancel_shadowform = p() -> autoUnshift != 0;
+    castable_in_shadowform = false;
   }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
+
+  inline bool check_shadowform()
+  {
+     return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
+  }
+
+  inline void cancel_shadowform()
+  {
+     if ( ! castable_in_shadowform )
+       p() -> buffs.shadowform -> expire();
+  }
 
   virtual void player_buff()
   {
@@ -392,6 +407,12 @@ public:
     return c;
   }
 
+  virtual void schedule_execute()
+  {
+    cancel_shadowform();
+    absorb_t::schedule_execute();
+  }
+
   virtual void consume_resource()
   {
     absorb_t::consume_resource();
@@ -405,7 +426,10 @@ public:
     if ( min_interval -> remains() > timespan_t::zero() )
       return false;
 
-    return absorb_t::ready();
+    if ( ! absorb_t::ready() )
+      return false;
+
+    return check_shadowform();
   }
 
   void parse_options( option_t*          options,
@@ -440,6 +464,20 @@ public:
 
 struct priest_heal_t : public heal_t
 {
+  bool can_cancel_shadowform;
+  bool castable_in_shadowform;
+
+  inline bool check_shadowform()
+  {
+     return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
+  }
+
+  inline void cancel_shadowform()
+  {
+     if ( ! castable_in_shadowform )
+       p() -> buffs.shadowform -> expire();
+  }
+
   struct divine_aegis_t : public priest_absorb_t
   {
     double shield_multiple;
@@ -447,7 +485,7 @@ struct priest_heal_t : public heal_t
     divine_aegis_t( const std::string& n, priest_t* p ) :
       priest_absorb_t( n, p, p -> find_spell( 47753 ) ), shield_multiple( 0 )
     {
-      check_talent( p -> spec.divine_aegis -> ok() );
+      check_spell( p -> spec.divine_aegis );
 
       proc             = true;
       background       = true;
@@ -527,12 +565,20 @@ struct priest_heal_t : public heal_t
     heal_t( n, player, s, sc ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
+    can_cancel_shadowform = p() -> autoUnshift != 0;
+    castable_in_shadowform = false;
   }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
 
   virtual void player_buff();
+
+  virtual void schedule_execute()
+  {
+    cancel_shadowform();
+    heal_t::schedule_execute();
+  }
 
   virtual void target_debuff( player_t* t, dmg_type_e type )
   {
@@ -632,6 +678,9 @@ struct priest_heal_t : public heal_t
   bool ready()
   {
     if ( ! heal_t::ready() )
+      return false;
+  
+    if ( ! check_shadowform() )
       return false;
 
     return ( min_interval -> remains() <= timespan_t::zero() );
@@ -756,6 +805,20 @@ struct priest_spell_t : public spell_t
 {
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
+  bool castable_in_shadowform;
+  bool can_cancel_shadowform;
+  buff_t* sform;
+
+  inline bool check_shadowform()
+  {
+    return ( castable_in_shadowform || can_cancel_shadowform || ( sform -> current_stack == 0 ) );
+  }
+
+  inline void cancel_shadowform()
+  {
+    if ( ! castable_in_shadowform )
+      sform  -> expire();
+  }
 
   priest_spell_t( const std::string& n, priest_t* player,
                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_SHADOW ) :
@@ -770,10 +833,28 @@ struct priest_spell_t : public spell_t
     weapon_multiplier = 0.0;
 
     can_trigger_atonement = false;
+
+    can_cancel_shadowform = p() -> autoUnshift != 0;
+    castable_in_shadowform = true;
+    sform = p() -> buffs.shadowform;
   }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
+
+  virtual void schedule_execute()
+  {
+    cancel_shadowform();
+    spell_t::schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! spell_t::ready() )
+      return false;
+
+    return check_shadowform();
+  }
 
   virtual void init()
   {
@@ -2072,6 +2153,8 @@ struct holy_fire_t : public priest_spell_t
       dtr_action = new holy_fire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+
+    castable_in_shadowform = false;
   }
 
   virtual void execute()
@@ -2148,6 +2231,8 @@ struct penance_t : public priest_spell_t
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 1 ).time_value();
 
     tick_spell = new penance_tick_t( p );
+
+    castable_in_shadowform = false;
   }
 
   virtual void init()
@@ -2194,6 +2279,8 @@ struct smite_t : public priest_spell_t
       dtr_action = new smite_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+
+    castable_in_shadowform = false;
   }
 
   virtual void execute()
@@ -2715,6 +2802,8 @@ struct holy_word_chastise_t : public priest_spell_t
 
     // Needs testing
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
+
+    castable_in_shadowform = false;
   }
 
   virtual bool ready()
@@ -2782,6 +2871,8 @@ struct holy_word_t : public priest_spell_t
     hw_sanctuary = new holy_word_sanctuary_t( p, options_str );
     hw_chastise  = new holy_word_chastise_t ( p, options_str );
     hw_serenity  = new holy_word_serenity_t ( p, options_str );
+
+    castable_in_shadowform = false;
   }
 
   virtual void schedule_execute()
@@ -2840,6 +2931,8 @@ struct lightwell_t : public priest_spell_t
     parse_options( options, options_str );
 
     harmful = false;
+
+    castable_in_shadowform = false;
 
     assert( consume_interval > timespan_t::zero() && consume_interval < cooldown -> duration );
   }
@@ -2936,6 +3029,8 @@ struct glyph_power_word_shield_t : public priest_heal_t
 
     background = true;
     proc       = true;
+
+    castable_in_shadowform = true;
   }
 };
 
@@ -2964,6 +3059,8 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> target = target;
       add_child( glyph_pws );
     }
+
+    castable_in_shadowform = true;
   }
 
   virtual double cost() const

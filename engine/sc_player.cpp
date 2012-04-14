@@ -282,6 +282,7 @@ player_t::player_t( sim_t*             s,
   world_lag_override( false ), world_lag_stddev_override( false ),
   events( 0 ),
   dbc( s -> dbc ),
+  autoUnshift( true ),
   // Haste
   base_haste_rating( 0 ), initial_haste_rating( 0 ), haste_rating( 0 ),
   spell_haste( 1.0 ), attack_haste( 1.0 ),
@@ -6478,6 +6479,7 @@ void player_t::create_options()
     { "infinite_rage",                        OPT_BOOL,   &( infinite_resource[ RESOURCE_RAGE   ]     ) },
     { "infinite_runic",                       OPT_BOOL,   &( infinite_resource[ RESOURCE_RUNIC_POWER  ]     ) },
     // Misc
+    { "autounshift",                          OPT_BOOL,   &( autoUnshift                              ) },
     { "dtr_proc_chance",                      OPT_FLT,    &( dtr_proc_chance                          ) },
     { "dtr_base_proc_chance",                 OPT_FLT,    &( dtr_base_proc_chance                     ) },
     { "skip_actions",                         OPT_STRING, &( action_list_skip                         ) },
