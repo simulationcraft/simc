@@ -1896,12 +1896,10 @@ struct shadow_word_death_t : public priest_spell_t
 {
   struct swd_state_t : public action_state_t
   {
-    double target_health;
     bool talent_proc;
-    bool was_dtr_action;
 
     swd_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      target_health( 100.0 ), talent_proc ( false ), was_dtr_action( false )
+      talent_proc ( false )
     {
 
     }
@@ -1932,9 +1930,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     swd_state_t* swd = static_cast< swd_state_t* >( state );
 
-    swd -> target_health = target -> health_percentage();
     swd -> talent_proc = p() -> buffs.divine_insight_shadow -> up();
-    swd -> was_dtr_action = is_dtr_action;
 
     priest_spell_t::snapshot_state( state, flags );
   }
@@ -1942,6 +1938,12 @@ struct shadow_word_death_t : public priest_spell_t
   virtual void execute()
   {
     priest_spell_t::execute();
+
+    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
+    {
+      cooldown -> reset();
+      p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
+    }
 
     p() -> buffs.divine_insight_shadow -> expire();
   }
@@ -1954,20 +1956,19 @@ struct shadow_word_death_t : public priest_spell_t
 
     double health_loss = s -> result_amount;
 
-    if ( ( swds -> target_health < 20.0 ) || ( swds -> talent_proc ) )
+    if ( ( target -> health_percentage() < 20.0 ) || ( swds -> talent_proc ) )
     {
       s -> result_amount *= 4.0;
     }
 
     priest_spell_t::impact_s( s );
-
-    if ( ! swds -> was_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
-    {
-      cooldown -> reset();
-      p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
-    }
-    
+   
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
+  }
+
+  virtual bool ready()
+  {
+    return priest_spell_t::ready();
   }
 };
 
