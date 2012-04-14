@@ -1327,7 +1327,7 @@ class timespan_t
 {
 #ifdef SC_USE_INTEGER_TIME
   // CAREFUL: Using int32_t implies that no overflowing happens during calculation.
-  typedef long time_t;
+  typedef int64_t time_t;
 
   static time_t native_to_milli ( time_t t ) { return t; }
   static double native_to_second( time_t t ) { return static_cast<double>( t ) * ( 1.0 / 1000 ); }

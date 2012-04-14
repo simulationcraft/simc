@@ -1020,7 +1020,7 @@ struct shadow_fiend_pet_t : public pet_t
 
   virtual double composite_attack_crit( const weapon_t* /* w */ ) const
   {
-    double c = pet_t::composite_attack_crit();
+    double c = attack_crit;
 
     c += owner -> composite_spell_crit(); // Needs confirming that it benefits from ALL owner crit.
 
