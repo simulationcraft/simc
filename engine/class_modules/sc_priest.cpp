@@ -51,7 +51,6 @@ struct priest_t : public player_t
   struct buffs_t
   {
     // Discipline
-    buff_t* dark_evangelism;
     buff_t* holy_evangelism;
     buff_t* dark_archangel;
     buff_t* holy_archangel;
@@ -73,7 +72,8 @@ struct priest_t : public player_t
     buff_t* shadowform;
     buff_t* shadowfiend;
     buff_t* vampiric_embrace;
-    buff_t* divine_insight_shadow;
+    buff_t* shadow_of_death;
+    buff_t* surge_of_darkness;
   } buffs;
 
   // Talents
@@ -384,7 +384,10 @@ public:
   inline void cancel_shadowform()
   {
      if ( ! castable_in_shadowform )
+     {
+       // FIX-ME: Needs to drop haste aura too.
        p() -> buffs.shadowform -> expire();
+     }
   }
 
   virtual void player_buff()
@@ -475,7 +478,10 @@ struct priest_heal_t : public heal_t
   inline void cancel_shadowform()
   {
      if ( ! castable_in_shadowform )
+     {
+       // FIX-ME: Needs to drop haste aura too.
        p() -> buffs.shadowform -> expire();
+     }
   }
 
   struct divine_aegis_t : public priest_absorb_t
@@ -817,7 +823,10 @@ struct priest_spell_t : public spell_t
   inline void cancel_shadowform()
   {
     if ( ! castable_in_shadowform )
+    {
+      // FIX-ME: Needs to drop haste aura too.
       sform  -> expire();
+    }
   }
 
   priest_spell_t( const std::string& n, priest_t* player,
@@ -934,6 +943,7 @@ private:
   friend void priest_t::init_spells();
 public:
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
+  void trigger_surge_of_darkness();
 };
 
 // ==========================================================================
@@ -1263,7 +1273,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     // Bug: Last tested Build 15589
     if ( p() -> buffs.shadowform -> check() )
-     m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
+      m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
     return m;
   }
 };
@@ -1337,6 +1347,14 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
   }
 }
 
+void priest_spell_t::trigger_surge_of_darkness()
+{
+  if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+  {
+    p() -> buffs.surge_of_darkness -> trigger();
+  }
+}
+
 // ==========================================================================
 // Priest Abilities
 // ==========================================================================
@@ -1344,6 +1362,45 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
 // ==========================================================================
 // Priest Non-Harmful Spells
 // ==========================================================================
+
+// Archangel Spell ==========================================================
+
+struct archangel_t : public priest_spell_t
+{
+  archangel_t( priest_t* player, const std::string& options_str ) :
+    priest_spell_t( "archangel", player, player -> find_spell( "Archangel" ) )
+  {
+    check_spell();
+
+    parse_options( NULL, options_str );
+
+    harmful           = false;
+
+    if ( p() -> primary_tree() == PRIEST_SHADOW )
+    {
+      cooldown -> duration = p() -> buffs.dark_archangel -> buff_cooldown;
+    }
+    else
+    {
+      cooldown -> duration = p() -> buffs.holy_archangel -> buff_cooldown;
+    }
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    if ( p() -> primary_tree() == PRIEST_SHADOW )
+    {
+      p() -> buffs.dark_archangel -> trigger( 1, p() -> buffs.dark_archangel -> default_value );
+    }
+    else
+    {     
+      p() -> buffs.holy_archangel -> trigger( 1, p() -> buffs.holy_archangel -> default_value * p() -> buffs.holy_evangelism -> stack() );
+      p() -> buffs.holy_evangelism -> expire();
+    }
+  }
+};
 
 // Chakra_Pre Spell =========================================================
 
@@ -1766,9 +1823,20 @@ struct mind_blast_t : public priest_spell_t
     }
 
     p() -> buffs.mind_spike -> expire();
-    p() -> buffs.mind_spike -> expire();
 
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
+  }
+
+  virtual double action_multiplier( const action_state_t* a ) const
+  {
+    double m = priest_spell_t::action_multiplier( a );
+
+    if ( p() -> buffs.dark_archangel -> up() )
+    {
+      m *= 1.0 + p() -> buffs.dark_archangel -> value();
+    }
+
+    return m;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1777,7 +1845,7 @@ struct mind_blast_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.divine_insight_shadow -> trigger();
+      p() -> buffs.shadow_of_death -> trigger();
     }
   }
 
@@ -1835,6 +1903,18 @@ struct mind_flay_t : public priest_spell_t
         num_ticks = 2;
 
     priest_spell_t::execute();
+  }
+
+  virtual double action_multiplier( const action_state_t* a ) const
+  {
+    double m = priest_spell_t::action_multiplier( a );
+
+    if ( p() -> buffs.dark_archangel -> up() )
+    {
+      m *= 1.0 + p() -> buffs.dark_archangel -> value();
+    }
+
+    return m;
   }
 
   virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
@@ -1902,23 +1982,51 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
+  virtual double action_multiplier( const action_state_t* a ) const
+  {
+    double m = priest_spell_t::action_multiplier( a );
+
+    if ( p() -> buffs.dark_archangel -> up() )
+    {
+      m *= 1.0 + p() -> buffs.dark_archangel -> value();
+    }
+
+    return m;
+  }
+
   virtual void impact_s( action_state_t* s )
   {
     priest_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.mind_spike -> trigger( 1, 1.0 );
 
       p() -> buffs.mind_spike -> trigger( 1, data().effectN( 2 ).percent() );
 
-      priest_targetdata_t* td = targetdata() -> cast_priest();
-
-      if ( ! td -> remove_dots_event )
+      if ( p() -> buffs.surge_of_darkness -> up() )
       {
-        td -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td );
+        p() -> buffs.surge_of_darkness -> expire();
+      }
+      else
+      {
+        priest_targetdata_t* td = targetdata() -> cast_priest();
+
+        if ( ! td -> remove_dots_event )
+        {
+          td -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td );
+        }
       }
     }
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    timespan_t a = priest_spell_t::execute_time();
+
+    if ( p() -> buffs.surge_of_darkness -> check() )
+      a *= 0.0;
+
+    return a;
   }
 };
 
@@ -2011,7 +2119,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     swd_state_t* swd = static_cast< swd_state_t* >( state );
 
-    swd -> talent_proc = p() -> buffs.divine_insight_shadow -> up();
+    swd -> talent_proc = p() -> buffs.shadow_of_death -> up();
 
     priest_spell_t::snapshot_state( state, flags );
   }
@@ -2026,7 +2134,7 @@ struct shadow_word_death_t : public priest_spell_t
       p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
     }
 
-    p() -> buffs.divine_insight_shadow -> expire();
+    p() -> buffs.shadow_of_death -> expire();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2045,6 +2153,18 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::impact_s( s );
    
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
+  }
+
+  virtual double action_multiplier( const action_state_t* a ) const
+  {
+    double m = priest_spell_t::action_multiplier( a );
+
+    if ( p() -> buffs.dark_archangel -> up() )
+    {
+      m *= 1.0 + p() -> buffs.dark_archangel -> value();
+    }
+
+    return m;
   }
 
   virtual bool ready()
@@ -2075,6 +2195,13 @@ struct shadow_word_pain_t : public priest_spell_t
     priest_spell_t::execute();
 
     generate_shadow_orb( this, p() -> gains.shadow_orb_swp );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
+
+    trigger_surge_of_darkness();
   }
 };
 
@@ -2130,6 +2257,8 @@ struct vampiric_touch_t : public priest_spell_t
 
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
+
+    trigger_surge_of_darkness();
   }
 };
 
@@ -3345,6 +3474,10 @@ double priest_t::composite_player_multiplier( const school_type_e school, const 
       m *= 1.0 + 0.15;
     }
   }
+  if ( talents.twist_of_fate -> ok() && ( a -> target -> health_percentage() < 20.0 ) )
+  {
+    m *= 1.0 + talents.twist_of_fate -> effect1().percent();
+  }
 
   return m;
 }
@@ -3392,6 +3525,7 @@ action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   // Misc
+  if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
   if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
@@ -3657,8 +3791,12 @@ void priest_t::init_buffs()
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( spec.evangelism -> ok() )
                                            .activated( false );
-  buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
-  buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
+  buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) )
+                                           .chance( talents.archangel -> ok() )
+                                           .default_value( find_spell( 87153 ) -> effect1().percent() );
+  buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) )
+                                           .chance( talents.archangel -> ok() )
+                                           .default_value( find_spell( 81700 ) -> effect1().percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_spell( "Inner Focus" ) )
                                                            .cd( timespan_t::zero() );
@@ -3683,10 +3821,13 @@ void priest_t::init_buffs()
                                                            max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
   buffs.shadowfiend                      = buff_creator_t( this, "shadowfiend" ).
                                                            max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
-  buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", talents.divine_insight )
+  buffs.shadow_of_death                  = buff_creator_t( this, "shadow_of_death", talents.divine_insight )
                                                            .chance( talents.divine_insight -> effectN( 1 ).percent() )
                                                            .max_stack( 1 )
                                                            .duration( timespan_t::from_seconds( 10.0 ) );
+  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
+                                                           .duration( find_spell( 114257 ) -> duration() );
+                                                           
 
   // Set Bonus
 }

@@ -48,6 +48,7 @@ struct buff_delay_t : public event_t
 buff_t::buff_t( const buff_creator_t& params ) :
   sim( params._sim ), player( params._player.target ), name_str( params._name ),
   s_data( params.s_data ),
+  default_value( 0.0 ),
   buff_duration( timespan_t::zero() ),
   buff_cooldown( timespan_t::zero() ),
   default_chance( 1.0 ),
@@ -103,6 +104,13 @@ buff_t::buff_t( const buff_creator_t& params ) :
   else
     default_chance = params._chance;
 
+  if ( params._default_value == -1.0 )
+  {
+    default_value = 0.0;  
+  }
+  else
+    default_value = params._default_value;
+
   // Set Reverse flag
   if ( params._reverse != -1 )
     reverse = params._reverse != 0;
@@ -125,7 +133,6 @@ void buff_t::init()
 {
   current_stack = 0;
   current_value = 0;
-  default_value = 0.0;
   last_start = timespan_t::min();
   last_trigger = timespan_t::min();
   iteration_uptime_sum = timespan_t::zero();
@@ -962,6 +969,7 @@ void buff_creator_t::init()
   _quiet = -1;
   _reverse = -1;
   _activated = -1;
+  _default_value = -1.0;
 }
 
 buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :

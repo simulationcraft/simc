@@ -2827,6 +2827,7 @@ private:
   std::string _name;
   const spell_data_t* s_data;
   double _chance;
+  double _default_value;
   int _max_stack;
   timespan_t _duration, _cooldown;
   int _quiet, _reverse, _activated;
@@ -2841,6 +2842,8 @@ public:
 
   buff_creator_t& duration( timespan_t d )
   { _duration=d; return *this; }
+  buff_creator_t& default_value( double v )
+  { _default_value=v; return *this; }
   buff_creator_t& chance( double c )
   { _chance=c; return *this; }
   buff_creator_t& max_stack( unsigned ms )
