@@ -4403,7 +4403,7 @@ struct arcane_torrent_t : public action_t
   double gain;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
+    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent", std::string(), RACE_BLOOD_ELF ) ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
     check_race( RACE_BLOOD_ELF );
@@ -4482,12 +4482,10 @@ struct berserking_t : public action_t
 struct blood_fury_t : public action_t
 {
   blood_fury_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "blood_fury", p )
+    action_t( ACTION_OTHER, "blood_fury", p, p -> find_racial_spell( "blood_fury", std::string(), RACE_ORC ) )
   {
     check_race( RACE_ORC );
     parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
@@ -4525,7 +4523,7 @@ struct blood_fury_t : public action_t
 struct rocket_barrage_t : public spell_t
 {
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
-    spell_t( "rocket_barrage", p, ( p -> dbc.spell( 69041 ) ) )
+    spell_t( "rocket_barrage", p, p -> find_racial_spell( "Rocket_Barrage", std::string(), RACE_GOBLIN ) )
   {
     check_race( RACE_GOBLIN );
     parse_options( NULL, options_str );
@@ -4549,12 +4547,10 @@ struct rocket_barrage_t : public spell_t
 struct stoneform_t : public action_t
 {
   stoneform_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "stoneform", p )
+    action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform", std::string(), RACE_DWARF)  )
   {
     check_race( RACE_DWARF );
     parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()
