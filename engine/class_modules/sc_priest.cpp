@@ -3274,7 +3274,7 @@ void priest_t::init_base()
 {
   player_t::init_base();
 
-  base_attack_power = -10;
+  base_attack_power = 0;
   attribute_multiplier_initial[ ATTR_INTELLECT ]   *= 1.0 + spec.enlightenment -> effectN( 1 ).percent();
 
   resources.base[ RESOURCE_SHADOW_ORB ] = 3;
