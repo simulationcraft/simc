@@ -971,7 +971,7 @@ struct shadow_fiend_pet_t : public pet_t
   {
     player_t::init_spells();
 
-    shadowcrawl = find_pet_spell( "Shadowcrawl" );
+    shadowcrawl = find_spell( "Shadowcrawl" );
     mana_leech  = find_spell( 34650, "mana_leech" );
   }
 
@@ -1269,7 +1269,7 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
 struct chakra_t : public priest_spell_t
 {
   chakra_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "chakra", p, p -> find_class_spell( "Chakra" ) )
+    priest_spell_t( "chakra", p, p -> find_spell( "Chakra" ) )
   {
     check_spell();
 
@@ -1302,7 +1302,7 @@ struct chakra_t : public priest_spell_t
 struct dispersion_t : public priest_spell_t
 {
   dispersion_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "dispersion", player, player -> find_class_spell( "Dispersion" ) )
+    priest_spell_t( "dispersion", player, player -> find_spell( "Dispersion" ) )
   {
     check_spell();
 
@@ -1333,7 +1333,7 @@ struct dispersion_t : public priest_spell_t
 struct fortitude_t : public priest_spell_t
 {
   fortitude_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "fortitude", player, player -> find_class_spell( "Power Word: Fortitude" ) )
+    priest_spell_t( "fortitude", player, player -> find_spell( "Power Word: Fortitude" ) )
   {
     check_spell();
 
@@ -1399,7 +1399,7 @@ struct hymn_of_hope_t : public priest_spell_t
   hymn_of_hope_tick_t* hymn_of_hope_tick;
 
   hymn_of_hope_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "hymn_of_hope", p, p -> find_class_spell( "Hymn of Hope" ) ),
+    priest_spell_t( "hymn_of_hope", p, p -> find_spell( "Hymn of Hope" ) ),
     hymn_of_hope_tick( 0 )
   {
     check_spell();
@@ -1433,7 +1433,7 @@ struct hymn_of_hope_t : public priest_spell_t
 struct inner_focus_t : public priest_spell_t
 {
   inner_focus_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "inner_focus", p, p -> find_class_spell( "Inner Focus" ) )
+    priest_spell_t( "inner_focus", p, p -> find_spell( "Inner Focus" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1455,7 +1455,7 @@ struct inner_focus_t : public priest_spell_t
 struct inner_fire_t : public priest_spell_t
 {
   inner_fire_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "inner_fire", player, player -> find_class_spell( "Inner Fire" ) )
+    priest_spell_t( "inner_fire", player, player -> find_spell( "Inner Fire" ) )
   {
     check_spell();
 
@@ -1486,7 +1486,7 @@ struct inner_fire_t : public priest_spell_t
 struct inner_will_t : public priest_spell_t
 {
   inner_will_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "inner_will", player, player -> find_class_spell( "Inner Will" ) )
+    priest_spell_t( "inner_will", player, player -> find_spell( "Inner Will" ) )
   {
     check_spell();
 
@@ -1518,7 +1518,7 @@ struct inner_will_t : public priest_spell_t
 struct pain_suppression_t : public priest_spell_t
 {
   pain_suppression_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "pain_suppression", p, p -> find_class_spell( "Pain Suppression" ) )
+    priest_spell_t( "pain_suppression", p, p -> find_spell( "Pain Suppression" ) )
   {
     check_spell();
 
@@ -1546,7 +1546,7 @@ struct pain_suppression_t : public priest_spell_t
 struct power_infusion_t : public priest_spell_t
 {
   power_infusion_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "power_infusion", p, p -> find_talent_spell( "Power Infusion" ) )
+    priest_spell_t( "power_infusion", p, p -> find_spell( "Power Infusion" ) )
   {
     check_spell();
 
@@ -1585,7 +1585,7 @@ struct power_infusion_t : public priest_spell_t
 struct shadowform_t : public priest_spell_t
 {
   shadowform_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadowform", p, p -> find_class_spell( "Shadowform" ) )
+    priest_spell_t( "shadowform", p, p -> find_spell( "Shadowform" ) )
   {
     check_spell();
 
@@ -1618,7 +1618,7 @@ struct shadowform_t : public priest_spell_t
 struct shadow_fiend_spell_t : public priest_spell_t
 {
   shadow_fiend_spell_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_fiend", p, p -> find_class_spell( "Shadowfiend" ) )
+    priest_spell_t( "shadow_fiend", p, p -> find_spell( "Shadowfiend" ) )
   {
     check_spell();
 
@@ -1658,7 +1658,7 @@ struct mind_blast_t : public priest_spell_t
   stats_t* orb_stats[ 4 ];
 
   mind_blast_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_blast", player, player -> find_class_spell( "Mind Blast" ) )
+    priest_spell_t( "mind_blast", player, player -> find_spell( "Mind Blast" ) )
   {
     check_spell();
 
@@ -1729,7 +1729,7 @@ struct mind_flay_t : public priest_spell_t
 
   mind_flay_t( priest_t* p, const std::string& options_str,
                const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p -> find_class_spell( "Mind Flay" ) ), mb_wait( timespan_t::zero() ), cut_for_mb( 0 ), no_dmg( 0 )
+    priest_spell_t( name, p, p -> find_spell( "Mind Flay" ) ), mb_wait( timespan_t::zero() ), cut_for_mb( 0 ), no_dmg( 0 )
   {
     check_spell();
 
@@ -1783,7 +1783,7 @@ struct mind_flay_t : public priest_spell_t
 struct mind_spike_t : public priest_spell_t
 {
   mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) )
+    priest_spell_t( "mind_spike", player, player -> find_spell( "Mind Spike" ) )
   {
     check_spell();
 
@@ -1861,7 +1861,7 @@ struct mind_sear_t : public priest_spell_t
   mind_sear_tick_t* mind_sear_tick;
 
   mind_sear_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "mind_sear", player, player -> find_class_spell( "Mind Sear" ) ),
+    priest_spell_t( "mind_sear", player, player -> find_spell( "Mind Sear" ) ),
     mind_sear_tick( 0 )
   {
     check_spell();
@@ -1908,7 +1908,7 @@ struct shadow_word_death_t : public priest_spell_t
   };
 
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) )
+    priest_spell_t( "shadow_word_death", p, p -> find_spell( "Shadow Word: Death" ) )
   {
     check_spell();
 
@@ -1976,7 +1976,7 @@ struct shadow_word_death_t : public priest_spell_t
 struct shadow_word_pain_t : public priest_spell_t
 {
   shadow_word_pain_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_pain", p, p -> find_class_spell( "Shadow Word: Pain" ) )
+    priest_spell_t( "shadow_word_pain", p, p -> find_spell( "Shadow Word: Pain" ) )
   {
     check_spell();
 
@@ -2001,7 +2001,7 @@ struct shadow_word_pain_t : public priest_spell_t
 struct vampiric_embrace_t : public priest_spell_t
 {
   vampiric_embrace_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "vampiric_embrace", p, p -> find_class_spell( "Vampiric Embrace" ) )
+    priest_spell_t( "vampiric_embrace", p, p -> find_spell( "Vampiric Embrace" ) )
   {
     check_spell();
 
@@ -2031,7 +2031,7 @@ struct vampiric_embrace_t : public priest_spell_t
 struct vampiric_touch_t : public priest_spell_t
 {
   vampiric_touch_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "vampiric_touch", player, player -> find_class_spell( "Vampiric Touch" ) )
+    priest_spell_t( "vampiric_touch", player, player -> find_spell( "Vampiric Touch" ) )
   {
     check_spell();
 
@@ -2056,7 +2056,7 @@ struct vampiric_touch_t : public priest_spell_t
 struct holy_fire_t : public priest_spell_t
 {
   holy_fire_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "holy_fire", player, player -> find_class_spell( "Holy Fire" ) )
+    priest_spell_t( "holy_fire", player, player -> find_spell( "Holy Fire" ) )
   {
     check_spell();
 
@@ -2129,7 +2129,7 @@ struct penance_t : public priest_spell_t
   penance_tick_t* tick_spell;
 
   penance_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "penance", p, p -> find_class_spell( "Penance" ) ),
+    priest_spell_t( "penance", p, p -> find_spell( "Penance" ) ),
     tick_spell( 0 )
   {
     check_spell();
@@ -2178,7 +2178,7 @@ struct penance_t : public priest_spell_t
 struct smite_t : public priest_spell_t
 {
   smite_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "smite", p, p -> find_class_spell( "Smite" ) )
+    priest_spell_t( "smite", p, p -> find_spell( "Smite" ) )
   {
     check_spell();
 
@@ -2240,7 +2240,7 @@ struct shadowy_apparition_t : priest_spell_t
   unsigned triggered_shadow_orb_mastery;
 
   shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadowy_apparition", player, player -> find_class_spell( "Shadowy Apparition" ) ),
+    priest_spell_t( "shadowy_apparition", player, player -> find_spell( "Shadowy Apparition" ) ),
     triggered_shadow_orb_mastery( 0 )
   {
     check_spell();
@@ -2320,7 +2320,7 @@ void priest_heal_t::consume_inner_focus()
 struct binding_heal_t : public priest_heal_t
 {
   binding_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "binding_heal", p, p -> find_class_spell( "Binding Heal" ) )
+    priest_heal_t( "binding_heal", p, p -> find_spell( "Binding Heal" ) )
   {
     check_spell();
 
@@ -2362,7 +2362,7 @@ struct binding_heal_t : public priest_heal_t
 struct circle_of_healing_t : public priest_heal_t
 {
   circle_of_healing_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "circle_of_healing", p, p -> find_class_spell( "Circle of Healing" ) )
+    priest_heal_t( "circle_of_healing", p, p -> find_spell( "Circle of Healing" ) )
   {
     check_spell();
 
@@ -2423,7 +2423,7 @@ struct divine_hymn_t : public priest_heal_t
   divine_hymn_tick_t* divine_hymn_tick;
 
   divine_hymn_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "divine_hymn", p, p -> find_class_spell( "Divine Hymn" ) ),
+    priest_heal_t( "divine_hymn", p, p -> find_spell( "Divine Hymn" ) ),
     divine_hymn_tick( 0 )
   {
     check_spell();
@@ -2450,7 +2450,7 @@ struct divine_hymn_t : public priest_heal_t
 struct flash_heal_t : public priest_heal_t
 {
   flash_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "flash_heal", p, p -> find_class_spell( "Flash Heal" ) )
+    priest_heal_t( "flash_heal", p, p -> find_spell( "Flash Heal" ) )
   {
     check_spell();
 
@@ -2498,7 +2498,7 @@ struct flash_heal_t : public priest_heal_t
 struct guardian_spirit_t : public priest_heal_t
 {
   guardian_spirit_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "guardian_spirit", p, p -> find_class_spell( "Guardian Spirit" ) )
+    priest_heal_t( "guardian_spirit", p, p -> find_spell( "Guardian Spirit" ) )
   {
     check_spell();
 
@@ -2524,7 +2524,7 @@ struct guardian_spirit_t : public priest_heal_t
 struct greater_heal_t : public priest_heal_t
 {
   greater_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "greater_heal", p, p -> find_class_spell( "Greater Heal" ) )
+    priest_heal_t( "greater_heal", p, p -> find_spell( "Greater Heal" ) )
   {
     check_spell();
 
@@ -2583,7 +2583,7 @@ struct greater_heal_t : public priest_heal_t
 struct _heal_t : public priest_heal_t
 {
   _heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "heal", p, p -> find_class_spell( "Heal" ) )
+    priest_heal_t( "heal", p, p -> find_spell( "Heal" ) )
   {
     check_spell();
 
@@ -2704,7 +2704,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
 struct holy_word_chastise_t : public priest_spell_t
 {
   holy_word_chastise_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "holy_word_chastise", p, p -> find_class_spell( "Holy Word: Chastise" ) )
+    priest_spell_t( "holy_word_chastise", p, p -> find_spell( "Holy Word: Chastise" ) )
   {
     check_spell();
 
@@ -2827,7 +2827,7 @@ struct lightwell_t : public priest_spell_t
   timespan_t consume_interval;
 
   lightwell_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "lightwell", p, p -> find_class_spell( "Lightwell" ) ), consume_interval( timespan_t::from_seconds( 10 ) )
+    priest_spell_t( "lightwell", p, p -> find_spell( "Lightwell" ) ), consume_interval( timespan_t::from_seconds( 10 ) )
   {
     check_spell();
 
@@ -2883,7 +2883,7 @@ struct penance_heal_t : public priest_heal_t
   penance_heal_tick_t* penance_tick;
 
   penance_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "penance_heal", p, p -> find_class_spell( "Penance" ) ), penance_tick( 0 )
+    priest_heal_t( "penance_heal", p, p -> find_spell( "Penance" ) ), penance_tick( 0 )
   {
     check_spell();
 
@@ -2944,7 +2944,7 @@ struct power_word_shield_t : public priest_absorb_t
   int ignore_debuff;
 
   power_word_shield_t( priest_t* p, const std::string& options_str ) :
-    priest_absorb_t( "power_word_shield", p, p -> find_class_spell( "Power Word: Shield" ) ), glyph_pws( 0 ), ignore_debuff( 0 )
+    priest_absorb_t( "power_word_shield", p, p -> find_spell( "Power Word: Shield" ) ), glyph_pws( 0 ), ignore_debuff( 0 )
   {
     check_spell();
 
@@ -3005,7 +3005,7 @@ struct power_word_shield_t : public priest_absorb_t
 struct prayer_of_healing_t : public priest_heal_t
 {
   prayer_of_healing_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "prayer_of_healing", p, p -> find_class_spell( "Prayer of Healing" ) )
+    priest_heal_t( "prayer_of_healing", p, p -> find_spell( "Prayer of Healing" ) )
   {
     check_spell();
 
@@ -3071,7 +3071,7 @@ struct prayer_of_mending_t : public priest_heal_t
 {
   int single;
   prayer_of_mending_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "prayer_of_mending", p, p -> find_class_spell( "Prayer of Mending" ) ), single( false )
+    priest_heal_t( "prayer_of_mending", p, p -> find_spell( "Prayer of Mending" ) ), single( false )
   {
     check_spell();
 
@@ -3135,7 +3135,7 @@ struct divine_touch_t : public priest_heal_t
 struct renew_t : public priest_heal_t
 {
   renew_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "renew", p, p -> find_class_spell( "Renew" ) )
+    priest_heal_t( "renew", p, p -> find_spell( "Renew" ) )
   {
     check_spell();
 
@@ -3457,47 +3457,47 @@ void priest_t::init_spells()
   player_t::init_spells();
 
   // Talents
-  talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
-  talents.psyfiend                    = find_talent_spell( "Psyfiend" );
-  talents.dominate_mind               = find_talent_spell( "Dominate Mind" );
-  talents.body_and_soul               = find_talent_spell( "Body and Soul" );
-  talents.feathers_from_heaven        = find_talent_spell( "Feathers From Heaven" );
-  talents.phantasm                    = find_talent_spell( "Phantasm" );
-  talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
+  talents.void_tendrils               = find_spell( "Void Tendrils" );
+  talents.psyfiend                    = find_spell( "Psyfiend" );
+  talents.dominate_mind               = find_spell( "Dominate Mind" );
+  talents.body_and_soul               = find_spell( "Body and Soul" );
+  talents.feathers_from_heaven        = find_spell( "Feathers From Heaven" );
+  talents.phantasm                    = find_spell( "Phantasm" );
+  talents.from_darkness_comes_light   = find_spell( "From Darkness, Comes Light" );
   // "coming soon"
-  talents.archangel                   = find_talent_spell( "Archangel" );
-  talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
-  talents.void_shift                  = find_talent_spell( "Void Shift" );
-  talents.angelic_bulwark             = find_talent_spell( "Angelic Bulwark" );
-  talents.twist_of_fate               = find_talent_spell( "Twist of Fate" );
-  talents.power_infusion              = find_talent_spell( "Power Infusion" );
-  talents.divine_insight              = find_talent_spell( "Divine Insight" );
-  talents.cascade                     = find_talent_spell( "Cascade" );
-  talents.divine_star                 = find_talent_spell( "Divine Star" );
-  talents.halo                        = find_talent_spell( "Halo" );
+  talents.archangel                   = find_spell( "Archangel" );
+  talents.desperate_prayer            = find_spell( "Desperate Prayer" );
+  talents.void_shift                  = find_spell( "Void Shift" );
+  talents.angelic_bulwark             = find_spell( "Angelic Bulwark" );
+  talents.twist_of_fate               = find_spell( "Twist of Fate" );
+  talents.power_infusion              = find_spell( "Power Infusion" );
+  talents.divine_insight              = find_spell( "Divine Insight" );
+  talents.cascade                     = find_spell( "Cascade" );
+  talents.divine_star                 = find_spell( "Divine Star" );
+  talents.halo                        = find_spell( "Halo" );
 
   // Passive Spells
 
   // General Spells
 
   // Discipline
-  spec.meditation_disc                = find_class_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
-  spec.divine_aegis                   = find_class_spell( "Divine Aegis" );
-  spec.grace                          = find_class_spell( "Grace" );
-  spec.evangelism                     = find_class_spell( "Evangelism" );
-  spec.train_of_thought               = find_class_spell( "Train of Thought" );
+  spec.meditation_disc                = find_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  spec.divine_aegis                   = find_spell( "Divine Aegis" );
+  spec.grace                          = find_spell( "Grace" );
+  spec.evangelism                     = find_spell( "Evangelism" );
+  spec.train_of_thought               = find_spell( "Train of Thought" );
 
   // Holy
-  spec.meditation_holy                = find_class_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
-  spec.revelations                    = find_class_spell( "Revelations" );
-  spec.chakra_chastise                = find_class_spell( "Chakra: Chastise" );
-  spec.chakra_sanctuary               = find_class_spell( "Chakra: Sanctuary" );
-  spec.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
+  spec.meditation_holy                = find_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
+  spec.revelations                    = find_spell( "Revelations" );
+  spec.chakra_chastise                = find_spell( "Chakra: Chastise" );
+  spec.chakra_sanctuary               = find_spell( "Chakra: Sanctuary" );
+  spec.chakra_serenity                = find_spell( "Chakra: Serenity" );
 
   // Shadow
-  spec.spiritual_precision            = find_class_spell( "Spiritual Precision" );
-  spec.shadowform                     = find_class_spell( "Shadowform" );
-  spec.shadowy_apparition             = find_class_spell( "Shadowy Apparition" );
+  spec.spiritual_precision            = find_spell( "Spiritual Precision" );
+  spec.shadowform                     = find_spell( "Shadowform" );
+  spec.shadowy_apparition             = find_spell( "Shadowy Apparition" );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -3505,24 +3505,24 @@ void priest_t::init_spells()
   mastery_spells.shadow_orb_power     = find_mastery_spell( PRIEST_SHADOW );
 
   // Glyphs
-  glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
-  glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
-  glyphs.holy_nova                    = find_glyph_spell( "Glyph of Holy Nova" );
-  glyphs.inner_fire                   = find_glyph_spell( "Glyph of Inner Fire" );
-  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );
-  glyphs.penance                      = find_glyph_spell( "Glyph of Penance" );
-  glyphs.power_word_shield            = find_glyph_spell( "Glyph of Power Word: Shield" );
-  glyphs.prayer_of_mending            = find_glyph_spell( "Glyph of Prayer of Mending" );
-  glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
-  glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
-  glyphs.atonement                    = find_glyph_spell( "Atonement" );
-  glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
-  glyphs.strength_of_soul             = find_glyph_spell( "Glyph of Strength of Soul" );
-  glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );
-  glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
-  glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
-  glyphs.vampiric_touch               = find_glyph_spell( "Glyph of Vampiric Touch" );
-  glyphs.shadowy_apparition           = find_glyph_spell( "Glyph of Shadowy Apparition" );
+  glyphs.circle_of_healing            = find_spell( "Glyph of Circle of Healing" );
+  glyphs.dispersion                   = find_spell( "Glyph of Dispersion" );
+  glyphs.holy_nova                    = find_spell( "Glyph of Holy Nova" );
+  glyphs.inner_fire                   = find_spell( "Glyph of Inner Fire" );
+  glyphs.lightwell                    = find_spell( "Glyph of Lightwell" );
+  glyphs.penance                      = find_spell( "Glyph of Penance" );
+  glyphs.power_word_shield            = find_spell( "Glyph of Power Word: Shield" );
+  glyphs.prayer_of_mending            = find_spell( "Glyph of Prayer of Mending" );
+  glyphs.renew                        = find_spell( "Glyph of Renew" );
+  glyphs.smite                        = find_spell( "Glyph of Smite" );
+  glyphs.atonement                    = find_spell( "Atonement" );
+  glyphs.mind_spike                   = find_spell( "Glyph of Mind Spike" );
+  glyphs.strength_of_soul             = find_spell( "Glyph of Strength of Soul" );
+  glyphs.inner_sanctum                = find_spell( "Glyph of Inner Sanctum" );
+  glyphs.mind_flay                    = find_spell( "Glyph of Mind Flay" );
+  glyphs.mind_blast                   = find_spell( "Glyph of Mind Blast" );
+  glyphs.vampiric_touch               = find_spell( "Glyph of Vampiric Touch" );
+  glyphs.shadowy_apparition           = find_spell( "Glyph of Shadowy Apparition" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new echo_of_light_t( this );
@@ -3561,10 +3561,10 @@ void priest_t::init_buffs()
                                            .activated( false );
   buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) );
   buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) );
-  buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
-  buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
+  buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_spell( "Inner Fire" ) );
+  buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_spell( "Inner Focus" ) )
                                                            .cd( timespan_t::zero() );
-  buffs.inner_will                       = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
+  buffs.inner_will                       = buff_creator_t( this, "inner_will", find_spell( "Inner Will" ) );
   // Holy
   buffs.chakra_pre                       = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
   buffs.chakra_chastise                  = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
@@ -3575,8 +3575,8 @@ void priest_t::init_buffs()
                                                            .activated( false );
 
   // Shadow
-  buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
-  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
+  buffs.shadowform                       = buff_creator_t( this, "shadowform", find_spell( "Shadowform" ) );
+  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_spell( "Vampiric Embrace" ) );
   buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown").
@@ -3615,17 +3615,17 @@ void priest_t::init_actions()
       buffer = "flask,type=frost_wyrm/food,type=fish_feast";
     }
 
-    if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
+    if ( find_spell( "Power Word: Fortitude" ) -> ok() )
       buffer += "/fortitude,if=!aura.stamina.up";
     
-    if ( find_class_spell( "Inner Fire" ) -> ok() )
+    if ( find_spell( "Inner Fire" ) -> ok() )
       buffer += "/inner_fire";
 
-    if ( find_class_spell( "Shadowform" ) -> ok() )
+    if ( find_spell( "Shadowform" ) -> ok() )
       buffer += "/shadowform";
 
     /*
-    if ( find_class_spell( "Vampiric Embrace" ) -> ok() )
+    if ( find_spell( "Vampiric Embrace" ) -> ok() )
       buffer += "/vampiric_embrace";
     */
 
@@ -3655,38 +3655,38 @@ void priest_t::init_actions()
         buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 */
-      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+      if ( find_spell( "Shadow Word: Death" ) -> ok() )
         buffer += "/shadow_word_death,health_percentage<=20";
 
-      if ( find_class_spell( "Mind Blast" ) -> ok() )
+      if ( find_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
 
       buffer += init_use_racial_actions();
 
-      if ( find_class_spell( "Vampiric Touch" ) -> ok() )
+      if ( find_spell( "Vampiric Touch" ) -> ok() )
         buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
-      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
+      if ( find_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      if ( find_class_spell( "Shadowfiend" ) -> ok() )
+      if ( find_spell( "Shadowfiend" ) -> ok() )
         buffer += "/shadow_fiend";
 
-      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
+      if ( find_spell( "Shadowy Apparition" ) -> ok() )
         buffer += "/shadowy_apparition,if=shadow_orb=3";
 
-      if ( find_class_spell( "Mind Flay" ) -> ok() )
+      if ( find_spell( "Mind Flay" ) -> ok() )
         buffer += "/mind_flay";
 
-      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+      if ( find_spell( "Shadow Word: Death" ) -> ok() )
       {
         buffer += "/shadow_word_death,moving=1";
       }
 
-      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
+      if ( find_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,moving=1";
 
-      if ( find_class_spell( "Dispersion" ) -> ok() )
+      if ( find_spell( "Dispersion" ) -> ok() )
         buffer += "/dispersion";
       break;
       // SHADOW END =========================================================

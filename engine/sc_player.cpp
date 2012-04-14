@@ -5414,7 +5414,6 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    sim -> errorf( "Player %s unable to find talent %s\n", name(), n.c_str() );
     return ( spell_data_t::nil() );
   }
 
@@ -5449,7 +5448,6 @@ const spell_data_t* player_t::find_glyph( const std::string& n )
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    sim -> errorf( "\nPlayer %s unable to find glyph %s\n", name(), n.c_str() );
     return ( spell_data_t::nil() );
   }
 
