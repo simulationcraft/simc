@@ -110,6 +110,7 @@ struct priest_t : public player_t
     const spell_data_t* grace;
     const spell_data_t* evangelism;
     const spell_data_t* train_of_thought;
+    const spell_data_t* divine_fury;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -213,6 +214,7 @@ struct priest_t : public player_t
 
     // Mop
     const spell_data_t* atonement;
+    const spell_data_t* holy_fire;
     const spell_data_t* mind_spike;
     const spell_data_t* strength_of_soul;
     const spell_data_t* inner_sanctum;
@@ -220,7 +222,9 @@ struct priest_t : public player_t
     const spell_data_t* mind_flay;
     const spell_data_t* mind_blast;
     const spell_data_t* vampiric_touch;
+    const spell_data_t* vampiric_embrace;
     const spell_data_t* shadowy_apparition;
+    const spell_data_t* fortitude;
   } glyphs;
 
   // Constants
@@ -906,7 +910,7 @@ struct priest_spell_t : public spell_t
 
     if ( aoe == 0 && p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
-      double a = amount * p() -> buffs.vampiric_embrace -> data().effectN( 1 ).percent();
+      double a = amount * ( p() -> buffs.vampiric_embrace -> data().effectN( 1 ).percent() + p() -> glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
 
       // Priest Heal
       p() -> resource_gain( RESOURCE_HEALTH, a, player -> gains.vampiric_embrace );
@@ -1482,6 +1486,15 @@ struct fortitude_t : public priest_spell_t
     background = ( sim -> overrides.stamina != 0 );
   }
 
+  virtual double cost() const
+  {
+    double c = priest_spell_t::cost();
+
+    c *= 1.0 + p() -> glyphs.fortitude -> effectN( 1 ).percent();
+
+    return c;
+  }
+
   virtual void execute()
   {
     priest_spell_t::execute();
@@ -1823,6 +1836,7 @@ struct mind_blast_t : public priest_spell_t
     }
 
     p() -> buffs.mind_spike -> expire();
+    p() -> buffs.glyph_mind_spike -> expire();
 
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
@@ -1862,7 +1876,7 @@ struct mind_blast_t : public priest_spell_t
   {
     timespan_t a = priest_spell_t::execute_time();
 
-    a *= 1 + ( p() -> buffs.mind_spike -> check() * p() -> glyphs.mind_spike -> effectN( 2 ).percent() );
+    a *= 1 + ( p() -> buffs.glyph_mind_spike -> stack() * p() -> glyphs.mind_spike -> effect1().percent() );
 
     return a;
   }
@@ -2002,6 +2016,8 @@ struct mind_spike_t : public priest_spell_t
     {
 
       p() -> buffs.mind_spike -> trigger( 1, data().effectN( 2 ).percent() );
+      if ( p() -> glyphs.mind_spike -> ok() )
+        p() -> buffs.glyph_mind_spike -> trigger();
 
       if ( p() -> buffs.surge_of_darkness -> up() )
       {
@@ -2252,7 +2268,7 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    double h = tick_dmg * data().effectN( 3 ).percent();
+    double h = tick_dmg * ( data().effectN( 3 ).percent() + p() -> glyphs.vampiric_touch -> effectN( 1 ).percent() );
     player -> resource_gain( RESOURCE_HEALTH, h, p() -> gains.vampiric_touch_health, this );
 
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
@@ -2273,7 +2289,7 @@ struct holy_fire_t : public priest_spell_t
 
     parse_options( NULL, options_str );
 
-    base_hit += player -> glyphs.atonement -> effectN( 1 ).percent();
+    base_hit += p() -> spec.divine_fury -> effectN( 1 ).percent();
 
     can_trigger_atonement = true;
 
@@ -2310,6 +2326,17 @@ struct holy_fire_t : public priest_spell_t
 
     return c;
   }
+
+  virtual timespan_t execute_time() const
+  {
+    timespan_t a = priest_spell_t::execute_time();
+
+    if ( p() -> glyphs.holy_fire -> ok() )
+      a *= 0.0;
+
+    return a;
+  }
+
 };
 
 // Penance Spell ============================================================
@@ -2326,7 +2353,7 @@ struct penance_t : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
-      base_hit += p -> glyphs.atonement -> effectN( 1 ).percent();
+      base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
     }
 
     virtual double action_multiplier( const action_state_t* s ) const
@@ -2357,7 +2384,7 @@ struct penance_t : public priest_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
 
-    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
 
     tick_spell = new penance_tick_t( p );
 
@@ -2384,6 +2411,8 @@ struct penance_t : public priest_spell_t
 
     c *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
+    c *= 1.0 + p() -> glyphs.penance -> effectN( 1 ).percent();
+
     return c;
   }
 };
@@ -2399,7 +2428,7 @@ struct smite_t : public priest_spell_t
 
     parse_options( NULL, options_str );
 
-    base_hit += p -> glyphs.atonement -> effectN( 1 ).percent();
+    base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
 
     can_trigger_atonement = true;
 
@@ -3120,7 +3149,7 @@ struct penance_heal_t : public priest_heal_t
     hasted_ticks   = false;
 
     cooldown = p -> cooldowns.penance;
-    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
 
     penance_tick = new penance_heal_tick_t( p );
     penance_tick -> target = target;
@@ -3139,6 +3168,8 @@ struct penance_heal_t : public priest_heal_t
     double c = priest_heal_t::cost();
 
     c *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 2 ).percent() );
+
+    c *= 1.0 + p() -> glyphs.penance -> effectN( 1 ).percent();
 
     return c;
   }
@@ -3180,7 +3211,9 @@ struct power_word_shield_t : public priest_absorb_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod = 0.87; // hardcoded into tooltip
+    // Tooltip is wrong.
+    // direct_power_mod = 0.87; // hardcoded into tooltip
+    direct_power_mod = 1.8709; // matches in-game actual value
 
     if ( p -> glyphs.power_word_shield -> ok() )
     {
@@ -3205,17 +3238,18 @@ struct power_word_shield_t : public priest_absorb_t
 
     t -> buffs.weakened_soul -> trigger();
 
-    td -> buffs_power_word_shield -> trigger( 1, travel_dmg );
-
-    stats -> add_result( travel_dmg, travel_dmg, ABSORB, impact_result );
-
     // Glyph
     if ( glyph_pws )
     {
       glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * travel_dmg;
       glyph_pws -> target = t;
       glyph_pws -> execute();
+
+      travel_dmg -= glyph_pws -> base_dd_min;
     }
+
+    td -> buffs_power_word_shield -> trigger( 1, travel_dmg );
+    stats -> add_result( travel_dmg, travel_dmg, ABSORB, impact_result );
   }
 
   virtual bool ready()
@@ -3371,6 +3405,8 @@ struct renew_t : public priest_heal_t
     may_crit = false;
 
     base_multiplier *= 1.0 + p -> glyphs.renew -> effectN( 1 ).percent();
+
+    num_ticks       += (int) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
   }
 
   virtual void player_buff()
@@ -3718,6 +3754,7 @@ void priest_t::init_spells()
   spec.grace                          = find_spell( "Grace" );
   spec.evangelism                     = find_spell( "Evangelism" );
   spec.train_of_thought               = find_spell( "Train of Thought" );
+  spec.divine_fury                    = find_spell( "Divine Fury" );
 
   // Holy
   spec.meditation_holy                = find_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
@@ -3747,6 +3784,7 @@ void priest_t::init_spells()
   glyphs.prayer_of_mending            = find_spell( "Glyph of Prayer of Mending" );
   glyphs.renew                        = find_spell( "Glyph of Renew" );
   glyphs.smite                        = find_spell( "Glyph of Smite" );
+  glyphs.holy_fire                    = find_spell( "Glyph of Holy Fire" );
   glyphs.atonement                    = find_spell( "Atonement" );
   glyphs.mind_spike                   = find_spell( "Glyph of Mind Spike" );
   glyphs.strength_of_soul             = find_spell( "Glyph of Strength of Soul" );
@@ -3754,7 +3792,9 @@ void priest_t::init_spells()
   glyphs.mind_flay                    = find_spell( "Glyph of Mind Flay" );
   glyphs.mind_blast                   = find_spell( "Glyph of Mind Blast" );
   glyphs.vampiric_touch               = find_spell( "Glyph of Vampiric Touch" );
+  glyphs.vampiric_embrace             = find_spell( "Glyph of Vampiric Embrace" );
   glyphs.shadowy_apparition           = find_spell( "Glyph of Shadowy Apparition" );
+  glyphs.fortitude                    = find_spell( "Glyph of Fortitude" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new echo_of_light_t( this );
@@ -3812,8 +3852,9 @@ void priest_t::init_buffs()
 
   // Shadow
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_spell( "Shadowform" ) );
-  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_spell( "Vampiric Embrace" ) );
-  buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", find_spell( glyphs.mind_spike -> effectN( 2 ).trigger_spell_id() ) );
+  buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_spell( "Vampiric Embrace" ) )
+                                           .duration( find_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
+  buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", glyphs.mind_spike ).max_stack( 2 ).duration( timespan_t::from_seconds( 6.0 ) );
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown").
                                                            max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
@@ -4186,7 +4227,7 @@ double priest_t::target_mitigation( double        amount,
   if ( buffs.shadowform -> check() )
   { amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
 
-  if ( glyphs.inner_sanctum -> ok() )
+  if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( spell_data_t::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
   { amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
 
   return amount;
