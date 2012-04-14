@@ -1878,7 +1878,7 @@ double sim_t::gauss( double mean,
 timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
-  return timespan_t::from_native( gauss( timespan_t::to_native( mean ), timespan_t::to_native( stddev ) ) );
+  return timespan_t::from_native( gauss( (double) timespan_t::to_native( mean ), (double) timespan_t::to_native( stddev ) ) );
 }
 
 // sim_t::get_rng ===========================================================

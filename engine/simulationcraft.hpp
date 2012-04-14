@@ -5818,21 +5818,21 @@ public:
 
   timespan_t range( timespan_t min, timespan_t max )
   {
-    return timespan_t::from_native( range( timespan_t::to_native( min ),
-                                           timespan_t::to_native( max ) ) );
+    return timespan_t::from_native( range( (double) timespan_t::to_native( min ),
+                                           (double) timespan_t::to_native( max ) ) );
   }
 
   timespan_t gauss( timespan_t mean, timespan_t stddev )
   {
-    return timespan_t::from_native( gauss( timespan_t::to_native( mean ),
-                                           timespan_t::to_native( stddev ) ) );
+    return timespan_t::from_native( gauss( (double) timespan_t::to_native( mean ),
+                                           (double) timespan_t::to_native( stddev ) ) );
   }
 
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
   {
-    return timespan_t::from_native( exgauss( timespan_t::to_native( mean ),
-                                             timespan_t::to_native( stddev ),
-                                             timespan_t::to_native( nu ) ) );
+    return timespan_t::from_native( exgauss( (double) timespan_t::to_native( mean ),
+                                             (double) timespan_t::to_native( stddev ),
+                                             (double) timespan_t::to_native( nu ) ) );
   }
 
   static double stdnormal_cdf( double u );
