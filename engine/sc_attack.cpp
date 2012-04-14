@@ -86,26 +86,24 @@ void attack_t::player_buff()
 
 double attack_t::miss_chance( double hit, int delta_level ) const
 {
+  double miss = 0.0;
+
   if ( target -> is_enemy() || target -> is_add() )
   {
-    if ( delta_level > 2 )
-    {
-      // FIXME: needs testing for delta_level > 3
-      return 0.06 + ( delta_level - 2 ) * 0.02 - hit;
-    }
-    else
-    {
-      return 0.05 + delta_level * 0.005 - hit;
-    }
+    miss = 0.03 + ( delta_level * 0.015 );
   }
   else
   {
     // FIXME: needs testing
-    if ( delta_level >= 0 )
-      return 0.05 + delta_level * 0.02;
-    else
-      return 0.05 + delta_level * 0.01;
+    miss = 0.03 + ( delta_level * 0.015 );
   }
+
+  miss -= hit;
+
+  if ( miss < 0.00 ) miss = 0.00;
+  if ( miss > 0.99 ) miss = 0.99;
+
+  return miss;
 }
 
 // attack_t::crit_block_chance ==============================================

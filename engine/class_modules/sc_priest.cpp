@@ -234,8 +234,6 @@ struct priest_t : public player_t
     // Shadow
   } constants;
 
-  bool   was_sub_20;
-
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // default initialize things ( set all elements to 0 )
@@ -253,7 +251,6 @@ struct priest_t : public player_t
     glyphs( glyphs_t() ),
     constants( constants_t() )
   {
-    was_sub_20                           = false;
     echo_of_light_merged                 = false;
 
     distance                             = 40.0;
@@ -1161,8 +1158,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 3.5;
-
-    base_crit += 0.05; // estimated.
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1914,15 +1909,16 @@ struct shadow_word_death_t : public priest_spell_t
   {
     swd_state_t* swds = static_cast< swd_state_t* >( s );
 
-    priest_spell_t::impact_s( s );
+    s -> result_amount = floor( s -> result_amount );
 
     double health_loss = s -> result_amount;
 
-
     if ( ( swds -> target_health < 20.0 ) || ( swds -> talent_proc ) )
     {
-      health_loss *= 0.25;
+      s -> result_amount *= 4.0;
     }
+
+    priest_spell_t::impact_s( s );
 
     if ( ! swds -> was_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
     {
@@ -1931,20 +1927,6 @@ struct shadow_word_death_t : public priest_spell_t
     }
     
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
-  }
-
-  virtual double action_multiplier( const action_state_t* s ) const
-  {
-    double am = priest_spell_t::action_multiplier( s );
-
-    const swd_state_t* swds = static_cast< const swd_state_t* >( s );
-
-    if ( ( swds -> target_health < 20.0 ) || ( swds -> talent_proc ) )
-    {
-      am *= 4.0;
-    }
-
-    return am;
   }
 };
 
@@ -3827,8 +3809,6 @@ void priest_t::reset()
   }
 
   echo_of_light_merged = false;
-
-  was_sub_20 = false;
 
   init_party();
 }
