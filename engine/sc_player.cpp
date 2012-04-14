@@ -2314,7 +2314,7 @@ double player_t::composite_spell_power( const school_type_e school ) const
 
   sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
 
-  return floor( sp );
+  return sp;
 }
 
 // player_t::composite_spell_power_multiplier ===============================
