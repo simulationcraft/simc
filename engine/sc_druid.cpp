@@ -238,6 +238,9 @@ struct druid_t : public player_t
   int eclipse_wrath_count; // Wrath gains eclipse in 13, 13, 14, 13, 13, 14, 13, 13
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
 
+  int initial_eclipse;
+  int preplant_mushrooms;
+
   // Up-Times
   benefit_t* uptimes_energy_cap;
   benefit_t* uptimes_rage_cap;
@@ -338,6 +341,9 @@ struct druid_t : public player_t
     eclipse_wrath_count   = 0;
     eclipse_bar_direction = 0;
 
+    initial_eclipse = 0;
+    preplant_mushrooms = true;
+
     cooldowns_burning_treant = get_cooldown( "burning_treant" );
     cooldowns_burning_treant -> duration = timespan_t::from_seconds( 45.0 );
     cooldowns_fury_swipes    = get_cooldown( "fury_swipes"    );
@@ -399,6 +405,7 @@ struct druid_t : public player_t
   virtual double    assess_damage( double amount, const school_type school, int dmg_type, int result, action_t* a );
   virtual heal_info_t assess_heal( double amount, const school_type school, int type, int result, action_t* a );
   virtual double    intellect() const;
+  virtual void      create_options();
 
 
   void reset_gcd()
@@ -5456,7 +5463,30 @@ void druid_t::combat_begin()
   resource_current[ RESOURCE_RAGE ] = 0;
 
   // Moonkins can precast 3 wild mushrooms without aggroing the boss
-  buffs_wild_mushroom -> trigger( 3 );
+  if ( preplant_mushrooms )
+    buffs_wild_mushroom -> trigger( 3 );
+
+  if ( ( primary_tree() == TREE_BALANCE ) && ( initial_eclipse != 0 ) )
+  {
+    if ( initial_eclipse > 0 )
+    {
+      eclipse_bar_value = std::min( 100, initial_eclipse );
+      if ( buffs_eclipse_solar -> trigger() )
+      {
+        // Solar proc => bar direction changes to -1 (towards Lunar)
+        eclipse_bar_direction = -1;
+      }
+    }
+    else
+    {
+      eclipse_bar_value = std::max( -100, initial_eclipse );
+      if ( buffs_eclipse_lunar -> trigger() )
+      {
+        // Lunar proc => bar direction changes to 1 (towards Solar)
+        eclipse_bar_direction = 1;
+      }
+    }
+  }
 }
 
 // druid_t::composite_armor_multiplier ======================================
@@ -5675,6 +5705,22 @@ action_expr_t* druid_t::create_expression( action_t* a, const std::string& name_
   }
 
   return player_t::create_expression( a, name_str );
+}
+
+// druid_t::create_options =================================================
+
+void druid_t::create_options()
+{
+  player_t::create_options();
+
+  option_t druid_options[] =
+  {
+    { "initial_eclipse",               OPT_INT,  &( initial_eclipse    ) },
+    { "preplant_mushrooms",            OPT_BOOL, &( preplant_mushrooms ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+
+  option_t::copy( options, druid_options );
 }
 
 // druid_t::decode_set ======================================================
