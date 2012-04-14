@@ -4399,67 +4399,47 @@ struct stop_moving_t : public action_t
 
 struct arcane_torrent_t : public action_t
 {
+  resource_type_e resource;
+  double gain;
+
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", p )
+    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
+    resource( RESOURCE_NONE ), gain( 0 )
   {
     check_race( RACE_BLOOD_ELF );
     parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
-  }
 
-  virtual void execute()
-  {
-    resource_type_e resource = player -> primary_resource();
-    double gain = 0;
+    resource = util_t::translate_power_type( static_cast<power_type_e>( data().effectN( 2 ).misc_value1() ) );
+
     switch ( resource )
     {
-    case RESOURCE_MANA:
-      gain = player -> resources.max [ RESOURCE_MANA ] * 0.06;
-      break;
     case RESOURCE_ENERGY:
     case RESOURCE_FOCUS:
     case RESOURCE_RAGE:
     case RESOURCE_RUNIC_POWER:
-      gain = 15;
+      gain = data().effectN( 2 ).resource( resource );
       break;
     default:
       break;
     }
+  }
 
-    if ( gain > 0 )
-      player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
+  virtual void execute()
+  {
+    if ( resource == RESOURCE_MANA )
+      gain = player -> resources.max [ RESOURCE_MANA ] * data().effectN( 2 ).resource( resource );
+
+    player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
 
     update_ready();
   }
 
   virtual bool ready()
   {
-    if ( ! action_t::ready() )
-      return false;
-
     if ( player -> race != RACE_BLOOD_ELF )
       return false;
 
-    resource_type_e resource = player -> primary_resource();
-    switch ( resource )
-    {
-    case RESOURCE_MANA:
-      if ( player -> resources.current [ resource ] / player -> resources.max [ resource ] <= 0.94 )
-        return true;
-      break;
-    case RESOURCE_ENERGY:
-    case RESOURCE_FOCUS:
-    case RESOURCE_RAGE:
-    case RESOURCE_RUNIC_POWER:
-      if ( player -> resources.max [ resource ] - player -> resources.current [ resource ] >= 15 )
-        return true;
-      break;
-    default:
-      break;
-    }
-
-    return false;
+    return action_t::ready();
   }
 };
 
@@ -5146,7 +5126,6 @@ struct cancel_buff_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
   if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
@@ -5162,6 +5141,10 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
+
+
+  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
+
 
   return consumable_t::create_action( this, name, options_str );
 }
@@ -5624,7 +5607,6 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
 
   return ( dbc.spell( id ) );
 }
-
 
 namespace {
 expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )

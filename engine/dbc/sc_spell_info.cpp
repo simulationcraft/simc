@@ -346,13 +346,15 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
     s << " | Chain Multiplier: " << e -> chain_multiplier();
 
-  if ( e -> misc_value1() != 0 )
+  if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
   {
     if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
          e -> subtype() == A_MOD_DAMAGE_TAKEN ||
          e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
          e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
+    else if ( e -> type() == E_ENERGIZE )
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util_t::resource_type_string( util_t::translate_power_type( static_cast<power_type_e>( e -> misc_value1() ) ) ) );
     else
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer;
