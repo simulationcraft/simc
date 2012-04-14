@@ -4547,6 +4547,7 @@ struct player_t : public noncopyable
   virtual void replace_spells();
 
   virtual const spell_data_t* find_glyph( const std::string& name );
+  virtual const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_type_e s = RACE_NONE );
   virtual const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
   virtual const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() );

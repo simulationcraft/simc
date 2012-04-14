@@ -2275,6 +2275,14 @@ struct vampiric_touch_t : public priest_spell_t
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
 
     trigger_surge_of_darkness();
+
+    /* FIX-ME: Make sure this is still the case when MoP goes live */
+    /* VT ticks are triggering OnHarmfulSpellCast procs. Twice at that..... */
+    if ( callbacks )
+    {
+      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
+    }
   }
 };
 
