@@ -5520,6 +5520,44 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   return ( dbc.spell( spell_id ) );
 }
 
+// player_t::find_spell ===================================================
+
+const spell_data_t* player_t::find_spell( const std::string& name, const std::string& token, specialization_e s )
+{
+  const spell_data_t* sp = find_class_spell( name, token, s );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  sp = find_specialization_spell( name, token );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  if ( s != SPEC_NONE )
+  {
+    sp = find_mastery_spell( s, token, 0 );
+    assert( sp );
+    if ( sp -> ok() ) return sp;
+  }
+
+  sp = find_mastery_spell( name, token );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  sp = find_talent_spell( name, token );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  sp = find_glyph_spell( name, token );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  sp = find_pet_spell( name, token );
+  assert( sp );
+  if ( sp -> ok() ) return sp;
+
+  return spell_data_t::nil();
+}
+
 
 // player_t::find_class_spell =============================================
 

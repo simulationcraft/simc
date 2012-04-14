@@ -1522,6 +1522,19 @@ void action_t::check_spec( specialization_e necessary_spec )
   }
 }
 
+// action_t::check_spec =====================================================
+
+void action_t::check_spell()
+{
+  if ( ! data().ok() )
+  {
+    sim -> errorf( "Player %s attempting to execute action %s without spell ok().\n",
+                   player -> name(), name() );
+
+    background = true; // prevent action from being executed
+  }
+}
+
 // action_t::create_expression ==============================================
 
 expr_t* action_t::create_expression( const std::string& name_str )

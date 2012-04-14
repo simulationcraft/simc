@@ -4548,6 +4548,7 @@ struct player_t : public noncopyable
   virtual const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_mastery_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
+  virtual const spell_data_t* find_spell( const std::string& name, const std::string& token, specialization_e s );
   virtual const spell_data_t* find_spell( const unsigned int id,const std::string& token = std::string() );
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -5046,6 +5047,7 @@ public:
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( specialization_e necessary_spec );
   virtual void   check_race( race_type_e race );
+  virtual void   check_spell();
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) const { return 0; }
