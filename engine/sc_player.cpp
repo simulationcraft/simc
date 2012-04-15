@@ -5220,100 +5220,125 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
 bool player_t::parse_talents_wowhead( const std::string& talent_string )
 {
-  // wowhead format: [tree_1]Z[tree_2]Z[tree_3] where the trees are character encodings
-  // each character expands to a pair of numbers [0-5][0-5]
-  // unused deeper talents are simply left blank instead of filling up the string with zero-zero encodings
-#if 0
-  static const struct decode_t
-  {
-    char key, first, second;
-  }
-  decoding[] =
-  {
-    { '0', '0', '0' },  { 'z', '0', '1' },  { 'M', '0', '2' },  { 'c', '0', '3' }, { 'm', '0', '4' },  { 'V', '0', '5' },
-    { 'o', '1', '0' },  { 'k', '1', '1' },  { 'R', '1', '2' },  { 's', '1', '3' }, { 'a', '1', '4' },  { 'q', '1', '5' },
-    { 'b', '2', '0' },  { 'd', '2', '1' },  { 'r', '2', '2' },  { 'f', '2', '3' }, { 'w', '2', '4' },  { 'i', '2', '5' },
-    { 'h', '3', '0' },  { 'u', '3', '1' },  { 'G', '3', '2' },  { 'I', '3', '3' }, { 'N', '3', '4' },  { 'A', '3', '5' },
-    { 'L', '4', '0' },  { 'p', '4', '1' },  { 'T', '4', '2' },  { 'j', '4', '3' }, { 'n', '4', '4' },  { 'y', '4', '5' },
-    { 'x', '5', '0' },  { 't', '5', '1' },  { 'g', '5', '2' },  { 'e', '5', '3' }, { 'v', '5', '4' },  { 'E', '5', '5' },
-    { '\0', '\0', '\0' }
-  };
-
+  player_type_e w_class = PLAYER_NONE;
+  uint32_t w_spec_idx = dbc.specialization_max_per_class();
   std::array< int, MAX_TALENT_SLOTS > encoding;
-  std::array< unsigned, MAX_TALENT_TREES > tree_count;
+  uint32_t idx = 0;
+  uint32_t encoding_idx = 0;
+  std::array< int, 9 > key = {{ 48, 32, 16, 12, 8, 4, 2, 1, 0 }};
+  char max_char = 48 + 12 + 2 + '0';
 
   range::fill( encoding, 0 );
-  range::fill( tree_count, 0 );
 
-  int tree = 0;
-  size_t count = 0;
-
-  for ( size_t i = 1; i < talent_string.length(); i++ )
+  if ( ! talent_string.size() )
   {
-    if ( tree >= MAX_TALENT_TREES )
+    sim -> errorf( "Player %s has malformed wowhead talent string. Empty string.\n", name() );
+    return false;
+  }
+
+  // Parse class
+  switch ( talent_string[ 0 ] )
+  {
+  case 'k' : w_class = DEATH_KNIGHT; break;
+  case 'd' : w_class = DRUID; break;
+  case 'h' : w_class = HUNTER; break;
+  case 'm' : w_class = MAGE; break;
+  case 'n' : w_class = MONK; break;
+  case 'l' : w_class = PALADIN; break;
+  case 'p' : w_class = PRIEST; break;
+  case 'r' : w_class = ROGUE; break;
+  case 's' : w_class = SHAMAN; break;
+  case 'o' : w_class = WARLOCK; break;
+  case 'w' : w_class = WARRIOR; break;
+  default: break;
+  }
+
+  if ( w_class == PLAYER_NONE )
+  {
+    sim -> errorf( "Player %s has malformed wowhead talent string. Empty class value.\n", name() );
+    return false;
+  }
+  if ( w_class != type )
+  {
+    sim -> errorf( "Player %s has malformed wowhead talent string. Talent string class %s does not match player class %s.\n", name(),
+      util_t::player_type_string( w_class ), util_t::player_type_string( type ) );
+    return false;
+  }
+  
+  idx = 1;
+  
+  // Parse spec if specified
+  switch ( talent_string[ idx ] )
+  {
+  case '!' : w_spec_idx = 0; break;
+  case 'x' : w_spec_idx = 1; break;
+  case 'y' : w_spec_idx = 2; break;
+  default: break;
+  }
+
+  if ( w_spec_idx < dbc.specialization_max_per_class() )
+  {
+    idx++;
+
+    specialization_e w_spec = dbc.spec_by_idx( type, w_spec_idx );
+
+    if ( w_spec != primary_tree() )
     {
-      sim -> errorf( "Player %s has malformed wowhead talent string. Too many talent trees specified.\n", name() );
+      sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
+        util_t::specialization_string( w_spec ), util_t::specialization_string( primary_tree() ) );
       return false;
-    }
-
-    char c = talent_string[ i ];
-
-    if ( c == ':' ) break; // glyph encoding follows
-
-    if ( c == 'Z' )
-    {
-      count = 0;
-      for ( int j = 0; j <= tree; j++ )
-        count += talent_trees[ j ].size();
-      tree++;
-      continue;
-    }
-
-    const decode_t* decode = 0;
-    for ( int j = 0; decoding[ j ].key != '\0'; j++ )
-    {
-      if ( decoding[ j ].key == c )
-      {
-        decode = &decoding[ j ];
-        break;
-      }
-    }
-
-    if ( ! decode )
-    {
-      sim -> errorf( "Player %s has malformed wowhead talent string. Translation for '%c' unknown.\n", name(), c );
-      return false;
-    }
-
-    encoding[ count++ ] += decode -> first - '0';
-    tree_count[ tree ] += 1;
-
-    if ( tree_count[ tree ] < talent_trees[ tree ].size() )
-    {
-      encoding[ count++ ] += decode -> second - '0';
-      tree_count[ tree ] += 1;
-    }
-
-    if ( tree_count[ tree ] >= talent_trees[ tree ].size() )
-    {
-      tree++;
     }
   }
 
+  if ( ( talent_string.size() - idx ) > 2 )
+  {
+    sim -> errorf( "Player %s has malformed wowhead talent string. String is too long.\n", name() );
+    return false;
+  }
+
+  while ( idx < talent_string.size() )
+  {
+    // Process 3 rows of talents per character.
+    uint32_t key_idx = 0;
+    unsigned char c = talent_string[ idx ];
+
+    if ( ( c < '0' ) || ( c > max_char ) )
+    {
+      sim -> errorf( "Player %s has malformed wowhead talent string. Character in position %d is invalid.\n", name(), idx );
+      return false;
+    }
+    
+    c -= '0';
+
+    while ( key_idx < key.size() )
+    {
+      if ( c >= key[ key_idx ] )
+      {
+        encoding[ encoding_idx + ( key.size() - key_idx ) - 1 ] = 1;
+        c -= key[ key_idx ];
+      }
+      key_idx++;
+    }   
+
+    idx++;
+    encoding_idx += key.size();
+  }
+ 
   if ( sim -> debug )
   {
     std::ostringstream str_out;
-    for ( size_t i = 0; i < count; i++ )
+    for ( size_t i = 0; i < encoding.size(); i++ )
       str_out << encoding[ i ];
 
     util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.str().c_str() );
   }
 
-  return parse_talent_trees( encoding );
-#else
-  ( void )talent_string;
-  return false;
-#endif
+  for ( uint32_t j = 0; j < talent_list.size(); j++ )
+  {
+    talent_list[ j ] = encoding[ j ];
+  }
+
+  return true;
 }
 
 // player_t::replace_spells ======================================================
