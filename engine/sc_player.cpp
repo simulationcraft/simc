@@ -370,7 +370,7 @@ player_t::player_t( sim_t*             s,
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
-  buffs( buffs_t() ), debuffs( debuffs_t() ), gains( gains_t() ), procs( procs_t() ), rng_list( 0 ), rngs( rngs_t() ),
+  buffs( buffs_t() ), potion_buffs( potion_buffs_t() ), debuffs( debuffs_t() ), gains( gains_t() ), procs( procs_t() ), rng_list( 0 ), rngs( rngs_t() ),
   targetdata_id( -1 )
 {
   sim -> actor_list.push_back( this );
@@ -1567,25 +1567,43 @@ void player_t::init_buffs()
     }
   };
 
-  buffs.speed_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
+  potion_buffs.speed = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
                        .stat( STAT_HASTE_RATING )
                        .amount( 500.0 );
 
-  buffs.volcanic_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
+  potion_buffs.volcanic = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
                           .stat( STAT_INTELLECT )
                           .amount( 1200.0 );
 
-  buffs.earthen_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
-                              .stat( STAT_ARMOR )
-                              .amount( 4800.0 );
+  potion_buffs.earthen = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
+                         .stat( STAT_ARMOR )
+                         .amount( 4800.0 );
 
-  buffs.golemblood_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
+  potion_buffs.golemblood = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
                               .stat( STAT_STRENGTH )
                               .amount( 1200.0 );
 
-  buffs.tolvir_potion = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
+  potion_buffs.tolvir = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
                               .stat( STAT_AGILITY )
                               .amount( 1200.0 );
+
+  // New Mop potions
+
+  potion_buffs.jinyu = stat_buff_creator_t( potions_common_buff_creator()( this, "jinyu" ) )
+                            .stat( STAT_INTELLECT )
+                            .amount( 4000.0 );
+
+  potion_buffs.mountains = stat_buff_creator_t( potions_common_buff_creator()( this, "mountains" ) )
+                                .stat( STAT_ARMOR )
+                                .amount( 12000.0 );
+
+  potion_buffs.mogu_power = stat_buff_creator_t( potions_common_buff_creator()( this, "mogu_power" ) )
+                                .stat( STAT_STRENGTH )
+                                .amount( 4000.0 );
+
+  potion_buffs.virmens_bite = stat_buff_creator_t( potions_common_buff_creator()( this, "virmens_bite" ) )
+                                .stat( STAT_AGILITY )
+                                .amount( 4000.0 );
 
 
 

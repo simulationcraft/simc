@@ -4277,9 +4277,7 @@ struct player_t : public noncopyable
     buff_t* blood_fury_sp;
     buff_t* bloodlust;
     buff_t* body_and_soul;
-    stat_buff_t* earthen_potion;
     buff_t* exhaustion;
-    stat_buff_t* golemblood_potion;
     buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* heroic_presence;
@@ -4294,16 +4292,27 @@ struct player_t : public noncopyable
     buff_t* power_infusion;
     buff_t* raid_movement;
     buff_t* self_movement;
-    stat_buff_t* speed_potion;
     buff_t* stoneform;
     buff_t* stunned;
-    stat_buff_t* tolvir_potion;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
-    stat_buff_t* volcanic_potion;
     buff_t* weakened_soul;
-    buffs_t() { memset( this, 0, sizeof( *this ) ); }
   } buffs;
+
+  struct potion_buffs_t
+  {
+    stat_buff_t* earthen;
+    stat_buff_t* golemblood;
+    stat_buff_t* speed;
+    stat_buff_t* tolvir;
+    stat_buff_t* volcanic;
+
+    // new mo
+    stat_buff_t* virmens_bite; // agi
+    stat_buff_t* mogu_power; // str
+    stat_buff_t* jinyu; // int
+    stat_buff_t* mountains; // armor
+  } potion_buffs;
 
   struct debuffs_t
   {
@@ -4326,7 +4335,6 @@ struct player_t : public noncopyable
 
     // Class specific "general" debuffs
     debuff_t* shattering_throw;
-    debuffs_t() { memset( this, 0, sizeof( *this ) ); }
   } debuffs;
 
   struct gains_t
@@ -4349,13 +4357,11 @@ struct player_t : public noncopyable
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
-    gains_t()  { memset( this, 0, sizeof( *this ) ); }
   } gains;
 
   struct procs_t
   {
     proc_t* hat_donor;
-    procs_t() { memset( this, 0, sizeof( *this ) ); }
   } procs;
 
   rng_t* rng_list;
@@ -4369,7 +4375,6 @@ struct player_t : public noncopyable
     rng_t* lag_queue;
     rng_t* lag_reaction;
     rng_t* lag_world;
-    rngs_t() { memset( this, 0, sizeof( *this ) ); }
   } rngs;
 
   int targetdata_id;

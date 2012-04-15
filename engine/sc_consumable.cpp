@@ -613,11 +613,17 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
   if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
   if ( name == "mythical_mana_potion"  ) return new           mana_potion_t( p, options_str );
-  if ( name == "speed_potion"          ) return new  potion_base_t( p, name, p -> buffs.speed_potion, options_str );
-  if ( name == "volcanic_potion"       ) return new  potion_base_t( p, name, p -> buffs.volcanic_potion, options_str );
-  if ( name == "earthen_potion"        ) return new  potion_base_t( p, name, p -> buffs.earthen_potion, options_str );
-  if ( name == "golemblood_potion"     ) return new  potion_base_t( p, name, p -> buffs.golemblood_potion, options_str );
-  if ( name == "tolvir_potion"         ) return new  potion_base_t( p, name, p -> buffs.tolvir_potion, options_str );
+  if ( name == "speed_potion"          ) return new  potion_base_t( p, name, p -> potion_buffs.speed, options_str );
+  if ( name == "volcanic_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.volcanic, options_str );
+  if ( name == "earthen_potion"        ) return new  potion_base_t( p, name, p -> potion_buffs.earthen, options_str );
+  if ( name == "golemblood_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.golemblood, options_str );
+  if ( name == "tolvir_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.tolvir, options_str );
+  // new mop potions
+  if ( name == "jinyu_potion"          ) return new  potion_base_t( p, name, p -> potion_buffs.jinyu, options_str );
+  if ( name == "mountains_potion"      ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
+  if ( name == "mogu_power_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
+  if ( name == "virmens_bite_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
+
 
   return 0;
 }

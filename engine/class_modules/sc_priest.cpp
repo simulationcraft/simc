@@ -3714,10 +3714,8 @@ void priest_t::init_benefits()
 {
   player_t::init_benefits();
 
-  benefits.mind_spike[ 0 ] = get_benefit( "mind_spike_0" );
-  benefits.mind_spike[ 1 ] = get_benefit( "mind_spike_1" );
-  benefits.mind_spike[ 2 ] = get_benefit( "mind_spike_2" );
-  benefits.mind_spike[ 3 ] = get_benefit( "mind_spike_3" );
+  for ( size_t i = 0; i < 4; ++i )
+    benefits.mind_spike[ i ] = get_benefit( "mind_spike_" + util_t::to_string( i ) );
 }
 
 // priest_t::init_rng =======================================================

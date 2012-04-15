@@ -2884,7 +2884,7 @@ void warlock_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.backdraft[ i ] = get_benefit( "backdraft_" + i );
+    benefits.backdraft[ i ] = get_benefit( "backdraft_" + util_t::to_string( i ) );
 }
 
 // warlock_t::init_procs ====================================================
