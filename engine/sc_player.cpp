@@ -4440,7 +4440,7 @@ struct arcane_torrent_t : public action_t
 struct berserking_t : public action_t
 {
   berserking_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "berserking", p, p -> find_racial_spell( "Berserking", std::string(), RACE_TROLL ) )
+    action_t( ACTION_OTHER, "berserking", p, p -> find_racial_spell( "Berserking" ) )
   {
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
