@@ -2988,8 +2988,16 @@ struct bear_form_t : public druid_spell_t
     p -> main_hand_attack = p -> bear_melee_attack;
     p -> main_hand_attack -> weapon = w;
 
-    if ( p -> buffs_cat_form     -> check() ) p -> buffs_cat_form     -> expire();
-    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
+    if ( p -> buffs_cat_form -> check() )
+    {
+      sim -> auras.critical_strike -> decrement();
+      p -> buffs_cat_form     -> expire();
+    }
+    if ( p -> buffs_moonkin_form -> check() )
+    {
+      sim -> auras.spell_haste -> decrement();
+      p -> buffs_moonkin_form -> expire();
+    }
 
     p -> buffs_bear_form -> start();
     p -> base_gcd = timespan_t::from_seconds( 1.0 );
@@ -2997,7 +3005,7 @@ struct bear_form_t : public druid_spell_t
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank() + p -> talents.natural_reaction -> effect1().percent();
 
-    if ( ! sim -> overrides.critical_strike && ! sim -> auras.critical_strike -> check() )
+    if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
   }
 
@@ -3093,8 +3101,16 @@ struct cat_form_t : public druid_spell_t
     p -> main_hand_attack = p -> cat_melee_attack;
     p -> main_hand_attack -> weapon = w;
 
-    if ( p -> buffs_bear_form    -> check() ) p -> buffs_bear_form    -> expire();
-    if ( p -> buffs_moonkin_form -> check() ) p -> buffs_moonkin_form -> expire();
+    if ( p -> buffs_bear_form -> check() )
+    {
+      sim -> auras.critical_strike -> decrement();
+      p -> buffs_bear_form -> expire();
+    }
+    if ( p -> buffs_moonkin_form -> check() )
+    {
+      sim -> auras.spell_haste -> decrement();
+      p -> buffs_moonkin_form -> expire();
+    }
 
     p -> dodge += 0.02 * p -> talents.feral_swiftness -> rank();
 
@@ -3102,7 +3118,7 @@ struct cat_form_t : public druid_spell_t
     p -> base_gcd = timespan_t::from_seconds( 1.0 );
     p -> reset_gcd();
 
-    if ( ! sim -> overrides.critical_strike && ! sim -> auras.critical_strike -> check() )
+    if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
   }
 
@@ -3511,12 +3527,20 @@ struct moonkin_form_t : public druid_spell_t
     spell_t::execute();
     druid_t* p = player -> cast_druid();
 
-    if ( p -> buffs_bear_form -> check() ) p -> buffs_bear_form -> expire();
-    if ( p -> buffs_cat_form  -> check() ) p -> buffs_cat_form  -> expire();
+    if ( p -> buffs_bear_form -> check() )
+    {
+      sim -> auras.critical_strike -> decrement();
+      p -> buffs_bear_form -> expire();
+    }
+    if ( p -> buffs_cat_form  -> check() )
+    {
+      sim -> auras.critical_strike -> decrement();
+      p -> buffs_cat_form  -> expire();
+    }
 
     p -> buffs_moonkin_form -> start();
 
-    if ( ! sim -> overrides.spell_haste && ! sim -> auras.spell_haste -> check() )
+    if ( ! sim -> overrides.spell_haste )
       sim -> auras.spell_haste -> trigger();
   }
 
