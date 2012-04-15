@@ -907,10 +907,55 @@ void print_html_talents( FILE* file, const player_t* p )
 
   if ( p -> fight_length.mean > 0 )
   {
+#if 0
     fprintf( file,
              "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
              "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
              "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
+#endif
+    fprintf( file,
+             "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
+             "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
+             "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+             "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
+             "\t\t\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t\t\t<th>Level</th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
+             "\t\t\t\t\t\t\t\t\t</tr>\n" );
+
+    for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
+    {
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%d</th>\n",
+               ( row + 1 ) * 15 );
+      for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
+      {
+        const talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
+        const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
+        if ( p -> talent_list[ row * MAX_TALENT_COLS + col ] )
+        {
+          fprintf( file,
+            "\t\t\t\t\t\t\t\t\t\t<td class=\"filler\">%s</td>\n",
+            name );
+        }
+        else
+        {
+          fprintf( file,
+            "\t\t\t\t\t\t\t\t\t\t<td>%s</td>\n",
+            name );
+        }
+      }
+      fprintf( file,
+        "\t\t\t\t\t\t\t\t\t</tr>\n" );
+    }
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t</table>\n"
+             "\t\t\t\t\t\t\t</div>\n"
+             "\t\t\t\t\t\t</div>\n" );
 
 #if 0
 // TO-DO
@@ -945,7 +990,6 @@ void print_html_talents( FILE* file, const player_t* p )
                "\t\t\t\t\t\t\t\t\t</table>\n"
                "\t\t\t\t\t\t\t\t</div>\n" );
     }
-#endif
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
@@ -953,6 +997,7 @@ void print_html_talents( FILE* file, const player_t* p )
     fprintf( file,
              "\t\t\t\t\t\t\t</div>\n"
              "\t\t\t\t\t\t</div>\n" );
+#endif
   }
 }
 
