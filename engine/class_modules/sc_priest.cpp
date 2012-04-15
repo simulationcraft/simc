@@ -3808,14 +3808,6 @@ void priest_t::init_actions()
     if ( find_spell( "Inner Fire" ) -> ok() )
       buffer += "/inner_fire";
 
-    if ( find_spell( "Shadowform" ) -> ok() )
-      buffer += "/shadowform";
-
-    /*
-    if ( find_spell( "Vampiric Embrace" ) -> ok() )
-      buffer += "/vampiric_embrace";
-    */
-
     buffer += "/snapshot_stats";
 
     buffer += init_use_item_actions();
@@ -3835,45 +3827,62 @@ void priest_t::init_actions()
     {
       // SHADOW =============================================================
     case PRIEST_SHADOW:
-/*
+
+      if ( find_class_spell( "Shadowform" ) -> ok() )
+        buffer += "/shadowform";
+
       if ( level > 80 )
       {
         buffer += "/volcanic_potion,if=!in_combat";
         buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
-*/
-      if ( find_spell( "Shadow Word: Death" ) -> ok() )
-        buffer += "/shadow_word_death,health_percentage<=20";
 
-      if ( find_spell( "Mind Blast" ) -> ok() )
+      /*
+      if ( find_spell( "Vampiric Embrace" ) -> ok() )
+        buffer += "/vampiric_embrace";
+      */
+
+      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+        buffer += "/shadow_word_death,if=target.health.pct<=20|buff.shadow_of_death.up";
+
+      if ( find_class_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
+
+      if ( find_class_spell( "Mind Spike" ) -> ok() )
+        buffer += "/mind_spike,if=buff.surge_of_darkness.up";
 
       buffer += init_use_racial_actions();
 
-      if ( find_spell( "Vampiric Touch" ) -> ok() )
+      if ( find_talent_spell( "Power Infusion" ) -> ok() )
+        buffer += "/power_infusion";
+
+      if ( find_talent_spell( "Archangel" ) -> ok() )
+        buffer += "/archangel";
+
+      if ( find_class_spell( "Vampiric Touch" ) -> ok() )
         buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
-      if ( find_spell( "Shadow Word: Pain" ) -> ok() )
+      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      if ( find_spell( "Shadowfiend" ) -> ok() )
-        buffer += "/shadow_fiend";
-
-      if ( find_spell( "Shadowy Apparition" ) -> ok() )
+      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
         buffer += "/shadowy_apparition,if=shadow_orb=3";
 
-      if ( find_spell( "Mind Flay" ) -> ok() )
+      if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        buffer += "/shadow_fiend";
+
+      if ( find_class_spell( "Mind Flay" ) -> ok() )
         buffer += "/mind_flay";
 
-      if ( find_spell( "Shadow Word: Death" ) -> ok() )
+      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
       {
         buffer += "/shadow_word_death,moving=1";
       }
 
-      if ( find_spell( "Shadow Word: Pain" ) -> ok() )
+      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,moving=1";
 
-      if ( find_spell( "Dispersion" ) -> ok() )
+      if ( find_class_spell( "Dispersion" ) -> ok() )
         buffer += "/dispersion";
       break;
       // SHADOW END =========================================================
@@ -4167,6 +4176,13 @@ bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool 
   {
     if ( ! atonement_target_str.empty() )
       profile_str += "atonement_target=" + atonement_target_str + "\n";
+
+    if ( initial_shadow_orbs != 0 )
+    {
+      profile_str += "initial_shadow_orbs=";
+      profile_str += util_t::to_string( initial_shadow_orbs );
+      profile_str += "\n";
+    }
   }
 
   return true;
