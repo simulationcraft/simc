@@ -4403,10 +4403,10 @@ struct arcane_torrent_t : public action_t
   double gain;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent", std::string(), RACE_BLOOD_ELF ) ),
+    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_spell( "Arcane Torrent" ) ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
-    check_race( RACE_BLOOD_ELF );
+    check_spell();
     parse_options( NULL, options_str );
 
     resource = util_t::translate_power_type( static_cast<power_type_e>( data().effectN( 2 ).misc_value1() ) );
@@ -4482,9 +4482,9 @@ struct berserking_t : public action_t
 struct blood_fury_t : public action_t
 {
   blood_fury_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "blood_fury", p, p -> find_racial_spell( "blood_fury", std::string(), RACE_ORC ) )
+    action_t( ACTION_OTHER, "blood_fury", p, p -> find_spell( "Blood Fury" ) )
   {
-    check_race( RACE_ORC );
+    check_spell();
     parse_options( NULL, options_str );
   }
 
@@ -4523,9 +4523,9 @@ struct blood_fury_t : public action_t
 struct rocket_barrage_t : public spell_t
 {
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
-    spell_t( "rocket_barrage", p, p -> find_racial_spell( "Rocket_Barrage", std::string(), RACE_GOBLIN ) )
+    spell_t( "rocket_barrage", p, p -> find_racial_spell( "Rocket Barrage" ) )
   {
-    check_race( RACE_GOBLIN );
+    check_spell();
     parse_options( NULL, options_str );
 
     base_spell_power_multiplier  = direct_power_mod;
@@ -4547,9 +4547,9 @@ struct rocket_barrage_t : public spell_t
 struct stoneform_t : public action_t
 {
   stoneform_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform", std::string(), RACE_DWARF)  )
+    action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
   {
-    check_race( RACE_DWARF );
+    check_spell();
     parse_options( NULL, options_str );
   }
 
