@@ -392,6 +392,9 @@ _DBC_FIELDS = {
     'gtOCTClassCombatRatingScalar.dbc' : [
           'id', ( 'gt_value', '%.10f' )
     ],
+    'gtOCTBaseMPByClass.dbc' : [
+        'id', ( 'gt_value', '%.10f' )
+    ],
     'gtOCTRegenMP.dbc' : [
           'id', ( 'gt_value', '%.10f' )
     ],
