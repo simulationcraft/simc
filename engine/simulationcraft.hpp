@@ -4569,7 +4569,7 @@ struct player_t : public noncopyable
   virtual const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() );
-  virtual const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string() );
+  virtual const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
   virtual const spell_data_t* find_mastery_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
   virtual const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE);

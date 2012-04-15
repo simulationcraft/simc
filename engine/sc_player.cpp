@@ -5444,9 +5444,12 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
 
 // player_t::find_specialization_spell ======================================
 
-const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token )
+const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token, specialization_e s )
 {
   unsigned spell_id = dbc.specialization_ability_id( spec, name.c_str() );
+
+  if ( s != SPEC_NONE && s != spec )
+    return spell_data_t::not_found();
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
     return ( spell_data_t::not_found() );
