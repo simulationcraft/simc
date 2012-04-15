@@ -5902,6 +5902,18 @@ expr_t* player_t::create_expression( action_t* a,
         return new in_flight_multi_expr_t( in_flight_list );
       }
     }
+
+    if ( splits[ 0 ] == "spell" && splits[ 2 ] == "exists" )
+    {
+      struct spell_exists_expr_t : public expr_t
+      {
+        const std::string name;
+        player_t& player;
+        spell_exists_expr_t( const std::string& n, player_t& p ) : expr_t( n ), name( n ), player( p ) {}
+        virtual double evaluate() { return player.find_spell( name ) -> ok(); }
+      };
+      return new spell_exists_expr_t( splits[ 1 ], *this );
+    }
   }
   else if ( num_splits == 2 )
   {

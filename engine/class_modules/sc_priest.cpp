@@ -1813,7 +1813,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double m = priest_spell_t::action_multiplier( a );
 
-    if ( p() -> buffs.dark_archangel -> up() )
+    if ( p() -> buffs.dark_archangel -> check() )
     {
       m *= 1.0 + p() -> buffs.dark_archangel -> value();
     }
