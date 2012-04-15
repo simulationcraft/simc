@@ -40,8 +40,11 @@ struct warlock_guardian_pet_t;
 struct warlock_t : public player_t
 {
   // Active Pet
-  warlock_main_pet_t* active_pet;
-  pet_t* pet_ebon_imp;
+  struct pets_t
+  {
+    warlock_main_pet_t* active;
+    pet_t* ebon_imp;
+  } pets;
 
   // Buffs
   struct buffs_t
@@ -175,7 +178,10 @@ struct warlock_t : public player_t
   } gains;
 
   // Uptimes
-  benefit_t* uptimes_backdraft[ 4 ];
+  struct benefits_t
+  {
+    benefit_t* backdraft[ 4 ];
+  } benefits;
 
   // Procs
   struct procs_t

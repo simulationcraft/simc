@@ -866,7 +866,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 void warlock_main_pet_t::summon( timespan_t duration )
 {
   warlock_t* o = owner -> cast_warlock();
-  o -> active_pet = this;
+  o -> pets.active = this;
   warlock_pet_t::summon( duration );
 }
 
@@ -874,7 +874,7 @@ void warlock_main_pet_t::dismiss()
 {
   warlock_t* o = owner -> cast_warlock();
   warlock_pet_t::dismiss();
-  o -> active_pet = 0;
+  o -> pets.active = 0;
 }
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const

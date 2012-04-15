@@ -46,7 +46,6 @@ struct mage_t : public player_t
   {
     pet_t* water_elemental;
     pet_t* mirror_image_3;
-    pets_t() { memset( this, 0, sizeof( *this ) ); }
   } pets;
 
   // Buffs
@@ -70,7 +69,6 @@ struct mage_t : public player_t
     buff_t* molten_armor;
     buff_t* presence_of_mind;
     buff_t* tier13_2pc;
-    buffs_t() { memset( this, 0, sizeof( *this ) ); }
   } buffs;
 
   // Cooldowns
@@ -81,7 +79,6 @@ struct mage_t : public player_t
     cooldown_t* evocation;
     cooldown_t* fire_blast;
     cooldown_t* mana_gem;
-    cooldowns_t() { memset( this, 0, sizeof( *this ) ); }
   } cooldowns;
 
   // Gains
@@ -94,7 +91,6 @@ struct mage_t : public player_t
     gain_t* mage_armor;
     gain_t* mana_gem;
     gain_t* master_of_elements;
-    gains_t() { memset( this, 0, sizeof( *this ) ); }
   } gains;
 
   // Glyphs
@@ -124,7 +120,6 @@ struct mage_t : public player_t
     // Minor
     const spell_data_t* arcane_brilliance;
     const spell_data_t* conjuring;
-    glyphs_t() { memset( this, 0, sizeof( *this ) ); }
   } glyphs;
 
   // Options
@@ -140,7 +135,6 @@ struct mage_t : public player_t
     const spell_data_t* nether_attunement;
     const spell_data_t* burning_soul;
 
-    passives_t() { memset( this, 0, sizeof( *this ) ); }
   } passives;
 
   // Spell Data
@@ -166,7 +160,6 @@ struct mage_t : public player_t
 
     const spell_data_t* stolen_time;
 
-    spells_t() { memset( this, 0, sizeof( *this ) ); }
   } spells;
 
   // Specializations
@@ -185,7 +178,6 @@ struct mage_t : public player_t
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frostburn;
 
-    specializations_t() { memset( this, 0, sizeof( *this ) ); }
   } spec;
 
   // Procs
@@ -200,7 +192,6 @@ struct mage_t : public player_t
     proc_t* crit_for_hotstreak;
     proc_t* hotstreak;
     proc_t* improved_hotstreak;
-    procs_t() { memset( this, 0, sizeof( *this ) ); }
   } procs;
 
   // Random Number Generation
@@ -214,7 +205,6 @@ struct mage_t : public player_t
     rng_t* improved_freeze;
     rng_t* nether_vortex;
     rng_t* mage_armor_start;
-    rngs_t() { memset( this, 0, sizeof( *this ) ); }
   } rngs;
 
   // Rotation (DPS vs DPM)
@@ -255,7 +245,6 @@ struct mage_t : public player_t
     const spell_data_t* rune_of_power;
     const spell_data_t* incanters_ward;
 
-    talents_list_t() { memset( this, 0, sizeof( *this ) ); }
   } talents;
 
   // Up-Times
@@ -265,7 +254,6 @@ struct mage_t : public player_t
     benefit_t* dps_rotation;
     benefit_t* dpm_rotation;
     benefit_t* water_elemental;
-    benefits_t() { memset( this, 0, sizeof( *this ) ); }
   } benefits;
 
   int mana_gem_charges;
@@ -273,15 +261,25 @@ struct mage_t : public player_t
 
   mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
-    ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) )
+    active_ignite( 0 ),
+    pets( pets_t() ),
+    buffs( buffs_t() ),
+    cooldowns( cooldowns_t() ),
+    gains( gains_t() ),
+    glyphs( glyphs_t() ),
+    merge_ignite( 0.0 ),
+    ignite_sampling_delta( timespan_t::zero() ),
+    passives( passives_t() ),
+    spells( spells_t() ),
+    spec( specializations_t() ),
+    procs( procs_t() ),
+    rngs( rngs_t() ),
+    rotation( rotation_t() ),
+    talents( talents_list_t() ),
+    benefits( benefits_t() ),
+    mana_gem_charges( 0 ),
+    mage_armor_timer( timespan_t::zero() )
   {
-    // Active
-    active_ignite = 0;
-
-    // Pets
-    pets.water_elemental = 0;
-    pets.mirror_image_3  = 0;
-
     // Cooldowns
     cooldowns.deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns.early_frost = get_cooldown( "early_frost" );
@@ -293,7 +291,7 @@ struct mage_t : public player_t
     distance         = 40;
     default_distance = 40;
     mana_gem_charges = 3;
-    merge_ignite     = 0;
+    ignite_sampling_delta = timespan_t::from_seconds( 0.2 );
 
     create_options();
   }

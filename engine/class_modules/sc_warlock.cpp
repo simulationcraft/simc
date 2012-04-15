@@ -81,7 +81,21 @@ warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
-  player_t( sim, WARLOCK, name, r )
+  player_t( sim, WARLOCK, name, r ),
+  pets( pets_t() ),
+  buffs( buffs_t() ),
+  cooldowns( cooldowns_t() ),
+  talents( talents_t() ),
+  passive_spell( passive_spells_t() ),
+  mastery_spell( mastery_spells_t() ),
+  gains( gains_t() ),
+  benefits( benefits_t() ),
+  procs( procs_t() ),
+  rngs( rngs_t() ),
+  spells_burning_ember(),
+  glyphs( glyphs_t() ),
+  constants_pandemic_gcd( timespan_t::zero() ),
+  use_pre_soulburn( 0 )
 {
 
   tree_type[ WARLOCK_AFFLICTION  ] = TREE_AFFLICTION;
@@ -90,10 +104,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
 
   distance = 40;
   default_distance = 40;
-
-  active_pet                  = 0;
-  pet_ebon_imp                = 0;
-  spells_burning_embers       = 0;
 
   cooldowns.metamorphosis                   = get_cooldown ( "metamorphosis" );
   cooldowns.infernal                        = get_cooldown ( "summon_infernal" );
@@ -468,8 +478,8 @@ struct bane_of_doom_t : public warlock_spell_t
     if ( p -> rngs.ebon_imp -> roll ( x ) )
     {
       p -> procs.ebon_imp -> occur();
-      p -> pet_ebon_imp -> dismiss();
-      p -> pet_ebon_imp -> summon( timespan_t::from_seconds( 14.99 ) );
+      p -> pets.ebon_imp -> dismiss();
+      p -> pets.ebon_imp -> summon( timespan_t::from_seconds( 14.99 ) );
     }
   }
 };
@@ -658,7 +668,7 @@ struct chaos_bolt_t : public warlock_spell_t
 
     for ( int i=0; i < 4; i++ )
     {
-      p -> uptimes_backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
+      p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
     }
 
     if ( p -> buffs.backdraft -> check() )
@@ -1311,7 +1321,7 @@ struct incinerate_t : public warlock_spell_t
 
     for ( int i=0; i < 4; i++ )
     {
-      p -> uptimes_backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
+      p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
     }
 
     if ( p -> buffs.backdraft -> check() )
@@ -1526,7 +1536,7 @@ struct life_tap_t : public warlock_spell_t
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains.life_tap );
     if ( p -> talent_mana_feed -> rank() && p -> active_pet )
     {
-      p -> active_pet -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect1().percent(), p -> active_pet -> gains_mana_feed );
+      p -> pets.active -> resource_gain( RESOURCE_MANA, mana * p -> talent_mana_feed -> effect1().percent(), p -> active_pet -> gains_mana_feed );
     }
   }
 
@@ -1695,15 +1705,15 @@ struct summon_main_pet_t : public summon_pet_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::schedule_execute();
 
-    if ( p -> active_pet )
-      p -> active_pet -> dismiss();
+    if ( p -> pets.active )
+      p -> pets.active -> dismiss();
   }
 
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( p -> active_pet == pet )
+    if ( p -> pets.active == pet )
       return false;
 
     return summon_pet_t::ready();
@@ -1979,15 +1989,15 @@ struct demonic_empowerment_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    if ( p -> active_pet -> pet_type == PET_FELGUARD )
-      p -> active_pet -> buffs.stunned -> expire();
+    if ( p -> pets.active -> pet_type == PET_FELGUARD )
+      p -> pets.active -> buffs.stunned -> expire();
   }
 
   virtual bool ready()
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( ! p -> active_pet )
+    if ( ! p -> pets.active )
       return false;
 
     return warlock_spell_t::ready();
@@ -2148,25 +2158,25 @@ struct demon_soul_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    assert ( p -> active_pet );
+    assert ( p -> pets.active );
 
-    if ( p -> active_pet -> pet_type == PET_IMP )
+    if ( p -> pets.active -> pet_type == PET_IMP )
     {
       p -> buffs.demon_soul_imp -> trigger();
     }
-    if ( p -> active_pet -> pet_type == PET_FELGUARD )
+    if ( p -> pets.active -> pet_type == PET_FELGUARD )
     {
       p -> buffs.demon_soul_felguard -> trigger();
     }
-    if ( p -> active_pet -> pet_type == PET_FELHUNTER )
+    if ( p -> pets.active -> pet_type == PET_FELHUNTER )
     {
       p -> buffs.demon_soul_felhunter -> trigger();
     }
-    if ( p -> active_pet -> pet_type == PET_SUCCUBUS )
+    if ( p -> pets.active -> pet_type == PET_SUCCUBUS )
     {
       p -> buffs.demon_soul_succubus -> trigger();
     }
-    if ( p -> active_pet -> pet_type == PET_VOIDWALKER )
+    if ( p -> pets.active -> pet_type == PET_VOIDWALKER )
     {
       p -> buffs.demon_soul_voidwalker -> trigger();
     }
@@ -2176,7 +2186,7 @@ struct demon_soul_t : public warlock_spell_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    if ( ! p ->  active_pet )
+    if ( ! p ->  pets.active )
       return false;
 
     return warlock_spell_t::ready();
@@ -2378,7 +2388,7 @@ void warlock_t::trigger_mana_feed( action_t* s, double impact_result )
     if ( impact_result == RESULT_CRIT )
     {
       double mana = p -> resources.max[ RESOURCE_MANA ] * p -> talent_mana_feed -> effect3().percent();
-      if ( p -> active_pet -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
+      if ( p -> pets.active -> pet_type == PET_FELGUARD || p -> active_pet -> pet_type == PET_FELHUNTER ) mana *= 4;
       p -> resource_gain( RESOURCE_MANA, mana, p -> gains.mana_feed );
       a -> procs_mana_feed -> occur();
     }
@@ -2648,7 +2658,7 @@ void warlock_t::create_pets()
   create_pet( "voidwalker" );
   create_pet( "infernal"  );
   create_pet( "doomguard" );
-  pet_ebon_imp = create_pet( "ebon_imp"  );
+  pets.ebon_imp = create_pet( "ebon_imp"  );
 }
 
 // warlock_t::init_talents ==================================================
@@ -2873,10 +2883,8 @@ void warlock_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_backdraft[ 0 ]  = get_benefit( "backdraft_0" );
-  uptimes_backdraft[ 1 ]  = get_benefit( "backdraft_1" );
-  uptimes_backdraft[ 2 ]  = get_benefit( "backdraft_2" );
-  uptimes_backdraft[ 3 ]  = get_benefit( "backdraft_3" );
+  for ( size_t i = 0; i < 4; ++i )
+    benefits.backdraft[ i ] = get_benefit( "backdraft_" + i );
 }
 
 // warlock_t::init_procs ====================================================
@@ -3168,7 +3176,9 @@ void warlock_t::init_actions()
 void warlock_t::init_resources( bool force )
 {
   player_t::init_resources( force );
-  if ( active_pet ) active_pet -> init_resources( force );
+
+  if ( pets.active )
+    pets.active -> init_resources( force );
 }
 
 // warlock_t::reset =========================================================
@@ -3178,7 +3188,7 @@ void warlock_t::reset()
   player_t::reset();
 
   // Active
-  active_pet = 0;
+  pets.active = 0;
 }
 
 // warlock_t::create_expression =============================================
