@@ -268,21 +268,6 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
     if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
-// imp_pet_t::fire_bolt_t::execute ==========================================
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      if ( p() -> o() -> buffs.empowered_imp -> trigger() ) p() -> o() -> procs.empowered_imp -> occur();
-
-      warlock_t::trigger_burning_embers ( this, travel_dmg );
-
-      warlock_t::trigger_mana_feed ( this, impact_result );
-    }
-  }
 
 };
 
@@ -300,13 +285,6 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     aoe               = -1;
     direct_power_mod  = 0.264;
     weapon   = &( p -> main_hand_weapon );
-  }
-
-  virtual void execute()
-  {
-    warlock_pet_actions::warlock_pet_melee_attack_t::execute();
-
-    warlock_t::trigger_mana_feed ( this, result );
   }
   
 };
@@ -386,13 +364,6 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
 
     player_multiplier *= 1.0 + td -> active_dots() * effect3().percent();
   }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
-    if ( result_is_hit( impact_result ) )
-      warlock_t::trigger_mana_feed ( this, impact_result );
-  }
 };
 
 }
@@ -417,14 +388,6 @@ struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
     }
 
     if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-      warlock_t::trigger_mana_feed ( this, impact_result );
   }
 
   virtual void player_buff()
@@ -456,14 +419,6 @@ struct torment_t : public warlock_pet_actions::warlock_pet_spell_t
     warlock_pet_actions::warlock_pet_spell_t( p, "Torment" )
   {
     direct_power_mod = 0.512;
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    warlock_pet_actions::warlock_pet_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-      warlock_t::trigger_mana_feed ( this, impact_result ); // untested
   }
 };
 
@@ -852,7 +807,7 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 
 resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
 
-double warlock_main_pet_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
+double warlock_main_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school, a );
 
@@ -1143,7 +1098,7 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
 }
 
 
-double doomguard_pet_t::composite_player_multiplier( const school_type_e school, action_t* a ) const
+double doomguard_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
   //FIXME: This is all untested, but seems to match what people are reporting in forums
 

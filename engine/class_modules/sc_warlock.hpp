@@ -111,29 +111,17 @@ struct warlock_t : public player_t
   // Specialization Spells
   struct specs_t
   {
+    // General   
+    const spell_data_t* nethermancy;
+
     // Affliction
-    const spell_data_t* agony;
-    const spell_data_t* corruption;
-    const spell_data_t* drain_soul;
-    const spell_data_t* malefic_grasp;
-    const spell_data_t* soulburn;
-    const spell_data_t* unstable_affliction;
+    const spell_data_t* nightfall;
 
     // Demonology
-    const spell_data_t* demonic_fury;
-    const spell_data_t* demonic_leap;
-    const spell_data_t* hand_of_guldan;
-    const spell_data_t* metamorphosis;
-    const spell_data_t* summon_felguard;
-    const spell_data_t* wild_imps;
+    const spell_data_t* decimation;
 
     // Destruction
     const spell_data_t* burning_embers;
-    const spell_data_t* chaotic_energy;
-    const spell_data_t* conflagrate;
-    const spell_data_t* immolate;
-    const spell_data_t* incinerate;
-    const spell_data_t* soul_fire;
 
   } spec;
 
@@ -143,11 +131,6 @@ struct warlock_t : public player_t
     const spell_data_t* master_demonologist;
     const spell_data_t* fiery_apocalypse;
   } mastery_spells;
-
-  struct passive_spells_t
-  {
-    const spell_data_t* decimation;
-  } passive_spells;
 
   std::string dark_intent_target_str;
 
@@ -221,13 +204,14 @@ struct warlock_t : public player_t
 
   int use_pre_soulburn;
 
+  warlock_pet_t* active_pet;
+
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
 
   // Character Definition
   virtual warlock_targetdata_t* new_targetdata( player_t* target )
   { return new warlock_targetdata_t( this, target ); }
-  virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -242,6 +226,8 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  buff_t*   create_buff( const char* name );
+  buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
@@ -252,12 +238,9 @@ struct warlock_t : public player_t
   virtual double    composite_armor() const;
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-
-  static void trigger_mana_feed( action_t* s, double impact_result );
-  static void trigger_burning_embers ( spell_t* s, double dmg );
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
+  virtual double composite_player_td_multiplier( school_type_e school, const action_t* a ) const;
 };
 
 // ==========================================================================
@@ -312,8 +295,8 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual void dismiss();
   virtual double composite_attack_expertise( const weapon_t* ) const;
   virtual resource_type_e primary_resource() const;
-  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;
   virtual double composite_mp5() const;
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 };
 
 // ==========================================================================
@@ -334,7 +317,6 @@ struct warlock_guardian_pet_t : public warlock_pet_t
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
   virtual double composite_spell_power( school_type_e school ) const;
-  virtual double composite_spell_power_multiplier() const;
 };
 
 // ==========================================================================
@@ -420,7 +402,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual double composite_player_multiplier( school_type_e school, action_t* a ) const;
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 };
 
 // ==========================================================================

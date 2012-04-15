@@ -127,7 +127,7 @@ namespace std {using namespace tr1; }
 #define SC_PRIEST       1
 #define SC_ROGUE        0
 #define SC_SHAMAN       0
-#define SC_WARLOCK      0
+#define SC_WARLOCK      1
 #define SC_WARRIOR      0
 
 #define BLOCKED_CLASS( sim, name_str, pt, r_type ) { \
