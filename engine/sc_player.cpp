@@ -4424,7 +4424,6 @@ struct arcane_torrent_t : public action_t
     action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_spell( "Arcane Torrent" ) ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
-    check_spell();
     parse_options( NULL, options_str );
 
     resource = util_t::translate_power_type( static_cast<power_type_e>( data().effectN( 2 ).misc_value1() ) );
@@ -4481,7 +4480,6 @@ struct blood_fury_t : public action_t
   blood_fury_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "blood_fury", p, p -> find_spell( "Blood Fury" ) )
   {
-    check_spell();
     parse_options( NULL, options_str );
   }
 
@@ -4511,7 +4509,6 @@ struct rocket_barrage_t : public spell_t
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
     spell_t( "rocket_barrage", p, p -> find_racial_spell( "Rocket Barrage" ) )
   {
-    check_spell();
     parse_options( NULL, options_str );
 
     base_spell_power_multiplier  = direct_power_mod;
@@ -4527,7 +4524,6 @@ struct stoneform_t : public action_t
   stoneform_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
   {
-    check_spell();
     parse_options( NULL, options_str );
   }
 
@@ -5384,7 +5380,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
   }
 
   for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
@@ -5396,7 +5392,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       {
         if ( ! talent_list[ j * MAX_TALENT_COLS + i ] )
         {
-          return ( spell_data_t::nil() );
+          return ( spell_data_t::not_found() );
         }
         // We have that talent enabled.
         dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5407,7 +5403,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   }
 
   /* Talent not enabled */
-  return ( spell_data_t::nil() );
+  return ( spell_data_t::not_found() );
 }
 
 // player_t::find_glyph =====================================================
@@ -5418,7 +5414,7 @@ const spell_data_t* player_t::find_glyph( const std::string& n )
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
   }
 
   return ( dbc.spell( spell_id ) );
@@ -5432,7 +5428,7 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
   const spell_data_t* g = find_glyph( n );
 
   if ( ! g )
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
 
   for ( std::vector<const spell_data_t*>::iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
   {
@@ -5443,7 +5439,7 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
     }
   }
 
-  return ( spell_data_t::nil() );
+  return ( spell_data_t::not_found() );
 }
 
 // player_t::find_specialization_spell ======================================
@@ -5453,7 +5449,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   unsigned spell_id = dbc.specialization_ability_id( spec, name.c_str() );
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
 
@@ -5467,7 +5463,7 @@ const spell_data_t* player_t::find_mastery_spell( const std::string& name, const
   unsigned spell_id = dbc.mastery_ability_id( spec, name.c_str() );
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
 
@@ -5481,7 +5477,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   unsigned spell_id = dbc.mastery_ability_id( s, idx );
 
   if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) )
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
 
@@ -5557,8 +5553,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    // Try find_specialization_spell() instead
-    return find_specialization_spell( name, token );
+    return spell_data_t::not_found();
   }
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5587,7 +5582,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
 const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token )
 {
   if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() )
-    return ( spell_data_t::nil() );
+    return ( spell_data_t::not_found() );
 
   dbc_t::add_token( id, token, dbc.ptr );
 
@@ -5918,6 +5913,38 @@ expr_t* player_t::create_expression( action_t* a,
       rest += '.' + splits[i];
     return target -> create_expression( a, rest );
   }
+
+  else if ( ( num_splits == 3 ) && ( ( splits[ 0 ] == "glyph" ) || ( splits[ 0 ] == "talent" ) ) )
+  {
+    struct s_expr_t : public player_expr_t
+    {
+      spell_data_t* s;
+
+      s_expr_t( const std::string& name, const player_t& p, spell_data_t* sp ) :
+        player_expr_t( name, p ), s( sp ) {}
+      virtual double evaluate()
+      { return ( s && s -> ok() ); }
+    };
+
+    if ( splits[ 2 ] != "enabled"  )
+    {
+      return 0;
+    }
+
+    spell_data_t* s;
+
+    if ( splits[ 0 ] == "glyph" )
+    {
+      s = const_cast< spell_data_t* >( find_glyph_spell( splits[ 1 ] ) );
+    }
+    else
+    {
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ] ) );
+    }
+
+    return new s_expr_t( name_str, *this, s );
+  }
+
 
   return sim -> create_expression( a, name_str );
 }

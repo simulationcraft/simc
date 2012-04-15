@@ -2136,6 +2136,7 @@ public:
   }
 
   bool                 ok() const { return _id != 0; }
+  bool                 found() const { return this != spell_data_t::not_found(); }
 
   unsigned             id() const { return _id; }
   uint32_t             school_mask() const { return _school; }
@@ -2191,7 +2192,6 @@ public:
   double               scaling_multiplier() const { return _c_scaling; }
   unsigned             scaling_threshold() const { return _c_scaling_level; }
   double               extra_coeff() const { return _extra_coeff; }
-
 
   std::string          to_str() const;
 
@@ -5093,7 +5093,7 @@ public:
 
   virtual double bonus_damage() const { return base_dd_adder; }
 
-  virtual expr_t* create_expression( const std::string& name );
+  virtual expr_t* create_expression( const std::string& name );  
 
   virtual double ppm_proc_chance( double PPM ) const;
 

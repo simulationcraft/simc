@@ -1113,11 +1113,21 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
 
 talent_data_t* talent_data_t::find( const char* name, bool ptr )
 {
+  std::string token1, token2;
+
+  token1 = name;
+  armory_t::format( token1, FORMAT_ASCII_MASK );
+
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
-    if ( ! strcmp( name, p -> name_cstr() ) )
+  {
+    token2 = p -> name_cstr();
+    armory_t::format( token2, FORMAT_ASCII_MASK );
+
+    if ( ! _stricmp( name, p -> name_cstr() ) || ! _stricmp( token1.c_str(), token2.c_str() ) )
     {
       return p;
     }
+  }
 
   return 0;
 }

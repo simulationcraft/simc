@@ -2815,7 +2815,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) ),
     tick_spell( 0 )
   {
-    check_talent( p -> spec.revelations -> ok() );
+    check_spell( p -> spec.revelations );
 
     parse_options( NULL, options_str );
 
@@ -2915,7 +2915,7 @@ struct holy_word_serenity_t : public priest_heal_t
   holy_word_serenity_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "holy_word_serenity", p, p -> find_spell( 88684 ) )
   {
-    check_talent( p -> spec.revelations -> ok() );
+    check_spell( p -> spec.revelations );
 
     parse_options( NULL, options_str );
 
