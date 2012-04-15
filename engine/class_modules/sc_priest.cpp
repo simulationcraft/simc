@@ -179,6 +179,7 @@ struct priest_t : public player_t
   } active_spells;
 
   bool echo_of_light_merged;
+  int initial_shadow_orbs;
 
   // Random Number Generators
   struct rngs_t
@@ -255,6 +256,7 @@ struct priest_t : public player_t
     constants( constants_t() )
   {
     echo_of_light_merged                 = false;
+    initial_shadow_orbs                  = 0;
 
     distance                             = 40.0;
     default_distance                     = 40.0;
@@ -3464,7 +3466,7 @@ void priest_t::combat_begin()
 {
   player_t::combat_begin();
 
-  resources.current[ RESOURCE_SHADOW_ORB ] = 0;
+  resources.current[ RESOURCE_SHADOW_ORB ] = ( ( initial_shadow_orbs >= 0 ) && ( initial_shadow_orbs <= resources.base[ RESOURCE_SHADOW_ORB ] ) ) ? initial_shadow_orbs : 0;
 }
 // priest_t::composite_armor ================================================
 
@@ -4249,8 +4251,9 @@ void priest_t::create_options()
 
   option_t priest_options[] =
   {
-    { "atonement_target",        OPT_STRING, &( atonement_target_str      ) },
+    { "atonement_target",        OPT_STRING,            &( atonement_target_str     ) },
     { "double_dot",              OPT_DEPRECATED, ( void* ) "action_list=double_dot"   },
+    { "initial_shadow_orbs",     OPT_INT,               &( initial_shadow_orbs      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
