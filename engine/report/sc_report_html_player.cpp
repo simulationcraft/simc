@@ -907,12 +907,6 @@ void print_html_talents( FILE* file, const player_t* p )
 
   if ( p -> fight_length.mean > 0 )
   {
-#if 0
-    fprintf( file,
-             "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
-             "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
-             "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
-#endif
     fprintf( file,
              "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
              "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
@@ -956,48 +950,6 @@ void print_html_talents( FILE* file, const player_t* p )
              "\t\t\t\t\t\t\t\t</table>\n"
              "\t\t\t\t\t\t\t</div>\n"
              "\t\t\t\t\t\t</div>\n" );
-
-#if 0
-// TO-DO
-    for ( size_t i = 0; i < p -> talent_trees.size(); i++ )
-    {
-      size_t tree_size = p -> talent_trees[ i ].size();
-
-      if ( tree_size == 0 )
-        continue;
-
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<div class=\"float\">\n"
-               "\t\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
-               "\t\t\t\t\t\t\t\t\t\t<tr>\n"
-               "\t\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
-               "\t\t\t\t\t\t\t\t\t\t\t<th>Rank</th>\n"
-               "\t\t\t\t\t\t\t\t\t\t</tr>\n",
-               util_t::talent_tree_string( p -> tree_type[ i ], false ) );
-
-
-
-      for ( size_t j=0; j < tree_size; j++ )
-      {
-        talent_t* t = p -> talent_trees[ i ][ j ];
-
-        fprintf( file, "\t\t\t\t\t\t\t\t\t\t<tr%s>\n", ( ( j&1 ) ? " class=\"odd\"" : "" ) );
-        fprintf( file, "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n", t -> t_data -> name_cstr() );
-        fprintf( file, "\t\t\t\t\t\t\t\t\t\t\t<td>%d</td>\n", t -> rank() );
-        fprintf( file, "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
-      }
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t\t</table>\n"
-               "\t\t\t\t\t\t\t\t</div>\n" );
-    }
-
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
-
-    fprintf( file,
-             "\t\t\t\t\t\t\t</div>\n"
-             "\t\t\t\t\t\t</div>\n" );
-#endif
   }
 }
 
