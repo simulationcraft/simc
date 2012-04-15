@@ -391,8 +391,8 @@ public:
   {
      if ( ! castable_in_shadowform )
      {
-       // FIX-ME: Needs to drop haste aura too.
        p() -> buffs.shadowform -> expire();
+       if ( ! sim -> overrides.spell_haste ) sim -> auras.spell_haste -> decrement();
      }
   }
 
