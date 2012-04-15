@@ -15,9 +15,9 @@ static bool is_plot_stat( sim_t* sim,
   if ( ! sim -> reforge_plot -> reforge_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list;
-    int num_stats = util_t::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+    size_t num_stats = util_t::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
     bool found = false;
-    for ( int i=0; i < num_stats && ! found; i++ )
+    for ( size_t i = 0; i < num_stats && ! found; i++ )
     {
       found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
@@ -67,7 +67,7 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
   if ( cur_mod_stat >= ( int ) stat_indices.size() - 1 )
   {
     int sum = 0;
-    for ( int i = 0; i < ( int ) cur_stat_mods.size(); i++ )
+    for ( size_t i = 0; i < cur_stat_mods.size(); i++ )
     {
       sum += cur_stat_mods[ i ];
     }
@@ -124,7 +124,7 @@ void reforge_plot_t::analyze_stats()
   if ( reforge_plot_stat_str.empty() )
     return;
 
-  int num_players = ( int ) sim -> players_by_name.size();
+  size_t num_players = sim -> players_by_name.size();
 
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )
@@ -144,14 +144,14 @@ void reforge_plot_t::analyze_stats()
   if ( reforge_plot_debug )
   {
     util_t::fprintf( sim -> output_file, "Reforge Plot Stats: " );
-    for ( int i=0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
+    for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
       util_t::fprintf( sim -> output_file, "%s, ", util_t::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     util_t::fprintf( sim -> output_file, "\n" );
 
     util_t::fprintf( sim -> output_file, "Reforge Plot Stat Mods:\n" );
-    for ( int i=0; i < ( int ) stat_mods.size(); i++ )
+    for ( size_t i = 0; i < stat_mods.size(); i++ )
     {
-      for ( int j=0; j < ( int ) stat_mods[ i ].size(); j++ )
+      for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
         util_t::fprintf( sim -> output_file, "%s: %d ",
                          util_t::stat_type_string( reforge_plot_stat_indices[ j ] ),
                          stat_mods[ i ][ j ] );
@@ -159,7 +159,7 @@ void reforge_plot_t::analyze_stats()
     }
   }
 
-  for ( int i=0; i < ( int ) stat_mods.size(); i++ )
+  for ( size_t i = 0; i < stat_mods.size(); i++ )
   {
     if ( sim -> canceled ) break;
 
@@ -171,7 +171,7 @@ void reforge_plot_t::analyze_stats()
       current_reforge_sim -> iterations = reforge_plot_iterations;
     if ( sim -> report_progress )
       util_t::fprintf( stdout, "Current reforge: " );
-    for ( int j=0; j < ( int ) stat_mods[ i ].size(); j++ )
+    for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
       current_reforge_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
                                                stat_mods[ i ][ j ] );
@@ -193,7 +193,7 @@ void reforge_plot_t::analyze_stats()
     current_stat_combo = i;
     current_reforge_sim -> execute();
 
-    for ( int k=0; k < num_players; k++ )
+    for ( size_t k = 0; k < num_players; k++ )
     {
       player_t* p = sim -> players_by_name[ k ];
 
@@ -258,9 +258,9 @@ void reforge_plot_t::analyze()
     }
     util_t::fprintf( reforge_plot_output_file, " DPS\n" );
 
-    for ( int i=0; i < ( int ) p -> reforge_plot_data.size(); i++ )
+    for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
     {
-      for ( int j=0; j < ( int ) p -> reforge_plot_data[ i ].size(); j++ )
+      for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
         util_t::fprintf( reforge_plot_output_file, "%f, ",
                          p -> reforge_plot_data[ i ][ j ].value );
       util_t::fprintf( reforge_plot_output_file, "\n" );

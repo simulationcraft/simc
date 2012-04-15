@@ -128,15 +128,9 @@ action_t::action_t( action_type_e       ty,
   time_to_travel                 = timespan_t::zero();
   travel_speed                   = 0.0;
   bloodlust_active               = 0;
-  max_haste                      = 0.0;
-  haste_gain_percentage          = 0.0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
   moving                         = -1;
-  vulnerable                     = 0;
-  invulnerable                   = 0;
-  not_flying                     = 0;
-  flying                         = 0;
   wait_on_ready                  = -1;
   interrupt                      = 0;
   round_base_dmg                 = true;
@@ -373,23 +367,22 @@ void action_t::parse_options( option_t*          options,
   // FIXME: remove deprecated options when all MoP class modules are finished
   option_t base_options[] =
   {
-    { "bloodlust",              OPT_BOOL,   &bloodlust_active      },
-    { "haste<",                 OPT_FLT,    &max_haste             },
-    { "haste_gain_percentage>", OPT_FLT,    &haste_gain_percentage },
-    { "health_percentage<",     OPT_FLT,    &max_health_percentage },
-    { "health_percentage>",     OPT_FLT,    &min_health_percentage },
+    { "bloodlust",              OPT_DEPRECATED, ( void* ) "if=buff.bloodlust.react" },
+    { "haste<",                 OPT_DEPRECATED, ( void* ) "if=spell_haste>= or if=attack_haste>=" },
+    { "health_percentage<",     OPT_DEPRECATED, ( void* ) "if=target.health.pct<=" },
+    { "health_percentage>",     OPT_DEPRECATED, ( void* ) "if=target.health.pct>=" },
     { "if",                     OPT_STRING, &if_expr_str           },
     { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
     { "interrupt",              OPT_BOOL,   &interrupt             },
-    { "invulnerable",           OPT_BOOL,   &invulnerable          },
-    { "not_flying",             OPT_BOOL,   &not_flying            },
-    { "flying",                 OPT_BOOL,   &flying                },
+    { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
+    { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
+    { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
     { "moving",                 OPT_BOOL,   &moving                },
     { "sync",                   OPT_STRING, &sync_str              },
     { "time<",                  OPT_DEPRECATED, ( void* ) "if=time<=" },
     { "time>",                  OPT_DEPRECATED, ( void* ) "if=time>=" },
     { "travel_speed",           OPT_DEPRECATED, ( void* ) "if=travel_speed" },
-    { "vulnerable",             OPT_BOOL,   &vulnerable            },
+    { "vulnerable",             OPT_DEPRECATED, ( void* ) "if=target.debuff.vulnerable.react" },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },
     { "label",                  OPT_STRING, &label_str             },
@@ -1297,10 +1290,6 @@ bool action_t::ready()
   if ( if_expr && ! if_expr -> success() )
     return false;
 
-  if ( max_haste > 0 )
-    if ( ( ( 1.0 / haste() ) - 1.0 ) > max_haste )
-      return false;
-
   if ( bloodlust_active > 0 )
     if ( ! player -> buffs.bloodlust -> check() )
       return false;
@@ -1325,22 +1314,6 @@ bool action_t::ready()
 
   if ( moving != -1 )
     if ( moving != ( player -> is_moving() ? 1 : 0 ) )
-      return false;
-
-  if ( vulnerable )
-    if ( ! t -> debuffs.vulnerable -> check() )
-      return false;
-
-  if ( invulnerable )
-    if ( ! t -> debuffs.invulnerable -> check() )
-      return false;
-
-  if ( not_flying )
-    if ( t -> debuffs.flying -> check() )
-      return false;
-
-  if ( flying )
-    if ( ! t -> debuffs.flying -> check() )
       return false;
 
   if ( min_health_percentage > 0 )

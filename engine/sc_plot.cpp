@@ -15,9 +15,9 @@ static bool is_plot_stat( sim_t* sim,
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list;
-    int num_stats = util_t::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
+    size_t num_stats = util_t::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
     bool found = false;
-    for ( int i=0; i < num_stats && ! found; i++ )
+    for ( size_t i = 0; i < num_stats && ! found; i++ )
     {
       found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
@@ -86,7 +86,7 @@ void plot_t::analyze_stats()
 {
   if ( dps_plot_stat_str.empty() ) return;
 
-  int num_players = ( int ) sim -> players_by_name.size();
+  size_t num_players = sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
   remaining_plot_stats = 0;
@@ -143,7 +143,7 @@ void plot_t::analyze_stats()
         }
       }
 
-      for ( int k=0; k < num_players; k++ )
+      for ( size_t k = 0; k < num_players; k++ )
       {
         player_t* p = sim -> players_by_name[ k ];
 

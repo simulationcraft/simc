@@ -4969,10 +4969,8 @@ struct action_t
   timespan_t time_to_execute, time_to_travel;
   double travel_speed;
   int bloodlust_active;
-  double max_haste;
-  double haste_gain_percentage;
   double min_health_percentage, max_health_percentage;
-  int moving, vulnerable, invulnerable, wait_on_ready, interrupt, not_flying, flying;
+  int moving, wait_on_ready, interrupt;
   bool round_base_dmg;
   bool class_flag1;
   std::string if_expr_str;

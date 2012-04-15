@@ -4433,14 +4433,6 @@ struct arcane_torrent_t : public action_t
 
     update_ready();
   }
-
-  virtual bool ready()
-  {
-    if ( player -> race != RACE_BLOOD_ELF )
-      return false;
-
-    return action_t::ready();
-  }
 };
 
 // Berserking ===============================================================
@@ -4448,12 +4440,10 @@ struct arcane_torrent_t : public action_t
 struct berserking_t : public action_t
 {
   berserking_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "berserking", p )
+    action_t( ACTION_OTHER, "berserking", p, p -> find_racial_spell( "Berserking", std::string(), RACE_TROLL ) )
   {
     check_race( RACE_TROLL );
     parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 180 );
   }
 
   virtual void execute()
@@ -4463,17 +4453,6 @@ struct berserking_t : public action_t
     update_ready();
 
     player -> buffs.berserking -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! action_t::ready() )
-      return false;
-
-    if ( player -> race != RACE_TROLL )
-      return false;
-
-    return true;
   }
 };
 
@@ -4505,17 +4484,6 @@ struct blood_fury_t : public action_t
       player -> buffs.blood_fury_sp -> trigger();
     }
   }
-
-  virtual bool ready()
-  {
-    if ( ! action_t::ready() )
-      return false;
-
-    if ( player -> race != RACE_ORC )
-      return false;
-
-    return true;
-  }
 };
 
 // Rocket Barrage ===========================================================
@@ -4531,14 +4499,6 @@ struct rocket_barrage_t : public spell_t
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> race != RACE_GOBLIN )
-      return false;
-
-    return action_t::ready();
   }
 };
 
@@ -4560,17 +4520,6 @@ struct stoneform_t : public action_t
     update_ready();
 
     player -> buffs.stoneform -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! action_t::ready() )
-      return false;
-
-    if ( player -> race != RACE_DWARF )
-      return false;
-
-    return true;
   }
 };
 
@@ -5113,6 +5062,7 @@ struct cancel_buff_t : public action_t
   {
     if ( ! buff || ! buff -> check() )
       return false;
+
     return action_t::ready();
   }
 };
@@ -5122,6 +5072,7 @@ struct cancel_buff_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
   if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
@@ -5137,10 +5088,6 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "use_item"         ) return new         use_item_t( this, options_str );
   if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
-
-
-  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
-
 
   return consumable_t::create_action( this, name, options_str );
 }
