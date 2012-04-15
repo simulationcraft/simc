@@ -48,7 +48,7 @@ struct stat_proc_callback_t : public action_callback_t
     action_callback_t::activate();
 
     if ( buff -> reverse )
-      buff -> trigger( buff -> max_stack );
+      buff -> trigger( buff -> max_stack() );
   }
 
   virtual void deactivate()
@@ -76,7 +76,7 @@ struct stat_proc_callback_t : public action_callback_t
           {
             stat_buff_t* b = callback -> buff;
             if ( b -> current_stack > 0 &&
-                 b -> current_stack < b -> max_stack )
+                 b -> current_stack < b -> max_stack() )
             {
               b -> bump();
               new ( sim ) tick_stack_t( sim, player, callback );
@@ -133,7 +133,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
     action_callback_t::activate();
 
     if ( buff -> reverse )
-      buff -> trigger( buff -> max_stack );
+      buff -> trigger( buff -> max_stack() );
   }
 
   virtual void deactivate()
@@ -481,8 +481,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     {
       double amount = heroic ? 2875 : 2540;
 
-      apparatus_of_khazgoroth = buff_creator_t( p, 96923, "titanic_power" ); // TODO: Duration, cd, etc.?
-      apparatus_of_khazgoroth -> activated = false;
+      apparatus_of_khazgoroth = buff_creator_t( p, 96923, "titanic_power" ).activated( false ); // TODO: Duration, cd, etc.?
       blessing_of_khazgoroth  = stat_buff_creator_t(
                                   buff_creator_t( p, "blessing_of_khazgoroth" ).duration( timespan_t::from_seconds( 15.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
                                 .stat( STAT_CRIT_RATING ).amount( amount );
@@ -577,8 +576,7 @@ static void register_fury_of_angerforge( item_t* item )
       action_callback_t( p )
     {
       raw_fury = buff_creator_t( p, "raw_fury" ).max_stack( 5 ).duration( timespan_t::from_seconds( 15.0 ) )
-                 .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true );
-      raw_fury -> activated = false;
+                 .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true ).activated( false );
       blackwing_dragonkin = stat_buff_creator_t( buff_creator_t( p, 91836, "blackwing_dragonkin").
                                                  duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
                             .stat( STAT_STRENGTH ).amount( 1926 );
@@ -630,9 +628,9 @@ static void register_heart_of_ignacious( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       buff -> trigger();
-      if ( buff -> stack() == buff -> max_stack )
+      if ( buff -> stack() == buff -> max_stack() )
       {
-        if ( haste_buff -> trigger( buff -> max_stack ) )
+        if ( haste_buff -> trigger( buff -> max_stack() ) )
         {
           buff -> expire();
         }
@@ -1103,8 +1101,7 @@ static void register_indomitable_pride( item_t* item )
       action_callback_t( p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
       // Looks like there is no spell_id_t for the buff
-      buff = buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) );
-      buff -> activated = false;
+      buff = buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) ).activated( false );
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
       p -> absorb_buffs.push_back( buff );
@@ -1149,8 +1146,7 @@ static void register_spidersilk_spindle( item_t* item )
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
       action_callback_t( p ), cd ( 0 ), stats( 0 )
     {
-      buff = buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" );
-      buff -> activated = false;
+      buff = buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" ).activated( false );
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
       p -> absorb_buffs.push_back( buff );
@@ -1163,7 +1159,7 @@ static void register_spidersilk_spindle( item_t* item )
       if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 35 )
       {
         cd -> start();
-        double amount = buff -> effect1().base_value();
+        double amount = buff -> data().effectN( 1 ).base_value();
         buff -> trigger( 1, amount );
         stats -> add_result( amount, amount, ABSORB, RESULT_HIT );
         stats -> add_execute( timespan_t::zero() );
@@ -1267,7 +1263,7 @@ static void register_fury_of_the_beast( item_t* item )
 
       virtual void execute()
       {
-        if ( buff -> check() && buff_stack -> check() < buff_stack -> max_stack )
+        if ( buff -> check() && buff_stack -> check() < buff_stack -> max_stack() )
         {
           buff_stack -> buff_duration = buff -> remains(); // hack instead of overriding fury_of_the_beast::expire()
           buff_stack -> trigger();
@@ -1605,7 +1601,7 @@ static void register_souldrinker( item_t* item )
 
     virtual void execute()
     {
-      base_dd_min = base_dd_max = effect1().percent() / 10.0 * player -> resources.max[ RESOURCE_HEALTH ];
+      base_dd_min = base_dd_max = data().effectN( 1 ).percent() / 10.0 * player -> resources.max[ RESOURCE_HEALTH ];
       spell_t::execute();
     }
 

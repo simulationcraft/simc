@@ -1623,7 +1623,7 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
                b -> data().id(),
                b -> cooldown -> name_str.c_str(),
                b -> data().tooltip(),
-               b -> max_stack,
+               b -> max_stack(),
                b -> buff_duration.total_seconds(),
                b -> cooldown -> duration.total_seconds(),
                b -> default_chance * 100 );
@@ -1696,7 +1696,7 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
                  b -> data().id(),
                  b -> cooldown -> name_str.c_str(),
                  b -> data().tooltip(),
-                 b -> max_stack,
+                 b -> max_stack(),
                  b -> buff_duration.total_seconds(),
                  b -> cooldown -> duration.total_seconds(),
                  b -> default_chance * 100 );

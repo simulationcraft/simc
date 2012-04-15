@@ -281,7 +281,6 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   legion_strike_t( felguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
-    warlock_t*      o = p -> owner -> cast_warlock();
     aoe               = -1;
     direct_power_mod  = 0.264;
     weapon   = &( p -> main_hand_weapon );
@@ -344,8 +343,6 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
   shadow_bite_t( felhunter_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
   {
-    warlock_t*       o = p -> owner -> cast_warlock();
-
     direct_power_mod = 0.614; // tested in-game as of 2010/12/20
     base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
     base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
@@ -362,7 +359,7 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
     warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
     warlock_targetdata_t* td = targetdata_t::get( o, target ) -> cast_warlock();
 
-    player_multiplier *= 1.0 + td -> active_dots() * effect3().percent();
+    player_multiplier *= 1.0 + td -> active_dots() * data().effectN( 3 ).percent();
   }
 };
 

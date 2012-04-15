@@ -22,7 +22,7 @@ struct hymn_of_hope_buff_t : public buff_t
 
     // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
     // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
-    mana_gain = player -> resources.max[ RESOURCE_MANA ] * effect2().percent();
+    mana_gain = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 2 ).percent();
     player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
   }
 
@@ -1959,7 +1959,7 @@ double player_t::composite_attack_haste() const
 
     if ( buffs.berserking -> up() )
     {
-      h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
     }
   }
 
@@ -2276,15 +2276,15 @@ double player_t::composite_spell_haste() const
   {
     if ( buffs.bloodlust -> up() )
     {
-      h *= 1.0 / ( 1.0 + buffs.bloodlust -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
     }
     else if ( buffs.power_infusion -> up() )
     {
-      h *= 1.0 / ( 1.0 + buffs.power_infusion -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent() );
     }
 
     if ( buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + buffs.berserking -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
     if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.spell_haste -> check() )
     {
@@ -3708,10 +3708,10 @@ double player_t::assess_damage( double        amount,
                                 action_t*     action )
 {
   if ( buffs.pain_supression -> up() )
-    amount *= 1.0 + buffs.pain_supression -> effect1().percent();
+    amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
   if ( buffs.stoneform -> up() )
-    amount *= 1.0 + buffs.stoneform -> effect1().percent();
+    amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
 
   double mitigated_amount = target_mitigation( amount, school, type, result, action );
 
@@ -3746,7 +3746,7 @@ double player_t::assess_damage( double        amount,
     {
       // Just assume that this is used so rarely that a strcmp hack will do
       stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
-      double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> effect2().percent();
+      double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
       resource_gain( RESOURCE_HEALTH, amount );
       if ( s )
         s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
@@ -3833,7 +3833,7 @@ player_t::heal_info_t player_t::assess_heal( double        amount,
   heal_info_t heal;
 
   if ( buffs.guardian_spirit -> up() )
-    amount *= 1.0 + buffs.guardian_spirit -> effect1().percent();
+    amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
   heal.amount = resource_gain( RESOURCE_HEALTH, amount, 0, action );
   heal.actual = amount;

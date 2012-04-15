@@ -50,12 +50,18 @@ buff_t::buff_t( const buff_creator_t& params ) :
   player( params._player.target ),
   name_str( params._name ),
   s_data( params.s_data ),
+  _max_stack( 1 ),
   default_value(),
+  activated( true ),
+  reverse(),
+  constant(),
+  quiet(),
+  overridden(),
   current_value(),
-  react(),
+  current_stack(),
   buff_duration( timespan_t::zero() ),
   buff_cooldown( timespan_t::zero() ),
-  default_chance(),
+  default_chance( 1.0 ),
   last_start( timespan_t::zero() ),
   last_trigger( timespan_t::zero() ),
   iteration_uptime_sum( timespan_t::zero() ),
@@ -75,13 +81,6 @@ buff_t::buff_t( const buff_creator_t& params ) :
   delay( 0 ),
   rng( 0 ),
   cooldown( 0 ),
-  current_stack(),
-  max_stack( 1 ),
-  aura_id(),
-  activated( true ),
-  reverse(),
-  constant(),
-  quiet(),
   uptime_pct(),
   start_intervals(),
   trigger_intervals()
@@ -110,13 +109,13 @@ buff_t::buff_t( const buff_creator_t& params ) :
     if ( data().ok() )
     {
       if ( data().max_stacks() != 0 )
-        max_stack = data().max_stacks();
+        _max_stack = data().max_stacks();
       else if ( data().initial_stacks() != 0 )
-        max_stack = data().initial_stacks();
+        _max_stack = data().initial_stacks();
     }
   }
   else
-    max_stack = params._max_stack;
+    _max_stack = params._max_stack;
 
   // Set Proc Chance
   if ( params._chance == -1.0 )
@@ -147,6 +146,15 @@ buff_t::buff_t( const buff_creator_t& params ) :
   if ( params._activated != -1 )
     quiet = params._activated != 0;
 
+  if ( initial_source ) // Player Buffs
+  {
+    player -> buff_list.push_back( this );
+  }
+  else // Sim Buffs
+  {
+    sim -> buff_list.push_back( this );
+  }
+
   init();
 
 }
@@ -155,8 +163,18 @@ buff_t::buff_t( const buff_creator_t& params ) :
 
 void buff_t::init()
 {
-  if ( max_stack < 1 )
-    max_stack = 1;
+  if ( _max_stack < 1 )
+  {
+    _max_stack = 1;
+    sim->errorf( "buff %s: initialized with max_stack < 1. Setting max_stack to 1.", name_str.c_str() );
+    assert( 0 );
+  }
+
+  if ( _max_stack > 999 )
+  {
+    _max_stack = 999;
+    sim->errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.", name_str.c_str() );
+  }
 
   // Keep non hidden reported numbers clean
   start_intervals.mean = 0;
@@ -164,13 +182,12 @@ void buff_t::init()
 
   buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
-  if ( max_stack >= 0 )
-  {
-    stack_occurrence.resize( max_stack + 1 );
-    stack_react_time.resize( max_stack + 1 );
-  }
-  if ( static_cast<int>( stack_uptime.size() ) < max_stack )
-    for ( int i = stack_uptime.size(); i <= max_stack; ++i )
+
+  stack_occurrence.resize( _max_stack + 1 );
+  stack_react_time.resize( _max_stack + 1 );
+
+  if ( static_cast<int>( stack_uptime.size() ) < _max_stack )
+    for ( int i = static_cast<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t( sim ) );
 
   if ( initial_source ) // Player Buffs
@@ -179,13 +196,11 @@ void buff_t::init()
     if ( initial_source != player )
       name_str = name_str + ':' + initial_source -> name_str;
     rng = initial_source-> get_rng( name_str );
-    player -> buff_list.push_back( this );
   }
   else // Sim Buffs
   {
     cooldown = sim -> get_cooldown( "buff_" + name_str );
     rng = sim -> get_rng( name_str );
-    sim -> buff_list.push_back( this );
   }
   cooldown -> duration = buff_cooldown;
 
@@ -226,7 +241,7 @@ bool buff_t::may_react( int stack ) const
   if ( stack > current_stack ) return false;
   if ( stack < 1             ) return false;
 
-  if ( stack > max_stack ) return false;
+  if ( stack > _max_stack ) return false;
 
   timespan_t occur = stack_occurrence[ stack ];
 
@@ -308,7 +323,7 @@ bool buff_t::trigger( int        stacks,
                       double     chance,
                       timespan_t duration )
 {
-  if ( max_stack == 0 || chance == 0 ) return false;
+  if ( _max_stack == 0 || chance == 0 ) return false;
 
   if ( cooldown -> remains() > timespan_t::zero() )
     return false;
@@ -384,7 +399,7 @@ void buff_t::increment( int        stacks,
 {
   if ( overridden ) return;
 
-  if ( max_stack == 0 ) return;
+  if ( _max_stack == 0 ) return;
 
   if ( current_stack == 0 )
   {
@@ -403,7 +418,7 @@ void buff_t::decrement( int    stacks,
 {
   if ( overridden ) return;
 
-  if ( max_stack == 0 || current_stack <= 0 ) return;
+  if ( _max_stack == 0 || current_stack <= 0 ) return;
 
   if ( stacks == 0 || current_stack <= stacks )
   {
@@ -473,7 +488,7 @@ void buff_t::start( int        stacks,
                     double     value,
                     timespan_t duration )
 {
-  if ( max_stack == 0 ) return;
+  if ( _max_stack == 0 ) return;
 
   if ( current_stack != 0 )
   {
@@ -506,7 +521,7 @@ void buff_t::refresh( int        stacks,
                       double     value,
                       timespan_t duration )
 {
-  if ( max_stack == 0 ) return;
+  if ( _max_stack == 0 ) return;
 
   refresh_count++;
 
@@ -530,25 +545,24 @@ void buff_t::refresh( int        stacks,
 
 // buff_t::bump =============================================================
 
-void buff_t::bump( int    stacks,
-                   double value )
+void buff_t::bump( int stacks, double value )
 {
-  if ( max_stack == 0 ) return;
+  if ( _max_stack == 0 ) return;
 
   if ( value >= 0 ) current_value = value;
 
-  if ( max_stack < 0 )
+  if ( max_stack() < 0 )
   {
     current_stack += stacks;
   }
-  else if ( current_stack < max_stack )
+  else if ( current_stack < max_stack() )
   {
     int before_stack = current_stack;
     stack_uptime[ current_stack ] -> update( false );
 
     current_stack += stacks;
-    if ( current_stack > max_stack )
-      current_stack = max_stack;
+    if ( current_stack > max_stack() )
+      current_stack = max_stack();
 
     stack_uptime[ current_stack ] -> update( true );
 
@@ -566,10 +580,9 @@ void buff_t::bump( int    stacks,
 
 // buff_t::override =========================================================
 
-void buff_t::override( int    stacks,
-                       double value )
+void buff_t::override( int stacks, double value )
 {
-  if ( max_stack == 0 ) return;
+  if ( _max_stack == 0 ) return;
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
@@ -627,24 +640,18 @@ void buff_t::aura_gain()
 {
   if ( sim -> log )
   {
-    char an[ 128 ];
-    const char* s = name_str.c_str();
-    if ( max_stack >= 0 )
-    {
-      snprintf( an, sizeof( an ), "%s_%d", s, current_stack );
-      s = an;
-    }
+    std::string s = name_str + "_" + util_t::to_string( current_stack );
 
     if ( player )
     {
       if ( sim -> log && ! player->sleeping )
       {
-        log_t::output( sim, "%s gains %s ( value=%.2f )", player->name(), s, current_value );
+        log_t::output( sim, "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
       }
     }
     else
     {
-      if ( sim -> log ) log_t::output( sim, "Raid gains %s", s );
+      if ( sim -> log ) log_t::output( sim, "Raid gains %s", s.c_str() );
     }
   }
 }
@@ -741,7 +748,7 @@ std::string buff_t::to_str() const
   std::ostringstream s;
 
   s << data().to_str();
-  s << " max_stack=" << max_stack;
+  s << " max_stack=" << _max_stack;
   s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown -> duration.total_seconds();
   s << " duration=" << buff_duration.total_seconds();
@@ -830,10 +837,8 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
 // stat_buff_t::bump ========================================================
 
-void stat_buff_t::bump( int    stacks,
-                        double value )
+void stat_buff_t::bump( int stacks, double value )
 {
-  if ( max_stack == 0 ) return;
   if ( value > 0 )
   {
     amount = value;
@@ -851,10 +856,8 @@ void stat_buff_t::bump( int    stacks,
 
 // stat_buff_t::decrement ===================================================
 
-void stat_buff_t::decrement( int    stacks,
-                             double /* value */ )
+void stat_buff_t::decrement( int stacks, double /* value */ )
 {
-  if ( max_stack == 0 ) return;
   if ( stacks == 0 || current_stack <= stacks )
   {
     expire();
@@ -890,10 +893,8 @@ cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_
 
 // cost_reduction_buff_t::bump ==============================================
 
-void cost_reduction_buff_t::bump( int    stacks,
-                                  double value )
+void cost_reduction_buff_t::bump( int stacks,double value )
 {
-  if ( max_stack == 0 ) return;
   if ( value > 0 )
   {
     amount = value;
@@ -910,10 +911,8 @@ void cost_reduction_buff_t::bump( int    stacks,
 
 // cost_reduction_buff_t::decrement =========================================
 
-void cost_reduction_buff_t::decrement( int    stacks,
-                                       double /* value */ )
+void cost_reduction_buff_t::decrement( int stacks, double /* value */ )
 {
-  if ( max_stack == 0 ) return;
   if ( stacks == 0 || current_stack <= stacks )
   {
     expire();
@@ -946,9 +945,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 {
   if ( ! refreshes )
   {
-    if ( max_stack == 0 ) return;
-
-    refresh_count++;
+     refresh_count++;
 
     bump( stacks, value );
     return;

@@ -90,7 +90,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   procs( procs_t() ),
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
-  use_pre_soulburn( 0 )
+  use_pre_soulburn()
 {
 
   distance = 40;
@@ -114,7 +114,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct warlock_heal_t : public heal_t
 {
-  warlock_heal_t( const char* n, warlock_t* p, const uint32_t id ) :
+  warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) :
     heal_t( n, p, p -> find_spell(id) )
   { }
 
@@ -150,13 +150,13 @@ private:
 
 public:
   warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( "", p, p -> find_spell( n ), sc )
+    spell_t( std::string(), p, p -> find_spell( n ), sc )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( "", p, s, sc )
+    spell_t( std::string(), p, s, sc )
   {
     _init_warlock_spell_t();
   }
@@ -173,12 +173,12 @@ public:
 
     if ( p -> buffs.eradication -> up() )
     {
-      h *= 1.0 / ( 1.0 + p -> buffs.eradication -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + p -> buffs.eradication -> data().effectN( 1 ).percent() );
     }
 
     if ( p -> buffs.demon_soul_felguard -> up() )
     {
-      h *= 1.0 / ( 1.0 + p -> buffs.demon_soul_felguard -> effect1().percent() );
+      h *= 1.0 / ( 1.0 + p -> buffs.demon_soul_felguard -> data().effectN( 1 ).percent() );
     }
 
     return h;
@@ -188,13 +188,11 @@ public:
 
   virtual void player_buff()
   {
-    warlock_t* p = player -> cast_warlock();
-
     spell_t::player_buff();
 
-    if ( base_execute_time > timespan_t::zero() && p -> buffs.demon_soul_imp -> up() )
+    if ( base_execute_time > timespan_t::zero() && p() -> buffs.demon_soul_imp -> up() )
     {
-      player_crit += p -> buffs.demon_soul_imp -> effect1().percent();
+      player_crit += p() -> buffs.demon_soul_imp -> data().effectN( 1 ).percent();
     }
   }
 
@@ -202,12 +200,10 @@ public:
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    warlock_t* p = player -> cast_warlock();
+   spell_t::target_debuff( t, dtype );
 
-    spell_t::target_debuff( t, dtype );
-
-    if ( p -> buffs.bane_of_havoc -> up() )
-      target_multiplier *= 1.0 + p -> buffs.bane_of_havoc -> effect1().percent();
+    if ( p() -> buffs.bane_of_havoc -> up() )
+      target_multiplier *= 1.0 + p() -> buffs.bane_of_havoc -> data().effectN( 1 ).percent();
   }
 
   // warlock_spell_t::total_td_multiplier ===================================
@@ -222,7 +218,7 @@ public:
     {
       if ( td -> debuffs_haunt -> up() )
       {
-        shadow_td_multiplier *= 1.0 + td -> debuffs_haunt -> effect3().percent() + ( p -> glyphs.haunt -> effect1().percent() );
+        shadow_td_multiplier *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent() + ( p -> glyphs.haunt -> effectN( 1 ).percent() );
       }
     }
 
@@ -237,8 +233,8 @@ public:
 
     if ( p -> talents.soul_leech -> ok() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talents.soul_leech -> effect1().percent(), p -> gains.soul_leech_health );
-      p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talents.soul_leech -> effect1().percent(), p -> gains.soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech_health );
+      p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
 
     }
   }
@@ -249,7 +245,7 @@ public:
   {
     warlock_t* p = s -> player -> cast_warlock();
     if ( ( result != RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-    if ( s -> target -> health_percentage() > p -> spec.decimation -> effect2().base_value() ) return;
+    if ( s -> target -> health_percentage() > p -> spec.decimation -> effectN( 2 ).base_value() ) return;
     p -> buffs.decimation -> trigger();
   }
 };
@@ -357,9 +353,7 @@ struct bane_of_havoc_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( p -> buffs.bane_of_havoc -> check() )
+    if ( p() -> buffs.bane_of_havoc -> check() )
       return false;
 
     return warlock_spell_t::ready();
@@ -390,7 +384,7 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p -> buffs.shadow_trance -> up() ) h = timespan_t::zero();
     if ( p -> buffs.backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs.backdraft -> effect1().percent();
+      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
     return h;
   }
@@ -416,7 +410,7 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    for ( int i=0; i < 4; i++ )
+    for ( int i = 0; i < 4; i++ )
     {
       p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
     }
@@ -434,7 +428,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( p -> buffs.demon_soul_succubus -> up() )
     {
-      player_multiplier *= 1.0 + p -> buffs.demon_soul_succubus -> effect1().percent();
+      player_multiplier *= 1.0 + p -> buffs.demon_soul_succubus -> data().effectN( 1 ).percent();
     }
   }
 
@@ -475,7 +469,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
 
     if ( p -> buffs.backdraft -> up() )
-      h *= 1.0 + p -> buffs.backdraft -> effect1().percent();
+      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
 
     return h;
   }
@@ -485,7 +479,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_spell_t::execute();
     warlock_t* p = player -> cast_warlock();
 
-    for ( int i=0; i < 4; i++ )
+    for ( int i = 0; i < 4; i++ )
     {
       p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
     }
@@ -556,7 +550,7 @@ struct shadowburn_t : public warlock_spell_t
 
     if ( p -> glyphs.shadowburn -> ok() )
     {
-      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p -> glyphs.shadowburn -> effect1().base_value() )
+      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p -> glyphs.shadowburn -> effectN( 1 ).base_value() )
       {
         cooldown -> reset();
         cd_glyph_of_shadowburn -> start();
@@ -623,7 +617,7 @@ struct drain_life_heal_t : public warlock_heal_t
   {
     warlock_t* p = player -> cast_warlock();
 
-    double heal_pct = effect1().percent();
+    double heal_pct = data().effectN( 1 ).percent();
 
     base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
     warlock_heal_t::execute();
@@ -834,7 +828,7 @@ struct conflagrate_t : public warlock_spell_t
 
     int periodic_ticks = td -> dots_immolate -> action -> hasted_num_ticks( player_haste );
 
-    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * effect2().percent() ;
+    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * data().effectN( 2 ).percent() ;
 
     warlock_spell_t::execute();
   }
@@ -918,7 +912,7 @@ struct incinerate_t : public warlock_spell_t
 
     if ( p -> buffs.molten_core -> check() )
     {
-      player_multiplier *= 1 + p -> buffs.molten_core -> effect1().percent();
+      player_multiplier *= 1 + p -> buffs.molten_core -> data().effectN( 1 ).percent();
       p -> buffs.molten_core -> decrement();
     }
   }
@@ -930,11 +924,11 @@ struct incinerate_t : public warlock_spell_t
 
     if ( p -> buffs.molten_core -> up() )
     {
-      h *= 1.0 + p -> buffs.molten_core -> effect3().percent();
+      h *= 1.0 + p -> buffs.molten_core -> data().effectN( 3 ).percent();
     }
     if ( p -> buffs.backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs.backdraft -> effect1().percent();
+      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
 
     return h;
@@ -980,7 +974,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p -> buffs.decimation -> up() )
     {
-      t *= 1.0 - p -> spec.decimation -> effect1().percent();
+      t *= 1.0 - p -> spec.decimation -> effectN( 1 ).percent();
     }
     if ( p -> buffs.empowered_imp -> up() )
     {
@@ -1025,7 +1019,7 @@ struct life_tap_t : public warlock_spell_t
     harmful = false;
 
     if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd += p -> glyphs.life_tap -> effect1().time_value();
+      trigger_gcd += p -> glyphs.life_tap -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -1033,8 +1027,8 @@ struct life_tap_t : public warlock_spell_t
     warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    double life = p -> resources.max[ RESOURCE_HEALTH ] * effect3().percent();
-    double mana = life * effect2().percent();
+    double life = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent();
+    double mana = life * data().effectN( 2 ).percent();
     p -> resource_loss( RESOURCE_HEALTH, life );
     p -> resource_gain( RESOURCE_MANA, mana, p -> gains.life_tap );
   }
@@ -1114,7 +1108,7 @@ struct fel_armor_t : public warlock_spell_t
     d -> current_tick = 0; // ticks indefinitely
 
     p -> resource_gain( RESOURCE_HEALTH,
-                        p -> resources.max[ RESOURCE_HEALTH ] * effect2().percent(),
+                        p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent(),
                         p -> gains.fel_armor, this );
   }
 
@@ -1644,7 +1638,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( target -> iteration_dmg_taken - dot_damage_done > effect2().base_value() )
+    if ( target -> iteration_dmg_taken - dot_damage_done > data().effectN( 2 ).base_value() )
     {
       dot_damage_done=0.0;
       seed_of_corruption_aoe -> execute();
@@ -1713,7 +1707,7 @@ double warlock_t::composite_armor() const
   double a = player_t::composite_armor();
 
   if ( buffs.demon_armor -> up() )
-    a += buffs.demon_armor ->effect1().base_value();
+    a += buffs.demon_armor -> data().effectN( 1 ).base_value();
 
   return a;
 }
@@ -1753,13 +1747,13 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
 
   if ( buffs.metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + buffs.metamorphosis -> effect3().percent()
+    player_multiplier *= 1.0 + buffs.metamorphosis -> data().effectN( 3 ).percent()
                          + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
   }
 
   if ( ( school == SCHOOL_FIRE || school == SCHOOL_SHADOW ) && buffs.demon_soul_felguard -> up() )
   {
-    player_multiplier *= 1.0 + buffs.demon_soul_felguard -> effect2().percent();
+    player_multiplier *= 1.0 + buffs.demon_soul_felguard -> data().effectN( 2 ).percent();
   }
 
   double fire_multiplier   = 1.0;
@@ -1801,7 +1795,7 @@ double warlock_t::composite_player_td_multiplier( school_type_e school, const ac
     }
     if ( buffs.demon_soul_felhunter -> up() )
     {
-      player_multiplier += buffs.demon_soul_felhunter -> effect1().percent();
+      player_multiplier += buffs.demon_soul_felhunter -> data().effectN( 1 ).percent();
     }
   }
 

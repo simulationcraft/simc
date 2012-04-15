@@ -730,10 +730,10 @@ void enchant_t::init( player_t* p )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 15 ) )
                           .cd( timespan_t::zero() )
-                          .chance( 0 ) )
+                          .chance( 0 )
+                          .activated( false ) )
                         .stat( STAT_ATTACK_POWER )
                         .amount( 400.0 );
-    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
   }
   if ( oh_enchant == "berserking" )
@@ -743,10 +743,10 @@ void enchant_t::init( player_t* p )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 15 ) )
                           .cd( timespan_t::zero() )
-                          .chance( 0 ) )
+                          .chance( 0 )
+                          .activated( false ) )
                         .stat( STAT_ATTACK_POWER )
                         .amount( 400.0 );
-    buff -> activated = false;
     p -> register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
   }
   if ( mh_enchant == "elemental_slayer" )
@@ -766,10 +766,10 @@ void enchant_t::init( player_t* p )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 15 ) )
                           .cd( timespan_t::zero() )
-                          .chance( 0 ) )
+                          .chance( 0 )
+                          .activated( false ) )
                         .stat( STAT_CRIT_RATING )
                         .amount( 120 );
-    buff -> activated = false;
 
     if ( mh_enchant == "executioner" )
     {

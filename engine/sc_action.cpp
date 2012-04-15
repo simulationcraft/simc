@@ -444,7 +444,7 @@ double action_t::cost() const
 
   if ( current_resource() == RESOURCE_MANA )
   {
-    if ( player -> buffs.power_infusion -> check() ) c *= ( 1.0 + player -> buffs.power_infusion -> effect2().percent() );
+    if ( player -> buffs.power_infusion -> check() ) c *= ( 1.0 + player -> buffs.power_infusion -> data().effectN( 2 ).percent() );
   }
 
   if ( is_dtr_action )

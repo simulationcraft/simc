@@ -479,10 +479,10 @@ struct spirit_wolf_pet_t : public pet_t
       {
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
         {
-          int   mwstack = o -> buff.maelstrom_weapon -> check();
+          int mwstack = o -> buff.maelstrom_weapon -> check();
           if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
           {
-            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack )
+            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
               o -> proc.wasted_mw -> occur();
 
             o -> proc.maelstrom_weapon -> occur();
@@ -491,10 +491,10 @@ struct spirit_wolf_pet_t : public pet_t
 
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
         {
-          int   mwstack = o -> buff.maelstrom_weapon -> check();
+          int mwstack = o -> buff.maelstrom_weapon -> check();
           if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
           {
-            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack )
+            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
               o -> proc.wasted_mw -> occur();
 
             o -> proc.maelstrom_weapon -> occur();
@@ -1136,7 +1136,7 @@ static bool trigger_rolling_thunder ( spell_t* s )
                         p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resources.max[ RESOURCE_MANA ],
                         p -> gain.rolling_thunder );
 
-    if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack )
+    if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
       p -> proc.wasted_ls -> occur();
 
     p -> buff.lightning_shield -> trigger();
@@ -1537,7 +1537,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
-    base_dd_min = w -> swing_time.total_seconds() / 4.0 * player -> dbc.effect_min( effect2().id(), player -> level ) / 25.0;
+    base_dd_min = w -> swing_time.total_seconds() / 4.0 * player -> dbc.effect_min( data().effectN( 2 ).id(), player -> level ) / 25.0;
     base_dd_max = base_dd_min;
 
     if ( player -> primary_tree() == SHAMAN_ENHANCEMENT )
@@ -1662,13 +1662,13 @@ void shaman_melee_attack_t::impact_s( action_state_t* state )
 
   if ( result_is_hit( state -> result ) && ! proc )
   {
-    int   mwstack = p() -> buff.maelstrom_weapon -> check();
+    int mwstack = p() -> buff.maelstrom_weapon -> check();
     // TODO: Chance is based on Rank 3, i.e., 10 PPM?
     double chance = weapon -> proc_chance_on_swing( 10.0 );
 
     if ( p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
-      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack )
+      if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
         p() -> proc.wasted_mw -> occur();
 
       p() -> proc.maelstrom_weapon -> occur();
@@ -3431,17 +3431,18 @@ struct water_shield_t : public shaman_spell_t
 
 struct lightning_shield_buff_t : public buff_t
 {
-  lightning_shield_buff_t( player_t* p ) :
+  lightning_shield_buff_t( shaman_t* p ) :
     buff_t( buff_creator_t( p, "lightning_shield", p -> find_class_spell( "Lightning Shield" ) ).chance( 1.0 ).cd( timespan_t::min() ) )
   {
     shaman_t* s = player -> cast_shaman();
 
     if ( s -> primary_tree() == SHAMAN_ELEMENTAL )
-      max_stack = static_cast< int >( s -> specialization.rolling_thunder -> effectN( 1 ).base_value() );
+      _max_stack = static_cast< int >( s -> specialization.rolling_thunder -> effectN( 1 ).base_value() );
 
     // Add some more uptimes to the stack uptime vector
-    if ( static_cast< int >( stack_uptime.size() ) < max_stack )
-      for ( int i = stack_uptime.size(); i <= max_stack; ++i )
+    int stack_uptimes = static_cast< int >( stack_uptime.size() );
+    if ( stack_uptimes < _max_stack )
+      for ( int i = stack_uptimes; i <= _max_stack; ++i )
         stack_uptime.push_back( new buff_uptime_t( sim ) );
   }
 };
@@ -3453,11 +3454,12 @@ struct searing_flames_buff_t : public buff_t
   {
     default_chance = player -> dbc.spell( 77661 ) -> proc_chance();
     buff_duration  = player -> dbc.spell( 77661 ) -> duration();
-    max_stack      = player -> dbc.spell( 77661 ) -> max_stacks();
+    _max_stack      = player -> dbc.spell( 77661 ) -> max_stacks();
 
     // Add some more uptimes to the stack uptime vector
-    if ( static_cast< int >( stack_uptime.size() ) < max_stack )
-      for ( int i = stack_uptime.size(); i <= max_stack; ++i )
+    int stack_uptimes = static_cast< int >( stack_uptime.size() );
+    if ( stack_uptimes < _max_stack )
+      for ( int i = stack_uptimes; i <= _max_stack; ++i )
         stack_uptime.push_back( new buff_uptime_t( sim ) );
   }
 };

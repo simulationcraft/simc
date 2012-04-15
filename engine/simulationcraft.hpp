@@ -2923,8 +2923,16 @@ struct buff_t
   player_t* const player;
   std::string name_str;
   const spell_data_t* s_data;
+  // static values
+protected:
+  int _max_stack;
+public:
   double default_value;
-  double current_value, react;
+  bool activated;
+  bool reverse, constant, quiet, overridden;
+  // dynamic values
+  double current_value;
+  int current_stack;
   timespan_t buff_duration, buff_cooldown;
   double default_chance;
   timespan_t last_start;
@@ -2941,10 +2949,6 @@ struct buff_t
   event_t* delay;
   rng_t* rng;
   cooldown_t* cooldown;
-  int current_stack, max_stack;
-  int aura_id;
-  bool activated;
-  bool reverse, constant, quiet, overridden;
   sample_data_t uptime_pct;
   sample_data_t start_intervals;
   sample_data_t trigger_intervals;
@@ -2960,10 +2964,10 @@ public:
   // Use up() where the presence of the buff affects the action mechanics.
 
   const spell_data_t& data() const { return *s_data; }
-  int    check() const { return current_stack; }
-  inline bool   up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
-  inline int    stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  inline double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  int             check() const { return current_stack; }
+  inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
+  inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
+  inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
@@ -2999,9 +3003,8 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
-  const spelleffect_data_t& effect1() const { return s_data -> effect1(); }
-  const spelleffect_data_t& effect2() const { return s_data -> effect2(); }
-  const spelleffect_data_t& effect3() const { return s_data -> effect3(); }
+  int max_stack() const
+    { return _max_stack; }
 };
 
 inline buff_creator_t::operator buff_t* () const
@@ -5110,11 +5113,6 @@ public:
   }
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
-
-  // Move to ability_t in future
-  const spelleffect_data_t& effect1() const { return data().effect1(); }
-  const spelleffect_data_t& effect2() const { return data().effect2(); }
-  const spelleffect_data_t& effect3() const { return data().effect3(); }
 
   targetdata_t* targetdata() const
   {
