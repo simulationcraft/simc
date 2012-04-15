@@ -252,8 +252,8 @@ struct priest_t : public player_t
     spells( spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
-    glyphs( glyphs_t() ),
     initial_shadow_orbs(),
+    glyphs( glyphs_t() ),
     constants( constants_t() )
   {
     distance                             = 40.0;
@@ -306,7 +306,7 @@ struct priest_t : public player_t
 
   virtual double    shadow_orb_amount() const;
 
-  void fixup_atonement_stats( const char* trigger_spell_name, const char* atonement_spell_name );
+  void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
 };
 
@@ -4099,7 +4099,7 @@ void priest_t::reset()
 // priest_t::fixup_atonement_stats  =========================================
 
 void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
-                                      const char* atonement_spell_name )
+                                      const std::string& atonement_spell_name )
 {
   if ( stats_t* trigger = find_stats( trigger_spell_name ) )
   {

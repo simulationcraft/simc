@@ -346,13 +346,11 @@ struct bane_of_havoc_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
     if ( result_is_hit() )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
-      p -> buffs.bane_of_havoc -> trigger();
+      p() -> buffs.bane_of_havoc -> trigger();
     }
 
   }
@@ -446,8 +444,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
-
       trigger_decimation( this, impact_result );
     }
   }
@@ -695,10 +691,8 @@ struct drain_soul_t : public warlock_spell_t
   virtual void player_buff()
   {
     warlock_spell_t::player_buff();
-    warlock_t* p = player -> cast_warlock();
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
-    if ( target -> health_percentage() < effect3().base_value() )
+    if ( target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
       player_multiplier *= 2.0;
     }
@@ -1047,14 +1041,12 @@ struct life_tap_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    warlock_t* p = player -> cast_warlock();
-
     if (  max_mana_pct > 0 )
-      if ( ( 100.0 * p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] ) > max_mana_pct )
+      if ( ( 100.0 * p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) > max_mana_pct )
         return false;
 
     if ( trigger > 0 )
-      if ( p -> resources.current[ RESOURCE_MANA ] > trigger )
+      if ( p() -> resources.current[ RESOURCE_MANA ] > trigger )
         return false;
 
     return warlock_spell_t::ready();
@@ -1069,13 +1061,6 @@ struct demon_armor_t : public warlock_spell_t
     warlock_spell_t( p, "Demon Armor" )
   {
     harmful = false;
-  }
-
-  virtual void execute()
-  {
-    warlock_t* p = player -> cast_warlock();
-
-    warlock_spell_t::execute();
   }
 
   virtual bool ready()
@@ -1160,7 +1145,7 @@ private:
     pet = p -> find_pet( pet_name );
     if ( ! pet )
     {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name );
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
       sim -> cancel();
     }
   }
@@ -1409,8 +1394,6 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
-
       if ( t -> debuffs.flying -> check() )
       {
         if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), t -> name_str.c_str() );
@@ -1595,11 +1578,7 @@ struct hellfire_t : public warlock_spell_t
   }
 
   virtual bool usable_moving()
-  {
-    warlock_t* p = player -> cast_warlock();
-
-    return false;
-  }
+  { return false; }
 
   virtual void tick( dot_t* /* d */ )
   {
