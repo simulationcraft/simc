@@ -170,16 +170,16 @@ struct priest_t : public player_t
   } procs;
 
   // Special
-  std::queue<spell_t*> shadowy_apparition_free_list;
-  std::list<spell_t*>  shadowy_apparition_active_list;
 
-  struct active_spells_t
+  struct spells_t
   {
+    std::queue<spell_t*> apparitions_free;
+    std::list<spell_t*>  apparitions_active;
     heal_t* echo_of_light;
-  } active_spells;
+    bool echo_of_light_merged;
+    spells_t() { echo_of_light=0; echo_of_light_merged = 0; }
+  } spells;
 
-  bool echo_of_light_merged;
-  int initial_shadow_orbs;
 
   // Random Number Generators
   struct rngs_t
@@ -195,8 +195,8 @@ struct priest_t : public player_t
   } pets;
 
   // Options
+  int initial_shadow_orbs;
   std::string atonement_target_str;
-
   std::vector<player_t *> party_list;
 
   // Glyphs
@@ -240,7 +240,7 @@ struct priest_t : public player_t
 
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
-    // default initialize things ( set all elements to 0 )
+    // initialize containers. For POD containers this sets all elements to 0.
     buffs( buffs_t() ),
     talents( talents_t() ),
     spec( specs_t() ),
@@ -249,15 +249,13 @@ struct priest_t : public player_t
     gains( gains_t() ),
     benefits( benefits_t() ),
     procs( procs_t() ),
-    active_spells( active_spells_t() ),
+    spells( spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
     glyphs( glyphs_t() ),
+    initial_shadow_orbs(),
     constants( constants_t() )
   {
-    echo_of_light_merged                 = false;
-    initial_shadow_orbs                  = 0;
-
     distance                             = 40.0;
     default_distance                     = 40.0;
 
@@ -266,9 +264,6 @@ struct priest_t : public player_t
     cooldowns.chakra                     = get_cooldown( "chakra"   );
     cooldowns.inner_focus                = get_cooldown( "inner_focus" );
     cooldowns.penance                    = get_cooldown( "penance" );
-
-    pets.shadow_fiend                    = NULL;
-    pets.lightwell                       = NULL;
 
     create_options();
   }
@@ -526,37 +521,37 @@ struct priest_heal_t : public heal_t
     if ( ! p() -> mastery_spells.echo_of_light -> ok() )
       return;
 
-    if ( p() -> active_spells.echo_of_light -> dot() -> ticking )
+    if ( p() -> spells.echo_of_light -> dot() -> ticking )
     {
-      if ( p() -> echo_of_light_merged )
+      if ( p() -> spells.echo_of_light_merged )
       {
         // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
-        p() -> active_spells.echo_of_light -> base_td = ( p() -> active_spells.echo_of_light -> base_td *
-                                                p() -> active_spells.echo_of_light -> dot() -> ticks() +
+        p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
+                                                p() -> spells.echo_of_light -> dot() -> ticks() +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> active_spells.echo_of_light -> num_ticks;
-        p() -> active_spells.echo_of_light -> dot() -> refresh_duration();
+                                                p() -> spells.echo_of_light -> num_ticks;
+        p() -> spells.echo_of_light -> dot() -> refresh_duration();
       }
       else
       {
         // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
-        p() -> active_spells.echo_of_light -> base_td = ( p() -> active_spells.echo_of_light -> base_td *
-                                                ( p() -> active_spells.echo_of_light -> dot() -> ticks() - 1 ) +
+        p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
+                                                ( p() -> spells.echo_of_light -> dot() -> ticks() - 1 ) +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> active_spells.echo_of_light -> num_ticks;
-        p() -> active_spells.echo_of_light -> dot() -> refresh_duration();
-        p() -> echo_of_light_merged = true;
+                                                p() -> spells.echo_of_light -> num_ticks;
+        p() -> spells.echo_of_light -> dot() -> refresh_duration();
+        p() -> spells.echo_of_light_merged = true;
       }
     }
     else
     {
-      p() -> active_spells.echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
+      p() -> spells.echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
                                               p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 /
-                                              p() -> active_spells.echo_of_light -> num_ticks;
-      p() -> active_spells.echo_of_light -> execute();
-      p() -> echo_of_light_merged = false;
+                                              p() -> spells.echo_of_light -> num_ticks;
+      p() -> spells.echo_of_light -> execute();
+      p() -> spells.echo_of_light_merged = false;
     }
   }
 
@@ -1261,8 +1256,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     priest_spell_t::impact_s( s );
 
     // Cleanup. Re-add to free list.
-    p() -> shadowy_apparition_active_list.remove( this );
-    p() -> shadowy_apparition_free_list.push( this );
+    p() -> spells.apparitions_active.remove( this );
+    p() -> spells.apparitions_free.push( this );
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -1283,15 +1278,15 @@ unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
 
   assert ( p -> spec.shadowy_apparition -> ok() );
 
-  if ( ! p -> shadowy_apparition_free_list.empty() )
+  if ( ! p -> spells.apparitions_free.empty() )
   {
     for ( int i = static_cast<int>( p -> resources.current[ RESOURCE_SHADOW_ORB ] ); i > 0; i-- )
     {
-      spell_t* s = p -> shadowy_apparition_free_list.front();
+      spell_t* s = p -> spells.apparitions_free.front();
 
-      p -> shadowy_apparition_free_list.pop();
+      p -> spells.apparitions_free.pop();
 
-      p -> shadowy_apparition_active_list.push_back( s );
+      p -> spells.apparitions_active.push_back( s );
 
       if ( p -> rngs.sa_shadow_orb_mastery -> roll( p -> shadow_orb_amount() ) )
       {
@@ -1310,17 +1305,17 @@ void priest_spell_t::add_more_shadowy_apparitions( priest_t* p, size_t n )
 {
   spell_t* s = NULL;
 
-  if ( ! p -> shadowy_apparition_free_list.size() )
+  if ( ! p -> spells.apparitions_free.size() )
   {
     for ( size_t i = 0; i < n; i++ )
     {
       s = new shadowy_apparition_spell_t( p );
-      p -> shadowy_apparition_free_list.push( s );
+      p -> spells.apparitions_free.push( s );
     }
   }
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> shadowy_apparition_free_list.size() ) );
+    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
 }
 
 void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned number )
@@ -3704,9 +3699,9 @@ void priest_t::init_spells()
   glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    active_spells.echo_of_light = new echo_of_light_t( this );
+    spells.echo_of_light = new echo_of_light_t( this );
   else
-    active_spells.echo_of_light = NULL;
+    spells.echo_of_light = NULL;
 
   if ( spec.shadowy_apparition -> ok() )
   {
@@ -4086,24 +4081,24 @@ void priest_t::reset()
 
   if ( spec.shadowy_apparition -> ok() )
   {
-    while ( shadowy_apparition_active_list.size() )
+    while ( spells.apparitions_active.size() )
     {
-      spell_t* s = shadowy_apparition_active_list.front();
+      spell_t* s = spells.apparitions_active.front();
 
-      shadowy_apparition_active_list.pop_front();
+      spells.apparitions_active.pop_front();
 
-      shadowy_apparition_free_list.push( s );
+      spells.apparitions_free.push( s );
     }
   }
 
-  echo_of_light_merged = false;
+  spells.echo_of_light_merged = false;
 
   init_party();
 }
 
 // priest_t::fixup_atonement_stats  =========================================
 
-void priest_t::fixup_atonement_stats( const char* trigger_spell_name,
+void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
                                       const char* atonement_spell_name )
 {
   if ( stats_t* trigger = find_stats( trigger_spell_name ) )

@@ -46,21 +46,45 @@ struct buff_delay_t : public event_t
 }
 
 buff_t::buff_t( const buff_creator_t& params ) :
-  sim( params._sim ), player( params._player.target ), name_str( params._name ),
+  sim( params._sim ),
+  player( params._player.target ),
+  name_str( params._name ),
   s_data( params.s_data ),
-  default_value( 0.0 ),
+  default_value(),
+  current_value(),
+  react(),
   buff_duration( timespan_t::zero() ),
   buff_cooldown( timespan_t::zero() ),
-  default_chance( 1.0 ),
+  default_chance(),
+  last_start( timespan_t::zero() ),
+  last_trigger( timespan_t::zero() ),
+  iteration_uptime_sum( timespan_t::zero() ),
+  up_count(),
+  down_count(),
+  start_count(),
+  refresh_count(),
+  trigger_attempts(),
+  trigger_successes(),
+  benefit_pct(),
+  trigger_pct(),
+  avg_start(),
+  avg_refresh(),
   source( params._player.source ),
   initial_source( params._player.source ),
+  expiration( 0 ),
+  delay( 0 ),
+  rng( 0 ),
+  cooldown( 0 ),
+  current_stack(),
   max_stack( 1 ),
-  //max_stack( params._max_stack ),
+  aura_id(),
   activated( true ),
-  reverse( false ),
-  constant( false ),
-  quiet( false ),
-  uptime_pct(), start_intervals(), trigger_intervals()
+  reverse(),
+  constant(),
+  quiet(),
+  uptime_pct(),
+  start_intervals(),
+  trigger_intervals()
 {
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
@@ -131,31 +155,12 @@ buff_t::buff_t( const buff_creator_t& params ) :
 
 void buff_t::init()
 {
-  current_stack = 0;
-  current_value = 0;
-  last_start = timespan_t::min();
-  last_trigger = timespan_t::min();
-  iteration_uptime_sum = timespan_t::zero();
-  up_count = 0;
-  down_count = 0;
-  start_count = 0;
-  refresh_count = 0;
-  trigger_attempts = 0;
-  trigger_successes = 0;
-  benefit_pct = 0;
-  trigger_pct = 0;
-  avg_start = 0;
-  avg_refresh = 0;
-  constant = false;
-  overridden = false;
-  expiration = 0;
-  delay = 0;
-
   if ( max_stack < 1 )
     max_stack = 1;
 
   // Keep non hidden reported numbers clean
-  start_intervals.mean = 0; trigger_intervals.mean = 0;
+  start_intervals.mean = 0;
+  trigger_intervals.mean = 0;
 
   buff_duration = std::min( buff_duration, timespan_t::from_seconds( sim -> wheel_seconds - 2.0 ) );
 
@@ -172,7 +177,7 @@ void buff_t::init()
   {
     cooldown = initial_source-> get_cooldown( "buff_" + name_str );
     if ( initial_source != player )
-      name_str = name_str + ':' + initial_source->name_str;
+      name_str = name_str + ':' + initial_source -> name_str;
     rng = initial_source-> get_rng( name_str );
     player -> buff_list.push_back( this );
   }
