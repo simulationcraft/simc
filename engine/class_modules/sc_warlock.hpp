@@ -14,17 +14,16 @@ struct warlock_targetdata_t : public targetdata_t
 {
   dot_t*  dots_corruption;
   dot_t*  dots_unstable_affliction;
-  dot_t*  dots_bane_of_agony;
-  dot_t*  dots_bane_of_doom;
+  dot_t*  dots_agony;
+  dot_t*  dots_doom;
   dot_t*  dots_immolate;
   dot_t*  dots_drain_life;
   dot_t*  dots_drain_soul;
-  dot_t*  dots_shadowflame_dot;
-  dot_t*  dots_curse_of_elements;
+  dot_t*  dots_shadowflame;
   dot_t*  dots_burning_embers;
+  dot_t*  dots_malefic_grasp;
 
-  buff_t* debuffs_haunted;
-  buff_t* debuffs_shadow_embrace;
+  buff_t* debuffs_haunt;
 
   int affliction_effects();
   int active_dots();
@@ -35,7 +34,6 @@ struct warlock_targetdata_t : public targetdata_t
 struct warlock_pet_t;
 struct warlock_main_pet_t;
 struct warlock_guardian_pet_t;
-
 
 struct warlock_t : public player_t
 {
@@ -85,83 +83,71 @@ struct warlock_t : public player_t
 
   struct talents_t
   {
-    // Put MoP talents in here
+    const spell_data_t* dark_regeneration;
+    const spell_data_t* soul_leech;
+    const spell_data_t* harvest_life;
+
+    const spell_data_t* howl_of_terror;
+    const spell_data_t* mortal_coil;
+    const spell_data_t* shadowfury;
+
+    const spell_data_t* soul_link;
+    const spell_data_t* sacrificial_pact;
+    const spell_data_t* dark_bargain;
+
+    const spell_data_t* blood_fear;
+    const spell_data_t* burning_rush;
+    const spell_data_t* unbound_will;
+
+    const spell_data_t* grimoire_of_supremacy;
+    const spell_data_t* grimoire_of_service;
+    const spell_data_t* grimoire_of_sacrifice;
+
+    const spell_data_t* archimondes_vengeance;
+    const spell_data_t* kiljaedens_cunning;
+    const spell_data_t* mannoroths_fury;
   } talents;
 
-  // Affliction
-  spell_id_t* talent_unstable_affliction;
-  talent_t* talent_doom_and_gloom; // done
-  talent_t* talent_improved_life_tap; // done
-  talent_t* talent_improved_corruption; // done
-  talent_t* talent_jinx;
-  talent_t* talent_soul_siphon; // done
-  talent_t* talent_siphon_life; // done
-  talent_t* talent_eradication; // done
-  talent_t* talent_soul_swap;
-  talent_t* talent_shadow_embrace; // done
-  talent_t* talent_deaths_embrace; // done
-  talent_t* talent_nightfall; // done
-  talent_t* talent_soulburn_seed_of_corruption;
-  talent_t* talent_everlasting_affliction; // done
-  talent_t* talent_pandemic; // done
-  talent_t* talent_haunt; // done
-
-  // Demonology
-  spell_id_t* talent_summon_felguard;
-  talent_t* talent_demonic_embrace; // done
-  talent_t* talent_dark_arts; // done
-  talent_t* talent_mana_feed; // done
-  talent_t* talent_demonic_aegis;
-  talent_t* talent_master_summoner;
-  talent_t* talent_impending_doom;
-  talent_t* talent_demonic_empowerment;
-  talent_t* talent_molten_core; // done
-  talent_t* talent_hand_of_guldan;
-  talent_t* talent_aura_of_foreboding;
-  talent_t* talent_ancient_grimoire;
-  talent_t* talent_inferno;
-  talent_t* talent_decimation; // done
-  talent_t* talent_cremation;
-  talent_t* talent_demonic_pact;
-  talent_t* talent_metamorphosis; // done
-
-  // Destruction
-  spell_id_t* talent_conflagrate;
-  talent_t* talent_bane; // done
-  talent_t* talent_shadow_and_flame; // done
-  talent_t* talent_improved_immolate;
-  talent_t* talent_improved_soul_fire;
-  talent_t* talent_emberstorm; // done
-  talent_t* talent_improved_searing_pain;
-  talent_t* talent_backdraft; // done
-  talent_t* talent_shadowburn; // done
-  talent_t* talent_burning_embers;
-  talent_t* talent_soul_leech; // done
-  talent_t* talent_fire_and_brimstone; // done
-  talent_t* talent_shadowfury; // done
-  talent_t* talent_empowered_imp; // done
-  talent_t* talent_bane_of_havoc;
-  talent_t* talent_chaos_bolt; // done
-
-  struct passive_spells_t
+  // Specialization Spells
+  struct specs_t
   {
-    spell_id_t* shadow_mastery;
-    spell_id_t* demonic_knowledge;
-    spell_id_t* cataclysm;
-    spell_id_t* doom_and_gloom;
-    spell_id_t* pandemic;
-    spell_id_t* nethermancy;
+    // Affliction
+    const spell_data_t* agony;
+    const spell_data_t* corruption;
+    const spell_data_t* drain_soul;
+    const spell_data_t* malefic_grasp;
+    const spell_data_t* soulburn;
+    const spell_data_t* unstable_affliction;
 
-  };
-  passive_spells_t passive_spells;
+    // Demonology
+    const spell_data_t* demonic_fury;
+    const spell_data_t* demonic_leap;
+    const spell_data_t* hand_of_guldan;
+    const spell_data_t* metamorphosis;
+    const spell_data_t* summon_felguard;
+    const spell_data_t* wild_imps;
+
+    // Destruction
+    const spell_data_t* burning_embers;
+    const spell_data_t* chaotic_energy;
+    const spell_data_t* conflagrate;
+    const spell_data_t* immolate;
+    const spell_data_t* incinerate;
+    const spell_data_t* soul_fire;
+
+  } spec;
 
   struct mastery_spells_t
   {
-    mastery_t* potent_afflictions;
-    mastery_t* master_demonologist;
-    mastery_t* fiery_apocalypse;
-  };
-  mastery_spells_t mastery_spells;
+    const spell_data_t* potent_afflictions;
+    const spell_data_t* master_demonologist;
+    const spell_data_t* fiery_apocalypse;
+  } mastery_spells;
+
+  struct passive_spells_t
+  {
+    const spell_data_t* decimation;
+  } passive_spells;
 
   std::string dark_intent_target_str;
 
@@ -209,28 +195,29 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
-    glyph_t* metamorphosis;
-    // Prime
-    glyph_t* life_tap;
-    glyph_t* shadow_bolt;
-
-    // Major
-    glyph_t* chaos_bolt;
-    glyph_t* conflagrate;
-    glyph_t* corruption;
-    glyph_t* bane_of_agony;
-    glyph_t* felguard;
-    glyph_t* haunt;
-    glyph_t* immolate;
-    glyph_t* imp;
-    glyph_t* incinerate;
-    glyph_t* lash_of_pain;
-    glyph_t* shadowburn;
-    glyph_t* unstable_affliction;
+    const spell_data_t* metamorphosis;
+    const spell_data_t* life_tap;
+    const spell_data_t* shadow_bolt;
+    const spell_data_t* chaos_bolt;
+    const spell_data_t* conflagrate;
+    const spell_data_t* corruption;
+    const spell_data_t* bane_of_agony;
+    const spell_data_t* felguard;
+    const spell_data_t* haunt;
+    const spell_data_t* immolate;
+    const spell_data_t* imp;
+    const spell_data_t* incinerate;
+    const spell_data_t* lash_of_pain;
+    const spell_data_t* shadowburn;
+    const spell_data_t* unstable_affliction;
+    // MoP
+    const spell_data_t* burning_embers;
+    const spell_data_t* demon_hunting;
+    const spell_data_t* demon_training;
+    const spell_data_t* doom;
+    const spell_data_t* soul_shards;
   };
   glyphs_t glyphs;
-
-  timespan_t constants_pandemic_gcd;
 
   int use_pre_soulburn;
 
@@ -268,10 +255,6 @@ struct warlock_t : public player_t
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    composite_player_td_multiplier( school_type_e school, action_t* a = NULL ) const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-
-  // Event Tracking
-  virtual action_expr_t* create_expression( action_t*, const std::string& name );
-
 
   static void trigger_mana_feed( action_t* s, double impact_result );
   static void trigger_burning_embers ( spell_t* s, double dmg );

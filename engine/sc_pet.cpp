@@ -211,7 +211,7 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::s
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
     if ( ! owner )
-      return spell_data_t::nil();
+      return spell_data_t::not_found();
 
     return owner -> find_pet_spell( name, token );
   }

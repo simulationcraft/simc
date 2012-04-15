@@ -189,6 +189,11 @@ action_t::action_t( action_type_e       ty,
 
   stats = player -> get_stats( name_str , this );
 
+  if ( &data() == &spell_data_not_found_t::singleton ) {
+    sim -> errorf( "Player %s could not find action %s", player -> name(), name() );
+    background = true; // prevent action from being executed
+  }
+
   if ( data().ok() )
   {
     parse_spell_data( data() );
@@ -1499,7 +1504,7 @@ void action_t::check_spec( specialization_e necessary_spec )
 
 void action_t::check_spell( const spell_data_t* sp )
 {
-  if ( ! sp -> ok() && ! data().ok() )
+  if ( ! sp -> ok() )
   {
     sim -> errorf( "Player %s attempting to execute action %s without spell ok().\n",
                    player -> name(), name() );

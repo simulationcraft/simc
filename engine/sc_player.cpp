@@ -5527,7 +5527,7 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
   assert( sp );
   if ( sp -> ok() ) return sp;
 
-  return spell_data_t::nil();
+  return spell_data_t::not_found();
 }
 
 // player_t::find_racial_spell ============================================
@@ -5538,7 +5538,7 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
   }
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5553,7 +5553,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   unsigned spell_id = dbc.class_ability_id( type, spec, name.c_str() );
 
   if ( s != SPEC_NONE && s != spec )
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
@@ -5574,7 +5574,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
 
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
   }
 
   dbc_t::add_token( spell_id, token, dbc.ptr );

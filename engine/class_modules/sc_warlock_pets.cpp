@@ -164,7 +164,7 @@ namespace warlock_pet_actions {
 struct warlock_pet_melee_t : public melee_attack_t
 {
   warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
-    melee_attack_t( name, p, RESOURCE_NONE, SCHOOL_PHYSICAL, TREE_NONE, false )
+    melee_attack_t( name, p )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
@@ -185,24 +185,18 @@ struct warlock_pet_melee_t : public melee_attack_t
 
 struct warlock_pet_melee_attack_t : public melee_attack_t
 {
-  warlock_pet_melee_attack_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_PHYSICAL ) :
-    melee_attack_t( n, p, r, s, TREE_NONE, true )
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
+    melee_attack_t( "", p, p -> find_pet_spell( n ), sc )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
   }
 
-  warlock_pet_melee_attack_t( const char* n, warlock_pet_t* player, const char* sname, talent_tree_type_e t = TREE_NONE ) :
-    melee_attack_t( n, sname, player, t, true )
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+    melee_attack_t( "", p, s, sc )
   {
-    may_crit   = true;
-    special = true;
-  }
-
-  warlock_pet_melee_attack_t( const char* n, uint32_t id, warlock_pet_t* player, talent_tree_type_e t = TREE_NONE ) :
-    melee_attack_t( n, id, player, t, true )
-  {
+    weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
   }
@@ -230,29 +224,15 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 struct warlock_pet_spell_t : public spell_t
 {
 
-  warlock_pet_spell_t( const char* n, warlock_pet_t* p, resource_type_e r=RESOURCE_MANA, school_type_e s=SCHOOL_SHADOW ) :
-    spell_t( n, p, r, s )
+  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
+    spell_t( "", p, p -> find_class_spell( n ), sc )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( const spell_id_t& s, talent_tree_type_e t = TREE_NONE ) :
-    spell_t( s, t )
-  {
-    may_crit = true;
-    crit_multiplier *= 1.33;
-  }
-
-  warlock_pet_spell_t( const char* n, warlock_pet_t* p, const char* sname, talent_tree_type_e t = TREE_NONE ) :
-    spell_t( n, sname, p, t )
-  {
-    may_crit = true;
-    crit_multiplier *= 1.33;
-  }
-
-  warlock_pet_spell_t( const char* n, uint32_t id, warlock_pet_t* p, talent_tree_type_e t = TREE_NONE ) :
-    spell_t( n, id, p, t )
+  warlock_pet_spell_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+    spell_t( "", p, s, sc )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
@@ -273,17 +253,19 @@ struct warlock_pet_spell_t : public spell_t
 };
 
 }
+
+
 namespace imp_spells {
 
 struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   firebolt_t( imp_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, "Firebolt" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
   {
     warlock_t*  o = p -> owner -> cast_warlock();
 
     direct_power_mod = 0.618; // tested in-game as of 2011/05/10
-    base_execute_time += o -> talent_dark_arts -> effect1().time_value();
+
     if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 // imp_pet_t::fire_bolt_t::execute ==========================================
@@ -303,20 +285,21 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 
 };
+
 }
 
 namespace felguard_spells
 {
+
 struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   legion_strike_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( "legion_strike", p, "Legion Strike" )
+    warlock_pet_actions::warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     warlock_t*      o = p -> owner -> cast_warlock();
     aoe               = -1;
     direct_power_mod  = 0.264;
     weapon   = &( p -> main_hand_weapon );
-    base_multiplier *= 1.0 + o -> talent_dark_arts -> effect2().percent();
   }
 
   virtual void execute()
@@ -325,29 +308,13 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 
     warlock_t::trigger_mana_feed ( this, result );
   }
-
-  virtual void player_buff()
-  {
-    warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
-    warlock_pet_actions::warlock_pet_melee_attack_t::player_buff();
-
-    if ( o -> race == RACE_ORC )
-    {
-      // Glyph is additive with orc racial
-      player_multiplier /= 1.05;
-      player_multiplier *= 1.05 + o -> glyphs.felguard -> base_value();
-    }
-    else
-    {
-      player_multiplier *= 1.0 + o -> glyphs.felguard -> base_value();
-    }
-  }
+  
 };
 
 struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   felstorm_tick_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", 89753, p )
+    warlock_pet_actions::warlock_pet_melee_attack_t( p, p -> find_spell( 89753, "felstorm_tick" ) )
   {
     direct_power_mod = 0.231; // hardcoded from the tooltip
     dual        = true;
@@ -364,7 +331,7 @@ struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   felstorm_tick_t* felstorm_tick;
 
   felstorm_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", 89751, p ), felstorm_tick( 0 )
+    warlock_pet_actions::warlock_pet_melee_attack_t( p, "Felstorm" ), felstorm_tick( 0 )
   {
     aoe       = -1;
     harmful   = false;
@@ -388,6 +355,7 @@ struct melee_t : public warlock_pet_actions::warlock_pet_melee_t
     warlock_pet_actions::warlock_pet_melee_t( p, "melee" )
   { }
 };
+
 }
 
 namespace felhunter_spells
@@ -396,11 +364,10 @@ namespace felhunter_spells
 struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   shadow_bite_t( felhunter_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "shadow_bite", p, "Shadow Bite" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
   {
     warlock_t*       o = p -> owner -> cast_warlock();
 
-    base_multiplier *= 1.0 + o -> talent_dark_arts -> effect3().percent();
     direct_power_mod = 0.614; // tested in-game as of 2010/12/20
     base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
     base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
@@ -432,10 +399,11 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
 
 namespace succubus_spells
 {
+
 struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   lash_of_pain_t( succubus_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "lash_of_pain", p, "Lash of Pain" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Lash of Pain" )
   {
     warlock_t*  o     = p -> owner -> cast_warlock();
 
@@ -468,11 +436,11 @@ struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
     {
       // Glyph is additive with orc racial
       player_multiplier /= 1.05;
-      player_multiplier *= 1.05 + o -> glyphs.lash_of_pain -> base_value();
+      player_multiplier *= 1.05 + o -> glyphs.lash_of_pain -> effectN(1).percent();
     }
     else
     {
-      player_multiplier *= 1.0 + o -> glyphs.lash_of_pain -> base_value();
+      player_multiplier *= 1.0 + o -> glyphs.lash_of_pain -> effectN(1).percent();
     }
   }
 };
@@ -485,7 +453,7 @@ namespace voidwalker_spells
 struct torment_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   torment_t( voidwalker_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "torment", p, "Torment" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Torment" )
   {
     direct_power_mod = 0.512;
   }
@@ -509,7 +477,7 @@ namespace infernal_spells
 struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   immolation_damage_t( infernal_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "immolation_dmg", 20153, p )
+    warlock_pet_actions::warlock_pet_spell_t( p, p -> find_spell( 20153, "immolation_dmg" ) )
   {
     dual        = true;
     background  = true;
@@ -526,7 +494,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
   immolation_damage_t* immolation_damage;
 
   infernal_immolation_t( infernal_pet_t* p, const std::string& options_str ) :
-    warlock_pet_actions::warlock_pet_spell_t( "infernal_immolation", 19483, p ), immolation_damage( 0 )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Immolation" ), immolation_damage( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -555,7 +523,7 @@ namespace doomguard_spells
 struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   doom_bolt_t( doomguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "doombolt", p, "Doom Bolt" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Doom Bolt" )
   {
     //FIXME: Needs testing, but WoL seems to suggest it has been changed from 2.5 to 3.0 sometime after 4.1.
     base_execute_time = timespan_t::from_seconds( 3.0 );
@@ -808,7 +776,7 @@ void warlock_pet_t::dismiss()
   /* Commenting this out for now - we never dismiss the real pet during combat
   anyway, and we don't want to accidentally turn off DP when guardians are dismissed
   warlock_t*  o = owner -> cast_warlock();
-  if ( o -> talent_demonic_pact -> rank() )
+  if ( o -> talents.demonic_pact -> rank() )
   sim -> auras.demonic_pact -> expire();
    */
 }
@@ -890,7 +858,7 @@ double warlock_main_pet_t::composite_player_multiplier( const school_type_e scho
 
   warlock_t* o = owner -> cast_warlock();
 
-  double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+  double mastery_value = o -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
 
   m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
 
@@ -966,17 +934,6 @@ double warlock_guardian_pet_t::composite_spell_power( const school_type_e school
   double sp = pet_t::composite_spell_power( school );
   sp += snapshot_sp * ( level / 80.0 ) * 0.5;
   return sp;
-}
-
-double warlock_guardian_pet_t::composite_spell_power_multiplier() const
-{
-  double m = warlock_pet_t::composite_spell_power_multiplier();
-  warlock_t* o = owner -> cast_warlock();
-
-  // Guardians normally don't gain demonic pact, but when they provide it they also provide it to themselves
-  if ( o -> talent_demonic_pact -> rank() ) m *= 1.10;
-
-  return m;
 }
 
 // ==========================================================================
@@ -1199,7 +1156,7 @@ double doomguard_pet_t::composite_player_multiplier( const school_type_e school,
     m  *= 1.05;
   }
 
-  double mastery_value = o -> mastery_spells.master_demonologist -> effect_base_value( 3 );
+  double mastery_value = o -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
 
   double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
 

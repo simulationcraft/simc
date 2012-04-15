@@ -2196,6 +2196,7 @@ public:
   std::string          to_str() const;
 
   static spell_data_t* nil();
+  static spell_data_t* not_found();
   static spell_data_t* find( const char* name, bool ptr = false );
   static spell_data_t* find( unsigned id, bool ptr = false );
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
@@ -2216,6 +2217,17 @@ public:
 
 inline spell_data_t* spell_data_t::nil()
 { return &spell_data_nil_t::singleton; }
+
+class spell_data_not_found_t : public spell_data_t
+{
+public:
+  spell_data_not_found_t();
+  static spell_data_not_found_t singleton;
+};
+
+inline spell_data_t* spell_data_t::not_found()
+{ return &spell_data_not_found_t::singleton; }
+
 
 struct talent_data_t
 {
@@ -5056,7 +5068,7 @@ public:
   virtual void   check_talent( int talent_rank );
   virtual void   check_spec( specialization_e necessary_spec );
   virtual void   check_race( race_type_e race );
-  virtual void   check_spell( const spell_data_t* sp = spell_data_t::nil() );
+  virtual void   check_spell( const spell_data_t* sp );
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) const { return 0; }

@@ -719,8 +719,6 @@ struct echo_of_light_t : public priest_heal_t
   echo_of_light_t( priest_t* p ) :
     priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
   {
-    check_spell();
-
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
 
@@ -738,8 +736,6 @@ struct atonement_heal_t : public priest_heal_t
   atonement_heal_t( const std::string& n, priest_t* p ) :
     priest_heal_t( n, p, p -> find_spell( 81751 ) )
   {
-    check_spell();
-
     proc           = true;
     background     = true;
     round_base_dmg = false;
@@ -1173,9 +1169,7 @@ struct lightwell_pet_t : public pet_t
     lightwell_renew_t( lightwell_pet_t* player ) :
       heal_t( "lightwell_renew", player, player -> find_spell( 7001 ) )
     {
-      check_spell();
-
-      may_crit = false;
+        may_crit = false;
       tick_may_crit = true;
 
       tick_power_mod = 0.308;
@@ -1254,8 +1248,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   shadowy_apparition_spell_t( priest_t* player ) :
     priest_spell_t( "shadowy_apparition_spell", player, player -> find_spell( 87532 ) )
   {
-    check_spell();
-
     background        = true;
     proc              = true;
     callbacks         = false;
@@ -1376,8 +1368,6 @@ struct archangel_t : public priest_spell_t
   archangel_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "archangel", player, player -> find_spell( "Archangel" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful           = false;
@@ -1415,8 +1405,6 @@ struct chakra_t : public priest_spell_t
   chakra_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "chakra", p, p -> find_spell( "Chakra" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1448,8 +1436,6 @@ struct dispersion_t : public priest_spell_t
   dispersion_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "dispersion", player, player -> find_spell( "Dispersion" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_tick_time    = timespan_t::from_seconds( 1.0 );
@@ -1479,8 +1465,6 @@ struct fortitude_t : public priest_spell_t
   fortitude_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "fortitude", player, player -> find_spell( "Power Word: Fortitude" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1526,8 +1510,6 @@ struct hymn_of_hope_tick_t : public priest_spell_t
   hymn_of_hope_tick_t( priest_t* player ) :
     priest_spell_t( "hymn_of_hope_tick", player, player -> find_spell( 64904 ) )
   {
-    check_spell();
-
     dual        = true;
     background  = true;
     may_crit    = true;
@@ -1555,8 +1537,6 @@ struct hymn_of_hope_t : public priest_spell_t
     priest_spell_t( "hymn_of_hope", p, p -> find_spell( "Hymn of Hope" ) ),
     hymn_of_hope_tick( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1610,8 +1590,6 @@ struct inner_fire_t : public priest_spell_t
   inner_fire_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "inner_fire", player, player -> find_spell( "Inner Fire" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1641,8 +1619,6 @@ struct inner_will_t : public priest_spell_t
   inner_will_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "inner_will", player, player -> find_spell( "Inner Will" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1673,8 +1649,6 @@ struct pain_suppression_t : public priest_spell_t
   pain_suppression_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "pain_suppression", p, p -> find_spell( "Pain Suppression" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     // If we don't specify a target, it's defaulted to the mob, so default to the player instead
@@ -1701,8 +1675,6 @@ struct power_infusion_t : public priest_spell_t
   power_infusion_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "power_infusion", p, p -> find_spell( "Power Infusion" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     // If we don't specify a target, it's defaulted to the mob, so default to the player instead
@@ -1740,8 +1712,6 @@ struct shadowform_t : public priest_spell_t
   shadowform_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "shadowform", p, p -> find_spell( "Shadowform" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1773,8 +1743,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
   shadow_fiend_spell_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "shadow_fiend", p, p -> find_spell( "Shadowfiend" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     cooldown = p -> cooldowns.shadow_fiend;
@@ -1813,8 +1781,6 @@ struct mind_blast_t : public priest_spell_t
   mind_blast_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_blast", player, player -> find_spell( "Mind Blast" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     if ( ! dtr && player -> has_dtr )
@@ -1896,8 +1862,6 @@ struct mind_flay_t : public priest_spell_t
                const std::string& name = "mind_flay" ) :
     priest_spell_t( name, p, p -> find_spell( "Mind Flay" ) ), mb_wait( timespan_t::zero() ), cut_for_mb( 0 ), no_dmg( 0 )
   {
-    check_spell();
-
     option_t options[] =
     {
       { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
@@ -1962,8 +1926,6 @@ struct mind_spike_t : public priest_spell_t
   mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_spike", player, player -> find_spell( "Mind Spike" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     if ( ! dtr && player -> has_dtr )
@@ -2055,8 +2017,6 @@ struct mind_sear_tick_t : public priest_spell_t
   mind_sear_tick_t( priest_t* player ) :
     priest_spell_t( "mind_sear_tick", player, player -> find_spell( 49821 ) )
   {
-    check_spell();
-
     background  = true;
     dual        = true;
     direct_tick = true;
@@ -2071,8 +2031,6 @@ struct mind_sear_t : public priest_spell_t
     priest_spell_t( "mind_sear", player, player -> find_spell( "Mind Sear" ) ),
     mind_sear_tick( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     channeled = true;
@@ -2115,8 +2073,6 @@ struct shadow_word_death_t : public priest_spell_t
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "shadow_word_death", p, p -> find_spell( "Shadow Word: Death" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -2198,8 +2154,6 @@ struct shadow_word_pain_t : public priest_spell_t
   shadow_word_pain_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "shadow_word_pain", p, p -> find_spell( "Shadow Word: Pain" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     may_crit   = false;
@@ -2230,8 +2184,6 @@ struct vampiric_embrace_t : public priest_spell_t
   vampiric_embrace_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "vampiric_embrace", p, p -> find_spell( "Vampiric Embrace" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -2260,8 +2212,6 @@ struct vampiric_touch_t : public priest_spell_t
   vampiric_touch_t( priest_t* player, const std::string& options_str ) :
     priest_spell_t( "vampiric_touch", player, player -> find_spell( "Vampiric Touch" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
     may_crit   = false;
   }
@@ -2295,8 +2245,6 @@ struct holy_fire_t : public priest_spell_t
   holy_fire_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "holy_fire", player, player -> find_spell( "Holy Fire" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_hit += p() -> spec.divine_fury -> effectN( 1 ).percent();
@@ -2358,9 +2306,7 @@ struct penance_t : public priest_spell_t
     penance_tick_t( priest_t* p ) :
       priest_spell_t( "penance_tick", p, p -> find_spell( 47666 ) )
     {
-      check_spell();
-
-      background  = true;
+        background  = true;
       dual        = true;
       direct_tick = true;
       base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
@@ -2382,8 +2328,6 @@ struct penance_t : public priest_spell_t
     priest_spell_t( "penance", p, p -> find_spell( "Penance" ) ),
     tick_spell( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     may_crit       = false;
@@ -2434,8 +2378,6 @@ struct smite_t : public priest_spell_t
   smite_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "smite", p, p -> find_spell( "Smite" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
@@ -2499,8 +2441,6 @@ struct shadowy_apparition_t : priest_spell_t
     priest_spell_t( "shadowy_apparition", player, player -> find_spell( "Shadowy Apparition" ) ),
     triggered_shadow_orb_mastery( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     may_crit = false;
@@ -2578,8 +2518,6 @@ struct binding_heal_t : public priest_heal_t
   binding_heal_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "binding_heal", p, p -> find_spell( "Binding Heal" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     aoe = 1;
@@ -2620,8 +2558,6 @@ struct circle_of_healing_t : public priest_heal_t
   circle_of_healing_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "circle_of_healing", p, p -> find_spell( "Circle of Healing" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.circle_of_healing -> effectN( 2 ).percent();
@@ -2658,8 +2594,6 @@ struct divine_hymn_tick_t : public priest_heal_t
   divine_hymn_tick_t( priest_t* player, int nr_targets ) :
     priest_heal_t( "divine_hymn_tick", player, player -> find_spell( 64844 ) )
   {
-    check_spell();
-
     background  = true;
 
     aoe = nr_targets - 1;
@@ -2682,8 +2616,6 @@ struct divine_hymn_t : public priest_heal_t
     priest_heal_t( "divine_hymn", p, p -> find_spell( "Divine Hymn" ) ),
     divine_hymn_tick( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -2708,8 +2640,6 @@ struct flash_heal_t : public priest_heal_t
   flash_heal_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "flash_heal", p, p -> find_spell( "Flash Heal" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
   }
 
@@ -2756,8 +2686,6 @@ struct guardian_spirit_t : public priest_heal_t
   guardian_spirit_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "guardian_spirit", p, p -> find_spell( "Guardian Spirit" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     // The absorb listed isn't a real absorb
@@ -2782,8 +2710,6 @@ struct greater_heal_t : public priest_heal_t
   greater_heal_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "greater_heal", p, p -> find_spell( "Greater Heal" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
   }
 
@@ -2841,8 +2767,6 @@ struct _heal_t : public priest_heal_t
   _heal_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "heal", p, p -> find_spell( "Heal" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
   }
 
@@ -2871,9 +2795,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     holy_word_sanctuary_tick_t( priest_t* player ) :
       priest_heal_t( "holy_word_sanctuary_tick", player, player -> find_spell( 88686 ) )
     {
-      check_spell();
-
-      dual        = true;
+        dual        = true;
       background  = true;
       direct_tick = true;
     }
@@ -2893,7 +2815,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) ),
     tick_spell( 0 )
   {
-    check_spell();
     check_talent( p -> spec.revelations -> ok() );
 
     parse_options( NULL, options_str );
@@ -2962,8 +2883,6 @@ struct holy_word_chastise_t : public priest_spell_t
   holy_word_chastise_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "holy_word_chastise", p, p -> find_spell( "Holy Word: Chastise" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
@@ -2996,8 +2915,6 @@ struct holy_word_serenity_t : public priest_heal_t
   holy_word_serenity_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "holy_word_serenity", p, p -> find_spell( 88684 ) )
   {
-    check_spell();
-
     check_talent( p -> spec.revelations -> ok() );
 
     parse_options( NULL, options_str );
@@ -3089,8 +3006,6 @@ struct lightwell_t : public priest_spell_t
   lightwell_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "lightwell", p, p -> find_spell( "Lightwell" ) ), consume_interval( timespan_t::from_seconds( 10 ) )
   {
-    check_spell();
-
     option_t options[] =
     {
       { "consume_interval", OPT_TIMESPAN,     &consume_interval },
@@ -3121,8 +3036,6 @@ struct penance_heal_tick_t : public priest_heal_t
   penance_heal_tick_t( priest_t* player ) :
     priest_heal_t( "penance_heal_tick", player, player -> find_spell( 47750 ) )
   {
-    check_spell();
-
     background  = true;
     may_crit    = true;
     dual        = true;
@@ -3147,8 +3060,6 @@ struct penance_heal_t : public priest_heal_t
   penance_heal_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "penance_heal", p, p -> find_spell( "Penance" ) ), penance_tick( 0 )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     may_crit       = false;
@@ -3192,8 +3103,6 @@ struct glyph_power_word_shield_t : public priest_heal_t
   glyph_power_word_shield_t( priest_t* player ) :
     priest_heal_t( "power_word_shield_glyph", player, player -> find_spell( 55672 ) )
   {
-    check_spell();
-
     school          = SCHOOL_HOLY;
     stats -> school = school;
 
@@ -3212,8 +3121,6 @@ struct power_word_shield_t : public priest_absorb_t
   power_word_shield_t( priest_t* p, const std::string& options_str ) :
     priest_absorb_t( "power_word_shield", p, p -> find_spell( "Power Word: Shield" ) ), glyph_pws( 0 ), ignore_debuff( 0 )
   {
-    check_spell();
-
     option_t options[] =
     {
       { "ignore_debuff", OPT_BOOL,    &ignore_debuff },
@@ -3278,8 +3185,6 @@ struct prayer_of_healing_t : public priest_heal_t
   prayer_of_healing_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "prayer_of_healing", p, p -> find_spell( "Prayer of Healing" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     aoe = 4;
@@ -3344,8 +3249,6 @@ struct prayer_of_mending_t : public priest_heal_t
   prayer_of_mending_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "prayer_of_mending", p, p -> find_spell( "Prayer of Mending" ) ), single( false )
   {
-    check_spell();
-
     option_t options[] =
     {
       { "single", OPT_BOOL,       &single },
@@ -3393,8 +3296,6 @@ struct divine_touch_t : public priest_heal_t
   divine_touch_t( priest_t* player ) :
     priest_heal_t( "divine_touch", player, player -> find_spell( 63544 ) )
   {
-    check_spell();
-
     school          = SCHOOL_HOLY;
     stats -> school = school;
 
@@ -3408,8 +3309,6 @@ struct renew_t : public priest_heal_t
   renew_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "renew", p, p -> find_spell( "Renew" ) )
   {
-    check_spell();
-
     parse_options( NULL, options_str );
 
     may_crit = false;
