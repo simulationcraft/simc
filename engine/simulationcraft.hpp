@@ -1359,7 +1359,8 @@ class timespan_t
   time_t time;
 
   template <typename Rep>
-  explicit timespan_t( Rep t ) : time( static_cast<time_t>( t ) ) {}
+  static timespan_t factory( Rep t )
+  { timespan_t ts; ts.time = static_cast<time_t>( t ); return ts; }
 
 public:
   double total_minutes() const { return native_to_minute( time ); }
@@ -1368,17 +1369,17 @@ public:
 
   template <typename Rep>
   static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
-  from_millis ( Rep millis )  { return timespan_t( milli_to_native ( millis ) ); }
+  from_millis ( Rep millis )  { return factory( milli_to_native ( millis ) ); }
 
   template <typename Rep>
   static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
-  from_seconds( Rep seconds ) { return timespan_t( second_to_native( seconds ) ); }
+  from_seconds( Rep seconds ) { return factory( second_to_native( seconds ) ); }
 
   template <typename Rep>
   static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
-  from_minutes( Rep minutes ) { return timespan_t( minute_to_native( minutes ) ); }
+  from_minutes( Rep minutes ) { return factory( minute_to_native( minutes ) ); }
 
-  timespan_t() {}
+  //timespan_t() {}
 
   bool operator==( timespan_t right ) const { return time == right.time; }
   bool operator!=( timespan_t right ) const { return time != right.time; }
@@ -1418,28 +1419,28 @@ public:
   friend timespan_t operator+( timespan_t right )
   { return right; }
   friend timespan_t operator-( timespan_t right )
-  { return timespan_t( -right.time ); }
+  { return factory( -right.time ); }
 
   friend timespan_t operator+( timespan_t left, timespan_t right )
-  { return timespan_t( left.time + right.time ); }
+  { return factory( left.time + right.time ); }
 
   friend timespan_t operator-( timespan_t left, timespan_t right )
-  { return timespan_t( left.time - right.time ); }
+  { return factory( left.time - right.time ); }
 
   template <typename Rep>
   friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
   operator*( timespan_t left, Rep right )
-  { return timespan_t( left.time * right ); }
+  { return factory( left.time * right ); }
 
   template <typename Rep>
   friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
   operator*( Rep left, timespan_t right )
-  { return timespan_t( left * right.time ); }
+  { return factory( left * right.time ); }
 
   template <typename Rep>
   friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
   operator/( timespan_t left, Rep right )
-  { return timespan_t( left.time / right ); }
+  { return factory( left.time / right ); }
 
   friend double operator/( timespan_t left, timespan_t right )
   { return static_cast<double>( left.time ) / right.time; }
@@ -1447,16 +1448,16 @@ public:
   typedef time_t native_t;
   static native_t to_native( timespan_t t ) { return t.time; }
   template <typename Rep>
-  static timespan_t from_native( Rep t ) { return timespan_t( static_cast<time_t>( t ) ); }
+  static timespan_t from_native( Rep t ) { return factory( t ); }
 
-  static timespan_t zero() { return timespan_t( 0 ); }
-  static timespan_t max() { return timespan_t( std::numeric_limits<time_t>::max() ); }
+  static timespan_t zero() { return factory( 0 ); }
+  static timespan_t max() { return factory( std::numeric_limits<time_t>::max() ); }
   static timespan_t min()
   {
     if ( std::is_floating_point<time_t>::value )
-      return timespan_t( -std::numeric_limits<time_t>::max() );
+      return factory( -std::numeric_limits<time_t>::max() );
     else
-      return timespan_t( std::numeric_limits<time_t>::min() );
+      return factory( std::numeric_limits<time_t>::min() );
   }
 };
 
@@ -5096,7 +5097,7 @@ public:
 
   virtual double bonus_damage() const { return base_dd_adder; }
 
-  virtual expr_t* create_expression( const std::string& name );  
+  virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) const;
 
