@@ -24,55 +24,65 @@ action_t::action_t( action_type_e       ty,
                     const spell_data_t* s,
                     school_type_e       school ) :
   s_data( s ? s : spell_data_t::nil() ),
-  sim( p->sim ), type( ty ), name_str( token ),
-  player( p ), target( p -> target ),
-  school( school )
+  sim( p -> sim ),
+  type( ty ),
+  name_str( token ),
+  player( p ),
+  target( p -> target ),
+  school( school ),
+  id(),
+  result(),
+  aoe(),
+  dual(),
+  callbacks( true ),
+  special(),
+  channeled(),
+  background(),
+  sequence(),
+  direct_tick(),
+  repeating(),
+  harmful( true ),
+  proc(),
+  item_proc(),
+  proc_ignores_slot(),
+  may_trigger_dtr(),
+  discharge_proc(),
+  auto_cast(),
+  initialized(),
+  may_hit( true ),
+  may_miss(),
+  may_dodge(),
+  may_parry(),
+  may_glance(),
+  may_block(),
+  may_crush(),
+  may_crit(),
+  tick_may_crit(),
+  tick_zero(),
+  hasted_ticks(),
+  no_buffs(),
+  no_debuffs(),
+  stateless(),
+  dot_behavior( DOT_CLIP ),
+  ability_lag( timespan_t() ),
+  ability_lag_stddev( timespan_t() ),
+  rp_gain(),
+  min_gcd( timespan_t() ),
+  trigger_gcd( player -> base_gcd ),
+  range(),
+  weapon_power_mod(),
+  direct_power_mod(),
+  tick_power_mod(),
+  base_execute_time( timespan_t() ),
+  base_tick_time( timespan_t() )
+
 {
-  special                        = false;
-  result                         = RESULT_NONE;
-  id                             = 0;
-  aoe                            = 0;
-  dual                           = false;
-  callbacks                      = true;
-  channeled                      = false;
-  background                     = false;
-  sequence                       = false;
-  use_off_gcd                    = false;
-  direct_tick                    = false;
-  repeating                      = false;
-  harmful                        = true;
-  proc                           = false;
-  item_proc                      = false;
-  proc_ignores_slot              = false;
-  may_trigger_dtr                = false;
-  discharge_proc                 = false;
-  auto_cast                      = false;
-  initialized                    = false;
-  may_hit                        = true;
-  may_miss                       = false;
-  may_dodge                      = false;
-  may_parry                      = false;
-  may_glance                     = false;
-  may_block                      = false;
-  may_crush                      = false;
-  may_crit                       = false;
-  tick_may_crit                  = false;
-  tick_zero                      = false;
-  hasted_ticks                   = false;
-  no_buffs                       = false;
-  no_debuffs                     = false;
   dot_behavior                   = DOT_CLIP;
-  ability_lag                    = timespan_t::zero();
-  ability_lag_stddev             = timespan_t::zero();
-  rp_gain                        = 0.0;
-  min_gcd                        = timespan_t::zero();
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
   weapon_power_mod               = 1.0/14.0;
-  direct_power_mod               = 0.0;
-  tick_power_mod                 = 0.0;
-  base_execute_time              = timespan_t::zero();
-  base_tick_time                 = timespan_t::zero();
+
+
   base_dd_min                    = 0.0;
   base_dd_max                    = 0.0;
   base_td                        = 0.0;
@@ -107,7 +117,6 @@ action_t::action_t( action_type_e       ty,
   player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
   player_haste                   = 1.0;
-  resource_consumed              = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
   snapshot_crit                  = 0.0;
@@ -127,6 +136,7 @@ action_t::action_t( action_type_e       ty,
   time_to_execute                = timespan_t::zero();
   time_to_travel                 = timespan_t::zero();
   travel_speed                   = 0.0;
+  resource_consumed              = 0.0;
   bloodlust_active               = 0;
   min_health_percentage          = 0.0;
   max_health_percentage          = 0.0;
@@ -775,7 +785,7 @@ void action_t::consume_resource()
 
   resource_consumed = cost();
 
-  player -> resource_loss( current_resource(), resource_consumed, this );
+  player -> resource_loss( current_resource(), resource_consumed, &( stats -> resource_gain ), this );
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),

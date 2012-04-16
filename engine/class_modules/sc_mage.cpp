@@ -329,8 +329,8 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void   regen( timespan_t periodicity );
-  virtual double resource_gain( resource_type_e resource, double amount, gain_t* source=0, action_t* action=0 );
-  virtual double resource_loss( resource_type_e resource, double amount, action_t* action=0 );
+  virtual double resource_gain( resource_type_e, double amount, gain_t* =0, action_t* =0 );
+  virtual double resource_loss( resource_type_e, double amount, gain_t* =0, action_t* =0 );
 };
 
 mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target )
@@ -3293,9 +3293,10 @@ double mage_t::resource_gain( resource_type_e resource,
 
 double mage_t::resource_loss( resource_type_e resource,
                               double    amount,
+                              gain_t*   source,
                               action_t* action )
 {
-  double actual_amount = player_t::resource_loss( resource, amount, action );
+  double actual_amount = player_t::resource_loss( resource, amount, source, action );
 
   if ( resource == RESOURCE_MANA )
   {

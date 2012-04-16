@@ -3265,6 +3265,7 @@ void player_t::regen( const timespan_t periodicity )
 
 double player_t::resource_loss( resource_type_e resource_type,
                                 double    amount,
+                                gain_t*   source,
                                 action_t* action )
 {
   if ( amount == 0 )
@@ -3289,6 +3290,11 @@ double player_t::resource_loss( resource_type_e resource_type,
     actual_amount = amount;
     resources.current[ resource_type ] -= actual_amount;
     resource_lost[ resource_type ] += actual_amount;
+  }
+
+  if ( source )
+  {
+    source -> add( resource_type, actual_amount, amount - actual_amount );
   }
 
   if ( resource_type == RESOURCE_MANA )
@@ -3548,6 +3554,7 @@ void player_t::stat_gain( stat_type_e stat,
 
 void player_t::stat_loss( stat_type_e stat,
                           double    amount,
+                          gain_t*   gain,
                           action_t* action,
                           bool      temporary_buff )
 {
@@ -3560,8 +3567,8 @@ void player_t::stat_loss( stat_type_e stat,
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * dbc.health_per_stamina( level ), action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, action ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * dbc.health_per_stamina( level ), gain, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, gain, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
   case STAT_ALL:
@@ -3573,12 +3580,12 @@ void player_t::stat_loss( stat_type_e stat,
     }
     break;
 
-  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, action ); break;
-  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, action ); break;
-  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount, action ); break;
-  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount, action ); break;
-  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount, action ); break;
-  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC_POWER,  amount, action ); break;
+  case STAT_HEALTH: resource_loss( RESOURCE_HEALTH, amount, gain, action ); break;
+  case STAT_MANA:   resource_loss( RESOURCE_MANA,   amount, gain, action ); break;
+  case STAT_RAGE:   resource_loss( RESOURCE_RAGE,   amount, gain, action ); break;
+  case STAT_ENERGY: resource_loss( RESOURCE_ENERGY, amount, gain, action ); break;
+  case STAT_FOCUS:  resource_loss( RESOURCE_FOCUS,  amount, gain, action ); break;
+  case STAT_RUNIC:  resource_loss( RESOURCE_RUNIC_POWER, amount, gain, action ); break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -3594,7 +3601,7 @@ void player_t::stat_loss( stat_type_e stat,
                           ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
     recalculate_resource_max( r );
     double delta = resources.current[ r ] - resources.max[ r ];
-    if ( delta > 0 ) resource_loss( r, delta, action );
+    if ( delta > 0 ) resource_loss( r, delta, gain, action );
   }
   break;
 
@@ -3737,7 +3744,7 @@ double player_t::assess_damage( double        amount,
 
   iteration_dmg_taken += mitigated_amount;
 
-  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, action );
+  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, 0, action );
 
   if ( resources.current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && infinite_resource[ RESOURCE_HEALTH ] == 0 )
   {

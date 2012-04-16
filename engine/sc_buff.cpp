@@ -77,10 +77,10 @@ buff_t::buff_t( const buff_creator_t& params ) :
   avg_refresh(),
   source( params._player.source ),
   initial_source( params._player.source ),
-  expiration( 0 ),
-  delay( 0 ),
-  rng( 0 ),
-  cooldown( 0 ),
+  expiration(),
+  delay(),
+  rng(),
+  cooldown(),
   uptime_pct(),
   start_intervals(),
   trigger_intervals()
@@ -865,7 +865,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   else
   {
     double delta = amount * stacks;
-    player -> stat_loss( stat, delta, 0, buff_duration > timespan_t::zero() );
+    player -> stat_loss( stat, delta, 0, 0, buff_duration > timespan_t::zero() );
     current_stack -= stacks;
     current_value -= delta;
   }
@@ -877,7 +877,7 @@ void stat_buff_t::expire()
 {
   if ( current_stack > 0 )
   {
-    player -> stat_loss( stat, current_value, 0, buff_duration > timespan_t::zero() );
+    player -> stat_loss( stat, current_value, 0, 0, buff_duration > timespan_t::zero() );
     buff_t::expire();
   }
 }

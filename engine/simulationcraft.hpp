@@ -4514,7 +4514,7 @@ struct player_t : public noncopyable
 
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
-  virtual double resource_loss( resource_type_e resource_type, double amount, action_t* a=0 );
+  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
   virtual void   recalculate_resource_max( resource_type_e resource_type );
   virtual bool   resource_available( resource_type_e resource_type, double cost ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_NONE; }
@@ -4528,7 +4528,7 @@ struct player_t : public noncopyable
   virtual timespan_t total_reaction_time() const;
 
   virtual void stat_gain( stat_type_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
-  virtual void stat_loss( stat_type_e stat, double amount, action_t* a=0, bool temporary=false );
+  virtual void stat_loss( stat_type_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
 
   virtual void cost_reduction_gain( school_type_e school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( school_type_e school, double amount, action_t* a=0 );
@@ -4936,12 +4936,14 @@ struct action_t
   std::string name_str;
   player_t* const player;
   player_t* target;
+  school_type_e school;
+
   uint32_t id;
   result_type_e result;
-  school_type_e school;
   int aoe;
   bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
-  bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot, may_trigger_dtr, discharge_proc, auto_cast, initialized;
+  bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot;
+  bool may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
@@ -4969,7 +4971,6 @@ struct action_t
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder, player_dd_adder, target_dd_adder;
   double player_haste;
-  double resource_consumed;
   double direct_dmg, tick_dmg;
   double snapshot_crit, snapshot_haste, snapshot_mastery;
   int num_ticks;
@@ -4986,7 +4987,7 @@ struct action_t
   event_t* execute_event;
   event_t* travel_event;
   timespan_t time_to_execute, time_to_travel;
-  double travel_speed;
+  double travel_speed, resource_consumed;
   int bloodlust_active;
   double min_health_percentage, max_health_percentage;
   int moving, wait_on_ready, interrupt;
