@@ -118,7 +118,7 @@ namespace std {using namespace tr1; }
 #endif
 
 // Enabled classes
-#define SC_DEATH_KNIGHT 0
+#define SC_DEATH_KNIGHT 1
 #define SC_DRUID        0
 #define SC_HUNTER       0
 #define SC_MAGE         1
