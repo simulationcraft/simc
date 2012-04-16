@@ -1070,8 +1070,7 @@ school_type_e spell_data_t::get_school_type() const
   case 0x7c: return SCHOOL_CHROMATIC;
   case 0x7e: return SCHOOL_MAGIC;
   case 0x7f: return SCHOOL_CHAOS;
-  default:
-    return SCHOOL_NONE;
+  default:   return SCHOOL_NONE;
   }
 }
 
@@ -1097,10 +1096,7 @@ talent_data_t* talent_data_t::find( player_type_e c, unsigned int row, unsigned 
 }
 
 talent_data_t* talent_data_t::find( unsigned id, bool ptr )
-{
-  talent_data_t* sp = idx_td.get( ptr, id );
-  return sp;
-}
+{ return idx_td.get( ptr, id ); }
 
 talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool ptr )
 {
@@ -1111,19 +1107,19 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
   return p;
 }
 
-talent_data_t* talent_data_t::find( const char* name, bool ptr )
+talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
 {
-  std::string token1, token2;
-
-  token1 = name;
+  const std::string name = name_cstr;
+  std::string token1 = name;
   armory_t::format( token1, FORMAT_ASCII_MASK );
 
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    token2 = p -> name_cstr();
+    const std::string p_name = p -> name_cstr();
+    std::string token2 = p_name;
     armory_t::format( token2, FORMAT_ASCII_MASK );
 
-    if ( util_t::str_compare_ci( name, p -> name_cstr() ) || util_t::str_compare_ci( token1.c_str(), token2.c_str() ) )
+    if ( util_t::str_compare_ci( name, p_name ) || util_t::str_compare_ci( token1, token2 ) )
     {
       return p;
     }
