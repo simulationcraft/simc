@@ -1379,8 +1379,6 @@ public:
   static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
   from_minutes( Rep minutes ) { return factory( minute_to_native( minutes ) ); }
 
-  //timespan_t() {}
-
   bool operator==( timespan_t right ) const { return time == right.time; }
   bool operator!=( timespan_t right ) const { return time != right.time; }
 
