@@ -133,69 +133,80 @@ struct death_knight_t : public player_t
 {
   // Active
   int       active_presence;
-  action_t* active_blood_caked_blade;
-  action_t* active_unholy_blight;
 
   // Buffs
-  buff_t* buffs_blood_presence;
-  buff_t* buffs_bloodworms;
-  buff_t* buffs_bone_shield;
-  buff_t* buffs_crimson_scourge;
-  buff_t* buffs_dancing_rune_weapon;
-  buff_t* buffs_dark_transformation;
-  buff_t* buffs_frost_presence;
-  buff_t* buffs_killing_machine;
-  buff_t* buffs_pillar_of_frost;
-  buff_t* buffs_rime;
-  buff_t* buffs_rune_of_cinderglacier;
-  buff_t* buffs_rune_of_razorice;
-  buff_t* buffs_rune_of_the_fallen_crusader;
-  buff_t* buffs_rune_strike;
-  buff_t* buffs_runic_corruption;
-  buff_t* buffs_scent_of_blood;
-  buff_t* buffs_shadow_infusion;
-  buff_t* buffs_sudden_doom;
-  buff_t* buffs_tier13_4pc_melee;
-  buff_t* buffs_unholy_presence;
+  struct buffs_t
+  {
+    buff_t* blood_presence;
+    buff_t* bloodworms;
+    buff_t* bone_shield;
+    buff_t* crimson_scourge;
+    buff_t* dancing_rune_weapon;
+    buff_t* dark_transformation;
+    buff_t* frost_presence;
+    buff_t* killing_machine;
+    buff_t* pillar_of_frost;
+    buff_t* rime;
+    buff_t* rune_of_cinderglacier;
+    buff_t* rune_of_razorice;
+    buff_t* rune_of_the_fallen_crusader;
+    buff_t* rune_strike;
+    buff_t* runic_corruption;
+    buff_t* scent_of_blood;
+    buff_t* shadow_infusion;
+    buff_t* sudden_doom;
+    buff_t* tier13_4pc_melee;
+    buff_t* unholy_presence;
+  } buffs;
 
   // Cooldowns
-  cooldown_t* cooldowns_howling_blast;
+  struct cooldowns_t
+  {
+    cooldown_t* howling_blast;
+  } cooldowns;
 
   // Diseases
-  spell_t* blood_plague;
-  spell_t* frost_fever;
+
+  struct active_spells_t
+  {
+    action_t* blood_caked_blade;
+    action_t* unholy_blight;
+    spell_t* blood_plague;
+    spell_t* frost_fever;
+  } active_spells;
 
   // Gains
-  gain_t* gains_butchery;
-  gain_t* gains_chill_of_the_grave;
-  gain_t* gains_frost_presence;
-  gain_t* gains_horn_of_winter;
-  gain_t* gains_improved_frost_presence;
-  gain_t* gains_might_of_the_frozen_wastes;
-  gain_t* gains_power_refund;
-  gain_t* gains_scent_of_blood;
-  gain_t* gains_rune;
-  gain_t* gains_rune_unholy;
-  gain_t* gains_rune_blood;
-  gain_t* gains_rune_frost;
-  gain_t* gains_rune_unknown;
-  gain_t* gains_runic_empowerment;
-  gain_t* gains_runic_empowerment_blood;
-  gain_t* gains_runic_empowerment_unholy;
-  gain_t* gains_runic_empowerment_frost;
-  gain_t* gains_empower_rune_weapon;
-  gain_t* gains_blood_tap;
-  // only useful if the blood rune charts are enabled
-  // charts are currently disabled so commenting out
-  // gain_t* gains_blood_tap_blood;
+  struct gains_t
+  {
+    gain_t* butchery;
+    gain_t* chill_of_the_grave;
+    gain_t* frost_presence;
+    gain_t* horn_of_winter;
+    gain_t* improved_frost_presence;
+    gain_t* might_of_the_frozen_wastes;
+    gain_t* power_refund;
+    gain_t* scent_of_blood;
+    gain_t* rune;
+    gain_t* rune_unholy;
+    gain_t* rune_blood;
+    gain_t* rune_frost;
+    gain_t* rune_unknown;
+    gain_t* runic_empowerment;
+    gain_t* runic_empowerment_blood;
+    gain_t* runic_empowerment_unholy;
+    gain_t* runic_empowerment_frost;
+    gain_t* empower_rune_weapon;
+    gain_t* blood_tap;
+    // only useful if the blood rune charts are enabled
+    // charts are currently disabled so commenting out
+    // gain_t* gains.blood_tap_blood;
+  } gains;
 
   // Glyphs
   struct glyphs_t
   {
-    // Prime
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
+
+  } glyphs;
 
   // Options
   std::string unholy_frenzy_target_str;
@@ -221,33 +232,39 @@ struct death_knight_t : public player_t
     // Masteries
     const spell_data_t* dreadblade;
     const spell_data_t* frozen_heart;
-
-    spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
-  };
-  spells_t spells;
+  } spells;
 
   // Pets and Guardians
-  pet_t* active_army_ghoul;
-  pet_t* active_bloodworms;
-  dancing_rune_weapon_pet_t* active_dancing_rune_weapon;
-  pet_t* active_ghoul;
-  pet_t* active_gargoyle;
+  struct pets_t
+  {
+    pet_t* army_ghoul;
+    pet_t* bloodworms;
+    dancing_rune_weapon_pet_t* dancing_rune_weapon;
+    pet_t* ghoul;
+    pet_t* gargoyle;
+  } pets;
 
   // Procs
-  proc_t* proc_runic_empowerment;
-  proc_t* proc_runic_empowerment_wasted;
-  proc_t* proc_oblit_killing_machine;
-  proc_t* proc_fs_killing_machine;
+  struct procs_t
+  {
+    proc_t* runic_empowerment;
+    proc_t* runic_empowerment_wasted;
+    proc_t* oblit_killing_machine;
+    proc_t* fs_killing_machine;
+  } procs;
 
   // RNGs
-  rng_t* rng_blood_caked_blade;
-  rng_t* rng_might_of_the_frozen_wastes;
-  rng_t* rng_threat_of_thassarian;
+  struct rngs_t
+  {
+    rng_t* blood_caked_blade;
+    rng_t* might_of_the_frozen_wastes;
+    rng_t* threat_of_thassarian;
+  } rngs;
 
   // Runes
   struct runes_t
   {
-    dk_rune_t slot[RUNE_SLOT_MAX];
+    std::array<dk_rune_t,RUNE_SLOT_MAX> slot;
 
     runes_t()
     {
@@ -256,45 +273,44 @@ struct death_knight_t : public player_t
       slot[2].type = slot[3].type = RUNE_TYPE_FROST;
       slot[4].type = slot[5].type = RUNE_TYPE_UNHOLY;
       // each rune pair is paired with each other
-      slot[0].paired_rune = &slot[1]; slot[1].paired_rune = &slot[0];
-      slot[2].paired_rune = &slot[3]; slot[3].paired_rune = &slot[2];
-      slot[4].paired_rune = &slot[5]; slot[5].paired_rune = &slot[4];
+      slot[0].paired_rune = &slot[ 1 ]; slot[ 1 ].paired_rune = &slot[ 0 ];
+      slot[2].paired_rune = &slot[ 3 ]; slot[ 3 ].paired_rune = &slot[ 2 ];
+      slot[4].paired_rune = &slot[ 5 ]; slot[ 5 ].paired_rune = &slot[ 4 ];
       // give each rune a slot number
-      for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) { slot[i].slot_number = i; }
+      for ( size_t i = 0; i < slot.size(); ++i ) { slot[ i ].slot_number = i; }
     }
-    void reset() { for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) slot[i].reset(); }
-  };
-  runes_t _runes;
+    void reset() { for ( size_t i = 0; i < slot.size(); ++i ) slot[ i ].reset(); }
+  } _runes;
 
   // Talents
   struct talents_t
   {
     spell_data_t* unholy_blight;
-    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-  };
-  talents_t talents;
+  } talents;
 
   // Uptimes
-  benefit_t* uptimes_rp_cap;
+  struct benefits_t
+  {
+    benefit_t* rp_cap;
+  } benefits;
 
   death_knight_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
-    player_t( sim, DEATH_KNIGHT, name, r )
+    player_t( sim, DEATH_KNIGHT, name, r ),
+    active_presence(),
+    buffs( buffs_t() ),
+    cooldowns( cooldowns_t() ),
+    active_spells( active_spells_t() ),
+    gains( gains_t() ),
+    glyphs( glyphs_t() ),
+    spells( spells_t() ),
+    pets( pets_t() ),
+    procs( procs_t() ),
+    rngs( rngs_t() ),
+    _runes( runes_t() ),
+    talents( talents_t() ),
+    benefits( benefits_t() )
   {
-    // Active
-    active_presence            = 0;
-    active_blood_caked_blade   = NULL;
-    active_unholy_blight       = NULL;
-    blood_plague = NULL;
-    frost_fever  = NULL;
-
-    // Pets and Guardians
-    active_army_ghoul          = NULL;
-    active_bloodworms          = NULL;
-    active_dancing_rune_weapon = NULL;
-    active_ghoul               = NULL;
-    active_gargoyle            = NULL;
-
-    cooldowns_howling_blast = get_cooldown( "howling_blast" );
+    cooldowns.howling_blast = get_cooldown( "howling_blast" );
 
     create_options();
 
@@ -397,12 +413,12 @@ void dk_rune_t::regen_rune( player_t* p, timespan_t periodicity )
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
-  gain_t* gains_rune      = o -> gains_rune         ;
+  gain_t* gains_rune      = o -> gains.rune         ;
   gain_t* gains_rune_type =
-    is_frost()            ? o -> gains_rune_frost   :
-    is_blood()            ? o -> gains_rune_blood   :
-    is_unholy()           ? o -> gains_rune_unholy  :
-                            o -> gains_rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
+    is_frost()            ? o -> gains.rune_frost   :
+    is_blood()            ? o -> gains.rune_blood   :
+    is_unholy()           ? o -> gains.rune_unholy  :
+                            o -> gains.rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
 
   // full runes don't regen. if both full, record half of overflow, as the other rune will record the other half
   if ( state == STATE_FULL )
@@ -1086,11 +1102,11 @@ struct ghoul_pet_t : public pet_t
       ghoul_pet_t* p = ( ghoul_pet_t* ) player -> cast_pet();
       death_knight_t* o = p -> owner -> cast_death_knight();
 
-      player_multiplier *= 1.0 + o -> buffs_shadow_infusion -> stack() * o -> buffs_shadow_infusion -> data().effectN( 1 ).percent();
+      player_multiplier *= 1.0 + o -> buffs.shadow_infusion -> stack() * o -> buffs.shadow_infusion -> data().effectN( 1 ).percent();
 
-      if ( o -> buffs_dark_transformation -> up() )
+      if ( o -> buffs.dark_transformation -> up() )
       {
-        player_multiplier *= 1.0 + o -> buffs_dark_transformation -> data().effectN( 1 ).percent();
+        player_multiplier *= 1.0 + o -> buffs.dark_transformation -> data().effectN( 1 ).percent();
       }
     }
   };
@@ -1156,7 +1172,7 @@ struct ghoul_pet_t : public pet_t
     {
       death_knight_t* o = player -> cast_pet() -> owner -> cast_death_knight();
 
-      if ( ! o -> buffs_dark_transformation -> check() )
+      if ( ! o -> buffs.dark_transformation -> check() )
         return false;
 
       return ghoul_pet_melee_attack_t::ready();
@@ -1548,7 +1564,7 @@ static void refund_power( action_t* a )
   death_knight_t* p = a -> player -> cast_death_knight();
 
   if ( a -> resource_consumed > 0 )
-    p -> resource_gain( RESOURCE_RUNIC_POWER, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains_power_refund );
+    p -> resource_gain( RESOURCE_RUNIC_POWER, a -> resource_consumed * RUNIC_POWER_REFUND, p -> gains.power_refund );
 }
 
 // ==========================================================================
@@ -1578,11 +1594,11 @@ void death_knight_melee_attack_t::consume_resource()
   {
     if ( result_is_hit() )
     {
-      if ( p -> buffs_frost_presence -> check() )
+      if ( p -> buffs.frost_presence -> check() )
       {
         p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
-                            p -> gains_frost_presence );
+                            p -> gains.frost_presence );
       }
       p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
     }
@@ -1608,10 +1624,10 @@ void death_knight_melee_attack_t::execute()
 
   if ( result_is_hit() )
   {
-    p -> buffs_bloodworms -> trigger();
+    p -> buffs.bloodworms -> trigger();
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
       if ( ! proc )
-        p -> buffs_rune_of_cinderglacier -> decrement();
+        p -> buffs.rune_of_cinderglacier -> decrement();
   }
 }
 
@@ -1625,7 +1641,7 @@ void death_knight_melee_attack_t::player_buff()
 
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     if ( ! proc )
-      player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
+      player_multiplier *= 1.0 + p -> buffs.rune_of_cinderglacier -> value();
 
   // Add in all m_dd_additive
   player_multiplier *= 1.0 + m_dd_additive;
@@ -1668,7 +1684,7 @@ void death_knight_melee_attack_t::target_debuff( player_t* t, dmg_type_e dtype )
 
   if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * p -> buffs_rune_of_razorice -> data().effectN( 1 ).percent();
+    target_multiplier *= 1.0 + p -> buffs.rune_of_razorice -> stack() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
   }
 }
 
@@ -1693,11 +1709,11 @@ void death_knight_spell_t::consume_resource()
   {
     if ( result_is_hit() )
     {
-      if ( p -> buffs_frost_presence -> check() )
+      if ( p -> buffs.frost_presence -> check() )
       {
         p -> resource_gain( RESOURCE_RUNIC_POWER,
                             rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
-                            p -> gains_frost_presence );
+                            p -> gains.frost_presence );
       }
       p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
     }
@@ -1722,7 +1738,7 @@ void death_knight_spell_t::execute()
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     {
       death_knight_t* p = player -> cast_death_knight();
-      p -> buffs_rune_of_cinderglacier -> decrement();
+      p -> buffs.rune_of_cinderglacier -> decrement();
     }
   }
 }
@@ -1736,7 +1752,7 @@ void death_knight_spell_t::player_buff()
   spell_t::player_buff();
 
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
-    player_multiplier *= 1.0 + p -> buffs_rune_of_cinderglacier -> value();
+    player_multiplier *= 1.0 + p -> buffs.rune_of_cinderglacier -> value();
 
   if ( sim -> debug )
     log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f p_mult=%.0f",
@@ -1765,7 +1781,7 @@ void death_knight_spell_t::target_debuff( player_t* t, dmg_type_e dtype )
 
   if ( school == SCHOOL_FROST  )
   {
-    target_multiplier *= 1.0 + p -> buffs_rune_of_razorice -> stack() * p -> buffs_rune_of_razorice -> data().effectN( 1 ).percent();
+    target_multiplier *= 1.0 + p -> buffs.rune_of_razorice -> stack() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
   }
 }
 
@@ -1821,12 +1837,12 @@ struct melee_t : public death_knight_melee_attack_t
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
 
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
-        p -> buffs_crimson_scourge -> trigger();
+        p -> buffs.crimson_scourge -> trigger();
 
-      if ( p -> buffs_scent_of_blood -> up() )
+      if ( p -> buffs.scent_of_blood -> up() )
       {
-        p -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains_scent_of_blood );
-        p -> buffs_scent_of_blood -> decrement();
+        p -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains.scent_of_blood );
+        p -> buffs.scent_of_blood -> decrement();
       }
     }
   }
@@ -1917,13 +1933,13 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
-      p -> active_army_ghoul -> summon( timespan_t::from_seconds( 35.0 ) );
+      p -> pets.army_ghoul -> summon( timespan_t::from_seconds( 35.0 ) );
     }
     else
     {
       death_knight_spell_t::execute();
 
-      p -> active_army_ghoul -> summon( timespan_t::from_seconds( 40.0 ) );
+      p -> pets.army_ghoul -> summon( timespan_t::from_seconds( 40.0 ) );
     }
   }
 
@@ -1931,7 +1947,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> active_army_ghoul && ! p -> active_army_ghoul -> sleeping )
+    if ( p -> pets.army_ghoul && ! p -> pets.army_ghoul -> sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -1958,11 +1974,11 @@ struct blood_boil_t : public death_knight_spell_t
 
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_blood_boil -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_blood_boil -> execute();
 
-    if ( p -> buffs_crimson_scourge -> up() )
-      p -> buffs_crimson_scourge -> expire();
+    if ( p -> buffs.crimson_scourge -> up() )
+      p -> buffs.crimson_scourge -> expire();
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
@@ -1982,7 +1998,7 @@ struct blood_boil_t : public death_knight_spell_t
     if ( ! spell_t::ready() )
       return false;
 
-    if ( ( ! p -> in_combat && ! harmful ) || p -> buffs_crimson_scourge -> check() )
+    if ( ( ! p -> in_combat && ! harmful ) || p -> buffs.crimson_scourge -> check() )
       return group_runes( p, 0, 0, 0, use );
     else
       return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
@@ -2111,7 +2127,7 @@ struct blood_tap_t : public death_knight_spell_t
       dk_rune_t& r = p -> _runes.slot[i];
       if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
       {
-        p -> gains_blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
+        p -> gains.blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
         r.fill_rune();
         rune_was_refreshed = true;
         break;
@@ -2126,8 +2142,8 @@ struct blood_tap_t : public death_knight_spell_t
         dk_rune_t& r = p -> _runes.slot[i];
         if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
         {
-          p -> gains_blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
-          // p -> gains_blood_tap_blood -> add(1 - r.value, r.value);
+          p -> gains.blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
+          // p -> gains.blood_tap_blood -> add(1 - r.value, r.value);
           r.fill_rune();
           rune_was_refreshed = true;
           break;
@@ -2177,17 +2193,17 @@ struct bone_shield_t : public death_knight_spell_t
       timespan_t pre_cast = timespan_t::from_seconds( p -> sim -> range( 8.0, 16.0 ) );
 
       cooldown -> duration -= pre_cast;
-      p -> buffs_bone_shield -> buff_duration -= pre_cast;
+      p -> buffs.bone_shield -> buff_duration -= pre_cast;
 
-      p -> buffs_bone_shield -> trigger( 1, 0.0 ); // FIXME
+      p -> buffs.bone_shield -> trigger( 1, 0.0 ); // FIXME
       death_knight_spell_t::execute();
 
       cooldown -> duration += pre_cast;
-      p -> buffs_bone_shield -> buff_duration += pre_cast;
+      p -> buffs.bone_shield -> buff_duration += pre_cast;
     }
     else
     {
-      p -> buffs_bone_shield -> trigger( 1, 0.0 ); // FIXME
+      p -> buffs.bone_shield -> trigger( 1, 0.0 ); // FIXME
       death_knight_spell_t::execute();
     }
   }
@@ -2209,8 +2225,8 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> buffs_dancing_rune_weapon -> trigger();
-    p -> active_dancing_rune_weapon -> summon( data().duration() );
+    p -> buffs.dancing_rune_weapon -> trigger();
+    p -> pets.dancing_rune_weapon -> summon( data().duration() );
   }
 };
 
@@ -2232,15 +2248,15 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_spell_t::execute();
 
-    p -> buffs_dark_transformation -> trigger();
-    p -> buffs_shadow_infusion -> expire();
+    p -> buffs.dark_transformation -> trigger();
+    p -> buffs.shadow_infusion -> expire();
   }
 
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_shadow_infusion -> check() != p -> buffs_shadow_infusion -> max_stack() )
+    if ( p -> buffs.shadow_infusion -> check() != p -> buffs.shadow_infusion -> max_stack() )
       return false;
 
     return death_knight_spell_t::ready();
@@ -2298,7 +2314,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_sudden_doom -> check() ) return 0;
+    if ( p -> buffs.sudden_doom -> check() ) return 0;
 
     return death_knight_spell_t::cost();
   }
@@ -2309,18 +2325,18 @@ struct death_coil_t : public death_knight_spell_t
 
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> buffs_sudden_doom -> decrement();
+    p -> buffs.sudden_doom -> decrement();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_death_coil -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
     if ( result_is_hit() )
     {
       p -> trigger_runic_empowerment();
     }
 
-    if ( ! p -> buffs_dark_transformation -> check() )
-      p -> buffs_shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
+    if ( ! p -> buffs.dark_transformation -> check() )
+      p -> buffs.shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
   }
 };
 
@@ -2364,8 +2380,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_death_strike -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
   }
 };
 
@@ -2395,7 +2411,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
       erw_over += r.value;
       r.fill_rune();
     }
-    p -> gains_empower_rune_weapon -> add( RESOURCE_RUNE, erw_gain, erw_over );
+    p -> gains.empower_rune_weapon -> add( RESOURCE_RUNE, erw_gain, erw_over );
   }
 };
 
@@ -2477,7 +2493,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
 
-    player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs.killing_machine -> value();
   }
 };
 
@@ -2506,10 +2522,10 @@ struct frost_strike_t : public death_knight_melee_attack_t
     if ( result_is_hit() )
       p -> trigger_runic_empowerment();
 
-    if ( p -> buffs_killing_machine -> check() )
-      p -> proc_fs_killing_machine -> occur();
+    if ( p -> buffs.killing_machine -> check() )
+      p -> procs.fs_killing_machine -> occur();
 
-    p -> buffs_killing_machine -> expire();
+    p -> buffs.killing_machine -> expire();
   }
 
   virtual void player_buff()
@@ -2517,7 +2533,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::player_buff();
     death_knight_t* p = player -> cast_death_knight();
 
-    player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs.killing_machine -> value();
   }
 
 };
@@ -2546,9 +2562,9 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      if ( p -> buffs_dancing_rune_weapon -> check() )
+      if ( p -> buffs.dancing_rune_weapon -> check() )
       {
-        p -> active_dancing_rune_weapon -> drw_heart_strike -> execute();
+        p -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
       }
     }
   }
@@ -2586,7 +2602,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger( 1, -1.0, -1.0, data().duration() );
 
-    player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains_horn_of_winter );
+    player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p -> gains.horn_of_winter );
   }
 };
 
@@ -2605,7 +2621,7 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 3 ).percent(); // Only 50% of the direct damage is done for AoE
     direct_power_mod    = 0.4;
 
-    assert( p -> frost_fever );
+    assert( p -> active_spells.frost_fever );
   }
 
   virtual void consume_resource() {}
@@ -2614,7 +2630,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     // Rime also prevents getting RP because there are no runes used!
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_rime -> check() )
+    if ( p -> buffs.rime -> check() )
       return 0;
     return death_knight_spell_t::cost();
   }
@@ -2623,7 +2639,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( ! p -> buffs_rime -> up() )
+    if ( ! p -> buffs.rime -> up() )
     {
       // We only consume resources when rime is not up
       // Rime procs generate no RP from rune abilites, which is handled in consume_resource as well
@@ -2636,7 +2652,7 @@ struct howling_blast_t : public death_knight_spell_t
     {
     }
 
-    p -> buffs_rime -> decrement();
+    p -> buffs.rime -> decrement();
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
@@ -2652,7 +2668,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_rime -> check() )
+    if ( p -> buffs.rime -> check() )
     {
       // If Rime is up, runes are no restriction.
       cost_frost  = 0;
@@ -2676,7 +2692,7 @@ struct icy_touch_t : public death_knight_spell_t
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod = 0.2;
 
-    assert( p -> frost_fever );
+    assert( p -> active_spells.frost_fever );
   }
 
   virtual void consume_resource() {}
@@ -2685,7 +2701,7 @@ struct icy_touch_t : public death_knight_spell_t
   {
     // Rime also prevents getting RP because there are no runes used!
     death_knight_t* p = player -> cast_death_knight();
-    if ( p -> buffs_rime -> check() )
+    if ( p -> buffs.rime -> check() )
       return 0;
     return death_knight_spell_t::cost();
   }
@@ -2693,7 +2709,7 @@ struct icy_touch_t : public death_knight_spell_t
   virtual void execute()
   {
     death_knight_t* p = player -> cast_death_knight();
-    if ( ! p -> buffs_rime -> up() )
+    if ( ! p -> buffs.rime -> up() )
     {
       // We only consume resources when rime is not up
       // Rime procs generate no RP from rune abilites, which is handled in consume_resource as well
@@ -2702,22 +2718,22 @@ struct icy_touch_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_icy_touch -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_icy_touch -> execute();
 
     if ( result_is_hit() )
     {
-      p -> frost_fever -> execute();
+      p -> active_spells.frost_fever -> execute();
     }
 
-    p -> buffs_rime -> decrement();
+    p -> buffs.rime -> decrement();
   }
 
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_rime -> check() )
+    if ( p -> buffs.rime -> check() )
     {
       // If Rime is up, runes are no restriction.
       cost_frost  = 0;
@@ -2794,7 +2810,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
     death_knight_melee_attack_t::player_buff();
 
-    player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs.killing_machine -> value();
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
@@ -2844,10 +2860,10 @@ struct obliterate_t : public death_knight_melee_attack_t
       (void)new_stacks;
     }
 
-    if ( p -> buffs_killing_machine -> check() )
-      p -> proc_oblit_killing_machine -> occur();
+    if ( p -> buffs.killing_machine -> check() )
+      p -> procs.oblit_killing_machine -> occur();
 
-    p -> buffs_killing_machine -> expire();
+    p -> buffs.killing_machine -> expire();
   }
 
   virtual void player_buff()
@@ -2856,7 +2872,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     death_knight_melee_attack_t::player_buff();
 
-    player_crit += p -> buffs_killing_machine -> value();
+    player_crit += p -> buffs.killing_machine -> value();
   }
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
@@ -2881,8 +2897,8 @@ struct outbreak_t : public death_knight_spell_t
 
     cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_value();
 
-    assert( p -> blood_plague );
-    assert( p -> frost_fever );
+    assert( p -> active_spells.blood_plague );
+    assert( p -> active_spells.frost_fever );
   }
 
   virtual void execute()
@@ -2892,8 +2908,8 @@ struct outbreak_t : public death_knight_spell_t
 
     if ( result_is_hit() )
     {
-      p -> blood_plague -> execute();
-      p -> frost_fever -> execute();
+      p -> active_spells.blood_plague -> execute();
+      p -> active_spells.frost_fever -> execute();
     }
   }
 };
@@ -2934,8 +2950,8 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_pestilence -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
@@ -2953,15 +2969,15 @@ struct pestilence_t : public death_knight_spell_t
       death_knight_t* p = player -> cast_death_knight();
       if ( spread_bp )
       {
-        p -> blood_plague -> target = t;
-        p -> blood_plague -> player_multiplier *= multiplier;
-        p -> blood_plague -> execute();
+        p -> active_spells.blood_plague -> target = t;
+        p -> active_spells.blood_plague -> player_multiplier *= multiplier;
+        p -> active_spells.blood_plague -> execute();
       }
       if ( spread_ff )
       {
-        p -> frost_fever -> target = t;
-        p -> frost_fever -> player_multiplier *= multiplier;
-        p -> frost_fever -> execute();
+        p -> active_spells.frost_fever -> target = t;
+        p -> active_spells.frost_fever -> player_multiplier *= multiplier;
+        p -> active_spells.frost_fever -> execute();
       }
     }
   }
@@ -3014,7 +3030,7 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
 
-    assert( p -> blood_plague );
+    assert( p -> active_spells.blood_plague );
   }
 
   virtual void execute()
@@ -3024,7 +3040,7 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      p -> blood_plague -> execute();
+      p -> active_spells.blood_plague -> execute();
     }
   }
 };
@@ -3046,7 +3062,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new plague_strike_offhand_t( p );
 
-    assert( p -> blood_plague );
+    assert( p -> active_spells.blood_plague );
   }
 
   virtual void execute()
@@ -3054,12 +3070,12 @@ struct plague_strike_t : public death_knight_melee_attack_t
     death_knight_t* p = player -> cast_death_knight();
     death_knight_melee_attack_t::execute();
 
-    if ( p -> buffs_dancing_rune_weapon -> check() )
-      p -> active_dancing_rune_weapon -> drw_plague_strike -> execute();
+    if ( p -> buffs.dancing_rune_weapon -> check() )
+      p -> pets.dancing_rune_weapon -> drw_plague_strike -> execute();
 
     if ( result_is_hit() )
     {
-      p -> blood_plague -> execute();
+      p -> active_spells.blood_plague -> execute();
     }
   }
 };
@@ -3127,21 +3143,21 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p -> active_presence )
     {
-    case PRESENCE_BLOOD:  p -> buffs_blood_presence  -> expire(); break;
-    case PRESENCE_FROST:  p -> buffs_frost_presence  -> expire(); break;
-    case PRESENCE_UNHOLY: p -> buffs_unholy_presence -> expire(); break;
+    case PRESENCE_BLOOD:  p -> buffs.blood_presence  -> expire(); break;
+    case PRESENCE_FROST:  p -> buffs.frost_presence  -> expire(); break;
+    case PRESENCE_UNHOLY: p -> buffs.unholy_presence -> expire(); break;
     }
     p -> active_presence = switch_to_presence;
 
     switch ( p -> active_presence )
     {
     case PRESENCE_BLOOD:
-      p -> buffs_blood_presence  -> trigger();
+      p -> buffs.blood_presence  -> trigger();
       break;
     case PRESENCE_FROST:
     {
       double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
-      p -> buffs_frost_presence -> trigger( 1, fp_value );
+      p -> buffs.frost_presence -> trigger( 1, fp_value );
     }
     break;
     case PRESENCE_UNHOLY:
@@ -3186,14 +3202,14 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_ghoul -> summon( ( p -> primary_tree() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effect1().base_value() ) -> duration() );
+    p -> pets.ghoul -> summon( ( p -> primary_tree() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effect1().base_value() ) -> duration() );
   }
 
   virtual bool ready()
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> active_ghoul && ! p -> active_ghoul -> sleeping )
+    if ( p -> pets.ghoul && ! p -> pets.ghoul -> sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3242,7 +3258,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> buffs_rune_strike -> expire();
+    p -> buffs.rune_strike -> expire();
 
     if ( result_is_hit() )
       p -> trigger_runic_empowerment();
@@ -3252,7 +3268,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( ! p -> buffs_blood_presence -> check() || p -> buffs_rune_strike -> check() )
+    if ( ! p -> buffs.blood_presence -> check() || p -> buffs.rune_strike -> check() )
       return false;
 
     return death_knight_melee_attack_t::ready();
@@ -3342,7 +3358,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = player -> cast_death_knight();
 
-    p -> active_gargoyle -> summon( p -> dbc.spell( data().effectN( 3 ).trigger_spell_id() ) -> duration() );
+    p -> pets.gargoyle -> summon( p -> dbc.spell( data().effectN( 3 ).trigger_spell_id() ) -> duration() );
   }
 };
 
@@ -3592,11 +3608,11 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 
 void death_knight_t::create_pets()
 {
-  active_army_ghoul           = create_pet( "army_of_the_dead" );
-  active_bloodworms           = create_pet( "bloodworms" );
-  active_dancing_rune_weapon  = new dancing_rune_weapon_pet_t ( sim, this );
-  active_gargoyle             = create_pet( "gargoyle" );
-  active_ghoul                = create_pet( "ghoul" );
+  pets.army_ghoul           = create_pet( "army_of_the_dead" );
+  pets.bloodworms           = create_pet( "bloodworms" );
+  pets.dancing_rune_weapon  = new dancing_rune_weapon_pet_t ( sim, this );
+  pets.gargoyle             = create_pet( "gargoyle" );
+  pets.ghoul                = create_pet( "ghoul" );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -3622,7 +3638,7 @@ double death_knight_t::composite_attack_haste() const
 {
   double haste = player_t::composite_attack_haste();
 
-  haste *= 1.0 / ( 1.0 + buffs_unholy_presence -> value() );
+  haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
   return haste;
 }
@@ -3664,9 +3680,9 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_blood_caked_blade          = get_rng( "blood_caked_blade"          );
-  rng_might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
-  rng_threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
+  rngs.blood_caked_blade          = get_rng( "blood_caked_blade"          );
+  rngs.might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
+  rngs.threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
 }
 
 // death_knight_t::init_defense =============================================
@@ -3737,8 +3753,8 @@ void death_knight_t::init_spells()
   // Glyphs
 
   // Active Spells
-  blood_plague = new blood_plague_t( this );
-  frost_fever = new frost_fever_t( this );
+  active_spells.blood_plague = new blood_plague_t( this );
+  active_spells.frost_fever = new frost_fever_t( this );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -3989,7 +4005,7 @@ void death_knight_t::init_enchant()
       death_knight_spell_t::target_debuff( t, dtype );
       death_knight_t* p = player -> cast_death_knight();
 
-      target_multiplier /= 1.0 + p -> buffs_rune_of_razorice -> check() * p -> buffs_rune_of_razorice -> data().effect1().percent();
+      target_multiplier /= 1.0 + p -> buffs.rune_of_razorice -> check() * p -> buffs.rune_of_razorice -> data().effect1().percent();
     }
   };
 
@@ -4021,34 +4037,34 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs_rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier" ).max_stack( 2 ).duration( timespan_t::from_seconds( 30.0 ) );
-  buffs_rune_of_razorice            = buff_creator_t( this, 51714, "rune_of_razorice" );
-  buffs_rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier" ).max_stack( 2 ).duration( timespan_t::from_seconds( 30.0 ) );
+  buffs.rune_of_razorice            = buff_creator_t( this, 51714, "rune_of_razorice" );
+  buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_the_fallen_crusader ) );
+    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_the_fallen_crusader ) );
   }
   else if ( mh_enchant == "rune_of_razorice" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_razorice ) );
+    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_razorice ) );
   }
   else if ( mh_enchant == "rune_of_cinderglacier" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs_rune_of_cinderglacier ) );
+    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_cinderglacier ) );
   }
 
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_the_fallen_crusader ) );
+    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_the_fallen_crusader ) );
   }
   else if ( oh_enchant == "rune_of_razorice" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_razorice ) );
+    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_razorice ) );
   }
   else if ( oh_enchant == "rune_of_cinderglacier" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs_rune_of_cinderglacier ) );
+    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_cinderglacier ) );
   }
 }
 
@@ -4079,33 +4095,33 @@ void death_knight_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs_blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
-  buffs_bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
-  buffs_crimson_scourge     = buff_creator_t( this, 81141, "crimson_scourge" );
-  buffs_dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );
-  buffs_dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
-  buffs_frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) );
-  buffs_killing_machine     = buff_creator_t( this, 51124, "killing_machine" ); // PPM based!
-  buffs_pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) );
-  buffs_rime                = buff_creator_t( this, "rime", find_specialization_spell( "Rime" ) )
+  buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
+  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
+  buffs.crimson_scourge     = buff_creator_t( this, 81141, "crimson_scourge" );
+  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );
+  buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
+  buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) );
+  buffs.killing_machine     = buff_creator_t( this, 51124, "killing_machine" ); // PPM based!
+  buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) );
+  buffs.rime                = buff_creator_t( this, "rime", find_specialization_spell( "Rime" ) )
     .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
     .duration( timespan_t::from_seconds( 30.0 ) )
     .cd( timespan_t::zero() )
     .chance( 1.0 ); // Trigger controls proc chance
-  buffs_rune_strike         = buff_creator_t( this, "runestrike", find_class_spell( "Rune Strike" ) )
+  buffs.rune_strike         = buff_creator_t( this, "runestrike", find_class_spell( "Rune Strike" ) )
     .max_stack( 1 )
     .duration( timespan_t::from_seconds( 10.0 ) )
     .cd( timespan_t::zero() )
     .chance( 1.0 )
     .quiet( true );
-  buffs_runic_corruption    = buff_creator_t( this, 51460, "runic_corruption" );
-  buffs_sudden_doom         = buff_creator_t( this, "sudden_doom", find_specialization_spell( "Sudden Doom" ) )
+  buffs.runic_corruption    = buff_creator_t( this, 51460, "runic_corruption" );
+  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_specialization_spell( "Sudden Doom" ) )
     .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
     .duration( timespan_t::from_seconds( 10.0 ) )
     .cd( timespan_t::zero() )
     .chance( 1.0 );
-  buffs_tier13_4pc_melee    = stat_buff_creator_t( buff_creator_t( this, 105647, "tier13_4pc_melee" ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
-  buffs_unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
+  buffs.tier13_4pc_melee    = stat_buff_creator_t( buff_creator_t( this, 105647, "tier13_4pc_melee" ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
+  buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
 
   struct bloodworms_buff_t : public buff_t
   {
@@ -4115,16 +4131,16 @@ void death_knight_t::init_buffs()
     {
       buff_t::start( stacks, value, duration );
       death_knight_t* p = player -> cast_death_knight();
-      p -> active_bloodworms -> summon();
+      p -> pets.bloodworms -> summon();
     }
     virtual void expire()
     {
       buff_t::expire();
       death_knight_t* p = player -> cast_death_knight();
-      if ( p -> active_bloodworms ) p -> active_bloodworms -> dismiss();
+      if ( p -> pets.bloodworms ) p -> pets.bloodworms -> dismiss();
     }
   };
-  buffs_bloodworms = new bloodworms_buff_t( this );
+  buffs.bloodworms = new bloodworms_buff_t( this );
 }
 
 // death_knight_t::init_values ====================================================
@@ -4146,27 +4162,27 @@ void death_knight_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_butchery                         = get_gain( "butchery"                   );
-  gains_chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
-  gains_frost_presence                   = get_gain( "frost_presence"             );
-  gains_horn_of_winter                   = get_gain( "horn_of_winter"             );
-  gains_improved_frost_presence          = get_gain( "improved_frost_presence"    );
-  gains_might_of_the_frozen_wastes       = get_gain( "might_of_the_frozen_wastes" );
-  gains_power_refund                     = get_gain( "power_refund"               );
-  gains_scent_of_blood                   = get_gain( "scent_of_blood"             );
-  gains_rune                             = get_gain( "rune_regen_all"             );
-  gains_rune_unholy                      = get_gain( "rune_regen_unholy"          );
-  gains_rune_blood                       = get_gain( "rune_regen_blood"           );
-  gains_rune_frost                       = get_gain( "rune_regen_frost"           );
-  gains_rune_unknown                     = get_gain( "rune_regen_unknown"         );
-  gains_runic_empowerment                = get_gain( "runic_empowerment"          );
-  gains_runic_empowerment_blood          = get_gain( "runic_empowerment_blood"    );
-  gains_runic_empowerment_frost          = get_gain( "runic_empowerment_frost"    );
-  gains_runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
-  gains_empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
-  gains_blood_tap                        = get_gain( "blood_tap"                  );
-  // gains_blood_tap_blood                  = get_gain( "blood_tap_blood"            );
-  //gains_blood_tap_blood          -> type = ( resource_type_e ) RESOURCE_RUNE_BLOOD   ;
+  gains.butchery                         = get_gain( "butchery"                   );
+  gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
+  gains.frost_presence                   = get_gain( "frost_presence"             );
+  gains.horn_of_winter                   = get_gain( "horn_of_winter"             );
+  gains.improved_frost_presence          = get_gain( "improved_frost_presence"    );
+  gains.might_of_the_frozen_wastes       = get_gain( "might_of_the_frozen_wastes" );
+  gains.power_refund                     = get_gain( "power_refund"               );
+  gains.scent_of_blood                   = get_gain( "scent_of_blood"             );
+  gains.rune                             = get_gain( "rune_regen_all"             );
+  gains.rune_unholy                      = get_gain( "rune_regen_unholy"          );
+  gains.rune_blood                       = get_gain( "rune_regen_blood"           );
+  gains.rune_frost                       = get_gain( "rune_regen_frost"           );
+  gains.rune_unknown                     = get_gain( "rune_regen_unknown"         );
+  gains.runic_empowerment                = get_gain( "runic_empowerment"          );
+  gains.runic_empowerment_blood          = get_gain( "runic_empowerment_blood"    );
+  gains.runic_empowerment_frost          = get_gain( "runic_empowerment_frost"    );
+  gains.runic_empowerment_unholy         = get_gain( "runic_empowerment_unholy"   );
+  gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
+  gains.blood_tap                        = get_gain( "blood_tap"                  );
+  // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
+  //gains.blood_tap_blood          -> type = ( resource_type_e ) RESOURCE_RUNE_BLOOD   ;
 }
 
 // death_knight_t::init_procs ===============================================
@@ -4175,10 +4191,10 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  proc_runic_empowerment        = get_proc( "runic_empowerment"            );
-  proc_runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
-  proc_oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
-  proc_fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
+  procs.runic_empowerment        = get_proc( "runic_empowerment"            );
+  procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
+  procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
+  procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
 }
 
 // death_knight_t::init_resources ===========================================
@@ -4196,7 +4212,7 @@ void death_knight_t::init_benefits()
 {
   player_t::init_benefits();
 
-  uptimes_rp_cap = get_benefit( "rp_cap" );
+  benefits.rp_cap = get_benefit( "rp_cap" );
 }
 
 // death_knight_t::reset ====================================================
@@ -4226,14 +4242,14 @@ double death_knight_t::assess_damage( double            amount,
                                       result_type_e     result,
                                       action_t*         action )
 {
-  if ( buffs_blood_presence -> check() )
+  if ( buffs.blood_presence -> check() )
     amount *= 1.0 - dbc.spell( 61261 ) -> effect1().percent();
 
   if ( result != RESULT_MISS )
-    buffs_scent_of_blood -> trigger();
+    buffs.scent_of_blood -> trigger();
 
   if ( result == RESULT_DODGE || result == RESULT_PARRY )
-    buffs_rune_strike -> trigger();
+    buffs.rune_strike -> trigger();
 
   return player_t::assess_damage( amount, school, dtype, result, action );
 }
@@ -4244,8 +4260,8 @@ double death_knight_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  if ( buffs_blood_presence -> check() )
-    a += buffs_blood_presence -> data().effect1().percent();
+  if ( buffs.blood_presence -> check() )
+    a += buffs.blood_presence -> data().effect1().percent();
 
   return a;
 }
@@ -4258,13 +4274,13 @@ double death_knight_t::composite_attribute_multiplier( attribute_type_e attr ) c
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + buffs_rune_of_the_fallen_crusader -> value();
-    m *= 1.0 + buffs_pillar_of_frost -> value();
+    m *= 1.0 + buffs.rune_of_the_fallen_crusader -> value();
+    m *= 1.0 + buffs.pillar_of_frost -> value();
   }
 
   if ( attr == ATTR_STAMINA )
-    if ( buffs_blood_presence -> check() )
-      m *= 1.0 + buffs_blood_presence -> data().effectN( 3 ).percent();
+    if ( buffs.blood_presence -> check() )
+      m *= 1.0 + buffs.blood_presence -> data().effectN( 3 ).percent();
 
   return m;
 }
@@ -4303,7 +4319,7 @@ double death_knight_t::composite_tank_parry() const
 {
   double parry = player_t::composite_tank_parry();
 
-  if ( buffs_dancing_rune_weapon -> up() )
+  if ( buffs.dancing_rune_weapon -> up() )
     parry += 0.20;
 
   return parry;
@@ -4316,8 +4332,8 @@ double death_knight_t::composite_player_multiplier( const school_type_e school, 
   double m = player_t::composite_player_multiplier( school, a );
 
   // Factor flat multipliers here so they effect procs, grenades, etc.
-  m *= 1.0 + buffs_frost_presence -> value();
-  m *= 1.0 + buffs_bone_shield -> value();
+  m *= 1.0 + buffs.frost_presence -> value();
+  m *= 1.0 + buffs.bone_shield -> value();
 
   if ( school == SCHOOL_SHADOW )
     m *= 1.0 + spells.dreadblade -> effect1().coeff() * 0.01 * composite_mastery();
@@ -4362,7 +4378,7 @@ void death_knight_t::regen( timespan_t periodicity )
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[i].regen_rune( this, periodicity );
 
-  uptimes_rp_cap -> update( resources.current[ RESOURCE_RUNIC_POWER ] ==
+  benefits.rp_cap -> update( resources.current[ RESOURCE_RUNIC_POWER ] ==
                             resources.max    [ RESOURCE_RUNIC_POWER] );
 }
 
@@ -4438,22 +4454,22 @@ void death_knight_t::trigger_runic_empowerment()
     int rune_to_regen = depleted_runes[ ( int ) ( sim -> rng -> real() * num_depleted * 0.9999 ) ];
     dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
     regen_rune -> fill_rune();
-    if      ( regen_rune -> is_blood()  ) gains_runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1,0 );
-    else if ( regen_rune -> is_unholy() ) gains_runic_empowerment_unholy -> add ( RESOURCE_RUNE_UNHOLY, 1,0 );
-    else if ( regen_rune -> is_frost()  ) gains_runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1,0 );
+    if      ( regen_rune -> is_blood()  ) gains.runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1,0 );
+    else if ( regen_rune -> is_unholy() ) gains.runic_empowerment_unholy -> add ( RESOURCE_RUNE_UNHOLY, 1,0 );
+    else if ( regen_rune -> is_frost()  ) gains.runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1,0 );
 
-    gains_runic_empowerment -> add ( RESOURCE_RUNE, 1,0 );
+    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1,0 );
     if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
-    proc_runic_empowerment -> occur();
+    procs.runic_empowerment -> occur();
 
     if ( set_bonus.tier13_4pc_melee() )
-      buffs_tier13_4pc_melee -> trigger( 1, 0, 0.25 );
+      buffs.tier13_4pc_melee -> trigger( 1, 0, 0.25 );
   }
   else
   {
     // If there were no available runes to refresh
-    proc_runic_empowerment_wasted -> occur();
-    gains_runic_empowerment -> add ( RESOURCE_RUNE, 0,1 );
+    procs.runic_empowerment_wasted -> occur();
+    gains.runic_empowerment -> add ( RESOURCE_RUNE, 0,1 );
   }
 }
 

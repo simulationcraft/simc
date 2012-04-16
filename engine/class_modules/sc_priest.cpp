@@ -252,7 +252,7 @@ struct priest_t : public player_t
     spells( spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
-    initial_shadow_orbs( 0 ),
+    initial_shadow_orbs(),
     glyphs( glyphs_t() ),
     constants( constants_t() )
   {
