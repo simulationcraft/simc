@@ -1123,7 +1123,7 @@ talent_data_t* talent_data_t::find( const char* name, bool ptr )
     token2 = p -> name_cstr();
     armory_t::format( token2, FORMAT_ASCII_MASK );
 
-    if ( ! util_t::str_compare_ci( name, p -> name_cstr() ) || ! util_t::str_compare_ci( token1.c_str(), token2.c_str() ) )
+    if ( util_t::str_compare_ci( name, p -> name_cstr() ) || util_t::str_compare_ci( token1.c_str(), token2.c_str() ) )
     {
       return p;
     }

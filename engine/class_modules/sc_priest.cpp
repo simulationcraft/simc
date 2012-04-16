@@ -940,7 +940,6 @@ private:
   friend void priest_t::init_spells();
 public:
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
-  void trigger_surge_of_darkness();
 };
 
 // ==========================================================================
@@ -1337,14 +1336,6 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
     p -> cooldowns.chakra -> reset();
     p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> data().cooldown();
     p -> cooldowns.chakra -> start();
-  }
-}
-
-void priest_spell_t::trigger_surge_of_darkness()
-{
-  if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
-  {
-    p() -> buffs.surge_of_darkness -> trigger();
   }
 }
 
@@ -2168,7 +2159,10 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_surge_of_darkness();
+    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+    {
+      p() -> buffs.surge_of_darkness -> trigger();
+    }
   }
 };
 
@@ -2221,7 +2215,10 @@ struct vampiric_touch_t : public priest_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
 
-    trigger_surge_of_darkness();
+    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+    {
+      p() -> buffs.surge_of_darkness -> trigger();
+    }
 
     /* FIX-ME: Make sure this is still the case when MoP goes live */
     /* VT ticks are triggering OnHarmfulSpellCast procs. Twice at that..... */
@@ -3844,7 +3841,7 @@ void priest_t::init_actions()
         buffer += "/mind_blast";
 
       if ( find_class_spell( "Mind Spike" ) -> ok() )
-        buffer += "/mind_spike,if=buff.surge_of_darkness.up";
+        buffer += "/mind_spike,if=buff.surge_of_darkness.react";
 
       buffer += init_use_racial_actions();
 
