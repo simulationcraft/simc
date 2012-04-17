@@ -3445,7 +3445,7 @@ timespan_t player_t::time_to_die() const
   // wait a minimum gcd before starting to estimate fight duration based on health,
   // otherwise very odd things happen with multi-actor simulations and time_to_die
   // expressions
-  if ( resources.base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
+  if ( iteration_dmg_taken > 0.0 && resources.base[ RESOURCE_HEALTH ] > 0 && sim -> current_time >= timespan_t::from_seconds( 1.0 ) )
   {
     return sim -> current_time * ( resources.current[ RESOURCE_HEALTH ] / iteration_dmg_taken );
   }
