@@ -1465,6 +1465,8 @@ public:
     else
       return factory( std::numeric_limits<time_t>::min() );
   }
+
+  timespan_t() : time( 0 ) {}
 };
 
 } // namespace timespan_adl_barrier =========================================
