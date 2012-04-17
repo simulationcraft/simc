@@ -446,7 +446,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
   immolation_damage_t* immolation_damage;
 
   infernal_immolation_t( infernal_pet_t* p, const std::string& options_str ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Immolation" ), immolation_damage( 0 )
+    warlock_pet_actions::warlock_pet_spell_t( p, p -> find_spell( 19483, "immolation" ) ), immolation_damage( 0 )
   {
     parse_options( NULL, options_str );
 
