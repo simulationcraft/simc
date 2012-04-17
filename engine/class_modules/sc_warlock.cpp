@@ -133,6 +133,7 @@ private:
   {
     may_crit      = true;
     tick_may_crit = true;
+    stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
     crit_multiplier *= 1.33;
@@ -156,21 +157,17 @@ public:
 
   // warlock_spell_t::total_td_multiplier ===================================
 
-  virtual double total_td_multiplier() const
+  virtual double action_ta_multiplier() const
   {
-    double shadow_td_multiplier = 1.0;
-    warlock_t* p = player -> cast_warlock();
+    double m = 1.0;
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
-    if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME )
+    if ( td -> debuffs_haunt -> up() )
     {
-      if ( td -> debuffs_haunt -> up() )
-      {
-        shadow_td_multiplier *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent() + ( p -> glyphs.haunt -> effectN( 1 ).percent() );
-      }
+      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
-    return spell_t::total_td_multiplier() * shadow_td_multiplier;
+    return spell_t::action_ta_multiplier() * m;
   }
 
   // trigger_soul_leech =====================================================
@@ -223,49 +220,29 @@ struct curse_of_elements_t : public warlock_spell_t
 
 struct agony_t : public warlock_spell_t
 {
+  int damage_level;
   agony_t( warlock_t* p ) :
-    warlock_spell_t( p, "Agony" )
+    warlock_spell_t( p, "Agony" ), damage_level( 0 )
   {
-    /*
-     * BOA DATA:
-     * No Glyph
-     * 16 Ticks:
-     * middle low low low low low    middle middle middle middle middle high high high high high
-     * 15 ticks:
-     * low    low low low low middle middle middle middle middle high   high high high high
-     * 14 ticks:
-     * low    low low low low middle middle middle middle high strange strange strange
-     * 828 828 403 403 403 486 998 485 485 1167  691 1421 691 1316
-     * 374 373 373 373 767 449 449 450 924  526  640  640 640 1316
-     * 378 777 777 777 378 461 460 460 460  543 1370  666 666  666
-     * 378 378 777 378 378 460 460 946 460  542 1369  667 666 1369
-     *
-     *
-     * 13 ticks:
-     * 2487 sp, lvl 80 -> middle = 130.14 + 0.1000000015 * 2487 = 378.84
-     * -> difference = base_td / 2, only 1 middle tick at the beginning
-     * 378 645 313 313 313 378 379 778 378 443 444 444 443
-     * 12 ticks:
-     * low low low low    middle middle middle middle   high high high high
-     * and it looks like low-tick = middle-tick - base_td / 2
-     * and              high-tick = middle-tick + base_td / 2
-     * at 12 ticks, everything is very consistent with this logic
-     */
-
     may_crit = false;
+    tick_power_mod = 0.02; // from tooltip
+  }
 
-    int extra_ticks = ( int ) ( p -> glyphs.bane_of_agony -> effectN( 1 ).time_value() / base_tick_time );
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+    damage_level = 0;
+  }
 
-    if ( extra_ticks > 0 )
-    {
-      // after patch 3.0.8, the added ticks are double the base damage
+  virtual void tick( dot_t* d )
+  {
+    if ( damage_level < 10 ) damage_level++;
+    warlock_spell_t::tick( d );
+  }
 
-      double total_damage = base_td_init * ( num_ticks + extra_ticks * 2 );
-
-      num_ticks += extra_ticks;
-
-      base_td_init = total_damage / num_ticks;
-    }
+  virtual double calculate_tick_damage( result_type_e r, double p, double m )
+  {
+    return warlock_spell_t::calculate_tick_damage( r, p, m ) * ( 70 + 5 * damage_level ) / 12;
   }
 
 };
@@ -279,6 +256,7 @@ struct doom_t : public warlock_spell_t
   {
     hasted_ticks = false;
     may_crit = false;
+    tick_power_mod = 1.0; // from tooltip
   }
 };
 
@@ -621,14 +599,16 @@ struct drain_soul_t : public warlock_spell_t
     may_crit     = false;
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier( const action_state_t* s ) const
   {
-    warlock_spell_t::player_buff();
+    double m = warlock_spell_t::action_multiplier( s );
 
     if ( target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
-      player_multiplier *= 2.0;
+      m *= 2.0;
     }
+
+    return m;
   }
 };
 
@@ -698,12 +678,13 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_ta_multiplier() const
   {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
+    double m = warlock_spell_t::action_ta_multiplier();
 
-    player_td_multiplier += p -> glyphs.immolate -> effectN( 1 ).percent();
+    m *= p() -> glyphs.immolate -> effectN( 1 ).percent(); //FIXME needs testing for additive vs multiplicative
+
+    return m;
   }
 
   virtual void execute()
@@ -842,18 +823,6 @@ struct incinerate_t : public warlock_spell_t
     if ( result_is_hit( impact_result ) )
     {
       trigger_decimation( this, impact_result );
-    }
-  }
-
-  virtual void player_buff()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::player_buff();
-
-    if ( p -> buffs.molten_core -> check() )
-    {
-      player_multiplier *= 1 + p -> buffs.molten_core -> data().effectN( 1 ).percent();
-      p -> buffs.molten_core -> decrement();
     }
   }
 
@@ -1286,6 +1255,19 @@ struct fel_flame_t : public warlock_spell_t
   }
 };
 
+// Malefic Grasp Spell ==========================================================
+
+struct malefic_grasp_t : public warlock_spell_t
+{
+  malefic_grasp_t( warlock_t* p ) :
+    warlock_spell_t( p, "Malefic Grasp" )
+  {
+    channeled    = true;
+    hasted_ticks = true; // informative
+    may_crit     = false;
+  }
+};
+
 // Dark Intent Spell ========================================================
 
 struct dark_intent_t : public warlock_spell_t
@@ -1604,6 +1586,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "immolate"            ) a = new            immolate_t( this );
   else if ( name == "incinerate"          ) a = new          incinerate_t( this );
   else if ( name == "life_tap"            ) a = new            life_tap_t( this );
+  else if ( name == "malefic_grasp"       ) a = new       malefic_grasp_t( this );
   else if ( name == "metamorphosis"       ) a = new       metamorphosis_t( this );
   else if ( name == "shadow_bolt"         ) a = new         shadow_bolt_t( this );
   else if ( name == "shadowburn"          ) a = new          shadowburn_t( this );
