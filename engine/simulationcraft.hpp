@@ -1013,7 +1013,8 @@ enum snapshot_state_e
 
   STATE_MUL_DA        = 0x000010,
   STATE_MUL_TA        = 0x000020,
-  STATE_MUL_TARGET    = 0x000040,
+  STATE_MUL_TGT_DA    = 0x000040,
+  STATE_MUL_TGT_TA    = 0x000080,
 };
 
 // Generic programming tools ================================================
@@ -1456,7 +1457,7 @@ public:
   template <typename Rep>
   static timespan_t from_native( Rep t ) { return factory( t ); }
 
-  static timespan_t zero() { return factory( 0 ); }
+  static timespan_t zero() { return factory( 0LL ); }
   static timespan_t max() { return factory( std::numeric_limits<time_t>::max() ); }
   static timespan_t min()
   {
@@ -5163,6 +5164,8 @@ public:
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
   virtual double composite_spell_power() const { return base_spell_power; }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
+  virtual double composite_target_da_multiplier( const player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_target_ta_multiplier( const player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_da_multiplier( const action_state_t* s ) const
   {
     return action_multiplier( s ) * action_da_multiplier() *
@@ -5193,7 +5196,8 @@ struct action_state_t
   // Multipliers
   double          da_multiplier;
   double          ta_multiplier;
-  double          target_multiplier;
+  double          target_da_multiplier;
+  double          target_ta_multiplier;
   // Cache pointer
   action_state_t* next;
 
@@ -5210,12 +5214,12 @@ struct action_state_t
 
   virtual inline double composite_da_multiplier() const
   {
-    return da_multiplier * target_multiplier;
+    return da_multiplier * target_da_multiplier;
   }
 
   virtual inline double composite_ta_multiplier() const
   {
-    return ta_multiplier * target_multiplier;
+    return ta_multiplier * target_ta_multiplier;
   }
 };
 
@@ -5294,6 +5298,8 @@ public:
   virtual double  dodge_chance( double /* expertise */, int delta_level ) const;
   virtual double  parry_chance( double /* expertise */, int delta_level ) const;
   virtual double glance_chance( int delta_level ) const;
+  virtual double composite_target_da_multiplier( const player_t* target ) const { return target -> composite_ranged_attack_player_vulnerability(); }
+  virtual double composite_target_ta_multiplier( const player_t* target ) const { return target -> composite_ranged_attack_player_vulnerability(); }
 
   /* New stuffs */
   virtual double composite_expertise() const { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }

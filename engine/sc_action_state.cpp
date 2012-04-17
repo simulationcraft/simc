@@ -48,6 +48,9 @@ void action_state_t::copy_state( const action_state_t* o )
 
   da_multiplier = o -> da_multiplier;
   ta_multiplier = o -> ta_multiplier;
+  
+  target_da_multiplier = o -> target_da_multiplier;
+  target_ta_multiplier = o -> target_ta_multiplier;
 }
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
@@ -55,7 +58,8 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   result( RESULT_NONE ), result_amount( 0 ),
   haste( 0 ), crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
-  da_multiplier( 1.0 ), ta_multiplier( 1.0 ), target_multiplier( 1.0 ),
+  da_multiplier( 1.0 ), ta_multiplier( 1.0 ), 
+  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
   next( 0 )
 {
 }
@@ -66,7 +70,7 @@ void action_state_t::debug() const
                  "[NEW] %s %s %s: flags=%#.4x result=%s amount=%.2f "
                  "haste=%.2f crit=%.2f "
                  "ap=%.0f sp=%.0f "
-                 "da_mul=%.4f ta_mul=%.4f target_mul=%.4f",
+                 "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
                  action -> player -> name(),
                  action -> name(),
                  target -> name(),
@@ -74,7 +78,8 @@ void action_state_t::debug() const
                  util_t::result_type_string( result ), result_amount,
                  haste, crit,
                  attack_power, spell_power,
-                 da_multiplier, ta_multiplier, target_multiplier );
+                 da_multiplier, ta_multiplier, 
+                 target_da_multiplier, target_ta_multiplier );
 }
 
 stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,

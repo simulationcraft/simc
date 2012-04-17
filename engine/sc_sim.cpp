@@ -805,7 +805,7 @@ void sim_t::add_event( event_t* e,
 
   if ( unlikely( ! ( delta_time.total_seconds() <= wheel_seconds ) ) )
   {
-    errorf( "sim_t::add_event assertion error! delta_time > wheel_seconds, event %s from %s.\n", e -> name, e -> player ? e -> player -> name() : "no-one" );
+    errorf( "sim_t::add_event assertion error! delta_time (%f) > wheel_seconds (%d), event %s from %s.\n", delta_time.total_seconds(), wheel_seconds, e -> name, e -> player ? e -> player -> name() : "no-one" );
     assert( 0 );
   }
 

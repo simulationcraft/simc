@@ -162,7 +162,7 @@ action_t::action_t( action_type_e       ty,
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
-  update_flags = STATE_MUL_TARGET;
+  update_flags = STATE_MUL_TGT_DA | STATE_MUL_TGT_TA;
   state_cache = 0;
   execute_state = 0;
 
@@ -1394,10 +1394,10 @@ void action_t::init()
     snapshot_flags |= STATE_CRIT;
 
   if ( base_td > 0 || num_ticks > 0 )
-    snapshot_flags |= STATE_MUL_TA | STATE_MUL_TARGET;
+    snapshot_flags |= STATE_MUL_TA | STATE_MUL_TGT_TA;
 
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
-    snapshot_flags |= STATE_MUL_DA | STATE_MUL_TARGET;
+    snapshot_flags |= STATE_MUL_DA | STATE_MUL_TGT_DA;
 
   if ( ! ( background || sequence ) )
     player->foreground_action_list.push_back( this );
@@ -1800,7 +1800,10 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
   if ( flags & STATE_MUL_TA )
     state -> ta_multiplier = composite_ta_multiplier( state );
 
-  if ( flags & STATE_MUL_TARGET )
-    state -> target_multiplier = state -> target -> composite_player_vulnerability( school );
+  if ( flags & STATE_MUL_TGT_DA )
+    state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
+
+  if ( flags & STATE_MUL_TGT_TA )
+    state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
 }
 

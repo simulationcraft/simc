@@ -9,7 +9,7 @@ role=hybrid
 spec=enhancement
 use_pre_potion=1
 professions=enchanting=525/alchemy=525
-talents=http://www.wowhead.com/talent#shaman-3022021000000000000232332001300301232100000000000000000000
+#talents=http://www.wowhead.com/talent#shaman-3022021000000000000232332001300301232100000000000000000000
 glyphs=ghost_wolf/lightning_shield/chain_lightning/astral_recall/renewed_life/lava_lash
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
