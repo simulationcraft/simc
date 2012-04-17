@@ -5167,7 +5167,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
       {
         if ( talent_on_row )
         {
-          sim -> errorf( "Player %s has more than 1 talent on row %d in talent encoding.\n", name(), ( i / MAX_TALENT_COLS ) + 1 );
+          sim -> errorf( "Player %s has more than 1 talent on row %d in talent encoding.\n", name(), static_cast<int> ( ( i / MAX_TALENT_COLS ) + 1 ) );
           return false;
         }
         talent_on_row = true;

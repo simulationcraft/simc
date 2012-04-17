@@ -418,41 +418,41 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 // ==========================================================================
 
 // chart_t::raid_dps ========================================================
+struct filter_non_performing_players
+{
+  const bool dps;
+  filter_non_performing_players( bool dps_ ) : dps( dps_ ) {}
+  bool operator()( const player_t* p ) const
+  { if ( dps ){ if ( p -> dps.mean<=0 ) return true;} else if ( p -> hps.mean<=0) return true; return false; }
+};
 
 size_t chart::raid_aps( std::vector<std::string>& images,
                      const sim_t* sim,
                      const std::vector<player_t*>& players_by_aps,
                      bool dps )
 {
-  int num_players = static_cast<int>( players_by_aps.size() );
+  size_t num_players = players_by_aps.size();
 
   if ( num_players == 0 )
     return 0;
 
   double max_aps = 0;
   if ( dps )
-    max_aps = players_by_aps[ 0 ]->dps.mean;
+    max_aps = players_by_aps[ 0 ] -> dps.mean;
   else
-    max_aps = players_by_aps[ 0 ]->hps.mean;
+    max_aps = players_by_aps[ 0 ] -> hps.mean;
 
   std::string s = std::string();
   char buffer[ 1024 ];
   bool first = true;
 
-  std::vector<player_t*> player_list = players_by_aps;
-  int max_players = MAX_PLAYERS_PER_CHART;
+  std::vector<player_t*> player_list ;
+  size_t max_players = MAX_PLAYERS_PER_CHART;
 
   // Ommit Player with 0 DPS/HPS
-  for ( int i=0; i < num_players; i++ )
-  {
-    player_t* p = player_list[ i ];
-    if ( dps ? p -> dps.mean <= 0 : p -> hps.mean <=0 )
-    {
-      player_list.resize( i );
-      break;
-    }
-  }
-  num_players = static_cast<int>( player_list.size() );
+  range::remove_copy_if( players_by_aps, back_inserter( player_list ), filter_non_performing_players( dps ) );
+
+  num_players = player_list.size();
 
   if ( num_players == 0 )
     return 0;
@@ -475,7 +475,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     s += "&amp;";
     s += "chd=t:";
 
-    for ( int i=0; i < num_players; i++ )
+    for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
       snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean ); s += buffer;
@@ -484,14 +484,14 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
     s += "&amp;";
     s += "chco=";
-    for ( int i=0; i < num_players; i++ )
+    for ( size_t i = 0; i < num_players; i++ )
     {
       if ( i ) s += ",";
       s += get_color( player_list[ i ] );
     }
     s += "&amp;";
     s += "chm=";
-    for ( int i=0; i < num_players; i++ )
+    for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
       std::string formatted_name;

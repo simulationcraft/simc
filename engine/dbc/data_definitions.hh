@@ -64,8 +64,8 @@ struct item_data_t {
   double   delay;
   double   dmg_range;
   double   item_modifier;
-  int      class_mask;
-  int      race_mask;
+  unsigned      class_mask;
+  unsigned      race_mask;
   int      stat_type_e[10];       // item_mod_type
   int      stat_val[10];
   int      id_spell[5];
