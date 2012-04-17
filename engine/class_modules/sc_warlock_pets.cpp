@@ -186,7 +186,7 @@ struct warlock_pet_melee_t : public melee_attack_t
 struct warlock_pet_melee_attack_t : public melee_attack_t
 {
   warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
-    melee_attack_t( "", p, p -> find_pet_spell( n ), sc )
+    melee_attack_t( armory_t::format( std::string( n ) ), p, p -> find_pet_spell( n ), sc )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
@@ -194,7 +194,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   }
 
   warlock_pet_melee_attack_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    melee_attack_t( "", p, s, sc )
+    melee_attack_t( s -> to_str(), p, s, sc )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
@@ -225,14 +225,14 @@ struct warlock_pet_spell_t : public spell_t
 {
 
   warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( "", p, p -> find_class_spell( n ), sc )
+    spell_t( armory_t::format( std::string( n ) ), p, p -> find_pet_spell( n ), sc )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
   }
 
   warlock_pet_spell_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( "", p, s, sc )
+    spell_t( s -> to_str(), p, s, sc )
   {
     may_crit = true;
     crit_multiplier *= 1.33;

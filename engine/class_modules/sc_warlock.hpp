@@ -49,25 +49,12 @@ struct warlock_t : public player_t
   {
     buff_t* backdraft;
     buff_t* decimation;
-    buff_t* demon_armor;
-    buff_t* demonic_empowerment;
-    buff_t* empowered_imp;
-    buff_t* eradication;
-    buff_t* fel_armor;
     buff_t* metamorphosis;
     buff_t* molten_core;
     buff_t* shadow_trance;
     buff_t* hand_of_guldan;
-    buff_t* improved_soul_fire;
-    buff_t* dark_intent_feedback;
     buff_t* soulburn;
-    buff_t* demon_soul_imp;
-    buff_t* demon_soul_felguard;
-    buff_t* demon_soul_felhunter;
-    buff_t* demon_soul_succubus;
-    buff_t* demon_soul_voidwalker;
     buff_t* bane_of_havoc;
-    buff_t* searing_pain_soulburn;
     buff_t* tier13_4pc_caster;
   } buffs;
 
@@ -226,7 +213,7 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  buff_t*   create_buff( const char* name );
+  buff_t*   create_buff( const std::string& name );
   buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -235,8 +222,6 @@ struct warlock_t : public player_t
   virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const     { return ROLE_SPELL; }
-  virtual double    composite_armor() const;
-  virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
