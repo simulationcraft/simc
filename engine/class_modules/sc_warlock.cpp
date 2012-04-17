@@ -157,7 +157,7 @@ public:
 
   // warlock_spell_t::total_td_multiplier ===================================
 
-  virtual double action_ta_multiplier() const
+  virtual double composite_target_ta_multiplier( const player_t* t ) const
   {
     double m = 1.0;
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
@@ -167,7 +167,7 @@ public:
       m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
-    return spell_t::action_ta_multiplier() * m;
+    return spell_t::composite_target_ta_multiplier( t ) * m;
   }
 
   // trigger_soul_leech =====================================================
@@ -178,8 +178,7 @@ public:
 
     if ( p -> talents.soul_leech -> ok() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech_health );
-      p -> resource_gain( RESOURCE_MANA, p -> resources.max[ RESOURCE_MANA ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
 
     }
   }
@@ -290,11 +289,8 @@ struct bane_of_havoc_t : public warlock_spell_t
 
 struct shadow_bolt_t : public warlock_spell_t
 {
-  bool used_shadow_trance;
-
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Shadow Bolt" ),
-    used_shadow_trance( 0 )
+    warlock_spell_t( p, "Shadow Bolt" )
   {
     if ( ! dtr && player -> has_dtr )
     {
@@ -307,28 +303,11 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
     warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs.shadow_trance -> up() ) h = timespan_t::zero();
     if ( p -> buffs.backdraft -> up() )
     {
       h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
     return h;
-  }
-
-  virtual void schedule_execute()
-  {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::schedule_execute();
-
-    if ( p -> buffs.shadow_trance -> check() )
-    {
-      p -> buffs.shadow_trance -> expire();
-      used_shadow_trance = true;
-    }
-    else
-    {
-      used_shadow_trance = false;
-    }
   }
 
   virtual void execute()
@@ -341,19 +320,19 @@ struct shadow_bolt_t : public warlock_spell_t
       p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
     }
 
-    if ( ! used_shadow_trance && p -> buffs.backdraft -> check() )
+    if ( p -> buffs.backdraft -> check() )
     {
       p -> buffs.backdraft -> decrement();
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_decimation( this, impact_result );
+      trigger_decimation( this, s -> result );
     }
   }
 };
@@ -403,11 +382,11 @@ struct chaos_bolt_t : public warlock_spell_t
       p -> buffs.backdraft -> decrement();
   }
   
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
       trigger_soul_leech( this );
   }
 };
@@ -418,11 +397,11 @@ struct death_coil_t : public warlock_spell_t
 {
   death_coil_t( warlock_t* p ) : warlock_spell_t( p, "Death Coil" ) { }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
       player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
   }
 };
@@ -450,11 +429,11 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
       trigger_soul_leech( this );
   }
 
@@ -509,11 +488,13 @@ struct corruption_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick( d );
 
-    if ( p -> buffs.shadow_trance -> trigger() )
-      p -> procs.shadow_trance -> occur();
+    if ( p() -> buffs.shadow_trance -> trigger() )
+      p() -> procs.shadow_trance -> occur();
+
+    if ( p() -> rngs.nightfall -> roll( p() -> spec.nightfall -> proc_chance() ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
   }
 };
 
@@ -652,11 +633,11 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
       td -> debuffs_haunt -> trigger();
@@ -754,13 +735,12 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
-      p -> buffs.backdraft -> trigger( 3 );
+    if ( result_is_hit( s -> result ) )
+      p() -> buffs.backdraft -> trigger( 3 );
   }
 
   virtual bool ready()
@@ -816,13 +796,13 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_decimation( this, impact_result );
+      trigger_decimation( this, s -> result );
     }
   }
 
@@ -891,13 +871,13 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_decimation( this, impact_result );
+      trigger_decimation( this, s -> result );
 
       trigger_soul_leech( this );
     }
@@ -1204,20 +1184,19 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_t* p = player -> cast_warlock();
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( t -> debuffs.flying -> check() )
+      if ( s -> target -> debuffs.flying -> check() )
       {
-        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), t -> name_str.c_str() );
+        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), s -> target -> name_str.c_str() );
       }
       else
       {
-        p -> buffs.hand_of_guldan -> trigger();
+        p() -> buffs.hand_of_guldan -> trigger();
       }
     }
   }
@@ -1242,11 +1221,11 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
-  virtual void impact( player_t* t,  result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
       td -> dots_immolate            -> extend_duration( 2, true );
@@ -1405,14 +1384,14 @@ struct seed_of_corruption_t : public warlock_spell_t
     add_child( seed_of_corruption_aoe );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::impact( t, impact_result, travel_dmg );
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
-      dot_damage_done = t -> iteration_dmg_taken;
+      dot_damage_done = s -> target -> iteration_dmg_taken;
       if ( td -> dots_corruption -> ticking )
       {
         td -> dots_corruption -> cancel();
@@ -1688,23 +1667,23 @@ void warlock_t::init_spells()
   mastery_spells.master_demonologist  = find_mastery_spell( "Master Demonologist" );
 
   // Prime
-  glyphs.metamorphosis        = find_glyph( "Glyph of Metamorphosis" );
-  glyphs.conflagrate          = find_glyph( "Glyph of Conflagrate" );
-  glyphs.chaos_bolt           = find_glyph( "Glyph of Chaos Bolt" );
-  glyphs.corruption           = find_glyph( "Glyph of Corruption" );
-  glyphs.bane_of_agony        = find_glyph( "Glyph of Bane of Agony" );
-  glyphs.felguard             = find_glyph( "Glyph of Felguard" );
-  glyphs.haunt                = find_glyph( "Glyph of Haunt" );
-  glyphs.immolate             = find_glyph( "Glyph of Immolate" );
-  glyphs.imp                  = find_glyph( "Glyph of Imp" );
-  glyphs.lash_of_pain         = find_glyph( "Glyph of Lash of Pain" );
-  glyphs.incinerate           = find_glyph( "Glyph of Incinerate" );
-  glyphs.shadowburn           = find_glyph( "Glyph of Shadowburn" );
-  glyphs.unstable_affliction  = find_glyph( "Glyph of Unstable Affliction" );
+  glyphs.metamorphosis        = find_glyph_spell( "Glyph of Metamorphosis" );
+  glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
+  glyphs.chaos_bolt           = find_glyph_spell( "Glyph of Chaos Bolt" );
+  glyphs.corruption           = find_glyph_spell( "Glyph of Corruption" );
+  glyphs.bane_of_agony        = find_glyph_spell( "Glyph of Bane of Agony" );
+  glyphs.felguard             = find_glyph_spell( "Glyph of Felguard" );
+  glyphs.haunt                = find_glyph_spell( "Glyph of Haunt" );
+  glyphs.immolate             = find_glyph_spell( "Glyph of Immolate" );
+  glyphs.imp                  = find_glyph_spell( "Glyph of Imp" );
+  glyphs.lash_of_pain         = find_glyph_spell( "Glyph of Lash of Pain" );
+  glyphs.incinerate           = find_glyph_spell( "Glyph of Incinerate" );
+  glyphs.shadowburn           = find_glyph_spell( "Glyph of Shadowburn" );
+  glyphs.unstable_affliction  = find_glyph_spell( "Glyph of Unstable Affliction" );
 
   // Major
-  glyphs.life_tap             = find_glyph( "Glyph of Life Tap" );
-  glyphs.shadow_bolt          = find_glyph( "Glyph of Shadow Bolt" );
+  glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.shadow_bolt          = find_glyph_spell( "Glyph of Shadow Bolt" );
 }
 
 // warlock_t::init_base =====================================================
@@ -1781,13 +1760,13 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.fel_armor         = get_gain( "fel_armor"         );
-  gains.felhunter         = get_gain( "felhunter"         );
-  gains.life_tap          = get_gain( "life_tap"          );
-  gains.mana_feed         = get_gain( "mana_feed"         );
-  gains.soul_leech        = get_gain( "soul_leech"        );
-  gains.soul_leech_health = get_gain( "soul_leech_health" );
-  gains.tier13_4pc        = get_gain( "tier13_4pc"        );
+  gains.fel_armor         = get_gain( "fel_armor"  );
+  gains.felhunter         = get_gain( "felhunter"  );
+  gains.life_tap          = get_gain( "life_tap"   );
+  gains.mana_feed         = get_gain( "mana_feed"  );
+  gains.soul_leech        = get_gain( "soul_leech" );
+  gains.tier13_4pc        = get_gain( "tier13_4pc" );
+  gains.tier13_4pc        = get_gain( "nightfall"  );
 }
 
 // warlock_t::init_uptimes ==================================================
@@ -1806,10 +1785,7 @@ void warlock_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.ebon_imp         = get_proc( "ebon_imp"       );
-  procs.empowered_imp    = get_proc( "empowered_imp"  );
-  procs.impending_doom   = get_proc( "impending_doom" );
-  procs.shadow_trance    = get_proc( "shadow_trance"  );
+  procs.shadow_trance    = get_proc( "shadow_trance" );
 }
 
 // warlock_t::init_rng ======================================================
@@ -1818,13 +1794,7 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  rngs.cremation               = get_rng( "cremation"              );
-  rngs.ebon_imp                = get_rng( "ebon_imp_proc"          );
-  rngs.everlasting_affliction  = get_rng( "everlasting_affliction" );
-  rngs.impending_doom          = get_rng( "impending_doom"         );
-  rngs.pandemic                = get_rng( "pandemic"               );
-  rngs.siphon_life             = get_rng( "siphon_life"            );
-  rngs.soul_leech              = get_rng( "soul_leech"             );
+  rngs.nightfall               = get_rng( "nightfall" );
 }
 
 // warlock_t::init_actions ==================================================

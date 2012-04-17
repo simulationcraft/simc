@@ -128,9 +128,9 @@ struct warlock_t : public player_t
     gain_t* felhunter;
     gain_t* life_tap;
     gain_t* soul_leech;
-    gain_t* soul_leech_health;
     gain_t* mana_feed;
     gain_t* tier13_4pc;
+    gain_t* nightfall;
   } gains;
 
   // Uptimes
@@ -142,22 +142,13 @@ struct warlock_t : public player_t
   // Procs
   struct procs_t
   {
-    proc_t* empowered_imp;
-    proc_t* impending_doom;
     proc_t* shadow_trance;
-    proc_t* ebon_imp;
   } procs;
 
   // Random Number Generators
   struct rngs_t
   {
-    rng_t* soul_leech;
-    rng_t* everlasting_affliction;
-    rng_t* pandemic;
-    rng_t* cremation;
-    rng_t* impending_doom;
-    rng_t* siphon_life;
-    rng_t* ebon_imp;
+    rng_t* nightfall;
   } rngs;
 
   // Spells
