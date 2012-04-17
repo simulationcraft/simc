@@ -182,6 +182,10 @@ action_t::action_t( action_type_e       ty,
       dbc_t::add_token( data().id(), name_str );
     }
   }
+  else
+  {
+    armory_t::format( name_str, FORMAT_ASCII_MASK );
+  }
 
   init_dot( name_str );
 
