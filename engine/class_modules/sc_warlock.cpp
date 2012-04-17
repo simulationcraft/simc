@@ -122,7 +122,6 @@ struct warlock_heal_t : public heal_t
   { return static_cast<warlock_t*>( player ); }
 };
 
-
 // ==========================================================================
 // Warlock Spell
 // ==========================================================================
@@ -141,13 +140,13 @@ private:
 
 public:
   warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( armory_t::format( std::string( n ) ), p, p -> find_class_spell( n ), sc )
+    spell_t( n, p, p -> find_class_spell( n ), sc )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( armory_t::format( std::string( s -> name_cstr() ) ), p, s, sc )
+    spell_t( s -> name_cstr(), p, s, sc )
   {
     _init_warlock_spell_t();
   }
@@ -924,8 +923,6 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      warlock_t* p = player -> cast_warlock();
-
       trigger_decimation( this, impact_result );
 
       trigger_soul_leech( this );
