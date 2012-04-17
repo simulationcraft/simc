@@ -2430,7 +2430,7 @@ struct shadowy_apparition_t : priest_spell_t
   unsigned triggered_shadow_orb_mastery;
 
   shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadowy_apparition", player, player -> find_class_spell( "Shadowy Apparition" ) ),
+    priest_spell_t( "shadowy_apparition", player, player -> find_class_spell( "Shadowy Apparition" ), SCHOOL_SHADOW ),
     triggered_shadow_orb_mastery( 0 )
   {
     parse_options( NULL, options_str );
