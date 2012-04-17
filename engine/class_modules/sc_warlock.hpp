@@ -51,8 +51,6 @@ struct warlock_t : public player_t
     buff_t* decimation;
     buff_t* metamorphosis;
     buff_t* molten_core;
-    buff_t* shadow_trance;
-    buff_t* hand_of_guldan;
     buff_t* soulburn;
     buff_t* bane_of_havoc;
     buff_t* tier13_4pc_caster;

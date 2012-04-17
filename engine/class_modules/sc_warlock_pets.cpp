@@ -204,16 +204,6 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
 
-  virtual void player_buff()
-  {
-
-    melee_attack_t::player_buff();
-
-    if ( p() -> o() -> buffs.hand_of_guldan -> up() )
-    {
-      player_crit += 0.10;
-    }
-  }
 };
 
 
@@ -241,15 +231,6 @@ struct warlock_pet_spell_t : public spell_t
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
 
-  virtual void player_buff()
-  {
-    spell_t::player_buff();
-
-    if ( p() -> o() -> buffs.hand_of_guldan -> up() )
-    {
-      player_crit += 0.10;
-    }
-  }
 };
 
 }
@@ -671,8 +652,9 @@ void warlock_pet_t::init_base()
   attribute_base[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
   attribute_base[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
   attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
-  resources.base[ RESOURCE_HEALTH ]  = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
-  resources.base[ RESOURCE_MANA   ]  = get_attribute_base( level, BASE_STAT_MANA, pet_type );
+  resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
+  resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type );
+  resources.base[ RESOURCE_ENERGY ] = 200;
   initial_attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
   initial_spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
   initial_dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
@@ -957,7 +939,7 @@ felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner ) :
 {
   damage_modifier = 0.8;
 
-  action_list_str += "/snapshot_stats";
+  action_list_str = "snapshot_stats";
   action_list_str += "/shadow_bite";
   action_list_str += "/wait_for_shadow_bite";
 }

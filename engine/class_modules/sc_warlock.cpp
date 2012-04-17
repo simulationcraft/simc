@@ -490,11 +490,11 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> buffs.shadow_trance -> trigger() )
-      p() -> procs.shadow_trance -> occur();
-
     if ( p() -> rngs.nightfall -> roll( p() -> spec.nightfall -> proc_chance() ) )
+    {
+      p() -> procs.shadow_trance -> occur();
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+    }
   }
 };
 
@@ -558,11 +558,7 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::tick( d );
-
-    if ( p -> buffs.shadow_trance -> trigger( 1, 1.0, p -> spec.nightfall -> proc_chance() ) )
-      p -> procs.shadow_trance -> occur();
 
     heal -> execute();
   }
@@ -1184,26 +1180,9 @@ struct hand_of_guldan_t : public warlock_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( s -> target -> debuffs.flying -> check() )
-      {
-        if ( sim -> debug ) log_t::output( sim, "%s can not apply its debuff to flying target %s", name(), s -> target -> name_str.c_str() );
-      }
-      else
-      {
-        p() -> buffs.hand_of_guldan -> trigger();
-      }
-    }
-  }
-
   virtual timespan_t travel_time() const
   {
-    return timespan_t::from_seconds( 0.2 );
+    return timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -1736,7 +1715,6 @@ void warlock_t::init_buffs()
   buffs.decimation            = create_buff( "Decimation" );
   buffs.metamorphosis         = create_buff( "Metamorphosis" );
   buffs.molten_core           = create_buff( "Molten Core" );
-  buffs.shadow_trance         = create_buff( "Shadow Trance" );
   buffs.soulburn              = create_buff( "Soulburn" );
   buffs.tier13_4pc_caster     = create_buff( sets -> set ( SET_T13_4PC_CASTER ) -> id(), "tier13_4pc_caster" );
 }
