@@ -523,7 +523,11 @@ struct shadowfury_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  corruption_t( warlock_t* p ) : warlock_spell_t( p, "Corruption" ) {};
+  corruption_t( warlock_t* p ) : warlock_spell_t( p, "Corruption" ) 
+  {
+    may_crit = false;
+    tick_power_mod = 0.2; // from tooltip 
+  };
 
   virtual void tick( dot_t* d )
   {
@@ -636,6 +640,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
+    tick_power_mod = 0.2; // from tooltip 
   }
 
   virtual void execute()
