@@ -4106,6 +4106,8 @@ struct player_t : public noncopyable
       range::fill( base, 0.0 ); range::fill( initial, 0.0 ); range::fill( max, 0.0 ); range::fill( current, 0.0 );
       range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
     }
+    double pct( const resource_type_e& rt ) const
+    { return current[ rt ] / max[ rt ]; }
   } resources;
 
   double  mana_per_intellect;
@@ -4764,7 +4766,6 @@ struct targetdata_t : public noncopyable
   mage_targetdata_t        * cast_mage        () { assert( source->type == MAGE         ); return ( mage_targetdata_t        * ) this; }
   monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
   paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
-  priest_targetdata_t      * cast_priest      () { assert( source->type == PRIEST       ); return ( priest_targetdata_t      * ) this; }
   rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
   shaman_targetdata_t      * cast_shaman      () { assert( source->type == SHAMAN       ); return ( shaman_targetdata_t      * ) this; }
   warlock_targetdata_t     * cast_warlock     () { assert( source->type == WARLOCK      ); return ( warlock_targetdata_t     * ) this; }

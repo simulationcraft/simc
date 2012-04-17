@@ -543,7 +543,7 @@ double enemy_t::health_percentage() const
     return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
   }
 
-  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100 ;
+  return resources.pct( RESOURCE_HEALTH ) * 100 ;
 }
 
 // enemy_t::recalculate_health ==============================================

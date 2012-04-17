@@ -3154,7 +3154,7 @@ struct mana_tide_totem_t : public shaman_totem_t
     if ( ! shaman_spell_t::ready() )
       return false;
 
-    return ( p() -> resources.current[ RESOURCE_MANA ] < ( 0.75 * p() -> resources.max[ RESOURCE_MANA ] ) );
+    return ( player -> resources.pct( RESOURCE_MANA ) < 0.75 );
   }
 };
 

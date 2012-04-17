@@ -3190,7 +3190,7 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
 
   m *= 1.0 + buffs.arcane_power -> value();
 
-  double mana_pct = resources.current[ RESOURCE_MANA ] / resources.max [ RESOURCE_MANA ];
+  double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
 
   return m;

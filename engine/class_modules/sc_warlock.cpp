@@ -898,11 +898,11 @@ struct life_tap_t : public warlock_spell_t
   virtual bool ready()
   {
     if (  max_mana_pct > 0 )
-      if ( ( 100.0 * p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) > max_mana_pct )
+      if ( ( 100.0 * player -> resources.pct( RESOURCE_MANA ) ) > max_mana_pct )
         return false;
 
     if ( trigger > 0 )
-      if ( p() -> resources.current[ RESOURCE_MANA ] > trigger )
+      if ( player -> resources.current[ RESOURCE_MANA ] > trigger )
         return false;
 
     return warlock_spell_t::ready();

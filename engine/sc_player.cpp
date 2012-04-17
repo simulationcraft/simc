@@ -3434,7 +3434,7 @@ stat_type_e player_t::normalize_by() const
 
 double player_t::health_percentage() const
 {
-  return resources.current[ RESOURCE_HEALTH ] / resources.max[ RESOURCE_HEALTH ] * 100;
+  return resources.pct( RESOURCE_HEALTH ) * 100;
 }
 
 // target_t::time_to_die ====================================================
@@ -6013,7 +6013,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
         resource_pct_expr_t( const std::string& n, const player_t& p, resource_type_e r  ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
-        { return player.resources.current[ rt ] / player.resources.max[ rt ] * 100.0; }
+        { return player.resources.pct( rt ) * 100.0; }
       };
       return new resource_pct_expr_t( name_str, *this, r  );
     }
@@ -6605,16 +6605,16 @@ targetdata_t* player_t::new_targetdata( player_t* target )
 
 targetdata_t* targetdata_t::get( player_t* source, player_t* target )
 {
-  int id = source->targetdata_id;
+  int id = source -> targetdata_id;
   if ( id < 0 )
     source -> targetdata_id = id = source -> sim -> num_targetdata_ids++;
 
   if ( id >= ( int ) target -> targetdata.size() )
     target -> targetdata.resize( id + 1 );
 
-  targetdata_t* p = target->targetdata[id];
+  targetdata_t* p = target->targetdata[ id ];
   if ( ! p )
-    target -> targetdata[id] = p = source -> new_targetdata( target );
+    target -> targetdata[ id ] = p = source -> new_targetdata( target );
 
   return p;
 }

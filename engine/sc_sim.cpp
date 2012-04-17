@@ -1019,7 +1019,7 @@ void sim_t::combat( int iteration )
         break;
       }
 
-      if (  target -> resources.current[ RESOURCE_HEALTH ] / target -> resources.max[ RESOURCE_HEALTH ] <= target_death_pct / 100.0 )
+      if (  target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the

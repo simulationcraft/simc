@@ -371,6 +371,13 @@ public:
     castable_in_shadowform = false;
   }
 
+  priest_targetdata_t* td() const
+  {
+    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
+    assert( q );
+    return q;
+  }
+
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
 
@@ -500,11 +507,9 @@ struct priest_heal_t : public heal_t
 
     virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
     {
-      priest_targetdata_t* td = targetdata() -> cast_priest();
-
-      double old_amount = td -> buffs_divine_aegis -> current_value;
+      double old_amount = td() -> buffs_divine_aegis -> current_value;
       double new_amount = std::min( t -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, travel_dmg );
-      td -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
+      td() -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( sim -> report_overheal ? new_amount : travel_dmg, travel_dmg, ABSORB, impact_result );
     }
   };
@@ -573,6 +578,13 @@ struct priest_heal_t : public heal_t
     castable_in_shadowform = false;
   }
 
+  priest_targetdata_t* td() const
+  {
+    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
+    assert( q );
+    return q;
+  }
+
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
 
@@ -627,7 +639,6 @@ struct priest_heal_t : public heal_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     heal_t::impact( t, impact_result, travel_dmg );
-    priest_targetdata_t* td = targetdata() -> cast_priest();
 
     if ( travel_dmg > 0 )
     {
@@ -639,8 +650,8 @@ struct priest_heal_t : public heal_t
 
       trigger_echo_of_light( this, t );
 
-      if ( p() -> buffs.chakra_serenity -> up() && td -> dots_renew -> ticking )
-        td -> dots_renew -> refresh_duration();
+      if ( p() -> buffs.chakra_serenity -> up() && td() -> dots_renew -> ticking )
+        td() -> dots_renew -> refresh_duration();
     }
   }
 
@@ -844,6 +855,13 @@ struct priest_spell_t : public spell_t
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
+
+  priest_targetdata_t* td() const
+  {
+    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
+    assert( q );
+    return q;
+  }
 
   virtual void schedule_execute()
   {
@@ -1922,11 +1940,9 @@ struct mind_spike_t : public priest_spell_t
 
   virtual void reset()
   {
-    priest_targetdata_t* td = targetdata() -> cast_priest();
-
     priest_spell_t::reset();
 
-    td -> remove_dots_event = 0;
+    td() -> remove_dots_event = 0;
   }
 
   virtual void execute()
@@ -1974,11 +1990,9 @@ struct mind_spike_t : public priest_spell_t
       }
       else
       {
-        priest_targetdata_t* td = targetdata() -> cast_priest();
-
-        if ( ! td -> remove_dots_event )
+        if ( ! td() -> remove_dots_event )
         {
-          td -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td );
+          td() -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td() );
         }
       }
     }
@@ -2406,11 +2420,9 @@ struct smite_t : public priest_spell_t
   {
     priest_spell_t::player_buff();
 
-    priest_targetdata_t* td = targetdata() -> cast_priest();
-
     player_multiplier *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
-    if ( td -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
+    if ( td() -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
       player_multiplier *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
   }
 
@@ -3142,7 +3154,6 @@ struct power_word_shield_t : public priest_absorb_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    priest_targetdata_t* td = targetdata() -> cast_priest();
 
     t -> buffs.weakened_soul -> trigger();
 
@@ -3156,7 +3167,7 @@ struct power_word_shield_t : public priest_absorb_t
       travel_dmg -= glyph_pws -> base_dd_min;
     }
 
-    td -> buffs_power_word_shield -> trigger( 1, travel_dmg );
+    td() -> buffs_power_word_shield -> trigger( 1, travel_dmg );
     stats -> add_result( travel_dmg, travel_dmg, ABSORB, impact_result );
   }
 
