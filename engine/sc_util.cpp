@@ -2473,15 +2473,15 @@ void util_t::armory_format( std::string& name, format_type_e f )
 
 
   util_t::str_to_utf8( name );
-  // remove leading '_' or '+'
-  if ( name[ 0 ] == '_' || name[ 0 ] == '+'  )
-    name.erase( 0 );
 
-  // replace all empty spaces with underscore
-  util_t::replace_all( name, ' ', "_" );
+  // remove leading '_' or '+'
+  while ( ( name[ 0 ] == '_' || name[ 0 ] == '+' ) && !name.empty() )
+  {
+    name.erase( 0, 1 );
+  }
 
   std::string buffer;
-
+  l = name.length();
   for ( std::string::size_type i = 0; i < l; ++i )
   {
     unsigned char c = name[ i ];
@@ -2499,7 +2499,10 @@ void util_t::armory_format( std::string& name, format_type_e f )
       }
       else
         c = std::tolower( c );
-      break;
+    }
+    else if ( c == ' ' )
+    {
+       c = '_';
     }
     else if ( c != '_' &&
               c != '+' &&

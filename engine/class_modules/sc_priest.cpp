@@ -1036,7 +1036,9 @@ struct shadow_fiend_pet_t : public pet_t
     stamina_per_owner           = 0.30;
     intellect_per_owner         = 0.50;
 
-    action_list_str             = "/snapshot_stats/shadowcrawl/wait_for_shadowcrawl";
+    action_list_str             = "/snapshot_stats";
+    action_list_str            += "/shadowcrawl";
+    action_list_str            += "/wait_for_shadowcrawl";
   }
 
   priest_t* o() const
