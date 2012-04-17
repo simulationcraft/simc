@@ -21,7 +21,7 @@ std::string stat_to_str( item_mod_type stat, int stat_amount )
       snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
       stat_str = stat_buf;
 
-      armory_t::format( stat_str );
+      util_t::armory_format( stat_str );
     }
   }
 
@@ -102,7 +102,7 @@ bool parse_item_name( item_t& item, const item_data_t* item_data )
 
   item.armory_name_str = item_data -> name;
 
-  armory_t::format( item.armory_name_str );
+  util_t::armory_format( item.armory_name_str );
 
   return true;
 }
@@ -278,8 +278,8 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
       {
         continue;
       }
-
-      source_list.push_back( armory_t::format( item_sources_split[ i ] ) );
+      util_t::armory_format( item_sources_split[ i ] );
+      source_list.push_back( item_sources_split[ i ] );
     }
 
     if ( source_list.empty() )
@@ -316,6 +316,7 @@ int item_database_t::random_suffix_type( const item_data_t* item )
     default:
       return 3;
     }
+    break;
   case ITEM_CLASS_ARMOR:
     switch ( item -> inventory_type )
     {
@@ -342,6 +343,7 @@ int item_database_t::random_suffix_type( const item_data_t* item )
     default:
       return -1;
     }
+    break;
   default:
     return -1;
   }
@@ -666,7 +668,7 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 
   if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
   else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-  armory_t::format( glyph_name );
+  util_t::armory_format( glyph_name );
 
   return true;
 }
@@ -695,7 +697,7 @@ gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
     if ( cut_pt != gem_name.npos )
     {
       gem_name.erase( cut_pt );
-      armory_t::format( gem_name );
+      util_t::armory_format( gem_name );
       item.armory_gems_str += gem_name;
     }
   }

@@ -1100,7 +1100,7 @@ bool enchant_t::download( item_t&            item,
   std::string description;
   if ( get_encoding( description, item.armory_enchant_str, enchant_id, item.ptr() ) )
   {
-    armory_t::format( item.armory_enchant_str );
+    util_t::armory_format( item.armory_enchant_str );
     return true;
   }
 
@@ -1120,7 +1120,7 @@ bool enchant_t::download_addon( item_t&            item,
   std::string description;
   if ( get_addon_encoding( description, item.armory_addon_str, addon_id, item.ptr() ) )
   {
-    armory_t::format( item.armory_addon_str );
+    util_t::armory_format( item.armory_addon_str );
     return true;
   }
 
@@ -1140,7 +1140,7 @@ bool enchant_t::download_reforge( item_t&            item,
   std::string description;
   if ( get_reforge_encoding( description, item.armory_reforge_str, reforge_id ) )
   {
-    armory_t::format( item.armory_reforge_str );
+    util_t::armory_format( item.armory_reforge_str );
     return true;
   }
 

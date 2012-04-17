@@ -52,6 +52,7 @@ static const char* translate_glyph_name( player_t* p,
     case  32: return "penguin";
     default: return 0;
     }
+    break;
   case DRUID:
     switch ( index )
     {
@@ -98,6 +99,7 @@ static const char* translate_glyph_name( player_t* p,
     case 40: return "unburdened_rebirth";
     default: return 0;
     }
+    break;
   case PALADIN:
     switch ( index )
     {
@@ -138,6 +140,7 @@ static const char* translate_glyph_name( player_t* p,
     case 32: return "truth";
     default: return 0;
     }
+    break;
   case WARRIOR:
     switch ( index )
     {
@@ -177,6 +180,7 @@ static const char* translate_glyph_name( player_t* p,
     case 33: return "intimidating_shout";
     default: return 0;
     }
+    break;
   case SHAMAN:
     switch ( index )
     {
@@ -217,6 +221,7 @@ static const char* translate_glyph_name( player_t* p,
     case 34: return "water_walking";
     default: return 0;
     }
+    break;
   case PRIEST:
     switch ( index )
     {
@@ -257,6 +262,7 @@ static const char* translate_glyph_name( player_t* p,
     case 34: return "shadowfiend";
     default: return 0;
     }
+    break;
   case DEATH_KNIGHT:
     switch ( index )
     {
@@ -292,6 +298,7 @@ static const char* translate_glyph_name( player_t* p,
     case 29: return "resilient_grip";
     default: return 0;
     }
+    break;
   case WARLOCK:
     switch ( index )
     {
@@ -331,6 +338,7 @@ static const char* translate_glyph_name( player_t* p,
     case 33: return "unending_breath";
     default: return 0;
     }
+    break;
   case ROGUE:
     switch ( index )
     {
@@ -372,6 +380,7 @@ static const char* translate_glyph_name( player_t* p,
     case 35: return "safe_fall";
     default: return 0;
     }
+    break;
   case HUNTER:
     switch ( index )
     {
@@ -408,6 +417,7 @@ static const char* translate_glyph_name( player_t* p,
     case 30: return "scare_beast";
     default: return 0;
     }
+    break;
   default: break;
   }
 
@@ -521,8 +531,8 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   std::string talents_parm = class_str + "Talents/.";
 
-  armory_t::format(  name_str );
-  armory_t::format( class_str );
+  util_t::armory_format(  name_str );
+  util_t::armory_format( class_str );
 
   race_type_e r = translate_rawr_race_str( race_str );
 
@@ -590,7 +600,7 @@ player_t* rawr_t::load_player( sim_t* sim,
         std::string glyph_name = sd -> name_cstr();
         if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
         else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-        armory_t::format( glyph_name );
+        util_t::armory_format( glyph_name );
         if ( p -> glyphs_str.size() ) p -> glyphs_str += "/";
         p -> glyphs_str += glyph_name;
       }

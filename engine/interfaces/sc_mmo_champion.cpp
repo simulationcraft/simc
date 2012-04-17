@@ -152,7 +152,7 @@ static bool parse_gems( item_t&           item,
     std::string& s = socket_colors[ i ];
     std::string::size_type pos = s.find( " " );
     if ( pos != std::string::npos ) s.erase( pos );
-    armory_t::format( s );
+    util_t::armory_format( s );
     sockets[ i ] = util_t::parse_gem_type( s );
   }
 
@@ -177,7 +177,7 @@ static bool parse_gems( item_t&           item,
     }
   }
 
-  armory_t::format( item.armory_gems_str );
+  util_t::armory_format( item.armory_gems_str );
 
   return true;
 }
@@ -299,7 +299,7 @@ static bool parse_item_stats( item_t&     item,
     item.armory_stats_str += block_str + "blockv";
   }
 
-  armory_t::format( item.armory_stats_str );
+  util_t::armory_format( item.armory_stats_str );
 
   return true;
 }
@@ -313,7 +313,7 @@ static bool parse_item_reforge( item_t&     item,
 
   // TO-DO (if it even makes sense)
 
-  armory_t::format( item.armory_reforge_str );
+  util_t::armory_format( item.armory_reforge_str );
 
   return true;
 }
@@ -342,7 +342,7 @@ static bool parse_item_name( item_t&            item,
     }
   }
 
-  armory_t::format( s );
+  util_t::armory_format( s );
 
   item.armory_id_str = item_id;
 
@@ -362,7 +362,7 @@ static bool parse_item_heroic( item_t&     item,
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_heroic_str = "1";
-    armory_t::format( item.armory_heroic_str );
+    util_t::armory_format( item.armory_heroic_str );
   }
 
   return true;
@@ -383,7 +383,7 @@ static bool parse_item_lfr( item_t& item, xml_node_t* node )
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_lfr_str = "1";
-    armory_t::format( item.armory_lfr_str );
+    util_t::armory_format( item.armory_lfr_str );
   }
 
   return true;
@@ -402,7 +402,7 @@ static bool parse_item_armor_type( item_t&     item,
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_armor_type_str = descriptions[ 0 ];
-    armory_t::format( item.armory_armor_type_str );
+    util_t::armory_format( item.armory_armor_type_str );
   }
 
   return true;
@@ -470,7 +470,7 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
     std::string color_str;
     if ( get_tti_value( color_str, node, "tti-subclass" ) )
     {
-      armory_t::format( color_str );
+      util_t::armory_format( color_str );
       gem_type_e type = util_t::parse_gem_type( color_str );
 
       std::string property_str;
@@ -526,7 +526,7 @@ bool mmo_champion_t::download_glyph( player_t*          player,
   glyph_name.erase( 0, 9 ); // remove "Glyph of "
   std::string::size_type pos = glyph_name.find( " - " );
   if ( pos != std::string::npos ) glyph_name.erase( pos );
-  armory_t::format( glyph_name );
+  util_t::armory_format( glyph_name );
   return true;
 }
 

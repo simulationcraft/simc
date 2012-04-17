@@ -629,7 +629,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         string_v = std::string( *reinterpret_cast<const char**>( data + offset ) );
       else
         string_v = "";
-      armory_t::format( string_v );
+      util_t::armory_format( string_v );
       ostring_v = other.result_str;
 
       switch ( t )

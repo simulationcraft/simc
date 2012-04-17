@@ -87,9 +87,9 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  armory_t::format( name_str );
-  armory_t::format( type_str );
-  armory_t::format( race_str );
+  util_t::armory_format( name_str );
+  util_t::armory_format( type_str );
+  util_t::armory_format( race_str );
 
   player_t* p = player_t::create( sim, type_str, name_str, util_t::parse_race_type( race_str ) );
   sim -> active_player = p;
@@ -190,7 +190,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     {
       if      ( glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
       else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-      armory_t::format( glyph_name );
+      util_t::armory_format( glyph_name );
       if ( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }

@@ -108,7 +108,7 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   if ( description_str.empty() ) return;
 
   std::string buffer = description_str;
-  armory_t::format( buffer );
+  util_t::armory_format( buffer );
 
   if ( is_proc_description( buffer ) )
     return;
@@ -208,71 +208,4 @@ meta_gem_type_e armory_t::parse_meta_gem( const std::string& description )
   if ( description == "+17 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSHATTER;
 
   return META_GEM_NONE;
-}
-
-// armory_t::format =========================================================
-
-std::string& armory_t::format( std::string& name, int format_type_e )
-{
-  if ( name.empty() ) return name;
-
-  std::string buffer;
-
-  switch ( format_type_e & FORMAT_CONVERT_MASK )
-  {
-  case FORMAT_UTF8_MASK:
-    util_t::urlencode( name );
-    break;
-  case FORMAT_ASCII_MASK:
-    util_t::str_to_utf8( name );
-    break;
-  }
-
-  int size = ( int ) name.size();
-  for ( int i=0; i < size; i++ )
-  {
-    unsigned char c = name[ i ];
-
-    if ( c >= 0x80 )
-    {
-      continue;
-    }
-    else if ( isalpha( c ) )
-    {
-      switch ( format_type_e & FORMAT_ALL_NAME_MASK )
-      {
-      case FORMAT_GUILD_NAME_MASK:
-        break;
-      case FORMAT_CHAR_NAME_MASK:
-        if ( i != 0 )
-        {
-          c = tolower( ( unsigned ) c );
-        }
-        break;
-      default:
-        c = tolower( ( unsigned ) c );
-        break;
-      }
-    }
-    else if ( c == ' ' )
-    {
-      c = '_';
-    }
-    else if ( ( c == '_' || c == '+' ) && i == 0 )
-    {
-      continue;
-    }
-    else if ( c != '_' &&
-              c != '+' &&
-              c != '.' &&
-              c != '%' &&
-              ! isdigit( c ) )
-    {
-      continue;
-    }
-    buffer += c;
-  }
-  name.swap( buffer );
-
-  return name;
 }

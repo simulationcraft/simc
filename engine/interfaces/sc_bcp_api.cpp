@@ -145,7 +145,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
             //        sources can use it instead of cut'n'pasting.
             if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
             else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-            armory_t::format( glyph_name );
+            util_t::armory_format( glyph_name );
 
             if ( p -> glyphs_str.length() )
               p -> glyphs_str += '/';
@@ -712,7 +712,7 @@ bool download_glyph( player_t*          player,
     glyph_name.erase( 0, glyph_of.length() );
   else if ( util_t::str_prefix_ci( glyph_name, glyph_dash ) )
     glyph_name.erase( 0, glyph_dash.length() );
-  armory_t::format( glyph_name );
+  util_t::armory_format( glyph_name );
 
   return true;
 }
@@ -777,7 +777,7 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
   std::string type_str;
   if ( ! js_t::get_value( type_str, js, "gemInfo/type/type" ) )
     return GEM_NONE;
-  armory_t::format( type_str );
+  util_t::armory_format( type_str );
 
   gem_type_e type = util_t::parse_gem_type( type_str );
 
@@ -800,7 +800,7 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
 
   if ( ! result.empty() )
   {
-    armory_t::format( result );
+    util_t::armory_format( result );
     if ( ! item.armory_gems_str.empty() )
       item.armory_gems_str += '_';
     item.armory_gems_str += result;

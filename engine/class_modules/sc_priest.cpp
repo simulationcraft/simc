@@ -160,7 +160,8 @@ struct priest_t : public player_t
   // Benefits
   struct benefits_t
   {
-    benefit_t* mind_spike[ 4 ];
+    std::array<benefit_t*, 4> mind_spike;
+    benefits_t() { range::fill( mind_spike, 0 ); }
   } benefits;
 
   // Procs
@@ -177,7 +178,7 @@ struct priest_t : public player_t
     std::list<spell_t*>  apparitions_active;
     heal_t* echo_of_light;
     bool echo_of_light_merged;
-    spells_t() { echo_of_light=0; echo_of_light_merged = 0; }
+    spells_t() : echo_of_light(), echo_of_light_merged() {}
   } spells;
 
 
@@ -232,10 +233,6 @@ struct priest_t : public player_t
   struct constants_t
   {
     double meditation_value;
-
-    // Discipline
-
-    // Shadow
   } constants;
 
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :

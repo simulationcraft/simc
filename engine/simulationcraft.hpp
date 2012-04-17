@@ -934,21 +934,9 @@ enum save_type_e
 enum format_type_e
 {
   FORMAT_NONE=0,
-  FORMAT_NAME,
   FORMAT_CHAR_NAME,
-  FORMAT_CONVERT_HEX,
-  FORMAT_CONVERT_UTF8,
   FORMAT_MAX
 };
-
-#define FORMAT_CHAR_NAME_MASK  ( (1<<FORMAT_NAME) | (1<<FORMAT_CHAR_NAME) )
-#define FORMAT_GUILD_NAME_MASK ( (1<<FORMAT_NAME) )
-#define FORMAT_ALL_NAME_MASK   ( (1<<FORMAT_NAME) | (1<<FORMAT_CHAR_NAME) )
-#define FORMAT_UTF8_MASK       ( (1<<FORMAT_CONVERT_HEX) | (1<<FORMAT_CONVERT_UTF8) )
-#define FORMAT_ASCII_MASK      ( (1<<FORMAT_CONVERT_UTF8) )
-#define FORMAT_CONVERT_MASK    ( (1<<FORMAT_CONVERT_HEX) | (1<<FORMAT_CONVERT_UTF8) )
-#define FORMAT_DEFAULT         ( FORMAT_ASCII_MASK )
-#define FORMAT_ALL_MASK        -1
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
@@ -2675,6 +2663,8 @@ public:
 
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
   static std::string encode_html( const std::string& );
+
+  static void armory_format( std::string& name, format_type_e = FORMAT_NONE );
 
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 };
@@ -5897,7 +5887,6 @@ struct armory_t
 {
   static void fuzzy_stats( std::string& encoding, const std::string& description );
   static meta_gem_type_e parse_meta_gem( const std::string& description );
-  static std::string& format( std::string& name, int format_type_e = FORMAT_DEFAULT );
 };
 
 // Wowhead  =================================================================

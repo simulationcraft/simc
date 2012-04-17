@@ -177,14 +177,14 @@ action_t::action_t( action_type_e       ty,
     if ( name_str.empty() )
     {
       name_str = data().name_cstr();
-      armory_t::format( name_str, FORMAT_ASCII_MASK );
+      util_t::armory_format( name_str );
       assert( ! name_str.empty() );
       dbc_t::add_token( data().id(), name_str );
     }
   }
   else
   {
-    armory_t::format( name_str, FORMAT_ASCII_MASK );
+    util_t::armory_format( name_str );
   }
 
   init_dot( name_str );

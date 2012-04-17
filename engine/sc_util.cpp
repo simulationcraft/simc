@@ -40,7 +40,7 @@ bool util_t::str_compare_ci( const std::string& l,
 
 std::string& util_t::glyph_name( std::string& n )
 {
-  armory_t::format( n, FORMAT_ASCII_MASK );
+  util_t::armory_format( n );
 
   if ( n.substr( 0, 9 ) == "glyph_of_" ) n.erase( 0, 9 );
   if ( n.substr( 0, 7 ) == "glyph__" )   n.erase( 0, 7 );
@@ -2464,6 +2464,56 @@ std::string util_t::encode_html( const std::string& s )
   util_t::replace_all( buffer, '>', "&gt;" );
   return buffer;
 }
+
+
+void util_t::armory_format( std::string& name, format_type_e f )
+{
+  std::string::size_type l = name.length();
+  if ( ! l ) return;
+
+
+  util_t::str_to_utf8( name );
+  // remove leading '_' or '+'
+  if ( name[ 0 ] == '_' || name[ 0 ] == '+'  )
+    name.erase( 0 );
+
+  // replace all empty spaces with underscore
+  util_t::replace_all( name, ' ', "_" );
+
+  std::string buffer;
+
+  for ( std::string::size_type i = 0; i < l; ++i )
+  {
+    unsigned char c = name[ i ];
+
+    if ( c >= 0x80 )
+    {
+      continue;
+    }
+    else if ( std::isalpha( c ) )
+    {
+      if ( f == FORMAT_CHAR_NAME )
+      {
+        if ( i != 0 )
+          c = std::tolower( c );
+      }
+      else
+        c = std::tolower( c );
+      break;
+    }
+    else if ( c != '_' &&
+              c != '+' &&
+              c != '.' &&
+              c != '%' &&
+              ! std::isdigit( c ) )
+    {
+      continue;
+    }
+    buffer += c;
+  }
+  name.swap( buffer );
+}
+
 
 #if 0 // UNUSED
 std::string trim( const std::string& src )
