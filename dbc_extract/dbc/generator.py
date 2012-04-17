@@ -2197,264 +2197,77 @@ class SpellListGenerator(SpellDataGenerator):
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
 
-        # Blacklist glyphs for this
-        #SpellDataGenerator._skill_category_blacklist += [ 810 ]
-        #SpellDataGenerator._spell_name_blacklist += [ '^Glyph of' ]
-        
         # Blacklist some ids, as no idea how to filter them out
         SpellDataGenerator._spell_blacklist += [
             # 54158,  # Judgement
-            66198,  # Obliterate (offhand attack)
-            66217,  # Rune Strike (offhand attack)
-            88767,  # Fulmination
-            22959,  # Critical Mass (weird talent debuff)
-            86941,  # Molten armor (talented replacement effect)
-            92315,  # Pyroblast (unknown)
-            89420,  # Drain Life (unknown)
-            81283,  # Fungal Growth (talented Treant secondary effect)
-            81291,  # Fungal Growth (talented Treant secondary effect)
+#            66198,  # Obliterate (offhand attack)
+#            66217,  # Rune Strike (offhand attack)
+#            88767,  # Fulmination
+#            22959,  # Critical Mass (weird talent debuff)
+#            86941,  # Molten armor (talented replacement effect)
+#            92315,  # Pyroblast (unknown)
+#            89420,  # Drain Life (unknown)
+#            81283,  # Fungal Growth (talented Treant secondary effect)
+#            81291,  # Fungal Growth (talented Treant secondary effect)
         ]
 
     def spell_state(self, spell, enabled_effects = None):
         if not SpellDataGenerator.spell_state(self, spell, None):
             return False
-            
+
         # Skip passive spells
         if self._spellmisc_db[spell.id_misc].flags & 0x40:
             self.debug( "Spell id %u (%s) marked as passive" % ( spell.id, spell.name ) )
             return False
-            
+
         # Skip by possible indicator for spellbook visibility
         if self._spellmisc_db[spell.id_misc].flags_4 & 0x8000:
             self.debug( "Spell id %u (%s) marked as hidden in spellbook" % ( spell.id, spell.name ) )
             return False;
-        
+
         # Skip spells without any resource cost and category
-        
+
         found_power = False
         for power in spell._powers:
             if not power:
                 continue
-            
+
             if power.cost > 0 or power.cost_2 > 0 or power.cost_per_second > 0:
                 found_power = True
                 break
-        
+
         if not found_power and spell.id_rune_cost == 0 and spell.id_categories == 0:
             self.debug( "Spell id %u (%s) has no power requirements" % ( spell.id, spell.name ) )
             return False
-        
+
         # Make sure rune cost makes sense, even if the rune cost id is valid
         if spell.id_rune_cost > 0:
             src = self._spellrunecost_db[spell.id_rune_cost]
             if src.rune_cost_1 == 0 and src.rune_cost_2 == 0 and src.rune_cost_3 == 0:
                 self.debug( "Spell id %u (%s) has no sensible rune cost" % ( spell.id, spell.name ) )
                 return False
-                
+
         # Filter out any "Rank x" string, as there should no longer be such things. This should filter out 
         # some silly left over? things, or things not shown to player anyhow, so should be all good.
         if spell.ofs_rank > 0 and 'Rank ' in spell.rank:
             self.debug( "Spell id %u (%s) has a rank defined" % ( spell.id, spell.name ) )
             return False
-        
+
         # Let's not accept spells that have over 100y range, as they cannot really be base abilities then
         if self._spellmisc_db[spell.id_misc].id_range > 0:
             range = self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range]
             if range.max_range > 100.0 or range.max_range_2 > 100.0:
                 self.debug( "Spell id %u (%s) has a high range (%f, %f)" % ( spell.id, spell.name, range.max_range, range.max_range_2 ) )
                 return False
-        
+
         return True
-        
+
     def filter(self):
         triggered_spell_ids = []
         ids = { }
         spell_tree = -1
         spell_tree_name = ''
         for ability_id, ability_data in self._skilllineability_db.iteritems():
-            #if ability_data.max_value > 0 or ability_data.min_value > 0:
-            #    continue
-
-            if ability_data.id_skill in SpellDataGenerator._skill_category_blacklist:
-                continue
-            
-            mask_class_skill = self.class_mask_by_skill(ability_data.id_skill)
-            mask_class_spec  = self.class_mask_by_spec_skill(ability_data.id_skill)
-            mask_class_pet_skill = self.class_mask_by_pet_skill(ability_data.id_skill)
-            mask_class = 0
-            
-            # Generic Class Ability
-            if mask_class_skill > 0:
-                spell_tree_name = "General"
-                spell_tree = 0
-                mask_class = mask_class_skill
-            # Spec tree ability
-            elif mask_class_spec > 0:
-                clsid = self._class_map[mask_class_spec]
-                for i in xrange(0, len(self._spec_skill_categories[clsid])):
-                    if self._spec_skill_categories[clsid][i] == ability_data.id_skill:
-                        spell_tree_name = self._skillline_db[ability_data.id_skill].name
-                        spell_tree = 1 + i
-                        break
-                #print clsid, ability_data.id_skill, spell_tree
-                mask_class = mask_class_spec
-            elif mask_class_pet_skill > 0:
-                spell_tree_name = "Pet"
-                spell_tree = 5
-                mask_class = mask_class_pet_skill
-            
-            # We only want abilities that belong to a class
-            if mask_class == 0:
-                continue
-                
-            spell = self._spell_db[ability_data.id_spell]
-            if not spell.id:
-                continue
-                
-            # Skip triggered spells
-            if ability_data.id_spell in triggered_spell_ids:
-                continue
-            
-            # Blacklist all triggered spells for this
-            for effect in spell._effects:
-                if not effect:
-                    continue
-                
-                if effect.trigger_spell > 0:
-                    triggered_spell_ids.append(effect.trigger_spell)
-            
-            # Check generic SpellDataGenerator spell state filtering before anything else
-            if not self.spell_state(spell):
-                continue
-            
-            if ids.get(ability_data.id_spell):
-                ids[ability_data.id_spell]['mask_class'] |= ability_data.mask_class or mask_class
-            else:
-                ids[ability_data.id_spell] = { 
-                    'mask_class': ability_data.mask_class or mask_class,
-                    'tree'      : spell_tree,
-                    'tree_name' : spell_tree_name,
-                }
-
-        for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
-            for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
-                # Skip spells with zero tree, as they dont exist
-                if spell_tuple[1] == 0:
-                    continue
-
-                spell = self._spell_db[spell_tuple[0]]
-                if not spell.id:
-                    continue
-                
-                if not self.spell_state(spell):
-                    continue
-                
-                if ids.get(spell_tuple[0]):
-                    ids[spell_tuple[0]]['mask_class'] |= self._class_masks[cls]
-                else:
-                    ids[spell_tuple[0]] = { 
-                        'mask_class': self._class_masks[cls], 
-                        'tree'      : spell_tuple[1],
-                        'tree_name' : spell_tuple[1] == 5 and 'Pet' or None
-                    }
-
-        return ids
-    
-    def generate(self, ids = None):
-        keys = [ 
-            # General | Spec0 | Spec1 | Spec2 | Spec3 | Pet
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-            [ [], [], [], [], [], [] ], 
-        ]
-        
-        # Sort a suitable list for us
-        for k, v in ids.iteritems():
-            if v['mask_class'] not in DataGenerator._class_masks:
-                continue
-
-            spell = self._spell_db[k]
-            keys[self._class_map[v['mask_class']]][v['tree']].append(( spell.name, spell.id ))
-
-        # Find out the maximum size of a key array
-        max_ids = 0
-        for cls_list in keys:
-            for tree_list in cls_list:
-                if len(tree_list) > max_ids:
-                    max_ids = len(tree_list)
-
-        data_str = "%sclass_ability%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-        
-        s = '#define %s_SIZE (%d)\n' % (
-            data_str.upper(),
-            max_ids
-        )
-        s += '#define %s_TREE_SIZE (%d)\n\n' % ( data_str.upper(), len( keys[0] ) )
-        s += '// Class based active abilities, wow build %d\n' % self._options.build
-        s += 'static unsigned __%s_data[][%s_TREE_SIZE][%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-            data_str.upper(),
-        )
-        
-        for i in xrange(0, len(keys)):
-            if SpellDataGenerator._class_names[i]:
-                s += '  // Class active abilities for %s\n' % ( SpellDataGenerator._class_names[i] )
-            
-            s += '  {\n'
-                
-            for j in xrange(0, len(keys[i])):
-                # See if we can describe the tree
-                for t in keys[i][j]:
-                    if ids[t[1]]['tree_name']:
-                        s += '    // %s tree, %d abilities\n' % ( ids[keys[i][j][0][1]]['tree_name'], len(keys[i][j]) )
-                        break
-                s += '    {\n'
-                for spell_id in sorted(keys[i][j], key = lambda k_: k_[0]):
-                    r = ''
-                    if self._spell_db[spell_id[1]].rank:
-                        r = ' (%s)' % self._spell_db[spell_id[1]].rank
-                    s += '      %6u, // %s%s\n' % ( spell_id[1], spell_id[0], r )
-            
-                # Append zero if a short struct
-                if max_ids - len(keys[i][j]) > 0:
-                    s += '      %6u,\n' % 0
-
-                s += '    },\n'
-            
-            s += '  },\n'
-            
-        s += '};\n'
-        
-        return s
-
-class MoPSpellListGenerator(SpellListGenerator):
-    def __init__(self, options):
-        SpellDataGenerator.__init__(self, options)
-        
-        self._dbc.append( 'ChrSpecialization' )
-    
-    def filter(self):
-        triggered_spell_ids = []
-        ids = { }
-        spell_tree = -1
-        spell_tree_name = ''
-        for ability_id, ability_data in self._skilllineability_db.iteritems():
-            if ability_data.max_value > 0 or ability_data.min_value > 0:
-                continue
-
             if ability_data.id_skill in SpellDataGenerator._skill_category_blacklist:
                 continue
 
@@ -2553,22 +2366,90 @@ class MoPSpellListGenerator(SpellListGenerator):
 
         return ids
 
+    def generate(self, ids = None):
+        keys = [ 
+            # General | Spec0 | Spec1 | Spec2 | Spec3 | Pet
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+            [ [], [], [], [], [], [] ], 
+        ]
+
+        # Sort a suitable list for us
+        for k, v in ids.iteritems():
+            if v['mask_class'] not in DataGenerator._class_masks:
+                continue
+
+            spell = self._spell_db[k]
+            keys[self._class_map[v['mask_class']]][v['tree']].append(( spell.name, spell.id ))
+
+        # Find out the maximum size of a key array
+        max_ids = 0
+        for cls_list in keys:
+            for tree_list in cls_list:
+                if len(tree_list) > max_ids:
+                    max_ids = len(tree_list)
+
+        data_str = "%sclass_ability%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n' % (
+            data_str.upper(),
+            max_ids
+        )
+        s += '#define %s_TREE_SIZE (%d)\n\n' % ( data_str.upper(), len( keys[0] ) )
+        s += '// Class based active abilities, wow build %d\n' % self._options.build
+        s += 'static unsigned __%s_data[][%s_TREE_SIZE][%s_SIZE] = {\n' % (
+            data_str,
+            data_str.upper(),
+            data_str.upper(),
+        )
+
+        for i in xrange(0, len(keys)):
+            if SpellDataGenerator._class_names[i]:
+                s += '  // Class active abilities for %s\n' % ( SpellDataGenerator._class_names[i] )
+
+            s += '  {\n'
+
+            for j in xrange(0, len(keys[i])):
+                # See if we can describe the tree
+                for t in keys[i][j]:
+                    if ids[t[1]]['tree_name']:
+                        s += '    // %s tree, %d abilities\n' % ( ids[keys[i][j][0][1]]['tree_name'], len(keys[i][j]) )
+                        break
+                s += '    {\n'
+                for spell_id in sorted(keys[i][j], key = lambda k_: k_[0]):
+                    r = ''
+                    if self._spell_db[spell_id[1]].rank:
+                        r = ' (%s)' % self._spell_db[spell_id[1]].rank
+                    s += '      %6u, // %s%s\n' % ( spell_id[1], spell_id[0], r )
+
+                # Append zero if a short struct
+                if max_ids - len(keys[i][j]) > 0:
+                    s += '      %6u,\n' % 0
+
+                s += '    },\n'
+
+            s += '  },\n'
+
+        s += '};\n'
+
+        return s
+
 class ClassFlagGenerator(SpellDataGenerator):
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
-    """
-    def filter(self, class_name):
-        ids = { }
-        mask = DataGenerator._class_masks[self._class_map[class_name.capitalize()]]
 
-        for ability_id, ability_data in self._skilllineability_db.iteritems():
-            if not (ability_data.mask_class & mask):
-                continue
-
-            ids[ability_data.id_spell] = {}
-
-        return ids
-    """
     def generate(self, ids, class_name):
         s = ''
         mask = DataGenerator._class_masks[self._class_map[class_name.capitalize()]]

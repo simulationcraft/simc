@@ -72,11 +72,7 @@ if options.type == 'spell':
     
     print g.generate(ids)
 elif options.type == 'class_list':
-    g = None
-    if options.build < 15464:        
-        g = dbc.generator.SpellListGenerator(options)
-    else:
-        g = dbc.generator.MoPSpellListGenerator(options)
+    g = dbc.generator.SpellListGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

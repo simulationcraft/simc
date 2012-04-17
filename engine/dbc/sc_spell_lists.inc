@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (45)
+#define CLASS_ABILITY_SIZE (50)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 // Class based active abilities, wow build 15589
@@ -210,12 +210,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        82654, // Widow Venom
            0,
     },
-    // Beast Mastery tree, 5 abilities
+    // Beast Mastery tree, 4 abilities
     {
        19574, // Bestial Wrath
        77767, // Cobra Shot
        82692, // Focus Fire
-       19577, // Intimidation
        34026, // Kill Command
            0,
     },
@@ -234,20 +233,58 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 11 abilities
+    // Pet tree, 50 abilities
     {
+       55749, // Acid Spit (Special Ability)
+       90355, // Ancient Hysteria
+       50433, // Ankle Crack (Special Ability)
        17253, // Bite (Basic Attack)
        93433, // Burrow Attack (Exotic Ability)
+       16827, // Claw (Basic Attack)
+       50541, // Clench (Special Ability)
+       35387, // Corrosive Spit (Special Ability)
+        1742, // Cower
+       50256, // Demoralizing Roar (Special Ability)
+       24423, // Demoralizing Screech
+       50285, // Dust Cloud (Special Ability)
+       34889, // Fire Breath (Special Ability)
+       54644, // Frost Breath (Special Ability)
+       92380, // Froststorm Breath (Exotic Ability)
+       24604, // Furious Howl (Special Ability)
+       35290, // Gore (Special Ability)
+        2649, // Growl
        93434, // Horn Toss (Exotic Ability)
+       19577, // Intimidation
+       24394, // Intimidation
+       58604, // Lava Breath (Special Ability)
+       24844, // Lightning Breath (Special Ability)
        90327, // Lock Jaw (Special Ability)
+       54680, // Monstrous Bite (Exotic Ability)
+       50479, // Nether Shock (Special Ability)
+       50245, // Pin (Special Ability)
        90347, // Play (Bonus Ability)
+       24450, // Prowl (Bonus Ability)
+       26090, // Pummel (Special Ability)
        90364, // Qiraji Fortitude (Exotic Ability)
+       50518, // Ravage (Special Ability)
        94019, // Rest (Bonus Ability)
+       50318, // Serenity Dust (Special Ability)
+       49966, // Smack (Basic Attack)
        91644, // Snatch (Special Ability)
+       50519, // Sonic Blast (Special Ability)
+       90361, // Spirit Mend (Exotic Ability)
+       90328, // Spirit Walk (Bonus Ability)
+       50274, // Spore Cloud (Special Ability)
+       57386, // Stampede (Special Ability)
+       56626, // Sting (Special Ability)
        90314, // Tailspin (Special Ability)
+       50498, // Tear Armor
+       50271, // Tendon Rip (Special Ability)
        90309, // Terrifying Roar (Special Ability)
+       35346, // Time Warp (Special Ability)
        94022, // Trick (Bonus Ability)
-           0,
+       54706, // Venom Web Spray (Special Ability)
+        4167, // Web (Special Ability)
     },
   },
   // Class active abilities for Rogue
@@ -459,9 +496,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 1 abilities
+    // Pet tree, 5 abilities
     {
+       47468, // Claw
        51963, // Gargoyle Strike
+       47481, // Gnaw
+       47484, // Huddle
+       47482, // Leap
            0,
     },
   },
@@ -610,12 +651,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 4 abilities
+    // Pet tree, 6 abilities
     {
        88084, // Arcane Blast
        59637, // Fire Blast
        88082, // Fireball
+       33395, // Freeze
        59638, // Frostbolt
+       31707, // Waterbolt
            0,
     },
   },
@@ -693,14 +736,31 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 6 abilities
+    // Pet tree, 23 abilities
     {
        89766, // Axe Toss (Special Ability)
+        6307, // Blood Pact (Special Ability)
       119899, // Cauterize Master (Special Ability)
+       19505, // Devour Magic (Special Ability)
       118093, // Disarm (Special Ability)
        85692, // Doom Bolt
        89751, // Felstorm (Special Ability)
+        3110, // Firebolt (Basic Attack)
+       89792, // Flee (Special Ability)
+        7814, // Lash of Pain (Basic Attack)
+       30213, // Legion Strike (Basic Attack)
+        7870, // Lesser Invisibility (Special Ability)
+       30151, // Pursuit (Special Ability)
+        6358, // Seduction (Special Ability)
+       54049, // Shadow Bite (Basic Attack)
+       17767, // Shadow Bulwark (Special Ability)
+      115232, // Shadow Shield (Special Ability)
+       89808, // Singe Magic (Special Ability)
+       19647, // Spell Lock (Special Ability)
+       17735, // Suffering (Special Ability)
       112042, // Threatening Presence
+        3716, // Torment (Basic Attack)
+        6360, // Whiplash (Special Ability)
            0,
     },
   },
@@ -830,6 +890,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        50516, // Typhoon
       102793, // Ursol's Vortex
         5176, // Wrath
+           0,
     },
     // Balance tree, 7 abilities
     {
