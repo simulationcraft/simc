@@ -204,6 +204,13 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
 
+  virtual bool ready()
+  {
+    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] - cost() < 100 )
+      return false;
+
+    return melee_attack_t::ready();
+  }
 };
 
 
@@ -230,6 +237,14 @@ struct warlock_pet_spell_t : public spell_t
 
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
+
+  virtual bool ready()
+  {
+    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] - cost() < 100 )
+      return false;
+
+    return spell_t::ready();
+  }
 
 };
 
@@ -652,7 +667,6 @@ void warlock_pet_t::init_base()
   attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
   resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
   resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type );
-  resources.base[ RESOURCE_ENERGY ] = 200;
   initial_attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
   initial_spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
   initial_dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
@@ -664,6 +678,9 @@ void warlock_pet_t::init_base()
     sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
   if ( stats2_avaiable != 13 )
     sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
+
+  resources.base[ RESOURCE_ENERGY ] = 200;
+  base_energy_regen_per_second = 10;
 
   initial_attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
   base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
@@ -781,7 +798,7 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
   return owner -> spell_hit * 26.0 / 17.0;
 }
 
-resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_MANA; }
+resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
 
 double warlock_main_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
