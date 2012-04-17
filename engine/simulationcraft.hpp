@@ -3978,7 +3978,7 @@ struct player_t : public noncopyable
 {
   sim_t* const sim;
   const player_type_e type;
-  const std::string name_str;
+  std::string name_str;
   race_type_e race;
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
@@ -5224,7 +5224,7 @@ struct action_state_t
 struct attack_t : public action_t
 {
 public:
-  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
 
   // Attack Overrides
   virtual double haste() const;
@@ -5262,7 +5262,7 @@ struct melee_attack_t : public attack_t
   double base_expertise, player_expertise, target_expertise;
 
 public:
-  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
 
   // Melee Attack Overrides
   virtual void   player_buff();
@@ -5284,7 +5284,7 @@ struct ranged_attack_t : public attack_t
   double base_expertise, player_expertise, target_expertise;
 
 public:
-  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
 
   // Ranged Attack Overrides
   virtual void   player_buff();
@@ -5304,7 +5304,7 @@ public:
 struct spell_base_t : public action_t
 {
 public:
-  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL );
+  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
   // Spell Overrides
   virtual double haste() const;
   virtual timespan_t gcd() const;

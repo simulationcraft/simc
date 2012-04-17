@@ -6360,6 +6360,7 @@ void player_t::create_options()
   option_t player_options[] =
   {
     // General
+    { "name",                                 OPT_STRING,   &( name_str                               ) },
     { "origin",                               OPT_STRING,   &( origin_str                             ) },
     { "region",                               OPT_STRING,   &( region_str                             ) },
     { "server",                               OPT_STRING,   &( server_str                             ) },

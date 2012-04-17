@@ -29,7 +29,7 @@ action_t::action_t( action_type_e       ty,
   name_str( token ),
   player( p ),
   target( p -> target ),
-  school( ( s && s -> ok() ) ? s -> get_school_type() : school ),
+  school( school ),
   id(),
   result(),
   aoe(),
@@ -269,6 +269,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   range                = spell_data.max_range();
   travel_speed         = spell_data.missile_speed();
   trigger_gcd          = spell_data.gcd();
+  school               = ( ( school == SCHOOL_NONE ) && spell_data.ok() ) ? spell_data.get_school_type() : school;
   stats -> school      = school;
   rp_gain              = spell_data.runic_power_gain();
 

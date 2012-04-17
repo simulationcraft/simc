@@ -363,7 +363,7 @@ struct priest_absorb_t : public absorb_t
 
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
-                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_HOLY ) :
+                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     absorb_t( n, player, s, sc )
   {
     may_crit          = false;
@@ -568,7 +568,7 @@ struct priest_heal_t : public heal_t
   }
 
   priest_heal_t( const std::string& n, priest_t* player,
-                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_HOLY ) :
+                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE ) :
     heal_t( n, player, s, sc ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
@@ -827,7 +827,7 @@ struct priest_spell_t : public spell_t
   }
 
   priest_spell_t( const std::string& n, priest_t* player,
-                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_SHADOW ) :
+                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, player, s, sc ),
     atonement( 0 ), can_trigger_atonement( 0 )
   {

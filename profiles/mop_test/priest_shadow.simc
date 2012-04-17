@@ -46,7 +46,6 @@ trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspell
 trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_4774.8+42.32shadow_45%_9cd
 back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=haste_mastery,gems=50int_10int,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
-ranged=finger_of_zonozz,heroic=1,ilevel=410,quality=epic,stats=172int_259sta_120mastery_106haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
