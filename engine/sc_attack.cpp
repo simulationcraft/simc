@@ -37,6 +37,21 @@ attack_t::attack_t( const std::string&  n,
   }
 }
 
+// attack_t::execute ========================================================
+
+void attack_t::execute()
+{
+  action_t::execute();
+  
+  if ( harmful && callbacks )
+  {
+    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    {
+      action_callback_t::trigger( player -> attack_callbacks[ execute_state ? execute_state -> result : result ], this );
+    }
+  }
+}
+
 // attack_t::swing_haste ====================================================
 
 double attack_t::swing_haste() const

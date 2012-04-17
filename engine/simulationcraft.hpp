@@ -5235,6 +5235,7 @@ public:
   virtual double total_haste() const { return swing_haste(); }
   virtual double swing_haste() const;
   virtual timespan_t execute_time() const;
+  virtual void execute();
   virtual void   player_buff();
   int build_table( std::array<double,RESULT_MAX>& chances,
                    std::array<result_type_e,RESULT_MAX>& results,

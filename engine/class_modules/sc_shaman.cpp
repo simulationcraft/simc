@@ -335,20 +335,24 @@ struct shaman_melee_attack_t : public melee_attack_t
   bool flametongue;
   shaman_targetdata_t* td;
 
-  shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
-    melee_attack_t( token, p, s ),
+  shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
+    melee_attack_t( token, p, s, school ),
     windfury( true ), flametongue( true ),
     td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     special = true;
+    may_crit = true;
+    may_glance = false;
   }
 
-  shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
-    melee_attack_t( "", p, s ),
+  shaman_melee_attack_t( shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
+    melee_attack_t( "", p, s, school ),
     windfury( true ), flametongue( true ),
     td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     special = true;
+    may_crit = true;
+    may_glance = false;
   }
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
@@ -378,6 +382,8 @@ struct shaman_spell_t : public spell_t
     td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     parse_options( 0, options );
+    
+    may_crit = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
   }
@@ -388,6 +394,8 @@ struct shaman_spell_t : public spell_t
     td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     parse_options( 0, options );
+
+    may_crit = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
   }
@@ -454,7 +462,7 @@ struct spirit_wolf_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     melee_t( player_t* player ) :
-      melee_attack_t( "wolf_melee", player )
+      melee_attack_t( "wolf_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -612,7 +620,7 @@ struct earth_elemental_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     melee_t( player_t* player ) :
-      melee_attack_t( "earth_melee", player )
+      melee_attack_t( "earth_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
     {
       may_crit          = true;
       background        = true;
@@ -1422,7 +1430,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
 struct searing_flames_t : public shaman_spell_t
 {
   searing_flames_t( shaman_t* player ) :
-    shaman_spell_t( player, player -> find_specialization_spell( "Searing Flames" ) )
+    shaman_spell_t( player, player -> find_spell( 77661 ) )
   {
     background       = true;
     may_miss         = false;
@@ -1723,6 +1731,7 @@ struct melee_t : public shaman_melee_attack_t
     trigger_gcd = timespan_t::zero();
     stateless   = true;
     special     = false;
+    may_glance  = true;
 
     if ( p() -> dual_wield() ) base_hit -= 0.19;
   }
@@ -1828,7 +1837,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   double sf_bonus;
 
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
-    shaman_melee_attack_t( "", player, player -> find_class_spell( "Lava Lash" ) ),
+    shaman_melee_attack_t( player, player -> find_class_spell( "Lava Lash" ), SCHOOL_FIRE ),
     ft_bonus( data().effectN( 2 ).percent() ),
     sf_bonus( player -> spell.searing_flames -> effectN( 1 ).percent() )
   {
@@ -3429,41 +3438,6 @@ struct water_shield_t : public shaman_spell_t
 // Shaman Passive Buffs
 // ==========================================================================
 
-struct lightning_shield_buff_t : public buff_t
-{
-  lightning_shield_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "lightning_shield", p -> find_class_spell( "Lightning Shield" ) ).chance( 1.0 ).cd( timespan_t::min() ) )
-  {
-    shaman_t* s = player -> cast_shaman();
-
-    if ( s -> primary_tree() == SHAMAN_ELEMENTAL )
-      _max_stack = static_cast< int >( s -> specialization.rolling_thunder -> effectN( 1 ).base_value() );
-
-    // Add some more uptimes to the stack uptime vector
-    int stack_uptimes = static_cast< int >( stack_uptime.size() );
-    if ( stack_uptimes < _max_stack )
-      for ( int i = stack_uptimes; i <= _max_stack; ++i )
-        stack_uptime.push_back( new buff_uptime_t( sim ) );
-  }
-};
-
-struct searing_flames_buff_t : public buff_t
-{
-  searing_flames_buff_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) ).chance( 1.0 ).cd( timespan_t::min() ).quiet( true ) ) // Quiet buff, dont show in report
-  {
-    default_chance = player -> dbc.spell( 77661 ) -> proc_chance();
-    buff_duration  = player -> dbc.spell( 77661 ) -> duration();
-    _max_stack      = player -> dbc.spell( 77661 ) -> max_stacks();
-
-    // Add some more uptimes to the stack uptime vector
-    int stack_uptimes = static_cast< int >( stack_uptime.size() );
-    if ( stack_uptimes < _max_stack )
-      for ( int i = stack_uptimes; i <= _max_stack; ++i )
-        stack_uptime.push_back( new buff_uptime_t( sim ) );
-  }
-};
-
 struct unleash_flame_buff_t : public buff_t
 {
   event_t* expiration_delay;
@@ -3666,16 +3640,16 @@ void shaman_t::init_spells()
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
 
   // Glyphs
-  glyph.chain_lightning              = find_glyph( "Glyph of Chain Lightning" );
-  glyph.fire_elemental_totem         = find_glyph( "Glyph of Fire Elemental Totem" );
-  glyph.flame_shock                  = find_glyph( "Glyph of Flame Shock" );
-  glyph.lava_lash                    = find_glyph( "Glyph of Lava Lash" );
-  glyph.spiritwalkers_grace          = find_glyph( "Glyph of Spiritwalker's Grace" );
-  glyph.telluric_currents            = find_glyph( "Glyph of Telluric Currents" );
-  glyph.thunder                      = find_glyph( "Glyph of Thunder" );
-  glyph.thunderstorm                 = find_glyph( "Glyph of Thunderstorm" );
-  glyph.unleashed_lightning          = find_glyph( "Glyph of Unleashed Lightning" );
-  glyph.water_shield                 = find_glyph( "Glyph of Water Shield" );
+  glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
+  glyph.fire_elemental_totem         = find_glyph_spell( "Glyph of Fire Elemental Totem" );
+  glyph.flame_shock                  = find_glyph_spell( "Glyph of Flame Shock" );
+  glyph.lava_lash                    = find_glyph_spell( "Glyph of Lava Lash" );
+  glyph.spiritwalkers_grace          = find_glyph_spell( "Glyph of Spiritwalker's Grace" );
+  glyph.telluric_currents            = find_glyph_spell( "Glyph of Telluric Currents" );
+  glyph.thunder                      = find_glyph_spell( "Glyph of Thunder" );
+  glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
+  glyph.unleashed_lightning          = find_glyph_spell( "Glyph of Unleashed Lightning" );
+  glyph.water_shield                 = find_glyph_spell( "Glyph of Water Shield" );
   
   // Misc spells
   spell.primal_wisdom                = find_spell( 63375 );
@@ -3754,7 +3728,7 @@ void shaman_t::init_buffs()
    buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
                               .max_stack( ( primary_tree() == SHAMAN_ELEMENTAL )
                                             ? static_cast< int >( specialization.rolling_thunder -> effectN( 1 ).base_value() )
-                                            : find_class_spell( "Lightning Shield" ) -> max_stacks() );
+                                            : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
   buff.maelstrom_weapon    = buff_creator_t( this, "maelstrom_weapon",  specialization.maelstrom_weapon -> effectN( 1 ).trigger() )
                              .activated( false );
   buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  specialization.shamanistic_rage );
@@ -4324,15 +4298,15 @@ void player_t::shaman_init( sim_t* sim )
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( "Bloodlust" ) )
+    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 );
 
-    p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( "Exhaustion" ) )
+    p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
                             .max_stack( 1 )
                             .quiet( true );
 
-    p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( "Mana Tide" ) )
-                            .duration( p -> find_class_spell( "Mana Tide Totem" ) -> duration() );
+    p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( 16191 ) )
+                            .duration( p -> find_spell( 16190 )-> duration() );
   }
 }
 
@@ -4347,7 +4321,11 @@ void player_t::shaman_combat_begin( sim_t* )
 shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
   : targetdata_t( p, target )
 {
-  debuffs_searing_flames = add_aura( new searing_flames_buff_t( p ) );
+  debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
+                                    .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
+                                    .duration(p -> dbc.spell( 77661 ) -> duration() )
+                                    .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
+                                    .quiet( true ) );
   debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
   debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
 }
