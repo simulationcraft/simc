@@ -64,8 +64,8 @@ action_t::action_t( action_type_e       ty,
   no_debuffs(),
   stateless(),
   dot_behavior( DOT_CLIP ),
-  ability_lag( timespan_t() ),
-  ability_lag_stddev( timespan_t() ),
+  ability_lag( timespan_t::zero() ),
+  ability_lag_stddev( timespan_t::zero() ),
   rp_gain(),
   min_gcd( timespan_t() ),
   trigger_gcd( player -> base_gcd ),
@@ -73,8 +73,8 @@ action_t::action_t( action_type_e       ty,
   weapon_power_mod(),
   direct_power_mod(),
   tick_power_mod(),
-  base_execute_time( timespan_t() ),
-  base_tick_time( timespan_t() )
+  base_execute_time( timespan_t::zero() ),
+  base_tick_time( timespan_t::zero() )
 
 {
   dot_behavior                   = DOT_CLIP;
