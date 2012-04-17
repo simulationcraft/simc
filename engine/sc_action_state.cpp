@@ -126,7 +126,7 @@ void action_t::schedule_travel_s( action_state_t* s )
       log_t::output( sim, "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel );
+    travel_event = new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel );
   }
 }
 
