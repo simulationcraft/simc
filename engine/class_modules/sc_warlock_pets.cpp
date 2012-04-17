@@ -194,7 +194,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   }
 
   warlock_pet_melee_attack_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    melee_attack_t( s -> to_str(), p, s, sc )
+    melee_attack_t( armory_t::format( std::string( s -> name_cstr() ) ), p, s, sc )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;

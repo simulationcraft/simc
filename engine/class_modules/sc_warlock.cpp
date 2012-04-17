@@ -147,7 +147,7 @@ public:
   }
 
   warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( s -> to_str(), p, s, sc )
+    spell_t( armory_t::format( std::string( s -> name_cstr() ) ), p, s, sc )
   {
     _init_warlock_spell_t();
   }
