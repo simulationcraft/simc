@@ -398,7 +398,6 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         no_debuffs = nd;
         // Pure casters get their innate crit damage bonus applied to discharge procs, hybrids don't
         if ( p -> type == WARLOCK || p -> type == MAGE ) crit_multiplier *= 1.33;
-        init();
       }
     };
 
@@ -428,7 +427,6 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
-        init();
       }
     };
 
@@ -553,6 +551,7 @@ static void register_darkmoon_card_greatness( item_t* item )
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
+
   action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero(), false, false );
 
   p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -728,7 +727,7 @@ static void register_shard_of_woe( item_t* item )
 
   item -> unique = true;
 
-  for ( int i = 0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     p -> initial_resource_reduction[ i ] += 205;
   }
@@ -1009,9 +1008,9 @@ static void register_windward_heart( item_t* item )
     {
       trigger_gcd = timespan_t::zero();
       background  = true;
-      may_miss = false;
-      may_crit = true;
-      callbacks = false;
+      may_miss    = false;
+      may_crit    = true;
+      callbacks   = false;
       init();
     }
   };

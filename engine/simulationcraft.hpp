@@ -1226,6 +1226,14 @@ template <typename Range, typename Out, typename Predicate>
 inline Out remove_copy_if( Range& r, Out o, Predicate p )
 { return std::remove_copy_if( range::begin( r ), range::end( r ), o, p ); }
 
+template <typename Range, typename Out, typename F>
+inline Out transform( Range& r, Out o, F f )
+{ return std::transform( range::begin( r ), range::end( r ), o, f ); }
+
+template <typename Range, typename F>
+inline typename range::traits<Range>::iterator transform_self( Range& r, F f )
+{ return std::transform( range::begin( r ), range::end( r ), range::begin( r ), f ); }
+
 template <typename Range1, typename Range2, typename Out>
 inline Out set_difference( const Range1& left, const Range2& right, Out o )
 {

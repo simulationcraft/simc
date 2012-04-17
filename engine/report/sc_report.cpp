@@ -451,25 +451,18 @@ void report::generate_player_buff_lists( const player_t*  p, player_t::report_in
   if ( ri.buff_lists_generated )
     return;
 
-  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
-  {
-    buff_t* b = p -> buff_list[ i ];
-    ri.buff_list.push_back( b );
-  }
+  // Append p -> buff_list to ri.buff_list
+  ri.buff_list.insert( ri.buff_list.end(), p -> buff_list.begin(), p -> buff_list.end() );
 
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
-    for ( size_t k = 0; k < p -> pet_list[ i ] -> buff_list.size(); ++k )
-    {
-      buff_t* b = p -> pet_list[ i ] -> buff_list[ k ];
-      ri.buff_list.push_back( b );
-    }
+    pet_t* pet = p -> pet_list[ i ];
+    // Append pet -> buff_list to ri.buff_list
+    ri.buff_list.insert( ri.buff_list.end(), pet -> buff_list.begin(), pet -> buff_list.end() );
   }
-  for ( size_t i = 0; i < p -> sim -> buff_list.size(); ++i )
-  {
-    buff_t* b = p -> sim -> buff_list[ i ];
-    ri.buff_list.push_back( b );
-  }
+
+  // Append p -> sim -> buff_list to ri.buff_list
+  ri.buff_list.insert( ri.buff_list.end(), p -> sim -> buff_list.begin(), p -> sim -> buff_list.end() );
 
   // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
   //range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
@@ -502,12 +495,15 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
   // Stats Charts
   std::vector<stats_t*> stats_list;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    stats_list.push_back( p -> stats_list[ i ] );
+  // Append p -> stats_list to stats_list
+  stats_list.insert( stats_list.end(), p -> stats_list.begin(), p -> stats_list.end() );
 
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-    for ( size_t k = 0; k < p -> pet_list[ i ] -> stats_list.size(); ++k )
-      stats_list.push_back( p -> pet_list[ i ] -> stats_list[ k ] );
+  {
+    pet_t* pet = p -> pet_list[ i ];
+    // Append pet -> stats_list to stats_list
+    stats_list.insert( stats_list.end(), pet -> stats_list.begin(), pet -> stats_list.end() );
+  }
 
   if ( ! p -> is_pet() )
   {

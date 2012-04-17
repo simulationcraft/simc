@@ -419,7 +419,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
 
 // chart_t::raid_dps ========================================================
 
-int chart::raid_aps( std::vector<std::string>& images,
+size_t chart::raid_aps( std::vector<std::string>& images,
                      const sim_t* sim,
                      const std::vector<player_t*>& players_by_aps,
                      bool dps )
@@ -521,12 +521,12 @@ int chart::raid_aps( std::vector<std::string>& images,
     if ( num_players == 0 ) break;
   }
 
-  return ( int ) images.size();
+  return images.size();
 }
 
 // chart_t::raid_gear =======================================================
 
-int chart::raid_gear( std::vector<std::string>& images,
+size_t chart::raid_gear( std::vector<std::string>& images,
                       const sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
@@ -684,7 +684,7 @@ int chart::raid_gear( std::vector<std::string>& images,
     if ( num_players == 0 ) break;
   }
 
-  return ( int ) images.size();
+  return images.size();
 }
 
 
@@ -698,47 +698,54 @@ struct compare_dpet
     return l -> apet > r -> apet;
   }
 };
+struct filter_stats_dpet
+{
+  const player_t& p;
+  filter_stats_dpet( const player_t& q ) : p( q ) {}
+  bool operator()( const stats_t* st ) const
+  {
+    if ( st->quiet ) return true;
+    if ( st->apet <= 0 ) return true;
+    if ( st->apet > ( 5 * p.dps.mean ) ) return true;
+    if ( ( p.primary_role() == ROLE_HEAL ) != ( st->type != STATS_DMG ) ) return true;
 
-int chart::raid_dpet( std::vector<std::string>& images,
+    return false;
+  }
+};
+
+size_t chart::raid_dpet( std::vector<std::string>& images,
                       const sim_t* sim )
 {
-  int num_players = ( int ) sim -> players_by_dps.size();
+  size_t num_players = sim -> players_by_dps.size();
 
   if ( num_players == 0 )
     return 0;
 
   std::vector<stats_t*> stats_list;
 
-  for ( int i=0; i < num_players; i++ )
+
+  for ( size_t i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_dps[ i ];
 
-    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    {
-      stats_t* st = p -> stats_list[ i ];
-      if ( st -> quiet ) continue;
-      if ( st -> apet <= 0 ) continue;
-      if ( st -> apet > ( 5 * p -> dps.mean ) ) continue;
-      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
-
-      stats_list.push_back( st );
-    }
+    // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
+    range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
   }
 
-  int num_stats = ( int ) stats_list.size();
+  size_t num_stats = stats_list.size();
   if ( num_stats == 0 ) return 0;
 
   range::sort( stats_list, compare_dpet() );
 
   double max_dpet = stats_list[ 0 ] -> apet;
 
-  int max_actions_per_chart = 20;
-  int max_charts = 4;
+  size_t max_actions_per_chart = 20;
+  size_t max_charts = 4;
 
   std::string s;
   char buffer[ 1024 ];
 
-  for ( int chart=0; chart < max_charts; chart++ )
+  for ( size_t chart = 0; chart < max_charts; chart++ )
   {
     if ( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
@@ -755,7 +762,7 @@ int chart::raid_dpet( std::vector<std::string>& images,
     s += "chbh=10";
     s += "&amp;";
     s += "chd=t:";
-    for ( int i=0; i < num_stats; i++ )
+    for ( size_t i = 0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
       snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> apet ); s += buffer;
@@ -764,14 +771,14 @@ int chart::raid_dpet( std::vector<std::string>& images,
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
     s += "&amp;";
     s += "chco=";
-    for ( int i=0; i < num_stats; i++ )
+    for ( size_t i = 0; i < num_stats; i++ )
     {
       if ( i ) s += ",";
       s += school_color ( stats_list[ i ] -> school );
     }
     s += "&amp;";
     s += "chm=";
-    for ( int i=0; i < num_stats; i++ )
+    for ( size_t i = 0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
       std::string formatted_name = st -> player -> name_str;
@@ -798,11 +805,11 @@ int chart::raid_dpet( std::vector<std::string>& images,
     images.push_back( s );
 
     stats_list.erase( stats_list.begin(), stats_list.begin() + num_stats );
-    num_stats = ( int ) stats_list.size();
+    num_stats = stats_list.size();
     if ( num_stats == 0 ) break;
   }
 
-  return ( int ) images.size();
+  return images.size();
 }
 
 // chart_t::action_dpet =====================================================
@@ -811,30 +818,15 @@ std::string chart::action_dpet( const player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  {
-    stats_t* st = p -> stats_list[ i ];
-    if ( st -> quiet ) continue;
-    if ( st -> apet <= 0 ) continue;
-    if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
-    if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
-
-    stats_list.push_back( st );
-  }
+  // Copy all stats* from p -> stats_list to stats_list, which satisfy the filter
+  range::remove_copy_if( p -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
 
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
-    {
-      stats_t* st = pet -> stats_list[ i ];
-      if ( st -> quiet ) continue;
-      if ( st -> apet <= 0 ) continue;
-      if ( st -> apet > ( 5 * ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ) ) continue;
-      if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
 
-      stats_list.push_back( st );
-    }
+    // Copy all stats* from pet -> stats_list to stats_list, which satisfy the filter
+    range::remove_copy_if( pet -> stats_list, back_inserter( stats_list ), filter_stats_dpet( *p ) );
   }
 
   int num_stats = ( int ) stats_list.size();
@@ -1040,11 +1032,11 @@ std::string chart::time_spent( const player_t* p )
   std::vector<stats_t*> filtered_waiting_stats;
 
   // Filter stats we do not want in the chart ( quiet, background, zero total_time ) and copy them to filtered_waiting_stats
-  range::remove_copy_if( p->stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
+  range::remove_copy_if( p -> stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
   if ( num_stats == 0 && p -> waiting_time.mean == 0 )
-    return 0;
+    return std::string();
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
 
@@ -1644,7 +1636,7 @@ std::string chart::reforge_dps( const player_t* p )
     s += "<input type='hidden' name='chd' value='t:";
     for ( size_t j = 0; j < 2; j++ )
     {
-      for ( size_t i=0; i < triangle_points.size(); i++ )
+      for ( size_t i = 0; i < triangle_points.size(); i++ )
       {
         snprintf( buffer, sizeof( buffer ), "%f", triangle_points[ i ][ j ] );
         s += buffer;
@@ -1806,14 +1798,7 @@ std::string chart::timeline_dps_error( const player_t* p )
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
 
-  double dps_max_error=0;
-  for ( int i=0; i < max_buckets; i++ )
-  {
-    if ( p -> dps_convergence_error[ i ] > dps_max_error )
-    {
-      dps_max_error = p -> dps_convergence_error[ i ];
-    }
-  }
+  double dps_max_error= *range::max_element( p -> dps_convergence_error );
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 

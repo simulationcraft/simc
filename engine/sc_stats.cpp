@@ -8,11 +8,18 @@
 // stats_t::stats_t =========================================================
 
 stats_t::stats_t( const std::string& n, player_t* p ) :
-  name_str( n ), sim( p -> sim ), player( p ), parent( 0 ),
-  school( SCHOOL_NONE ), type( STATS_DMG ),
+  name_str( n ),
+  sim( p -> sim ),
+  player( p ),
+
+  parent(),
+  school( SCHOOL_NONE ),
+  type( STATS_DMG ),
   resource_gain( gain_t( n ) ),
   //Flags
-  analyzed( false ), quiet( false ), background( true ),
+  analyzed(),
+  quiet(),
+  background( true ),
   // Variables used both during combat and for reporting
   num_executes( 0 ), num_ticks( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
@@ -24,7 +31,8 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   actual_amount( p -> sim -> statistics_level < 3 ),
   total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), opportunity_cost( 0 ),
-  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),tick_results( RESULT_MAX, stats_results_t( p -> sim ) ),
+  direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),
+  tick_results( RESULT_MAX, stats_results_t( p -> sim ) ),
   // Reporting only
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),

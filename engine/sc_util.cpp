@@ -1573,9 +1573,9 @@ bool util_t::parse_origin( std::string& region_str,
     return false;
 
   std::vector<std::string> tokens;
-  int num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
+  size_t num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
 
-  for ( int i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     std::string& t = tokens[ i ];
 
@@ -2136,14 +2136,14 @@ int64_t util_t::milliseconds()
 int64_t util_t::parse_date( const std::string& month_day_year )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, month_day_year, " _,;-/ \t\n\r" );
+  size_t num_splits = util_t::string_split( splits, month_day_year, " _,;-/ \t\n\r" );
   if ( num_splits != 3 ) return 0;
 
   std::string& month = splits[ 0 ];
   std::string& day   = splits[ 1 ];
   std::string& year  = splits[ 2 ];
 
-  std::transform( month.begin(), month.end(), month.begin(), ( int( * )( int ) ) std::tolower );
+  util_t::tolower_( month );
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
@@ -2443,20 +2443,15 @@ double util_t::round( double X, unsigned int decplaces )
 
 void util_t::tolower_( std::string& str )
 {
-  for ( std::string::size_type i = 0, n = str.length(); i < n; ++i )
-    str[i] = ::tolower( str[i] );
+  // Transform all chars to lower case
+  range::transform_self( str, ( int( * )( int ) ) std::tolower );
 }
 
-//-------------------------------
-// std::STRING   utils
-//-------------------------------
-
-// utility functions
 std::string tolower( const std::string& src )
 {
   std::string dest;
-  for ( std::string::size_type i = 0, n = src.length(); i < n; ++i )
-    dest.push_back( tolower( src[ i ] ) );
+  // Transform all chars to lowercase from src to dest
+  range::transform( src, back_inserter( dest ), ( int( * )( int ) ) std::tolower );
   return dest;
 }
 

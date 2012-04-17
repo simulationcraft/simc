@@ -432,7 +432,8 @@ player_t::player_t( sim_t*             s,
 
   if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.top();
 
-  if ( reaction_stddev == timespan_t::zero() ) reaction_stddev = reaction_mean * 0.25;
+  if ( reaction_stddev == timespan_t::zero() )
+    reaction_stddev = reaction_mean * 0.25;
 }
 
 // player_t::~player_t ======================================================
@@ -497,7 +498,7 @@ bool player_t::init( sim_t* sim )
   if ( sim -> debug )
     log_t::output( sim, "Creating Pets." );
 
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     p -> create_pets();
@@ -575,7 +576,7 @@ bool player_t::init( sim_t* sim )
       size_t num_players = util_t::string_split( player_names, party_str, ",;/" );
       int member_index=0;
 
-      for ( size_t j=0; j < num_players; j++ )
+      for ( size_t j = 0; j < num_players; j++ )
       {
         player_t* p = sim -> find_player( player_names[ j ] );
         if ( ! p )
@@ -1085,7 +1086,7 @@ void player_t::init_resources( bool force )
       if ( i == RESOURCE_HEALTH )
       {
         // The first 20pts of stamina only provide 1pt of health.
-        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
+        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, static_cast<int>( floor( stamina() ) ) );
         resources.initial[ i ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
       }
     }
@@ -1212,7 +1213,8 @@ struct execute_pet_action_t : public action_t
   std::string action_str;
 
   execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_pet_action", player ), pet_action( 0 ), pet( p ), action_str( as )
+    action_t( ACTION_OTHER, "execute_pet_action", player ),
+    pet_action( 0 ), pet( p ), action_str( as )
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
@@ -1238,8 +1240,12 @@ struct execute_pet_action_t : public action_t
 
   virtual bool ready()
   {
-    if ( ! action_t::ready() ) return false;
-    if ( pet_action -> player -> sleeping ) return false;
+    if ( ! action_t::ready() )
+      return false;
+
+    if ( pet_action -> player -> sleeping )
+      return false;
+
     return pet_action -> ready();
   }
 };
@@ -1263,8 +1269,8 @@ void player_t::init_target()
 std::string player_t::init_use_item_actions( const std::string& append )
 {
   std::string buffer;
-  int num_items = ( int ) items.size();
-  for ( int i=0; i < num_items; i++ )
+
+  for ( size_t i = 0; i < items.size(); ++i )
   {
     if ( items[ i ].use.active() )
     {
@@ -1378,9 +1384,9 @@ void player_t::init_actions()
     }
 
     std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, action_list_str, "/" );
+    size_t num_splits = util_t::string_split( splits, action_list_str, "/" );
 
-    for ( int i=0; i < num_splits; i++ )
+    for ( size_t i = 0; i < num_splits; i++ )
     {
       std::string action_name    = splits[ i ];
       std::string action_options = "";
@@ -1456,8 +1462,8 @@ void player_t::init_actions()
       log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
 
     std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, action_list_skip, "/" );
-    for ( int i=0; i < num_splits; i++ )
+    size_t num_splits = util_t::string_split( splits, action_list_skip, "/" );
+    for ( size_t i = 0; i < num_splits; i++ )
     {
       action_t* action = find_action( splits[ i ] );
       if ( action ) action -> background = true;
@@ -1473,7 +1479,7 @@ void player_t::init_actions()
 
   }
 
-  int capacity = std::max( 1200, ( int ) ( sim -> max_time.total_seconds() / 2.0 ) );
+  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
   report_information.action_sequence.reserve( capacity );
   report_information.action_sequence.clear();
 }
@@ -1567,37 +1573,37 @@ void player_t::init_buffs()
     }
   };
 
-  potion_buffs.speed = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
-                       .stat( STAT_HASTE_RATING )
-                       .amount( 500.0 );
+  potion_buffs.speed      = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
+                              .stat( STAT_HASTE_RATING )
+                              .amount( 500.0 );
 
-  potion_buffs.volcanic = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
-                          .stat( STAT_INTELLECT )
-                          .amount( 1200.0 );
+  potion_buffs.volcanic   = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
+                              .stat( STAT_INTELLECT )
+                              .amount( 1200.0 );
 
-  potion_buffs.earthen = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
-                         .stat( STAT_ARMOR )
-                         .amount( 4800.0 );
+  potion_buffs.earthen    = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
+                              .stat( STAT_ARMOR )
+                              .amount( 4800.0 );
 
   potion_buffs.golemblood = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
                               .stat( STAT_STRENGTH )
                               .amount( 1200.0 );
 
-  potion_buffs.tolvir = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
+  potion_buffs.tolvir     = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
                               .stat( STAT_AGILITY )
                               .amount( 1200.0 );
 
   // New Mop potions
 
-  potion_buffs.jinyu = stat_buff_creator_t( potions_common_buff_creator()( this, "jinyu" ) )
-                            .stat( STAT_INTELLECT )
-                            .amount( 4000.0 );
+  potion_buffs.jinyu        = stat_buff_creator_t( potions_common_buff_creator()( this, "jinyu" ) )
+                                .stat( STAT_INTELLECT )
+                                .amount( 4000.0 );
 
-  potion_buffs.mountains = stat_buff_creator_t( potions_common_buff_creator()( this, "mountains" ) )
+  potion_buffs.mountains    = stat_buff_creator_t( potions_common_buff_creator()( this, "mountains" ) )
                                 .stat( STAT_ARMOR )
                                 .amount( 12000.0 );
 
-  potion_buffs.mogu_power = stat_buff_creator_t( potions_common_buff_creator()( this, "mogu_power" ) )
+  potion_buffs.mogu_power   = stat_buff_creator_t( potions_common_buff_creator()( this, "mogu_power" ) )
                                 .stat( STAT_STRENGTH )
                                 .amount( 4000.0 );
 
@@ -1606,18 +1612,17 @@ void player_t::init_buffs()
                                 .amount( 4000.0 );
 
 
-
   buffs.mongoose_mh = NULL;
   buffs.mongoose_oh = NULL;
 
   // Infinite-Stacking Buffs and De-Buffs
 
-  buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( -1 );
-  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( -1 );
-  debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( -1 );
-  debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( -1 );
-  debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( -1 );
-  debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( -1 );
+  buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
+  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
+  debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 );
+  debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
+  debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
+  debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
 
   // MOP Debuffs
   debuffs.slowed_casting           = buff_creator_t( this, "slowed_casting", find_spell( 115803 ) );
@@ -1676,7 +1681,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  primary_resource_cap = get_uptime( util_t::resource_type_string( primary_resource() ) + ( std::string ) "_cap" );
+  primary_resource_cap = get_uptime( std::string( util_t::resource_type_string( primary_resource() ) ) +  "_cap" );
 }
 
 // player_t::init_benefits ===================================================
@@ -2635,9 +2640,7 @@ void player_t::combat_end( sim_t* sim )
 void player_t::combat_end()
 {
   for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
     pet_list[ i ] -> combat_end();
-  }
 
   if ( ! is_pet() )
   {
@@ -2660,7 +2663,6 @@ void player_t::combat_end()
     sim -> iteration_dmg += iteration_dmg;
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
-    ;
     iteration_dmg += pet_list[ i ] -> iteration_dmg;
   }
   compound_dmg.add( iteration_dmg );
@@ -2843,7 +2845,7 @@ void player_t::reset()
   parry_rating_per_strength = initial_parry_rating_per_strength;
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ]-> reset();
+    buff_list[ i ] -> reset();
 
   last_foreground_action = 0;
 
@@ -2873,12 +2875,12 @@ void player_t::reset()
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
 
-  for ( int i=0; i < RESOURCE_MAX; i++ )
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     action_callback_t::reset( resource_gain_callbacks[ i ] );
     action_callback_t::reset( resource_loss_callbacks[ i ] );
   }
-  for ( int i=0; i < RESULT_MAX; i++ )
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     action_callback_t::reset( attack_callbacks[ i ] );
     action_callback_t::reset( spell_callbacks [ i ] );
@@ -2887,7 +2889,7 @@ void player_t::reset()
     action_callback_t::reset( absorb_callbacks [ i ] );
     action_callback_t::reset( tick_callbacks  [ i ] );
   }
-  for ( int i=0; i < SCHOOL_MAX; i++ )
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     action_callback_t::reset( tick_damage_callbacks  [ i ] );
     action_callback_t::reset( direct_damage_callbacks[ i ] );
@@ -2904,10 +2906,10 @@ void player_t::reset()
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
 
-  for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
+  for ( std::vector<targetdata_t*>::iterator it = targetdata.begin(), end = targetdata.end(); it != end; ++it )
   {
-    if ( *i )
-      ( *i )->reset();
+    if ( *it )
+      ( *it )->reset();
   }
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
@@ -2936,8 +2938,6 @@ void player_t::schedule_ready( timespan_t delta_time,
   executing = 0;
   channeling = 0;
   action_queued = false;
-
-  if ( ! has_foreground_actions( this ) ) return;
 
   timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero() ) delta_time += gcd_adjust;
@@ -3042,7 +3042,9 @@ void player_t::arise()
 
   arise_time = sim -> current_time;
 
-  schedule_ready();
+
+  if ( has_foreground_actions( this ) )
+    schedule_ready();
 }
 
 // player_t::demise =========================================================
@@ -3082,9 +3084,7 @@ void player_t::demise()
   //sim -> cancel_events( this );
 
   for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
     pet_list[ i ] -> demise();
-  }
 }
 
 // player_t::interrupt ======================================================
@@ -4928,7 +4928,6 @@ struct use_item_t : public action_t
           may_miss    = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
           background  = true;
           base_spell_power_multiplier = 0;
-          init();
         }
       };
 
@@ -6657,8 +6656,8 @@ dot_t* targetdata_t::add_dot( dot_t* d )
 
 aura_t* targetdata_t::add_aura( aura_t* a )
 {
-  assert( a->player == this->target );
-  assert( a->initial_source == this->source );
+  assert( a -> player == this -> target );
+  assert( a -> initial_source == this -> source );
   return a;
 }
 

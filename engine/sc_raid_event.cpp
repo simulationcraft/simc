@@ -224,7 +224,7 @@ struct movement_event_t : public raid_event_t
         {
           double new_distance = ( move_to < 0 ) ? p -> default_distance : move_to;
           if ( ! my_move_distance )
-            my_move_distance = abs( new_distance - p -> distance );
+            my_move_distance = fabs( new_distance - p -> distance );
           p -> distance = new_distance;
         }
         my_duration = my_move_distance / p -> composite_movement_speed();

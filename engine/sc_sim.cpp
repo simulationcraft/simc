@@ -1509,14 +1509,14 @@ void sim_t::analyze_player( player_t* p )
   // Stats Analysis =========================================================
   std::vector<stats_t*> stats_list;
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    stats_list.push_back( p -> stats_list[ i ] );
+  // Append p -> stats_list to stats_list
+  stats_list.insert( stats_list.end(), p -> stats_list.begin(), p -> stats_list.end() );
 
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
-      stats_list.push_back( pet -> stats_list[ i ] );
+    // Append pet -> stats_list to stats_list
+    stats_list.insert( stats_list.end(), pet -> stats_list.begin(), pet -> stats_list.end() );
   }
 
   size_t num_stats = stats_list.size();
@@ -1630,7 +1630,7 @@ void sim_t::analyze()
     int last = ( int ) floor( iteration_timeline[ i ].total_seconds() );
     size_t num_buckets = divisor_timeline.size();
     if ( 1 + last > ( int ) num_buckets ) divisor_timeline.resize( 1 + last, 0 );
-    for ( int j=0; j <= last; j++ ) divisor_timeline[ j ] += 1;
+    for ( int j = 0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -1643,8 +1643,8 @@ void sim_t::analyze()
 
   confidence_estimator = rng -> stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  for ( unsigned int i = 0; i < actor_list.size(); i++ )
-    analyze_player( actor_list[i] );
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+    analyze_player( actor_list[ i ] );
 
   range::sort( players_by_dps, compare_dps() );
   range::sort( players_by_hps, compare_hps() );
@@ -1705,9 +1705,9 @@ void sim_t::merge( sim_t& other_sim )
     buff_list[ i ] -> merge( buff_t::find( &other_sim, buff_list[ i ] -> name_str.c_str() ) );
   }
 
-  for ( unsigned int i = 0; i < actor_list.size(); i++ )
+  for ( size_t i = 0; i < actor_list.size(); i++ )
   {
-    player_t* p = actor_list[i];
+    player_t* p = actor_list[ i ];
     player_t* other_p = other_sim.find_player( p -> index );
     assert( other_p );
     p -> merge( *other_p );
@@ -1718,9 +1718,7 @@ void sim_t::merge( sim_t& other_sim )
 
 void sim_t::merge()
 {
-  int num_children = ( int ) children.size();
-
-  for ( int i=0; i < num_children; i++ )
+  for ( size_t i = 0; i < children.size(); i++ )
   {
     sim_t* child = children[ i ];
     child -> wait();
@@ -1748,14 +1746,14 @@ void sim_t::partition()
   int num_children = threads - 1;
   children.resize( num_children );
 
-  for ( int i=0; i < num_children; i++ )
+  for ( int i = 0; i < num_children; i++ )
   {
-    sim_t* child = children[ i ] = new sim_t( this, i+1 );
+    sim_t* child = children[ i ] = new sim_t( this, i + 1 );
     child -> iterations /= threads;
     child -> report_progress = 0;
   }
 
-  for ( int i=0; i < num_children; i++ )
+  for ( int i = 0; i < num_children; i++ )
     children[ i ] -> launch();
 }
 
@@ -1779,10 +1777,11 @@ bool sim_t::execute()
 
 player_t* sim_t::find_player( const std::string& name ) const
 {
-  for ( size_t i = 0; i < actor_list.size(); i++ )
+  for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
   {
     player_t* p = actor_list[ i ];
-    if ( name == p -> name() ) return p;
+    if ( name == p -> name() )
+      return p;
   }
   return 0;
 }
@@ -1791,10 +1790,11 @@ player_t* sim_t::find_player( const std::string& name ) const
 
 player_t* sim_t::find_player( int index ) const
 {
-  for ( size_t i = 0; i < actor_list.size(); i++ )
+  for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
   {
     player_t* p = actor_list[ i ];
-    if ( index == p -> index ) return p;
+    if ( index == p -> index )
+      return p;
   }
   return 0;
 }
@@ -2174,7 +2174,7 @@ bool sim_t::parse_options( int    _argc,
   if ( ! parent )
     cache::advance_era();
 
-  for ( int i=1; i < argc; i++ )
+  for ( int i = 1; i < argc; i++ )
   {
     if ( ! option_t::parse_line( this, argv[ i ] ) )
       return false;
@@ -2238,9 +2238,7 @@ void sim_t::cancel()
 
   canceled = 1;
 
-  int num_children = ( int ) children.size();
-
-  for ( int i=0; i < num_children; i++ )
+  for ( size_t i = 0; i < children.size(); i++ )
   {
     children[ i ] -> cancel();
   }
