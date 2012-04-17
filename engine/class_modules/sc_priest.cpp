@@ -3835,7 +3835,7 @@ void priest_t::init_actions()
       */
 
       if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
-        buffer += "/shadow_word_death,if=target.health.pct<=20|buff.shadow_of_death.up";
+        buffer += "/shadow_word_death,if=target.health.pct<=20|buff.shadow_of_death.react";
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
