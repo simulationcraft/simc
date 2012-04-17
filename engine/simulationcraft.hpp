@@ -4693,7 +4693,6 @@ struct player_t : public noncopyable
   paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return ( shaman_t      * ) this; }
-  warlock_t     * cast_warlock     () { assert( type == WARLOCK      ); return ( warlock_t     * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
@@ -6060,7 +6059,7 @@ struct js_t
 
 struct wait_action_base_t : public action_t
 {
-  wait_action_base_t( player_t* player, const char* name ) :
+  wait_action_base_t( player_t* player, const std::string& name ) :
     action_t( ACTION_OTHER, name, player )
   { trigger_gcd = timespan_t::zero(); }
 
@@ -6074,7 +6073,7 @@ struct wait_for_cooldown_t : public wait_action_base_t
 {
   cooldown_t* wait_cd;
   action_t* a;
-  wait_for_cooldown_t( player_t* player, const char* cd_name );
+  wait_for_cooldown_t( player_t* player, const std::string& cd_name );
   virtual bool usable_moving() { return a -> usable_moving(); }
   virtual timespan_t execute_time() const;
 };

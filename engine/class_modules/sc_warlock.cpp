@@ -172,9 +172,9 @@ public:
 
   // trigger_soul_leech =====================================================
 
-  static void trigger_soul_leech( spell_t* s )
+  static void trigger_soul_leech( warlock_spell_t* s )
   {
-    warlock_t* p = s -> player -> cast_warlock();
+    warlock_t* p = s -> p();
 
     if ( p -> talents.soul_leech -> ok() )
     {
@@ -187,7 +187,7 @@ public:
 
   static void trigger_decimation( warlock_spell_t* s, int result )
   {
-    warlock_t* p = s -> player -> cast_warlock();
+    warlock_t* p = s -> p();
     if ( ( result != RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
     if ( s -> target -> health_percentage() > p -> spec.decimation -> effectN( 2 ).base_value() ) return;
     p -> buffs.decimation -> trigger();
@@ -207,6 +207,7 @@ struct curse_of_elements_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+
     if ( result_is_hit() )
     {
       if ( ! sim -> overrides.magic_vulnerability )
@@ -220,6 +221,7 @@ struct curse_of_elements_t : public warlock_spell_t
 struct agony_t : public warlock_spell_t
 {
   int damage_level;
+
   agony_t( warlock_t* p ) :
     warlock_spell_t( p, "Agony" ), damage_level( 0 )
   {
@@ -302,27 +304,26 @@ struct shadow_bolt_t : public warlock_spell_t
   virtual timespan_t execute_time() const
   {
     timespan_t h = warlock_spell_t::execute_time();
-    warlock_t* p = player -> cast_warlock();
-    if ( p -> buffs.backdraft -> up() )
+
+    if ( p() -> buffs.backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
     return h;
   }
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
     for ( int i = 0; i < 4; i++ )
     {
-      p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
+      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
     }
 
-    if ( p -> buffs.backdraft -> check() )
+    if ( p() -> buffs.backdraft -> check() )
     {
-      p -> buffs.backdraft -> decrement();
+      p() -> buffs.backdraft -> decrement();
     }
   }
 
@@ -360,10 +361,9 @@ struct chaos_bolt_t : public warlock_spell_t
   virtual timespan_t execute_time() const
   {
     timespan_t h = warlock_spell_t::execute_time();
-    warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs.backdraft -> up() )
-      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.backdraft -> up() )
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
 
     return h;
   }
@@ -371,15 +371,14 @@ struct chaos_bolt_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    warlock_t* p = player -> cast_warlock();
 
     for ( int i = 0; i < 4; i++ )
     {
-      p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
+      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
     }
 
-    if ( p -> buffs.backdraft -> check() )
-      p -> buffs.backdraft -> decrement();
+    if ( p() -> buffs.backdraft -> check() )
+      p() -> buffs.backdraft -> decrement();
   }
   
   virtual void impact_s( action_state_t* s )
@@ -440,11 +439,10 @@ struct shadowburn_t : public warlock_spell_t
   virtual void update_ready()
   {
     warlock_spell_t::update_ready();
-    warlock_t* p = player -> cast_warlock();
 
-    if ( p -> glyphs.shadowburn -> ok() )
+    if ( p() -> glyphs.shadowburn -> ok() )
     {
-      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p -> glyphs.shadowburn -> effectN( 1 ).base_value() )
+      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p() -> glyphs.shadowburn -> effectN( 1 ).base_value() )
       {
         cooldown -> reset();
         cd_glyph_of_shadowburn -> start();
@@ -508,16 +506,13 @@ struct drain_life_heal_t : public warlock_heal_t
     background = true;
     may_miss = false;
     base_dd_min = base_dd_max = 0; // Is parsed as 2
-    init();
   }
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
     double heal_pct = data().effectN( 1 ).percent();
+    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
 
-    base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
     warlock_heal_t::execute();
   }
 };
@@ -539,18 +534,16 @@ struct drain_life_t : public warlock_spell_t
   virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
-    warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs.soulburn -> check() )
-      p -> buffs.soulburn -> expire();
+    if ( p() -> buffs.soulburn -> check() )
+      p() -> buffs.soulburn -> expire();
   }
 
   virtual timespan_t tick_time( double haste ) const
   {
-    warlock_t* p = player -> cast_warlock();
     timespan_t t = warlock_spell_t::tick_time( haste );
 
-    if ( p -> buffs.soulburn -> up() )
+    if ( p() -> buffs.soulburn -> up() )
       t *= 1.0 - 0.5;
 
     return t;
@@ -681,9 +674,8 @@ struct immolate_t : public warlock_spell_t
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-    warlock_t* p = player -> cast_warlock();
 
-    p -> buffs.molten_core -> trigger( 3 );
+    p() -> buffs.molten_core -> trigger( 3 );
   }
 
 };
@@ -771,7 +763,6 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
 
     if ( td -> dots_immolate -> ticking )
@@ -783,12 +774,12 @@ struct incinerate_t : public warlock_spell_t
 
     for ( int i=0; i < 4; i++ )
     {
-      p -> benefits.backdraft[ i ] -> update( i == p -> buffs.backdraft -> check() );
+      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
     }
 
-    if ( p -> buffs.backdraft -> check() )
+    if ( p() -> buffs.backdraft -> check() )
     {
-      p -> buffs.backdraft -> decrement();
+      p() -> buffs.backdraft -> decrement();
     }
   }
 
@@ -804,16 +795,15 @@ struct incinerate_t : public warlock_spell_t
 
   virtual timespan_t execute_time() const
   {
-    warlock_t* p = player -> cast_warlock();
     timespan_t h = warlock_spell_t::execute_time();
 
-    if ( p -> buffs.molten_core -> up() )
+    if ( p() -> buffs.molten_core -> up() )
     {
-      h *= 1.0 + p -> buffs.molten_core -> data().effectN( 3 ).percent();
+      h *= 1.0 + p() -> buffs.molten_core -> data().effectN( 3 ).percent();
     }
-    if ( p -> buffs.backdraft -> up() )
+    if ( p() -> buffs.backdraft -> up() )
     {
-      h *= 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
 
     return h;
@@ -838,28 +828,26 @@ struct soul_fire_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs.soulburn -> check() )
+    if ( p() -> buffs.soulburn -> check() )
     {
-      p -> buffs.soulburn -> expire();
-      if ( p -> set_bonus.tier13_4pc_caster() )
+      p() -> buffs.soulburn -> expire();
+      if ( p() -> set_bonus.tier13_4pc_caster() )
       {
-        p -> resource_gain( RESOURCE_SOUL_SHARD, 1, p -> gains.tier13_4pc );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.tier13_4pc );
       }
     }
   }
 
   virtual timespan_t execute_time() const
   {
-    warlock_t* p = player -> cast_warlock();
     timespan_t t = warlock_spell_t::execute_time();
 
-    if ( p -> buffs.decimation -> up() )
+    if ( p() -> buffs.decimation -> up() )
     {
-      t *= 1.0 - p -> spec.decimation -> effectN( 1 ).percent();
+      t *= 1.0 - p() -> spec.decimation -> effectN( 1 ).percent();
     }
-    if ( p -> buffs.soulburn -> up() )
+    if ( p() -> buffs.soulburn -> up() )
     {
       t = timespan_t::zero();
     }
@@ -899,13 +887,12 @@ struct life_tap_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    double life = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent();
+    double life = player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent();
     double mana = life * data().effectN( 2 ).percent();
-    p -> resource_loss( RESOURCE_HEALTH, life );
-    p -> resource_gain( RESOURCE_MANA, mana, p -> gains.life_tap );
+    player -> resource_loss( RESOURCE_HEALTH, life );
+    player -> resource_gain( RESOURCE_MANA, mana, p() -> gains.life_tap );
   }
 
   virtual bool ready()
@@ -932,13 +919,12 @@ struct summon_pet_t : public warlock_spell_t
 private:
   void _init_summon_pet_t( const std::string& pet_name )
   {
-    warlock_t* p = player -> cast_warlock();
     harmful = false;
 
-    pet = p -> find_pet( pet_name );
+    pet = player -> find_pet( pet_name );
     if ( ! pet )
     {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p -> name(), pet_name.c_str() );
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
       sim -> cancel();
     }
   }
@@ -975,18 +961,15 @@ struct summon_main_pet_t : public summon_pet_t
 
   virtual void schedule_execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::schedule_execute();
 
-    if ( p -> pets.active )
-      p -> pets.active -> dismiss();
+    if ( p() -> pets.active )
+      p() -> pets.active -> dismiss();
   }
 
   virtual bool ready()
   {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( p -> pets.active == pet )
+    if ( p() -> pets.active == pet )
       return false;
 
     return summon_pet_t::ready();
@@ -994,9 +977,7 @@ struct summon_main_pet_t : public summon_pet_t
 
   virtual timespan_t execute_time() const
   {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( p -> buffs.soulburn -> up() )
+    if ( p() -> buffs.soulburn -> up() )
       return timespan_t::zero();
 
     return warlock_spell_t::execute_time();
@@ -1004,10 +985,10 @@ struct summon_main_pet_t : public summon_pet_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     summon_pet_t::execute();
-    if ( p -> buffs.soulburn -> check() )
-      p -> buffs.soulburn -> expire();
+
+    if ( p() -> buffs.soulburn -> check() )
+      p() -> buffs.soulburn -> expire();
   }
 };
 
@@ -1081,12 +1062,10 @@ struct summon_infernal_t : public summon_pet_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
     if ( infernal_awakening )
       infernal_awakening -> execute();
 
-    p -> cooldowns.doomguard -> start();
+    p() -> cooldowns.doomguard -> start();
 
     summon_pet_t::execute();
   }
@@ -1109,9 +1088,7 @@ struct summon_doomguard2_t : public summon_pet_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
-    p -> cooldowns.infernal -> start();
+    p() -> cooldowns.infernal -> start();
 
     summon_pet_t::execute();
   }
@@ -1135,12 +1112,10 @@ struct summon_doomguard_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
     consume_resource();
     update_ready();
 
-    p -> cooldowns.infernal -> start();
+    p() -> cooldowns.infernal -> start();
 
     summon_doomguard2 -> execute();
   }
@@ -1159,10 +1134,9 @@ struct metamorphosis_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
     warlock_spell_t::execute();
 
-    p -> buffs.metamorphosis -> trigger( 1, p -> composite_mastery() );
+    p() -> buffs.metamorphosis -> trigger( 1, player -> composite_mastery() );
   }
 };
 
@@ -1258,17 +1232,16 @@ struct soulburn_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_t* p = player -> cast_warlock();
-
-    if ( p -> use_pre_soulburn || p -> in_combat )
+    if ( p() -> use_pre_soulburn || player -> in_combat )
     {
-      p -> buffs.soulburn -> trigger();
-      p -> buffs.tier13_4pc_caster -> trigger();
+      p() -> buffs.soulburn -> trigger();
+      p() -> buffs.tier13_4pc_caster -> trigger();
       // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
-      if ( ! p -> in_combat )
+      if ( ! player -> in_combat )
       {
-        p -> buffs.soulburn -> extend_duration( p, timespan_t::from_seconds( -3 ) );
-        if ( p -> buffs.tier13_4pc_caster -> check() ) p -> buffs.tier13_4pc_caster -> extend_duration( p, timespan_t::from_seconds( -3 ) );
+        p() -> buffs.soulburn -> extend_duration( player, timespan_t::from_seconds( -3 ) );
+        if ( p() -> buffs.tier13_4pc_caster -> check() )
+          p() -> buffs.tier13_4pc_caster -> extend_duration( player, timespan_t::from_seconds( -3 ) );
       }
     }
 
@@ -1338,12 +1311,11 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    warlock_t* p = player -> cast_warlock();
 
-    if ( p -> buffs.soulburn -> check() )
+    if ( p() -> buffs.soulburn -> check() )
     {
       // Trigger Multiple Corruptions
-      p -> buffs.soulburn -> expire();
+      p() -> buffs.soulburn -> expire();
     }
   }
 };
@@ -2062,7 +2034,10 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
 void warlock_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
-  warlock_t* p = source -> cast_warlock();
+
+  warlock_t* p = dynamic_cast<warlock_t*>( source );
+  assert( p );
+
   use_pre_soulburn       = p -> use_pre_soulburn;
 }
 

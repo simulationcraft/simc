@@ -4833,15 +4833,15 @@ struct wait_until_ready_t : public wait_fixed_t
 
 // Wait For Cooldown Action =================================================
 
-wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const char* cd_name ) :
-  wait_action_base_t( player, ( "wait_for_" + std::string( cd_name ) ).c_str() ),
+wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :
+  wait_action_base_t( player, "wait_for_" + cd_name ),
   wait_cd( player -> get_cooldown( cd_name ) ), a( player -> find_action( cd_name ) )
 {
   assert( a );
 }
 
 timespan_t wait_for_cooldown_t::execute_time() const
-{ return wait_cd -> remains(); }
+{ assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
 
 // Use Item Action ==========================================================
 

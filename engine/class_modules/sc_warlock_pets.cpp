@@ -243,11 +243,11 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   firebolt_t( imp_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
   {
-    warlock_t*  o = p -> owner -> cast_warlock();
 
     direct_power_mod = 0.618; // tested in-game as of 2011/05/10
 
-    if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
+    if ( p -> owner -> bugs )
+      min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
 };
@@ -337,8 +337,8 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
   virtual void player_buff()
   {
     warlock_pet_actions::warlock_pet_spell_t::player_buff();
-    warlock_t*  o = player -> cast_pet() -> owner -> cast_warlock();
-    warlock_targetdata_t* td = targetdata_t::get( o, target ) -> cast_warlock();
+
+    warlock_targetdata_t* td = targetdata_t::get( p() -> o(), target ) -> cast_warlock();
 
     player_multiplier *= 1.0 + td -> active_dots() * data().effectN( 3 ).percent();
   }
@@ -354,23 +354,21 @@ struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
   lash_of_pain_t( succubus_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Lash of Pain" )
   {
-    warlock_t*  o     = p -> owner -> cast_warlock();
-
     direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
 
-    if ( o -> level == 85 )
+    if ( p -> owner -> level == 85 )
     {
       // only tested at level 85
       base_dd_min = 283;
       base_dd_max = 314;
     }
 
-    if ( o -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
+    if ( p -> owner -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   virtual void player_buff()
   {
-    warlock_t* o = player -> cast_pet() -> owner -> cast_warlock();
+    warlock_t* o = p() -> o();
     warlock_pet_actions::warlock_pet_spell_t::player_buff();
 
     if ( o -> race == RACE_ORC )
@@ -709,8 +707,7 @@ void warlock_pet_t::dismiss()
   pet_t::dismiss();
   /* Commenting this out for now - we never dismiss the real pet during combat
   anyway, and we don't want to accidentally turn off DP when guardians are dismissed
-  warlock_t*  o = owner -> cast_warlock();
-  if ( o -> talents.demonic_pact -> rank() )
+  if ( o() -> talents.demonic_pact -> rank() )
   sim -> auras.demonic_pact -> expire();
    */
 }
@@ -767,16 +764,16 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 
 void warlock_main_pet_t::summon( timespan_t duration )
 {
-  warlock_t* o = owner -> cast_warlock();
-  o -> pets.active = this;
+  o() -> pets.active = this;
+
   warlock_pet_t::summon( duration );
 }
 
 void warlock_main_pet_t::dismiss()
 {
-  warlock_t* o = owner -> cast_warlock();
   warlock_pet_t::dismiss();
-  o -> pets.active = 0;
+
+  o() -> pets.active = 0;
 }
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
@@ -790,11 +787,9 @@ double warlock_main_pet_t::composite_player_multiplier( school_type_e school, co
 {
   double m = warlock_pet_t::composite_player_multiplier( school, a );
 
-  warlock_t* o = owner -> cast_warlock();
+  double mastery_value = o() -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
 
-  double mastery_value = o -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
-
-  m *= 1.0 + ( o -> mastery_spells.master_demonologist -> ok() * o -> composite_mastery() * mastery_value / 10000.0 );
+  m *= 1.0 + ( o() -> mastery_spells.master_demonologist -> ok() * owner -> composite_mastery() * mastery_value / 10000.0 );
 
   return m;
 }
@@ -1081,16 +1076,15 @@ double doomguard_pet_t::composite_player_multiplier( school_type_e school, const
 
   double m = player_t::composite_player_multiplier( school, a );
 
-  warlock_t* o = owner -> cast_warlock();
 
-  if ( o -> race == RACE_ORC )
+  if ( owner -> race == RACE_ORC )
   {
     m  *= 1.05;
   }
 
-  double mastery_value = o -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
+  double mastery_value = o() -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
 
-  double mastery_gain = ( o -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
+  double mastery_gain = ( o() -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
 
   m *= 1.0 + mastery_gain;
 
