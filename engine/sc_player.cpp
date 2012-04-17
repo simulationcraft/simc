@@ -1625,26 +1625,26 @@ void player_t::init_buffs()
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
 
   // MOP Debuffs
-  debuffs.slowed_casting           = buff_creator_t( this, "slowed_casting", find_spell( 115803 ) );
-  debuffs.slowed_casting -> current_value = debuffs.slowed_casting -> data().effectN( 1 ).percent();
+  debuffs.slowed_casting           = buff_creator_t( this, "slowed_casting", find_spell( 115803 ) )
+                                     .default_value( std::fabs( find_spell( 115803 ) -> effectN( 1 ).percent() ) );
 
-  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) );
-  debuffs.magic_vulnerability -> current_value = debuffs.magic_vulnerability -> data().effectN( 1 ).percent();
+  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) )
+                                    .default_value( find_spell( 104225 ) -> effectN( 1 ).percent() );
 
-  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) );
-  debuffs.physical_vulnerability -> current_value = debuffs.physical_vulnerability -> data().effectN( 1 ).percent();
+  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) )
+                                    .default_value( find_spell( 81326 ) -> effectN( 1 ).percent() );
 
-  debuffs.ranged_vulnerability    = buff_creator_t( this, "ranged_vulnerability", find_spell( 1130 ) );
-  debuffs.ranged_vulnerability -> current_value = debuffs.ranged_vulnerability -> data().effectN( 2 ).percent();
+  debuffs.ranged_vulnerability    = buff_creator_t( this, "ranged_vulnerability", find_spell( 1130 ) )
+                                    .default_value( find_spell( 1130 ) -> effectN( 2 ).percent() );
 
-  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) );
-  debuffs.mortal_wounds -> current_value = debuffs.mortal_wounds -> data().effectN( 1 ).percent();
+  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
+                                    .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
 
-  debuffs.weakened_armor          = buff_creator_t( this, "weakened_armor", find_spell( 113746 ) );
-  debuffs.weakened_armor -> current_value = debuffs.weakened_armor -> data().effectN( 1 ).percent();
+  debuffs.weakened_armor          = buff_creator_t( this, "weakened_armor", find_spell( 113746 ) )
+                                    .default_value( std::fabs( find_spell( 113746 ) -> effectN( 1 ).percent() ) );
 
-  debuffs.weakened_blows          = buff_creator_t( this, "weakened_blows", find_spell( 115798 ) );
-  debuffs.weakened_blows -> current_value = debuffs.weakened_blows -> data().effectN( 1 ).percent();
+  debuffs.weakened_blows          = buff_creator_t( this, "weakened_blows", find_spell( 115798 ) )
+                                    .default_value( std::fabs( find_spell( 115798 ) -> effectN( 1 ).percent() ) );
 }
 
 // player_t::init_gains =====================================================
@@ -2129,7 +2129,7 @@ double player_t::composite_armor() const
   a += bonus_armor;
 
   if ( debuffs.weakened_armor -> check() )
-    a *= 1.0 + debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
+    a *= 1.0 - debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
   return a;
 }
@@ -2422,7 +2422,7 @@ double player_t::composite_player_multiplier( const school_type_e school, const 
   if ( type != PLAYER_GUARDIAN )
   {
     if ( school == SCHOOL_PHYSICAL && debuffs.weakened_blows -> check() )
-      m *= 1.0 + debuffs.weakened_blows -> value();
+      m *= 1.0 - debuffs.weakened_blows -> value();
 
     if ( buffs.tricks_of_the_trade -> check() )
     {
