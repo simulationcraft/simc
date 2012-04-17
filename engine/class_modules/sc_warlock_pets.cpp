@@ -941,7 +941,6 @@ felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner ) :
 
   action_list_str = "snapshot_stats";
   action_list_str += "/shadow_bite";
-  action_list_str += "/wait_for_shadow_bite";
 }
 
 void felhunter_pet_t::init_base()
@@ -962,7 +961,6 @@ action_t* felhunter_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
   if ( name == "shadow_bite" ) return new felhunter_spells::shadow_bite_t( this );
-  if ( name == "wait_for_shadow_bite" ) return new wait_for_cooldown_t( this, "shadow_bite" );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
