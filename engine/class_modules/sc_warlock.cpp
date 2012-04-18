@@ -157,7 +157,7 @@ public:
 
   // warlock_spell_t::composite_target_ta_multiplier ===================================
 
-  virtual double composite_target_ta_multiplier( const player_t* t ) const
+  virtual double composite_target_ta_multiplier( player_t* t ) const
   {
     double m = 1.0;
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
@@ -170,7 +170,7 @@ public:
     return spell_t::composite_target_ta_multiplier( t ) * m;
   }
 
-  virtual double composite_target_da_multiplier( const player_t* t ) const
+  virtual double composite_target_da_multiplier( player_t* t ) const
   {
     double m = 1.0;
     warlock_targetdata_t* td = targetdata() -> cast_warlock();
