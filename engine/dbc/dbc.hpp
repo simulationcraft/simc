@@ -15,7 +15,7 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 
 // DBC related classes ======================================================
 
-struct dbc_t;
+class dbc_t;
 
 // SpellPower.dbc
 struct spellpower_data_t
