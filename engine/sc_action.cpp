@@ -786,7 +786,7 @@ double action_t::calculate_direct_damage( result_type_e r, int chain_target, uns
 
 void action_t::consume_resource()
 {
-  if ( current_resource() == RESOURCE_NONE ) return;
+  if ( current_resource() == RESOURCE_NONE || base_costs[ current_resource() ] == 0 || proc ) return;
 
   resource_consumed = cost();
 

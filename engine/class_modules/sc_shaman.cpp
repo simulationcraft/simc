@@ -299,7 +299,7 @@ struct shaman_t : public player_t
   virtual shaman_targetdata_t* new_targetdata( player_t* target )
   { return new shaman_targetdata_t( this, target ); }
 
-  shaman_targetdata_t* get_target( player_t* target )
+  shaman_targetdata_t* targetdata( player_t* target )
   { return debug_cast<shaman_targetdata_t*>( targetdata_t::get( this, target ) ); }
 
   virtual void      init_spells();
@@ -1207,7 +1207,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        shaman_targetdata_t* td = p() -> get_target( sim -> actor_list[ i ] );
+        shaman_targetdata_t* td = p() -> targetdata( sim -> actor_list[ i ] );
 
         if ( td -> dots_flame_shock -> ticking )
           continue;
@@ -1863,7 +1863,7 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = p() -> get_target( state -> target );
+      shaman_targetdata_t* td = p() -> targetdata( state -> target );
       td -> debuffs_searing_flames -> expire();
       if ( p() -> active_searing_flames_dot )
         p() -> active_searing_flames_dot -> dot() -> cancel();
@@ -1940,7 +1940,7 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = p() -> get_target( state -> target );
+      shaman_targetdata_t* td = p() -> targetdata( state -> target );
       td -> debuffs_stormstrike -> trigger();
 
       stormstrike_mh -> execute();
@@ -1968,7 +1968,7 @@ double shaman_spell_t::cost_reduction() const
   if ( harmful && callbacks && ! proc && p() -> buff.elemental_focus -> up() )
     cr += p() -> buff.elemental_focus -> data().effectN( 1 ).percent();
 
-  if ( base_execute_time == timespan_t::zero() )
+  if ( ( execute_time() == timespan_t::zero() && ! harmful ) || harmful || is_totem )
     cr += p() -> specialization.mental_quickness -> effectN( 2 ).percent();
 
   return cr;
@@ -1978,7 +1978,7 @@ double shaman_spell_t::cost_reduction() const
 
 double shaman_spell_t::cost() const
 {
-  double    c = spell_t::cost();
+  double c = spell_t::cost();
 
   c *= 1.0 + cost_reduction();
 
@@ -2301,7 +2301,7 @@ struct fire_nova_t : public shaman_spell_t
       if ( e -> sleeping || ! e -> is_enemy() )
         continue;
 
-      shaman_targetdata_t* td = p() -> get_target( e );
+      shaman_targetdata_t* td = p() -> targetdata( e );
       if ( td -> dots_flame_shock -> ticking )
         t.push_back( e );
     }
