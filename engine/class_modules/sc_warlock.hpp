@@ -129,6 +129,7 @@ struct warlock_t : public player_t
     gain_t* mana_feed;
     gain_t* tier13_4pc;
     gain_t* nightfall;
+    gain_t* drain_soul;
   } gains;
 
   // Uptimes

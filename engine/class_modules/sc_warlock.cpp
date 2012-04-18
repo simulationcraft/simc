@@ -155,7 +155,7 @@ public:
   warlock_t* p() const
   { return static_cast<warlock_t*>( player ); }
 
-  // warlock_spell_t::total_td_multiplier ===================================
+  // warlock_spell_t::composite_target_ta_multiplier ===================================
 
   virtual double composite_target_ta_multiplier( const player_t* t ) const
   {
@@ -168,6 +168,18 @@ public:
     }
 
     return spell_t::composite_target_ta_multiplier( t ) * m;
+  }
+
+  virtual timespan_t tick_time( double haste ) const
+  {
+    timespan_t t = spell_t::tick_time( haste );
+
+    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+
+    if ( td -> dots_malefic_grasp -> ticking )
+      t /= ( 1.0 + td -> dots_malefic_grasp -> action -> data().effectN( 2 ).percent() );
+
+    return t;
   }
 
   // trigger_soul_leech =====================================================
@@ -191,6 +203,26 @@ public:
     if ( ( result != RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
     if ( s -> target -> health_percentage() > p -> spec.decimation -> effectN( 2 ).base_value() ) return;
     p -> buffs.decimation -> trigger();
+  }
+
+  // trigger_malefic_grasp =====================================================
+
+  static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
+  {
+    if ( dot -> ticking )
+    {
+      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time ) 
+                                     / ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
+    }
+  }
+
+  static void stop_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
+  {
+    if ( dot -> ticking )
+    {
+      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time ) 
+                                     * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
+    }
   }
 };
 
@@ -573,12 +605,19 @@ struct drain_soul_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier( s );
 
-    if ( target -> health_percentage() < data().effectN( 3 ).base_value() )
+    if ( s -> target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
       m *= 2.0;
     }
 
     return m;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
   }
 };
 
@@ -613,8 +652,6 @@ struct haunt_t : public warlock_spell_t
   haunt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Haunt" )
   {
-    direct_power_mod = 0.5577;
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new haunt_t( p, true );
@@ -1181,8 +1218,7 @@ struct fel_flame_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       warlock_targetdata_t* td = targetdata() -> cast_warlock();
-      td -> dots_immolate            -> extend_duration( 2, true );
-      td -> dots_unstable_affliction -> extend_duration( 2, true );
+      td -> dots_corruption -> extend_duration( 2, true );
     }
   }
 };
@@ -1195,8 +1231,35 @@ struct malefic_grasp_t : public warlock_spell_t
     warlock_spell_t( p, "Malefic Grasp" )
   {
     channeled    = true;
-    hasted_ticks = true; // informative
+    hasted_ticks = false;
     may_crit     = false;
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+    
+    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+
+    stop_malefic_grasp( this, td -> dots_agony );
+    stop_malefic_grasp( this, td -> dots_corruption );
+    stop_malefic_grasp( this, td -> dots_doom );
+    stop_malefic_grasp( this, td -> dots_unstable_affliction );
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+
+    if ( result_is_hit() )
+    {
+      start_malefic_grasp( this, td -> dots_agony );
+      start_malefic_grasp( this, td -> dots_corruption );
+      start_malefic_grasp( this, td -> dots_doom );
+      start_malefic_grasp( this, td -> dots_unstable_affliction );
+    }
   }
 };
 
@@ -1716,7 +1779,8 @@ void warlock_t::init_gains()
   gains.mana_feed         = get_gain( "mana_feed"  );
   gains.soul_leech        = get_gain( "soul_leech" );
   gains.tier13_4pc        = get_gain( "tier13_4pc" );
-  gains.tier13_4pc        = get_gain( "nightfall"  );
+  gains.nightfall         = get_gain( "nightfall"  );
+  gains.drain_soul        = get_gain( "drain_soul"  );
 }
 
 // warlock_t::init_uptimes ==================================================
