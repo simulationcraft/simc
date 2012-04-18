@@ -369,6 +369,7 @@ public:
     min_interval      = player -> get_cooldown( "min_interval_" + name_str );
     can_cancel_shadowform = p() -> autoUnshift != 0;
     castable_in_shadowform = false;
+    stateless         = true;
   }
 
   priest_targetdata_t* td() const
@@ -391,11 +392,9 @@ public:
      }
   }
 
-  virtual void player_buff()
+  virtual double composite_da_multiplier( const action_state_t* s ) const
   {
-    absorb_t::player_buff();
-
-    player_multiplier *= 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 );
+    return absorb_t::composite_da_multiplier( s ) * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
   }
 
   virtual double cost() const
@@ -3140,23 +3139,21 @@ struct power_word_shield_t : public priest_absorb_t
     return c;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
 
-    t -> buffs.weakened_soul -> trigger();
+    s -> target -> buffs.weakened_soul -> trigger();
 
     // Glyph
     if ( glyph_pws )
     {
-      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * travel_dmg;
-      glyph_pws -> target = t;
+      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
+      glyph_pws -> target = s -> target;
       glyph_pws -> execute();
-
-      travel_dmg -= glyph_pws -> base_dd_min;
     }
 
-    td() -> buffs_power_word_shield -> trigger( 1, travel_dmg );
-    stats -> add_result( travel_dmg, travel_dmg, ABSORB, impact_result );
+    td() -> buffs_power_word_shield -> trigger( 1, s -> result_amount );
+    stats -> add_result( s -> result_amount, s -> result_amount, ABSORB, s -> result );
   }
 
   virtual bool ready()
