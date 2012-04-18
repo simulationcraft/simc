@@ -852,11 +852,11 @@ void SimulationCraftWindow::createBestInSlotTab()
 #ifndef Q_WS_MAC
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
 #else
-    CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(), 
-                                                CFStringCreateWithCString( NULL, 
-                                                                           tprofileList[ i ].toAscii().constData(), 
-                                                                           kCFStringEncodingUTF8 ), 
-                                                0, 
+    CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
+                                                CFStringCreateWithCString( NULL,
+                                                                           tprofileList[ i ].toAscii().constData(),
+                                                                           kCFStringEncodingUTF8 ),
+                                                0,
                                                 CFSTR( "profiles" ) );
     QDir dir;
     if ( fileRef )
@@ -1284,12 +1284,13 @@ void ImportThread::importBattleNet()
 
 void ImportThread::importCharDev()
 {
-  QStringList tokens = url.split( QRegExp( "[?&=:/.]" ), QString::SkipEmptyParts );
-  int count = tokens.count();
-  if ( count > 0 )
+  int last_slash = url.lastIndexOf( '/' );
+  int first_dash = url.indexOf( '-', last_slash );
+  if ( last_slash > 0 && first_dash > 0 )
   {
+    int len = first_dash - last_slash - 1;
     // Win7/x86_64 workaround
-    std::string c = tokens[ count-1 ].toUtf8().constData();
+    std::string c = url.mid( last_slash + 1, len ).toUtf8().constData();
     player = chardev_t::download_player( sim, c );
   }
 }

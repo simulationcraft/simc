@@ -75,10 +75,7 @@ player_t* chardev_t::download_player( sim_t* sim,
   std::string name_str, race_str, type_str;
 
   if ( ! js_t::get_value( name_str, profile_js, "0/0" ) )
-  {
-    name_str = "chardev_";
-    name_str += id;
-  }
+    name_str = "chardev_" + id;
 
   if ( ! js_t::get_value( race_str, profile_js, "0/2/1" ) ||
        ! js_t::get_value( type_str, profile_js, "0/3/1" ) )
@@ -87,7 +84,6 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  armory_t::format( name_str );
   armory_t::format( type_str );
   armory_t::format( race_str );
 
@@ -100,7 +96,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  p -> origin_str = "http://chardev.org/?profile=" + id;
+  p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
   http_t::format( p -> origin_str );
 
   js_node_t*        gear_root = js_t::get_child( profile_js, "1" );
