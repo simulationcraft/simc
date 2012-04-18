@@ -493,27 +493,82 @@ expr_t* expr_t::parse( action_t* action,
 
 #ifdef UNIT_TEST
 
+namespace {
+expr_t* parse_expression( const char* arg )
+{
+  std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, arg );
+  expression_t::convert_to_unary( tokens );
+  expression_t::print_tokens( tokens, 0 );
+
+  if ( expression_t::convert_to_rpn( tokens ) )
+  {
+    puts( "rpn:" );
+    expression_t::print_tokens( tokens, 0 );
+
+    return build_expression_tree( 0, tokens );
+  }
+
+  return 0;
+}
+
+void time_test( expr_t* expr, uint64_t n )
+{
+  double value = 0;
+  const int64_t start = util_t::milliseconds();
+  for ( uint64_t i = 0; i < n ; ++i )
+    value = expr -> eval();
+  const int64_t stop = util_t::milliseconds();
+  printf( "evaluate: %f in %.4f seconds\n", value, ( stop - start ) / 1000.0 );
+}
+}
+
+unsigned spell_data_t::get_school_mask(school_type_e) { return 0; }
+
+void sim_t::cancel() {}
+
+int sim_t::errorf( const char *format, ... )
+{
+  va_list ap;
+  va_start( ap, format );
+  int result = vfprintf( stderr, format, ap );
+  va_end( ap );
+  return result;
+}
+
+void log_t::output( sim_t*, const char *format, ... )
+{
+  va_list ap;
+  va_start( ap, format );
+  vfprintf( stdout, format, ap );
+  va_end( ap );
+}
+
 int main( int argc, char** argv )
 {
+  uint64_t n_evals = 1;
+
   for ( int i=1; i < argc; i++ )
   {
-    std::vector<expr_token_t> tokens = parse_tokens( 0, argv[ i ] );
-    convert_to_unary( tokens );
-    print_tokens( tokens );
-
-    if ( convert_to_rpn( tokens ) )
+    if ( util_t::str_compare_ci( argv[ i ], "-n" ) )
     {
-      printf( "rpn:\n" );
-      print_tokens( tokens );
+      ++i;
+      assert( i < argc );
+      std::istringstream is( argv[ i ] );
+      is >> n_evals;
+      assert( n_evals > 0 );
+      continue;
+    }
 
-      expr_t* expr = build_expression_tree( 0, tokens );
-
-      if ( expr )
+    expr_t* expr = parse_expression( argv[ i ] );
+    if ( expr )
+    {
+      if ( n_evals == 1 )
       {
-        printf( "evaluate:\n" );
-        std::string buffer;
+        puts( "evaluate:" );
         printf( "%f\n", expr -> eval() );
       }
+      else
+        time_test( expr, n_evals );
     }
   }
 
