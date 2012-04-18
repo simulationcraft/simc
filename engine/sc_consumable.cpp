@@ -12,6 +12,32 @@
 // ==========================================================================
 // Flask
 // ==========================================================================
+namespace ft {
+struct flask_data_t
+{
+  flask_type_e ft;
+  stat_type_e st;
+  double stat_amount;
+  double mixology_stat_amount;
+};
+
+const flask_data_t flask_data[] =
+{
+  // cataclysm
+  { FLASK_DRACONIC_MIND,    STAT_INTELLECT,  300,  380 },
+  { FLASK_FLOWING_WATER,    STAT_SPIRIT,     300,  380 },
+  { FLASK_STEELSKIN,        STAT_STAMINA,    300,  380 },
+  { FLASK_TITANIC_STRENGTH, STAT_STRENGTH,   300,  380 },
+  { FLASK_WINDS,            STAT_AGILITY,    300,  380 },
+  // mop
+  // FIXME: add correct mixology values
+  { FLASK_WARM_SUN,         STAT_INTELLECT, 1000, 1000 },
+  { FLASK_FALLING_LEAVES,   STAT_SPIRIT,    1000, 1000 },
+  { FLASK_EARTH,            STAT_STAMINA,   1500, 1500 },
+  { FLASK_WINTERS_BITE,     STAT_STRENGTH,  1000, 1000 },
+  { FLASK_SPRING_BLOSSOMS,  STAT_AGILITY,   1000, 1000 }
+};
+}
 
 struct flask_t : public action_t
 {
@@ -47,112 +73,27 @@ struct flask_t : public action_t
     player_t* p = player;
     if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", p -> name(), util_t::flask_type_string( type ) );
     p -> flask = type;
-    double intellect = 0, stamina = 0;
-    switch ( type )
+
+    for ( size_t i = 0; i < sizeof_array( ft::flask_data ); ++i )
     {
-    case FLASK_BLINDING_LIGHT:
-      p -> spell_power[ SCHOOL_ARCANE ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      p -> spell_power[ SCHOOL_HOLY   ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      p -> spell_power[ SCHOOL_NATURE ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      break;
-    case FLASK_DISTILLED_WISDOM:
-      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 85 : 65;
-      p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
-      break;
-    case FLASK_DRACONIC_MIND:
-      intellect = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300;
-      p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
-      break;
-    case FLASK_ENDLESS_RAGE:
-      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 244 : 180 );
-      break;
-    case FLASK_ENHANCEMENT:
-      if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
+      ft::flask_data_t d = ft::flask_data[ i ];
+      if ( type == d.ft )
       {
-        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+        double amount = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
+        p -> stat_gain( d.st, amount, gain, this );
+
+        if ( d.st == STAT_STAMINA )
         {
-          p -> stat_gain( STAT_STRENGTH, 80 );
-        }
-        else
-        {
-          p -> stat_gain( STAT_AGILITY, 80 );
+          // Cap Health for stamina flasks if they are used outside of combat
+          if ( ! player -> in_combat )
+          {
+            if ( amount > 0 )
+              player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
+          }
         }
       }
-      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
-      {
-        intellect = 80; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
-      }
-      else
-      {
-        p -> stat_gain( STAT_AGILITY, 80 );
-      }
-      break;
-    case FLASK_FLOWING_WATER:
-      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
-      break;
-    case FLASK_FROST_WYRM:
-      p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 172 : 125 );
-      break;
-    case FLASK_MIGHTY_RESTORATION:
-      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 109 : 62 );
-      break;
-    case FLASK_NORTH:
-      if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
-      {
-        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
-        {
-          p -> stat_gain( STAT_STRENGTH, 40 );
-        }
-        else
-        {
-          p -> stat_gain( STAT_AGILITY, 40 );
-        }
-      }
-      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
-      {
-        intellect = 40; p -> stat_gain( STAT_INTELLECT, intellect, gain, this );
-      }
-      else
-      {
-        p -> stat_gain( STAT_AGILITY, 40 );
-      }
-      break;
-    case FLASK_PURE_DEATH:
-      p -> spell_power[ SCHOOL_FIRE   ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      p -> spell_power[ SCHOOL_FROST  ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      p -> spell_power[ SCHOOL_SHADOW ] += ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 103 : 80;
-      break;
-    case FLASK_PURE_MOJO:
-      p -> stat_gain( STAT_SPIRIT, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 137 : 90 );
-      break;
-    case FLASK_RELENTLESS_ASSAULT:
-      p -> stat_gain( STAT_ATTACK_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 160 : 120 );
-      break;
-    case FLASK_SUPREME_POWER:
-      p -> stat_gain( STAT_SPELL_POWER, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 93 : 70 );
-      break;
-    case FLASK_STEELSKIN:
-      stamina = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300;
-      p -> stat_gain( STAT_STAMINA, stamina );
-      break;
-    case FLASK_TITANIC_STRENGTH:
-      p -> stat_gain( STAT_STRENGTH, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
-      break;
-    case FLASK_WINDS:
-      p -> stat_gain( STAT_AGILITY, ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? 380 : 300 );
-      break;
-    default: assert( 0 ); break;
     }
 
-    // Cap Health / Mana for flasks if they are used outside of combat
-    if ( ! player -> in_combat )
-    {
-      if ( intellect > 0 )
-        player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] - player -> resources.current[ RESOURCE_MANA ], gain, this );
-
-      if ( stamina > 0 )
-        player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
-    }
   }
 
   virtual bool ready()

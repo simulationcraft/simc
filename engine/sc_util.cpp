@@ -1144,23 +1144,19 @@ const char* util_t::flask_type_string( flask_type_e flask )
   switch ( flask )
   {
   case FLASK_NONE:               return "none";
-  case FLASK_BLINDING_LIGHT:     return "blinding_light";
-  case FLASK_DISTILLED_WISDOM:   return "distilled_wisdom";
-  case FLASK_DRACONIC_MIND:      return "draconic_mind";
-  case FLASK_ENDLESS_RAGE:       return "endless_rage";
-  case FLASK_ENHANCEMENT:        return "enhancement";
-  case FLASK_FLOWING_WATER:      return "flowing_water";
-  case FLASK_FROST_WYRM:         return "frost_wyrm";
-  case FLASK_MIGHTY_RESTORATION: return "mighty_restoration";
-  case FLASK_NORTH:              return "north";
-  case FLASK_PURE_DEATH:         return "pure_death";
-  case FLASK_PURE_MOJO:          return "pure_mojo";
-  case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
-  case FLASK_SUPREME_POWER:      return "supreme_power";
-  case FLASK_STEELSKIN:          return "steelskin";
-  case FLASK_TITANIC_STRENGTH:   return "titanic_strength";
-  case FLASK_WINDS:              return "winds";
-  default:                       return "unknown";
+  // cataclysm
+  case FLASK_DRACONIC_MIND:     return "draconic_mind";
+  case FLASK_FLOWING_WATER:     return "flowing_water";
+  case FLASK_STEELSKIN:         return "steelskin";
+  case FLASK_TITANIC_STRENGTH:  return "titanic_strength";
+  case FLASK_WINDS:             return "winds";
+  // mop
+  case FLASK_WARM_SUN:          return "warm_sun";
+  case FLASK_FALLING_LEAVES:    return "falling_leaves";
+  case FLASK_EARTH:             return "earth";
+  case FLASK_WINTERS_BITE:      return "winters_bite";
+  case FLASK_SPRING_BLOSSOMS:   return "spring_blossoms";
+  default:                      return "unknown";
   }
 }
 
