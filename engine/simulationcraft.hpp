@@ -4890,7 +4890,7 @@ struct stats_t
     double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
 
     stats_results_t( sim_t* );
-    void analyze( const stats_t& );
+    void analyze( const stats_t&, bool tick_result = false );
     void merge( const stats_results_t& other );
     void combat_end();
   };

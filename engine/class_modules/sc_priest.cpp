@@ -3844,13 +3844,24 @@ void priest_t::init_actions()
         buffer += "/vampiric_embrace";
       */
 
+      if ( find_talent_spell( "Archangel" ) -> ok() )
+        buffer += "/archangel";
+
+      if ( find_class_spell( "Mind Blast" ) -> ok() && find_class_spell( "Mind Spike" ) -> ok() )
+        buffer += "/mind_blast,if=buff.mind_spike.react>=1";
+
+
       if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
-        buffer += "/shadow_word_death,if=target.health.pct<=20|buff.shadow_of_death.react";
+      {
+        buffer += "/shadow_word_death,if=target.health.pct<=20";
+        if ( find_talent_spell( "Divine Insight" ) -> ok() )
+          buffer += "|buff.shadow_of_death.react";
+      }
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
 
-      if ( find_class_spell( "Mind Spike" ) -> ok() )
+      if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness, Comes Light" ) -> ok() )
         buffer += "/mind_spike,if=buff.surge_of_darkness.react";
 
       buffer += init_use_racial_actions();
@@ -3858,20 +3869,17 @@ void priest_t::init_actions()
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         buffer += "/power_infusion";
 
-      if ( find_talent_spell( "Archangel" ) -> ok() )
-        buffer += "/archangel";
-
       if ( find_class_spell( "Vampiric Touch" ) -> ok() )
         buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
 
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
-        buffer += "/shadowy_apparition,if=shadow_orb=3";
-
       if ( find_class_spell( "Shadowfiend" ) -> ok() )
         buffer += "/shadow_fiend";
+
+      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
+        buffer += "/shadowy_apparition,if=shadow_orb=3";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
         buffer += "/mind_flay";
