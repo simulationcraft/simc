@@ -132,7 +132,7 @@ struct shaman_t : public player_t
   // Cooldowns
   struct
   {
-    cooldown_t* elemental_mastery;
+    cooldown_t* earth_elemental;
     cooldown_t* fire_elemental;
     cooldown_t* lava_burst;
     cooldown_t* shock;
@@ -202,6 +202,7 @@ struct shaman_t : public player_t
     const spell_data_t* flurry;
     const spell_data_t* mental_quickness;
     const spell_data_t* primal_wisdom;
+    const spell_data_t* searing_flames;
     const spell_data_t* shamanistic_rage;
     const spell_data_t* static_shock;
     const spell_data_t* maelstrom_weapon;
@@ -279,12 +280,12 @@ struct shaman_t : public player_t
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
 
     // Cooldowns
-    cooldown.elemental_mastery    = get_cooldown( "elemental_mastery"    );
-    cooldown.fire_elemental       = get_cooldown( "fire_elemental_totem" );
-    cooldown.lava_burst           = get_cooldown( "lava_burst"           );
-    cooldown.shock                = get_cooldown( "shock"                );
-    cooldown.strike               = get_cooldown( "strike"               );
-    cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"      );
+    cooldown.earth_elemental      = get_cooldown( "earth_elemental_totem" );
+    cooldown.fire_elemental       = get_cooldown( "fire_elemental_totem"  );
+    cooldown.lava_burst           = get_cooldown( "lava_burst"            );
+    cooldown.shock                = get_cooldown( "shock"                 );
+    cooldown.strike               = get_cooldown( "strike"                );
+    cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
     // Weapon Enchants
     windfury_mh    = 0;
@@ -448,6 +449,9 @@ struct shaman_spell_t : public spell_t
 
     if ( p() -> buff.tier13_4pc_healer -> up() )
       h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> data().effect1().percent() );
+    
+    if ( p() -> talent.ancestral_swiftness -> ok() )
+      h *= 1.0 / 1.05;
 
     return h;
   }
@@ -2210,6 +2214,33 @@ struct elemental_mastery_t : public shaman_spell_t
   }
 };
 
+// Call of the Elements Spell ===============================================
+
+struct call_of_the_elements_t : public shaman_spell_t
+{
+  call_of_the_elements_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( player, player -> find_talent_spell( "Call of the Elements" ), options_str )
+  {
+    harmful   = false;
+    may_crit  = false;
+    may_miss  = false;
+    stateless = true;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+    
+    // For now, reset earth / fire elemental totem cooldowns
+
+    if ( p() -> cooldown.earth_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
+      p() -> cooldown.earth_elemental -> reset();
+
+    if ( p() -> cooldown.fire_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
+      p() -> cooldown.fire_elemental -> reset();
+  }
+};
+
 // Fire Nova Spell ==========================================================
 
 struct fire_nova_explosion_t : public shaman_spell_t
@@ -2799,7 +2830,7 @@ struct flame_shock_t : public shaman_spell_t
     num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + player -> glyph.flame_shock -> effectN( 1 ).percent() ) );
     cooldown              = player -> cooldown.shock;
     cooldown -> duration  = data().cooldown();
-    base_dd_min          += player -> glyph.flame_shock -> effectN( 2 ).base_value();
+    base_dd_multiplier   += player -> glyph.flame_shock -> effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3055,8 +3086,8 @@ struct fire_elemental_totem_t : public shaman_totem_t
   fire_elemental_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
-    cooldown -> duration *= 1.0 - p() -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
-    totem_duration       *= 1.0 - p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
+    cooldown -> duration *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
+    //totem_duration       *= 1.0 - p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
@@ -3181,7 +3212,8 @@ struct searing_totem_t : public shaman_totem_t
   {
     shaman_targetdata_t* td = targetdata();
     shaman_totem_t::tick( d );
-    if ( result_is_hit() && td -> debuffs_searing_flames -> trigger() )
+    if ( result_is_hit() && p() -> specialization.searing_flames -> ok() && 
+         td -> debuffs_searing_flames -> trigger() )
     {
       double new_base_td = tick_dmg;
       // Searing flame dot treats all hits as.. HITS
@@ -3518,6 +3550,7 @@ action_t* shaman_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"             ) return new              auto_attack_t( this, options_str );
   if ( name == "bloodlust"               ) return new                bloodlust_t( this, options_str );
+  if ( name == "call_of_the_elements"    ) return new     call_of_the_elements_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "earth_elemental_totem"   ) return new    earth_elemental_totem_t( this, options_str );
@@ -3607,6 +3640,7 @@ void shaman_t::init_spells()
   specialization.maelstrom_weapon    = find_specialization_spell( "Maelstrom Weapon" );
   specialization.mental_quickness    = find_specialization_spell( "Mental Quickness" );
   specialization.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
+  specialization.searing_flames      = find_specialization_spell( "Searing Flames" );
   specialization.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
   specialization.static_shock        = find_specialization_spell( "Static Shock" );
 
