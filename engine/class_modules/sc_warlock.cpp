@@ -197,14 +197,11 @@ public:
 
   // trigger_soul_leech =====================================================
 
-  static void trigger_soul_leech( warlock_spell_t* s )
+  static void trigger_soul_leech( warlock_t* p, double dmg )
   {
-    warlock_t* p = s -> p();
-
     if ( p -> talents.soul_leech -> ok() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, p -> resources.max[ RESOURCE_HEALTH ] * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
-
+      p -> resource_gain( RESOURCE_HEALTH, dmg * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
     }
   }
 
@@ -404,6 +401,8 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_decimation( this, s -> result );
+
+      trigger_soul_leech( p(), s -> result_amount );
     }
   }
 };
@@ -450,28 +449,44 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p() -> buffs.backdraft -> check() )
       p() -> buffs.backdraft -> decrement();
   }
+};
 
-  virtual void impact_s( action_state_t* s )
+// Mortal Coil Spell =========================================================
+
+struct mortal_coil_heal_t : public warlock_heal_t
+{
+  mortal_coil_heal_t( warlock_t* p ) :
+    warlock_heal_t( "mortal_coil_heal", p, 108396 )
   {
-    warlock_spell_t::impact_s( s );
+    background = true;
+    may_miss = false;
+  }
 
-    if ( result_is_hit( s -> result ) )
-      trigger_soul_leech( this );
+  virtual void execute()
+  {
+    double heal_pct = data().effectN( 1 ).percent();
+    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
+
+    warlock_heal_t::execute();
   }
 };
 
-// Death Coil Spell =========================================================
-
-struct death_coil_t : public warlock_spell_t
+struct mortal_coil_t : public warlock_spell_t
 {
-  death_coil_t( warlock_t* p ) : warlock_spell_t( p, "Death Coil" ) { }
+  mortal_coil_heal_t* heal;
+
+  mortal_coil_t( warlock_t* p ) : 
+    warlock_spell_t( p, p -> talents.mortal_coil ), heal( 0 )
+  {
+    heal = new mortal_coil_heal_t( p );
+  }
 
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-      player -> resource_gain( RESOURCE_HEALTH, direct_dmg );
+      heal -> execute();
   }
 };
 
@@ -496,14 +511,6 @@ struct shadowburn_t : public warlock_spell_t
       dtr_action = new shadowburn_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-      trigger_soul_leech( this );
   }
 
   virtual void update_ready()
@@ -533,15 +540,9 @@ struct shadowburn_t : public warlock_spell_t
 
 struct shadowfury_t : public warlock_spell_t
 {
-  timespan_t cast_gcd;
-
   shadowfury_t( warlock_t* p ) :
-    warlock_spell_t( p, "Shadowfury" ),
-    cast_gcd( timespan_t::zero() )
-  {
-    // estimate - measured at ~0.6sec, but lag in there too, plus you need to mouse-click
-    trigger_gcd = ( cast_gcd >= timespan_t::zero() ) ? cast_gcd : timespan_t::from_seconds( 0.5 );
-  }
+    warlock_spell_t( p, p -> talents.shadowfury )
+  {  }
 };
 
 // Corruption Spell =========================================================
@@ -891,6 +892,8 @@ struct incinerate_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_decimation( this, s -> result );
+
+      trigger_soul_leech( p(), s -> result_amount );
     }
   }
 
@@ -960,12 +963,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_decimation( this, s -> result );
-
-      trigger_soul_leech( this );
-    }
+    trigger_decimation( this, s -> result );
   }
 };
 
@@ -1325,6 +1323,13 @@ struct malefic_grasp_t : public warlock_spell_t
       start_malefic_grasp( this, td -> dots_unstable_affliction );
     }
   }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    trigger_soul_leech( p(), d -> state -> result_amount );
+  }
 };
 
 // Dark Intent Spell ========================================================
@@ -1618,7 +1623,6 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "agony"               ) a = new               agony_t( this );
   else if ( name == "doom"                ) a = new                doom_t( this );
   else if ( name == "curse_of_elements"   ) a = new   curse_of_elements_t( this );
-  else if ( name == "death_coil"          ) a = new          death_coil_t( this );
   else if ( name == "drain_life"          ) a = new          drain_life_t( this );
   else if ( name == "drain_soul"          ) a = new          drain_soul_t( this );
   else if ( name == "haunt"               ) a = new               haunt_t( this );
@@ -1627,6 +1631,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "life_tap"            ) a = new            life_tap_t( this );
   else if ( name == "malefic_grasp"       ) a = new       malefic_grasp_t( this );
   else if ( name == "metamorphosis"       ) a = new       metamorphosis_t( this );
+  else if ( name == "mortal_coil"         ) a = new         mortal_coil_t( this );
   else if ( name == "shadow_bolt"         ) a = new         shadow_bolt_t( this );
   else if ( name == "shadowburn"          ) a = new          shadowburn_t( this );
   else if ( name == "shadowfury"          ) a = new          shadowfury_t( this );
@@ -1725,6 +1730,31 @@ void warlock_t::init_spells()
   mastery_spells.fiery_apocalypse     = find_mastery_spell( "Fiery Apocalypse" );
   mastery_spells.potent_afflictions   = find_mastery_spell( "Potent Afflictions" );
   mastery_spells.master_demonologist  = find_mastery_spell( "Master Demonologist" );
+
+  // Talents
+  talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
+  talents.soul_leech            = find_talent_spell( "Soul Leech" );
+  talents.harvest_life          = find_talent_spell( "Harvest Life" );
+
+  talents.howl_of_terror        = find_talent_spell( "Howl of Terror" );
+  talents.mortal_coil           = find_talent_spell( "Mortal Coil" );
+  talents.shadowfury            = find_talent_spell( "Shadowfury" );
+
+  talents.soul_link             = find_talent_spell( "Soul Link" );
+  talents.sacrificial_pact      = find_talent_spell( "Sacrificial Pact" );
+  talents.dark_bargain          = find_talent_spell( "Dark Bargain" );
+
+  talents.blood_fear            = find_talent_spell( "Blood Fear" );
+  talents.burning_rush          = find_talent_spell( "Burning Rush" );
+  talents.unbound_will          = find_talent_spell( "Unbound Will" );
+
+  talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
+  talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
+  talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
+
+  talents.archimondes_vengeance = find_talent_spell( "Archimonde's Vengeance" );
+  talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
+  talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   // Prime
   glyphs.metamorphosis        = find_glyph_spell( "Glyph of Metamorphosis" );
