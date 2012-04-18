@@ -4099,8 +4099,6 @@ struct action_t
   event_t* travel_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
-  int bloodlust_active;
-  double min_health_percentage, max_health_percentage;
   int moving, wait_on_ready, interrupt;
   bool round_base_dmg;
   bool class_flag1;

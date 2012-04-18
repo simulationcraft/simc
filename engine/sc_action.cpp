@@ -137,9 +137,6 @@ action_t::action_t( action_type_e       ty,
   time_to_travel                 = timespan_t::zero();
   travel_speed                   = 0.0;
   resource_consumed              = 0.0;
-  bloodlust_active               = 0;
-  min_health_percentage          = 0.0;
-  max_health_percentage          = 0.0;
   moving                         = -1;
   wait_on_ready                  = -1;
   interrupt                      = 0;
@@ -1295,11 +1292,10 @@ bool action_t::ready()
   player_t* t = target;
 
   if ( unlikely( is_dtr_action ) )
-    assert( 0 );
+    assert( false );
 
-  if ( player -> skill < 1.0 )
-    if ( ! sim -> roll( player -> skill ) )
-      return false;
+  if ( player -> skill < 1.0 && ! sim -> roll( player -> skill ) )
+    return false;
 
   if ( cooldown -> remains() > timespan_t::zero() )
     return false;
@@ -1310,39 +1306,20 @@ bool action_t::ready()
   if ( if_expr && ! if_expr -> success() )
     return false;
 
-  if ( bloodlust_active > 0 )
-    if ( ! player -> buffs.bloodlust -> check() )
-      return false;
-
-  if ( bloodlust_active < 0 )
-    if ( player -> buffs.bloodlust -> check() )
-      return false;
-
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
   if ( unlikely( t -> sleeping ) )
     return false;
 
-  if ( target -> debuffs.invulnerable -> check() )
-    if ( harmful )
-      return false;
+  if ( target -> debuffs.invulnerable -> check() && harmful )
+    return false;
 
-  if ( player -> is_moving() )
-    if ( ! usable_moving() )
-      return false;
+  if ( player -> is_moving() && ! usable_moving() )
+    return false;
 
-  if ( moving != -1 )
-    if ( moving != ( player -> is_moving() ? 1 : 0 ) )
-      return false;
-
-  if ( min_health_percentage > 0 )
-    if ( t -> health_percentage() < min_health_percentage )
-      return false;
-
-  if ( max_health_percentage > 0 )
-    if ( t -> health_percentage() > max_health_percentage )
-      return false;
+  if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
+    return false;
 
   return true;
 }
