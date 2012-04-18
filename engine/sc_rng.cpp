@@ -101,8 +101,7 @@ double rng_t::gauss( double mean,
 
   num_gauss++;
 
-  if ( stddev )
-    actual_gauss += ( result - mean ) / stddev;
+  actual_gauss += z;
 
   return result;
 }
