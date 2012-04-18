@@ -49,9 +49,14 @@
 
 #if SC_SHAMAN == 1
 
+namespace {
 enum totem_type_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
 enum imbue_type_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
+
+struct shaman_melee_attack_t;
+struct shaman_spell_t;
+}
 
 struct shaman_targetdata_t : public targetdata_t
 {
@@ -247,10 +252,10 @@ struct shaman_t : public player_t
   } spell;
 
   // Weapon Enchants
-  melee_attack_t* windfury_mh;
-  melee_attack_t* windfury_oh;
-  spell_t*  flametongue_mh;
-  spell_t*  flametongue_oh;
+  shaman_melee_attack_t* windfury_mh;
+  shaman_melee_attack_t* windfury_oh;
+  shaman_spell_t*  flametongue_mh;
+  shaman_spell_t*  flametongue_oh;
 
 
   shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
@@ -293,6 +298,10 @@ struct shaman_t : public player_t
   // Character Definition
   virtual shaman_targetdata_t* new_targetdata( player_t* target )
   { return new shaman_targetdata_t( this, target ); }
+
+  shaman_targetdata_t* get_target( player_t* target )
+  { return debug_cast<shaman_targetdata_t*>( targetdata_t::get( this, target ) ); }
+
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -333,12 +342,10 @@ struct shaman_melee_attack_t : public melee_attack_t
 {
   bool windfury;
   bool flametongue;
-  shaman_targetdata_t* td;
 
   shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
     melee_attack_t( token, p, s, school ),
-    windfury( true ), flametongue( true ),
-    td( targetdata_t::get( player, target ) -> cast_shaman() )
+    windfury( true ), flametongue( true )
   {
     special = true;
     may_crit = true;
@@ -347,8 +354,7 @@ struct shaman_melee_attack_t : public melee_attack_t
 
   shaman_melee_attack_t( shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
     melee_attack_t( "", p, s, school ),
-    windfury( true ), flametongue( true ),
-    td( targetdata_t::get( player, target ) -> cast_shaman() )
+    windfury( true ), flametongue( true )
   {
     special = true;
     may_crit = true;
@@ -356,6 +362,8 @@ struct shaman_melee_attack_t : public melee_attack_t
   }
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
+  shaman_targetdata_t* targetdata() const
+  { return static_cast<shaman_targetdata_t*>( melee_attack_t::targetdata() ); }
 
   virtual void execute();
   virtual void impact_s( action_state_t* );
@@ -373,13 +381,11 @@ struct shaman_spell_t : public spell_t
   bool     maelstrom;
   bool     overload;
   bool     is_totem;
-  shaman_targetdata_t* td;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( token, p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    td( targetdata_t::get( player, target ) -> cast_shaman() )
+    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false )
   {
     parse_options( 0, options );
 
@@ -390,8 +396,7 @@ struct shaman_spell_t : public spell_t
 
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( "", p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    td( targetdata_t::get( player, target ) -> cast_shaman() )
+    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false )
   {
     parse_options( 0, options );
 
@@ -401,6 +406,8 @@ struct shaman_spell_t : public spell_t
   }
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
+  shaman_targetdata_t* targetdata() const
+  { return static_cast<shaman_targetdata_t*>( spell_t::targetdata() ); }
 
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
   virtual bool   is_periodic_damage() const { return base_td > 0; };
@@ -423,6 +430,7 @@ struct shaman_spell_t : public spell_t
   {
     double c = spell_t::composite_crit( s );
 
+    shaman_targetdata_t* td = targetdata();
     if ( school == SCHOOL_NATURE && td -> debuffs_stormstrike -> up() )
       c += td -> debuffs_stormstrike -> data().effectN( 1 ).percent();
 
@@ -461,7 +469,7 @@ struct spirit_wolf_pet_t : public pet_t
 {
   struct melee_t : public melee_attack_t
   {
-    melee_t( player_t* player ) :
+    melee_t( spirit_wolf_pet_t* player ) :
       melee_attack_t( "wolf_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
     {
       weapon = &( player -> main_hand_weapon );
@@ -476,9 +484,11 @@ struct spirit_wolf_pet_t : public pet_t
       weapon_power_mod /= player -> main_hand_weapon.swing_time.total_seconds();
     }
 
+    spirit_wolf_pet_t* p() const { return static_cast<spirit_wolf_pet_t*>( player ); }
+
     virtual void execute()
     {
-      shaman_t* o = player -> cast_pet() -> owner -> cast_shaman();
+      shaman_t* o = p() -> o();
 
       melee_attack_t::execute();
 
@@ -514,7 +524,7 @@ struct spirit_wolf_pet_t : public pet_t
 
   melee_t* melee;
 
-  spirit_wolf_pet_t( sim_t* sim, player_t* owner ) :
+  spirit_wolf_pet_t( sim_t* sim, shaman_t* owner ) :
     pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -523,6 +533,8 @@ struct spirit_wolf_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
+
+  shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
 
   virtual void init_base()
   {
@@ -544,11 +556,10 @@ struct spirit_wolf_pet_t : public pet_t
 
   virtual double composite_attack_power() const
   {
-    shaman_t* o         = owner -> cast_shaman();
     double ap           = pet_t::composite_attack_power();
     double ap_per_owner = 0.4944;
 
-    return ap + ap_per_owner * o -> composite_attack_power_multiplier() * o -> composite_attack_power();
+    return ap + ap_per_owner * o() -> composite_attack_power_multiplier() * o() -> composite_attack_power();
   }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -591,35 +602,30 @@ struct earth_elemental_pet_t : public pet_t
 
   struct auto_melee_attack_t : public melee_attack_t
   {
-    auto_melee_attack_t( player_t* player ) :
+    auto_melee_attack_t( earth_elemental_pet_t* player ) :
       melee_attack_t( "auto_attack", player )
     {
-      pet_t* p = player -> cast_pet();
-
-      assert( p -> main_hand_weapon.type != WEAPON_NONE );
-      p -> main_hand_attack = new melee_t( player );
+      assert( player -> main_hand_weapon.type != WEAPON_NONE );
+      player -> main_hand_attack = new melee_t( player );
 
       trigger_gcd = timespan_t::zero();
     }
 
     virtual void execute()
     {
-      pet_t* p = player -> cast_pet();
-
-      p -> main_hand_attack -> schedule_execute();
+      player -> main_hand_attack -> schedule_execute();
     }
 
     virtual bool ready()
     {
-      pet_t* p = player -> cast_pet();
-      if ( p -> is_moving() ) return false;
-      return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
+      if ( player -> is_moving() ) return false;
+      return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
     }
   };
 
   struct melee_t : public melee_attack_t
   {
-    melee_t( player_t* player ) :
+    melee_t( earth_elemental_pet_t* player ) :
       melee_attack_t( "earth_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
     {
       may_crit          = true;
@@ -657,7 +663,7 @@ struct earth_elemental_pet_t : public pet_t
     }
   };
 
-  earth_elemental_pet_t( sim_t* sim, player_t* owner ) :
+  earth_elemental_pet_t( sim_t* sim, shaman_t* owner ) :
     pet_t( sim, owner, "earth_elemental", true /*GUARDIAN*/ ), owner_sp( 0.0 )
   {
     stamina_per_owner   = 1.0;
@@ -765,7 +771,7 @@ struct fire_elemental_pet_t : public pet_t
     double int_multiplier;
     double sp_multiplier;
 
-    fire_elemental_spell_t( const std::string& t, player_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    fire_elemental_spell_t( const std::string& t, fire_elemental_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       spell_t( t, p, s, SCHOOL_FIRE ),
       int_multiplier( 0.85 ), sp_multiplier ( 0.53419 )
     {
@@ -775,12 +781,8 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual double total_spell_power() const
     {
-      double sp  = 0.0;
-      pet_t* pet = player -> cast_pet();
-
-      sp += pet -> intellect() * int_multiplier;
-      sp += pet -> composite_spell_power( school ) * sp_multiplier;
-      return floor( sp );
+      return floor( player -> intellect() * int_multiplier +
+                    player -> composite_spell_power( school ) * sp_multiplier );
     }
 
     virtual void player_buff()
@@ -808,7 +810,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_shield_t : public fire_elemental_spell_t
   {
-    fire_shield_t( player_t* player ) :
+    fire_shield_t( fire_elemental_pet_t* player ) :
       fire_elemental_spell_t( "fire_shield", player )
     {
       aoe                       = -1;
@@ -831,13 +833,13 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_nova_t : public fire_elemental_spell_t
   {
-    fire_nova_t( fire_elemental_pet_t* fe ) :
-      fire_elemental_spell_t( "fire_nova", fe )
+    fire_nova_t( fire_elemental_pet_t* player ) :
+      fire_elemental_spell_t( "fire_nova", player )
     {
       aoe                  = -1;
       may_crit             = true;
       direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
-      cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 30.0, 60.0 ) );
+      cooldown -> duration = timespan_t::from_seconds( player -> rng_ability_cooldown -> range( 30.0, 60.0 ) );
 
       // 207 = 80
       base_costs[ RESOURCE_MANA ]            = player -> level * 2.750;
@@ -860,14 +862,14 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_blast_t : public fire_elemental_spell_t
   {
-    fire_blast_t( fire_elemental_pet_t* fe ) :
-      fire_elemental_spell_t( "fire_blast", fe )
+    fire_blast_t( fire_elemental_pet_t* player ) :
+      fire_elemental_spell_t( "fire_blast", player )
     {
       may_crit             = true;
-      base_costs[ RESOURCE_MANA ] = ( fe -> level ) * 3.554;
+      base_costs[ RESOURCE_MANA ] = ( player -> level ) * 3.554;
       base_execute_time    = timespan_t::zero();
-      direct_power_mod     = fe -> dbc.spell( 57984 ) -> effect1().coeff();
-      cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
+      direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
+      cooldown -> duration = timespan_t::from_seconds( player -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
 
       base_dd_min        = 276;
       base_dd_max        = 321;
@@ -893,8 +895,8 @@ struct fire_elemental_pet_t : public pet_t
     double int_multiplier;
     double sp_multiplier;
 
-    fire_melee_t( fire_elemental_pet_t* fe ) :
-      melee_attack_t( "fire_melee", fe, spell_data_t::nil(), SCHOOL_FIRE ),
+    fire_melee_t( fire_elemental_pet_t* player ) :
+      melee_attack_t( "fire_melee", player, spell_data_t::nil(), SCHOOL_FIRE ),
       int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
     {
       may_crit                     = true;
@@ -912,14 +914,8 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual double total_spell_power() const
     {
-      double sp  = 0.0;
-
-      pet_t* pet = player -> cast_pet();
-
-      sp += pet -> intellect() * int_multiplier;
-      sp += pet -> composite_spell_power( school ) * sp_multiplier;
-
-      return floor( sp );
+      return floor( player -> intellect() * int_multiplier +
+                    player -> composite_spell_power( school ) * sp_multiplier );
     }
 
     virtual void execute()
@@ -1067,9 +1063,9 @@ struct fire_elemental_pet_t : public pet_t
 
 // trigger_flametongue_weapon ===============================================
 
-static void trigger_flametongue_weapon( melee_attack_t* a )
+static void trigger_flametongue_weapon( shaman_melee_attack_t* a )
 {
-  shaman_t* p = a -> player -> cast_shaman();
+  shaman_t* p = a -> p();
 
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     p -> flametongue_mh -> execute();
@@ -1081,19 +1077,17 @@ static void trigger_flametongue_weapon( melee_attack_t* a )
 
 struct windfury_delay_event_t : public event_t
 {
-  melee_attack_t* wf;
-  timespan_t delay;
+  shaman_melee_attack_t* wf;
 
-  windfury_delay_event_t( sim_t* sim, player_t* p, melee_attack_t* wf, timespan_t delay ) :
-    event_t( sim, p ), wf( wf ), delay( delay )
+  windfury_delay_event_t( shaman_melee_attack_t* wf, timespan_t delay ) :
+    event_t( wf -> p() -> sim, wf -> p(), "windfury_delay_event" ), wf( wf )
   {
-    name = "windfury_delay_event";
     sim -> add_event( this, delay );
   }
 
   virtual void execute()
   {
-    shaman_t* p = player -> cast_shaman();
+    shaman_t* p = wf -> p();
 
     p -> proc.windfury -> occur();
     wf -> execute();
@@ -1102,10 +1096,10 @@ struct windfury_delay_event_t : public event_t
   }
 };
 
-static bool trigger_windfury_weapon( melee_attack_t* a )
+static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
 {
-  shaman_t* p = a -> player -> cast_shaman();
-  melee_attack_t* wf = 0;
+  shaman_t* p = a -> p();
+  shaman_melee_attack_t* wf = 0;
 
   if ( a -> weapon -> slot == SLOT_MAIN_HAND )
     wf = p -> windfury_mh;
@@ -1119,7 +1113,7 @@ static bool trigger_windfury_weapon( melee_attack_t* a )
     p -> cooldown.windfury_weapon -> start( p -> rng.windfury_delay -> gauss( timespan_t::from_seconds( 3.0 ), timespan_t::from_seconds( 0.3 ) ) );
 
     // Delay windfury by some time, up to about a second
-    new ( p -> sim ) windfury_delay_event_t( p -> sim, p, wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    new ( p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
   }
   return false;
@@ -1127,9 +1121,9 @@ static bool trigger_windfury_weapon( melee_attack_t* a )
 
 // trigger_rolling_thunder ==================================================
 
-static bool trigger_rolling_thunder ( spell_t* s )
+static bool trigger_rolling_thunder ( shaman_spell_t* s )
 {
-  shaman_t* p = s -> player -> cast_shaman();
+  shaman_t* p = s -> p();
 
   if ( ! p -> buff.lightning_shield -> check() )
     return false;
@@ -1153,9 +1147,9 @@ static bool trigger_rolling_thunder ( spell_t* s )
 
 // trigger_static_shock =====================================================
 
-static bool trigger_static_shock ( melee_attack_t* a )
+static bool trigger_static_shock ( shaman_melee_attack_t* a )
 {
-  shaman_t* p = a -> player -> cast_shaman();
+  shaman_t* p = a -> p();
 
   if ( ! p -> buff.lightning_shield -> stack() )
     return false;
@@ -1171,7 +1165,7 @@ static bool trigger_static_shock ( melee_attack_t* a )
 
 // trigger_improved_lava_lash ===============================================
 
-static bool trigger_improved_lava_lash( melee_attack_t* a )
+static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 {
   struct improved_lava_lash_t : public shaman_spell_t
   {
@@ -1211,7 +1205,7 @@ static bool trigger_improved_lava_lash( melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        shaman_targetdata_t* td = targetdata_t::get( player, sim -> actor_list[ i ] ) -> cast_shaman();
+        shaman_targetdata_t* td = p() -> get_target( sim -> actor_list[ i ] );
 
         if ( td -> dots_flame_shock -> ticking )
           continue;
@@ -1249,7 +1243,7 @@ static bool trigger_improved_lava_lash( melee_attack_t* a )
                        target -> name(),
                        state -> target -> name() );
 
-      shaman_t* p = player -> cast_shaman();
+      shaman_t* p = this -> p();
 
       double dd_min = p -> action_flame_shock -> base_dd_min,
              dd_max = p -> action_flame_shock -> base_dd_max,
@@ -1299,12 +1293,12 @@ static bool trigger_improved_lava_lash( melee_attack_t* a )
   if ( a -> sim -> num_enemies == 1 )
     return false;
 
-  shaman_targetdata_t* t = a -> targetdata() -> cast_shaman();
+  shaman_targetdata_t* t = a -> targetdata();
 
   if ( ! t -> dots_flame_shock -> ticking )
     return false;
 
-  shaman_t* p = a -> player -> cast_shaman();
+  shaman_t* p = a -> p();
 
   if ( p -> glyph.lava_lash -> ok() )
     return false;
@@ -1350,7 +1344,7 @@ struct lava_burst_overload_t : public shaman_spell_t
 
   virtual double composite_crit( const action_state_t* s ) const
   {
-    if ( td -> dots_flame_shock -> ticking )
+    if ( targetdata() -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit( s );
@@ -1366,7 +1360,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     background           = true;
     stateless            = true;
 
-    direct_power_mod  += p() -> specialization.shamanism -> effectN( 1 ).percent();
+    direct_power_mod  += player -> specialization.shamanism -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1396,13 +1390,13 @@ struct chain_lightning_overload_t : public shaman_spell_t
     background           = true;
     stateless            = true;
 
-    direct_power_mod  += p() -> specialization.shamanism -> effectN( 2 ).percent();
+    direct_power_mod  += player -> specialization.shamanism -> effectN( 2 ).percent();
 
     aoe = 2;
-    if ( p() -> glyph.chain_lightning -> ok() )
+    if ( player -> glyph.chain_lightning -> ok() )
     {
-      base_multiplier *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
-      aoe             += ( int ) p() -> glyph.chain_lightning -> effectN( 1 ).base_value();
+      base_multiplier *= 1.0 + player -> glyph.chain_lightning -> effectN( 2 ).percent();
+      aoe             += ( int ) player -> glyph.chain_lightning -> effectN( 1 ).base_value();
     }
 
     base_add_multiplier = data().effectN( 1 ).chain_multiplier();
@@ -1456,13 +1450,13 @@ struct searing_flames_t : public shaman_spell_t
 
   virtual double composite_ta_multiplier( const action_state_t* ) const
   {
-    return td -> debuffs_searing_flames -> stack();
+    return targetdata() -> debuffs_searing_flames -> stack();
   }
 
   void last_tick( dot_t* d )
   {
     shaman_spell_t::last_tick( d );
-    td -> debuffs_searing_flames -> expire();
+    targetdata() -> debuffs_searing_flames -> expire();
   }
 };
 
@@ -1651,7 +1645,7 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
 // Shaman Attack
 // ==========================================================================
 
-// shaman_melee_attack_t::execute =================================================
+// shaman_melee_attack_t::execute ===========================================
 
 void shaman_melee_attack_t::execute()
 {
@@ -1855,7 +1849,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   {
     double m = shaman_melee_attack_t::action_multiplier( s );
 
-    m *= 1.0 + ( td -> debuffs_searing_flames -> check() * sf_bonus ) +
+    m *= 1.0 + ( targetdata() -> debuffs_searing_flames -> check() * sf_bonus ) +
                ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
@@ -1867,7 +1861,7 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = targetdata_t::get( p(), state -> target ) -> cast_shaman();
+      shaman_targetdata_t* td = p() -> get_target( state -> target );
       td -> debuffs_searing_flames -> expire();
       if ( p() -> active_searing_flames_dot )
         p() -> active_searing_flames_dot -> dot() -> cancel();
@@ -1944,7 +1938,7 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = targetdata_t::get( p(), state -> target ) -> cast_shaman();
+      shaman_targetdata_t* td = p() -> get_target( state -> target );
       td -> debuffs_stormstrike -> trigger();
 
       stormstrike_mh -> execute();
@@ -2281,7 +2275,7 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    shaman_targetdata_t* td = targetdata() -> cast_shaman();
+    shaman_targetdata_t* td = targetdata();
 
     if ( ! td -> dots_flame_shock -> ticking )
       return false;
@@ -2305,7 +2299,7 @@ struct fire_nova_t : public shaman_spell_t
       if ( e -> sleeping || ! e -> is_enemy() )
         continue;
 
-      shaman_targetdata_t* td = targetdata_t::get( player, e ) -> cast_shaman();
+      shaman_targetdata_t* td = p() -> get_target( e );
       if ( td -> dots_flame_shock -> ticking )
         t.push_back( e );
     }
@@ -2390,7 +2384,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( ! dtr && player -> has_dtr )
     {
-      dtr_action = new lava_burst_t( p(), options_str, true );
+      dtr_action = new lava_burst_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -2409,6 +2403,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
+    shaman_targetdata_t* td = targetdata();
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -2417,7 +2412,7 @@ struct lava_burst_t : public shaman_spell_t
 
   virtual double composite_crit( const action_state_t* s ) const
   {
-    if ( td -> dots_flame_shock -> ticking )
+    if ( targetdata() -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit( s );
@@ -2471,12 +2466,12 @@ struct lightning_bolt_t : public shaman_spell_t
     base_multiplier   += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
                          player -> specialization.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> specialization.shamanism -> effectN( 3 ).time_value();
-    base_execute_time *= 1.0 + p() -> glyph.unleashed_lightning -> effectN( 2 ).percent();
-    overload           = new lightning_bolt_overload_t( p() );
+    base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
+    overload           = new lightning_bolt_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
     {
-      dtr_action = new lightning_bolt_t( p(), options_str, true );
+      dtr_action = new lightning_bolt_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -2485,6 +2480,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
+    shaman_targetdata_t* td = targetdata();
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -2507,7 +2503,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual double cost_reduction() const
   {
-    double   cr = shaman_spell_t::cost_reduction();
+    double cr = shaman_spell_t::cost_reduction();
     cr += p() -> buff.maelstrom_weapon -> stack() * p() -> buff.maelstrom_weapon -> data().effectN( 2 ).percent();
     return cr;
   }
@@ -2574,7 +2570,7 @@ struct elemental_blast_t : public shaman_spell_t
 };
 
 
-// Shamanisitc Rage Spell ===================================================
+// Shamanistic Rage Spell ===================================================
 
 struct shamanistic_rage_t : public shaman_spell_t
 {
@@ -2697,7 +2693,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
   spiritwalkers_grace_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Spiritwalker's Grace" ), options_str )
   {
-    may_miss  = may_crit = harmful = callbacks = false;
+    may_miss = may_crit = harmful = callbacks = false;
   }
 
   virtual void execute()
@@ -2724,10 +2720,10 @@ struct earth_shock_t : public shaman_spell_t
     int consume_stacks;
     int consume_threshold;
 
-    lightning_charge_delay_t( sim_t* sim, player_t* p, buff_t* b, int consume, int consume_threshold ) :
-      event_t( sim, p ), buff( b ), consume_stacks( consume ), consume_threshold( consume_threshold )
+    lightning_charge_delay_t( shaman_t* p, buff_t* b, int consume, int consume_threshold ) :
+      event_t( p -> sim, p, "lightning_charge_delay_t" ), buff( b ),
+      consume_stacks( consume ), consume_threshold( consume_threshold )
     {
-      name = "lightning_charge_delay_t";
       sim -> add_event( this, timespan_t::from_seconds( 0.001 ) );
     }
 
@@ -2769,7 +2765,7 @@ struct earth_shock_t : public shaman_spell_t
       {
         p() -> active_lightning_charge -> execute();
         if ( ! is_dtr_action )
-          new ( p() -> sim ) lightning_charge_delay_t( sim, p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
+          new ( p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
       }
     }
@@ -3181,7 +3177,7 @@ struct searing_totem_t : public shaman_totem_t
 
   virtual void tick( dot_t* d )
   {
-    shaman_targetdata_t* td = targetdata() -> cast_shaman();
+    shaman_targetdata_t* td = targetdata();
     shaman_totem_t::tick( d );
     if ( result_is_hit() && td -> debuffs_searing_flames -> trigger() )
     {
@@ -3240,7 +3236,7 @@ struct flametongue_weapon_t : public shaman_spell_t
     else
     {
       sim -> errorf( "Player %s: flametongue_weapon: weapon option must be one of main/off/both\n", p() -> name() );
-      assert( 0 );
+      sim -> cancel();
     }
 
     // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
@@ -3436,64 +3432,58 @@ struct water_shield_t : public shaman_spell_t
 
 struct unleash_flame_buff_t : public buff_t
 {
-  event_t* expiration_delay;
-
-  unleash_flame_buff_t( player_t* p );
-
-  void reset();
-  void expire();
-};
-
-struct unleash_flame_expiration_delay_t : public event_t
-{
-  unleash_flame_buff_t* buff;
-
-  unleash_flame_expiration_delay_t( sim_t* sim, player_t* p, unleash_flame_buff_t* b ) :
-    event_t( sim, p ), buff( b )
+  struct unleash_flame_expiration_delay_t : public event_t
   {
-    shaman_t* s = player -> cast_shaman();
-    name = "unleash_flame_expiration_delay";
-    sim -> add_event( this, sim -> gauss( s -> uf_expiration_delay, s -> uf_expiration_delay_stddev ) );
-  }
+    unleash_flame_buff_t* buff;
 
-  virtual void execute()
+    unleash_flame_expiration_delay_t( shaman_t* player, unleash_flame_buff_t* b ) :
+      event_t( player -> sim, player, "unleash_flame_expiration_delay" ), buff( b )
+    {
+      sim -> add_event( this, sim -> gauss( player -> uf_expiration_delay,
+                                            player -> uf_expiration_delay_stddev ) );
+    }
+
+    virtual void execute()
+    {
+      // Call real expire after a delay
+      buff -> buff_t::expire();
+      buff -> expiration_delay = 0;
+    }
+  };
+
+  unleash_flame_expiration_delay_t* expiration_delay;
+
+  unleash_flame_buff_t( shaman_t* p ) :
+    buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),
+    expiration_delay( 0 )
+  {}
+
+  void reset()
   {
-    // Call real expire after a delay
-    buff -> buff_t::expire();
-    buff -> expiration_delay = 0;
-  }
-};
-
-unleash_flame_buff_t::unleash_flame_buff_t( player_t* p ) :
-  buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ), expiration_delay( 0 )
-{
-}
-
-void unleash_flame_buff_t::reset()
-{
-  buff_t::reset();
-  event_t::cancel( expiration_delay );
-}
-
-void unleash_flame_buff_t::expire()
-{
-  // Active player's Unleash Flame buff has a short aura expiration delay, which allows
-  // "Double Casting" with a single buff
-  if ( ! player -> sleeping )
-  {
-    if ( current_stack <= 0 ) return;
-    if ( expiration_delay ) return;
-    expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( sim, player, this );
-  }
-  // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
-  // expire) and additionally, make _absolutely sure_ that any pending expiration delay
-  // is canceled
-  else
-  {
-    buff_t::expire();
+    buff_t::reset();
     event_t::cancel( expiration_delay );
   }
-}
+
+  void expire()
+  {
+    // Active player's Unleash Flame buff has a short aura expiration delay, which allows
+    // "Double Casting" with a single buff
+    if ( ! player -> sleeping )
+    {
+      if ( current_stack <= 0 ) return;
+      if ( expiration_delay ) return;
+      expiration_delay = new ( sim ) unleash_flame_expiration_delay_t( static_cast<shaman_t*>( player ), this );
+    }
+    // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
+    // expire) and additionally, make _absolutely sure_ that any pending expiration delay
+    // is canceled
+    else
+    {
+      buff_t::expire();
+      event_t::cancel( expiration_delay );
+    }
+  }
+};
 
 } // ANONYMOUS NAMESPACE ===================================================
 
@@ -3509,15 +3499,14 @@ void shaman_t::create_options()
 
   option_t shaman_options[] =
   {
-    { "wf_delay",                   OPT_TIMESPAN,     &( wf_delay                   ) },
-    { "wf_delay_stddev",            OPT_TIMESPAN,     &( wf_delay_stddev            ) },
-    { "uf_expiration_delay",        OPT_TIMESPAN,     &( uf_expiration_delay        ) },
-    { "uf_expiration_delay_stddev", OPT_TIMESPAN,     &( uf_expiration_delay_stddev ) },
-    { NULL,                         OPT_UNKNOWN, NULL                            }
+    { "wf_delay",                   OPT_TIMESPAN, &( wf_delay                   ) },
+    { "wf_delay_stddev",            OPT_TIMESPAN, &( wf_delay_stddev            ) },
+    { "uf_expiration_delay",        OPT_TIMESPAN, &( uf_expiration_delay        ) },
+    { "uf_expiration_delay_stddev", OPT_TIMESPAN, &( uf_expiration_delay_stddev ) },
+    { NULL,                         OPT_UNKNOWN,  NULL                            }
   };
 
   option_t::copy( options, shaman_options );
-
 }
 
 // shaman_t::create_action  =================================================

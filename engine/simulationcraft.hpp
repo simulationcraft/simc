@@ -4699,7 +4699,6 @@ struct player_t : public noncopyable
   monk_t        * cast_monk        () { assert( type == MONK         ); return ( monk_t        * ) this; }
   paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
-  shaman_t      * cast_shaman      () { assert( type == SHAMAN       ); return ( shaman_t      * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
   enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
@@ -4772,7 +4771,6 @@ struct targetdata_t : public noncopyable
   monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
   paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
   rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
-  shaman_targetdata_t      * cast_shaman      () { assert( source->type == SHAMAN       ); return ( shaman_targetdata_t      * ) this; }
   warlock_targetdata_t     * cast_warlock     () { assert( source->type == WARLOCK      ); return ( warlock_targetdata_t     * ) this; }
   warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }
 
