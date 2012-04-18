@@ -2671,6 +2671,8 @@ public:
 
   static void armory_format( std::string& name, format_type_e = FORMAT_NONE );
 
+  static bool is_number( const std::string& s );
+
   static int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 };
 
@@ -5889,7 +5891,6 @@ bool str_to_float( const std::string& src, double& dest );
 struct armory_t
 {
   static void fuzzy_stats( std::string& encoding, const std::string& description );
-  static meta_gem_type_e parse_meta_gem( const std::string& description );
 };
 
 // Wowhead  =================================================================

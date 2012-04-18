@@ -7,17 +7,6 @@
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
-// is_number ================================================================
-
-static bool is_number( const std::string s )
-{
-  int size = ( int ) s.size();
-  for ( int i=0; i < size; i++ )
-    if ( ! isdigit( s[ i ] ) )
-      return false;
-  return true;
-}
-
 // stat_search ==============================================================
 
 static void stat_search( std::string&              encoding_str,
@@ -26,14 +15,14 @@ static void stat_search( std::string&              encoding_str,
                          const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
-  int num_stats = util_t::string_split( stat_tokens, stat_str, " " );
-  int num_descriptions = ( int ) description_tokens.size();
+  size_t num_stats = util_t::string_split( stat_tokens, stat_str, " " );
+  size_t num_descriptions = description_tokens.size();
 
-  for ( int i=0; i < num_descriptions; i++ )
+  for ( size_t i = 0; i < num_descriptions; i++ )
   {
     bool match = true;
 
-    for ( int j=0; j < num_stats && match; j++ )
+    for ( size_t j = 0; j < num_stats && match; j++ )
     {
       if ( ( i + j ) == num_descriptions )
       {
@@ -63,13 +52,13 @@ static void stat_search( std::string&              encoding_str,
       std::string value_str;
 
       if ( ( i > 0 ) &&
-           ( is_number( description_tokens[ i-1 ] ) ) )
+           ( util_t::is_number( description_tokens[ i-1 ] ) ) )
       {
         value_str = description_tokens[ i-1 ];
       }
       if ( ( ( i + num_stats + 1 ) < num_descriptions ) &&
            ( description_tokens[ i + num_stats ] == "by" ) &&
-           ( is_number( description_tokens[ i + num_stats + 1 ] ) ) )
+           ( util_t::is_number( description_tokens[ i + num_stats + 1 ] ) ) )
       {
         value_str = description_tokens[ i + num_stats + 1 ];
       }
@@ -149,63 +138,3 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
 }
 
-// armory_t::parse_meta_gem =================================================
-
-meta_gem_type_e armory_t::parse_meta_gem( const std::string& description )
-{
-  if ( description == "+54 Agility and 3% Increased Critical Damage"                      ) return META_AGILE_SHADOWSPIRIT;
-  if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;
-  if ( description == "+81 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_SHADOWSPIRIT;
-  if ( description == "+21 Critical Strike Rating and +2% Mana"                           ) return META_BEAMING_EARTHSIEGE;
-  if ( description == "+21 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSIEGE;
-  if ( description == "+12 Intellect and +2% Reduced Threat"                              ) return META_BRACING_EARTHSTORM;
-  if ( description == "+54 Intellect and +2% Reduced Threat"                              ) return META_BRACING_SHADOWSPIRIT;
-  if ( description == "+54 Intellect and 3% Increased Critical Damage"                    ) return META_BURNING_SHADOWSPIRIT;
-  if ( description == "+54 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SHADOWSPIRIT;
-  if ( description == "+21 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFLARE;
-  if ( description == "+12 Critical Strike Rating and 3% Increased Critical Damage"       ) return META_CHAOTIC_SKYFIRE;
-  if ( description == "+54 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SHADOWSPIRIT;
-  if ( description == "+14 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFIRE;
-  if ( description == "+25 Critical Strike Rating and 1% Spell Reflect"                   ) return META_DESTRUCTIVE_SKYFLARE;
-  if ( description == "+81 Stamina and Reduce Spell Damage Taken by 2%"                   ) return META_EFFULGENT_SHADOWSPIRIT;
-  if ( description == "+54 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SHADOWSPIRIT;
-  if ( description == "+12 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFIRE;
-  if ( description == "+21 Intellect and +2% Maximum Mana"                                ) return META_EMBER_SKYFLARE;
-  if ( description == "+54 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SHADOWSPIRIT;
-  if ( description == "+21 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFLARE;
-  if ( description == "+17 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_STARFLARE;
-  if ( description == "+12 Critical Strike Rating and Reduces Snare/Root Duration by 10%" ) return META_ENIGMATIC_SKYFIRE;
-  if ( description == "+21 Dodge Rating and +1% Shield Block Value"                       ) return META_ETERNAL_EARTHSIEGE;
-  if ( description == "+81 Stamina and +5% Shield Block Value"                            ) return META_ETERNAL_SHADOWSPIRIT;
-  if ( description == "+54 Mastery Rating and Minor Run Speed Increase"                   ) return META_FLEET_SHADOWSPIRIT;
-  if ( description == "+54 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SHADOWSPIRIT;
-  if ( description == "+21 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_SKYFLARE;
-  if ( description == "+17 Intellect and Silence Duration Reduced by 10%"                 ) return META_FORLORN_STARFLARE;
-  if ( description == "+54 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SHADOWSPIRIT;
-  if ( description == "+21 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_SKYFLARE;
-  if ( description == "+17 Critical Strike Rating and Fear Duration Reduced by 10%"       ) return META_IMPASSIVE_STARFLARE;
-  if ( description == "+21 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSIEGE;
-  if ( description == "+12 Intellect and Chance to restore mana on spellcast"             ) return META_INSIGHTFUL_EARTHSTORM;
-  if ( description == "+21 Haste Rating and Sometimes Heal on Your Crits"                 ) return META_INVIGORATING_EARTHSIEGE;
-  if ( description == "+21 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSIEGE;
-  if ( description == "+12 Agility and 3% Increased Critical Damage"                      ) return META_RELENTLESS_EARTHSTORM;
-  if ( description == "+21 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSIEGE;
-  if ( description == "+17 Critical Strike Rating and Stun Duration Reduced by 10%"       ) return META_PERSISTENT_EARTHSHATTER;
-  if ( description == "+32 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSIEGE;
-  if ( description == "+26 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSHATTER;
-  if ( description == "+18 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_EARTHSTORM;
-  if ( description == "+81 Stamina and Stun Duration Reduced by 10%"                      ) return META_POWERFUL_SHADOWSPIRIT;
-  if ( description == "+81 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SHADOWSPIRIT;
-  if ( description == "+54 Strength and 3% Increased Critical Damage"                     ) return META_REVERBERATING_SHADOWSPIRIT;
-  if ( description == "+22 Spirit and 3% Increased Critical Healing Effect"               ) return META_REVITALIZING_SKYFLARE;
-  if ( description == "+12 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFIRE;
-  if ( description == "+21 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_SKYFLARE;
-  if ( description == "+17 Critical Strike Rating and Minor Run Speed Increase"           ) return META_SWIFT_STARFLARE;
-  if ( description == "Chance to Increase Melee/Ranged Attack Speed"                      ) return META_THUNDERING_SKYFLARE; //FIXME: Assuming the best one for now, since there's no way to tell by just the description
-  if ( description == "+17 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_STARFLARE;
-  if ( description == "+21 Intellect and Minor Run Speed Increase"                        ) return META_TIRELESS_SKYFLARE;
-  if ( description == "+21 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSIEGE;
-  if ( description == "+17 Intellect and Stun Duration Reduced by 10%"                    ) return META_POWERFUL_EARTHSHATTER;
-
-  return META_GEM_NONE;
-}

@@ -2517,6 +2517,13 @@ void util_t::armory_format( std::string& name, format_type_e f )
   name.swap( buffer );
 }
 
+bool util_t::is_number( const std::string& s )
+{
+  for ( std::string::size_type i = 0, l = s.length(); i < l; ++i )
+    if ( ! std::isdigit( s[ i ] ) )
+      return false;
+  return true;
+}
 
 #if 0 // UNUSED
 std::string trim( const std::string& src )
