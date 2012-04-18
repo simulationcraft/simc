@@ -6,7 +6,6 @@
 #include "simulationcraft.hpp"
 
 #include "sc_spec_list.inc"
-
 #include "sc_scale_data.inc"
 #include "sc_talent_data.inc"
 #include "sc_spell_data.inc"
@@ -921,31 +920,31 @@ spellpower_data_t* spellpower_data_t::list( bool ptr )
 double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_average( _id, level ? level : p -> level );
+  return p -> dbc.effect_average( id(), level ? level : p -> level );
 }
 
 double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_delta( _id, level ? level : p -> level );
+  return p -> dbc.effect_delta( id(), level ? level : p -> level );
 }
 
 double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_bonus( _id, level ? level : p -> level );
+  return p -> dbc.effect_bonus( id(), level ? level : p -> level );
 }
 
 double spelleffect_data_t::min( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_min( _id, level ? level : p -> level );
+  return p -> dbc.effect_min( id(), level ? level : p -> level );
 }
 
 double spelleffect_data_t::max( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc.effect_max( _id, level ? level : p -> level );
+  return p -> dbc.effect_max( id(), level ? level : p -> level );
 }
 
 talent_data_t* talent_data_t::list( bool ptr )
@@ -1146,10 +1145,10 @@ void spelleffect_data_t::link( bool ptr )
     if ( ed._spell -> _effects == 0 )
       ed._spell -> _effects = new std::vector< const spelleffect_data_t* >();
 
-    if ( ed._spell -> _effects -> size() < ( ed._index + 1 ) )
-      ed._spell -> _effects -> resize( ed._index + 1, spelleffect_data_t::nil() );
+    if ( ed._spell -> _effects -> size() < ( ed.index() + 1 ) )
+      ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
 
-    ed._spell -> _effects -> at( ed._index ) = &ed;
+    ed._spell -> _effects -> at( ed.index() ) = &ed;
   }
 }
 

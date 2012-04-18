@@ -790,7 +790,7 @@ void action_t::consume_resource()
 
   resource_consumed = cost();
 
-  player -> resource_loss( current_resource(), resource_consumed, &( stats -> resource_gain ), this );
+  player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),

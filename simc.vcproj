@@ -242,7 +242,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_data.cpp"
+			RelativePath=".\engine\dbc\sc_data.cpp"
 			>
 		</File>
 		<File

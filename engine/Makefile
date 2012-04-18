@@ -76,7 +76,6 @@ SRC = \
 	sc_attack.cpp \
 	sc_buff.cpp \
 	sc_consumable.cpp \
-	sc_data.cpp \
 	sc_dot.cpp \
 	sc_enchant.cpp \
 	sc_expressions.cpp \
@@ -126,10 +125,12 @@ SRC = \
 	interfaces$(PATHSEP)sc_xml.cpp \
 	dbc$(PATHSEP)data_definitions.hh \
 	dbc$(PATHSEP)data_enums.hh \
+	dbc$(PATHSEP)dbc.hpp \
 	dbc$(PATHSEP)sc_const_data.cpp \
 	dbc$(PATHSEP)sc_item_data.cpp \
 	dbc$(PATHSEP)sc_spell_data.cpp \
 	dbc$(PATHSEP)sc_spell_info.cpp \
+	dbc$(PATHSEP)sc_data.cpp \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
 	class_modules$(PATHSEP)sc_hunter.cpp \

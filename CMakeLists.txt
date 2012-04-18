@@ -38,7 +38,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/report/sc_chart.cpp"
   "engine/dbc/sc_const_data.cpp"
   "engine/sc_consumable.cpp"
-  "engine/sc_data.cpp"
+  "engine/dbc/sc_data.cpp"
   "engine/sc_dot.cpp"
   "engine/sc_enchant.cpp"
   "engine/sc_event.cpp"
@@ -101,6 +101,7 @@ SET(SIMC_ENGINE_SOURCE
 SET(SIMC_ENGINE_HEADERS
   "engine/simulationcraft.hpp"
   "engine/dbc/specialization.hpp"
+  "engine/dbc/dbc.hpp"
   "engine/utf8.h"
   "engine/utf8/checked.h"
   "engine/utf8/core.h"

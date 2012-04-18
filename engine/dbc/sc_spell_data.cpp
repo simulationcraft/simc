@@ -662,8 +662,8 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
         for ( size_t j = 0; j < spell -> _effects -> size(); j++ )
         {
-          if ( spell && spell -> _effects -> at( j ) -> _id > 0 &&
-               sim -> dbc.effect( spell -> _effects -> at( j ) -> _id ) )
+          if ( spell && spell -> _effects -> at( j ) -> id() > 0 &&
+               sim -> dbc.effect( spell -> _effects -> at( j ) -> id() ) )
             p_data = reinterpret_cast< char* > ( const_cast< spelleffect_data_t* >( spell -> _effects -> at( j ) ) );
           else
             p_data = 0;

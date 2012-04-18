@@ -136,8 +136,22 @@ spelleffect_data_nil_t::spelleffect_data_nil_t() :
 
 resource_type_e spelleffect_data_t::resource_gain_type() const
 {
-  return util_t::translate_power_type( static_cast< power_type_e >( _misc_value ) );
+  return util_t::translate_power_type( static_cast< power_type_e >( misc_value1() ) );
 }
+
+double spelleffect_data_t::resource( resource_type_e resource_type ) const
+  {
+    switch ( resource_type )
+    {
+    case RESOURCE_RUNIC_POWER:
+    case RESOURCE_RAGE:
+      return base_value() * ( 1 / 10.0 );
+    case RESOURCE_MANA:
+      return base_value() * ( 1 / 100.0 );
+    default:
+      return base_value();
+    }
+  }
 
 // ==========================================================================
 // Spell Power Data
@@ -153,7 +167,34 @@ spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
 resource_type_e spellpower_data_t::resource() const
 {
-  return util_t::translate_power_type( static_cast< power_type_e >( _power_type_e ) );
+  return util_t::translate_power_type( type() );
+}
+
+double spellpower_data_t::cost() const
+{
+  double cost = 0.0;
+  double divisor;
+
+  if ( _cost > 0 )
+    cost = _cost;
+  else
+    cost = _cost_2;
+
+  switch ( type() )
+  {
+  case POWER_MANA:
+    divisor = 100.0;
+    break;
+  case POWER_RAGE:
+  case POWER_RUNIC_POWER:
+    divisor = 10.0;
+    break;
+  default:
+    divisor = 1.0;
+    break;
+  }
+
+  return cost / divisor;
 }
 
 // ==========================================================================
