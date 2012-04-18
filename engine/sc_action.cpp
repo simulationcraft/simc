@@ -1685,7 +1685,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return sim -> create_expression( this, rest );
   }
 
-  if ( ( name_str == "enabled" ) )
+  if ( name_str == "enabled" )
   {
     struct ok_expr_t : public action_expr_t
     {

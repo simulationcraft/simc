@@ -21,30 +21,44 @@ public:
 
 // Unary Operators ==========================================================
 
+template <double (*F)(double)>
 struct expr_unary_t : public expr_t
 {
   expr_t* input;
-  token_type_e operation;
 
-  expr_unary_t( const std::string& n, token_type_e o, expr_t* i ) :
-    expr_t( n ), input( i ), operation( o ) { assert( input ); }
+  expr_unary_t( const std::string& n, expr_t* i ) :
+    expr_t( n ), input( i )
+  { assert( input ); }
+
   ~expr_unary_t() { delete input; }
 
-  virtual double evaluate()
-  {
-    double val = input -> eval();
-    switch ( operation )
-    {
-    case TOK_PLUS:  return  val;
-    case TOK_MINUS: return -val;
-    case TOK_NOT:   return val == 0;
-    case TOK_ABS:   return std::fabs( val );
-    case TOK_FLOOR: return std::floor( val );
-    case TOK_CEIL:  return std::ceil( val );
-    default: assert( false ); return 0; // throw?
-    }
-  }
+  double evaluate() // override
+  { return F( input -> eval() ); }
 };
+
+namespace unary {
+inline double plus ( double val ) { return val; }
+inline double minus( double val ) { return -val; }
+inline double lnot ( double val ) { return val == 0; }
+inline double abs  ( double val ) { return std::fabs( val ); }
+inline double floor( double val ) { return std::floor( val ); }
+inline double ceil ( double val ) { return std::ceil( val ); }
+}
+
+expr_t* select_unary( const std::string& name, token_type_e op, expr_t* input )
+{
+  switch ( op )
+  {
+  case TOK_PLUS:  return new expr_unary_t<unary::plus> ( name, input );
+  case TOK_MINUS: return new expr_unary_t<unary::minus>( name, input );
+  case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, input );
+  case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, input );
+  case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, input );
+  case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, input );
+
+  default: assert( false ); return 0; // throw?
+  }
+}
 
 // Binary Operators =========================================================
 
@@ -56,7 +70,12 @@ struct expr_binary_t : public expr_t
 
   expr_binary_t( const std::string& n, token_type_e o, expr_t* l, expr_t* r ) :
     expr_t( n ), left( l ), right( r ), operation( o )
-  { assert( left ); assert( right ); }
+  {
+    assert( left );
+    assert( right );
+    assert( expression_t::is_binary( o ) );
+  }
+
   ~expr_binary_t() { delete left; delete right; }
 
   virtual double evaluate()
@@ -437,7 +456,7 @@ static expr_t* build_expression_tree( action_t* action,
         return 0;
       expr_t* input = stack.back(); stack.pop_back();
       assert( input );
-      stack.push_back( new expr_unary_t( t.label, t.type, input ) );
+      stack.push_back( select_unary( t.label, t.type, input ) );
     }
     else if ( expression_t::is_binary( t.type ) )
     {
