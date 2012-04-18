@@ -339,14 +339,6 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
   shadow_bite_t( felhunter_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
   {
-    direct_power_mod = 0.614; // tested in-game as of 2010/12/20
-    base_dd_min *= 2.5; // only tested at level 85, applying base damage adjustment as a percentage
-    base_dd_max *= 2.5; // modifier in hopes of getting it "somewhat right" for other levels as well
-
-    // FIXME - Naive assumption, needs testing on the 4.1 PTR!
-    base_dd_min *= 2;
-    base_dd_max *= 2;
-    direct_power_mod *= 2;
   }
 
   virtual void player_buff()
