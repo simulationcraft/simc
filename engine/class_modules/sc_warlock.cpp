@@ -157,30 +157,17 @@ public:
 
   // warlock_spell_t::composite_target_ta_multiplier ===================================
 
-  virtual double composite_target_ta_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = 1.0;
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata_t::get( player, t ) -> cast_warlock();
 
     if ( td -> debuffs_haunt -> up() )
     {
       m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
-    return spell_t::composite_target_ta_multiplier( t ) * m;
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const
-  {
-    double m = 1.0;
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
-
-    if ( td -> debuffs_haunt -> up() )
-    {
-      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
-    }
-
-    return spell_t::composite_target_da_multiplier( t ) * m;
+    return spell_t::composite_target_multiplier( t ) * m;
   }
 
   virtual timespan_t tick_time( double haste ) const
@@ -451,45 +438,6 @@ struct chaos_bolt_t : public warlock_spell_t
   }
 };
 
-// Mortal Coil Spell =========================================================
-
-struct mortal_coil_heal_t : public warlock_heal_t
-{
-  mortal_coil_heal_t( warlock_t* p ) :
-    warlock_heal_t( "mortal_coil_heal", p, 108396 )
-  {
-    background = true;
-    may_miss = false;
-  }
-
-  virtual void execute()
-  {
-    double heal_pct = data().effectN( 1 ).percent();
-    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
-
-    warlock_heal_t::execute();
-  }
-};
-
-struct mortal_coil_t : public warlock_spell_t
-{
-  mortal_coil_heal_t* heal;
-
-  mortal_coil_t( warlock_t* p ) : 
-    warlock_spell_t( p, p -> talents.mortal_coil ), heal( 0 )
-  {
-    heal = new mortal_coil_heal_t( p );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-      heal -> execute();
-  }
-};
-
 // Shadow Burn Spell ========================================================
 
 struct shadowburn_t : public warlock_spell_t
@@ -534,15 +482,6 @@ struct shadowburn_t : public warlock_spell_t
 
     return warlock_spell_t::ready();
   }
-};
-
-// Shadowfury Spell =========================================================
-
-struct shadowfury_t : public warlock_spell_t
-{
-  shadowfury_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> talents.shadowfury )
-  {  }
 };
 
 // Corruption Spell =========================================================
@@ -1088,6 +1027,9 @@ struct summon_main_pet_t : public summon_pet_t
 
     if ( p() -> buffs.soulburn -> check() )
       p() -> buffs.soulburn -> expire();
+
+    if ( p() -> buffs.grimoire_of_sacrifice -> check() )
+      p() -> buffs.grimoire_of_sacrifice -> expire();
   }
 };
 
@@ -1542,6 +1484,105 @@ struct rain_of_fire_t : public warlock_spell_t
 };
 
 
+// TALENT SPELLS
+
+// Shadowfury Spell =========================================================
+
+struct shadowfury_t : public warlock_spell_t
+{
+  shadowfury_t( warlock_t* p ) :
+    warlock_spell_t( p, p -> talents.shadowfury )
+  {  }
+};
+
+// Mortal Coil Spell =========================================================
+
+struct mortal_coil_heal_t : public warlock_heal_t
+{
+  mortal_coil_heal_t( warlock_t* p ) :
+    warlock_heal_t( "mortal_coil_heal", p, 108396 )
+  {
+    background = true;
+    may_miss = false;
+  }
+
+  virtual void execute()
+  {
+    double heal_pct = data().effectN( 1 ).percent();
+    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
+
+    warlock_heal_t::execute();
+  }
+};
+
+struct mortal_coil_t : public warlock_spell_t
+{
+  mortal_coil_heal_t* heal;
+
+  mortal_coil_t( warlock_t* p ) : 
+    warlock_spell_t( p, p -> talents.mortal_coil ), heal( 0 )
+  {
+    heal = new mortal_coil_heal_t( p );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+      heal -> execute();
+  }
+};
+
+// Grimoire of Sacrifice ====================================================
+
+struct grimoire_of_sacrifice_t : public warlock_spell_t
+{
+  struct decrement_event_t : public event_t
+  {
+    buff_t* buff;
+
+    decrement_event_t( warlock_t* p, buff_t* b ) :
+      event_t( p -> sim, p, "grimoire_of_sacrifice_decrement" ), buff( b )
+    {
+      sim -> add_event( this, timespan_t::from_seconds( 15 ) );  
+    }
+
+    virtual void execute()
+    {
+      if ( buff -> stack() == 2 ) buff -> decrement();
+    }
+  };
+
+  decrement_event_t* decrement_event;
+
+  grimoire_of_sacrifice_t( warlock_t* p ) :
+    warlock_spell_t( p, p -> talents.grimoire_of_sacrifice ), decrement_event( 0 )
+  {  
+    harmful = false;  
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> pets.active ) return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> pets.active )
+    {
+      warlock_spell_t::execute();
+
+      p() -> pets.active -> dismiss();
+      p() -> buffs.grimoire_of_sacrifice -> trigger( 2 );
+      decrement_event = new (sim) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
+    }
+  }
+};
+
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -1572,8 +1613,13 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
 
   if ( buffs.metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + buffs.metamorphosis -> data().effectN( 3 ).percent()
+    player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
                          + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
+  }
+
+  if ( buffs.grimoire_of_sacrifice -> up() )
+  {
+    player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
   }
 
   double fire_multiplier   = 1.0;
@@ -1617,41 +1663,42 @@ action_t* warlock_t::create_action( const std::string& name,
 {
   action_t* a;
 
-  if      ( name == "chaos_bolt"          ) a = new          chaos_bolt_t( this );
-  else if ( name == "conflagrate"         ) a = new         conflagrate_t( this );
-  else if ( name == "corruption"          ) a = new          corruption_t( this );
-  else if ( name == "agony"               ) a = new               agony_t( this );
-  else if ( name == "doom"                ) a = new                doom_t( this );
-  else if ( name == "curse_of_elements"   ) a = new   curse_of_elements_t( this );
-  else if ( name == "drain_life"          ) a = new          drain_life_t( this );
-  else if ( name == "drain_soul"          ) a = new          drain_soul_t( this );
-  else if ( name == "haunt"               ) a = new               haunt_t( this );
-  else if ( name == "immolate"            ) a = new            immolate_t( this );
-  else if ( name == "incinerate"          ) a = new          incinerate_t( this );
-  else if ( name == "life_tap"            ) a = new            life_tap_t( this );
-  else if ( name == "malefic_grasp"       ) a = new       malefic_grasp_t( this );
-  else if ( name == "metamorphosis"       ) a = new       metamorphosis_t( this );
-  else if ( name == "mortal_coil"         ) a = new         mortal_coil_t( this );
-  else if ( name == "shadow_bolt"         ) a = new         shadow_bolt_t( this );
-  else if ( name == "shadowburn"          ) a = new          shadowburn_t( this );
-  else if ( name == "shadowfury"          ) a = new          shadowfury_t( this );
-  else if ( name == "soul_fire"           ) a = new           soul_fire_t( this );
-  else if ( name == "summon_felhunter"    ) a = new    summon_felhunter_t( this );
-  else if ( name == "summon_felguard"     ) a = new     summon_felguard_t( this );
-  else if ( name == "summon_succubus"     ) a = new     summon_succubus_t( this );
-  else if ( name == "summon_voidwalker"   ) a = new   summon_voidwalker_t( this );
-  else if ( name == "summon_imp"          ) a = new          summon_imp_t( this );
-  else if ( name == "summon_infernal"     ) a = new     summon_infernal_t( this );
-  else if ( name == "summon_doomguard"    ) a = new    summon_doomguard_t( this );
-  else if ( name == "unstable_affliction" ) a = new unstable_affliction_t( this );
-  else if ( name == "hand_of_guldan"      ) a = new      hand_of_guldan_t( this );
-  else if ( name == "fel_flame"           ) a = new           fel_flame_t( this );
-  else if ( name == "dark_intent"         ) a = new         dark_intent_t( this );
-  else if ( name == "soulburn"            ) a = new            soulburn_t( this );
-  else if ( name == "bane_of_havoc"       ) a = new       bane_of_havoc_t( this );
-  else if ( name == "hellfire"            ) a = new            hellfire_t( this );
-  else if ( name == "seed_of_corruption"  ) a = new  seed_of_corruption_t( this );
-  else if ( name == "rain_of_fire"        ) a = new        rain_of_fire_t( this );
+  if      ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
+  else if ( name == "conflagrate"           ) a = new           conflagrate_t( this );
+  else if ( name == "corruption"            ) a = new            corruption_t( this );
+  else if ( name == "agony"                 ) a = new                 agony_t( this );
+  else if ( name == "doom"                  ) a = new                  doom_t( this );
+  else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
+  else if ( name == "drain_life"            ) a = new            drain_life_t( this );
+  else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
+  else if ( name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
+  else if ( name == "haunt"                 ) a = new                 haunt_t( this );
+  else if ( name == "immolate"              ) a = new              immolate_t( this );
+  else if ( name == "incinerate"            ) a = new            incinerate_t( this );
+  else if ( name == "life_tap"              ) a = new              life_tap_t( this );
+  else if ( name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
+  else if ( name == "metamorphosis"         ) a = new         metamorphosis_t( this );
+  else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
+  else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
+  else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
+  else if ( name == "shadowfury"            ) a = new            shadowfury_t( this );
+  else if ( name == "soul_fire"             ) a = new             soul_fire_t( this );
+  else if ( name == "summon_felhunter"      ) a = new      summon_felhunter_t( this );
+  else if ( name == "summon_felguard"       ) a = new       summon_felguard_t( this );
+  else if ( name == "summon_succubus"       ) a = new       summon_succubus_t( this );
+  else if ( name == "summon_voidwalker"     ) a = new     summon_voidwalker_t( this );
+  else if ( name == "summon_imp"            ) a = new            summon_imp_t( this );
+  else if ( name == "summon_infernal"       ) a = new       summon_infernal_t( this );
+  else if ( name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
+  else if ( name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
+  else if ( name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
+  else if ( name == "fel_flame"             ) a = new             fel_flame_t( this );
+  else if ( name == "dark_intent"           ) a = new           dark_intent_t( this );
+  else if ( name == "soulburn"              ) a = new              soulburn_t( this );
+  else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
+  else if ( name == "hellfire"              ) a = new              hellfire_t( this );
+  else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
+  else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
@@ -1721,9 +1768,12 @@ void warlock_t::init_spells()
   spec.nightfall = find_specialization_spell( "Nightfall" );
 
   // Demonology
-  spec.decimation = find_specialization_spell( "Decimation" );
+  spec.decimation    = find_specialization_spell( "Decimation" );
+  spec.metamorphosis = find_specialization_spell( "Metamorphosis" );
+  spec.molten_core   = find_specialization_spell( "Molten Core" );
 
   // Destruction
+  spec.backdraft      = find_specialization_spell( "Backdraft" );
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
 
   // Mastery
@@ -1808,9 +1858,9 @@ void warlock_t::init_scaling()
 
 // helpers
 
-buff_t* warlock_t::create_buff( const std::string& name )
+buff_t* warlock_t::create_buff( const spell_data_t* sd, const std::string& token )
 {
-  return buff_creator_t( this, std::string( name ), find_spell( name ) );
+  return buff_creator_t( this, token, sd );
 }
 
 buff_t* warlock_t::create_buff( int id, const std::string& token )
@@ -1822,11 +1872,12 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = create_buff( "Backdraft" );
-  buffs.decimation            = create_buff( "Decimation" );
-  buffs.metamorphosis         = create_buff( "Metamorphosis" );
-  buffs.molten_core           = create_buff( "Molten Core" );
-  buffs.soulburn              = create_buff( "Soulburn" );
+  buffs.backdraft             = create_buff( spec.backdraft, "backdraft" );
+  buffs.decimation            = create_buff( spec.decimation, "decimation" );
+  buffs.metamorphosis         = create_buff( spec.metamorphosis, "metamorphosis" );
+  buffs.molten_core           = create_buff( spec.molten_core, "molten_core" );
+  buffs.soulburn              = create_buff( find_class_spell( "Soulburn" ), "soulburn" );
+  buffs.grimoire_of_sacrifice = create_buff( talents.grimoire_of_sacrifice, "grimoire_of_sacrifice" );
   buffs.tier13_4pc_caster     = create_buff( sets -> set ( SET_T13_4PC_CASTER ) -> id(), "tier13_4pc_caster" );
 }
 

@@ -54,6 +54,7 @@ struct warlock_t : public player_t
     buff_t* soulburn;
     buff_t* bane_of_havoc;
     buff_t* tier13_4pc_caster;
+    buff_t* grimoire_of_sacrifice;
   } buffs;
 
   // Cooldowns
@@ -104,8 +105,11 @@ struct warlock_t : public player_t
 
     // Demonology
     const spell_data_t* decimation;
+    const spell_data_t* metamorphosis;
+    const spell_data_t* molten_core;
 
     // Destruction
+    const spell_data_t* backdraft;
     const spell_data_t* burning_embers;
 
   } spec;
@@ -181,8 +185,6 @@ struct warlock_t : public player_t
 
   int use_pre_soulburn;
 
-  warlock_pet_t* active_pet;
-
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
 
@@ -203,7 +205,7 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  buff_t*   create_buff( const std::string& name );
+  buff_t*   create_buff( const spell_data_t* sd, const std::string& token );
   buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
