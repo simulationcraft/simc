@@ -29,13 +29,22 @@ struct monk_t : public player_t
   monk_stance_e active_stance;
 
   // Buffs
-  //buff_t* buffs_<buffname>;
+  struct buffs_t
+  {
+    //buff_t* buffs_<buffname>;
+  } buffs;
 
   // Gains
-  gain_t* gains_chi;
+  struct gains_t
+  {
+    gain_t* chi;
+  } gains;
 
   // Procs
-  //proc_t* procs_<procname>;
+  struct procs_t
+  {
+    //proc_t* procs_<procname>;
+  } procs;
 
   // Talents
   struct talents_t
@@ -47,9 +56,7 @@ struct monk_t : public player_t
 
     // TREE_MONK_HEAL
 
-    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-  };
-  talents_t talents;
+  } talents;
 
   // Passives
   struct passives_t
@@ -60,10 +67,7 @@ struct monk_t : public player_t
     // TREE_MONK_DAMAGE
 
     // TREE_MONK_HEAL
-
-    passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
-  };
-  passives_t passives;
+  } passives;
 
   // Glyphs
   struct glyphs_t
@@ -73,23 +77,20 @@ struct monk_t : public player_t
 
     // Major
 
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
+  } glyphs;
 
   monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_PANDAREN ) :
-    player_t( sim, MONK, name, r )
+    player_t( sim, MONK, name, r ),
+    buffs( buffs_t() ),
+    gains( gains_t() ),
+    procs( procs_t() ),
+    talents( talents_t() ),
+    passives( passives_t() ),
+    glyphs( glyphs_t() )
   {
-
-    // FIXME
-    tree_type[ MONK_BREWMASTER    ] = TREE_BREWMASTER;
-    tree_type[ MONK_WINDWALKER  ] = TREE_WINDWALKER;
-    tree_type[ MONK_MISTWEAVER    ] = TREE_MISTWEAVER;
 
     active_stance             = STANCE_FIERCE_TIGER;
 
-    create_talents();
-    create_glyphs();
     create_options();
   }
 
@@ -97,7 +98,6 @@ struct monk_t : public player_t
   virtual monk_targetdata_t* new_targetdata( player_t* target )
   { return new monk_targetdata_t( this, target ); }
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -127,29 +127,17 @@ struct monk_melee_attack_t : public melee_attack_t
 {
   int stancemask;
 
-  monk_melee_attack_t( const char* n, uint32_t id, monk_t* p,
-                       talent_tree_type_e t=TREE_NONE, bool special = true ) :
-    melee_attack_t( n, id, p, t, special ),
+  monk_melee_attack_t( const std::string& n, monk_t* player,
+                       const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+    melee_attack_t( n, player, s, sc ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_melee_attack_t();
-  }
-
-  monk_melee_attack_t( const char* n, const char* s_name, monk_t* p ) :
-    melee_attack_t( n, s_name, p, TREE_NONE, true ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_melee_attack_t();
-  }
-
-  monk_t* p() const
-  { return static_cast<monk_t*>( player ); }
-
-  void _init_monk_melee_attack_t()
   {
     may_crit   = true;
     may_glance = false;
   }
+
+  monk_t* p() const
+  { return debug_cast<monk_t*>( player ); }
 
   virtual bool   ready();
 };
@@ -158,27 +146,16 @@ struct monk_spell_t : public spell_t
 {
   int stancemask;
 
-  monk_spell_t( const char* n, uint32_t id, monk_t* p ) :
-    spell_t( n, id, p ),
+  monk_spell_t( const std::string& n, monk_t* player,
+                const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+    spell_t( n, player, s, sc ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_spell_t();
-  }
-
-  monk_spell_t( const char* n, const char* s_name, monk_t* p ) :
-    spell_t( n, s_name, p ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_spell_t();
-  }
-
-  monk_t* p() const
-  { return static_cast<monk_t*>( player ); }
-
-  void _init_monk_spell_t()
   {
     may_crit   = true;
   }
+
+  monk_t* p() const
+  { return debug_cast<monk_t*>( player ); }
 
   virtual bool   ready();
 };
@@ -187,27 +164,16 @@ struct monk_heal_t : public heal_t
 {
   int stancemask;
 
-  monk_heal_t( const char* n, uint32_t id, monk_t* p ) :
-    heal_t( n, p, id ),
+  monk_heal_t( const std::string& n, monk_t* player,
+                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+      heal_t( n, player, s, sc ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_heal_t();
-  }
-
-  monk_heal_t( const char* n, const char* s_name, monk_t* p ) :
-    heal_t( n, p, s_name ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
-  {
-    _init_monk_heal_t();
-  }
-
-  monk_t* p() const
-  { return static_cast<monk_t*>( player ); }
-
-  void _init_monk_heal_t()
   {
     may_crit   = true;
   }
+
+  monk_t* p() const
+  { return debug_cast<monk_t*>( player ); }
 
   virtual bool   ready();
 };
@@ -229,7 +195,7 @@ bool monk_melee_attack_t::ready()
 struct jab_t : public monk_melee_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "jab", "Jab", p )
+    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -239,14 +205,14 @@ struct jab_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p() -> resource_gain( RESOURCE_CHI,  effectN( 2 ).base_value() , p() -> gains_chi );
+    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gains.chi );
   }
 };
 
 struct tiger_palm_t : public monk_melee_attack_t
 {
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "tiger_palm", "Tiger Palm", p )
+    monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
@@ -267,7 +233,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "blackout_kick", "Blackout Kick", p )
+    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( 0, options_str );
   }
@@ -276,7 +242,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 struct spinning_crane_kick_tick_t : public monk_melee_attack_t
 {
   spinning_crane_kick_tick_t( monk_t* p ) :
-    monk_melee_attack_t( "spinning_crane_kick_tick", 0u, p )
+    monk_melee_attack_t( "spinning_crane_kick_tick", p )
   {
     background  = true;
     dual        = true;
@@ -290,7 +256,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "spinning_crane_kick", "Spinning Crane Kick", p ),
+    monk_melee_attack_t( "spinning_crane_kick", p, p -> find_class_spell( "Spinning Crane Kick" ) ),
     spinning_crane_kick_tick( 0 )
   {
     parse_options( 0, options_str );
@@ -343,7 +309,7 @@ struct stance_t : public monk_spell_t
   std::string stance_str;
 
   stance_t( monk_t* p, const std::string& options_str ) :
-    monk_spell_t( "stance", ( uint32_t ) 0, p ),
+    monk_spell_t( "stance", p ),
     switch_to_stance( STANCE_FIERCE_TIGER ), stance_str( "" )
   {
     option_t options[] =
@@ -418,21 +384,6 @@ action_t* monk_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// monk_t::init_talents =====================================================
-
-void monk_t::init_talents()
-{
-  player_t::init_talents();
-
-  // TREE_MONK_TANK
-  //talents.<name>        = find_talent( "<talentname>" );
-
-  // TREE_MONK_DAMAGE
-
-  // TREE_MONK_HEAL
-
-}
-
 // monk_t::init_spells ======================================================
 
 void monk_t::init_spells()
@@ -459,18 +410,18 @@ void monk_t::init_base()
 
   int tree = primary_tree();
 
-  default_distance = ( tree == TREE_MISTWEAVER ) ? 40 : 3;
+  default_distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
   distance = default_distance;
 
   base_gcd = timespan_t::from_seconds( 1.0 ); // FIXME: assumption
 
-  resources.base[  RESOURCE_CHI  ] = 0; // FIXME: placeholder
+  resources.base[  RESOURCE_CHI  ] = 3; // FIXME: placeholder
 
   base_chi_regen_per_second = 10; // FIXME: placeholder ( identical to rogue )
 
-  if ( tree == TREE_MISTWEAVER )
+  if ( tree == MONK_MISTWEAVER )
     active_stance = STANCE_HEAL;
-  else if ( tree == TREE_BREWMASTER )
+  else if ( tree == MONK_BREWMASTER )
     active_stance = STANCE_DRUNKEN_OX;
 
 
@@ -506,7 +457,7 @@ void monk_t::init_gains()
 {
   player_t::init_gains();
 
-  gains_chi = get_gain( "chi" );
+  gains.chi = get_gain( "chi" );
 }
 
 // monk_t::init_procs =======================================================
@@ -564,7 +515,7 @@ void monk_t::init_resources( bool force )
 
 double monk_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
-  if ( primary_tree() == TREE_MISTWEAVER )
+  if ( primary_tree() == MONK_MISTWEAVER )
   {
     if ( attr == ATTR_INTELLECT )
       return 0.05;
@@ -602,7 +553,7 @@ int monk_t::decode_set( const item_t& item ) const
 resource_type_e monk_t::primary_resource() const
 {
   // FIXME: change to healing stance
-  if ( primary_tree() == TREE_MISTWEAVER )
+  if ( primary_tree() == MONK_MISTWEAVER )
     return RESOURCE_MANA;
 
   return RESOURCE_CHI;
@@ -621,10 +572,10 @@ role_type_e monk_t::primary_role() const
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
-  if ( primary_tree() == TREE_BREWMASTER )
+  if ( primary_tree() == MONK_BREWMASTER )
     return ROLE_TANK;
 
-  if ( primary_tree() == TREE_MISTWEAVER )
+  if ( primary_tree() == MONK_MISTWEAVER )
     return ROLE_HEAL;
 
   return ROLE_HYBRID;
