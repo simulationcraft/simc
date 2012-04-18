@@ -139,15 +139,10 @@ bool parse_glyphs( player_t* p, js_node_t* build )
               item_t::download_glyph( p, glyph_name, glyph_id );
           }
 
+          util_t::glyph_name( glyph_name );
           if ( ! glyph_name.empty() )
           {
-            // FIXME: Move this common boilerplate stuff into util_t where all the data
-            //        sources can use it instead of cut'n'pasting.
-            if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-            else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-            util_t::armory_format( glyph_name );
-
-            if ( p -> glyphs_str.length() )
+            if ( ! p -> glyphs_str.empty() )
               p -> glyphs_str += '/';
             p -> glyphs_str += glyph_name;
           }
@@ -704,15 +699,6 @@ bool download_glyph( player_t*          player,
       player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );
     return false;
   }
-
-  static const std::string glyph_of = "Glyph of ";
-  static const std::string glyph_dash = "Glyph - ";
-
-  if ( util_t::str_prefix_ci( glyph_name, glyph_of ) )
-    glyph_name.erase( 0, glyph_of.length() );
-  else if ( util_t::str_prefix_ci( glyph_name, glyph_dash ) )
-    glyph_name.erase( 0, glyph_dash.length() );
-  util_t::armory_format( glyph_name );
 
   return true;
 }

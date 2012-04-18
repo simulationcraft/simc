@@ -1501,6 +1501,8 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     }
   }
 
+  util_t::glyph_name( glyph_name );
+
   return success;
 }
 

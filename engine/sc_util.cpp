@@ -42,8 +42,13 @@ std::string& util_t::glyph_name( std::string& n )
 {
   util_t::armory_format( n );
 
-  if ( n.substr( 0, 9 ) == "glyph_of_" ) n.erase( 0, 9 );
-  if ( n.substr( 0, 7 ) == "glyph__" )   n.erase( 0, 7 );
+  if ( n.size() >= 9 )
+  {
+    if ( std::equal( n.begin(), n.begin() + 7, "glyph__" ) )
+      n.erase( 0, 7 );
+    else if ( std::equal( n.begin(), n.begin() + 9, "glyph_of_" ) )
+      n.erase( 0, 9 );
+  }
 
   return n;
 }

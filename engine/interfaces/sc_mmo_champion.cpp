@@ -585,10 +585,6 @@ bool mmo_champion_t::download_glyph( player_t*          player,
     return false;
   }
 
-  glyph_name.erase( 0, 9 ); // remove "Glyph of "
-  std::string::size_type pos = glyph_name.find( " - " );
-  if ( pos != std::string::npos ) glyph_name.erase( pos );
-  util_t::armory_format( glyph_name );
   return true;
 }
 

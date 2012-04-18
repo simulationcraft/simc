@@ -184,10 +184,9 @@ player_t* chardev_t::download_player( sim_t* sim,
     std::string glyph_name;
     if ( js_t::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
     {
-      if      ( glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-      else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-      util_t::armory_format( glyph_name );
-      if ( p -> glyphs_str.size() > 0 ) p -> glyphs_str += "/";
+      util_t::glyph_name( glyph_name );
+      if ( ! p -> glyphs_str.empty() )
+        p -> glyphs_str += '/';
       p -> glyphs_str += glyph_name;
     }
   }

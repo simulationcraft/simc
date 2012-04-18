@@ -666,10 +666,6 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 
   glyph_name = glyph -> name;
 
-  if (      glyph_name.substr( 0, 9 ) == "Glyph of " ) glyph_name.erase( 0, 9 );
-  else if ( glyph_name.substr( 0, 8 ) == "Glyph - "  ) glyph_name.erase( 0, 8 );
-  util_t::armory_format( glyph_name );
-
   return true;
 }
 
