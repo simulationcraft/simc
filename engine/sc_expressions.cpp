@@ -11,21 +11,22 @@ class const_expr_t : public expr_t
 {
   const double value;
 
-  double evaluate() // override
-  { return value; }
-
 public:
   const_expr_t( const std::string& name, double value_ ) :
     expr_t( name ), value( value_ ) {}
+
+  double evaluate() // override
+  { return value; }
 };
 
 // Unary Operators ==========================================================
 
 template <double (*F)(double)>
-struct expr_unary_t : public expr_t
+class expr_unary_t : public expr_t
 {
   expr_t* input;
 
+public:
   expr_unary_t( const std::string& n, expr_t* i ) :
     expr_t( n ), input( i )
   { assert( input ); }
@@ -62,53 +63,79 @@ expr_t* select_unary( const std::string& name, token_type_e op, expr_t* input )
 
 // Binary Operators =========================================================
 
-struct expr_binary_t : public expr_t
+class binary_base_t : public expr_t
 {
+protected:
   expr_t* left;
   expr_t* right;
-  token_type_e operation;
 
-  expr_binary_t( const std::string& n, token_type_e o, expr_t* l, expr_t* r ) :
-    expr_t( n ), left( l ), right( r ), operation( o )
+public:
+  binary_base_t( const std::string& n, expr_t* l, expr_t* r ) :
+    expr_t( n ), left( l ), right( r )
   {
     assert( left );
     assert( right );
-    assert( expression_t::is_binary( o ) );
   }
 
-  ~expr_binary_t() { delete left; delete right; }
-
-  virtual double evaluate()
-  {
-    double l = left -> eval();
-
-    switch( operation )
-    {
-    case TOK_AND: return l && right -> eval();
-    case TOK_OR:  return l || right -> eval();
-    default: break;
-    }
-
-    double r = right -> eval();
-
-    switch ( operation )
-    {
-    case TOK_ADD:   return l + r;
-    case TOK_SUB:   return l - r;
-    case TOK_MULT:  return l * r;
-    case TOK_DIV:   return l / r;
-
-    case TOK_EQ:    return l == r;
-    case TOK_NOTEQ: return l != r;
-    case TOK_LT:    return l <  r;
-    case TOK_LTEQ:  return l <= r;
-    case TOK_GT:    return l >  r;
-    case TOK_GTEQ:  return l >= r;
-
-    default: assert( false ); return 0; // throw?
-    }
-  }
+  ~binary_base_t() { delete left; delete right; }
 };
+
+class logical_and_t : public binary_base_t
+{
+public:
+  logical_and_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return left -> eval() && right -> eval(); }
+};
+
+class logical_or_t : public binary_base_t
+{
+public:
+  logical_or_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return left -> eval() || right -> eval(); }
+};
+
+template <template<typename> class F>
+class expr_binary_t : public binary_base_t
+{
+public:
+  expr_binary_t( const std::string& n, expr_t* l, expr_t* r ) :
+    binary_base_t( n, l, r )
+  {}
+
+  double evaluate() // override
+  { return F<double>()( left -> eval(), right -> eval() ); }
+};
+
+expr_t* select_binary( const std::string& name, token_type_e op, expr_t* left, expr_t* right )
+{
+  switch( op )
+  {
+  case TOK_AND:   return new logical_and_t                     ( name, left, right );
+  case TOK_OR:    return new logical_or_t                      ( name, left, right );
+
+  case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
+  case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
+  case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, left, right );
+  case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, left, right );
+
+  case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, left, right );
+  case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, left, right );
+  case TOK_LT:    return new expr_binary_t<std::less>          ( name, left, right );
+  case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, left, right );
+  case TOK_GT:    return new expr_binary_t<std::greater>       ( name, left, right );
+  case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, left, right );
+
+  default: assert( false ); return 0; // throw?
+  }
+}
 
 } // ANONYMOUS NAMESPACE ====================================================
 
@@ -466,7 +493,7 @@ static expr_t* build_expression_tree( action_t* action,
       assert( right );
       expr_t* left  = stack.back(); stack.pop_back();
       assert( left );
-      stack.push_back( new expr_binary_t( t.label, t.type, left, right ) );
+      stack.push_back( select_binary( t.label, t.type, left, right ) );
     }
   }
 
