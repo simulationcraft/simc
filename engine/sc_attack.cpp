@@ -317,6 +317,9 @@ void attack_t::init()
 
   if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
     snapshot_flags |= STATE_AP;
+
+  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_SP;
 }
 
 // ==========================================================================

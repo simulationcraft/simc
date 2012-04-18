@@ -4260,7 +4260,7 @@ public:
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power; }
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
-  virtual double composite_spell_power() const { return base_spell_power; }
+  virtual double composite_spell_power() const { return base_spell_power + player -> composite_spell_power( school ); }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
@@ -4425,7 +4425,6 @@ public:
   virtual double composite_crit( const action_state_t* s ) const
   { return action_t::composite_crit( s ) + player -> composite_spell_crit(); }
   virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_spell_haste(); }
-  virtual double composite_spell_power() const { return action_t::composite_spell_power() + player -> composite_spell_power( school ); }
   virtual double composite_spell_power_multiplier() const { return action_t::composite_spell_power_multiplier() * player -> composite_spell_power_multiplier(); }
 };
 
