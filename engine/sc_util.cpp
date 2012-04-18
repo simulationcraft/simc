@@ -211,14 +211,15 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 }
 #endif
 
-// util_t::dot_behaviour_type_string =========================================
+// util_t::dot_behavior_type_string =========================================
 
-const char* util_t::dot_behaviour_type_string( dot_behaviour_type_e t )
+const char* util_t::dot_behavior_type_string( dot_behavior_type_e t )
 {
   switch ( t )
   {
   case DOT_REFRESH: return "DOT_REFRESH";
   case DOT_CLIP:    return "DOT_CLIP";
+  case DOT_EXTEND:  return "DOT_EXTEND";
   default:          return "unknown";
   }
 }

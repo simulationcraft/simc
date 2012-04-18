@@ -500,7 +500,7 @@ enum dmg_type_e { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, AB
 
 enum stats_type_e { STATS_DMG, STATS_HEAL, STATS_ABSORB };
 
-enum dot_behaviour_type_e { DOT_CLIP, DOT_REFRESH };
+enum dot_behavior_type_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
 enum attribute_type_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
@@ -1649,7 +1649,7 @@ public:
 
   static const char* attribute_type_string     ( attribute_type_e type );
   static const char* dmg_type_string           ( dmg_type_e type );
-  static const char* dot_behaviour_type_string ( dot_behaviour_type_e t );
+  static const char* dot_behavior_type_string  ( dot_behavior_type_e t );
   static const char* elixir_type_string        ( elixir_type_e type );
   static const char* flask_type_string         ( flask_type_e type );
   static const char* food_type_string          ( food_type_e type );
@@ -4063,7 +4063,7 @@ struct action_t
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
   bool stateless;
-  dot_behaviour_type_e dot_behavior;
+  dot_behavior_type_e dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;

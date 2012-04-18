@@ -139,7 +139,8 @@ void action_t::impact_s( action_state_t* s )
     if ( num_ticks > 0 )
     {
       dot_t* dot = this -> dot();
-      if ( dot_behavior != DOT_REFRESH ) dot -> cancel();
+      int remaining_ticks = dot -> num_ticks - dot -> current_tick;
+      if ( dot_behavior == DOT_CLIP ) dot -> cancel();
       dot -> action = this;
       dot -> current_tick = 0;
       dot -> added_ticks = 0;
@@ -150,8 +151,10 @@ void action_t::impact_s( action_state_t* s )
       else
         dot -> state -> copy_state( s );
       dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
+
       if ( dot -> ticking )
       {
+        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( (int) ( dot -> num_ticks / 2 ), remaining_ticks );
         assert( dot -> tick_event );
         if ( ! channeled )
         {

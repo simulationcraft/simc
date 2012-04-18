@@ -1034,7 +1034,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
     if ( num_ticks > 0 )
     {
       dot_t* dot = this -> dot();
-      if ( dot_behavior != DOT_REFRESH ) dot -> cancel();
+      if ( dot_behavior == DOT_CLIP ) dot -> cancel();
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks( player_haste );
       dot -> current_tick = 0;

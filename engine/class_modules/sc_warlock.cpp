@@ -272,6 +272,7 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.02; // from tooltip
+    dot_behavior = DOT_EXTEND;
   }
 
   virtual void last_tick( dot_t* d )
@@ -314,6 +315,7 @@ struct doom_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
+    dot_behavior = DOT_EXTEND;
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -550,6 +552,7 @@ struct corruption_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.2; // from tooltip
+    dot_behavior = DOT_EXTEND;
   };
 
   virtual void tick( dot_t* d )
@@ -678,6 +681,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     tick_power_mod = 0.2; // from tooltip
+    dot_behavior = DOT_EXTEND;
   }
 
   virtual void execute()
