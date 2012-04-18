@@ -2333,8 +2333,8 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
-  report::generate_player_charts( p, p->report_information );
-  report::generate_player_buff_lists( p, p->report_information );
+  generate_report_information::generate_player_charts( p, p->report_information );
+  generate_report_information::generate_player_buff_lists( p, p->report_information );
 
   std::string n = p -> name();
   util_t::format_text( n, true );

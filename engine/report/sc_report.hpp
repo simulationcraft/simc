@@ -34,15 +34,16 @@ struct chart {
   static std::string gear_weights_pawn      ( const player_t*, bool hit_expertise=true );
 };
 
-struct report {
+struct generate_report_information {
   static void generate_player_charts  ( const player_t*, player_t::report_information_t& );
   static void generate_player_buff_lists ( const player_t*, player_t::report_information_t& );
   static void generate_sim_report_information     ( const sim_t*,       sim_t::report_information_t& );
+};
+
+struct report {
 
   static void print_html_rng_information  ( FILE*, const rng_t* );
   static void print_html_sample_data      ( FILE*, const player_t*, const sample_data_t&, const std::string& name );
-
-  static bool buff_comp( const buff_t* i, const buff_t* j );
 
   static void print_spell_query ( sim_t*, unsigned level = MAX_LEVEL );
   static void print_profiles    ( sim_t* );
@@ -53,25 +54,6 @@ struct report {
   static void print_suite       ( sim_t* );
 };
 
-inline bool report::buff_comp( const buff_t* i, const buff_t* j )
-{
-  // Aura&Buff / Pet
-  if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
-    return true;
-  // Pet / Aura&Buff
-  else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
-    return false;
-  // Pet / Pet
-  else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
-  {
-    if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
-      return ( i -> name_str.compare( j -> name_str ) < 0 );
-    else
-      return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
-  }
-
-  return ( i -> name_str.compare( j -> name_str ) < 0 );
-}
 
 #if SC_BETA
 namespace {

@@ -445,8 +445,30 @@ struct buff_is_constant
     return true;
   }
 };
+struct buff_comp
+{
+  bool operator()( const buff_t* i, const buff_t* j )
+  {
+    // Aura&Buff / Pet
+    if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
+      return true;
+    // Pet / Aura&Buff
+    else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
+      return false;
+    // Pet / Pet
+    else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
+    {
+      if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
+        return ( i -> name_str.compare( j -> name_str ) < 0 );
+      else
+        return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
+    }
 
-void report::generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
+    return ( i -> name_str.compare( j -> name_str ) < 0 );
+  }
+};
+
+void generate_report_information::generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -467,16 +489,16 @@ void report::generate_player_buff_lists( const player_t*  p, player_t::report_in
   // Filter out non-dynamic buffs, copy them into ri.dynamic_buffs and sort
   //range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic );
   range::remove_copy_if( ri.buff_list, back_inserter( ri.dynamic_buffs ), buff_is_dynamic() );
-  range::sort( ri.dynamic_buffs, report::buff_comp );
+  range::sort( ri.dynamic_buffs, buff_comp() );
 
   // Filter out non-constant buffs, copy them into ri.constant_buffs and sort
   range::remove_copy_if( ri.buff_list, back_inserter( ri.constant_buffs ), buff_is_constant() );
-  range::sort( ri.constant_buffs, report::buff_comp );
+  range::sort( ri.constant_buffs, buff_comp() );
 
   ri.buff_lists_generated = true;
 }
 
-void report::generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
+void generate_report_information::generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -588,7 +610,7 @@ void report::generate_player_charts( const player_t*  p, player_t::report_inform
   ri.charts_generated = true;
 }
 
-void report::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
+void generate_report_information::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;

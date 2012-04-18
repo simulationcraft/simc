@@ -700,7 +700,7 @@ void print_text_hat_donors( FILE* file, const sim_t* sim )
 
 void print_text_player( FILE* file, player_t* p )
 {
-  report::generate_player_buff_lists( p, p->report_information );
+  generate_report_information::generate_player_buff_lists( p, p->report_information );
 
   util_t::fprintf( file, "\n%s: %s %s %s %s %d\n",
                    p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
