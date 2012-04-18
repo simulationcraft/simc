@@ -372,11 +372,7 @@ public:
   }
 
   priest_targetdata_t* td() const
-  {
-    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
-    assert( q );
-    return q;
-  }
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
@@ -579,11 +575,7 @@ struct priest_heal_t : public heal_t
   }
 
   priest_targetdata_t* td() const
-  {
-    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
-    assert( q );
-    return q;
-  }
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
@@ -694,7 +686,7 @@ struct priest_heal_t : public heal_t
   {
     if ( ! heal_t::ready() )
       return false;
-  
+
     if ( ! check_shadowform() )
       return false;
 
@@ -857,11 +849,7 @@ struct priest_spell_t : public spell_t
   { return static_cast<priest_t*>( player ); }
 
   priest_targetdata_t* td() const
-  {
-    priest_targetdata_t* q = dynamic_cast<priest_targetdata_t*>( action_t::targetdata() );
-    assert( q );
-    return q;
-  }
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
 
   virtual void schedule_execute()
   {
@@ -1394,7 +1382,7 @@ struct archangel_t : public priest_spell_t
       p() -> buffs.dark_archangel -> trigger( 1, p() -> buffs.dark_archangel -> default_value );
     }
     else
-    {     
+    {
       p() -> buffs.holy_archangel -> trigger( 1, p() -> buffs.holy_archangel -> default_value * p() -> buffs.holy_evangelism -> stack() );
       p() -> buffs.holy_evangelism -> expire();
     }
@@ -2124,7 +2112,7 @@ struct shadow_word_death_t : public priest_spell_t
     }
 
     priest_spell_t::impact_s( s );
-   
+
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
@@ -3777,7 +3765,7 @@ void priest_t::init_buffs()
                                                            .duration( timespan_t::from_seconds( 10.0 ) );
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
                                                            .duration( find_spell( 114257 ) -> duration() );
-                                                           
+
 
   // Set Bonus
 }
@@ -3806,7 +3794,7 @@ void priest_t::init_actions()
 
     if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
       buffer += "/fortitude,if=!aura.stamina.up";
-    
+
     if ( find_class_spell( "Inner Fire" ) -> ok() )
       buffer += "/inner_fire";
 
@@ -4204,11 +4192,9 @@ void priest_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  priest_t* source_p = dynamic_cast<priest_t*>( source );
+  priest_t* source_p = debug_cast<priest_t*>( source );
 
-  assert( source_p );
-
-  atonement_target_str      = source_p -> atonement_target_str;
+  atonement_target_str = source_p -> atonement_target_str;
 }
 
 // priest_t::decode_set =====================================================

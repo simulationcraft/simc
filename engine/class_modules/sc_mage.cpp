@@ -3435,8 +3435,7 @@ void mage_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  mage_t* source_mage = dynamic_cast<mage_t*>( source );
-  assert( source_mage );
+  mage_t* source_mage = debug_cast<mage_t*>( source );
 
   focus_magic_target_str = source_mage -> focus_magic_target_str;
   merge_ignite           = source_mage -> merge_ignite;

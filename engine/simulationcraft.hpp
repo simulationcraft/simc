@@ -1307,6 +1307,18 @@ public:
   void dispose()  { dispose_(); Container::clear(); }
 };
 
+template <typename To, typename From>
+inline To debug_cast( From* ptr )
+{
+#ifdef NDEBUG
+  return static_cast<To>( ptr );
+#else
+  To result = dynamic_cast<To>( ptr );
+  assert( result );
+  return result;
+#endif
+}
+
 // timespan_t ===============================================================
 
 // if timespan_t is in the global namespace, there's a name lookup issue with

@@ -238,7 +238,7 @@ struct shaman_t : public player_t
     const spell_data_t* unleashed_lightning;
     const spell_data_t* water_shield;
   } glyph;
-  
+
   // Misc Spells
   struct
   {
@@ -375,14 +375,14 @@ struct shaman_spell_t : public spell_t
   bool     is_totem;
   shaman_targetdata_t* td;
 
-  shaman_spell_t( const std::string& token, shaman_t* p, 
+  shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( token, p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     td( targetdata_t::get( player, target ) -> cast_shaman() )
   {
     parse_options( 0, options );
-    
+
     may_crit = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
@@ -831,11 +831,9 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_nova_t : public fire_elemental_spell_t
   {
-    fire_nova_t( player_t* player ) :
-      fire_elemental_spell_t( "fire_nova", player )
+    fire_nova_t( fire_elemental_pet_t* fe ) :
+      fire_elemental_spell_t( "fire_nova", fe )
     {
-      fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
-
       aoe                  = -1;
       may_crit             = true;
       direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
@@ -852,7 +850,7 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual void execute()
     {
-      fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
+      fire_elemental_pet_t* fe = static_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 30.0, 60.0 ) );
 
@@ -862,15 +860,13 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_blast_t : public fire_elemental_spell_t
   {
-    fire_blast_t( player_t* player ) :
-      fire_elemental_spell_t( "fire_blast", player )
+    fire_blast_t( fire_elemental_pet_t* fe ) :
+      fire_elemental_spell_t( "fire_blast", fe )
     {
-      fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
-
       may_crit             = true;
-      base_costs[ RESOURCE_MANA ]            = ( player -> level ) * 3.554;
+      base_costs[ RESOURCE_MANA ] = ( fe -> level ) * 3.554;
       base_execute_time    = timespan_t::zero();
-      direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
+      direct_power_mod     = fe -> dbc.spell( 57984 ) -> effect1().coeff();
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
 
       base_dd_min        = 276;
@@ -884,7 +880,7 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual void execute()
     {
-      fire_elemental_pet_t* fe = dynamic_cast< fire_elemental_pet_t* >( player );
+      fire_elemental_pet_t* fe = static_cast< fire_elemental_pet_t* >( player );
       // Randomize next cooldown duration here
       cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
 
@@ -897,8 +893,8 @@ struct fire_elemental_pet_t : public pet_t
     double int_multiplier;
     double sp_multiplier;
 
-    fire_melee_t( player_t* player ) :
-      melee_attack_t( "fire_melee", player, spell_data_t::nil(), SCHOOL_FIRE ),
+    fire_melee_t( fire_elemental_pet_t* fe ) :
+      melee_attack_t( "fire_melee", fe, spell_data_t::nil(), SCHOOL_FIRE ),
       int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
     {
       may_crit                     = true;
@@ -938,7 +934,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct auto_melee_attack_t : public melee_attack_t
   {
-    auto_melee_attack_t( player_t* player ) :
+    auto_melee_attack_t( fire_elemental_pet_t* player ) :
       melee_attack_t( "auto_attack", player )
     {
       player -> main_hand_attack = new fire_melee_t( player );
@@ -967,7 +963,7 @@ struct fire_elemental_pet_t : public pet_t
   double      owner_int;
   double      owner_sp;
 
-  fire_elemental_pet_t( sim_t* sim, player_t* owner ) :
+  fire_elemental_pet_t( sim_t* sim, shaman_t* owner ) :
     pet_t( sim, owner, "fire_elemental", true /*GUARDIAN*/ ), owner_int( 0.0 ), owner_sp( 0.0 )
   {
     intellect_per_owner         = 1.0;
@@ -1393,7 +1389,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
   int glyph_targets;
 
   chain_lightning_overload_t( shaman_t* player, bool dtr = false ) :
-    shaman_spell_t( "chain_lightning_overload", player, player -> dbc.spell( 45297 ) ), 
+    shaman_spell_t( "chain_lightning_overload", player, player -> dbc.spell( 45297 ) ),
     glyph_targets( 0 )
   {
     overload             = true;
@@ -1702,7 +1698,7 @@ double shaman_melee_attack_t::cost_reduction() const
 {
   if ( p() -> buff.shamanistic_rage -> up() )
     return p() -> buff.shamanistic_rage -> data().effectN( 1 ).percent();
-  
+
   return 0.0;
 }
 
@@ -1762,7 +1758,7 @@ struct melee_t : public shaman_melee_attack_t
   void impact_s( action_state_t* state )
   {
     shaman_melee_attack_t::impact_s( state );
-    
+
     if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
       trigger_static_shock( this );
 
@@ -3300,7 +3296,7 @@ struct windfury_weapon_t : public shaman_spell_t
   {
     check_spec( SHAMAN_ENHANCEMENT );
     std::string weapon_str;
-    
+
     option_t options[] =
     {
       { "weapon", OPT_STRING,  &weapon_str },
@@ -3410,7 +3406,7 @@ struct water_shield_t : public shaman_spell_t
   double bonus;
 
   water_shield_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Water Shield" ), options_str ), 
+    shaman_spell_t( player, player -> find_class_spell( "Water Shield" ), options_str ),
     bonus( 0.0 )
   {
     harmful      = false;
@@ -3650,7 +3646,7 @@ void shaman_t::init_spells()
   glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
   glyph.unleashed_lightning          = find_glyph_spell( "Glyph of Unleashed Lightning" );
   glyph.water_shield                 = find_glyph_spell( "Glyph of Water Shield" );
-  
+
   // Misc spells
   spell.primal_wisdom                = find_spell( 63375 );
   spell.searing_flames               = find_spell( 77657 );
@@ -3734,8 +3730,8 @@ void shaman_t::init_buffs()
   buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  specialization.shamanistic_rage );
   buff.spiritwalkers_grace = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
                              .chance( 1.0 )
-                             .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() + 
-                                        glyph.spiritwalkers_grace -> effectN( 1 ).time_value() + 
+                             .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
+                                        glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
                                         sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
   buff.unleash_flame       = new unleash_flame_buff_t( this );
   buff.unleash_wind        = buff_creator_t( this, "unleash_wind", dbc.spell( 73681 ) );

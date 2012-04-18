@@ -140,13 +140,13 @@ private:
   }
 
 public:
-  warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
+  warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, p -> find_class_spell( n ), sc )
   {
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+  warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( s -> name_cstr(), p, s, sc )
   {
     _init_warlock_spell_t();
@@ -380,7 +380,7 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p() -> buffs.backdraft -> check() )
       p() -> buffs.backdraft -> decrement();
   }
-  
+
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
@@ -478,10 +478,10 @@ struct shadowfury_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  corruption_t( warlock_t* p ) : warlock_spell_t( p, "Corruption" ) 
+  corruption_t( warlock_t* p ) : warlock_spell_t( p, "Corruption" )
   {
     may_crit = false;
-    tick_power_mod = 0.2; // from tooltip 
+    tick_power_mod = 0.2; // from tooltip
   };
 
   virtual void tick( dot_t* d )
@@ -590,7 +590,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    tick_power_mod = 0.2; // from tooltip 
+    tick_power_mod = 0.2; // from tooltip
   }
 
   virtual void execute()
@@ -1502,7 +1502,7 @@ action_t* warlock_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
   action_t* a;
-  
+
   if      ( name == "chaos_bolt"          ) a = new          chaos_bolt_t( this );
   else if ( name == "conflagrate"         ) a = new         conflagrate_t( this );
   else if ( name == "corruption"          ) a = new          corruption_t( this );
@@ -1605,7 +1605,7 @@ void warlock_t::init_spells()
 
   // Affliction
   spec.nightfall = find_specialization_spell( "Nightfall" );
-  
+
   // Demonology
   spec.decimation = find_specialization_spell( "Decimation" );
 
@@ -2035,10 +2035,9 @@ void warlock_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  warlock_t* p = dynamic_cast<warlock_t*>( source );
-  assert( p );
+  warlock_t* p = debug_cast<warlock_t*>( source );
 
-  use_pre_soulburn       = p -> use_pre_soulburn;
+  use_pre_soulburn = p -> use_pre_soulburn;
 }
 
 // warlock_t::decode_set ====================================================
