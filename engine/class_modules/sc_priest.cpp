@@ -372,8 +372,8 @@ public:
     stateless         = true;
   }
 
-  priest_targetdata_t* td() const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
+  priest_targetdata_t* td( player_t* t ) const
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
@@ -502,9 +502,9 @@ struct priest_heal_t : public heal_t
 
     virtual void impact_s( action_state_t* s )
     {
-      double old_amount = td() -> buffs_divine_aegis -> current_value;
+      double old_amount = td( s -> target ) -> buffs_divine_aegis -> current_value;
       double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
-      td() -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
+      td( s -> target ) -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( sim -> report_overheal ? new_amount : s -> result_amount, s -> result_amount, ABSORB, s -> result );
     }
   };
@@ -574,8 +574,8 @@ struct priest_heal_t : public heal_t
     stateless = true;
   }
 
-  priest_targetdata_t* td() const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
+  priest_targetdata_t* td( player_t* t ) const
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
 
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
@@ -598,7 +598,7 @@ struct priest_heal_t : public heal_t
     return heal_t::action_multiplier( s ) * ( 1.0 + p() -> buffs.holy_archangel -> value() );
   }
 
-  virtual double composite_target_multiplier( const player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double ctm = heal_t::composite_target_multiplier( t );
 
@@ -659,8 +659,8 @@ struct priest_heal_t : public heal_t
 
       trigger_echo_of_light( this, s -> target );
 
-      if ( p() -> buffs.chakra_serenity -> up() && td() -> dots_renew -> ticking )
-        td() -> dots_renew -> refresh_duration();
+      if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots_renew -> ticking )
+        td( s -> target ) -> dots_renew -> refresh_duration();
     }
   }
 
@@ -865,8 +865,8 @@ struct priest_spell_t : public spell_t
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
 
-  priest_targetdata_t* td() const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata() ); }
+  priest_targetdata_t* td( player_t* t ) const
+  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual void schedule_execute()
   {
@@ -1959,7 +1959,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::reset();
 
-    td() -> remove_dots_event = 0;
+    td( target ) -> remove_dots_event = 0;
   }
 
   virtual void execute()
@@ -2007,9 +2007,9 @@ struct mind_spike_t : public priest_spell_t
       }
       else
       {
-        if ( ! td() -> remove_dots_event )
+        if ( ! td( s -> target ) -> remove_dots_event )
         {
-          td() -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td() );
+          td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
         }
       }
     }
@@ -2439,7 +2439,7 @@ struct smite_t : public priest_spell_t
 
     am *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
-    if ( td() -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
+    if ( td( s -> target ) -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
       am *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
 
     return am;
@@ -3182,7 +3182,7 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> execute();
     }
 
-    td() -> buffs_power_word_shield -> trigger( 1, s -> result_amount );
+    td( s -> target ) -> buffs_power_word_shield -> trigger( 1, s -> result_amount );
     stats -> add_result( s -> result_amount, s -> result_amount, ABSORB, s -> result );
   }
 
@@ -3308,7 +3308,7 @@ struct prayer_of_mending_t : public priest_heal_t
     trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
-  virtual double composite_target_multiplier( const player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double ctm = priest_heal_t::composite_target_multiplier( t );
 

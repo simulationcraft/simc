@@ -4212,7 +4212,7 @@ public:
   dot_t* dot() const
   {
     if ( targetdata_dot_offset >= 0 )
-      return *( dot_t** )( ( char* )targetdata() + targetdata_dot_offset );
+      return *( dot_t** )( ( char* )targetdata( target ) + targetdata_dot_offset );
     else
     {
       if ( ! action_dot )
@@ -4223,12 +4223,12 @@ public:
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
-  targetdata_t* targetdata() const
+  targetdata_t* targetdata( player_t* t ) const
   {
-    if ( cached_targetdata_target != target )
+    if ( cached_targetdata_target != t )
     {
       cached_targetdata_target = target;
-      cached_targetdata = targetdata_t::get( player, target );
+      cached_targetdata = targetdata_t::get( player, t );
     }
     return cached_targetdata;
   }

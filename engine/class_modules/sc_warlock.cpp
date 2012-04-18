@@ -174,7 +174,7 @@ public:
   {
     timespan_t t = spell_t::tick_time( haste );
 
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     if ( td -> dots_malefic_grasp -> ticking )
       t /= ( 1.0 + td -> dots_malefic_grasp -> action -> data().effectN( 2 ).percent() );
@@ -630,7 +630,8 @@ struct unstable_affliction_t : public warlock_spell_t
 
     if ( result_is_hit() )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
+      // FIXME: move to impact
+      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
       if ( td -> dots_immolate -> ticking )
         td -> dots_immolate -> cancel();
     }
@@ -669,7 +670,7 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       td -> debuffs_haunt -> trigger();
     }
   }
@@ -704,7 +705,8 @@ struct immolate_t : public warlock_spell_t
 
     if ( result_is_hit() )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
+      // FIXME: move to impact
+      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
       if ( td -> dots_unstable_affliction -> ticking )
       {
         td -> dots_unstable_affliction -> cancel();
@@ -751,7 +753,7 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     action_t* a = td -> dots_immolate -> action;
 
@@ -774,7 +776,7 @@ struct conflagrate_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     if ( ! ( td -> dots_immolate -> ticking ) )
       return false;
@@ -804,7 +806,7 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     if ( td -> dots_immolate -> ticking )
     {
@@ -1221,7 +1223,7 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
+      warlock_targetdata_t* td = targetdata( s -> target) -> cast_warlock();
       td -> dots_corruption -> extend_duration( 2, true );
     }
   }
@@ -1243,7 +1245,7 @@ struct malefic_grasp_t : public warlock_spell_t
   {
     warlock_spell_t::last_tick( d );
     
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     stop_malefic_grasp( this, td -> dots_agony );
     stop_malefic_grasp( this, td -> dots_corruption );
@@ -1255,7 +1257,8 @@ struct malefic_grasp_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+    //FIXME: move to impact
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     if ( result_is_hit() )
     {
@@ -1415,7 +1418,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata() -> cast_warlock();
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       dot_damage_done = s -> target -> iteration_dmg_taken;
       if ( td -> dots_corruption -> ticking )
       {

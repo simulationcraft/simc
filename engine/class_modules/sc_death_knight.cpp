@@ -1824,7 +1824,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+      death_knight_targetdata_t* td = targetdata( target ) -> cast_death_knight();
 
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
@@ -1985,7 +1985,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( t, dtype );
 
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
 
     base_dd_adder = td -> diseases() ? 95 : 0;
     direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
@@ -2057,7 +2057,7 @@ struct blood_strike_offhand_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
@@ -2091,7 +2091,7 @@ struct blood_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
 
     target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
@@ -2437,7 +2437,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+      death_knight_targetdata_t* td = targetdata( target ) -> cast_death_knight();
       td -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
       td -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
     }
@@ -2571,7 +2571,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
 
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2815,7 +2815,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
@@ -2877,7 +2877,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
     target_multiplier *= 1 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
@@ -2943,7 +2943,7 @@ struct pestilence_t : public death_knight_spell_t
   virtual void execute()
   {
     // See which diseases we can spread
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( target ) -> cast_death_knight();
     spread_bp = td -> dots_blood_plague -> ticking;
     spread_ff = td -> dots_frost_fever -> ticking;
 
@@ -2984,7 +2984,7 @@ struct pestilence_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+    death_knight_targetdata_t* td = targetdata( target ) -> cast_death_knight();
 
     // BP or FF must be ticking to use
     if ( ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking ) ||
@@ -3302,7 +3302,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
       // death_knight_spell_t::target_debuff( t, dmg_type_e );
 
-      death_knight_targetdata_t* td = targetdata() -> cast_death_knight();
+      death_knight_targetdata_t* td = targetdata( t ) -> cast_death_knight();
 
       target_multiplier = td -> diseases() * 0.18;
       if ( t -> debuffs.magic_vulnerability -> check() )

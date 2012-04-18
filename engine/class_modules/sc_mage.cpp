@@ -1458,7 +1458,7 @@ struct combustion_t : public mage_spell_t
     // http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p3/#post1824829
 
     mage_t* p = player -> cast_mage();
-    mage_targetdata_t* td = targetdata() -> cast_mage();
+    mage_targetdata_t* td = targetdata( target ) -> cast_mage();
 
     if ( td -> dots_ignite -> ticking )
     {

@@ -365,8 +365,8 @@ struct shaman_melee_attack_t : public melee_attack_t
   shaman_t* p() const
   { return static_cast< shaman_t* >( player ); }
 
-  shaman_targetdata_t* targetdata() const
-  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata() ); }
+  shaman_targetdata_t* targetdata( player_t* t ) const
+  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual void execute();
   virtual void impact_s( action_state_t* );
@@ -409,8 +409,8 @@ struct shaman_spell_t : public spell_t
   }
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
-  shaman_targetdata_t* targetdata() const
-  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata() ); }
+  shaman_targetdata_t* targetdata( player_t* t ) const
+  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
   virtual bool   is_periodic_damage() const { return base_td > 0; };
@@ -433,7 +433,7 @@ struct shaman_spell_t : public spell_t
   {
     double c = spell_t::composite_crit( s );
 
-    shaman_targetdata_t* td = targetdata();
+    shaman_targetdata_t* td = targetdata( s -> target );
     if ( school == SCHOOL_NATURE && td -> debuffs_stormstrike -> up() )
       c += td -> debuffs_stormstrike -> data().effectN( 1 ).percent();
 
@@ -1299,7 +1299,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   if ( a -> sim -> num_enemies == 1 )
     return false;
 
-  shaman_targetdata_t* t = a -> targetdata();
+  shaman_targetdata_t* t = a -> targetdata( a -> target );
 
   if ( ! t -> dots_flame_shock -> ticking )
     return false;
@@ -1350,7 +1350,7 @@ struct lava_burst_overload_t : public shaman_spell_t
 
   virtual double composite_crit( const action_state_t* s ) const
   {
-    if ( targetdata() -> dots_flame_shock -> ticking )
+    if ( targetdata( s -> target ) -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit( s );
@@ -1454,15 +1454,15 @@ struct searing_flames_t : public shaman_spell_t
     snapshot_flags = STATE_CRIT | STATE_MUL_TA;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* ) const
+  virtual double composite_ta_multiplier( const action_state_t* s ) const
   {
-    return targetdata() -> debuffs_searing_flames -> stack();
+    return targetdata( s -> target ) -> debuffs_searing_flames -> stack();
   }
 
   void last_tick( dot_t* d )
   {
     shaman_spell_t::last_tick( d );
-    targetdata() -> debuffs_searing_flames -> expire();
+    targetdata( target ) -> debuffs_searing_flames -> expire();
   }
 };
 
@@ -1855,7 +1855,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   {
     double m = shaman_melee_attack_t::action_multiplier( s );
 
-    m *= 1.0 + ( targetdata() -> debuffs_searing_flames -> check() * sf_bonus ) +
+    m *= 1.0 + ( targetdata( s -> target ) -> debuffs_searing_flames -> check() * sf_bonus ) +
                ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
@@ -2308,7 +2308,7 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    shaman_targetdata_t* td = targetdata();
+    shaman_targetdata_t* td = targetdata( target );
 
     if ( ! td -> dots_flame_shock -> ticking )
       return false;
@@ -2436,7 +2436,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
-    shaman_targetdata_t* td = targetdata();
+    shaman_targetdata_t* td = targetdata( target );
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -2445,7 +2445,7 @@ struct lava_burst_t : public shaman_spell_t
 
   virtual double composite_crit( const action_state_t* s ) const
   {
-    if ( targetdata() -> dots_flame_shock -> ticking )
+    if ( targetdata( s -> target ) -> dots_flame_shock -> ticking )
       return 1.0;
     else
       return shaman_spell_t::composite_crit( s );
@@ -2513,7 +2513,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
-    shaman_targetdata_t* td = targetdata();
+    shaman_targetdata_t* td = targetdata( target );
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -3210,7 +3210,7 @@ struct searing_totem_t : public shaman_totem_t
 
   virtual void tick( dot_t* d )
   {
-    shaman_targetdata_t* td = targetdata();
+    shaman_targetdata_t* td = targetdata( target );
     shaman_totem_t::tick( d );
     if ( result_is_hit() && p() -> specialization.searing_flames -> ok() && 
          td -> debuffs_searing_flames -> trigger() )

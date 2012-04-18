@@ -777,7 +777,7 @@ static void trigger_efflorescence( heal_t* a )
 static void trigger_empowered_touch( heal_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
-  druid_targetdata_t* td = a -> targetdata() -> cast_druid();
+  druid_targetdata_t* td = a -> targetdata( a -> target ) -> cast_druid();
 
   if ( p -> rng_empowered_touch -> roll( p -> talents.empowered_touch -> effect2().percent() ) )
   {
@@ -942,7 +942,7 @@ static void trigger_primal_fury( druid_bear_melee_attack_t* a )
 static void trigger_primal_fury( druid_cat_melee_attack_t* a )
 {
   druid_t* p = a -> player -> cast_druid();
-  druid_targetdata_t * td = a -> targetdata() -> cast_druid();
+  druid_targetdata_t * td = a -> targetdata( a -> target ) -> cast_druid();
 
   if ( ! p -> talents.primal_fury -> rank() )
     return;
@@ -1032,7 +1032,7 @@ void druid_cat_melee_attack_t::consume_resource()
 void druid_cat_melee_attack_t::execute()
 {
   druid_t* p = player -> cast_druid();
-  druid_targetdata_t* td = targetdata() -> cast_druid();
+  druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
   melee_attack_t::execute();
 
@@ -1073,7 +1073,7 @@ bool druid_cat_melee_attack_t::ready()
     return false;
 
   druid_t*  p = player -> cast_druid();
-  druid_targetdata_t* td = targetdata() -> cast_druid();
+  druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
   if ( ! p -> buffs_cat_form -> check() )
     return false;
@@ -1226,7 +1226,7 @@ struct ferocious_bite_t : public druid_cat_melee_attack_t
   virtual void execute()
   {
     druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata() -> cast_druid();
+    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     base_dd_adder    = base_dmg_per_point * td -> buffs_combo_points -> stack();
     direct_power_mod = 0.109 * td -> buffs_combo_points -> stack();
