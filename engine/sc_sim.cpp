@@ -1009,7 +1009,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( expected_time > timespan_t::zero() && current_time > ( expected_time * 2.0 ) )
+      if ( expected_time > timespan_t::zero() && current_time > ( expected_time + expected_time ) )
       {
         if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the

@@ -93,7 +93,6 @@ struct flask_t : public action_t
         }
       }
     }
-
   }
 
   virtual bool ready()
@@ -564,7 +563,6 @@ action_t* consumable_t::create_action( player_t*          p,
   if ( name == "mountains_potion"      ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
   if ( name == "mogu_power_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
   if ( name == "virmens_bite_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
-
 
   return 0;
 }

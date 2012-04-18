@@ -630,44 +630,54 @@ rng_t* rng_t::create( sim_t*             sim,
 
 #ifdef UNIT_TEST
 
-std::string& armory_t::format( std::string& name, int ) { return name; }
-uint32_t spell_id_t::get_school_mask( school_type_e x ) { return 0; }
+uint32_t spell_data_t::get_school_mask( school_type_e ) { return 0; }
 
-int main( int argc, char** argv )
+int main( int /*argc*/, char** /*argv*/ )
 {
   rng_t* rng = new rng_sfmt_t( "test-rng", false, false );
 
+  {
+  int start_time = util_t::milliseconds();
 
-#ifdef PERFORMANCE
-  int64_t start_time = util_t::milliseconds();
+  const unsigned n = 10000000;
+  double average=0;
+  for ( unsigned i = 0; i< n; i++ )
+    average += rng -> real();
+  average /= n;
+  int elapsed_cpu = util_t::milliseconds() - start_time;
+  util_t::printf( "%d calls to real(): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+  }
+  {
+  int start_time = util_t::milliseconds();
 
-  for ( int i=0; i<=1000000000; i++ )
-    rng -> real();
-  int64_t elapsed_cpu = util_t::milliseconds() - start_time;
-
-  util_t::printf( "%d\n", elapsed_cpu );
-#else
+  const unsigned n = 10000000;
+  double average=0;
+  for ( unsigned i = 0; i< n; i++ )
+    average += rng -> gauss(0,1);
+  average /= n;
+  int elapsed_cpu = util_t::milliseconds() - start_time;
+  util_t::printf( "%d calls to gauss(0,1): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+  }
   util_t::printf( "\nreal:\n" );
-  for ( int i=1; i <= 100; i++ )
+  for ( unsigned i = 1; i <= 100; i++ )
   {
     util_t::printf( "  %.8f", rng->real() );
     if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
   util_t::printf( "\ngauss mean=0, std_dev=1.0:\n" );
-  for ( int i=1; i <= 100; i++ )
+  for ( unsigned i = 1; i <= 100; i++ )
   {
     util_t::printf( "  %.8f", rng->gauss( 0.0, 1.0 ) );
     if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
 
   util_t::printf( "\nroll 30%%:\n" );
-  for ( int i=1; i <= 100; i++ )
+  for ( unsigned i = 1; i <= 100; i++ )
   {
     util_t::printf( "  %d", rng->roll( 0.30 ) );
     if ( i % 10 == 0 ) util_t::printf( "\n" );
   }
-#endif
 }
 
 #endif
