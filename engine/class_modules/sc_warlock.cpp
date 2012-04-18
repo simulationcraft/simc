@@ -170,6 +170,19 @@ public:
     return spell_t::composite_target_ta_multiplier( t ) * m;
   }
 
+  virtual double composite_target_da_multiplier( const player_t* t ) const
+  {
+    double m = 1.0;
+    warlock_targetdata_t* td = targetdata() -> cast_warlock();
+
+    if ( td -> debuffs_haunt -> up() )
+    {
+      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+    }
+
+    return spell_t::composite_target_da_multiplier( t ) * m;
+  }
+
   virtual timespan_t tick_time( double haste ) const
   {
     timespan_t t = spell_t::tick_time( haste );
@@ -278,6 +291,17 @@ struct agony_t : public warlock_spell_t
     return warlock_spell_t::calculate_tick_damage( r, p, m ) * ( 70 + 5 * damage_level ) / 12;
   }
 
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = warlock_spell_t::action_multiplier( s );
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+    {
+      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    }
+
+    return m;
+  }
 };
 
 // Bane of Doom Spell =======================================================
@@ -290,6 +314,18 @@ struct doom_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
+  }
+
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = warlock_spell_t::action_multiplier( s );
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+    {
+      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    }
+
+    return m;
   }
 };
 
@@ -526,6 +562,18 @@ struct corruption_t : public warlock_spell_t
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
   }
+
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = warlock_spell_t::action_multiplier( s );
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+    {
+      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    }
+
+    return m;
+  }
 };
 
 // Drain Life Spell =========================================================
@@ -642,6 +690,18 @@ struct unstable_affliction_t : public warlock_spell_t
       if ( td -> dots_immolate -> ticking )
         td -> dots_immolate -> cancel();
     }
+  }
+  
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = warlock_spell_t::action_multiplier( s );
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+    {
+      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    }
+
+    return m;
   }
 };
 
@@ -1526,24 +1586,6 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
       player_multiplier *= fire_multiplier;
     else
       player_multiplier *= shadow_multiplier;
-  }
-
-  return player_multiplier;
-}
-
-// warlock_t::composite_player_td_multiplier ================================
-
-double warlock_t::composite_player_td_multiplier( school_type_e school, const action_t* a ) const
-{
-  double player_multiplier = player_t::composite_player_td_multiplier( school, a );
-
-  if ( school == SCHOOL_SHADOW || school == SCHOOL_SHADOWFLAME )
-  {
-    // Shadow TD
-    if ( mastery_spells.potent_afflictions -> ok() )
-    {
-      player_multiplier += floor ( ( composite_mastery() * mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
-    }
   }
 
   return player_multiplier;
