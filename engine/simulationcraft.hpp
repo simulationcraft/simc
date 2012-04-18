@@ -4929,7 +4929,8 @@ public:
   const std::string name_str;
   double expected_roll,  actual_roll,  num_roll;
   double expected_range, actual_range, num_range;
-  double expected_gauss, actual_gauss, num_gauss;
+  double actual_gauss;
+  uint64_t num_gauss;
   rng_t* next;
 
 private:

@@ -11,7 +11,7 @@ rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) :
   name_str( n ),
   expected_roll( 0 ),  actual_roll( 0 ),  num_roll( 0 ),
   expected_range( 0 ), actual_range( 0 ), num_range( 0 ),
-  expected_gauss( 0 ), actual_gauss( 0 ), num_gauss( 0 ),
+  actual_gauss( 0 ), num_gauss( 0 ),
   next( 0 ),
   gauss_pair_use( false ),
   average_range( avg_range ),
@@ -100,8 +100,9 @@ double rng_t::gauss( double mean,
     result = 0;
 
   num_gauss++;
-  expected_gauss += mean;
-  actual_gauss += result;
+
+  if ( stddev )
+    actual_gauss += ( result - mean ) / stddev;
 
   return result;
 }
@@ -132,7 +133,7 @@ void rng_t::report( FILE* file )
                    name_str.c_str(),
                    ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
                    ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
-                   ( ( expected_gauss == 0 ) ? 1.0 : actual_gauss / expected_gauss ) );
+                   ( ( num_gauss == 0 ) ? 0.0 : actual_gauss / num_gauss           ) );
 }
 
 // rng_t::stdnormal_cdf ==
