@@ -4262,8 +4262,9 @@ public:
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
   virtual double composite_spell_power() const { return base_spell_power; }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
-  virtual double composite_target_da_multiplier( const player_t* target ) const { return target -> composite_player_vulnerability( school ); }
-  virtual double composite_target_ta_multiplier( const player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_target_multiplier( const player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_target_da_multiplier( const player_t* target ) const { return composite_target_multiplier( target ); }
+  virtual double composite_target_ta_multiplier( const player_t* target ) const { return composite_target_multiplier( target ); }
   virtual double composite_da_multiplier( const action_state_t* s ) const
   {
     return action_multiplier( s ) * action_da_multiplier() *
