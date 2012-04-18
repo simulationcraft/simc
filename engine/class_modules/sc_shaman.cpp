@@ -361,9 +361,11 @@ struct shaman_melee_attack_t : public melee_attack_t
     may_glance = false;
   }
 
-  shaman_t* p() const { return static_cast< shaman_t* >( player ); }
+  shaman_t* p() const
+  { return static_cast< shaman_t* >( player ); }
+
   shaman_targetdata_t* targetdata() const
-  { return static_cast<shaman_targetdata_t*>( melee_attack_t::targetdata() ); }
+  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata() ); }
 
   virtual void execute();
   virtual void impact_s( action_state_t* );
@@ -407,7 +409,7 @@ struct shaman_spell_t : public spell_t
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
   shaman_targetdata_t* targetdata() const
-  { return static_cast<shaman_targetdata_t*>( spell_t::targetdata() ); }
+  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata() ); }
 
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
   virtual bool   is_periodic_damage() const { return base_td > 0; };

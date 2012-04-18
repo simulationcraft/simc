@@ -171,7 +171,7 @@ void stats_t::combat_end()
   }
 }
 
-void stats_t::stats_results_t::analyze( const stats_t& s, bool tick_result )
+void stats_t::stats_results_t::analyze( double num_results )
 {
   count.analyze();
   if ( count.mean == 0 )
@@ -179,7 +179,7 @@ void stats_t::stats_results_t::analyze( const stats_t& s, bool tick_result )
 
   avg_actual_amount.analyze();
   count.analyze();
-  pct = 100.0 * count.mean / static_cast<double>( ( tick_result && ( s.num_tick_results > 0.0 ) ) ? s.num_tick_results : s.num_direct_results );
+  pct = 100.0 * count.mean / ( num_results > 0.0 ? num_results : 0.0 );
   fight_total_amount.analyze();
   fight_actual_amount.analyze();
   actual_amount.analyze();
@@ -216,8 +216,8 @@ void stats_t::analyze()
 
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].analyze( *this );
-    tick_results[ i ].analyze( *this, true );
+    direct_results[ i ].analyze( num_direct_results );
+    tick_results[ i ].analyze( num_tick_results );
   }
 
   portion_aps.analyze( true, true, true, 50 );

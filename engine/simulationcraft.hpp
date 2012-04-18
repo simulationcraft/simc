@@ -4111,7 +4111,7 @@ struct player_t : public noncopyable
       range::fill( base, 0.0 ); range::fill( initial, 0.0 ); range::fill( max, 0.0 ); range::fill( current, 0.0 );
       range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
     }
-    double pct( const resource_type_e& rt ) const
+    double pct( resource_type_e rt ) const
     { return current[ rt ] / max[ rt ]; }
   } resources;
 
@@ -4893,7 +4893,7 @@ struct stats_t
     double iteration_actual_amount, iteration_total_amount,pct, overkill_pct;
 
     stats_results_t( sim_t* );
-    void analyze( const stats_t&, bool tick_result = false );
+    void analyze( double num_results );
     void merge( const stats_results_t& other );
     void combat_end();
   };
