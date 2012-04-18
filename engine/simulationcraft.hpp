@@ -4398,8 +4398,7 @@ public:
   virtual double  dodge_chance( double /* expertise */, int delta_level ) const;
   virtual double  parry_chance( double /* expertise */, int delta_level ) const;
   virtual double glance_chance( int delta_level ) const;
-  virtual double composite_target_da_multiplier( const player_t* target ) const { return target -> composite_ranged_attack_player_vulnerability(); }
-  virtual double composite_target_ta_multiplier( const player_t* target ) const { return target -> composite_ranged_attack_player_vulnerability(); }
+  virtual double composite_target_multiplier( const player_t* target ) const { return target -> composite_ranged_attack_player_vulnerability(); }
 
   /* New stuffs */
   virtual double composite_expertise() const { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
