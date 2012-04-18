@@ -1301,16 +1301,10 @@ template <typename Container>
 class auto_dispose : public Container
 {
 private:
-  void dispose_()
-  { range::dispose( *this ); }
-
+  void dispose_() { range::dispose( *this ); }
 public:
   ~auto_dispose() { dispose_(); }
-
-  using Container::clear;
-
-  void dispose()
-  { dispose_(); clear(); }
+  void dispose()  { dispose_(); Container::clear(); }
 };
 
 // timespan_t ===============================================================
