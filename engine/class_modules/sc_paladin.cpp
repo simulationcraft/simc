@@ -1278,7 +1278,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
   {
     if ( result_is_hit( impact_result ) )
     {
-      paladin_targetdata_t* td = targetdata() -> cast_paladin();
+      paladin_targetdata_t* td = targetdata( t ) -> cast_paladin();
       td -> debuffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
