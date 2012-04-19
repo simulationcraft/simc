@@ -1224,7 +1224,7 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target) -> cast_warlock();
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       td -> dots_corruption -> extend_duration( 2, true );
     }
   }
@@ -1254,15 +1254,13 @@ struct malefic_grasp_t : public warlock_spell_t
     stop_malefic_grasp( this, td -> dots_unstable_affliction );
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::impact_s( s );
 
-    //FIXME: move to impact
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result ) )
     {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       start_malefic_grasp( this, td -> dots_agony );
       start_malefic_grasp( this, td -> dots_corruption );
       start_malefic_grasp( this, td -> dots_doom );
@@ -1861,29 +1859,17 @@ void warlock_t::init_scaling()
 
 // warlock_t::init_buffs ====================================================
 
-// helpers
-
-buff_t* warlock_t::create_buff( const spell_data_t* sd, const std::string& token )
-{
-  return buff_creator_t( this, token, sd );
-}
-
-buff_t* warlock_t::create_buff( int id, const std::string& token )
-{
-  return buff_creator_t( this, token, find_spell( id, token ) );
-}
-
 void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = create_buff( spec.backdraft, "backdraft" );
-  buffs.decimation            = create_buff( spec.decimation, "decimation" );
-  buffs.metamorphosis         = create_buff( spec.metamorphosis, "metamorphosis" );
-  buffs.molten_core           = create_buff( spec.molten_core, "molten_core" );
-  buffs.soulburn              = create_buff( find_class_spell( "Soulburn" ), "soulburn" );
-  buffs.grimoire_of_sacrifice = create_buff( talents.grimoire_of_sacrifice, "grimoire_of_sacrifice" );
-  buffs.tier13_4pc_caster     = create_buff( sets -> set ( SET_T13_4PC_CASTER ) -> id(), "tier13_4pc_caster" );
+  buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft );
+  buffs.decimation            = buff_creator_t( this, "decimation", spec.decimation );
+  buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
+  buffs.molten_core           = buff_creator_t( this, "molten_core", spec.molten_core );
+  buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
+  buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
+  buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( sets -> set ( SET_T13_4PC_CASTER ) -> id() ) );
 }
 
 // warlock_t::init_values ======================================================
