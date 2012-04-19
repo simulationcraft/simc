@@ -2049,7 +2049,7 @@ double player_t::composite_attack_expertise( const weapon_t* weapon ) const
     case WEAPON_AXE:
     case WEAPON_AXE_2H:
     case WEAPON_FIST:
-      m += 0.03;
+      m += 0.01;
       break;
     default:
       break;
@@ -2064,7 +2064,7 @@ double player_t::composite_attack_expertise( const weapon_t* weapon ) const
     case WEAPON_MACE_2H:
     case WEAPON_SWORD:
     case WEAPON_SWORD_2H:
-      m += 0.03;
+      m += 0.01;
       break;
     default:
       break;
@@ -2077,7 +2077,7 @@ double player_t::composite_attack_expertise( const weapon_t* weapon ) const
     {
     case WEAPON_MACE:
     case WEAPON_MACE_2H:
-      m += 0.03;
+      m += 0.01;
       break;
     default:
       break;
@@ -2090,7 +2090,7 @@ double player_t::composite_attack_expertise( const weapon_t* weapon ) const
     {
     case WEAPON_DAGGER:
     case WEAPON_SWORD:
-      m += 0.03;
+      m += 0.01;
       break;
     default:
       break;
@@ -2381,6 +2381,7 @@ double player_t::composite_spell_hit() const
   if ( buffs.heroic_presence -> up() )
     sh += 0.01;
 
+  sh += composite_attack_expertise( 0 );
   return sh;
 }
 

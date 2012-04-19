@@ -275,7 +275,7 @@ void print_text_spell_stats( FILE* file, const player_t* p )
 void print_text_attack_stats( FILE* file, const player_t* p )
 {
   util_t::fprintf( file,
-                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f/%.2f|%.2f/%.2f(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
+                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
                    p -> buffed.attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
                    100 * p -> buffed.attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
                    100 * p -> buffed.attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,

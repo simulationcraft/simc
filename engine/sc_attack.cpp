@@ -381,39 +381,28 @@ void melee_attack_t::target_debuff( player_t* t, dmg_type_e dt )
 
 double melee_attack_t::total_expertise() const
 {
-  double e = base_expertise + player_expertise + target_expertise;
-
-  // FIXME
-  // Round down to dicrete units of Expertise?  Not according to EJ:
-  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
-  if ( false ) e = floor( 100.0 * e ) / 100.0;
-
-  return e;
+  return base_expertise + player_expertise + target_expertise;
 }
 
 // melee_attack_t::dodge_chance ===================================================
 
 double melee_attack_t::dodge_chance( double expertise, int delta_level ) const
 {
-  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * expertise );
+  return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
 // melee_attack_t::parry_chance ===================================================
 
 double melee_attack_t::parry_chance( double expertise, int delta_level ) const
 {
-  // Tested on 03.03.2011 with a data set for delta_level = 5 which gave 22%
-  if ( delta_level > 2 )
-    return 0.10 + ( delta_level - 2 ) * 0.04 - 0.25 * expertise;
-  else
-    return 0.05 + delta_level * 0.005 - 0.25 * expertise;
+  return 0.03 + ( delta_level * 0.015 ) + std::min( 0.0, dodge_chance( expertise, delta_level ) );
 }
 
 // melee_attack_t::glance_chance ==================================================
 
 double melee_attack_t::glance_chance( int delta_level ) const
 {
-  return (  delta_level  + 1 ) * 0.06;
+  return ( delta_level + 1 ) * 0.06;
 }
 
 // ==========================================================================
@@ -474,21 +463,14 @@ void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
 
 double ranged_attack_t::total_expertise() const
 {
-  double e = base_expertise + player_expertise + target_expertise;
-
-  // FIXME
-  // Round down to dicrete units of Expertise?  Not according to EJ:
-  // http://elitistjerks.com/f78/t38095-retesting_hit_table_assumptions/p3/#post1092985
-  if ( false ) e = floor( 100.0 * e ) / 100.0;
-
-  return e;
+  return base_expertise + player_expertise + target_expertise;
 }
 
 // ranged_attack_t::dodge_chance ===================================================
 
 double ranged_attack_t::dodge_chance( double expertise, int delta_level ) const
 {
-  return 0.05 + ( delta_level * 0.005 ) - ( 0.25 * expertise );
+  return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
 // ranged_attack_t::parry_chance ===================================================

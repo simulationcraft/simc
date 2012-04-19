@@ -779,8 +779,8 @@ void print_html_stats ( FILE* file, const player_t* a )
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<tr%s>\n"
              "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f / %.2f</td>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f / %.2f </td>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              ( j%2 == 1 )? " class=\"odd\"" : "",
