@@ -947,7 +947,6 @@ private:
     if ( ! pet )
     {
       sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), pet_name.c_str() );
-      sim -> cancel();
     }
   }
 
