@@ -1030,7 +1030,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
   {
     if ( num_ticks > 0 )
     {
-      dot_t* dot = this -> dot();
+      dot_t* dot = this -> dot( t );
       if ( dot_behavior == DOT_CLIP ) dot -> cancel();
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks( player_haste );
@@ -1106,7 +1106,7 @@ void action_t::assess_damage( player_t*     t,
   {
     if ( sim -> log )
     {
-      dot_t* dot = this -> dot();
+      dot_t* dot = this -> dot( t );
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,

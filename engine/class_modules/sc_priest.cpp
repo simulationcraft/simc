@@ -513,32 +513,33 @@ struct priest_heal_t : public heal_t
   divine_aegis_t* da;
   cooldown_t* min_interval;
 
-  void trigger_echo_of_light( priest_heal_t* a, player_t* /* t */ )
+  void trigger_echo_of_light( priest_heal_t* a, player_t* t )
   {
     if ( ! p() -> mastery_spells.echo_of_light -> ok() )
       return;
 
-    if ( p() -> spells.echo_of_light -> dot() -> ticking )
+    dot_t* d = p() -> spells.echo_of_light -> dot( t );
+    if ( d -> ticking )
     {
       if ( p() -> spells.echo_of_light_merged )
       {
         // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
         p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                p() -> spells.echo_of_light -> dot() -> ticks() +
+                                                d -> ticks() +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
                                                 p() -> spells.echo_of_light -> num_ticks;
-        p() -> spells.echo_of_light -> dot() -> refresh_duration();
+        d -> refresh_duration();
       }
       else
       {
         // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
         p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                ( p() -> spells.echo_of_light -> dot() -> ticks() - 1 ) +
+                                                ( d -> ticks() - 1 ) +
                                                 a -> direct_dmg * p() -> composite_mastery() *
                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
                                                 p() -> spells.echo_of_light -> num_ticks;
-        p() -> spells.echo_of_light -> dot() -> refresh_duration();
+        d -> refresh_duration();
         p() -> spells.echo_of_light_merged = true;
       }
     }

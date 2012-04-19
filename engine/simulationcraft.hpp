@@ -4133,8 +4133,8 @@ public:
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() const;
-  virtual double total_haste() const  { return haste();           }
-  virtual double haste() const        { return 1.0;               }
+  virtual double total_haste() const  { return haste(); }
+  virtual double haste() const        { return 1.0; }
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time( double haste ) const;
@@ -4178,9 +4178,9 @@ public:
   virtual void   cancel();
   virtual void   interrupt_action();
   virtual void   check_talent( int talent_rank );
-  virtual void   check_spec( specialization_e necessary_spec );
-  virtual void   check_race( race_type_e race );
-  virtual void   check_spell( const spell_data_t* sp );
+  virtual void   check_spec( specialization_e );
+  virtual void   check_race( race_type_e );
+  virtual void   check_spell( const spell_data_t* );
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual double   miss_chance( double /* hit */, int /* delta_level */ ) const { return 0; }
@@ -4209,10 +4209,13 @@ public:
 
   virtual double ppm_proc_chance( double PPM ) const;
 
-  dot_t* dot() const
+  dot_t* dot( player_t* t = 0 ) const
   {
+    if ( !t )
+      t = target;
+
     if ( targetdata_dot_offset >= 0 )
-      return *( dot_t** )( ( char* )targetdata( target ) + targetdata_dot_offset );
+      return *( dot_t** )( ( char* )targetdata( t ) + targetdata_dot_offset );
     else
     {
       if ( ! action_dot )
@@ -4261,7 +4264,7 @@ public:
   virtual double composite_expertise() const { return 0.0; }
   virtual double composite_crit( const action_state_t* ) const { return base_crit; }
   virtual double composite_haste() const { return 1.0; }
-  virtual double composite_attack_power() const { return base_attack_power; }
+  virtual double composite_attack_power() const { return base_attack_power + player -> composite_attack_power(); }
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
   virtual double composite_spell_power() const { return base_spell_power + player -> composite_spell_power( school ); }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
@@ -4358,7 +4361,6 @@ public:
   { return action_t::composite_crit( s ) + player -> composite_attack_crit( weapon ); }
   virtual double composite_haste() const
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
-  virtual double composite_attack_power() const { return action_t::composite_attack_power() + player -> composite_attack_power(); }
   virtual double composite_attack_power_multiplier() const { return action_t::composite_attack_power_multiplier() * player -> composite_attack_power_multiplier(); }
 };
 
