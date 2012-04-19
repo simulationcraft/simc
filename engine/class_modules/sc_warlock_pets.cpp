@@ -73,14 +73,6 @@ const _stat_list_t doomguard_base_stats[]=
   { 0, { 0 } }
 };
 
-const _stat_list_t ebon_imp_base_stats[]=
-{
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 0, { 0 } }
-};
-
 const _stat_list_t voidwalker_base_stats[]=
 {
   // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
@@ -135,13 +127,6 @@ const _weapon_list_t infernal_weapon[]=
 
 const _weapon_list_t doomguard_weapon[]=
 {
-  { 0, 0, 0, timespan_t::zero() }
-};
-
-const _weapon_list_t ebon_imp_weapon[]=
-{
-  { 85, 1110.0, 1110.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
-  { 80, 956.0, 956.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -500,7 +485,6 @@ double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e
   else if ( pet_type == PET_SUCCUBUS   ) pet_list = pet_stats::succubus_base_stats;
   else if ( pet_type == PET_INFERNAL   ) pet_list = pet_stats::infernal_base_stats;
   else if ( pet_type == PET_DOOMGUARD  ) pet_list = pet_stats::doomguard_base_stats;
-  else if ( pet_type == PET_EBON_IMP   ) pet_list = pet_stats::ebon_imp_base_stats;
   else if ( pet_type == PET_VOIDWALKER ) pet_list = pet_stats::voidwalker_base_stats;
 
   if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
@@ -557,7 +541,6 @@ const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_e pet_type 
   else if ( pet_type == PET_SUCCUBUS     ) weapon_list = pet_stats::succubus_weapon;
   else if ( pet_type == PET_INFERNAL     ) weapon_list = pet_stats::infernal_weapon;
   else if ( pet_type == PET_DOOMGUARD    ) weapon_list = pet_stats::doomguard_weapon;
-  else if ( pet_type == PET_EBON_IMP     ) weapon_list = pet_stats::ebon_imp_weapon;
   else if ( pet_type == PET_VOIDWALKER   ) weapon_list = pet_stats::voidwalker_weapon;
 
   return weapon_list;
@@ -771,20 +754,6 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
   warlock_pet_t( sim, owner, pet_name, pt )
 {}
 
-void warlock_main_pet_t::summon( timespan_t duration )
-{
-  o() -> pets.active = this;
-
-  warlock_pet_t::summon( duration );
-}
-
-void warlock_main_pet_t::dismiss()
-{
-  warlock_pet_t::dismiss();
-
-  o() -> pets.active = 0;
-}
-
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
   return owner -> stats_current.spell_hit * 26.0 / 17.0;
@@ -878,8 +847,8 @@ double warlock_guardian_pet_t::composite_spell_power( const school_type_e school
 // Pet Imp
 // ==========================================================================
 
-imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_main_pet_t( sim, owner, "imp", PET_IMP )
+imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+  warlock_main_pet_t( sim, owner, name, PET_IMP )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/firebolt";
@@ -907,8 +876,8 @@ action_t* imp_pet_t::create_action( const std::string& name,
 // Pet Felguard
 // ==========================================================================
 
-felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_main_pet_t( sim, owner, "felguard", PET_FELGUARD )
+felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+  warlock_main_pet_t( sim, owner, name, PET_FELGUARD )
 {
   damage_modifier = 1.0;
 
@@ -938,8 +907,8 @@ action_t* felguard_pet_t::create_action( const std::string& name,
 // Pet Felhunter
 // ==========================================================================
 
-felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_main_pet_t( sim, owner, "felhunter", PET_FELHUNTER )
+felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+  warlock_main_pet_t( sim, owner, name, PET_FELHUNTER )
 {
   damage_modifier = 0.8;
 
@@ -983,8 +952,8 @@ void felhunter_pet_t::dismiss()
 // Pet Succubus
 // ==========================================================================
 
-succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_main_pet_t( sim, owner, "succubus", PET_SUCCUBUS )
+succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+  warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS )
 {
   damage_modifier = 1.025;
 
@@ -1004,8 +973,8 @@ action_t* succubus_pet_t::create_action( const std::string& name,
 // Pet Voidwalker
 // ==========================================================================
 
-voidwalker_pet_t::voidwalker_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_main_pet_t( sim, owner, "voidwalker", PET_VOIDWALKER )
+voidwalker_pet_t::voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+  warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER )
 {
   damage_modifier = 0.86;
 
@@ -1098,31 +1067,6 @@ double doomguard_pet_t::composite_player_multiplier( school_type_e school, const
   m *= 1.0 + mastery_gain;
 
   return m;
-}
-
-// ==========================================================================
-// Pet Ebon Imp
-// ==========================================================================
-
-ebon_imp_pet_t::ebon_imp_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_guardian_pet_t( sim, owner, "ebon_imp", PET_EBON_IMP )
-{
-  action_list_str += "/snapshot_stats";
-}
-
-timespan_t ebon_imp_pet_t::available() const
-{ return sim -> max_time; }
-
-double ebon_imp_pet_t::composite_attack_power() const
-{
-  return 0;
-}
-
-void ebon_imp_pet_t::init_base()
-{
-  warlock_guardian_pet_t::init_base();
-
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "ebon_imp_melee" );
 }
 
 #endif // SC_WARLOCK

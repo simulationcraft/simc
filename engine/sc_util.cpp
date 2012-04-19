@@ -441,7 +441,6 @@ const char* util_t::pet_type_string( pet_type_e type )
   case PET_SUCCUBUS:            return "succubus";
   case PET_INFERNAL:            return "infernal";
   case PET_DOOMGUARD:           return "doomguard";
-  case PET_EBON_IMP:            return "ebon_imp";
   case PET_GHOUL:               return "ghoul";
   case PET_BLOODWORMS:          return "bloodworms";
   case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";

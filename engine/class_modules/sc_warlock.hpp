@@ -41,7 +41,6 @@ struct warlock_t : public player_t
   struct pets_t
   {
     warlock_main_pet_t* active;
-    pet_t* ebon_imp;
   } pets;
 
   // Buffs
@@ -267,8 +266,6 @@ public:
 struct warlock_main_pet_t : public warlock_pet_t
 {
   warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
-  virtual void summon( timespan_t duration=timespan_t::zero() );
-  virtual void dismiss();
   virtual double composite_attack_expertise( const weapon_t* ) const;
   virtual resource_type_e primary_resource() const;
   virtual double composite_mp5() const;
@@ -301,7 +298,7 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 
 struct imp_pet_t : public warlock_main_pet_t
 {
-  imp_pet_t( sim_t* sim, warlock_t* owner );
+  imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
@@ -313,7 +310,7 @@ struct imp_pet_t : public warlock_main_pet_t
 
 struct felguard_pet_t : public warlock_main_pet_t
 {
-  felguard_pet_t( sim_t* sim, warlock_t* owner );
+  felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
@@ -325,7 +322,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
 struct felhunter_pet_t : public warlock_main_pet_t
 {
-  felhunter_pet_t( sim_t* sim, warlock_t* owner );
+  felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
@@ -339,7 +336,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
 
 struct succubus_pet_t : public warlock_main_pet_t
 {
-  succubus_pet_t( sim_t* sim, warlock_t* owner );
+  succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" );
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };
@@ -350,7 +347,7 @@ struct succubus_pet_t : public warlock_main_pet_t
 
 struct voidwalker_pet_t : public warlock_main_pet_t
 {
-  voidwalker_pet_t( sim_t* sim, warlock_t* owner );
+  voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
@@ -379,18 +376,6 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-};
-
-// ==========================================================================
-// Pet Ebon Imp
-// ==========================================================================
-
-struct ebon_imp_pet_t : public warlock_guardian_pet_t
-{
-  ebon_imp_pet_t( sim_t* sim, warlock_t* owner );
-  virtual timespan_t available() const;
-  virtual double composite_attack_power() const;
-  virtual void init_base();
 };
 
 #endif
