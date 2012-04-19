@@ -288,20 +288,14 @@ player_t::player_t( sim_t*             s,
   spell_haste( 1.0 ), attack_haste( 1.0 ),
   // Mastery
   mastery( 0 ), mastery_rating( 0 ), initial_mastery_rating ( 0 ), base_mastery ( 8.0 ),
-  stats_base( player_stats_t() ), stats_initial( player_stats_t() ), stats_current( player_stats_t() ),
+  stats_base( player_stats_t() ),
+  stats_initial( extended_player_stats_t() ), stats_current( extended_player_stats_t() ),
   // Spell Mechanics
   base_spell_power( 0 ),
-  spell_power_multiplier( 1.0 ),  initial_spell_power_multiplier( 1.0 ),
-  spell_power_per_intellect( 0 ), initial_spell_power_per_intellect( 0 ),
-  spell_crit_per_intellect( 0 ),  initial_spell_crit_per_intellect( 0 ),
   mana_regen_base( 0 ),
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero() ),
   // Attack Mechanics
-  attack_power_multiplier( 1.0 ), initial_attack_power_multiplier( 1.0 ),
-  attack_power_per_strength( 0 ), initial_attack_power_per_strength( 0 ),
-  attack_power_per_agility( 0 ),  initial_attack_power_per_agility( 0 ),
-  attack_crit_per_agility( 0 ),   initial_attack_crit_per_agility( 0 ),
   position( POSITION_BACK ), position_str ( "" ),
   // Defense Mechanics
   target_auto_attack( 0 ),
@@ -361,6 +355,9 @@ player_t::player_t( sim_t*             s,
   targetdata_id( -1 )
 {
   sim -> actor_list.push_back( this );
+
+  stats_initial.spell_power_multiplier = 1.0;
+  stats_initial.attack_power_multiplier = 1.0;
 
   if ( type != ENEMY && type != ENEMY_ADD )
   {
@@ -665,8 +662,8 @@ void player_t::init_base()
   resources.base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MANA );
   stats_base.spell_crit                  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT );
   stats_base.attack_crit                 = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
-  initial_spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  initial_attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+  stats_initial.spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
+  stats_initial.attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
   stats_base.mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
 
   if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
@@ -959,6 +956,8 @@ void player_t::init_spell()
 
   stats_initial.mp5 = stats_base.mp5 + initial_stats.mp5;
 
+  stats_initial.spell_power_multiplier = 1.0;
+
   if ( type != ENEMY && type != ENEMY_ADD )
     mana_regen_base = dbc.regen_spirit( type, level );
 
@@ -989,6 +988,8 @@ void player_t::init_attack()
   stats_initial.attack_hit       = stats_base.attack_hit       + initial_stats.hit_rating       / rating.attack_hit;
   stats_initial.attack_crit      = stats_base.attack_crit      + initial_stats.crit_rating      / rating.attack_crit;
   stats_initial.attack_expertise = stats_base.attack_expertise + initial_stats.expertise_rating / rating.expertise;
+
+  stats_initial.attack_power_multiplier = 1.0;
 
   double a,b;
   if ( level > 80 )
@@ -1995,8 +1996,8 @@ double player_t::composite_attack_power() const
 {
   double ap = stats_current.attack_power;
 
-  ap += attack_power_per_strength * ( strength() - 10 );
-  ap += attack_power_per_agility  * ( agility() - 10 );
+  ap += stats_current.attack_power_per_strength * ( strength() - 10 );
+  ap += stats_current.attack_power_per_agility  * ( agility() - 10 );
 
   if ( vengeance_enabled )
     ap += vengeance_value;
@@ -2008,7 +2009,7 @@ double player_t::composite_attack_power() const
 
 double player_t::composite_attack_crit( const weapon_t* weapon ) const
 {
-  double ac = stats_current.attack_crit + ( agility() / attack_crit_per_agility / 100.0 );
+  double ac = stats_current.attack_crit + ( agility() / stats_current.attack_crit_per_agility / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
@@ -2337,7 +2338,7 @@ double player_t::composite_spell_power( const school_type_e school ) const
     sp += spell_power[ SCHOOL_MAX ];
 
 
-  sp += spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
+  sp += stats_current.spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
 
   return sp;
 }
@@ -2346,7 +2347,7 @@ double player_t::composite_spell_power( const school_type_e school ) const
 
 double player_t::composite_spell_power_multiplier() const
 {
-  double m = spell_power_multiplier;
+  double m = stats_current.spell_power_multiplier;
 
   if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() && sim -> auras.spell_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.spell_power_multiplier -> value();
@@ -2357,7 +2358,7 @@ double player_t::composite_spell_power_multiplier() const
 
 double player_t::composite_spell_crit() const
 {
-  double sc = stats_current.spell_crit + ( intellect() / spell_crit_per_intellect / 100.0 );
+  double sc = stats_current.spell_crit + ( intellect() / stats_current.spell_crit_per_intellect / 100.0 );
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() )
   {
@@ -2407,7 +2408,7 @@ double player_t::composite_mastery() const
 
 double player_t::composite_attack_power_multiplier() const
 {
-  double m = attack_power_multiplier;
+  double m = stats_current.attack_power_multiplier;
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.attack_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
@@ -2819,15 +2820,6 @@ void player_t::reset()
 
   // Reset current stats to initial stats
   stats_current = stats_initial;
-
-  spell_power_multiplier    = initial_spell_power_multiplier;
-  spell_power_per_intellect = initial_spell_power_per_intellect;
-  spell_crit_per_intellect  = initial_spell_crit_per_intellect;
-
-  attack_power_multiplier   = initial_attack_power_multiplier;
-  attack_power_per_strength = initial_attack_power_per_strength;
-  attack_power_per_agility  = initial_attack_power_per_agility;
-  attack_crit_per_agility   = initial_attack_crit_per_agility;
 
   armor_multiplier          = initial_armor_multiplier;
   dodge_per_agility         = initial_dodge_per_agility;
@@ -5767,7 +5759,7 @@ expr_t* player_t::create_expression( action_t* a,
           return ( player.temporary.spell_power +
                    player.temporary.attribute[ ATTR_INTELLECT ] *
                    player.composite_attribute_multiplier( ATTR_INTELLECT ) *
-                   player.spell_power_per_intellect ) *
+                   player.stats_current.spell_power_per_intellect ) *
               player.composite_spell_power_multiplier();
         }
       };
@@ -5785,10 +5777,10 @@ expr_t* player_t::create_expression( action_t* a,
           return ( player.temporary.attack_power +
                    player.temporary.attribute[ ATTR_STRENGTH ] *
                    player.composite_attribute_multiplier( ATTR_STRENGTH ) *
-                   player.attack_power_per_strength +
+                   player.stats_current.attack_power_per_strength +
                    player.temporary.attribute[ ATTR_AGILITY ] *
                    player.composite_attribute_multiplier( ATTR_AGILITY ) *
-                   player.attack_power_per_agility ) *
+                   player.stats_current.attack_power_per_agility ) *
               player.composite_attack_power_multiplier();
         }
       };

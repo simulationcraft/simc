@@ -858,8 +858,8 @@ struct army_ghoul_pet_t : public pet_t
     attribute_base[ ATTR_SPIRIT    ] = 116;
 
     stats_base.attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
-    initial_attack_power_per_agility  = 0.0;
+    stats_initial.attack_power_per_strength = 2.0;
+    stats_initial.attack_power_per_agility  = 0.0;
 
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -1193,10 +1193,10 @@ struct ghoul_pet_t : public pet_t
     attribute_base[ ATTR_SPIRIT    ] = 116;
 
     stats_base.attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
-    initial_attack_power_per_agility  = 0.0;//no AP per agi.
+    stats_initial.attack_power_per_strength = 2.0;
+    stats_initial.attack_power_per_agility  = 0.0;//no AP per agi.
 
-    initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+    stats_initial.attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -3711,7 +3711,7 @@ void death_knight_t::init_base()
 
   stats_base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  initial_attack_power_per_strength = 2.0;
+  stats_initial.attack_power_per_strength = 2.0;
 
   if ( primary_tree() == DEATH_KNIGHT_BLOOD )
     vengeance_enabled = true;

@@ -555,7 +555,7 @@ struct spirit_wolf_pet_t : public pet_t
     attribute_base[ ATTR_SPIRIT    ] = 109;
 
     stats_base.attack_power = -20;
-    initial_attack_power_per_strength = 2.0;
+    stats_initial.attack_power_per_strength = 2.0;
 
     melee = new melee_t( this );
   }
@@ -584,7 +584,7 @@ struct spirit_wolf_pet_t : public pet_t
 
   virtual double composite_attack_power_multiplier() const
   {
-    return attack_power_multiplier;
+    return stats_current.attack_power_multiplier;
   }
 
   virtual double composite_player_multiplier( school_type_e, const action_t* ) const
@@ -1015,7 +1015,7 @@ struct fire_elemental_pet_t : public pet_t
     pet_t::summon();
 
     owner_int = owner -> intellect();
-    owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
+    owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> stats_current.spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
     fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
@@ -3686,9 +3686,9 @@ void shaman_t::init_base()
   player_t::init_base();
 
   stats_base.attack_power = ( level * 2 ) - 30;
-  initial_attack_power_per_strength = 1.0;
-  initial_attack_power_per_agility  = 2.0;
-  initial_spell_power_per_intellect = 1.0;
+  stats_initial.attack_power_per_strength = 1.0;
+  stats_initial.attack_power_per_agility  = 2.0;
+  stats_initial.spell_power_per_intellect = 1.0;
 
   mana_per_intellect = 0;
   if ( primary_tree() == SHAMAN_ELEMENTAL )

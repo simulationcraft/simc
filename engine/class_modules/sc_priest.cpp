@@ -1108,7 +1108,7 @@ struct shadow_fiend_pet_t : public pet_t
     resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
     stats_base.attack_power                 = 0;  // Unknown
     stats_base.attack_crit                  = 0.07; // Needs more testing
-    initial_attack_power_per_strength = 0; // Unknown
+    stats_initial.attack_power_per_strength = 0; // Unknown
 
     main_hand_attack = new melee_t( this );
   }
@@ -3582,8 +3582,8 @@ void priest_t::init_base()
 
   resources.base[ RESOURCE_SHADOW_ORB ] = 3;
 
-  initial_attack_power_per_strength = 1.0;
-  initial_spell_power_per_intellect = 1.0;
+  stats_initial.attack_power_per_strength = 1.0;
+  stats_initial.spell_power_per_intellect = 1.0;
 
   mana_per_intellect = 15;
 

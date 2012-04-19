@@ -3096,6 +3096,23 @@ struct player_stats_t
     double block_reduction;
 };
 
+struct extended_player_stats_t : player_stats_t
+{
+
+    double spell_power_multiplier;
+    double spell_power_per_intellect;
+    double spell_crit_per_intellect;
+
+    double attack_power_multiplier;
+    double attack_power_per_strength;
+    double attack_power_per_agility;
+    double attack_crit_per_agility;
+
+    double armor_multiplier;
+    double dodge_per_agility;
+    double parry_rating_per_strength;
+};
+
 // Player ===================================================================
 
 struct player_t : public noncopyable
@@ -3171,14 +3188,12 @@ struct player_t : public noncopyable
 
   double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
-  player_stats_t stats_base, stats_initial, stats_current;
+  player_stats_t stats_base;
+  extended_player_stats_t stats_initial, stats_current;
   // Spell Mechanics
   double base_spell_power;
   std::array<double,SCHOOL_MAX + 1> initial_spell_power;
   std::array<double,SCHOOL_MAX + 1> spell_power;
-  double spell_power_multiplier,    initial_spell_power_multiplier;
-  double spell_power_per_intellect, initial_spell_power_per_intellect;
-  double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
   double mana_regen_base;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
@@ -3187,10 +3202,6 @@ struct player_t : public noncopyable
   timespan_t last_cast;
 
   // Attack Mechanics
-  double attack_power_multiplier,   initial_attack_power_multiplier;
-  double attack_power_per_strength, initial_attack_power_per_strength;
-  double attack_power_per_agility,  initial_attack_power_per_agility;
-  double attack_crit_per_agility,   initial_attack_crit_per_agility;
   position_type_e position;
   std::string position_str;
 
