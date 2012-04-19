@@ -37,7 +37,7 @@ struct enemy_t : public player_t
   { return RESOURCE_NONE; }
 
   virtual double base_armor() const
-  { return armor; }
+  { return stats_current.armor; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init();
@@ -372,29 +372,30 @@ void enemy_t::init_base()
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );
 
-  base_attack_crit = 0.05;
+  stats_base.attack_crit = 0.05;
 
-  if ( initial_armor <= 0 )
+  if ( stats_initial.armor <= 0 )
   {
+    double& a = stats_initial.armor;
     // TO-DO: Fill in the blanks.
     // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
     switch ( level )
     {
-    case 80: initial_armor = 9729; break;
-    case 81: initial_armor = 10034; break;
-    case 82: initial_armor = 10338; break;
-    case 83: initial_armor = 10643; break;
-    case 84: initial_armor = 10880; break; // Need real value
-    case 85: initial_armor = 11092; break;
-    case 86: initial_armor = 11387; break;
-    case 87: initial_armor = 11682; break;
-    case 88: initial_armor = 11977; break;
+    case 80: a = 9729; break;
+    case 81: a = 10034; break;
+    case 82: a = 10338; break;
+    case 83: a = 10643; break;
+    case 84: a = 10880; break; // Need real value
+    case 85: a = 11092; break;
+    case 86: a = 11387; break;
+    case 87: a = 11682; break;
+    case 88: a = 11977; break;
     default: if ( level < 80 )
-        initial_armor = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+        a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
       break;
     }
   }
-  player_t::base_armor = initial_armor;
+  stats_base.armor = stats_initial.armor;
 
   initial_health = fixed_health;
 

@@ -1106,8 +1106,8 @@ struct shadow_fiend_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ]  = 0; // Unknown
     resources.base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
     resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
-    base_attack_power                 = 0;  // Unknown
-    base_attack_crit                  = 0.07; // Needs more testing
+    stats_base.attack_power                 = 0;  // Unknown
+    stats_base.attack_crit                  = 0.07; // Needs more testing
     initial_attack_power_per_strength = 0; // Unknown
 
     main_hand_attack = new melee_t( this );
@@ -1144,7 +1144,7 @@ struct shadow_fiend_pet_t : public pet_t
 
   virtual double composite_attack_crit( const weapon_t* /* w */ ) const
   {
-    double c = attack_crit;
+    double c = stats_current.attack_crit;
 
     c += owner -> composite_spell_crit(); // Needs confirming that it benefits from ALL owner crit.
 
@@ -3055,7 +3055,7 @@ struct lightwell_t : public priest_spell_t
 struct penance_heal_tick_t : public priest_heal_t
 {
   penance_heal_tick_t( priest_t* player ) :
-    priest_heal_t( "penance_heal_tick", player, player -> find_spell( 47750 ) )
+    priest_heal_t( "penance_heal_tick", player, player -> find_spell( 47666 ) )
   {
     background  = true;
     may_crit    = true;
@@ -3578,7 +3578,7 @@ void priest_t::init_base()
 {
   player_t::init_base();
 
-  base_attack_power = 0;
+  stats_base.attack_power = 0;
 
   resources.base[ RESOURCE_SHADOW_ORB ] = 3;
 

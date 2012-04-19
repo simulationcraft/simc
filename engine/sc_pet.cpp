@@ -21,8 +21,8 @@ void pet_t::init_pet_t_()
   owner -> pet_list.push_back( this );
 
   // Pets have inherent 5% critical strike chance if not overridden.
-  base_spell_crit  = 0.05;
-  base_attack_crit = 0.05;
+  stats_base.spell_crit  = 0.05;
+  stats_base.attack_crit = 0.05;
 
   stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;

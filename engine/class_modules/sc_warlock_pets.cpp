@@ -662,9 +662,9 @@ void warlock_pet_t::init_base()
   initial_attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
   initial_spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
   initial_dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
-  base_spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
-  base_attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
-  base_mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
+  stats_base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
+  stats_base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
+  stats_base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
   if ( stats_avaiable != 13 )
     sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
@@ -675,12 +675,12 @@ void warlock_pet_t::init_base()
   base_energy_regen_per_second = 10;
 
   initial_attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
-  base_attack_power = -20; // technically, the first 20 str give 0 ap. - tested
+  stats_base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
   stamina_per_owner = 0.6496; // level invariant, tested
   intellect_per_owner = 0; // removed in cata, tested
 
-  base_attack_crit                  += 0.0328; // seems to be level invariant, untested
-  base_spell_crit                   += 0.0328; // seems to be level invariant, untested
+  stats_base.attack_crit                  += 0.0328; // seems to be level invariant, untested
+  stats_base.spell_crit                   += 0.0328; // seems to be level invariant, untested
   initial_attack_crit_per_agility   += 0.01 / 52.0; // untested
   initial_spell_crit_per_intellect  += owner -> initial_spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
@@ -787,7 +787,7 @@ void warlock_main_pet_t::dismiss()
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
-  return owner -> spell_hit * 26.0 / 17.0;
+  return owner -> stats_current.spell_hit * 26.0 / 17.0;
 }
 
 resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
@@ -955,7 +955,7 @@ void felhunter_pet_t::init_base()
   //health_per_stamina = 9.5;
   mana_per_intellect = 11.55;
   //mp5_per_intellect  = 8.0 / 324.0;
-  base_mp5 = 11.22;
+  stats_base.mp5 = 11.22;
   // untested in cataclyms!!
 
   main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "felhunter_melee" );

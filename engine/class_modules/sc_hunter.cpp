@@ -429,7 +429,7 @@ struct hunter_pet_t : public pet_t
 
     base_gcd = timespan_t::from_seconds( 1.20 );
 
-    infinite_resource[ RESOURCE_FOCUS ] = o -> infinite_resource[ RESOURCE_FOCUS ];
+    resources.infinite_resource[ RESOURCE_FOCUS ] = o -> resources.infinite_resource[ RESOURCE_FOCUS ];
 
     world_lag = timespan_t::from_seconds( 0.3 ); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
     world_lag_override = true;

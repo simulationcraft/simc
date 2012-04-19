@@ -554,7 +554,7 @@ struct spirit_wolf_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
     attribute_base[ ATTR_SPIRIT    ] = 109;
 
-    base_attack_power = -20;
+    stats_base.attack_power = -20;
     initial_attack_power_per_strength = 2.0;
 
     melee = new melee_t( this );
@@ -3685,7 +3685,7 @@ void shaman_t::init_base()
 {
   player_t::init_base();
 
-  base_attack_power = ( level * 2 ) - 30;
+  stats_base.attack_power = ( level * 2 ) - 30;
   initial_attack_power_per_strength = 1.0;
   initial_attack_power_per_agility  = 2.0;
   initial_spell_power_per_intellect = 1.0;

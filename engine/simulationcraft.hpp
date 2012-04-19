@@ -3075,6 +3075,28 @@ public:
   const spell_data_t* set( set_type_e s ) const;
 };
 
+struct player_stats_t
+{
+    double spell_hit;
+    double spell_crit;
+    double mp5;
+
+    // Attack Mechanics
+    double attack_power;
+    double attack_hit;
+    double attack_expertise;
+    double attack_crit;
+
+    // Defense Mechanics
+    double armor;
+    double bonus_armor;
+    double miss;
+    double dodge;
+    double parry;
+    double block;
+    double block_reduction;
+};
+
 // Player ===================================================================
 
 struct player_t : public noncopyable
@@ -3106,7 +3128,6 @@ struct player_t : public noncopyable
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
   timespan_t  reaction_mean,reaction_stddev,reaction_nu;
-  std::array<int, RESOURCE_MAX> infinite_resource;
   std::vector<buff_t*> absorb_buffs;
   int         scale_player;
   bool        has_dtr;
@@ -3151,13 +3172,11 @@ struct player_t : public noncopyable
 
   double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
+  player_stats_t stats_base, stats_initial, stats_current;
   // Spell Mechanics
   double base_spell_power;
   std::array<double,SCHOOL_MAX + 1> initial_spell_power;
   std::array<double,SCHOOL_MAX + 1> spell_power;
-  double base_spell_hit,         initial_spell_hit,                   spell_hit;
-  double base_spell_crit,        initial_spell_crit,                  spell_crit;
-  double base_mp5,               initial_mp5,                         mp5;
   double spell_power_multiplier,    initial_spell_power_multiplier;
   double spell_power_per_intellect, initial_spell_power_per_intellect;
   double spell_crit_per_intellect,  initial_spell_crit_per_intellect;
@@ -3169,10 +3188,6 @@ struct player_t : public noncopyable
   timespan_t last_cast;
 
   // Attack Mechanics
-  double base_attack_power,       initial_attack_power,        attack_power;
-  double base_attack_hit,         initial_attack_hit,          attack_hit;
-  double base_attack_expertise,   initial_attack_expertise,    attack_expertise;
-  double base_attack_crit,        initial_attack_crit,         attack_crit;
   double attack_power_multiplier,   initial_attack_power_multiplier;
   double attack_power_per_strength, initial_attack_power_per_strength;
   double attack_power_per_agility,  initial_attack_power_per_agility;
@@ -3182,13 +3197,6 @@ struct player_t : public noncopyable
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double base_armor,       initial_armor,       armor;
-  double base_bonus_armor, initial_bonus_armor, bonus_armor;
-  double base_miss,        initial_miss,        miss;
-  double base_dodge,       initial_dodge,       dodge;
-  double base_parry,       initial_parry,       parry;
-  double base_block,       initial_block,       block;
-  double base_block_reduction, initial_block_reduction, block_reduction;
   double armor_multiplier,  initial_armor_multiplier;
   double dodge_per_agility, initial_dodge_per_agility;
   double parry_rating_per_strength, initial_parry_rating_per_strength;
@@ -3212,14 +3220,18 @@ struct player_t : public noncopyable
   {
     std::array<double,RESOURCE_MAX> base, initial, max, current,
                                     base_multiplier, initial_multiplier;
+    std::array<int, RESOURCE_MAX> infinite_resource;
 
     resources_t()
     {
       range::fill( base, 0.0 ); range::fill( initial, 0.0 ); range::fill( max, 0.0 ); range::fill( current, 0.0 );
       range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
+      range::fill( infinite_resource, 0 );
     }
     double pct( resource_type_e rt ) const
     { return current[ rt ] / max[ rt ]; }
+    bool is_infinite( resource_type_e rt ) const
+    { return infinite_resource[ rt ] == 0 ? false : true; }
   } resources;
 
   double  mana_per_intellect;
@@ -3907,7 +3919,7 @@ public:
   // Pets gain their owners' hit rating, but it rounds down to a
   // percentage.  Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise( const weapon_t* ) const { return floor( floor( 100.0 * owner -> attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return floor( floor( 100.0 * owner -> stats_current.attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
   virtual double composite_attack_hit() const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
   virtual double composite_spell_hit() const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;

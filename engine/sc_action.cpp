@@ -1085,7 +1085,7 @@ void action_t::assess_damage( player_t*     t,
                               result_type_e result )
 {
   double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
-  double actual_amount = t -> infinite_resource[ RESOURCE_HEALTH ] ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
+  double actual_amount = t -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
 
   if ( type == DMG_DIRECT )
   {

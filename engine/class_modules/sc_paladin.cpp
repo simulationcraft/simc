@@ -2221,14 +2221,14 @@ void paladin_t::init_base()
   initial_spell_power_per_intellect = 1.0;
 
   base_spell_power  = 0;
-  base_attack_power = level * 3;
+  stats_base.attack_power = level * 3;
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + 0;
 
   // FIXME! Level-specific!
-  base_miss    = 0.05;
-  base_parry   = 0.05;
-  base_block   = 0.05;
+  stats_base.miss    = 0.05;
+  stats_base.parry   = 0.05;
+  stats_base.block   = 0.05;
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -2239,8 +2239,8 @@ void paladin_t::init_base()
   switch ( primary_tree() )
   {
   case PALADIN_HOLY:
-    base_attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
-    base_spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
+    stats_base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
+    stats_base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
     break;
 
   case PALADIN_PROTECTION:

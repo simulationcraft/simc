@@ -1815,7 +1815,7 @@ void warlock_t::init_base()
 {
   player_t::init_base();
 
-  base_attack_power = -10;
+  stats_base.attack_power = -10;
   initial_attack_power_per_strength = 2.0;
   initial_spell_power_per_intellect = 1.0;
 

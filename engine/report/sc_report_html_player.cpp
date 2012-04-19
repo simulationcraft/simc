@@ -75,7 +75,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
            "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"

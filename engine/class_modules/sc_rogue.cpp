@@ -3916,7 +3916,7 @@ void rogue_t::regen( timespan_t periodicity )
 
   if ( buffs_adrenaline_rush -> up() )
   {
-    if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
+    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
     {
       double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
 
@@ -3926,7 +3926,7 @@ void rogue_t::regen( timespan_t periodicity )
 
   if ( talents.overkill -> rank() && buffs_overkill -> up() )
   {
-    if ( infinite_resource[ RESOURCE_ENERGY ] == 0 )
+    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
     {
       double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * 0.30;
 

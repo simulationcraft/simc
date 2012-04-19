@@ -741,7 +741,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_crit( const weapon_t* ) const        { return snapshot_attack_crit; }
   virtual double composite_attack_haste() const       { return haste_snapshot; }
   virtual double composite_attack_speed() const       { return speed_snapshot; }
-  virtual double composite_attack_power() const       { return attack_power; }
+  virtual double composite_attack_power() const       { return stats_current.attack_power; }
   virtual double composite_spell_crit() const         { return snapshot_spell_crit;  }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -752,7 +752,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
     speed_snapshot       = o -> composite_attack_speed();
-    attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    stats_current.attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
   }
 };
@@ -857,7 +857,7 @@ struct army_ghoul_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 69;
     attribute_base[ ATTR_SPIRIT    ] = 116;
 
-    base_attack_power = -20;
+    stats_base.attack_power = -20;
     initial_attack_power_per_strength = 2.0;
     initial_attack_power_per_agility  = 0.0;
 
@@ -1192,7 +1192,7 @@ struct ghoul_pet_t : public pet_t
     attribute_base[ ATTR_INTELLECT ] = 69;
     attribute_base[ ATTR_SPIRIT    ] = 116;
 
-    base_attack_power = -20;
+    stats_base.attack_power = -20;
     initial_attack_power_per_strength = 2.0;
     initial_attack_power_per_agility  = 0.0;//no AP per agi.
 
@@ -1262,7 +1262,7 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> spells.master_of_ghouls -> ok() )
     {
-      return ( ( 100.0 * o -> attack_hit ) * 26.0 / 8.0 ) / 100.0;
+      return ( ( 100.0 * o -> stats_current.attack_hit ) * 26.0 / 8.0 ) / 100.0;
     }
     else
     {
@@ -3707,9 +3707,9 @@ void death_knight_t::init_base()
   attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
   attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
-  base_attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
+  stats_base.attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
 
-  base_attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  stats_base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   initial_attack_power_per_strength = 2.0;
 
