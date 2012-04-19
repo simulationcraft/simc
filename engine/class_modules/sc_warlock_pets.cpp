@@ -241,8 +241,9 @@ namespace imp_spells {
 struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   firebolt_t( imp_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
+   warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
   {
+    //FIXME: This stuff needs testing in MoP
 
     direct_power_mod = 0.618; // tested in-game as of 2011/05/10
 
@@ -746,6 +747,18 @@ double warlock_pet_t::composite_spell_crit() const
   return sc;
 }
 
+double warlock_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
+{
+  double m = pet_t::composite_player_multiplier( school, a );
+
+  m *= 1.0 + owner -> composite_mastery() * o() -> mastery_spells.master_demonologist -> effectN( 3 ).base_value() / 10000.0;
+
+  if ( o() -> talents.grimoire_of_supremacy -> ok() )
+    m *= 1.0 + o() -> find_spell( 115578 ) -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
+
+  return m;
+}
+
 // ==========================================================================
 // Warlock Main Pet
 // ==========================================================================
@@ -760,17 +773,6 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 }
 
 resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
-
-double warlock_main_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school, a );
-
-  double mastery_value = o() -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
-
-  m *= 1.0 + ( o() -> mastery_spells.master_demonologist -> ok() * owner -> composite_mastery() * mastery_value / 10000.0 );
-
-  return m;
-}
 
 double warlock_main_pet_t::composite_mp5() const
 {

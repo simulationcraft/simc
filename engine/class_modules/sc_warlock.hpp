@@ -255,6 +255,7 @@ public:
   virtual double composite_attack_power() const;
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 };
@@ -269,7 +270,6 @@ struct warlock_main_pet_t : public warlock_pet_t
   virtual double composite_attack_expertise( const weapon_t* ) const;
   virtual resource_type_e primary_resource() const;
   virtual double composite_mp5() const;
-  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 };
 
 // ==========================================================================
