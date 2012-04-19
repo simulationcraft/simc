@@ -4223,11 +4223,14 @@ public:
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
-  targetdata_t* targetdata( player_t* t ) const
+  targetdata_t* targetdata( player_t* t = 0 ) const
   {
+    if ( !t )
+      t = target;
+
     if ( cached_targetdata_target != t )
     {
-      cached_targetdata_target = target;
+      cached_targetdata_target = t;
       cached_targetdata = targetdata_t::get( player, t );
     }
     return cached_targetdata;
