@@ -1525,7 +1525,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       n_ticks_expr_t( const action_t& a ) : action_expr_t( "n_ticks", a ) {}
       virtual double evaluate() {
         int n_ticks = action.hasted_num_ticks( action.player -> composite_spell_haste() );
-        if ( action.dot_behavior == DOT_EXTEND )
+        if ( action.dot_behavior == DOT_EXTEND && action.dot() -> ticking )
           n_ticks += std::min( (int) ( n_ticks / 2 ), action.dot() -> num_ticks - action.dot() -> current_tick );
         return n_ticks; 
       }
