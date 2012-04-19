@@ -122,7 +122,7 @@ namespace std {using namespace tr1; }
 #define SC_HUNTER       0
 #define SC_MAGE         1
 #define SC_MONK         1
-#define SC_PALADIN      0
+#define SC_PALADIN      1
 #define SC_PRIEST       1
 #define SC_ROGUE        0
 #define SC_SHAMAN       1
