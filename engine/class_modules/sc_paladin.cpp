@@ -66,7 +66,6 @@ struct paladin_t : public player_t
   // Buffs
   buff_t* buffs_ancient_power;
   buff_t* buffs_avenging_wrath;
-  buff_t* buffs_conviction;
   buff_t* buffs_daybreak;
   buff_t* buffs_divine_favor;
   buff_t* buffs_divine_plea;
@@ -83,9 +82,7 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_wise;
   buff_t* buffs_reckoning;
   buff_t* buffs_sacred_duty;
-  buff_t* buffs_selfless;
   buff_t* buffs_the_art_of_war;
-  buff_t* buffs_zealotry;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -106,7 +103,6 @@ struct paladin_t : public player_t
   gain_t* gains_hp_holy_shock;
   gain_t* gains_hp_pursuit_of_justice;
   gain_t* gains_hp_tower_of_radiance;
-  gain_t* gains_hp_zealotry;
   gain_t* gains_hp_judgement;
 
   // Cooldowns
@@ -383,11 +379,6 @@ struct paladin_heal_t : public heal_t
   {
     heal_t::player_buff();
 
-    if ( p() -> buffs_conviction -> up() )
-    {
-      player_multiplier *= 1.0 + p() -> buffs_conviction -> data().effect2().percent();
-    }
-
     if ( p() -> buffs_divine_favor -> up() )
     {
       player_crit += p() -> buffs_divine_favor -> data().effect2().percent();
@@ -480,9 +471,6 @@ struct paladin_melee_attack_t : public melee_attack_t
           p() -> procs_wasted_divine_purpose -> occur();
         }
       }
-
-      if ( result == RESULT_CRIT && direct_dmg > 0 )
-        p() -> buffs_conviction -> trigger();
     }
   }
 
@@ -490,22 +478,10 @@ struct paladin_melee_attack_t : public melee_attack_t
   {
     melee_attack_t::player_buff();
 
-    if ( p() -> set_bonus.tier13_4pc_melee() && p() -> buffs_zealotry -> check() )
-    {
-      player_multiplier *= 1.18;
-    }
-
-    if ( p() -> buffs_conviction -> up() )
-    {
-      player_multiplier *= 1.0 + p() -> buffs_conviction -> data().effect1().percent();
-    }
-
     if ( p() -> buffs_divine_shield -> up() )
     {
       player_multiplier *= 1.0 + p() -> buffs_divine_shield -> data().effect1().percent();
     }
-
-    player_multiplier *= 1.0 + p() -> buffs_selfless -> value();
   }
 
   virtual double cost() const
@@ -583,8 +559,6 @@ struct paladin_spell_t : public spell_t
           p() -> procs_wasted_divine_purpose -> occur();
         }
       }
-      if ( result == RESULT_CRIT && direct_dmg > 0 )
-        p() -> buffs_conviction -> trigger();
     }
   }
 
@@ -602,16 +576,6 @@ struct paladin_spell_t : public spell_t
   {
     spell_t::player_buff();
 
-    if ( p() -> set_bonus.tier13_4pc_melee() && p() -> buffs_zealotry -> check() )
-    {
-      player_multiplier *= 1.12;
-    }
-
-    if ( p() -> buffs_conviction -> up() )
-    {
-      player_multiplier *= 1.0 + p() -> buffs_conviction -> data().effect1().percent();
-    }
-
     if ( p() -> buffs_divine_shield -> up() )
     {
       player_multiplier *= 1.0 + p() -> buffs_divine_shield -> data().effect1().percent();
@@ -619,8 +583,6 @@ struct paladin_spell_t : public spell_t
 
     if ( p() -> buffs_divine_favor -> up() )
       player_crit += p() -> buffs_divine_favor -> data().effect2().percent();
-
-    player_multiplier *= 1.0 + p() -> buffs_selfless -> value();
   }
 };
 
@@ -890,8 +852,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     if ( result_is_hit() )
     {
-      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs_zealotry -> up() ? 3 : 1,
-                          p() -> gains_hp_crusader_strike );
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains_hp_crusader_strike );
 
       trigger_hand_of_light( this );
     }
@@ -1891,31 +1852,6 @@ struct inquisition_t : public paladin_spell_t
   }
 };
 
-// Zealotry =================================================================
-
-struct zealotry_t : public paladin_spell_t
-{
-  zealotry_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "zealotry", p, p -> find_class_spell( "Zealotry" ) )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p() -> name(), name() );
-    update_ready();
-    p() -> buffs_zealotry -> trigger();
-  }
-
-  virtual void consume_resource()
-  {
-  }
-};
-
-
 // ==========================================================================
 // Paladin Heals
 // ==========================================================================
@@ -1925,9 +1861,6 @@ struct zealotry_t : public paladin_spell_t
 void paladin_heal_t::execute()
 {
   heal_t::execute();
-
-  if ( result == RESULT_CRIT && direct_dmg > 0 )
-    p() -> buffs_conviction -> trigger();
 
   if ( target != p() -> beacon_target )
     trigger_beacon_of_light( this );
@@ -2259,7 +2192,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
-  if ( name == "zealotry"                  ) return new zealotry_t                 ( this, options_str );
 
   if ( name == "seal_of_justice"           ) return new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
   if ( name == "seal_of_insight"           ) return new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
@@ -2296,7 +2228,7 @@ void paladin_t::init_base()
   base_spell_power  = 0;
   base_attack_power = level * 3;
 
-  resources.base[ RESOURCE_HOLY_POWER ] = 3;
+  resources.base[ RESOURCE_HOLY_POWER ] = 3 + 0;
 
   // FIXME! Level-specific!
   base_miss    = 0.05;
@@ -2359,7 +2291,6 @@ void paladin_t::init_gains()
   gains_hp_holy_shock               = get_gain( "holy_power_holy_shock" );
   gains_hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains_hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
-  gains_hp_zealotry                 = get_gain( "holy_power_zealotry" );
   gains_hp_judgement                = get_gain( "holy_power_judgement" );
 }
 
@@ -2460,8 +2391,8 @@ void paladin_t::init_buffs()
   buffs_gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_spell( 86659 ) );
   buffs_holy_shield            = buff_creator_t( this, "holy_shield", find_spell( 20925 ) );
   buffs_inquisition            = buff_creator_t( this, "inquisition", find_spell( 84963 ) );
-  buffs_judgements_of_the_bold = buff_creator_t( this, "judgements_of_the_bold", find_spell( 89906 ) ).max_stack( primary_tree() == PALADIN_RETRIBUTION ? 1 : 0 );
-  buffs_judgements_of_the_wise = buff_creator_t( this, "judgements_of_the_wise", find_spell( 31930 ) ).max_stack( primary_tree() == PALADIN_PROTECTION ? 1 : 0 );
+  buffs_judgements_of_the_bold = buff_creator_t( this, "judgements_of_the_bold", find_specialization_spell( "Judgments of the Bold" ) );
+  buffs_judgements_of_the_wise = buff_creator_t( this, "judgements_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2477,13 +2408,13 @@ void paladin_t::init_actions()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
-  active_seals_of_command_proc       = new seals_of_command_proc_t      ( this );
+//  active_seals_of_command_proc       = new seals_of_command_proc_t      ( this );
   active_seal_of_justice_proc        = new seal_of_justice_proc_t       ( this );
   active_seal_of_insight_proc        = new seal_of_insight_proc_t       ( this );
   active_seal_of_righteousness_proc  = new seal_of_righteousness_proc_t ( this );
   active_seal_of_truth_proc          = new seal_of_truth_proc_t         ( this );
   active_seal_of_truth_dot           = new seal_of_truth_dot_t          ( this );
-  ancient_fury_explosion             = new ancient_fury_t               ( this );
+//  ancient_fury_explosion             = new ancient_fury_t               ( this );
 
   if ( action_list_str.empty() )
   {
@@ -2491,6 +2422,7 @@ void paladin_t::init_actions()
     {
     case PALADIN_RETRIBUTION:
     {
+#if 0
       if ( level > 80 )
       {
         action_list_str += "/flask,type=titanic_strength/food,type=beer_basted_crocolisk";
@@ -2499,10 +2431,11 @@ void paladin_t::init_actions()
       {
         action_list_str += "/flask,type=endless_rage/food,type=dragonfin_filet";
       }
+#endif
       action_list_str += "/seal_of_truth";
       action_list_str += "/snapshot_stats";
       // TODO: action_list_str += "/rebuke";
-
+#if 0
       if ( level > 80 )
       {
         action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
@@ -2525,23 +2458,23 @@ void paladin_t::init_actions()
       }
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
-      if ( level >= 85 )
-        action_list_str += "/guardian_of_ancient_kings,if=cooldown.zealotry.remains<10";
-      action_list_str += "/zealotry,if=cooldown.guardian_of_ancient_kings.remains>0&cooldown.guardian_of_ancient_kings.remains<292";
-      action_list_str += "/avenging_wrath,if=buff.zealotry.up";
+      action_list_str += "/avenging_wrath";
       action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
-      action_list_str += "/judgement,if=buff.zealotry.down&holy_power<3";
+      action_list_str += "/judgement";
       if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|buff.divine_purpose.react)";
       action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
       action_list_str += "/hammer_of_wrath";
-      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&buff.zealotry.up&holy_power<3";
+      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
       action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader_strike.remains>0";
       action_list_str += "/holy_wrath";
       action_list_str += "/consecration,not_flying=1,if=mana>16000";  // Consecration is expensive, only use if we have plenty of mana
       action_list_str += "/divine_plea";
+#else
+      action_list_str += "/crusader_strike";
+#endif
     }
     break;
     case PALADIN_PROTECTION:
