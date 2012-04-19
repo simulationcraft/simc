@@ -438,7 +438,7 @@ struct paladin_melee_attack_t : public melee_attack_t
     melee_attack_t::execute();
     if ( result_is_hit() )
     {
-      paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+      paladin_targetdata_t* td = targetdata() -> cast_paladin();
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
       {
         switch ( p() -> active_seal )
@@ -1270,7 +1270,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
   virtual void player_buff()
   {
     paladin_melee_attack_t::player_buff();
-    paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     player_multiplier *= td -> debuffs_censure -> stack();
   }
 
@@ -1278,7 +1278,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
   {
     if ( result_is_hit( impact_result ) )
     {
-      paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+      paladin_targetdata_t* td = targetdata() -> cast_paladin();
       td -> debuffs_censure -> trigger();
       player_buff(); // update with new stack of the debuff
     }
@@ -1287,7 +1287,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
 
   virtual void last_tick( dot_t* d )
   {
-    paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_melee_attack_t::last_tick( d );
     td -> debuffs_censure -> expire();
   }
@@ -1306,7 +1306,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   }
   virtual void player_buff()
   {
-    paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_melee_attack_t::player_buff();
     player_multiplier *= td -> debuffs_censure -> stack() * 0.2;
   }
@@ -1334,7 +1334,7 @@ struct seal_of_truth_judgement_t : public paladin_melee_attack_t
 
   virtual void player_buff()
   {
-    paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_melee_attack_t::player_buff();
     player_multiplier *= 1.0 + td -> debuffs_censure -> stack() * 0.20;
   }
@@ -1748,7 +1748,7 @@ struct exorcism_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    paladin_targetdata_t* td = targetdata( p() ) -> cast_paladin();
+    paladin_targetdata_t* td = targetdata() -> cast_paladin();
 
     // FIXME: Should this be wrapped in a result_is_hit() ?
     switch ( p() -> active_seal )
