@@ -913,12 +913,8 @@ struct soul_fire_t : public warlock_spell_t
 
 struct life_tap_t : public warlock_spell_t
 {
-  double trigger;
-  double max_mana_pct;
-
   life_tap_t( warlock_t* p ) :
-    warlock_spell_t( p, "Life Tap" ),
-    trigger( 0 ), max_mana_pct( 0 )
+    warlock_spell_t( p, "Life Tap" )
   {
     harmful = false;
 
@@ -930,23 +926,8 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    double life = player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent();
-    double mana = life * data().effectN( 2 ).percent();
-    player -> resource_loss( RESOURCE_HEALTH, life );
-    player -> resource_gain( RESOURCE_MANA, mana, p() -> gains.life_tap );
-  }
-
-  virtual bool ready()
-  {
-    if (  max_mana_pct > 0 )
-      if ( ( 100.0 * player -> resources.pct( RESOURCE_MANA ) ) > max_mana_pct )
-        return false;
-
-    if ( trigger > 0 )
-      if ( player -> resources.current[ RESOURCE_MANA ] > trigger )
-        return false;
-
-    return warlock_spell_t::ready();
+    player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
+    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent() / 10, p() -> gains.life_tap );
   }
 };
 
