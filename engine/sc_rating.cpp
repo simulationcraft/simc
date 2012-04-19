@@ -116,6 +116,7 @@ double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, pl
                                      if ( race == RACE_HUMAN ) res *= 1.03; break;
   case BASE_STAT_HEALTH:             res = dbc.health_base( class_type, level ); break;
   case BASE_STAT_MANA:               res = dbc.resource_base( class_type, level ); break;
+  case BASE_STAT_MELEE_CRIT_PER_AGI: res = dbc.melee_crit_scaling( class_type, level ); break;
   case BASE_STAT_SPELL_CRIT_PER_INT: res = dbc.spell_crit_scaling( class_type, level ); break;
   case BASE_STAT_DODGE_PER_AGI:      res = dbc.dodge_scaling( class_type, level ); break;
   case BASE_STAT_MELEE_CRIT:         res = dbc.melee_crit_base( class_type ); break;

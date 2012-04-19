@@ -505,7 +505,7 @@ enum attribute_type_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAM
 
 enum base_stat_type_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
                           BASE_STAT_HEALTH, BASE_STAT_MANA,
-                          BASE_STAT_SPELL_CRIT_PER_INT,
+                          BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                           BASE_STAT_DODGE_PER_AGI,
                           BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
                         };
@@ -3176,6 +3176,7 @@ struct player_t : public noncopyable
       double attack_power_multiplier;
       double attack_power_per_strength;
       double attack_power_per_agility;
+      double attack_crit_per_agility;
 
       double armor_multiplier;
       double dodge_per_agility;
