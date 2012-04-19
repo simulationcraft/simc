@@ -16,68 +16,68 @@ struct _stat_list_t
 };
 
 // Base Stats, same for all pets. Depend on level
-const _stat_list_t pet_base_stats[]=
+static const _stat_list_t pet_base_stats[]=
 {
-  // str, agi,  sta, int, spi,   hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {  453, 883,  353, 159, 225,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 81, {  345, 297,  333, 151, 212,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {  314, 226,  328, 150, 209,    0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,   hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {  453, 883,  353, 159, 225,    0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 81, {  345, 297,  333, 151, 212,    0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {  314, 226,  328, 150, 209,    0,     0,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t imp_base_stats[]=
+static const _stat_list_t imp_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5026, 31607,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,  5026, 17628,         0,         0,     0,     0,     0,   0,       0 } },
+  //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5026, 31607,          0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5026, 17628,          0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t felguard_base_stats[]=
+static const _stat_list_t felguard_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t felhunter_base_stats[]=
+static const _stat_list_t felhunter_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5395, 19072,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  5395,  9109,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t succubus_base_stats[]=
+static const _stat_list_t succubus_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  5640, 19072,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  4530,  9109,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t infernal_base_stats[]=
+static const _stat_list_t infernal_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t doomguard_base_stats[]=
+static const _stat_list_t doomguard_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
-const _stat_list_t voidwalker_base_stats[]=
+static const _stat_list_t voidwalker_base_stats[]=
 {
-  // str, agi,  sta, int, spi,     hp,  mana, mcrit/agi, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,         0,     0,     0,     0,   0,       0 } },
-  { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,         0,     0,     0,     0,   0,       0 } },
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,  6131, 19072,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,  6131,  9109,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
@@ -88,13 +88,13 @@ struct _weapon_list_t
   timespan_t swing_time;
 };
 
-const _weapon_list_t imp_weapon[]=
+static const _weapon_list_t imp_weapon[]=
 {
   { 81, 116.7, 176.7, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t felguard_weapon[]=
+static const _weapon_list_t felguard_weapon[]=
 {
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
@@ -102,7 +102,7 @@ const _weapon_list_t felguard_weapon[]=
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t felhunter_weapon[]=
+static const _weapon_list_t felhunter_weapon[]=
 {
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 678.4, 1010.4, timespan_t::from_seconds( 2.0 ) },
@@ -110,7 +110,7 @@ const _weapon_list_t felhunter_weapon[]=
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t succubus_weapon[]=
+static const _weapon_list_t succubus_weapon[]=
 {
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
@@ -118,19 +118,19 @@ const _weapon_list_t succubus_weapon[]=
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t infernal_weapon[]=
+static const _weapon_list_t infernal_weapon[]=
 {
   { 85, 1072.0, 1072.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
   { 80, 924.0, 924.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t doomguard_weapon[]=
+static const _weapon_list_t doomguard_weapon[]=
 {
   { 0, 0, 0, timespan_t::zero() }
 };
 
-const _weapon_list_t voidwalker_weapon[]=
+static const _weapon_list_t voidwalker_weapon[]=
 {
   { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
   { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
@@ -643,7 +643,6 @@ void warlock_pet_t::init_base()
   attribute_base[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
   resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
   resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type );
-  stats_initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
   stats_initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
   initial_dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
   stats_base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
@@ -665,7 +664,6 @@ void warlock_pet_t::init_base()
 
   stats_base.attack_crit                  += 0.0328; // seems to be level invariant, untested
   stats_base.spell_crit                   += 0.0328; // seems to be level invariant, untested
-  stats_initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
   stats_initial.spell_crit_per_intellect  += owner -> stats_initial.spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
   mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int

@@ -505,7 +505,7 @@ enum attribute_type_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAM
 
 enum base_stat_type_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
                           BASE_STAT_HEALTH, BASE_STAT_MANA,
-                          BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
+                          BASE_STAT_SPELL_CRIT_PER_INT,
                           BASE_STAT_DODGE_PER_AGI,
                           BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
                         };
@@ -1633,11 +1633,6 @@ private:
   static int vfprintf_helper( FILE *stream, const char *format, va_list fmtargs );
 
 public:
-  static double talent_rank( int num, int max, double increment );
-  static double talent_rank( int num, int max, double value1, double value2, ... );
-
-  static int talent_rank( int num, int max, int increment );
-  static int talent_rank( int num, int max, int value1, int value2, ... );
 
   static double ability_rank( int player_level, double ability_value, int ability_level, ... );
   static int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
@@ -3074,44 +3069,6 @@ public:
   const spell_data_t* set( set_type_e s ) const;
 };
 
-struct player_stats_t
-{
-    double spell_hit;
-    double spell_crit;
-    double mp5;
-
-    // Attack Mechanics
-    double attack_power;
-    double attack_hit;
-    double attack_expertise;
-    double attack_crit;
-
-    // Defense Mechanics
-    double armor;
-    double bonus_armor;
-    double miss;
-    double dodge;
-    double parry;
-    double block;
-    double block_reduction;
-};
-
-struct extended_player_stats_t : player_stats_t
-{
-
-    double spell_power_multiplier;
-    double spell_power_per_intellect;
-    double spell_crit_per_intellect;
-
-    double attack_power_multiplier;
-    double attack_power_per_strength;
-    double attack_power_per_agility;
-    double attack_crit_per_agility;
-
-    double armor_multiplier;
-    double dodge_per_agility;
-    double parry_rating_per_strength;
-};
 
 // Player ===================================================================
 
@@ -3188,6 +3145,42 @@ struct player_t : public noncopyable
 
   double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
+  struct player_stats_t
+  {
+      double spell_hit;
+      double spell_crit;
+      double mp5;
+
+      // Attack Mechanics
+      double attack_power;
+      double attack_hit;
+      double attack_expertise;
+      double attack_crit;
+
+      // Defense Mechanics
+      double armor;
+      double bonus_armor;
+      double miss;
+      double dodge;
+      double parry;
+      double block;
+      double block_reduction;
+  };
+
+  struct extended_player_stats_t : player_stats_t
+  {
+      double spell_power_multiplier;
+      double spell_power_per_intellect;
+      double spell_crit_per_intellect;
+
+      double attack_power_multiplier;
+      double attack_power_per_strength;
+      double attack_power_per_agility;
+
+      double armor_multiplier;
+      double dodge_per_agility;
+      double parry_rating_per_strength;
+  };
   player_stats_t stats_base;
   extended_player_stats_t stats_initial, stats_current;
   // Spell Mechanics

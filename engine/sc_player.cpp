@@ -663,7 +663,6 @@ void player_t::init_base()
   stats_base.spell_crit                  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT );
   stats_base.attack_crit                 = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
   stats_initial.spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
-  stats_initial.attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
   stats_base.mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
 
   if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
@@ -2009,7 +2008,7 @@ double player_t::composite_attack_power() const
 
 double player_t::composite_attack_crit( const weapon_t* weapon ) const
 {
-  double ac = stats_current.attack_crit + ( agility() / stats_current.attack_crit_per_agility / 100.0 );
+  double ac = stats_current.attack_crit;
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();

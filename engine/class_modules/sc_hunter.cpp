@@ -416,7 +416,6 @@ struct hunter_pet_t : public pet_t
 
     base_attack_power = -20;
     initial_attack_power_per_strength = 2.0;
-    initial_attack_crit_per_agility   = rating_t::interpolate( level, 0.01/16.0, 0.01/30.0, 0.01/62.5, 0.01/243.6 );
 
     base_attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
 

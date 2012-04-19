@@ -21,7 +21,7 @@ struct flask_data_t
   double mixology_stat_amount;
 };
 
-const flask_data_t flask_data[] =
+static const flask_data_t flask_data[] =
 {
   // cataclysm
   { FLASK_DRACONIC_MIND,    STAT_INTELLECT,  300,  380 },

@@ -1428,7 +1428,13 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   virtual void player_buff()
   {
     paladin_melee_attack_t::player_buff();
-    player_multiplier *= util_t::talent_rank( p() -> holy_power_stacks(), 3, 1.0, 3.0, 6.0 );
+
+    static const double holypower_pm[] = { 0, 1.0, 3.0, 6.0 };
+#ifndef NDEBUG
+    assert( static_cast<unsigned>( p() -> holy_power_stacks() ) < sizeof_array( holypower_pm ) );
+#endif
+    player_multiplier = holypower_pm[ p() -> holy_power_stacks() ];
+
     if ( p() -> buffs_sacred_duty -> up() )
     {
       player_crit += 1.0;
@@ -1459,7 +1465,11 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
   virtual void execute()
   {
-    weapon_multiplier = util_t::talent_rank( p() -> holy_power_stacks(), 3, 0.30, 0.90, 2.35 );
+    static const double holypower_wp[] = { 0, 0.30, 0.90, 2.35 };
+#ifndef NDEBUG
+    assert( static_cast<unsigned>( p() -> holy_power_stacks() ) < sizeof_array( holypower_wp ) );
+#endif
+    weapon_multiplier = holypower_wp[ p() -> holy_power_stacks() ];
     paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
