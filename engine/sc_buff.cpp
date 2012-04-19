@@ -51,7 +51,7 @@ buff_t::buff_t( const buff_creator_t& params ) :
   name_str( params._name ),
   s_data( params.s_data ),
   _max_stack( 1 ),
-  default_value(),
+  default_value( -1.0 ),
   activated( true ),
   reverse(),
   constant(),
@@ -129,7 +129,7 @@ buff_t::buff_t( const buff_creator_t& params ) :
 
   if ( params._default_value == -1.0 )
   {
-    default_value = 0.0;  
+    default_value = -1.0;
   }
   else
     default_value = params._default_value;
@@ -337,6 +337,9 @@ bool buff_t::trigger( int        stacks,
 
   if ( ! rng -> roll( chance ) )
     return false;
+
+  if ( ( value < 0.0 ) && ( default_value >= 0.0 ) )
+    value = default_value;
 
   if ( ! activated && player && player -> in_combat && sim -> default_aura_delay > timespan_t::zero() )
   {

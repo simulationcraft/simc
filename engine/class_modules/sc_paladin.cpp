@@ -80,9 +80,9 @@ struct paladin_t : public player_t
   buff_t* buffs_judgements_of_the_bold;
   buff_t* buffs_judgements_of_the_pure;
   buff_t* buffs_judgements_of_the_wise;
-  buff_t* buffs_reckoning;
   buff_t* buffs_sacred_duty;
   buff_t* buffs_the_art_of_war;
+  buff_t* buffs_zealotry;
 
   // Gains
   gain_t* gains_divine_plea;
@@ -111,6 +111,8 @@ struct paladin_t : public player_t
   // Passives
   struct passives_t
   {
+    const spell_data_t* tier13_4pc_melee_value;
+    const spell_data_t* crusaders_zeal;
     const spell_data_t* divine_bulwark;
     const spell_data_t* hand_of_light;
     const spell_data_t* illuminated_healing;
@@ -120,7 +122,8 @@ struct paladin_t : public player_t
     const spell_data_t* plate_specialization;
     const spell_data_t* sheath_of_light;
     const spell_data_t* touched_by_the_light;
-    const spell_data_t* two_handed_weapon_spec;
+    const spell_data_t* sword_of_light;
+    const spell_data_t* sword_of_light_value;
     const spell_data_t* vengeance;
     const spell_data_t* walk_in_the_light;
     passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
@@ -223,6 +226,7 @@ struct paladin_t : public player_t
   virtual void      init_items();
   virtual void      reset();
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
+  virtual double    composite_attack_speed() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_tank_block() const;
@@ -714,19 +718,14 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
+      p() -> buffs_zealotry -> decrement();
+      p() -> buffs_zealotry -> trigger( 3 );
       bool already_up = p() -> buffs_the_art_of_war -> check() != 0;
       bool triggered = p() -> buffs_the_art_of_war -> trigger();
       if ( already_up && triggered )
       {
         p() -> procs_wasted_art_of_war -> occur();
       }
-    }
-    if ( !proc && p() -> buffs_reckoning -> up() )
-    {
-      p() -> buffs_reckoning -> decrement();
-      proc = true;
-      paladin_melee_attack_t::execute();
-      proc = false;
     }
   }
 };
@@ -736,7 +735,7 @@ struct melee_t : public paladin_melee_attack_t
 struct auto_melee_attack_t : public paladin_melee_attack_t
 {
   auto_melee_attack_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "auto_attack", p )
+    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil(), SCHOOL_PHYSICAL, true )
   {
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
@@ -844,6 +843,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_cooldown         = cooldown -> duration;
 
     base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;
+    base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
 
   virtual void execute()
@@ -1375,11 +1375,6 @@ struct judgement_t : public paladin_melee_attack_t
       p() -> buffs_divine_purpose -> trigger();
       p() -> buffs_judgements_of_the_pure -> trigger();
       p() -> buffs_sacred_duty-> trigger();
-
-      if ( p() -> set_bonus.tier13_2pc_melee() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains_hp_judgement );
-      }
     }
 
     p() -> buffs_judgements_of_the_bold -> trigger();
@@ -2383,6 +2378,7 @@ void paladin_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
+  buffs_the_art_of_war         = buff_creator_t( this, "the_art_of_war", find_specialization_spell( "The Art of War" ) );
   buffs_ancient_power          = buff_creator_t( this, "ancient_power", find_spell( 86700 ) );
   buffs_avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_spell( 31884 ) ).max_stack( 1 ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs_divine_plea            = buff_creator_t( this, "divine_plea", find_spell( 54428 ) ).max_stack( 1 ).cd( timespan_t::zero() ); // Let the ability handle the CD
@@ -2393,6 +2389,10 @@ void paladin_t::init_buffs()
   buffs_inquisition            = buff_creator_t( this, "inquisition", find_spell( 84963 ) );
   buffs_judgements_of_the_bold = buff_creator_t( this, "judgements_of_the_bold", find_specialization_spell( "Judgments of the Bold" ) );
   buffs_judgements_of_the_wise = buff_creator_t( this, "judgements_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
+  buffs_zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
+    .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
+    .max_stack( 3 )
+    .duration( find_spell( 107397 ) -> duration() );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2581,6 +2581,7 @@ void paladin_t::init_spells()
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings" );
 
   // Passives
+  passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
   passives.divine_bulwark         = find_mastery_spell( "Divine Bulwark" );
   passives.hand_of_light          = find_mastery_spell( "Hand of Light" );
   passives.illuminated_healing    = find_mastery_spell( "Illuminated Healing" );
@@ -2590,11 +2591,14 @@ void paladin_t::init_spells()
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
   passives.sheath_of_light        = find_specialization_spell( "Sheath of Light" );
   passives.touched_by_the_light   = find_specialization_spell( "Touched by the Light" );
-  passives.two_handed_weapon_spec = find_specialization_spell( "Two-Handed Weapon Specialization" );
+  passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
+  passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance_enabled = true;
   passives.walk_in_the_light      = find_specialization_spell( "Walk in the Light" );
+
+  passives.tier13_4pc_melee_value = find_spell( 105819 );
 
   // Glyphs
 /*
@@ -2695,6 +2699,18 @@ double paladin_t::composite_attribute_multiplier( attribute_type_e attr ) const
   return m;
 }
 
+double paladin_t::composite_attack_speed() const
+{
+  double m = player_t::composite_attack_speed();
+
+  if ( buffs_zealotry -> up() )
+  {
+    m /= 1.0 + buffs_zealotry -> value();
+  }
+
+  return m;
+}
+
 // paladin_t::composite_player_multiplier ===================================
 
 double paladin_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
@@ -2704,13 +2720,16 @@ double paladin_t::composite_player_multiplier( school_type_e school, const actio
   // These affect all damage done by the paladin
   m *= 1.0 + buffs_avenging_wrath -> value();
 
+  m *= 1.0 + ( ( buffs_zealotry -> up() ) ? set_bonus.tier13_4pc_melee() * passives.tier13_4pc_melee_value -> effectN( 1 ).percent() : 0.0 );
+
   if ( school == SCHOOL_HOLY )
   {
     m *= 1.0 + buffs_inquisition -> value();
   }
 
-  if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( primary_tree() == PALADIN_RETRIBUTION ) && ( main_hand_weapon.group() == WEAPON_2H ) )
+  if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( passives.sword_of_light -> ok() ) && ( main_hand_weapon.group() == WEAPON_2H ) )
   {
+    m *= 1.0 + passives.sword_of_light_value -> effectN( 1 ).percent();
   }
   return m;
 }
@@ -2725,6 +2744,7 @@ double paladin_t::composite_spell_power( school_type_e school ) const
   case PALADIN_PROTECTION:
     break;
   case PALADIN_RETRIBUTION:
+    sp += passives.sword_of_light -> effectN( 1 ).percent() * strength();
     break;
   default:
     break;
@@ -2843,10 +2863,6 @@ double paladin_t::assess_damage( double        amount,
     }
   }
 
-  if ( result == RESULT_BLOCK )
-  {
-    buffs_reckoning -> trigger();
-  }
   if ( result == RESULT_PARRY )
   {
     if ( main_hand_attack && main_hand_attack -> execute_event )
