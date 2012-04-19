@@ -146,8 +146,8 @@ public:
     _init_warlock_spell_t();
   }
 
-  warlock_spell_t( warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( s -> name_cstr(), p, s, sc )
+  warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+    spell_t( token, p, s, sc )
   {
     _init_warlock_spell_t();
   }
@@ -294,7 +294,7 @@ struct agony_t : public warlock_spell_t
 struct doom_t : public warlock_spell_t
 {
   doom_t( warlock_t* p ) :
-    warlock_spell_t( p, "Doom" )
+    warlock_spell_t( "doom", p, p -> glyphs.doom -> ok() ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
     hasted_ticks = false;
     may_crit = false;
@@ -488,7 +488,8 @@ struct shadowburn_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  corruption_t( warlock_t* p ) : warlock_spell_t( p, "Corruption" )
+  corruption_t( warlock_t* p ) :
+    warlock_spell_t( "corruption", p, p -> glyphs.doom -> ok() ? spell_data_t::not_found() : p -> find_class_spell("Corruption") )
   {
     may_crit = false;
     tick_power_mod = 0.2; // from tooltip
@@ -977,7 +978,7 @@ public:
   }
 
   summon_pet_t( const std::string& n, warlock_t* p, int id ) :
-    warlock_spell_t( p, p -> find_spell( id, n ) ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+    warlock_spell_t( n, p, p -> find_spell( id ) ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
     _init_summon_pet_t( n );
   }
@@ -1075,7 +1076,7 @@ struct summon_voidwalker_t : public summon_main_pet_t
 struct infernal_awakening_t : public warlock_spell_t
 {
   infernal_awakening_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> find_spell( 22703, "infernal_awakening" ) )
+    warlock_spell_t( "infernal_awakening", p, p -> find_spell( 22703 ) )
   {
     aoe        = -1;
     background = true;
@@ -1331,7 +1332,7 @@ struct soulburn_t : public warlock_spell_t
 struct hellfire_tick_t : public warlock_spell_t
 {
   hellfire_tick_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> find_spell( 5857, "hellfire_tick" ) )
+    warlock_spell_t( "hellfire_tick", p, p -> find_spell( 5857 ) )
   {
     dual        = true;
     background  = true;
@@ -1378,7 +1379,7 @@ struct hellfire_t : public warlock_spell_t
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
   seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> find_spell( 27285, "seed_of_corruption_aoe" ) )
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
   {
     proc       = true;
     background = true;
@@ -1445,7 +1446,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 struct rain_of_fire_tick_t : public warlock_spell_t
 {
   rain_of_fire_tick_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> find_spell( 42223, "rain_of_fire_tick" ) )
+    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
   {
     background  = true;
     aoe         = -1;
@@ -1494,7 +1495,7 @@ struct rain_of_fire_t : public warlock_spell_t
 struct shadowfury_t : public warlock_spell_t
 {
   shadowfury_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> talents.shadowfury )
+    warlock_spell_t( "shadowfury", p, p -> talents.shadowfury )
   {  }
 };
 
@@ -1523,7 +1524,7 @@ struct mortal_coil_t : public warlock_spell_t
   mortal_coil_heal_t* heal;
 
   mortal_coil_t( warlock_t* p ) : 
-    warlock_spell_t( p, p -> talents.mortal_coil ), heal( 0 )
+    warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
   {
     heal = new mortal_coil_heal_t( p );
   }
@@ -1560,7 +1561,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
   decrement_event_t* decrement_event;
 
   grimoire_of_sacrifice_t( warlock_t* p ) :
-    warlock_spell_t( p, p -> talents.grimoire_of_sacrifice ), decrement_event( 0 )
+    warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice ), decrement_event( 0 )
   {  
     harmful = false;  
   }
@@ -1814,6 +1815,7 @@ void warlock_t::init_spells()
   glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
   glyphs.chaos_bolt           = find_glyph_spell( "Glyph of Chaos Bolt" );
   glyphs.corruption           = find_glyph_spell( "Glyph of Corruption" );
+  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.bane_of_agony        = find_glyph_spell( "Glyph of Bane of Agony" );
   glyphs.felguard             = find_glyph_spell( "Glyph of Felguard" );
   glyphs.haunt                = find_glyph_spell( "Glyph of Haunt" );

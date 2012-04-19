@@ -10,7 +10,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warlock-000000000000001000
-glyphs=haunt/corruption/unstable_affliction/life_tap/shadow_bolt
+glyphs=haunt/unstable_affliction/life_tap/shadow_bolt
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_felhunter,if=buff.grimoire_of_sacrifice.down
