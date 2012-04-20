@@ -580,11 +580,14 @@ struct sim_end_event_t : event_t
 {
   int timing_wheel_count; // counter to allow the event to be schedules in each timing wheel
   timespan_t time_remainder; // delta event time for the event delta in the last timing wheel
-  const int max_event_time_delta;
-  sim_end_event_t( sim_t* s, timespan_t max_sim_duration ) :
-    event_t( s, 0, "sim-ending-event" ),
+  const int max_event_time_delta; // wheel cap minus 1 second
+  const int exception_value;
+
+  sim_end_event_t( sim_t* s, const char* n, timespan_t max_sim_duration, int ev ) :
+    event_t( s, 0, n ),
     timing_wheel_count(),
-    max_event_time_delta( sim -> wheel_seconds - 1 )
+    max_event_time_delta( sim -> wheel_seconds - 1 ),
+    exception_value( ev )
   {
 
     timing_wheel_count = static_cast<int>( max_sim_duration.total_seconds() ) / ( max_event_time_delta );
@@ -599,7 +602,7 @@ struct sim_end_event_t : event_t
   {
     if ( timing_wheel_count == 0 )
     {
-      throw 1;
+      throw exception_value;
       return;
     }
     else
@@ -1016,8 +1019,6 @@ void sim_t::combat( int iteration )
 
   combat_begin();
 
-  new ( this ) sim_end_event_t( this, expected_time + expected_time );
-
   while ( event_t* e = next_event() )
   {
     current_time = e -> time;
@@ -1032,23 +1033,9 @@ void sim_t::combat( int iteration )
         assert( 0 );
       }
     }
-
-    if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
-    {
-      // The first iteration is always time-limited since we do not yet have inferred health
-      if ( current_time > expected_time )
-      {
-        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
-      }
-    }
     else
     {
-      if (  target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
+      if (  !fixed_time && target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
@@ -1075,14 +1062,29 @@ void sim_t::combat( int iteration )
       {
         e -> execute();
       }
-      catch ( int )
+      catch ( int x )
       {
-        if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
+        if( x == 5 ) // Cancel at expected time if (1) target health is not yet calculated ( current_iteration==0 ) or (2) fixed_time is set
+        {
+          if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
+          {
+            if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
+            // Set this last event as canceled, so asserts dont fire when odd things happen at the
+            // tail-end of the simulation iteration
+            e -> canceled = 1;
+            delete e;
+            break;
+          }
+        }
+        else if ( x == 6 ) // Cancel at 2 x expected time
+        {
+          if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
+          // Set this last event as canceled, so asserts dont fire when odd things happen at the
+          // tail-end of the simulation iteration
+          e -> canceled = 1;
+          delete e;
+          break;
+        }
       }
     }
     delete e;
@@ -1197,6 +1199,9 @@ void sim_t::combat_begin()
     };
 
     new ( this ) bloodlust_check_t( this );
+
+    new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time, 5 );
+    new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time, 6 );
   }
 }
 
