@@ -5321,7 +5321,7 @@ void player_t::replace_spells()
   {
     for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+      if ( talent_list[ j * MAX_TALENT_COLS + i ] && ( level >= (int) ( ( j + 1 ) * 15 ) ) )
       {
         talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
         if ( td && td -> replace_id() )
@@ -5377,7 +5377,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] )
+        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] || ( level < (int)( ( j + 1 ) * 15 ) ) )
         {
           return ( spell_data_t::not_found() );
         }
@@ -5438,7 +5438,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   if ( s != SPEC_NONE && s != spec )
     return spell_data_t::not_found();
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5452,7 +5452,7 @@ const spell_data_t* player_t::find_mastery_spell( const std::string& name, const
 {
   unsigned spell_id = dbc.mastery_ability_id( spec, name.c_str() );
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5466,7 +5466,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
 {
   unsigned spell_id = dbc.mastery_ability_id( s, idx );
 
-  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5541,7 +5541,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   if ( s != SPEC_NONE && s != spec )
     return spell_data_t::not_found();
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
   {
     return spell_data_t::not_found();
   }
@@ -5571,7 +5571,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
 
 const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token )
 {
-  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() )
+  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() || ( (int)dbc.spell( id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( id, token, dbc.ptr );
