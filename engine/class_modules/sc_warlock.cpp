@@ -992,8 +992,12 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
+      //FIXME: Exact mechanic needs testing - seems inconsistent, particularly for Doom
       warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      td -> dots_corruption -> extend_duration( 2, true );
+      td -> dots_corruption          -> extend_duration( 2, true );
+      td -> dots_doom                -> extend_duration( 1, true );
+      td -> dots_immolate            -> extend_duration( 2, true );
+      td -> dots_unstable_affliction -> extend_duration( 2, true );
     }
   }
 };

@@ -326,15 +326,6 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
     warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
   {
   }
-
-  virtual void player_buff()
-  {
-    warlock_pet_actions::warlock_pet_spell_t::player_buff();
-
-    warlock_targetdata_t* td = targetdata_t::get( p() -> o(), target ) -> cast_warlock();
-
-    player_multiplier *= 1.0 + td -> active_dots() * data().effectN( 3 ).percent();
-  }
 };
 
 }
@@ -756,6 +747,9 @@ double warlock_pet_t::composite_player_multiplier( school_type_e school, const a
   if ( o() -> talents.grimoire_of_supremacy -> ok() )
     m *= 1.0 + o() -> find_spell( 115578 ) -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
+  if ( owner -> race == RACE_ORC )
+    m  *= 1.05;
+
   return m;
 }
 
@@ -1047,28 +1041,6 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
   if ( name == "doom_bolt" ) return new doomguard_spells::doom_bolt_t( this );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
-}
-
-
-double doomguard_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
-{
-  //FIXME: This is all untested, but seems to match what people are reporting in forums
-
-  double m = player_t::composite_player_multiplier( school, a );
-
-
-  if ( owner -> race == RACE_ORC )
-  {
-    m  *= 1.05;
-  }
-
-  double mastery_value = o() -> mastery_spells.master_demonologist -> effectN( 3 ).base_value();
-
-  double mastery_gain = ( o() -> mastery_spells.master_demonologist -> ok() * snapshot_mastery * mastery_value / 10000.0 );
-
-  m *= 1.0 + mastery_gain;
-
-  return m;
 }
 
 #endif // SC_WARLOCK

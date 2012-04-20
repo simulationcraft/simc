@@ -380,7 +380,6 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 };
 
 #endif
