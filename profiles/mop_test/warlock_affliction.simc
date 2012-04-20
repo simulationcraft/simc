@@ -18,7 +18,7 @@ actions+=/grimoire_of_service_felhunter
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
-actions+=/agony,if=(!ticking|remains<=action.drain_soul.tick_time)&target.time_to_die>=8&miss_react
+actions+=/agony,if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react
 actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/drain_soul,if=soul_shard=0,interrupt_if=1
