@@ -3181,6 +3181,11 @@ struct player_t : public noncopyable
       double armor_multiplier;
       double dodge_per_agility;
       double parry_rating_per_strength;
+
+      extended_player_stats_t() : player_stats_t()
+      {
+        memset( this, 0, sizeof( extended_player_stats_t ) );
+      }
   };
   player_stats_t stats_base;
   extended_player_stats_t stats_initial, stats_current;
