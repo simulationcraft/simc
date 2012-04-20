@@ -576,6 +576,43 @@ static bool parse_item_sources( sim_t*             sim,
   return true;
 }
 
+struct sim_end_event_t : event_t
+{
+  int timing_wheel_count; // counter to allow the event to be schedules in each timing wheel
+  timespan_t time_remainder; // delta event time for the event delta in the last timing wheel
+  const int max_event_time_delta;
+  sim_end_event_t( sim_t* s, timespan_t max_sim_duration ) :
+    event_t( s, 0, "sim-ending-event" ),
+    timing_wheel_count(),
+    max_event_time_delta( sim -> wheel_seconds - 1 )
+  {
+
+    timing_wheel_count = static_cast<int>( max_sim_duration.total_seconds() ) / ( max_event_time_delta );
+    time_remainder = timespan_t::from_seconds( static_cast<int>( max_sim_duration.total_seconds() ) % ( max_event_time_delta ) );
+    if ( timing_wheel_count > 0 )
+      sim -> add_event( this, timespan_t::from_seconds( max_event_time_delta ) );
+    else
+      sim -> add_event( this, max_sim_duration );
+  }
+
+  virtual void execute()
+  {
+    if ( timing_wheel_count == 0 )
+    {
+      throw 1;
+      return;
+    }
+    else
+    {
+      timing_wheel_count--;
+      if ( timing_wheel_count > 0 )
+        sim -> add_event( this, timespan_t::from_seconds( max_event_time_delta ) );
+      else
+        sim -> add_event( this, time_remainder );
+    }
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -979,6 +1016,8 @@ void sim_t::combat( int iteration )
 
   combat_begin();
 
+  new ( this ) sim_end_event_t( this, expected_time + expected_time );
+
   while ( event_t* e = next_event() )
   {
     current_time = e -> time;
@@ -1009,16 +1048,6 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( expected_time > timespan_t::zero() && current_time > ( expected_time + expected_time ) )
-      {
-        if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
-      }
-
       if (  target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
       {
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
@@ -1042,7 +1071,19 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
-      e -> execute();
+      try
+      {
+        e -> execute();
+      }
+      catch ( int )
+      {
+        if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
+        // Set this last event as canceled, so asserts dont fire when odd things happen at the
+        // tail-end of the simulation iteration
+        e -> canceled = 1;
+        delete e;
+        break;
+      }
     }
     delete e;
   }
