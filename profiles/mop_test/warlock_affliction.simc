@@ -17,6 +17,7 @@ actions+=/summon_felhunter
 actions+=/grimoire_of_service_felhunter
 actions+=/snapshot_stats
 actions+=/blood_fury
+actions+=/drain_soul,if=soul_shard=0,interrupt_if=1
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
 actions+=/agony,if=(!ticking|remains<tick_time)&miss_react
 actions+=/corruption,if=(!ticking|remains<tick_time)&miss_react
