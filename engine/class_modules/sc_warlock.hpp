@@ -47,6 +47,7 @@ struct warlock_t : public player_t
   struct buffs_t
   {
     buff_t* backdraft;
+    buff_t* dark_soul;
     buff_t* decimation;
     buff_t* metamorphosis;
     buff_t* molten_core;
@@ -96,7 +97,8 @@ struct warlock_t : public player_t
   // Specialization Spells
   struct specs_t
   {
-    // General   
+    // General
+    const spell_data_t* dark_soul;
     const spell_data_t* nethermancy;
 
     // Affliction
@@ -216,6 +218,9 @@ struct warlock_t : public player_t
   virtual double    composite_spell_power_multiplier() const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
+  virtual double composite_spell_crit() const;
+  virtual double composite_spell_haste() const;
+  virtual double composite_mastery() const;
 };
 
 // ==========================================================================

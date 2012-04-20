@@ -96,9 +96,9 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   distance = 40;
   default_distance = 40;
 
-  cooldowns.metamorphosis                   = get_cooldown ( "metamorphosis" );
-  cooldowns.infernal                        = get_cooldown ( "summon_infernal" );
-  cooldowns.doomguard                       = get_cooldown ( "summon_doomguard" );
+  cooldowns.metamorphosis      = get_cooldown ( "metamorphosis" );
+  cooldowns.infernal           = get_cooldown ( "summon_infernal" );
+  cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
 
   use_pre_soulburn = 1;
 
@@ -931,6 +931,350 @@ struct life_tap_t : public warlock_spell_t
   }
 };
 
+
+// Metamorphosis Spell ======================================================
+
+struct metamorphosis_t : public warlock_spell_t
+{
+  metamorphosis_t( warlock_t* p ) :
+    warlock_spell_t( p, "Metamorphosis" )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.metamorphosis -> trigger( 1, player -> composite_mastery() );
+  }
+};
+
+
+// Hand of Gul'dan Spell ====================================================
+
+struct hand_of_guldan_t : public warlock_spell_t
+{
+  hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Hand of Gul'dan" )
+  {
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new hand_of_guldan_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 1.5 );
+  }
+};
+
+// Fel Flame Spell ==========================================================
+
+struct fel_flame_t : public warlock_spell_t
+{
+  fel_flame_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Fel Flame" )
+  {
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new fel_flame_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+      td -> dots_corruption -> extend_duration( 2, true );
+    }
+  }
+};
+
+// Malefic Grasp Spell ==========================================================
+
+struct malefic_grasp_t : public warlock_spell_t
+{
+  malefic_grasp_t( warlock_t* p ) :
+    warlock_spell_t( p, "Malefic Grasp" )
+  {
+    channeled    = true;
+    hasted_ticks = false;
+    may_crit     = false;
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+    
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
+
+    stop_malefic_grasp( this, td -> dots_agony );
+    stop_malefic_grasp( this, td -> dots_corruption );
+    stop_malefic_grasp( this, td -> dots_doom );
+    stop_malefic_grasp( this, td -> dots_unstable_affliction );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+      start_malefic_grasp( this, td -> dots_agony );
+      start_malefic_grasp( this, td -> dots_corruption );
+      start_malefic_grasp( this, td -> dots_doom );
+      start_malefic_grasp( this, td -> dots_unstable_affliction );
+    }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    trigger_soul_leech( p(), d -> state -> result_amount );
+  }
+};
+
+// Dark Intent Spell ========================================================
+
+struct dark_intent_t : public warlock_spell_t
+{
+  dark_intent_t( warlock_t* p ) :
+    warlock_spell_t( p, "Dark Intent" )
+  {
+    harmful = false;
+    background = ( sim -> overrides.spell_power_multiplier != 0 );
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( ! sim -> overrides.spell_power_multiplier )
+      sim -> auras.spell_power_multiplier -> trigger();
+  }
+};
+
+// Soulburn Spell ===========================================================
+
+struct soulburn_t : public warlock_spell_t
+{
+  soulburn_t( warlock_t* p ) :
+    warlock_spell_t( p, "Soulburn" )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> use_pre_soulburn || player -> in_combat )
+    {
+      p() -> buffs.soulburn -> trigger();
+      p() -> buffs.tier13_4pc_caster -> trigger();
+      // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
+      if ( ! player -> in_combat )
+      {
+        p() -> buffs.soulburn -> extend_duration( player, timespan_t::from_seconds( -3 ) );
+        if ( p() -> buffs.tier13_4pc_caster -> check() )
+          p() -> buffs.tier13_4pc_caster -> extend_duration( player, timespan_t::from_seconds( -3 ) );
+      }
+    }
+
+    warlock_spell_t::execute();
+  }
+};
+
+// Dark Soul Spell ===========================================================
+
+struct dark_soul_t : public warlock_spell_t
+{
+  dark_soul_t( warlock_t* p ) :
+    warlock_spell_t( "dark_soul", p, p -> spec.dark_soul )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.dark_soul -> trigger();
+  }
+};
+
+// AOE SPELLS
+
+// Hellfire Effect Spell ====================================================
+
+struct hellfire_tick_t : public warlock_spell_t
+{
+  hellfire_tick_t( warlock_t* p ) :
+    warlock_spell_t( "hellfire_tick", p, p -> find_spell( 5857 ) )
+  {
+    dual        = true;
+    background  = true;
+    aoe         = -1;
+    direct_tick = true;
+  }
+};
+
+// Hellfire Spell ===========================================================
+
+struct hellfire_t : public warlock_spell_t
+{
+  hellfire_tick_t* hellfire_tick;
+
+  hellfire_t( warlock_t* p ) :
+    warlock_spell_t( p, "Hellfire" ), hellfire_tick( 0 )
+  {
+    // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
+    harmful = false;
+
+    channeled    = true;
+    hasted_ticks = false;
+
+    hellfire_tick = new hellfire_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    hellfire_tick -> stats = stats;
+  }
+
+  virtual bool usable_moving()
+  { return false; }
+
+  virtual void tick( dot_t* /* d */ )
+  {
+    hellfire_tick -> execute();
+  }
+};
+// Seed of Corruption AOE Spell =============================================
+
+struct seed_of_corruption_aoe_t : public warlock_spell_t
+{
+  seed_of_corruption_aoe_t( warlock_t* p ) :
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+  {
+    proc       = true;
+    background = true;
+    aoe        = -1;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> buffs.soulburn -> check() )
+    {
+      // Trigger Multiple Corruptions
+      p() -> buffs.soulburn -> expire();
+    }
+  }
+};
+
+// Seed of Corruption Spell =================================================
+
+struct seed_of_corruption_t : public warlock_spell_t
+{
+  seed_of_corruption_aoe_t* seed_of_corruption_aoe;
+  double dot_damage_done;
+
+  seed_of_corruption_t( warlock_t* p ) :
+    warlock_spell_t( p, "Seed of Corruption" ),
+    seed_of_corruption_aoe( 0 ), dot_damage_done( 0 )
+  {
+    seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    add_child( seed_of_corruption_aoe );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+      dot_damage_done = s -> target -> iteration_dmg_taken;
+      if ( td -> dots_corruption -> ticking )
+      {
+        td -> dots_corruption -> cancel();
+      }
+    }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( target -> iteration_dmg_taken - dot_damage_done > data().effectN( 2 ).base_value() )
+    {
+      dot_damage_done=0.0;
+      seed_of_corruption_aoe -> execute();
+      spell_t::cancel();
+    }
+  }
+};
+
+// Rain of Fire Tick Spell ==================================================
+
+struct rain_of_fire_tick_t : public warlock_spell_t
+{
+  rain_of_fire_tick_t( warlock_t* p ) :
+    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
+  {
+    background  = true;
+    aoe         = -1;
+    direct_tick = true;
+  }
+};
+
+// Rain of Fire Spell =======================================================
+
+struct rain_of_fire_t : public warlock_spell_t
+{
+  rain_of_fire_tick_t* rain_of_fire_tick;
+
+  rain_of_fire_t( warlock_t* p ) :
+    warlock_spell_t( p, "Rain of Fire" ),
+    rain_of_fire_tick( 0 )
+  {
+    harmful = false;
+    channeled = true;
+
+    rain_of_fire_tick = new rain_of_fire_tick_t( p );
+
+    add_child( rain_of_fire_tick );
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    rain_of_fire_tick -> stats = stats;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    rain_of_fire_tick -> execute();
+  }
+};
+
+// PET SPELLS
+
 // Summon Pet Spell =========================================================
 
 struct summon_pet_t : public warlock_spell_t
@@ -1155,327 +1499,6 @@ struct summon_doomguard_t : public warlock_spell_t
   }
 };
 
-// Metamorphosis Spell ======================================================
-
-struct metamorphosis_t : public warlock_spell_t
-{
-  metamorphosis_t( warlock_t* p ) :
-    warlock_spell_t( p, "Metamorphosis" )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    p() -> buffs.metamorphosis -> trigger( 1, player -> composite_mastery() );
-  }
-};
-
-// Hand of Gul'dan Spell ====================================================
-
-struct hand_of_guldan_t : public warlock_spell_t
-{
-  hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Hand of Gul'dan" )
-  {
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new hand_of_guldan_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual timespan_t travel_time() const
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
-};
-
-// Fel Flame Spell ==========================================================
-
-struct fel_flame_t : public warlock_spell_t
-{
-  fel_flame_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Fel Flame" )
-  {
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new fel_flame_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      td -> dots_corruption -> extend_duration( 2, true );
-    }
-  }
-};
-
-// Malefic Grasp Spell ==========================================================
-
-struct malefic_grasp_t : public warlock_spell_t
-{
-  malefic_grasp_t( warlock_t* p ) :
-    warlock_spell_t( p, "Malefic Grasp" )
-  {
-    channeled    = true;
-    hasted_ticks = false;
-    may_crit     = false;
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    warlock_spell_t::last_tick( d );
-    
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    stop_malefic_grasp( this, td -> dots_agony );
-    stop_malefic_grasp( this, td -> dots_corruption );
-    stop_malefic_grasp( this, td -> dots_doom );
-    stop_malefic_grasp( this, td -> dots_unstable_affliction );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      start_malefic_grasp( this, td -> dots_agony );
-      start_malefic_grasp( this, td -> dots_corruption );
-      start_malefic_grasp( this, td -> dots_doom );
-      start_malefic_grasp( this, td -> dots_unstable_affliction );
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    trigger_soul_leech( p(), d -> state -> result_amount );
-  }
-};
-
-// Dark Intent Spell ========================================================
-
-struct dark_intent_t : public warlock_spell_t
-{
-  dark_intent_t( warlock_t* p ) :
-    warlock_spell_t( p, "Dark Intent" )
-  {
-    harmful = false;
-    background = ( sim -> overrides.spell_power_multiplier != 0 );
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    if ( ! sim -> overrides.spell_power_multiplier )
-      sim -> auras.spell_power_multiplier -> trigger();
-  }
-};
-
-// Soulburn Spell ===========================================================
-
-struct soulburn_t : public warlock_spell_t
-{
-  soulburn_t( warlock_t* p ) :
-    warlock_spell_t( p, "Soulburn" )
-  {
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> use_pre_soulburn || player -> in_combat )
-    {
-      p() -> buffs.soulburn -> trigger();
-      p() -> buffs.tier13_4pc_caster -> trigger();
-      // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
-      if ( ! player -> in_combat )
-      {
-        p() -> buffs.soulburn -> extend_duration( player, timespan_t::from_seconds( -3 ) );
-        if ( p() -> buffs.tier13_4pc_caster -> check() )
-          p() -> buffs.tier13_4pc_caster -> extend_duration( player, timespan_t::from_seconds( -3 ) );
-      }
-    }
-
-    warlock_spell_t::execute();
-  }
-};
-
-// Hellfire Effect Spell ====================================================
-
-struct hellfire_tick_t : public warlock_spell_t
-{
-  hellfire_tick_t( warlock_t* p ) :
-    warlock_spell_t( "hellfire_tick", p, p -> find_spell( 5857 ) )
-  {
-    dual        = true;
-    background  = true;
-    aoe         = -1;
-    direct_tick = true;
-  }
-};
-
-// Hellfire Spell ===========================================================
-
-struct hellfire_t : public warlock_spell_t
-{
-  hellfire_tick_t* hellfire_tick;
-
-  hellfire_t( warlock_t* p ) :
-    warlock_spell_t( p, "Hellfire" ), hellfire_tick( 0 )
-  {
-    // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
-    harmful = false;
-
-    channeled    = true;
-    hasted_ticks = false;
-
-    hellfire_tick = new hellfire_tick_t( p );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    hellfire_tick -> stats = stats;
-  }
-
-  virtual bool usable_moving()
-  { return false; }
-
-  virtual void tick( dot_t* /* d */ )
-  {
-    hellfire_tick -> execute();
-  }
-};
-// Seed of Corruption AOE Spell =============================================
-
-struct seed_of_corruption_aoe_t : public warlock_spell_t
-{
-  seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
-  {
-    proc       = true;
-    background = true;
-    aoe        = -1;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    if ( p() -> buffs.soulburn -> check() )
-    {
-      // Trigger Multiple Corruptions
-      p() -> buffs.soulburn -> expire();
-    }
-  }
-};
-
-// Seed of Corruption Spell =================================================
-
-struct seed_of_corruption_t : public warlock_spell_t
-{
-  seed_of_corruption_aoe_t* seed_of_corruption_aoe;
-  double dot_damage_done;
-
-  seed_of_corruption_t( warlock_t* p ) :
-    warlock_spell_t( p, "Seed of Corruption" ),
-    seed_of_corruption_aoe( 0 ), dot_damage_done( 0 )
-  {
-    seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
-    add_child( seed_of_corruption_aoe );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      dot_damage_done = s -> target -> iteration_dmg_taken;
-      if ( td -> dots_corruption -> ticking )
-      {
-        td -> dots_corruption -> cancel();
-      }
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( target -> iteration_dmg_taken - dot_damage_done > data().effectN( 2 ).base_value() )
-    {
-      dot_damage_done=0.0;
-      seed_of_corruption_aoe -> execute();
-      spell_t::cancel();
-    }
-  }
-};
-
-// Rain of Fire Tick Spell ==================================================
-
-struct rain_of_fire_tick_t : public warlock_spell_t
-{
-  rain_of_fire_tick_t( warlock_t* p ) :
-    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
-  {
-    background  = true;
-    aoe         = -1;
-    direct_tick = true;
-  }
-};
-
-// Rain of Fire Spell =======================================================
-
-struct rain_of_fire_t : public warlock_spell_t
-{
-  rain_of_fire_tick_t* rain_of_fire_tick;
-
-  rain_of_fire_t( warlock_t* p ) :
-    warlock_spell_t( p, "Rain of Fire" ),
-    rain_of_fire_tick( 0 )
-  {
-    harmful = false;
-    channeled = true;
-
-    rain_of_fire_tick = new rain_of_fire_tick_t( p );
-
-    add_child( rain_of_fire_tick );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    rain_of_fire_tick -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    rain_of_fire_tick -> execute();
-  }
-};
-
-
 // TALENT SPELLS
 
 // Shadowfury Spell =========================================================
@@ -1648,6 +1671,48 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
   return player_multiplier;
 }
 
+double warlock_t::composite_spell_crit() const
+{
+  double sc = player_t::composite_spell_crit();
+
+  if ( primary_tree() == WARLOCK_DESTRUCTION ) {
+    if ( buffs.dark_soul -> up() )
+      sc += spec.dark_soul -> effectN( 1 ).percent();
+    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+      sc += spec.dark_soul -> effectN( 1 ).percent() / 6;
+  }
+
+  return sc;
+}
+
+double warlock_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( primary_tree() == WARLOCK_AFFLICTION ) {
+    if ( buffs.dark_soul -> up() )
+      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() );
+    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() / 6 );
+  }
+
+  return h;
+}
+
+double warlock_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  if ( primary_tree() == WARLOCK_DEMONOLOGY ) {
+    if ( buffs.dark_soul -> up() )
+      m += spec.dark_soul -> effectN( 1 ).base_value();
+    else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
+      m += spec.dark_soul -> effectN( 1 ).base_value() / 6;
+  }
+
+  return m;
+}
+
 // warlock_t::matching_gear_multiplier ======================================
 
 double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
@@ -1696,6 +1761,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
   else if ( name == "fel_flame"             ) a = new             fel_flame_t( this );
   else if ( name == "dark_intent"           ) a = new           dark_intent_t( this );
+  else if ( name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
   else if ( name == "hellfire"              ) a = new              hellfire_t( this );
@@ -1780,6 +1846,10 @@ void warlock_t::init_spells()
 
   // General
   spec.nethermancy = find_specialization_spell( "Nethermancy" );
+
+  spec.dark_soul = find_specialization_spell( "Dark Soul: Instability" );
+  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge" );
+  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Misery" );
 
   // Affliction
   spec.nightfall = find_specialization_spell( "Nightfall" );
@@ -1879,6 +1949,7 @@ void warlock_t::init_buffs()
   player_t::init_buffs();
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft );
+  buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.decimation            = buff_creator_t( this, "decimation", spec.decimation );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
   buffs.molten_core           = buff_creator_t( this, "molten_core", spec.molten_core );
