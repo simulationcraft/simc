@@ -860,6 +860,8 @@ enum rating_type
   RATING_MAX
 };
 
+enum { READY_POLL=0, READY_TRIGGER=1 };
+
 // Type utilities and generic programming tools =============================
 template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const T ( & )[N] )
@@ -3993,10 +3995,9 @@ struct player_t : public noncopyable
   player_type type;
   role_type   role;
   player_t*   target;
-  int         level, use_pre_potion, party, member;
+  int         level, use_pre_potion, party, member, ready_type;
   double      skill, initial_skill, distance, default_distance;
-  timespan_t  gcd_ready;
-  timespan_t  base_gcd;
+  timespan_t  gcd_ready, base_gcd, started_waiting;
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   pet_t*      pet_list;
@@ -4534,6 +4535,7 @@ struct player_t : public noncopyable
   virtual void      moving();
   virtual void      stun();
   virtual void      clear_debuffs();
+  virtual void      trigger_ready();
   virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero, bool waiting=false );
   virtual void      arise();
   virtual void      demise();

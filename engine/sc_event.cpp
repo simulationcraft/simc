@@ -135,21 +135,25 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
 
 void player_ready_event_t::execute()
 {
-  // Player that's checking for off gcd actions to use, cancels that checking
-  // when there's a ready event firing.
+  // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
   if ( player -> off_gcd )
     event_t::cancel( player -> off_gcd );
 
   if ( ! player -> execute_action() )
   {
-    timespan_t x = player -> available();
-
-    player -> schedule_ready( x, true );
-    // Waiting Debug
-    if ( sim -> debug )
+    if( player -> ready_type == READY_POLL )
     {
-      log_t::output( sim, "%s is waiting for %.4f resource=%.2f", player -> name(), x.total_seconds(), player -> resource_current[ player -> primary_resource() ] );
+      timespan_t x = player -> available();
+
+      player -> schedule_ready( x, true );
+
+      // Waiting Debug
+      if ( sim -> debug )
+	log_t::output( sim, "%s is waiting for %.4f resource=%.2f", 
+		       player -> name(), x.total_seconds(), 
+		       player -> resource_current[ player -> primary_resource() ] );
     }
+    else player -> started_waiting = sim -> current_time;
   }
 }
 

@@ -1078,6 +1078,8 @@ void action_t::tick( dot_t* d )
   if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
 
   stats -> add_tick( d -> time_to_tick );
+
+  player -> trigger_ready();
 }
 
 // action_t::last_tick ======================================================
