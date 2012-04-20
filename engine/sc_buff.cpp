@@ -579,6 +579,8 @@ void buff_t::bump( int stacks, double value )
       stack_react_time[ i ] = react;
     }
   }
+
+  if( player ) player -> trigger_ready();
 }
 
 // buff_t::override =========================================================
@@ -626,6 +628,8 @@ void buff_t::expire()
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> update( false );
+
+  if( player ) player -> trigger_ready();
 }
 
 // buff_t::predict ==========================================================

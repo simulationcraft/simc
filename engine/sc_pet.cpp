@@ -144,6 +144,8 @@ void pet_t::summon( timespan_t duration )
   }
 
   arise();
+
+  owner -> trigger_ready();
 }
 
 // pet_t::dismiss ===========================================================

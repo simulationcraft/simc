@@ -999,6 +999,8 @@ enum snapshot_state_e
   STATE_MUL_TGT_TA    = 0x000080,
 };
 
+enum { READY_POLL=0, READY_TRIGGER=1 };
+
 // Generic programming tools ================================================
 
 template <typename T, std::size_t N>
@@ -3084,10 +3086,9 @@ struct player_t : public noncopyable
   int         index;
   role_type_e   role;
   player_t*   target;
-  int         level, use_pre_potion, party, member;
+  int         level, use_pre_potion, party, member, ready_type;
   double      skill, initial_skill, distance, default_distance;
-  timespan_t  gcd_ready;
-  timespan_t  base_gcd;
+  timespan_t  gcd_ready, base_gcd, started_waiting;
   int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   std::vector<pet_t*> pet_list;
@@ -3640,6 +3641,7 @@ struct player_t : public noncopyable
   virtual void      moving();
   virtual void      stun();
   virtual void      clear_debuffs();
+  virtual void      trigger_ready();
   virtual void      schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false );
   virtual void      arise();
   virtual void      demise();

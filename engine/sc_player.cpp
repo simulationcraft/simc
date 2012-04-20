@@ -268,8 +268,9 @@ player_t::player_t( sim_t*             s,
   sim( s ), type( t ), name_str( n ), race( r ),
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
-  party( 0 ), member( 0 ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ),
+  party( 0 ), member( 0 ), ready_type( READY_POLL ), 
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), 
+  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ), 
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), spec( SPEC_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
@@ -2901,10 +2902,33 @@ void player_t::reset()
   memset( &temporary, 0x00, sizeof( temporary ) );
 }
 
+// player_t::trigger_ready ==================================================
+
+void player_t::trigger_ready()
+{
+  if( ready_type == READY_POLL ) return;
+
+  if( readying ) return;
+  if( executing ) return;
+  if( channeling ) return;
+
+  if( sleeping ) return;
+
+  if ( buffs.stunned -> check() ) return;
+
+  if ( sim -> debug ) log_t::output( sim, "%s is triggering ready", name() );
+
+  assert( started_waiting != timespan_t::zero() );
+
+  iteration_waiting_time += sim -> current_time - started_waiting;
+
+  schedule_ready( available() );
+}
+
 // player_t::schedule_ready =================================================
 
 void player_t::schedule_ready( timespan_t delta_time,
-                               bool   waiting )
+                               bool       waiting )
 {
   if ( readying )
   {
@@ -2919,6 +2943,8 @@ void player_t::schedule_ready( timespan_t delta_time,
   executing = 0;
   channeling = 0;
   action_queued = false;
+
+  started_waiting = timespan_t::zero();
 
   timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero() ) delta_time += gcd_adjust;
@@ -6350,6 +6376,7 @@ void player_t::create_options()
     { "glyphs",                               OPT_STRING,   &( glyphs_str                             ) },
     { "race",                                 OPT_STRING,   &( race_str                               ) },
     { "level",                                OPT_INT,      &( level                                  ) },
+    { "ready_trigger",                        OPT_INT,      &( ready_type                             ) },
     { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "role",                                 OPT_FUNC,     ( void* ) ::parse_role_string               },
     { "target",                               OPT_STRING,   &( target_str                             ) },

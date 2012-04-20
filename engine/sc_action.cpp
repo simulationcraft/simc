@@ -998,6 +998,8 @@ void action_t::tick( dot_t* d )
   }
 
   stats -> add_tick( d -> time_to_tick );
+
+  player -> trigger_ready();
 }
 
 // action_t::last_tick ======================================================

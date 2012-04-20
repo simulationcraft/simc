@@ -826,7 +826,7 @@ void sim_t::add_event( event_t* e,
 
   if ( debug )
   {
-    log_t::output( this, "Add Event: %s %.2f %d", e -> name, e -> time.total_seconds(), e -> id );
+    log_t::output( this, "Add Event: %s %.2f %d %s", e -> name, e -> time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
     if ( e -> player ) log_t::output( this, "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
   }
 }
@@ -1041,7 +1041,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( debug ) log_t::output( this, "Executing event: %s", e -> name );
+      if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
       e -> execute();
     }
     delete e;
