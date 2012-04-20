@@ -1561,6 +1561,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new tick_time_expr_t( *this );
   }
+  else if ( name_str == "new_tick_time" )
+  {
+    struct new_tick_time_expr_t : public action_expr_t
+    {
+      new_tick_time_expr_t( const action_t& a ) : action_expr_t( "new_tick_time", a ) {}
+      virtual double evaluate()
+      {
+        return action.tick_time( action.player -> composite_spell_haste() ).total_seconds();
+      }
+    };
+    return new new_tick_time_expr_t( *this );
+  }
   else if ( name_str == "gcd" )
     return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "travel_time" )
