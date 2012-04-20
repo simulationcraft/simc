@@ -123,6 +123,7 @@ struct priest_t : public player_t
     const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparition;
+    const spell_data_t* shadowfiend_cooldown_reduction;
   } spec;
 
   // Mastery Spells
@@ -168,6 +169,7 @@ struct priest_t : public player_t
   struct procs_t
   {
     proc_t* sa_shadow_orb_mastery;
+    proc_t* shadowfiend_cooldown_reduction;
   } procs;
 
   // Special
@@ -1938,6 +1940,17 @@ struct mind_flay_t : public priest_spell_t
 
     return priest_spell_t::ready();
   }
+
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
+
+    if ( d -> state -> result == RESULT_CRIT )
+    {
+      p() -> procs.shadowfiend_cooldown_reduction -> occur();
+      p() -> cooldowns.shadow_fiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+    }
+  }
 };
 
 // Mind Spike Spell =========================================================
@@ -3616,6 +3629,7 @@ void priest_t::init_procs()
   player_t::init_procs();
 
   procs.sa_shadow_orb_mastery = get_proc( "shadowy_apparation_shadow_orb_mastery_proc" );
+  procs.shadowfiend_cooldown_reduction = get_proc( "shadowfiend_cooldown_reduction_proc" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3707,6 +3721,7 @@ void priest_t::init_spells()
   spec.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   spec.shadowform                     = find_class_spell( "Shadowform" );
   spec.shadowy_apparition             = find_class_spell( "Shadowy Apparition" );
+  spec.shadowfiend_cooldown_reduction = find_spell( find_class_spell( "Mind Flay" ) -> ok() ? 87100 : 0 );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
