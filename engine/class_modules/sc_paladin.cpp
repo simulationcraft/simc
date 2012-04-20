@@ -74,7 +74,6 @@ struct paladin_t : public player_t
     buff_t* divine_shield;
     buff_t* gotak_prot;
     buff_t* grand_crusader;
-    buff_t* holy_shield;
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgements_of_the_bold;
@@ -122,6 +121,8 @@ struct paladin_t : public player_t
     const spell_data_t* boundless_conviction;
     const spell_data_t* crusaders_zeal;
     const spell_data_t* divine_bulwark;
+    const spell_data_t* ancient_fury;
+    const spell_data_t* ancient_power;
     const spell_data_t* hand_of_light;
     const spell_data_t* illuminated_healing;
     const spell_data_t* judgements_of_the_bold; // passive stuff is hidden here because spells
@@ -232,7 +233,6 @@ struct paladin_t : public player_t
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_tank_block() const;
-  virtual double    composite_tank_block_reduction() const;
   virtual double    composite_tank_crit( school_type_e school ) const;
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
@@ -301,8 +301,8 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg = 5500; // TODO
-    main_hand_weapon.max_dmg = 7000; // TODO
+    main_hand_weapon.min_dmg = util_t::ability_rank( p -> level, 5840.0,85, 1.0,0 ); // TODO
+    main_hand_weapon.max_dmg = util_t::ability_rank( p -> level, 7557.0,85, 1.0,0 ); // TODO
   }
 
   virtual void init_base()
@@ -320,6 +320,12 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 
     if ( owner -> cast_paladin() -> ancient_fury_explosion )
       owner -> cast_paladin() -> ancient_fury_explosion -> execute();
+  }
+
+  virtual void arise()
+  {
+    pet_t::arise();
+    schedule_ready();
   }
 
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false )
@@ -353,7 +359,7 @@ struct paladin_heal_t : public heal_t
   {
     if ( current_resource() == RESOURCE_HOLY_POWER )
     {
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
 
     return heal_t::cost();
@@ -402,6 +408,11 @@ struct paladin_melee_attack_t : public melee_attack_t
     melee_attack_t::execute();
     if ( result_is_hit() )
     {
+      if ( ! p() -> guardian_of_ancient_kings -> sleeping )
+      {
+        p() -> buffs.ancient_power -> trigger();
+      }
+
       paladin_targetdata_t* td = targetdata() -> cast_paladin();
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
       {
@@ -428,12 +439,6 @@ struct paladin_melee_attack_t : public melee_attack_t
         {
           p() -> active_seal_of_truth_dot -> execute();
         }
-
-        // It seems like it's the seal-triggering attacks that stack up ancient power
-        if ( ! p() -> guardian_of_ancient_kings -> sleeping )
-        {
-          p() -> buffs.ancient_power -> trigger();
-        }
       }
     }
   }
@@ -452,7 +457,7 @@ struct paladin_melee_attack_t : public melee_attack_t
   {
     if ( current_resource() == RESOURCE_HOLY_POWER )
     {
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
 
     return melee_attack_t::cost();
@@ -479,7 +484,7 @@ struct paladin_spell_t : public spell_t
   {
     if ( current_resource() == RESOURCE_HOLY_POWER )
     {
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], p() -> resources.current[ RESOURCE_HOLY_POWER ] );
+      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
 
     return spell_t::cost();
@@ -550,7 +555,7 @@ static void trigger_hand_of_light( action_t* a )
 {
   paladin_t* p = a -> player -> cast_paladin();
 
-  if ( p -> primary_tree() == PALADIN_RETRIBUTION )
+  if ( p -> passives.hand_of_light -> ok() )
   {
     p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
     p -> active_hand_of_light_proc -> execute();
@@ -674,7 +679,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 struct ancient_fury_t : public paladin_spell_t
 {
   ancient_fury_t( paladin_t* p ) :
-    paladin_spell_t( "ancient_fury", p, p -> find_spell( 86704 ) )
+    paladin_spell_t( "ancient_fury", p, p -> passives.ancient_fury )
   {
     // TODO meteor stuff
     background = true;
@@ -693,12 +698,6 @@ struct ancient_fury_t : public paladin_spell_t
   {
     paladin_spell_t::player_buff();
     player_multiplier *= p() -> buffs.ancient_power -> stack();
-  }
-
-  virtual double total_crit() const
-  {
-    // This doesnt inherit the player's crit
-    return base_crit + target_crit;
   }
 };
 
@@ -740,6 +739,52 @@ struct avengers_shield_t : public paladin_melee_attack_t
   }
 };
 
+// Blessing of Kings ========================================================
+
+struct blessing_of_kings_t : public paladin_spell_t
+{
+  blessing_of_kings_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_kings", p, p -> find_class_spell( "Blessing of Kings" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    background = ( sim -> overrides.str_agi_int != 0 );
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    if ( ! sim -> overrides.str_agi_int )
+      sim -> auras.str_agi_int -> trigger();
+  }
+};
+
+// Blessing of Might ========================================================
+
+struct blessing_of_might_t : public paladin_spell_t
+{
+  blessing_of_might_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "blessing_of_might", p, p -> find_class_spell( "Blessing of Might" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    background = ( sim -> overrides.mastery != 0 );
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    if ( ! sim -> overrides.mastery )
+      sim -> auras.mastery -> trigger();
+  }
+};
+
 // Crusader Strike ==========================================================
 
 struct crusader_strike_t : public paladin_melee_attack_t
@@ -777,20 +822,16 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
 struct divine_storm_t : public paladin_melee_attack_t
 {
-  timespan_t base_cooldown;
-
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ), base_cooldown( timespan_t::zero() )
+    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
 
     aoe               = -1;
     trigger_seal      = false;
     trigger_seal_of_righteousness = true;
-    base_cooldown     = cooldown -> duration;
   }
 
   virtual void execute()
@@ -799,12 +840,6 @@ struct divine_storm_t : public paladin_melee_attack_t
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
-      /*
-        if ( target -> cast_target() -> adds_nearby >= 4 )
-          {
-            p() -> resource_gain( RESOURCE_HOLY_POWER, 1,
-                                      p() -> gains_hp_divine_storm );
-          }*/
     }
   }
 };
@@ -928,7 +963,8 @@ struct hand_of_light_proc_t : public melee_attack_t
   {
     melee_attack_t::target_debuff( t, dt );
     // not *= since we don't want to double dip in other effects (like vunerability)
-    target_multiplier = 1.0 + t -> debuffs.magic_vulnerability -> value();
+    // FIX-ME: Currently gets 8% from CoEl not 5%.
+    target_multiplier = 1.0 + t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0;
   }
 };
 
@@ -1292,14 +1328,18 @@ struct judgement_t : public paladin_melee_attack_t
       p() -> buffs.sacred_duty-> trigger();
     }
 
-    p() -> procs.judgments_of_the_bold -> occur();
-    p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgements_of_the_bold );
+    if ( p() -> passives.judgements_of_the_bold -> ok() )
+    {
+      p() -> procs.judgments_of_the_bold -> occur();
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgements_of_the_bold );
 
-    // Mists of Pandaria: Retribution Paladin Judgments trigger Physical Vulnerability
-    if ( p() -> primary_tree() == PALADIN_RETRIBUTION && ! sim -> overrides.physical_vulnerability )
-      target -> debuffs.physical_vulnerability -> trigger();
+      // Mists of Pandaria: Retribution Paladin Judgments trigger Physical Vulnerability
+      if ( ! sim -> overrides.physical_vulnerability )
+        target -> debuffs.physical_vulnerability -> trigger();
+    }
 
-    p() -> buffs.judgements_of_the_wise -> trigger();
+    if ( p() -> passives.judgements_of_the_wise -> ok() )
+      p() -> buffs.judgements_of_the_wise -> trigger();
 
     p() -> last_foreground_action = seal; // Necessary for DPET calculations.
 
@@ -1553,73 +1593,18 @@ struct divine_shield_t : public paladin_spell_t
 
 struct exorcism_t : public paladin_spell_t
 {
-  int undead_demon;
-
   exorcism_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) ), undead_demon( 0 )
+    : paladin_spell_t( "exorcism", p, p -> find_class_spell( "Exorcism" ) )
   {
-    option_t options[] =
-    {
-      { "undead_demon", OPT_BOOL, &undead_demon },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
-    base_attack_power_multiplier = 0.344;
-    base_spell_power_multiplier  = 0.344;
-    direct_power_mod             = 1.0;
-    dot_behavior                 = DOT_REFRESH;
-    hasted_ticks                 = false;
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier  = 0.0;
+    direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
-    tick_may_crit                = true;
-    tick_power_mod               = 0.2/3; // glyph of exorcism is 20% of damage over three ticks
 
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
-  }
-
-  virtual double total_power() const
-  {
-    return ( std::max )( total_spell_power(), total_attack_power() );
-  }
-
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-
-    paladin_targetdata_t* td = targetdata() -> cast_paladin();
-
-    // FIXME: Should this be wrapped in a result_is_hit() ?
-    switch ( p() -> active_seal )
-    {
-    case SEAL_OF_JUSTICE:
-      p() -> active_seal_of_justice_proc       -> execute();
-      break;
-    case SEAL_OF_INSIGHT:
-      p() -> active_seal_of_insight_proc       -> execute();
-      break;
-    case SEAL_OF_RIGHTEOUSNESS:
-      p() -> active_seal_of_righteousness_proc -> execute();
-      break;
-    case SEAL_OF_TRUTH:
-      if ( td -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
-      break;
-    default:
-      ;
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( undead_demon )
-    {
-      int target_race = target -> race;
-      if ( target_race != RACE_UNDEAD &&
-           target_race != RACE_DEMON  )
-        return false;
-    }
-
-    return paladin_spell_t::ready();
   }
 };
 
@@ -1641,24 +1626,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
       p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
     else if ( p() -> primary_tree() == PALADIN_PROTECTION )
       p() -> buffs.gotak_prot -> trigger();
-  }
-};
-
-// Holy Shield ==============================================================
-
-struct holy_shield_t : public paladin_spell_t
-{
-  holy_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_shield", p, p -> find_spell( 20925 ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.holy_shield -> trigger();
   }
 };
 
@@ -2039,6 +2006,8 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
+  if ( name == "blessing_of_kings"         ) return new blessing_of_kings_t        ( this, options_str );
+  if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
@@ -2050,7 +2019,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
-  if ( name == "holy_shield"               ) return new holy_shield_t              ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
@@ -2248,18 +2216,22 @@ void paladin_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-
-  buffs.ancient_power          = buff_creator_t( this, "ancient_power", find_spell( 86700 ) );
+  // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.divine_plea            = buff_creator_t( this, "divine_plea", find_spell( 54428 ) ).max_stack( 1 ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.divine_protection      = buff_creator_t( this, "divine_protection", find_spell( 498 ) ).max_stack( 1 ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_spell( 642 ) ).max_stack( 1 ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_spell( 86659 ) );
-  buffs.holy_shield            = buff_creator_t( this, "holy_shield", find_spell( 20925 ) );
-  buffs.inquisition            = buff_creator_t( this, "inquisition", find_spell( 84963 ) );
+  buffs.divine_protection      = buff_creator_t( this, "divine_protection", find_class_spell( "Divine Protection" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+
+  // Holy
+  buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
+  buffs.divine_plea            = buff_creator_t( this, "divine_plea", find_class_spell( "Divine Plea" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
+
+  // Prot
+  buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
+
+  // Ret
+  buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
+  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgements_of_the_wise = buff_creator_t( this, "judgements_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
     .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
@@ -2286,7 +2258,7 @@ void paladin_t::init_actions()
   active_seal_of_righteousness_proc  = new seal_of_righteousness_proc_t ( this );
   active_seal_of_truth_proc          = new seal_of_truth_proc_t         ( this );
   active_seal_of_truth_dot           = new seal_of_truth_dot_t          ( this );
-//  ancient_fury_explosion             = new ancient_fury_t               ( this );
+  ancient_fury_explosion             = new ancient_fury_t               ( this );
 
   if ( action_list_str.empty() )
   {
@@ -2384,7 +2356,6 @@ void paladin_t::init_actions()
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
       action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30,use_off_gcd=1";
-      action_list_str += "/holy_shield,use_off_gcd=1";
       action_list_str += "/shield_of_the_righteous,if=holy_power=3&(buff.sacred_duty.up|buff.inquisition.up)";
       action_list_str += "/judgement,if=holy_power=3";
       action_list_str += "/inquisition,if=holy_power=3&(buff.inquisition.down|buff.inquisition.remains<5)";
@@ -2450,7 +2421,7 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Spells
-  spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings" );
+  spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( "Divine Bulwark" );
@@ -2473,6 +2444,8 @@ void paladin_t::init_spells()
   
   // Ret Passives
   passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
+  passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
+  passives.ancient_power          = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86700 : 0 );
   passives.judgements_of_the_bold = find_specialization_spell( "Judgements of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
@@ -2575,7 +2548,7 @@ double paladin_t::composite_attribute_multiplier( attribute_type_e attr ) const
   double m = player_t::composite_attribute_multiplier( attr );
   if ( attr == ATTR_STRENGTH && buffs.ancient_power -> check() )
   {
-    m *= 1.0 + 0.01 * buffs.ancient_power -> stack();
+    m *= 1.0 + buffs.ancient_power -> stack() * passives.ancient_power ->effectN( 1 ).percent();
   }
   return m;
 }
@@ -2639,15 +2612,6 @@ double paladin_t::composite_tank_block() const
 {
   double b = player_t::composite_tank_block();
   b += get_divine_bulwark();
-  return b;
-}
-
-// paladin_t::composite_tank_block_reduction ================================
-
-double paladin_t::composite_tank_block_reduction() const
-{
-  double b = player_t::composite_tank_block_reduction();
-  b += buffs.holy_shield -> up() * buffs.holy_shield -> data().effect1().percent();
   return b;
 }
 
@@ -2728,13 +2692,13 @@ double paladin_t::assess_damage( double        amount,
 
   if ( buffs.divine_protection -> up() )
   {
-    if ( school == SCHOOL_PHYSICAL )
+    if ( util_t::school_type_component( school, SCHOOL_MAGIC ) )
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect2().percent();
+      amount *= 1.0 + buffs.divine_protection -> data().effect1().percent();
     }
     else
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect3().percent();
+      amount *= 1.0 + buffs.divine_protection -> data().effect2().percent();
     }
   }
 

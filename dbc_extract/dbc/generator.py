@@ -949,7 +949,7 @@ class SpellDataGenerator(DataGenerator):
           52586,  68043,  68044,    # Gurthalak, Voice of the Deeps - LFR, N, H
         ),
         (),     # Warrior:
-        (),     # Paladin:
+        ( ( 86700, 5 ), ( 86704, 5 ) ),     # Paladin: Ancient Power and Ancient Fury
         ( ( 83381, 0 ), ), # Hunter: Kill Command base dmg
         ( ), # Rogue: 
         ( ( 63619, 5 ), ( 94472, 0 ), ( 114255, 0 ), ( 114257, 0 ) ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. From Darkness Comes Light spells

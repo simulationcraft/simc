@@ -990,10 +990,10 @@ struct shadow_fiend_pet_t : public pet_t
     }
   };
 
-  struct melee_t : public attack_t
+  struct melee_t : public melee_attack_t
   {
     melee_t( shadow_fiend_pet_t* p ) :
-      attack_t( "melee", p, spell_data_t::nil(), SCHOOL_SHADOW )
+      melee_attack_t( "melee", p, spell_data_t::nil(), SCHOOL_SHADOW )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -1510,19 +1510,6 @@ struct fortitude_t : public priest_spell_t
 
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger();
-
-    /*
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
-    {
-      if ( p -> ooc_buffs() )
-      {
-        double before = p -> resources.current[ RESOURCE_HEALTH ];
-        p -> buffs.fortitude -> trigger( 1, bonus );
-        double  after = p -> resources.current[ RESOURCE_HEALTH ];
-        p -> stat_gain( STAT_HEALTH, after - before );
-      }
-    }
-    */
   }
 };
 
