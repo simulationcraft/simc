@@ -5410,7 +5410,7 @@ void player_t::replace_spells()
 // player_t::find_talent_spell ====================================================
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
-                                                const std::string& token )
+                                                 const std::string& token )
 {
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
 

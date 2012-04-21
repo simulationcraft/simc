@@ -53,7 +53,6 @@ struct mage_t : public player_t
   {
     buff_t* arcane_charge;
     buff_t* arcane_missiles;
-    buff_t* arcane_potency;
     buff_t* arcane_power;
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
@@ -61,13 +60,13 @@ struct mage_t : public player_t
     buff_t* hot_streak;
     buff_t* hot_streak_crits;
     buff_t* icy_veins;
-    buff_t* improved_mana_gem;
     buff_t* incanters_absorption;
     buff_t* invocation;
     buff_t* mage_armor;
     buff_t* missile_barrage;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
+    buff_t* rune_of_power;
     buff_t* tier13_2pc;
   } buffs;
 
@@ -90,7 +89,7 @@ struct mage_t : public player_t
     gain_t* frost_armor;
     gain_t* mage_armor;
     gain_t* mana_gem;
-    gain_t* master_of_elements;
+    gain_t* rune_of_power;
   } gains;
 
   // Glyphs
@@ -228,22 +227,22 @@ struct mage_t : public player_t
   {
     const spell_data_t* presence_of_mind;
     const spell_data_t* scorch;
-    const spell_data_t* ice_flows;
-    const spell_data_t* temporal_shield;
-    const spell_data_t* blazing_speed;
-    const spell_data_t* ice_barrier;
-    const spell_data_t* ring_of_frost;
-    const spell_data_t* ice_ward;
-    const spell_data_t* frostjaw;
-    const spell_data_t* greater_invis;
-    const spell_data_t* cauterize;
+    const spell_data_t* ice_flows; // NYI
+    const spell_data_t* temporal_shield; // NYI
+    const spell_data_t* blazing_speed; // NYI
+    const spell_data_t* ice_barrier; // NYI
+    const spell_data_t* ring_of_frost; // NYI
+    const spell_data_t* ice_ward; // NYI
+    const spell_data_t* frostjaw; // NYI
+    const spell_data_t* greater_invis; // NYI
+    const spell_data_t* cauterize; // NYI
     const spell_data_t* cold_snap;
-    const spell_data_t* nether_tempest;
+    const spell_data_t* nether_tempest; // Extra target NYI
     const spell_data_t* living_bomb;
     const spell_data_t* frost_bomb;
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
-    const spell_data_t* incanters_ward;
+    const spell_data_t* incanters_ward; // NYI
 
   } talents;
 
@@ -329,12 +328,12 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void   regen( timespan_t periodicity );
-  virtual double resource_gain( resource_type_e, double amount, gain_t* =0, action_t* =0 );
-  virtual double resource_loss( resource_type_e, double amount, gain_t* =0, action_t* =0 );
+  virtual double resource_gain( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
+  virtual double resource_loss( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
 };
 
-mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target )
-  : targetdata_t( source, target )
+mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target ) :
+  targetdata_t( source, target )
 {
   debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> find_spell( 31589 ) ) );
 }
@@ -1008,9 +1007,6 @@ void mage_spell_t::execute()
   if ( consumes_arcane_blast )
     p() -> buffs.arcane_charge -> expire();
 
-  if ( ( base_dd_max > 0 || base_td > 0 ) && ! background )
-    p() -> buffs.arcane_potency -> decrement();
-
   if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
     p() -> buffs.presence_of_mind -> expire();
 
@@ -1286,8 +1282,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> expire();
-
-    p() -> buffs.arcane_potency -> decrement();
   }
 
   virtual void last_tick( dot_t* d )
@@ -1359,6 +1353,7 @@ struct arcane_power_t : public mage_spell_t
 
   virtual bool ready()
   {
+    // FIXME: Is this still true?
     // Can't trigger AP if PoM is up
     if ( p() -> buffs.presence_of_mind -> check() )
       return false;
@@ -1401,7 +1396,7 @@ struct cold_snap_t : public mage_spell_t
   std::vector<cooldown_t*> cooldown_list;
 
   cold_snap_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "cold_snap", p, p -> find_spell( 11958 ) )
+    mage_spell_t( "cold_snap", p, p -> talents.cold_snap )
   {
     check_talent( p -> talents.cold_snap -> ok() );
     parse_options( NULL, options_str );
@@ -1414,6 +1409,8 @@ struct cold_snap_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_HEALTH, p() -> resources.base[ RESOURCE_HEALTH ] * p() -> talents.cold_snap -> effectN( 2 ).percent() );
 
     for ( size_t i = 0; i < cooldown_list.size(); i++ )
     {
@@ -1544,13 +1541,6 @@ struct counterspell_t : public mage_spell_t
     may_miss = may_crit = false;
   }
 
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.invocation -> trigger();
-  }
-
   virtual bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -1619,16 +1609,18 @@ struct dragons_breath_t : public mage_spell_t
 struct evocation_t : public mage_spell_t
 {
   evocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "evocation", p, p -> find_spell( 12051 ) )
+    mage_spell_t( "evocation", p, p -> talents.rune_of_power ? spell_data_t::not_found() : p -> find_spell( 12051 ) )
   {
     parse_options( NULL, options_str );
 
     base_tick_time    = timespan_t::from_seconds( 2.0 );
-    // FIXME: num_ticks         = ( int ) ( duration() / base_tick_time );
+    num_ticks         = ( int ) ( data().duration() / base_tick_time );
     tick_zero         = true;
     channeled         = true;
     harmful           = false;
     hasted_ticks      = false;
+
+    cooldown -> duration *= 1.0 + p -> talents.invocation -> effectN( 1 ).percent();
   }
 
   virtual void tick( dot_t* d )
@@ -1637,6 +1629,13 @@ struct evocation_t : public mage_spell_t
 
     double mana = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, mana, p() -> gains.evocation );
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    mage_spell_t::last_tick( d );
+
+    p() -> buffs.invocation -> trigger();
   }
 
   virtual void execute()
@@ -1757,6 +1756,54 @@ struct frost_armor_t : public mage_spell_t
       return false;
 
     return mage_spell_t::ready();
+  }
+};
+
+// Frost Bomb ===============================================================
+
+struct frost_bomb_explosion_t : public mage_spell_t
+{
+  frost_bomb_explosion_t( mage_t* p, bool dtr = false ) :
+    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
+  {
+    aoe = -1;
+    base_aoe_multiplier = 0.5; // This is stored in effectN( 2 ), but it's just 50% of effectN( 1 )
+    background = true;
+
+    // FIXME: Assuming this triggers from dtr like Living Bomb's Explosion
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new frost_bomb_explosion_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+   
+  virtual resource_type_e current_resource() const
+  { return RESOURCE_NONE; }
+};
+
+struct frost_bomb_t : public mage_spell_t
+{
+  frost_bomb_explosion_t* explosion_spell;
+
+  frost_bomb_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb ),
+    explosion_spell( 0 )
+  {
+    parse_options( NULL, options_str );
+    num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
+    
+    explosion_spell = new frost_bomb_explosion_t( p );
+    add_child( explosion_spell );
+
+    // FIXME: How does haste affect the CD/Tick Time?
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    mage_spell_t::last_tick( d );
+
+    explosion_spell -> execute();
   }
 };
 
@@ -1989,9 +2036,8 @@ struct living_bomb_explosion_t : public mage_spell_t
   living_bomb_explosion_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
   {
-    aoe = -1;
+    aoe = 3;
     background = true;
-    base_multiplier *= 1.0 + p -> glyphs.living_bomb -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2005,7 +2051,8 @@ struct living_bomb_explosion_t : public mage_spell_t
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
-    // Ticks don't trigger ignite
+    // FIXME: Is this still true?
+    // Explosion doesn't trigger ignite
     spell_t::impact( t, impact_result, travel_dmg );
   }
 };
@@ -2015,25 +2062,17 @@ struct living_bomb_t : public mage_spell_t
   living_bomb_explosion_t* explosion_spell;
 
   living_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "living_bomb", p, p -> find_spell( 44457 ) )
+    mage_spell_t( "living_bomb", p, p -> talents.living_bomb )
   {
     check_talent( p -> talents.living_bomb -> ok() );
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
 
+    trigger_gcd = timespan_t::from_seconds( 1.0 );
+
     explosion_spell = new living_bomb_explosion_t( p );
-    // Trickery to make MoE work
-    explosion_spell -> base_costs[ explosion_spell -> current_resource() ] = base_costs[ current_resource() ];
     add_child( explosion_spell );
-  }
-
-  virtual void target_debuff( player_t* t, dmg_type_e dt )
-  {
-    // Override the mage_spell_t version to ensure mastery effect is stacked additively.  Someday I will make this cleaner.
-    spell_t::target_debuff( t, dt );
-
-    target_multiplier *= 1.0 + ( p() -> glyphs.living_bomb -> effectN( 1 ).percent() );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2087,14 +2126,10 @@ struct mana_gem_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    min = p -> dbc.effect_min( 16856, p -> level );
-    max = p -> dbc.effect_max( 16856, p -> level );
-
-    if ( p -> level <= 80 )
-    {
-      min = 3330.0;
-      max = 3500.0;
-    }
+    // FIXME: These currently always return 1, either need to figure out the DBC information
+    // or hardcode them
+    min = p -> dbc.effect_min( 1936, p -> level );
+    max = p -> dbc.effect_max( 1936, p -> level );
 
     cooldown = p -> cooldowns.mana_gem;
     cooldown -> duration = timespan_t::from_seconds( 120.0 );
@@ -2114,8 +2149,6 @@ struct mana_gem_t : public action_t
     double gain = sim -> rng -> range( min, max );
 
     player -> resource_gain( RESOURCE_MANA, gain, p -> gains.mana_gem );
-
-    p -> buffs.improved_mana_gem -> trigger();
 
     update_ready();
   }
@@ -2201,12 +2234,26 @@ struct molten_armor_t : public mage_spell_t
   }
 };
 
+// Nether Tempest ===========================================================
+
+struct nether_tempest_t : public mage_spell_t
+{
+  // FIXME: Add extra AOE component id = 114954
+  nether_tempest_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest )
+  {
+    check_talent( p -> talents.nether_tempest -> ok() );
+
+    parse_options( NULL, options_str );
+  }
+};
+
 // Presence of Mind Spell ===================================================
 
 struct presence_of_mind_t : public mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "presence_of_mind", p, p -> find_spell( 12043 ) )
+    mage_spell_t( "presence_of_mind", p, p -> talents.presence_of_mind )
   {
     check_talent( p -> talents.presence_of_mind -> ok() );
 
@@ -2219,7 +2266,6 @@ struct presence_of_mind_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.presence_of_mind -> trigger();
-    p() -> buffs.arcane_potency -> trigger( 2 );
   }
 
   virtual bool ready()
@@ -2309,15 +2355,33 @@ struct pyroblast_hs_t : public mage_spell_t
   }
 };
 
+// Rune of Power ============================================================
+
+struct rune_of_power_t : public mage_spell_t
+{
+  rune_of_power_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "rune_of_power", p, p -> talents.rune_of_power )
+  {
+    check_talent( p -> talents.rune_of_power -> ok() );
+
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    // Assume they're always in it
+    p() -> buffs.rune_of_power -> trigger();
+  }
+};
+
 // Scorch Spell =============================================================
 
 struct scorch_t : public mage_spell_t
 {
-  int debuff;
-
   scorch_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "scorch", p, p -> find_spell( 2948 ) ),
-    debuff( 0 )
+    mage_spell_t( "scorch", p, p -> talents.scorch )
   {
     check_talent( p -> talents.scorch -> ok() );
 
@@ -2661,6 +2725,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "frost_armor"       ) return new             frost_armor_t( this, options_str );
+  if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
@@ -2670,9 +2735,11 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "mana_gem"          ) return new                mana_gem_t( this, options_str );
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "molten_armor"      ) return new            molten_armor_t( this, options_str );
+  if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
   if ( name == "pyroblast_hs"      ) return new            pyroblast_hs_t( this, options_str );
+  if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
@@ -2841,7 +2908,8 @@ void mage_t::init_buffs()
   buffs.invocation           = buff_creator_t( this, "invocation", talents.invocation );
   buffs.mage_armor           = buff_creator_t( this, 6117, "mage_armor" );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
-  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind );
+  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
+  buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) ); // FIXME: can this stack?
 
   buffs.hot_streak_crits     = buff_creator_t( this, "hot_streak_crits" ).max_stack( 2 ).quiet( true );
 
@@ -2856,12 +2924,12 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.clearcasting       = get_gain( "clearcasting"       );
-  gains.evocation          = get_gain( "evocation"          );
-  gains.frost_armor        = get_gain( "frost_armor"        );
-  gains.mage_armor         = get_gain( "mage_armor"         );
-  gains.mana_gem           = get_gain( "mana_gem"           );
-  gains.master_of_elements = get_gain( "master_of_elements" );
+  gains.clearcasting  = get_gain( "clearcasting"  );
+  gains.evocation     = get_gain( "evocation"     );
+  gains.frost_armor   = get_gain( "frost_armor"   );
+  gains.mage_armor    = get_gain( "mage_armor"    );
+  gains.mana_gem      = get_gain( "mana_gem"      );
+  gains.rune_of_power = get_gain( "rune_of_power" );
 }
 
 // mage_t::init_procs =======================================================
@@ -2985,7 +3053,7 @@ void mage_t::init_actions()
         action_list_str += items[ i ].name();
         //Special trinket handling for Arcane, previously only used for Shard of Woe but seems to be good for all useable trinkets
         if ( primary_tree() == MAGE_ARCANE )
-          action_list_str += ",if=buff.improved_mana_gem.up|cooldown.evocation.remains>90|target.time_to_die<=50";
+          action_list_str += ",if=cooldown.evocation.remains>90|target.time_to_die<=50";
       }
     }
     action_list_str += init_use_profession_actions();
@@ -3002,7 +3070,7 @@ void mage_t::init_actions()
       }
       else if ( primary_tree() == MAGE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=buff.improved_mana_gem.up|target.time_to_die<=50";
+        action_list_str += "/volcanic_potion,if=target.time_to_die<=50";
       }
       else
       {
@@ -3037,7 +3105,7 @@ void mage_t::init_actions()
       //Special handling for Race Abilities
       if ( race == RACE_ORC )
       {
-        action_list_str += "/blood_fury,if=buff.improved_mana_gem.up|target.time_to_die<=50";
+        action_list_str += "/blood_fury,if=target.time_to_die<=50";
       }
       else if ( race == RACE_TROLL )
       {
@@ -3062,18 +3130,18 @@ void mage_t::init_actions()
         action_list_str += "/mana_gem,if=buff.arcane_blast.stack=4";
       }
       //Choose Rotation
-      action_list_str += "/choose_rotation,cooldown=1,force_dps=1,if=buff.improved_mana_gem.up&dpm=1&cooldown.evocation.remains+15<target.time_to_die";
+      action_list_str += "/choose_rotation,cooldown=1,force_dps=1,if=dpm=1&cooldown.evocation.remains+15<target.time_to_die";
       action_list_str += "/choose_rotation,cooldown=1,force_dpm=1,if=cooldown.evocation.remains<=20&dps=1&mana_pct<22&(target.time_to_die>60|burn_mps*((target.time_to_die-5)-cooldown.evocation.remains)>max_mana_nonproc)&cooldown.evocation.remains+15<target.time_to_die";
       //Arcane Power
       if ( level >= 62 )
       {
         if ( set_bonus.tier13_4pc_caster() )
         {
-          action_list_str += "/arcane_power,if=(buff.improved_mana_gem.up&buff.tier13_2pc.stack>=9)|(buff.tier13_2pc.stack>=10&cooldown.mana_gem.remains>30&cooldown.evocation.remains>10)|target.time_to_die<=50";
+          action_list_str += "/arcane_power,if=buff.tier13_2pc.stack>=9|(buff.tier13_2pc.stack>=10&cooldown.mana_gem.remains>30&cooldown.evocation.remains>10)|target.time_to_die<=50";
         }
         else
         {
-          action_list_str += "/arcane_power,if=buff.improved_mana_gem.up|target.time_to_die<=50";
+          action_list_str += "/arcane_power,if=target.time_to_die<=50";
         }
         action_list_str += "/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)";
       }
@@ -3091,11 +3159,11 @@ void mage_t::init_actions()
 
       if ( set_bonus.tier13_4pc_caster() )
       {
-        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)|(buff.arcane_power.up&mana_pct_nonproc>88)";
+        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|cooldown.mana_gem.remains<5)&mana_pct>=22)|(buff.arcane_power.up&mana_pct_nonproc>88)";
       }
       else
       {
-        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|buff.improved_mana_gem.up|cooldown.mana_gem.remains<5)&mana_pct>=22)";
+        action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|cooldown.mana_gem.remains<5)&mana_pct>=22)";
       }
       action_list_str += "/arcane_blast,if=buff.arcane_blast.remains<0.8&buff.arcane_blast.stack=4";
       action_list_str += "/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react&mage_armor_timer<=2";
@@ -3185,10 +3253,15 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
 
   if ( buffs.invocation -> up() )
   {
-    m *= 1.0 + talents.invocation -> effectN( 1 ).percent();
+    // FIXME: Find the actual buff value somewhere
+    m *= 1.0 + 0.30;
   }
 
-  m *= 1.0 + buffs.arcane_power -> value();
+  if ( buffs.arcane_power -> check() )
+    m *= 1.0 + buffs.arcane_power -> value();
+
+  if ( buffs.rune_of_power -> check() )
+    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2).percent();
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
@@ -3256,6 +3329,9 @@ void mage_t::reset()
 void mage_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
+
+  if ( buffs.rune_of_power -> up() )
+    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
 
   if ( glyphs.frost_armor -> ok() && buffs.frost_armor -> up()  )
   {
