@@ -1079,6 +1079,7 @@ void sim_t::combat( int iteration )
         }
       }
     }
+
     delete e;
   }
 
