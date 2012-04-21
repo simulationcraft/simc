@@ -74,7 +74,6 @@ struct mage_t : public player_t
   struct cooldowns_t
   {
     cooldown_t* deep_freeze;
-    cooldown_t* early_frost;
     cooldown_t* evocation;
     cooldown_t* fire_blast;
     cooldown_t* mana_gem;
@@ -100,7 +99,6 @@ struct mage_t : public player_t
     const spell_data_t* arcane_blast;
     const spell_data_t* arcane_missiles;
     const spell_data_t* arcane_power;
-    const spell_data_t* cone_of_cold;
     const spell_data_t* deep_freeze;
     const spell_data_t* fireball;
     const spell_data_t* frost_armor;
@@ -186,7 +184,6 @@ struct mage_t : public player_t
     proc_t* munched_ignite;
     proc_t* rolled_ignite;
     proc_t* mana_gem;
-    proc_t* early_frost;
     proc_t* test_for_crit_hotstreak;
     proc_t* crit_for_hotstreak;
     proc_t* hotstreak;
@@ -281,7 +278,6 @@ struct mage_t : public player_t
   {
     // Cooldowns
     cooldowns.deep_freeze = get_cooldown( "deep_freeze" );
-    cooldowns.early_frost = get_cooldown( "early_frost" );
     cooldowns.evocation   = get_cooldown( "evocation"   );
     cooldowns.fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns.mana_gem    = get_cooldown( "mana_gem"    );
@@ -347,7 +343,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct mage_spell_t : public spell_t
 {
   bool may_chill, may_hot_streak, may_brain_freeze;
-  bool fof_frozen, consumes_arcane_blast;
+  bool consumes_arcane_blast;
   int dps_rotation;
   int dpm_rotation;
 
@@ -355,7 +351,7 @@ struct mage_spell_t : public spell_t
                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, s, sc ),
     may_chill( false ), may_hot_streak( false ), may_brain_freeze( false ),
-    fof_frozen( false ), consumes_arcane_blast( false ),
+    consumes_arcane_blast( false ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
@@ -373,8 +369,6 @@ struct mage_spell_t : public spell_t
   virtual void   execute();
   virtual timespan_t execute_time() const;
   virtual void   impact( player_t* t, result_type_e impact_result, double travel_dmg );
-  virtual void   player_buff();
-  virtual double total_crit() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
 
@@ -1010,11 +1004,6 @@ void mage_spell_t::execute()
   if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
     p() -> buffs.presence_of_mind -> expire();
 
-  if ( fof_frozen )
-  {
-    p() -> buffs.fingers_of_frost -> decrement();
-  }
-
   if ( may_brain_freeze )
   {
     trigger_brain_freeze( this );
@@ -1062,42 +1051,6 @@ void mage_spell_t::impact( player_t* t, const result_type_e impact_result, const
       p() -> buffs.fingers_of_frost -> trigger();
     }
   }
-}
-
-
-// mage_spell_t::player_buff ================================================
-
-void mage_spell_t::player_buff()
-{
-  spell_t::player_buff();
-
-  if ( fof_frozen && p() -> buffs.fingers_of_frost -> up() )
-  {
-    player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).coeff() * 0.01 * p() -> composite_mastery();
-  }
-
-  if ( sim -> debug )
-    log_t::output( sim, "mage_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f mult=%.2f",
-                   name(), player_hit, player_crit, player_spell_power, player_multiplier );
-}
-
-// mage_spell_t::total_crit =================================================
-
-double mage_spell_t::total_crit() const
-{
-  double crit = spell_t::total_crit();
-
-  if ( fof_frozen && p() -> buffs.fingers_of_frost -> up() )
-  {
-    if ( p() -> passives.shatter -> ok() )
-    {
-      // Hardcoded, doubles crit + 40%
-      crit *= 2.0;
-      crit += 0.4;
-     }
-  }
-
-  return crit;
 }
 
 // ==========================================================================
@@ -1495,7 +1448,6 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    base_multiplier *= 1.0 + p -> glyphs.cone_of_cold -> effectN( 1 ).percent();
 
     may_brain_freeze = true;
     may_chill = true;
@@ -1564,7 +1516,6 @@ struct deep_freeze_t : public mage_spell_t
     base_costs[ current_resource() ] = 0.09 * p -> resources.base[ RESOURCE_MANA ];
     cooldown -> duration = timespan_t::from_seconds( 30.0 );
 
-    fof_frozen = true;
     base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effectN( 1 ).percent();
     trigger_gcd = p -> base_gcd;
 
@@ -1828,17 +1779,6 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
-  virtual void schedule_execute()
-  {
-    mage_spell_t::schedule_execute();
-
-    if ( p() -> cooldowns.early_frost -> remains() == timespan_t::zero() )
-    {
-      p() -> procs.early_frost -> occur();
-      p() -> cooldowns.early_frost -> start( timespan_t::from_seconds( 15.0 ) );
-    }
-  }
-
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -1855,24 +1795,15 @@ struct frostbolt_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
-  int dot_stack;
-
   frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    dot_stack( 0 )
+    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     parse_options( NULL, options_str );
 
     may_chill = true;
     may_hot_streak = true;
+    base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
-    if ( p -> glyphs.frostfire -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.frostfire -> effectN( 1 ).percent();
-      num_ticks = 4;
-      base_tick_time = timespan_t::from_seconds( 3.0 );
-      dot_behavior = DOT_REFRESH;
-    }
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1881,18 +1812,6 @@ struct frostfire_bolt_t : public mage_spell_t
       dtr_action = new frostfire_bolt_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual void reset()
-  {
-    mage_spell_t::reset();
-    dot_stack=0;
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
-    dot_stack=0;
   }
 
   virtual double cost() const
@@ -1911,10 +1830,16 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::execute_time();
   }
 
+  virtual void player_buff()
+  {
+    mage_spell_t::player_buff();
+
+    if ( p() -> buffs.brain_freeze -> up() )
+      player_multiplier *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 1 ).percent();
+  }
+
   virtual void execute()
   {
-    fof_frozen = p() -> buffs.brain_freeze -> up();
-
     mage_spell_t::execute();
 
     consume_brain_freeze( this );
@@ -1924,30 +1849,6 @@ struct frostfire_bolt_t : public mage_spell_t
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    if ( p() -> glyphs.frostfire -> ok() && result_is_hit( impact_result ) )
-    {
-      if ( dot_stack < 3 ) dot_stack++;
-      result = RESULT_HIT;
-      double dot_dmg = calculate_direct_damage( result, 0, t -> level, total_spell_power(), total_attack_power(), total_dd_multiplier() ) * 0.03;
-      base_td = dot_stack * dot_dmg / num_ticks;
-    }
-
-    mage_spell_t::impact( t, impact_result, travel_dmg );
-  }
-
-  virtual double total_td_multiplier() const
-  { return 1.0; } // No double-dipping!
-
-  virtual void tick( dot_t* d )
-  {
-    // Ticks don't benefit from Shatter, which checks for fof_frozen
-    // So disable it for the ticks, assuming it was set to true in execute
-    fof_frozen = false;
-    mage_spell_t::tick( d );
   }
 };
 
@@ -1960,7 +1861,9 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 1 ).percent();
-    fof_frozen = true;
+
+    aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
+    base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1975,7 +1878,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
-      player_multiplier *= 1.0 + data().effectN( 2 ).percent(); // Built in bonus against frozen targets
+      player_multiplier *= 4.0; // Built in bonus against frozen targets
       player_multiplier *= 1.25; // Buff from Fingers of Frost
     }
   }
@@ -2217,8 +2120,7 @@ struct molten_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
-    update_ready();
+    spell_t::execute();
 
     p() -> buffs.frost_armor -> expire();
     p() -> buffs.mage_armor -> expire();
@@ -2822,7 +2724,6 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_missiles   = find_glyph_spell( "Glyph of Arcane Missiles" );
   glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
-  glyphs.cone_of_cold      = find_glyph_spell( "Glyph of Cone of Cold" );
   glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
   glyphs.deep_freeze       = find_glyph_spell( "Glyph of Deep Freeze" );
   glyphs.dragons_breath    = find_glyph_spell( "Glyph of Dragon's Breath" );
@@ -2942,7 +2843,6 @@ void mage_t::init_procs()
   procs.munched_ignite          = get_proc( "munched_ignite"                );
   procs.rolled_ignite           = get_proc( "rolled_ignite"                 );
   procs.mana_gem                = get_proc( "mana_gem"                      );
-  procs.early_frost             = get_proc( "early_frost"                   );
   procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak"       );
   procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"           );
   procs.hotstreak               = get_proc( "normal_hotstreak"              );
