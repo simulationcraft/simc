@@ -1033,41 +1033,10 @@ void sim_t::combat( int iteration )
         assert( 0 );
       }
     }
-#if 1
-
-    if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
-    {
-      // The first iteration is always time-limited since we do not yet have inferred health
-      if ( current_time > expected_time )
-      {
-        if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
-      }
-    }
-    else
-    {
-      if ( expected_time > timespan_t::zero() && current_time > ( expected_time + expected_time ) )
-      {
-        if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
-      }
-
-      if (  target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
-      {
-#else
     else
     {
       if (  !fixed_time && target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
       {
-#endif
         if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
         // Set this last event as canceled, so asserts dont fire when odd things happen at the
         // tail-end of the simulation iteration
@@ -1089,9 +1058,6 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
-#if 1
-      e -> execute();
-#else
       try
       {
         e -> execute();
@@ -1120,7 +1086,6 @@ void sim_t::combat( int iteration )
           break;
         }
       }
-#endif
     }
     delete e;
   }
@@ -1234,13 +1199,10 @@ void sim_t::combat_begin()
     };
 
     new ( this ) bloodlust_check_t( this );
-
-#if 1
-#else
-    new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time, 5 );
-    new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time, 6 );
-#endif
   }
+
+  new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time, 5 );
+  new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time, 6 );
 }
 
 // sim_t::combat_end ========================================================
