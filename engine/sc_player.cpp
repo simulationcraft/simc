@@ -3721,6 +3721,8 @@ double player_t::assess_damage( double        amount,
                                 result_type_e result,
                                 action_t*     action )
 {
+  if( amount <= 0 ) return 0;
+  
   if ( buffs.pain_supression -> up() )
     amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
@@ -3753,7 +3755,13 @@ double player_t::assess_damage( double        amount,
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, 0, action );
 
-  if ( resources.current[ RESOURCE_HEALTH ] <= 0 && !is_enemy() && !resources.is_infinite( RESOURCE_HEALTH ) )
+  if( this == sim -> target )
+  {
+    if( sim -> target_death >= 0 )
+      if( resources.current[ RESOURCE_HEALTH ] <= sim -> target_death )
+	sim -> iteration_canceled = 1;
+  }
+  else if ( resources.current[ RESOURCE_HEALTH ] <= 0 && ! is_enemy() && ! resources.is_infinite( RESOURCE_HEALTH ) )
   {
     // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
     if ( buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
@@ -3762,16 +3770,14 @@ double player_t::assess_damage( double        amount,
       stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
       double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
       resource_gain( RESOURCE_HEALTH, amount );
-      if ( s )
-        s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
-
+      if ( s ) s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
       buffs.guardian_spirit -> expire();
     }
     else
     {
       if ( ! sleeping )
       {
-        deaths.add( sim -> current_time.total_seconds() );
+	deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
       demise();
