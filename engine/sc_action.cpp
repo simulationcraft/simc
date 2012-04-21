@@ -220,7 +220,7 @@ action_t::action_t( action_type_e       ty,
 
   std::vector<specialization_e> spec_list;
   specialization_e _s = player -> primary_tree();
-  if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) != spec_list.end() )
+  if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) == spec_list.end() )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
                    player -> name(), name() );
