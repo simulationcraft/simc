@@ -1962,7 +1962,7 @@ void warlock_t::init_buffs()
   buffs.molten_core           = buff_creator_t( this, "molten_core", spec.molten_core );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
-  buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( sets -> set ( SET_T13_4PC_CASTER ) -> id() ) );
+  buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 
 // warlock_t::init_values ======================================================
