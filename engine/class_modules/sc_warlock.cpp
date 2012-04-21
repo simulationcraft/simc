@@ -1010,7 +1010,7 @@ struct malefic_grasp_t : public warlock_spell_t
     warlock_spell_t( p, "Malefic Grasp" )
   {
     channeled    = true;
-    hasted_ticks = false;
+    hasted_ticks = true;
     may_crit     = false;
   }
 
