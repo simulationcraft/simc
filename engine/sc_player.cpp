@@ -3755,7 +3755,7 @@ double player_t::assess_damage( double        amount,
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, 0, action );
 
-  if( this == sim -> target )
+  if( false && ( this == sim -> target ) )
   {
     if( sim -> target_death >= 0 )
       if( resources.current[ RESOURCE_HEALTH ] <= sim -> target_death )
