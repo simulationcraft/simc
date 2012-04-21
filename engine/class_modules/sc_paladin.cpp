@@ -18,6 +18,7 @@ enum seal_type_e
   SEAL_OF_INSIGHT,
   SEAL_OF_RIGHTEOUSNESS,
   SEAL_OF_TRUTH,
+  SEAL_OF_COMMAND,
   SEAL_MAX
 };
 
@@ -51,7 +52,7 @@ struct paladin_t : public player_t
   // Active
   seal_type_e active_seal;
   heal_t*   active_beacon_of_light;
-  heal_t*   active_enlightened_judgements;
+  heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
@@ -60,7 +61,7 @@ struct paladin_t : public player_t
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_dot;
   action_t* active_seal_of_truth_proc;
-  action_t* active_seals_of_command_proc;
+  action_t* active_seal_of_command_proc;
   action_t* ancient_fury_explosion;
 
   // Buffs
@@ -76,9 +77,9 @@ struct paladin_t : public player_t
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* inquisition;
-    buff_t* judgements_of_the_bold;
-    buff_t* judgements_of_the_pure;
-    buff_t* judgements_of_the_wise;
+    buff_t* judgments_of_the_bold;
+    buff_t* judgments_of_the_pure;
+    buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
     buff_t* zealotry;
   } buffs;
@@ -87,8 +88,8 @@ struct paladin_t : public player_t
   struct gains_t
   {
     gain_t* divine_plea;
-    gain_t* judgements_of_the_bold;
-    gain_t* judgements_of_the_wise;
+    gain_t* judgments_of_the_bold;
+    gain_t* judgments_of_the_wise;
     gain_t* sanctuary;
     gain_t* seal_of_command_glyph;
     gain_t* seal_of_insight;
@@ -103,7 +104,7 @@ struct paladin_t : public player_t
     gain_t* hp_holy_shock;
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_tower_of_radiance;
-    gain_t* hp_judgement;
+    gain_t* hp_judgment;
   } gains;
 
   // Cooldowns
@@ -125,8 +126,8 @@ struct paladin_t : public player_t
     const spell_data_t* ancient_power;
     const spell_data_t* hand_of_light;
     const spell_data_t* illuminated_healing;
-    const spell_data_t* judgements_of_the_bold; // passive stuff is hidden here because spells
-    const spell_data_t* judgements_of_the_wise; // can only have three effects
+    const spell_data_t* judgments_of_the_bold; // passive stuff is hidden here because spells
+    const spell_data_t* judgments_of_the_wise; // can only have three effects
     const spell_data_t* meditation;
     const spell_data_t* plate_specialization;
     const spell_data_t* sword_of_light;
@@ -190,12 +191,12 @@ struct paladin_t : public player_t
     player_t( sim, PALADIN, name, r )
   {
     active_beacon_of_light             = 0;
-    active_enlightened_judgements      = 0;
+    active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;
     active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
-    active_seal = SEAL_NONE;
-    active_seals_of_command_proc       = 0;
+    active_seal                        = SEAL_NONE;
+    active_seal_of_command_proc        = 0;
     active_seal_of_justice_proc        = 0;
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
@@ -340,7 +341,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 // ==========================================================================
 
 struct paladin_heal_t : public heal_t
-{
+{  
   paladin_heal_t( const std::string& n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     heal_t( n, p, s, sc )
@@ -363,6 +364,16 @@ struct paladin_heal_t : public heal_t
     }
 
     return heal_t::cost();
+  }
+
+  virtual void player_buff()
+  {
+    heal_t::player_buff();
+
+    if ( p() -> active_seal == SEAL_OF_INSIGHT )
+    {
+      player_multiplier *= 1.0 + data().effectN( 2 ).percent();
+    }
   }
 
   virtual void execute();
@@ -418,6 +429,8 @@ struct paladin_melee_attack_t : public melee_attack_t
       {
         switch ( p() -> active_seal )
         {
+        case SEAL_OF_COMMAND:
+          p() -> active_seal_of_command_proc       -> execute();
         case SEAL_OF_JUSTICE:
           p() -> active_seal_of_justice_proc       -> execute();
           break;
@@ -798,7 +811,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     trigger_seal = true;
     use_spell_haste = p -> passives.sanctity_of_battle -> ok();
     // JotW decreases the CD by 1.5 seconds for Prot Pallies, but it's not in the tooltip
-    cooldown -> duration += p -> passives.judgements_of_the_wise -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> passives.judgments_of_the_wise -> effectN( 1 ).time_value();
     base_cooldown         = cooldown -> duration;
 
     base_multiplier *= 1.0 + 0.05 * p -> ret_pvp_gloves;
@@ -878,7 +891,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   hammer_of_the_righteous_aoe_t *proc;
 
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), SCHOOL_NONE, false ), proc( 0 )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), SCHOOL_NONE, true ), proc( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -908,7 +921,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), SCHOOL_NONE, false )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), SCHOOL_NONE, true )
   {
     parse_options( NULL, options_str );
 
@@ -916,7 +929,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     may_parry    = false;
     may_dodge    = false;
     may_block    = false;
-    trigger_seal = 1; // TODO: only SoT or all seals?
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
@@ -1024,44 +1036,40 @@ struct rebuke_t : public paladin_melee_attack_t
 
 struct seal_of_insight_proc_t : public paladin_heal_t
 {
+  double proc_regen;
+  double proc_chance;
+
   seal_of_insight_proc_t( paladin_t* p ) :
-    paladin_heal_t( "seal_of_insight_proc", p, p -> find_spell( 20167 ) )
+    paladin_heal_t( "seal_of_insight_proc", p, p -> find_class_spell( "Seal of Insight" ) ), proc_regen( 0.0 ), proc_chance( 0.0 )
   {
     background  = true;
     proc        = true;
     trigger_gcd = timespan_t::zero();
+
+    direct_power_mod             = 1.0;
+    base_attack_power_multiplier = 0.15;
+    base_spell_power_multiplier  = 0.15;
+
+    weapon            = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.0;
+
+    proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
+    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() );
 
     target = player;
   }
 
   virtual void execute()
   {
-    base_dd_min = base_dd_max = ( p() -> spell_power[ SCHOOL_HOLY ] * 0.15 ) + ( 0.15 * p() -> composite_attack_power() );
-    paladin_heal_t::execute();
-    p() -> resource_gain( RESOURCE_MANA, p() -> resources.base[ RESOURCE_MANA ] * data().effect2().resource( RESOURCE_MANA ), p() -> gains.seal_of_insight );
-  }
-};
-
-struct seal_of_insight_judgement_t : public paladin_melee_attack_t
-{
-  seal_of_insight_judgement_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgement_of_insight", p, spell_data_t::nil(), SCHOOL_HOLY )
-  {
-    background = true;
-
-    may_parry = false;
-    may_dodge = false;
-    may_block = false;
-
-    base_dd_min = base_dd_max    = 1.0;
-    direct_power_mod             = 1.0;
-    base_spell_power_multiplier  = 0.25;
-    base_attack_power_multiplier = 0.16;
-
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    cooldown -> duration = timespan_t::from_seconds( 8 );
+    if ( sim -> roll( proc_chance ) )
+    {
+      paladin_heal_t::execute();
+      p() -> resource_gain( RESOURCE_MANA, p() -> resources.base[ RESOURCE_MANA ] * proc_regen, p() -> gains.seal_of_insight );
+    }
+    else
+    {
+      update_ready();
+    }
   }
 };
 
@@ -1082,30 +1090,6 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
   virtual void execute()
   {
     // No need to model stun
-  }
-};
-
-struct seal_of_justice_judgement_t : public paladin_melee_attack_t
-{
-  seal_of_justice_judgement_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgement_of_justice", p, spell_data_t::nil(), SCHOOL_HOLY )
-  {
-    background = true;
-    may_parry  = false;
-    may_dodge  = false;
-    may_block  = false;
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    direct_power_mod             = 1.0;
-    base_spell_power_multiplier  = 0.25;
-    base_attack_power_multiplier = 0.16;
-
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    cooldown -> duration = timespan_t::from_seconds( 8 );
   }
 };
 
@@ -1130,31 +1114,6 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
   }
 };
 
-struct seal_of_righteousness_judgement_t : public paladin_melee_attack_t
-{
-  seal_of_righteousness_judgement_t( paladin_t* p ) :
-    paladin_melee_attack_t( "judgement_of_righteousness", p, spell_data_t::nil(), SCHOOL_HOLY )
-  {
-    background = true;
-    may_parry  = false;
-    may_dodge  = false;
-    may_block  = false;
-    may_crit   = false;
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    base_dd_min = base_dd_max    = 1.0;
-    direct_power_mod             = 1.0;
-    base_spell_power_multiplier  = 0.32;
-    base_attack_power_multiplier = 0.20;
-
-    weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    cooldown -> duration = timespan_t::from_seconds( 8 );
-  }
-};
 
 // Seal of Truth ============================================================
 
@@ -1225,130 +1184,40 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   }
 };
 
-struct seal_of_truth_judgement_t : public paladin_melee_attack_t
+// Seal of Command proc ====================================================
+
+struct seal_of_command_proc_t : public paladin_melee_attack_t
 {
-  seal_of_truth_judgement_t( paladin_t* p )
-    : paladin_melee_attack_t( "judgement_of_truth", p, p -> find_spell( 31804 ) )
-  {
-    background   = true;
-    may_parry    = false;
-    may_dodge    = false;
-    may_block    = false;
-    trigger_seal = 1;
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    base_dd_min = base_dd_max    = 1.0;
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
-  }
-
-  virtual void player_buff()
-  {
-    paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    paladin_melee_attack_t::player_buff();
-    player_multiplier *= 1.0 + td -> debuffs_censure -> stack() * 0.20;
-  }
-};
-
-// Seals of Command proc ====================================================
-
-struct seals_of_command_proc_t : public paladin_melee_attack_t
-{
-  seals_of_command_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seals_of_command", p, p -> find_spell( 20424 ) )
+  seal_of_command_proc_t( paladin_t* p )
+    : paladin_melee_attack_t( "seal_of_command", p, p -> find_class_spell( "Seal of Command" ) )
   {
     background  = true;
     proc        = true;
   }
 };
 
-// Judgement ================================================================
+// judgment ================================================================
 
-struct judgement_t : public paladin_melee_attack_t
+struct judgment_t : public paladin_melee_attack_t
 {
-  action_t* seal_of_justice;
-  action_t* seal_of_insight;
-  action_t* seal_of_righteousness;
-  action_t* seal_of_truth;
-
-  judgement_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgement", p, p -> find_spell( "Judgment" ) ),
-      seal_of_justice( 0 ), seal_of_insight( 0 ),
-      seal_of_righteousness( 0 ), seal_of_truth( 0 )
+  judgment_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), SCHOOL_NONE, false )
   {
     parse_options( NULL, options_str );
 
     use_spell_haste = p -> passives.sanctity_of_battle -> ok();
-    seal_of_justice       = new seal_of_justice_judgement_t      ( p );
-    seal_of_insight       = new seal_of_insight_judgement_t      ( p );
-    seal_of_righteousness = new seal_of_righteousness_judgement_t( p );
-    seal_of_truth         = new seal_of_truth_judgement_t        ( p );
+
+    base_spell_power_multiplier  = direct_power_mod;
+    base_attack_power_multiplier = data().extra_coeff();
+    direct_power_mod             = 1.0;
 
     if ( p -> set_bonus.pvp_4pc_melee() )
       cooldown -> duration -= timespan_t::from_seconds( 1.0 );
   }
 
-  action_t* active_seal() const
-  {
-    switch ( p() -> active_seal )
-    {
-    case SEAL_OF_JUSTICE:
-      return seal_of_justice;
-    case SEAL_OF_INSIGHT:
-      return seal_of_insight;
-    case SEAL_OF_RIGHTEOUSNESS:
-      return seal_of_righteousness;
-    case SEAL_OF_TRUTH:
-      return seal_of_truth;
-    default:
-      return 0;
-      break;
-    }
-    return 0;
-  }
-
-  virtual void execute()
-  {
-    action_t* seal = active_seal();
-
-    if ( ! seal )
-      return;
-
-    seal -> base_costs[ current_resource() ]   = base_costs[ current_resource() ];
-    seal -> cooldown    = cooldown;
-    seal -> trigger_gcd = trigger_gcd;
-    seal -> execute();
-
-    if ( seal -> result_is_hit() )
-    {
-      p() -> buffs.judgements_of_the_pure -> trigger();
-      p() -> buffs.sacred_duty-> trigger();
-    }
-
-    if ( p() -> passives.judgements_of_the_bold -> ok() )
-    {
-      p() -> procs.judgments_of_the_bold -> occur();
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgements_of_the_bold );
-
-      // Mists of Pandaria: Retribution Paladin Judgments trigger Physical Vulnerability
-      if ( ! sim -> overrides.physical_vulnerability )
-        target -> debuffs.physical_vulnerability -> trigger();
-    }
-
-    if ( p() -> passives.judgements_of_the_wise -> ok() )
-      p() -> buffs.judgements_of_the_wise -> trigger();
-
-    p() -> last_foreground_action = seal; // Necessary for DPET calculations.
-
-  }
-
   virtual bool ready()
   {
-    action_t* seal = active_seal();
-    if ( ! seal ) return false;
+    if ( p() -> active_seal == SEAL_NONE ) return false;
     return paladin_melee_attack_t::ready();
   }
 };
@@ -1675,7 +1544,7 @@ struct inquisition_t : public paladin_spell_t
 {
   timespan_t base_duration;
   inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ), base_duration( timespan_t::zero() )
+    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ), base_duration( data().duration() )
   {
     parse_options( NULL, options_str );
 
@@ -1685,7 +1554,7 @@ struct inquisition_t : public paladin_spell_t
   virtual void execute()
   {
     p() -> buffs.inquisition -> buff_duration = base_duration * p() -> holy_power_stacks();
-    p() -> buffs.inquisition -> trigger( 1, data().effect1().base_value() );
+    p() -> buffs.inquisition -> trigger( 1, data().effect1().percent() );
 
     paladin_spell_t::execute();
   }
@@ -2024,16 +1893,24 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
-  if ( name == "judgement"                 ) return new judgement_t                ( this, options_str );
+  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
 
-  if ( name == "seal_of_justice"           ) return new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
-  if ( name == "seal_of_insight"           ) return new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
-  if ( name == "seal_of_righteousness"     ) return new paladin_seal_t( this, "seal_of_righteousness", SEAL_OF_RIGHTEOUSNESS, options_str );
-  if ( name == "seal_of_truth"             ) return new paladin_seal_t( this, "seal_of_truth",         SEAL_OF_TRUTH,         options_str );
+  action_t* a = 0;
+  if ( name == "seal_of_command"           ) { a = new paladin_seal_t( this, "seal_of_command",       SEAL_OF_COMMAND,       options_str ); 
+                                               active_seal_of_command_proc       = new seal_of_command_proc_t       ( this ); return a; }
+  if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
+                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this ); return a; }
+  if ( name == "seal_of_insight"           ) { a = new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
+                                               active_seal_of_insight_proc       = new seal_of_insight_proc_t       ( this ); return a; }
+  if ( name == "seal_of_righteousness"     ) { a = new paladin_seal_t( this, "seal_of_righteousness", SEAL_OF_RIGHTEOUSNESS, options_str );
+                                               active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t ( this ); return a; }
+  if ( name == "seal_of_truth"             ) { a = new paladin_seal_t( this, "seal_of_truth",         SEAL_OF_TRUTH,         options_str );
+                                               active_seal_of_truth_proc         = new seal_of_truth_proc_t         ( this );
+                                               active_seal_of_truth_dot          = new seal_of_truth_dot_t          ( this ); return a; }
 
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
@@ -2081,8 +1958,8 @@ void paladin_t::init_base()
   switch ( primary_tree() )
   {
   case PALADIN_HOLY:
-    stats_base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgements
-    stats_base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgements
+    stats_base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
+    stats_base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
     break;
 
   case PALADIN_PROTECTION:
@@ -2111,8 +1988,8 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   gains.divine_plea            = get_gain( "divine_plea"            );
-  gains.judgements_of_the_wise = get_gain( "judgements_of_the_wise" );
-  gains.judgements_of_the_bold = get_gain( "judgements_of_the_bold" );
+  gains.judgments_of_the_wise  = get_gain( "judgments_of_the_wise" );
+  gains.judgments_of_the_bold  = get_gain( "judgments_of_the_bold" );
   gains.sanctuary              = get_gain( "sanctuary"              );
   gains.seal_of_command_glyph  = get_gain( "seal_of_command_glyph"  );
   gains.seal_of_insight        = get_gain( "seal_of_insight"        );
@@ -2127,7 +2004,7 @@ void paladin_t::init_gains()
   gains.hp_holy_shock               = get_gain( "holy_power_holy_shock" );
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
-  gains.hp_judgement                = get_gain( "holy_power_judgement" );
+  gains.hp_judgment                = get_gain( "holy_power_judgment" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2232,7 +2109,7 @@ void paladin_t::init_buffs()
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
-  buffs.judgements_of_the_wise = buff_creator_t( this, "judgements_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
+  buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
     .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
     .max_stack( 3 )
@@ -2252,12 +2129,6 @@ void paladin_t::init_actions()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
-//  active_seals_of_command_proc       = new seals_of_command_proc_t      ( this );
-  active_seal_of_justice_proc        = new seal_of_justice_proc_t       ( this );
-  active_seal_of_insight_proc        = new seal_of_insight_proc_t       ( this );
-  active_seal_of_righteousness_proc  = new seal_of_righteousness_proc_t ( this );
-  active_seal_of_truth_proc          = new seal_of_truth_proc_t         ( this );
-  active_seal_of_truth_dot           = new seal_of_truth_dot_t          ( this );
   ancient_fury_explosion             = new ancient_fury_t               ( this );
 
   if ( action_list_str.empty() )
@@ -2290,7 +2161,7 @@ void paladin_t::init_actions()
       }
 
       // This should<tm> get Censure up before the auto attack lands
-      action_list_str += "/auto_attack/judgement,if=buff.judgements_of_the_pure.down";
+      action_list_str += "/auto_attack/judgment,if=buff.judgments_of_the_pure.down";
       int num_items = ( int ) items.size();
       for ( int i=0; i < num_items; i++ )
       {
@@ -2304,14 +2175,14 @@ void paladin_t::init_actions()
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
       action_list_str += "/crusader_strike,if=holy_power<3";  // CS before TV if <3 power, even with DP up
-      action_list_str += "/judgement";
+      action_list_str += "/judgment";
       if ( level >= 81 )
         action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|buff.divine_purpose.react)";
       action_list_str += "/templars_verdict,if=buff.divine_purpose.react";
       action_list_str += "/templars_verdict,if=holy_power=3";
       action_list_str += "/exorcism,if=buff.the_art_of_war.react";
       action_list_str += "/hammer_of_wrath";
-      action_list_str += "/judgement,if=set_bonus.tier13_2pc_melee&holy_power<3";
+      action_list_str += "/judgment,if=set_bonus.tier13_2pc_melee&holy_power<3";
       action_list_str += "/wait,sec=0.1,if=cooldown.crusader_strike.remains<0.2&cooldown.crusader_strike.remains>0";
       action_list_str += "/holy_wrath";
       action_list_str += "/consecration,not_flying=1,if=mana>16000";  // Consecration is expensive, only use if we have plenty of mana
@@ -2357,15 +2228,15 @@ void paladin_t::init_actions()
       action_list_str += "/avenging_wrath";
       action_list_str += "/guardian_of_ancient_kings,if=health_pct<=30,use_off_gcd=1";
       action_list_str += "/shield_of_the_righteous,if=holy_power=3&(buff.sacred_duty.up|buff.inquisition.up)";
-      action_list_str += "/judgement,if=holy_power=3";
+      action_list_str += "/judgment,if=holy_power=3";
       action_list_str += "/inquisition,if=holy_power=3&(buff.inquisition.down|buff.inquisition.remains<5)";
       action_list_str += "/divine_plea,if=holy_power<2";
       action_list_str += "/avengers_shield,if=buff.grand_crusader.up&holy_power<3";
-      action_list_str += "/judgement,if=buff.judgements_of_the_pure.down";
+      action_list_str += "/judgment,if=buff.judgments_of_the_pure.down";
       action_list_str += "/crusader_strike,if=holy_power<3";
       action_list_str += "/hammer_of_wrath";
       action_list_str += "/avengers_shield,if=cooldown.crusader_strike.remains>=0.2";
-      action_list_str += "/judgement";
+      action_list_str += "/judgment";
       action_list_str += "/consecration,not_flying=1";
       action_list_str += "/holy_wrath";
       action_list_str += "/divine_plea,if=holy_power<1";
@@ -2398,7 +2269,7 @@ void paladin_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions();
       action_list_str += "/avenging_wrath";
-      action_list_str += "/judgement,if=buff.judgements_of_the_pure.remains<10";
+      action_list_str += "/judgment,if=buff.judgments_of_the_pure.remains<10";
       action_list_str += "/word_of_glory,if=holy_power>2";
       action_list_str += "/holy_shock_heal";
       action_list_str += "/divine_light,if=mana_pct>75";
@@ -2437,7 +2308,7 @@ void paladin_t::init_spells()
   // Holy Passives
 
   // Prot Passives
-  passives.judgements_of_the_wise = find_specialization_spell( "Judgements of the Wise" );
+  passives.judgments_of_the_wise = find_specialization_spell( "judgments of the Wise" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance_enabled = true;
@@ -2446,7 +2317,7 @@ void paladin_t::init_spells()
   passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
   passives.ancient_power          = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86700 : 0 );
-  passives.judgements_of_the_bold = find_specialization_spell( "Judgements of the Bold" );
+  passives.judgments_of_the_bold = find_specialization_spell( "judgments of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
@@ -2469,7 +2340,7 @@ void paladin_t::init_spells()
   glyphs.hammer_of_the_righteous  = find_glyph( "Glyph of Hammer of the Righteous" );
   glyphs.hammer_of_wrath          = find_glyph( "Glyph of Hammer of Wrath" );
   glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
-  glyphs.judgement                = find_glyph( "Glyph of Judgement" );
+  glyphs.judgment                = find_glyph( "Glyph of judgment" );
   glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
   glyphs.light_of_dawn            = find_glyph( "Glyph of Light of Dawn" );
   glyphs.long_word                = find_glyph( "Glyph of the Long Word" );
@@ -2578,7 +2449,10 @@ double paladin_t::composite_player_multiplier( school_type_e school, const actio
 
   if ( school == SCHOOL_HOLY )
   {
-    m *= 1.0 + buffs.inquisition -> value();
+    if ( buffs.inquisition -> up() )
+    {
+      m *= 1.0 + buffs.inquisition -> value();
+    }
   }
 
   if ( a && a -> type == ACTION_ATTACK && ! a -> class_flag1 && ( passives.sword_of_light -> ok() ) && ( main_hand_weapon.group() == WEAPON_2H ) )
@@ -2663,11 +2537,11 @@ void paladin_t::regen( timespan_t periodicity )
     double amount = periodicity.total_seconds() * tick_amount / 3;
     resource_gain( RESOURCE_MANA, amount, gains.divine_plea );
   }
-  if ( buffs.judgements_of_the_wise -> up() )
+  if ( buffs.judgments_of_the_wise -> up() )
   {
-    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgements_of_the_wise -> data().effect1().percent();
-    double amount = periodicity.total_seconds() * tot_amount / buffs.judgements_of_the_wise -> buff_duration.total_seconds();
-    resource_gain( RESOURCE_MANA, amount, gains.judgements_of_the_wise );
+    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgments_of_the_wise -> data().effect1().percent();
+    double amount = periodicity.total_seconds() * tot_amount / buffs.judgments_of_the_wise -> buff_duration.total_seconds();
+    resource_gain( RESOURCE_MANA, amount, gains.judgments_of_the_wise );
   }
 }
 
