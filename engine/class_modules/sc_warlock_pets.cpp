@@ -90,31 +90,24 @@ struct _weapon_list_t
 
 static const _weapon_list_t imp_weapon[]=
 {
-  { 81, 116.7, 176.7, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t felguard_weapon[]=
 {
-  { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
-  { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
-  { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
+  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t felhunter_weapon[]=
 {
-  { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
-  { 81, 678.4, 1010.4, timespan_t::from_seconds( 2.0 ) },
-  { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
+  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t succubus_weapon[]=
 {
-  { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
-  { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
-  { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
+  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -132,9 +125,7 @@ static const _weapon_list_t doomguard_weapon[]=
 
 static const _weapon_list_t voidwalker_weapon[]=
 {
-  { 85, 926.3, 926.3, timespan_t::from_seconds( 2.0 ) },
-  { 81, 848.7, 848.7, timespan_t::from_seconds( 2.0 ) },
-  { 80, 824.6, 824.6, timespan_t::from_seconds( 2.0 ) },
+  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -156,8 +147,6 @@ struct warlock_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-
-    base_multiplier *= p -> damage_modifier;
   }
 
   warlock_pet_t* p() const
@@ -605,7 +594,7 @@ timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type 
 }
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian ) :
-  pet_t( sim, owner, pet_name, pt, guardian ), damage_modifier( 1.0 )
+  pet_t( sim, owner, pet_name, pt, guardian )
 {
   gains_mana_feed = get_gain( "mana_feed" );
   procs_mana_feed = get_proc( "mana_feed" );
@@ -698,16 +687,12 @@ double warlock_pet_t::composite_attack_haste() const
 
 double warlock_pet_t::composite_spell_power( const school_type_e school ) const
 {
-  double sp = pet_t::composite_spell_power( school );
-  sp += owner -> composite_spell_power( school ) * ( level / 80.0 ) * 0.5 * owner -> composite_spell_power_multiplier();
-  return sp;
+  return owner -> composite_spell_power( school ); // Pet SP is simply exactly the same as owner SP in MoP
 }
 
 double warlock_pet_t::composite_attack_power() const
 {
-  double ap = pet_t::composite_attack_power();
-  ap += owner -> composite_spell_power( SCHOOL_MAX ) * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
-  return ap;
+  return owner -> composite_spell_power( SCHOOL_MAX ) * 3.5; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
 }
 
 double warlock_pet_t::composite_attack_crit( const weapon_t* ) const
@@ -859,8 +844,6 @@ action_t* imp_pet_t::create_action( const std::string& name,
 felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
   warlock_main_pet_t( sim, owner, name, PET_FELGUARD )
 {
-  damage_modifier = 1.0;
-
   action_list_str += "/snapshot_stats";
   action_list_str += "/felstorm";
   action_list_str += "/legion_strike";
@@ -890,8 +873,6 @@ action_t* felguard_pet_t::create_action( const std::string& name,
 felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
   warlock_main_pet_t( sim, owner, name, PET_FELHUNTER )
 {
-  damage_modifier = 0.8;
-
   action_list_str = "snapshot_stats";
   action_list_str += "/shadow_bite";
 }
@@ -935,8 +916,6 @@ void felhunter_pet_t::dismiss()
 succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
   warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS )
 {
-  damage_modifier = 1.025;
-
   action_list_str += "/snapshot_stats";
   action_list_str += "/lash_of_pain";
 }
@@ -956,8 +935,6 @@ action_t* succubus_pet_t::create_action( const std::string& name,
 voidwalker_pet_t::voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
   warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER )
 {
-  damage_modifier = 0.86;
-
   action_list_str += "/snapshot_stats";
   action_list_str += "/torment";
 }
