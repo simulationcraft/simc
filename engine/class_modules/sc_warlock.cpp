@@ -1433,12 +1433,14 @@ struct summon_infernal_t : public summon_pet_t
     summon_pet_t( "infernal", p, "Summon Infernal" ),
     infernal_awakening( 0 )
   {
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).time_value() : timespan_t::zero();
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
+    summoning_duration = timespan_t::from_seconds( 60 );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> primary_tree() == WARLOCK_DEMONOLOGY ?
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).time_value() :
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).time_value() ) : timespan_t::zero();
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
+
     infernal_awakening = new infernal_awakening_t( p );
   }
 
@@ -1462,10 +1464,11 @@ struct summon_doomguard2_t : public summon_pet_t
   {
     harmful = false;
     background = true;
+    summoning_duration = timespan_t::from_seconds( 60 );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> primary_tree() == WARLOCK_DEMONOLOGY ?
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).time_value() :
-                            p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).time_value() ) : timespan_t::zero();
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
   }
 
   virtual void execute()
@@ -1486,7 +1489,7 @@ struct summon_doomguard_t : public warlock_spell_t
     warlock_spell_t( p, "Summon Doomguard" ),
     summon_doomguard2( 0 )
   {
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).time_value() : timespan_t::zero();
+    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );

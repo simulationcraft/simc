@@ -252,8 +252,6 @@ public:
   virtual void init_resources( bool force );
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual void summon( timespan_t duration=timespan_t::zero() );
-  virtual void dismiss();
   virtual double composite_spell_haste() const;
   virtual double composite_attack_haste() const;
   virtual double composite_spell_power( school_type_e school ) const;
@@ -261,6 +259,7 @@ public:
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
+  virtual resource_type_e warlock_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 };
@@ -273,7 +272,6 @@ struct warlock_main_pet_t : public warlock_pet_t
 {
   warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
   virtual double composite_attack_expertise( const weapon_t* ) const;
-  virtual resource_type_e primary_resource() const;
   virtual double composite_mp5() const;
 };
 

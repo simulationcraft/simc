@@ -440,6 +440,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
   doom_bolt_t( doomguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Doom Bolt" )
   {
+    /* commenting out hardcoded stuff, need to re-test in MoP
     //FIXME: Needs testing, but WoL seems to suggest it has been changed from 2.5 to 3.0 sometime after 4.1.
     base_execute_time = timespan_t::from_seconds( 3.0 );
 
@@ -447,7 +448,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
     direct_power_mod  = 1.36;
     base_dd_min *= 1.25;
     base_dd_max *= 1.25;
-
+    */
     if ( p -> owner -> bugs )
     {
       ability_lag = timespan_t::from_seconds( 0.22 );
@@ -681,21 +682,6 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-void warlock_pet_t::summon( timespan_t duration )
-{
-  pet_t::summon( duration );
-}
-
-void warlock_pet_t::dismiss()
-{
-  pet_t::dismiss();
-  /* Commenting this out for now - we never dismiss the real pet during combat
-  anyway, and we don't want to accidentally turn off DP when guardians are dismissed
-  if ( o() -> talents.demonic_pact -> rank() )
-  sim -> auras.demonic_pact -> expire();
-   */
-}
-
 double warlock_pet_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
@@ -765,8 +751,6 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
   return owner -> stats_current.spell_hit * 26.0 / 17.0;
 }
-
-resource_type_e warlock_main_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
 
 double warlock_main_pet_t::composite_mp5() const
 {
