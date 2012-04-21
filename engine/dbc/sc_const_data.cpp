@@ -1577,12 +1577,12 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
   return 0;
 }
 
-specialization_e dbc_t::ability_specialization( uint32_t spell_id ) const
+bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const
 {
   unsigned s = 0;
 
   if ( ! spell_id )
-    return SPEC_NONE;
+    return false;
 
   for ( unsigned class_idx = 0; class_idx < specialization_max_class() - 1; class_idx++ )
   {
@@ -1592,7 +1592,7 @@ specialization_e dbc_t::ability_specialization( uint32_t spell_id ) const
       {
         if ( ( s = specialization_ability( class_idx, spec_index, n ) ) == spell_id )
         {
-          return __class_spec_id[ class_idx ][ spec_index ];
+          spec_list.push_back( __class_spec_id[ class_idx ][ spec_index ] );
         }
         if ( ! s )
           break;
@@ -1600,7 +1600,7 @@ specialization_e dbc_t::ability_specialization( uint32_t spell_id ) const
     }
   }
 
-  return SPEC_NONE;
+  return ! spec_list.empty();
 }
 
 specialization_e dbc_t::class_ability_specialization( const player_type_e c, uint32_t spell_id ) const

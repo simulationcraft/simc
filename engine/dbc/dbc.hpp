@@ -478,7 +478,7 @@ public:
   unsigned specialization_ability_size() const;
   unsigned specialization_max_per_class() const;
   unsigned specialization_max_class() const;
-  specialization_e ability_specialization( uint32_t spell_id ) const;
+  bool ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
 
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;

@@ -392,9 +392,19 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
   if ( spell -> class_mask() )
   {
     s << "Class         : ";
-    
+
     if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
-      s << util_t::specialization_string( sim -> dbc.ability_specialization( spell -> id() ), false ) << " ";
+    {
+      std::vector<specialization_e> spec_list;
+      std::vector<specialization_e>::iterator iter;
+      sim -> dbc.ability_specialization( spell -> id(), spec_list );
+      
+      for ( iter = spec_list.begin(); iter != spec_list.end(); iter++ )
+      {
+        s << util_t::specialization_string( *iter, false ) << " ";
+      }
+      spec_list.clear();
+    }
 
     for ( unsigned int i = 0; i < 12; i++ )
     {

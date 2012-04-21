@@ -217,18 +217,17 @@ action_t::action_t( action_type_e       ty,
 
     background = true; // prevent action from being executed
   }
-  if ( data().id() && ( player -> dbc.ability_specialization( data().id() ) != player -> primary_tree() ) &&
-                      ( player -> dbc.ability_specialization( data().id() ) != SPEC_NONE ) )
+
+  std::vector<specialization_e> spec_list;
+  specialization_e _s = player -> primary_tree();
+  if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) != spec_list.end() )
   {
-    sim -> errorf( "Player %s attempting to execute action %s without the required spec (%s (%d) != %s (%d) ).\n",
-                   player -> name(), name(),
-                   util_t::specialization_string( player -> dbc.ability_specialization( data().id() ) ),
-                   static_cast<int>( player -> dbc.ability_specialization( data().id() ) ),
-                   util_t::specialization_string( player -> primary_tree() ),
-                   static_cast<int>( player -> primary_tree() ) );
+    sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
+                   player -> name(), name() );
 
     background = true; // prevent action from being executed
   }
+  spec_list.clear();
 }
 
 action_t::~action_t()
