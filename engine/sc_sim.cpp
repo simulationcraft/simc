@@ -1022,16 +1022,16 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
-
       e -> execute();
     }
 
     delete e;
 
+    // This should be moved to assess_damage somehow, but it is a little tricky given mixed inheritance of player/enemy.
     if( target_death >= 0 )
       if( target -> resources.current[ RESOURCE_HEALTH ] <= target_death )
 	iteration_canceled = 1;
-
+    
     if( unlikely( iteration_canceled ) ) 
       break;
   }
