@@ -259,7 +259,7 @@ public:
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-  virtual resource_type_e warlock_pet_t::primary_resource() const { return RESOURCE_ENERGY; }
+  virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 };
