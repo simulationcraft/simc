@@ -2399,7 +2399,7 @@ struct sim_t : private thread_t
   int         num_enemies;
   int         num_targetdata_ids;
   int         max_player_level;
-  int         canceled;
+  int         canceled, iteration_canceled;
   timespan_t  queue_lag, queue_lag_stddev;
   timespan_t  gcd_lag, gcd_lag_stddev;
   timespan_t  channel_lag, channel_lag_stddev;
@@ -2430,6 +2430,7 @@ struct sim_t : private thread_t
   double      dtr_proc_chance;
 
   // Target options
+  double      target_death;
   double      target_death_pct;
   int         target_level;
   std::string target_race;

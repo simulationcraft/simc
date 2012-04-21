@@ -578,33 +578,13 @@ static bool parse_item_sources( sim_t*             sim,
 
 struct sim_end_event_t : event_t
 {
-  const int max_event_time_delta; // wheel cap minus 1 second
-  const int exception_value;
-  timespan_t delta_time;
-
-  sim_end_event_t( sim_t* s, const char* n, timespan_t msd, int ev ) :
-    event_t( s, 0, n ),
-    max_event_time_delta( sim -> wheel_seconds - 1 ),
-    exception_value( ev ),
-    delta_time( msd )
+  sim_end_event_t( sim_t* s, const char* n, timespan_t end_time ) : event_t( s, 0, n )
   {
-    if ( delta_time.total_seconds() >= max_event_time_delta )
-      sim -> add_event( this, timespan_t::from_seconds( max_event_time_delta ) );
-    else
-      sim -> add_event( this, delta_time );
+    sim -> add_event( this, end_time );
   }
-
   virtual void execute()
   {
-    if ( delta_time.total_seconds() < max_event_time_delta )
-    {
-      throw exception_value;
-      return;
-    }
-    else
-    {
-      new ( sim ) sim_end_event_t( sim, name, delta_time - timespan_t::from_seconds( max_event_time_delta ), exception_value );
-    }
+    sim -> iteration_canceled = 1;
   }
 };
 
@@ -618,7 +598,8 @@ struct sim_end_event_t : event_t
 
 sim_t::sim_t( sim_t* p, int index ) :
   parent( p ),
-  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), canceled( 0 ),
+  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), 
+  canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
@@ -639,7 +620,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   input_is_utf8( false ),
   dtr_proc_chance( -1.0 ),
-  target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
+  target_death( 0 ), target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
@@ -829,16 +810,19 @@ sim_t::~sim_t()
 void sim_t::add_event( event_t* e,
                        timespan_t delta_time )
 {
+  e -> id   = ++id;
+
   if ( delta_time < timespan_t::zero() )
     delta_time = timespan_t::zero();
 
-  e -> time = current_time + delta_time;
-  e -> id   = ++id;
-
-  if ( unlikely( ! ( delta_time.total_seconds() <= wheel_seconds ) ) )
+  if ( unlikely( delta_time.total_seconds() > wheel_seconds ) )
   {
-    errorf( "sim_t::add_event assertion error! delta_time (%f) > wheel_seconds (%d), event %s from %s.\n", delta_time.total_seconds(), wheel_seconds, e -> name, e -> player ? e -> player -> name() : "no-one" );
-    assert( 0 );
+    e -> time = current_time + timespan_t::from_seconds( wheel_seconds-1 );
+    e -> reschedule_time = current_time + delta_time;
+  }
+  else
+  {
+    e -> time = current_time + delta_time;
   }
 
   if ( e -> time > last_event ) last_event = e -> time;
@@ -1025,18 +1009,6 @@ void sim_t::combat( int iteration )
         assert( 0 );
       }
     }
-    else
-    {
-      if (  !fixed_time && target -> resources.pct( RESOURCE_HEALTH ) <= target_death_pct / 100.0 )
-      {
-        if ( debug ) log_t::output( this, "Target %s has died, ending simulation", target -> name() );
-        // Set this last event as canceled, so asserts dont fire when odd things happen at the
-        // tail-end of the simulation iteration
-        e -> canceled = 1;
-        delete e;
-        break;
-      }
-    }
 
     if ( unlikely( e -> canceled ) )
     {
@@ -1050,37 +1022,18 @@ void sim_t::combat( int iteration )
     else
     {
       if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
-      try
-      {
-        e -> execute();
-      }
-      catch ( int x )
-      {
-        if( x == 5 ) // Cancel at expected time if (1) target health is not yet calculated ( current_iteration==0 ) or (2) fixed_time is set
-        {
-          if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
-          {
-            if ( debug ) log_t::output( this, "Reached expected_time=%.2f, ending simulation", expected_time.total_seconds() );
-            // Set this last event as canceled, so asserts dont fire when odd things happen at the
-            // tail-end of the simulation iteration
-            e -> canceled = 1;
-            delete e;
-            break;
-          }
-        }
-        else if ( x == 6 ) // Cancel at 2 x expected time
-        {
-          if ( debug ) log_t::output( this, "Target proving tough to kill, ending simulation" );
-          // Set this last event as canceled, so asserts dont fire when odd things happen at the
-          // tail-end of the simulation iteration
-          e -> canceled = 1;
-          delete e;
-          break;
-        }
-      }
+
+      e -> execute();
     }
 
     delete e;
+
+    if( target_death >= 0 )
+      if( target -> resources.current[ RESOURCE_HEALTH ] <= target_death )
+	iteration_canceled = 1;
+
+    if( unlikely( iteration_canceled ) ) 
+      break;
   }
 
   combat_end();
@@ -1194,8 +1147,18 @@ void sim_t::combat_begin()
     new ( this ) bloodlust_check_t( this );
   }
 
-  new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time, 5 );
-  new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time, 6 );
+  iteration_canceled = 0;
+
+  if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
+  {
+    new ( this ) sim_end_event_t( this, "sim_end_expected_time", expected_time );
+    target_death = -1;
+  }
+  else
+  {
+    target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct;
+  }
+  new ( this ) sim_end_event_t( this, "sim_end_twice_expected_time", expected_time + expected_time );
 }
 
 // sim_t::combat_end ========================================================
