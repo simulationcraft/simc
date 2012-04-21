@@ -578,40 +578,32 @@ static bool parse_item_sources( sim_t*             sim,
 
 struct sim_end_event_t : event_t
 {
-  int timing_wheel_count; // counter to allow the event to be schedules in each timing wheel
-  timespan_t time_remainder; // delta event time for the event delta in the last timing wheel
   const int max_event_time_delta; // wheel cap minus 1 second
   const int exception_value;
+  timespan_t delta_time;
 
-  sim_end_event_t( sim_t* s, const char* n, timespan_t max_sim_duration, int ev ) :
+  sim_end_event_t( sim_t* s, const char* n, timespan_t msd, int ev ) :
     event_t( s, 0, n ),
-    timing_wheel_count(),
     max_event_time_delta( sim -> wheel_seconds - 1 ),
-    exception_value( ev )
+    exception_value( ev ),
+    delta_time( msd )
   {
-
-    timing_wheel_count = static_cast<int>( max_sim_duration.total_seconds() ) / ( max_event_time_delta );
-    time_remainder = timespan_t::from_seconds( static_cast<int>( max_sim_duration.total_seconds() ) % ( max_event_time_delta ) );
-    if ( timing_wheel_count > 0 )
+    if ( delta_time.total_seconds() >= max_event_time_delta )
       sim -> add_event( this, timespan_t::from_seconds( max_event_time_delta ) );
     else
-      sim -> add_event( this, max_sim_duration );
+      sim -> add_event( this, delta_time );
   }
 
   virtual void execute()
   {
-    if ( timing_wheel_count == 0 )
+    if ( delta_time.total_seconds() < max_event_time_delta )
     {
       throw exception_value;
       return;
     }
     else
     {
-      timing_wheel_count--;
-      if ( timing_wheel_count > 0 )
-        sim -> add_event( this, timespan_t::from_seconds( max_event_time_delta ) );
-      else
-        sim -> add_event( this, time_remainder );
+      new ( sim ) sim_end_event_t( sim, name, delta_time - timespan_t::from_seconds( max_event_time_delta ), exception_value );
     }
   }
 };
