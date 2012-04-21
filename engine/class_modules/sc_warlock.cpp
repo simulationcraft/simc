@@ -1724,8 +1724,8 @@ double warlock_t::composite_mastery() const
 
 double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
-  if ( ( attr == ATTR_INTELLECT ) && spec.nethermancy -> ok() )
-    return ( spec.nethermancy -> effectN( 1 ).base_value() * 0.01 );
+  if ( attr == ATTR_INTELLECT )
+    return 0.05;
 
   return 0.0;
 }

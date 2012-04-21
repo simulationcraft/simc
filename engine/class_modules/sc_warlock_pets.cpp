@@ -140,13 +140,15 @@ namespace warlock_pet_actions {
 struct warlock_pet_melee_t : public melee_attack_t
 {
   warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
-    melee_attack_t( name, p )
+    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     may_crit    = true;
     background  = true;
     repeating   = true;
+    
+    if ( p -> owner -> race == RACE_ORC ) base_multiplier = 1.05;
   }
 
   warlock_pet_t* p() const
@@ -180,7 +182,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
   virtual bool ready()
   {
-    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] - cost() < 100 )
+    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
       return false;
 
     return melee_attack_t::ready();
@@ -214,7 +216,7 @@ struct warlock_pet_spell_t : public spell_t
 
   virtual bool ready()
   {
-    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] - cost() < 100 )
+    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
       return false;
 
     return spell_t::ready();
@@ -327,33 +329,7 @@ struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
   lash_of_pain_t( succubus_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Lash of Pain" )
   {
-    direct_power_mod  = 0.642; // tested in-game as of 2010/12/20
-
-    if ( p -> owner -> level == 85 )
-    {
-      // only tested at level 85
-      base_dd_min = 283;
-      base_dd_max = 314;
-    }
-
     if ( p -> owner -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
-  }
-
-  virtual void player_buff()
-  {
-    warlock_t* o = p() -> o();
-    warlock_pet_actions::warlock_pet_spell_t::player_buff();
-
-    if ( o -> race == RACE_ORC )
-    {
-      // Glyph is additive with orc racial
-      player_multiplier /= 1.05;
-      player_multiplier *= 1.05 + o -> glyphs.lash_of_pain -> effectN(1).percent();
-    }
-    else
-    {
-      player_multiplier *= 1.0 + o -> glyphs.lash_of_pain -> effectN(1).percent();
-    }
   }
 };
 
@@ -366,9 +342,7 @@ struct torment_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   torment_t( voidwalker_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Torment" )
-  {
-    direct_power_mod = 0.512;
-  }
+  { }
 };
 
 }
@@ -389,7 +363,6 @@ struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
     direct_tick = true;
     may_crit    = false;
     stats = p -> get_stats( "infernal_immolation", this );
-    direct_power_mod  = 0.4;
   }
 };
 
@@ -687,12 +660,16 @@ double warlock_pet_t::composite_attack_haste() const
 
 double warlock_pet_t::composite_spell_power( const school_type_e school ) const
 {
-  return owner -> composite_spell_power( school ); // Pet SP is simply exactly the same as owner SP in MoP
+  double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets.
+  sp += owner -> composite_spell_power( school ); // Pet SP is simply exactly the same as owner SP in MoP
+  return sp;
 }
 
 double warlock_pet_t::composite_attack_power() const
 {
-  return owner -> composite_spell_power( SCHOOL_MAX ) * 3.5; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
+  double ap = 0;
+  ap += owner -> composite_spell_power( SCHOOL_MAX ) * 3.5; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
+  return ap;
 }
 
 double warlock_pet_t::composite_attack_crit( const weapon_t* ) const
@@ -717,9 +694,6 @@ double warlock_pet_t::composite_player_multiplier( school_type_e school, const a
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() )
     m *= 1.0 + o() -> find_spell( 115578 ) -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
-
-  if ( owner -> race == RACE_ORC )
-    m  *= 1.05;
 
   return m;
 }

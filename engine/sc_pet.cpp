@@ -196,11 +196,13 @@ double pet_t::composite_player_multiplier( const school_type_e school, const act
   double m = player_t::composite_player_multiplier( school, a );
 
   // FIXME: check if Guardian Pets benefit from it or not.
+  // FIXME: Commenting this out for now, testing suggests it only applies to melee swings in MoP
+  /*
   if ( owner -> race == RACE_ORC )
   {
     m  *= 1.05;
   }
-
+  */
   return m;
 }
 
