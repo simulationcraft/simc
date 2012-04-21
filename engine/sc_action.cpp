@@ -290,7 +290,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 {
   if ( ! spelleffect_data.ok() )
   {
-    sim -> errorf( "%s %s: parse_effect_data: no effect to parse.\n", player -> name(), name() );
     return;
   }
 

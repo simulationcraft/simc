@@ -128,7 +128,6 @@ struct paladin_t : public player_t
     const spell_data_t* illuminated_healing;
     const spell_data_t* judgments_of_the_bold; // passive stuff is hidden here because spells
     const spell_data_t* judgments_of_the_wise; // can only have three effects
-    const spell_data_t* meditation;
     const spell_data_t* plate_specialization;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
@@ -441,16 +440,11 @@ struct paladin_melee_attack_t : public melee_attack_t
           p() -> active_seal_of_righteousness_proc -> execute();
           break;
         case SEAL_OF_TRUTH:
+          p() -> active_seal_of_truth_dot -> execute();
           if ( td -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
           break;
         default:
           ;
-        }
-
-        // TODO: does the censure stacking up happen before or after the SoT proc?
-        if ( p() -> active_seal == SEAL_OF_TRUTH )
-        {
-          p() -> active_seal_of_truth_dot -> execute();
         }
       }
     }
@@ -1078,18 +1072,14 @@ struct seal_of_insight_proc_t : public paladin_heal_t
 struct seal_of_justice_proc_t : public paladin_melee_attack_t
 {
   seal_of_justice_proc_t( paladin_t* p ) :
-    paladin_melee_attack_t( "seal_of_justice", p, spell_data_t::nil(), SCHOOL_HOLY )
+    paladin_melee_attack_t( "seal_of_justice_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Justice" ) -> ok() ? 20170 : 0 ) )
   {
     background        = true;
     proc              = true;
     trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-  }
-
-  virtual void execute()
-  {
-    // No need to model stun
+    base_spell_power_multiplier  = 0.0; // FIX-ME: It's bugged in game as of 15589.
+    base_attack_power_multiplier = 0.0; // FIX-ME: It's bugged in game as of 15589.
   }
 };
 
@@ -1098,19 +1088,16 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
 struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 {
   seal_of_righteousness_proc_t( paladin_t* p ) :
-    paladin_melee_attack_t( "seal_of_righteousness", p, spell_data_t::nil(), SCHOOL_HOLY )
+    paladin_melee_attack_t( "seal_of_righteousness_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Righteousness" ) -> ok() ? 101423 : 0 ) )
   {
     background  = true;
     may_crit    = true;
     proc        = true;
     trigger_gcd = timespan_t::zero();
 
-    direct_power_mod             = 1.0;
-    base_attack_power_multiplier = 0.011;
-    base_spell_power_multiplier  = 2 * base_attack_power_multiplier;
-
     weapon            = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
+
+    // TO-DO: implement the aoe stuff.
   }
 };
 
@@ -1120,7 +1107,7 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 struct seal_of_truth_dot_t : public paladin_melee_attack_t
 {
   seal_of_truth_dot_t( paladin_t* p )
-    : paladin_melee_attack_t( "censure", p, p -> find_spell( 31803 ), SCHOOL_NONE, false )
+    : paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), SCHOOL_NONE, false )
   {
     background       = true;
     proc             = true;
@@ -1139,6 +1126,17 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     tick_power_mod               = 1.0;
   }
 
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    if ( result_is_hit( impact_result ) )
+    {
+      paladin_targetdata_t* td = targetdata( t ) -> cast_paladin();
+      td -> debuffs_censure -> trigger();
+      player_buff();
+    }
+    paladin_melee_attack_t::impact( t, impact_result, travel_dmg );
+  }
+
   virtual void player_buff()
   {
     paladin_melee_attack_t::player_buff();
@@ -1146,15 +1144,10 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     player_multiplier *= td -> debuffs_censure -> stack();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
-    if ( result_is_hit( impact_result ) )
-    {
-      paladin_targetdata_t* td = targetdata( t ) -> cast_paladin();
-      td -> debuffs_censure -> trigger();
-      player_buff(); // update with new stack of the debuff
-    }
-    paladin_melee_attack_t::impact( t, impact_result, travel_dmg );
+    double amt = paladin_melee_attack_t::calculate_tick_damage( r, power, multiplier );
+    return amt;
   }
 
   virtual void last_tick( dot_t* d )
@@ -1168,19 +1161,24 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
 struct seal_of_truth_proc_t : public paladin_melee_attack_t
 {
   seal_of_truth_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seal_of_truth", p, p -> find_spell( 42463 ) )
+    : paladin_melee_attack_t( "seal_of_truth_proc", p, p -> find_class_spell( "Seal of Truth" ) )
   {
     background  = true;
     proc        = true;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
-  }
-  virtual void player_buff()
-  {
-    paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    paladin_melee_attack_t::player_buff();
-    player_multiplier *= td -> debuffs_censure -> stack() * 0.2;
+
+    weapon                 = &( p -> main_hand_weapon );
+
+    if ( data().ok() )
+    {
+      const spell_data_t* s = p -> find_spell( 42463 );
+      if ( s && s -> ok() )
+      {
+        weapon_multiplier      = s -> effectN( 1 ).percent();
+      }
+    }
   }
 };
 
@@ -1189,7 +1187,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
 struct seal_of_command_proc_t : public paladin_melee_attack_t
 {
   seal_of_command_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "seal_of_command", p, p -> find_class_spell( "Seal of Command" ) )
+    : paladin_melee_attack_t( "seal_of_command_proc", p, p -> find_class_spell( "Seal of Command" ) )
   {
     background  = true;
     proc        = true;
@@ -1287,13 +1285,27 @@ struct templars_verdict_t : public paladin_melee_attack_t
     trigger_seal      = true;
   }
 
+  virtual double calculate_direct_damage( result_type_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
+  {
+    double d = paladin_melee_attack_t::calculate_direct_damage( r, chain_target, target_level, ap, sp, multiplier );
+    return d;
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
+  {
+    paladin_melee_attack_t::impact( t, impact_result, impact_dmg );
+  }
+
+
   virtual void execute()
   {
+/*
     static const double holypower_wp[] = { 0, 0.30, 0.90, 2.35 };
 #ifndef NDEBUG
     assert( static_cast<unsigned>( p() -> holy_power_stacks() ) < sizeof_array( holypower_wp ) );
 #endif
     weapon_multiplier = holypower_wp[ p() -> holy_power_stacks() ];
+*/
     paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
@@ -1842,10 +1854,9 @@ struct word_of_glory_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier  = 0.0;
-
-    base_multiplier *= 1.0 + p -> passives.meditation -> effect2().percent();
+    base_attack_power_multiplier = 0.198;
+    base_spell_power_multiplier  = direct_power_mod;
+    direct_power_mod = 1.0;
 
     // Hot is built into the spell, but only becomes active with the glyph
     base_td = 0;
@@ -1857,7 +1868,7 @@ struct word_of_glory_t : public paladin_heal_t
   {
     paladin_heal_t::player_buff();
 
-    player_multiplier *= p() -> holy_power_stacks();    
+    player_multiplier *= p() -> holy_power_stacks();
   }
 };
 
@@ -2428,7 +2439,7 @@ double paladin_t::composite_attack_speed() const
 {
   double m = player_t::composite_attack_speed();
 
-  if ( buffs.zealotry -> up() )
+  if ( buffs.zealotry -> check() )
   {
     m /= 1.0 + buffs.zealotry -> value();
   }
