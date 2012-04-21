@@ -5334,7 +5334,7 @@ void player_t::replace_spells()
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id  )
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( (int)dbc.spell( id ) -> level() <= level ) )
       {
         // Found a spell we should replace
         dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
@@ -5378,6 +5378,23 @@ void player_t::replace_spells()
             dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
           }
         }
+      }
+    }
+  }
+
+  // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn later)
+  if ( spec != SPEC_NONE )
+  {
+    for ( unsigned int i = 0; i < dbc.class_ability_size(); i++ )
+    {
+      if ( ( id = dbc.class_ability( class_idx, 0, i ) ) == 0 )
+      {
+        break;
+      }
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( (int)dbc.spell( id ) -> level() <= level ) )
+      {
+        // Found a spell we should replace
+        dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
       }
     }
   }

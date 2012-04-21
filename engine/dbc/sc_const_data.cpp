@@ -151,7 +151,14 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.52018;
   }
 
-
+  // PALADIN
+  // Build Last Checked: 15589
+  // Description: Seal of Truth should be replacing Seal of Command but is missing it's ReplaceId vvalue
+  s = spell_data_t::find( 31801, false );
+  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
+  {
+    const_cast<spell_data_t&>( *s )._replace_spell_id = 105361;
+  }
 }
 
 void dbc_t::init()

@@ -198,6 +198,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\dbc\dbc.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_absorb.cpp"
 			>
 		</File>
