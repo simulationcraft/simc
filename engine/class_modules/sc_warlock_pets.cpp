@@ -273,7 +273,6 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     direct_tick = true;
   }
 
-  virtual resource_type_e current_resource() const { return RESOURCE_MANA; }
 };
 
 struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
@@ -390,6 +389,8 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
     d -> current_tick = 0; // ticks indefinitely
 
     immolation_damage -> execute();
+
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual void cancel()
