@@ -361,6 +361,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 struct infernal_pet_t : public warlock_guardian_pet_t
 {
   infernal_pet_t( sim_t* sim, warlock_t* owner );
+  virtual double composite_spell_power( school_type_e school ) const;
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );

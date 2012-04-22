@@ -113,8 +113,7 @@ static const _weapon_list_t succubus_weapon[]=
 
 static const _weapon_list_t infernal_weapon[]=
 {
-  { 85, 1072.0, 1072.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
-  { 80, 924.0, 924.0, timespan_t::from_seconds( 2.0 ) }, //Rough numbers
+  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -234,9 +233,9 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   firebolt_t( imp_pet_t* p ) :
    warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
   {
-    //FIXME: This stuff needs testing in MoP
+    //FIXME: This stuff needs testing in MoP - commenting out for now
 
-    direct_power_mod = 0.618; // tested in-game as of 2011/05/10
+    // direct_power_mod = 0.618; // tested in-game as of 2011/05/10
 
     if ( p -> owner -> bugs )
       min_gcd = timespan_t::from_seconds( 1.5 );
@@ -255,7 +254,7 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     warlock_pet_actions::warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     aoe               = -1;
-    direct_power_mod  = 0.264;
+    // direct_power_mod  = 0.264; FIXME: Retest in MoP
     weapon   = &( p -> main_hand_weapon );
   }
   
@@ -362,7 +361,7 @@ struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
     may_crit    = false;
     direct_tick = true;
     stats = p -> get_stats( "immolation", this );
-    direct_power_mod = 0.4;
+    direct_power_mod = 0.2;
   }
 };
 
@@ -918,6 +917,13 @@ infernal_pet_t::infernal_pet_t( sim_t* sim, warlock_t* owner ) :
 {
   action_list_str += "/snapshot_stats";
   if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
+  ap_per_owner_sp = 0.48;
+}
+
+double infernal_pet_t::composite_spell_power( const school_type_e school ) const
+{
+  // The infernal, for some reason, does not appear to get the "hidden" base 59 sp
+  return snapshot_sp;
 }
 
 void infernal_pet_t::init_base()
