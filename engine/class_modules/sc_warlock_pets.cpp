@@ -391,6 +391,12 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
 
     immolation_damage -> execute();
   }
+
+  virtual void cancel()
+  {
+    if ( action_dot ) action_dot -> reset();
+    action_t::cancel();
+  }
 };
 
 }

@@ -191,7 +191,7 @@ timespan_t dot_t::remains() const
 
 void dot_t::reset()
 {
-  tick_event=0;
+  event_t::cancel( tick_event );
   current_tick=0;
   added_ticks=0;
   ticking=0;
