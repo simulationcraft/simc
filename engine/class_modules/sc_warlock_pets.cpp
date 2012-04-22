@@ -204,8 +204,8 @@ struct warlock_pet_spell_t : public spell_t
     crit_multiplier *= 1.33;
   }
 
-  warlock_pet_spell_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    spell_t( s -> name_cstr(), p, s, sc )
+  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+    spell_t( token, p, s, sc )
   {
     may_crit = true;
     crit_multiplier *= 1.33;
@@ -264,9 +264,9 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 {
   felstorm_tick_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( p, p -> find_spell( 89753, "felstorm_tick" ) )
+    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
   {
-    direct_power_mod = 0.231; // hardcoded from the tooltip
+    direct_power_mod = 0.33; // hardcoded from the tooltip
     dual        = true;
     background  = true;
     aoe         = -1;
@@ -355,14 +355,14 @@ namespace infernal_spells
 struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   immolation_damage_t( infernal_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, p -> find_spell( 20153, "immolation_dmg" ) )
+    warlock_pet_actions::warlock_pet_spell_t( "immolation_dmg", p, p -> find_spell( 20153 ) )
   {
     dual        = true;
     background  = true;
     aoe         = -1;
-    direct_tick = true;
     may_crit    = false;
     stats = p -> get_stats( "infernal_immolation", this );
+    direct_power_mod = 0.4;
   }
 };
 
@@ -371,7 +371,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
   immolation_damage_t* immolation_damage;
 
   infernal_immolation_t( infernal_pet_t* p, const std::string& options_str ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, p -> find_spell( 19483, "immolation" ) ), immolation_damage( 0 )
+    warlock_pet_actions::warlock_pet_spell_t( "infernal_immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -379,6 +379,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
     num_ticks    = 1;
     hasted_ticks = false;
     harmful = false;
+    direct_tick = true;
     trigger_gcd = timespan_t::from_seconds( 1.5 );
 
     immolation_damage = new immolation_damage_t( p );
@@ -402,15 +403,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
   doom_bolt_t( doomguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Doom Bolt" )
   {
-    /* commenting out hardcoded stuff, need to re-test in MoP
-    //FIXME: Needs testing, but WoL seems to suggest it has been changed from 2.5 to 3.0 sometime after 4.1.
-    base_execute_time = timespan_t::from_seconds( 3.0 );
-
-    //Rough numbers based on report in EJ thread 2011/07/04
-    direct_power_mod  = 1.36;
-    base_dd_min *= 1.25;
-    base_dd_max *= 1.25;
-    */
+    // FIXME: Exact casting mechanics need re-testing in MoP
     if ( p -> owner -> bugs )
     {
       ability_lag = timespan_t::from_seconds( 0.22 );
@@ -427,7 +420,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
 double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e pet_type )
 {
-  double r                      = 0.0;
+  double r = 0.0;
   const pet_stats::_stat_list_t* base_list = 0;
   const pet_stats::_stat_list_t*  pet_list = 0;
 
@@ -661,15 +654,15 @@ double warlock_pet_t::composite_attack_haste() const
 
 double warlock_pet_t::composite_spell_power( const school_type_e school ) const
 {
-  double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets.
-  sp += owner -> composite_spell_power( school ); // Pet SP is simply exactly the same as owner SP in MoP
+  double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets, especially at level 90.
+  sp += owner -> composite_spell_power( school );
   return sp;
 }
 
 double warlock_pet_t::composite_attack_power() const
 {
   double ap = 0;
-  ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
+  ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
   return ap;
 }
 
@@ -778,7 +771,7 @@ double warlock_guardian_pet_t::composite_spell_haste() const
 
 double warlock_guardian_pet_t::composite_spell_power( const school_type_e school ) const
 {
-  double sp = 59; // FIXME: Mysterious, needs more testing, especially at level 90
+  double sp = 59; // FIXME: Mysterious base spell power. Needs more testing/confirmation for all guardians, especially at level 90.
   sp += snapshot_sp;
   return sp;
 }
@@ -792,16 +785,6 @@ imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/firebolt";
-}
-
-void imp_pet_t::init_base()
-{
-  warlock_main_pet_t::init_base();
-
-  // untested !!
-  mana_per_intellect = 14.28;
-  //mp5_per_intellect  = 5.0 / 6.0;
-  // untested !!
 }
 
 action_t* imp_pet_t::create_action( const std::string& name,
@@ -822,7 +805,6 @@ felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string&
   action_list_str += "/snapshot_stats";
   action_list_str += "/felstorm";
   action_list_str += "/legion_strike";
-  action_list_str += "/wait_until_ready";
 }
 
 void felguard_pet_t::init_base()

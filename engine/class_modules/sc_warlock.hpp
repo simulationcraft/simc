@@ -302,7 +302,6 @@ struct warlock_guardian_pet_t : public warlock_pet_t
 struct imp_pet_t : public warlock_main_pet_t
 {
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" );
-  virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };
