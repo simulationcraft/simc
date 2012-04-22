@@ -419,8 +419,6 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">target:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
-                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
                 "\t\t\t\t\t\t\t\t\t</div>\n"
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
@@ -436,9 +434,30 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
-                a -> harmful ? "true" : "false",
-                a -> data().tooltip(),
-                util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
+                a -> harmful ? "true" : "false" );
+
+      // Spelldata
+      if ( a -> data().ok() )
+      {
+      fprintf ( file,
+                      "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
+                      "\t\t\t\t\t\t\t\t\t\t<h5>Spelldata</h5>\n"
+                      "\t\t\t\t\t\t\t\t\t\t<ul>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">school:</span>%s</li>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
+                      "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+                      "\t\t\t\t\t\t\t\t\t</div>\n"
+                      "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
+                      a -> data().id(),
+                      a -> data().name_cstr(),
+                      util_t::school_type_string( a -> data().get_school_type() ),
+                      a -> data().tooltip(),
+                      util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
+      }
+
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         fprintf ( file,
@@ -555,7 +574,7 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                 "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
                 s -> resource_gain.name(),
-                util_t::resource_type_string( i ),
+                util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                 s -> resource_gain.count[ i ],
                 s -> resource_gain.actual[ i ],
                 s -> resource_gain.actual[ i ] / s -> resource_gain.count[ i ] );
@@ -595,7 +614,7 @@ void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<ite
              "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             item.slot_name(),
+             util_t::inverse_tokenize( item.slot_name() ).c_str(),
              item.active() ? item.options_str.c_str() : "empty" );
   }
 
@@ -662,7 +681,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                "\t\t\t\t\t\t\t\t\t</tr>\n",
                ( j%2 == 1 )? " class=\"odd\"" : "",
-               util_t::attribute_type_string( i ),
+               util_t::inverse_tokenize( util_t::attribute_type_string( i ) ).c_str(),
                a -> buffed.attribute[ i ],
                a -> get_attribute( i ),
                a -> stats.attribute[ i ] );
@@ -679,7 +698,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                  "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                  "\t\t\t\t\t\t\t\t\t</tr>\n",
                  ( j%2 == 1 )? " class=\"odd\"" : "",
-                 util_t::resource_type_string( static_cast<resource_type_e>( i ) ),
+                 util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                  a -> buffed.resource[ i ],
                  a -> resources.max[ i ],
                  0.0 );
@@ -1276,7 +1295,7 @@ void print_html_gain( FILE* file, const gain_t* g, bool report_overflow = true )
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
                g -> name(),
-               util_t::resource_type_string( i ),
+               util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                g -> count[ i ],
                g -> actual[ i ],
                g -> actual[ i ] / g -> count[ i ] );
@@ -1558,6 +1577,116 @@ void print_html_player_charts( FILE* file, const sim_t* sim, const player_t* p, 
 }
 
 
+void print_html_player_buff( FILE* file, const buff_t* b, int report_details, const size_t i, bool constant_buffs = false )
+{
+  std::string buff_name;
+  if ( b -> player && b -> player -> is_pet() )
+  {
+    buff_name += b -> player -> name_str + '-';
+  }
+  buff_name += b -> name_str.c_str();
+
+  fprintf( file,
+           "\t\t\t\t\t\t\t<tr" );
+  if ( i & 1 )
+  {
+    fprintf( file, " class=\"odd\"" );
+  }
+  fprintf( file, ">\n" );
+  if ( report_details )
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n",
+             buff_name.c_str() );
+  else
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n",
+             buff_name.c_str() );
+  if ( !constant_buffs )
+  fprintf( file,
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
+           "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n",
+           b -> avg_start,
+           b -> avg_refresh,
+           b -> start_intervals.mean,
+           b -> trigger_intervals.mean,
+           b -> uptime_pct.mean,
+           ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
+
+  fprintf( file,
+           "\t\t\t\t\t\t\t</tr>\n" );
+
+  if ( report_details )
+  {
+    fprintf( file,
+             "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
+             "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
+             "\t\t\t\t\t\t\t\t\t<h4>Buff details</h4>\n"
+             "\t\t\t\t\t\t\t\t\t<ul>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown name:</span>%s</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+             "\t\t\t\t\t\t\t\t\t</ul>\n",
+             b -> cooldown -> name_str.c_str(),
+             b -> max_stack(),
+             b -> buff_duration.total_seconds(),
+             b -> cooldown -> duration.total_seconds(),
+             b -> default_chance * 100 );
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
+             "\t\t\t\t\t\t\t\t\t<ul>\n" );
+    for ( unsigned int j= 0; j < b -> stack_uptime.size(); j++ )
+    {
+      double uptime = b -> stack_uptime[ j ] -> uptime_sum.mean;
+      if ( uptime > 0 )
+      {
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
+                 b -> name_str.c_str(), j,
+                 uptime * 100.0 );
+      }
+    }
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t\t</ul>\n"
+             "\t\t\t\t\t\t\t\t</td>\n" );
+
+    // Spelldata
+    if ( b -> data().ok() )
+    {
+    fprintf ( file,
+        "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
+        "\t\t\t\t\t\t\t\t\t<h4>Spelldata details</h4>\n"
+        "\t\t\t\t\t\t\t\t\t<ul>\n"
+                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+                    "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+                    "\t\t\t\t\t\t\t\t\t</td>\n",
+                    b -> data().id(),
+                    b -> data().name_cstr(),
+                    b -> data().tooltip(),
+                    util_t::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
+                    b -> data().max_stacks(),
+                    b -> data().duration().total_seconds(),
+                    b -> data().cooldown().total_seconds(),
+                    b -> data().proc_chance() );
+    }
+
+    fprintf ( file,
+             "\t\t\t\t\t\t\t</tr>\n" );
+  }
+}
 // print_html_player_buffs ==================================================
 
 void print_html_player_buffs( FILE* file, const player_t* p, const player_t::report_information_t& ri )
@@ -1585,87 +1714,7 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
   {
     buff_t* b = ri.dynamic_buffs[ i ];
 
-    std::string buff_name;
-    if ( b -> player && b -> player -> is_pet() )
-    {
-      buff_name += b -> player -> name_str + '-';
-    }
-    buff_name += b -> name_str.c_str();
-
-    fprintf( file,
-             "\t\t\t\t\t\t\t<tr" );
-    if ( i & 1 )
-    {
-      fprintf( file, " class=\"odd\"" );
-    }
-    fprintf( file, ">\n" );
-    if ( p -> sim -> report_details )
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n",
-               buff_name.c_str() );
-    else
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n",
-               buff_name.c_str() );
-    fprintf( file,
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
-             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
-             b -> avg_start,
-             b -> avg_refresh,
-             b -> start_intervals.mean,
-             b -> trigger_intervals.mean,
-             b -> uptime_pct.mean,
-             ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
-
-    if ( p -> sim -> report_details )
-    {
-      fprintf( file,
-               "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-               "\t\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
-               "\t\t\t\t\t\t\t\t\t<h4>Database details</h4>\n"
-               "\t\t\t\t\t\t\t\t\t<ul>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%.i</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown name:</span>%s</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip-wider\">%s</span></li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-               "\t\t\t\t\t\t\t\t\t</ul>\n"
-               "\t\t\t\t\t\t\t\t</td>\n",
-               b -> data().id(),
-               b -> cooldown -> name_str.c_str(),
-               b -> data().tooltip(),
-               b -> max_stack(),
-               b -> buff_duration.total_seconds(),
-               b -> cooldown -> duration.total_seconds(),
-               b -> default_chance * 100 );
-
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
-               "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
-               "\t\t\t\t\t\t\t\t\t<ul>\n" );
-      for ( unsigned int j= 0; j < b -> stack_uptime.size(); j++ )
-      {
-        double uptime = b -> stack_uptime[ j ] -> uptime_sum.mean;
-        if ( uptime > 0 )
-        {
-          fprintf( file,
-                   "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">%s_%d:</span>%.1f%%</li>\n",
-                   b -> name_str.c_str(), j,
-                   uptime * 100.0 );
-        }
-      }
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t\t</ul>\n"
-               "\t\t\t\t\t\t\t\t</td>\n"
-               "\t\t\t\t\t\t\t</tr>\n" );
-    }
+    print_html_player_buff( file, b, p -> sim->report_details, i );
   }
   fprintf( file,
            "\t\t\t\t\t\t\t</table>\n" );
@@ -1681,49 +1730,8 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
     for ( size_t i = 0; i < ri.constant_buffs.size(); i++ )
     {
       buff_t* b = ri.constant_buffs[ i ];
-      fprintf( file,
-               "\t\t\t\t\t\t\t<tr" );
-      if ( !( i & 1 ) )
-      {
-        fprintf( file, " class=\"odd\"" );
-      }
-      fprintf( file, ">\n" );
-      if ( p -> sim -> report_details )
-      {
-        fprintf( file,
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 b -> name_str.c_str() );
 
-
-        fprintf( file,
-                 "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-                 "\t\t\t\t\t\t\t\t\t<td>\n"
-                 "\t\t\t\t\t\t\t\t\t\t<h4>Database details</h4>\n"
-                 "\t\t\t\t\t\t\t\t\t\t<ul>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%.i</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown name:</span>%s</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
-                 "\t\t\t\t\t\t\t\t\t</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 b -> data().id(),
-                 b -> cooldown -> name_str.c_str(),
-                 b -> data().tooltip(),
-                 b -> max_stack(),
-                 b -> buff_duration.total_seconds(),
-                 b -> cooldown -> duration.total_seconds(),
-                 b -> default_chance * 100 );
-      }
-      else
-        fprintf( file,
-                 "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                 "\t\t\t\t\t\t\t\t</tr>\n",
-                 b -> name_str.c_str() );
+      print_html_player_buff( file, b, p -> sim->report_details, i, true );
     }
     fprintf( file,
              "\t\t\t\t\t\t\t</table>\n" );
@@ -1813,7 +1821,7 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
            "\t\t\t\t\t<li><b>Position:</b> %s</li>\n"
            "\t\t\t\t</ul>\n"
            "\t\t\t\t<div class=\"clear\"></div>\n",
-           p -> level, util_t::role_type_string( p -> primary_role() ), p -> position_str.c_str() );
+           p -> level, util_t::inverse_tokenize( util_t::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
 
 }
 
@@ -1858,7 +1866,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
   util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
+                   "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th>Active</th>\n"
@@ -1911,7 +1919,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
                    "\t\t\t\t\t\t</table>\n",
                    p -> rps_loss,
                    p -> rps_gain,
-                   util_t::resource_type_string( p -> primary_resource() ),
+                   util_t::inverse_tokenize( util_t::resource_type_string( p -> primary_resource() ) ).c_str(),
                    p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
                    p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
                    sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );

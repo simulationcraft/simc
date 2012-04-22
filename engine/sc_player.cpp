@@ -1684,7 +1684,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  primary_resource_cap = get_uptime( std::string( util_t::resource_type_string( primary_resource() ) ) +  "_cap" );
+  primary_resource_cap = get_uptime( util_t::inverse_tokenize( util_t::resource_type_string( primary_resource() ) ) +  " Cap" );
 }
 
 // player_t::init_benefits ===================================================

@@ -375,7 +375,7 @@ std::string chart::raid_downtime( const std::vector<player_t*>& players_by_name,
   }
   s << amp;
 
-  s << google_chart::chart_title( "Player+Waiting-Time" ); // Set chart title
+  s << google_chart::chart_title( "Player Waiting Time" ); // Set chart title
 
   // Format chart title with color and font size
   if ( print_styles )

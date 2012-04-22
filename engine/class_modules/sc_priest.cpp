@@ -3648,7 +3648,7 @@ void priest_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.mind_spike[ i ] = get_benefit( "mind_spike_" + util_t::to_string( i ) );
+    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util_t::to_string( i ) );
 }
 
 // priest_t::init_rng =======================================================
