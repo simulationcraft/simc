@@ -3742,6 +3742,7 @@ struct player_t : public noncopyable
 
   // Raid-wide aura/buff/debuff maintenance
   static bool init        ( sim_t* sim );
+  static void debuff_init ( sim_t* sim );
   static void combat_begin( sim_t* sim );
   static void combat_end  ( sim_t* sim );
 

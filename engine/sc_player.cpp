@@ -502,6 +502,37 @@ bool check_actors( sim_t* sim )
   return true;
 }
 }
+// player_t::debuff_init ====================================================
+
+void player_t::debuff_init( sim_t* sim )
+{
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[i];
+    // MOP Debuffs
+    p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 115803 ) )
+                                       .default_value( std::fabs( p -> find_spell( 115803 ) -> effectN( 1 ).percent() ) );
+
+    p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
+                                      .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
+
+    p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
+                                      .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
+
+    p -> debuffs.ranged_vulnerability    = buff_creator_t( p, "ranged_vulnerability", p -> find_spell( 1130 ) )
+                                      .default_value( p -> find_spell( 1130 ) -> effectN( 2 ).percent() );
+
+    p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
+                                      .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+
+    p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
+                                      .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) );
+
+    p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
+                                      .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) );
+  }
+}
+
 // player_t::init ===========================================================
 
 bool player_t::init( sim_t* sim )
@@ -517,6 +548,8 @@ bool player_t::init( sim_t* sim )
 
   if ( sim -> debug )
     log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
+  
+  player_t::debuff_init( sim );
 
   player_t::death_knight_init( sim );
   player_t::druid_init       ( sim );
@@ -1626,28 +1659,6 @@ void player_t::init_buffs()
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
-
-  // MOP Debuffs
-  debuffs.slowed_casting           = buff_creator_t( this, "slowed_casting", find_spell( 115803 ) )
-                                     .default_value( std::fabs( find_spell( 115803 ) -> effectN( 1 ).percent() ) );
-
-  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) )
-                                    .default_value( find_spell( 104225 ) -> effectN( 1 ).percent() );
-
-  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) )
-                                    .default_value( find_spell( 81326 ) -> effectN( 1 ).percent() );
-
-  debuffs.ranged_vulnerability    = buff_creator_t( this, "ranged_vulnerability", find_spell( 1130 ) )
-                                    .default_value( find_spell( 1130 ) -> effectN( 2 ).percent() );
-
-  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
-                                    .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-
-  debuffs.weakened_armor          = buff_creator_t( this, "weakened_armor", find_spell( 113746 ) )
-                                    .default_value( std::fabs( find_spell( 113746 ) -> effectN( 1 ).percent() ) );
-
-  debuffs.weakened_blows          = buff_creator_t( this, "weakened_blows", find_spell( 115798 ) )
-                                    .default_value( std::fabs( find_spell( 115798 ) -> effectN( 1 ).percent() ) );
 }
 
 // player_t::init_gains =====================================================
