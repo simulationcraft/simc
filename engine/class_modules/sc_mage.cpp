@@ -15,9 +15,9 @@ enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX
 
 struct mage_targetdata_t : public targetdata_t
 {
-  dot_t* dots_frostfire_bolt;
   dot_t* dots_ignite;
   dot_t* dots_living_bomb;
+  dot_t* dots_nether_tempest;
   dot_t* dots_pyroblast;
 
   buff_t* debuffs_slow;
@@ -30,9 +30,9 @@ void register_mage_targetdata( sim_t* sim )
   player_type_e t = MAGE;
   typedef mage_targetdata_t type;
 
-  REGISTER_DOT( frostfire_bolt );
   REGISTER_DOT( ignite );
   REGISTER_DOT( living_bomb );
+  REGISTER_DOT( nether_tempest );
   REGISTER_DOT( pyroblast );
 
   REGISTER_DEBUFF( slow );
@@ -1415,10 +1415,9 @@ struct combustion_t : public mage_spell_t
     }
 
     base_td = 0;
-    base_td += calculate_dot_dps( td -> dots_frostfire_bolt );
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td -> dots_living_bomb    ) * ( 1.0 + p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery() );
     base_td += calculate_dot_dps( td -> dots_pyroblast      ) * ( 1.0 + p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery() );
+    // FIXME: Add FlameStrike
 
     if ( p -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p -> buffs.tier13_2pc -> check() * p -> spells.stolen_time -> effectN( 2 ).time_value();
@@ -3079,7 +3078,7 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( level >= 77 )
       {
-        action_list_str += "/combustion,if=dot.living_bomb.ticking&dot.ignite.ticking&dot.pyroblast.ticking&dot.ignite.tick_dmg>10000";
+        action_list_str += "/combustion,if=dot.ignite.ticking&dot.pyroblast.ticking&dot.ignite.tick_dmg>10000";
       }
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=!ticking";
