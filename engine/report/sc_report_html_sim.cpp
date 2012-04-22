@@ -834,7 +834,7 @@ void print_html_help_boxes( FILE*  file, const sim_t* sim )
            "\t\t<div id=\"help-rps-in\">\n"
            "\t\t\t<div class=\"help-box\">\n"
            "\t\t\t\t<h3>RPS In</h3>\n"
-           "\t\t\t\t<p>Average resource points generated per second.</p>\n"
+           "\t\t\t\t<p>Average primary resource points generated per second.</p>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n" );
 
@@ -842,7 +842,7 @@ void print_html_help_boxes( FILE*  file, const sim_t* sim )
            "\t\t<div id=\"help-rps-out\">\n"
            "\t\t\t<div class=\"help-box\">\n"
            "\t\t\t\t<h3>RPS Out</h3>\n"
-           "\t\t\t\t<p>Average resource points consumed per second.</p>\n"
+           "\t\t\t\t<p>Average primary resource points consumed per second.</p>\n"
            "\t\t\t</div>\n"
            "\t\t</div>\n" );
 

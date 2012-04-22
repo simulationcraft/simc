@@ -3615,8 +3615,8 @@ void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.sa_shadow_orb_mastery = get_proc( "shadowy_apparation_shadow_orb_mastery_proc" );
-  procs.shadowfiend_cooldown_reduction = get_proc( "shadowfiend_cooldown_reduction_proc" );
+  procs.sa_shadow_orb_mastery = get_proc( "Shadowy Apparation Shadow Orb Mastery" );
+  procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction" );
 }
 
 // priest_t::init_scaling ===================================================

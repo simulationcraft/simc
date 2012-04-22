@@ -1414,6 +1414,35 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
 
+  // Resource Consumption Section
+    fprintf( file,
+             "\t\t\t\t\t\t<table class=\"sc\">\n"
+             "\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
+             "\t\t\t\t\t\t\t\t<th>RPS-Gain</th>\n"
+             "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
+             "\t\t\t\t\t\t\t</tr>\n" );
+  for ( resource_type_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
+  {
+    double rps_gain = p -> resource_gained[ rt ] / p -> fight_length.mean;
+    double rps_loss = p -> resource_lost[ rt ] / p -> fight_length.mean;
+    if ( rps_gain <= 0 && rps_loss <= 0 )
+      continue;
+
+    fprintf( file,
+             "\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
+             util_t::inverse_tokenize( util_t::resource_type_string( rt ) ).c_str(),
+             rps_gain, rps_loss );
+    fprintf( file,
+             "\t\t\t\t\t\t\t</tr>\n" );
+  }
+  fprintf( file,
+           "\t\t\t\t\t\t</table>\n" );
+
+
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
   for ( resource_type_e j = RESOURCE_NONE; j < RESOURCE_MAX; ++j )
