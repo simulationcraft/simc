@@ -95,25 +95,25 @@ static const _weapon_list_t imp_weapon[]=
 
 static const _weapon_list_t felguard_weapon[]=
 {
-  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
+  { 85, 986, 986, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t felhunter_weapon[]=
 {
-  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
+  { 85, 986, 986, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t succubus_weapon[]=
 {
-  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
+  { 85, 986, 986, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
 static const _weapon_list_t infernal_weapon[]=
 {
-  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
+  { 85, 986, 986, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -124,7 +124,7 @@ static const _weapon_list_t doomguard_weapon[]=
 
 static const _weapon_list_t voidwalker_weapon[]=
 {
-  { 85, 937, 937, timespan_t::from_seconds( 2.0 ) },
+  { 85, 986, 986, timespan_t::from_seconds( 2.0 ) },
   { 0, 0, 0, timespan_t::zero() }
 };
 
@@ -146,8 +146,6 @@ struct warlock_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    
-    if ( p -> owner -> race == RACE_ORC ) base_multiplier = 1.05;
   }
 
   warlock_pet_t* p() const
@@ -930,7 +928,7 @@ infernal_pet_t::infernal_pet_t( sim_t* sim, warlock_t* owner ) :
 {
   action_list_str += "/snapshot_stats";
   if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
-  ap_per_owner_sp = 0.48;
+  ap_per_owner_sp = 0.566;
 }
 
 double infernal_pet_t::composite_spell_power( const school_type_e school ) const
