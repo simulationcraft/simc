@@ -462,8 +462,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     if ( num_players > max_players ) num_players = max_players;
 
     s = get_chart_base_url();
-    snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_players * 20 + ( first ? 20 : 0 ) ); s += buffer;
-    s += "&amp;";
+    s += google_chart::chart_size( 525, num_players * 20 + ( first ? 20 : 0 ) ); // Set chart size
     s += "cht=bhg";
     s += "&amp;";
     if ( ! sim -> print_styles )
@@ -578,8 +577,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     if ( num_players <= 12 ) height += 70;
 
     s = get_chart_base_url();
-    snprintf( buffer, sizeof( buffer ), "chs=525x%d", height ); s += buffer;
-    s += "&amp;";
+    s += google_chart::chart_size( 525, height ); // Set chart size
     s += "cht=bhs";
     s += "&amp;";
     if ( ! sim -> print_styles )
@@ -750,8 +748,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     if ( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
     s = get_chart_base_url();
-    snprintf( buffer, sizeof( buffer ), "chs=500x%d", num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); s += buffer;
-    s += "&amp;";
+    s += google_chart::chart_size( 500, num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); // Set chart size
     s += "cht=bhg";
     s += "&amp;";
     if ( ! sim -> print_styles )
@@ -839,8 +836,7 @@ std::string chart::action_dpet( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=550x%d", num_stats * 30 + 30 ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_size( 550, num_stats * 30 + 30 ); // Set chart size
   s += "cht=bhg";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
@@ -943,8 +939,7 @@ std::string chart::aps_portion( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=550x%d", 200 + num_stats * 10 ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_size( 550, 200 + num_stats * 10 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
@@ -1044,8 +1039,7 @@ std::string chart::time_spent( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=525x%d", 200 + num_stats * 10 ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_size( 525, 200 + num_stats * 10 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
@@ -1219,8 +1213,7 @@ std::string chart::scale_factors( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  snprintf( buffer, sizeof( buffer ), "chs=525x%d", num_scaling_stats * 30 + 30 ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_size( 525, num_scaling_stats * 30 + 30 ); // Set chart size
   s += "cht=bhg";
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff";
@@ -1310,8 +1303,7 @@ std::string chart::scaling_dps( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += "chs=550x300";
-  s += "&amp;";
+  s += google_chart::chart_size( 550, 300 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
@@ -1474,8 +1466,7 @@ std::string chart::reforge_dps( const player_t* p )
     char buffer[ 1024 ];
 
     s = get_chart_base_url();
-    s += "chs=525x300";
-    s += "&amp;";
+    s += google_chart::chart_size( 525, 300 ); // Set chart size
     s += "cht=lxy";
     s += "&amp;";
     if ( ! p -> sim -> print_styles )
@@ -1730,8 +1721,7 @@ std::string chart::timeline( const player_t* p,
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += "chs=525x185";
-  s += "&amp;";
+  s += google_chart::chart_size( 525, 185 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff";
@@ -1806,8 +1796,7 @@ std::string chart::timeline_dps_error( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += "chs=525x185";
-  s += "&amp;";
+  s += google_chart::chart_size( 525, 185 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
   s += "chg=20,20";
@@ -1881,8 +1870,7 @@ std::string chart::distribution( const sim_t* sim,
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += "chs=525x185";
-  s += "&amp;";
+  s += google_chart::chart_size( 525, 185 ); // Set chart size
   s += "cht=bvs";
   s += "&amp;";
   if ( sim -> print_styles )
@@ -2223,8 +2211,7 @@ std::string chart::dps_error( const player_t* p )
   double std_dev = p -> dps.mean_std_dev;
 
   s = get_chart_base_url();
-  s += "chs=525x185";
-  s += "&amp;";
+  s += google_chart::chart_size( 525, 185 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
   s += "chg=20,20";
