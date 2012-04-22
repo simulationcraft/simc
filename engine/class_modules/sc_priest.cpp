@@ -866,7 +866,7 @@ struct priest_spell_t : public spell_t
   }
 
   priest_t* p() const
-  { return static_cast<priest_t*>( player ); }
+  { return debug_cast<priest_t*>( player ); }
 
   priest_targetdata_t* td( player_t* t = 0 ) const
   { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
