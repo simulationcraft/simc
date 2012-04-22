@@ -169,8 +169,8 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     special = true;
   }
 
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
-    melee_attack_t( s -> name_cstr(), p, s, sc )
+  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+    melee_attack_t( token, p, s, sc )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
@@ -361,7 +361,7 @@ struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
     background  = true;
     aoe         = -1;
     may_crit    = false;
-    stats = p -> get_stats( "infernal_immolation", this );
+    stats = p -> get_stats( "immolation", this );
     direct_power_mod = 0.4;
   }
 };
@@ -371,7 +371,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
   immolation_damage_t* immolation_damage;
 
   infernal_immolation_t( infernal_pet_t* p, const std::string& options_str ) :
-    warlock_pet_actions::warlock_pet_spell_t( "infernal_immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
+    warlock_pet_actions::warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
   {
     parse_options( NULL, options_str );
 
