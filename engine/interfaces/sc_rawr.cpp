@@ -531,8 +531,8 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   std::string talents_parm = class_str + "Talents/.";
 
-  util_t::armory_format(  name_str );
-  util_t::armory_format( class_str );
+  util_t::tokenize(  name_str );
+  util_t::tokenize( class_str );
 
   race_type_e r = translate_rawr_race_str( race_str );
 

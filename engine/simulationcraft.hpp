@@ -1649,7 +1649,7 @@ public:
   static const char* stat_type_abbrev          ( stat_type_e type );
   static const char* stat_type_wowhead         ( stat_type_e type );
   static specialization_e translate_spec_str   ( player_type_e ptype, const std::string& spec_str );
-  static const char* specialization_string     ( specialization_e spec, bool armory_format = true );
+  static std::string specialization_string     ( specialization_e spec );
   static resource_type_e translate_power_type  ( power_type_e );
   static const char* weapon_type_string        ( weapon_type_e type );
   static const char* weapon_class_string       ( inventory_type class_ );
@@ -1754,7 +1754,9 @@ public:
   static std::string& tolower( std::string& str ) { tolower_( str ); return str; }
   static std::string encode_html( const std::string& );
 
-  static void armory_format( std::string& name, format_type_e = FORMAT_NONE );
+  static void tokenize( std::string& name, format_type_e = FORMAT_NONE );
+  static void inverse_tokenize( std::string& name );
+  static std::string inverse_tokenize( const std::string& name );
 
   static bool is_number( const std::string& s );
 

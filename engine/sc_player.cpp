@@ -3407,7 +3407,7 @@ role_type_e player_t::primary_role() const
 
 const char* player_t::primary_tree_name() const
 {
-  return util_t::specialization_string( primary_tree() );
+  return util_t::specialization_string( primary_tree() ).c_str();
 }
 
 // player_t::primary_tree ===================================================
@@ -5265,7 +5265,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     if ( w_spec != primary_tree() )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
-        util_t::specialization_string( w_spec ), util_t::specialization_string( primary_tree() ) );
+        util_t::specialization_string( w_spec ).c_str(), util_t::specialization_string( primary_tree() ).c_str() );
       return false;
     }
   }

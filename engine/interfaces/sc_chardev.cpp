@@ -84,8 +84,8 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  util_t::armory_format( type_str );
-  util_t::armory_format( race_str );
+  util_t::tokenize( type_str );
+  util_t::tokenize( race_str );
 
   player_t* p = player_t::create( sim, type_str, name_str, util_t::parse_race_type( race_str ) );
   sim -> active_player = p;

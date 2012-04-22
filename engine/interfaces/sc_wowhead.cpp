@@ -202,7 +202,7 @@ static bool parse_gems( item_t&           item,
     }
   }
 
-  util_t::armory_format( item.armory_gems_str );
+  util_t::tokenize( item.armory_gems_str );
 
   return true;
 }
@@ -286,7 +286,7 @@ static bool parse_item_stats( item_t&     item,
     return true;
 
   parse_stats( item.armory_stats_str, stats_str );
-  util_t::armory_format( item.armory_stats_str );
+  util_t::tokenize( item.armory_stats_str );
 
   return true;
 }
@@ -305,7 +305,7 @@ static bool parse_item_reforge( item_t&     item,
     return true;
 
   parse_stats( item.armory_reforge_str, stats_str );
-  util_t::armory_format( item.armory_reforge_str );
+  util_t::tokenize( item.armory_reforge_str );
 #endif
   return true;
 }
@@ -321,7 +321,7 @@ static bool parse_item_name( item_t&     item,
   if ( ! xml_t::get_value( item.armory_id_str, node, "item/id" ) )
     return false;
 
-  util_t::armory_format( item.armory_name_str );
+  util_t::tokenize( item.armory_name_str );
 
   return true;
 }
@@ -358,7 +358,7 @@ static bool parse_item_heroic( item_t&     item,
     }
   }
 
-  util_t::armory_format( item.armory_heroic_str );
+  util_t::tokenize( item.armory_heroic_str );
 
   return true;
 }
@@ -398,7 +398,7 @@ static bool parse_item_lfr( item_t&     item,
     }
   }
 
-  util_t::armory_format( item.armory_lfr_str );
+  util_t::tokenize( item.armory_lfr_str );
 
   return true;
 }
@@ -486,7 +486,7 @@ static bool parse_item_armor_type( item_t&     item,
     else if ( temp_str == "3" ) { item.armory_armor_type_str = "mail"; }
     else if ( temp_str == "4" ) { item.armory_armor_type_str = "plate"; }
 
-    util_t::armory_format( item.armory_heroic_str );
+    util_t::tokenize( item.armory_heroic_str );
   }
 
   return true;
@@ -636,7 +636,7 @@ player_t* download_player_profile( sim_t* sim,
     std::string server_name = p -> server_str;
     std::string character_name = name_str;
     format_server( server_name );
-    util_t::armory_format( character_name, FORMAT_CHAR_NAME );
+    util_t::tokenize( character_name, FORMAT_CHAR_NAME );
     p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
@@ -812,7 +812,7 @@ gem_type_e wowhead_t::parse_gem( item_t&            item,
   {
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
-    util_t::armory_format( color_str );
+    util_t::tokenize( color_str );
     type = util_t::parse_gem_type( color_str );
 
     if ( type == GEM_META )
@@ -822,7 +822,7 @@ gem_type_e wowhead_t::parse_gem( item_t&            item,
       {
         std::string::size_type new_pos = name_str.find( " Diamond" );
         if ( new_pos != std::string::npos ) name_str.erase( new_pos );
-        util_t::armory_format( name_str );
+        util_t::tokenize( name_str );
         item.armory_gems_str += "_";
         item.armory_gems_str += name_str;
       }
@@ -1050,7 +1050,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( ! is_valid_profile_id( id ) )
   {
     std::string character_name = name;
-    util_t::armory_format( character_name, FORMAT_CHAR_NAME );
+    util_t::tokenize( character_name, FORMAT_CHAR_NAME );
 
     std::string server_name = server;
     format_server( server_name );

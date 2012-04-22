@@ -1118,13 +1118,13 @@ talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
 {
   const std::string name = name_cstr;
   std::string token1 = name;
-  util_t::armory_format( token1 );
+  util_t::tokenize( token1 );
 
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
     const std::string p_name = p -> name_cstr();
     std::string token2 = p_name;
-    util_t::armory_format( token2 );
+    util_t::tokenize( token2 );
 
     if ( util_t::str_compare_ci( name, p_name ) || util_t::str_compare_ci( token1, token2 ) )
     {
@@ -2081,7 +2081,7 @@ bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr
     else
     {
       std::string t = sp -> name_cstr();
-      util_t::armory_format( t );
+      util_t::tokenize( t );
       return tokens.add( id_spell, t );
     }
   }

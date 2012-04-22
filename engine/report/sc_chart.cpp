@@ -279,33 +279,6 @@ unsigned char simple_encoding( int number )
   return encoding[ number ];
 }
 
-std::string chart_resource_type_string( resource_type_e type )
-{
-  switch ( type )
-  {
-  case RESOURCE_NONE:          return "None";
-  case RESOURCE_HEALTH:        return "Health";
-  case RESOURCE_MANA:          return "Mana";
-  case RESOURCE_RAGE:          return "Rage";
-  case RESOURCE_ENERGY:        return "Energy";
-  case RESOURCE_MONK_ENERGY:   return "Energy";
-  case RESOURCE_FOCUS:         return "Focus";
-  case RESOURCE_RUNIC_POWER:   return "Runic Power";
-  case RESOURCE_SOUL_SHARD:    return "Soul Shards";
-  case RESOURCE_HOLY_POWER:    return "Holy Power";
-  case RESOURCE_CHI:           return "Chi";
-  case RESOURCE_BURNING_EMBER: return "Burning Embers";
-  case RESOURCE_DEMONIC_FURY:  return "Demonic Fury";
-  case RESOURCE_RUNE:          return "All Runes";
-  case RESOURCE_RUNE_BLOOD:    return "Blood Rune";
-  case RESOURCE_RUNE_UNHOLY:   return "Unholy Rune";
-  case RESOURCE_RUNE_FROST:    return "Frost Rune";
-  case RESOURCE_SHADOW_ORB:    return "Shadow Orb";
-  default:                     return "Unknown";
-  }
-}
-
-
 struct compare_downtime
 {
   bool operator()( player_t* l, player_t* r ) const
@@ -500,8 +473,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     s += "&amp;";
     if ( first )
     {
-      snprintf( buffer, sizeof( buffer ), "chtt=%s Ranking", dps ? "DPS " : "HPS" ); s += buffer;
-      s += "&amp;";
+      s += google_chart::chart_title( std::string( dps ? "DPS " : "HPS" ) + " Ranking" ); // Set chart title
     }
     if ( sim -> print_styles )
     {
@@ -658,8 +630,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
       s += "chdls=dddddd,12";
       s += "&amp;";
     }
-    s += "chtt=Gear+Overview";
-    s += "&amp;";
+    s += google_chart::chart_title( "Gear Overview" ); // Set chart title
     if ( sim -> print_styles )
     {
       s += "chts=666666,18";
@@ -787,8 +758,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     s += "&amp;";
     if ( chart==0 )
     {
-      s += "chtt=Raid+Damage+Per+Execute+Time";
-      s += "&amp;";
+      s += google_chart::chart_title( "Raid Damage Per Execute Time" ); // Set chart title
     }
     if ( sim -> print_styles )
     {
@@ -877,9 +847,10 @@ std::string chart::action_dpet( const player_t* p )
     snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
   s += "&amp;";
+
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Damage+Per+Execute+Time", formatted_name.c_str() ); s += buffer;
+  s += google_chart::chart_title( formatted_name + " Damage Per Execute Time" ); // Set chart title
   s += "&amp;";
   if ( p -> sim -> print_styles )
   {
@@ -982,10 +953,7 @@ std::string chart::aps_portion( const player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name();
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+%s+Sources", formatted_name.c_str(),
-            ( p -> primary_role() == ROLE_HEAL ? "HPS" : "DPS" ) );
-  s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " HPS" : " DPS" ) + " Sources" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1097,9 +1065,7 @@ std::string chart::time_spent( const player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name();
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Spent Time", formatted_name.c_str() );
-  s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( formatted_name + " Spent Time" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1178,7 +1144,9 @@ std::string chart::gains( const player_t* p, resource_type_e type )
 
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  s << google_chart::chart_title( formatted_name + "+" + chart_resource_type_string( type ) + "+Gains" );
+  std::string r = util_t::resource_type_string( type );
+  util_t::inverse_tokenize( r );
+  s << google_chart::chart_title( formatted_name + "+" + r + " Gains" );
 
   if ( p -> sim -> print_styles )
     s << google_chart::chart_title_formating( "666666", 18 );
@@ -1260,8 +1228,7 @@ std::string chart::scale_factors( const player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Scale+Factors", formatted_name.c_str() ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( formatted_name + " Scale Factors" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1375,8 +1342,7 @@ std::string chart::scaling_dps( const player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+DPS+Scaling", formatted_name.c_str() ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( formatted_name + "DPS Scaling" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1581,8 +1547,7 @@ std::string chart::reforge_dps( const player_t* p )
     // Chart Title
     std::string formatted_name = p -> name_str;
     util_t::urlencode( util_t::str_to_utf8( formatted_name ) );
-    snprintf( buffer, sizeof( buffer ), "chtt=%s+Reforge+Scaling", formatted_name.c_str() ); s += buffer;
-    s += "&amp;";
+    s += google_chart::chart_title( formatted_name + " Reforge Scaling" ); // Set chart title
 
     if ( p -> sim -> print_styles )
       s += "chts=666666,18";
@@ -1757,8 +1722,8 @@ std::string chart::timeline( const player_t* p,
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * avg / timeline_max ); s += buffer;
   s += "&amp;";
 
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Timeline", timeline_name.c_str() ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( timeline_name + " Timeline" ); // Set chart title
+
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1837,8 +1802,7 @@ std::string chart::timeline_dps_error( const player_t* p )
   s += "&amp;";
   s += "chdl=DPS Error";
   s += "&amp;";
-  s += "chtt=Standard Error";
-  s += "&amp;";
+  s += google_chart::chart_title( "Standard Error" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -1902,8 +1866,7 @@ std::string chart::distribution( const sim_t* sim,
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%s+Distribution", distribution_name.c_str() ); s += buffer;
-  s += "&amp;";
+  s += google_chart::chart_title( distribution_name + " Distribution" ); // Set chart title
   if ( sim -> print_styles )
   {
     s += "chts=666666,18";
@@ -2234,9 +2197,8 @@ std::string chart::dps_error( const player_t* p )
   s += "&amp;";
   s += "chxl=1:|DPS|3:|p";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chtt=%.2f%%25+Confidence+Interval", p -> sim -> confidence * 100.0 ); s += buffer;
+  s += google_chart::chart_title( util_t::to_string( p -> sim -> confidence * 100.0, 2 ) + "%" + " Confidence Interval" ); // Set chart title
 
-  s += "&amp;";
   if ( p -> sim -> print_styles )
   {
     s += "chxs=0,000000|1,000000|2,000000|3,000000";

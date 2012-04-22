@@ -537,7 +537,37 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
     if ( ! a -> background ) break;
   }
 
-  print_html_gain( file, &(s -> resource_gain), false );
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+   {
+     if ( s -> resource_gain.actual[ i ] > 0 )
+     {
+       fprintf( file,
+                "\t\t\t\t\t\t\t\t<tr" );
+       if ( !( i & 1 ) )
+       {
+         fprintf( file, " class=\"odd\"" );
+       }
+       fprintf( file, ">\n" );
+       fprintf( file,
+                "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
+                s -> resource_gain.name(),
+                util_t::resource_type_string( i ),
+                s -> resource_gain.count[ i ],
+                s -> resource_gain.actual[ i ],
+                s -> resource_gain.actual[ i ] / s -> resource_gain.count[ i ] );
+         fprintf( file,
+                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
+                s->rpe[ i ],
+                s->apr[ i ] );
+       fprintf( file,
+                "\t\t\t\t\t\t\t</tr>\n" );
+     }
+   }
 
 }
 
@@ -1278,6 +1308,8 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t\t<th>Count</th>\n"
            "\t\t\t\t\t\t\t\t<th>Total</th>\n"
            "\t\t\t\t\t\t\t\t<th>Average</th>\n"
+           "\t\t\t\t\t\t\t\t<th>RPE</th>\n"
+           "\t\t\t\t\t\t\t\t<th>APR</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
 
   fprintf( file,
@@ -1766,14 +1798,14 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
            "\t\t\t\t<ul class=\"params\">\n"
            "\t\t\t\t\t<li><b>Race:</b> %s</li>\n"
            "\t\t\t\t\t<li><b>Class:</b> %s</li>\n",
-           p -> race_str.c_str(),
-           pt
+           util_t::inverse_tokenize( p -> race_str ).c_str(),
+           util_t::inverse_tokenize( pt ).c_str()
          );
 
   if ( p -> primary_tree() != SPEC_NONE )
     fprintf( file,
              "\t\t\t\t\t<li><b>Spec:</b> %s</li>\n",
-             util_t::specialization_string( p -> primary_tree() ) );
+             util_t::inverse_tokenize( util_t::specialization_string( p -> primary_tree() ) ).c_str() );
 
   fprintf( file,
            "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"

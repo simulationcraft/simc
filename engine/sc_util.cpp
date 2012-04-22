@@ -40,7 +40,7 @@ bool util_t::str_compare_ci( const std::string& l,
 
 std::string& util_t::glyph_name( std::string& n )
 {
-  util_t::armory_format( n );
+  util_t::tokenize( n );
 
   if ( n.size() >= 9 )
   {
@@ -823,95 +823,48 @@ specialization_e util_t::translate_spec_str( player_type_e ptype, const std::str
 
 // util_t::specialization_string ===============================================
 
-const char* util_t::specialization_string( specialization_e spec, bool armory_format )
+std::string util_t::specialization_string( specialization_e spec )
 {
-  if ( armory_format )
+  switch ( spec )
   {
-    switch ( spec )
-    {
-    case WARRIOR_ARMS: return "arms";
-    case WARRIOR_FURY: return "fury";
-    case WARRIOR_PROTECTION: return "protection";
-    case PALADIN_HOLY: return "holy";
-    case PALADIN_PROTECTION: return "protection";
-    case PALADIN_RETRIBUTION: return "retribution";
-    case HUNTER_BEAST_MASTERY: return "beast_mastery";
-    case HUNTER_MARKSMANSHIP: return "marksmanship";
-    case HUNTER_SURVIVAL: return "survival";
-    case ROGUE_ASSASSINATION: return "assassination";
-    case ROGUE_COMBAT: return "combat";
-    case ROGUE_SUBTLETY: return "subtlety";
-    case PRIEST_DISCIPLINE: return "discipline";
-    case PRIEST_HOLY: return "holy";
-    case PRIEST_SHADOW: return "shadow";
-    case DEATH_KNIGHT_BLOOD: return "blood";
-    case DEATH_KNIGHT_FROST: return "frost";
-    case DEATH_KNIGHT_UNHOLY: return "unholy";
-    case SHAMAN_ELEMENTAL: return "elemental";
-    case SHAMAN_ENHANCEMENT: return "enhancement";
-    case SHAMAN_RESTORATION: return "restoration";
-    case MAGE_ARCANE: return "arcane";
-    case MAGE_FIRE: return "fire";
-    case MAGE_FROST: return "frost";
-    case WARLOCK_AFFLICTION: return "affliction";
-    case WARLOCK_DEMONOLOGY: return "demonology";
-    case WARLOCK_DESTRUCTION: return "destruction";
-    case MONK_BREWMASTER: return "brewmaster";
-    case MONK_MISTWEAVER: return "mistweaver";
-    case MONK_WINDWALKER: return "windwalker";
-    case DRUID_BALANCE: return "balance";
-    case DRUID_FERAL: return "feral";
-    case DRUID_GUARDIAN: return "guardian";
-    case DRUID_RESTORATION: return "restoration";
-    case PET_FEROCITY: return "ferocity";
-    case PET_TENACITY: return "tenacity";
-    case PET_CUNNING: return "cunning";
-    default: return "unknown";
-    }
-  }
-  else
-  {
-    switch ( spec )
-    {
-    case WARRIOR_ARMS: return "Arms";
-    case WARRIOR_FURY: return "Fury";
-    case WARRIOR_PROTECTION: return "Protection";
-    case PALADIN_HOLY: return "Holy";
-    case PALADIN_PROTECTION: return "Protection";
-    case PALADIN_RETRIBUTION: return "Retribution";
-    case HUNTER_BEAST_MASTERY: return "Beast Mastery";
-    case HUNTER_MARKSMANSHIP: return "Marksmanship";
-    case HUNTER_SURVIVAL: return "Survival";
-    case ROGUE_ASSASSINATION: return "Assassination";
-    case ROGUE_COMBAT: return "Combat";
-    case ROGUE_SUBTLETY: return "Subtlety";
-    case PRIEST_DISCIPLINE: return "Discipline";
-    case PRIEST_HOLY: return "Holy";
-    case PRIEST_SHADOW: return "Shadow";
-    case DEATH_KNIGHT_BLOOD: return "Blood";
-    case DEATH_KNIGHT_FROST: return "Frost";
-    case DEATH_KNIGHT_UNHOLY: return "Unholy";
-    case SHAMAN_ELEMENTAL: return "Elemental";
-    case SHAMAN_ENHANCEMENT: return "Enhancement";
-    case SHAMAN_RESTORATION: return "Restoration";
-    case MAGE_ARCANE: return "Arcane";
-    case MAGE_FIRE: return "Fire";
-    case MAGE_FROST: return "Frost";
-    case WARLOCK_AFFLICTION: return "Affliction";
-    case WARLOCK_DEMONOLOGY: return "Demonology";
-    case WARLOCK_DESTRUCTION: return "Destruction";
-    case MONK_BREWMASTER: return "Brewmaster";
-    case MONK_MISTWEAVER: return "Mistweaver";
-    case MONK_WINDWALKER: return "Windwalker";
-    case DRUID_BALANCE: return "Balance";
-    case DRUID_FERAL: return "Feral";
-    case DRUID_GUARDIAN: return "Guardian";
-    case DRUID_RESTORATION: return "Restoration";
-    case PET_FEROCITY: return "Ferocity";
-    case PET_TENACITY: return "Tenacity";
-    case PET_CUNNING: return "Cunning";
-    default:                 return "Unknown";
-    }
+  case WARRIOR_ARMS: return "arms";
+  case WARRIOR_FURY: return "fury";
+  case WARRIOR_PROTECTION: return "protection";
+  case PALADIN_HOLY: return "holy";
+  case PALADIN_PROTECTION: return "protection";
+  case PALADIN_RETRIBUTION: return "retribution";
+  case HUNTER_BEAST_MASTERY: return "beast_mastery";
+  case HUNTER_MARKSMANSHIP: return "marksmanship";
+  case HUNTER_SURVIVAL: return "survival";
+  case ROGUE_ASSASSINATION: return "assassination";
+  case ROGUE_COMBAT: return "combat";
+  case ROGUE_SUBTLETY: return "subtlety";
+  case PRIEST_DISCIPLINE: return "discipline";
+  case PRIEST_HOLY: return "holy";
+  case PRIEST_SHADOW: return "shadow";
+  case DEATH_KNIGHT_BLOOD: return "blood";
+  case DEATH_KNIGHT_FROST: return "frost";
+  case DEATH_KNIGHT_UNHOLY: return "unholy";
+  case SHAMAN_ELEMENTAL: return "elemental";
+  case SHAMAN_ENHANCEMENT: return "enhancement";
+  case SHAMAN_RESTORATION: return "restoration";
+  case MAGE_ARCANE: return "arcane";
+  case MAGE_FIRE: return "fire";
+  case MAGE_FROST: return "frost";
+  case WARLOCK_AFFLICTION: return "affliction";
+  case WARLOCK_DEMONOLOGY: return "demonology";
+  case WARLOCK_DESTRUCTION: return "destruction";
+  case MONK_BREWMASTER: return "brewmaster";
+  case MONK_MISTWEAVER: return "mistweaver";
+  case MONK_WINDWALKER: return "windwalker";
+  case DRUID_BALANCE: return "balance";
+  case DRUID_FERAL: return "feral";
+  case DRUID_GUARDIAN: return "guardian";
+  case DRUID_RESTORATION: return "restoration";
+  case PET_FEROCITY: return "ferocity";
+  case PET_TENACITY: return "tenacity";
+  case PET_CUNNING: return "cunning";
+  default: return "unknown";
   }
 }
 
@@ -2365,7 +2318,7 @@ std::string util_t::encode_html( const std::string& s )
 }
 
 
-void util_t::armory_format( std::string& name, format_type_e f )
+void util_t::tokenize( std::string& name, format_type_e f )
 {
   std::string::size_type l = name.length();
   if ( ! l ) return;
@@ -2414,6 +2367,43 @@ void util_t::armory_format( std::string& name, format_type_e f )
     buffer += c;
   }
   name.swap( buffer );
+}
+
+void util_t::inverse_tokenize( std::string& name )
+{
+  // Converts underscores to whitespace and converts leading chars to uppercase
+
+  std::string::size_type l = name.length();
+  if ( ! l ) return;
+
+
+  util_t::str_to_utf8( name );
+
+  for ( std::string::iterator i = name.begin(); i != name.end(); ++i )
+  {
+    if ( *i == '_' )
+    {
+      *i = ' ';
+      ++i;
+      if ( i == name.end() )
+        break;
+      *i = std::toupper( *i );
+    }
+    else if ( i == name.begin() )
+    {
+      *i = std::toupper( *i );
+    }
+  }
+}
+
+
+std::string util_t::inverse_tokenize( const std::string& name )
+{
+  std::string s = std::string( name );
+
+  inverse_tokenize( s );
+
+  return s;
 }
 
 bool util_t::is_number( const std::string& s )

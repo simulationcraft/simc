@@ -21,7 +21,7 @@ std::string stat_to_str( item_mod_type stat, int stat_amount )
       snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
       stat_str = stat_buf;
 
-      util_t::armory_format( stat_str );
+      util_t::tokenize( stat_str );
     }
   }
 
@@ -102,7 +102,7 @@ bool parse_item_name( item_t& item, const item_data_t* item_data )
 
   item.armory_name_str = item_data -> name;
 
-  util_t::armory_format( item.armory_name_str );
+  util_t::tokenize( item.armory_name_str );
 
   return true;
 }
@@ -278,7 +278,7 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
       {
         continue;
       }
-      util_t::armory_format( item_sources_split[ i ] );
+      util_t::tokenize( item_sources_split[ i ] );
       source_list.push_back( item_sources_split[ i ] );
     }
 
@@ -693,7 +693,7 @@ gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
     if ( cut_pt != gem_name.npos )
     {
       gem_name.erase( cut_pt );
-      util_t::armory_format( gem_name );
+      util_t::tokenize( gem_name );
       item.armory_gems_str += gem_name;
     }
   }

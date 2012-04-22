@@ -763,7 +763,7 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
   std::string type_str;
   if ( ! js_t::get_value( type_str, js, "gemInfo/type/type" ) )
     return GEM_NONE;
-  util_t::armory_format( type_str );
+  util_t::tokenize( type_str );
 
   gem_type_e type = util_t::parse_gem_type( type_str );
 
@@ -786,7 +786,7 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
 
   if ( ! result.empty() )
   {
-    util_t::armory_format( result );
+    util_t::tokenize( result );
     if ( ! item.armory_gems_str.empty() )
       item.armory_gems_str += '_';
     item.armory_gems_str += result;

@@ -97,7 +97,7 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   if ( description_str.empty() ) return;
 
   std::string buffer = description_str;
-  util_t::armory_format( buffer );
+  util_t::tokenize( buffer );
 
   if ( is_proc_description( buffer ) )
     return;

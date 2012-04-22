@@ -21,11 +21,10 @@ actions+=/mana_potion,if=mana.pct<=75
 actions+=/hymn_of_hope,if=pet.shadow_fiend.active
 actions+=/berserking
 actions+=/inner_focus
-actions+=/power_infusion
-actions+=/power_word_shield,if=!cooldown.rapture.remains
 actions+=/penance_heal,if=buff.grace.down
 actions+=/greater_heal,if=buff.inner_focus.up
 actions+=/penance_heal
+#actions+=/renew,if=!ticking|remains<tick_time
 actions+=/greater_heal
 head=cowl_of_the_cleansing_flame,heroic=1,type=cloth,ilevel=391,quality=epic,stats=1211armor_400int_689sta_289spi_263mastery,reforge=mastery_haste,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_spi,gems=40int_10int

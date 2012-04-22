@@ -562,7 +562,7 @@ static bool parse_item_sources( sim_t*             sim,
     {
       continue;
     }
-    util_t::armory_format( sources[ i ] );
+    util_t::tokenize( sources[ i ] );
     sim -> item_db_sources.push_back( sources[ i ] );
   }
 

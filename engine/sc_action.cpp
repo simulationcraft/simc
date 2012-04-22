@@ -174,14 +174,14 @@ action_t::action_t( action_type_e       ty,
     if ( name_str.empty() )
     {
       name_str = data().name_cstr();
-      util_t::armory_format( name_str );
+      util_t::tokenize( name_str );
       assert( ! name_str.empty() );
       dbc_t::add_token( data().id(), name_str );
     }
   }
   else
   {
-    util_t::armory_format( name_str );
+    util_t::tokenize( name_str );
   }
 
   init_dot( name_str );
@@ -1486,7 +1486,7 @@ void action_t::check_spec( specialization_e necessary_spec )
   if ( player -> primary_tree() != necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
-                   player -> name(), name(), util_t::specialization_string( necessary_spec ) );
+                   player -> name(), name(), util_t::specialization_string( necessary_spec ).c_str() );
 
     background = true; // prevent action from being executed
   }
