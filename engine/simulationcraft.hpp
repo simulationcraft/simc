@@ -3232,6 +3232,8 @@ struct player_t : public noncopyable
   } resources;
 
   double  mana_per_intellect;
+  double mp5_per_spirit;
+  double health_per_stamina;
   double mp5_from_spirit_multiplier;
   uptime_t* primary_resource_cap;
 

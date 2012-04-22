@@ -77,7 +77,9 @@ double pet_t::composite_attribute( attribute_type_e attr ) const
 // pet_t::init_base =========================================================
 
 void pet_t::init_base()
-{}
+{
+  //mp5_per_spirit = dbc.mp5_per_spirit( pet_type, level );
+}
 
 // pet_t::init_target =======================================================
 

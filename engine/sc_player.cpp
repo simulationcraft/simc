@@ -310,7 +310,7 @@ player_t::player_t( sim_t*             s,
   main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
   // Resources
   resources( resources_t() ),
-  mana_per_intellect( 0 ), mp5_from_spirit_multiplier( 1.0 ),
+  mana_per_intellect( 0 ), health_per_stamina(), mp5_from_spirit_multiplier( 1.0 ),
   // Consumables
   elixir_guardian( ELIXIR_NONE ),
   elixir_battle( ELIXIR_NONE ),
@@ -699,6 +699,8 @@ void player_t::init_base()
   stats_initial.spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
   stats_initial.attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
   stats_base.mp5                         = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 );
+  health_per_stamina = dbc.health_per_stamina( level );
+  mp5_per_spirit = dbc.mp5_per_spirit( type, level );
 
   if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
@@ -1123,7 +1125,7 @@ void player_t::init_resources( bool force )
       {
         // The first 20pts of stamina only provide 1pt of health.
         double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, static_cast<int>( floor( stamina() ) ) );
-        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
+        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
       }
     }
   }
@@ -2403,7 +2405,7 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mp5() const
 {
-  return stats_current.mp5 + spirit() * dbc.mp5_per_spirit( type, level ) * mp5_from_spirit_multiplier;
+  return stats_current.mp5 + spirit() * mp5_per_spirit * mp5_from_spirit_multiplier;
 }
 
 double player_t::composite_mastery() const
@@ -3402,7 +3404,7 @@ void player_t::recalculate_resource_max( resource_type_e resource_type )
   case RESOURCE_HEALTH:
   {
     double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-    resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * dbc.health_per_stamina( level ) + adjust;
+    resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * health_per_stamina + adjust;
     break;
   }
   default: break;
@@ -3585,7 +3587,7 @@ void player_t::stat_loss( stat_type_e stat,
   {
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
-  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * dbc.health_per_stamina( level ), gain, action ); break;
+  case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, gain, action ); break;
   case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, gain, action ); break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
