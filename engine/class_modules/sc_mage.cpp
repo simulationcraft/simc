@@ -107,7 +107,6 @@ struct mage_t : public player_t
     const spell_data_t* ice_lance;
     const spell_data_t* living_bomb;
     const spell_data_t* mage_armor;
-    const spell_data_t* molten_armor;
     const spell_data_t* pyroblast;
 
     // Major
@@ -143,7 +142,6 @@ struct mage_t : public player_t
     const spell_data_t* hot_streak;
     const spell_data_t* icy_veins;
     const spell_data_t* mage_armor;
-    const spell_data_t* molten_armor;
 
     const spell_data_t* flashburn;
     const spell_data_t* frostburn;
@@ -2735,7 +2733,6 @@ void mage_t::init_spells()
   glyphs.living_bomb       = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.mage_armor        = find_glyph_spell( "Glyph of Mage Armor" );
   glyphs.mirror_image      = find_glyph_spell( "Glyph of Mirror Image" );
-  glyphs.molten_armor      = find_glyph_spell( "Glyph of Molten Armor" );
   glyphs.pyroblast         = find_glyph_spell( "Glyph of Pyroblast" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -3179,8 +3176,7 @@ double mage_t::composite_spell_crit() const
 
   if ( buffs.molten_armor -> up() )
   {
-    c += ( spells.molten_armor -> effectN( 3 ).percent() +
-           glyphs.molten_armor -> effectN( 1 ).percent() );
+    c += buffs.molten_armor -> data().effectN( 1 ).percent();
   }
 
   return c;
