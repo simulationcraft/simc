@@ -1379,6 +1379,14 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  {
+    paladin_melee_attack_t::impact( t, impact_result, impact_dmg );
+
+    if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
+      t -> debuffs.physical_vulnerability -> trigger();
+  }  
+
   virtual void player_buff()
   {
     paladin_melee_attack_t::player_buff();
