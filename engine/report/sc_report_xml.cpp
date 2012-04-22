@@ -974,9 +974,10 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "cpu_seconds", util_t::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
   writer.print_tag( "speed_up", util_t::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds(), 0 ) );
   writer.begin_tag( "rng" );
-  writer.print_attribute( "roll", util_t::to_string( ( sim -> rng -> expected_roll  == 0 ) ? 1.0 : ( sim -> rng -> actual_roll  / sim -> rng -> expected_roll  ), 6 ) );
-  writer.print_attribute( "range", util_t::to_string( ( sim -> rng -> expected_range == 0 ) ? 1.0 : ( sim -> rng -> actual_range / sim -> rng -> expected_range ), 6 ) );
-  writer.print_attribute( "gauss", util_t::to_string( sim -> rng -> actual_gauss, 6 ) );
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  writer.print_attribute( "roll", util_t::to_string( ( sim -> rng -> num_roll  == 0 ) ? nan : ( sim -> rng -> actual_roll / sim -> rng -> num_roll ), 6 ) );
+  writer.print_attribute( "range", util_t::to_string( ( sim -> rng -> num_range == 0 ) ? nan : ( sim -> rng -> actual_range / sim -> rng -> num_range ), 6 ) );
+  writer.print_attribute( "gauss", util_t::to_string( ( sim -> rng -> num_gauss == 0 ) ? nan : ( sim -> rng -> actual_gauss / sim -> rng -> num_gauss ), 6 ) );
   writer.end_tag(); // </rng>
 
   writer.end_tag(); // </performance>

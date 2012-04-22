@@ -9,9 +9,8 @@
 
 rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) :
   name_str( n ),
-  expected_roll( 0 ),  actual_roll( 0 ),  num_roll( 0 ),
-  expected_range( 0 ), actual_range( 0 ), num_range( 0 ),
-  actual_gauss( 0 ), num_gauss( 0 ),
+  actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
+  num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
   next( 0 ),
   gauss_pair_use( false ),
   average_range( avg_range ),
@@ -29,10 +28,12 @@ bool rng_t::roll( double chance )
 {
   if ( chance <= 0 ) return false;
   if ( chance >= 1 ) return true;
+  double z = real();
+  bool result = ( z < chance );
+#ifndef NDEBUG
   num_roll++;
-  bool result = ( real() < chance );
-  expected_roll += chance;
-  if ( result ) actual_roll++;
+  actual_roll += z;
+#endif
   return result;
 }
 
@@ -44,10 +45,12 @@ double rng_t::range( double min,
   assert( min <= max );
   double result = ( min + max ) / 2.0;
   if ( average_range ) return result;
+  double z = real();
+  result =  min + z * ( max - min );
+#ifndef NDEBUG
+  actual_range += z;
   num_range++;
-  expected_range += result;
-  if ( min < max ) result =  min + real() * ( max - min );
-  actual_range += result;
+#endif
   return result;
 }
 
@@ -99,9 +102,10 @@ double rng_t::gauss( double mean,
   if ( truncate_low_end && result < 0 )
     result = 0;
 
+#ifndef NDEBUG
   num_gauss++;
-
   actual_gauss += z;
+#endif
 
   return result;
 }
@@ -126,13 +130,55 @@ double rng_t::exgauss( double mean, double stddev, double nu )
 
 // rng_t::report ============================================================
 
-void rng_t::report( FILE* file )
+std::string rng_t::report( double confidence_estimator ) const
 {
-  util_t::fprintf( file, "RNG %s Actual/Expected Roll=%.6f Range=%.6f Gauss=%.6f\n",
-                   name_str.c_str(),
-                   ( ( expected_roll  == 0 ) ? 1.0 : actual_roll  / expected_roll  ),
-                   ( ( expected_range == 0 ) ? 1.0 : actual_range / expected_range ),
-                   ( ( num_gauss == 0 ) ? 0.0 : actual_gauss / num_gauss           ) );
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  double gauss_confidence = 1.0 / sqrt( num_gauss ) * confidence_estimator;
+  double range_confidence = 1.0 / sqrt( num_range ) * confidence_estimator;
+  double roll_confidence = 1.0 / sqrt( num_roll ) * confidence_estimator;
+
+  int precision = 6;
+
+  std::ostringstream s;
+  s << "RNG " << name_str << ": Actual ( Confidence Interval ): ";
+
+  s << "Roll=";
+  if ( num_roll > 0 )
+  {
+    s << util_t::to_string( actual_roll / num_roll, precision );
+    s << "( [ ";
+    s << util_t::to_string(  0.5 - roll_confidence, precision );
+    s << ", ";
+    s << util_t::to_string(  0.5 + roll_confidence, precision );
+    s << "] ) ";
+  }
+  else s << util_t::to_string( nan ) << " ";
+
+  s << "Range=";
+  if ( num_range > 0 )
+  {
+    s << util_t::to_string( actual_range / num_range, precision );
+    s << "( [ ";
+    s << util_t::to_string(  0.5 - range_confidence, precision );
+    s << ", ";
+    s << util_t::to_string(  0.5 + range_confidence, precision );
+    s << "] ) ";
+  }
+  else s << util_t::to_string( nan ) << " ";
+
+  if ( num_gauss > 0 )
+  {
+    s << "Gauss=";
+    s << util_t::to_string( actual_gauss / num_gauss, precision );
+    s << "( [ ";
+    s << util_t::to_string(  -gauss_confidence, precision );
+    s << ", ";
+    s << util_t::to_string(  gauss_confidence, precision );
+    s << "] ) ";
+  }
+  else s << util_t::to_string( nan );
+
+  return s.str();
 }
 
 // rng_t::stdnormal_cdf ==

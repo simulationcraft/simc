@@ -400,7 +400,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t<h4>Action details: %s </h4>\n", a -> name() );
 
       if ( a->sim->separated_rng )
-        report::print_html_rng_information( file, a->rng_result );
+        report::print_html_rng_information( file, a->rng_result, a -> sim -> confidence_estimator );
 
       fprintf ( file,
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"

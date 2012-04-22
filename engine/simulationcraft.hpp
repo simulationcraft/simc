@@ -4942,10 +4942,8 @@ struct rng_t
 {
 public:
   const std::string name_str;
-  double expected_roll,  actual_roll,  num_roll;
-  double expected_range, actual_range, num_range;
-  double actual_gauss;
-  uint64_t num_gauss;
+  double actual_roll, actual_range, actual_gauss;
+  uint64_t num_roll, num_range, num_gauss;
   rng_t* next;
 
 private:
@@ -4967,7 +4965,7 @@ public:
   virtual double gauss( double mean, double stddev, const bool truncate_low_end = false );
   double exgauss( double mean, double stddev, double nu );
   virtual void    seed( uint32_t start = time( NULL ) );
-  void   report( FILE* );
+  std::string report( double confidence_estimator ) const;
 
   timespan_t range( timespan_t min, timespan_t max )
   {

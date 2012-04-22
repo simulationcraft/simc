@@ -42,7 +42,7 @@ struct generate_report_information {
 
 struct report {
 
-  static void print_html_rng_information  ( FILE*, const rng_t* );
+  static void print_html_rng_information  ( FILE*, const rng_t*, double confidence_estimator );
   static void print_html_sample_data      ( FILE*, const player_t*, const sample_data_t&, const std::string& name );
 
   static void print_spell_query ( sim_t*, unsigned level = MAX_LEVEL );

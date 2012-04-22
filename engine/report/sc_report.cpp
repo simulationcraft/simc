@@ -206,7 +206,7 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_rng_information( FILE* file, const rng_t* rng )
+void report::print_html_rng_information( FILE* file, const rng_t* rng, double confidence_estimator )
 {
   fprintf( file,
            "\t\t\t\t\t\t\t<table>\n"
@@ -221,11 +221,9 @@ void report::print_html_rng_information( FILE* file, const rng_t* rng )
            "\t\t\t\t\t\t\t<table class=\"details\">\n" );
   fprintf( file,
            "\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"left\">Actual Roll / Expected Roll / Diff%%</td>\n"
-           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.8f / %.8f / %.8f%%</td>\n"
+           "\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
            "\t\t\t\t\t\t\t\t</tr>\n",
-           rng->actual_roll, rng->expected_roll,
-           rng->expected_roll ? fabs( ( rng->actual_roll-rng->expected_roll ) / rng->expected_roll ) * 100.0 : 0 );
+           rng -> report( confidence_estimator ).c_str() );
 
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );
