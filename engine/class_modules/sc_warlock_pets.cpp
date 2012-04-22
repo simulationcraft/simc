@@ -776,7 +776,7 @@ double warlock_guardian_pet_t::composite_spell_haste() const
   return snapshot_haste;
 }
 
-double warlock_guardian_pet_t::composite_spell_power( const school_type_e school ) const
+double warlock_guardian_pet_t::composite_spell_power( const school_type_e /*school*/ ) const
 {
   double sp = 59; // FIXME: Mysterious base spell power. Needs more testing/confirmation for all guardians, especially at level 90.
   sp += snapshot_sp;

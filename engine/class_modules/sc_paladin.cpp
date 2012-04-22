@@ -69,13 +69,16 @@ struct paladin_t : public player_t
   {
     buff_t* ancient_power;
     buff_t* avenging_wrath;
+    buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_plea;
     buff_t* divine_protection;
     buff_t* divine_purpose;
     buff_t* divine_shield;
+    buff_t* double_jeopardy;
     buff_t* gotak_prot;
     buff_t* grand_crusader;
+    buff_t* glyph_hammer_of_wrath;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
@@ -93,6 +96,7 @@ struct paladin_t : public player_t
     gain_t* sanctuary;
     gain_t* seal_of_command_glyph;
     gain_t* seal_of_insight;
+    gain_t* glyph_divine_storm;
 
     // Holy Power
     gain_t* hp_blessed_life;
@@ -174,9 +178,14 @@ struct paladin_t : public player_t
   // Glyphs
   struct glyphs_t
   {
-    // prime
-
-    // major
+    const spell_data_t* ascetic_crusader;
+    const spell_data_t* blessed_life;
+    const spell_data_t* divine_protection;
+    const spell_data_t* divine_storm;
+    const spell_data_t* double_jeopardy;
+    const spell_data_t* hammer_of_wrath;
+    const spell_data_t* immediate_truth;
+    const spell_data_t* inquisition;
 
     glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
   };
@@ -858,6 +867,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
 
+  virtual double cost() const
+  {
+    double m = paladin_melee_attack_t::cost();
+
+    m *= 1.0 + p() -> glyphs.ascetic_crusader -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
@@ -880,8 +898,10 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
 struct divine_storm_t : public paladin_melee_attack_t
 {
+  double heal_percentage;
+
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ), heal_percentage( 0.0 )
   {
     parse_options( NULL, options_str );
 
@@ -890,6 +910,11 @@ struct divine_storm_t : public paladin_melee_attack_t
     aoe               = -1;
     trigger_seal      = false;
     trigger_seal_of_righteousness = true;
+
+    if ( p -> glyphs.divine_storm -> ok() )
+    {
+      heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
+    }
   }
 
   virtual void execute()
@@ -898,6 +923,10 @@ struct divine_storm_t : public paladin_melee_attack_t
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
+      if ( p() -> glyphs.divine_storm -> ok() )
+      {
+        p() -> resource_gain( RESOURCE_HEALTH, heal_percentage * p() -> resources.max[ RESOURCE_HEALTH ], p() -> gains.glyph_divine_storm, this );
+      }
     }
   }
 };
@@ -1018,6 +1047,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p() -> buffs.holy_avenger -> check() )
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+      }
+
+      if ( p() -> glyphs.hammer_of_wrath -> ok() )
+      {
+        p() -> buffs.glyph_hammer_of_wrath -> trigger();
       }
     }
   }
@@ -1214,6 +1248,11 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     tick_power_mod               = 1.0;
+
+    if ( p -> glyphs.immediate_truth -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
+    }
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -1269,6 +1308,11 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
         weapon_multiplier      = s -> effectN( 1 ).percent();
       }
     }
+
+    if ( p -> glyphs.immediate_truth -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
+    }
   }
 };
 
@@ -1288,8 +1332,10 @@ struct seal_of_command_proc_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
+  player_t* old_target;
+
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), SCHOOL_NONE, false )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), SCHOOL_NONE, false ), old_target( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1308,6 +1354,12 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
+  virtual void reset()
+  {
+    paladin_melee_attack_t::reset();
+    old_target = 0;
+  }
+
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
@@ -1323,6 +1375,18 @@ struct judgment_t : public paladin_melee_attack_t
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
         }
       }
+      p() -> buffs.double_jeopardy -> trigger();
+    }
+  }
+
+  virtual void player_buff()
+  {
+    paladin_melee_attack_t::player_buff();
+
+    if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
+    {
+      player_multiplier *= 1.0 + p() -> buffs.double_jeopardy -> value();
+      old_target = target;
     }
   }
 
@@ -1706,12 +1770,21 @@ struct holy_avenger_t : public paladin_spell_t
 struct inquisition_t : public paladin_spell_t
 {
   timespan_t base_duration;
+  double m;
+
   inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ), base_duration( data().duration() )
+    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ), 
+    base_duration( data().duration() ), m( data().effect1().percent() )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
+
+    if ( p -> glyphs.inquisition -> ok() )
+    {
+      m += p -> glyphs.inquisition -> effectN( 1 ).percent(); 
+      base_duration *= 1.0 + p -> glyphs.inquisition -> effectN( 2 ).percent();
+    }
   }
 
   virtual void execute()
@@ -2167,10 +2240,11 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   gains.divine_plea                 = get_gain( "divine_plea"            );
-  gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise" );
+  gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
   gains.sanctuary                   = get_gain( "sanctuary"              );
   gains.seal_of_command_glyph       = get_gain( "seal_of_command_glyph"  );
   gains.seal_of_insight             = get_gain( "seal_of_insight"        );
+  gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
 
   // Holy Power
   gains.hp_blessed_life             = get_gain( "holy_power_blessed_life" );
@@ -2275,6 +2349,16 @@ int paladin_t::decode_set( const item_t& item ) const
 void paladin_t::init_buffs()
 {
   player_t::init_buffs();
+
+  // Glyphs
+  buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
+    .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
+  buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
+    .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+    .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+  buffs.glyph_hammer_of_wrath  = buff_creator_t( this, "glyph_hammer_of_wrath", glyphs.hammer_of_wrath )
+    .duration( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+    .default_value( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
@@ -2516,31 +2600,14 @@ void paladin_t::init_spells()
   passives.tier13_4pc_melee_value = find_spell( 105819 );
 
   // Glyphs
-/*
-  glyphs.ascetic_crusader         = find_glyph( "Glyph of the Ascetic Crusader" );
-  glyphs.beacon_of_light          = find_glyph( "Glyph of Beacon of Light" );
-  glyphs.consecration             = find_glyph( "Glyph of Consecration" );
-  glyphs.crusader_strike          = find_glyph( "Glyph of Crusader Strike" );
-  glyphs.divine_favor             = find_glyph( "Glyph of Divine Favor" );
-  glyphs.divine_plea              = find_glyph( "Glyph of Divine Plea" );
-  glyphs.divine_protection        = find_glyph( "Glyph of Divine Protection" );
-  glyphs.divinity                 = find_glyph( "Glyph of Divinity" );
-  glyphs.exorcism                 = find_glyph( "Glyph of Exorcism" );
-  glyphs.focused_shield           = find_glyph( "Glyph of Focused Shield" );
-  glyphs.hammer_of_the_righteous  = find_glyph( "Glyph of Hammer of the Righteous" );
-  glyphs.hammer_of_wrath          = find_glyph( "Glyph of Hammer of Wrath" );
-  glyphs.holy_shock               = find_glyph( "Glyph of Holy Shock" );
-  glyphs.judgment                = find_glyph( "Glyph of judgment" );
-  glyphs.lay_on_hands             = find_glyph( "Glyph of Lay on Hands" );
-  glyphs.light_of_dawn            = find_glyph( "Glyph of Light of Dawn" );
-  glyphs.long_word                = find_glyph( "Glyph of the Long Word" );
-  glyphs.rebuke                   = find_glyph( "Glyph of Rebuke" );
-  glyphs.seal_of_insight          = find_glyph( "Glyph of Seal of Insight" );
-  glyphs.seal_of_truth            = find_glyph( "Glyph of Seal of Truth" );
-  glyphs.shield_of_the_righteous  = find_glyph( "Glyph of Shield of the Righteous" );
-  glyphs.templars_verdict         = find_glyph( "Glyph of Templar's Verdict" );
-  glyphs.word_of_glory            = find_glyph( "Glyph of Word of Glory" );
-*/
+  glyphs.ascetic_crusader         = find_glyph_spell( "Glyph of the Ascetic Crusader" );
+  glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
+  glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
+  glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
+  glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
+  glyphs.hammer_of_wrath          = find_glyph_spell( "Glyph of Hammer of Wrath" );
+  glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
+  glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -2758,12 +2825,17 @@ double paladin_t::assess_damage( double        amount,
   {
     if ( util_t::school_type_component( school, SCHOOL_MAGIC ) )
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect1().percent();
+      amount *= 1.0 + buffs.divine_protection -> data().effect1().percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
     }
     else
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect2().percent();
+      amount *= 1.0 + buffs.divine_protection -> data().effect2().percent() + glyphs.divine_protection -> effectN( 2 ).percent();
     }
+  }
+
+  if ( buffs.glyph_hammer_of_wrath -> check() )
+  {
+    amount *= 1.0 + buffs.glyph_hammer_of_wrath -> value();
   }
 
   if ( result == RESULT_PARRY )
@@ -2778,6 +2850,15 @@ double paladin_t::assess_damage( double        amount,
         main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs.parry_haste -> occur();
       }
+    }
+  }
+
+  if ( ( dtype == DMG_DIRECT ) && glyphs.ascetic_crusader -> ok() )
+  {
+    if ( ! buffs.blessed_life -> up() )
+    {
+      resource_gain( RESOURCE_HOLY_POWER, 1, gains.hp_blessed_life );
+      buffs.blessed_life -> trigger();
     }
   }
 

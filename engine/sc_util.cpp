@@ -46,6 +46,8 @@ std::string& util_t::glyph_name( std::string& n )
   {
     if ( std::equal( n.begin(), n.begin() + 7, "glyph__" ) )
       n.erase( 0, 7 );
+    else if ( n.size() >= 13 && std::equal( n.begin(), n.begin() + 13, "glyph_of_the_" ) )
+      n.erase( 0, 13 );
     else if ( std::equal( n.begin(), n.begin() + 9, "glyph_of_" ) )
       n.erase( 0, 9 );
   }
