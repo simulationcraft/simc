@@ -249,6 +249,7 @@ public:
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
+  virtual timespan_t available() const;
   virtual void init_resources( bool force );
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );

@@ -313,8 +313,7 @@ struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   shadow_bite_t( felhunter_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
-  {
-  }
+  { }
 };
 
 }
@@ -624,6 +623,20 @@ void warlock_pet_t::init_base()
   //health_per_stamina = 10.0; // untested!
   mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
   //mp5_per_intellect  = 2.0 / 3.0; // untested!
+}
+
+timespan_t warlock_pet_t::available() const
+{
+  assert( primary_resource() == RESOURCE_ENERGY );
+  double energy = resources.current[ RESOURCE_ENERGY ];
+
+  if ( energy >= 100 )
+    return timespan_t::from_seconds( 0.1 );
+
+  return std::max(
+    timespan_t::from_seconds( ( 100 - energy ) / energy_regen_per_second() ),
+    timespan_t::from_seconds( 0.1 )
+  );
 }
 
 void warlock_pet_t::init_resources( bool force )
