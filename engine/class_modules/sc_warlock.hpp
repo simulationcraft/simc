@@ -232,7 +232,7 @@ struct _weapon_list_t;
 }
 struct warlock_pet_t : public pet_t
 {
-  double damage_modifier;
+  double ap_per_owner_sp;
   int stats_avaiable;
   int stats2_avaiable;
 
@@ -329,8 +329,6 @@ struct felhunter_pet_t : public warlock_main_pet_t
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
-  virtual void summon( timespan_t duration=timespan_t::zero() );
-  virtual void dismiss();
 };
 
 // ==========================================================================
@@ -340,6 +338,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
 struct succubus_pet_t : public warlock_main_pet_t
 {
   succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" );
+  virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };

@@ -573,6 +573,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   procs_mana_feed = get_proc( "mana_feed" );
   stats_avaiable = 0;
   stats2_avaiable = 0;
+  ap_per_owner_sp = 3.5;
 
   main_hand_weapon.type       = WEAPON_BEAST;
   main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
@@ -668,7 +669,7 @@ double warlock_pet_t::composite_spell_power( const school_type_e school ) const
 double warlock_pet_t::composite_attack_power() const
 {
   double ap = 0;
-  ap += owner -> composite_spell_power( SCHOOL_MAX ) * 3.5; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
+  ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp; // Appears to simply be 3.5 times owner SP in MoP, needs more testing
   return ap;
 }
 
@@ -855,13 +856,6 @@ void felhunter_pet_t::init_base()
 {
   warlock_pet_t::init_base();
 
-  // untested in cataclyms!!
-  //health_per_stamina = 9.5;
-  mana_per_intellect = 11.55;
-  //mp5_per_intellect  = 8.0 / 324.0;
-  stats_base.mp5 = 11.22;
-  // untested in cataclyms!!
-
   main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "felhunter_melee" );
 }
 
@@ -873,16 +867,6 @@ action_t* felhunter_pet_t::create_action( const std::string& name,
   return warlock_main_pet_t::create_action( name, options_str );
 }
 
-void felhunter_pet_t::summon( timespan_t duration )
-{
-  warlock_main_pet_t::summon( duration );
-}
-
-void felhunter_pet_t::dismiss()
-{
-  warlock_main_pet_t::dismiss();
-}
-
 // ==========================================================================
 // Pet Succubus
 // ==========================================================================
@@ -892,6 +876,14 @@ succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string&
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/lash_of_pain";
+  ap_per_owner_sp = 1.667;
+}
+
+void succubus_pet_t::init_base()
+{
+  warlock_pet_t::init_base();
+
+  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "succubus_melee" );
 }
 
 action_t* succubus_pet_t::create_action( const std::string& name,
