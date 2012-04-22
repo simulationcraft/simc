@@ -735,7 +735,7 @@ void warlock_guardian_pet_t::summon( timespan_t duration )
   // Guardians use snapshots
   snapshot_crit = owner -> composite_spell_crit();
   snapshot_haste = owner -> spell_haste;
-  snapshot_sp = floor( owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() );
+  snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX );
   snapshot_mastery = owner -> composite_mastery();
 }
 
@@ -761,8 +761,8 @@ double warlock_guardian_pet_t::composite_attack_hit() const
 
 double warlock_guardian_pet_t::composite_attack_power() const
 {
-  double ap = pet_t::composite_attack_power();
-  ap += snapshot_sp * ( level / 80.0 ) * owner -> composite_spell_power_multiplier();
+  double ap = 0;
+  ap += snapshot_sp * ap_per_owner_sp;
   return ap;
 }
 
@@ -778,8 +778,8 @@ double warlock_guardian_pet_t::composite_spell_haste() const
 
 double warlock_guardian_pet_t::composite_spell_power( const school_type_e school ) const
 {
-  double sp = pet_t::composite_spell_power( school );
-  sp += snapshot_sp * ( level / 80.0 ) * 0.5;
+  double sp = 59; // FIXME: Mysterious, needs more testing, especially at level 90
+  sp += snapshot_sp;
   return sp;
 }
 
@@ -848,7 +848,7 @@ action_t* felguard_pet_t::create_action( const std::string& name,
 felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
   warlock_main_pet_t( sim, owner, name, PET_FELHUNTER )
 {
-  action_list_str = "snapshot_stats";
+  action_list_str += "/snapshot_stats";
   action_list_str += "/shadow_bite";
 }
 
