@@ -3082,9 +3082,6 @@ struct player_t : public noncopyable
   int         bugs;
   specialization_e spec;
   int         invert_scaling;
-  bool        vengeance_enabled;
-  double      vengeance_damage, vengeance_value, vengeance_max;
-  bool        vengeance_was_attacked;
   int         active_pets;
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
@@ -3093,6 +3090,13 @@ struct player_t : public noncopyable
   int         scale_player;
   bool        has_dtr;
   double      avg_ilvl;
+
+  struct p_vengeance_t
+  {
+    bool        enabled;
+    double      damage, value, max;
+    bool        was_attacked;
+  } vengeance;
 
   // Latency
   timespan_t  world_lag, world_lag_stddev;
@@ -3170,7 +3174,7 @@ struct player_t : public noncopyable
       double dodge_per_agility;
       double parry_rating_per_strength;
 
-      extended_player_stats_t() : player_stats_t()
+      extended_player_stats_t()
       {
         memset( this, 0, sizeof( extended_player_stats_t ) );
       }
@@ -3258,21 +3262,43 @@ struct player_t : public noncopyable
   timespan_t cast_delay_occurred;
 
   // Callbacks
-  std::vector<action_callback_t*> all_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > attack_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > spell_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > heal_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > tick_callbacks;
+  struct callbacks_t
+  {
+    std::vector<action_callback_t*> all_callbacks;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
 
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage_callbacks;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage_callbacks;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal_callbacks;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal_callbacks;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal;
+    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal;
 
-  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain_callbacks;
-  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss_callbacks;
+    std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
+    std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
+
+    ~callbacks_t()
+    { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
+
+    void reset();
+
+    virtual void register_callbacks();
+    virtual void register_resource_gain_callback( resource_type_e,     action_callback_t* );
+    virtual void register_resource_loss_callback( resource_type_e,     action_callback_t* );
+    virtual void register_attack_callback       ( int64_t result_mask, action_callback_t* );
+    virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
+    virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
+    virtual void register_heal_callback         ( int64_t result_mask, action_callback_t* );
+    virtual void register_absorb_callback       ( int64_t result_mask, action_callback_t* );
+    virtual void register_harmful_spell_callback( int64_t result_mask, action_callback_t* );
+    virtual void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
+    virtual void register_direct_damage_callback( int64_t result_mask, action_callback_t* );
+    virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
+    virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
+  } callbacks;
 
   // Action Priority List
   std::vector<action_t*>  action_list;
@@ -3307,15 +3333,10 @@ struct player_t : public noncopyable
     std::array< double, RESOURCE_MAX > resource;
 
     double spell_power, spell_hit, spell_crit, mp5;
-
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
-
     double armor, miss, crit, dodge, parry, block;
-
     double spell_haste, attack_haste, attack_speed;
-
     double mastery;
-
   } buffed;
 
   std::vector<buff_t*> buff_list;
@@ -3672,20 +3693,6 @@ struct player_t : public noncopyable
   virtual bool ooc_buffs() { return true; }
 
   virtual bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
-
-  virtual void register_callbacks();
-  virtual void register_resource_gain_callback( resource_type_e,       action_callback_t* );
-  virtual void register_resource_loss_callback( resource_type_e,       action_callback_t* );
-  virtual void register_attack_callback       ( int64_t result_mask, action_callback_t* );
-  virtual void register_spell_callback        ( int64_t result_mask, action_callback_t* );
-  virtual void register_tick_callback         ( int64_t result_mask, action_callback_t* );
-  virtual void register_heal_callback         ( int64_t result_mask, action_callback_t* );
-  virtual void register_absorb_callback         ( int64_t result_mask, action_callback_t* );
-  virtual void register_harmful_spell_callback( int64_t result_mask, action_callback_t* );
-  virtual void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
-  virtual void register_direct_damage_callback( int64_t result_mask, action_callback_t* );
-  virtual void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
-  virtual void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
 
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
@@ -4604,7 +4611,7 @@ struct action_callback_t
     listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
   {
     assert( l );
-    l -> all_callbacks.push_back( this );
+    l -> callbacks.all_callbacks.push_back( this );
   }
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data=0 ) = 0;

@@ -1682,7 +1682,7 @@ std::string chart::timeline( const player_t* p,
 
   double timeline_adjust = timeline_range / timeline_max;
 
-  char buffer[ 1024 ];
+  char buffer[ 2048 ];
 
   std::string s = std::string();
   s = get_chart_base_url();
@@ -1741,19 +1741,20 @@ std::string chart::timeline( const player_t* p,
 
 std::string chart::timeline_dps_error( const player_t* p )
 {
-  int max_buckets = ( int ) p -> dps_convergence_error.size();
-  if ( ! max_buckets )
+  static const size_t min_data_number = 50;
+  size_t max_buckets = p -> dps_convergence_error.size();
+  if ( max_buckets <= min_data_number )
     return std::string();
 
-  int max_points  = 600;
-  int increment   = 1;
+  size_t max_points  = 600;
+  size_t increment   = 1;
 
   if ( max_buckets > max_points )
   {
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
 
-  double dps_max_error= *range::max_element( p -> dps_convergence_error );
+  double dps_max_error= *std::max_element( p -> dps_convergence_error.begin() + min_data_number, p -> dps_convergence_error.end() );
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 
@@ -1780,17 +1781,20 @@ std::string chart::timeline_dps_error( const player_t* p )
   }
   s += "&amp;";
   s += "chd=s:";
-  for ( int i=0; i < max_buckets; i += increment )
+  for ( size_t i = 0; i < max_buckets; i += increment )
   {
-    s += simple_encoding( ( int ) ( p -> dps_convergence_error[ i ] * dps_adjust ) );
+    if ( i < min_data_number )
+      s += simple_encoding( 0 );
+    else
+      s += simple_encoding( ( int ) ( p -> dps_convergence_error[ i ] * dps_adjust ) );
   }
   s += "&amp;";
   s += "chxt=x,y";
   s += "&amp;";
   s += "chm=";
-  for ( int i=1; i <= 5; i++ )
+  for ( unsigned i = 1; i <= 5; i++ )
   {
-    int j = ( int ) ( ( max_buckets / 5 ) * i );
+    unsigned j = ( int ) ( ( max_buckets / 5 ) * i );
     if ( !j ) continue;
     if ( j >= max_buckets ) j = max_buckets - 1;
     if ( i > 1 ) s += "|";
@@ -1798,11 +1802,11 @@ std::string chart::timeline_dps_error( const player_t* p )
 
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", max_buckets, dps_max_error ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", max_buckets + 1, dps_max_error ); s += buffer;
   s += "&amp;";
   s += "chdl=DPS Error";
   s += "&amp;";
-  s += google_chart::chart_title( "Standard Error" ); // Set chart title
+  s += google_chart::chart_title( "Standard Error Confidence ( n >= 50 )" ); // Set chart title
   if ( p -> sim -> print_styles )
   {
     s += "chts=666666,18";

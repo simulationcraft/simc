@@ -2255,8 +2255,8 @@ struct vampiric_touch_t : public priest_spell_t
     /* VT ticks are triggering OnHarmfulSpellCast procs. Twice at that..... */
     if ( callbacks )
     {
-      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
-      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
     }
   }
 };

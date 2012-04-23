@@ -47,7 +47,7 @@ void attack_t::execute()
   {
     if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> attack_callbacks[ execute_state ? execute_state -> result : result ], this );
+      action_callback_t::trigger( player -> callbacks.attack[ execute_state ? execute_state -> result : result ], this );
     }
   }
 }

@@ -788,6 +788,33 @@ static void trigger_hot_streak( mage_spell_t* s )
 }
 
 // trigger_ignite ===========================================================
+struct ignite_t : public mage_spell_t
+{
+  ignite_t( mage_t* player ) :
+    mage_spell_t( "ignite", player, player -> find_spell( 12654 ) )
+  {
+    background    = true;
+
+    // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
+    // proc          = false;
+
+    tick_may_crit = false;
+    hasted_ticks  = false;
+    dot_behavior  = DOT_REFRESH;
+  }
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, 0 );
+
+    base_td = travel_dmg;
+  }
+  virtual timespan_t travel_time() const
+  {
+    mage_t* p = static_cast<mage_t*>( player );
+    return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
+  }
+  virtual double total_td_multiplier() const { return 1.0; }
+};
 
 static void trigger_ignite( mage_spell_t* s, double dmg )
 {
@@ -824,36 +851,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
     {
       mage_t* p = ignite_sampling_event_t::p();
 
-      struct ignite_t : public mage_spell_t
-      {
-        ignite_t( mage_t* player ) :
-          mage_spell_t( "ignite", player, player -> find_spell( 12654 ) )
-        {
-          background    = true;
-
-          // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
-          // proc          = false;
-
-          tick_may_crit = false;
-          hasted_ticks  = false;
-          dot_behavior  = DOT_REFRESH;
-          init();
-        }
-        virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-        {
-          mage_spell_t::impact( t, impact_result, 0 );
-
-          base_td = travel_dmg;
-        }
-        virtual timespan_t travel_time() const
-        {
-          mage_t* p = static_cast<mage_t*>( player );
-          return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
-        }
-        virtual double total_td_multiplier() const { return 1.0; }
-      };
-
-      if ( ! p -> active_ignite ) p -> active_ignite = new ignite_t( p );
+      assert( p -> active_ignite );
 
       dot_t* dot = p -> active_ignite -> dot();
 
@@ -2714,6 +2712,9 @@ void mage_t::init_spells()
   spec.mana_adept = find_mastery_spell( MAGE_ARCANE );
 
   spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+
+  if ( spec.ignite -> ok() )
+    active_ignite = new ignite_t( this );
 
   // Glyphs
   glyphs.arcane_barrage    = find_glyph_spell( "Glyph of Arcane Barrage" );

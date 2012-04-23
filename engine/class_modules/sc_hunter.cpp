@@ -770,6 +770,46 @@ static void trigger_go_for_the_throat( attack_t* a )
 
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, p -> talents.go_for_the_throat -> effectN( 1 ).base_value(), p -> active_pet -> gains.go_for_the_throat );
 }
+struct piercing_shots_t : public attack_t
+{
+  piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, p -> find_spell( 63468 ) )
+  {
+    may_miss      = false;
+    may_crit      = true;
+    background    = true;
+    proc          = true;
+    hasted_ticks  = false;
+    tick_may_crit = false;
+    dot_behavior  = DOT_REFRESH;
+
+    base_multiplier = 1.0;
+    tick_power_mod  = 0;
+    num_ticks       = 8;
+    base_tick_time  = timespan_t::from_seconds( 1.0 );
+  }
+
+  void player_buff() {}
+
+  void target_debuff( player_t*, dmg_type_e )
+  {
+    target_multiplier = 1.30;
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
+  {
+    attack_t::impact( t, impact_result, 0 );
+
+    // FIXME: Is a is_hit check necessary here?
+    base_td = impact_dmg / dot() -> num_ticks;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+  }
+
+  virtual double total_td_multiplier() const { return target_multiplier; }
+};
 
 // trigger_piercing_shots ===================================================
 
@@ -781,48 +821,7 @@ static void trigger_piercing_shots( action_t* a, double dmg )
   if ( ! p -> talents.piercing_shots -> ok() )
     return;
 
-  struct piercing_shots_t : public attack_t
-  {
-    piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, p -> find_spell( 63468 ) )
-    {
-      may_miss      = false;
-      may_crit      = true;
-      background    = true;
-      proc          = true;
-      hasted_ticks  = false;
-      tick_may_crit = false;
-      dot_behavior  = DOT_REFRESH;
-
-      base_multiplier = 1.0;
-      tick_power_mod  = 0;
-      num_ticks       = 8;
-      base_tick_time  = timespan_t::from_seconds( 1.0 );
-
-      init();
-    }
-
-    void player_buff() {}
-
-    void target_debuff( player_t*, dmg_type_e )
-    {
-      target_multiplier = 1.30;
-    }
-
-    virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
-    {
-      attack_t::impact( t, impact_result, 0 );
-
-      // FIXME: Is a is_hit check necessary here?
-      base_td = impact_dmg / dot() -> num_ticks;
-    }
-
-    virtual timespan_t travel_time() const
-    {
-      return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
-    }
-
-    virtual double total_td_multiplier() const { return target_multiplier; }
-  };
+  assert( p -> active_piercing_shots );
 
   double piercing_shots_dmg = p -> talents.piercing_shots -> effectN( 1 ).percent() * dmg;
 
@@ -834,8 +833,6 @@ static void trigger_piercing_shots( action_t* a, double dmg )
     a -> result = result;
     return;
   }
-
-  if ( ! p -> active_piercing_shots ) p -> active_piercing_shots = new piercing_shots_t( p );
 
   dot_t* dot = p -> active_piercing_shots -> dot();
 
@@ -3562,6 +3559,9 @@ void hunter_t::init_spells()
   glyphs.steady_shot    = find_glyph( "Glyph of Steady Shot"    );
   glyphs.trap_launcher  = find_glyph( "Glyph of Trap Launcher"  );
   glyphs.kill_command   = find_glyph( "Glyph of Kill Command"   );
+
+  if ( talents.piercing_shots -> ok() )
+    active_piercing_shots = new piercing_shots_t( this );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {

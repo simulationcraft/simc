@@ -58,11 +58,11 @@ void absorb_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> absorb_callbacks[ result ], this );
+      action_callback_t::trigger( player -> callbacks.absorb[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
-      action_callback_t::trigger( player -> absorb_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.absorb[ RESULT_NONE ], this );
     }
   }
 }

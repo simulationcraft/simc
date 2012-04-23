@@ -1422,14 +1422,15 @@ void player_convergence( const int& iterations, const int& convergence_scale, co
 
     double sum_of_squares = 0;
 
-    for ( int i=0; i < iterations; i++ )
+    for ( int i = 0; i < iterations; i++ )
     {
-      dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
-
       double delta = dps.data()[ i ] - convergence_dps;
       double delta_squared = delta * delta;
 
       sum_of_squares += delta_squared;
+
+      if ( i > 1 )
+        dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
 
       if ( ( i % convergence_scale ) == 0 )
         convergence_std_dev += delta_squared;

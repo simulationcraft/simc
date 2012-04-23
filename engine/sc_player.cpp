@@ -40,43 +40,43 @@ struct vengeance_t : public event_t
   vengeance_t ( player_t* player ) :
     event_t( player -> sim, player )
   {
-    name = "Vengeance_Check";
+    name = "vengeance.Check";
     sim -> add_event( this, timespan_t::from_seconds( 2.0 ) );
   }
 
   virtual void execute()
   {
-    if ( player -> vengeance_was_attacked /* There is only a 5% decay if the player has been attacked ( dodged, paried )
+    if ( player -> vengeance.was_attacked /* There is only a 5% decay if the player has been attacked ( dodged, paried )
     damage in the last 2s. 10% is only when there has been no attack at all. See Issue 1009 */ )
     {
-      player -> vengeance_value *= 0.95;
-      player -> vengeance_value += 0.05 * player -> vengeance_damage;
-      if ( player -> vengeance_value < player -> vengeance_damage * ( 1.0 / 3.0 ) )
-        player -> vengeance_value = player -> vengeance_damage * ( 1.0 / 3.0 ) ;
+      player -> vengeance.value *= 0.95;
+      player -> vengeance.value += 0.05 * player -> vengeance.damage;
+      if ( player -> vengeance.value < player -> vengeance.damage * ( 1.0 / 3.0 ) )
+        player -> vengeance.value = player -> vengeance.damage * ( 1.0 / 3.0 ) ;
     }
     else
     {
-      player -> vengeance_value -= 0.1 * player -> vengeance_max;
+      player -> vengeance.value -= 0.1 * player -> vengeance.max;
     }
 
-    if ( player -> vengeance_value < 0 )
-      player -> vengeance_value = 0;
+    if ( player -> vengeance.value < 0 )
+      player -> vengeance.value = 0;
 
-    if ( player -> vengeance_value > ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] ) )
-      player -> vengeance_value = ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] );
+    if ( player -> vengeance.value > ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] ) )
+      player -> vengeance.value = ( player -> stamina() + 0.1 * player -> resources.base[ RESOURCE_HEALTH ] );
 
-    if ( player -> vengeance_value > player -> vengeance_max )
-      player -> vengeance_max = player -> vengeance_value;
+    if ( player -> vengeance.value > player -> vengeance.max )
+      player -> vengeance.max = player -> vengeance.value;
 
     if ( sim -> debug )
     {
-      log_t::output( sim, "%s updated vengeance. New vengeance_value=%.2f and vengeance_max=%.2f. vengeance_damage=%.2f.\n",
-                     player -> name(), player -> vengeance_value,
-                     player -> vengeance_max, player -> vengeance_damage );
+      log_t::output( sim, "%s updated vengeance. New vengeance.value=%.2f and vengeance.max=%.2f. vengeance.damage=%.2f.\n",
+                     player -> name(), player -> vengeance.value,
+                     player -> vengeance.max, player -> vengeance.damage );
     }
 
-    player -> vengeance_damage = 0;
-    player -> vengeance_was_attacked = false;
+    player -> vengeance.damage = 0;
+    player -> vengeance.was_attacked = false;
 
     new ( sim ) vengeance_t( player );
   }
@@ -265,7 +265,11 @@ player_t::player_t( sim_t*             s,
                     player_type_e        t,
                     const std::string& n,
                     race_type_e          r ) :
-  sim( s ), type( t ), name_str( n ), race( r ),
+  sim( s ),
+  type( t ),
+  name_str( n ),
+  race( r ),
+
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ), ready_type( READY_POLL ), 
@@ -273,10 +277,10 @@ player_t::player_t( sim_t*             s,
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ), 
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), spec( SPEC_NONE ), invert_scaling( 0 ),
-  vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
   reaction_mean( timespan_t::from_seconds( 0.5 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.5 ) ),
   scale_player( 1 ), has_dtr( false ), avg_ilvl( 0 ),
+  vengeance( p_vengeance_t() ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
@@ -465,9 +469,6 @@ player_t::~player_t()
     delete d;
   }
 
-  range::sort( all_callbacks );
-  dispose( all_callbacks.begin(), range::unique( all_callbacks ) );
-
   glyph_list.clear();
 
   range::dispose( action_priority_list );
@@ -635,7 +636,7 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> register_callbacks();
+    p -> callbacks.register_callbacks();
   }
 
   return true;
@@ -2013,8 +2014,8 @@ double player_t::composite_attack_power() const
   ap += stats_current.attack_power_per_strength * ( strength() - 10 );
   ap += stats_current.attack_power_per_agility  * ( agility() - 10 );
 
-  if ( vengeance_enabled )
-    ap += vengeance_value;
+  if ( vengeance.enabled )
+    ap += vengeance.value;
 
   return ap;
 }
@@ -2812,7 +2813,7 @@ void player_t::reset()
 
   stats = initial_stats;
 
-  vengeance_damage = vengeance_value = vengeance_max = 0.0;
+  vengeance.damage = vengeance.value = vengeance.max = 0.0;
 
   haste_rating = initial_haste_rating;
   mastery_rating = initial_mastery_rating;
@@ -2870,25 +2871,7 @@ void player_t::reset()
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-  {
-    action_callback_t::reset( resource_gain_callbacks[ i ] );
-    action_callback_t::reset( resource_loss_callbacks[ i ] );
-  }
-  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    action_callback_t::reset( attack_callbacks[ i ] );
-    action_callback_t::reset( spell_callbacks [ i ] );
-    action_callback_t::reset( harmful_spell_callbacks [ i ] );
-    action_callback_t::reset( heal_callbacks [ i ] );
-    action_callback_t::reset( absorb_callbacks [ i ] );
-    action_callback_t::reset( tick_callbacks  [ i ] );
-  }
-  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    action_callback_t::reset( tick_damage_callbacks  [ i ] );
-    action_callback_t::reset( direct_damage_callbacks[ i ] );
-  }
+  callbacks.reset();
 
   init_resources( true );
 
@@ -3322,7 +3305,7 @@ double player_t::resource_loss( resource_type_e resource_type,
     last_cast = sim -> current_time;
   }
 
-  action_callback_t::trigger( resource_loss_callbacks[ resource_type ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( callbacks.resource_loss[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
     log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
@@ -3357,7 +3340,7 @@ double player_t::resource_gain( resource_type_e resource_type,
     source -> add( resource_type, actual_amount, amount - actual_amount );
   }
 
-  action_callback_t::trigger( resource_gain_callbacks[ resource_type ], action, ( void* ) &actual_amount );
+  action_callback_t::trigger( callbacks.resource_gain[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> log )
   {
@@ -3797,10 +3780,10 @@ double player_t::assess_damage( double        amount,
     }
   }
 
-  if ( vengeance_enabled )
+  if ( vengeance.enabled )
   {
-    vengeance_damage += actual_amount;
-    vengeance_was_attacked = true;
+    vengeance.damage += actual_amount;
+    vengeance.was_attacked = true;
   }
 
   return mitigated_amount;
@@ -3911,164 +3894,187 @@ void player_t::dismiss_pet( const char* pet_name )
 
 // player_t::register_callbacks =============================================
 
-void player_t::register_callbacks()
+void player_t::callbacks_t::register_callbacks()
 {
 }
 
 // player_t::register_resource_gain_callback ================================
 
-void player_t::register_resource_gain_callback( resource_type_e resource_type,
+void player_t::callbacks_t::register_resource_gain_callback( resource_type_e resource_type,
                                                 action_callback_t* cb )
 {
-  resource_gain_callbacks[ resource_type ].push_back( cb );
+  resource_gain[ resource_type ].push_back( cb );
 }
 
 // player_t::register_resource_loss_callback ================================
 
-void player_t::register_resource_loss_callback( resource_type_e resource_type,
+void player_t::callbacks_t::register_resource_loss_callback( resource_type_e resource_type,
                                                 action_callback_t* cb )
 {
-  resource_loss_callbacks[ resource_type ].push_back( cb );
+  resource_loss[ resource_type ].push_back( cb );
 }
 
 // player_t::register_attack_callback =======================================
 
-void player_t::register_attack_callback( int64_t mask,
+void player_t::callbacks_t::register_attack_callback( int64_t mask,
                                          action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      attack_callbacks[ i ].push_back( cb );
+      attack[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_spell_callback ========================================
 
-void player_t::register_spell_callback( int64_t mask,
+void player_t::callbacks_t::register_spell_callback( int64_t mask,
                                         action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      spell_callbacks[ i ].push_back( cb );
-      heal_callbacks[ i ].push_back( cb );
+      spell[ i ].push_back( cb );
+      heal[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_tick_callback =========================================
 
-void player_t::register_tick_callback( int64_t mask,
+void player_t::callbacks_t::register_tick_callback( int64_t mask,
                                        action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      tick_callbacks[ i ].push_back( cb );
+      tick[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_heal_callback =========================================
 
-void player_t::register_heal_callback( int64_t mask,
+void player_t::callbacks_t::register_heal_callback( int64_t mask,
                                        action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      heal_callbacks[ i ].push_back( cb );
+      heal[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_absorb_callback =========================================
 
-void player_t::register_absorb_callback( int64_t mask,
+void player_t::callbacks_t::register_absorb_callback( int64_t mask,
                                          action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      absorb_callbacks[ i ].push_back( cb );
+      absorb[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_harmful_spell_callback ================================
 
-void player_t::register_harmful_spell_callback( int64_t mask,
+void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
                                                 action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      harmful_spell_callbacks[ i ].push_back( cb );
+      harmful_spell[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_tick_damage_callback ==================================
 
-void player_t::register_tick_damage_callback( int64_t mask,
+void player_t::callbacks_t::register_tick_damage_callback( int64_t mask,
                                               action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      tick_damage_callbacks[ i ].push_back( cb );
+      tick_damage[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_direct_damage_callback ================================
 
-void player_t::register_direct_damage_callback( int64_t mask,
+void player_t::callbacks_t::register_direct_damage_callback( int64_t mask,
                                                 action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      direct_damage_callbacks[ i ].push_back( cb );
+      direct_damage[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_tick_heal_callback ====================================
 
-void player_t::register_tick_heal_callback( int64_t mask,
+void player_t::callbacks_t::register_tick_heal_callback( int64_t mask,
                                             action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      tick_heal_callbacks[ i ].push_back( cb );
+      tick_heal[ i ].push_back( cb );
     }
   }
 }
 
 // player_t::register_direct_heal_callback ==================================
 
-void player_t::register_direct_heal_callback( int64_t mask,
+void player_t::callbacks_t::register_direct_heal_callback( int64_t mask,
                                               action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
     {
-      direct_heal_callbacks[ i ].push_back( cb );
+      direct_heal[ i ].push_back( cb );
     }
+  }
+}
+
+void player_t::callbacks_t::reset()
+{
+  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  {
+    action_callback_t::reset( resource_gain[ i ] );
+    action_callback_t::reset( resource_loss[ i ] );
+  }
+  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    action_callback_t::reset( attack[ i ] );
+    action_callback_t::reset( spell [ i ] );
+    action_callback_t::reset( harmful_spell [ i ] );
+    action_callback_t::reset( heal [ i ] );
+    action_callback_t::reset( absorb [ i ] );
+    action_callback_t::reset( tick  [ i ] );
+  }
+  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    action_callback_t::reset( tick_damage  [ i ] );
+    action_callback_t::reset( direct_damage[ i ] );
   }
 }
 
@@ -6741,3 +6747,4 @@ double player_t::composite_ranged_attack_player_vulnerability() const
 
   return 1.0;
 }
+

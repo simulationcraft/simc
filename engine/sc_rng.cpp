@@ -133,9 +133,9 @@ double rng_t::exgauss( double mean, double stddev, double nu )
 std::string rng_t::report( double confidence_estimator ) const
 {
   double nan = std::numeric_limits<double>::quiet_NaN();
-  double gauss_confidence = 1.0 / sqrt( num_gauss ) * confidence_estimator;
-  double range_confidence = 1.0 / sqrt( num_range ) * confidence_estimator;
-  double roll_confidence = 1.0 / sqrt( num_roll ) * confidence_estimator;
+  double gauss_confidence = 1.0 / sqrt( static_cast<double>( num_gauss ) ) * confidence_estimator;
+  double range_confidence = 1.0 / sqrt( static_cast<double>( num_range ) ) * confidence_estimator;
+  double roll_confidence = 1.0 / sqrt( static_cast<double>( num_roll ) ) * confidence_estimator;
 
   int precision = 6;
 

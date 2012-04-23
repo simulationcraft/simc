@@ -76,11 +76,11 @@ void heal_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> heal_callbacks[ result ], this );
+      action_callback_t::trigger( player -> callbacks.heal[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
-      action_callback_t::trigger( player -> heal_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.heal[ RESULT_NONE ], this );
     }
   }
 }
@@ -107,7 +107,7 @@ void heal_t::assess_damage( player_t* t,
                      util_t::result_type_string( result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> direct_heal_callbacks[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this );
   }
   else // HEAL_OVER_TIME
   {
@@ -121,7 +121,7 @@ void heal_t::assess_damage( player_t* t,
                      util_t::result_type_string( result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> tick_heal_callbacks[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this );
   }
 
   stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );

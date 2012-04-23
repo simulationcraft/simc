@@ -3125,7 +3125,7 @@ void warrior_t::init_base()
   base_block   = 0.05;
 
   if ( primary_tree() == TREE_PROTECTION )
-    vengeance_enabled = true;
+    vengeance.enabled = true;
 
   if ( talents.toughness -> ok() )
     initial_armor_multiplier *= 1.0 + talents.toughness -> effect1().percent();

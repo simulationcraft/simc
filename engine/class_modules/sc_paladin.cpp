@@ -559,7 +559,19 @@ struct paladin_spell_t : public spell_t
 };
 
 // trigger_beacon_of_light ==================================================
+struct beacon_of_light_heal_t : public heal_t
+{
+  beacon_of_light_heal_t( paladin_t* p ) :
+    heal_t( "beacon_of_light_heal", p, p -> find_spell( 53652 ) )
+  {
+    background = true;
+    may_crit = false;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
 
+    target = p -> beacon_target;
+  }
+};
 static void trigger_beacon_of_light( heal_t* h )
 {
   paladin_t* p = h -> player -> cast_paladin();
@@ -573,25 +585,10 @@ static void trigger_beacon_of_light( heal_t* h )
   if ( h -> proc )
     return;
 
-  if ( ! p -> active_beacon_of_light )
-  {
-    struct beacon_of_light_heal_t : public heal_t
-    {
-      beacon_of_light_heal_t( paladin_t* p ) :
-        heal_t( "beacon_of_light_heal", p, p -> find_spell( 53652 ) )
-      {
-        background = true;
-        may_crit = false;
-        proc = true;
-        trigger_gcd = timespan_t::zero();
+  assert( p -> active_beacon_of_light );
 
-        target = p -> beacon_target;
+  p -> active_beacon_of_light -> target = p -> beacon_target;
 
-        init();
-      }
-    };
-    p -> active_beacon_of_light = new beacon_of_light_heal_t( p );
-  }
 
   p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effect1().percent();
   p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effect1().percent();
@@ -618,7 +615,16 @@ static void trigger_hand_of_light( action_t* a )
     p -> active_hand_of_light_proc -> execute();
   }
 }
-
+struct illuminated_healing_t : public absorb_t
+{
+  illuminated_healing_t( paladin_t* p ) :
+    absorb_t( "illuminated_healing", p, p -> find_spell( 86273 ) )
+  {
+    background = true;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
+  }
+};
 // trigger_illuminated_healing ==============================================
 
 static void trigger_illuminated_healing( heal_t* h )
@@ -632,22 +638,7 @@ static void trigger_illuminated_healing( heal_t* h )
   paladin_t* p = h -> player -> cast_paladin();
 
   // FIXME: Each player can have their own bubble, so this should probably be a vector as well
-  if ( ! p -> active_illuminated_healing )
-  {
-    struct illuminated_healing_t : public absorb_t
-    {
-      illuminated_healing_t( paladin_t* p ) :
-        absorb_t( "illuminated_healing", p, p -> find_spell( 86273 ) )
-      {
-        background = true;
-        proc = true;
-        trigger_gcd = timespan_t::zero();
-
-        init();
-      }
-    };
-    p -> active_illuminated_healing = new illuminated_healing_t( p );
-  }
+  assert( p -> active_illuminated_healing );
 
   // FIXME: This should stack when the buff is present already
 
@@ -2593,7 +2584,7 @@ void paladin_t::init_spells()
   passives.judgments_of_the_wise = find_specialization_spell( "judgments of the Wise" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
-    vengeance_enabled = true;
+    vengeance.enabled = true;
   
   // Ret Passives
   passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
@@ -2616,6 +2607,12 @@ void paladin_t::init_spells()
   glyphs.hammer_of_wrath          = find_glyph_spell( "Glyph of Hammer of Wrath" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
+
+  if ( find_class_spell( "Beacon of Light" ) )
+    active_beacon_of_light = new beacon_of_light_heal_t( this );
+
+  if ( passives.illuminated_healing -> ok() )
+    active_illuminated_healing = new illuminated_healing_t( this );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =

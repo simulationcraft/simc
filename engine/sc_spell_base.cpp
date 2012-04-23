@@ -130,11 +130,11 @@ void spell_base_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> spell_callbacks[ result ], this );
+      action_callback_t::trigger( player -> callbacks.spell[ result ], this );
     }
     if ( ! background ) // OnSpellCast
     {
-      action_callback_t::trigger( player -> spell_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.spell[ RESULT_NONE ], this );
     }
   }
 }

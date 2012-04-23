@@ -17,7 +17,7 @@ void simplify_html( std::string& buffer )
 
 // print_text_action ========================================================
 
-void print_text_action( FILE* file, const stats_t* s, int max_name_length=0 )
+void print_text_action( FILE* file, const stats_t* s, int max_name_length = 0 )
 {
   if ( s -> num_executes == 0 && s -> total_amount.mean == 0 ) return;
 
@@ -155,7 +155,7 @@ void print_text_actions( FILE* file, const player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    bool first=true;
+    bool first = true;
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
@@ -177,7 +177,7 @@ void print_text_actions( FILE* file, const player_t* p )
 
 void print_text_buffs( FILE* file, const player_t::report_information_t& ri )
 {
-  bool first=true;
+  bool first = true;
   char prefix = ' ';
   int total_length = 100;
   std::string full_name;

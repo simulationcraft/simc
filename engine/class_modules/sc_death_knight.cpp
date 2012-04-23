@@ -3714,7 +3714,7 @@ void death_knight_t::init_base()
   stats_initial.attack_power_per_strength = 2.0;
 
   if ( primary_tree() == DEATH_KNIGHT_BLOOD )
-    vengeance_enabled = true;
+    vengeance.enabled = true;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 
@@ -4043,28 +4043,28 @@ void death_knight_t::init_enchant()
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_the_fallen_crusader ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_the_fallen_crusader ) );
   }
   else if ( mh_enchant == "rune_of_razorice" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_razorice ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_razorice ) );
   }
   else if ( mh_enchant == "rune_of_cinderglacier" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_cinderglacier ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_cinderglacier ) );
   }
 
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_the_fallen_crusader ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_the_fallen_crusader ) );
   }
   else if ( oh_enchant == "rune_of_razorice" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_razorice ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_razorice ) );
   }
   else if ( oh_enchant == "rune_of_cinderglacier" )
   {
-    register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_cinderglacier ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_cinderglacier ) );
   }
 }
 

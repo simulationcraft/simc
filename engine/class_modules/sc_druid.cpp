@@ -3039,7 +3039,7 @@ struct bear_form_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( p -> primary_tree() == DRUID_FERAL )
-      p -> vengeance_enabled = true;
+      p -> vengeance.enabled = true;
 
     weapon_t* w = &( p -> main_hand_weapon );
 

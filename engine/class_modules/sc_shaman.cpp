@@ -1555,8 +1555,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       base_attack_power_multiplier = 0;
       base_spell_power_multiplier  = w -> swing_time.total_seconds() / 4.0 * 0.1253;
     }
-
-    init();
   }
 
   virtual double composite_attack_power() const
@@ -1589,8 +1587,6 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
     background       = true;
     callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
     stateless        = true;
-
-    init();
   }
 
   virtual double composite_attack_power() const

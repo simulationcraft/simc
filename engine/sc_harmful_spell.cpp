@@ -95,11 +95,11 @@ void spell_t::execute()
   {
     if ( result != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> harmful_spell_callbacks[ result ], this );
+      action_callback_t::trigger( player -> callbacks.harmful_spell[ result ], this );
     }
     if ( ! background ) // OnHarmfulSpellCast
     {
-      action_callback_t::trigger( player -> harmful_spell_callbacks[ RESULT_NONE ], this );
+      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
     }
   }
 }

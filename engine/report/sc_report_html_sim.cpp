@@ -16,14 +16,14 @@ void print_html_contents( FILE*  file, const sim_t* sim )
   if ( sim -> scaling -> has_scale_factors() )
     ++c;
 
-  const int num_players = ( int ) sim -> players_by_name.size();
+  const size_t num_players = sim -> players_by_name.size();
   c += num_players;
   if ( sim -> report_targets )
     c += sim -> targets_by_name.size();
 
   if ( sim -> report_pets_separately )
   {
-    for ( int i=0; i < num_players; i++ )
+    for ( size_t i = 0; i < num_players; i++ )
     {
       for ( size_t i = 0; i < sim -> players_by_name[ i ] -> pet_list.size(); ++i )
       {
@@ -177,7 +177,6 @@ void print_html_contents( FILE*  file, const sim_t* sim )
 
 void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
 {
-
   fprintf( file,
            "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n" );
 
@@ -306,14 +305,15 @@ void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_
              "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
              ri.timeline_chart.c_str() );
   }
+
   // Gear Charts
-  int count = ( int ) ri.gear_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.gear_charts.size(); i++ )
   {
     fprintf( file,
              "\t\t\t\t\t<img src=\"%s\" alt=\"Gear Chart\" />\n",
              ri.gear_charts[ i ].c_str() );
   }
+
   // Raid Downtime Chart
   std::string downtime_chart = chart::raid_downtime( sim -> players_by_name, sim -> print_styles );
   if ( !  downtime_chart.empty() )
@@ -329,8 +329,7 @@ void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_
   // Right side charts: dpet
   fprintf( file,
            "\t\t\t\t<div class=\"charts\">\n" );
-  count = ( int ) ri.dpet_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.dpet_charts.size(); i++ )
   {
     fprintf( file,
              "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
@@ -381,8 +380,7 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
   // Left side charts: dps, raid events
   fprintf( file,
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
-  int count = ( int ) ri.dps_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
     fprintf( file, "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", i, i );
     fprintf( file,
@@ -399,8 +397,8 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
              "\t\t\t\t\t\t\t<th class=\"left\">Raid Event List</th>\n"
              "\t\t\t\t\t\t</tr>\n" );
     std::vector<std::string> raid_event_names;
-    int num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
-    for ( int i=0; i < num_raid_events; i++ )
+    size_t num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    for ( size_t i = 0; i < num_raid_events; i++ )
     {
       fprintf( file,
                "\t\t\t\t\t\t<tr" );
@@ -426,20 +424,20 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
   fprintf( file,
            "\t\t\t\t<div class=\"charts\">\n" );
 
-  count = ( int ) ri.hps_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
     fprintf( file, "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", i, i );
     fprintf( file,
              "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
              i, ri.hps_charts[ i ].c_str() );
   }
+
   // RNG chart
   if ( sim -> report_rng )
   {
     fprintf( file,
              "\t\t\t\t\t<ul>\n" );
-    for ( int i=0; i < ( int ) sim -> players_by_name.size(); i++ )
+    for ( size_t i = 0; i < sim -> players_by_name.size(); i++ )
     {
       player_t* p = sim -> players_by_name[ i ];
       double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
@@ -469,10 +467,10 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
 void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
-  int start = num * MAX_PLAYERS_PER_CHART;
-  unsigned int end = start + MAX_PLAYERS_PER_CHART;
+  size_t start = num * MAX_PLAYERS_PER_CHART;
+  size_t end = start + MAX_PLAYERS_PER_CHART;
 
-  for ( unsigned int i=0; i < player_list.size(); i++ )
+  for ( size_t i = 0; i < player_list.size(); i++ )
   {
     player_t* p = player_list[ i ];
     if ( dps ? p -> dps.mean <= 0 : p -> hps.mean <=0 )
@@ -485,7 +483,7 @@ void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
   if ( end > player_list.size() ) end = static_cast<unsigned>( player_list.size() );
 
   fprintf( file, "\t\t\tn = [" );
-  for ( int i=end-1; i >= start; i-- )
+  for ( size_t i = end-1; i >= start; i-- )
   {
     fprintf( file, "\"%s\"", player_list[i] -> name_str.c_str() );
     if ( i != start ) fprintf( file, ", " );
@@ -531,14 +529,12 @@ void print_html_raid_imagemaps( FILE*  file, const sim_t* sim, const sim_t::repo
            "\t\t\t\t});\n"
            "\t\t\t}\n\n" );
 
-  int count = ( int ) ri.dps_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
     print_html_raid_imagemap( file, sim, i, true );
   }
 
-  count = ( int ) ri.hps_charts.size();
-  for ( int i=0; i < count; i++ )
+  for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
     print_html_raid_imagemap( file, sim, i, false );
   }
@@ -562,10 +558,9 @@ void print_html_scale_factors( FILE*  file, const sim_t* sim )
            "\t\t\t\t<table class=\"sc\">\n" );
 
   std::string buffer;
-  int num_players = ( int ) sim -> players_by_name.size();
-  int prev_type = PLAYER_NONE;
+  player_type_e prev_type = PLAYER_NONE;
 
-  for ( int i=0; i < num_players; i++ )
+  for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
 

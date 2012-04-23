@@ -527,7 +527,7 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
+  p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
 }
 
 // register_darkmoon_card_greatness =========================================
@@ -554,8 +554,8 @@ static void register_darkmoon_card_greatness( item_t* item )
 
   action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero(), false, false );
 
-  p -> register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
 // register_fury_of_angerforge ==============================================
@@ -600,7 +600,7 @@ static void register_fury_of_angerforge( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new fury_of_angerforge_callback_t( p ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_angerforge_callback_t( p ) );
 }
 
 // register_heart_of_ignacious ==============================================
@@ -638,8 +638,8 @@ static void register_heart_of_ignacious( item_t* item )
   };
 
   stat_proc_callback_t* cb = new heart_of_ignacious_callback_t( p, item -> heroic() );
-  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> callbacks.register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb  );
 }
 
 // register_matrix_restabilizer =============================================
@@ -711,7 +711,7 @@ static void register_matrix_restabilizer( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( p, item -> heroic() ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( p, item -> heroic() ) );
 }
 
 // register_shard_of_woe ====================================================
@@ -758,8 +758,8 @@ static void register_sorrowsong( item_t* item )
   };
 
   stat_proc_callback_t* cb = new sorrowsong_callback_t( p, item -> heroic() );
-  p -> register_tick_damage_callback( RESULT_ALL_MASK, cb );
-  p -> register_direct_damage_callback( RESULT_ALL_MASK, cb  );
+  p -> callbacks.register_tick_damage_callback( RESULT_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb  );
 }
 
 // register_tyrandes_favorite_doll ==========================================
@@ -823,7 +823,7 @@ static void register_tyrandes_favorite_doll( item_t* item )
     }
   };
 
-  p -> register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
+  p -> callbacks.register_resource_loss_callback( RESOURCE_MANA, new tyrandes_callback_t( p ) );
 }
 
 // register_dragonwrath_tarecgosas_rest =====================================
@@ -926,8 +926,8 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   action_callback_t* cb = new dragonwrath_tarecgosas_rest_callback_t( p, chance );
   action_callback_t* cb_dd = new dragonwrath_tarecgosas_rest_dd_callback_t( p, chance );
 
-  p -> register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
-  p -> register_direct_damage_callback( SCHOOL_SPELL_MASK, cb_dd );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_SPELL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, cb_dd );
 }
 
 // register_blazing_power ===================================================
@@ -990,7 +990,7 @@ static void register_blazing_power( item_t* item )
   };
 
   // FIXME: Observe if it procs of non-direct healing spells
-  p -> register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
+  p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> heroic() ) )  );
 }
 
 // register_windward_heart ==================================================
@@ -1052,7 +1052,7 @@ static void register_windward_heart( item_t* item )
     }
   };
 
-  p -> register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> heroic(), item -> lfr() ) )  );
+  p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> heroic(), item -> lfr() ) )  );
 }
 
 // register_symbiotic_worm ==================================================
@@ -1079,7 +1079,7 @@ static void register_symbiotic_worm( item_t* item )
   };
 
   stat_proc_callback_t* cb = new symbiotic_worm_callback_t( p, item -> heroic() );
-  p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
+  p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
 // register_indomitable_pride ================================================
@@ -1126,7 +1126,7 @@ static void register_indomitable_pride( item_t* item )
   };
 
   action_callback_t* cb = new indomitable_pride_callback_t( p, item -> heroic(), item -> lfr() );
-  p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
+  p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
 // register_spidersilk_spindle ==============================================
@@ -1167,7 +1167,7 @@ static void register_spidersilk_spindle( item_t* item )
   };
 
   action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> heroic() );
-  p -> register_resource_loss_callback( RESOURCE_HEALTH, cb );
+  p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
 // register_bonelink_fetish =================================================
@@ -1231,7 +1231,7 @@ static void register_bonelink_fetish( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new bonelink_fetish_callback_t( p, spell_id ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new bonelink_fetish_callback_t( p, spell_id ) );
 }
 
 // register_fury_of_the_beast ===============================================
@@ -1299,7 +1299,7 @@ static void register_fury_of_the_beast( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> heroic(), item -> lfr() ) );
 }
 
 // register_gurthalak =======================================================
@@ -1417,7 +1417,7 @@ static void register_gurthalak( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, tick_damage, proc_spell_id, slot ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, tick_damage, proc_spell_id, slot ) );
 }
 
 // register_nokaled =========================================================
@@ -1524,7 +1524,7 @@ static void register_nokaled( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id, slot ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id, slot ) );
 }
 
 // register_rathrak =========================================================
@@ -1573,7 +1573,7 @@ static void register_rathrak( item_t* item )
     }
   };
 
-  p -> register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
+  p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
 }
 
 // register_souldrinker =====================================================
@@ -1640,7 +1640,7 @@ static void register_souldrinker( item_t* item )
     }
   };
 
-  p -> register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ), slot ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ), slot ) );
 }
 
 // register_titahk ==========================================================
@@ -1692,7 +1692,7 @@ static void register_titahk( item_t* item )
     }
   };
 
-  p -> register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
+  p -> callbacks.register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
 // ==========================================================================
@@ -1773,41 +1773,41 @@ action_callback_t* unique_gear_t::register_stat_proc( proc_type_e        type,
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_damage_callback( mask, cb );
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_heal_callback( mask, cb );
-    player -> register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( mask, cb );
+    player -> callbacks.register_direct_heal_callback( mask, cb );
   }
   else if ( type == PROC_TICK_DAMAGE )
   {
-    player -> register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
   }
   else if ( type == PROC_DIRECT_DAMAGE )
   {
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_ATTACK )
   {
-    player -> register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( mask, cb );
   }
   else if ( type == PROC_SPELL )
   {
-    player -> register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_HARMFUL_SPELL )
   {
-    player -> register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( mask, cb );
   }
   else if ( type == PROC_HEAL_SPELL )
   {
-    player -> register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1834,41 +1834,41 @@ action_callback_t* unique_gear_t::register_cost_reduction_proc( proc_type_e     
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_damage_callback( mask, cb );
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_heal_callback( mask, cb );
-    player -> register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( mask, cb );
+    player -> callbacks.register_direct_heal_callback( mask, cb );
   }
   else if ( type == PROC_TICK_DAMAGE )
   {
-    player -> register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
   }
   else if ( type == PROC_DIRECT_DAMAGE )
   {
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_ATTACK )
   {
-    player -> register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( mask, cb );
   }
   else if ( type == PROC_SPELL )
   {
-    player -> register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
   }
   else if ( type == PROC_HARMFUL_SPELL )
   {
-    player -> register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( mask, cb );
   }
   else if ( type == PROC_HEAL_SPELL )
   {
-    player -> register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1898,46 +1898,46 @@ action_callback_t* unique_gear_t::register_discharge_proc( proc_type_e        ty
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_damage_callback( mask, cb );
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_heal_callback( mask, cb );
-    player -> register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( mask, cb );
+    player -> callbacks.register_direct_heal_callback( mask, cb );
   }
   else if ( type == PROC_TICK_DAMAGE )
   {
-    player -> register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
   }
   else if ( type == PROC_DIRECT_DAMAGE )
   {
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_ATTACK )
   {
-    player -> register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( mask, cb );
   }
   else if ( type == PROC_SPELL )
   {
-    player -> register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_AND_TICK )
   {
-    player -> register_spell_callback( mask, cb );
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_HARMFUL_SPELL )
   {
-    player -> register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( mask, cb );
   }
   else if ( type == PROC_HEAL_SPELL )
   {
-    player -> register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -1967,46 +1967,46 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( proc_type_e   
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_damage_callback( mask, cb );
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_heal_callback( mask, cb );
-    player -> register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( mask, cb );
+    player -> callbacks.register_direct_heal_callback( mask, cb );
   }
   else if ( type == PROC_TICK_DAMAGE )
   {
-    player -> register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
   }
   else if ( type == PROC_DIRECT_DAMAGE )
   {
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_ATTACK )
   {
-    player -> register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( mask, cb );
   }
   else if ( type == PROC_SPELL )
   {
-    player -> register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
   }
   else if ( type == PROC_SPELL_AND_TICK )
   {
-    player -> register_spell_callback( mask, cb );
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_HARMFUL_SPELL )
   {
-    player -> register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( mask, cb );
   }
   else if ( type == PROC_HEAL_SPELL )
   {
-    player -> register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( mask, cb );
   }
 
   return cb;
@@ -2039,41 +2039,41 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( proc_type_e     
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_damage_callback( mask, cb );
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
   {
-    player -> register_tick_heal_callback( mask, cb );
-    player -> register_direct_heal_callback( mask, cb );
+    player -> callbacks.register_tick_heal_callback( mask, cb );
+    player -> callbacks.register_direct_heal_callback( mask, cb );
   }
   else if ( type == PROC_TICK_DAMAGE )
   {
-    player -> register_tick_damage_callback( mask, cb );
+    player -> callbacks.register_tick_damage_callback( mask, cb );
   }
   else if ( type == PROC_DIRECT_DAMAGE )
   {
-    player -> register_direct_damage_callback( mask, cb );
+    player -> callbacks.register_direct_damage_callback( mask, cb );
   }
   else if ( type == PROC_TICK )
   {
-    player -> register_tick_callback( mask, cb );
+    player -> callbacks.register_tick_callback( mask, cb );
   }
   else if ( type == PROC_ATTACK )
   {
-    player -> register_attack_callback( mask, cb );
+    player -> callbacks.register_attack_callback( mask, cb );
   }
   else if ( type == PROC_SPELL )
   {
-    player -> register_spell_callback( mask, cb );
+    player -> callbacks.register_spell_callback( mask, cb );
   }
   else if ( type == PROC_HARMFUL_SPELL )
   {
-    player -> register_harmful_spell_callback( mask, cb );
+    player -> callbacks.register_harmful_spell_callback( mask, cb );
   }
   else if ( type == PROC_HEAL_SPELL )
   {
-    player -> register_heal_callback( mask, cb );
+    player -> callbacks.register_heal_callback( mask, cb );
   }
 
   return cb;

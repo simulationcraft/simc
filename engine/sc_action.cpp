@@ -971,7 +971,7 @@ void action_t::tick( dot_t* d )
 
     assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
 
-    if ( harmful && callbacks ) action_callback_t::trigger( player -> tick_callbacks[ result ], this );
+    if ( harmful && callbacks ) action_callback_t::trigger( player -> callbacks.tick[ result ], this );
   }
   else
   {
@@ -989,7 +989,7 @@ void action_t::tick( dot_t* d )
     assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
 
     if ( harmful && callbacks )
-      action_callback_t::trigger( player -> tick_callbacks[ d -> state -> result ], this );
+      action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
 
     if ( sim -> debug )
       d -> state -> debug();
@@ -1100,7 +1100,7 @@ void action_t::assess_damage( player_t*     t,
 
     direct_dmg = dmg_adjusted;
 
-    if ( callbacks ) action_callback_t::trigger( player -> direct_damage_callbacks[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this );
   }
   else // DMG_OVER_TIME
   {
@@ -1117,7 +1117,7 @@ void action_t::assess_damage( player_t*     t,
 
     tick_dmg = dmg_adjusted;
 
-    if ( callbacks ) action_callback_t::trigger( player -> tick_damage_callbacks[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
   }
 
   stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );

@@ -237,7 +237,6 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                  "\t\t\t\t\t\t\t</tr>\n" );
 
 
-
         fprintf( file,
                  "\t\t\t\t\t\t</table>\n" );
 
@@ -530,7 +529,6 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n" );
     }
 
-
     fprintf( file,
              "\t\t\t\t\t\t\t\t</td>\n"
              "\t\t\t\t\t\t\t</tr>\n" );
@@ -680,7 +678,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                "\t\t\t\t\t\t\t\t\t</tr>\n",
-               ( j%2 == 1 )? " class=\"odd\"" : "",
+               ( j%2 == 1 ) ? " class=\"odd\"" : "",
                util_t::inverse_tokenize( util_t::attribute_type_string( i ) ).c_str(),
                a -> buffed.attribute[ i ],
                a -> get_attribute( i ),
@@ -697,7 +695,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                  "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                  "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                  "\t\t\t\t\t\t\t\t\t</tr>\n",
-                 ( j%2 == 1 )? " class=\"odd\"" : "",
+                 ( j%2 == 1 ) ? " class=\"odd\"" : "",
                  util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                  a -> buffed.resource[ i ],
                  a -> resources.max[ i ],
@@ -712,7 +710,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              a -> buffed.spell_power,
              a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
              a -> stats.spell_power );
@@ -724,7 +722,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.spell_hit,
              100 * a -> composite_spell_hit(),
              a -> stats.hit_rating  );
@@ -736,7 +734,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.spell_crit,
              100 * a -> composite_spell_crit(),
              a -> stats.crit_rating );
@@ -748,7 +746,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * ( 1 / a -> buffed.spell_haste - 1 ),
              100 * ( 1 / a -> composite_spell_haste() - 1 ),
              a -> stats.haste_rating );
@@ -760,7 +758,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              a -> buffed.mp5,
              a -> composite_mp5(),
              a -> stats.mp5 );
@@ -772,7 +770,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              a -> buffed.attack_power,
              a -> composite_attack_power() * a -> composite_attack_power_multiplier(),
              a -> stats.attack_power );
@@ -784,7 +782,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.attack_hit,
              100 * a -> composite_attack_hit(),
              a -> stats.hit_rating );
@@ -796,7 +794,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.attack_crit,
              100 * a -> composite_attack_crit(),
              a -> stats.crit_rating );
@@ -808,7 +806,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * ( 1 / a -> buffed.attack_haste - 1 ),
              100 * ( 1 / a -> composite_attack_haste() - 1 ),
              a -> stats.haste_rating );
@@ -820,7 +818,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * ( 1 / a -> buffed.attack_speed - 1 ),
              100 * ( 1 / a -> composite_attack_speed() - 1 ),
              a -> stats.haste_rating );
@@ -832,7 +830,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.mh_attack_expertise,
              100 * a -> buffed.oh_attack_expertise,
              100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
@@ -846,7 +844,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              a -> buffed.armor,
              a -> composite_armor(),
              ( a -> stats.armor + a -> stats.bonus_armor ) );
@@ -858,7 +856,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.miss,
              100 * ( a -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
              0.0  );
@@ -870,7 +868,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.dodge,
              100 * ( a -> composite_tank_dodge() - a -> diminished_dodge() ),
              a -> stats.dodge_rating );
@@ -882,7 +880,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.parry,
              100 * ( a -> composite_tank_parry() - a -> diminished_parry() ),
              a -> stats.parry_rating );
@@ -894,7 +892,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.block,
              100 * a -> composite_tank_block(),
              a -> stats.block_rating );
@@ -906,7 +904,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              100 * a -> buffed.crit,
              100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ),
              0.0 );
@@ -918,7 +916,7 @@ void print_html_stats ( FILE* file, const player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             ( j%2 == 1 )? " class=\"odd\"" : "",
+             ( j % 2 == 1 ) ? " class=\"odd\"" : "",
              a -> buffed.mastery,
              a -> composite_mastery(),
              a -> stats.mastery_rating );
@@ -1246,12 +1244,11 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";
 
-  char buffer[ 1024 ];
-
   if ( ! ri.timeline_dps_error_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"Timeline DPS Error Chart\" />\n", ri.timeline_dps_error_chart.c_str() );
-    timeline_dps_error_str = buffer;
+    timeline_dps_error_str += "<img src=\"";
+    timeline_dps_error_str += ri.timeline_dps_error_chart;
+    timeline_dps_error_str += "\" alt=\"Timeline DPS Error Chart\" />\n";
   }
 
   fprintf( file,
@@ -1260,8 +1257,9 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
 
   if ( ! ri.dps_error_chart.empty() )
   {
-    snprintf( buffer, sizeof( buffer ), "<img src=\"%s\" alt=\"DPS Error Chart\" />\n", ri.dps_error_chart.c_str() );
-    dps_error_str = buffer;
+    dps_error_str += "<img src=\"";
+    dps_error_str += ri.dps_error_chart;
+    dps_error_str +="\" alt=\"DPS Error Chart\" />\n";
   }
   fprintf( file,
            "%s\n"
@@ -2402,8 +2400,8 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
 {
-  generate_report_information::generate_player_charts( p, p->report_information );
-  generate_report_information::generate_player_buff_lists( p, p->report_information );
+  generate_report_information::generate_player_charts( p, p -> report_information );
+  generate_report_information::generate_player_buff_lists( p, p -> report_information );
 
   std::string n = p -> name();
   util_t::format_text( n, true );
