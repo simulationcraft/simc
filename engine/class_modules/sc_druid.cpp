@@ -448,6 +448,8 @@ struct druid_t : public player_t
     const spell_data_t* moonkin_form_bonuses;
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* shooting_stars;
+    const spell_data_t* starfall;
+    const spell_data_t* sunfire;
     
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
@@ -498,14 +500,6 @@ struct druid_t : public player_t
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* disentanglement;
 
-    // Balance
-    const spell_data_t* owlkin_frenzy;
-    const spell_data_t* shooting_stars;
-    const spell_data_t* solar_beam;
-    const spell_data_t* starfall;
-    const spell_data_t* starlight_wrath;
-    const spell_data_t* sunfire;
-    
     // 4.x talents (convert/remove)
     const spell_data_t* berserk;
     const spell_data_t* blood_in_the_water;
@@ -1008,10 +1002,9 @@ static void trigger_eclipse_gain_delay( druid_spell_t* s, int gain )
     int g;
 
     eclipse_delay_t ( druid_spell_t* spell, int gain ) :
-      event_t( spell -> sim, spell -> player ),
+      event_t( spell -> sim, spell -> player, "Eclipse gain delay" ),
       s( spell ), g( gain )
     {
-      name = "Eclipse gain delay";
       sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
     }
 
@@ -3527,7 +3520,7 @@ struct starfall_t : public druid_spell_t
   spell_t* starfall_star;
 
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ), 
+    druid_spell_t( "starfall", player, player -> specialization.starfall ), 
     starfall_star( 0 )
   {
     parse_options( NULL, options_str );
@@ -3689,7 +3682,7 @@ struct sunfire_t : public druid_spell_t
   // Identical to moonfire, except damage type and usability
 
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) ),
+    druid_spell_t( "sunfire", player, player -> specialization.sunfire ),
     starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
@@ -4119,6 +4112,9 @@ void druid_t::init_spells()
   specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
+  specialization.starfall               = find_specialization_spell( "Starfall" );
+  // Which is the acutal spell on beta? Still http://mop.wowhead.com/spell=93402 ?
+  specialization.sunfire                = find_specialization_spell( "Sunfire" );
   
   specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   specialization.moonkin_form_bonuses   = find_spell( 24905 ); // This is the passive applied on shapeshift!
@@ -4129,9 +4125,9 @@ void druid_t::init_spells()
   // Masteries
   
   mastery.total_eclipse   = find_specialization_spell( "Total Eclipse" );
-  mastery.meditation      = find_specialization_spell( "" );
-  mastery.razor_claws     = find_specialization_spell( "" );
-  mastery.harmony         = find_specialization_spell( "" );
+  mastery.meditation      = find_specialization_spell( "Meditation" );
+  mastery.razor_claws     = find_specialization_spell( "Razor Claws" );
+  mastery.harmony         = find_specialization_spell( "Harmony" );
   
   /*
   specialization.meditation      = spell_data_t::find( 85101, "Meditation",      dbc.ptr );
@@ -4215,7 +4211,7 @@ void druid_t::init_base()
   stats_initial.spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific!  Should be form-specific!
-  initial_armor_multiplier  = 1.0 + talent.thick_hide -> effect1().percent();
+  stats_initial.armor_multiplier  = 1.0 + talent.thick_hide -> effect1().percent();
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -4586,17 +4582,17 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       if ( talent.typhoon -> ok() )
         action_list_str += "/typhoon,moving=1";
-      if ( talent.starfall -> ok() )
+      if ( specialization.starfall -> ok() )
       {
         action_list_str += "/starfall,if=eclipse<-80";
       }
 
-      if ( talent.sunfire -> ok() )
+      if ( specialization.sunfire -> ok() )
       {
         action_list_str += "/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)";
       }
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2";
-      if ( talent.sunfire -> ok() )
+      if ( specialization.sunfire -> ok() )
         action_list_str += "&!dot.sunfire.remains>0";
       action_list_str += ")|(eclipse>-20&dot.moonfire.remains<10))";
 
