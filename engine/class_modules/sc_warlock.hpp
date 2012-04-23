@@ -20,7 +20,6 @@ struct warlock_targetdata_t : public targetdata_t
   dot_t*  dots_drain_life;
   dot_t*  dots_drain_soul;
   dot_t*  dots_shadowflame;
-  dot_t*  dots_burning_embers;
   dot_t*  dots_malefic_grasp;
 
   buff_t* debuffs_haunt;
@@ -112,6 +111,7 @@ struct warlock_t : public player_t
     // Destruction
     const spell_data_t* backdraft;
     const spell_data_t* burning_embers;
+    const spell_data_t* chaotic_energy;
 
   } spec;
 
@@ -119,7 +119,7 @@ struct warlock_t : public player_t
   {
     const spell_data_t* potent_afflictions;
     const spell_data_t* master_demonologist;
-    const spell_data_t* fiery_apocalypse;
+    const spell_data_t* emberstorm;
   } mastery_spells;
 
   std::string dark_intent_target_str;
@@ -127,11 +127,8 @@ struct warlock_t : public player_t
   // Gains
   struct gains_t
   {
-    gain_t* fel_armor;
-    gain_t* felhunter;
     gain_t* life_tap;
     gain_t* soul_leech;
-    gain_t* mana_feed;
     gain_t* tier13_4pc;
     gain_t* nightfall;
     gain_t* drain_soul;
@@ -155,15 +152,11 @@ struct warlock_t : public player_t
     rng_t* nightfall;
   } rngs;
 
-  // Spells
-  spell_t* spells_burning_embers;
-
   struct glyphs_t
   {
     const spell_data_t* metamorphosis;
     const spell_data_t* life_tap;
     const spell_data_t* shadow_bolt;
-    const spell_data_t* chaos_bolt;
     const spell_data_t* conflagrate;
     const spell_data_t* corruption;
     const spell_data_t* bane_of_agony;
@@ -185,6 +178,7 @@ struct warlock_t : public player_t
   glyphs_t glyphs;
 
   int use_pre_soulburn;
+  int initial_burning_embers;
 
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
@@ -221,6 +215,8 @@ struct warlock_t : public player_t
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
   virtual double composite_mastery() const;
+  virtual double composite_mp5() const;
+  virtual void combat_begin();
 };
 
 // ==========================================================================
@@ -250,7 +246,6 @@ public:
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
   virtual timespan_t available() const;
-  virtual void init_resources( bool force );
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
   virtual double composite_spell_haste() const;

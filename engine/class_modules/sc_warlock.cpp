@@ -66,7 +66,6 @@ void register_warlock_targetdata( sim_t* sim )
   REGISTER_DOT( drain_life );
   REGISTER_DOT( drain_soul );
   REGISTER_DOT( shadowflame );
-  REGISTER_DOT( burning_embers );
   REGISTER_DOT( malefic_grasp );
 
   REGISTER_DEBUFF( haunt );
@@ -90,7 +89,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   procs( procs_t() ),
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
-  use_pre_soulburn()
+  use_pre_soulburn( 1 ),
+  initial_burning_embers( -1 )
 {
 
   distance = 40;
@@ -99,8 +99,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   cooldowns.metamorphosis      = get_cooldown ( "metamorphosis" );
   cooldowns.infernal           = get_cooldown ( "summon_infernal" );
   cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
-
-  use_pre_soulburn = 1;
 
   create_options();
 }
@@ -168,6 +166,16 @@ public:
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
+  }
+
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = spell_t::action_multiplier( s );
+
+    if ( current_resource() == RESOURCE_BURNING_EMBER )
+      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+
+    return m;
   }
 
   virtual timespan_t tick_time( double haste ) const
@@ -391,50 +399,6 @@ struct shadow_bolt_t : public warlock_spell_t
 
       trigger_soul_leech( p(), s -> result_amount );
     }
-  }
-};
-
-// Burning Embers Spell =====================================================
-
-// Chaos Bolt Spell =========================================================
-
-struct chaos_bolt_t : public warlock_spell_t
-{
-  chaos_bolt_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Chaos Bolt" )
-  {
-    may_miss = false;
-
-    cooldown -> duration += p -> glyphs.chaos_bolt -> effectN( 1 ).time_value();
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new chaos_bolt_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    timespan_t h = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.backdraft -> up() )
-      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-
-    return h;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    for ( int i = 0; i < 4; i++ )
-    {
-      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
-    }
-
-    if ( p() -> buffs.backdraft -> check() )
-      p() -> buffs.backdraft -> decrement();
   }
 };
 
@@ -906,6 +870,16 @@ struct soul_fire_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     trigger_decimation( this, s -> result );
+  }
+
+  virtual resource_type_e current_resource() const
+  {
+    return ( p() -> mastery_spells.emberstorm -> ok() ) ? RESOURCE_BURNING_EMBER : warlock_spell_t::current_resource();
+  }
+
+  virtual double cost() const
+  {
+    return ( p() -> mastery_spells.emberstorm -> ok() ) ? 10.0 : warlock_spell_t::cost();
   }
 };
 
@@ -1648,32 +1622,8 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
     player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
                          + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
   }
-
-  if ( buffs.grimoire_of_sacrifice -> up() )
-  {
-    player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
-  }
-
-  double fire_multiplier   = 1.0;
-  double shadow_multiplier = 1.0;
-
-  // Fire
-  if ( mastery_spells.fiery_apocalypse -> ok() )
-    fire_multiplier *= 1.0 + ( composite_mastery() * mastery_spells.fiery_apocalypse -> effectN( 2 ).base_value() / 10000.0 );
-
-  // Shadow
-
-  if ( school == SCHOOL_FIRE )
-    player_multiplier *= fire_multiplier;
-  else if ( school == SCHOOL_SHADOW )
-    player_multiplier *= shadow_multiplier;
-  else if ( school == SCHOOL_SHADOWFLAME )
-  {
-    if ( fire_multiplier > shadow_multiplier )
-      player_multiplier *= fire_multiplier;
-    else
-      player_multiplier *= shadow_multiplier;
-  }
+  
+  player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
 
   return player_multiplier;
 }
@@ -1720,6 +1670,16 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
+double warlock_t::composite_mp5() const
+{
+  double mp5 = player_t::composite_mp5();
+
+  mp5 *= spec.chaotic_energy -> effectN( 1 ).percent();
+
+  return mp5;
+}
+
+
 // warlock_t::matching_gear_multiplier ======================================
 
 double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
@@ -1737,8 +1697,7 @@ action_t* warlock_t::create_action( const std::string& name,
 {
   action_t* a;
 
-  if      ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
-  else if ( name == "conflagrate"           ) a = new           conflagrate_t( this );
+  if      ( name == "conflagrate"           ) a = new           conflagrate_t( this );
   else if ( name == "corruption"            ) a = new            corruption_t( this );
   else if ( name == "agony"                 ) a = new                 agony_t( this );
   else if ( name == "doom"                  ) a = new                  doom_t( this );
@@ -1869,11 +1828,12 @@ void warlock_t::init_spells()
   // Destruction
   spec.backdraft      = find_specialization_spell( "Backdraft" );
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
+  spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
 
   // Mastery
-  mastery_spells.fiery_apocalypse     = find_mastery_spell( "Fiery Apocalypse" );
-  mastery_spells.potent_afflictions   = find_mastery_spell( "Potent Afflictions" );
-  mastery_spells.master_demonologist  = find_mastery_spell( "Master Demonologist" );
+  mastery_spells.emberstorm          = find_mastery_spell( "Emberstorm" );
+  mastery_spells.potent_afflictions  = find_mastery_spell( "Potent Afflictions" );
+  mastery_spells.master_demonologist = find_mastery_spell( "Master Demonologist" );
 
   // Talents
   talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
@@ -1903,7 +1863,6 @@ void warlock_t::init_spells()
   // Prime
   glyphs.metamorphosis        = find_glyph_spell( "Glyph of Metamorphosis" );
   glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
-  glyphs.chaos_bolt           = find_glyph_spell( "Glyph of Chaos Bolt" );
   glyphs.corruption           = find_glyph_spell( "Glyph of Corruption" );
   glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.bane_of_agony        = find_glyph_spell( "Glyph of Bane of Agony" );
@@ -1933,7 +1892,8 @@ void warlock_t::init_base()
 
   mana_per_intellect = 15;
 
-  resources.base[ RESOURCE_SOUL_SHARD ] = 3;
+  if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
+  if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -1984,14 +1944,11 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.fel_armor         = get_gain( "fel_armor"  );
-  gains.felhunter         = get_gain( "felhunter"  );
-  gains.life_tap          = get_gain( "life_tap"   );
-  gains.mana_feed         = get_gain( "mana_feed"  );
-  gains.soul_leech        = get_gain( "soul_leech" );
-  gains.tier13_4pc        = get_gain( "tier13_4pc" );
-  gains.nightfall         = get_gain( "nightfall"  );
-  gains.drain_soul        = get_gain( "drain_soul"  );
+  gains.life_tap               = get_gain( "life_tap"   );
+  gains.soul_leech             = get_gain( "soul_leech" );
+  gains.tier13_4pc             = get_gain( "tier13_4pc" );
+  gains.nightfall              = get_gain( "nightfall"  );
+  gains.drain_soul             = get_gain( "drain_soul" );
 }
 
 // warlock_t::init_uptimes ==================================================
@@ -2265,6 +2222,13 @@ void warlock_t::init_resources( bool force )
     pets.active -> init_resources( force );
 }
 
+void warlock_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  resources.current[ RESOURCE_BURNING_EMBER ] = ( initial_burning_embers == -1 ) ? resources.max[ RESOURCE_BURNING_EMBER ] : initial_burning_embers;
+}
+
 // warlock_t::reset =========================================================
 
 void warlock_t::reset()
@@ -2283,7 +2247,8 @@ void warlock_t::create_options()
 
   option_t warlock_options[] =
   {
-    { "use_pre_soulburn",    OPT_BOOL,   &( use_pre_soulburn       ) },
+    { "use_pre_soulburn",    OPT_BOOL,   &( use_pre_soulburn     ) },
+    { "burning_embers",       OPT_INT,   &( initial_burning_embers       ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -2299,6 +2264,8 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
   if ( stype == SAVE_ALL )
   {
     if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
+    if ( initial_burning_embers != resources.max[ RESOURCE_BURNING_EMBER ] && initial_burning_embers != -1 )
+      profile_str += "burning_embers=" + util_t::to_string( initial_burning_embers ) + "\n";
   }
 
   return true;
@@ -2313,6 +2280,7 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast<warlock_t*>( source );
 
   use_pre_soulburn = p -> use_pre_soulburn;
+  initial_burning_embers = p -> initial_burning_embers;
 }
 
 // warlock_t::decode_set ====================================================

@@ -636,15 +636,6 @@ timespan_t warlock_pet_t::available() const
     timespan_t::from_seconds( 0.1 )
   );
 }
-
-void warlock_pet_t::init_resources( bool force )
-{
-  //bool mana_force = ( force || resource_initial[ RESOURCE_MANA ] == 0 );
-  player_t::init_resources( force );
-  // if ( mana_force ) resource_initial[ RESOURCE_MANA ] += ( owner -> intellect() - owner -> attribute_base[ ATTR_INTELLECT ] ) * ( level / 80.0 ) * 7.5;
-  resources.current[ RESOURCE_MANA ] = resources.max[ RESOURCE_MANA ];// = resource_initial[ RESOURCE_MANA ];
-}
-
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( main_hand_attack && ! main_hand_attack -> execute_event )
