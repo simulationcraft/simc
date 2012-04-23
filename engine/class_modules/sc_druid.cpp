@@ -5094,6 +5094,7 @@ void player_t::druid_init( sim_t* sim )
     // TODO: Figure this out
     //p -> buffs.innervate              = new innervate_buff_t( p );
 #else
+    player_t* p = sim -> actor_list[ i ];
     p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
   }
