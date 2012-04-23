@@ -1674,7 +1674,7 @@ double warlock_t::composite_mp5() const
 {
   double mp5 = player_t::composite_mp5();
 
-  mp5 *= spec.chaotic_energy -> effectN( 1 ).percent();
+  if ( spec.chaotic_energy -> ok() ) mp5 *= spec.chaotic_energy -> effectN( 1 ).percent();
 
   return mp5;
 }
