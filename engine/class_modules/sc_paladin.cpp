@@ -2608,7 +2608,7 @@ void paladin_t::init_spells()
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
 
-  if ( find_class_spell( "Beacon of Light" ) )
+  if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
 
   if ( passives.illuminated_healing -> ok() )
