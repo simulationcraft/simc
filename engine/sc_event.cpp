@@ -124,9 +124,8 @@ void event_t::execute()
 player_ready_event_t::player_ready_event_t( sim_t*    sim,
                                             player_t* p,
                                             timespan_t delta_time ) :
-  event_t( sim, p )
+  event_t( sim, p, "Player-Ready" )
 {
-  name = "Player-Ready";
   if ( sim -> debug ) log_t::output( sim, "New Player-Ready Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
@@ -166,9 +165,8 @@ void player_ready_event_t::execute()
 player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
                                         player_t* p,
                                         timespan_t delta_time ) :
-  event_t( sim, p )
+  event_t( sim, p, "Player-Ready-GCD" )
 {
-  name = "Player-Ready-GCD";
   if ( sim -> debug ) log_t::output( sim, "New Player-Ready-GCD Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
@@ -207,9 +205,8 @@ void player_gcd_event_t::execute()
 action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 action_t* a,
                                                 timespan_t time_to_execute ) :
-  event_t( sim, a -> player ), action( a )
+  event_t( sim, a -> player, "Action-Execute" ), action( a )
 {
-  name = "Action-Execute";
   if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
   sim -> add_event( this, time_to_execute );
 }
@@ -248,10 +245,8 @@ void action_execute_event_t::execute()
 dot_tick_event_t::dot_tick_event_t( sim_t* sim,
                                     dot_t* d,
                                     timespan_t time_to_tick ) :
-  event_t( sim, d -> player ), dot( d )
+  event_t( sim, d -> player, "DoT Tick" ), dot( d )
 {
-  name = "DoT Tick";
-
   if ( sim -> debug )
     log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",
                    player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
@@ -335,9 +330,8 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
                                               player_t* t,
                                               action_t* a,
                                               timespan_t time_to_travel ) :
-  event_t( sim, a -> player ), action( a ), target( t )
+  event_t( sim, a -> player, "Action Travel" ), action( a ), target( t )
 {
-  name   = "Action Travel";
   result = a -> result;
   damage = a -> direct_dmg;
 
@@ -363,9 +357,8 @@ void action_travel_event_t::execute()
 
 // regen_event_t::regen_event_t =============================================
 
-regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim )
+regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim, 0, "Regen Event" )
 {
-  name = "Regen Event";
   if ( sim -> debug ) log_t::output( sim, "New Regen Event" );
   sim -> add_event( this, sim -> regen_periodicity );
 }

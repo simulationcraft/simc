@@ -1826,6 +1826,7 @@ struct raid_event_t
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Gear Stats ===============================================================
@@ -2098,6 +2099,7 @@ public:
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name );
 
+  const char* name() const { return name_str.c_str(); }
   int max_stack() const
     { return _max_stack; }
 };
@@ -2766,12 +2768,10 @@ public:
   timespan_t time;
   timespan_t reschedule_time;
   int       canceled;
-  const char* name;
-  event_t( sim_t* s, player_t* p=0, const char* n="" ) :
+  const char* const name;
+  event_t( sim_t* s, player_t* p=0, const char* n="unknown" ) :
     next( 0 ), sim( s ), player( p ), time( timespan_t::zero() ), reschedule_time( timespan_t::zero() ), canceled( 0 ), name( n )
-  {
-    if ( ! name ) name = "unknown";
-  }
+  { }
   timespan_t occurs()  const { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() const { return occurs() - sim -> current_time; }
   virtual void reschedule( timespan_t new_time );

@@ -569,9 +569,8 @@ void raid_event_t::schedule()
   {
     raid_event_t* raid_event;
 
-    duration_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s ), raid_event( re )
+    duration_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s, 0, re -> name() ), raid_event( re )
     {
-      name = re -> name_str.c_str();
       sim -> add_event( this, time );
     }
 
@@ -585,9 +584,8 @@ void raid_event_t::schedule()
   {
     raid_event_t* raid_event;
 
-    cooldown_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s ), raid_event( re )
+    cooldown_event_t( sim_t* s, raid_event_t* re, timespan_t time ) : event_t( s, 0, re -> name() ), raid_event( re )
     {
-      name = re -> name_str.c_str();
       sim -> add_event( this, time );
     }
 

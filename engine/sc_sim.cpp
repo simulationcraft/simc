@@ -1117,9 +1117,8 @@ void sim_t::combat_begin()
 
     struct bloodlust_check_t : public event_t
     {
-      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0 )
+      bloodlust_check_t( sim_t* sim ) : event_t( sim, 0, "Bloodlust Check" )
       {
-        name = "Bloodlust Check";
         sim -> add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
       virtual void execute()

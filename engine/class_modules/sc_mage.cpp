@@ -832,11 +832,9 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
     double crit_ignite_bank;
     timespan_t application_delay;
     ignite_sampling_event_t( sim_t* sim, player_t* t, mage_spell_t* a, double crit_ignite_bank ) :
-      event_t( sim, a -> player ), target( t ), crit_ignite_bank( crit_ignite_bank )
+      event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank )
     {
-      name = "Ignite Sampling";
-
-      if ( sim -> debug )
+       if ( sim -> debug )
         log_t::output( sim, "New Ignite Sampling Event: %s",
                        player -> name() );
 

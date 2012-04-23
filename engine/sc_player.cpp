@@ -35,12 +35,11 @@ struct hymn_of_hope_buff_t : public buff_t
 
 // Event Vengeance ==========================================================
 
-struct vengeance_t : public event_t
+struct vengeance_event_t : public event_t
 {
-  vengeance_t ( player_t* player ) :
-    event_t( player -> sim, player )
+  vengeance_event_t ( player_t* player ) :
+    event_t( player -> sim, player, "Vengeance_Check" )
   {
-    name = "Vengeance_Check";
     sim -> add_event( this, timespan_t::from_seconds( 2.0 ) );
   }
 
@@ -78,7 +77,7 @@ struct vengeance_t : public event_t
     player -> vengeance.damage = 0;
     player -> vengeance.was_attacked = false;
 
-    new ( sim ) vengeance_t( player );
+    new ( sim ) vengeance_event_t( player );
   }
 };
 
@@ -2633,7 +2632,7 @@ void player_t::combat_begin()
   }
 
   if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
-    new ( sim ) vengeance_t( this );
+    new ( sim ) vengeance_event_t( this );
 
   report_information.action_sequence = "";
 
@@ -5028,9 +5027,8 @@ struct use_item_t : public action_t
           item_t* item;
           action_callback_t* trigger;
 
-          trigger_expiration_t( sim_t* sim, player_t* player, item_t* i, action_callback_t* t ) : event_t( sim, player ), item( i ), trigger( t )
+          trigger_expiration_t( sim_t* sim, player_t* player, item_t* i, action_callback_t* t ) : event_t( sim, player, i -> name() ), item( i ), trigger( t )
           {
-            name = item -> name();
             sim -> add_event( this, item -> use.duration );
           }
           virtual void execute()
