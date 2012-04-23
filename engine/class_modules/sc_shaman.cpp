@@ -9,7 +9,7 @@
 // Code:
 // - Ascendancy
 // - Redo Totem system
-// - Talents Call of the Elements, Totemic Restoration, Ancestral Swiftness
+// - Talents Totemic Restoration, Ancestral Swiftness
 //
 // General:
 // - Class base stats for 87..90
@@ -90,6 +90,7 @@ struct shaman_t : public player_t
   timespan_t wf_delay_stddev;
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
+  double     eoe_proc_chance;
 
   // Active
   action_t* active_lightning_charge;
@@ -171,6 +172,7 @@ struct shaman_t : public player_t
   // Random Number Generators
   struct
   {
+    rng_t* echo_of_the_elements;
     rng_t* elemental_overload;
     rng_t* lava_surge;
     rng_t* primal_wisdom;
@@ -262,7 +264,8 @@ struct shaman_t : public player_t
   shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
-    uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) )
+    uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
+    eoe_proc_chance( 0 )
   {
     // Active
     active_lightning_charge   = 0;
@@ -303,6 +306,7 @@ struct shaman_t : public player_t
   shaman_targetdata_t* targetdata( player_t* target )
   { return debug_cast<shaman_targetdata_t*>( targetdata_t::get( this, target ) ); }
 
+  virtual void      init();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -378,6 +382,17 @@ struct shaman_melee_attack_t : public melee_attack_t
 // Shaman Spell
 // ==========================================================================
 
+
+struct shaman_spell_state_t : public action_state_t
+{
+  bool eoe_proc;
+
+  shaman_spell_state_t( action_t* spell, player_t* target ) :
+    action_state_t( spell, target ),
+    eoe_proc( false )
+  { }
+};
+
 struct shaman_spell_t : public spell_t
 {
   double   base_cost_reduction;
@@ -385,10 +400,16 @@ struct shaman_spell_t : public spell_t
   bool     overload;
   bool     is_totem;
 
+  // Echo of Elements stuff
+  bool     eoe_proc;
+  stats_t* eoe_stats;
+
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( token, p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false )
+    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
+    eoe_proc( false ), 
+    eoe_stats( p -> get_stats( name_str + "_eoe", this ) )
   {
     parse_options( 0, options );
 
@@ -399,7 +420,9 @@ struct shaman_spell_t : public spell_t
 
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( "", p, s ),
-    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false )
+    base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
+    eoe_proc( false ), 
+    eoe_stats( p -> get_stats( name_str + "_eoe", this ) )
   {
     parse_options( 0, options );
 
@@ -412,15 +435,18 @@ struct shaman_spell_t : public spell_t
   shaman_targetdata_t* targetdata( player_t* t = 0 ) const
   { return debug_cast<shaman_targetdata_t*>( action_t::targetdata( t ) ); }
 
+  action_state_t* new_state() { return new shaman_spell_state_t( this, target ); }
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
   virtual bool   is_periodic_damage() const { return base_td > 0; };
   virtual double cost() const;
   virtual double cost_reduction() const;
+  virtual timespan_t execute_time() const;
   virtual double haste() const { return composite_haste(); }
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   impact_s( action_state_t* );
   virtual void   schedule_execute();
+  virtual void   update_ready();
   virtual bool   usable_moving()
   {
     if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero() )
@@ -465,7 +491,43 @@ struct shaman_spell_t : public spell_t
 
     return m;
   }
+
+  void snapshot_state( action_state_t* s, uint32_t f )
+  {
+    shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( s );
+    ss -> eoe_proc = eoe_proc;
+
+    spell_t::snapshot_state( s, f );
+  }
 };
+
+struct eoe_execute_event_t : public event_t
+{
+  shaman_spell_t* spell;
+  
+  eoe_execute_event_t( shaman_spell_t* s ) :
+    event_t( s -> sim, s -> player, "eoe_execute" ),
+    spell( s )
+  {
+    timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    sim -> add_event( this, delay_duration );
+  }
+  
+  void execute()
+  {
+    assert( spell );
+    
+    stats_t* tmp_stats     = spell -> stats;
+    spell -> eoe_proc      = true;
+    spell -> is_dtr_action = true;
+    spell -> stats         = spell -> eoe_stats;
+    spell -> execute();
+    spell -> stats         = tmp_stats;
+    spell -> is_dtr_action = false;
+    spell -> eoe_proc      = false;
+  }
+};
+
 
 // ==========================================================================
 // Pet Spirit Wolf
@@ -1340,6 +1402,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     stateless            = true;
+    base_execute_time    = timespan_t::zero();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1365,6 +1428,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     stateless            = true;
+    base_execute_time    = timespan_t::zero();
 
     direct_power_mod  += player -> specialization.shamanism -> effectN( 1 ).percent();
 
@@ -1395,6 +1459,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     stateless            = true;
+    base_execute_time    = timespan_t::zero();
 
     direct_power_mod  += player -> specialization.shamanism -> effectN( 2 ).percent();
 
@@ -1978,12 +2043,17 @@ double shaman_spell_t::cost_reduction() const
 
 double shaman_spell_t::cost() const
 {
-  double c = spell_t::cost();
+  if ( unlikely( eoe_proc ) )
+    return 0.0;
+  else
+  {
+    double c = spell_t::cost();
 
-  c *= 1.0 + cost_reduction();
+    c *= 1.0 + cost_reduction();
 
-  if ( c < 0 ) c = 0;
-  return c;
+    if ( c < 0 ) c = 0;
+    return c;
+  }
 }
 
 // shaman_spell_t::consume_resource =========================================
@@ -1993,6 +2063,16 @@ void shaman_spell_t::consume_resource()
   spell_t::consume_resource();
   if ( harmful && callbacks && ! proc && resource_consumed > 0 && p() -> buff.elemental_focus -> up() )
     p() -> buff.elemental_focus -> decrement();
+}
+
+// shaman_spell_t::execute_time =============================================
+
+timespan_t shaman_spell_t::execute_time() const
+{
+  if ( unlikely( eoe_proc ) )
+    return timespan_t::zero();
+  
+  return spell_t::execute_time();
 }
 
 // shaman_spell_t::execute =================================================
@@ -2007,6 +2087,14 @@ void shaman_spell_t::execute()
   // Record maelstrom weapon stack usage
   if ( maelstrom && p() -> primary_tree() == SHAMAN_ENHANCEMENT )
     p() -> proc.maelstrom_weapon_used[ p() -> buff.maelstrom_weapon -> check() ] -> occur();
+
+  if ( harmful && ! eoe_proc && ! is_dtr_action && 
+       p() -> talent.echo_of_the_elements -> ok() && 
+       p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
+  {
+    if ( sim -> debug ) log_t::output( sim, "Echo of the Elements procs for %s", name() );
+    new ( sim ) eoe_execute_event_t( this );
+  }
 
   // Shamans have specialized swing timer reset system, where every cast time spell
   // resets the swing timers, _IF_ the spell is not maelstromable, or the maelstrom
@@ -2044,7 +2132,16 @@ void shaman_spell_t::execute()
 
 void shaman_spell_t::impact_s( action_state_t* state )
 {
-  spell_t::impact_s( state );
+  shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( state );
+  if ( unlikely( ss -> eoe_proc ) )
+  {
+    stats_t* tmp_stats = stats;
+    stats = eoe_stats;
+    spell_t::impact_s( state );
+    stats = tmp_stats;
+  }
+  else
+    spell_t::impact_s( state );
 
   // Triggers wont happen for procs or totems
   if ( proc || ! callbacks )
@@ -2080,6 +2177,16 @@ void shaman_spell_t::schedule_execute()
       p() -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
+}
+
+// shaman_spell_t::update_ready =============================================
+
+void shaman_spell_t::update_ready()
+{
+  spell_t::update_ready();
+  
+  if ( eoe_proc && cooldown -> duration > timespan_t::zero() )
+    cooldown -> reset();
 }
 
 // ==========================================================================
@@ -3533,6 +3640,7 @@ void shaman_t::create_options()
     { "wf_delay_stddev",            OPT_TIMESPAN, &( wf_delay_stddev            ) },
     { "uf_expiration_delay",        OPT_TIMESPAN, &( uf_expiration_delay        ) },
     { "uf_expiration_delay_stddev", OPT_TIMESPAN, &( uf_expiration_delay_stddev ) },
+    { "eoe_proc_chance",            OPT_FLT,      &( eoe_proc_chance            ) },
     { NULL,                         OPT_UNKNOWN,  NULL                            }
   };
 
@@ -3602,6 +3710,21 @@ void shaman_t::create_pets()
   pet_spirit_wolf     = create_pet( "spirit_wolf"     );
   pet_fire_elemental  = create_pet( "fire_elemental"  );
   pet_earth_elemental = create_pet( "earth_elemental" );
+}
+
+// shaman_t::init ===========================================================
+
+void shaman_t::init()
+{
+  player_t::init();
+  
+  if ( eoe_proc_chance == 0 )
+  {
+    if ( primary_tree() == SHAMAN_ENHANCEMENT )
+      eoe_proc_chance = 0.25; /// TODO: Enhancement proc chance needs testing
+    else
+      eoe_proc_chance = 0.06; /// Resto / Elemental proc chance is ~6%
+  }
 }
 
 // shaman_t::init_spells ====================================================
@@ -3843,6 +3966,7 @@ void shaman_t::init_procs()
 void shaman_t::init_rng()
 {
   player_t::init_rng();
+  rng.echo_of_the_elements = get_rng( "echo_of_the_elements" );
   rng.elemental_overload   = get_rng( "elemental_overload"   );
   rng.lava_surge           = get_rng( "lava_surge"           );
   rng.primal_wisdom        = get_rng( "primal_wisdom"        );
