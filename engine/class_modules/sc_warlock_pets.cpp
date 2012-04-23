@@ -198,14 +198,12 @@ struct warlock_pet_spell_t : public spell_t
     spell_t( n, p, p -> find_pet_spell( n ), sc )
   {
     may_crit = true;
-    crit_multiplier *= 1.33;
   }
 
   warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
     spell_t( token, p, s, sc )
   {
     may_crit = true;
-    crit_multiplier *= 1.33;
   }
 
   warlock_pet_t* p() const

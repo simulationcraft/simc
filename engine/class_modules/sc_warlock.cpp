@@ -134,7 +134,6 @@ private:
     stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
-    crit_multiplier *= 1.33;
   }
 
 public:
@@ -883,8 +882,8 @@ struct soul_fire_t : public warlock_spell_t
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
     // FIXME: Need to test if this bonus replaces or works in addition to the one implemented in warlock_spell_t
-    if ( p() -> mastery_spells.emberstorm -> ok() )
-      m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    //if ( p() -> mastery_spells.emberstorm -> ok() )
+    //  m = 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
 
     return m;
   }
