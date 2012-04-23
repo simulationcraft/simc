@@ -711,13 +711,6 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
   return owner -> stats_current.spell_hit * 26.0 / 17.0;
 }
 
-double warlock_main_pet_t::composite_mp5() const
-{
-  double h = warlock_pet_t::composite_mp5();
-  //h += mp5_per_intellect * owner -> intellect();
-  return h;
-}
-
 // ==========================================================================
 // Warlock Guardian Pet
 // ==========================================================================

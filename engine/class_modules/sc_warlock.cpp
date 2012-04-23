@@ -1678,16 +1678,6 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
-double warlock_t::composite_mp5() const
-{
-  double mp5 = player_t::composite_mp5();
-
-  if ( spec.chaotic_energy -> ok() ) mp5 *= spec.chaotic_energy -> effectN( 1 ).percent();
-
-  return mp5;
-}
-
-
 // warlock_t::matching_gear_multiplier ======================================
 
 double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
@@ -1895,8 +1885,11 @@ void warlock_t::init_base()
   player_t::init_base();
 
   stats_base.attack_power = -10;
+  stats_base.mp5 = 5000;
   stats_initial.attack_power_per_strength = 2.0;
   stats_initial.spell_power_per_intellect = 1.0;
+
+  if ( spec.chaotic_energy -> ok() ) stats_base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
   if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30;
@@ -1921,7 +1914,7 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft );
+  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.decimation            = buff_creator_t( this, "decimation", spec.decimation );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
