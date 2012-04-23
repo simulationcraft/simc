@@ -15,6 +15,7 @@ enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX
 
 struct mage_targetdata_t : public targetdata_t
 {
+  dot_t* dots_flamestrike;
   dot_t* dots_ignite;
   dot_t* dots_living_bomb;
   dot_t* dots_nether_tempest;
@@ -30,6 +31,7 @@ void register_mage_targetdata( sim_t* sim )
   player_type_e t = MAGE;
   typedef mage_targetdata_t type;
 
+  REGISTER_DOT( flamestrike );
   REGISTER_DOT( ignite );
   REGISTER_DOT( living_bomb );
   REGISTER_DOT( nether_tempest );
@@ -788,6 +790,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 }
 
 // trigger_ignite ===========================================================
+
 struct ignite_t : public mage_spell_t
 {
   ignite_t( mage_t* player ) :
@@ -1336,6 +1339,43 @@ struct blink_t : public mage_spell_t
   }
 };
 
+// Blizzard Spell ===========================================================
+
+struct blizzard_shard_t : public mage_spell_t
+{
+  blizzard_shard_t( mage_t* p ) :
+    mage_spell_t( "blizzard_shard", p, p -> find_spell( 42208 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+struct blizzard_t : public mage_spell_t
+{
+  blizzard_shard_t* shard;
+  blizzard_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "blizzard", p, p -> find_spell( 10 ) ),
+    shard( 0 )
+  {
+    parse_options( NULL, options_str );
+    
+    channeled    = true;
+    hasted_ticks = false;
+    may_miss     = false;
+
+    shard = new blizzard_shard_t( p );
+    add_child( shard );
+  }
+
+  void tick( dot_t* d )
+  {
+    mage_spell_t::tick( d );
+
+    shard -> execute();
+  }
+};
+
 // Cold Snap Spell ==========================================================
 
 struct cold_snap_t : public mage_spell_t
@@ -1412,7 +1452,9 @@ struct combustion_t : public mage_spell_t
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td -> dots_pyroblast      ) * ( 1.0 + p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery() );
+    base_td += calculate_dot_dps( td -> dots_pyroblast   );
+    base_td += calculate_dot_dps( td -> dots_flamestrike );
+
     // FIXME: Add FlameStrike
 
     if ( p -> set_bonus.tier13_4pc_caster() )
@@ -1668,6 +1710,19 @@ struct fireball_t : public mage_spell_t
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
+  }
+};
+
+// Flamestrike Spell ========================================================
+
+struct flamestrike_t : public mage_spell_t
+{
+  flamestrike_t( mage_t* p, const std::string& options_str ) :
+     mage_spell_t( "flamestrike", p, p -> find_spell( 2120 ) )
+  {
+    parse_options( NULL, options_str );
+
+    aoe = -1;
   }
 };
 
@@ -2089,14 +2144,6 @@ struct mirror_image_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> pets.mirror_image_3 -> summon();
-  }
-
-  virtual timespan_t gcd() const
-  {
-    if ( p() -> buffs.arcane_power -> check() && p() -> glyphs.arcane_power -> ok() )
-      return timespan_t::zero();
-
-    return mage_spell_t::gcd();
   }
 };
 
@@ -2608,6 +2655,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
   if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
+  if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
@@ -2619,6 +2667,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
+  if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
   if ( name == "frost_armor"       ) return new             frost_armor_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
