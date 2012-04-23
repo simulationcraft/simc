@@ -363,31 +363,6 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual timespan_t execute_time() const
-  {
-    timespan_t h = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.backdraft -> up() )
-    {
-      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-    }
-    return h;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    for ( int i = 0; i < 4; i++ )
-    {
-      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
-    }
-
-    if ( p() -> buffs.backdraft -> check() )
-    {
-      p() -> buffs.backdraft -> decrement();
-    }
-  }
 
   virtual void impact_s( action_state_t* s )
   {
@@ -664,28 +639,6 @@ struct immolate_t : public warlock_spell_t
     return m;
   }
 
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    if ( result_is_hit() )
-    {
-      // FIXME: move to impact
-      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-      if ( td -> dots_unstable_affliction -> ticking )
-      {
-        td -> dots_unstable_affliction -> cancel();
-      }
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    p() -> buffs.molten_core -> trigger( 3 );
-  }
-
 };
 
 // Shadowflame DOT Spell ====================================================
@@ -707,8 +660,6 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Conflagrate" )
   {
-    base_dd_multiplier *= 1.0 + p -> glyphs.immolate -> effectN( 1 ).percent();
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new conflagrate_t( p, true );
@@ -716,37 +667,12 @@ struct conflagrate_t : public warlock_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    action_t* a = td -> dots_immolate -> action;
-
-    double periodic_dmg = a -> base_td + total_power() * a -> tick_power_mod;
-
-    int periodic_ticks = td -> dots_immolate -> action -> hasted_num_ticks( player_haste );
-
-    base_dd_min = base_dd_max = periodic_dmg * periodic_ticks * data().effectN( 2 ).percent() ;
-
-    warlock_spell_t::execute();
-  }
-
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
-  }
-
-  virtual bool ready()
-  {
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    if ( ! ( td -> dots_immolate -> ticking ) )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -754,11 +680,8 @@ struct conflagrate_t : public warlock_spell_t
 
 struct incinerate_t : public warlock_spell_t
 {
-  spell_t*  incinerate_burst_immolate;
-
   incinerate_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Incinerate" ),
-    incinerate_burst_immolate( 0 )
+    warlock_spell_t( p, "Incinerate" )
   {
     base_multiplier *= 1.0 + p -> glyphs.incinerate -> effectN( 1 ).percent();
 
@@ -771,13 +694,6 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    if ( td -> dots_immolate -> ticking )
-    {
-      base_dd_adder = ( sim -> range( base_dd_min, base_dd_max ) + direct_power_mod * total_power() ) / 6;
-    }
-
     warlock_spell_t::execute();
 
     for ( int i=0; i < 4; i++ )
@@ -797,7 +713,13 @@ struct incinerate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_decimation( this, s -> result );
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+
+      if ( td -> dots_immolate -> ticking )
+      {
+        double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
+        p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
+      }
 
       trigger_soul_leech( p(), s -> result_amount );
     }
@@ -807,10 +729,6 @@ struct incinerate_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
-    if ( p() -> buffs.molten_core -> up() )
-    {
-      h *= 1.0 + p() -> buffs.molten_core -> data().effectN( 3 ).percent();
-    }
     if ( p() -> buffs.backdraft -> up() )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
@@ -828,6 +746,8 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
+    if ( p -> mastery_spells.emberstorm -> ok() ) base_costs[ RESOURCE_BURNING_EMBER ] = 10;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new soul_fire_t( p, true );
@@ -877,9 +797,29 @@ struct soul_fire_t : public warlock_spell_t
     return ( p() -> mastery_spells.emberstorm -> ok() ) ? RESOURCE_BURNING_EMBER : warlock_spell_t::current_resource();
   }
 
-  virtual double cost() const
+  virtual result_type_e calculate_result( double crit, unsigned int level )
+  { 
+    result_type_e r = warlock_spell_t::calculate_result( crit, level );
+
+    // Soul fire always crits
+    if ( result_is_hit( r ) ) return RESULT_CRIT;
+
+    return r;
+  }
+
+  virtual double action_multiplier( const action_state_t* s ) const
   {
-    return ( p() -> mastery_spells.emberstorm -> ok() ) ? 10.0 : warlock_spell_t::cost();
+    double m = warlock_spell_t::action_multiplier( s );
+
+    if ( p() -> buffs.soulburn -> check() )
+      m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
+
+    m = 1;
+    // FIXME: Need to test if this bonus replaces or works in addition to the one implemented in warlock_spell_t
+    if ( p() -> mastery_spells.emberstorm -> ok() )
+      m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+
+    return m;
   }
 };
 
@@ -1949,6 +1889,7 @@ void warlock_t::init_gains()
   gains.tier13_4pc             = get_gain( "tier13_4pc" );
   gains.nightfall              = get_gain( "nightfall"  );
   gains.drain_soul             = get_gain( "drain_soul" );
+  gains.incinerate             = get_gain( "incinerate" );
 }
 
 // warlock_t::init_uptimes ==================================================
