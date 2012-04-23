@@ -881,9 +881,11 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
-    // FIXME: Need to test if this bonus replaces or works in addition to the one implemented in warlock_spell_t
-    //if ( p() -> mastery_spells.emberstorm -> ok() )
-    //  m = 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    // FIXME: Initial testing seems to suggest the tooltip may be wrong about the extra 10% for soul fire. Needs a lot more testing.
+    // if ( current_resource() == RESOURCE_BURNING_EMBER ) m += 0.1;
+
+    // FIXME: Initial testing seems roughly in line with a spell crit scaling factor of 0.5. Needs a lot more testing.
+    m *= 1.0 + p() -> composite_spell_crit() * 0.5;
 
     return m;
   }
