@@ -2184,7 +2184,7 @@ void paladin_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = 0.27;
+  stats_initial.parry_rating_per_strength = 0.27;
 }
 
 // paladin_t::init_base =====================================================
@@ -2209,8 +2209,6 @@ void paladin_t::init_base()
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
   diminished_parry_capi = 0.01523660;
-
-  mana_per_intellect = 15;
 
   switch ( primary_tree() )
   {
@@ -2638,16 +2636,16 @@ void paladin_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ] += 70;
+    stats_initial.attribute[ ATTR_STRENGTH ] += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ] += 90;
+    stats_initial.attribute[ ATTR_STRENGTH ] += 90;
 }
 
 void paladin_t::init_items()

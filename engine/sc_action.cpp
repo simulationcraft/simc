@@ -449,7 +449,7 @@ double action_t::cost() const
 
   double c = base_costs[ current_resource() ];
 
-  c -= player -> resource_reduction[ school ];
+  c -= player -> stats_current.resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
   if ( current_resource() == RESOURCE_MANA )

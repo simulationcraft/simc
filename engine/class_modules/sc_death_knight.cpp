@@ -851,11 +851,11 @@ struct army_ghoul_pet_t : public pet_t
   virtual void init_base()
   {
     // FIXME: Copied from the pet ghoul
-    attribute_base[ ATTR_STRENGTH  ] = 476;
-    attribute_base[ ATTR_AGILITY   ] = 3343;
-    attribute_base[ ATTR_STAMINA   ] = 546;
-    attribute_base[ ATTR_INTELLECT ] = 69;
-    attribute_base[ ATTR_SPIRIT    ] = 116;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
+    stats_base.attribute[ ATTR_AGILITY   ] = 3343;
+    stats_base.attribute[ ATTR_STAMINA   ] = 546;
+    stats_base.attribute[ ATTR_INTELLECT ] = 69;
+    stats_base.attribute[ ATTR_SPIRIT    ] = 116;
 
     stats_base.attack_power = -20;
     stats_initial.attack_power_per_strength = 2.0;
@@ -958,13 +958,13 @@ struct bloodworms_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 133;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
+    stats_base.attribute[ ATTR_AGILITY   ] =  38;
+    stats_base.attribute[ ATTR_STAMINA   ] = 190;
+    stats_base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
-    mana_per_intellect = 5;
+    //mana_per_intellect = 5;
 
     melee = new melee_t( this );
   }
@@ -1013,11 +1013,11 @@ struct gargoyle_pet_t : public pet_t
   virtual void init_base()
   {
     // FIX ME!
-    attribute_base[ ATTR_STRENGTH  ] = 0;
-    attribute_base[ ATTR_AGILITY   ] = 0;
-    attribute_base[ ATTR_STAMINA   ] = 0;
-    attribute_base[ ATTR_INTELLECT ] = 0;
-    attribute_base[ ATTR_SPIRIT    ] = 0;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 0;
+    stats_base.attribute[ ATTR_AGILITY   ] = 0;
+    stats_base.attribute[ ATTR_STAMINA   ] = 0;
+    stats_base.attribute[ ATTR_INTELLECT ] = 0;
+    stats_base.attribute[ ATTR_SPIRIT    ] = 0;
 
     action_list_str = "/snapshot_stats/gargoyle_strike";
   }
@@ -1186,11 +1186,11 @@ struct ghoul_pet_t : public pet_t
 
 
     // Value for the ghoul of a naked worgen as of 4.2
-    attribute_base[ ATTR_STRENGTH  ] = 476;
-    attribute_base[ ATTR_AGILITY   ] = 3343;
-    attribute_base[ ATTR_STAMINA   ] = 546;
-    attribute_base[ ATTR_INTELLECT ] = 69;
-    attribute_base[ ATTR_SPIRIT    ] = 116;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
+    stats_base.attribute[ ATTR_AGILITY   ] = 3343;
+    stats_base.attribute[ ATTR_STAMINA   ] = 546;
+    stats_base.attribute[ ATTR_INTELLECT ] = 69;
+    stats_base.attribute[ ATTR_SPIRIT    ] = 116;
 
     stats_base.attack_power = -20;
     stats_initial.attack_power_per_strength = 2.0;
@@ -1211,7 +1211,7 @@ struct ghoul_pet_t : public pet_t
   virtual double composite_attribute( attribute_type_e attr ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
-    double a = attribute[ attr ];
+    double a = stats_current.attribute[ attr ];
     if ( attr == ATTR_STRENGTH )
     {
       double strength_scaling = 1.01;
@@ -3691,7 +3691,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = 0.27;
+  stats_initial.parry_rating_per_strength = 0.27;
 }
 
 // death_knight_t::init_base ================================================
@@ -3704,9 +3704,9 @@ void death_knight_t::init_base()
 
   str_mult += spells.unholy_might -> effect1().percent();
 
-  attribute_multiplier_initial[ ATTR_STRENGTH ] *= 1.0 + str_mult;
+  stats_initial.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
-  attribute_multiplier_initial[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
+  stats_initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
   stats_base.attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
 
   stats_base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
@@ -4150,10 +4150,10 @@ void death_knight_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ]   += 70;
+    stats_initial.attribute[ ATTR_STRENGTH ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ]   += 90;
+    stats_initial.attribute[ ATTR_STRENGTH ]   += 90;
 }
 
 // death_knight_t::init_gains ===============================================

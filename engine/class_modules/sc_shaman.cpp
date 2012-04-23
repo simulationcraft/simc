@@ -614,11 +614,11 @@ struct spirit_wolf_pet_t : public pet_t
 
     // New approximated pet values at 85, roughly the same ratio of str/agi as per the old ones
     // At 85, the wolf has a base attack power of 932
-    attribute_base[ ATTR_STRENGTH  ] = 407;
-    attribute_base[ ATTR_AGILITY   ] = 138;
-    attribute_base[ ATTR_STAMINA   ] = 361;
-    attribute_base[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
-    attribute_base[ ATTR_SPIRIT    ] = 109;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 407;
+    stats_base.attribute[ ATTR_AGILITY   ] = 138;
+    stats_base.attribute[ ATTR_STAMINA   ] = 361;
+    stats_base.attribute[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
+    stats_base.attribute[ ATTR_SPIRIT    ] = 109;
 
     stats_base.attack_power = -20;
     stats_initial.attack_power_per_strength = 2.0;
@@ -754,8 +754,6 @@ struct earth_elemental_pet_t : public pet_t
 
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
-
-    mana_per_intellect = 0;
 
     // Simple as it gets, travel to target, kick off melee
     action_list_str = "travel/auto_attack,moving=0";
@@ -1045,7 +1043,7 @@ struct fire_elemental_pet_t : public pet_t
     resources.base[ RESOURCE_HEALTH ] = 46430; // Approximated from lvl83 fire elem with naked shaman
     resources.base[ RESOURCE_MANA   ] = 85080; //
 
-    mana_per_intellect               = 4.5;
+    //mana_per_intellect               = 4.5;
 
     main_hand_weapon.type            = WEAPON_BEAST;
     main_hand_weapon.min_dmg         = 427; // Level 85 Values, approximated
@@ -3815,7 +3813,6 @@ void shaman_t::init_base()
   stats_initial.attack_power_per_agility  = 2.0;
   stats_initial.spell_power_per_intellect = 1.0;
 
-  mana_per_intellect = 0;
   if ( primary_tree() == SHAMAN_ELEMENTAL )
     resources.initial_multiplier[ RESOURCE_MANA ] = specialization.spiritual_insight -> effectN( 1 ).percent();
 
@@ -3853,7 +3850,7 @@ void shaman_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -3908,22 +3905,22 @@ void shaman_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 70;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 90;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // shaman_t::init_gains =====================================================
@@ -4253,7 +4250,7 @@ double shaman_t::composite_spell_hit() const
   double hit = player_t::composite_spell_hit();
 
   hit += ( specialization.elemental_precision -> ok() *
-    ( spirit() - attribute_base[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
+    ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
 }

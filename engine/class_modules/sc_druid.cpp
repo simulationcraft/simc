@@ -873,11 +873,11 @@ struct treants_pet_t : public pet_t
     pet_t::init_base();
 
     // At 85 base AP of 932
-    attribute_base[ ATTR_STRENGTH  ] = 476;
-    attribute_base[ ATTR_AGILITY   ] = 113;
-    attribute_base[ ATTR_STAMINA   ] = 361;
-    attribute_base[ ATTR_INTELLECT ] = 65;
-    attribute_base[ ATTR_SPIRIT    ] = 109;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
+    stats_base.attribute[ ATTR_AGILITY   ] = 113;
+    stats_base.attribute[ ATTR_STAMINA   ] = 361;
+    stats_base.attribute[ ATTR_INTELLECT ] = 65;
+    stats_base.attribute[ ATTR_SPIRIT    ] = 109;
     
     stats_base.attack_crit  = .05;
     stats_base.attack_power = -20;
@@ -4238,7 +4238,6 @@ void druid_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_RAGE   ] = 100;
 
-  mana_per_intellect           = 15;
   base_energy_regen_per_second = 10;
 
   // Natural Insight: +400% mana
@@ -4318,22 +4317,22 @@ void druid_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 70;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 90;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // druid_t::init_scaling ====================================================
@@ -4356,7 +4355,7 @@ void druid_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -4809,7 +4808,7 @@ double druid_t::composite_spell_hit() const
   double hit = player_t::composite_spell_hit();
 
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
+  hit += ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -4870,7 +4869,7 @@ double druid_t::composite_attribute( attribute_type_e attr ) const
   double a = player_t::composite_attribute( attr );
 
   if ( attr == ATTR_INTELLECT )
-    a += ( a - attribute_base[ attr ] )* talent.heart_of_the_wild -> effect1().percent();
+    a += ( a - stats_base.attribute[ attr ] )* talent.heart_of_the_wild -> effect1().percent();
 
   return a;
 }

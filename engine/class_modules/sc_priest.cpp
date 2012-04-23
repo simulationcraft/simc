@@ -1102,10 +1102,10 @@ struct shadow_fiend_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    attribute_base[ ATTR_STRENGTH  ]  = 0; // Unknown
-    attribute_base[ ATTR_AGILITY   ]  = 0; // Unknown
-    attribute_base[ ATTR_STAMINA   ]  = 0; // Unknown
-    attribute_base[ ATTR_INTELLECT ]  = 0; // Unknown
+    stats_base.attribute[ ATTR_STRENGTH  ]  = 0; // Unknown
+    stats_base.attribute[ ATTR_AGILITY   ]  = 0; // Unknown
+    stats_base.attribute[ ATTR_STAMINA   ]  = 0; // Unknown
+    stats_base.attribute[ ATTR_INTELLECT ]  = 0; // Unknown
     resources.base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
     resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
     stats_base.attack_power                 = 0;  // Unknown
@@ -3430,7 +3430,7 @@ double priest_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( ( spirit() - attribute_base[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -3585,8 +3585,6 @@ void priest_t::init_base()
   stats_initial.attack_power_per_strength = 1.0;
   stats_initial.spell_power_per_intellect = 1.0;
 
-  mana_per_intellect = 15;
-
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
@@ -3636,7 +3634,7 @@ void priest_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      attribute_initial[ ATTR_SPIRIT ] -= v * 2;
+      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -4109,16 +4107,16 @@ void priest_t::init_values()
 
   // Shadow
   if ( set_bonus.pvp_2pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // priest_t::reset ==========================================================

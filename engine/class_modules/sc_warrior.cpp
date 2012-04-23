@@ -3103,7 +3103,7 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial_parry_rating_per_strength = 0.27;
+  stats_initial.parry_rating_per_strength = 0.27;
 }
 
 // warrior_t::init_base =====================================================
@@ -3225,10 +3225,10 @@ void warrior_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ]   += 70;
+    stats_initial.attribute[ ATTR_STRENGTH ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_STRENGTH ]   += 90;
+    stats_initial.attribute[ ATTR_STRENGTH ]   += 90;
 }
 
 // warrior_t::init_gains ====================================================

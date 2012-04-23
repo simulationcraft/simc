@@ -424,11 +424,11 @@ struct hunter_pet_t : public pet_t
     pet_t::init_base();
 
     hunter_t* o = owner -> cast_hunter();
-    attribute_base[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
-    attribute_base[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
-    attribute_base[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
-    attribute_base[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
-    attribute_base[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
+    stats_base.attribute[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
+    stats_base.attribute[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
+    stats_base.attribute[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
+    stats_base.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
+    stats_base.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
     stats_base.attack_power = -20;
     stats_initial.attack_power_per_strength = 2.0;
@@ -3653,10 +3653,10 @@ void hunter_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 70;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 90;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // hunter_t::init_gains =====================================================

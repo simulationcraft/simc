@@ -675,9 +675,9 @@ static void register_synapse_springs( item_t* item )
 
   for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
   {
-    if ( p -> attribute[ attr[ i ] ] > max_value )
+    if ( p -> stats_current.attribute[ attr[ i ] ] > max_value )
     {
-      max_value = p -> attribute[ attr[ i ] ];
+      max_value = p -> stats_current.attribute[ attr[ i ] ];
       max_stat = stat_from_attr( attr[ i ] );
     }
   }

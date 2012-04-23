@@ -3754,10 +3754,10 @@ void rogue_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 70;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    attribute_initial[ ATTR_AGILITY ]   += 90;
+    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // trigger_honor_among_thieves ==============================================

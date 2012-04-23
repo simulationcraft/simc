@@ -322,7 +322,7 @@ struct summon_add_t : public spell_t
   {
     spell_t::execute();
 
-    player -> summon_pet( add_name.c_str(), summoning_duration );
+    player -> summon_pet( add_name, summoning_duration );
   }
 
   virtual bool ready()

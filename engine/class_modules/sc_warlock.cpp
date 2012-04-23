@@ -1897,8 +1897,6 @@ void warlock_t::init_base()
   stats_initial.attack_power_per_strength = 2.0;
   stats_initial.spell_power_per_intellect = 1.0;
 
-  mana_per_intellect = 15;
-
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
   if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30;
 
@@ -1939,10 +1937,10 @@ void warlock_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // warlock_t::init_gains ====================================================

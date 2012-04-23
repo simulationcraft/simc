@@ -983,7 +983,8 @@ enum snapshot_state_e
   STATE_MUL_TGT_TA    = 0x000080,
 };
 
-enum { READY_POLL=0, READY_TRIGGER=1 };
+enum ready_type_e
+{ READY_POLL=0, READY_TRIGGER=1 };
 
 // Generic programming tools ================================================
 
@@ -3069,11 +3070,13 @@ struct player_t : public noncopyable
   race_type_e race;
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
+  std::string race_str, professions_str, position_str;
   player_t*   next;
   int         index;
   role_type_e   role;
   player_t*   target;
-  int         level, use_pre_potion, party, member, ready_type;
+  int         level, use_pre_potion, party, member;
+  ready_type_e ready_type;
   double      skill, initial_skill, distance, default_distance;
   timespan_t  gcd_ready, base_gcd, started_waiting;
   int         potion_used, sleeping, initial_sleeping, initialized;
@@ -3090,6 +3093,7 @@ struct player_t : public noncopyable
   int         scale_player;
   bool        has_dtr;
   double      avg_ilvl;
+  position_type_e position;
 
   struct p_vengeance_t
   {
@@ -3121,66 +3125,42 @@ struct player_t : public noncopyable
   std::vector<const spell_data_t*> glyph_list;
 
   // Profs
-  std::string professions_str;
   std::array<int,PROFESSION_MAX> profession;
 
-  // Race
-  std::string race_str;
-
   // Haste
-  double base_haste_rating, initial_haste_rating, haste_rating;
   double spell_haste, attack_haste;
-
-  // Attributes
-  std::array<double,ATTRIBUTE_MAX> attribute, attribute_base, attribute_initial,
-                                   attribute_multiplier, attribute_multiplier_initial;
-
-  double mastery, mastery_rating, initial_mastery_rating,base_mastery;
 
   struct player_stats_t
   {
-      double spell_hit;
-      double spell_crit;
-      double mp5;
+    std::array<double,ATTRIBUTE_MAX> attribute;
 
-      // Attack Mechanics
-      double attack_power;
-      double attack_hit;
-      double attack_expertise;
-      double attack_crit;
+    double mastery, mastery_rating, haste_rating;
 
-      // Defense Mechanics
-      double armor;
-      double bonus_armor;
-      double miss;
-      double dodge;
-      double parry;
-      double block;
-      double block_reduction;
+    double spell_hit, spell_crit, mp5;
+    // Attack Mechanics
+    double attack_power, attack_hit, attack_expertise, attack_crit;
+    // Defense Mechanics
+    double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
   };
 
   struct extended_player_stats_t : player_stats_t
   {
-      double spell_power_multiplier;
-      double spell_power_per_intellect;
-      double spell_crit_per_intellect;
+    std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
+    double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
 
-      double attack_power_multiplier;
-      double attack_power_per_strength;
-      double attack_power_per_agility;
-      double attack_crit_per_agility;
+    double spell_power_per_intellect, spell_crit_per_intellect;
+    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
+    double dodge_per_agility, parry_rating_per_strength;
 
-      double armor_multiplier;
-      double dodge_per_agility;
-      double parry_rating_per_strength;
+    double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
 
-      extended_player_stats_t()
-      {
-        memset( this, 0, sizeof( extended_player_stats_t ) );
-      }
+    std::array<double,SCHOOL_MAX> resource_reduction;
+
+    extended_player_stats_t();
   };
   player_stats_t stats_base;
   extended_player_stats_t stats_initial, stats_current;
+
   // Spell Mechanics
   double base_spell_power;
   std::array<double,SCHOOL_MAX + 1> initial_spell_power;
@@ -3189,18 +3169,10 @@ struct player_t : public noncopyable
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
   double base_chi_regen_per_second;
-  std::array<double,SCHOOL_MAX> resource_reduction, initial_resource_reduction;
   timespan_t last_cast;
-
-  // Attack Mechanics
-  position_type_e position;
-  std::string position_str;
 
   // Defense Mechanics
   event_t* target_auto_attack;
-  double armor_multiplier,  initial_armor_multiplier;
-  double dodge_per_agility, initial_dodge_per_agility;
-  double parry_rating_per_strength, initial_parry_rating_per_strength;
   double diminished_dodge_capi, diminished_parry_capi, diminished_kfactor;
   double armor_coeff;
   double half_resistance_rating;
@@ -3234,12 +3206,6 @@ struct player_t : public noncopyable
     bool is_infinite( resource_type_e rt ) const
     { return infinite_resource[ rt ] == 0 ? false : true; }
   } resources;
-
-  double  mana_per_intellect;
-  double mp5_per_spirit;
-  double health_per_stamina;
-  double mp5_from_spirit_multiplier;
-  uptime_t* primary_resource_cap;
 
   // Consumables
   std::string flask_str, elixirs_str, food_str;
@@ -3361,7 +3327,7 @@ struct player_t : public noncopyable
   size_t resource_timeline_count;
 
   // Damage
-  double iteration_dmg, iteration_dmg_taken;
+  double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dps_error, dpr, dtps_error;
   sample_data_t dmg;
   sample_data_t compound_dmg;
@@ -3372,10 +3338,10 @@ struct player_t : public noncopyable
   std::vector<double> timeline_dmg;
   std::vector<double> timeline_dps;
   std::vector<double> dps_convergence_error;
-  double    dps_convergence;
+  double dps_convergence;
 
   // Heal
-  double iteration_heal,iteration_heal_taken;
+  double iteration_heal,iteration_heal_taken; // temporary accumulators
   double hps_error,hpr;
   sample_data_t heal;
   sample_data_t compound_heal;
@@ -3403,7 +3369,7 @@ struct player_t : public noncopyable
     std::string thumbnail_url;
     std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
 
-    report_information_t() { charts_generated = buff_lists_generated = false; }
+    report_information_t() : charts_generated(), buff_lists_generated() {}
   } report_information;
 
   // Gear
@@ -3411,7 +3377,7 @@ struct player_t : public noncopyable
   std::vector<item_t> items;
   gear_stats_t stats, initial_stats, gear, enchant, temporary;
   set_bonus_t set_bonus;
-  set_bonus_array_t * sets;
+  set_bonus_array_t* sets;
   meta_gem_type_e meta_gem;
   bool matching_gear;
 
@@ -3537,6 +3503,11 @@ struct player_t : public noncopyable
     rng_t* lag_reaction;
     rng_t* lag_world;
   } rngs;
+
+  struct uptimes_t
+  {
+    uptime_t* primary_resource_cap;
+  } uptimes;
 
   int targetdata_id;
   std::vector<targetdata_t*> targetdata;
@@ -3687,8 +3658,8 @@ struct player_t : public noncopyable
   struct heal_info_t { double actual, amount; };
   virtual heal_info_t assess_heal( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a=0 );
 
-  virtual void  summon_pet( const char* name, timespan_t duration=timespan_t::zero() );
-  virtual void dismiss_pet( const char* name );
+  virtual void  summon_pet( const std::string& name, timespan_t duration=timespan_t::zero() );
+  virtual void dismiss_pet( const std::string& name );
 
   virtual bool ooc_buffs() { return true; }
 

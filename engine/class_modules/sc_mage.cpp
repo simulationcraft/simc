@@ -436,13 +436,13 @@ struct water_elemental_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 133;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
+    stats_base.attribute[ ATTR_AGILITY   ] =  38;
+    stats_base.attribute[ ATTR_STAMINA   ] = 190;
+    stats_base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
-    mana_per_intellect = 5;
+    //mana_per_intellect = 5;
   }
 
   virtual double composite_spell_haste() const
@@ -612,13 +612,13 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    attribute_base[ ATTR_STRENGTH  ] = 145;
-    attribute_base[ ATTR_AGILITY   ] =  38;
-    attribute_base[ ATTR_STAMINA   ] = 190;
-    attribute_base[ ATTR_INTELLECT ] = 133;
+    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
+    stats_base.attribute[ ATTR_AGILITY   ] =  38;
+    stats_base.attribute[ ATTR_STAMINA   ] = 190;
+    stats_base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
-    mana_per_intellect = 5;
+    //mana_per_intellect = 5;
   }
 
   virtual void init_actions()
@@ -2756,8 +2756,6 @@ void mage_t::init_base()
   stats_base.attack_power = -10;
   stats_initial.attack_power_per_strength = 1.0;
 
-  mana_per_intellect = 15;
-
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
   diminished_parry_capi = 0.006650;
@@ -2779,10 +2777,10 @@ void mage_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 70;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    attribute_initial[ ATTR_INTELLECT ] += 90;
+    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // mage_t::init_buffs =======================================================

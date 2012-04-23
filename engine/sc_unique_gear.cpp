@@ -541,13 +541,13 @@ static void register_darkmoon_card_greatness( item_t* item )
   static const attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
 
   stat_type_e max_stat = stat_from_attr( attr[ 0 ] );
-  double max_value = p -> attribute[ attr[ 0 ] ];
+  double max_value = p -> stats_current.attribute[ attr[ 0 ] ];
 
   for ( unsigned i = 1; i < sizeof_array( attr ); i++ )
   {
-    if ( p -> attribute[ attr[ i ] ] > max_value )
+    if ( p -> stats_current.attribute[ attr[ i ] ] > max_value )
     {
-      max_value = p -> attribute[ attr[ i ] ];
+      max_value = p -> stats_current.attribute[ attr[ i ] ];
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
@@ -729,7 +729,7 @@ static void register_shard_of_woe( item_t* item )
 
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
-    p -> initial_resource_reduction[ i ] += 205;
+    p -> stats_initial.resource_reduction[ i ] += 205;
   }
 }
 
