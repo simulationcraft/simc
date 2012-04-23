@@ -236,6 +236,7 @@ struct paladin_t : public player_t
   virtual void      init_actions();
   virtual void      init_items();
   virtual void      reset();
+  virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    composite_attack_speed() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
@@ -1335,6 +1336,10 @@ struct judgment_t : public paladin_melee_attack_t
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
+    may_glance                   = false;
+    may_block                    = false;
+    may_parry                    = false;
+    may_dodge                    = false;
 
     if ( p -> set_bonus.pvp_4pc_melee() )
       cooldown -> duration -= timespan_t::from_seconds( 1.0 );
@@ -2970,6 +2975,45 @@ double paladin_t::get_hand_of_light() const
 
   // chance to proc buff, 1% per point of mastery
   return composite_mastery() * ( passives.hand_of_light -> effectN( 1 ).coeff() / 100.0 );
+}
+
+// player_t::create_expression ==============================================
+
+expr_t* paladin_t::create_expression( action_t* a,
+                                     const std::string& name_str )
+{
+  struct paladin_expr_t : public expr_t
+  {
+    paladin_t& paladin;
+    paladin_expr_t( const std::string& n, paladin_t& p ) :
+      expr_t( n ), paladin( p ) {}
+  };
+
+  struct seal_expr_t : public paladin_expr_t
+  {
+    seal_type_e rt;
+    seal_expr_t( const std::string& n, paladin_t& p, seal_type_e r ) :
+      paladin_expr_t( n, p ), rt( r ) {}
+    virtual double evaluate() { return paladin.active_seal == rt; }
+  };
+
+  std::vector<std::string> splits;
+  int num_splits = util_t::string_split( splits, name_str, "." );
+
+  if ( ( num_splits == 2 ) && ( splits[ 0 ] == "seal" ) )
+  {
+    seal_type_e s = SEAL_NONE;
+
+    if      ( splits[ 1 ] == "truth"         ) s = SEAL_OF_TRUTH;
+    else if ( splits[ 1 ] == "insight"       ) s = SEAL_OF_INSIGHT;
+    else if ( splits[ 1 ] == "none"          ) s = SEAL_NONE;
+    else if ( splits[ 1 ] == "righteousness" ) s = SEAL_OF_RIGHTEOUSNESS;
+    else if ( splits[ 1 ] == "justice"       ) s = SEAL_OF_JUSTICE;
+    else if ( splits[ 1 ] == "command"       ) s = SEAL_OF_COMMAND;
+    return new seal_expr_t( name_str, *this, s );
+  }
+
+  return player_t::create_expression( a, name_str );
 }
 
 #endif // SC_PALADIN

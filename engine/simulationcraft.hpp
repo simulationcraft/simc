@@ -3280,7 +3280,7 @@ struct player_t : public noncopyable
     std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
     std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
 
-    ~callbacks_t()
+    virtual ~callbacks_t()
     { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
 
     void reset();
