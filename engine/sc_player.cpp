@@ -655,11 +655,11 @@ void player_t::init()
   replace_spells();
   init_spells();
   init_rating();
-  init_items();
-  init_base();
   init_racials();
   init_position();
   init_professions();
+  init_items();
+  init_base();
   init_core();
   init_spell();
   init_attack();
