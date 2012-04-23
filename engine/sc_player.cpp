@@ -6644,8 +6644,8 @@ player_t* player_t::create( sim_t*             sim,
 
 // player_t::create =========================================================
 
-player_t* player_t::create( sim_t* sim,
-                            const player_description_t& d )
+player_t* player_t::create( sim_t*,
+                            const player_description_t& )
 {
   return 0;
 }
