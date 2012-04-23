@@ -120,11 +120,8 @@ struct mage_t : public player_t
   // Passives
   struct passives_t
   {
+    const spell_data_t* nether_attunement; // NYI
     const spell_data_t* shatter;
-    const spell_data_t* improved_counterspell;
-    const spell_data_t* nether_attunement;
-    const spell_data_t* burning_soul;
-
   } passives;
 
   // Spell Data
@@ -2682,8 +2679,6 @@ void mage_t::init_spells()
   talents.temporal_shield  = find_talent_spell( "Temporal Shield" );
 
   // Passive Spells
-  passives.burning_soul          = find_class_spell( "Burning Soul" );
-  passives.improved_counterspell = find_class_spell( "Improved Counterspell" );
   passives.nether_attunement     = find_class_spell( "Nether Attunement" );
   passives.shatter               = find_class_spell( "Shatter" );
 
