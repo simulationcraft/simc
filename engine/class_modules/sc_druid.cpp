@@ -46,7 +46,7 @@
 // -- Maul
 // -- Meditation (Passive)
 // -- Might of Ursoc
-// -- Moonfire
+// ++ Moonfire
 // -- Moonkin Form
 // -- Natural Insight (Passive)
 // -- Nature's Focus (Passive)
@@ -69,17 +69,15 @@
 // -- Rip
 // -- Savage Defense
 // -- Savage Roar
-// -- Shooting Stars (Passive)
+// ++ Shooting Stars (Passive)
 // -- Shred
 // -- Skull Bash
 // -- Solar Beam
-// -- Soothe
 // -- Stampeding Roar
 // -- Starfall
 // ++ Starfire
 // ++ Starsurge
 // -- Survival Instincts
-// -- Swift Flight Form
 // -- Swift Rejuvenation (Passive)
 // -- Swiftmend
 // -- Swipe
@@ -299,11 +297,11 @@ struct druid_t : public player_t
   {
     // DONE
     cooldown_t* starfall;
+    cooldown_t* starsurge;
     
     // NYI / Needs checking
     cooldown_t* lotp;
     cooldown_t* mangle_bear;
-    cooldown_t* starsurge;
   } cooldown;
 
   // Gains
@@ -3452,8 +3450,10 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::tick( d );
     druid_t* p = player -> cast_druid();
 
-    if ( p -> buff.shooting_stars -> trigger() )
-      starsurge_cd -> reset();
+    if ( p -> specialization.shooting_stars -> ok() &&
+         d -> state -> result == RESULT_CRIT )
+      if ( p -> buff.shooting_stars -> trigger() )
+        starsurge_cd -> reset();
   }
 
   virtual void execute()
@@ -3500,7 +3500,7 @@ struct moonfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( p -> talent.sunfire -> ok() && p -> buff.eclipse_solar -> check() )
+    if ( p -> specialization.eclipse -> ok() && p -> buff.eclipse_solar -> check() )
       return false;
 
     return true;
@@ -3602,7 +3602,7 @@ struct druids_swiftness_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   starfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) ),
+    druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3743,6 +3743,7 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
@@ -3882,8 +3883,10 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::tick( d );
     druid_t* p = player -> cast_druid();
 
-    if ( p -> buff.shooting_stars -> trigger() )
-      starsurge_cd -> reset();
+    if ( p -> specialization.shooting_stars -> ok() &&
+         d -> state -> result == RESULT_CRIT )
+      if ( p -> buff.shooting_stars -> trigger() )
+        starsurge_cd -> reset();
   }
 
   virtual void execute()
@@ -3891,7 +3894,7 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    dot_t* mf = td->dots_moonfire;
+    dot_t* mf = td -> dots_moonfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -4132,7 +4135,7 @@ struct wrath_t : public druid_spell_t
       if ( p -> specialization.eclipse -> ok() )
       {
         if ( td -> dots_sunfire -> ticking )
-          td -> dots_sunfire -> refresh_duriation();
+          td -> dots_sunfire -> refresh_duration();
           
         if ( p -> eclipse_bar_direction <= 0 )
         {
@@ -4414,9 +4417,25 @@ void druid_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( sim, player, name, max_stack, duration, cooldown, proc_chance, quiet )
-  // These have either incorrect or no values in the DBC or don't really exist
-  
+ 
+  // MoP checked
+  buff.eclipse_lunar         = create_buff( 48518, "lunar_eclipse" );
+  buff.eclipse_solar         = create_buff( 48517, "solar_eclipse" );
+  buff.shooting_stars        = create_buff( specialization.shooting_stars -> effect1().trigger_spell_id(), "shooting_stars" );
+  buff.lunar_shower          = create_buff( specialization.lunar_shower -> effect1().trigger_spell_id(), "lunar_shower" );
+
+
+  buff.barkskin              = create_buff( 22812, "barkskin" );
+  //buff.enrage                = create_buff( dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buff.frenzied_regeneration = new frenzied_regeneration_buff_t( this );
+  buff.frenzied_regeneration -> cooldown -> duration = timespan_t::zero(); //CD is handled by the ability
+  buff.harmony               = create_buff( 100977, "harmony" );
+  //buff.lacerate              = create_buff( dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
+  buff.natures_grace         = create_buff( 16886, "natures_grace" );
+  buff.natures_swiftness     = create_buff( talent.natures_swiftness, "natures_swiftness" );
+  buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
+  buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity, "omen_of_clarity" );
+
   /*
   buff.glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), glyph.innervate -> ok() );
   buff.pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds( 10.0 ) + talent.endless_carnage -> effect2().time_value() );
@@ -4425,31 +4444,10 @@ void druid_t::init_buffs()
   buff.stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talent.stampede -> ok() );
   buff.t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
   buff.wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero(), 1.0, true );
-  */
-
-  buff.barkskin              = create_buff( 22812, "barkskin" );
-  buff.eclipse_lunar         = create_buff( 48518, "lunar_eclipse" );
-  buff.eclipse_solar         = create_buff( 48517, "solar_eclipse" );
-  //buff.enrage                = create_buff( dbc.class_ability_id( type, "Enrage" ), "enrage" );
-  buff.frenzied_regeneration = new frenzied_regeneration_buff_t( this );
-  buff.frenzied_regeneration -> cooldown -> duration = timespan_t::zero(); //CD is handled by the ability
-  buff.harmony               = create_buff( 100977, "harmony" );
-  //buff.lacerate              = create_buff( dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
-  buff.lunar_shower          = create_buff( specialization.lunar_shower -> effect1().trigger_spell_id(), "lunar_shower" );
-  buff.natures_grace         = create_buff( 16886, "natures_grace" );
-  buff.natures_swiftness     = create_buff( talent.natures_swiftness, "natures_swiftness" );
-  buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
-  buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity, "omen_of_clarity" );
-
-
-  /*
   buff.savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
-  buff.shooting_stars        = new buff_t( this, talent.shooting_stars -> effect_trigger_spell( 1 ), "shooting_stars", talent.shooting_stars -> proc_chance() );
   buff.survival_instincts    = new buff_t( this, talent.survival_instincts -> spell_id(), "survival_instincts" );
   buff.tree_of_life          = new buff_t( this, talent.tree_of_life, NULL );
   buff.tree_of_life -> buff_duration += talent.natural_shapeshifter -> mod_additive_time( P_DURATION );
-  */
-  /*
   buff.primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
   buff.primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
   buff.berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) );
