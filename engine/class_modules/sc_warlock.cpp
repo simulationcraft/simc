@@ -89,8 +89,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   procs( procs_t() ),
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
-  use_pre_soulburn( 1 ),
-  initial_burning_embers( -1 )
+  use_pre_soulburn( 0 ),
+  initial_burning_embers( 0 )
 {
 
   distance = 40;
@@ -2233,7 +2233,7 @@ void warlock_t::combat_begin()
 {
   player_t::combat_begin();
 
-  resources.current[ RESOURCE_BURNING_EMBER ] = ( initial_burning_embers == -1 ) ? resources.max[ RESOURCE_BURNING_EMBER ] : initial_burning_embers;
+  resources.current[ RESOURCE_BURNING_EMBER ] = initial_burning_embers;
 }
 
 // warlock_t::reset =========================================================
@@ -2271,8 +2271,7 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
   if ( stype == SAVE_ALL )
   {
     if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
-    if ( initial_burning_embers != resources.max[ RESOURCE_BURNING_EMBER ] && initial_burning_embers != -1 )
-      profile_str += "burning_embers=" + util_t::to_string( initial_burning_embers ) + "\n";
+    if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util_t::to_string( initial_burning_embers ) + "\n";
   }
 
   return true;
