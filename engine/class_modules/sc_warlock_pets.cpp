@@ -931,7 +931,7 @@ infernal_pet_t::infernal_pet_t( sim_t* sim, warlock_t* owner ) :
   ap_per_owner_sp = 0.566;
 }
 
-double infernal_pet_t::composite_spell_power( const school_type_e school ) const
+double infernal_pet_t::composite_spell_power( const school_type_e /*school*/ ) const
 {
   // The infernal, for some reason, does not appear to get the "hidden" base 59 sp
   return snapshot_sp;
