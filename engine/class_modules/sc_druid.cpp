@@ -361,7 +361,6 @@ struct druid_t : public player_t
     const spell_data_t* starsurge;
     const spell_data_t* swiftmend;
     const spell_data_t* tigers_fury;
-    const spell_data_t* typhoon;
     const spell_data_t* wild_growth;
     const spell_data_t* wrath;
   } glyph;
@@ -476,7 +475,7 @@ struct druid_t : public player_t
     
     // MoP TODO: Fix/Implement
     const spell_data_t* feline_swiftness;
-    const spell_data_t* displacer_beast;
+    const spell_data_t* displacer_beast; 
     const spell_data_t* wild_charge;
     
     const spell_data_t* natures_swiftness;
@@ -500,7 +499,6 @@ struct druid_t : public player_t
     const spell_data_t* disentanglement;
 
     // Balance
-    const spell_data_t* natures_majesty;
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* shooting_stars;
     const spell_data_t* solar_beam;
@@ -601,7 +599,6 @@ struct druid_t : public player_t
   virtual double    composite_attack_power() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_hit() const;
-  virtual double    composite_spell_crit() const;
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double    composite_block_value() const { return 0; }
@@ -3873,19 +3870,9 @@ struct tree_of_life_t : public druid_spell_t
 struct typhoon_t : public druid_spell_t
 {
   typhoon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "typhoon", player, player -> find_specialization_spell( "Typhoon" ) )
+    druid_spell_t( "typhoon", player, player -> talent.typhoon )
   {
     parse_options( NULL, options_str );
-
-    // Damage information is stored in effect 2's trigger spell
-    const spell_data_t* damage_spell = player -> dbc.spell( data().effect2().trigger_spell_id() );
-
-    aoe                   = -1;
-    base_dd_min           = player -> dbc.effect_min( damage_spell -> effect2().id(), player -> level );
-    base_dd_max           = player -> dbc.effect_max( damage_spell -> effect2().id(), player -> level );
-    direct_power_mod      = damage_spell -> effect2().coeff();
-    //cooldown -> duration += player -> glyph.monsoon -> mod_additive_time( P_COOLDOWN );
-    //base_costs[ current_resource() ] *= 1.0 + player -> glyph.typhoon -> mod_additive( P_RESOURCE_COST );
   }
 };
 
@@ -4202,7 +4189,6 @@ void druid_t::init_spells()
   glyph.starfire              = find_glyph( "Glyph of Starfire" );
   glyph.starsurge             = find_glyph( "Glyph of Starsurge" );
   glyph.swiftmend             = find_glyph( "Glyph of Swiftmend" );
-  glyph.typhoon               = find_glyph( "Glyph of Typhoon" );
   glyph.wild_growth           = find_glyph( "Glyph of Wild Growth" );
   glyph.wrath                 = find_glyph( "Glyph of Wrath" );
 
@@ -4811,17 +4797,6 @@ double druid_t::composite_spell_hit() const
   hit += ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
 
   return hit;
-}
-
-// druid_t::composite_spell_crit ============================================
-
-double druid_t::composite_spell_crit() const
-{
-  double crit = player_t::composite_spell_crit();
-
-  crit += talent.natures_majesty -> effect1().base_value() / 100.0;
-
-  return crit;
 }
 
 // druid_t::composite_attribute_multiplier ==================================
