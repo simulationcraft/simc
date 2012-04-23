@@ -261,9 +261,9 @@ static bool parse_specialization( sim_t* sim,
 // player_t::player_t =======================================================
 
 player_t::player_t( sim_t*             s,
-                    player_type_e        t,
+                    player_type_e      t,
                     const std::string& n,
-                    race_type_e          r ) :
+                    race_type_e        r ) :
   sim( s ),
   type( t ),
   name_str( n ),
@@ -410,8 +410,6 @@ player_t::player_t( sim_t*             s,
   main_hand_weapon.slot = SLOT_MAIN_HAND;
   off_hand_weapon.slot = SLOT_OFF_HAND;
   ranged_weapon.slot = SLOT_RANGED;
-
-  if ( ! sim -> active_files.empty() ) origin_str = sim -> active_files.top();
 
   if ( reaction_stddev == timespan_t::zero() )
     reaction_stddev = reaction_mean * 0.25;
@@ -6641,6 +6639,14 @@ player_t* player_t::create( sim_t*             sim,
   {
     return player_t::create_enemy( sim, name, r );
   }
+  return 0;
+}
+
+// player_t::create =========================================================
+
+player_t* player_t::create( sim_t* sim,
+                            const player_description_t& d )
+{
   return 0;
 }
 

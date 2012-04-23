@@ -1409,17 +1409,24 @@ void SimulateThread::run()
   }
   for ( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
-  if ( sim -> parse_options( argc, argv ) )
+  sim_description_t description;
+
+  success = description.options.parse_args( argc, argv );
+
+  if ( success )
+  {
+    success = sim -> setup( &description );
+  }
+  if ( success )
   {
     success = sim -> execute();
-
-    if ( success )
-    {
-      sim -> scaling -> analyze();
-      sim -> plot -> analyze();
-      sim -> reforge_plot -> analyze();
-      report_t::print_suite( sim );
-    }
+  }
+  if ( success )
+  {
+    sim -> scaling -> analyze();
+    sim -> plot -> analyze();
+    sim -> reforge_plot -> analyze();
+    report_t::print_suite( sim );
   }
 }
 

@@ -597,7 +597,7 @@ struct sim_end_event_t : event_t
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-  parent( p ),
+  description( 0 ), parent( p ),
   target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), 
   canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
@@ -633,7 +633,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5 ) ),
-  path_str( "." ), output_file( stdout ),
+  output_file( stdout ),
   debug_exp( 0 ),
   // Report
   report_precision( 4 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ),
@@ -678,56 +678,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   register_warrior_targetdata( this );
 #endif
 
-  path_str += "|profiles";
-  path_str += "|profiles_heal";
-  path_str += "|profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier14H";
-  path_str += "|profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier14N";
-  path_str += "|profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier13H";
-  path_str += "|profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier13N";
-  path_str += "|profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "mop_test";
-
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles_heal";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "mop_test";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier14H";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier14N";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier13H";
-  path_str += "|..";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "profiles";
-  path_str += DIRECTORY_DELIMITER;
-  path_str += "Tier13N";
-
   // Initialize the default item database source order
   static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "armory", "ptrhead" };
   item_db_sources.assign( range::begin( dbsources ), range::end( dbsources ) );
@@ -742,8 +692,8 @@ sim_t::sim_t( sim_t* p, int index ) :
 
   if ( parent )
   {
-    // Import the config file
-    parse_options( parent -> argc, parent -> argv );
+    // Inherit setup
+    setup( parent -> description );
 
     // Inherit 'scaling' settings from parent because these are set outside of the config file
     scaling -> scale_stat  = parent -> scaling -> scale_stat;
@@ -2041,8 +1991,6 @@ void sim_t::create_options()
     { "xml_style",                        OPT_STRING, &( xml_stylesheet_file_str                  ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },
     { "output",                           OPT_STRING, &( output_file_str                          ) },
-    { "path",                             OPT_STRING, &( path_str                                 ) },
-    { "path+",                            OPT_APPEND, &( path_str                                 ) },
     { "save_raid_summary",                OPT_BOOL,   &( save_raid_summary                        ) },
     // Bloodlust
     { "bloodlust_percent",                OPT_INT,    &( bloodlust_percent                        ) },
@@ -2163,23 +2111,51 @@ bool sim_t::parse_option( const std::string& name,
   return false;
 }
 
-// sim_t::parse_options =====================================================
+// sim_t::setup =============================================================
 
-bool sim_t::parse_options( int    _argc,
-                           char** _argv )
+bool sim_t::setup( sim_description_t* d )
 {
-  argc = _argc;
-  argv = _argv;
+  // Limitation: setup+execute is a one-way action that cannot be repeated or reset
 
-  if ( argc <= 1 ) return false;
+  description = d;
 
-  if ( ! parent )
-    cache::advance_era();
+  if ( ! parent ) cache::advance_era();
 
-  for ( int i = 1; i < argc; i++ )
+  // Global Options
+  for( size_t i=0; i < description -> options.size(); i++ )
   {
-    if ( ! option_t::parse_line( this, argv[ i ] ) )
+    option_tuple_t& o = description -> options[ i ];
+    if( o.scope != "global" ) continue;
+    parse_option( o.name, o.value );
+  }
+
+  // Combat
+  // Try very hard to limit this to just what would be displayed on the gui.
+  // Super-users can use misc options.
+  // xyz = description -> combat.xyz;
+
+  // Players
+  for( size_t i=0; i < description -> players.size(); i++ )
+  {
+    player_t::create( this, description -> players[ i ] );
+  }
+
+  // Player Options
+  for( size_t i=0; i < description -> options.size(); i++ )
+  {
+    option_tuple_t& o = description -> options[ i ];
+    if( o.scope == "global" ) continue;
+    player_t* p = find_player( o.scope );
+    if( p )
+    {
+      if ( ! option_t::parse( this, p -> options, o.name, o.value ) )
+	return false;
+    }
+    else
+    {
+      errorf( "sim_t::setup: Unable to locate player %s for option %s with value %s\n", o.scope.c_str(), o.name.c_str(), o.value.c_str() );
       return false;
+    }
   }
 
   if ( player_list == NULL && spell_query == NULL )
@@ -2294,10 +2270,17 @@ int sim_t::main( int argc, char** argv )
   http_t::cache_load();
   dbc_t::init();
 
-  if ( ! parse_options( argc, argv ) )
+  sim_description_t description;
+  
+  if ( ! description.options.parse_args( argc, argv ) )
   {
     errorf( "ERROR! Incorrect option format..\n" );
-    cancel();
+    return 0;
+  }
+  else if( ! setup( &description ) )
+  {
+    errorf( "ERROR! Setup failure...\n" );
+    return 0;
   }
 
   if ( canceled ) return 0;

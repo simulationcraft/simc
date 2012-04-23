@@ -229,7 +229,6 @@ void scaling_t::analyze_stats()
 
     baseline_sim = new sim_t( sim );
     baseline_sim -> scaling -> scale_stat = STAT_MAX;
-    --baseline_sim -> scaling -> scale_stat;
     baseline_sim -> execute();
   }
 

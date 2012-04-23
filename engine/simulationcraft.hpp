@@ -2384,6 +2384,64 @@ public:
   void deallocate( void* );
 };
 
+// Simulation Setup =========================================================
+
+struct option_tuple_t 
+{
+  std::string scope, name, value; 
+  option_tuple_t( const std::string& s, const std::string& n, const std::string& v ) : scope(s), name(n), value(v) {}
+};
+
+struct option_db_t : public std::vector<option_tuple_t>
+{
+  std::string auto_path;
+  std::unordered_map<std::string,std::string> var_map;
+
+  option_db_t();
+  void add( const std::string& scope, const std::string& name, const std::string& value )
+  {
+    push_back( option_tuple_t( scope, name, value ) );
+  }
+  FILE* open_file( const std::string& name );
+  bool parse_file( FILE* file );
+  bool parse_token( const std::string& token );
+  bool parse_line( const char* line );
+  bool parse_args( int argc, char** argv );
+};
+
+struct player_description_t
+{
+  // Add just enough to describe a player
+
+  // name, class, talents, glyphs, gear, professions, actions explicitly stored
+  std::string name;
+  // etc
+
+  // flesh out API, these functions cannot depend upon sim_t
+  // ideally they remain static, but if not then move to sim_description_t
+  static void load_bcp    ( player_description_t& /*etc*/ );
+  static void load_wowhead( player_description_t& /*etc*/ );
+  static void load_chardev( player_description_t& /*etc*/ );
+  static void load_rawr   ( player_description_t& /*etc*/ );
+};
+
+struct combat_description_t
+{
+  std::string name;
+  int target_seconds;
+  std::string raid_events;
+  // etc
+};
+
+struct sim_description_t
+{
+  combat_description_t combat;
+  std::vector<player_description_t> players;
+  option_db_t options;
+
+  bool parse_args( int argc, char** argv );
+};
+
 // Simulation Engine ========================================================
 
 #define REGISTER_DOT(n) sim->register_targetdata_item(DATA_DOT, #n, t, nonpod_offsetof(type, dots_##n))
@@ -2392,6 +2450,7 @@ public:
 
 struct sim_t : private thread_t
 {
+  sim_description_t* description;
   int         argc;
   char**      argv;
   sim_t*      parent;
@@ -2559,8 +2618,6 @@ public:
   std::vector<int> divisor_timeline;
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
-  std::string path_str;
-  std::stack<std::string> active_files;
   std::vector<std::string> error_list;
   FILE* output_file;
   int debug_exp;
@@ -2623,6 +2680,7 @@ public:
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
+  bool      setup( sim_description_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
   double    iteration_adjust();
@@ -3706,6 +3764,7 @@ struct player_t : public noncopyable
   // Class-Specific Methods
 
   static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_type_e r = RACE_NONE );
+  static player_t* create( sim_t* sim, const player_description_t& );
 
   static player_t* create_death_knight( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
   static player_t* create_druid       ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );

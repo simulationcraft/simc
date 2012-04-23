@@ -28,22 +28,6 @@ static bool only_white_space( char* s )
   return true;
 }
 
-// open_file ================================================================
-
-static FILE* open_file( sim_t* sim, const std::string& name )
-{
-  std::vector<std::string> splits;
-  util_t::string_split( splits, sim -> path_str, ",;|" );
-
-  for ( size_t i = 0; i < splits.size(); i++ )
-  {
-    if ( FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" ) )
-      return f;
-  }
-
-  return fopen( name.c_str(), "r" );
-}
-
 } // ANONYMOUS NAMESPACE ====================================================
 
 // option_t::print ==========================================================
@@ -279,10 +263,38 @@ bool option_t::parse( sim_t*             sim,
   return parse( sim, context, options_vector, strings );
 }
 
-// option_t::parse_file =====================================================
+// option_t::merge ==========================================================
 
-bool option_t::parse_file( sim_t* sim,
-                           FILE*  file )
+option_t* option_t::merge( std::vector<option_t>& merged_options,
+                           const option_t*        options1,
+                           const option_t*        options2 )
+{
+  merged_options.clear();
+  if( options1 ) while( options1 -> name ) merged_options.push_back( *options1++ );
+  if( options2 ) while( options2 -> name ) merged_options.push_back( *options2++ );
+  merged_options.push_back( option_t() );
+  return &merged_options[ 0 ];
+}
+
+// option_db_t::open_file ======================================================
+
+FILE* option_db_t::open_file( const std::string& name )
+{
+  std::vector<std::string> splits;
+  util_t::string_split( splits, auto_path, ",;|" );
+
+  for ( size_t i = 0; i < splits.size(); i++ )
+  {
+    if ( FILE* f = fopen( ( splits[ i ] + DIRECTORY_DELIMITER + name ).c_str(), "r" ) )
+      return f;
+  }
+
+  return fopen( name.c_str(), "r" );
+}
+
+// option_db_t::parse_file =====================================================
+
+bool option_db_t::parse_file( FILE* file )
 {
   char buffer[ 1024 ];
   bool first = true;
@@ -301,15 +313,14 @@ bool option_t::parse_file( sim_t* sim,
     }
     if ( *b == '#' ) continue;
     if ( only_white_space( b ) ) continue;
-    option_t::parse_line( sim, b );
+    parse_line( b );
   }
   return true;
 }
 
-// option_t::parse_line =====================================================
+// option_db_t::parse_line =====================================================
 
-bool option_t::parse_line( sim_t* sim,
-                           const char*  line )
+bool option_db_t::parse_line( const char* line )
 {
   if ( *line == '#' ) return true;
 
@@ -317,20 +328,19 @@ bool option_t::parse_line( sim_t* sim,
   int num_tokens = util_t::string_split( tokens, line, " \t\n\r", true );
 
   for ( int i=0; i < num_tokens; i++ )
-    if ( ! parse_token( sim, tokens[ i ] ) )
+    if ( ! parse_token( tokens[ i ] ) )
       return false;
 
   return true;
 }
 
-// option_t::parse_token ====================================================
+// option_db_t::parse_token ====================================================
 
-bool option_t::parse_token( sim_t*       sim,
-                            const std::string& token )
+bool option_db_t::parse_token( const std::string& token )
 {
   if ( token == "-" )
   {
-    parse_file( sim, stdin );
+    parse_file( stdin );
     return true;
   }
 
@@ -338,16 +348,14 @@ bool option_t::parse_token( sim_t*       sim,
 
   if ( cut_pt == token.npos )
   {
-    FILE* file = open_file( sim, token );
+    FILE* file = open_file( token );
     if ( ! file )
     {
-      sim -> errorf( "Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
+      printf( "Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
       return false;
     }
-    sim -> active_files.push( token );
-    parse_file( sim, file );
+    parse_file( file );
     fclose( file );
-    sim -> active_files.pop();
     return true;
   }
 
@@ -359,67 +367,110 @@ bool option_t::parse_token( sim_t*       sim,
     std::string::size_type end = value.find( ')', start );
     if ( end == std::string::npos )
     {
-      sim -> errorf( "Variable syntax error: %s\n", token.c_str() );
+      printf( "Variable syntax error: %s\n", token.c_str() );
       return false;
     }
 
     value.replace( start, ( end - start ) + 1,
-                   sim -> var_map[ value.substr( start+2, ( end - start ) - 2 ) ] );
+                   var_map[ value.substr( start+2, ( end - start ) - 2 ) ] );
   }
 
   if ( name.size() >= 1 && name[ 0 ] == '$' )
   {
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size()-1 ] != ')' )
     {
-      sim -> errorf( "Variable syntax error: %s\n", token.c_str() );
+      printf( "Variable syntax error: %s\n", token.c_str() );
       return false;
     }
     std::string var_name( name, 2, name.size() - 3 );
-    sim -> var_map[ var_name ] = value;
-    if ( sim -> debug ) log_t::output( sim, "%s = %s", var_name.c_str(), value.c_str() );
-    return true;
+    var_map[ var_name ] = value;
+    if ( false ) printf( "%s = %s", var_name.c_str(), value.c_str() );
   }
-
-  if ( name == "input" )
+  else if ( name == "input" )
   {
-    FILE* file = open_file( sim, value );
+    FILE* file = open_file( value );
     if ( ! file )
     {
-      sim -> errorf( "Unable to open input parameter file '%s'\n", value.c_str() );
+      printf( "Unable to open input parameter file '%s'\n", value.c_str() );
       return false;
     }
-    sim -> active_files.push( value );
-    parse_file( sim, file );
+    parse_file( file );
     fclose( file );
-    sim -> active_files.pop();
   }
-  else if ( ! sim -> parse_option( name, value ) )
+  else
   {
-    sim -> errorf( "Unknown option/value pair: '%s' : '%s'\n", name.c_str(), value.c_str() );
-    return false;
+    add( "global", name, value );
   }
 
   return true;
 }
 
-// option_t::merge ==========================================================
+// option_db_t::parse_args =====================================================
 
-namespace {
-inline void merge_some( std::vector<option_t>& out, const option_t* in )
+bool option_db_t::parse_args( int argc,
+			      char** argv )
 {
-  if ( ! in ) return;
-  while ( in -> name )
-    out.push_back( *in++ );
-}
+  for( int i=1; i < argc; i++ )
+    if( ! parse_line( argv[ i ] ) )
+      return false;
+
+  return true;
 }
 
-option_t* option_t::merge( std::vector<option_t>& merged_options,
-                           const option_t*        options1,
-                           const option_t*        options2 )
+// option_db_t::option_db_t ====================================================
+
+option_db_t::option_db_t()
 {
-  merged_options.clear();
-  merge_some( merged_options, options1 );
-  merge_some( merged_options, options2 );
-  merged_options.push_back( option_t() );
-  return &merged_options[ 0 ];
+  // This makes baby pandas cry.
+
+  auto_path = ".";
+  auto_path += "|profiles";
+  auto_path += "|profiles_heal";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier14H";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier14N";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier13H";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier13N";
+  auto_path += "|profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "mop_test";
+
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles_heal";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "mop_test";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier14H";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier14N";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier13H";
+  auto_path += "|..";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "profiles";
+  auto_path += DIRECTORY_DELIMITER;
+  auto_path += "Tier13N";
 }
