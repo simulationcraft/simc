@@ -794,7 +794,14 @@ struct soul_fire_t : public warlock_spell_t
 
   virtual resource_type_e current_resource() const
   {
-    return ( p() -> mastery_spells.emberstorm -> ok() ) ? RESOURCE_BURNING_EMBER : warlock_spell_t::current_resource();
+    if ( p() -> mastery_spells.emberstorm -> ok() && p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= base_costs[ RESOURCE_BURNING_EMBER ] )
+    {
+      return RESOURCE_BURNING_EMBER;
+    }
+    else
+    { 
+      return warlock_spell_t::current_resource();
+    }
   }
 
   virtual result_type_e calculate_result( double crit, unsigned int level )
