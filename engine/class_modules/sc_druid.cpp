@@ -3,6 +3,97 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+// ==========================================================================
+// MoP PROGRESS, check every single bit
+// ==========================================================================
+// -- Balance of Power (Passive)
+// -- Barkskin
+// -- Bear Form
+// -- Bear Hug
+// -- Berserk
+// -- Cat Form
+// -- Celestial Alignment
+// -- Celestial Focus (Passive)
+// ++ Eclipse (Passive)
+// -- Enrage
+// -- Entangling Roots
+// -- Euphoria (Passive)
+// -- Faerie Fire
+// -- Feline Grace (Passive)
+// -- Feral Instinct (Passive)
+// -- Ferocious Bite
+// -- Frenzied Regeneration
+// -- Growl
+// -- Healing Touch
+// -- Hurricane
+// -- Innervate
+// -- Ironbark
+// -- Killer Instinct (Passive)
+// -- Lacerate
+// -- Leader of the Pack (Passive)
+// -- Leather Specialization (Passive)
+// -- Lifebloom
+// -- Living Seed (Passive)
+// -- Lunar Shower (Passive)
+// -- Maim
+// -- Malfurion's Gift (Passive)
+// -- Mangle
+// -- Mark of the Wild
+// -- Mastery: Harmony (Passive)
+// -- Mastery: Nature's Guardian (Passive)
+// -- Mastery: Razor Claws (Passive)
+// ++ Mastery: Total Eclipse (Passive)
+// -- Maul
+// -- Meditation (Passive)
+// -- Might of Ursoc
+// -- Moonfire
+// -- Moonkin Form
+// -- Natural Insight (Passive)
+// -- Nature's Focus (Passive)
+// -- Nourish
+// -- Nurturing Instinct (Passive)
+// -- Omen of Clarity (Passive)
+// -- Owlkin Frenzy (Passive)
+// -- Pounce
+// -- Predatory Swiftness (Passive)
+// -- Primal Fury (Passive)
+// -- Prowl
+// -- Rake
+// -- Ravage
+// -- Rebirth
+// -- Regrowth
+// -- Rejuvenation
+// -- Remove Corruption
+// -- Revitalize (Passive)
+// -- Revive
+// -- Rip
+// -- Savage Defense
+// -- Savage Roar
+// -- Shooting Stars (Passive)
+// -- Shred
+// -- Skull Bash
+// -- Solar Beam
+// -- Soothe
+// -- Stampeding Roar
+// -- Starfall
+// -- Starfire
+// -- Starsurge
+// -- Survival Instincts
+// -- Swift Flight Form
+// -- Swift Rejuvenation (Passive)
+// -- Swiftmend
+// -- Swipe
+// -- Symbiosis
+// -- Thick Hide (Passive)
+// -- Thrash
+// -- Tiger's Fury
+// -- Tranquility
+// -- Vengeance (Passive)
+// -- Wild Growth
+// -- Wild Mushroom
+// -- Wild Mushroom: Bloom
+// -- Wild Mushroom: Detonate
+// ++ Wrath
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -96,7 +187,6 @@ struct combo_points_t
 
 struct druid_targetdata_t : public targetdata_t
 {
-  dot_t* dots_insect_swarm;
   dot_t* dots_lacerate;
   dot_t* dots_lifebloom;
   dot_t* dots_moonfire;
@@ -136,7 +226,6 @@ void register_druid_targetdata( sim_t* sim )
   player_type_e t = DRUID;
   typedef druid_targetdata_t type;
 
-  REGISTER_DOT( insect_swarm );
   REGISTER_DOT( lacerate );
   REGISTER_DOT( lifebloom );
   REGISTER_DOT( moonfire );
@@ -255,7 +344,6 @@ struct druid_t : public player_t
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* innervate;
-    const spell_data_t* insect_swarm;
     const spell_data_t* lacerate;
     const spell_data_t* lifebloom;
     const spell_data_t* mangle;
@@ -3290,36 +3378,6 @@ struct innervate_t : public druid_spell_t
   }
 };
 
-// Insect Swarm Spell =======================================================
-
-struct insect_swarm_t : public druid_spell_t
-{
-  cooldown_t* starsurge_cd;
-
-  insect_swarm_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "insect_swarm", player, player -> find_class_spell( "Insect Swarm" )  ),
-    starsurge_cd( 0 )
-  {
-    parse_options( NULL, options_str );
-
-    may_crit = false;
-
-    dot_behavior = DOT_REFRESH;
-
-    starsurge_cd = player -> cooldown.starsurge;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    druid_spell_t::tick( d );
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buff.shooting_stars -> trigger() )
-      starsurge_cd -> reset();
-  }
-
-};
-
 // Mark of the Wild Spell ===================================================
 
 struct mark_of_the_wild_t : public druid_spell_t
@@ -3570,67 +3628,41 @@ struct starfire_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    dot_t* mf = td->dots_moonfire;
-    dot_t* sf = td->dots_sunfire;
 
     if ( result_is_hit() )
     {
-      if ( p -> glyph.starfire -> ok() )
+      if ( p -> specialization.eclipse -> ok() )
       {
-        if ( mf -> ticking )
-        {
-          if ( mf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
-            mf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
-          else
-            mf -> extend_duration_seconds( timespan_t::zero() );
-        }
-        else if ( sf -> ticking )
-        {
-          if ( sf -> added_seconds < timespan_t::from_seconds( 9.0 ) )
-            sf -> extend_duration_seconds( timespan_t::from_seconds( 3.0 ) );
-          else
-            sf -> extend_duration_seconds( timespan_t::zero() );
-        }
-      }
+        if ( td -> dots_moonfire -> ticking )
+          td -> dots_moonfire -> refresh_duriation();
 
-      if ( ! p -> buff.eclipse_solar -> check() )
-      {
-        // BUG (FEATURE?) ON LIVE, TODO: Beta too?
-        // #1 Euphoria does not proc, if you are more than 35 into the side the
-        // Eclipse bar is moving towards, >35 for Starfire/towards Solar
-        int gain = data().effect2().base_value();
-
-        if ( ! p -> buff.eclipse_lunar -> check() )
+        if ( ! p -> buff.eclipse_solar -> check() )
         {
-          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+          // BUG (FEATURE?) ON LIVE, TODO: Beta too?
+          // #1 Euphoria does not proc, if you are more than 35 into the side the
+          // Eclipse bar is moving towards, >35 for Starfire/towards Solar
+          int gain = data().effect2().base_value();
+  
+          if ( ! p -> buff.eclipse_lunar -> check() )
           {
-            if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
             {
-              gain *= 2;
+              if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+              {
+                gain *= 2;
+              }
             }
           }
+  
+          trigger_eclipse_gain_delay( this, gain );
         }
-
-        trigger_eclipse_gain_delay( this, gain );
-      }
-      else
-      {
-        // Cast starfire, but solar eclipse was up?
-        p -> proc.wrong_eclipse_starfire -> occur();
+        else
+        {
+          // Cast starfire, but solar eclipse was up?
+          p -> proc.wrong_eclipse_starfire -> occur();
+        }
       }
     }
-  }
-
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
-  {
-    druid_spell_t::target_debuff( t, dtype );
-    druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
-    // Starsurge, and Wrath spells against that target by 3%.
-    if ( td -> dots_insect_swarm -> ticking )
-      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
   }
 
   virtual bool ready()
@@ -3751,22 +3783,31 @@ struct starsurge_t : public druid_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      // gain is positive for p -> eclipse_bar_direction==0
-      // else it is towards p -> eclipse_bar_direction
-      int gain = data().effect2().base_value();
-      if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
-
-      if ( ! p -> buff.eclipse_lunar -> check() && ! p -> buff.eclipse_solar -> check() )
+      if ( p -> specialization.eclipse -> ok() )
       {
-        if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+        if ( td -> dots_moonfire -> ticking )
+          td -> dots_moonfire -> refresh_duriation();
+
+        if ( td -> dots_sunfire -> ticking )
+          td -> dots_sunfire -> refresh_duriation();
+
+        // gain is positive for p -> eclipse_bar_direction==0
+        // else it is towards p -> eclipse_bar_direction
+        int gain = data().effect2().base_value();
+        if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
+  
+        if ( ! p -> buff.eclipse_lunar -> check() && ! p -> buff.eclipse_solar -> check() )
         {
-          if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
           {
-            gain *= 2;
+            if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            {
+              gain *= 2;
+            }
           }
         }
+        trigger_eclipse_gain_delay( this, gain );
       }
-      trigger_eclipse_gain_delay( this, gain );
     }
   }
 
@@ -3797,17 +3838,6 @@ struct starsurge_t : public druid_spell_t
       return druid_spell_t::ready();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
-  {
-    druid_spell_t::target_debuff( t, dtype );
-    druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
-    // Starsurge, and Wrath spells against that target by 3%.
-    if ( td -> dots_insect_swarm -> ticking )
-      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
-  }
 };
 
 // Stealth ==================================================================
@@ -4128,56 +4158,41 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual timespan_t execute_time() const
-  {
-    timespan_t t = druid_spell_t::execute_time();
-    druid_t* p = player ->cast_druid();
-
-    if ( p -> buff.tree_of_life -> check() )
-      t *= 0.50;
-
-    return t;
-  }
-
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
-  {
-    druid_spell_t::target_debuff( t, dtype );
-    druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    // Balance, 2P -- Insect Swarm increases all damage done by your Starfire,
-    // Starsurge, and Wrath spells against that target by 3%.
-    if ( td -> dots_insect_swarm -> ticking )
-      target_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * 0.03;
-  }
-
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
+    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p -> eclipse_bar_direction <= 0 )
+      if ( p -> specialization.eclipse -> ok() )
       {
-        int gain = data().effect2().base_value();
-
-        // BUG (FEATURE?) ON LIVE
-        // #1 Euphoria does not proc, if you are more than 35 into the side the
-        // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
-        if ( ! p -> buff.eclipse_solar -> check() )
+        if ( td -> dots_sunfire -> ticking )
+          td -> dots_sunfire -> refresh_duriation();
+          
+        if ( p -> eclipse_bar_direction <= 0 )
         {
-          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+          int gain = data().effect2().base_value();
+  
+          // BUG (FEATURE?) ON LIVE
+          // #1 Euphoria does not proc, if you are more than 35 into the side the
+          // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
+          if ( ! p -> buff.eclipse_solar -> check() )
           {
-            if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
+            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
             {
-              gain *= 2;
+              if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
+              {
+                gain *= 2;
+              }
             }
           }
+          trigger_eclipse_gain_delay( this, -gain );
         }
-
-        trigger_eclipse_gain_delay( this, -gain );
+        
       }
+      
     }
   }
 
@@ -4217,7 +4232,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
-  if ( name == "insect_swarm"           ) return new           insect_swarm_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -4358,7 +4372,6 @@ void druid_t::init_spells()
   glyph.frenzied_regeneration = find_glyph( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph( "Glyph of Healing Touch" );
   glyph.innervate             = find_glyph( "Glyph of Innervate" );
-  glyph.insect_swarm          = find_glyph( "Glyph of Insect Swarm" );
   glyph.lacerate              = find_glyph( "Glyph of Lacerate" );
   glyph.lifebloom             = find_glyph( "Glyph of Lifebloom" );
   glyph.mangle                = find_glyph( "Glyph of Mangle" );
@@ -4774,7 +4787,6 @@ void druid_t::init_actions()
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
       action_list_str += init_use_racial_actions();
-      action_list_str += "/insect_swarm,if=(ticks_remain<2|(dot.insect_swarm.remains<10&buff.solar_eclipse.up&eclipse<15))&(buff.solar_eclipse.up|buff.lunar_eclipse.up|time<10)";
 
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       if ( talent.typhoon -> ok() )
