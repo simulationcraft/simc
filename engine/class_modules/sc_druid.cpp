@@ -76,8 +76,8 @@
 // -- Soothe
 // -- Stampeding Roar
 // -- Starfall
-// -- Starfire
-// -- Starsurge
+// ++ Starfire
+// ++ Starsurge
 // -- Survival Instincts
 // -- Swift Flight Form
 // -- Swift Rejuvenation (Passive)
@@ -3601,20 +3601,10 @@ struct druids_swiftness_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  int extend_moonfire;
-
   starfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
     druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) ),
-    extend_moonfire( 0 )
   {
-    option_t options[] =
-    {
-      { "extendmf", OPT_BOOL, &extend_moonfire },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
-
-    //base_execute_time += p -> talent.starlight_wrath -> mod_additive_time( P_CAST_TIME );
+    parse_options( NULL, options_str );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3634,7 +3624,7 @@ struct starfire_t : public druid_spell_t
       if ( p -> specialization.eclipse -> ok() )
       {
         if ( td -> dots_moonfire -> ticking )
-          td -> dots_moonfire -> refresh_duriation();
+          td -> dots_moonfire -> refresh_duration();
 
         if ( ! p -> buff.eclipse_solar -> check() )
         {
@@ -3663,33 +3653,6 @@ struct starfire_t : public druid_spell_t
         }
       }
     }
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    if ( extend_moonfire )
-    {
-      if ( ! p -> glyph.starfire -> ok() )
-        return false;
-
-      if ( td -> dots_moonfire -> ticking )
-      {
-        if ( td -> dots_moonfire -> added_seconds > timespan_t::from_seconds( 8 ) )
-          return false;
-      }
-      else if ( td -> dots_sunfire -> ticking )
-      {
-        if ( td -> dots_sunfire -> added_seconds > timespan_t::from_seconds( 8 ) )
-          return false;
-      }
-      else
-        return false;
-    }
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -3786,10 +3749,10 @@ struct starsurge_t : public druid_spell_t
       if ( p -> specialization.eclipse -> ok() )
       {
         if ( td -> dots_moonfire -> ticking )
-          td -> dots_moonfire -> refresh_duriation();
+          td -> dots_moonfire -> refresh_duration();
 
         if ( td -> dots_sunfire -> ticking )
-          td -> dots_sunfire -> refresh_duriation();
+          td -> dots_sunfire -> refresh_duration();
 
         // gain is positive for p -> eclipse_bar_direction==0
         // else it is towards p -> eclipse_bar_direction
