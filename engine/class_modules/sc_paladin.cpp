@@ -24,7 +24,6 @@ enum seal_type_e
 
 struct paladin_targetdata_t : public targetdata_t
 {
-  dot_t* dots_exorcism;
   dot_t* dots_word_of_glory;
   dot_t* dots_holy_radiance;
   dot_t* dots_censure;
@@ -40,7 +39,6 @@ void register_paladin_targetdata( sim_t* sim )
   typedef paladin_targetdata_t type;
 
   REGISTER_DOT( censure );
-  REGISTER_DOT( exorcism );
   REGISTER_DOT( word_of_glory );
   REGISTER_DOT( holy_radiance );
 
@@ -1235,6 +1233,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     may_parry        = false;
     may_block        = false;
     may_glance       = false;
+    may_miss         = false;
     dot_behavior     = DOT_REFRESH;
 
     base_spell_power_multiplier  = tick_power_mod;
@@ -1286,6 +1285,8 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   {
     background  = true;
     proc        = true;
+    may_block   = false;
+    may_glance  = false;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
@@ -2770,6 +2771,7 @@ double paladin_t::composite_tank_crit( const school_type_e school ) const
 double paladin_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
   double mult = 0.01 * passives.plate_specialization -> effectN( 1 ).base_value();
+
   switch ( primary_tree() )
   {
   case PALADIN_PROTECTION:

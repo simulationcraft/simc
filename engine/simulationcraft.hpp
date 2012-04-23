@@ -4214,8 +4214,8 @@ public:
   virtual double total_crit() const       { return   base_crit       + player_crit       + target_crit;       }
   virtual double total_crit_bonus() const;
 
-  virtual double total_spell_power() const  { return floor( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
-  virtual double total_attack_power() const { return floor( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
+  virtual double total_spell_power() const  { return util_t::round( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
+  virtual double total_attack_power() const { return util_t::round( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
   virtual double total_power() const;
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
@@ -4285,9 +4285,9 @@ public:
   virtual double composite_crit( const action_state_t* ) const { return base_crit; }
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power + player -> composite_attack_power(); }
-  virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier; }
+  virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier * player -> composite_attack_power_multiplier(); }
   virtual double composite_spell_power() const { return base_spell_power + player -> composite_spell_power( school ); }
-  virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier; }
+  virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier * player -> composite_attack_power_multiplier(); }
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
   virtual double composite_target_ta_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
@@ -4381,7 +4381,6 @@ public:
   { return action_t::composite_crit( s ) + player -> composite_attack_crit( weapon ); }
   virtual double composite_haste() const
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
-  virtual double composite_attack_power_multiplier() const { return action_t::composite_attack_power_multiplier() * player -> composite_attack_power_multiplier(); }
 };
 
 // Melee Attack ===================================================================
@@ -4450,7 +4449,6 @@ public:
   virtual double composite_crit( const action_state_t* s ) const
   { return action_t::composite_crit( s ) + player -> composite_spell_crit(); }
   virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_spell_haste(); }
-  virtual double composite_spell_power_multiplier() const { return action_t::composite_spell_power_multiplier() * player -> composite_spell_power_multiplier(); }
 };
 
 // Harmful Spell ====================================================================

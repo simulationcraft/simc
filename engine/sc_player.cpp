@@ -655,11 +655,11 @@ void player_t::init()
   replace_spells();
   init_spells();
   init_rating();
+  init_items();
   init_base();
   init_racials();
   init_position();
   init_professions();
-  init_items();
   init_core();
   init_spell();
   init_attack();
@@ -710,6 +710,15 @@ void player_t::init_base()
   if ( race == RACE_GNOME )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
+  }
+
+  if ( level >= 50 && matching_gear )
+  {
+    for ( attribute_type_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
+    {
+      attribute_base[ a ] *= 1.0 + matching_gear_multiplier( a );
+      attribute_base[ a ] = util_t::floor( attribute_base[ a ] );
+    }
   }
 
   if ( world_lag_stddev < timespan_t::zero() ) world_lag_stddev = world_lag * 0.1;
@@ -2526,6 +2535,7 @@ double player_t::composite_movement_speed() const
 double player_t::composite_attribute( attribute_type_e attr ) const
 {
   double a = attribute[ attr ];
+  double m = ( ( level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
 
   switch ( attr )
   {
@@ -2536,6 +2546,8 @@ double player_t::composite_attribute( attribute_type_e attr ) const
   default:
     break;
   }
+
+  a = util_t::floor( ( a - attribute_base[ attr ] ) * m ) + attribute_base[ attr ];
 
   return a;
 }
@@ -2573,7 +2585,7 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
 double player_t::get_attribute( attribute_type_e a ) const
 {
-  return composite_attribute( a ) * composite_attribute_multiplier( a );
+  return util_t::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
 // player_t::combat_begin ===================================================
@@ -2823,13 +2835,7 @@ void player_t::reset()
   attribute = attribute_initial;
   attribute_multiplier = attribute_multiplier_initial;
 
-  if ( ( level >= 50 ) && matching_gear )
-  {
-    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
-    {
-      attribute_multiplier[ i ] *= 1.0 + matching_gear_multiplier( i );
-    }
-  }
+
   spell_power = initial_spell_power;
   resource_reduction = initial_resource_reduction;
 
@@ -3483,7 +3489,7 @@ void player_t::stat_gain( stat_type_e stat,
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] += amount; attribute[ ATTR_STRENGTH  ] += amount; temporary.attribute[ ATTR_STRENGTH  ] += temp_value * amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] += amount; attribute[ ATTR_AGILITY   ] += amount; temporary.attribute[ ATTR_AGILITY   ] += temp_value * amount; break;
   case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] += amount; attribute[ ATTR_STAMINA   ] += amount; temporary.attribute[ ATTR_STAMINA   ] += temp_value * amount; recalculate_resource_max( RESOURCE_HEALTH ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; recalculate_resource_max( RESOURCE_MANA ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] += amount; attribute[ ATTR_INTELLECT ] += amount; temporary.attribute[ ATTR_INTELLECT ] += temp_value * amount; break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] += amount; attribute[ ATTR_SPIRIT    ] += amount; temporary.attribute[ ATTR_SPIRIT    ] += temp_value * amount; break;
 
   case STAT_ALL:
@@ -3571,7 +3577,7 @@ void player_t::stat_loss( stat_type_e stat,
   case STAT_STRENGTH:  stats.attribute[ ATTR_STRENGTH  ] -= amount; temporary.attribute[ ATTR_STRENGTH  ] -= temp_value * amount; attribute[ ATTR_STRENGTH  ] -= amount; break;
   case STAT_AGILITY:   stats.attribute[ ATTR_AGILITY   ] -= amount; temporary.attribute[ ATTR_AGILITY   ] -= temp_value * amount; attribute[ ATTR_AGILITY   ] -= amount; break;
   case STAT_STAMINA:   stats.attribute[ ATTR_STAMINA   ] -= amount; temporary.attribute[ ATTR_STAMINA   ] -= temp_value * amount; attribute[ ATTR_STAMINA   ] -= amount; stat_loss( STAT_MAX_HEALTH, floor( amount * composite_attribute_multiplier( ATTR_STAMINA ) ) * health_per_stamina, gain, action ); break;
-  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; stat_loss( STAT_MAX_MANA, floor( amount * composite_attribute_multiplier( ATTR_INTELLECT ) ) * mana_per_intellect, gain, action ); break;
+  case STAT_INTELLECT: stats.attribute[ ATTR_INTELLECT ] -= amount; temporary.attribute[ ATTR_INTELLECT ] -= temp_value * amount; attribute[ ATTR_INTELLECT ] -= amount; break;
   case STAT_SPIRIT:    stats.attribute[ ATTR_SPIRIT    ] -= amount; temporary.attribute[ ATTR_SPIRIT    ] -= temp_value * amount; attribute[ ATTR_SPIRIT    ] -= amount; break;
 
   case STAT_ALL:
