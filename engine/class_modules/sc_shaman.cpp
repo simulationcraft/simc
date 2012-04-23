@@ -403,13 +403,15 @@ struct shaman_spell_t : public spell_t
   // Echo of Elements stuff
   bool     eoe_proc;
   stats_t* eoe_stats;
+  cooldown_t* eoe_cooldown;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( token, p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     eoe_proc( false ), 
-    eoe_stats( p -> get_stats( name_str + "_eoe", this ) )
+    eoe_stats( p -> get_stats( name_str + "_eoe", this ) ),
+    eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
   {
     parse_options( 0, options );
 
@@ -422,7 +424,8 @@ struct shaman_spell_t : public spell_t
     spell_t( "", p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     eoe_proc( false ), 
-    eoe_stats( p -> get_stats( name_str + "_eoe", this ) )
+    eoe_stats( p -> get_stats( name_str + "_eoe", this ) ),
+    eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
   {
     parse_options( 0, options );
 
@@ -517,17 +520,18 @@ struct eoe_execute_event_t : public event_t
   {
     assert( spell );
     
+    cooldown_t* tmp_cd     = spell -> cooldown;
     stats_t* tmp_stats     = spell -> stats;
+
     spell -> eoe_proc      = true;
-    spell -> is_dtr_action = true;
     spell -> stats         = spell -> eoe_stats;
+    spell -> cooldown      = spell -> eoe_cooldown;
     spell -> execute();
+    spell -> cooldown      = tmp_cd;
     spell -> stats         = tmp_stats;
-    spell -> is_dtr_action = false;
     spell -> eoe_proc      = false;
   }
 };
-
 
 // ==========================================================================
 // Pet Spirit Wolf
@@ -2137,7 +2141,9 @@ void shaman_spell_t::impact_s( action_state_t* state )
   {
     stats_t* tmp_stats = stats;
     stats = eoe_stats;
+    is_dtr_action = true;
     spell_t::impact_s( state );
+    is_dtr_action = false;
     stats = tmp_stats;
   }
   else
