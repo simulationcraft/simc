@@ -138,8 +138,38 @@ private:
   }
 
 public:
+  int recharge_seconds, max_charges, current_charges;
+
+  struct recharge_event_t : event_t
+  {
+    warlock_spell_t* action;
+
+    recharge_event_t( player_t* p, warlock_spell_t* a ) :
+      event_t( p -> sim, p, (a -> name_str + "_recharge").c_str() ), action( a )
+    { 
+      sim -> add_event( this, timespan_t::from_seconds( action -> recharge_seconds ) );  
+    }
+
+    virtual void execute()
+    {
+      assert( action -> current_charges < action -> max_charges );
+      action -> current_charges++;
+
+      if ( action -> current_charges < action -> max_charges ) 
+      {
+        action -> recharge_event = new (sim) recharge_event_t( player, action );
+      }
+      else 
+      {
+        action -> recharge_event = 0;
+      }
+    }
+  };
+
+  recharge_event_t* recharge_event;
+
   warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_class_spell( n ), sc )
+    spell_t( n, p, p -> find_class_spell( n ), sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 )
   {
     _init_warlock_spell_t();
   }
@@ -152,6 +182,34 @@ public:
 
   warlock_t* p() const
   { return static_cast<warlock_t*>( player ); }
+
+  virtual void execute()
+  {
+    if ( max_charges > 0 )
+    {
+      assert( current_charges > 0 );
+      current_charges--;
+
+      if ( current_charges == max_charges - 1 )
+      {
+        recharge_event = new (sim) recharge_event_t( p(), this );
+      }
+      else if ( current_charges == 0 )
+      {
+        assert( recharge_event );
+        cooldown -> duration = recharge_event -> time - sim -> current_time;
+      }
+    }
+    spell_t::execute();
+  }
+
+  virtual void reset()
+  {
+    spell_t::reset();
+
+    event_t::cancel( recharge_event );
+    current_charges = max_charges;
+  }
 
   // warlock_spell_t::composite_target_ta_multiplier ===================================
 
@@ -660,6 +718,9 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Conflagrate" )
   {
+    current_charges = max_charges = 2;
+    recharge_seconds = 12;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new conflagrate_t( p, true );
@@ -821,7 +882,6 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
-    m = 1;
     // FIXME: Need to test if this bonus replaces or works in addition to the one implemented in warlock_spell_t
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
