@@ -132,7 +132,6 @@ double rng_t::exgauss( double mean, double stddev, double nu )
 
 std::string rng_t::report( double confidence_estimator ) const
 {
-  double nan = std::numeric_limits<double>::quiet_NaN();
   double gauss_confidence = 1.0 / sqrt( static_cast<double>( num_gauss ) ) * confidence_estimator;
   double range_confidence = 1.0 / sqrt( static_cast<double>( num_range ) ) * confidence_estimator;
   double roll_confidence = 1.0 / sqrt( static_cast<double>( num_roll ) ) * confidence_estimator;
@@ -152,7 +151,7 @@ std::string rng_t::report( double confidence_estimator ) const
     s << util_t::to_string(  0.5 + roll_confidence, precision );
     s << "] ) ";
   }
-  else s << util_t::to_string( nan ) << " ";
+  else s << "nan ";
 
   s << "Range=";
   if ( num_range > 0 )
@@ -164,7 +163,7 @@ std::string rng_t::report( double confidence_estimator ) const
     s << util_t::to_string(  0.5 + range_confidence, precision );
     s << "] ) ";
   }
-  else s << util_t::to_string( nan ) << " ";
+  else s << "nan ";
 
   if ( num_gauss > 0 )
   {
@@ -176,7 +175,7 @@ std::string rng_t::report( double confidence_estimator ) const
     s << util_t::to_string(  gauss_confidence, precision );
     s << "] ) ";
   }
-  else s << util_t::to_string( nan );
+  else s << "nan";
 
   return s.str();
 }

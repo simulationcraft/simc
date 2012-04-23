@@ -40,7 +40,7 @@ struct vengeance_t : public event_t
   vengeance_t ( player_t* player ) :
     event_t( player -> sim, player )
   {
-    name = "vengeance.Check";
+    name = "Vengeance_Check";
     sim -> add_event( this, timespan_t::from_seconds( 2.0 ) );
   }
 
