@@ -75,7 +75,6 @@ struct mage_t : public player_t
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* deep_freeze;
     cooldown_t* evocation;
     cooldown_t* fire_blast;
     cooldown_t* mana_gem;
@@ -84,11 +83,7 @@ struct mage_t : public player_t
   // Gains
   struct gains_t
   {
-    gain_t* clearcasting;
-    gain_t* empowered_fire;
     gain_t* evocation;
-    gain_t* frost_armor;
-    gain_t* mage_armor;
     gain_t* mana_gem;
     gain_t* rune_of_power;
   } gains;
@@ -101,14 +96,11 @@ struct mage_t : public player_t
     const spell_data_t* arcane_blast;
     const spell_data_t* arcane_missiles;
     const spell_data_t* arcane_power;
-    const spell_data_t* deep_freeze;
     const spell_data_t* fireball;
-    const spell_data_t* frost_armor;
     const spell_data_t* frostbolt;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* living_bomb;
-    const spell_data_t* mage_armor;
     const spell_data_t* pyroblast;
 
     // Major
@@ -140,10 +132,8 @@ struct mage_t : public player_t
   {
     const spell_data_t* arcane_missiles;
     const spell_data_t* arcane_power;
-    const spell_data_t* frost_armor;
     const spell_data_t* hot_streak;
     const spell_data_t* icy_veins;
-    const spell_data_t* mage_armor;
 
     const spell_data_t* flashburn;
     const spell_data_t* frostburn;
@@ -200,7 +190,6 @@ struct mage_t : public player_t
     rng_t* impact;
     rng_t* improved_freeze;
     rng_t* nether_vortex;
-    rng_t* mage_armor_start;
   } rngs;
 
   // Rotation (DPS vs DPM)
@@ -253,7 +242,6 @@ struct mage_t : public player_t
   } benefits;
 
   int mana_gem_charges;
-  timespan_t mage_armor_timer;
 
   mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
@@ -273,11 +261,9 @@ struct mage_t : public player_t
     rotation( rotation_t() ),
     talents( talents_list_t() ),
     benefits( benefits_t() ),
-    mana_gem_charges( 0 ),
-    mage_armor_timer( timespan_t::zero() )
+    mana_gem_charges( 0 )
   {
     // Cooldowns
-    cooldowns.deep_freeze = get_cooldown( "deep_freeze" );
     cooldowns.evocation   = get_cooldown( "evocation"   );
     cooldowns.fire_blast  = get_cooldown( "fire_blast"  );
     cooldowns.mana_gem    = get_cooldown( "mana_gem"    );
@@ -315,10 +301,10 @@ struct mage_t : public player_t
   virtual int       decode_set( const item_t& item ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const { return ROLE_SPELL; }
-  virtual double    composite_armor_multiplier() const;
+  virtual double    composite_mastery() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_resistance( school_type_e school ) const;
+  virtual double    composite_spell_haste() const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual void      stun();
 
@@ -1537,46 +1523,6 @@ struct counterspell_t : public mage_spell_t
   }
 };
 
-// Deep Freeze Spell ========================================================
-
-// FIXME: This no longer does damage
-struct deep_freeze_t : public mage_spell_t
-{
-  deep_freeze_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "deep_freeze", p, p -> find_spell( 71757 ) )
-  {
-    parse_options( NULL, options_str );
-
-    // The spell data is spread across two separate Spell IDs.  Hard code missing for now.
-    base_costs[ current_resource() ] = 0.09 * p -> resources.base[ RESOURCE_MANA ];
-    cooldown -> duration = timespan_t::from_seconds( 30.0 );
-
-    base_multiplier *= 1.0 + p -> glyphs.deep_freeze -> effectN( 1 ).percent();
-    trigger_gcd = p -> base_gcd;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new deep_freeze_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.fingers_of_frost -> up();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buffs.fingers_of_frost -> check() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
 // Dragon's Breath Spell ====================================================
 
 struct dragons_breath_t : public mage_spell_t
@@ -1739,10 +1685,7 @@ struct frost_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
-
-    update_ready();
+    spell_t::execute();
 
     p() -> buffs.molten_armor -> expire();
     p() -> buffs.mage_armor -> expire();
@@ -2047,9 +1990,7 @@ struct mage_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
-    update_ready();
+    spell_t::execute();
 
     p() -> buffs.frost_armor -> expire();
     p() -> buffs.molten_armor -> expire();
@@ -2662,7 +2603,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "conjure_mana_gem"  ) return new        conjure_mana_gem_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
-  if ( name == "deep_freeze"       ) return new             deep_freeze_t( this, options_str );
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
@@ -2770,15 +2710,12 @@ void mage_t::init_spells()
   glyphs.arcane_missiles   = find_glyph_spell( "Glyph of Arcane Missiles" );
   glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
-  glyphs.deep_freeze       = find_glyph_spell( "Glyph of Deep Freeze" );
   glyphs.dragons_breath    = find_glyph_spell( "Glyph of Dragon's Breath" );
   glyphs.fireball          = find_glyph_spell( "Glyph of Fireball" );
-  glyphs.frost_armor       = find_glyph_spell( "Glyph of Frost Armor" );
   glyphs.frostbolt         = find_glyph_spell( "Glyph of Frostbolt" );
   glyphs.frostfire         = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance         = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.living_bomb       = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.mage_armor        = find_glyph_spell( "Glyph of Mage Armor" );
   glyphs.mirror_image      = find_glyph_spell( "Glyph of Mirror Image" );
   glyphs.pyroblast         = find_glyph_spell( "Glyph of Pyroblast" );
 
@@ -2849,7 +2786,7 @@ void mage_t::init_buffs()
   // FIXME: What is this called now? buffs.hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.invocation           = buff_creator_t( this, "invocation", talents.invocation );
-  buffs.mage_armor           = buff_creator_t( this, 6117, "mage_armor" );
+  buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) ); // FIXME: can this stack?
@@ -2867,10 +2804,7 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.clearcasting  = get_gain( "clearcasting"  );
   gains.evocation     = get_gain( "evocation"     );
-  gains.frost_armor   = get_gain( "frost_armor"   );
-  gains.mage_armor    = get_gain( "mage_armor"    );
   gains.mana_gem      = get_gain( "mana_gem"      );
   gains.rune_of_power = get_gain( "rune_of_power" );
 }
@@ -2920,7 +2854,6 @@ void mage_t::init_rng()
   rngs.impact              = get_rng( "impact"              );
   rngs.improved_freeze     = get_rng( "improved_freeze"     );
   rngs.nether_vortex       = get_rng( "nether_vortex"       );
-  rngs.mage_armor_start    = get_rng( "rngs.mage_armor_start" );
 }
 
 // mage_t::init_actions =====================================================
@@ -3108,8 +3041,8 @@ void mage_t::init_actions()
         action_list_str += "/arcane_blast,if=dps=1|target.time_to_die<20|((cooldown.evocation.remains<=20|cooldown.mana_gem.remains<5)&mana_pct>=22)";
       }
       action_list_str += "/arcane_blast,if=buff.arcane_blast.remains<0.8&buff.arcane_blast.stack=4";
-      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react&mage_armor_timer<=2";
-      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<93&buff.arcane_missiles.react&mage_armor_timer>2";
+      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<92&buff.arcane_missiles.react";
+      action_list_str += "/arcane_missiles,if=mana_pct_nonproc<93&buff.arcane_missiles.react";
       action_list_str += "/arcane_barrage,if=mana_pct_nonproc<87&buff.arcane_blast.stack=2";
       action_list_str += "/arcane_barrage,if=mana_pct_nonproc<90&buff.arcane_blast.stack=3";
       action_list_str += "/arcane_barrage,if=mana_pct_nonproc<92&buff.arcane_blast.stack=4";
@@ -3173,18 +3106,16 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::composite_armor_multiplier =======================================
+// mage_t::composite_mastery ================================================
 
-double mage_t::composite_armor_multiplier() const
+double mage_t::composite_mastery() const
 {
-  double a = player_t::composite_armor_multiplier();
+  double m = player_t::composite_mastery();
 
-  if ( buffs.frost_armor -> check() )
-  {
-    a *= 1.0 + spells.frost_armor -> effectN( 1 ).percent();
-  }
+  if ( buffs.mage_armor -> up() )
+    m += buffs.mage_armor -> data().effectN( 1 ).percent();
 
-  return a;
+  return m;
 }
 
 // mage_t::composite_player_multipler =======================================
@@ -3227,22 +3158,18 @@ double mage_t::composite_spell_crit() const
   return c;
 }
 
-// mage_t::composite_spell_resistance =======================================
+// mage_t::composite_spell_haste ============================================
 
-double mage_t::composite_spell_resistance( const school_type_e school ) const
+double mage_t::composite_spell_haste() const
 {
-  double sr = player_t::composite_spell_resistance( school );
+  double h = player_t::composite_spell_haste();
 
-  if ( buffs.frost_armor -> check() && school == SCHOOL_FROST )
+  if ( buffs.frost_armor -> up() )
   {
-    sr += spells.frost_armor -> effectN( 3 ).base_value();
-  }
-  else if ( buffs.mage_armor -> check() )
-  {
-    sr += spells.mage_armor -> effectN( 1 ).base_value();
+    h *= 1.0 / ( 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent() );
   }
 
-  return sr;
+  return h;
 }
 
 // mage_t::matching_gear_multiplier =========================================
@@ -3273,13 +3200,6 @@ void mage_t::regen( timespan_t periodicity )
 
   if ( buffs.rune_of_power -> up() )
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
-
-  if ( glyphs.frost_armor -> ok() && buffs.frost_armor -> up()  )
-  {
-    double gain_amount = resources.max[ RESOURCE_MANA ] * glyphs.frost_armor -> effectN( 1 ).percent();
-    gain_amount *= periodicity.total_seconds() / 5.0;
-    resource_gain( RESOURCE_MANA, gain_amount, gains.frost_armor );
-  }
 
   if ( pets.water_elemental )
     benefits.water_elemental -> update( pets.water_elemental -> sleeping == 0 );
@@ -3365,16 +3285,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
   if ( name_str == "mana_gem_charges" )
     return make_ref_expr( name_str, mana_gem_charges );
-
-  if ( name_str == "mage_armor_timer" )
-  {
-    struct mage_armor_timer_expr_t : public mage_expr_t
-    {
-      mage_armor_timer_expr_t( mage_t& m ) : mage_expr_t( "mage_armor_timer", m ) {}
-      virtual double evaluate() { return 5 + ( mage.mage_armor_timer - mage.sim -> current_time ).total_seconds(); }
-    };
-    return new mage_armor_timer_expr_t( *this );
-  }
 
   if ( name_str == "burn_mps" )
   {
