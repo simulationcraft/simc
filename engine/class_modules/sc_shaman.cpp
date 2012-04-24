@@ -9,7 +9,7 @@
 // Code:
 // - Ascendancy
 // - Redo Totem system
-// - Talents Totemic Restoration, Ancestral Swiftness
+// - Talents Totemic Restoration, Ancestral Swiftness Instacast
 //
 // General:
 // - Class base stats for 87..90
@@ -17,7 +17,7 @@
 //   * Flametongue: Additive or Multiplicative modifier (has a new spell data aura type)
 //   * Windfury: Static Shock proc% (same as normal proc%?)
 // - (Fire|Earth) Elemental scaling with and without Primal Elementalist
-// - Echo of Elements proc%
+// - Echo of Elements proc% (Enhancement)
 // - Searing totem base damage scaling
 // - Glyph of Telluric Currents
 //   * Additive or Multiplicative with other modifiers (spell data indicates additive)
@@ -401,17 +401,13 @@ struct shaman_spell_t : public spell_t
   bool     is_totem;
 
   // Echo of Elements stuff
-  bool     eoe_proc;
   stats_t* eoe_stats;
-  cooldown_t* eoe_cooldown;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( token, p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    eoe_proc( false ), 
-    eoe_stats( 0 ),
-    eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
+    eoe_stats( 0 )
   {
     parse_options( 0, options );
 
@@ -424,9 +420,7 @@ struct shaman_spell_t : public spell_t
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     spell_t( "", p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
-    eoe_proc( false ), 
-    eoe_stats( 0 ),
-    eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
+    eoe_stats( 0 )
   {
     parse_options( 0, options );
 
@@ -445,13 +439,11 @@ struct shaman_spell_t : public spell_t
   virtual bool   is_periodic_damage() const { return base_td > 0; };
   virtual double cost() const;
   virtual double cost_reduction() const;
-  virtual timespan_t execute_time() const;
   virtual double haste() const { return composite_haste(); }
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   impact_s( action_state_t* );
   virtual void   schedule_execute();
-  virtual void   update_ready();
   virtual bool   usable_moving()
   {
     if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero() )
@@ -493,16 +485,18 @@ struct shaman_spell_t : public spell_t
 
     if ( maelstrom && p() -> buff.maelstrom_weapon -> stack() > 0 )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
+    
+    if ( p() -> buff.elemental_focus -> up() )
+      m *= 1.0 + p() -> buff.elemental_focus -> data().effectN( 2 ).percent();
 
     return m;
   }
 
-  void snapshot_state( action_state_t* s, uint32_t f )
+  action_state_t* get_state( const action_state_t* o )
   {
-    shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( s );
-    ss -> eoe_proc = eoe_proc;
-
-    spell_t::snapshot_state( s, f );
+    action_state_t* s = spell_t::get_state( o );
+    static_cast< shaman_spell_state_t* >( s ) -> eoe_proc = false;
+    return s;
   }
 };
 
@@ -522,16 +516,20 @@ struct eoe_execute_event_t : public event_t
   {
     assert( spell );
     
-    cooldown_t* tmp_cd     = spell -> cooldown;
-    stats_t* tmp_stats     = spell -> stats;
+    // EoE proc re-executes the "effect" with the same snapshot stats
+    shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( spell -> get_state( spell -> execute_state ) );
+    ss -> eoe_proc = true;
+    ss -> result = spell -> calculate_result( ss -> crit, 
+                                              ss -> target -> level );
+    if ( spell -> result_is_hit( ss -> result ) )
+      ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0, 
+                                                              ss -> target -> level, 
+                                                              ss -> attack_power, 
+                                                              ss -> spell_power, 
+                                                              ss -> composite_da_multiplier() );
 
-    spell -> eoe_proc      = true;
-    spell -> stats         = spell -> eoe_stats;
-    spell -> cooldown      = spell -> eoe_cooldown;
-    spell -> execute();
-    spell -> cooldown      = tmp_cd;
-    spell -> stats         = tmp_stats;
-    spell -> eoe_proc      = false;
+    spell -> eoe_stats -> add_execute( timespan_t::zero() );
+    spell -> schedule_travel_s( ss );
   }
 };
 
@@ -2029,7 +2027,7 @@ struct stormstrike_t : public shaman_melee_attack_t
 
 double shaman_spell_t::cost_reduction() const
 {
-  double   cr = base_cost_reduction;
+  double cr = base_cost_reduction;
 
   if ( ( harmful || is_totem ) && p() -> buff.shamanistic_rage -> up() )
     cr += p() -> buff.shamanistic_rage -> data().effectN( 1 ).percent();
@@ -2047,17 +2045,12 @@ double shaman_spell_t::cost_reduction() const
 
 double shaman_spell_t::cost() const
 {
-  if ( unlikely( eoe_proc ) )
-    return 0.0;
-  else
-  {
-    double c = spell_t::cost();
+  double c = spell_t::cost();
 
-    c *= 1.0 + cost_reduction();
+  c *= 1.0 + cost_reduction();
 
-    if ( c < 0 ) c = 0;
-    return c;
-  }
+  if ( c < 0 ) c = 0;
+  return c;
 }
 
 // shaman_spell_t::consume_resource =========================================
@@ -2067,16 +2060,6 @@ void shaman_spell_t::consume_resource()
   spell_t::consume_resource();
   if ( harmful && callbacks && ! proc && resource_consumed > 0 && p() -> buff.elemental_focus -> up() )
     p() -> buff.elemental_focus -> decrement();
-}
-
-// shaman_spell_t::execute_time =============================================
-
-timespan_t shaman_spell_t::execute_time() const
-{
-  if ( unlikely( eoe_proc ) )
-    return timespan_t::zero();
-  
-  return spell_t::execute_time();
 }
 
 // shaman_spell_t::execute =================================================
@@ -2092,7 +2075,7 @@ void shaman_spell_t::execute()
   if ( maelstrom && p() -> primary_tree() == SHAMAN_ENHANCEMENT )
     p() -> proc.maelstrom_weapon_used[ p() -> buff.maelstrom_weapon -> check() ] -> occur();
 
-  if ( harmful && ! eoe_proc && ! is_dtr_action && 
+  if ( harmful && ! is_dtr_action && 
        p() -> talent.echo_of_the_elements -> ok() && 
        p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
   {
@@ -2137,7 +2120,7 @@ void shaman_spell_t::execute()
 void shaman_spell_t::impact_s( action_state_t* state )
 {
   shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( state );
-  if ( unlikely( ss -> eoe_proc ) )
+  if ( ss -> eoe_proc )
   {
     stats_t* tmp_stats = stats;
     stats = eoe_stats;
@@ -2183,16 +2166,6 @@ void shaman_spell_t::schedule_execute()
       p() -> gcd_ready -= sim -> queue_gcd_reduction;
     }
   }
-}
-
-// shaman_spell_t::update_ready =============================================
-
-void shaman_spell_t::update_ready()
-{
-  spell_t::update_ready();
-  
-  if ( eoe_proc && cooldown -> duration > timespan_t::zero() )
-    cooldown -> reset();
 }
 
 // ==========================================================================
