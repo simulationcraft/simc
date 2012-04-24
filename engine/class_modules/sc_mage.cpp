@@ -92,9 +92,6 @@ struct mage_t : public player_t
   struct glyphs_t
   {
     // Prime
-    const spell_data_t* arcane_barrage;
-    const spell_data_t* arcane_blast;
-    const spell_data_t* arcane_missiles;
     const spell_data_t* arcane_power;
     const spell_data_t* fireball;
     const spell_data_t* frostbolt;
@@ -326,7 +323,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct mage_spell_t : public spell_t
 {
   bool may_chill, may_hot_streak, may_brain_freeze;
-  bool consumes_arcane_blast;
   int dps_rotation;
   int dpm_rotation;
 
@@ -334,7 +330,6 @@ struct mage_spell_t : public spell_t
                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, s, sc ),
     may_chill( false ), may_hot_streak( false ), may_brain_freeze( false ),
-    consumes_arcane_blast( false ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
@@ -486,9 +481,7 @@ struct mirror_image_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      double ab_stack_multiplier = p() -> o() -> spec.arcane_charge -> effectN( 1 ).percent();
-      double ab_glyph_multiplier = p() -> o() -> glyphs.arcane_blast -> effectN( 1 ).percent();
-      player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
+      player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spec.arcane_charge -> effectN( 1 ).percent();
     }
 
     virtual void execute()
@@ -978,9 +971,6 @@ void mage_spell_t::execute()
   if ( background )
     return;
 
-  if ( consumes_arcane_blast )
-    p() -> buffs.arcane_charge -> expire();
-
   if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
     p() -> buffs.presence_of_mind -> expire();
 
@@ -1047,14 +1037,27 @@ struct arcane_barrage_t : public mage_spell_t
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + p -> glyphs.arcane_barrage -> effectN( 1 ).percent();
-    consumes_arcane_blast = true;
-
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new arcane_barrage_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void execute()
+  {
+    aoe = p() -> buffs.arcane_charge -> check();
+
+    mage_spell_t::execute();
+
+    p() -> buffs.arcane_charge -> expire();
+  }
+
+  virtual void player_buff()
+  {
+    mage_spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p () -> buffs.arcane_charge -> data().effectN( 1 ).percent();
   }
 };
 
@@ -1079,22 +1082,20 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual double cost() const
   {
-    mage_t* p = player -> cast_mage();
-
     double c = spell_t::cost();
     double base_cost = c;
     double stack_cost = 0;
 
     // Arcane Power only affects the initial base cost, it doesn't inflate the stack cost too
     // ( BaseCost * AP ) + ( BaseCost * 1.5 * ABStacks )
-    if ( p -> buffs.arcane_power -> check() )
+    if ( p() -> buffs.arcane_power -> check() )
     {
-      c *= 1.0 + p -> buffs.arcane_power -> data().effectN( 2 ).percent();
+      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
     }
 
-    if ( p -> buffs.arcane_charge -> check() )
+    if ( p() -> buffs.arcane_charge -> check() )
     {
-      stack_cost = base_cost * p -> buffs.arcane_charge -> stack() * p -> spec.arcane_charge -> effectN( 2 ).percent();
+      stack_cost = base_cost * p() -> buffs.arcane_charge -> check() * p() -> spec.arcane_charge -> effectN( 2 ).percent();
     }
 
     c += stack_cost;
@@ -1104,29 +1105,27 @@ struct arcane_blast_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_t* p = player -> cast_mage();
     for ( int i=0; i < 5; i++ )
     {
-      p -> benefits.arcane_blast[ i ] -> update( i == p -> buffs.arcane_charge -> stack() );
+      p() -> benefits.arcane_blast[ i ] -> update( i == p() -> buffs.arcane_charge -> check() );
     }
+
     mage_spell_t::execute();
 
-    p -> buffs.arcane_charge -> trigger();
+    p() -> buffs.arcane_charge -> trigger();
 
     if ( result_is_hit() )
     {
-      if ( p -> set_bonus.tier13_2pc_caster() )
-        p -> buffs.tier13_2pc -> trigger( 1, -1, 1 );
+      if ( p() -> set_bonus.tier13_2pc_caster() )
+        p() -> buffs.tier13_2pc -> trigger( 1, -1, 1 );
     }
   }
 
   virtual void player_buff()
   {
-    mage_t* p = player -> cast_mage();
     mage_spell_t::player_buff();
-    double ab_stack_multiplier = p -> spec.arcane_charge -> effectN( 1 ).percent();
-    double ab_glyph_multiplier = p -> glyphs.arcane_blast -> effectN( 1 ).percent();
-    player_multiplier *= 1.0 + p ->  buffs.arcane_charge -> stack() * ( ab_stack_multiplier + ab_glyph_multiplier );
+
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spec.arcane_charge -> effectN( 1 ).percent();
   }
 };
 
@@ -1178,13 +1177,19 @@ struct arcane_missiles_tick_t : public mage_spell_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    base_crit  += p -> glyphs.arcane_missiles -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new arcane_missiles_tick_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void player_buff()
+  {
+    mage_spell_t::player_buff();
+
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> buffs.arcane_charge -> data().effectN( 1 ).percent();
   }
 };
 
@@ -1215,13 +1220,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> expire();
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
-
-    p() -> buffs.arcane_charge -> expire();
+    p() -> buffs.arcane_charge -> trigger();
   }
 
   virtual void tick( dot_t* d )
@@ -1311,14 +1310,6 @@ struct blink_t : public mage_spell_t
     mage_spell_t::execute();
 
     player -> buffs.stunned -> expire();
-  }
-
-  virtual timespan_t gcd() const
-  {
-    if ( p() -> buffs.arcane_power -> check() && p() -> glyphs.arcane_power -> ok() )
-      return timespan_t::zero();
-
-    return mage_spell_t::gcd();
   }
 };
 
@@ -2699,10 +2690,7 @@ void mage_t::init_spells()
     active_ignite = new ignite_t( this );
 
   // Glyphs
-  glyphs.arcane_barrage    = find_glyph_spell( "Glyph of Arcane Barrage" );
-  glyphs.arcane_blast      = find_glyph_spell( "Glyph of Arcane Blast" );
   glyphs.arcane_brilliance = find_glyph_spell( "Glyph of Arcane Brilliance" );
-  glyphs.arcane_missiles   = find_glyph_spell( "Glyph of Arcane Missiles" );
   glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
   glyphs.dragons_breath    = find_glyph_spell( "Glyph of Dragon's Breath" );
