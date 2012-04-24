@@ -1084,6 +1084,7 @@ void sim_t::combat_begin()
               continue;
 
             p -> buffs.bloodlust -> trigger();
+            p -> buffs.exhaustion -> trigger();
           }
         }
         else

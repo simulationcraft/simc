@@ -2075,7 +2075,7 @@ void shaman_spell_t::execute()
   if ( maelstrom && p() -> primary_tree() == SHAMAN_ENHANCEMENT )
     p() -> proc.maelstrom_weapon_used[ p() -> buff.maelstrom_weapon -> check() ] -> occur();
 
-  if ( harmful && ! is_dtr_action && 
+  if ( harmful && is_direct_damage() && ! is_dtr_action && 
        p() -> talent.echo_of_the_elements -> ok() && 
        p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
   {
