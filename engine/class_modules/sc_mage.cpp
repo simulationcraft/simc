@@ -93,7 +93,6 @@ struct mage_t : public player_t
   {
     // Prime
     const spell_data_t* arcane_power;
-    const spell_data_t* frostbolt;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* living_bomb;
@@ -314,14 +313,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct mage_spell_t : public spell_t
 {
-  bool may_chill, may_hot_streak, may_brain_freeze;
+  bool may_hot_streak;
   int dps_rotation;
   int dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, s, sc ),
-    may_chill( false ), may_hot_streak( false ), may_brain_freeze( false ),
+    may_hot_streak( false ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
@@ -338,7 +337,6 @@ struct mage_spell_t : public spell_t
   virtual double haste() const;
   virtual void   execute();
   virtual timespan_t execute_time() const;
-  virtual void   impact( player_t* t, result_type_e impact_result, double travel_dmg );
   virtual double hot_streak_crit() { return player_crit; }
 };
 
@@ -694,32 +692,6 @@ static double calculate_dot_dps( dot_t* dot )
   return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier() ) / a -> base_tick_time.total_seconds() );
 }
 
-// consume_brain_freeze =====================================================
-
-static void consume_brain_freeze( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-
-  if ( p -> buffs.brain_freeze -> check() )
-  {
-    p -> buffs.brain_freeze -> expire();
-  }
-}
-
-// trigger_brain_freeze =====================================================
-
-static void trigger_brain_freeze( spell_t* s )
-{
-  mage_t* p = s -> player -> cast_mage();
-  double chance = 0.0;
-
-  if ( ! p -> spec.brain_freeze -> ok() ) return;
-
-  chance = p -> spec.brain_freeze -> proc_chance();
-
-  p -> buffs.brain_freeze -> trigger( 1, -1.0, chance );
-}
-
 // trigger_hot_streak =======================================================
 
 static void trigger_hot_streak( mage_spell_t* s )
@@ -960,18 +932,12 @@ void mage_spell_t::execute()
   if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
     p() -> buffs.presence_of_mind -> expire();
 
-  if ( may_brain_freeze )
-  {
-    trigger_brain_freeze( this );
-  }
-
   if ( result_is_hit() )
   {
     trigger_hot_streak( this );
   }
 
-  if ( p() -> primary_tree() != MAGE_FIRE &&
-       ! p() -> spec.brain_freeze -> ok() )
+  if ( p() -> primary_tree() == MAGE_ARCANE )
   {
     p() -> buffs.arcane_missiles -> trigger();
   }
@@ -987,21 +953,6 @@ timespan_t mage_spell_t::execute_time() const
     return timespan_t::zero();
 
   return t;
-}
-
-// mage_spell_t::impact =====================================================
-
-void mage_spell_t::impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
-{
-  spell_t::impact( t, impact_result, travel_dmg );
-
-  if ( may_chill )
-  {
-    if ( result_is_hit( impact_result ) )
-    {
-      p() -> buffs.fingers_of_frost -> trigger();
-    }
-  }
 }
 
 // ==========================================================================
@@ -1431,9 +1382,6 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-
-    may_brain_freeze = true;
-    may_chill = true;
   }
 };
 
@@ -1700,6 +1648,16 @@ struct frost_bomb_t : public mage_spell_t
     // FIXME: How does haste affect the CD/Tick Time?
   }
 
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      p() -> buffs.brain_freeze -> trigger();
+    }
+  }
+
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
@@ -1716,9 +1674,6 @@ struct frostbolt_t : public mage_spell_t
     mage_spell_t( "frostbolt", p, p -> find_spell( 116 ) )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.frostbolt -> effectN( 1 ).percent();
-    may_chill = true;
-    may_brain_freeze = true;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1739,6 +1694,17 @@ struct frostbolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
+
+  virtual void impact( player_t* t, result_type_e travel_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, travel_result, travel_dmg );
+
+    if ( result_is_hit( travel_result ) )
+    {
+      if ( p() -> primary_tree() == MAGE_FROST )
+        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
+    }
+  }
 };
 
 // Frostfire Bolt Spell =====================================================
@@ -1750,7 +1716,6 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_chill = true;
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
@@ -1792,7 +1757,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    consume_brain_freeze( this );
+    p() -> buffs.brain_freeze -> expire();
 
     if ( result_is_hit() )
     {
@@ -1805,7 +1770,13 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    trigger_ignite( this, travel_dmg );
+    if ( result_is_hit( impact_result ) )
+    {
+      trigger_ignite( this, travel_dmg );
+
+      if ( p() -> primary_tree() == MAGE_FROST )
+        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
+    }
   }
 
   virtual double total_crit() const
@@ -1815,6 +1786,57 @@ struct frostfire_bolt_t : public mage_spell_t
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
     return c;
+  }
+};
+
+// Frozen Orb Spell =========================================================
+
+struct frozen_orb_bolt_t : public mage_spell_t
+{
+  frozen_orb_bolt_t( mage_t* p ) :
+    mage_spell_t( "frozen_orb_bolt", p, p -> find_spell( 84721 ) )
+  {
+    background = true;
+    cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
+  }
+};
+
+struct frozen_orb_t : public mage_spell_t
+{
+  frozen_orb_bolt_t* bolt;
+
+  frozen_orb_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "frozen_orb", p, p -> find_spell( 84714 ) ),
+    bolt( 0 )
+  {
+    check_spec( MAGE_FROST );
+    parse_options( NULL, options_str );
+
+    channeled = true;
+    // FIX ME: how many bolts does it fire? Assuming 1 a second for 10 total
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    num_ticks      = ( int ) ( data().duration() / base_tick_time );
+
+    bolt = new frozen_orb_bolt_t( p );
+    add_child( bolt );
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      p() -> buffs.fingers_of_frost -> trigger();
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent() );
+    }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    mage_spell_t::tick( d );
+
+    bolt -> execute();
   }
 };
 
@@ -1864,7 +1886,7 @@ struct icy_veins_buff_t : public buff_t
   {
     buff_t::expire();
 
-    mage_t* p = static_cast<mage_t*>( player );
+    mage_t* p = debug_cast<mage_t*>( player );
     p -> buffs.tier13_2pc -> expire();
   }
 };
@@ -1876,23 +1898,20 @@ struct icy_veins_t : public mage_spell_t
   timespan_t orig_duration;
 
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", p, p -> find_spell( 12472 ) ), orig_duration( timespan_t::zero() )
+    mage_spell_t( "icy_veins", p, p -> find_spell( 12472 ) ),
+    orig_duration( timespan_t::zero() )
   {
-    // check_talent( p -> talents.icy_veins -> rank() );
+    check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
     orig_duration = cooldown -> duration;
   }
 
   virtual void execute()
   {
-    if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
+    spell_t::execute();
 
     if ( player -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 3 ).time_value();
-
-    consume_resource();
-    update_ready();
 
     p() -> buffs.icy_veins -> trigger();
   }
@@ -1968,6 +1987,16 @@ struct living_bomb_t : public mage_spell_t
 
     explosion_spell = new living_bomb_explosion_t( p );
     add_child( explosion_spell );
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      p() -> buffs.brain_freeze -> trigger();
+    }
   }
 
   virtual void last_tick( dot_t* d )
@@ -2128,6 +2157,16 @@ struct nether_tempest_t : public mage_spell_t
     check_talent( p -> talents.nether_tempest -> ok() );
 
     parse_options( NULL, options_str );
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      p() -> buffs.brain_freeze -> trigger();
+    }
   }
 };
 
@@ -2318,7 +2357,12 @@ struct scorch_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    trigger_ignite( this, travel_dmg );
+    if ( result_is_hit( impact_result ) )
+    {
+      trigger_ignite( this, travel_dmg );
+      if ( p() -> primary_tree() == MAGE_FROST )
+        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent() );
+    }
   }
 
   virtual double total_crit() const
@@ -2660,6 +2704,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
+  if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
@@ -2741,7 +2786,7 @@ void mage_t::init_spells()
   spec.fingers_of_frost = find_class_spell( "Fingers of Frost" );
 
   // Mastery
-  spec.frostburn  = find_mastery_spell( MAGE_FROST );
+  spec.frostburn  = find_mastery_spell( MAGE_FROST ); // This is completely useless, as it only works against Frozen targets
   spec.ignite     = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept = find_mastery_spell( MAGE_ARCANE );
 
@@ -2754,7 +2799,6 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
-  glyphs.frostbolt         = find_glyph_spell( "Glyph of Frostbolt" );
   glyphs.frostfire         = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance         = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.living_bomb       = find_glyph_spell( "Glyph of Living Bomb" );
@@ -2821,7 +2865,7 @@ void mage_t::init_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", find_spell( 36032 ) );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) ).chance( 0.40 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
-  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) );
+  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) ); // FIX ME, what is the proc chance?
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
   // FIXME: What is this called now? 
