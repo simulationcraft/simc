@@ -163,9 +163,9 @@ struct warlock_t : public player_t
 
   int use_pre_soulburn;
   int initial_burning_embers;
+  timespan_t ember_react;
 
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
-
 
   // Character Definition
   virtual warlock_targetdata_t* new_targetdata( player_t* target )
@@ -200,6 +200,7 @@ struct warlock_t : public player_t
   virtual double composite_spell_haste() const;
   virtual double composite_mastery() const;
   virtual void combat_begin();
+  virtual expr_t* create_expression( action_t* a, const std::string& name_str );
 };
 
 // ==========================================================================

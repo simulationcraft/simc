@@ -112,7 +112,7 @@ double rng_t::gauss( double mean,
 
 // rng_t::exgauss ===========================================================
 
-double rng_t::exgauss( double mean, double stddev, double nu )
+double rng_t::exgauss( double mean, double stddev, double nu, double cutoff )
 {
   double x = 0;
   do
@@ -123,7 +123,7 @@ double rng_t::exgauss( double mean, double stddev, double nu )
 
   double result =  ( gauss( mean, stddev ) ) - log( x / nu ) * nu;
   if ( result < 0 ) result = 0;
-  if ( result > 5 ) result = 5; // cut it off at 5s
+  if ( result > cutoff ) result = cutoff; // cut it off at 5s
 
   return result;
 }

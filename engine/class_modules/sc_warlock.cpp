@@ -90,9 +90,9 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
   use_pre_soulburn( 0 ),
-  initial_burning_embers( 0 )
+  initial_burning_embers( 0 ),
+  ember_react( timespan_t::zero() )
 {
-
   distance = 40;
   default_distance = 40;
 
@@ -745,6 +745,13 @@ struct incinerate_t : public warlock_spell_t
       {
         double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
         p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
+
+        // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
+        if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
+          p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
+        else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
+          p() -> ember_react = sim -> current_time;
+
       }
 
       trigger_soul_leech( p(), s -> result_amount );
@@ -2174,6 +2181,7 @@ void warlock_t::reset()
 
   // Active
   pets.active = 0;
+  ember_react = timespan_t::zero();
 }
 
 // warlock_t::create_options ================================================
@@ -2239,6 +2247,25 @@ int warlock_t::decode_set( const item_t& item ) const
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
+}
+
+expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
+{
+  if ( name_str == "ember_react" )
+  {
+    struct ember_react_expr_t : public expr_t
+    {
+      warlock_t& player;
+      ember_react_expr_t( warlock_t& p ) :
+        expr_t( "ember_react" ), player( p ) { }
+      virtual double evaluate() { return player.resources.current[ RESOURCE_BURNING_EMBER ] >= 10 && player.sim -> current_time >= player.ember_react; }
+    };
+    return new ember_react_expr_t( *this );
+  }
+  else
+  {
+    return player_t::create_expression( a, name_str );
+  }
 }
 
 #endif // SC_WARLOCK
