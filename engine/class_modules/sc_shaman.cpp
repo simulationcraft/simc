@@ -410,12 +410,13 @@ struct shaman_spell_t : public spell_t
     spell_t( token, p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     eoe_proc( false ), 
-    eoe_stats( p -> get_stats( name_str + "_eoe", this ) ),
+    eoe_stats( 0 ),
     eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
   {
     parse_options( 0, options );
 
-    may_crit = true;
+    eoe_stats = p -> get_stats( name_str + "_eoe", this );
+    may_crit  = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
   }
@@ -424,12 +425,13 @@ struct shaman_spell_t : public spell_t
     spell_t( "", p, s ),
     base_cost_reduction( 0 ), maelstrom( false ), overload( false ), is_totem( false ),
     eoe_proc( false ), 
-    eoe_stats( p -> get_stats( name_str + "_eoe", this ) ),
+    eoe_stats( 0 ),
     eoe_cooldown( p -> get_cooldown( name_str + "_eoe" ) )
   {
     parse_options( 0, options );
 
-    may_crit = true;
+    eoe_stats = p -> get_stats( name_str + "_eoe", this );
+    may_crit  = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
   }
