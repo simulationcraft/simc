@@ -22,7 +22,7 @@
 #  define SC_SIGACTION
 #endif
 
-#if defined( _MSC_VER )
+#if ( _MSC_VER && _MSC_VER < 1600 )
 #  include "../vs/stdint.h"
 #else
 #  include <stdint.h>
