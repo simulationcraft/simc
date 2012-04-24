@@ -165,8 +165,8 @@ struct monk_heal_t : public heal_t
   int stancemask;
 
   monk_heal_t( const std::string& n, monk_t* player,
-                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-      heal_t( n, player, s, sc ),
+               const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+    heal_t( n, player, s, sc ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
     may_crit   = true;

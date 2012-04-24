@@ -271,9 +271,9 @@ player_t::player_t( sim_t*             s,
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
-  party( 0 ), member( 0 ), ready_type( READY_POLL ), 
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), 
-  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ), 
+  party( 0 ), member( 0 ), ready_type( READY_POLL ),
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ),
+  gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), spec( SPEC_NONE ), invert_scaling( 0 ),
   active_pets( 0 ), dtr_proc_chance( -1.0 ), dtr_base_proc_chance( -1.0 ),
@@ -513,25 +513,25 @@ void player_t::debuff_init( sim_t* sim )
     player_t* p = sim -> actor_list[i];
     // MOP Debuffs
     p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 115803 ) )
-                                       .default_value( std::fabs( p -> find_spell( 115803 ) -> effectN( 1 ).percent() ) );
+                                            .default_value( std::fabs( p -> find_spell( 115803 ) -> effectN( 1 ).percent() ) );
 
     p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
-                                      .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
+                                           .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
 
     p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
-                                      .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
+                                           .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
 
     p -> debuffs.ranged_vulnerability    = buff_creator_t( p, "ranged_vulnerability", p -> find_spell( 1130 ) )
-                                      .default_value( p -> find_spell( 1130 ) -> effectN( 2 ).percent() );
+                                           .default_value( p -> find_spell( 1130 ) -> effectN( 2 ).percent() );
 
     p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
-                                      .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+                                           .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
 
     p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
-                                      .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) );
+                                           .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) );
 
     p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
-                                      .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) );
+                                           .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) );
   }
 }
 
@@ -550,7 +550,7 @@ bool player_t::init( sim_t* sim )
 
   if ( sim -> debug )
     log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
-  
+
   player_t::debuff_init( sim );
 
   player_t::death_knight_init( sim );
@@ -1621,43 +1621,43 @@ void player_t::init_buffs()
     }
   };
 
-  potion_buffs.speed      = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 )) )
-                              .stat( STAT_HASTE_RATING )
-                              .amount( 500.0 );
+  potion_buffs.speed      = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) ) )
+                            .stat( STAT_HASTE_RATING )
+                            .amount( 500.0 );
 
   potion_buffs.volcanic   = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
-                              .stat( STAT_INTELLECT )
-                              .amount( 1200.0 );
+                            .stat( STAT_INTELLECT )
+                            .amount( 1200.0 );
 
   potion_buffs.earthen    = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
-                              .stat( STAT_ARMOR )
-                              .amount( 4800.0 );
+                            .stat( STAT_ARMOR )
+                            .amount( 4800.0 );
 
   potion_buffs.golemblood = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
-                              .stat( STAT_STRENGTH )
-                              .amount( 1200.0 );
+                            .stat( STAT_STRENGTH )
+                            .amount( 1200.0 );
 
   potion_buffs.tolvir     = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
-                              .stat( STAT_AGILITY )
-                              .amount( 1200.0 );
+                            .stat( STAT_AGILITY )
+                            .amount( 1200.0 );
 
   // New Mop potions
 
   potion_buffs.jinyu        = stat_buff_creator_t( potions_common_buff_creator()( this, "jinyu" ) )
-                                .stat( STAT_INTELLECT )
-                                .amount( 4000.0 );
+                              .stat( STAT_INTELLECT )
+                              .amount( 4000.0 );
 
   potion_buffs.mountains    = stat_buff_creator_t( potions_common_buff_creator()( this, "mountains" ) )
-                                .stat( STAT_ARMOR )
-                                .amount( 12000.0 );
+                              .stat( STAT_ARMOR )
+                              .amount( 12000.0 );
 
   potion_buffs.mogu_power   = stat_buff_creator_t( potions_common_buff_creator()( this, "mogu_power" ) )
-                                .stat( STAT_STRENGTH )
-                                .amount( 4000.0 );
+                              .stat( STAT_STRENGTH )
+                              .amount( 4000.0 );
 
   potion_buffs.virmens_bite = stat_buff_creator_t( potions_common_buff_creator()( this, "virmens_bite" ) )
-                                .stat( STAT_AGILITY )
-                                .amount( 4000.0 );
+                              .stat( STAT_AGILITY )
+                              .amount( 4000.0 );
 
 
   buffs.mongoose_mh = NULL;
@@ -2899,13 +2899,13 @@ void player_t::reset()
 
 void player_t::trigger_ready()
 {
-  if( ready_type == READY_POLL ) return;
+  if ( ready_type == READY_POLL ) return;
 
-  if( readying ) return;
-  if( executing ) return;
-  if( channeling ) return;
+  if ( readying ) return;
+  if ( executing ) return;
+  if ( channeling ) return;
 
-  if( sleeping ) return;
+  if ( sleeping ) return;
 
   if ( buffs.stunned -> check() ) return;
 
@@ -3257,7 +3257,7 @@ void player_t::regen( const timespan_t periodicity )
   for ( size_t j = 0; j < resource_timeline_count; ++j )
   {
     resource_timelines[ j ].timeline[ index ] +=
-        resources.current[ resource_timelines[ j ].type ];
+      resources.current[ resource_timelines[ j ].type ];
   }
 }
 
@@ -3714,8 +3714,8 @@ double player_t::assess_damage( double        amount,
                                 result_type_e result,
                                 action_t*     action )
 {
-  if( amount <= 0 ) return 0;
-  
+  if ( amount <= 0 ) return 0;
+
   if ( buffs.pain_supression -> up() )
     amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
@@ -3748,11 +3748,11 @@ double player_t::assess_damage( double        amount,
 
   double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, 0, action );
 
-  if( false && ( this == sim -> target ) )
+  if ( false && ( this == sim -> target ) )
   {
-    if( sim -> target_death >= 0 )
-      if( resources.current[ RESOURCE_HEALTH ] <= sim -> target_death )
-	sim -> iteration_canceled = 1;
+    if ( sim -> target_death >= 0 )
+      if ( resources.current[ RESOURCE_HEALTH ] <= sim -> target_death )
+        sim -> iteration_canceled = 1;
   }
   else if ( resources.current[ RESOURCE_HEALTH ] <= 0 && ! is_enemy() && ! resources.is_infinite( RESOURCE_HEALTH ) )
   {
@@ -3770,7 +3770,7 @@ double player_t::assess_damage( double        amount,
     {
       if ( ! sleeping )
       {
-	deaths.add( sim -> current_time.total_seconds() );
+        deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
       demise();
@@ -3898,7 +3898,7 @@ void player_t::callbacks_t::register_callbacks()
 // player_t::register_resource_gain_callback ================================
 
 void player_t::callbacks_t::register_resource_gain_callback( resource_type_e resource_type,
-                                                action_callback_t* cb )
+                                                             action_callback_t* cb )
 {
   resource_gain[ resource_type ].push_back( cb );
 }
@@ -3906,7 +3906,7 @@ void player_t::callbacks_t::register_resource_gain_callback( resource_type_e res
 // player_t::register_resource_loss_callback ================================
 
 void player_t::callbacks_t::register_resource_loss_callback( resource_type_e resource_type,
-                                                action_callback_t* cb )
+                                                             action_callback_t* cb )
 {
   resource_loss[ resource_type ].push_back( cb );
 }
@@ -3914,7 +3914,7 @@ void player_t::callbacks_t::register_resource_loss_callback( resource_type_e res
 // player_t::register_attack_callback =======================================
 
 void player_t::callbacks_t::register_attack_callback( int64_t mask,
-                                         action_callback_t* cb )
+                                                      action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3928,7 +3928,7 @@ void player_t::callbacks_t::register_attack_callback( int64_t mask,
 // player_t::register_spell_callback ========================================
 
 void player_t::callbacks_t::register_spell_callback( int64_t mask,
-                                        action_callback_t* cb )
+                                                     action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3943,7 +3943,7 @@ void player_t::callbacks_t::register_spell_callback( int64_t mask,
 // player_t::register_tick_callback =========================================
 
 void player_t::callbacks_t::register_tick_callback( int64_t mask,
-                                       action_callback_t* cb )
+                                                    action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3957,7 +3957,7 @@ void player_t::callbacks_t::register_tick_callback( int64_t mask,
 // player_t::register_heal_callback =========================================
 
 void player_t::callbacks_t::register_heal_callback( int64_t mask,
-                                       action_callback_t* cb )
+                                                    action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3971,7 +3971,7 @@ void player_t::callbacks_t::register_heal_callback( int64_t mask,
 // player_t::register_absorb_callback =========================================
 
 void player_t::callbacks_t::register_absorb_callback( int64_t mask,
-                                         action_callback_t* cb )
+                                                      action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3985,7 +3985,7 @@ void player_t::callbacks_t::register_absorb_callback( int64_t mask,
 // player_t::register_harmful_spell_callback ================================
 
 void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
-                                                action_callback_t* cb )
+                                                             action_callback_t* cb )
 {
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -3999,7 +3999,7 @@ void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
 // player_t::register_tick_damage_callback ==================================
 
 void player_t::callbacks_t::register_tick_damage_callback( int64_t mask,
-                                              action_callback_t* cb )
+                                                           action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
@@ -4013,7 +4013,7 @@ void player_t::callbacks_t::register_tick_damage_callback( int64_t mask,
 // player_t::register_direct_damage_callback ================================
 
 void player_t::callbacks_t::register_direct_damage_callback( int64_t mask,
-                                                action_callback_t* cb )
+                                                             action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
@@ -4027,7 +4027,7 @@ void player_t::callbacks_t::register_direct_damage_callback( int64_t mask,
 // player_t::register_tick_heal_callback ====================================
 
 void player_t::callbacks_t::register_tick_heal_callback( int64_t mask,
-                                            action_callback_t* cb )
+                                                         action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
@@ -4041,7 +4041,7 @@ void player_t::callbacks_t::register_tick_heal_callback( int64_t mask,
 // player_t::register_direct_heal_callback ==================================
 
 void player_t::callbacks_t::register_direct_heal_callback( int64_t mask,
-                                              action_callback_t* cb )
+                                                           action_callback_t* cb )
 {
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
@@ -5256,12 +5256,12 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( w_class != type )
   {
     sim -> errorf( "Player %s has malformed wowhead talent string. Talent string class %s does not match player class %s.\n", name(),
-      util_t::player_type_string( w_class ), util_t::player_type_string( type ) );
+                   util_t::player_type_string( w_class ), util_t::player_type_string( type ) );
     return false;
   }
-  
+
   idx = 1;
-  
+
   // Parse spec if specified
   switch ( talent_string[ idx ] )
   {
@@ -5280,7 +5280,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     if ( w_spec != primary_tree() )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
-        util_t::specialization_string( w_spec ).c_str(), util_t::specialization_string( primary_tree() ).c_str() );
+                     util_t::specialization_string( w_spec ).c_str(), util_t::specialization_string( primary_tree() ).c_str() );
       return false;
     }
   }
@@ -5302,7 +5302,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
       sim -> errorf( "Player %s has malformed wowhead talent string. Character in position %d is invalid.\n", name(), idx );
       return false;
     }
-    
+
     c -= '0';
 
     while ( key_idx < key.size() )
@@ -5313,12 +5313,12 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
         c -= key[ key_idx ];
       }
       key_idx++;
-    }   
+    }
 
     idx++;
     encoding_idx += key.size();
   }
- 
+
   if ( sim -> debug )
   {
     std::ostringstream str_out;
@@ -5355,7 +5355,7 @@ void player_t::replace_spells()
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( (int)dbc.spell( id ) -> level() <= level ) )
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( ( int )dbc.spell( id ) -> level() <= level ) )
       {
         // Found a spell we should replace
         dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
@@ -5368,7 +5368,7 @@ void player_t::replace_spells()
   {
     for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_list[ j * MAX_TALENT_COLS + i ] && ( level >= (int) ( ( j + 1 ) * 15 ) ) )
+      if ( talent_list[ j * MAX_TALENT_COLS + i ] && ( level >= ( int ) ( ( j + 1 ) * 15 ) ) )
       {
         talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
         if ( td && td -> replace_id() )
@@ -5412,7 +5412,7 @@ void player_t::replace_spells()
       {
         break;
       }
-      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( (int)dbc.spell( id ) -> level() <= level ) )
+      if ( dbc.spell( id ) && dbc.spell( id ) -> _replace_spell_id && ( ( int )dbc.spell( id ) -> level() <= level ) )
       {
         // Found a spell we should replace
         dbc.replace_id( dbc.spell( id ) -> _replace_spell_id, id );
@@ -5441,7 +5441,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] || ( level < (int)( ( j + 1 ) * 15 ) ) )
+        if ( ! talent_list[ j * MAX_TALENT_COLS + i ] || ( level < ( int )( ( j + 1 ) * 15 ) ) )
         {
           return ( spell_data_t::not_found() );
         }
@@ -5502,7 +5502,7 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   if ( s != SPEC_NONE && s != spec )
     return spell_data_t::not_found();
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5516,7 +5516,7 @@ const spell_data_t* player_t::find_mastery_spell( const std::string& name, const
 {
   unsigned spell_id = dbc.mastery_ability_id( spec, name.c_str() );
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5530,7 +5530,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
 {
   unsigned spell_id = dbc.mastery_ability_id( s, idx );
 
-  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
+  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -5581,7 +5581,7 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
 }
 
 // player_t::find_racial_spell ============================================
-  
+
 const spell_data_t* player_t::find_racial_spell( const std::string& name, const std::string& token, race_type_e r )
 {
   unsigned spell_id = dbc.race_ability_id( type, ( r != RACE_NONE ) ? r : race, name.c_str() );
@@ -5605,7 +5605,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   if ( s != SPEC_NONE && s != spec )
     return spell_data_t::not_found();
 
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( (int)dbc.spell( spell_id ) -> level() > level ) )
+  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
   {
     return spell_data_t::not_found();
   }
@@ -5635,7 +5635,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
 
 const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token )
 {
-  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() || ( (int)dbc.spell( id ) -> level() > level ) )
+  if ( ! id || ! dbc.spell( id ) || ! dbc.spell( id ) -> id() || ( ( int )dbc.spell( id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( id, token, dbc.ptr );
@@ -5824,7 +5824,7 @@ expr_t* player_t::create_expression( action_t* a,
                    player.temporary.attribute[ ATTR_INTELLECT ] *
                    player.composite_attribute_multiplier( ATTR_INTELLECT ) *
                    player.stats_current.spell_power_per_intellect ) *
-              player.composite_spell_power_multiplier();
+                 player.composite_spell_power_multiplier();
         }
       };
       return new temp_sp_expr_t( name_str, *this );
@@ -5845,7 +5845,7 @@ expr_t* player_t::create_expression( action_t* a,
                    player.temporary.attribute[ ATTR_AGILITY ] *
                    player.composite_attribute_multiplier( ATTR_AGILITY ) *
                    player.stats_current.attack_power_per_agility ) *
-              player.composite_attack_power_multiplier();
+                 player.composite_attack_power_multiplier();
         }
       };
       return new temp_ap_expr_t( name_str, *this );
@@ -6117,7 +6117,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
           {
             return ( player.resources.max[ RESOURCE_ENERGY ] -
                      player.resources.current[ RESOURCE_ENERGY ] ) /
-                player.energy_regen_per_second();
+                   player.energy_regen_per_second();
           }
         };
         return new time_to_max_energy_expr_t( *this, r );
@@ -6132,7 +6132,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
           {
             return ( player.resources.max[ RESOURCE_FOCUS ] -
                      player.resources.current[ RESOURCE_FOCUS ] ) /
-                player.focus_regen_per_second(); return TOK_NUM;
+                   player.focus_regen_per_second(); return TOK_NUM;
           }
         };
         return new time_to_max_focus_expr_t( *this, r );

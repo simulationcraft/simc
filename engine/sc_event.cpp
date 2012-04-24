@@ -140,7 +140,7 @@ void player_ready_event_t::execute()
 
   if ( ! player -> execute_action() )
   {
-    if( player -> ready_type == READY_POLL )
+    if ( player -> ready_type == READY_POLL )
     {
       timespan_t x = player -> available();
 
@@ -148,9 +148,9 @@ void player_ready_event_t::execute()
 
       // Waiting Debug
       if ( sim -> debug )
-	log_t::output( sim, "%s is waiting for %.4f resource=%.2f", 
-		       player -> name(), x.total_seconds(), 
-		       player -> resources.current[ player -> primary_resource() ] );
+        log_t::output( sim, "%s is waiting for %.4f resource=%.2f",
+                       player -> name(), x.total_seconds(),
+                       player -> resources.current[ player -> primary_resource() ] );
     }
     else player -> started_waiting = sim -> current_time;
   }

@@ -21,7 +21,7 @@ public:
 
 // Unary Operators ==========================================================
 
-template <double (*F)(double)>
+template <double ( *F )( double )>
 class expr_unary_t : public expr_t
 {
   expr_t* input;
@@ -116,7 +116,7 @@ public:
 
 expr_t* select_binary( const std::string& name, token_type_e op, expr_t* left, expr_t* right )
 {
-  switch( op )
+  switch ( op )
   {
   case TOK_AND:   return new logical_and_t                     ( name, left, right );
   case TOK_OR:    return new logical_or_t                      ( name, left, right );
@@ -568,7 +568,7 @@ void time_test( expr_t* expr, uint64_t n )
 }
 }
 
-unsigned spell_data_t::get_school_mask(school_type_e) { return 0; }
+unsigned spell_data_t::get_school_mask( school_type_e ) { return 0; }
 
 void sim_t::cancel() {}
 

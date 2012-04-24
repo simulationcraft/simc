@@ -436,23 +436,23 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
       // Spelldata
       if ( a -> data().ok() )
       {
-      fprintf ( file,
-                      "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
-                      "\t\t\t\t\t\t\t\t\t\t<h5>Spelldata</h5>\n"
-                      "\t\t\t\t\t\t\t\t\t\t<ul>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">school:</span>%s</li>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-                      "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
-                      "\t\t\t\t\t\t\t\t\t\t</ul>\n"
-                      "\t\t\t\t\t\t\t\t\t</div>\n"
-                      "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
-                      a -> data().id(),
-                      a -> data().name_cstr(),
-                      util_t::school_type_string( a -> data().get_school_type() ),
-                      a -> data().tooltip(),
-                      util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
+        fprintf ( file,
+                  "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
+                  "\t\t\t\t\t\t\t\t\t\t<h5>Spelldata</h5>\n"
+                  "\t\t\t\t\t\t\t\t\t\t<ul>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">school:</span>%s</li>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+                  "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
+                  "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+                  "\t\t\t\t\t\t\t\t\t</div>\n"
+                  "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
+                  a -> data().id(),
+                  a -> data().name_cstr(),
+                  util_t::school_type_string( a -> data().get_school_type() ),
+                  a -> data().tooltip(),
+                  util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
       }
 
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
@@ -545,37 +545,37 @@ int print_html_action_resource( FILE* file, const stats_t* s, int j )
   }
 
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-   {
-     if ( s -> resource_gain.actual[ i ] > 0 )
-     {
-       fprintf( file,
-                "\t\t\t\t\t\t\t<tr" );
-       if ( !( j & 1 ) )
-       {
-         fprintf( file, " class=\"odd\"" );
-       }
-       ++j;
-       fprintf( file, ">\n" );
-       fprintf( file,
-                "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
-                s -> resource_gain.name(),
-                util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
-                s -> resource_gain.count[ i ],
-                s -> resource_gain.actual[ i ],
-                s -> resource_gain.actual[ i ] / s -> resource_gain.count[ i ] );
-         fprintf( file,
-                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
-                s->rpe[ i ],
-                s->apr[ i ] );
-       fprintf( file,
-                "\t\t\t\t\t\t\t</tr>\n" );
-     }
-   }
+  {
+    if ( s -> resource_gain.actual[ i ] > 0 )
+    {
+      fprintf( file,
+               "\t\t\t\t\t\t\t<tr" );
+      if ( !( j & 1 ) )
+      {
+        fprintf( file, " class=\"odd\"" );
+      }
+      ++j;
+      fprintf( file, ">\n" );
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
+               s -> resource_gain.name(),
+               util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
+               s -> resource_gain.count[ i ],
+               s -> resource_gain.actual[ i ],
+               s -> resource_gain.actual[ i ] / s -> resource_gain.count[ i ] );
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
+               s->rpe[ i ],
+               s->apr[ i ] );
+      fprintf( file,
+               "\t\t\t\t\t\t\t</tr>\n" );
+    }
+  }
   return j;
 }
 
@@ -955,18 +955,18 @@ void print_html_talents( FILE* file, const player_t* p )
         if ( p -> talent_list[ row * MAX_TALENT_COLS + col ] )
         {
           fprintf( file,
-            "\t\t\t\t\t\t\t\t\t\t<td class=\"filler\">%s</td>\n",
-            name );
+                   "\t\t\t\t\t\t\t\t\t\t<td class=\"filler\">%s</td>\n",
+                   name );
         }
         else
         {
           fprintf( file,
-            "\t\t\t\t\t\t\t\t\t\t<td>%s</td>\n",
-            name );
+                   "\t\t\t\t\t\t\t\t\t\t<td>%s</td>\n",
+                   name );
         }
       }
       fprintf( file,
-        "\t\t\t\t\t\t\t\t\t</tr>\n" );
+               "\t\t\t\t\t\t\t\t\t</tr>\n" );
     }
 
     fprintf( file,
@@ -1366,49 +1366,49 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t</tr>\n" );
 
   {
-  html_report_stream s;
-  s.set_tabs( 6 );
+    html_report_stream s;
+    s.set_tabs( 6 );
 
-  int j = 0;
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
-  {
-    print_html_gain( s, g, j );
-  }
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-  {
-    pet_t* pet = p -> pet_list[ i ];
-    if ( pet -> fight_length.mean <= 0 ) continue;
-    bool first = true;
-    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    int j = 0;
+    for ( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      if ( first )
-      {
-        first = false;
-        fprintf( file,
-                 "\t\t\t\t\t\t\t<tr>\n"
-                 "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
-                 "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
-                 "\t\t\t\t\t\t\t</tr>\n",
-                 pet -> name_str.c_str() );
-      }
       print_html_gain( s, g, j );
     }
-  }
+    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    {
+      pet_t* pet = p -> pet_list[ i ];
+      if ( pet -> fight_length.mean <= 0 ) continue;
+      bool first = true;
+      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+      {
+        if ( first )
+        {
+          first = false;
+          fprintf( file,
+                   "\t\t\t\t\t\t\t<tr>\n"
+                   "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
+                   "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
+                   "\t\t\t\t\t\t\t</tr>\n",
+                   pet -> name_str.c_str() );
+        }
+        print_html_gain( s, g, j );
+      }
+    }
 
-  fprintf( file, "%s", s.str().c_str() );
+    fprintf( file, "%s", s.str().c_str() );
   }
 
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
 
   // Resource Consumption Section
-    fprintf( file,
-             "\t\t\t\t\t\t<table class=\"sc\">\n"
-             "\t\t\t\t\t\t\t<tr>\n"
-             "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
-             "\t\t\t\t\t\t\t\t<th>RPS-Gain</th>\n"
-             "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
-             "\t\t\t\t\t\t\t</tr>\n" );
+  fprintf( file,
+           "\t\t\t\t\t\t<table class=\"sc\">\n"
+           "\t\t\t\t\t\t\t<tr>\n"
+           "\t\t\t\t\t\t\t\t<th>Resource</th>\n"
+           "\t\t\t\t\t\t\t\t<th>RPS-Gain</th>\n"
+           "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
+           "\t\t\t\t\t\t\t</tr>\n" );
   int j = 0;
   for ( resource_type_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
@@ -1626,19 +1626,19 @@ void print_html_player_buff( FILE* file, const buff_t* b, int report_details, co
              "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n",
              buff_name.c_str() );
   if ( !constant_buffs )
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
-           "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n",
-           b -> avg_start,
-           b -> avg_refresh,
-           b -> start_intervals.mean,
-           b -> trigger_intervals.mean,
-           b -> uptime_pct.mean,
-           ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
+    fprintf( file,
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.1fsec</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n"
+             "\t\t\t\t\t\t\t\t<td class=\"right\">%.0f%%</td>\n",
+             b -> avg_start,
+             b -> avg_refresh,
+             b -> start_intervals.mean,
+             b -> trigger_intervals.mean,
+             b -> uptime_pct.mean,
+             ( b -> benefit_pct > 0 ? b -> benefit_pct : b -> uptime_pct.mean ) );
 
   fprintf( file,
            "\t\t\t\t\t\t\t</tr>\n" );
@@ -1683,32 +1683,32 @@ void print_html_player_buff( FILE* file, const buff_t* b, int report_details, co
     // Spelldata
     if ( b -> data().ok() )
     {
-    fprintf ( file,
-        "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
-        "\t\t\t\t\t\t\t\t\t<h4>Spelldata details</h4>\n"
-        "\t\t\t\t\t\t\t\t\t<ul>\n"
-                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-                    "\t\t\t\t\t\t\t\t\t\t</ul>\n"
-                    "\t\t\t\t\t\t\t\t\t</td>\n",
-                    b -> data().id(),
-                    b -> data().name_cstr(),
-                    b -> data().tooltip(),
-                    util_t::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
-                    b -> data().max_stacks(),
-                    b -> data().duration().total_seconds(),
-                    b -> data().cooldown().total_seconds(),
-                    b -> data().proc_chance() );
+      fprintf ( file,
+                "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
+                "\t\t\t\t\t\t\t\t\t<h4>Spelldata details</h4>\n"
+                "\t\t\t\t\t\t\t\t\t<ul>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
+                "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+                "\t\t\t\t\t\t\t\t\t</td>\n",
+                b -> data().id(),
+                b -> data().name_cstr(),
+                b -> data().tooltip(),
+                util_t::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
+                b -> data().max_stacks(),
+                b -> data().duration().total_seconds(),
+                b -> data().cooldown().total_seconds(),
+                b -> data().proc_chance() );
     }
 
     fprintf ( file,
-             "\t\t\t\t\t\t\t</tr>\n" );
+              "\t\t\t\t\t\t\t</tr>\n" );
   }
 }
 // print_html_player_buffs ==================================================

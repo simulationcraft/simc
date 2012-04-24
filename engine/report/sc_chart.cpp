@@ -396,13 +396,13 @@ struct filter_non_performing_players
   const bool dps;
   filter_non_performing_players( bool dps_ ) : dps( dps_ ) {}
   bool operator()( const player_t* p ) const
-  { if ( dps ){ if ( p -> dps.mean<=0 ) return true;} else if ( p -> hps.mean<=0) return true; return false; }
+  { if ( dps ) { if ( p -> dps.mean<=0 ) return true;} else if ( p -> hps.mean<=0 ) return true; return false; }
 };
 
 size_t chart::raid_aps( std::vector<std::string>& images,
-                     const sim_t* sim,
-                     const std::vector<player_t*>& players_by_aps,
-                     bool dps )
+                        const sim_t* sim,
+                        const std::vector<player_t*>& players_by_aps,
+                        bool dps )
 {
   size_t num_players = players_by_aps.size();
 
@@ -498,7 +498,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 // chart_t::raid_gear =======================================================
 
 size_t chart::raid_gear( std::vector<std::string>& images,
-                      const sim_t* sim )
+                         const sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -683,7 +683,7 @@ struct filter_stats_dpet
 };
 
 size_t chart::raid_dpet( std::vector<std::string>& images,
-                      const sim_t* sim )
+                         const sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 

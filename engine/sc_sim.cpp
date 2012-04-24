@@ -598,7 +598,7 @@ struct sim_end_event_t : event_t
 
 sim_t::sim_t( sim_t* p, int index ) :
   description( 0 ), parent( p ),
-  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ), 
+  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ),
   canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
@@ -978,11 +978,11 @@ void sim_t::combat( int iteration )
     delete e;
 
     // This should be moved to assess_damage somehow, but it is a little tricky given mixed inheritance of player/enemy.
-    if( target_death >= 0 )
-      if( target -> resources.current[ RESOURCE_HEALTH ] <= target_death )
-	iteration_canceled = 1;
-    
-    if( unlikely( iteration_canceled ) ) 
+    if ( target_death >= 0 )
+      if ( target -> resources.current[ RESOURCE_HEALTH ] <= target_death )
+        iteration_canceled = 1;
+
+    if ( unlikely( iteration_canceled ) )
       break;
   }
 
@@ -1841,7 +1841,7 @@ double sim_t::gauss( double mean,
 timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
-  return timespan_t::from_native( gauss( (double) timespan_t::to_native( mean ), (double) timespan_t::to_native( stddev ) ) );
+  return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ), ( double ) timespan_t::to_native( stddev ) ) );
 }
 
 // sim_t::get_rng ===========================================================
@@ -2125,10 +2125,10 @@ bool sim_t::setup( sim_description_t* d )
   if ( ! parent ) cache::advance_era();
 
   // Global Options
-  for( size_t i=0; i < description -> options.size(); i++ )
+  for ( size_t i=0; i < description -> options.size(); i++ )
   {
     option_tuple_t& o = description -> options[ i ];
-    if( o.scope != "global" ) continue;
+    if ( o.scope != "global" ) continue;
     parse_option( o.name, o.value );
   }
 
@@ -2138,21 +2138,21 @@ bool sim_t::setup( sim_description_t* d )
   // xyz = description -> combat.xyz;
 
   // Players
-  for( size_t i=0; i < description -> players.size(); i++ )
+  for ( size_t i=0; i < description -> players.size(); i++ )
   {
     player_t::create( this, description -> players[ i ] );
   }
 
   // Player Options
-  for( size_t i=0; i < description -> options.size(); i++ )
+  for ( size_t i=0; i < description -> options.size(); i++ )
   {
     option_tuple_t& o = description -> options[ i ];
-    if( o.scope == "global" ) continue;
+    if ( o.scope == "global" ) continue;
     player_t* p = find_player( o.scope );
-    if( p )
+    if ( p )
     {
       if ( ! option_t::parse( this, p -> options, o.name, o.value ) )
-	return false;
+        return false;
     }
     else
     {
@@ -2274,13 +2274,13 @@ int sim_t::main( int argc, char** argv )
   dbc_t::init();
 
   sim_description_t description;
-  
+
   if ( ! description.options.parse_args( argc, argv ) )
   {
     errorf( "ERROR! Incorrect option format..\n" );
     return 0;
   }
-  else if( ! setup( &description ) )
+  else if ( ! setup( &description ) )
   {
     errorf( "ERROR! Setup failure...\n" );
     return 0;

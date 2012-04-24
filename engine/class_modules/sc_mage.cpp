@@ -136,7 +136,7 @@ struct mage_t : public player_t
     proc_t* hotstreak;
     proc_t* improved_hotstreak;
   } procs;
-  
+
   // Random Number Generation
   struct rngs_t
   {
@@ -247,7 +247,7 @@ struct mage_t : public player_t
     rotation( rotation_t() ),
     spells( spells_t() ),
     spec( specializations_t() ),
-    talents( talents_list_t() ),    
+    talents( talents_list_t() ),
     mana_gem_charges( 0 )
   {
     // Cooldowns
@@ -776,7 +776,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
     ignite_sampling_event_t( sim_t* sim, player_t* t, mage_spell_t* a, double crit_ignite_bank ) :
       event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank )
     {
-       if ( sim -> debug )
+      if ( sim -> debug )
         log_t::output( sim, "New Ignite Sampling Event: %s",
                        player -> name() );
 
@@ -1265,7 +1265,7 @@ struct blizzard_t : public mage_spell_t
     shard( 0 )
   {
     parse_options( NULL, options_str );
-    
+
     channeled    = true;
     hasted_ticks = false;
     may_miss     = false;
@@ -1571,7 +1571,7 @@ struct fireball_t : public mage_spell_t
 struct flamestrike_t : public mage_spell_t
 {
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-     mage_spell_t( "flamestrike", p, p -> find_spell( 2120 ) )
+    mage_spell_t( "flamestrike", p, p -> find_spell( 2120 ) )
   {
     parse_options( NULL, options_str );
 
@@ -1626,7 +1626,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-   
+
   virtual resource_type_e current_resource() const
   { return RESOURCE_NONE; }
 };
@@ -1641,7 +1641,7 @@ struct frost_bomb_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
-    
+
     explosion_spell = new frost_bomb_explosion_t( p );
     add_child( explosion_spell );
 
@@ -2868,7 +2868,7 @@ void mage_t::init_buffs()
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) ); // FIX ME, what is the proc chance?
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
-  // FIXME: What is this called now? 
+  // FIXME: What is this called now?
   buffs.hot_streak           = buff_creator_t( this, "hot_streak" );
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.invocation           = buff_creator_t( this, "invocation", talents.invocation );
@@ -3213,7 +3213,7 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
     m *= 1.0 + buffs.arcane_power -> value();
 
   if ( buffs.rune_of_power -> check() )
-    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2).percent();
+    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
@@ -3381,7 +3381,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
           mage.rotation.dpm_time += delta;
 
         return ( mage.rotation.dps_mana_loss / mage.rotation.dps_time.total_seconds() ) -
-            ( mage.rotation.mana_gain / mage.sim -> current_time.total_seconds() );
+               ( mage.rotation.mana_gain / mage.sim -> current_time.total_seconds() );
       }
     };
     return new burn_mps_expr_t( *this );
@@ -3395,7 +3395,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       virtual double evaluate()
       {
         return mage.rotation.mana_gain /
-            mage.sim -> current_time.total_seconds();
+               mage.sim -> current_time.total_seconds();
       }
     };
     return new regen_mps_expr_t( *this );

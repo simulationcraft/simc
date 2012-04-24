@@ -211,19 +211,19 @@ struct discharge_proc_callback_base_t : public action_callback_t
   rng_t* rng;
 
   discharge_proc_callback_base_t( const std::string& n,
-                                     player_t* p,
-                                     int ms,
-                                     const school_type_e school,
-                                     double amount,
-                                     double scaling,
-                                     double pc,
-                                     timespan_t cd,
-                                     bool no_buffs,
-                                     bool no_debuffs,
-                                     unsigned int override_result_type_es_mask = 0,
-                                     unsigned int result_type_es_mask = 0 ) :
-   action_callback_t( p ),
-   name_str( n ), stacks( 0 ), max_stacks( ms ), initial_proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
+                                  player_t* p,
+                                  int ms,
+                                  const school_type_e school,
+                                  double amount,
+                                  double scaling,
+                                  double pc,
+                                  timespan_t cd,
+                                  bool no_buffs,
+                                  bool no_debuffs,
+                                  unsigned int override_result_type_es_mask = 0,
+                                  unsigned int result_type_es_mask = 0 ) :
+    action_callback_t( p ),
+    name_str( n ), stacks( 0 ), max_stacks( ms ), initial_proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
     cooldown = p -> get_cooldown( name_str );
     cooldown -> duration = cd;
@@ -305,7 +305,7 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
                              bool no_debuffs,
                              unsigned int override_result_type_es_mask = 0,
                              unsigned int result_type_es_mask = 0 ) :
-   discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,override_result_type_es_mask,result_type_es_mask)
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,override_result_type_es_mask,result_type_es_mask )
   { }
 };
 
@@ -326,7 +326,7 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
                                     bool no_debuffs,
                                     unsigned int override_result_type_es_mask = 0,
                                     unsigned int result_type_es_mask = 0 ) :
-       discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,override_result_type_es_mask,result_type_es_mask)
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,override_result_type_es_mask,result_type_es_mask )
   { }
 
   virtual double proc_chance() const
@@ -373,7 +373,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
-             .activated( activated ))
+             .activated( activated ) )
            .stat( stat )
            .amount( stat_amount );
 
@@ -575,8 +575,8 @@ static void register_fury_of_angerforge( item_t* item )
     {
       raw_fury = buff_creator_t( p, "raw_fury" ).max_stack( 5 ).duration( timespan_t::from_seconds( 15.0 ) )
                  .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true ).activated( false );
-      blackwing_dragonkin = stat_buff_creator_t( buff_creator_t( p, 91836, "blackwing_dragonkin").
-                                                 duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+      blackwing_dragonkin = stat_buff_creator_t( buff_creator_t( p, 91836, "blackwing_dragonkin" )
+                                                 .duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
                             .stat( STAT_STRENGTH ).amount( 1926 );
     }
 
@@ -665,11 +665,14 @@ static void register_matrix_restabilizer( item_t* item )
     {
       double amount = heroic ? 1834 : 1624;
 
-      struct common_buff_creator {
-      buff_creator_t operator()( player_t* p, const std::string& n ) {
-        return ( buff_creator_t ( p, "matrix_restabilizer_" + n )
-                 .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )
-                 .chance( .15 ).activated( false ) ); }
+      struct common_buff_creator
+      {
+        buff_creator_t operator()( player_t* p, const std::string& n )
+        {
+          return ( buff_creator_t ( p, "matrix_restabilizer_" + n )
+                   .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )
+                   .chance( .15 ).activated( false ) );
+        }
       };
 
       buff_matrix_restabilizer_crit     = stat_buff_creator_t( common_buff_creator()( p, "crit" ) )

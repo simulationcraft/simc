@@ -113,7 +113,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) :
-    heal_t( n, p, p -> find_spell(id) )
+    heal_t( n, p, p -> find_spell( id ) )
   { }
 
   warlock_t* p() const
@@ -144,9 +144,9 @@ public:
     warlock_spell_t* action;
 
     recharge_event_t( player_t* p, warlock_spell_t* a ) :
-      event_t( p -> sim, p, (a -> name_str + "_recharge").c_str() ), action( a )
-    { 
-      sim -> add_event( this, timespan_t::from_seconds( action -> recharge_seconds ) );  
+      event_t( p -> sim, p, ( a -> name_str + "_recharge" ).c_str() ), action( a )
+    {
+      sim -> add_event( this, timespan_t::from_seconds( action -> recharge_seconds ) );
     }
 
     virtual void execute()
@@ -154,11 +154,11 @@ public:
       assert( action -> current_charges < action -> max_charges );
       action -> current_charges++;
 
-      if ( action -> current_charges < action -> max_charges ) 
+      if ( action -> current_charges < action -> max_charges )
       {
-        action -> recharge_event = new (sim) recharge_event_t( player, action );
+        action -> recharge_event = new ( sim ) recharge_event_t( player, action );
       }
-      else 
+      else
       {
         action -> recharge_event = 0;
       }
@@ -191,7 +191,7 @@ public:
 
       if ( current_charges == max_charges - 1 )
       {
-        recharge_event = new (sim) recharge_event_t( p(), this );
+        recharge_event = new ( sim ) recharge_event_t( p(), this );
       }
       else if ( current_charges == 0 )
       {
@@ -273,8 +273,8 @@ public:
   {
     if ( dot -> ticking )
     {
-      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time ) 
-                                     / ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
+      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
+                                       / ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
     }
   }
 
@@ -282,8 +282,8 @@ public:
   {
     if ( dot -> ticking )
     {
-      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time ) 
-                                     * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
+      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
+                                       * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
     }
   }
 };
@@ -463,7 +463,7 @@ struct shadowburn_t : public warlock_spell_t
 struct corruption_t : public warlock_spell_t
 {
   corruption_t( warlock_t* p ) :
-    warlock_spell_t( "corruption", p, p -> glyphs.doom -> ok() ? spell_data_t::not_found() : p -> find_class_spell("Corruption") )
+    warlock_spell_t( "corruption", p, p -> glyphs.doom -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Corruption" ) )
   {
     may_crit = false;
     tick_power_mod = 0.2; // from tooltip
@@ -611,7 +611,7 @@ struct unstable_affliction_t : public warlock_spell_t
         td -> dots_immolate -> cancel();
     }
   }
-  
+
   virtual double action_multiplier( const action_state_t* s ) const
   {
     double m = warlock_spell_t::action_multiplier( s );
@@ -832,13 +832,13 @@ struct soul_fire_t : public warlock_spell_t
       return RESOURCE_BURNING_EMBER;
     }
     else
-    { 
+    {
       return warlock_spell_t::current_resource();
     }
   }
 
   virtual result_type_e calculate_result( double crit, unsigned int level )
-  { 
+  {
     result_type_e r = warlock_spell_t::calculate_result( crit, level );
 
     // Soul fire always crits
@@ -972,7 +972,7 @@ struct malefic_grasp_t : public warlock_spell_t
   virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
-    
+
     warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
     stop_malefic_grasp( this, td -> dots_agony );
@@ -1496,7 +1496,7 @@ struct mortal_coil_t : public warlock_spell_t
 {
   mortal_coil_heal_t* heal;
 
-  mortal_coil_t( warlock_t* p ) : 
+  mortal_coil_t( warlock_t* p ) :
     warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
   {
     heal = new mortal_coil_heal_t( p );
@@ -1522,7 +1522,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     decrement_event_t( warlock_t* p, buff_t* b ) :
       event_t( p -> sim, p, "grimoire_of_sacrifice_decrement" ), buff( b )
     {
-      sim -> add_event( this, timespan_t::from_seconds( 15 ) );  
+      sim -> add_event( this, timespan_t::from_seconds( 15 ) );
     }
 
     virtual void execute()
@@ -1535,8 +1535,8 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
 
   grimoire_of_sacrifice_t( warlock_t* p ) :
     warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice ), decrement_event( 0 )
-  {  
-    harmful = false;  
+  {
+    harmful = false;
   }
 
   virtual bool ready()
@@ -1554,7 +1554,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
 
       p() -> pets.active -> dismiss();
       p() -> buffs.grimoire_of_sacrifice -> trigger( 2 );
-      decrement_event = new (sim) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
+      decrement_event = new ( sim ) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
     }
   }
 };
@@ -1565,8 +1565,8 @@ struct grimoire_of_service_t : public summon_pet_t
 {
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ) :
     summon_pet_t( pet_name, p, p -> talents.grimoire_of_service )
-  { 
-    summoning_duration = timespan_t::from_seconds( 30 );  
+  {
+    summoning_duration = timespan_t::from_seconds( 30 );
   }
 };
 
@@ -1603,7 +1603,7 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
     player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
                          + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
   }
-  
+
   player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
 
   return player_multiplier;
@@ -1613,7 +1613,8 @@ double warlock_t::composite_spell_crit() const
 {
   double sc = player_t::composite_spell_crit();
 
-  if ( primary_tree() == WARLOCK_DESTRUCTION ) {
+  if ( primary_tree() == WARLOCK_DESTRUCTION )
+  {
     if ( buffs.dark_soul -> up() )
       sc += spec.dark_soul -> effectN( 1 ).percent();
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
@@ -1627,7 +1628,8 @@ double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( primary_tree() == WARLOCK_AFFLICTION ) {
+  if ( primary_tree() == WARLOCK_AFFLICTION )
+  {
     if ( buffs.dark_soul -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() );
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
@@ -1641,7 +1643,8 @@ double warlock_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( primary_tree() == WARLOCK_DEMONOLOGY ) {
+  if ( primary_tree() == WARLOCK_DEMONOLOGY )
+  {
     if ( buffs.dark_soul -> up() )
       m += spec.dark_soul -> effectN( 1 ).base_value();
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
@@ -1987,7 +1990,7 @@ void warlock_t::init_actions()
     }
     else if ( primary_tree() == WARLOCK_AFFLICTION )
     {
-        action_list_str += "/summon_felhunter";
+      action_list_str += "/summon_felhunter";
     }
     else
       action_list_str += "/summon_imp";

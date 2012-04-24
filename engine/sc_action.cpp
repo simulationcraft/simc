@@ -201,7 +201,8 @@ action_t::action_t( action_type_e       ty,
 
   stats = player -> get_stats( name_str , this );
 
-  if ( &data() == &spell_data_not_found_t::singleton ) {
+  if ( &data() == &spell_data_not_found_t::singleton )
+  {
     sim -> errorf( "Player %s could not find action %s", player -> name(), name() );
     background = true; // prevent action from being executed
   }
@@ -1524,11 +1525,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct n_ticks_expr_t : public action_expr_t
     {
       n_ticks_expr_t( const action_t& a ) : action_expr_t( "n_ticks", a ) {}
-      virtual double evaluate() {
+      virtual double evaluate()
+      {
         int n_ticks = action.hasted_num_ticks( action.player -> composite_spell_haste() );
         if ( action.dot_behavior == DOT_EXTEND && action.dot() -> ticking )
-          n_ticks += std::min( (int) ( n_ticks / 2 ), action.dot() -> num_ticks - action.dot() -> current_tick );
-        return n_ticks; 
+          n_ticks += std::min( ( int ) ( n_ticks / 2 ), action.dot() -> num_ticks - action.dot() -> current_tick );
+        return n_ticks;
       }
     };
     return new n_ticks_expr_t( *this );

@@ -587,11 +587,11 @@ void generate_report_information::generate_player_charts( const player_t*  p, pl
   {
     resource_type_e rt = p -> resource_timelines[ i ].type;
     ri.timeline_resource_chart[ rt ] =
-        chart::timeline( p,
-                         p -> resource_timelines[ i ].timeline,
-                         encoded_name + ' ' + util_t::inverse_tokenize( util_t::resource_type_string( rt ) ),
-                         0,
-                         chart::resource_color( rt ) );
+      chart::timeline( p,
+                       p -> resource_timelines[ i ].timeline,
+                       encoded_name + ' ' + util_t::inverse_tokenize( util_t::resource_type_string( rt ) ),
+                       0,
+                       chart::resource_color( rt ) );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
 

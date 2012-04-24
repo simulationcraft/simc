@@ -194,23 +194,23 @@ struct food_t : public action_t
       food_stat_multiplier = 2.0;
 
     for ( size_t i = 0; i < sizeof_array( ft::food_data ); ++i )
-       {
-         ft::food_data_t d = ft::food_data[ i ];
-         if ( type == d.ft )
-         {
-           p -> stat_gain( d.st, d.stat_amount * food_stat_multiplier, gain, this );
+    {
+      ft::food_data_t d = ft::food_data[ i ];
+      if ( type == d.ft )
+      {
+        p -> stat_gain( d.st, d.stat_amount * food_stat_multiplier, gain, this );
 
-           if ( d.st == STAT_STAMINA )
-           {
-             // Cap Health for stamina flasks if they are used outside of combat
-             if ( ! player -> in_combat )
-             {
-               if ( d.stat_amount > 0 )
-                 player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
-             }
-           }
-         }
-       }
+        if ( d.st == STAT_STAMINA )
+        {
+          // Cap Health for stamina flasks if they are used outside of combat
+          if ( ! player -> in_combat )
+          {
+            if ( d.stat_amount > 0 )
+              player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
+          }
+        }
+      }
+    }
 
 
     double stamina = 0;

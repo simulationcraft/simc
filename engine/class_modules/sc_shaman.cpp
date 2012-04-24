@@ -472,7 +472,7 @@ struct shaman_spell_t : public spell_t
 
     if ( p() -> buff.tier13_4pc_healer -> up() )
       h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> data().effect1().percent() );
-    
+
     if ( p() -> talent.ancestral_swiftness -> ok() )
       h *= 1.0 / 1.05;
 
@@ -485,7 +485,7 @@ struct shaman_spell_t : public spell_t
 
     if ( maelstrom && p() -> buff.maelstrom_weapon -> stack() > 0 )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
-    
+
     if ( p() -> buff.elemental_focus -> up() )
       m *= 1.0 + p() -> buff.elemental_focus -> data().effectN( 2 ).percent();
 
@@ -503,7 +503,7 @@ struct shaman_spell_t : public spell_t
 struct eoe_execute_event_t : public event_t
 {
   shaman_spell_t* spell;
-  
+
   eoe_execute_event_t( shaman_spell_t* s ) :
     event_t( s -> sim, s -> player, "eoe_execute" ),
     spell( s )
@@ -511,21 +511,21 @@ struct eoe_execute_event_t : public event_t
     timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
     sim -> add_event( this, delay_duration );
   }
-  
+
   void execute()
   {
     assert( spell );
-    
+
     // EoE proc re-executes the "effect" with the same snapshot stats
     shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( spell -> get_state( spell -> execute_state ) );
     ss -> eoe_proc = true;
-    ss -> result = spell -> calculate_result( ss -> crit, 
+    ss -> result = spell -> calculate_result( ss -> crit,
                                               ss -> target -> level );
     if ( spell -> result_is_hit( ss -> result ) )
-      ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0, 
-                                                              ss -> target -> level, 
-                                                              ss -> attack_power, 
-                                                              ss -> spell_power, 
+      ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0,
+                                                              ss -> target -> level,
+                                                              ss -> attack_power,
+                                                              ss -> spell_power,
                                                               ss -> composite_da_multiplier() );
 
     spell -> eoe_stats -> add_execute( timespan_t::zero() );
@@ -2075,8 +2075,8 @@ void shaman_spell_t::execute()
   if ( maelstrom && p() -> primary_tree() == SHAMAN_ENHANCEMENT )
     p() -> proc.maelstrom_weapon_used[ p() -> buff.maelstrom_weapon -> check() ] -> occur();
 
-  if ( harmful && is_direct_damage() && ! is_dtr_action && 
-       p() -> talent.echo_of_the_elements -> ok() && 
+  if ( harmful && is_direct_damage() && ! is_dtr_action &&
+       p() -> talent.echo_of_the_elements -> ok() &&
        p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
   {
     if ( sim -> debug ) log_t::output( sim, "Echo of the Elements procs for %s", name() );
@@ -2312,7 +2312,7 @@ struct call_of_the_elements_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-    
+
     // For now, reset earth / fire elemental totem cooldowns
 
     if ( p() -> cooldown.earth_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
@@ -3294,7 +3294,7 @@ struct searing_totem_t : public shaman_totem_t
   {
     shaman_targetdata_t* td = targetdata( target );
     shaman_totem_t::tick( d );
-    if ( result_is_hit() && p() -> specialization.searing_flames -> ok() && 
+    if ( result_is_hit() && p() -> specialization.searing_flames -> ok() &&
          td -> debuffs_searing_flames -> trigger() )
     {
       double new_base_td = tick_dmg;
@@ -3696,7 +3696,7 @@ void shaman_t::create_pets()
 void shaman_t::init()
 {
   player_t::init();
-  
+
   if ( eoe_proc_chance == 0 )
   {
     if ( primary_tree() == SHAMAN_ENHANCEMENT )
@@ -3844,12 +3844,12 @@ void shaman_t::init_buffs()
   buff.flurry              = buff_creator_t( this, "flurry",            specialization.flurry -> effectN( 1 ).trigger() )
                              .chance( 1.0 )
                              .activated( false );
-   buff.lava_surge          = buff_creator_t( this, "lava_surge",        specialization.lava_surge )
+  buff.lava_surge          = buff_creator_t( this, "lava_surge",        specialization.lava_surge )
                              .activated( false );
-   buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
-                              .max_stack( ( primary_tree() == SHAMAN_ELEMENTAL )
-                                            ? static_cast< int >( specialization.rolling_thunder -> effectN( 1 ).base_value() )
-                                            : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
+  buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
+                             .max_stack( ( primary_tree() == SHAMAN_ELEMENTAL )
+                                         ? static_cast< int >( specialization.rolling_thunder -> effectN( 1 ).base_value() )
+                                         : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
   buff.maelstrom_weapon    = buff_creator_t( this, "maelstrom_weapon",  specialization.maelstrom_weapon -> effectN( 1 ).trigger() )
                              .activated( false );
   buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  specialization.shamanistic_rage );
@@ -4444,10 +4444,10 @@ shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
   : targetdata_t( p, target )
 {
   debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
-                                    .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
-                                    .duration(p -> dbc.spell( 77661 ) -> duration() )
-                                    .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
-                                    .quiet( true ) );
+                                     .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
+                                     .duration( p -> dbc.spell( 77661 ) -> duration() )
+                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
+                                     .quiet( true ) );
   debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
   debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
 }

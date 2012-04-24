@@ -48,7 +48,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
   da_multiplier = o -> da_multiplier;
   ta_multiplier = o -> ta_multiplier;
-  
+
   target_da_multiplier = o -> target_da_multiplier;
   target_ta_multiplier = o -> target_ta_multiplier;
 }
@@ -58,7 +58,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   result( RESULT_NONE ), result_amount( 0 ),
   haste( 0 ), crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
-  da_multiplier( 1.0 ), ta_multiplier( 1.0 ), 
+  da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
   next( 0 )
 {
@@ -78,7 +78,7 @@ void action_state_t::debug() const
                  util_t::result_type_string( result ), result_amount,
                  haste, crit,
                  attack_power, spell_power,
-                 da_multiplier, ta_multiplier, 
+                 da_multiplier, ta_multiplier,
                  target_da_multiplier, target_ta_multiplier );
 }
 
@@ -152,7 +152,7 @@ void action_t::impact_s( action_state_t* s )
 
       if ( dot -> ticking )
       {
-        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( (int) ( dot -> num_ticks / 2 ), remaining_ticks );
+        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
         assert( dot -> tick_event );
         if ( ! channeled )
         {

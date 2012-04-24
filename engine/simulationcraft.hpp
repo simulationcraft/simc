@@ -2101,7 +2101,7 @@ public:
 
   const char* name() const { return name_str.c_str(); }
   int max_stack() const
-    { return _max_stack; }
+  { return _max_stack; }
 };
 
 inline buff_creator_t::operator buff_t* () const
@@ -2386,10 +2386,10 @@ public:
 
 // Simulation Setup =========================================================
 
-struct option_tuple_t 
+struct option_tuple_t
 {
-  std::string scope, name, value; 
-  option_tuple_t( const std::string& s, const std::string& n, const std::string& v ) : scope(s), name(n), value(v) {}
+  std::string scope, name, value;
+  option_tuple_t( const std::string& s, const std::string& n, const std::string& v ) : scope( s ), name( n ), value( v ) {}
 };
 
 struct option_db_t : public std::vector<option_tuple_t>
@@ -3381,7 +3381,7 @@ struct player_t : public noncopyable
     resource_timeline_t( resource_type_e t = RESOURCE_NONE ) : type( t ) {}
   };
 
-   // Health/primary/secondary makes 3 resources, does any class/spec need more?
+  // Health/primary/secondary makes 3 resources, does any class/spec need more?
   std::array<resource_timeline_t,3> resource_timelines;
   size_t resource_timeline_count;
 
@@ -3739,7 +3739,7 @@ struct player_t : public noncopyable
   virtual const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
   virtual const spell_data_t* find_mastery_spell( const std::string& name, const std::string& token = std::string() );
   virtual const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 );
-  virtual const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE);
+  virtual const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
   virtual const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() );
 
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -5012,14 +5012,14 @@ public:
 
   timespan_t range( timespan_t min, timespan_t max )
   {
-    return timespan_t::from_native( range( (double) timespan_t::to_native( min ),
-                                           (double) timespan_t::to_native( max ) ) );
+    return timespan_t::from_native( range( ( double ) timespan_t::to_native( min ),
+                                           ( double ) timespan_t::to_native( max ) ) );
   }
 
   timespan_t gauss( timespan_t mean, timespan_t stddev )
   {
-    return timespan_t::from_native( gauss( (double) timespan_t::to_native( mean ),
-                                           (double) timespan_t::to_native( stddev ) ) );
+    return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ),
+                                           ( double ) timespan_t::to_native( stddev ) ) );
   }
 
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )

@@ -800,14 +800,14 @@ void enchant_t::init( player_t* p )
     if ( oh_enchant == "hurricane" )
     {
       oh_buff = stat_buff_creator_t(
-                        buff_creator_t( p, "hurricane_oh" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 12 ) )
-                        .cd( timespan_t::zero() )
-                        .chance( 0 )
-                        .activated( false ) )
-                      .stat( STAT_HASTE_RATING )
-                      .amount( 450.0 );
+                  buff_creator_t( p, "hurricane_oh" )
+                  .max_stack( 1 )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .cd( timespan_t::zero() )
+                  .chance( 0 )
+                  .activated( false ) )
+                .stat( STAT_HASTE_RATING )
+                .amount( 450.0 );
       p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
     }
@@ -882,12 +882,12 @@ void enchant_t::init( player_t* p )
   if ( mh_enchant == "power_torrent" )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                     buff_creator_t( p, "power_torrent_mh" )
-                     .duration( timespan_t::from_seconds( 12 ) )
-                     .cd( timespan_t::from_seconds( 45 ) )
-                     .chance( 0.20 )
-                     .activated( false ) )
-                   .stat( STAT_INTELLECT ).amount( 500 );
+                          buff_creator_t( p, "power_torrent_mh" )
+                          .duration( timespan_t::from_seconds( 12 ) )
+                          .cd( timespan_t::from_seconds( 45 ) )
+                          .chance( 0.20 )
+                          .activated( false ) )
+                        .stat( STAT_INTELLECT ).amount( 500 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
@@ -948,12 +948,12 @@ void enchant_t::init( player_t* p )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     stat_buff_t* buff = stat_buff_creator_t(
-                              buff_creator_t( p, "skyfire_swiftness" )
-                              .spell( p -> find_spell( 39959 ) )
-                              .cd( timespan_t::from_seconds( 40 ) )
-                              .activated( false ) )
-                            .stat( STAT_HASTE_RATING )
-                            .amount( p->find_spell( 39959 )->effectN( 1 ).base_value() );
+                          buff_creator_t( p, "skyfire_swiftness" )
+                          .spell( p -> find_spell( 39959 ) )
+                          .cd( timespan_t::from_seconds( 40 ) )
+                          .activated( false ) )
+                        .stat( STAT_HASTE_RATING )
+                        .amount( p->find_spell( 39959 )->effectN( 1 ).base_value() );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
@@ -961,12 +961,12 @@ void enchant_t::init( player_t* p )
   if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                              buff_creator_t( p, "skyflare_swiftness" )
-                              .spell( p -> find_spell( 55379 ) )
-                              .cd( timespan_t::from_seconds( 40 ) )
-                              .activated( false ) )
-                            .stat( STAT_HASTE_RATING )
-                            .amount( p->find_spell( 55379 )->effectN( 1 ).base_value() );
+                          buff_creator_t( p, "skyflare_swiftness" )
+                          .spell( p -> find_spell( 55379 ) )
+                          .cd( timespan_t::from_seconds( 40 ) )
+                          .activated( false ) )
+                        .stat( STAT_HASTE_RATING )
+                        .amount( p->find_spell( 55379 )->effectN( 1 ).base_value() );
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );

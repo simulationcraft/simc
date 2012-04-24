@@ -158,7 +158,7 @@ struct warlock_pet_melee_t : public melee_attack_t
 
 struct warlock_pet_melee_attack_t : public melee_attack_t
 {
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
     melee_attack_t( n, p, p -> find_pet_spell( n ), sc )
   {
     weapon = &( p -> main_hand_weapon );
@@ -166,7 +166,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     special = true;
   }
 
-  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     melee_attack_t( token, p, s, sc )
   {
     weapon = &( p -> main_hand_weapon );
@@ -194,13 +194,13 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 struct warlock_pet_spell_t : public spell_t
 {
 
-  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) : 
+  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, p -> find_pet_spell( n ), sc )
   {
     may_crit = true;
   }
 
-  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) : 
+  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( token, p, s, sc )
   {
     may_crit = true;
@@ -227,7 +227,7 @@ namespace imp_spells {
 struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 {
   firebolt_t( imp_pet_t* p ) :
-   warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
+    warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
   {
     //FIXME: This stuff needs testing in MoP - commenting out for now
 
@@ -261,7 +261,7 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     // direct_power_mod  = 0.264; FIXME: Retest in MoP
     weapon   = &( p -> main_hand_weapon );
   }
-  
+
 };
 
 struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t

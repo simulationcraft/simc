@@ -382,16 +382,16 @@ public:
 
   inline bool check_shadowform()
   {
-     return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
+    return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
   }
 
   inline void cancel_shadowform()
   {
-     if ( ! castable_in_shadowform )
-     {
-       p() -> buffs.shadowform -> expire();
-       if ( ! sim -> overrides.spell_haste ) sim -> auras.spell_haste -> decrement();
-     }
+    if ( ! castable_in_shadowform )
+    {
+      p() -> buffs.shadowform -> expire();
+      if ( ! sim -> overrides.spell_haste ) sim -> auras.spell_haste -> decrement();
+    }
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -474,16 +474,16 @@ struct priest_heal_t : public heal_t
 
   inline bool check_shadowform()
   {
-     return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
+    return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
   }
 
   inline void cancel_shadowform()
   {
-     if ( ! castable_in_shadowform )
-     {
-       // FIX-ME: Needs to drop haste aura too.
-       p() -> buffs.shadowform -> expire();
-     }
+    if ( ! castable_in_shadowform )
+    {
+      // FIX-ME: Needs to drop haste aura too.
+      p() -> buffs.shadowform -> expire();
+    }
   }
 
   struct divine_aegis_t : public priest_absorb_t
@@ -527,20 +527,20 @@ struct priest_heal_t : public heal_t
       {
         // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
         p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                d -> ticks() +
-                                                a -> direct_dmg * p() -> composite_mastery() *
-                                                p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> spells.echo_of_light -> num_ticks;
+                                                 d -> ticks() +
+                                                 a -> direct_dmg * p() -> composite_mastery() *
+                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
+                                                 p() -> spells.echo_of_light -> num_ticks;
         d -> refresh_duration();
       }
       else
       {
         // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
         p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                ( d -> ticks() - 1 ) +
-                                                a -> direct_dmg * p() -> composite_mastery() *
-                                                p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                p() -> spells.echo_of_light -> num_ticks;
+                                                 ( d -> ticks() - 1 ) +
+                                                 a -> direct_dmg * p() -> composite_mastery() *
+                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
+                                                 p() -> spells.echo_of_light -> num_ticks;
         d -> refresh_duration();
         p() -> spells.echo_of_light_merged = true;
       }
@@ -548,8 +548,8 @@ struct priest_heal_t : public heal_t
     else
     {
       p() -> spells.echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
-                                              p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 /
-                                              p() -> spells.echo_of_light -> num_ticks;
+                                               p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 /
+                                               p() -> spells.echo_of_light -> num_ticks;
       p() -> spells.echo_of_light -> execute();
       p() -> spells.echo_of_light_merged = false;
     }
@@ -2329,7 +2329,7 @@ struct penance_t : public priest_spell_t
     penance_tick_t( priest_t* p ) :
       priest_spell_t( "penance_tick", p, p -> find_spell( 47666 ) )
     {
-        background  = true;
+      background  = true;
       dual        = true;
       direct_tick = true;
       base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
@@ -2814,7 +2814,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     holy_word_sanctuary_tick_t( priest_t* player ) :
       priest_heal_t( "holy_word_sanctuary_tick", player, player -> find_spell( 88686 ) )
     {
-        dual        = true;
+      dual        = true;
       background  = true;
       direct_tick = true;
     }
@@ -3346,7 +3346,7 @@ struct renew_t : public priest_heal_t
 
     base_multiplier *= 1.0 + p -> glyphs.renew -> effectN( 1 ).percent();
 
-    num_ticks       += (int) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
+    num_ticks       += ( int ) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -3779,7 +3779,7 @@ void priest_t::init_buffs()
                                            .default_value( find_spell( 81700 ) -> effect1().percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
-                                                           .cd( timespan_t::zero() );
+                                           .cd( timespan_t::zero() );
   buffs.inner_will                       = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
   // Holy
   buffs.chakra_pre                       = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
@@ -3787,8 +3787,8 @@ void priest_t::init_buffs()
   buffs.chakra_sanctuary                 = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
   buffs.chakra_serenity                  = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
   buffs.serenity                         = buff_creator_t( this, "serenity", find_spell( 88684 ) )
-                                                           .cd( timespan_t::zero() )
-                                                           .activated( false );
+                                           .cd( timespan_t::zero() )
+                                           .activated( false );
 
   // Shadow
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
@@ -3796,18 +3796,18 @@ void priest_t::init_buffs()
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
   buffs.glyph_mind_spike                 = buff_creator_t( this, "glyph_mind_spike", glyphs.mind_spike ).max_stack( 2 ).duration( timespan_t::from_seconds( 6.0 ) );
 
-  buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown").
-                                                           max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
-  buffs.mind_spike                       = buff_creator_t( this, "mind_spike" ).
-                                                           max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
-  buffs.shadowfiend                      = buff_creator_t( this, "shadowfiend" ).
-                                                           max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
+  buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
+                                           .max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+  buffs.mind_spike                       = buff_creator_t( this, "mind_spike" )
+                                           .max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
+  buffs.shadowfiend                      = buff_creator_t( this, "shadowfiend" )
+                                           .max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
   buffs.shadow_of_death                  = buff_creator_t( this, "shadow_of_death", talents.divine_insight )
-                                                           .chance( talents.divine_insight -> effectN( 1 ).percent() )
-                                                           .max_stack( 1 )
-                                                           .duration( timespan_t::from_seconds( 10.0 ) );
+                                           .chance( talents.divine_insight -> effectN( 1 ).percent() )
+                                           .max_stack( 1 )
+                                           .duration( timespan_t::from_seconds( 10.0 ) );
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
-                                                           .duration( find_spell( 114257 ) -> duration() );
+                                           .duration( find_spell( 114257 ) -> duration() );
 
 
   // Set Bonus

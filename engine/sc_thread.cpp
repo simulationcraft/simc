@@ -82,7 +82,7 @@ public:
   }
 
   static void sleep( timespan_t t )
-  { ::Sleep( (DWORD) t.total_millis() ); }
+  { ::Sleep( ( DWORD ) t.total_millis() ); }
 };
 
 #elif defined( _POSIX_THREADS ) && _POSIX_THREADS > 0

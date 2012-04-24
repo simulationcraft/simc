@@ -528,7 +528,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   };
 
   struct drw_blood_plague_t : public drw_spell_t
- { 
+  { 
     drw_blood_plague_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "blood_plague", p, p -> find_spell( 59879 ) )  // Also check spell id 55078
     {
@@ -1410,7 +1410,7 @@ struct death_knight_spell_t : public spell_t
   gain_t* rp_gains;
 
   death_knight_spell_t( const std::string& n, death_knight_t* p,
-                        const spell_data_t* s = spell_data_t::nil() ) :   
+                        const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
   {
@@ -1831,7 +1831,7 @@ struct melee_t : public death_knight_melee_attack_t
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
         int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent() ) ) ? 2 : 1;
-        (void)new_stacks;
+        ( void )new_stacks;
       }
 
       // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
@@ -2857,7 +2857,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
       // Ensure that if we have 1 that we only refresh, not add another stack
       int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect2().percent() ) ) ? 2 : 1;
-      (void)new_stacks;
+      ( void )new_stacks;
     }
 
     if ( p -> buffs.killing_machine -> check() )
@@ -4104,22 +4104,22 @@ void death_knight_t::init_buffs()
   buffs.killing_machine     = buff_creator_t( this, 51124, "killing_machine" ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) );
   buffs.rime                = buff_creator_t( this, "rime", find_specialization_spell( "Rime" ) )
-    .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
-    .duration( timespan_t::from_seconds( 30.0 ) )
-    .cd( timespan_t::zero() )
-    .chance( 1.0 ); // Trigger controls proc chance
+                              .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
+                              .duration( timespan_t::from_seconds( 30.0 ) )
+                              .cd( timespan_t::zero() )
+                              .chance( 1.0 ); // Trigger controls proc chance
   buffs.rune_strike         = buff_creator_t( this, "runestrike", find_class_spell( "Rune Strike" ) )
-    .max_stack( 1 )
-    .duration( timespan_t::from_seconds( 10.0 ) )
-    .cd( timespan_t::zero() )
-    .chance( 1.0 )
-    .quiet( true );
+                              .max_stack( 1 )
+                              .duration( timespan_t::from_seconds( 10.0 ) )
+                              .cd( timespan_t::zero() )
+                              .chance( 1.0 )
+                              .quiet( true );
   buffs.runic_corruption    = buff_creator_t( this, 51460, "runic_corruption" );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_specialization_spell( "Sudden Doom" ) )
-    .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
-    .duration( timespan_t::from_seconds( 10.0 ) )
-    .cd( timespan_t::zero() )
-    .chance( 1.0 );
+                              .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
+                              .duration( timespan_t::from_seconds( 10.0 ) )
+                              .cd( timespan_t::zero() )
+                              .chance( 1.0 );
   buffs.tier13_4pc_melee    = stat_buff_creator_t( buff_creator_t( this, 105647, "tier13_4pc_melee" ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
 
@@ -4379,7 +4379,7 @@ void death_knight_t::regen( timespan_t periodicity )
     _runes.slot[i].regen_rune( this, periodicity );
 
   benefits.rp_cap -> update( resources.current[ RESOURCE_RUNIC_POWER ] ==
-                            resources.max    [ RESOURCE_RUNIC_POWER] );
+                             resources.max    [ RESOURCE_RUNIC_POWER] );
 }
 
 // death_knight_t::create_options ===========================================

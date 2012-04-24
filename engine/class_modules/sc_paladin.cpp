@@ -116,7 +116,7 @@ struct paladin_t : public player_t
 
   // Cooldowns
   // Cooldowns
-  struct cooldowns_t 
+  struct cooldowns_t
   {
     cooldown_t* avengers_shield;
     cooldown_t* exorcism;
@@ -133,7 +133,7 @@ struct paladin_t : public player_t
     const spell_data_t* ancient_power;
     const spell_data_t* hand_of_light;
     const spell_data_t* illuminated_healing;
-    const spell_data_t* judgments_of_the_bold; 
+    const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* plate_specialization;
     const spell_data_t* sword_of_light;
@@ -353,7 +353,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 // ==========================================================================
 
 struct paladin_heal_t : public heal_t
-{  
+{
   paladin_heal_t( const std::string& n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     heal_t( n, p, s, sc )
@@ -406,7 +406,7 @@ struct paladin_melee_attack_t : public melee_attack_t
   bool use_spell_haste; // Some attacks (CS w/ sanctity of battle, censure) use spell haste. sigh.
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil(), 
+                          const spell_data_t* s = spell_data_t::nil(),
                           school_type_e sc = SCHOOL_NONE,
                           bool use2hspec = true ) :
     melee_attack_t( n, p, s, sc ),
@@ -531,7 +531,7 @@ struct paladin_melee_attack_t : public melee_attack_t
 struct paladin_spell_t : public spell_t
 {
   paladin_spell_t( const std::string& n, paladin_t* p,
-                   const spell_data_t* s = spell_data_t::nil(), 
+                   const spell_data_t* s = spell_data_t::nil(),
                    school_type_e sc = SCHOOL_NONE )
     : spell_t( n, p, s, sc )
   {
@@ -547,7 +547,7 @@ struct paladin_spell_t : public spell_t
       if ( p() -> buffs.divine_purpose -> check() )
       {
         return 0.0;
-      }     
+      }
       return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
 
@@ -1426,7 +1426,7 @@ struct judgment_t : public paladin_melee_attack_t
 
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       t -> debuffs.physical_vulnerability -> trigger();
-  }  
+  }
 
   virtual void player_buff()
   {
@@ -1634,7 +1634,7 @@ struct divine_protection_t : public paladin_spell_t
     paladin_spell_t( "divine_protection", p, p -> find_class_spell( "Divine Protection" ) )
   {
     parse_options( NULL, options_str );
- 
+
     harmful = false;
   }
 
@@ -1810,8 +1810,8 @@ struct inquisition_t : public paladin_spell_t
   double m;
 
   inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ), 
-    base_duration( data().duration() ), m( data().effect1().percent() )
+    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ),
+      base_duration( data().duration() ), m( data().effect1().percent() )
   {
     parse_options( NULL, options_str );
 
@@ -1819,7 +1819,7 @@ struct inquisition_t : public paladin_spell_t
 
     if ( p -> glyphs.inquisition -> ok() )
     {
-      m += p -> glyphs.inquisition -> effectN( 1 ).percent(); 
+      m += p -> glyphs.inquisition -> effectN( 1 ).percent();
       base_duration *= 1.0 + p -> glyphs.inquisition -> effectN( 2 ).percent();
     }
   }
@@ -1936,7 +1936,7 @@ struct flash_of_light_t : public paladin_heal_t
 
     p() -> buffs.daybreak -> trigger();
     p() -> buffs.infusion_of_light -> expire();
- }
+  }
 
   virtual timespan_t execute_time() const
   {
@@ -2059,11 +2059,11 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     int g = p() -> dbc.spell( 25914 ) -> effect2().base_value();
     p() -> resource_gain( RESOURCE_HOLY_POWER,
-                        g,
-                        p() -> gains.hp_holy_shock );
+                          g,
+                          p() -> gains.hp_holy_shock );
     if ( p() -> buffs.holy_avenger -> check() )
     {
-      p() -> resource_gain( RESOURCE_HOLY_POWER, std::max( (int) 0, (int)( p() -> buffs.holy_avenger -> value() - g ) ), p() -> gains.hp_holy_avenger );
+      p() -> resource_gain( RESOURCE_HOLY_POWER, std::max( ( int ) 0, ( int )( p() -> buffs.holy_avenger -> value() - g ) ), p() -> gains.hp_holy_avenger );
     }
 
     p() -> buffs.daybreak -> expire();
@@ -2392,17 +2392,17 @@ void paladin_t::init_buffs()
 
   // Glyphs
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
-    .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
+                                 .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
-    .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-    .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+                                 .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                 .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
   buffs.glyph_hammer_of_wrath  = buff_creator_t( this, "glyph_hammer_of_wrath", glyphs.hammer_of_wrath )
-    .duration( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-    .default_value( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+                                 .duration( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                 .default_value( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
-    .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
+                                 .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
@@ -2423,9 +2423,9 @@ void paladin_t::init_buffs()
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
-    .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
-    .max_stack( 3 )
-    .duration( find_spell( 107397 ) -> duration() );
+                                 .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
+                                 .max_stack( 3 )
+                                 .duration( find_spell( 107397 ) -> duration() );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2683,7 +2683,7 @@ void paladin_t::init_spells()
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance.enabled = true;
-  
+
   // Ret Passives
   passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
@@ -3046,7 +3046,7 @@ int paladin_t::holy_power_stacks() const
 {
   if ( buffs.divine_purpose -> check() )
   {
-    return std::min( (int) 3, ( int ) resources.current[ RESOURCE_HOLY_POWER ] );
+    return std::min( ( int ) 3, ( int ) resources.current[ RESOURCE_HOLY_POWER ] );
   }
   return ( int ) resources.current[ RESOURCE_HOLY_POWER ];
 }
@@ -3073,7 +3073,7 @@ double paladin_t::get_hand_of_light() const
 // player_t::create_expression ==============================================
 
 expr_t* paladin_t::create_expression( action_t* a,
-                                     const std::string& name_str )
+                                      const std::string& name_str )
 {
   struct paladin_expr_t : public expr_t
   {

@@ -398,7 +398,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
       std::vector<specialization_e> spec_list;
       std::vector<specialization_e>::iterator iter;
       sim -> dbc.ability_specialization( spell -> id(), spec_list );
-      
+
       for ( iter = spec_list.begin(); iter != spec_list.end(); iter++ )
       {
         s << util_t::inverse_tokenize( util_t::specialization_string( *iter ) ) << " ";

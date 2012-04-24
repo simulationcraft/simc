@@ -2356,7 +2356,7 @@ void util_t::tokenize( std::string& name, format_type_e f )
     }
     else if ( c == ' ' )
     {
-       c = '_';
+      c = '_';
     }
     else if ( c != '_' &&
               c != '+' &&

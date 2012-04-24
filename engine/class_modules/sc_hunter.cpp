@@ -744,7 +744,7 @@ struct hunter_spell_t : public spell_t
 {
 
   hunter_spell_t( const std::string& n, hunter_t* player,
-      const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, player, s, sc )
   {
   }
@@ -1282,7 +1282,7 @@ struct hunter_pet_spell_t : public spell_t
   }
 
   hunter_pet_spell_t( const std::string& n, hunter_pet_t* player,
-      const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
+                      const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, player, s, sc )
   {
   }

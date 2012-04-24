@@ -42,7 +42,7 @@ attack_t::attack_t( const std::string&  n,
 void attack_t::execute()
 {
   action_t::execute();
-  
+
   if ( harmful && callbacks )
   {
     if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )

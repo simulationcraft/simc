@@ -580,7 +580,7 @@ void buff_t::bump( int stacks, double value )
     }
   }
 
-  if( player ) player -> trigger_ready();
+  if ( player ) player -> trigger_ready();
 }
 
 // buff_t::override =========================================================
@@ -629,7 +629,7 @@ void buff_t::expire()
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> update( false );
 
-  if( player ) player -> trigger_ready();
+  if ( player ) player -> trigger_ready();
 }
 
 // buff_t::predict ==========================================================
@@ -952,7 +952,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 {
   if ( ! refreshes )
   {
-     refresh_count++;
+    refresh_count++;
 
     bump( stacks, value );
     return;

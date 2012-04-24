@@ -140,18 +140,18 @@ resource_type_e spelleffect_data_t::resource_gain_type() const
 }
 
 double spelleffect_data_t::resource( resource_type_e resource_type ) const
+{
+  switch ( resource_type )
   {
-    switch ( resource_type )
-    {
-    case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RAGE:
-      return base_value() * ( 1 / 10.0 );
-    case RESOURCE_MANA:
-      return base_value() * ( 1 / 100.0 );
-    default:
-      return base_value();
-    }
+  case RESOURCE_RUNIC_POWER:
+  case RESOURCE_RAGE:
+    return base_value() * ( 1 / 10.0 );
+  case RESOURCE_MANA:
+    return base_value() * ( 1 / 100.0 );
+  default:
+    return base_value();
   }
+}
 
 // ==========================================================================
 // Spell Power Data
