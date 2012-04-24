@@ -44,11 +44,15 @@ struct mage_t : public player_t
 {
   // Active
   spell_t* active_ignite;
-  struct pets_t
+
+  // Benefits
+  struct benefits_t
   {
-    pet_t* water_elemental;
-    pet_t* mirror_image_3;
-  } pets;
+    benefit_t* arcane_blast[ 5 ];
+    benefit_t* dps_rotation;
+    benefit_t* dpm_rotation;
+    benefit_t* water_elemental;
+  } benefits;
 
   // Buffs
   struct buffs_t
@@ -62,10 +66,8 @@ struct mage_t : public player_t
     buff_t* hot_streak;
     buff_t* hot_streak_crits;
     buff_t* icy_veins;
-    buff_t* incanters_absorption;
     buff_t* invocation;
     buff_t* mage_armor;
-    buff_t* missile_barrage;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
     buff_t* rune_of_power;
@@ -76,8 +78,6 @@ struct mage_t : public player_t
   struct cooldowns_t
   {
     cooldown_t* evocation;
-    cooldown_t* fire_blast;
-    cooldown_t* mana_gem;
   } cooldowns;
 
   // Gains
@@ -93,15 +93,12 @@ struct mage_t : public player_t
   {
     // Prime
     const spell_data_t* arcane_power;
-    const spell_data_t* fireball;
     const spell_data_t* frostbolt;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* living_bomb;
-    const spell_data_t* pyroblast;
 
     // Major
-    const spell_data_t* dragons_breath;
     const spell_data_t* mirror_image;
 
     // Minor
@@ -120,6 +117,53 @@ struct mage_t : public player_t
     const spell_data_t* nether_attunement; // NYI
     const spell_data_t* shatter;
   } passives;
+
+  // Pets
+  struct pets_t
+  {
+    pet_t* water_elemental;
+    pet_t* mirror_image_3;
+  } pets;
+
+  // Procs
+  struct procs_t
+  {
+    proc_t* deferred_ignite;
+    proc_t* munched_ignite;
+    proc_t* rolled_ignite;
+    proc_t* mana_gem;
+    proc_t* test_for_crit_hotstreak;
+    proc_t* crit_for_hotstreak;
+    proc_t* hotstreak;
+    proc_t* improved_hotstreak;
+  } procs;
+  
+  // Random Number Generation
+  struct rngs_t
+  {
+    rng_t* arcane_missiles;
+    rng_t* empowered_fire;
+    rng_t* enduring_winter;
+    rng_t* fire_power;
+    rng_t* impact;
+    rng_t* improved_freeze;
+    rng_t* nether_vortex;
+  } rngs;
+
+  // Rotation (DPS vs DPM)
+  struct rotation_t
+  {
+    mage_rotation_e current;
+    double mana_gain;
+    double dps_mana_loss;
+    double dpm_mana_loss;
+    timespan_t dps_time;
+    timespan_t dpm_time;
+    timespan_t last_time;
+
+    void reset() { memset( this, 0, sizeof( *this ) ); current = ROTATION_DPS; }
+    rotation_t() { reset(); }
+  } rotation;
 
   // Spell Data
   struct spells_t
@@ -161,47 +205,6 @@ struct mage_t : public player_t
 
   } spec;
 
-  // Procs
-  struct procs_t
-  {
-    proc_t* deferred_ignite;
-    proc_t* munched_ignite;
-    proc_t* rolled_ignite;
-    proc_t* mana_gem;
-    proc_t* test_for_crit_hotstreak;
-    proc_t* crit_for_hotstreak;
-    proc_t* hotstreak;
-    proc_t* improved_hotstreak;
-  } procs;
-
-  // Random Number Generation
-  struct rngs_t
-  {
-    rng_t* arcane_missiles;
-    rng_t* empowered_fire;
-    rng_t* enduring_winter;
-    rng_t* fire_power;
-    rng_t* impact;
-    rng_t* improved_freeze;
-    rng_t* nether_vortex;
-  } rngs;
-
-  // Rotation (DPS vs DPM)
-  struct rotation_t
-  {
-    mage_rotation_e current;
-    double mana_gain;
-    double dps_mana_loss;
-    double dpm_mana_loss;
-    timespan_t dps_time;
-    timespan_t dpm_time;
-    timespan_t last_time;
-
-    void reset() { memset( this, 0, sizeof( *this ) ); current = ROTATION_DPS; }
-    rotation_t() { reset(); }
-  };
-  rotation_t rotation;
-
   // Talents
   struct talents_list_t
   {
@@ -226,21 +229,12 @@ struct mage_t : public player_t
 
   } talents;
 
-  // Up-Times
-  struct benefits_t
-  {
-    benefit_t* arcane_blast[ 5 ];
-    benefit_t* dps_rotation;
-    benefit_t* dpm_rotation;
-    benefit_t* water_elemental;
-  } benefits;
-
   int mana_gem_charges;
 
   mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
-    pets( pets_t() ),
+    benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -248,19 +242,17 @@ struct mage_t : public player_t
     merge_ignite( 0.0 ),
     ignite_sampling_delta( timespan_t::zero() ),
     passives( passives_t() ),
-    spells( spells_t() ),
-    spec( specializations_t() ),
+    pets( pets_t() ),
     procs( procs_t() ),
     rngs( rngs_t() ),
     rotation( rotation_t() ),
-    talents( talents_list_t() ),
-    benefits( benefits_t() ),
+    spells( spells_t() ),
+    spec( specializations_t() ),
+    talents( talents_list_t() ),    
     mana_gem_charges( 0 )
   {
     // Cooldowns
     cooldowns.evocation   = get_cooldown( "evocation"   );
-    cooldowns.fire_blast  = get_cooldown( "fire_blast"  );
-    cooldowns.mana_gem    = get_cooldown( "mana_gem"    );
 
     // Options
     distance         = 40;
@@ -772,7 +764,7 @@ struct ignite_t : public mage_spell_t
   ignite_t( mage_t* player ) :
     mage_spell_t( "ignite", player, player -> find_spell( 12654 ) )
   {
-    background    = true;
+    background = true;
 
     // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
     // proc          = false;
@@ -797,8 +789,7 @@ struct ignite_t : public mage_spell_t
 
 static void trigger_ignite( mage_spell_t* s, double dmg )
 {
-  if ( s -> school != SCHOOL_FIRE &&
-       s -> school != SCHOOL_FROSTFIRE ) return;
+  if ( s -> result != RESULT_CRIT ) return;
 
   mage_t* p = s -> p();
   sim_t* sim = s -> sim;
@@ -878,12 +869,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
     }
   };
 
-  double ignite_dmg = dmg * p -> spec.ignite -> effectN( 1 ).percent();
-
-  if ( p -> primary_tree() == MAGE_FIRE )
-  {
-    ignite_dmg *= 1.0 + p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery();
-  }
+  double ignite_dmg = dmg * p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery();
 
   if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
   {
@@ -1008,11 +994,6 @@ timespan_t mage_spell_t::execute_time() const
 void mage_spell_t::impact( player_t* t, const result_type_e impact_result, const double travel_dmg )
 {
   spell_t::impact( t, impact_result, travel_dmg );
-
-  if ( impact_result == RESULT_CRIT )
-  {
-    trigger_ignite( this, direct_dmg );
-  }
 
   if ( may_chill )
   {
@@ -1411,17 +1392,12 @@ struct combustion_t : public mage_spell_t
   virtual void execute()
   {
     double ignite_dmg = 0;
-    // Apparently, Combustion double-dips mastery....
-    // In addition, Ignite contribution uses current mastery
-    // http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p3/#post1824829
 
-    mage_t* p = player -> cast_mage();
     mage_targetdata_t* td = targetdata( target ) -> cast_mage();
 
     if ( td -> dots_ignite -> ticking )
     {
       ignite_dmg += calculate_dot_dps( td -> dots_ignite );
-      ignite_dmg *= 1.0 + p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery();
     }
 
     base_td = 0;
@@ -1429,10 +1405,8 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( td -> dots_pyroblast   );
     base_td += calculate_dot_dps( td -> dots_flamestrike );
 
-    // FIXME: Add FlameStrike
-
-    if ( p -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p -> buffs.tier13_2pc -> check() * p -> spells.stolen_time -> effectN( 2 ).time_value();
+    if ( p() -> set_bonus.tier13_4pc_caster() )
+      cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
 
     mage_spell_t::execute();
   }
@@ -1520,7 +1494,6 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    cooldown -> duration += p -> glyphs.dragons_breath -> effectN( 1 ).time_value();
   }
 };
 
@@ -1540,6 +1513,7 @@ struct evocation_t : public mage_spell_t
     harmful           = false;
     hasted_ticks      = false;
 
+    cooldown = p -> cooldowns.evocation;
     cooldown -> duration *= 1.0 + p -> talents.invocation -> effectN( 1 ).percent();
   }
 
@@ -1605,7 +1579,6 @@ struct fireball_t : public mage_spell_t
     mage_spell_t( "fireball", p, p -> find_spell( 133 ) )
   {
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.fireball -> effectN( 1 ).percent();
     may_hot_streak = true;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -1617,33 +1590,31 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual double cost() const
-  {
-    if ( p() -> buffs.brain_freeze -> check() )
-      return 0;
-
-    return mage_spell_t::cost();
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    if ( p() -> buffs.brain_freeze -> check() )
-      return timespan_t::zero();
-
-    return mage_spell_t::execute_time();
-  }
-
   virtual void execute()
   {
     mage_spell_t::execute();
-
-    consume_brain_freeze( this );
 
     if ( result_is_hit() )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
+  virtual double total_crit() const
+  {
+    double c = mage_spell_t::total_crit();
+
+    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return c;
   }
 };
 
@@ -1829,6 +1800,22 @@ struct frostfire_bolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
+  virtual double total_crit() const
+  {
+    double c = mage_spell_t::total_crit();
+
+    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return c;
+  }
 };
 
 // Ice Lance Spell ==========================================================
@@ -1909,6 +1896,32 @@ struct icy_veins_t : public mage_spell_t
 
     p() -> buffs.icy_veins -> trigger();
   }
+};
+
+// Inferno Blast Spell ======================================================
+
+struct inferno_blast_t : public mage_spell_t
+{
+  inferno_blast_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "inferno_blast", p, p -> find_spell( 108853 ) )
+  {
+    check_spec( MAGE_FIRE );
+    parse_options( NULL, options_str );
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
+  virtual double total_crit() const
+  {
+    return 1.0;
+  }
+
+  // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
 };
 
 // Living Bomb Spell ========================================================
@@ -2011,7 +2024,6 @@ struct mana_gem_t : public action_t
     min = p -> dbc.effect_min( 1936, p -> level );
     max = p -> dbc.effect_max( 1936, p -> level );
 
-    cooldown = p -> cooldowns.mana_gem;
     cooldown -> duration = timespan_t::from_seconds( 120.0 );
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -2158,7 +2170,6 @@ struct pyroblast_t : public mage_spell_t
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.pyroblast -> effectN( 1 ).percent();
     may_hot_streak = true;
     dot_behavior = DOT_REFRESH;
 
@@ -2179,9 +2190,27 @@ struct pyroblast_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
+  virtual double total_crit() const
+  {
+    double c = mage_spell_t::total_crit();
+
+    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return c;
+  }
 };
 
 // Pyroblast! Spell =========================================================
+
+// FIX ME: This doesn't appear to exist in the DBC, see if it's still seperate in-game
 
 struct pyroblast_hs_t : public mage_spell_t
 {
@@ -2191,7 +2220,6 @@ struct pyroblast_hs_t : public mage_spell_t
     init_dot( "pyroblast" );
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
-    base_crit += p -> glyphs.pyroblast -> effectN( 1 ).percent();
     dot_behavior = DOT_REFRESH;
 
     if ( ! dtr && player -> has_dtr )
@@ -2217,12 +2245,28 @@ struct pyroblast_hs_t : public mage_spell_t
     }
   }
 
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
   virtual bool ready()
   {
     if ( ! mage_spell_t::ready() )
       return false;
 
     return ( p() -> buffs.hot_streak -> check() > 0 );
+  }
+
+  virtual double total_crit() const
+  {
+    double c = mage_spell_t::total_crit();
+
+    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return c;
   }
 };
 
@@ -2268,6 +2312,22 @@ struct scorch_t : public mage_spell_t
       dtr_action = new scorch_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    trigger_ignite( this, travel_dmg );
+  }
+
+  virtual double total_crit() const
+  {
+    double c = mage_spell_t::total_crit();
+
+    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+
+    return c;
   }
 
   virtual bool usable_moving()
@@ -2602,6 +2662,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
+  if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
   if ( name == "mana_gem"          ) return new                mana_gem_t( this, options_str );
@@ -2693,14 +2754,11 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
-  glyphs.dragons_breath    = find_glyph_spell( "Glyph of Dragon's Breath" );
-  glyphs.fireball          = find_glyph_spell( "Glyph of Fireball" );
   glyphs.frostbolt         = find_glyph_spell( "Glyph of Frostbolt" );
   glyphs.frostfire         = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance         = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.living_bomb       = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.mirror_image      = find_glyph_spell( "Glyph of Mirror Image" );
-  glyphs.pyroblast         = find_glyph_spell( "Glyph of Pyroblast" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -2766,7 +2824,8 @@ void mage_t::init_buffs()
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) );
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
-  // FIXME: What is this called now? buffs.hot_streak           = new buff_t( this, spells.hot_streak,            NULL );
+  // FIXME: What is this called now? 
+  buffs.hot_streak           = buff_creator_t( this, "hot_streak" );
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.invocation           = buff_creator_t( this, "invocation", talents.invocation );
   buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
@@ -3045,14 +3104,7 @@ void mage_t::init_actions()
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=!ticking";
       action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
-      if ( glyphs.frostfire -> ok() )
-      {
-        action_list_str += "/frostfire_bolt";
-      }
-      else
-      {
-        action_list_str += "/fireball";
-      }
+      action_list_str += "/fireball";
       action_list_str += "/mage_armor,if=mana_pct<5&buff.mage_armor.down";
       action_list_str += "/scorch"; // This can be free, so cast it last
     }
