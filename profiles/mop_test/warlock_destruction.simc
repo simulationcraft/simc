@@ -9,7 +9,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warlock-000000000000010000
-glyphs=immolate/incinerate/imp
+glyphs=life_tap/demon_training
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_imp

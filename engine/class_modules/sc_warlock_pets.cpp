@@ -237,6 +237,14 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
+  virtual timespan_t execute_time() const
+  {
+    timespan_t t = warlock_pet_actions::warlock_pet_spell_t::execute_time();
+
+    if ( p() -> o() -> glyphs.demon_training -> ok() ) t *= 0.5;
+
+    return t;
+  }
 };
 
 }

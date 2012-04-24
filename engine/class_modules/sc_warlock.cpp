@@ -358,8 +358,9 @@ struct agony_t : public warlock_spell_t
 
 struct doom_t : public warlock_spell_t
 {
+  // FIXME: Activating the glyph of doom currently puts the spell in the spellbook for all specs, but it's only castable as affliction
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, p -> glyphs.doom -> ok() ? p -> find_spell( 603 ) : spell_data_t::not_found() )
+    warlock_spell_t( "doom", p, ( p -> primary_tree() == WARLOCK_AFFLICTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
     hasted_ticks = false;
     may_crit = false;
@@ -1824,8 +1825,9 @@ void warlock_t::init_spells()
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   // Major
-  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.demon_training       = find_glyph_spell( "Glyph of Demon Training" );
+  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
 }
 
 // warlock_t::init_base =====================================================

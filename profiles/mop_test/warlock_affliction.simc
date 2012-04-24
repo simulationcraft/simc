@@ -9,11 +9,11 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warlock-000000000000010000
-glyphs=haunt/unstable_affliction/life_tap/shadow_bolt
+glyphs=life_tap/demon_training
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/summon_felhunter
-actions+=/grimoire_of_service_felhunter
+actions+=/summon_imp
+actions+=/grimoire_of_service_imp
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
