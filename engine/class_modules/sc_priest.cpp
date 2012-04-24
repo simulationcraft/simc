@@ -1786,8 +1786,6 @@ struct shadow_fiend_spell_t : public priest_spell_t
 
 struct mind_blast_t : public priest_spell_t
 {
-  stats_t* orb_stats[ 4 ];
-
   mind_blast_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "mind_blast", player, player -> find_class_spell( "Mind Blast" ) )
   {
