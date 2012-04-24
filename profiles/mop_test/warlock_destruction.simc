@@ -18,11 +18,11 @@ actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<20
 actions+=/dark_soul
-actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+action.incinerate.))&target.time_to_die>=5&miss_react
 actions+=/shadowburn,if=ember_react
 actions+=/soul_fire,if=ember_react
 actions+=/summon_doomguard,if=time>10
 actions+=/conflagrate,if=buff.backdraft.down
+actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+action.incinerate.travel_time))&target.time_to_die>=5&miss_react
 actions+=/incinerate
 actions+=/fel_flame,moving=1
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
