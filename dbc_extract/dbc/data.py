@@ -290,6 +290,9 @@ _DBC_FIELDS = {
           'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), 'spell_family_name', 'desc',
           'unk_15464'
     ],
+    'SpellCastingRequirements.dbc' : [
+          'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
+    ],
     'SpellCategory.dbc' : [
           'id', 'field'
     ],

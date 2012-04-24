@@ -3196,7 +3196,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
     shaman_totem_t( "fire_elemental_totem", "Fire Elemental Totem", player, options_str, TOTEM_FIRE )
   {
     cooldown -> duration *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
-    //totem_duration       *= 1.0 - p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
+    totem_duration       *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
