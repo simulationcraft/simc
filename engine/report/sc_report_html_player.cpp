@@ -10,8 +10,6 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_action_damage =================================================
 
-int print_html_gain( FILE* file, const gain_t* g, int, bool );
-
 double mean_damage( const std::vector<stats_t::stats_results_t> result )
 {
   double mean = 0;
@@ -1264,45 +1262,30 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
            dps_error_str.c_str() );
 }
 
-int print_html_gain( FILE* file, const gain_t* g, int j, bool report_overflow = true )
+void print_html_gain( html_report_stream& s, const gain_t* g, int& j, bool report_overflow = true )
 {
-
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
-      double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
-      fprintf( file,
-               "\t\t\t\t\t\t\t<tr" );
-      if ( !( j & 1 ) )
-      {
-        fprintf( file, " class=\"odd\"" );
-      }
       ++j;
-      fprintf( file, ">\n" );
-      fprintf( file,
-               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
-               g -> name(),
-               util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
-               g -> count[ i ],
-               g -> actual[ i ],
-               g -> actual[ i ] / g -> count[ i ] );
+      double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
+      s.tabs() << "<tr" << ( ( j & 1 ) ? " class=\"odd\"" : "" ) << ">\n";
+      s.increase_tabs();
+      s.tabs() << "<td class=\"left\">" << g -> name_str << "</td>\n";
+      s.tabs() << "<td class=\"left\">" << util_t::inverse_tokenize( util_t::resource_type_string( i ) ) << "</td>\n";
+      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> count[ i ], 1 ) << "</td>\n";
+      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> actual[ i ], 1 ) << "</td>\n";
+      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> actual[ i ] / g -> count[ i ], 1 ) << "</td>\n";
       if ( report_overflow )
-        fprintf( file,
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
-               "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f%%</td>\n",
-               g -> overflow[ i ],
-               overflow_pct );
-      fprintf( file,
-               "\t\t\t\t\t\t\t</tr>\n" );
+      {
+        s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> overflow[ i ], 1 ) << "</td>\n";
+        s.tabs() << "<td class=\"right\">" << util_t::to_string( overflow_pct, 1 ) << "%</td>\n";
+      }
+      s.decrease_tabs();
+      s.tabs() << "</tr>\n";
     }
   }
-
-  return j;
 }
 // print_html_player_resources ==============================================
 
@@ -1382,10 +1365,14 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
 
+  {
+  html_report_stream s;
+  s.set_tabs( 6 );
+
   int j = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    j = print_html_gain( file, g, j );
+    print_html_gain( s, g, j );
   }
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
@@ -1404,9 +1391,13 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
                  "\t\t\t\t\t\t\t</tr>\n",
                  pet -> name_str.c_str() );
       }
-      print_html_gain( file, g, j );
+      print_html_gain( s, g, j );
     }
   }
+
+  fprintf( file, "%s", s.str().c_str() );
+  }
+
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );
 
@@ -1418,7 +1409,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
              "\t\t\t\t\t\t\t\t<th>RPS-Gain</th>\n"
              "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
              "\t\t\t\t\t\t\t</tr>\n" );
-  j = 0;
+  int j = 0;
   for ( resource_type_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
     double rps_gain = p -> resource_gained[ rt ] / p -> fight_length.mean;

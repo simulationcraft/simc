@@ -104,4 +104,20 @@ struct compare_hat_donor_interval
   }
 };
 
+struct html_report_stream : public std::ostringstream
+{
+private:
+  unsigned _tabs;
+public:
+  html_report_stream( unsigned t = 0 ) : std::ostringstream(), _tabs( t ) {}
+  void increase_tabs() { ++_tabs; }
+  void decrease_tabs() { --_tabs; }
+  void set_tabs( unsigned t ) { _tabs = t; }
+  html_report_stream& tabs() {
+    *this << report::html_tabs( _tabs );
+    return *this;
+  }
+};
+
+
 #endif // SC_REPORT_HPP
