@@ -2638,6 +2638,7 @@ public:
     bool charts_generated;
     std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
     std::string timeline_chart;
+    report_information_t() { charts_generated = false; }
   } report_information;
 
   std::unordered_map<std::string, std::pair<player_type_e, size_t> > targetdata_items[DATA_COUNT];

@@ -483,10 +483,10 @@ void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
   if ( end > player_list.size() ) end = static_cast<unsigned>( player_list.size() );
 
   fprintf( file, "\t\t\tn = [" );
-  for ( size_t i = end-1; i >= start; i-- )
+  for ( int i = (int)end-1; i >= (int)start; i-- )
   {
     fprintf( file, "\"%s\"", player_list[i] -> name_str.c_str() );
-    if ( i != start ) fprintf( file, ", " );
+    if ( i != (int)start ) fprintf( file, ", " );
   }
   fprintf( file, "];\n" );
 
