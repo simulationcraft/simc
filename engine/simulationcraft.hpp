@@ -3426,6 +3426,7 @@ struct player_t : public noncopyable
     std::string save_actions_str;
     std::string comment_str;
     std::string thumbnail_url;
+    std::string html_profile_str;
     std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
 
     report_information_t() : charts_generated(), buff_lists_generated() {}
@@ -3745,7 +3746,8 @@ struct player_t : public noncopyable
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  void recreate_talent_str();
+  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
 
   virtual void copy_from( player_t* source );
 

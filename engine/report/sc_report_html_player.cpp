@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_action_damage =================================================
 
-void print_html_gain( FILE* file, const gain_t* g, bool );
+int print_html_gain( FILE* file, const gain_t* g, int, bool );
 
 double mean_damage( const std::vector<stats_t::stats_results_t> result )
 {
@@ -537,16 +537,8 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
 
 // print_html_action_resource ===============================================
 
-void print_html_action_resource( FILE* file, const stats_t* s, int j )
+int print_html_action_resource( FILE* file, const stats_t* s, int j )
 {
-  fprintf( file,
-           "\t\t\t\t\t\t\t<tr" );
-  if ( j & 1 )
-  {
-    fprintf( file, " class=\"odd\"" );
-  }
-  fprintf( file, ">\n" );
-
   for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
     action_t* a = s -> player -> action_list[ i ];
@@ -559,11 +551,12 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
      if ( s -> resource_gain.actual[ i ] > 0 )
      {
        fprintf( file,
-                "\t\t\t\t\t\t\t\t<tr" );
-       if ( !( i & 1 ) )
+                "\t\t\t\t\t\t\t<tr" );
+       if ( !( j & 1 ) )
        {
          fprintf( file, " class=\"odd\"" );
        }
+       ++j;
        fprintf( file, ">\n" );
        fprintf( file,
                 "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
@@ -585,7 +578,7 @@ void print_html_action_resource( FILE* file, const stats_t* s, int j )
                 "\t\t\t\t\t\t\t</tr>\n" );
      }
    }
-
+  return j;
 }
 
 // print_html_gear ==========================================================
@@ -624,7 +617,7 @@ void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<ite
 
 // print_html_profile =======================================================
 
-void print_html_profile ( FILE* file, player_t* a )
+void print_html_profile ( FILE* file, const player_t* a )
 {
   if ( a -> fight_length.mean > 0 )
   {
@@ -1271,7 +1264,7 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
            dps_error_str.c_str() );
 }
 
-void print_html_gain( FILE* file, const gain_t* g, bool report_overflow = true )
+int print_html_gain( FILE* file, const gain_t* g, int j, bool report_overflow = true )
 {
 
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
@@ -1280,11 +1273,12 @@ void print_html_gain( FILE* file, const gain_t* g, bool report_overflow = true )
     {
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       fprintf( file,
-               "\t\t\t\t\t\t\t\t<tr" );
-      if ( !( i & 1 ) )
+               "\t\t\t\t\t\t\t<tr" );
+      if ( !( j & 1 ) )
       {
         fprintf( file, " class=\"odd\"" );
       }
+      ++j;
       fprintf( file, ">\n" );
       fprintf( file,
                "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
@@ -1307,6 +1301,8 @@ void print_html_gain( FILE* file, const gain_t* g, bool report_overflow = true )
                "\t\t\t\t\t\t\t</tr>\n" );
     }
   }
+
+  return j;
 }
 // print_html_player_resources ==============================================
 
@@ -1336,12 +1332,13 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t</tr>\n",
            p -> name() );
 
+  int k = 0;
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
     if ( s -> rpe_sum > 0 )
     {
-      print_html_action_resource( file, s, i );
+      k = print_html_action_resource( file, s, k );
     }
   }
 
@@ -1365,7 +1362,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
                    "\t\t\t\t\t\t\t</tr>\n",
                    pet -> name_str.c_str() );
         }
-        print_html_action_resource( file, s, i );
+        k = print_html_action_resource( file, s, k );
       }
     }
   }
@@ -1385,9 +1382,10 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
            "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
 
+  int j = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    print_html_gain( file, g );
+    j = print_html_gain( file, g, j );
   }
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
@@ -1406,7 +1404,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
                  "\t\t\t\t\t\t\t</tr>\n",
                  pet -> name_str.c_str() );
       }
-      print_html_gain( file, g );
+      print_html_gain( file, g, j );
     }
   }
   fprintf( file,
@@ -1420,6 +1418,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
              "\t\t\t\t\t\t\t\t<th>RPS-Gain</th>\n"
              "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
              "\t\t\t\t\t\t\t</tr>\n" );
+  j = 0;
   for ( resource_type_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
     double rps_gain = p -> resource_gained[ rt ] / p -> fight_length.mean;
@@ -1428,7 +1427,14 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
       continue;
 
     fprintf( file,
-             "\t\t\t\t\t\t\t<tr>\n"
+             "\t\t\t\t\t\t\t<tr" );
+    if ( !( j & 1 ) )
+    {
+      fprintf( file, " class=\"odd\"" );
+    }
+    ++j;
+    fprintf( file,
+             ">\n"
              "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
@@ -2398,11 +2404,12 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 // print_html_player_ ========================================================
 
-void print_html_player_( FILE* file, sim_t* sim, player_t* p, int j=0 )
+void print_html_player_( FILE* file, const sim_t* sim, player_t* q, int j=0 )
 {
-  generate_report_information::generate_player_charts( p, p -> report_information );
-  generate_report_information::generate_player_buff_lists( p, p -> report_information );
+  generate_report_information::generate_player_charts( q, q -> report_information );
+  generate_report_information::generate_player_buff_lists( q, q -> report_information );
 
+  const player_t* p = q;
   std::string n = p -> name();
   util_t::format_text( n, true );
 

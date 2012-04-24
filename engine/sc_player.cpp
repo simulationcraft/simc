@@ -6143,9 +6143,27 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
   return 0;
 }
 
+void player_t::recreate_talent_str()
+{
+  talents_str.clear();
+  talents_str = "http://www.wowhead.com/talent#";
+  talents_str += util_t::player_type_string( type );
+  talents_str += "-";
+  // This is necessary because sometimes the talent trees change shape between live/ptr.
+  for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
+    {
+      int t = talent_list[ j * MAX_TALENT_COLS + i ];
+
+      talents_str += util_t::to_string( t );
+    }
+  }
+}
+
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
+bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
 {
   std::string term;
 
@@ -6172,7 +6190,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
-    profile_str += primary_tree_name() + term;
+    profile_str += std::string( primary_tree_name() ) + term;
     profile_str += "role=";
     profile_str += util_t::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
@@ -6186,21 +6204,6 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
 
   if ( stype == SAVE_ALL || stype == SAVE_TALENTS )
   {
-    talents_str = "http://www.wowhead.com/talent#";
-    talents_str += util_t::player_type_string( type );
-    talents_str += "-";
-    // This is necessary because sometimes the talent trees change shape between live/ptr.
-    for ( int j=0; j < MAX_TALENT_ROWS; j++ )
-    {
-      for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
-      {
-        int t = talent_list[ j * MAX_TALENT_COLS + i ];
-        std::stringstream ss;
-        ss << t;
-        talents_str += ss.str();
-      }
-    }
-
     if ( talents_str.size() > 0 )
     {
       profile_str += "talents=" + talents_str + term;

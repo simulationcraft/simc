@@ -1559,6 +1559,8 @@ void sim_t::analyze_player( player_t* p )
                                      std::back_inserter( p -> timeline_dps ) );
   assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
+  p -> recreate_talent_str();
+
   // Error Convergence ======================================================
   player_convergence( iterations, convergence_scale, confidence_estimator,
                       p -> dps, p -> dps_convergence_error, p -> dps_error, p -> dps_convergence );

@@ -605,6 +605,9 @@ void generate_report_information::generate_player_charts( const player_t*  p, pl
     ri.gear_weights_pawn_alt_string  = chart::gear_weights_pawn       ( p, false );
   }
 
+  // Create html profile str
+  p -> create_profile( ri.html_profile_str, SAVE_ALL, true );
+
   ri.charts_generated = true;
 }
 

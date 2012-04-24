@@ -52,6 +52,29 @@ struct report {
   static void print_html_player ( FILE*, player_t*, int );
   static void print_xml         ( sim_t* );
   static void print_suite       ( sim_t* );
+
+  static const char* html_tabs( unsigned i )
+  {
+    static const char* a[] =
+    {
+      "", // 0
+      "\t", // 1
+      "\t\t", // 2
+      "\t\t\t", // 3
+      "\t\t\t\t", // 4
+      "\t\t\t\t\t", // 5
+      "\t\t\t\t\t\t", // 6
+      "\t\t\t\t\t\t\t", // 7
+      "\t\t\t\t\t\t\t\t", // 8
+      "\t\t\t\t\t\t\t\t\t", // 9
+      "\t\t\t\t\t\t\t\t\t\t", // 10
+      "\t\t\t\t\t\t\t\t\t\t\t" // 11
+    };
+#ifndef NDEBUG
+    assert( i < sizeof_array( a ) );
+#endif
+    return a[ i ];
+  }
 };
 
 
