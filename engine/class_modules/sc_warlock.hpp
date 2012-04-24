@@ -155,26 +155,8 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
-    const spell_data_t* metamorphosis;
     const spell_data_t* life_tap;
-    const spell_data_t* shadow_bolt;
-    const spell_data_t* conflagrate;
-    const spell_data_t* corruption;
-    const spell_data_t* bane_of_agony;
-    const spell_data_t* felguard;
-    const spell_data_t* haunt;
-    const spell_data_t* immolate;
-    const spell_data_t* imp;
-    const spell_data_t* incinerate;
-    const spell_data_t* lash_of_pain;
-    const spell_data_t* shadowburn;
-    const spell_data_t* unstable_affliction;
-    // MoP
-    const spell_data_t* burning_embers;
-    const spell_data_t* demon_hunting;
-    const spell_data_t* demon_training;
     const spell_data_t* doom;
-    const spell_data_t* soul_shards;
   };
   glyphs_t glyphs;
 

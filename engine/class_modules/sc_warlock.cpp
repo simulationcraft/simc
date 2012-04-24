@@ -438,36 +438,13 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct shadowburn_t : public warlock_spell_t
 {
-  cooldown_t* cd_glyph_of_shadowburn;
-
   shadowburn_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Shadowburn" ),
-    cd_glyph_of_shadowburn( 0 )
+    warlock_spell_t( p, "Shadowburn" )
   {
-    if ( p -> glyphs.shadowburn -> ok() )
-    {
-      cd_glyph_of_shadowburn             = p -> get_cooldown ( "glyph_of_shadowburn" );
-      cd_glyph_of_shadowburn -> duration = p -> dbc.spell( 91001 ) -> duration();
-    }
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new shadowburn_t( p, true );
       dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual void update_ready()
-  {
-    warlock_spell_t::update_ready();
-
-    if ( p() -> glyphs.shadowburn -> ok() )
-    {
-      if ( cd_glyph_of_shadowburn -> remains() == timespan_t::zero() && target -> health_percentage() < p() -> glyphs.shadowburn -> effectN( 1 ).base_value() )
-      {
-        cooldown -> reset();
-        cd_glyph_of_shadowburn -> start();
-      }
     }
   }
 
@@ -686,16 +663,6 @@ struct immolate_t : public warlock_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-
-  virtual double action_ta_multiplier() const
-  {
-    double m = warlock_spell_t::action_ta_multiplier();
-
-    m *= p() -> glyphs.immolate -> effectN( 1 ).percent(); //FIXME needs testing for additive vs multiplicative
-
-    return m;
-  }
-
 };
 
 // Shadowflame DOT Spell ====================================================
@@ -743,8 +710,6 @@ struct incinerate_t : public warlock_spell_t
   incinerate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Incinerate" )
   {
-    base_multiplier *= 1.0 + p -> glyphs.incinerate -> effectN( 1 ).percent();
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new incinerate_t( p, true );
@@ -1858,24 +1823,9 @@ void warlock_t::init_spells()
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
-  // Prime
-  glyphs.metamorphosis        = find_glyph_spell( "Glyph of Metamorphosis" );
-  glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
-  glyphs.corruption           = find_glyph_spell( "Glyph of Corruption" );
-  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
-  glyphs.bane_of_agony        = find_glyph_spell( "Glyph of Bane of Agony" );
-  glyphs.felguard             = find_glyph_spell( "Glyph of Felguard" );
-  glyphs.haunt                = find_glyph_spell( "Glyph of Haunt" );
-  glyphs.immolate             = find_glyph_spell( "Glyph of Immolate" );
-  glyphs.imp                  = find_glyph_spell( "Glyph of Imp" );
-  glyphs.lash_of_pain         = find_glyph_spell( "Glyph of Lash of Pain" );
-  glyphs.incinerate           = find_glyph_spell( "Glyph of Incinerate" );
-  glyphs.shadowburn           = find_glyph_spell( "Glyph of Shadowburn" );
-  glyphs.unstable_affliction  = find_glyph_spell( "Glyph of Unstable Affliction" );
-
   // Major
+  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
-  glyphs.shadow_bolt          = find_glyph_spell( "Glyph of Shadow Bolt" );
 }
 
 // warlock_t::init_base =====================================================
@@ -2028,11 +1978,6 @@ void warlock_t::init_actions()
     }
     else if ( primary_tree() == WARLOCK_AFFLICTION )
     {
-      if ( glyphs.lash_of_pain -> ok() )
-        action_list_str += "/summon_succubus";
-      else if ( glyphs.imp -> ok() )
-        action_list_str += "/summon_imp";
-      else
         action_list_str += "/summon_felhunter";
     }
     else
@@ -2085,7 +2030,7 @@ void warlock_t::init_actions()
     {
 
     case WARLOCK_AFFLICTION:
-      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( level >= 85 ) action_list_str += "/demon_soul";
       if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soulburn";
       action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
       action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
@@ -2107,22 +2052,14 @@ void warlock_t::init_actions()
       action_list_str += "/life_tap,mana_percentage<=35";
       if ( ! set_bonus.tier13_4pc_caster() )
       {
-        if ( glyphs.lash_of_pain -> ok() )
-        {
-          action_list_str += "/soulburn,if=buff.demon_soul_succubus.down";
-        }
-        else
-        {
-          action_list_str += "/soulburn,if=buff.demon_soul_felhunter.down";
-        }
+        action_list_str += "/soulburn,if=buff.demon_soul_felhunter.down";
         action_list_str += "/soul_fire,if=buff.soulburn.up";
       }
-      if ( level >= 85 && glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
       action_list_str += "/shadow_bolt";
       break;
 
     case WARLOCK_DESTRUCTION:
-      if ( level >= 85 && ! glyphs.lash_of_pain -> ok() ) action_list_str += "/demon_soul";
+      if ( level >= 85 ) action_list_str += "/demon_soul";
       if ( set_bonus.tier13_4pc_caster() )
       {
         action_list_str += "/soulburn";
@@ -2183,7 +2120,6 @@ void warlock_t::init_actions()
       if ( level >= 75 ) action_list_str += "/shadowflame";
       action_list_str += "/hand_of_guldan";
       if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
-      if ( glyphs.corruption -> ok() ) action_list_str += "/shadow_bolt,if=buff.shadow_trance.react";
       if ( level >= 64 ) action_list_str += "/incinerate,if=buff.molten_core.react";
       if ( level >= 54 ) action_list_str += "/soul_fire,if=buff.decimation.up";
       action_list_str += "/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
