@@ -230,7 +230,7 @@ public:
     double m = spell_t::action_multiplier( s );
 
     if ( current_resource() == RESOURCE_BURNING_EMBER )
-      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+      m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
 
     return m;
   }
@@ -854,11 +854,9 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
-    // FIXME: Initial testing seems to suggest the tooltip may be wrong about the extra 10% for soul fire. Needs a lot more testing.
-    // if ( current_resource() == RESOURCE_BURNING_EMBER ) m += 0.1;
-
-    // FIXME: Initial testing seems roughly in line with a spell crit scaling factor of 0.5. Needs a lot more testing.
-    m *= 1.0 + p() -> composite_spell_crit() * 0.5;
+    // FIXME: This may be a bug, but on beta it's currently (2012/04/24) not scaling with crit when using embers
+    if ( current_resource() != RESOURCE_BURNING_EMBER )
+      m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 ) * 0.5;
 
     return m;
   }
