@@ -5003,7 +5003,10 @@ public:
   virtual bool    roll( double chance );
   virtual double range( double min, double max );
   virtual double gauss( double mean, double stddev, const bool truncate_low_end = false );
-  double exgauss( double mean, double stddev, double nu, double cutoff = 5.0 );
+
+  double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
+
+
   virtual void    seed( uint32_t start = time( NULL ) );
   std::string report( double confidence_estimator ) const;
 
@@ -5021,10 +5024,8 @@ public:
 
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
   {
-    return timespan_t::from_native( exgauss( (double) timespan_t::to_native( mean ),
-                                             (double) timespan_t::to_native( stddev ),
-                                             (double) timespan_t::to_native( nu ),
-                                             (double) timespan_t::to_native( timespan_t::from_seconds( 5.0 ) ) ) );
+    return timespan_t::from_seconds(
+        exgauss( mean.total_seconds(), stddev.total_seconds(), nu.total_seconds(), nu.total_seconds(), 5.0 ) );
   }
 
   static double stdnormal_cdf( double u );

@@ -112,7 +112,7 @@ double rng_t::gauss( double mean,
 
 // rng_t::exgauss ===========================================================
 
-double rng_t::exgauss( double mean, double stddev, double nu, double cutoff )
+double rng_t::exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff )
 {
   double x = 0;
   do
@@ -121,12 +121,13 @@ double rng_t::exgauss( double mean, double stddev, double nu, double cutoff )
   }
   while ( x <=  0 ); // avoid ln(0)
 
-  double result =  ( gauss( mean, stddev ) ) - log( x / nu ) * nu;
+  double result =  ( gauss( mean, stddev ) ) - log( x / nu_divisor ) * nu_multiplier;
   if ( result < 0 ) result = 0;
   if ( result > cutoff ) result = cutoff; // cut it off at 5s
 
   return result;
 }
+
 
 // rng_t::report ============================================================
 
@@ -681,10 +682,13 @@ int main( int /*argc*/, char** /*argv*/ )
 {
   rng_t* rng = new rng_sfmt_t( "test-rng", false, false );
 
+  static const unsigned n = 10000000;
+
+  // double real()
   {
   int start_time = util_t::milliseconds();
 
-  const unsigned n = 10000000;
+
   double average=0;
   for ( unsigned i = 0; i< n; i++ )
     average += rng -> real();
@@ -692,10 +696,11 @@ int main( int /*argc*/, char** /*argv*/ )
   int elapsed_cpu = util_t::milliseconds() - start_time;
   util_t::printf( "%d calls to real(): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
   }
+
+  // double gauss
   {
   int start_time = util_t::milliseconds();
 
-  const unsigned n = 10000000;
   double average=0;
   for ( unsigned i = 0; i< n; i++ )
     average += rng -> gauss(0,1);
@@ -704,28 +709,45 @@ int main( int /*argc*/, char** /*argv*/ )
   util_t::printf( "%d calls to gauss(0,1): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
   }
 
+  // timespan_t gauss
   {
   int start_time = util_t::milliseconds();
 
-  const unsigned n = 10000000;
   double average=0;
   for ( unsigned i = 0; i< n; i++ )
-    average += rng -> exgauss(0.5,0,0.5);
+    average += rng -> gauss( timespan_t::from_native( 700 ), timespan_t::from_native( 1000 ) ).total_seconds();
   average /= n;
   int elapsed_cpu = util_t::milliseconds() - start_time;
-  util_t::printf( "%d calls to exgauss(0.5,0,0.5): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+  util_t::printf( "%d calls to gauss( timespan_t::from_native( 700 ), timespan_t::from_native( 1000 ) ): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
   }
 
+  // double exgauss
   {
   int start_time = util_t::milliseconds();
 
-  const unsigned n = 10000000;
   double average=0;
   for ( unsigned i = 0; i< n; i++ )
-    average += rng -> exgauss( timespan_t::from_seconds( 0.5 ), timespan_t::zero(), timespan_t::from_seconds( 0.5 ) ).total_seconds();
+    average += rng -> exgauss(0.5,0.0,0.5,0.0,5.0);
   average /= n;
   int elapsed_cpu = util_t::milliseconds() - start_time;
-  util_t::printf( "%d calls to exgauss( timespan_t::from_seconds( 0.5 ), timespan_t::zero(), timespan_t::from_seconds( 0.5 ) ): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+  util_t::printf( "%d calls to exgauss(0.5,0,0.5,0,5): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
+  }
+
+  // timespan_t exgauss
+  {
+    static const timespan_t mean = timespan_t::from_native( 500 );
+    static const timespan_t stddev = timespan_t::zero();
+    static const timespan_t nu = timespan_t::from_native( 500 );
+
+  int start_time = util_t::milliseconds();
+
+
+  double average=0;
+  for ( unsigned i = 0; i< n; i++ )
+    average += rng -> exgauss( mean, stddev, nu ).total_seconds();
+  average /= n;
+  int elapsed_cpu = util_t::milliseconds() - start_time;
+  util_t::printf( "%d calls to exgauss( timespan_t::from_native( 500 ), timespan_t::zero(), timespan_t::from_native( 500 ) ): average=%.8f time(ms)=%d\n", n, average, elapsed_cpu );
   }
 
 
