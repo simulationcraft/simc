@@ -856,7 +856,7 @@ struct soul_fire_t : public warlock_spell_t
 
     // FIXME: This may be a bug, but on beta it's currently (2012/04/24) not scaling with crit when using embers
     if ( current_resource() != RESOURCE_BURNING_EMBER )
-      m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 ) * 0.5;
+      m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
 
     return m;
   }
