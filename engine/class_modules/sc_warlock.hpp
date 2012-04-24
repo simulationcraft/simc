@@ -133,6 +133,7 @@ struct warlock_t : public player_t
     gain_t* nightfall;
     gain_t* drain_soul;
     gain_t* incinerate;
+    gain_t* metamorphosis;
   } gains;
 
   // Uptimes
@@ -161,8 +162,26 @@ struct warlock_t : public player_t
   };
   glyphs_t glyphs;
 
+  struct meta_cost_event_t : event_t
+  {
+    meta_cost_event_t( player_t* p ) :
+      event_t( p -> sim, p, "metamorphosis_fury_cost" )
+    {
+      sim -> add_event( this, timespan_t::from_seconds( 1 ) );
+    }
+
+    virtual void execute()
+    {
+      warlock_t* p = ( warlock_t* ) player;
+      p -> meta_cost_event = new ( sim ) meta_cost_event_t( player );
+      p -> resource_loss( RESOURCE_DEMONIC_FURY, 6, p -> gains.metamorphosis );
+    }
+  };
+
+  meta_cost_event_t* meta_cost_event;
+
   int use_pre_soulburn;
-  int initial_burning_embers;
+  int initial_burning_embers, initial_demonic_fury;
   timespan_t ember_react;
 
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
@@ -201,6 +220,7 @@ struct warlock_t : public player_t
   virtual double composite_mastery() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
+  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* gain, action_t* action = 0 );
 };
 
 // ==========================================================================

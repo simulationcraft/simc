@@ -91,7 +91,9 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   glyphs( glyphs_t() ),
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
-  ember_react( timespan_t::zero() )
+  initial_demonic_fury( 200 ),
+  ember_react( timespan_t::zero() ),
+  meta_cost_event( 0 )
 {
   distance = 40;
   default_distance = 40;
@@ -245,6 +247,14 @@ public:
       t /= ( 1.0 + td -> dots_malefic_grasp -> action -> data().effectN( 2 ).percent() );
 
     return t;
+  }
+
+  virtual resource_type_e current_resource() const
+  {
+    if ( data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 && p() -> buffs.metamorphosis -> up() )
+      return RESOURCE_DEMONIC_FURY;
+    else
+      return spell_t::current_resource();
   }
 
   // trigger_soul_leech =====================================================
@@ -900,7 +910,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    p() -> buffs.metamorphosis -> trigger( 1, player -> composite_mastery() );
+    p() -> buffs.metamorphosis -> trigger();
   }
 };
 
@@ -1851,6 +1861,7 @@ void warlock_t::init_base()
   if ( spec.chaotic_energy -> ok() ) stats_base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
+  if ( primary_tree() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
   if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30;
 
   diminished_kfactor    = 0.009830;
@@ -2172,6 +2183,7 @@ void warlock_t::combat_begin()
   player_t::combat_begin();
 
   resources.current[ RESOURCE_BURNING_EMBER ] = initial_burning_embers;
+  resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
 }
 
 // warlock_t::reset =========================================================
@@ -2193,8 +2205,9 @@ void warlock_t::create_options()
 
   option_t warlock_options[] =
   {
-    { "use_pre_soulburn",    OPT_BOOL,   &( use_pre_soulburn     ) },
-    { "burning_embers",       OPT_INT,   &( initial_burning_embers       ) },
+    { "use_pre_soulburn",  OPT_BOOL,   &( use_pre_soulburn       ) },
+    { "burning_embers",     OPT_INT,   &( initial_burning_embers ) },
+    { "demonic_fury",       OPT_INT,   &( initial_demonic_fury   ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -2209,8 +2222,9 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
 
   if ( stype == SAVE_ALL )
   {
-    if ( use_pre_soulburn ) profile_str += "use_pre_soulburn=1\n";
+    if ( use_pre_soulburn )            profile_str += "use_pre_soulburn=1\n";
     if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util_t::to_string( initial_burning_embers ) + "\n";
+    if ( initial_demonic_fury != 200 ) profile_str += "burning_embers=" + util_t::to_string( initial_demonic_fury ) + "\n";
   }
 
   return true;
@@ -2224,8 +2238,9 @@ void warlock_t::copy_from( player_t* source )
 
   warlock_t* p = debug_cast<warlock_t*>( source );
 
-  use_pre_soulburn = p -> use_pre_soulburn;
+  use_pre_soulburn       = p -> use_pre_soulburn;
   initial_burning_embers = p -> initial_burning_embers;
+  initial_demonic_fury   = p -> initial_demonic_fury;
 }
 
 // warlock_t::decode_set ====================================================
@@ -2267,6 +2282,19 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   {
     return player_t::create_expression( a, name_str );
   }
+}
+
+double warlock_t::resource_loss( resource_type_e resource_type, double amount, gain_t* gain, action_t* action )
+{
+  double r = player_t::resource_loss( resource_type, amount, gain, action );
+
+  if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 )
+  {
+    assert( buffs.metamorphosis -> up() );
+    buffs.metamorphosis -> expire();
+  }
+
+  return r;
 }
 
 #endif // SC_WARLOCK
