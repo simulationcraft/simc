@@ -179,6 +179,8 @@ struct warlock_t : public player_t
   };
 
   meta_cost_event_t* meta_cost_event;
+  
+  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
 
   int use_pre_soulburn;
   int initial_burning_embers, initial_demonic_fury;

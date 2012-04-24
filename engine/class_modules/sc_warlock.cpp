@@ -910,7 +910,15 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    p() -> buffs.metamorphosis -> trigger();
+    p() -> trigger_metamorphosis();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> up() ) return false;
+    if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -2195,6 +2203,7 @@ void warlock_t::reset()
   // Active
   pets.active = 0;
   ember_react = timespan_t::zero();
+  event_t::cancel( meta_cost_event );
 }
 
 // warlock_t::create_options ================================================
@@ -2292,6 +2301,7 @@ double warlock_t::resource_loss( resource_type_e resource_type, double amount, g
   {
     assert( buffs.metamorphosis -> up() );
     buffs.metamorphosis -> expire();
+    event_t::cancel( meta_cost_event );
   }
 
   return r;
