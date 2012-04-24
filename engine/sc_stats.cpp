@@ -104,10 +104,10 @@ void stats_t::add_result( const double act_amount,
   }
 
   r -> iteration_count += 1;
-  r -> actual_amount.add( act_amount );
-  r -> total_amount.add( tot_amount );
   r -> iteration_actual_amount += act_amount;
   r -> iteration_total_amount += tot_amount;
+  r -> actual_amount.add( act_amount );
+  r -> total_amount.add( tot_amount );
 
   const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
@@ -173,11 +173,7 @@ void stats_t::combat_end()
 void stats_t::stats_results_t::analyze( double num_results )
 {
   count.analyze();
-  if ( count.mean == 0 )
-    return
-
   avg_actual_amount.analyze();
-  count.analyze();
   pct = 100.0 * count.mean / ( num_results > 0.0 ? num_results : 0.0 );
   fight_total_amount.analyze();
   fight_actual_amount.analyze();
@@ -295,7 +291,7 @@ stats_t::stats_results_t::stats_results_t( sim_t* s ) :
   // Keep non hidden reported numbers clean
   count.mean = 0;
   actual_amount.mean = 0; actual_amount.max=0;
-  avg_actual_amount.mean = 0;
+  //avg_actual_amount.mean = 0;
 
   actual_amount.reserve( s -> iterations );
   total_amount.reserve( s -> iterations );
