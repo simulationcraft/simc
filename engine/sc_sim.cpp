@@ -1197,35 +1197,6 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
-  // Find Already defined target, otherwise create a new one.
-  if ( debug )
-    log_t::output( this, "Creating Enemies." );
-
-  if ( target_list )
-  {
-    target = target_list;
-  }
-  else if ( ! main_target_str.empty() )
-  {
-    player_t* p = find_player( main_target_str );
-    if ( p )
-      target = p;
-  }
-  else
-    target = player_t::create( this, "enemy", "Fluffy_Pillow" );
-
-
-  if ( max_player_level < 0 )
-  {
-    for ( player_t* p = player_list; p; p = p -> next )
-    {
-      if ( p -> is_enemy() || p -> is_add() )
-        continue;
-      if ( max_player_level < p -> level )
-        max_player_level = p -> level;
-    }
-  }
-
   // MoP aura initialization
 
   // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
@@ -1267,6 +1238,35 @@ bool sim_t::init()
   auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
                       .max_stack( 100 )
                       .default_value( dbc.spell( 79062 ) -> effectN( 1 ).percent() );
+
+  // Find Already defined target, otherwise create a new one.
+  if ( debug )
+    log_t::output( this, "Creating Enemies." );
+
+  if ( target_list )
+  {
+    target = target_list;
+  }
+  else if ( ! main_target_str.empty() )
+  {
+    player_t* p = find_player( main_target_str );
+    if ( p )
+      target = p;
+  }
+  else
+    target = player_t::create( this, "enemy", "Fluffy_Pillow" );
+
+
+  if ( max_player_level < 0 )
+  {
+    for ( player_t* p = player_list; p; p = p -> next )
+    {
+      if ( p -> is_enemy() || p -> is_add() )
+        continue;
+      if ( max_player_level < p -> level )
+        max_player_level = p -> level;
+    }
+  }
 
   if ( ! player_t::init( this ) ) return false;
 

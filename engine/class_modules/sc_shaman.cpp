@@ -3741,8 +3741,8 @@ void shaman_t::init_spells()
   specialization.static_shock        = find_specialization_spell( "Static Shock" );
 
   // Masteries
-  mastery.elemental_overload         = find_mastery_spell( "Elemental Overload" );
-  mastery.enhanced_elements          = find_mastery_spell( "Enhanced Elements" );
+  mastery.elemental_overload         = find_mastery_spell( "Mastery: Elemental Overload" );
+  mastery.enhanced_elements          = find_mastery_spell( "Mastery: Enhanced Elements" );
 
   // Talents
   talent.call_of_the_elements        = find_talent_spell( "Call of the Elements" );
