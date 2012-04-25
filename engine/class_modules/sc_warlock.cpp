@@ -7,18 +7,8 @@
 
 /*
  * To Do:
- * - Check if curse_of_elements is counted for affliction_effects in every possible situation
- *  (optimal_raid=1, or with multiple wl's, dk's/druis), it enhances drain soul damage.
- * - Bane of Agony and haste scaling looks strange (and is crazy as hell, we'll leave it at average base_td for now)
  * - Seed of Corruption with Soulburn: Trigger Corruptions
- * - Execute felguard:felstorm by player, not the pet
- * - Verify if the current incinerate bonus calculation is correct
- * - Investigate pet mp5 - probably needs to scale with owner int
- * - Dismissing a pet drops aura -> demonic_pact. Either don't let it dropt if there is another pet alive, or recheck application when dropping it.
  */
-
-// ==========================================================================
-// Warlock
 // ==========================================================================
 
 #if SC_WARLOCK == 1
@@ -107,11 +97,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
 
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
-
-// ==========================================================================
-// Warlock Heal
-// ==========================================================================
-
+  
 struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) :
@@ -122,9 +108,6 @@ struct warlock_heal_t : public heal_t
   { return static_cast<warlock_t*>( player ); }
 };
 
-// ==========================================================================
-// Warlock Spell
-// ==========================================================================
 
 struct warlock_spell_t : public spell_t
 {
@@ -299,7 +282,6 @@ public:
   }
 };
 
-// Curse of Elements Spell ==================================================
 
 struct curse_of_elements_t : public warlock_spell_t
 {
@@ -321,7 +303,6 @@ struct curse_of_elements_t : public warlock_spell_t
   }
 };
 
-// Bane of Agony Spell ======================================================
 
 struct agony_t : public warlock_spell_t
 {
@@ -364,13 +345,11 @@ struct agony_t : public warlock_spell_t
   }
 };
 
-// Bane of Doom Spell =======================================================
 
 struct doom_t : public warlock_spell_t
 {
-  // FIXME: Activating the glyph of doom currently puts the spell in the spellbook for all specs, but it's only castable as affliction
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, ( p -> primary_tree() == WARLOCK_AFFLICTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
+    warlock_spell_t( "doom", p, ( p -> primary_tree() != WARLOCK_DESTRUCTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
@@ -399,7 +378,6 @@ struct doom_t : public warlock_spell_t
   }
 };
 
-// Bane of Havoc Spell ======================================================
 
 struct bane_of_havoc_t : public warlock_spell_t
 {
@@ -425,7 +403,6 @@ struct bane_of_havoc_t : public warlock_spell_t
   }
 };
 
-// Shadow Bolt Spell ========================================================
 
 struct shadow_bolt_t : public warlock_spell_t
 {
@@ -453,7 +430,6 @@ struct shadow_bolt_t : public warlock_spell_t
   }
 };
 
-// Shadow Burn Spell ========================================================
 
 struct shadowburn_t : public warlock_spell_t
 {
@@ -476,7 +452,6 @@ struct shadowburn_t : public warlock_spell_t
   }
 };
 
-// Corruption Spell =========================================================
 
 struct corruption_t : public warlock_spell_t
 {
@@ -510,7 +485,6 @@ struct corruption_t : public warlock_spell_t
   }
 };
 
-// Drain Life Spell =========================================================
 
 struct drain_life_heal_t : public warlock_heal_t
 {
@@ -571,7 +545,6 @@ struct drain_life_t : public warlock_spell_t
   }
 };
 
-// Drain Soul Spell =========================================================
 
 struct drain_soul_t : public warlock_spell_t
 {
@@ -643,7 +616,6 @@ struct drain_soul_t : public warlock_spell_t
   }
 };
 
-// Unstable Affliction Spell ================================================
 
 struct unstable_affliction_t : public warlock_spell_t
 {
@@ -652,19 +624,6 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     tick_power_mod = 0.2; // from tooltip
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    if ( result_is_hit() )
-    {
-      // FIXME: move to impact
-      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-      if ( td -> dots_immolate -> ticking )
-        td -> dots_immolate -> cancel();
-    }
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -680,7 +639,6 @@ struct unstable_affliction_t : public warlock_spell_t
   }
 };
 
-// Haunt Spell ==============================================================
 
 struct haunt_t : public warlock_spell_t
 {
@@ -706,7 +664,6 @@ struct haunt_t : public warlock_spell_t
   }
 };
 
-// Immolate Spell ===========================================================
 
 struct immolate_t : public warlock_spell_t
 {
@@ -724,7 +681,6 @@ struct immolate_t : public warlock_spell_t
   }
 };
 
-// Shadowflame DOT Spell ====================================================
 
 struct shadowflame_t : public warlock_spell_t
 {
@@ -736,7 +692,6 @@ struct shadowflame_t : public warlock_spell_t
   }
 };
 
-// Conflagrate Spell ========================================================
 
 struct conflagrate_t : public warlock_spell_t
 {
@@ -766,7 +721,6 @@ struct conflagrate_t : public warlock_spell_t
   }
 };
 
-// Incinerate Spell =========================================================
 
 struct incinerate_t : public warlock_spell_t
 {
@@ -789,7 +743,7 @@ struct incinerate_t : public warlock_spell_t
       p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
     }
 
-    if ( p() -> buffs.backdraft -> check() )
+    if ( p() -> buffs.backdraft -> up() )
     {
       p() -> buffs.backdraft -> decrement();
     }
@@ -818,17 +772,28 @@ struct incinerate_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
-    if ( p() -> buffs.backdraft -> up() )
+    if ( p() -> buffs.backdraft -> check() )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
 
     return h;
   }
+
+  virtual double cost() const
+  {
+    double c = warlock_spell_t::cost();
+
+    if ( p() -> buffs.backdraft -> check() )
+    {
+      c *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
+    }
+
+    return c;
+  }
 };
 
 
-// Soul Fire Spell ==========================================================
 
 struct soul_fire_t : public warlock_spell_t
 {
@@ -902,7 +867,6 @@ struct soul_fire_t : public warlock_spell_t
   }
 };
 
-// Chaos Bolt Spell =========================================================
 
 struct chaos_bolt_t : public warlock_spell_t
 {
@@ -930,7 +894,6 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier( s );
 
-    // FIXME: Test whether chaos bolt actually scales with crit
     m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
 
     return m;
@@ -955,6 +918,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
+    // FIXME: currently bugged on beta to give the benefit even when the stack isn't 3, but that's such an obvious bug I won't simulate it
     if ( p() -> buffs.backdraft -> stack() == 3 )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
@@ -964,7 +928,6 @@ struct chaos_bolt_t : public warlock_spell_t
   }
 };
 
-// Life Tap Spell ===========================================================
 
 struct life_tap_t : public warlock_spell_t
 {
@@ -984,7 +947,6 @@ struct life_tap_t : public warlock_spell_t
 };
 
 
-// Metamorphosis Spell ======================================================
 
 struct metamorphosis_t : public warlock_spell_t
 {
@@ -1012,8 +974,6 @@ struct metamorphosis_t : public warlock_spell_t
 };
 
 
-// Hand of Gul'dan Spell ====================================================
-
 struct hand_of_guldan_t : public warlock_spell_t
 {
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
@@ -1032,7 +992,6 @@ struct hand_of_guldan_t : public warlock_spell_t
   }
 };
 
-// Fel Flame Spell ==========================================================
 
 struct fel_flame_t : public warlock_spell_t
 {
@@ -1062,7 +1021,6 @@ struct fel_flame_t : public warlock_spell_t
   }
 };
 
-// Malefic Grasp Spell ==========================================================
 
 struct malefic_grasp_t : public warlock_spell_t
 {
@@ -1108,7 +1066,6 @@ struct malefic_grasp_t : public warlock_spell_t
   }
 };
 
-// Dark Intent Spell ========================================================
 
 struct dark_intent_t : public warlock_spell_t
 {
@@ -1128,7 +1085,6 @@ struct dark_intent_t : public warlock_spell_t
   }
 };
 
-// Soulburn Spell ===========================================================
 
 struct soulburn_t : public warlock_spell_t
 {
@@ -1157,7 +1113,6 @@ struct soulburn_t : public warlock_spell_t
   }
 };
 
-// Dark Soul Spell ===========================================================
 
 struct dark_soul_t : public warlock_spell_t
 {
@@ -1175,9 +1130,8 @@ struct dark_soul_t : public warlock_spell_t
   }
 };
 
-// AOE SPELLS
 
-// Hellfire Effect Spell ====================================================
+// AOE SPELLS
 
 struct hellfire_tick_t : public warlock_spell_t
 {
@@ -1191,7 +1145,6 @@ struct hellfire_tick_t : public warlock_spell_t
   }
 };
 
-// Hellfire Spell ===========================================================
 
 struct hellfire_t : public warlock_spell_t
 {
@@ -1224,7 +1177,6 @@ struct hellfire_t : public warlock_spell_t
     hellfire_tick -> execute();
   }
 };
-// Seed of Corruption AOE Spell =============================================
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
@@ -1248,7 +1200,6 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
   }
 };
 
-// Seed of Corruption Spell =================================================
 
 struct seed_of_corruption_t : public warlock_spell_t
 {
@@ -1291,7 +1242,6 @@ struct seed_of_corruption_t : public warlock_spell_t
   }
 };
 
-// Rain of Fire Tick Spell ==================================================
 
 struct rain_of_fire_tick_t : public warlock_spell_t
 {
@@ -1304,7 +1254,6 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   }
 };
 
-// Rain of Fire Spell =======================================================
 
 struct rain_of_fire_t : public warlock_spell_t
 {
@@ -1337,9 +1286,8 @@ struct rain_of_fire_t : public warlock_spell_t
   }
 };
 
-// PET SPELLS
 
-// Summon Pet Spell =========================================================
+// PET SPELLS
 
 struct summon_pet_t : public warlock_spell_t
 {
@@ -1385,7 +1333,6 @@ public:
   }
 };
 
-// Summon Main Pet Spell ====================================================
 
 struct summon_main_pet_t : public summon_pet_t
 {
@@ -1469,7 +1416,6 @@ struct summon_voidwalker_t : public summon_main_pet_t
   { }
 };
 
-// Infernal Awakening =======================================================
 
 struct infernal_awakening_t : public warlock_spell_t
 {
@@ -1483,7 +1429,6 @@ struct infernal_awakening_t : public warlock_spell_t
   }
 };
 
-// Summon Infernal Spell ====================================================
 
 struct summon_infernal_t : public summon_pet_t
 {
@@ -1515,7 +1460,6 @@ struct summon_infernal_t : public summon_pet_t
   }
 };
 
-// Summon Doomguard2 Spell ==================================================
 
 struct summon_doomguard2_t : public summon_pet_t
 {
@@ -1539,7 +1483,6 @@ struct summon_doomguard2_t : public summon_pet_t
   }
 };
 
-// Summon Doomguard Spell ===================================================
 
 struct summon_doomguard_t : public warlock_spell_t
 {
@@ -1566,9 +1509,8 @@ struct summon_doomguard_t : public warlock_spell_t
   }
 };
 
-// TALENT SPELLS
 
-// Shadowfury Spell =========================================================
+// TALENT SPELLS
 
 struct shadowfury_t : public warlock_spell_t
 {
@@ -1577,7 +1519,6 @@ struct shadowfury_t : public warlock_spell_t
   {  }
 };
 
-// Mortal Coil Spell =========================================================
 
 struct mortal_coil_heal_t : public warlock_heal_t
 {
@@ -1616,7 +1557,6 @@ struct mortal_coil_t : public warlock_spell_t
   }
 };
 
-// Grimoire of Sacrifice ====================================================
 
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
@@ -1664,7 +1604,6 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
   }
 };
 
-// Grimoire of Service ====================================================
 
 struct grimoire_of_service_t : public summon_pet_t
 {
@@ -1677,11 +1616,6 @@ struct grimoire_of_service_t : public summon_pet_t
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// ==========================================================================
-// Warlock Character Definition
-// ==========================================================================
-
-// warlock_t::composite_spell_power_multiplier ==============================
 
 double warlock_t::composite_spell_power_multiplier() const
 {
@@ -1695,7 +1629,6 @@ double warlock_t::composite_spell_power_multiplier() const
   return m;
 }
 
-// warlock_t::composite_player_multiplier ===================================
 
 double warlock_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
@@ -1714,6 +1647,7 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
   return player_multiplier;
 }
 
+
 double warlock_t::composite_spell_crit() const
 {
   double sc = player_t::composite_spell_crit();
@@ -1728,6 +1662,7 @@ double warlock_t::composite_spell_crit() const
 
   return sc;
 }
+
 
 double warlock_t::composite_spell_haste() const
 {
@@ -1744,6 +1679,7 @@ double warlock_t::composite_spell_haste() const
   return h;
 }
 
+
 double warlock_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
@@ -1759,7 +1695,6 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
-// warlock_t::matching_gear_multiplier ======================================
 
 double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
 {
@@ -1769,7 +1704,6 @@ double warlock_t::matching_gear_multiplier( const attribute_type_e attr ) const
   return 0.0;
 }
 
-// warlock_t::create_action =================================================
 
 action_t* warlock_t::create_action( const std::string& name,
                                     const std::string& options_str )
@@ -1826,7 +1760,6 @@ action_t* warlock_t::create_action( const std::string& name,
   return a;
 }
 
-// warlock_t::create_pet ====================================================
 
 pet_t* warlock_t::create_pet( const std::string& pet_name,
                               const std::string& /* pet_type */ )
@@ -1852,7 +1785,6 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   return 0;
 }
 
-// warlock_t::create_pets ===================================================
 
 void warlock_t::create_pets()
 {
@@ -1871,9 +1803,7 @@ void warlock_t::create_pets()
   create_pet( "grimoire_of_service_voidwalker" );
 }
 
-// warlock_t::init_talents ==================================================
 
-// warlock_t::init_spells ===================================================
 
 void warlock_t::init_spells()
 {
@@ -1949,7 +1879,6 @@ void warlock_t::init_spells()
   glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
 }
 
-// warlock_t::init_base =====================================================
 
 void warlock_t::init_base()
 {
@@ -1970,7 +1899,6 @@ void warlock_t::init_base()
   diminished_parry_capi = 0.006650;
 }
 
-// warlock_t::init_scaling ==================================================
 
 void warlock_t::init_scaling()
 {
@@ -1979,7 +1907,6 @@ void warlock_t::init_scaling()
   scales_with[ STAT_STAMINA ] = 0;
 }
 
-// warlock_t::init_buffs ====================================================
 
 void warlock_t::init_buffs()
 {
@@ -1995,7 +1922,6 @@ void warlock_t::init_buffs()
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 
-// warlock_t::init_values ======================================================
 
 void warlock_t::init_values()
 {
@@ -2008,7 +1934,6 @@ void warlock_t::init_values()
     stats_initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
-// warlock_t::init_gains ====================================================
 
 void warlock_t::init_gains()
 {
@@ -2022,7 +1947,6 @@ void warlock_t::init_gains()
   gains.incinerate             = get_gain( "incinerate" );
 }
 
-// warlock_t::init_uptimes ==================================================
 
 void warlock_t::init_benefits()
 {
@@ -2032,14 +1956,12 @@ void warlock_t::init_benefits()
     benefits.backdraft[ i ] = get_benefit( "backdraft_" + util_t::to_string( i ) );
 }
 
-// warlock_t::init_procs ====================================================
 
 void warlock_t::init_procs()
 {
   player_t::init_procs();
 }
 
-// warlock_t::init_rng ======================================================
 
 void warlock_t::init_rng()
 {
@@ -2048,7 +1970,6 @@ void warlock_t::init_rng()
   rngs.nightfall               = get_rng( "nightfall" );
 }
 
-// warlock_t::init_actions ==================================================
 
 void warlock_t::init_actions()
 {
@@ -2285,7 +2206,6 @@ void warlock_t::combat_begin()
   resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
 }
 
-// warlock_t::reset =========================================================
 
 void warlock_t::reset()
 {
@@ -2303,7 +2223,6 @@ void warlock_t::reset()
   nightfall_index = -1;
 }
 
-// warlock_t::create_options ================================================
 
 void warlock_t::create_options()
 {
@@ -2320,7 +2239,6 @@ void warlock_t::create_options()
   option_t::copy( options, warlock_options );
 }
 
-// warlock_t::create_profile ================================================
 
 bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
 {
@@ -2336,7 +2254,6 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
   return true;
 }
 
-// warlock_t::copy_from =====================================================
 
 void warlock_t::copy_from( player_t* source )
 {
@@ -2349,7 +2266,6 @@ void warlock_t::copy_from( player_t* source )
   initial_demonic_fury   = p -> initial_demonic_fury;
 }
 
-// warlock_t::decode_set ====================================================
 
 int warlock_t::decode_set( const item_t& item ) const
 {
@@ -2426,22 +2342,17 @@ bool warlock_t::verify_nightfall()
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_warlock =================================================
-
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type_e r )
 {
   SC_CREATE_WARLOCK( sim, name, r );
 }
 
-// player_t::warlock_init ===================================================
 
 void player_t::warlock_init( sim_t* )
 {
 }
 
-// player_t::warlock_combat_begin ===========================================
 
 void player_t::warlock_combat_begin( sim_t* )
 {
 }
-
