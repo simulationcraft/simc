@@ -174,7 +174,7 @@ void stats_t::stats_results_t::analyze( double num_results )
 {
   count.analyze();
   avg_actual_amount.analyze();
-  pct = 100.0 * count.mean / ( num_results > 0.0 ? num_results : 0.0 );
+  pct = num_results ? ( 100.0 * count.mean / num_results ) : 0.0;
   fight_total_amount.analyze();
   fight_actual_amount.analyze();
   actual_amount.analyze();
