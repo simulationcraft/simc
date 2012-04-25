@@ -1227,18 +1227,6 @@ bool sim_t::init()
     }
   }
 
-  if ( ! player_t::init( this ) ) return false;
-
-  // Target overrides 2
-  for ( player_t* t = target_list; t; t = t -> next )
-  {
-    if ( ! target_race.empty() )
-    {
-      t -> race = util_t::parse_race_type( target_race );
-      t -> race_str = util_t::race_type_string( t -> race );
-    }
-  }
-
   // MoP aura initialization
 
   // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
@@ -1280,6 +1268,18 @@ bool sim_t::init()
   auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
                       .max_stack( 100 )
                       .default_value( dbc.spell( 79062 ) -> effectN( 1 ).percent() );
+
+  if ( ! player_t::init( this ) ) return false;
+
+  // Target overrides 2
+  for ( player_t* t = target_list; t; t = t -> next )
+  {
+    if ( ! target_race.empty() )
+    {
+      t -> race = util_t::parse_race_type( target_race );
+      t -> race_str = util_t::race_type_string( t -> race );
+    }
+  }
 
   raid_event_t::init( this );
 
