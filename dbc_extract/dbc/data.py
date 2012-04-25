@@ -68,6 +68,15 @@ _DIFF_DATA = {
             ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
         ],
         
+    },
+    15640 : {
+	'SpellClassOptions.dbc' : [
+	    ( 'unk_15464', _REMOVE_FIELD ),
+	],
+        'SkillLineAbility.dbc' : [
+            ( 'unk_15640', _ADD_FIELD, 'min_value' ),
+        ],
+
     }
 }
 
