@@ -2669,9 +2669,9 @@ void paladin_t::init_spells()
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
 
   // Masteries
-  passives.divine_bulwark         = find_mastery_spell( "Divine Bulwark" );
-  passives.hand_of_light          = find_mastery_spell( "Hand of Light" );
-  passives.illuminated_healing    = find_mastery_spell( "Illuminated Healing" );
+  passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
+  passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
+  passives.illuminated_healing    = find_mastery_spell( PALADIN_HOLY );
   // Passives
 
   // Shared Passives

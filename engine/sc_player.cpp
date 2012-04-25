@@ -5514,20 +5514,6 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 // player_t::find_mastery_spell =============================================
 
-const spell_data_t* player_t::find_mastery_spell( const std::string& name, const std::string& token )
-{
-  unsigned spell_id = dbc.mastery_ability_id( spec, name.c_str() );
-
-  if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
-    return ( spell_data_t::not_found() );
-
-  dbc_t::add_token( spell_id, token, dbc.ptr );
-
-  return ( dbc.spell( spell_id ) );
-}
-
-// player_t::find_mastery_spell =============================================
-
 const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx )
 {
   unsigned spell_id = dbc.mastery_ability_id( s, idx );
@@ -5558,10 +5544,6 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
     assert( sp );
     if ( sp -> ok() ) return sp;
   }
-
-  sp = find_mastery_spell( name, token );
-  assert( sp );
-  if ( sp -> ok() ) return sp;
 
   sp = find_talent_spell( name, token );
   assert( sp );
