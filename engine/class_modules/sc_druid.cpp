@@ -363,6 +363,19 @@ struct druid_t : public player_t
     const spell_data_t* wrath;
   } glyph;
 
+  // Masteries
+  struct masteries_t
+  {
+    // Done
+    const spell_data_t* total_eclipse;
+
+    // NYI / TODO!
+    const spell_data_t* meditation;
+    const spell_data_t* razor_claws;
+    const spell_data_t* natures_guardian; // NYI
+    const spell_data_t* harmony;
+  } mastery;
+
   // Procs
   struct procs_t
   {
@@ -386,45 +399,6 @@ struct druid_t : public player_t
     rng_t* primal_fury;
     rng_t* revitalize;
   } rng;
-
-  // Masteries
-  struct masteries_t
-  {
-    // Done
-    const spell_data_t* total_eclipse;
-
-    // NYI / TODO!
-    const spell_data_t* meditation;
-    const spell_data_t* razor_claws;
-    const spell_data_t* natures_guardian; // NYI
-    const spell_data_t* harmony;
-  } mastery;
-
-  struct spells_t
-  {
-    const spell_data_t* berserk; // Berserk cat resource cost reducer
-    const spell_data_t* bear_form; // Bear form bonuses
-    const spell_data_t* combo_point; // Combo point spell
-    const spell_data_t* eclipse; // Eclipse mana gain
-    const spell_data_t* leader_of_the_pack; // LotP aura
-    const spell_data_t* mangle; // Lacerate mangle cooldown reset
-    const spell_data_t* moonkin_form; // Moonkin form bonuses
-    const spell_data_t* primal_fury; // Primal fury mana gain
-    const spell_data_t* regrowth; // Old GoRegrowth
-    const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
-    const spell_data_t* vengeance;
-  } spell;
-
-  // Eclipse Management
-  int eclipse_bar_value; // Tracking the current value of the eclipse bar
-  int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
-
-  // Up-Times
-  struct
-  {
-    benefit_t* energy_cap;
-    benefit_t* rage_cap;
-  } uptime;
 
   // Class Specializations
   struct specializations_t
@@ -470,6 +444,26 @@ struct druid_t : public player_t
     // Tehm whos bare durids, can B 4 tank (Guardian)
 
   } specialization;
+
+
+  struct spells_t
+  {
+    const spell_data_t* berserk; // Berserk cat resource cost reducer
+    const spell_data_t* bear_form; // Bear form bonuses
+    const spell_data_t* combo_point; // Combo point spell
+    const spell_data_t* eclipse; // Eclipse mana gain
+    const spell_data_t* leader_of_the_pack; // LotP aura
+    const spell_data_t* mangle; // Lacerate mangle cooldown reset
+    const spell_data_t* moonkin_form; // Moonkin form bonuses
+    const spell_data_t* primal_fury; // Primal fury mana gain
+    const spell_data_t* regrowth; // Old GoRegrowth
+    const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
+    const spell_data_t* vengeance;
+  } spell;
+
+  // Eclipse Management
+  int eclipse_bar_value; // Tracking the current value of the eclipse bar
+  int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
 
   // Talents
   struct talents_t
@@ -544,9 +538,28 @@ struct druid_t : public player_t
     const spell_data_t* wild_growth;
 
   } talent;
+  
+  // Up-Times
+  struct uptimes_t
+  {
+    benefit_t* energy_cap;
+    benefit_t* rage_cap;
+  } uptime;
 
   druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
-    player_t( sim, DRUID, name, r )
+    player_t( sim, DRUID, name, r ),
+    buff( buffs_t() ),
+    cooldown( cooldowns_t() ),
+    gain( gains_t() ),
+    glyph( glyphs_t() ),
+    mastery( masteries_t() ),
+    proc( procs_t() ),
+    rng( rngs_t() ),
+    specialization( specializations_t() ),
+    spell( spells_t() ),
+    talent( talents_t() ),
+    uptime( uptimes_t() )
+
   {
     active_efflorescence      = 0;
     active_living_seed        = 0;
@@ -930,7 +943,7 @@ static void trigger_soul_of_the_forest( druid_t* p )
   {
     log_t::output( p -> sim, "%s gains %d (%d) %s from %s (%d)",
                    p -> name(), gain, gain,
-                   "Eclipse", "soul_of_the_forest" /* p -> talent.soul_of_the_forest -> name()*/,
+                   "Eclipse", p -> talent.soul_of_the_forest -> name_cstr(),
                    p -> eclipse_bar_value );
   }
 }
