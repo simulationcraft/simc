@@ -441,6 +441,7 @@ struct druid_t : public player_t
     // Boom badoom boom boom badoom boomkin. (Balance)
     const spell_data_t* balance_of_power;
     const spell_data_t* celestial_focus;
+    const spell_data_t* celestial_alignment;
     const spell_data_t* eclipse;
     const spell_data_t* euphoria;
     const spell_data_t* lunar_shower;
@@ -916,6 +917,25 @@ static void trigger_eclipse_proc( druid_t* p )
   p -> buff.natures_grace -> trigger();
 }
 
+// trigger_soul_of_the_forest ===============================================
+
+static void trigger_soul_of_the_forest( druid_t* p )
+{
+  if ( ! p -> talent.soul_of_the_forest -> ok() ) 
+    return;
+
+  int gain = p -> talent.soul_of_the_forest -> effectN( 2 ).base_value() * p -> eclipse_bar_direction;
+  p -> eclipse_bar_value += gain;
+
+  if ( p -> sim -> log )
+  {
+    log_t::output( p -> sim, "%s gains %d (%d) %s from %s (%d)",
+                   p -> name(), gain, gain,
+                   "Eclipse", "soul_of_the_forest" /* p -> talent.soul_of_the_forest -> name()*/,
+                   p -> eclipse_bar_value );
+  }
+}
+
 // trigger_eclipse_energy_gain ==============================================
 
 static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
@@ -940,16 +960,27 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   int old_eclipse_bar_value = p -> eclipse_bar_value;
   p -> eclipse_bar_value += gain;
 
+  // When a Lunar Eclipse ends you gain 20 Solar Energy and when a Solar Eclipse
+  // ends you gain 20 Lunar Energy.
+  bool soul_of_the_forest = false;
   if ( p -> eclipse_bar_value <= 0 )
   {
-    p -> buff.eclipse_solar -> expire();
+    if ( p -> buff.eclipse_solar -> check() )
+    {
+      p -> buff.eclipse_solar -> expire();
+      soul_of_the_forest = true;
+    }
     if ( p -> eclipse_bar_value < p -> specialization.eclipse -> effectN( 2 ).base_value() )
       p -> eclipse_bar_value = p -> specialization.eclipse -> effectN( 2 ).base_value();
   }
 
   if ( p -> eclipse_bar_value >= 0 )
   {
-    p -> buff.eclipse_lunar -> expire();
+    if ( p -> buff.eclipse_lunar -> check() )
+    {
+      p -> buff.eclipse_lunar -> expire();
+      soul_of_the_forest = true;
+    }
     if ( p -> eclipse_bar_value > p -> specialization.eclipse -> effectN( 1 ).base_value() )
       p -> eclipse_bar_value = p -> specialization.eclipse -> effectN( 1 ).base_value();
   }
@@ -990,6 +1021,8 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
       }
     }
   }
+  if ( soul_of_the_forest )
+    trigger_soul_of_the_forest( p );
 }
 
 // trigger_eclipse_gain_delay ===============================================
@@ -2155,8 +2188,6 @@ struct skull_bash_bear_t : public druid_bear_attack_t
     parse_options( NULL, options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-
-    cooldown -> duration  += player -> talent.brutal_impact -> effect2().time_value();
   }
 
   virtual bool ready()
@@ -2189,7 +2220,7 @@ struct swipe_bear_t : public druid_bear_attack_t
 struct thrash_t : public druid_bear_attack_t
 {
   thrash_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( "thrash", player, player -> find_specialization_spell( "Thread" ) )
+    druid_bear_attack_t( "thrash", player, player -> find_specialization_spell( "Thrash" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2462,9 +2493,6 @@ struct nourish_t : public druid_heal_t
   nourish_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_specialization_spell( "Nourish" ), options_str )
   {
-
-    //base_dd_multiplier *= 1.0 + p -> talent.empowered_touch -> mod_additive( P_GENERIC );
-    //base_execute_time  += p -> talent.naturalist -> mod_additive_time( P_CAST_TIME );
   }
 
   virtual void execute()
@@ -3031,6 +3059,25 @@ struct cat_form_t : public druid_spell_t
   }
 };
 
+// Celestial Alignment ======================================================
+
+struct celestial_alignment_t : public druid_spell_t
+{
+  celestial_alignment_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "celestial_alignment", player, player -> specialization.celestial_alignment )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    // TODO: One buff per spec?
+    druid_spell_t::execute();
+  }
+};
+
 // Enrage ===================================================================
 
 struct enrage_t : public druid_spell_t
@@ -3122,6 +3169,26 @@ struct faerie_fire_t : public druid_spell_t
       target -> debuffs.weakened_armor -> trigger( 3 );
   }
 };
+
+// Incarnation ==============================================================
+
+struct incarnation_t : public druid_spell_t
+{
+  incarnation_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "incarnation", player, player -> talent.incarnation )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    // TODO: One buff per spec?
+    druid_spell_t::execute();
+  }
+};
+
 
 // Innervate Buff ===========================================================
 
@@ -3822,7 +3889,7 @@ struct treants_spell_t : public druid_spell_t
   /  http://mop.wowhead.com/spell=102706 Summons 3 treants to protect the summoner and nearby allies for 1 min. (Bear is schtronk)
   */
   treants_spell_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "treants", player, player -> find_specialization_spell( "Force of Nature" ) )
+    druid_spell_t( "treants", player, player -> talent.force_of_nature )
   {
     parse_options( NULL, options_str );
 
@@ -3844,7 +3911,7 @@ struct tree_of_life_t : public druid_spell_t
 {
   // TODO: Only available with the right specialization + talent combo
   tree_of_life_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "tree_of_life", player, player -> find_specialization_spell( "Tree of Life" ) )
+    druid_spell_t( "tree_of_life", player, player -> find_class_spell( "Incarnation: Tree of Life" ) )
   {
     parse_options( NULL, options_str );
   }
@@ -4108,6 +4175,7 @@ void druid_t::init_spells()
   spell.eclipse      = find_spell( 81070 );
   specialization.eclipse                = find_specialization_spell( "Eclipse" );
   specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
+  specialization.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
   specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
   specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
@@ -4119,7 +4187,7 @@ void druid_t::init_spells()
   specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   specialization.moonkin_form_bonuses   = find_spell( 24905 ); // This is the passive applied on shapeshift!
 
-  specialization.vengeance       = find_specialization_spell( "" );
+  specialization.vengeance       = find_specialization_spell( "Vengeance" );
 
 
   // Masteries
@@ -4209,9 +4277,6 @@ void druid_t::init_base()
 
   stats_initial.attack_power_per_strength = 1.0;
   stats_initial.spell_power_per_intellect = 1.0;
-
-  // FIXME! Level-specific!  Should be form-specific!
-  stats_initial.armor_multiplier  = 1.0 + talent.thick_hide -> effect1().percent();
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -5059,11 +5124,12 @@ void player_t::druid_init( sim_t* sim )
 {
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
+    player_t* p = sim -> actor_list[ i ];
 #if SC_DRUID == 1
     // TODO: Figure this out
     //p -> buffs.innervate              = new innervate_buff_t( p );
+    p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
 #else
-    player_t* p = sim -> actor_list[ i ];
     p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
   }
