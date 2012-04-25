@@ -736,63 +736,13 @@ double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 // ==========================================================================
 
 warlock_guardian_pet_t::warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt ) :
-  warlock_pet_t( sim, owner, pet_name, pt, true ),
-  snapshot_crit( 0 ), snapshot_haste( 0 ), snapshot_sp( 0 ), snapshot_mastery( 0 )
+  warlock_pet_t( sim, owner, pet_name, pt, true )
 {}
 
 void warlock_guardian_pet_t::summon( timespan_t duration )
 {
   reset();
   warlock_pet_t::summon( duration );
-  // Guardians use snapshots
-  snapshot_crit = owner -> composite_spell_crit();
-  snapshot_haste = owner -> spell_haste;
-  snapshot_sp = owner -> composite_spell_power( SCHOOL_MAX );
-  snapshot_mastery = owner -> composite_mastery();
-}
-
-double warlock_guardian_pet_t::composite_attack_crit( const weapon_t* ) const
-{
-  return snapshot_crit;
-}
-
-double warlock_guardian_pet_t::composite_attack_expertise( const weapon_t* ) const
-{
-  return 0;
-}
-
-double warlock_guardian_pet_t::composite_attack_haste() const
-{
-  return snapshot_haste;
-}
-
-double warlock_guardian_pet_t::composite_attack_hit() const
-{
-  return 0;
-}
-
-double warlock_guardian_pet_t::composite_attack_power() const
-{
-  double ap = 0;
-  ap += snapshot_sp * ap_per_owner_sp;
-  return ap;
-}
-
-double warlock_guardian_pet_t::composite_spell_crit() const
-{
-  return snapshot_crit;
-}
-
-double warlock_guardian_pet_t::composite_spell_haste() const
-{
-  return snapshot_haste;
-}
-
-double warlock_guardian_pet_t::composite_spell_power( const school_type_e /*school*/ ) const
-{
-  double sp = 59; // FIXME: Mysterious base spell power. Needs more testing/confirmation for all guardians, especially at level 90.
-  sp += snapshot_sp;
-  return sp;
 }
 
 // ==========================================================================
@@ -933,10 +883,10 @@ infernal_pet_t::infernal_pet_t( sim_t* sim, warlock_t* owner ) :
   ap_per_owner_sp = 0.566;
 }
 
-double infernal_pet_t::composite_spell_power( const school_type_e /*school*/ ) const
+double infernal_pet_t::composite_spell_power( const school_type_e school ) const
 {
   // The infernal, for some reason, does not appear to get the "hidden" base 59 sp
-  return snapshot_sp;
+  return owner -> composite_spell_power( school );
 }
 
 void infernal_pet_t::init_base()

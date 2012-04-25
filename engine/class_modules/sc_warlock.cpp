@@ -581,7 +581,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 2;
+    tick_power_mod = 2; // from tooltip
   }
 
   virtual double action_multiplier( const action_state_t* s ) const

@@ -292,18 +292,8 @@ struct warlock_main_pet_t : public warlock_pet_t
 
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
-  double snapshot_crit, snapshot_haste, snapshot_sp, snapshot_mastery;
-
   warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
   virtual void summon( timespan_t duration=timespan_t::zero() );
-  virtual double composite_attack_crit( const weapon_t* ) const;
-  virtual double composite_attack_expertise( const weapon_t* ) const;
-  virtual double composite_attack_haste() const;
-  virtual double composite_attack_hit() const;
-  virtual double composite_attack_power() const;
-  virtual double composite_spell_crit() const;
-  virtual double composite_spell_haste() const;
-  virtual double composite_spell_power( school_type_e school ) const;
 };
 
 // ==========================================================================
