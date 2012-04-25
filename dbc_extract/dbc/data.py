@@ -484,6 +484,14 @@ class DBCRecord(object):
         for i in self._fields:
             s += '%s=%s ' % (i, (self._field_fmt[self._fields.index(i)] % getattr(self, i)).strip())
 
+        if self._dbc_parser._options.debug == True:
+            s += 'bytes=['
+            for b in xrange(0, len(self._record)):
+                s += '%.02x' % ord(self._record[b])
+                if (b + 1) % 4 == 0 and b < len(self._record) - 1:
+                    s += ' '
+            
+            s += ']'
         return s
 
 class SpellEffect(DBCRecord):
@@ -1098,7 +1106,8 @@ def initialize_data_model(build, obj):
                 cls_field_fmt.append('%u')
                 cls_format.append('I')
                 setattr(cls, field, 0)
-                
+                setattr(cls, '%s_raw' % field, 0)
+        
         setattr(cls, '_fields', cls_fields)
         setattr(cls, '_format', cls_format)
         setattr(cls, '_field_fmt', cls_field_fmt)
@@ -1152,6 +1161,7 @@ def initialize_data_model(build, obj):
                     
                     cls._field_fmt.insert(idx_field + 1, field_format)
                     setattr(cls, field_name, 0)
+                    setattr(cls, '%s_raw' % field_name, 0)
                 elif diff_data[1] == _REMOVE_FIELD:
                     idx_field = cls._fields.index(diff_data[0])
                     if idx_field < 0:
