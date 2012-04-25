@@ -6,18 +6,34 @@
 // ==========================================================================
 // MoP TODO
 // ==========================================================================
+// Fire Elemental:
+// - Fire blast is on a ~6second cooldown, like spell data indicates
+// - Melee swing every second, does not inherit owner haste
+// - Seems to inherit owner crit/spellcrit
+// - Inherits owner's crit damage bonus
+// - Fire blast base damage might be 1 + (owner_level - 10) or so
+// - Separate SP/INT scaling seems to be gone, seems to inherit ~0.577425 of 
+//   owner spell power (at 85), needs validation at 90
+// - Stats update dynamically
+// - Even with flame shock on target and meleeing, elemental suffers from an
+//   idle time, around 3.5 seconds. Idle time here is defined as the interval 
+//   between the summon event from Fire Elemental Totem, to the first action 
+//   performed by the elemental
+// - Receives 10.5 hit points per stamina
+// 
 // Code:
 // - Ascendancy
 // - Redo Totem system
 // - Talents Totemic Restoration, Ancestral Swiftness Instacast
 //
 // General:
+// - Echo of the Elements proc rates nearer to release, currently (~late April 2k12) 
+//   tested to 30% for Enhancement, 6% for Elemental / Restoration (1k LB casts both)
 // - Class base stats for 87..90
 // - Unleashed fury
 //   * Flametongue: Additive or Multiplicative modifier (has a new spell data aura type)
 //   * Windfury: Static Shock proc% (same as normal proc%?)
 // - (Fire|Earth) Elemental scaling with and without Primal Elementalist
-// - Echo of Elements proc% (Enhancement)
 // - Searing totem base damage scaling
 // - Glyph of Telluric Currents
 //   * Additive or Multiplicative with other modifiers (spell data indicates additive)
@@ -36,9 +52,6 @@
 // ==========================================================================
 // BUGS
 // ==========================================================================
-// Cataclysm:
-//   Searing Totem is double dipping to Totem of Wrath
-//   Searing Totem's base damage range is wrong in spell data
 // ==========================================================================
 
 #include "simulationcraft.hpp"
@@ -800,30 +813,6 @@ struct earth_elemental_pet_t : public pet_t
   }
 };
 
-// ==========================================================================
-// Pet Fire Elemental
-// New modeling for fire elemental, based on cata beta tests
-// - Fire elemental does not gain any kind of attack-power based bonuses,
-//   it scales purely on spellpower
-// - Fire elemental takes a snapshot of owner's Intellect and pure Spell Power
-// - Fire elemental gets 7.5 health and 4.5 mana per point of owner's Stamina
-//   and Intellect, respectively
-// - DBC Data files gave coefficients for spells it does, melee coefficient
-//   is based on empirical testing
-// - Fire elemental gains Spell Power (to power abilities) with a different
-//   multiplier for Intellect and pure Spell Power. Current numbers are from
-//   Cataclysm beta, level 85 shaman.
-// - Fire Elemental base damage values are from Cataclysm, level 85
-// - Fire Elemental now has a proper action list, using Fire Blast and Fire Nova
-//   with random cooldowns to do damage to the target. In addition, both
-//   Fire Nova and Fire Blast cause the Fire Elemental to reset the swing timer,
-//   and an on-going Fire Nova cast will also clip a swing.
-// TODO:
-// - Analysis of in-game Fire Elemental Fire Nova and Fire Blast ability cooldown
-//   distributions would help us make a more realistic model. The current values
-//   of 5-20 seconds are not very well researched.
-// ==========================================================================
-
 struct fire_elemental_pet_t : public pet_t
 {
   struct travel_t : public action_t
@@ -1040,10 +1029,11 @@ struct fire_elemental_pet_t : public pet_t
   {
     pet_t::init_base();
 
-    resources.base[ RESOURCE_HEALTH ] = 46430; // Approximated from lvl83 fire elem with naked shaman
-    resources.base[ RESOURCE_MANA   ] = 85080; //
+    resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
+    resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
 
     //mana_per_intellect               = 4.5;
+    //hp_per_stamina = 10.5;
 
     main_hand_weapon.type            = WEAPON_BEAST;
     main_hand_weapon.min_dmg         = 427; // Level 85 Values, approximated
@@ -1498,8 +1488,8 @@ struct searing_flames_t : public shaman_spell_t
     tick_may_crit    = true;
     proc             = true;
     dot_behavior     = DOT_REFRESH;
-    hasted_ticks     = false;
-    may_crit         = false;
+    hasted_ticks     = true;
+    may_crit         = true;
     stateless        = true;
     update_flags     = 0;
 
@@ -1516,7 +1506,7 @@ struct searing_flames_t : public shaman_spell_t
     shaman_spell_t::init();
 
     // Override snapshot flags
-    snapshot_flags = STATE_CRIT | STATE_MUL_TA;
+    snapshot_flags = STATE_HASTE | STATE_CRIT | STATE_MUL_TA;
   }
 
   virtual double composite_ta_multiplier( const action_state_t* s ) const
@@ -1571,8 +1561,9 @@ struct unleash_flame_t : public shaman_spell_t
   unleash_flame_t( shaman_t* player ) :
     shaman_spell_t( "unleash_flame", player, player -> dbc.spell( 73683 ) )
   {
+    harmful              = true;
     background           = true;
-    proc                 = true;
+    //proc                 = true;
     stateless            = true;
 
     // Don't cooldown here, unleash elements ability will handle it
@@ -2073,7 +2064,7 @@ void shaman_spell_t::execute()
   if ( maelstrom && p() -> primary_tree() == SHAMAN_ENHANCEMENT )
     p() -> proc.maelstrom_weapon_used[ p() -> buff.maelstrom_weapon -> check() ] -> occur();
 
-  if ( harmful && is_direct_damage() && ! is_dtr_action &&
+  if ( harmful && ! proc && is_direct_damage() && ! is_dtr_action &&
        p() -> talent.echo_of_the_elements -> ok() &&
        p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
   {
@@ -3698,9 +3689,9 @@ void shaman_t::init()
   if ( eoe_proc_chance == 0 )
   {
     if ( primary_tree() == SHAMAN_ENHANCEMENT )
-      eoe_proc_chance = 0.25; /// TODO: Enhancement proc chance needs testing
+      eoe_proc_chance = 0.30; /// Tested, ~30% (1k LB casts)
     else
-      eoe_proc_chance = 0.06; /// Resto / Elemental proc chance is ~6%
+      eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
   }
 }
 
@@ -3741,8 +3732,8 @@ void shaman_t::init_spells()
   specialization.static_shock        = find_specialization_spell( "Static Shock" );
 
   // Masteries
-  mastery.elemental_overload         = find_mastery_spell( "Mastery: Elemental Overload" );
-  mastery.enhanced_elements          = find_mastery_spell( "Mastery: Enhanced Elements" );
+  mastery.elemental_overload         = find_mastery_spell( SHAMAN_ELEMENTAL   );
+  mastery.enhanced_elements          = find_mastery_spell( SHAMAN_ENHANCEMENT );
 
   // Talents
   talent.call_of_the_elements        = find_talent_spell( "Call of the Elements" );
