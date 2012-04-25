@@ -712,6 +712,9 @@ struct immolate_t : public warlock_spell_t
   immolate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Immolate" )
   {
+    // No tick power mod in dbc for some reason
+    tick_power_mod = direct_power_mod;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new immolate_t( p, true );
@@ -739,8 +742,12 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Conflagrate" )
   {
-    current_charges = max_charges = 2;
-    recharge_seconds = 12;
+    if ( p -> glyphs.conflagrate -> ok() )
+    {
+      current_charges = max_charges = 2;
+      recharge_seconds = 12;
+      cooldown = 0;
+    }
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -795,18 +802,14 @@ struct incinerate_t : public warlock_spell_t
     {
       warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
 
-      if ( td -> dots_immolate -> ticking )
-      {
-        double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
-        p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
+      double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
+      p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
 
-        // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
-        if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
-          p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
-        else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
-          p() -> ember_react = sim -> current_time;
-
-      }
+      // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
+      if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
+        p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
+      else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
+        p() -> ember_react = sim -> current_time;
 
       trigger_soul_leech( p(), s -> result_amount );
     }
@@ -833,8 +836,6 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
-    if ( p -> mastery_spells.emberstorm -> ok() ) base_costs[ RESOURCE_BURNING_EMBER ] = 10;
-
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new soul_fire_t( p, true );
@@ -879,18 +880,6 @@ struct soul_fire_t : public warlock_spell_t
     trigger_decimation( this, s -> result );
   }
 
-  virtual resource_type_e current_resource() const
-  {
-    if ( p() -> mastery_spells.emberstorm -> ok() && p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= base_costs[ RESOURCE_BURNING_EMBER ] )
-    {
-      return RESOURCE_BURNING_EMBER;
-    }
-    else
-    {
-      return warlock_spell_t::current_resource();
-    }
-  }
-
   virtual result_type_e calculate_result( double crit, unsigned int level )
   {
     result_type_e r = warlock_spell_t::calculate_result( crit, level );
@@ -908,11 +897,71 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
-    // FIXME: This may be a bug, but on beta it's currently (2012/04/24) not scaling with crit when using embers
-    if ( current_resource() != RESOURCE_BURNING_EMBER )
-      m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
+    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
 
     return m;
+  }
+};
+
+// Soul Fire Spell ==========================================================
+
+struct chaos_bolt_t : public warlock_spell_t
+{
+  chaos_bolt_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Chaos Bolt" )
+  {
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new chaos_bolt_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual result_type_e calculate_result( double crit, unsigned int level )
+  {
+    result_type_e r = warlock_spell_t::calculate_result( crit, level );
+
+    // Chaos Bolt always crits
+    if ( result_is_hit( r ) ) return RESULT_CRIT;
+
+    return r;
+  }
+
+  virtual double action_multiplier( const action_state_t* s ) const
+  {
+    double m = warlock_spell_t::action_multiplier( s );
+
+    // FIXME: Test whether chaos bolt actually scales with crit
+    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
+
+    return m;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    for ( int i=0; i < 4; i++ )
+    {
+      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
+    }
+
+    if ( p() -> buffs.backdraft -> check() == 3 )
+    {
+      p() -> buffs.backdraft -> decrement( 3 );
+    }
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    timespan_t h = warlock_spell_t::execute_time();
+
+    if ( p() -> buffs.backdraft -> stack() == 3 )
+    {
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
+    }
+
+    return h;
   }
 };
 
@@ -924,9 +973,6 @@ struct life_tap_t : public warlock_spell_t
     warlock_spell_t( p, "Life Tap" )
   {
     harmful = false;
-
-    if ( p -> glyphs.life_tap -> ok() )
-      trigger_gcd += p -> glyphs.life_tap -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -1676,9 +1722,9 @@ double warlock_t::composite_spell_crit() const
   if ( primary_tree() == WARLOCK_DESTRUCTION )
   {
     if ( buffs.dark_soul -> up() )
-      sc += spec.dark_soul -> effectN( 1 ).percent();
+      sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
-      sc += spec.dark_soul -> effectN( 1 ).percent() / 6;
+      sc += spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent();
   }
 
   return sc;
@@ -1691,9 +1737,9 @@ double warlock_t::composite_spell_haste() const
   if ( primary_tree() == WARLOCK_AFFLICTION )
   {
     if ( buffs.dark_soul -> up() )
-      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() );
+      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) );
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
-      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() / 6 );
+      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent() );
   }
 
   return h;
@@ -1706,9 +1752,9 @@ double warlock_t::composite_mastery() const
   if ( primary_tree() == WARLOCK_DEMONOLOGY )
   {
     if ( buffs.dark_soul -> up() )
-      m += spec.dark_soul -> effectN( 1 ).base_value();
+      m += spec.dark_soul -> effectN( 1 ).base_value() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
-      m += spec.dark_soul -> effectN( 1 ).base_value() / 6;
+      m += spec.dark_soul -> effectN( 1 ).base_value() * glyphs.dark_soul -> effectN( 1 ).percent();
   }
 
   return m;
@@ -1735,6 +1781,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "corruption"            ) a = new            corruption_t( this );
   else if ( name == "agony"                 ) a = new                 agony_t( this );
   else if ( name == "doom"                  ) a = new                  doom_t( this );
+  else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
   else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
   else if ( name == "drain_life"            ) a = new            drain_life_t( this );
   else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
@@ -1866,9 +1913,9 @@ void warlock_t::init_spells()
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
 
   // Mastery
-  mastery_spells.emberstorm          = find_mastery_spell( "Mastery: Emberstorm" );
-  mastery_spells.potent_afflictions  = find_mastery_spell( "Mastery: Potent Afflictions" );
-  mastery_spells.master_demonologist = find_mastery_spell( "Mastery: Master Demonologist" );
+  mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
+  mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
+  mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
   // Talents
   talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
@@ -1896,9 +1943,11 @@ void warlock_t::init_spells()
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   // Major
-  glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
+  glyphs.dark_soul            = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training       = find_glyph_spell( "Glyph of Demon Training" );
   glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
+  glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
 }
 
 // warlock_t::init_base =====================================================

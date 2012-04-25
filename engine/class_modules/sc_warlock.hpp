@@ -160,9 +160,11 @@ struct warlock_t : public player_t
 
   struct glyphs_t
   {
-    const spell_data_t* life_tap;
+    const spell_data_t* conflagrate;
+    const spell_data_t* dark_soul;
     const spell_data_t* demon_training;
     const spell_data_t* doom;
+    const spell_data_t* life_tap;
   };
   glyphs_t glyphs;
 
