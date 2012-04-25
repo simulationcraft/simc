@@ -746,7 +746,7 @@ struct conflagrate_t : public warlock_spell_t
     {
       current_charges = max_charges = 2;
       recharge_seconds = 12;
-      cooldown = 0;
+      cooldown -> duration = timespan_t::zero();
     }
 
     if ( ! dtr && p -> has_dtr )
