@@ -147,8 +147,8 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 87532, false );
   if ( s && s -> ok() && s -> effectN( 1 ).ok() )
   {
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.55322;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.52018;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.047;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.988;
   }
 
   // PALADIN

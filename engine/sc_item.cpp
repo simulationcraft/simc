@@ -738,18 +738,6 @@ bool item_t::decode_enchant()
     return true;
   }
 
-  if ( encoded_enchant_str == "lightweave_embroidery" ||
-       encoded_enchant_str == "lightweave_embroidery_old" ||
-       encoded_enchant_str == "lightweave" ||
-       encoded_enchant_str == "lightweave_old" ||
-       encoded_enchant_str == "swordguard_embroidery" ||
-       encoded_enchant_str == "swordguard_embroidery_old" ||
-       encoded_enchant_str == "darkglow_embroidery" ||
-       encoded_enchant_str == "darkglow_embroidery_old" )
-  {
-    stats.add_stat( STAT_SPIRIT, 1 );
-  }
-
   std::string use_str;
   if ( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
