@@ -597,7 +597,7 @@ struct sim_end_event_t : event_t
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-  description( 0 ), parent( p ),
+  control( 0 ), parent( p ),
   target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ),
   canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
@@ -693,7 +693,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   if ( parent )
   {
     // Inherit setup
-    setup( parent -> description );
+    setup( parent -> control );
 
     // Inherit 'scaling' settings from parent because these are set outside of the config file
     scaling -> scale_stat  = parent -> scaling -> scale_stat;
@@ -2116,18 +2116,18 @@ bool sim_t::parse_option( const std::string& name,
 
 // sim_t::setup =============================================================
 
-bool sim_t::setup( sim_description_t* d )
+bool sim_t::setup( sim_control_t* c )
 {
   // Limitation: setup+execute is a one-way action that cannot be repeated or reset
 
-  description = d;
+  control = c;
 
   if ( ! parent ) cache::advance_era();
 
   // Global Options
-  for ( size_t i=0; i < description -> options.size(); i++ )
+  for ( size_t i=0; i < control -> options.size(); i++ )
   {
-    option_tuple_t& o = description -> options[ i ];
+    option_tuple_t& o = control -> options[ i ];
     if ( o.scope != "global" ) continue;
     parse_option( o.name, o.value );
   }
@@ -2135,18 +2135,18 @@ bool sim_t::setup( sim_description_t* d )
   // Combat
   // Try very hard to limit this to just what would be displayed on the gui.
   // Super-users can use misc options.
-  // xyz = description -> combat.xyz;
+  // xyz = control -> combat.xyz;
 
   // Players
-  for ( size_t i=0; i < description -> players.size(); i++ )
+  for ( size_t i=0; i < control -> players.size(); i++ )
   {
-    player_t::create( this, description -> players[ i ] );
+    player_t::create( this, control -> players[ i ] );
   }
 
   // Player Options
-  for ( size_t i=0; i < description -> options.size(); i++ )
+  for ( size_t i=0; i < control -> options.size(); i++ )
   {
-    option_tuple_t& o = description -> options[ i ];
+    option_tuple_t& o = control -> options[ i ];
     if ( o.scope == "global" ) continue;
     player_t* p = find_player( o.scope );
     if ( p )
@@ -2273,14 +2273,14 @@ int sim_t::main( int argc, char** argv )
   http_t::cache_load();
   dbc_t::init();
 
-  sim_description_t description;
+  sim_control_t control;
 
-  if ( ! description.options.parse_args( argc, argv ) )
+  if ( ! control.options.parse_args( argc, argv ) )
   {
     errorf( "ERROR! Incorrect option format..\n" );
     return 0;
   }
-  else if ( ! setup( &description ) )
+  else if ( ! setup( &control ) )
   {
     errorf( "ERROR! Setup failure...\n" );
     return 0;

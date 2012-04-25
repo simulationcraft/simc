@@ -1262,58 +1262,77 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
            dps_error_str.c_str() );
 }
 
-void print_html_gain( html_report_stream& s, const gain_t* g, int& j, bool report_overflow = true )
+void print_html_gain( FILE* file, tabs_t tabs, const gain_t* g, int& j, bool report_overflow = true )
 {
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
-      ++j;
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
-      s.tabs() << "<tr" << ( ( j & 1 ) ? " class=\"odd\"" : "" ) << ">\n";
-      s.increase_tabs();
-      s.tabs() << "<td class=\"left\">" << g -> name_str << "</td>\n";
-      s.tabs() << "<td class=\"left\">" << util_t::inverse_tokenize( util_t::resource_type_string( i ) ) << "</td>\n";
-      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> count[ i ], 1 ) << "</td>\n";
-      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> actual[ i ], 1 ) << "</td>\n";
-      s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> actual[ i ] / g -> count[ i ], 1 ) << "</td>\n";
-      if ( report_overflow )
+      fprintf( file, "%s<tr", *tabs );
+      if ( !( j & 1 ) )
       {
-        s.tabs() << "<td class=\"right\">" << util_t::to_string( g -> overflow[ i ], 1 ) << "</td>\n";
-        s.tabs() << "<td class=\"right\">" << util_t::to_string( overflow_pct, 1 ) << "%</td>\n";
+        fprintf( file, " class=\"odd\"" );
       }
-      s.decrease_tabs();
-      s.tabs() << "</tr>\n";
+      ++j;
+      fprintf( file, ">\n" );
+      ++tabs;
+      fprintf( file,
+               "%s<td class=\"left\">%s</td>\n"
+               "%s<td class=\"left\">%s</td>\n"
+               "%s<td class=\"right\">%.1f</td>\n"
+               "%s<td class=\"right\">%.1f</td>\n"
+               "%s<td class=\"right\">%.1f</td>\n",
+               *tabs, g -> name(),
+               *tabs, util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
+               *tabs, g -> count[ i ],
+               *tabs, g -> actual[ i ],
+               *tabs, g -> actual[ i ] / g -> count[ i ] );
+      if ( report_overflow )
+        fprintf( file,
+               "%s<td class=\"right\">%.1f</td>\n"
+               "%s<td class=\"right\">%.1f%%</td>\n",
+               *tabs, g -> overflow[ i ],
+               *tabs, overflow_pct );
+      --tabs;
+      fprintf( file, "%s</tr>\n", *tabs );
     }
   }
 }
+
 // print_html_player_resources ==============================================
 
 void print_html_player_resources( FILE* file, const player_t* p, const player_t::report_information_t& ri )
 {
-// Resources Section
+  tabs_t tabs(4); // this should get passed in
 
-  fprintf( file,
-           "\t\t\t\t<div class=\"player-section gains\">\n"
-           "\t\t\t\t\t<h3 class=\"toggle\">Resources</h3>\n"
-           "\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-           "\t\t\t\t\t\t<table class=\"sc mt\">\n"
-           "\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t<th>Resource Usage</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Type</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Count</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Total</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Average</th>\n"
-           "\t\t\t\t\t\t\t\t<th>RPE</th>\n"
-           "\t\t\t\t\t\t\t\t<th>APR</th>\n"
-           "\t\t\t\t\t\t\t</tr>\n" );
+  // Resources Section
 
-  fprintf( file,
-           "\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t<th class=\"left small\">%s</th>\n"
-           "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
-           "\t\t\t\t\t\t\t</tr>\n",
-           p -> name() );
+  fprintf( file, "%s<div class=\"player-section gains\">\n", *tabs ); 
+  ++tabs;
+  fprintf( file, "%s<h3 class=\"toggle\">Resources</h3>\n", *tabs );
+  fprintf( file, "%s<div class=\"toggle-content hide\">\n", *tabs ); 
+  ++tabs;
+  fprintf( file, "%s<table class=\"sc mt\">\n", *tabs );
+  ++tabs;
+  fprintf( file, "%s<tr>\n", *tabs );
+  ++tabs;
+  fprintf( file, "%s<th>Resource Usage</th>\n", *tabs );
+  fprintf( file, "%s<th>Type</th>\n",           *tabs );
+  fprintf( file, "%s<th>Count</th>\n",          *tabs );
+  fprintf( file, "%s<th>Total</th>\n",          *tabs );
+  fprintf( file, "%s<th>Average</th>\n",        *tabs );
+  fprintf( file, "%s<th>RPE</th>\n",            *tabs );
+  fprintf( file, "%s<th>APR</th>\n",            *tabs );
+  --tabs;
+  fprintf( file, "%s</tr>\n", *tabs );
+
+  fprintf( file, "%s<tr>\n", *tabs );
+  ++tabs;
+  fprintf( file, "%s<th class=\"left small\">%s</th>\n", *tabs, p -> name() );
+  fprintf( file, "%s<td colspan=\"4\" class=\"filler\"></td>\n", *tabs );
+  --tabs;
+  fprintf( file, "%s</tr>\n", *tabs );
 
   int k = 0;
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
@@ -1338,41 +1357,41 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
         if ( first )
         {
           first = false;
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-                   "\t\t\t\t\t\t\t\t<td colspan=\"4\" class=\"filler\"></td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   pet -> name_str.c_str() );
+          fprintf( file, "%s<tr>\n", *tabs );
+	  ++tabs;
+	  fprintf( file, "%s<th class=\"left small\">pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
+	  fprintf( file, "%s<td colspan=\"4\" class=\"filler\"></td>\n", *tabs );
+	  --tabs;
+	  fprintf( file, "%s</tr>\n", *tabs );
         }
         k = print_html_action_resource( file, s, k );
       }
     }
   }
 
-  fprintf( file,
-           "\t\t\t\t\t\t</table>\n" );
+  --tabs;
+  fprintf( file, "%s</table>\n", *tabs );
 
-// Resource Gains Section
-  fprintf( file,
-           "\t\t\t\t\t\t<table class=\"sc\">\n"
-           "\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t<th>Resource Gains</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Type</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Count</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Total</th>\n"
-           "\t\t\t\t\t\t\t\t<th>Average</th>\n"
-           "\t\t\t\t\t\t\t\t<th colspan=\"2\">Overflow</th>\n"
-           "\t\t\t\t\t\t\t</tr>\n" );
+  // Resource Gains Section
+  fprintf( file, "%s<table class=\"sc\">\n", *tabs ); 
+  ++tabs;
+  fprintf( file, "%s<tr>\n", *tabs ); 
+  ++tabs;
+  fprintf( file, "%s<th>Resource Gains</th>\n", *tabs );
+  fprintf( file, "%s<th>Type</th>\n", *tabs );
+  fprintf( file, "%s<th>Count</th>\n", *tabs );
+  fprintf( file, "%s<th>Total</th>\n", *tabs );
+  fprintf( file, "%s<th>Average</th>\n", *tabs );
+  fprintf( file, "%s<th colspan=\"2\">Overflow</th>\n", *tabs ); 
+  --tabs;
+  fprintf( file, "%s</tr>\n", *tabs ); 
+  --tabs;
 
   {
-    html_report_stream s;
-    s.set_tabs( 6 );
-
     int j = 0;
     for ( gain_t* g = p -> gain_list; g; g = g -> next )
     {
-      print_html_gain( s, g, j );
+      print_html_gain( file, tabs, g, j );
     }
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
@@ -1384,22 +1403,21 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
         if ( first )
         {
           first = false;
-          fprintf( file,
-                   "\t\t\t\t\t\t\t<tr>\n"
-                   "\t\t\t\t\t\t\t\t<th>pet - %s</th>\n"
-                   "\t\t\t\t\t\t\t\t<td colspan=\"6\" class=\"filler\"></td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n",
-                   pet -> name_str.c_str() );
+	  ++tabs;
+          fprintf( file, "%s<tr>\n", *tabs );
+	  ++tabs;
+	  fprintf( file, "%s<th>pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
+	  fprintf( file, "%s<td colspan=\"6\" class=\"filler\"></td>\n", *tabs );
+	  --tabs;
+	  fprintf( file, "%s</tr>\n", *tabs );
+	  --tabs;
         }
-        print_html_gain( s, g, j );
+        print_html_gain( file, tabs, g, j );
       }
     }
-
-    fprintf( file, "%s", s.str().c_str() );
   }
 
-  fprintf( file,
-           "\t\t\t\t\t\t</table>\n" );
+  fprintf( file, "%s</table>\n", *tabs );
 
   // Resource Consumption Section
   fprintf( file,

@@ -52,29 +52,6 @@ struct report {
   static void print_html_player ( FILE*, player_t*, int );
   static void print_xml         ( sim_t* );
   static void print_suite       ( sim_t* );
-
-  static const char* html_tabs( unsigned i )
-  {
-    static const char* a[] =
-    {
-      "", // 0
-      "\t", // 1
-      "\t\t", // 2
-      "\t\t\t", // 3
-      "\t\t\t\t", // 4
-      "\t\t\t\t\t", // 5
-      "\t\t\t\t\t\t", // 6
-      "\t\t\t\t\t\t\t", // 7
-      "\t\t\t\t\t\t\t\t", // 8
-      "\t\t\t\t\t\t\t\t\t", // 9
-      "\t\t\t\t\t\t\t\t\t\t", // 10
-      "\t\t\t\t\t\t\t\t\t\t\t" // 11
-    };
-#ifndef NDEBUG
-    assert( i < sizeof_array( a ) );
-#endif
-    return a[ i ];
-  }
 };
 
 
@@ -104,20 +81,37 @@ struct compare_hat_donor_interval
   }
 };
 
-struct html_report_stream : public std::ostringstream
+struct tabs_t
 {
-private:
-  unsigned _tabs;
-public:
-  html_report_stream( unsigned t = 0 ) : std::ostringstream(), _tabs( t ) {}
-  void increase_tabs() { ++_tabs; }
-  void decrease_tabs() { --_tabs; }
-  void set_tabs( unsigned t ) { _tabs = t; }
-  html_report_stream& tabs() {
-    *this << report::html_tabs( _tabs );
-    return *this;
+  int level;
+  tabs_t( int l=0 ) : level(l) {}
+  tabs_t operator+(int c) { return tabs_t(level+c); }
+  tabs_t operator-(int c) { return tabs_t(level-c); }
+  tabs_t operator++() { ++level; return *this; }
+  tabs_t operator--() { --level; return *this; }
+  tabs_t operator++(int c) { level+=c; return *this; }
+  tabs_t operator--(int c) { level-=c; return *this; }
+  const char* operator*() 
+  { 
+    switch(level)
+    {
+    case  0: return "";
+    case  1: return "\t";
+    case  2: return "\t\t";
+    case  3: return "\t\t\t";
+    case  4: return "\t\t\t\t";
+    case  5: return "\t\t\t\t\t";
+    case  6: return "\t\t\t\t\t\t";
+    case  7: return "\t\t\t\t\t\t\t";
+    case  8: return "\t\t\t\t\t\t\t\t";
+    case  9: return "\t\t\t\t\t\t\t\t\t";
+    case 10: return "\t\t\t\t\t\t\t\t\t\t";
+    case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+    case 12: return "\t\t\t\t\t\t\t\t\t\t\t";
+    default: assert(0);
+    }
+    return NULL;
   }
 };
-
 
 #endif // SC_REPORT_HPP

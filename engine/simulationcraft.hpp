@@ -2418,7 +2418,7 @@ struct player_description_t
   // etc
 
   // flesh out API, these functions cannot depend upon sim_t
-  // ideally they remain static, but if not then move to sim_description_t
+  // ideally they remain static, but if not then move to sim_control_t
   static void load_bcp    ( player_description_t& /*etc*/ );
   static void load_wowhead( player_description_t& /*etc*/ );
   static void load_chardev( player_description_t& /*etc*/ );
@@ -2433,7 +2433,7 @@ struct combat_description_t
   // etc
 };
 
-struct sim_description_t
+struct sim_control_t
 {
   combat_description_t combat;
   std::vector<player_description_t> players;
@@ -2450,7 +2450,7 @@ struct sim_description_t
 
 struct sim_t : private thread_t
 {
-  sim_description_t* description;
+  sim_control_t* control;
   int         argc;
   char**      argv;
   sim_t*      parent;
@@ -2681,7 +2681,7 @@ public:
   void      create_options();
   bool      parse_option( const std::string& name, const std::string& value );
   bool      parse_options( int argc, char** argv );
-  bool      setup( sim_description_t* );
+  bool      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
   double    iteration_adjust();
