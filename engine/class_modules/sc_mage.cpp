@@ -313,14 +313,14 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct mage_spell_t : public spell_t
 {
-  bool may_hot_streak;
+  bool frozen, may_hot_streak;
   int dps_rotation;
   int dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
     spell_t( n, p, s, sc ),
-    may_hot_streak( false ),
+    frozen( false ), may_hot_streak( false ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
@@ -336,6 +336,7 @@ struct mage_spell_t : public spell_t
   virtual double cost() const;
   virtual double haste() const;
   virtual void   execute();
+  virtual void   player_buff();
   virtual timespan_t execute_time() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
@@ -348,13 +349,26 @@ struct water_elemental_pet_t : public pet_t
 {
   struct freeze_t : public spell_t
   {
-    freeze_t( water_elemental_pet_t* player, const std::string& options_str ):
-      spell_t( "freeze", player, player -> find_spell( 33395 ) )
+    freeze_t( water_elemental_pet_t* p, const std::string& options_str ):
+      spell_t( "freeze", p, p -> find_spell( 33395 ) )
     {
       parse_options( NULL, options_str );
       aoe = -1;
       may_crit = true;
       crit_multiplier *= 1.33;
+      base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
+    }
+
+    virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+    {
+      spell_t::impact( t, impact_result, travel_dmg );
+
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      if ( result_is_hit( impact_result ) )
+      {
+        p -> o() -> buffs.fingers_of_frost -> trigger();
+      }
     }
 
     virtual void player_buff()
@@ -363,6 +377,7 @@ struct water_elemental_pet_t : public pet_t
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
+      // FIXME: needs testing
       player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier() * 0.4;
       player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
@@ -370,13 +385,13 @@ struct water_elemental_pet_t : public pet_t
 
   struct water_bolt_t : public spell_t
   {
-    water_bolt_t( water_elemental_pet_t* player, const std::string& options_str ):
-      spell_t( "water_bolt", player, player -> find_spell( 31707 ) )
+    water_bolt_t( water_elemental_pet_t* p, const std::string& options_str ):
+      spell_t( "water_bolt", player, p -> find_spell( 31707 ) )
     {
       parse_options( NULL, options_str );
       may_crit = true;
       crit_multiplier *= 1.33;
-      direct_power_mod = 0.833;
+      base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
     virtual void player_buff()
@@ -385,6 +400,7 @@ struct water_elemental_pet_t : public pet_t
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
+      // FIXME: needs testing
       player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier() * 0.4;
       player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
@@ -399,7 +415,7 @@ struct water_elemental_pet_t : public pet_t
   }
 
   mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
+  { return debug_cast<mage_t*>( owner ); }
 
   virtual void init_base()
   {
@@ -955,6 +971,16 @@ timespan_t mage_spell_t::execute_time() const
   return t;
 }
 
+// mage_spell_t::player_buff ================================================
+
+void mage_spell_t::player_buff()
+{
+  spell_t::player_buff();
+
+  if ( frozen )
+    player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).coeff() * 0.01 * p() -> composite_mastery();
+}
+
 // ==========================================================================
 // Mage Spells
 // ==========================================================================
@@ -1096,6 +1122,14 @@ struct arcane_explosion_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( result_is_hit() )
+      p() -> buffs.arcane_charge -> trigger();
   }
 };
 
@@ -1255,6 +1289,16 @@ struct blizzard_shard_t : public mage_spell_t
     aoe = -1;
     background = true;
   }
+  
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  {
+    mage_spell_t::impact( t, impact_result, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent() );
+    }
+  }
 };
 
 struct blizzard_t : public mage_spell_t
@@ -1353,8 +1397,7 @@ struct combustion_t : public mage_spell_t
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td -> dots_pyroblast   );
-    base_td += calculate_dot_dps( td -> dots_flamestrike );
+    base_td += calculate_dot_dps( td -> dots_pyroblast );
 
     if ( p() -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
@@ -1462,7 +1505,7 @@ struct evocation_t : public mage_spell_t
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration *= 1.0 + p -> talents.invocation -> effectN( 1 ).percent();
+    cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
   }
 
   virtual void tick( dot_t* d )
@@ -1755,6 +1798,9 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual void execute()
   {
+    // Brain Freeze treats the target as frozen
+    frozen = p() -> buffs.brain_freeze -> check() > 0;
+
     mage_spell_t::execute();
 
     p() -> buffs.brain_freeze -> expire();
@@ -1828,7 +1874,7 @@ struct frozen_orb_t : public mage_spell_t
     if ( result_is_hit( impact_result ) )
     {
       p() -> buffs.fingers_of_frost -> trigger();
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent() );
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
   }
 
@@ -1844,8 +1890,11 @@ struct frozen_orb_t : public mage_spell_t
 
 struct ice_lance_t : public mage_spell_t
 {
+  double fof_multiplier;
+
   ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "ice_lance", p, p -> find_spell( 30455 ) )
+    mage_spell_t( "ice_lance", p, p -> find_spell( 30455 ) ),
+    fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 1 ).percent();
@@ -1853,11 +1902,20 @@ struct ice_lance_t : public mage_spell_t
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
+    fof_multiplier = p -> find_spell( 44544 ) -> effectN( 2 ).percent();
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new ice_lance_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void execute()
+  {
+    // Ice Lance treats the target as frozen with FoF up
+    frozen = p() -> buffs.fingers_of_frost -> check() > 0;
+    mage_spell_t::execute();
   }
 
   virtual void player_buff()
@@ -1867,7 +1925,7 @@ struct ice_lance_t : public mage_spell_t
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
       player_multiplier *= 4.0; // Built in bonus against frozen targets
-      player_multiplier *= 1.25; // Buff from Fingers of Frost
+      player_multiplier *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
     }
   }
 };
@@ -2786,7 +2844,7 @@ void mage_t::init_spells()
   spec.fingers_of_frost = find_class_spell( "Fingers of Frost" );
 
   // Mastery
-  spec.frostburn  = find_mastery_spell( MAGE_FROST ); // This is completely useless, as it only works against Frozen targets
+  spec.frostburn  = find_mastery_spell( MAGE_FROST );
   spec.ignite     = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept = find_mastery_spell( MAGE_ARCANE );
 
@@ -3192,7 +3250,7 @@ double mage_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   if ( buffs.mage_armor -> up() )
-    m += buffs.mage_armor -> data().effectN( 1 ).percent();
+    m += buffs.mage_armor -> data().effectN( 1 ).base_value();
 
   return m;
 }
