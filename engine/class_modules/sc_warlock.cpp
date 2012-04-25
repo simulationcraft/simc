@@ -801,8 +801,6 @@ struct incinerate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-
       double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
       p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
 
@@ -904,7 +902,7 @@ struct soul_fire_t : public warlock_spell_t
   }
 };
 
-// Soul Fire Spell ==========================================================
+// Chaos Bolt Spell =========================================================
 
 struct chaos_bolt_t : public warlock_spell_t
 {
