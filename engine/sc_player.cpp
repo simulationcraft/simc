@@ -4347,13 +4347,13 @@ rng_t* player_t::get_rng( const std::string& n )
 
   for ( rng = rng_list; rng; rng = rng -> next )
   {
-    if ( rng -> name_str == n )
+    if ( rng -> name_str() == n )
       return rng;
   }
 
   if ( ! rng )
   {
-    rng = rng_t::create( sim, n );
+    rng = rng_t::create( n );
     rng -> next = rng_list;
     rng_list = rng;
   }

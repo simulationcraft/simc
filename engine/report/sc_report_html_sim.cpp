@@ -382,9 +382,9 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
-    fprintf( file, "\t\t\t\t\t<map id='DPSMAP%lu' name='DPSMAP%lu'></map>\n", i, i );
+    fprintf( file, "\t\t\t\t\t<map id='DPSMAP%u' name='DPSMAP%u'></map>\n", i, i );
     fprintf( file,
-             "\t\t\t\t\t<img id='DPSIMG%lu' src=\"%s\" alt=\"DPS Chart\" />\n",
+             "\t\t\t\t\t<img id='DPSIMG%u' src=\"%s\" alt=\"DPS Chart\" />\n",
              i, ri.dps_charts[ i ].c_str() );
   }
 
@@ -408,7 +408,7 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
       }
       fprintf( file, ">\n" );
       fprintf( file,
-               "\t\t\t\t\t\t\t<th class=\"right\">%lu</th>\n"
+               "\t\t\t\t\t\t\t<th class=\"right\">%u</th>\n"
                "\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                "\t\t\t\t\t\t</tr>\n",
                i,
@@ -426,9 +426,9 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    fprintf( file, "\t\t\t\t\t<map id='HPSMAP%lu' name='HPSMAP%lu'></map>\n", i, i );
+    fprintf( file, "\t\t\t\t\t<map id='HPSMAP%u' name='HPSMAP%u'></map>\n", i, i );
     fprintf( file,
-             "\t\t\t\t\t<img id='HPSIMG%lu' src=\"%s\" alt=\"HPS Chart\" />\n",
+             "\t\t\t\t\t<img id='HPSIMG%u' src=\"%s\" alt=\"HPS Chart\" />\n",
              i, ri.hps_charts[ i ].c_str() );
   }
 

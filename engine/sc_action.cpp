@@ -203,7 +203,7 @@ action_t::action_t( action_type_e       ty,
 
   if ( &data() == &spell_data_not_found_t::singleton )
   {
-    sim -> errorf( "Player %s could not find action %s", player -> name(), name() );
+    sim -> errorf( "Player %s could not find spell data for action %s", player -> name(), name() );
     background = true; // prevent action from being executed
   }
 
@@ -630,7 +630,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 {
   if ( ! weapon || weapon_multiplier <= 0 ) return 0;
 
-  double dmg = sim -> range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
+  double dmg = sim -> averaged_range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
   timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
 
@@ -688,7 +688,7 @@ double action_t::calculate_tick_damage( result_type_e r, double power, double mu
 
 double action_t::calculate_direct_damage( result_type_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
 {
-  double dmg = sim -> range( base_dd_min, base_dd_max );
+  double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
   if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
 
@@ -740,7 +740,7 @@ double action_t::calculate_direct_damage( result_type_e r, int chain_target, uns
       max_glance = temp;
     }
 
-    dmg *= sim -> range( min_glance, max_glance ); // 0.75 against +3 targets.
+    dmg *= sim -> averaged_range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
   else if ( r == RESULT_CRIT )
   {

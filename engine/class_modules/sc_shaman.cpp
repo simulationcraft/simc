@@ -1052,7 +1052,6 @@ struct fire_elemental_pet_t : public pet_t
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 2.0 );
 
     rng_ability_cooldown             = get_rng( "fire_elemental_ability_cooldown" );
-    rng_ability_cooldown -> average_range = 0;
 
     cooldown_fire_nova               = get_cooldown( "fire_nova" );
     cooldown_fire_blast              = get_cooldown( "fire_blast" );
@@ -1255,7 +1254,6 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       stateless = true;
 
       imp_ll_rng = sim -> get_rng( "improved_ll" );
-      imp_ll_rng -> average_range = false;
       imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
       imp_ll_fs_cd -> duration = timespan_t::zero();
       fs_dummy_stat = player -> get_stats( "flame_shock_dummy" );

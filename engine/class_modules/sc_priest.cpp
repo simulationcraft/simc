@@ -2728,7 +2728,7 @@ struct guardian_spirit_t : public priest_heal_t
 struct greater_heal_t : public priest_heal_t
 {
   greater_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "greater_heal", p, p -> find_specialization_spell( "Greater Heal" ) )
+    priest_heal_t( "greater_heal", p, p -> find_class_spell( "Greater Heal" ) )
   {
     parse_options( NULL, options_str );
   }

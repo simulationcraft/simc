@@ -1499,7 +1499,6 @@ static void register_nokaled( item_t* item )
       spells[ 2 ] = new nokaled_shadow_t( p, ids[ 2 ] );
 
       rng = p -> get_rng ( "nokaled" );
-      rng -> average_range = false; // Otherwise we'll always get the mean
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )

@@ -7,19 +7,12 @@
 
 // rng_t::rng_t =============================================================
 
-rng_t::rng_t( const std::string& n, bool avg_range, bool avg_gauss ) :
-  name_str( n ),
+rng_t::rng_t( const std::string& n, rng_type_e t ) :
+  _name_str( n ), _type( t ),
   actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
   num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
-  next( 0 ),
   gauss_pair_use( false ),
-  average_range( avg_range ),
-  average_gauss( avg_gauss )
-{}
-
-// rng_t::seed ==============================================================
-
-void rng_t::seed( uint32_t )
+  next( 0 )
 {}
 
 // rng_t::roll ==============================================================
@@ -43,15 +36,12 @@ double rng_t::range( double min,
                      double max )
 {
   assert( min <= max );
-  double result = ( min + max ) / 2.0;
-  if ( average_range ) return result;
   double z = real();
-  result =  min + z * ( max - min );
 #ifndef NDEBUG
   actual_range += z;
   num_range++;
 #endif
-  return result;
+  return min + z * ( max - min );
 }
 
 // rng_t::gauss =============================================================
@@ -60,8 +50,6 @@ double rng_t::gauss( double mean,
                      double stddev,
                      const bool truncate_low_end )
 {
-  if ( average_gauss ) return mean;
-
   // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
   // Implements the Polar form of the Box-Muller Transformation
   //
@@ -140,7 +128,7 @@ std::string rng_t::report( double confidence_estimator ) const
   int precision = 6;
 
   std::ostringstream s;
-  s << "RNG " << name_str << ": Actual ( Confidence Interval ): ";
+  s << "RNG " << name_str() << ": Actual ( Confidence Interval ): ";
 
   s << "Roll=";
   if ( num_roll > 0 )
@@ -360,17 +348,14 @@ namespace { // ANONYMOUS ====================================================
 class rng_std_t : public rng_t
 {
 public:
-  rng_std_t( const std::string& name, bool avg_range, bool avg_gauss ) :
-    rng_t( name, avg_range, avg_gauss )
+  rng_std_t( const std::string& name ) :
+    rng_t( name, RNG_STANDARD )
   {}
 
-  virtual rng_type_e type() const // override
-  { return RNG_STANDARD; }
-
-  virtual void seed( uint32_t start ) // override
+  virtual void _seed( uint32_t start ) // override
   { srand( start ); }
 
-  virtual double real() // override
+  virtual double _real() // override
   { return rand() * ( 1.0 / ( ( ( double ) RAND_MAX ) + 1.0 ) ); }
 };
 
@@ -630,17 +615,14 @@ private:
   dsfmt_t dsfmt_global_data;
 
 public:
-  rng_sfmt_t( const std::string& name, bool avg_range=false, bool avg_gauss=false ) :
-    rng_t( name, avg_range, avg_gauss )
-  { seed( static_cast<uint32_t>( time( NULL ) ) ); }
+  rng_sfmt_t( const std::string& name ) :
+    rng_t( name, RNG_MERSENNE_TWISTER )
+  { _seed( static_cast<uint32_t>( time( NULL ) ) ); }
 
-  virtual rng_type_e type() const
-  { return RNG_MERSENNE_TWISTER; }
-
-  virtual double real()
+  virtual double _real()
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
 
-  virtual void seed( uint32_t start )
+  virtual void _seed( uint32_t start )
   { dsfmt_chk_init_gen_rand( &dsfmt_global_data, start ); }
 
 #if defined(__SSE2__)
@@ -657,19 +639,15 @@ public:
 // Choosing the RNG package.........
 // ==========================================================================
 
-rng_t* rng_t::create( sim_t*             sim,
-                      const std::string& name,
+rng_t* rng_t::create( const std::string& name,
                       rng_type_e           type )
 {
   if ( type == RNG_DEFAULT     ) type = RNG_MERSENNE_TWISTER;
 
-  bool ar = ( sim -> average_range != 0 );
-  bool ag = ( sim -> average_gauss != 0 );
-
   switch ( type )
   {
-  case RNG_STANDARD:         return new rng_std_t            ( name,    ar, ag );
-  case RNG_MERSENNE_TWISTER: return new rng_sfmt_t           ( name,    ar, ag );
+  case RNG_STANDARD:         return new rng_std_t ( name );
+  case RNG_MERSENNE_TWISTER: return new rng_sfmt_t( name );
   default: assert( 0 );      return 0;
   }
 }

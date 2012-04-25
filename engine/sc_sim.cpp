@@ -1158,11 +1158,10 @@ bool sim_t::init()
 {
   if ( seed == 0 ) seed = ( int ) time( NULL );
 
-  if ( ! parent ) srand( seed );
+  rng = rng_t::create( "global", RNG_MERSENNE_TWISTER );
+  rng -> seed( seed );
 
-  rng = rng_t::create( this, "global", RNG_MERSENNE_TWISTER );
-
-  _deterministic_rng = rng_t::create( this, "global_deterministic", RNG_MERSENNE_TWISTER );
+  _deterministic_rng = rng_t::create( "global_deterministic", RNG_MERSENNE_TWISTER );
   _deterministic_rng -> seed( 31459 + thread_index );
 
   if ( scaling -> smooth_scale_factors &&
@@ -1816,16 +1815,6 @@ bool sim_t::time_to_think( timespan_t proc_time )
   return current_time - proc_time > reaction_time;
 }
 
-// sim_t::range =============================================================
-
-double sim_t::range( double min,
-                     double max )
-{
-  if ( average_range ) return ( min + max ) / 2.0;
-
-  return default_rng_ -> range( min, max );
-}
-
 // sim_t::gauss =============================================================
 
 double sim_t::gauss( double mean,
@@ -1859,11 +1848,11 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
   for ( r = rng_list; r; r = r -> next )
   {
-    if ( r -> name_str == n )
+    if ( r -> name_str() == n )
       return r;
   }
 
-  r = rng_t::create( this, n, static_cast<rng_type_e> ( type ) );
+  r = rng_t::create( n, static_cast<rng_type_e> ( type ) );
   r -> next = rng_list;
   rng_list = r;
 

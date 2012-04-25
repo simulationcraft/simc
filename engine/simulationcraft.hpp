@@ -2557,6 +2557,7 @@ public:
 
   bool      roll( double chance ) const;
   double    range( double min, double max );
+  double    averaged_range( double min, double max );
   double    gauss( double mean, double stddev );
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() const;
@@ -5007,34 +5008,36 @@ struct log_t
 
 struct rng_t
 {
-public:
-  const std::string name_str;
+private:
+  const std::string _name_str;
+  rng_type_e _type;
   double actual_roll, actual_range, actual_gauss;
   uint64_t num_roll, num_range, num_gauss;
-  rng_t* next;
-
-private:
   double gauss_pair_value;
   bool   gauss_pair_use;
 public:
-  bool   average_range, average_gauss;
+  rng_t* next;
   // FIXME: Change rng-creation so that average_range and average_gauss can be protected again.
 protected:
-  rng_t( const std::string& n, bool avg_range=false, bool avg_gauss=false );
+  rng_t( const std::string& n, rng_type_e );
 
 public:
   virtual ~rng_t() {}
 
-  virtual rng_type_e type() const = 0;
-  virtual double  real() = 0;
-  virtual bool    roll( double chance );
-  virtual double range( double min, double max );
-  virtual double gauss( double mean, double stddev, const bool truncate_low_end = false );
+private:
+  virtual double  _real() = 0;
+  virtual void    _seed( uint32_t start ) = 0;
+public:
 
+  const std::string& name_str() const { return _name_str; }
+  const char* name() const { return _name_str.c_str(); }
+  void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
+  double real() { return _real(); }
+  rng_type_e type() const { return _type; }
+  bool    roll( double chance );
+  double range( double min, double max );
+  double gauss( double mean, double stddev, const bool truncate_low_end = false );
   double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
-
-
-  virtual void    seed( uint32_t start = time( NULL ) );
   std::string report( double confidence_estimator ) const;
 
   timespan_t range( timespan_t min, timespan_t max )
@@ -5058,7 +5061,7 @@ public:
   static double stdnormal_cdf( double u );
   static double stdnormal_inv( double p );
 
-  static rng_t* create( sim_t*, const std::string& name, rng_type_e type=RNG_STANDARD );
+  static rng_t* create( const std::string& name, rng_type_e=RNG_STANDARD );
 };
 
 // String utils =============================================================
@@ -5284,6 +5287,16 @@ inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return fin
 
 inline double sim_t::real() const                { return default_rng_ -> real(); }
 inline bool   sim_t::roll( double chance ) const { return default_rng_ -> roll( chance ); }
+inline double sim_t::range( double min, double max )
+{ return default_rng_ -> range( min, max ); }
+inline double sim_t::averaged_range( double min, double max )
+{
+  if ( average_range ) return ( min + max ) / 2.0;
+
+  return default_rng_ -> range( min, max );
+}
+
+
 
 #ifdef WHAT_IF
 

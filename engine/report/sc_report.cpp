@@ -213,7 +213,7 @@ void report::print_html_rng_information( FILE* file, const rng_t* rng, double co
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t\t<th class=\"left small\"><a href=\"#\" class=\"toggle-details\" rel=\"sample=%s\">RNG %s</a></th>\n"
            "\t\t\t\t\t\t\t\t\t<th></th>\n"
-           "\t\t\t\t\t\t\t\t</tr>\n", rng->name_str.c_str(), rng->name_str.c_str() );
+           "\t\t\t\t\t\t\t\t</tr>\n", rng -> name(), rng -> name() );
   fprintf( file,
            "\t\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
            "\t\t\t\t\t\t\t\t<td colspan=\"2\" class=\"filler\">\n" );
