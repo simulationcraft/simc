@@ -403,6 +403,7 @@ struct druid_t : public player_t
   struct spells_t
   {
     const spell_data_t* berserk; // Berserk cat resource cost reducer
+    const spell_data_t* bear_form; // Bear form bonuses
     const spell_data_t* combo_point; // Combo point spell
     const spell_data_t* eclipse; // Eclipse mana gain
     const spell_data_t* leader_of_the_pack; // LotP aura
@@ -521,7 +522,6 @@ struct druid_t : public player_t
     const spell_data_t* rend_and_tear;
     const spell_data_t* stampede;
     const spell_data_t* survival_instincts;
-    const spell_data_t* thick_hide; // How does the +10% and +33%@bear stack etc
 
     const spell_data_t* blessing_of_the_grove;
     const spell_data_t* efflorescence;
@@ -4085,6 +4085,9 @@ void druid_t::init_spells()
 
   specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   spell.moonkin_form                    = find_spell( 24905 ); // This is the passive applied on shapeshift!
+  // TODO: Check if this is really the passive applied, the actual shapeshift
+  // only has data of shift, polymorph immunity and the general armor bonus
+  spell.bear_form                       = find_spell( 1178 ); // This is the passive applied on shapeshift!
 
   specialization.vengeance       = find_specialization_spell( "Vengeance" );
 
@@ -4696,10 +4699,12 @@ double druid_t::composite_armor_multiplier() const
   if ( buff.bear_form -> check() )
   {
     // Increases the armor bonus of Bear Form to 330%
+    // TODO: http://mop.wowhead.com/spell=5487 spell tooltip => +120% armor
+    // But the actual spell data suggests +65% armor
     if ( specialization.thick_hide -> ok() )
       a += specialization.thick_hide -> effect2().percent();
     else
-      a += 1.2;
+      a += buff.bear_form -> data().effect3().percent();
   }
   return a;
 }
@@ -4774,11 +4779,9 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
   switch ( attr )
   {
-  // http://mop.wowhead.com/spell=5487 => Shapeshift spell
-  // http://mop.wowhead.com/spell=1178 => Bear form bonus data
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
-      m *= 1.20;
+      m *= 1.0 + spell.bear_form -> effect2().percent();
     break;
   default:
     break;
