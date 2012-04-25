@@ -1236,7 +1236,7 @@ bool sim_t::init()
   // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
   auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
                                   .max_stack( 100 )
-                                  .default_value( dbc.effect_average( dbc.spell( 19506 ) -> effectN( 1 ).id(), max_player_level ) / dbc.combat_rating( RATING_MASTERY, max_player_level ) / 100 );
+                                  .default_value( dbc.spell( 19506 ) -> effectN( 1 ).percent() );
 
   // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
   auras.critical_strike = buff_creator_t( this, "critical_strike" )
