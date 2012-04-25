@@ -658,7 +658,7 @@ void buff_t::aura_gain()
     }
     else
     {
-      if ( sim -> log ) log_t::output( sim, "Raid gains %s", s.c_str() );
+      if ( sim -> log ) log_t::output( sim, "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
     }
   }
 }

@@ -1198,48 +1198,6 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
-  // MoP aura initialization
-
-  // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
-  auras.attack_haste = buff_creator_t( this, "attack_haste" )
-                       .max_stack( 100 )
-                       .default_value( dbc.spell( 113742 ) -> effectN( 1 ).percent() );
-
-  // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
-  auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
-                                  .max_stack( 100 )
-                                  .default_value( dbc.spell( 19506 ) -> effectN( 1 ).percent() );
-
-  // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
-  auras.critical_strike = buff_creator_t( this, "critical_strike" )
-                          .max_stack( 100 )
-                          .default_value( dbc.spell( 19506 ) -> effectN( 3 ).percent() );
-
-  // Mastery, value from Grace of Air (id=116956) (Shaman)
-  auras.mastery = buff_creator_t( this, "mastery" )
-                  .max_stack( 100 )
-                  .default_value( dbc.spell( 116956 ) -> effectN( 1 ).base_value() );
-
-  // Spell Haste, value from Mind Quickening (id=49868) (Priest)
-  auras.spell_haste = buff_creator_t( this, "spell_haste" )
-                      .max_stack( 100 )
-                      .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() );
-
-  // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
-  auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
-                                 .max_stack( 100 )
-                                 .default_value( dbc.spell( 77747 ) -> effectN( 1 ).percent() );
-
-  // Stamina, value from fortitude (id=79104) (Priest)
-  auras.stamina = buff_creator_t( this, "stamina" )
-                  .max_stack( 100 )
-                  .default_value( dbc.spell( 79104 ) -> effectN( 1 ).percent() );
-
-  // Strength, Agility, and Intellect, value from Blessing of Kings (id=79062) (Paladin)
-  auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
-                      .max_stack( 100 )
-                      .default_value( dbc.spell( 79062 ) -> effectN( 1 ).percent() );
-
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     log_t::output( this, "Creating Enemies." );
@@ -1280,6 +1238,48 @@ bool sim_t::init()
       t -> race_str = util_t::race_type_string( t -> race );
     }
   }
+
+  // MoP aura initialization
+
+  // Attack and Ranged haste, value from Swiftblade's Cunning (id=113742) (Rogue)
+  auras.attack_haste = buff_creator_t( this, "attack_haste" )
+                       .max_stack( 100 )
+                       .default_value( dbc.spell( 113742 ) -> effectN( 1 ).percent() );
+
+  // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
+  auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
+                                  .max_stack( 100 )
+                                  .default_value( dbc.effect_average( dbc.spell( 19506 ) -> effectN( 1 ).id(), max_player_level ) / dbc.combat_rating( RATING_MASTERY, max_player_level ) / 100 );
+
+  // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
+  auras.critical_strike = buff_creator_t( this, "critical_strike" )
+                          .max_stack( 100 )
+                          .default_value( dbc.spell( 19506 ) -> effectN( 3 ).percent() );
+
+  // Mastery, value from Grace of Air (id=116956) (Shaman)
+  auras.mastery = buff_creator_t( this, "mastery" )
+                  .max_stack( 100 )
+                  .default_value( dbc.spell( 116956 ) -> effectN( 1 ).base_value() );
+
+  // Spell Haste, value from Mind Quickening (id=49868) (Priest)
+  auras.spell_haste = buff_creator_t( this, "spell_haste" )
+                      .max_stack( 100 )
+                      .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() );
+
+  // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
+  auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
+                                 .max_stack( 100 )
+                                 .default_value( dbc.spell( 77747 ) -> effectN( 1 ).percent() );
+
+  // Stamina, value from fortitude (id=79104) (Priest)
+  auras.stamina = buff_creator_t( this, "stamina" )
+                  .max_stack( 100 )
+                  .default_value( dbc.spell( 79104 ) -> effectN( 1 ).percent() );
+
+  // Strength, Agility, and Intellect, value from Blessing of Kings (id=79062) (Paladin)
+  auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
+                      .max_stack( 100 )
+                      .default_value( dbc.spell( 79062 ) -> effectN( 1 ).percent() );
 
   raid_event_t::init( this );
 
