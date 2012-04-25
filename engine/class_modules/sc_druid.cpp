@@ -3474,7 +3474,7 @@ struct starfall_star_t : public druid_spell_t
 
     if ( ! dtr && player -> has_dtr )
     {
-      dtr_action = new starfall_star_t( player, true );
+      dtr_action = new starfall_star_t( player, spell_id, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -4077,6 +4077,7 @@ void druid_t::init_spells()
   specialization.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
   specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
   specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
+  specialization.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
   specialization.starfall               = find_specialization_spell( "Starfall" );
@@ -4230,7 +4231,7 @@ void druid_t::init_buffs()
   buff.natures_grace         = create_buff( 16886, "natures_grace" );
   buff.natures_swiftness     = create_buff( talent.natures_swiftness, "natures_swiftness" );
   buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
-  buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity, "omen_of_clarity" );
+  buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity -> effect1().trigger_spell_id(), "omen_of_clarity" );
 
   /*
   buff.glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), glyph.innervate -> ok() );
