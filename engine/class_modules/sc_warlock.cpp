@@ -372,7 +372,6 @@ struct doom_t : public warlock_spell_t
   doom_t( warlock_t* p ) :
     warlock_spell_t( "doom", p, ( p -> primary_tree() == WARLOCK_AFFLICTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
-    hasted_ticks = false;
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
   }
