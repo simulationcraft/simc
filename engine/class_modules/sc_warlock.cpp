@@ -237,24 +237,27 @@ public:
     return m;
   }
 
+  virtual resource_type_e current_resource() const
+  {
+    if ( p() -> buffs.metamorphosis -> check() && data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 )
+      return RESOURCE_DEMONIC_FURY;
+    else
+      return spell_t::current_resource();
+  }
+
   virtual timespan_t tick_time( double haste ) const
   {
     timespan_t t = spell_t::tick_time( haste );
 
+    if ( channeled ) return t;
+
     warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
 
-    if ( td -> dots_malefic_grasp -> ticking )
-      t /= ( 1.0 + td -> dots_malefic_grasp -> action -> data().effectN( 2 ).percent() );
+    if ( td -> dots_malefic_grasp -> ticking ||
+       ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
+      t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
 
     return t;
-  }
-
-  virtual resource_type_e current_resource() const
-  {
-    if ( data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 && p() -> buffs.metamorphosis -> up() )
-      return RESOURCE_DEMONIC_FURY;
-    else
-      return spell_t::current_resource();
   }
 
   // trigger_soul_leech =====================================================
@@ -276,8 +279,6 @@ public:
     if ( s -> target -> health_percentage() > p -> spec.decimation -> effectN( 2 ).base_value() ) return;
     p -> buffs.decimation -> trigger();
   }
-
-  // trigger_malefic_grasp =====================================================
 
   static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
   {
@@ -331,7 +332,6 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.02; // from tooltip
-    dot_behavior = DOT_EXTEND;
   }
 
   virtual void last_tick( dot_t* d )
@@ -375,7 +375,6 @@ struct doom_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
-    dot_behavior = DOT_EXTEND;
   }
 
   virtual double action_multiplier( const action_state_t* s ) const
@@ -388,6 +387,16 @@ struct doom_t : public warlock_spell_t
     }
 
     return m;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p() -> rngs.nightfall -> roll( 0.4 ) && p() -> verify_nightfall() )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+    }
   }
 };
 
@@ -477,16 +486,14 @@ struct corruption_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.2; // from tooltip
-    dot_behavior = DOT_EXTEND;
   };
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> rngs.nightfall -> roll( p() -> spec.nightfall -> proc_chance() ) )
+    if ( p() -> rngs.nightfall -> roll( 0.1 ) && p() -> verify_nightfall() )
     {
-      p() -> procs.shadow_trance -> occur();
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
   }
@@ -595,6 +602,45 @@ struct drain_soul_t : public warlock_spell_t
 
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
   }
+
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+
+    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
+
+    if ( td -> ds_started_below_20 )
+    {
+      stop_malefic_grasp( this, td -> dots_agony );
+      stop_malefic_grasp( this, td -> dots_corruption );
+      stop_malefic_grasp( this, td -> dots_doom );
+      stop_malefic_grasp( this, td -> dots_unstable_affliction );
+    }
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+
+      if ( s -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
+      {
+        td -> ds_started_below_20 = true;
+        start_malefic_grasp( this, td -> dots_agony );
+        start_malefic_grasp( this, td -> dots_corruption );
+        start_malefic_grasp( this, td -> dots_doom );
+        start_malefic_grasp( this, td -> dots_unstable_affliction );
+      }
+      else
+      {
+        td -> ds_started_below_20 = false;
+      }
+    }
+  }
 };
 
 // Unstable Affliction Spell ================================================
@@ -606,7 +652,6 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     tick_power_mod = 0.2; // from tooltip
-    dot_behavior = DOT_EXTEND;
   }
 
   virtual void execute()
@@ -915,7 +960,7 @@ struct metamorphosis_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> up() ) return false;
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
     if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 ) return false;
 
     return warlock_spell_t::ready();
@@ -1808,7 +1853,8 @@ void warlock_t::init_spells()
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Misery" );
 
   // Affliction
-  spec.nightfall = find_specialization_spell( "Nightfall" );
+  spec.nightfall     = find_specialization_spell( "Nightfall" );
+  spec.malefic_grasp = find_specialization_spell( "Malefic Grasp" );
 
   // Demonology
   spec.decimation    = find_specialization_spell( "Decimation" );
@@ -1821,9 +1867,9 @@ void warlock_t::init_spells()
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
 
   // Mastery
-  mastery_spells.emberstorm          = find_mastery_spell( "Emberstorm" );
-  mastery_spells.potent_afflictions  = find_mastery_spell( "Potent Afflictions" );
-  mastery_spells.master_demonologist = find_mastery_spell( "Master Demonologist" );
+  mastery_spells.emberstorm          = find_mastery_spell( "Mastery: Emberstorm" );
+  mastery_spells.potent_afflictions  = find_mastery_spell( "Mastery: Potent Afflictions" );
+  mastery_spells.master_demonologist = find_mastery_spell( "Mastery: Master Demonologist" );
 
   // Talents
   talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
@@ -1944,8 +1990,6 @@ void warlock_t::init_benefits()
 void warlock_t::init_procs()
 {
   player_t::init_procs();
-
-  procs.shadow_trance    = get_proc( "shadow_trance" );
 }
 
 // warlock_t::init_rng ======================================================
@@ -2204,6 +2248,12 @@ void warlock_t::reset()
   pets.active = 0;
   ember_react = timespan_t::zero();
   event_t::cancel( meta_cost_event );
+
+  for ( int i = 0; i < NIGHTFALL_LIMIT; i++ )
+  {
+    nightfall_times[ i ] = timespan_t::min();
+  }
+  nightfall_index = -1;
 }
 
 // warlock_t::create_options ================================================
@@ -2299,12 +2349,28 @@ double warlock_t::resource_loss( resource_type_e resource_type, double amount, g
 
   if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 )
   {
-    assert( buffs.metamorphosis -> up() );
+    assert( buffs.metamorphosis -> check() );
     buffs.metamorphosis -> expire();
     event_t::cancel( meta_cost_event );
   }
 
   return r;
+}
+
+bool warlock_t::verify_nightfall()
+{
+  int new_index = ( nightfall_index + 1 ) % NIGHTFALL_LIMIT;
+
+  if ( nightfall_times[ new_index ] < sim -> current_time - timespan_t::from_minutes( 1 ) )
+  {
+    nightfall_times[ new_index ] = sim -> current_time;
+    nightfall_index = new_index;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 #endif // SC_WARLOCK

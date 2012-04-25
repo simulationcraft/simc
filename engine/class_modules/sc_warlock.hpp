@@ -10,6 +10,8 @@
 
 #if SC_WARLOCK == 1
 
+#define NIGHTFALL_LIMIT 5
+
 struct warlock_targetdata_t : public targetdata_t
 {
   dot_t*  dots_corruption;
@@ -23,6 +25,8 @@ struct warlock_targetdata_t : public targetdata_t
   dot_t*  dots_malefic_grasp;
 
   buff_t* debuffs_haunt;
+
+  bool ds_started_below_20;
 
   int affliction_effects();
   int active_dots();
@@ -102,6 +106,7 @@ struct warlock_t : public player_t
 
     // Affliction
     const spell_data_t* nightfall;
+    const spell_data_t* malefic_grasp;
 
     // Demonology
     const spell_data_t* decimation;
@@ -145,7 +150,6 @@ struct warlock_t : public player_t
   // Procs
   struct procs_t
   {
-    proc_t* shadow_trance;
   } procs;
 
   // Random Number Generators
@@ -181,6 +185,10 @@ struct warlock_t : public player_t
   meta_cost_event_t* meta_cost_event;
   
   void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
+
+  int nightfall_index;
+  timespan_t nightfall_times[ NIGHTFALL_LIMIT ];
+  bool verify_nightfall();
 
   int use_pre_soulburn;
   int initial_burning_embers, initial_demonic_fury;
