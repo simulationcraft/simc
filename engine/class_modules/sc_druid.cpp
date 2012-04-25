@@ -611,7 +611,6 @@ struct druid_t : public player_t
   virtual role_type_e primary_role() const;
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
-  virtual double    composite_attribute( attribute_type_e attr ) const;
 
 
   void reset_gcd()
@@ -1200,7 +1199,7 @@ static void trigger_primal_fury( druid_cat_attack_t* a )
   if ( ! a -> adds_combo_points )
     return;
 
-  td -> combo_points -> add( 1, a -> name() );
+  td -> combo_points -> add( a -> adds_combo_points, a -> name() );
   p -> proc.primal_fury -> occur();
 }
 
@@ -2316,7 +2315,7 @@ void druid_heal_t::execute()
 
   if ( direct_dmg > 0 && ! background )
   {
-    p -> buff.harmony -> trigger( 1, p -> mastery.harmony -> effectN( 1 ).mastery_value() * p -> composite_mastery() );
+    p -> buff.harmony -> trigger( 1, p -> mastery.harmony -> effectN( 1 ).percent() * p -> composite_mastery() );
   }
 }
 
@@ -2356,7 +2355,7 @@ void druid_heal_t::player_buff()
 
   if ( p -> primary_tree() == DRUID_RESTORATION && direct_dmg > 0 )
   {
-    player_multiplier *= 1.0 + p -> mastery.harmony -> effectN( 1 ).mastery_value() * p -> composite_mastery();
+    player_multiplier *= 1.0 + p -> mastery.harmony -> effectN( 1 ).percent() * p -> composite_mastery();
   }
 
   if ( tick_dmg > 0 )
@@ -2524,9 +2523,6 @@ struct regrowth_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
-    druid_t* p = player -> cast_druid();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
     trigger_lifebloom_refresh( this );
 
     if ( result == RESULT_CRIT )
@@ -2701,8 +2697,7 @@ double druid_spell_t::haste() const
 
 timespan_t druid_spell_t::execute_time() const
 {
-  druid_t* p = player -> cast_druid();
-
+  //druid_t* p = player -> cast_druid();
   return spell_t::execute_time();
 }
 
@@ -2756,7 +2751,7 @@ void druid_spell_t::player_tick()
 
 void druid_spell_t::player_buff()
 {
-  druid_t* p = player -> cast_druid();
+  //druid_t* p = player -> cast_druid();
 
   spell_t::player_buff();
 
@@ -4699,8 +4694,13 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a += 3.7 * ( 1.0 + 0.11 * talent.thick_hide -> ok() );
-
+  {
+    // Increases the armor bonus of Bear Form to 330%
+    if ( specialization.thick_hide -> ok() )
+      a += specialization.thick_hide -> effect2().percent();
+    else
+      a += 1.2;
+  }
   return a;
 }
 
@@ -4774,43 +4774,17 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
   switch ( attr )
   {
-  case ATTR_AGILITY:
-    if ( buff.cat_form -> check() )
-    {
-      if ( primary_tree() == DRUID_FERAL )
-        m *= 1.05;
-    }
-    break;
+  // http://mop.wowhead.com/spell=5487 => Shapeshift spell
+  // http://mop.wowhead.com/spell=1178 => Bear form bonus data
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
-    {
-      m *= 1.0 + talent.heart_of_the_wild -> effect1().percent();
-
-      if ( primary_tree() == DRUID_FERAL )
-        m *= 1.05;
-    }
-    break;
-  case ATTR_INTELLECT:
-    if ( sim -> auras.str_agi_int -> check() )
-      m *= 1.05;
+      m *= 1.20;
     break;
   default:
     break;
   }
 
   return m;
-}
-
-// Heart of the Wild does nothing for base int so we need to do completely silly
-// tricks to match paper doll in game
-double druid_t::composite_attribute( attribute_type_e attr ) const
-{
-  double a = player_t::composite_attribute( attr );
-
-  if ( attr == ATTR_INTELLECT )
-    a += ( a - stats_base.attribute[ attr ] )* talent.heart_of_the_wild -> effect1().percent();
-
-  return a;
 }
 
 // druid_t::matching_gear_multiplier ========================================
@@ -4822,7 +4796,15 @@ double druid_t::matching_gear_multiplier( attribute_type_e attr ) const
   case DRUID_BALANCE:
   case DRUID_RESTORATION:
     if ( attr == ATTR_INTELLECT )
-      return 0.05;
+      return specialization.leather_specialization -> effectN( 1 ).percent();
+    break;
+  case DRUID_FERAL:
+    if ( attr == ATTR_AGILITY )
+      return specialization.leather_specialization -> effectN( 1 ).percent();
+    break;
+  case DRUID_GUARDIAN:
+    if ( attr == ATTR_STAMINA )
+      return specialization.leather_specialization -> effectN( 1 ).percent();
     break;
   default:
     break;
@@ -4838,7 +4820,7 @@ double druid_t::composite_tank_crit( school_type_e school ) const
   double c = player_t::composite_tank_crit( school );
 
   if ( school == SCHOOL_PHYSICAL )
-    c += talent.thick_hide -> effect3().percent();
+    c += specialization.thick_hide -> effect1().percent();
 
   return c;
 }
@@ -5037,7 +5019,6 @@ void player_t::druid_init( sim_t* sim )
     p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
   }
-
 }
 
 // player_t::druid_combat_begin =============================================
@@ -5045,4 +5026,3 @@ void player_t::druid_init( sim_t* sim )
 void player_t::druid_combat_begin( sim_t* )
 {
 }
-
