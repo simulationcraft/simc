@@ -969,6 +969,14 @@ debuff_t::debuff_t( const buff_creator_t& params ) :
   buff_t( params )
 {}
 
+// Absorb Buff
+
+
+absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
+  buff_t( params.bc ), absorb_source( params._absorb_source )
+{
+}
+
 void buff_creator_t::init()
 {
   _chance = -1.0;

@@ -410,19 +410,7 @@ void action_t::parse_options( option_t*          options,
   std::vector<option_t> merged_options;
   option_t::merge( merged_options, options, base_options );
 
-  std::string::size_type cut_pt = options_str.find( ':' );
-
-  std::string options_buffer;
-  if ( cut_pt != options_str.npos )
-  {
-    options_buffer = options_str.substr( cut_pt + 1 );
-  }
-  else options_buffer = options_str;
-
-  if ( options_buffer.empty()     ) return;
-  if ( options_buffer.size() == 0 ) return;
-
-  if ( ! option_t::parse( sim, name(), merged_options, options_buffer ) )
+  if ( ! option_t::parse( sim, name(), merged_options, options_str ) )
   {
     sim -> errorf( "%s %s: Unable to parse options str '%s'.\n", player -> name(), name(), options_str.c_str() );
     sim -> cancel();

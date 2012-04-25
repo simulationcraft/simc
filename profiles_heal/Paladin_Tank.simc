@@ -1,4 +1,6 @@
 #!./simc 
+statistics_level=2
+fixed_time=1
 
 paladin=Paladin_Tank
 origin="http://eu.battle.net/wow/en/character/eredar/vanos/advanced"
@@ -19,12 +21,8 @@ actions+=/auto_attack
 actions+=/use_item,name=flickering_handguards_of_the_bedrock
 actions+=/use_item,name=essence_of_the_eternal_flame
 actions+=/avenging_wrath
-actions+=/guardian_of_ancient_kings,if=health_pct<=30
-actions+=/word_of_glory,if=health_pct<=50
-actions+=/holy_shield
-actions+=/shield_of_the_righteous,if=holy_power=3
+actions+=/word_of_glory,if=health.pct<=50
 actions+=/crusader_strike
-actions+=/judgement
 actions+=/avengers_shield
 actions+=/holy_wrath
 actions+=/consecration
@@ -73,6 +71,7 @@ origin="http://chardev.org/?profile=24066"
 level=85
 race=night_elf
 #infinite_mana=1
+spec=discipline
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=http://www.wowhead.com/talent#priest-233003221013200312021033002000000000000000200000000000000000000
@@ -84,8 +83,8 @@ actions+=/inner_fire
 actions+=/snapshot_stats
 actions+=/inner_focus
 actions+=/power_word_shield,target=Paladin_Tank
-actions+=/penance_heal,target=Paladin_Tank,if=target.health_pct<=80
-actions+=/greater_heal,target=Paladin_Tank,if=target.health_pct<70
+actions+=/penance_heal,target=Paladin_Tank,if=target.health.pct<=80
+actions+=/greater_heal,target=Paladin_Tank,if=target.health.pct<70
 actions+=/prayer_of_mending,moving=1,single=1
 actions+=/renew,moving=1
 head=mercurial_cowl,heroic=1,type=cloth,ilevel=372,quality=epic,stats=1093armor_197crit_325int_257spi_578sta,gems=revitalizing_shadowspirit_20int_20spi_30int,enchant=60int_35crit
@@ -125,4 +124,4 @@ enemy=Overridden_Main_Target
 level=88
 role=tank
 actions+=/snapshot_stats
-actions+=/auto_attack,target=Paladin_Tank,damage=120000,attack_speed=2
+actions+=/auto_attack,target=Paladin_Tank,damage=30000,attack_speed=2,aoe_tanks=1

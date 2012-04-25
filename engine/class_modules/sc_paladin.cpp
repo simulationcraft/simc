@@ -664,6 +664,9 @@ static void trigger_illuminated_healing( heal_t* h )
 
   paladin_t* p = h -> player -> cast_paladin();
 
+  if ( ! p -> passives.illuminated_healing -> ok() )
+    return;
+
   // FIXME: Each player can have their own bubble, so this should probably be a vector as well
   assert( p -> active_illuminated_healing );
 

@@ -27,8 +27,6 @@ absorb_t::absorb_t( const std::string&  token,
   if ( target -> is_enemy() || target -> is_add() )
     target = player;
 
-  total_heal = total_actual = 0;
-
   may_crit = false;
 
   stats -> type = STATS_ABSORB;
@@ -50,8 +48,6 @@ void absorb_t::player_buff()
 
 void absorb_t::execute()
 {
-  total_heal = 0;
-
   spell_base_t::execute();
 
   if ( harmful && callbacks )
@@ -84,17 +80,14 @@ void absorb_t::assess_damage( player_t*     t,
                               dmg_type_e    heal_type,
                               result_type_e heal_result )
 {
-  double heal_actual = direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
-
-  total_heal   += heal_amount;
-  total_actual += heal_actual;
+  direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 
   if ( sim -> log )
     log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
-                   t -> name(), heal_actual, heal_amount,
+                   t -> name(), direct_dmg, heal_amount,
                    util_t::result_type_string( result ) );
 
-  stats -> add_result( heal_actual, heal_amount, heal_type, heal_result );
+  stats -> add_result( direct_dmg, heal_amount, heal_type, heal_result );
 }
 

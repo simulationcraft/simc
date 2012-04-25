@@ -1094,20 +1094,21 @@ static void register_indomitable_pride( item_t* item )
 
   struct indomitable_pride_callback_t : public action_callback_t
   {
-    buff_t* buff;
+    absorb_buff_t* buff;
     bool heroic, lfr;
     cooldown_t* cd;
     stats_t* stats;
     indomitable_pride_callback_t( player_t* p, bool h, bool l ) :
       action_callback_t( p ), heroic( h ), lfr( l ), cd ( 0 ), stats( 0 )
     {
-      // Looks like there is no spell_id_t for the buff
-      buff = buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) ).activated( false );
+      stats = listener -> get_stats( "indomitable_pride" );
+      stats -> type = STATS_ABSORB;
+      // Looks like there is no spell_id for the buff
+      buff = absorb_buff_creator_t( buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) ).activated( false ) )
+             .source( stats );
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
       p -> absorb_buffs.push_back( buff );
-      stats = listener -> get_stats( "indomitable_pride" );
-      stats -> type = STATS_ABSORB;
     }
 
     virtual void trigger( action_t* /* a */, void*  call_data )
@@ -1141,18 +1142,19 @@ static void register_spidersilk_spindle( item_t* item )
 
   struct spidersilk_spindle_callback_t : public action_callback_t
   {
-    buff_t* buff;
+    absorb_buff_t* buff;
     cooldown_t* cd;
     stats_t* stats;
     spidersilk_spindle_callback_t( player_t* p, bool h ) :
       action_callback_t( p ), cd ( 0 ), stats( 0 )
     {
-      buff = buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" ).activated( false );
+      stats = listener -> get_stats( "loom_of_fate" );
+      stats -> type = STATS_ABSORB;
+      buff = absorb_buff_creator_t( buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" ).activated( false ) )
+             .source( stats );
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
       p -> absorb_buffs.push_back( buff );
-      stats = listener -> get_stats( "loom_of_fate" );
-      stats -> type = STATS_ABSORB;
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )

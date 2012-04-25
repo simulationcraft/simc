@@ -211,6 +211,7 @@ namespace std {using namespace tr1; }
 
 // Forward Declarations =====================================================
 
+struct absorb_buff_t;
 struct action_callback_t;
 struct action_priority_list_t;
 struct action_state_t;
@@ -1990,6 +1991,22 @@ public:
   operator stat_buff_t* () const;
 };
 
+struct absorb_buff_creator_t
+{
+private:
+  buff_creator_t bc;
+  stats_t* _absorb_source;
+  friend struct absorb_buff_t;
+public:
+  absorb_buff_creator_t( buff_creator_t a ) :
+    bc( a ),_absorb_source( 0 ) {}
+
+  absorb_buff_creator_t& source( stats_t* s )
+  { _absorb_source=s; return *this; }
+
+  operator absorb_buff_t* () const;
+};
+
 struct cost_reduction_buff_creator_t
 {
 private:
@@ -2123,6 +2140,20 @@ private:
 
 inline stat_buff_creator_t::operator stat_buff_t* () const
 { return new stat_buff_t( *this ); }
+
+
+struct absorb_buff_t : public buff_t
+{
+  stats_t* absorb_source;
+
+private:
+  absorb_buff_t( const absorb_buff_creator_t& params );
+  friend struct absorb_buff_creator_t;
+};
+
+inline absorb_buff_creator_t::operator absorb_buff_t* () const
+{ return new absorb_buff_t( *this ); }
+
 
 struct cost_reduction_buff_t : public buff_t
 {
@@ -3148,7 +3179,7 @@ struct player_t : public noncopyable
   double      dtr_proc_chance;
   double      dtr_base_proc_chance;
   timespan_t  reaction_mean,reaction_stddev,reaction_nu;
-  std::vector<buff_t*> absorb_buffs;
+  std::vector<absorb_buff_t*> absorb_buffs;
   int         scale_player;
   bool        has_dtr;
   double      avg_ilvl;
@@ -4506,8 +4537,6 @@ public:
 struct heal_t : public spell_base_t
 {
   bool group_only;
-  // Reporting
-  double total_heal, total_actual;
 
 public:
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
@@ -4524,8 +4553,6 @@ public:
 
 struct absorb_t : public spell_base_t
 {
-  // Reporting
-  double total_heal, total_actual;
 
 public:
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );

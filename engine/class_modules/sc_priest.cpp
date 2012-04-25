@@ -312,10 +312,15 @@ struct priest_t : public player_t
 priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
   targetdata_t( p, target ), remove_dots_event( NULL )
 {
-  buffs_power_word_shield = add_aura( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) );
-  target -> absorb_buffs.push_back( buffs_power_word_shield );
-  buffs_divine_aegis = add_aura( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) );
-  target -> absorb_buffs.push_back( buffs_divine_aegis );
+  absorb_buff_t* new_pws = absorb_buff_creator_t( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) )
+                                          .source( source -> get_stats( "power_word_shield" ) );
+  buffs_power_word_shield = add_aura( new_pws );
+  target -> absorb_buffs.push_back( new_pws );
+
+  absorb_buff_t* new_da = absorb_buff_creator_t( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) )
+                          .source( source -> get_stats( "divine_aegis" ) );
+  buffs_divine_aegis = add_aura( new_da );
+  target -> absorb_buffs.push_back( new_da );
 }
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -504,10 +509,10 @@ struct priest_heal_t : public heal_t
 
     virtual void impact_s( action_state_t* s )
     {
-      double old_amount = td( s -> target ) -> buffs_divine_aegis -> current_value;
+      double old_amount = td( s -> target ) -> buffs_divine_aegis -> value();
       double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
       td( s -> target ) -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
-      stats -> add_result( sim -> report_overheal ? new_amount : s -> result_amount, s -> result_amount, ABSORB, s -> result );
+      stats -> add_result( 0, new_amount, ABSORB, s -> result );
     }
   };
 
@@ -3182,7 +3187,7 @@ struct power_word_shield_t : public priest_absorb_t
     }
 
     td( s -> target ) -> buffs_power_word_shield -> trigger( 1, s -> result_amount );
-    stats -> add_result( s -> result_amount, s -> result_amount, ABSORB, s -> result );
+    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 
   virtual bool ready()

@@ -28,8 +28,6 @@ heal_t::heal_t( const std::string&  token,
 
   group_only = false;
 
-  total_heal = total_actual = 0;
-
   dot_behavior      = DOT_REFRESH;
   weapon_multiplier = 0.0;
   may_crit          = true;
@@ -68,8 +66,6 @@ void heal_t::player_buff()
 
 void heal_t::execute()
 {
-  total_heal = 0;
-
   spell_base_t::execute();
 
   if ( harmful && callbacks )
@@ -94,9 +90,6 @@ void heal_t::assess_damage( player_t* t,
 {
   player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
 
-  total_heal   += heal.amount;
-  total_actual += heal.actual;
-
   if ( heal_type == HEAL_DIRECT )
   {
     if ( sim -> log )
@@ -113,7 +106,7 @@ void heal_t::assess_damage( player_t* t,
   {
     if ( sim -> log )
     {
-      dot_t* dot = this -> dot();
+      dot_t* dot = this -> dot( t );
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,

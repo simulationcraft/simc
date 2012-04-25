@@ -3727,18 +3727,20 @@ double player_t::assess_damage( double        amount,
   double absorbed_amount = 0;
   for ( size_t i = 0; i < absorb_buffs.size(); i++ )
   {
-    double buff_value = absorb_buffs[ i ] -> value();
+    absorb_buff_t* ab = absorb_buffs[ i ];
+    double buff_value = ab -> value();
     double value = std::min( mitigated_amount - absorbed_amount, buff_value );
+    ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
     absorbed_amount += value;
     if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
-                                       name(), absorb_buffs[ i ] -> name_str.c_str(), value );
+                                       name(), ab -> name_str.c_str(), value );
     if ( value == buff_value )
-      absorb_buffs[ i ] -> expire();
+      ab -> expire();
     else
     {
-      absorb_buffs[ i ] -> current_value -= value;
+      ab -> current_value -= value;
       if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
-                                         name(), absorb_buffs[ i ] -> name_str.c_str(), absorb_buffs[ i ] -> current_value );
+                                         name(), ab -> name_str.c_str(), ab -> current_value );
     }
   }
 

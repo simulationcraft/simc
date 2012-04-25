@@ -93,7 +93,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),  
-  ember_react( timespan_t::zero() )  
+  ember_react( timespan_t::zero() )
 {
   distance = 40;
   default_distance = 40;

@@ -416,6 +416,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">target:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">harmful:</span>%s</li>\n"
+                "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">if_expr:</span>%s</li>\n"
                 "\t\t\t\t\t\t\t\t\t\t</ul>\n"
                 "\t\t\t\t\t\t\t\t\t</div>\n"
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
@@ -431,7 +432,8 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 a -> base_execute_time.total_seconds(),
                 a -> base_crit,
                 a -> target ? a -> target -> name() : "",
-                a -> harmful ? "true" : "false" );
+                a -> harmful ? "true" : "false",
+                a -> if_expr_str.c_str() );
 
       // Spelldata
       if ( a -> data().ok() )
