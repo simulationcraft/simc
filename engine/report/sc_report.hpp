@@ -107,7 +107,7 @@ struct tabs_t
     case  9: return "\t\t\t\t\t\t\t\t\t";
     case 10: return "\t\t\t\t\t\t\t\t\t\t";
     case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
-    case 12: return "\t\t\t\t\t\t\t\t\t\t\t";
+    case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
     default: assert(0);
     }
     return NULL;
