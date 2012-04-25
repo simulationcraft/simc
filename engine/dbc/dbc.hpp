@@ -228,6 +228,9 @@ public:
   const spellpower_data_t& powerN( power_type_e pt ) const
   {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
+    if ( _power == 0)
+       return *spellpower_data_t::nil();
+
     for ( size_t i = 0; i < _power -> size(); i++ )
     {
       if ( _power -> at( i ) -> _power_type_e == pt )
