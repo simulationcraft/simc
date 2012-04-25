@@ -1805,11 +1805,7 @@ struct mind_blast_t : public priest_spell_t
 
   virtual void execute()
   {
-    timespan_t saved_cooldown = cooldown -> duration;
-
     priest_spell_t::execute();
-
-    cooldown -> duration = saved_cooldown;
 
     for ( int i=0; i < 4; i++ )
     {
