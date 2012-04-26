@@ -8,7 +8,6 @@
     <ClCompile Include="engine\report\sc_chart.cpp" />
     <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
-    <ClCompile Include="engine\sc_data.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />
     <ClCompile Include="engine\sc_enchant.cpp" />
     <ClCompile Include="engine\sc_event.cpp" />
@@ -38,7 +37,6 @@
     <ClCompile Include="engine\sc_harmful_spell.cpp" />
     <ClCompile Include="engine\sc_absorb.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
-    <ClCompile Include="engine\sc_talent.cpp" />
     <ClCompile Include="engine\sc_target.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
@@ -70,6 +68,7 @@
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
+    <ClCompile Include="engine\dbc\sc_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
@@ -78,36 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />
-    <None Include="engine\sc_extra_data.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_extra_data_ptr.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_scale_data.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_spell_data_ptr.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_scale_data_ptr.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_spell_data.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_talent_data.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_talent_data_ptr.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_spell_lists.inc">
-      <Filter>Data Files</Filter>
-    </None>
-    <None Include="engine\sc_spell_lists_ptr.inc">
-      <Filter>Data Files</Filter>
-    </None>
     <None Include="engine\dbc\data_enums.hh" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\core.h">
@@ -119,8 +88,20 @@
     <None Include="engine\utf8\unchecked.h">
       <Filter>utf8</Filter>
     </None>
-    <None Include="engine\sc_item_data.inc" />
-    <None Include="engine\sc_item_data_ptr.inc" />
+    <None Include="engine\dbc\specialization.hpp" />
+    <None Include="engine\dbc\sc_extra_data.inc" />
+    <None Include="engine\dbc\sc_extra_data_ptr.inc" />
+    <None Include="engine\dbc\sc_item_data.inc" />
+    <None Include="engine\dbc\sc_item_data_ptr.inc" />
+    <None Include="engine\dbc\c_scale_data.inc" />
+    <None Include="engine\dbc\sc_scale_data_ptr.inc" />
+    <None Include="engine\dbc\sc_spec_list.inc" />
+    <None Include="engine\dbc\sc_spell_data.inc" />
+    <None Include="engine\dbc\sc_spell_data_ptr.inc" />
+    <None Include="engine\dbc\sc_spell_lists.inc" />
+    <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
+    <None Include="engine\dbc\sc_talent_data.inc" />
+    <None Include="engine\dbc\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">

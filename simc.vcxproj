@@ -143,6 +143,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <EnablePREfast>true</EnablePREfast>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
