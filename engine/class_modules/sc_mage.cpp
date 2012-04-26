@@ -106,7 +106,6 @@ struct mage_t : public player_t
   } glyphs;
 
   // Options
-  std::string focus_magic_target_str;
   double merge_ignite;
   timespan_t ignite_sampling_delta;
 
@@ -134,19 +133,11 @@ struct mage_t : public player_t
     proc_t* test_for_crit_hotstreak;
     proc_t* crit_for_hotstreak;
     proc_t* hotstreak;
-    proc_t* improved_hotstreak;
   } procs;
 
   // Random Number Generation
   struct rngs_t
   {
-    rng_t* arcane_missiles;
-    rng_t* empowered_fire;
-    rng_t* enduring_winter;
-    rng_t* fire_power;
-    rng_t* impact;
-    rng_t* improved_freeze;
-    rng_t* nether_vortex;
   } rngs;
 
   // Rotation (DPS vs DPM)
@@ -273,12 +264,10 @@ struct mage_t : public player_t
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
-  virtual void      init_rng();
   virtual void      init_actions();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -2929,7 +2918,7 @@ void mage_t::init_buffs()
   // FIXME: What is this called now?
   buffs.hot_streak           = buff_creator_t( this, "hot_streak" );
   buffs.icy_veins            = new icy_veins_buff_t( this );
-  buffs.invocation           = buff_creator_t( this, "invocation", talents.invocation );
+  buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
   buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
@@ -2959,14 +2948,13 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.deferred_ignite         = get_proc( "deferred_ignite"               );
-  procs.munched_ignite          = get_proc( "munched_ignite"                );
-  procs.rolled_ignite           = get_proc( "rolled_ignite"                 );
-  procs.mana_gem                = get_proc( "mana_gem"                      );
-  procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak"       );
-  procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"           );
-  procs.hotstreak               = get_proc( "normal_hotstreak"              );
-  procs.improved_hotstreak      = get_proc( "improved_hotstreak"            );
+  procs.deferred_ignite         = get_proc( "deferred_ignite"         );
+  procs.munched_ignite          = get_proc( "munched_ignite"          );
+  procs.rolled_ignite           = get_proc( "rolled_ignite"           );
+  procs.mana_gem                = get_proc( "mana_gem"                );
+  procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak" );
+  procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"     );
+  procs.hotstreak               = get_proc( "hotstreak"               );
 }
 
 // mage_t::init_uptimes =====================================================
@@ -2975,29 +2963,14 @@ void mage_t::init_benefits()
 {
   player_t::init_benefits();
 
-  benefits.arcane_blast[ 0 ]    = get_benefit( "arcane_blast_0"  );
-  benefits.arcane_blast[ 1 ]    = get_benefit( "arcane_blast_1"  );
-  benefits.arcane_blast[ 2 ]    = get_benefit( "arcane_blast_2"  );
-  benefits.arcane_blast[ 3 ]    = get_benefit( "arcane_blast_3"  );
-  benefits.arcane_blast[ 4 ]    = get_benefit( "arcane_blast_4"  );
-  benefits.dps_rotation         = get_benefit( "dps_rotation"    );
-  benefits.dpm_rotation         = get_benefit( "dpm_rotation"    );
-  benefits.water_elemental      = get_benefit( "water_elemental" );
-}
-
-// mage_t::init_rng =========================================================
-
-void mage_t::init_rng()
-{
-  player_t::init_rng();
-
-  rngs.arcane_missiles     = get_rng( "arcane_missiles"     );
-  rngs.empowered_fire      = get_rng( "empowered_fire"      );
-  rngs.enduring_winter     = get_rng( "enduring_winter"     );
-  rngs.fire_power          = get_rng( "fire_power"          );
-  rngs.impact              = get_rng( "impact"              );
-  rngs.improved_freeze     = get_rng( "improved_freeze"     );
-  rngs.nether_vortex       = get_rng( "nether_vortex"       );
+  benefits.arcane_blast[ 0 ] = get_benefit( "arcane_blast_0"  );
+  benefits.arcane_blast[ 1 ] = get_benefit( "arcane_blast_1"  );
+  benefits.arcane_blast[ 2 ] = get_benefit( "arcane_blast_2"  );
+  benefits.arcane_blast[ 3 ] = get_benefit( "arcane_blast_3"  );
+  benefits.arcane_blast[ 4 ] = get_benefit( "arcane_blast_4"  );
+  benefits.dps_rotation      = get_benefit( "dps_rotation"    );
+  benefits.dpm_rotation      = get_benefit( "dpm_rotation"    );
+  benefits.water_elemental   = get_benefit( "water_elemental" );
 }
 
 // mage_t::init_actions =====================================================
@@ -3262,10 +3235,7 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( buffs.invocation -> up() )
-  {
-    // FIXME: Find the actual buff value somewhere
-    m *= 1.0 + 0.30;
-  }
+    m *= 1.0 + buffs.invocation -> data().effectN( 1 ).percent();
 
   if ( buffs.arcane_power -> check() )
     m *= 1.0 + buffs.arcane_power -> value();
@@ -3391,7 +3361,7 @@ double mage_t::resource_loss( resource_type_e resource,
 
 void mage_t::stun()
 {
-  //TODO: override this to handle Blink
+  // FIX ME: override this to handle Blink
   player_t::stun();
 }
 
@@ -3470,27 +3440,12 @@ void mage_t::create_options()
 
   option_t mage_options[] =
   {
-    { "focus_magic_target",     OPT_STRING,   &( focus_magic_target_str ) },
-    { "merge_ignite",           OPT_FLT,      &( merge_ignite           ) },
-    { "ignite_sampling_delta",  OPT_TIMESPAN, &( ignite_sampling_delta  ) },
+    { "merge_ignite",          OPT_FLT,      &( merge_ignite           ) },
+    { "ignite_sampling_delta", OPT_TIMESPAN, &( ignite_sampling_delta  ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
   option_t::copy( options, mage_options );
-}
-
-// mage_t::create_profile ===================================================
-
-bool mage_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
-{
-  player_t::create_profile( profile_str, stype, save_html );
-
-  if ( stype == SAVE_ALL )
-  {
-    if ( ! focus_magic_target_str.empty() ) profile_str += "focus_magic_target=" + focus_magic_target_str + "\n";
-  }
-
-  return true;
 }
 
 // mage_t::copy_from ========================================================
@@ -3501,8 +3456,7 @@ void mage_t::copy_from( player_t* source )
 
   mage_t* source_mage = debug_cast<mage_t*>( source );
 
-  focus_magic_target_str = source_mage -> focus_magic_target_str;
-  merge_ignite           = source_mage -> merge_ignite;
+  merge_ignite = source_mage -> merge_ignite;
 }
 
 // mage_t::decode_set =======================================================
@@ -3543,12 +3497,10 @@ player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_
 // player_t::mage_init ======================================================
 
 void player_t::mage_init( sim_t* )
-{
-}
+{ }
 
 // player_t::mage_combat_begin ==============================================
 
 void player_t::mage_combat_begin( sim_t* )
-{
-}
+{ }
 
