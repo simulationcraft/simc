@@ -3387,7 +3387,7 @@ struct starfire_t : public druid_spell_t
       {
         if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
         {
-          //td -> dots_moonfire -> refresh_duration();
+          td -> dots_moonfire -> refresh_duration();
         }
 
         if ( ! p -> buff.eclipse_solar -> check() )
@@ -3408,7 +3408,7 @@ struct starfire_t : public druid_spell_t
             }
           }
 
-          //trigger_eclipse_gain_delay( this, gain );
+          trigger_eclipse_gain_delay( this, gain );
         }
         else
         {
