@@ -3169,18 +3169,12 @@ struct mark_of_the_wild_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  cooldown_t* starsurge_cd;
-
   moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" )  ),
-    starsurge_cd( 0 )
+    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" )  )
   {
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
-
-
-    starsurge_cd = player -> cooldown.starsurge;
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
@@ -3215,7 +3209,7 @@ struct moonfire_t : public druid_spell_t
     if ( p -> specialization.shooting_stars -> ok() &&
          d -> state -> result == RESULT_CRIT )
       if ( p -> buff.shooting_stars -> trigger() )
-        starsurge_cd -> reset();
+        p -> cooldown.starsurge -> reset();
   }
 
   virtual void execute()
@@ -3603,19 +3597,14 @@ struct stealth_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
-  cooldown_t* starsurge_cd;
-
   // Identical to moonfire, except damage type and usability
 
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
-    starsurge_cd( 0 )
+    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
   {
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
-
-    starsurge_cd = player -> cooldown.starsurge;
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
 
@@ -3650,7 +3639,7 @@ struct sunfire_t : public druid_spell_t
     if ( p -> specialization.shooting_stars -> ok() &&
          d -> state -> result == RESULT_CRIT )
       if ( p -> buff.shooting_stars -> trigger() )
-        starsurge_cd -> reset();
+        p -> cooldown.starsurge -> reset();
   }
 
   virtual void execute()
