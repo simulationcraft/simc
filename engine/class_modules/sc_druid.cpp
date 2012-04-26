@@ -3659,7 +3659,7 @@ struct sunfire_t : public druid_spell_t
   // Identical to moonfire, except damage type and usability
 
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, spell_data_t::nil() /*player -> find_spell( 93402 )*/ ),
+    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) ),
     starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
