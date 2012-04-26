@@ -9,20 +9,6 @@
 
 namespace {
 struct remove_dots_event_t;
-
-struct spirit_shell_buff_t : public absorb_buff_t
-{
-  spirit_shell_buff_t( actor_pair_t p ) :
-    absorb_buff_t( absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ) )
-  { }
-
-  virtual void expire()
-  {
-    absorb_buff_t::expire();
-
-  }
-};
-
 }
 
 struct priest_targetdata_t : public targetdata_t
@@ -34,7 +20,6 @@ struct priest_targetdata_t : public targetdata_t
 
   buff_t* buffs_power_word_shield;
   buff_t* buffs_divine_aegis;
-  buff_t* buffs_spirit_shell;
 
   remove_dots_event_t* remove_dots_event;
 
@@ -53,7 +38,6 @@ void register_priest_targetdata( sim_t* sim )
 
   REGISTER_BUFF( power_word_shield );
   REGISTER_BUFF( divine_aegis );
-  REGISTER_BUFF( spirit_shell );
 }
 
 // ==========================================================================
@@ -337,11 +321,6 @@ priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
                           .source( source -> get_stats( "divine_aegis" ) );
   buffs_divine_aegis = add_aura( new_da );
   target -> absorb_buffs.push_back( new_da );
-
-  absorb_buff_t* new_ss = new spirit_shell_buff_t( this );
-
-  buffs_spirit_shell = add_aura( new_ss );
-  target -> absorb_buffs.push_back( new_ss );
 }
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -843,6 +822,13 @@ struct atonement_heal_t : public priest_heal_t
 // Priest Spell
 // ==========================================================================
 
+struct priest_spell_state_t : public action_state_t
+{
+  priest_spell_state_t( action_t* a, priest_t* t ) :
+    action_state_t( a, t )
+  { }
+};
+
 struct priest_spell_t : public spell_t
 {
   atonement_heal_t* atonement;
@@ -1020,8 +1006,8 @@ struct shadow_fiend_pet_t : public pet_t
       direct_power_mod = 0.0063928 * p -> o() -> level;
       if ( harmful ) base_spell_power_multiplier = 1.0;
       base_attack_power_multiplier = 0.0;
-      base_dd_min = util::ability_rank( player -> level,  290.0,85,  197.0,82,  175.0,80,  1.0,0 );
-      base_dd_max = util::ability_rank( player -> level,  373.0,85,  245.0,82,  222.0,80,  2.0,0 );
+      base_dd_min = util_t::ability_rank( player -> level,  290.0,85,  197.0,82,  175.0,80,  1.0,0 );
+      base_dd_max = util_t::ability_rank( player -> level,  373.0,85,  245.0,82,  222.0,80,  2.0,0 );
       background = true;
       repeating  = true;
       may_dodge  = true;
@@ -1081,7 +1067,7 @@ struct shadow_fiend_pet_t : public pet_t
 
   shadow_fiend_pet_t( sim_t* sim, priest_t* owner ) :
     pet_t( sim, owner, "shadow_fiend" ),
-    bad_spell_power( util::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 ) ),
+    bad_spell_power( util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 ) ),
     shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() ),
     bad_swing( false ), extra_tick( false )
   {
@@ -1125,8 +1111,8 @@ struct shadow_fiend_pet_t : public pet_t
     stats_base.attribute[ ATTR_AGILITY   ]  = 0; // Unknown
     stats_base.attribute[ ATTR_STAMINA   ]  = 0; // Unknown
     stats_base.attribute[ ATTR_INTELLECT ]  = 0; // Unknown
-    resources.base[ RESOURCE_HEALTH ]  = util::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
-    resources.base[ RESOURCE_MANA   ]  = util::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
+    resources.base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
+    resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
     stats_base.attack_power                 = 0;  // Unknown
     stats_base.attack_crit                  = 0.07; // Needs more testing
     stats_initial.attack_power_per_strength = 0; // Unknown
@@ -3372,23 +3358,6 @@ struct renew_t : public priest_heal_t
     return am;
   }
 };
-
-struct spirit_shell_t : priest_heal_t
-{
-  spirit_shell_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "spirit_shell", p, p -> find_class_spell( "Spirit Shell" ) )
-  {
-    parse_options( NULL, options_str );
-
-    // Parse values from buff spell effect
-    action_t::parse_effect_data( p -> find_spell( 114908 ) -> effectN( 1 ) );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    td( s -> target ) -> buffs_spirit_shell -> trigger();
-  }
-};
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
@@ -3676,7 +3645,7 @@ void priest_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util::to_string( i ) );
+    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util_t::to_string( i ) );
 }
 
 // priest_t::init_rng =======================================================
@@ -4251,7 +4220,7 @@ bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool 
     if ( initial_shadow_orbs != 0 )
     {
       profile_str += "initial_shadow_orbs=";
-      profile_str += util::to_string( initial_shadow_orbs );
+      profile_str += util_t::to_string( initial_shadow_orbs );
       profile_str += "\n";
     }
   }
@@ -4331,7 +4300,7 @@ int priest_t::decode_set( const item_t& item ) const
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<priest_t,SC_PRIEST>()( "Priest", sim, name, r );
+  SC_CREATE_PRIEST( sim, name, r );
 }
 
 // player_t::priest_init ====================================================

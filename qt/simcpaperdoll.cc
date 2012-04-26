@@ -295,7 +295,7 @@ PaperdollProfile::enchantUsableByProfile( const EnchantData& e ) const
 bool
 PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor ) const
 {
-  if ( ! item -> class_mask & util::class_id_mask( m_class ) ) return false;
+  if ( ! item -> class_mask & util_t::class_id_mask( m_class ) ) return false;
 
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
@@ -413,7 +413,7 @@ PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor )
 bool
 PaperdollProfile::itemUsableByRace( const item_data_t* item ) const
 {
-  return item -> race_mask & util::race_mask( m_race );
+  return item -> race_mask & util_t::race_mask( m_race );
 }
 
 bool
@@ -815,8 +815,8 @@ ItemDataDelegate::itemFlagStr( const item_data_t* item )
   if ( item -> flags_1 & ITEM_FLAG_HEROIC )
     str += QString( "<span style='color:#1eff00;font-style:italic;'>%1</span>" ).arg( "Heroic" );
 
-  if ( item -> id_set > 0 && util::set_item_type_string( item -> id_set ) != 0 )
-    str += QString( "<span style='color:yellow;'>%1 Set</span>" ).arg( util::set_item_type_string( item -> id_set ) );
+  if ( item -> id_set > 0 && util_t::set_item_type_string( item -> id_set ) != 0 )
+    str += QString( "<span style='color:yellow;'>%1 Set</span>" ).arg( util_t::set_item_type_string( item -> id_set ) );
 
   return QString( "<div align='right' style='font-size:9pt;color:white;'>%1</div>" ).arg( str.join(" ") );
 }
@@ -838,8 +838,8 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) co
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
     weapon_stats += QString( "<strong>%1%2" )
-      .arg( util::weapon_class_string( item -> inventory_type ) ? QString( util::weapon_class_string( item -> inventory_type ) ) + QString( " " ) : "" )
-      .arg( util::weapon_subclass_string( item -> item_subclass ) );
+      .arg( util_t::weapon_class_string( item -> inventory_type ) ? QString( util_t::weapon_class_string( item -> inventory_type ) ) + QString( " " ) : "" )
+      .arg( util_t::weapon_subclass_string( item -> item_subclass ) );
     weapon_stats += QString( "%1 - %2 (%3)" )
       .arg( item_database_t::weapon_dmg_min( item, dbc ) )
       .arg( item_database_t::weapon_dmg_max( item, dbc ) )
@@ -855,12 +855,12 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) co
     if ( item -> stat_type_e[ i ] < 0 || item -> stat_val[ i ] == 0 )
       continue;
 
-    stat_type_e t = util::translate_item_mod( item -> stat_type_e[ i ] );
+    stat_type_e t = util_t::translate_item_mod( item -> stat_type_e[ i ] );
     if ( t == STAT_NONE ) continue;
 
     stats << QString( "%1 %2" )
       .arg( item -> stat_val[ i ] )
-      .arg( util::stat_type_abbrev( t ) );
+      .arg( util_t::stat_type_abbrev( t ) );
   }
 
   if ( item -> id_suffix_group > 0 )
@@ -1100,11 +1100,11 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type_e stat = util::translate_item_mod( enchant_data.ench_prop[ j ] );
+      stat_type_e stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
 
       if ( stat == STAT_NONE ) continue;
 
-      std::string stat_str = util::stat_type_abbrev( stat );
+      std::string stat_str = util_t::stat_type_abbrev( stat );
       char statbuf[32];
       snprintf( statbuf, sizeof( statbuf ), "+%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
       stat_list.push_back( statbuf );
@@ -1213,13 +1213,13 @@ EnchantDataModel::enchantStatsStr( const item_enchantment_data_t* enchant )
     if ( enchant -> ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
       continue;
 
-    stat_type_e t = util::translate_item_mod( enchant -> ench_prop[ i ] );
+    stat_type_e t = util_t::translate_item_mod( enchant -> ench_prop[ i ] );
     if ( t == STAT_NONE )
       continue;
 
     stats << QString( "+%1 %2" )
       .arg( enchant -> ench_amount[ i ] )
-      .arg( util::stat_type_abbrev( t ) );
+      .arg( util_t::stat_type_abbrev( t ) );
 
   }
 
@@ -1514,19 +1514,19 @@ PaperdollSlotButton::setSlotItem( slot_type_e t, const item_data_t* )
 PaperdollClassButton::PaperdollClassButton( PaperdollProfile* profile, player_type_e t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = getPaperdollPixmap( QString( "class_%1" ).arg( util::player_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "class_%1" ).arg( util_t::player_type_string( t ) ), true );
 }
 
 PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_type_e t, QWidget* parent ) :
   PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = getPaperdollPixmap( QString( "race_%1" ).arg( util::race_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "race_%1" ).arg( util_t::race_type_string( t ) ), true );
 }
 
 PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_type_e t, QWidget* parent ) :
 PaperdollBasicButton( profile, parent ), m_type( t )
 {
-  m_icon = getPaperdollPixmap( QString( "prof_%1" ).arg( util::profession_type_string( t ) ), true );
+  m_icon = getPaperdollPixmap( QString( "prof_%1" ).arg( util_t::profession_type_string( t ) ), true );
 }
 
 PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile, QWidget* parent ) :

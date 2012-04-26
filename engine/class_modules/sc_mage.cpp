@@ -3537,7 +3537,7 @@ int mage_t::decode_set( const item_t& item ) const
 
 player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<mage_t,SC_MAGE>()( "Mage", sim, name, r );
+  SC_CREATE_MAGE( sim, name, r );
 }
 
 // player_t::mage_init ======================================================

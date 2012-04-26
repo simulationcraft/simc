@@ -722,7 +722,7 @@ struct hunter_ranged_attack_t : public ranged_attack_t
   {
     if ( player -> items[ weapon -> slot ].encoded_enchant_str == "scope" )
     {
-      double scope_damage = util::ability_rank( player -> level, 15.0,72,  12.0,67,  7.0,0 );
+      double scope_damage = util_t::ability_rank( player -> level, 15.0,72,  12.0,67,  7.0,0 );
 
       base_dd_min += scope_damage;
       base_dd_max += scope_damage;
@@ -2434,7 +2434,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
   virtual void execute()
   {
-    base_td = sim -> averaged_range( base_td_min, base_td_max );
+    base_td = sim -> range( base_td_min, base_td_max );
     hunter_ranged_attack_t::execute();
 
     hunter_t* p = player -> cast_hunter();
@@ -3436,7 +3436,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( p )
     return p;
 
-  pet_type_e type = util::parse_pet_type( pet_type );
+  pet_type_e type = util_t::parse_pet_type( pet_type );
 
   if ( type > PET_NONE && type < PET_HUNTER )
   {
@@ -3686,12 +3686,12 @@ void hunter_t::init_position()
   if ( position == POSITION_FRONT )
   {
     position = POSITION_RANGED_FRONT;
-    position_str = util::position_type_string( position );
+    position_str = util_t::position_type_string( position );
   }
   else if ( position == POSITION_BACK )
   {
     position = POSITION_RANGED_BACK;
-    position_str = util::position_type_string( position );
+    position_str = util_t::position_type_string( position );
   }
 }
 
@@ -4046,7 +4046,7 @@ bool hunter_t::create_profile( std::string& profile_str, save_type_e stype, bool
     }
 
     profile_str += "pet=";
-    profile_str += util::pet_type_string( p -> pet_type );
+    profile_str += util_t::pet_type_string( p -> pet_type );
     profile_str += ",";
     profile_str += p -> name_str + "\n";
     profile_str += "talents=" + p -> talents_str + "\n";
@@ -4232,7 +4232,7 @@ void hunter_t::armory_extensions( const std::string& region,
         if ( ! xml_t::get_value( summoned_pet_name, xml_t::get_node( pet_nodes[ i ], "span", "class", "name" ), "." ) )
           continue;
 
-        util::html_special_char_decode( summoned_pet_name );
+        util_t::html_special_char_decode( summoned_pet_name );
         if ( ! summoned_pet_name.empty() )
         {
           summon_pet_str = summoned_pet_name;
@@ -4292,7 +4292,7 @@ void hunter_t::moving()
 
 player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<hunter_t,SC_HUNTER>()( "Hunter", sim, name, r );
+  SC_CREATE_HUNTER( sim, name, r );
 }
 
 // player_t::hunter_init ====================================================

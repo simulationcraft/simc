@@ -189,7 +189,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
           {
             fprintf( file,
                      "\t\t\t\t\t\t\t\t<th>%s</th>\n",
-                     util::stat_type_abbrev( i ) );
+                     util_t::stat_type_abbrev( i ) );
             colspan++;
           }
         if ( p -> sim -> scaling -> scale_lag )
@@ -286,7 +286,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                     "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
                     "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                     "\t\t\t\t\t\t\t\t\t\t</tr>\n",
-                    util::result_type_string( i ),
+                    util_t::result_type_string( i ),
                     s -> direct_results[ i ].count.mean,
                     s -> direct_results[ i ].pct,
                     s -> direct_results[ i ].actual_amount.mean,
@@ -346,7 +346,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                     "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
                     "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
                     "\t\t\t\t\t\t\t\t\t\t</tr>\n",
-                    util::result_type_string( i ),
+                    util_t::result_type_string( i ),
                     s -> tick_results[ i ].count.mean,
                     s -> tick_results[ i ].pct,
                     s -> tick_results[ i ].actual_amount.mean,
@@ -421,8 +421,8 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                 "\t\t\t\t\t\t\t\t\t</div>\n"
                 "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
                 a -> id,
-                util::school_type_string( a-> school ),
-                util::resource_type_string( a -> current_resource() ),
+                util_t::school_type_string( a-> school ),
+                util_t::resource_type_string( a -> current_resource() ),
                 a -> range,
                 a -> travel_speed,
                 a -> trigger_gcd.total_seconds(),
@@ -452,9 +452,9 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                   "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
                   a -> data().id(),
                   a -> data().name_cstr(),
-                  util::school_type_string( a -> data().get_school_type() ),
+                  util_t::school_type_string( a -> data().get_school_type() ),
                   a -> data().tooltip(),
-                  util::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
+                  util_t::encode_html( a -> data().desc() ? std::string( a -> data().desc() ) : std::string() ).c_str() );
       }
 
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
@@ -493,7 +493,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
                   a -> num_ticks,
                   a -> base_tick_time.total_seconds(),
                   a -> hasted_ticks?"true":"false",
-                  util::dot_behavior_type_string( a -> dot_behavior ) );
+                  util_t::dot_behavior_type_string( a -> dot_behavior ) );
       }
       // Extra Reporting for DKs
       if ( a -> player -> type == DEATH_KNIGHT )
@@ -565,7 +565,7 @@ int print_html_action_resource( FILE* file, const stats_t* s, int j )
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
                "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
                s -> resource_gain.name(),
-               util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
+               util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                s -> resource_gain.count[ i ],
                s -> resource_gain.actual[ i ],
                s -> resource_gain.actual[ i ] / s -> resource_gain.count[ i ] );
@@ -605,7 +605,7 @@ void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<ite
              "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
-             util::inverse_tokenize( item.slot_name() ).c_str(),
+             util_t::inverse_tokenize( item.slot_name() ).c_str(),
              item.active() ? item.options_str.c_str() : "empty" );
   }
 
@@ -644,7 +644,7 @@ void print_html_profile ( FILE* file, const player_t* a )
 void print_html_stats ( FILE* file, const player_t* a )
 {
   std::string n = a -> name();
-  util::format_text( n, true );
+  util_t::format_text( n, true );
 
   int j = 1;
 
@@ -672,7 +672,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                "\t\t\t\t\t\t\t\t\t</tr>\n",
                ( j%2 == 1 ) ? " class=\"odd\"" : "",
-               util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
+               util_t::inverse_tokenize( util_t::attribute_type_string( i ) ).c_str(),
                a -> buffed.attribute[ i ],
                a -> get_attribute( i ),
                a -> stats.attribute[ i ] );
@@ -689,7 +689,7 @@ void print_html_stats ( FILE* file, const player_t* a )
                  "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
                  "\t\t\t\t\t\t\t\t\t</tr>\n",
                  ( j%2 == 1 ) ? " class=\"odd\"" : "",
-                 util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
+                 util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                  a -> buffed.resource[ i ],
                  a -> resources.max[ i ],
                  0.0 );
@@ -928,7 +928,7 @@ void print_html_stats ( FILE* file, const player_t* a )
 void print_html_talents( FILE* file, const player_t* p )
 {
   std::string n = p -> name();
-  util::format_text( n, true );
+  util_t::format_text( n, true );
 
   if ( p -> fight_length.mean > 0 )
   {
@@ -999,7 +999,7 @@ void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player
         {
           fprintf( file,
                    "\t\t\t\t\t\t\t\t<th>%s</th>\n",
-                   util::stat_type_abbrev( i ) );
+                   util_t::stat_type_abbrev( i ) );
           colspan++;
         }
       if ( p -> sim -> scaling -> scale_lag )
@@ -1110,7 +1110,7 @@ void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player
             fprintf( file, " = " );
         }
 
-        fprintf( file, "%s", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+        fprintf( file, "%s", util_t::stat_type_abbrev( p -> scaling_stats[ i ] ) );
       }
       fprintf( file, "</li>\n"
                "\t\t\t\t\t\t\t\t\t</ul>\n"
@@ -1163,7 +1163,7 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              a -> marker,
-             util::encode_html( a -> signature_str ).c_str() );
+             util_t::encode_html( a -> signature_str ).c_str() );
   }
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );
@@ -1264,7 +1264,7 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
            dps_error_str.c_str() );
 }
 
-void print_html_gain( FILE* file, report::tabs_t tabs, const gain_t* g, int& j, bool report_overflow = true )
+void print_html_gain( FILE* file, tabs_t tabs, const gain_t* g, int& j, bool report_overflow = true )
 {
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -1286,7 +1286,7 @@ void print_html_gain( FILE* file, report::tabs_t tabs, const gain_t* g, int& j, 
                "%s<td class=\"right\">%.1f</td>\n"
                "%s<td class=\"right\">%.1f</td>\n",
                *tabs, g -> name(),
-               *tabs, util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
+               *tabs, util_t::inverse_tokenize( util_t::resource_type_string( i ) ).c_str(),
                *tabs, g -> count[ i ],
                *tabs, g -> actual[ i ],
                *tabs, g -> actual[ i ] / g -> count[ i ] );
@@ -1306,7 +1306,7 @@ void print_html_gain( FILE* file, report::tabs_t tabs, const gain_t* g, int& j, 
 
 void print_html_player_resources( FILE* file, const player_t* p, const player_t::report_information_t& ri )
 {
-  report::tabs_t tabs(4); // this should get passed in
+  tabs_t tabs(4); // this should get passed in
 
   // Resources Section
 
@@ -1449,7 +1449,7 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
              "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"
              "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n",
-             util::inverse_tokenize( util::resource_type_string( rt ) ).c_str(),
+             util_t::inverse_tokenize( util_t::resource_type_string( rt ) ).c_str(),
              rps_gain, rps_loss );
     fprintf( file,
              "\t\t\t\t\t\t\t</tr>\n" );
@@ -1720,7 +1720,7 @@ void print_html_player_buff( FILE* file, const buff_t* b, int report_details, co
                 b -> data().id(),
                 b -> data().name_cstr(),
                 b -> data().tooltip(),
-                util::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
+                util_t::encode_html( b -> data().desc() ? std::string( b -> data().desc() ) : std::string() ).c_str(),
                 b -> data().max_stacks(),
                 b -> data().duration().total_seconds(),
                 b -> data().cooldown().total_seconds(),
@@ -1843,21 +1843,21 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
   }
   fprintf( file, "\">\n" );
 
-  const char* pt = util::player_type_string( p -> type );
+  const char* pt = util_t::player_type_string( p -> type );
   if ( p -> is_pet() )
-    pt = util::pet_type_string( const_cast<player_t*>( p ) -> cast_pet() -> pet_type );
+    pt = util_t::pet_type_string( const_cast<player_t*>( p ) -> cast_pet() -> pet_type );
   fprintf( file,
            "\t\t\t\t<ul class=\"params\">\n"
            "\t\t\t\t\t<li><b>Race:</b> %s</li>\n"
            "\t\t\t\t\t<li><b>Class:</b> %s</li>\n",
-           util::inverse_tokenize( p -> race_str ).c_str(),
-           util::inverse_tokenize( pt ).c_str()
+           util_t::inverse_tokenize( p -> race_str ).c_str(),
+           util_t::inverse_tokenize( pt ).c_str()
          );
 
   if ( p -> primary_tree() != SPEC_NONE )
     fprintf( file,
              "\t\t\t\t\t<li><b>Spec:</b> %s</li>\n",
-             util::inverse_tokenize( util::specialization_string( p -> primary_tree() ) ).c_str() );
+             util_t::inverse_tokenize( util_t::specialization_string( p -> primary_tree() ) ).c_str() );
 
   fprintf( file,
            "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"
@@ -1865,7 +1865,7 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
            "\t\t\t\t\t<li><b>Position:</b> %s</li>\n"
            "\t\t\t\t</ul>\n"
            "\t\t\t\t<div class=\"clear\"></div>\n",
-           p -> level, util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
+           p -> level, util_t::inverse_tokenize( util_t::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
 
 }
 
@@ -1893,7 +1893,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
            "\t\t\t\t\t\t\t<tr>\n" );
   // Damage
   if ( p -> dps.mean > 0 )
-    util::fprintf( file,
+    util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
@@ -1901,13 +1901,13 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n" );
   // Heal
   if ( p -> hps.mean > 0 )
-    util::fprintf( file,
+    util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
                      "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n" );
-  util::fprintf( file,
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
                    "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
@@ -1920,7 +1920,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
   if ( p -> dps.mean > 0 )
   {
     double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2;
-    util::fprintf( file,
+    util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
@@ -1938,7 +1938,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
   if ( p -> hps.mean > 0 )
   {
     double range = ( p -> hps.percentile( 0.95 ) - p -> hps.percentile( 0.05 ) ) / 2;
-    util::fprintf( file,
+    util_t::fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
@@ -1952,7 +1952,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
                      p -> hps.mean ? range / p -> hps.mean * 100.0 : 0,
                      p -> hpr );
   }
-  util::fprintf( file,
+  util_t::fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
                    "\t\t\t\t\t\t\t\t<td>%s</td>\n"
@@ -1963,7 +1963,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
                    "\t\t\t\t\t\t</table>\n",
                    p -> rps_loss,
                    p -> rps_gain,
-                   util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
+                   util_t::inverse_tokenize( util_t::resource_type_string( p -> primary_resource() ) ).c_str(),
                    p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
                    p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
                    sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );
@@ -1976,8 +1976,8 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
     if ( p -> origin_str.compare( "unknown" ) )
     {
       std::string enc_url = p -> origin_str;
-      util::urldecode( enc_url );
-      enc_url = util::encode_html( enc_url );
+      util_t::urldecode( enc_url );
+      enc_url = util_t::encode_html( enc_url );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
@@ -1988,7 +1988,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
     }
     if ( ! p -> talents_str.empty() )
     {
-      std::string enc_url = util::encode_html( p -> talents_str );
+      std::string enc_url = util_t::encode_html( p -> talents_str );
       fprintf( file,
                "\t\t\t\t\t\t\t<tr class=\"left\">\n"
                "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
@@ -1998,7 +1998,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
                enc_url.c_str() );
     }
     std::vector<std::string> glyph_names;
-    int num_glyphs = util::string_split( glyph_names, p -> glyphs_str, ",/" );
+    int num_glyphs = util_t::string_split( glyph_names, p -> glyphs_str, ",/" );
     if ( num_glyphs )
     {
       fprintf( file,
@@ -2422,7 +2422,7 @@ void print_html_player_( FILE* file, const sim_t* sim, player_t* q, int j=0 )
 
   const player_t* p = q;
   std::string n = p -> name();
-  util::format_text( n, true );
+  util_t::format_text( n, true );
 
   print_html_player_description( file, sim, p, j, n );
 
@@ -2466,11 +2466,9 @@ void print_html_player_( FILE* file, const sim_t* sim, player_t* q, int j=0 )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-namespace report {
+// report::print_html_player ====================================================
 
-void print_html_player( FILE* file, player_t* p, int j=0 )
+void report::print_html_player( FILE* file, player_t* p, int j=0 )
 {
   print_html_player_( file, p -> sim, p, j );
 }
-
-} // END report NAMESPACE

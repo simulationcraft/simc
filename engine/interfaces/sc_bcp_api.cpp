@@ -34,7 +34,7 @@ js_node_t* download_id( sim_t* sim, const std::string& region, const std::string
 
 void parse_profession( std::string& professions_str, js_node_t* profile, int index )
 {
-  std::string key = "professions/primary/" + util::to_string( index );
+  std::string key = "professions/primary/" + util_t::to_string( index );
   if ( js_node_t* profession = js_t::get_node( profile, key ) )
   {
     int id;
@@ -43,7 +43,7 @@ void parse_profession( std::string& professions_str, js_node_t* profile, int ind
     {
       if ( professions_str.length() > 0 )
         professions_str += '/';
-      professions_str += util::profession_type_string( util::translate_profession_id( id ) );
+      professions_str += util_t::profession_type_string( util_t::translate_profession_id( id ) );
       professions_str += '=' + rank;
     }
   }
@@ -60,27 +60,27 @@ js_node_t* pick_talents( js_node_t* talents, const std::string& specifier )
 
   bool spec1_is_active = js_t::get_child( spec1, "selected" ) != 0;
 
-  if ( util::str_compare_ci( specifier, "active" ) )
+  if ( util_t::str_compare_ci( specifier, "active" ) )
     return spec1_is_active ? spec1 : spec2;
 
-  if ( util::str_compare_ci( specifier, "inactive" ) )
+  if ( util_t::str_compare_ci( specifier, "inactive" ) )
     return spec1_is_active ? spec2 : spec1;
 
-  if ( util::str_compare_ci( specifier, "primary" ) )
+  if ( util_t::str_compare_ci( specifier, "primary" ) )
     return spec1;
 
-  if ( util::str_compare_ci( specifier, "secondary" ) )
+  if ( util_t::str_compare_ci( specifier, "secondary" ) )
     return spec2;
 
   std::string spec_name;
   if ( ! js_t::get_value( spec_name, spec1, "name" ) )
     return 0;
-  if ( util::str_prefix_ci( spec_name, specifier ) )
+  if ( util_t::str_prefix_ci( spec_name, specifier ) )
     return spec1;
 
   if ( spec2 && js_t::get_value( spec_name, spec2, "name" ) )
   {
-    if ( util::str_prefix_ci( spec_name, specifier ) )
+    if ( util_t::str_prefix_ci( spec_name, specifier ) )
       return spec2;
   }
 
@@ -106,7 +106,7 @@ bool parse_talents( player_t* p, js_node_t* talents )
   }
 
   p -> talents_str  = "http://www.wowhead.com/talent#";
-  p -> talents_str += util::class_id_string( p -> type );
+  p -> talents_str += util_t::class_id_string( p -> type );
   p -> talents_str += '-';
   p -> talents_str += talent_encoding;
 
@@ -139,7 +139,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
               item_t::download_glyph( p, glyph_name, glyph_id );
           }
 
-          util::glyph_name( glyph_name );
+          util_t::glyph_name( glyph_name );
           if ( ! glyph_name.empty() )
           {
             if ( ! p -> glyphs_str.empty() )
@@ -234,7 +234,7 @@ parse_player( sim_t*             sim,
   std::string result;
   if ( ! http_t::get( result, player.url, caching ) )
     return 0;
-  // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
+  // if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
   js_node_t* profile = js_t::create( sim, result );
   if ( ! profile )
   {
@@ -244,7 +244,7 @@ parse_player( sim_t*             sim,
   if ( sim -> debug ) js_t::print( profile, sim -> output_file );
 
   std::string status, reason;
-  if ( js_t::get_value( status, profile, "status" ) && util::str_compare_ci( status, "nok" ) )
+  if ( js_t::get_value( status, profile, "status" ) && util_t::str_compare_ci( status, "nok" ) )
   {
     js_t::get_value( reason, profile, "reason" );
 
@@ -280,7 +280,7 @@ parse_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
     return 0;
   }
-  std::string class_name = util::player_type_string( util::translate_class_id( cid ) );
+  std::string class_name = util_t::player_type_string( util_t::translate_class_id( cid ) );
 
   int rid;
   if ( ! js_t::get_value( rid, profile, "race" ) )
@@ -289,7 +289,7 @@ parse_player( sim_t*             sim,
     return 0;
   }
 
-  player_t* p = player_t::create( sim, class_name, name, util::translate_race_id( rid ) );
+  player_t* p = player_t::create( sim, class_name, name, util_t::translate_race_id( rid ) );
   sim -> active_player = p;
   if ( ! p )
   {
@@ -646,7 +646,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
 
     int cid;
     if ( ! js_t::get_value( cid, characters[ i ], "character/class" ) ||
-         ( player_filter != PLAYER_NONE && player_filter != util::translate_class_id( cid ) ) )
+         ( player_filter != PLAYER_NONE && player_filter != util_t::translate_class_id( cid ) ) )
       continue;
 
     int rank;
@@ -667,7 +667,7 @@ bool download_guild( sim_t* sim, const std::string& region, const std::string& s
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
     const std::string& cname = names[ i ];
-    util::printf( "Downloading character: %s\n", cname.c_str() );
+    util_t::printf( "Downloading character: %s\n", cname.c_str() );
     player_t* player = download_player( sim, region, server, cname, "active", caching );
     if ( !player )
     {
@@ -718,26 +718,26 @@ std::string parse_gem_stats( const std::string& bonus )
   in >> amount;
   in >> stat;
 
-  stat_type_e st = util::parse_stat_type( stat );
+  stat_type_e st = util_t::parse_stat_type( stat );
   if ( st != STAT_NONE )
-    out << amount << util::stat_type_abbrev( st );
+    out << amount << util_t::stat_type_abbrev( st );
 
   in >> stat;
   if ( in )
   {
-    if ( util::str_compare_ci( stat, "Rating" ) )
+    if ( util_t::str_compare_ci( stat, "Rating" ) )
       in >> stat;
 
     if ( in )
     {
-      if ( util::str_compare_ci( stat, "and" ) )
+      if ( util_t::str_compare_ci( stat, "and" ) )
       {
         in >> amount;
         in >> stat;
 
-        st = util::parse_stat_type( stat );
+        st = util_t::parse_stat_type( stat );
         if ( st != STAT_NONE )
-          out << '_' << amount << util::stat_type_abbrev( st );
+          out << '_' << amount << util_t::stat_type_abbrev( st );
       }
     }
   }
@@ -763,9 +763,9 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
   std::string type_str;
   if ( ! js_t::get_value( type_str, js, "gemInfo/type/type" ) )
     return GEM_NONE;
-  util::tokenize( type_str );
+  util_t::tokenize( type_str );
 
-  gem_type_e type = util::parse_gem_type( type_str );
+  gem_type_e type = util_t::parse_gem_type( type_str );
 
   std::string result;
   if ( type == GEM_META )
@@ -786,7 +786,7 @@ gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e
 
   if ( ! result.empty() )
   {
-    util::tokenize( result );
+    util_t::tokenize( result );
     if ( ! item.armory_gems_str.empty() )
       item.armory_gems_str += '_';
     item.armory_gems_str += result;

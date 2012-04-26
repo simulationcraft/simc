@@ -1798,7 +1798,7 @@ struct melee_t : public shaman_melee_attack_t
   {
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
-      if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util_t::slot_type_string( weapon -> slot ) );
       schedule_execute();
     }
     else
@@ -3060,7 +3060,7 @@ struct shaman_totem_t : public shaman_spell_t
         else
         {
           if ( sim -> log )
-            log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
+            log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
         }
 
       }
@@ -3086,7 +3086,7 @@ struct shaman_totem_t : public shaman_spell_t
       else
       {
         if ( sim -> log )
-          log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
+          log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util_t::result_type_string( result ) );
       }
 
       stats -> add_tick( d -> time_to_tick );
@@ -3919,12 +3919,12 @@ void shaman_t::init_procs()
 
   for ( int i = 0; i < 7; i++ )
   {
-    proc.fulmination[ i ] = get_proc( "fulmination_" + util::to_string( i ) );
+    proc.fulmination[ i ] = get_proc( "fulmination_" + util_t::to_string( i ) );
   }
 
   for ( int i = 0; i < 6; i++ )
   {
-    proc.maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util::to_string( i ) );
+    proc.maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util_t::to_string( i ) );
   }
 }
 
@@ -3976,17 +3976,17 @@ void shaman_t::init_actions()
   // Detect some stuff so we can figure out how much int should be used to summon FE
   for ( int i = 0; i < SLOT_MAX; i++ )
   {
-    if ( util::str_compare_ci( items[ i ].name(), "darkmoon_card_volcano" ) )
+    if ( util_t::str_compare_ci( items[ i ].name(), "darkmoon_card_volcano" ) )
       has_dmc_volcano = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
+    else if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
       has_fiery_quintessence = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "will_of_unbinding" ) )
+    else if ( util_t::str_compare_ci( items[ i ].name(), "will_of_unbinding" ) )
       has_will_of_unbinding = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+    else if ( util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
       has_bottled_wishes = true;
-    else if ( util::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
+    else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
       has_power_torrent = true;
-    else if ( util::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
+    else if ( util_t::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
       has_lightweave = true;
   }
 
@@ -4057,9 +4057,9 @@ void shaman_t::init_actions()
 
         // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and
         // only used when the required temporary spell power threshold is exceeded
-        if ( util::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
+        if ( util_t::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
           duration = 25;
-        else if ( util::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
+        else if ( util_t::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
           duration = 15;
 
         action_list_str += "/use_item,name=" + std::string( items[ i ].name() );
@@ -4067,7 +4067,7 @@ void shaman_t::init_actions()
         if ( duration > 0 )
         {
           action_list_str += ",if=(cooldown.fire_elemental_totem.remains=0&temporary_bonus.spell_power>=" +
-                             util::to_string( sp_threshold ) +
+                             util_t::to_string( sp_threshold ) +
                              ")";
         }
       }
@@ -4399,7 +4399,7 @@ role_type_e shaman_t::primary_role() const
 
 player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<shaman_t,SC_SHAMAN>()( "Shaman", sim, name, r );
+  SC_CREATE_SHAMAN( sim, name, r );
 }
 
 // player_t::shaman_init ====================================================

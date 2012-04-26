@@ -15,7 +15,7 @@ static void stat_search( std::string&              encoding_str,
                          const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
-  size_t num_stats = util::string_split( stat_tokens, stat_str, " " );
+  size_t num_stats = util_t::string_split( stat_tokens, stat_str, " " );
   size_t num_descriptions = description_tokens.size();
 
   for ( size_t i = 0; i < num_descriptions; i++ )
@@ -52,20 +52,20 @@ static void stat_search( std::string&              encoding_str,
       std::string value_str;
 
       if ( ( i > 0 ) &&
-           ( util::is_number( description_tokens[ i-1 ] ) ) )
+           ( util_t::is_number( description_tokens[ i-1 ] ) ) )
       {
         value_str = description_tokens[ i-1 ];
       }
       if ( ( ( i + num_stats + 1 ) < num_descriptions ) &&
            ( description_tokens[ i + num_stats ] == "by" ) &&
-           ( util::is_number( description_tokens[ i + num_stats + 1 ] ) ) )
+           ( util_t::is_number( description_tokens[ i + num_stats + 1 ] ) ) )
       {
         value_str = description_tokens[ i + num_stats + 1 ];
       }
 
       if ( ! value_str.empty() )
       {
-        encoding_str += '_' + value_str + util::stat_type_abbrev( type );
+        encoding_str += '_' + value_str + util_t::stat_type_abbrev( type );
       }
     }
   }
@@ -97,13 +97,13 @@ void armory_t::fuzzy_stats( std::string&       encoding_str,
   if ( description_str.empty() ) return;
 
   std::string buffer = description_str;
-  util::tokenize( buffer );
+  util_t::tokenize( buffer );
 
   if ( is_proc_description( buffer ) )
     return;
 
   std::vector<std::string> splits;
-  util::string_split( splits, buffer, "_." );
+  util_t::string_split( splits, buffer, "_." );
 
   stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
   stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );

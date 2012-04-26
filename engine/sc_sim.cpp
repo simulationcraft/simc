@@ -180,7 +180,7 @@ static bool parse_player( sim_t*             sim,
       return false;
     }
 
-    sim -> active_player = player_t::create( sim, util::player_type_string( source -> type ), player_name );
+    sim -> active_player = player_t::create( sim, util_t::player_type_string( source -> type ), player_name );
     if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
   }
 
@@ -198,7 +198,7 @@ static bool parse_proxy( sim_t*             sim,
 {
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, value, "," );
+  int num_splits = util_t::string_split( splits, value, "," );
 
   if ( num_splits != 3 )
   {
@@ -228,7 +228,7 @@ static bool parse_cache( sim_t*             /* sim */,
   {
     if ( value == "1" ) cache::players( cache::ANY );
     else if ( value == "0" ) cache::players( cache::CURRENT );
-    else if ( util::str_compare_ci( value, "only" ) ) cache::players( cache::ONLY );
+    else if ( util_t::str_compare_ci( value, "only" ) ) cache::players( cache::ONLY );
     else return false;
 
     return true;
@@ -238,7 +238,7 @@ static bool parse_cache( sim_t*             /* sim */,
   {
     if ( value == "1" ) cache::items( cache::ANY );
     else if ( value == "0" ) cache::items( cache::CURRENT );
-    else if ( util::str_compare_ci( value, "only" ) ) cache::items( cache::ONLY );
+    else if ( util_t::str_compare_ci( value, "only" ) ) cache::items( cache::ONLY );
     else return false;
 
     return true;
@@ -283,7 +283,7 @@ public:
     std::vector<option_t> options;
     option_t::merge( options, base_options, client_options );
 
-    size_t n = util::string_split( names, input, "," );
+    size_t n = util_t::string_split( names, input, "," );
     size_t count = 0;
     for ( size_t i = 0; i < n; ++i )
     {
@@ -408,7 +408,7 @@ bool parse_guild( sim_t*             sim,
     if ( ! ranks_str.empty() )
     {
       std::vector<std::string> ranks;
-      int n_ranks = util::string_split( ranks, ranks_str, "/" );
+      int n_ranks = util_t::string_split( ranks, ranks_str, "/" );
       if ( n_ranks > 0 )
       {
         for ( int i = 0; i < n_ranks; i++ )
@@ -418,7 +418,7 @@ bool parse_guild( sim_t*             sim,
 
     player_type_e pt = PLAYER_NONE;
     if ( ! type_str.empty() )
-      pt = util::parse_player_type( type_str );
+      pt = util_t::parse_player_type( type_str );
 
     for ( size_t i = 0; i < stuff.names.size(); ++i )
     {
@@ -462,12 +462,12 @@ static bool parse_fight_style( sim_t*             sim,
 {
   if ( name != "fight_style" ) return false;
 
-  if ( util::str_compare_ci( value, "Patchwerk" ) )
+  if ( util_t::str_compare_ci( value, "Patchwerk" ) )
   {
     sim -> fight_style = "Patchwerk";
     sim -> raid_events_str.clear();
   }
-  else if ( util::str_compare_ci( value, "Ultraxion" ) )
+  else if ( util_t::str_compare_ci( value, "Ultraxion" ) )
   {
     sim -> fight_style = "Ultraxion";
     sim -> max_time    = timespan_t::from_seconds( 366.0 );
@@ -484,7 +484,7 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
     sim -> raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
   }
-  else if ( util::str_compare_ci( value, "HelterSkelter" ) )
+  else if ( util_t::str_compare_ci( value, "HelterSkelter" ) )
   {
     sim -> fight_style = "HelterSkelter";
     sim -> raid_events_str = "casting,cooldown=30,duration=3,first=15";
@@ -492,15 +492,15 @@ static bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/stun,cooldown=60,duration=2";
     sim -> raid_events_str += "/invulnerable,cooldown=120,duration=3";
   }
-  else if ( util::str_compare_ci( value, "LightMovement" ) )
+  else if ( util_t::str_compare_ci( value, "LightMovement" ) )
   {
     sim -> fight_style = "LightMovement";
     sim -> raid_events_str = "/movement,players_only=1,first=";
-    sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.1 ) );
+    sim -> raid_events_str += util_t::to_string( int( sim -> max_time.total_seconds() * 0.1 ) );
     sim -> raid_events_str += ",cooldown=85,duration=7,last=";
-    sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
+    sim -> raid_events_str += util_t::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
   }
-  else if ( util::str_compare_ci( value, "HeavyMovement" ) )
+  else if ( util_t::str_compare_ci( value, "HeavyMovement" ) )
   {
     sim -> fight_style = "HeavyMovement";
     sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=4";
@@ -547,22 +547,22 @@ static bool parse_item_sources( sim_t*             sim,
 {
   std::vector<std::string> sources;
 
-  util::string_split( sources, value, ":/|", false );
+  util_t::string_split( sources, value, ":/|", false );
 
   sim -> item_db_sources.clear();
 
   for ( unsigned i = 0; i < sources.size(); i++ )
   {
-    if ( ! util::str_compare_ci( sources[ i ], "local" ) &&
-         ! util::str_compare_ci( sources[ i ], "mmoc" ) &&
-         ! util::str_compare_ci( sources[ i ], "wowhead" ) &&
-         ! util::str_compare_ci( sources[ i ], "ptrhead" ) &&
-         ! util::str_compare_ci( sources[ i ], "armory" ) &&
-         ! util::str_compare_ci( sources[ i ], "bcpapi" ) )
+    if ( ! util_t::str_compare_ci( sources[ i ], "local" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "mmoc" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "wowhead" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "ptrhead" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "armory" ) &&
+         ! util_t::str_compare_ci( sources[ i ], "bcpapi" ) )
     {
       continue;
     }
-    util::tokenize( sources[ i ] );
+    util_t::tokenize( sources[ i ] );
     sim -> item_db_sources.push_back( sources[ i ] );
   }
 
@@ -1275,8 +1275,8 @@ bool sim_t::init()
   {
     if ( ! target_race.empty() )
     {
-      t -> race = util::parse_race_type( target_race );
-      t -> race_str = util::race_type_string( t -> race );
+      t -> race = util_t::parse_race_type( target_race );
+      t -> race_str = util_t::race_type_string( t -> race );
     }
   }
 
@@ -1625,12 +1625,12 @@ bool sim_t::iterate()
 
     if ( report_progress && ( message_interval > 0 ) && ( i % message_interval == 0 ) && ( message_index > 0 ) )
     {
-      util::fprintf( stdout, "%d... ", message_index-- );
+      util_t::fprintf( stdout, "%d... ", message_index-- );
       fflush( stdout );
     }
     combat( i );
   }
-  if ( report_progress ) util::fprintf( stdout, "\n" );
+  if ( report_progress ) util_t::fprintf( stdout, "\n" );
 
   reset();
 
@@ -1691,7 +1691,7 @@ void sim_t::partition()
   if ( iterations < threads ) return;
 
 #if defined( NO_THREADS )
-  util::fprintf( output_file, "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
+  util_t::fprintf( output_file, "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
   exit( 0 );
 #endif
 
@@ -1715,14 +1715,14 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
-  int64_t start_time = util::milliseconds();
+  int64_t start_time = util_t::milliseconds();
 
   partition();
   if ( ! iterate() ) return false;
   merge();
   analyze();
 
-  elapsed_cpu = timespan_t::from_millis( ( util::milliseconds() - start_time ) );
+  elapsed_cpu = timespan_t::from_millis( ( util_t::milliseconds() - start_time ) );
 
   return true;
 }
@@ -1880,11 +1880,11 @@ expr_t* sim_t::create_expression( action_t* a,
   if ( name_str == "time" )
     return make_ref_expr( name_str, current_time );
 
-  if ( util::str_compare_ci( name_str, "enemies" ) )
+  if ( util_t::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, num_enemies );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  int num_splits = util_t::string_split( splits, name_str, "." );
 
   if ( num_splits == 3 )
   {
@@ -1919,22 +1919,22 @@ expr_t* sim_t::create_expression( action_t* a,
 
 void sim_t::print_options()
 {
-  util::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
+  util_t::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
 
   int num_options = ( int ) options.size();
 
-  util::fprintf( output_file, "\nSimulation Engine:\n" );
+  util_t::fprintf( output_file, "\nSimulation Engine:\n" );
   for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
 
   for ( player_t* p = player_list; p; p = p -> next )
   {
     num_options = ( int ) p -> options.size();
 
-    util::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
+    util_t::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util_t::player_type_string( p -> type ) );
     for ( int i=0; i < num_options; i++ ) p -> options[ i ].print( output_file );
   }
 
-  util::fprintf( output_file, "\n" );
+  util_t::fprintf( output_file, "\n" );
   fflush( output_file );
 }
 
@@ -2292,7 +2292,7 @@ int sim_t::main( int argc, char** argv )
 
   if ( canceled ) return 0;
 
-  util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
+  util_t::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
                    SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( dbc.ptr ) );
   fflush( output_file );
 
@@ -2304,40 +2304,40 @@ int sim_t::main( int argc, char** argv )
   else if ( need_to_save_profiles( this ) )
   {
     init();
-    util::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
+    util_t::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
     report_t::print_profiles( this );
   }
   else
   {
     if ( max_time <= timespan_t::zero() )
     {
-      util::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
+      util_t::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
       exit( 0 );
     }
     if ( abs( vary_combat_length ) >= 1.0 )
     {
-      util::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
+      util_t::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
       vary_combat_length = 0.0;
     }
     if ( confidence <= 0.0 || confidence >= 1.0 )
     {
-      util::fprintf( output_file, "\nInvalid confidence, reseting to 0.95.\n" );
+      util_t::fprintf( output_file, "\nInvalid confidence, reseting to 0.95.\n" );
       confidence = 0.95;
     }
 
-    util::fprintf( output_file,
+    util_t::fprintf( output_file,
                      "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
                      iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
-    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+    util_t::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 
     if ( execute() )
     {
       scaling      -> analyze();
       plot         -> analyze();
       reforge_plot -> analyze();
-      util::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
+      util_t::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report_t::print_suite( this );
     }
   }

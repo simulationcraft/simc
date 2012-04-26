@@ -75,7 +75,7 @@ void action_state_t::debug() const
                  action -> name(),
                  target -> name(),
                  action -> snapshot_flags,
-                 util::result_type_string( result ), result_amount,
+                 util_t::result_type_string( result ), result_amount,
                  haste, crit,
                  attack_power, spell_power,
                  da_multiplier, ta_multiplier,
@@ -183,7 +183,15 @@ void action_t::impact_s( action_state_t* s )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
+      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( s -> result ) );
     }
+  }
+}
+
+void absorb_t::impact_s( action_state_t* s )
+{
+  if ( s -> result_amount > 0 )
+  {
+    assess_damage( s -> target, s -> result_amount, ABSORB, s -> result );
   }
 }

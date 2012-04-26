@@ -15,11 +15,11 @@ static bool is_plot_stat( sim_t* sim,
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list;
-    size_t num_stats = util::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
+    size_t num_stats = util_t::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
     bool found = false;
     for ( size_t i = 0; i < num_stats && ! found; i++ )
     {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
+      found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
     if ( ! found ) return false;
   }
@@ -69,7 +69,7 @@ double plot_t::progress( std::string& phase )
   if ( current_plot_stat <= 0 ) return 0;
 
   phase  = "Plot - ";
-  phase += util::stat_type_abbrev( current_plot_stat );
+  phase += util_t::stat_type_abbrev( current_plot_stat );
 
   double stat_progress = ( num_plot_stats - remaining_plot_stats ) / ( double ) num_plot_stats;
 
@@ -105,7 +105,7 @@ void plot_t::analyze_stats()
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util::stat_type_string( i ) );
+      util_t::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util_t::stat_type_string( i ) );
       fflush( stdout );
     }
 
@@ -138,7 +138,7 @@ void plot_t::analyze_stats()
         delta_sim -> execute();
         if ( dps_plot_debug )
         {
-          util::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
+          util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
           report_t::print_text( sim -> output_file, delta_sim, true );
         }
       }

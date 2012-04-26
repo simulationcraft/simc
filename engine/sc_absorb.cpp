@@ -28,7 +28,6 @@ absorb_t::absorb_t( const std::string&  token,
     target = player;
 
   may_crit = false;
-  stateless = true;
 
   stats -> type = STATS_ABSORB;
 }
@@ -49,9 +48,6 @@ void absorb_t::player_buff()
 
 void absorb_t::execute()
 {
-  if ( !stateless ) // Safety check to ensure stateless flag never gets turned off. Remove when non-stateless system is discontinued.
-    assert( 0 );
-
   spell_base_t::execute();
 
   if ( harmful && callbacks )
@@ -67,13 +63,13 @@ void absorb_t::execute()
   }
 }
 
-// absorb_t::impact_s =========================================================
+// absorb_t::impact =========================================================
 
-void absorb_t::impact_s( action_state_t* s )
+void absorb_t::impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
 {
-  if ( s -> result_amount > 0 )
+  if ( travel_dmg > 0 )
   {
-    assess_damage( s -> target, s -> result_amount, ABSORB, s -> result );
+    assess_damage( t, travel_dmg, ABSORB, impact_result );
   }
 }
 
@@ -90,7 +86,7 @@ void absorb_t::assess_damage( player_t*     t,
     log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
                    t -> name(), direct_dmg, heal_amount,
-                   util::result_type_string( result ) );
+                   util_t::result_type_string( result ) );
 
   stats -> add_result( direct_dmg, heal_amount, heal_type, heal_result );
 }

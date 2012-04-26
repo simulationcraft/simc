@@ -816,7 +816,7 @@ void SimulationCraftWindow::createBestInSlotTab()
     // Ignore the Monk for now
     if ( i == MONK ) continue;
 
-    QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( i ) ) );
+    QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util_t::player_type_string( i ) ) );
     bisTree->addTopLevelItem( top );
     for ( int j=0; j < TIER_MAX; j++ )
     {
@@ -885,7 +885,7 @@ void SimulationCraftWindow::createBestInSlotTab()
       {
         for ( player_type_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
         {
-          if ( profile.contains( util::player_type_string( j ), Qt::CaseInsensitive ) )
+          if ( profile.contains( util_t::player_type_string( j ), Qt::CaseInsensitive ) )
           {
             player = j;
             break;
@@ -1311,7 +1311,7 @@ void ImportThread::run()
 
   if ( player )
   {
-    player -> role = util::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
+    player -> role = util_t::parse_role_type( mainWindow->defaultRoleChoice->currentText().toUtf8().constData() );
 
     if ( sim->init() )
     {

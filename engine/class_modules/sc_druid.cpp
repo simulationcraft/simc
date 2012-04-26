@@ -1459,7 +1459,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
       // Let the additional energy consumption create it's own debug log entries.
       if ( sim -> debug )
         log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
-                       excess_energy, util::resource_type_string( current_resource() ), name() );
+                       excess_energy, util_t::resource_type_string( current_resource() ), name() );
 
       player -> resource_loss( current_resource(), excess_energy );
       stats -> consume_resource( current_resource(), excess_energy );
@@ -4971,7 +4971,7 @@ player_t* player_t::create_druid( sim_t*             sim,
                                   const std::string& name,
                                   race_type_e r )
 {
-  return sc_create_class<druid_t,SC_DRUID>()( "Druid", sim, name, r );
+  SC_CREATE_DRUID( sim, name, r );
 }
 
 // player_t::druid_init =====================================================

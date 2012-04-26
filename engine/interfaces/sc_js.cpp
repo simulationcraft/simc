@@ -241,7 +241,7 @@ static js_node_t* split_path( js_node_t*         node,
                               const std::string& path )
 {
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, path, "/" );
+  int num_splits = util_t::string_split( splits, path, "/" );
 
   for ( int i=0; i < num_splits; i++ )
   {
@@ -395,13 +395,13 @@ void js_t::print( js_node_t* root,
 
   if ( ! file ) file = stdout;
 
-  util::fprintf( file, "%*s%s", spacing, "", root -> name() );
+  util_t::fprintf( file, "%*s%s", spacing, "", root -> name() );
 
   if ( ! root -> value.empty() )
   {
-    util::fprintf( file, " : '%s'", root -> value.c_str() );
+    util_t::fprintf( file, " : '%s'", root -> value.c_str() );
   }
-  util::fprintf( file, "\n" );
+  util_t::fprintf( file, "\n" );
 
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )

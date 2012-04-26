@@ -314,8 +314,8 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg = util::ability_rank( p -> level, 5840.0,85, 1.0,0 ); // TODO
-    main_hand_weapon.max_dmg = util::ability_rank( p -> level, 7557.0,85, 1.0,0 ); // TODO
+    main_hand_weapon.min_dmg = util_t::ability_rank( p -> level, 5840.0,85, 1.0,0 ); // TODO
+    main_hand_weapon.max_dmg = util_t::ability_rank( p -> level, 7557.0,85, 1.0,0 ); // TODO
   }
 
   virtual void init_base()
@@ -2930,7 +2930,7 @@ double paladin_t::assess_damage( double        amount,
 
   if ( buffs.divine_protection -> up() )
   {
-    if ( util::school_type_component( school, SCHOOL_MAGIC ) )
+    if ( util_t::school_type_component( school, SCHOOL_MAGIC ) )
     {
       amount *= 1.0 + buffs.divine_protection -> data().effect1().percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
     }
@@ -3094,7 +3094,7 @@ expr_t* paladin_t::create_expression( action_t* a,
   };
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, name_str, "." );
+  int num_splits = util_t::string_split( splits, name_str, "." );
 
   if ( ( num_splits == 2 ) && ( splits[ 0 ] == "seal" ) )
   {
@@ -3120,7 +3120,7 @@ expr_t* paladin_t::create_expression( action_t* a,
 
 player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<paladin_t,SC_PALADIN>()( "Paladin", sim, name, r );
+  SC_CREATE_PALADIN( sim, name, r );
 }
 
 // player_t::paladin_init ===================================================

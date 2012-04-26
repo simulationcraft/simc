@@ -15,11 +15,11 @@ static bool is_plot_stat( sim_t* sim,
   if ( ! sim -> reforge_plot -> reforge_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list;
-    size_t num_stats = util::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+    size_t num_stats = util_t::string_split( stat_list, sim -> reforge_plot -> reforge_plot_stat_str, ",:;/|" );
     bool found = false;
     for ( size_t i = 0; i < num_stats && ! found; i++ )
     {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
+      found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
     if ( ! found ) return false;
   }
@@ -143,19 +143,19 @@ void reforge_plot_t::analyze_stats()
 
   if ( reforge_plot_debug )
   {
-    util::fprintf( sim -> output_file, "Reforge Plot Stats: " );
+    util_t::fprintf( sim -> output_file, "Reforge Plot Stats: " );
     for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
-      util::fprintf( sim -> output_file, "%s, ", util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
-    util::fprintf( sim -> output_file, "\n" );
+      util_t::fprintf( sim -> output_file, "%s, ", util_t::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+    util_t::fprintf( sim -> output_file, "\n" );
 
-    util::fprintf( sim -> output_file, "Reforge Plot Stat Mods:\n" );
+    util_t::fprintf( sim -> output_file, "Reforge Plot Stat Mods:\n" );
     for ( size_t i = 0; i < stat_mods.size(); i++ )
     {
       for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
-        util::fprintf( sim -> output_file, "%s: %d ",
-                         util::stat_type_string( reforge_plot_stat_indices[ j ] ),
+        util_t::fprintf( sim -> output_file, "%s: %d ",
+                         util_t::stat_type_string( reforge_plot_stat_indices[ j ] ),
                          stat_mods[ i ][ j ] );
-      util::fprintf( sim -> output_file, "\n" );
+      util_t::fprintf( sim -> output_file, "\n" );
     }
   }
 
@@ -170,7 +170,7 @@ void reforge_plot_t::analyze_stats()
     if ( reforge_plot_iterations > 0 )
       current_reforge_sim -> iterations = reforge_plot_iterations;
     if ( sim -> report_progress )
-      util::fprintf( stdout, "Current reforge: " );
+      util_t::fprintf( stdout, "Current reforge: " );
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
       current_reforge_sim -> enchant.add_stat( reforge_plot_stat_indices[ j ],
@@ -179,14 +179,14 @@ void reforge_plot_t::analyze_stats()
       delta_result[ j ].error = 0;
 
       if ( sim -> report_progress )
-        util::fprintf( stdout, "%s: %d ",
-                         util::stat_type_string( reforge_plot_stat_indices[ j ] ),
+        util_t::fprintf( stdout, "%s: %d ",
+                         util_t::stat_type_string( reforge_plot_stat_indices[ j ] ),
                          stat_mods[ i ][ j ] );
     }
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\n" );
+      util_t::fprintf( stdout, "\n" );
       fflush( stdout );
     }
 
@@ -249,21 +249,21 @@ void reforge_plot_t::analyze()
   {
     if ( p -> quiet ) continue;
 
-    util::fprintf( reforge_plot_output_file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
+    util_t::fprintf( reforge_plot_output_file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
 
     for ( int i=0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
     {
-      util::fprintf( reforge_plot_output_file, "%s, ",
-                       util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+      util_t::fprintf( reforge_plot_output_file, "%s, ",
+                       util_t::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
-    util::fprintf( reforge_plot_output_file, " DPS\n" );
+    util_t::fprintf( reforge_plot_output_file, " DPS\n" );
 
     for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
     {
       for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
-        util::fprintf( reforge_plot_output_file, "%f, ",
+        util_t::fprintf( reforge_plot_output_file, "%f, ",
                          p -> reforge_plot_data[ i ][ j ].value );
-      util::fprintf( reforge_plot_output_file, "\n" );
+      util_t::fprintf( reforge_plot_output_file, "\n" );
     }
   }
 }
@@ -281,7 +281,7 @@ double reforge_plot_t::progress( std::string& phase )
   phase = "Reforge - ";
   for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
   {
-    phase += util::stat_type_abbrev( reforge_plot_stat_indices[ i ] );
+    phase += util_t::stat_type_abbrev( reforge_plot_stat_indices[ i ] );
     if ( i < reforge_plot_stat_indices.size() - 1 )
       phase += " to ";
   }

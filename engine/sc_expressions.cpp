@@ -294,9 +294,9 @@ token_type_e expression_t::next_token( action_t* action, const std::string& expr
       c = expr_str[ ++current_index ];
     }
 
-    if ( util::str_compare_ci( token_str, "floor" ) )
+    if ( util_t::str_compare_ci( token_str, "floor" ) )
       return TOK_FLOOR;
-    else if ( util::str_compare_ci( token_str, "ceil" ) )
+    else if ( util_t::str_compare_ci( token_str, "ceil" ) )
       return TOK_CEIL;
     else
       return TOK_STR;
@@ -560,10 +560,10 @@ expr_t* parse_expression( const char* arg )
 void time_test( expr_t* expr, uint64_t n )
 {
   double value = 0;
-  const int64_t start = util::milliseconds();
+  const int64_t start = util_t::milliseconds();
   for ( uint64_t i = 0; i < n ; ++i )
     value = expr -> eval();
-  const int64_t stop = util::milliseconds();
+  const int64_t stop = util_t::milliseconds();
   printf( "evaluate: %f in %.4f seconds\n", value, ( stop - start ) / 1000.0 );
 }
 }
@@ -595,7 +595,7 @@ int main( int argc, char** argv )
 
   for ( int i=1; i < argc; i++ )
   {
-    if ( util::str_compare_ci( argv[ i ], "-n" ) )
+    if ( util_t::str_compare_ci( argv[ i ], "-n" ) )
     {
       ++i;
       assert( i < argc );

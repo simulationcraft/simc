@@ -241,7 +241,7 @@ struct discharge_proc_callback_base_t : public action_callback_t
     rng  = p -> get_rng ( name_str );
   }
 
-  double proc_chance() const
+  virtual double proc_chance() const
   {
     return initial_proc_chance;
   }
@@ -1376,7 +1376,7 @@ static void register_gurthalak( item_t* item )
       // Init different spells/dots to act like multiple tentacles up at once
       for ( int i=0; i <= 9; i++ )
       {
-        std::string spell_name = "gurthalak_voice_of_the_deeps" + util::to_string( i );
+        std::string spell_name = "gurthalak_voice_of_the_deeps" + util_t::to_string( i );
         spell[ i ] = new gurthalak_t( p, tick_damage, spell_name.c_str()  );
         dot_gurth[ i ] = p -> get_dot( spell_name );
       }
@@ -2304,7 +2304,7 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
   if ( e.empty() ) return false;
 
-  util::tolower( e );
+  util_t::tolower( e );
 
   encoding = e;
 
@@ -2389,7 +2389,7 @@ bool unique_gear_t::get_use_encoding( std::string&       encoding,
 
   if ( e.empty() ) return false;
 
-  util::tolower( e );
+  util_t::tolower( e );
 
   encoding = e;
 

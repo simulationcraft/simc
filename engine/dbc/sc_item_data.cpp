@@ -14,14 +14,14 @@ std::string stat_to_str( item_mod_type stat, int stat_amount )
 
   if ( stat_amount )
   {
-    stat_type_e s = util::translate_item_mod( stat );
+    stat_type_e s = util_t::translate_item_mod( stat );
     if ( s != STAT_NONE )
     {
       char stat_buf[64];
-      snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util::stat_type_abbrev( s ) );
+      snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util_t::stat_type_abbrev( s ) );
       stat_str = stat_buf;
 
-      util::tokenize( stat_str );
+      util_t::tokenize( stat_str );
     }
   }
 
@@ -82,7 +82,7 @@ bool parse_item_quality( item_t& item, const item_data_t* item_data )
   item.armory_quality_str.clear();
 
   if ( item_data -> quality > 1 )
-    item.armory_quality_str = util::item_quality_string( item_data -> quality );
+    item.armory_quality_str = util_t::item_quality_string( item_data -> quality );
 
   return true;
 }
@@ -91,7 +91,7 @@ bool parse_item_level( item_t& item, const item_data_t* item_data )
 {
   assert( item_data );
 
-  item.armory_ilevel_str = util::to_string( item_data -> level );
+  item.armory_ilevel_str = util_t::to_string( item_data -> level );
 
   return true;
 }
@@ -102,7 +102,7 @@ bool parse_item_name( item_t& item, const item_data_t* item_data )
 
   item.armory_name_str = item_data -> name;
 
-  util::tokenize( item.armory_name_str );
+  util_t::tokenize( item.armory_name_str );
 
   return true;
 }
@@ -199,12 +199,12 @@ bool parse_weapon_type( item_t&            item,
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
 
-  weapon_type_e w = util::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
+  weapon_type_e w = util_t::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
   if ( w == WEAPON_NONE || w == WEAPON_WAND )
     return true;
 
   snprintf( stat_buf, sizeof( stat_buf ), "%s_%4.2fspeed_%umin_%umax",
-            util::weapon_type_string( w ), speed, min_dam, max_dam );
+            util_t::weapon_type_string( w ), speed, min_dam, max_dam );
   item.armory_weapon_str = stat_buf;
 
   return true;
@@ -263,22 +263,22 @@ bool item_database_t::initialize_item_sources( const item_t& item, std::vector<s
   if ( ! item.option_data_source_str.empty() )
   {
     std::vector<std::string> item_sources_split;
-    util::string_split( item_sources_split, item.option_data_source_str, ":/|", false );
+    util_t::string_split( item_sources_split, item.option_data_source_str, ":/|", false );
 
     source_list.clear();
 
     for ( unsigned i = 0; i < item_sources_split.size(); i++ )
     {
-      if ( ! util::str_compare_ci( item_sources_split[ i ], "local" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "mmoc" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "wowhead" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "ptrhead" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "armory" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "bcpapi" ) )
+      if ( ! util_t::str_compare_ci( item_sources_split[ i ], "local" ) &&
+           ! util_t::str_compare_ci( item_sources_split[ i ], "mmoc" ) &&
+           ! util_t::str_compare_ci( item_sources_split[ i ], "wowhead" ) &&
+           ! util_t::str_compare_ci( item_sources_split[ i ], "ptrhead" ) &&
+           ! util_t::str_compare_ci( item_sources_split[ i ], "armory" ) &&
+           ! util_t::str_compare_ci( item_sources_split[ i ], "bcpapi" ) )
       {
         continue;
       }
-      util::tokenize( item_sources_split[ i ] );
+      util_t::tokenize( item_sources_split[ i ] );
       source_list.push_back( item_sources_split[ i ] );
     }
 
@@ -693,7 +693,7 @@ gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
     if ( cut_pt != gem_name.npos )
     {
       gem_name.erase( cut_pt );
-      util::tokenize( gem_name );
+      util_t::tokenize( gem_name );
       item.armory_gems_str += gem_name;
     }
   }
@@ -713,5 +713,5 @@ gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
     }
   }
 
-  return util::translate_socket_color( static_cast<item_socket_color>( gem_prop.color ) );
+  return util_t::translate_socket_color( static_cast<item_socket_color>( gem_prop.color ) );
 }

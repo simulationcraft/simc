@@ -5,8 +5,14 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+// ==========================================================================
+// Consumable
+// ==========================================================================
 
+// ==========================================================================
+// Flask
+// ==========================================================================
+namespace ft {
 struct flask_data_t
 {
   flask_type_e ft;
@@ -79,6 +85,7 @@ static const food_data_t food_data[] =
   { FOOD_SKEWERED_EEL,                STAT_AGILITY,  90 },
   { FOOD_SKEWERED_EEL,                STAT_STAMINA,  90 },
 };
+}
 
 struct flask_t : public action_t
 {
@@ -100,7 +107,7 @@ struct flask_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
-    type = util::parse_flask_type( type_str );
+    type = util_t::parse_flask_type( type_str );
     if ( type == FLASK_NONE )
     {
       sim -> errorf( "Player %s attempting to use flask of type '%s', which is not supported.\n",
@@ -112,12 +119,12 @@ struct flask_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
+    if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", p -> name(), util_t::flask_type_string( type ) );
     p -> flask = type;
 
-    for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
+    for ( size_t i = 0; i < sizeof_array( ft::flask_data ); ++i )
     {
-      flask_data_t d = flask_data[ i ];
+      ft::flask_data_t d = ft::flask_data[ i ];
       if ( type == d.ft )
       {
         double amount = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
@@ -168,7 +175,7 @@ struct food_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    type = util::parse_food_type( type_str );
+    type = util_t::parse_food_type( type_str );
     if ( type == FOOD_NONE )
     {
       sim -> errorf( "Invalid food type '%s'\n", type_str.c_str() );
@@ -179,16 +186,16 @@ struct food_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) log_t::output( sim, "%s uses Food %s", p -> name(), util::food_type_string( type ) );
+    if ( sim -> log ) log_t::output( sim, "%s uses Food %s", p -> name(), util_t::food_type_string( type ) );
     p -> food = type;
 
     double food_stat_multiplier = 1.0;
     if ( p -> race == RACE_PANDAREN )
       food_stat_multiplier = 2.0;
 
-    for ( size_t i = 0; i < sizeof_array( food_data ); ++i )
+    for ( size_t i = 0; i < sizeof_array( ft::food_data ); ++i )
     {
-      food_data_t d = food_data[ i ];
+      ft::food_data_t d = ft::food_data[ i ];
       if ( type == d.ft )
       {
         p -> stat_gain( d.st, d.stat_amount * food_stat_multiplier, gain, this );
@@ -303,7 +310,7 @@ struct mana_potion_t : public action_t
 
     if ( min == 0 && max == 0 )
     {
-      min = max = util::ability_rank( player -> level,  10000,85, 4300,80,  2400,68,  1800,0 );
+      min = max = util_t::ability_rank( player -> level,  10000,85, 4300,80,  2400,68,  1800,0 );
     }
 
     if ( min > max ) std::swap( min, max );
@@ -490,13 +497,11 @@ struct potion_base_t : public action_t
   }
 };
 
-} // END ANONYMOUS NAMESPACE
 // ==========================================================================
 // consumable_t::create_action
 // ==========================================================================
-namespace consumable {
 
-action_t* create_action( player_t*          p,
+action_t* consumable_t::create_action( player_t*          p,
                                        const std::string& name,
                                        const std::string& options_str )
 {
@@ -519,5 +524,3 @@ action_t* create_action( player_t*          p,
 
   return 0;
 }
-
-} // END consumable NAMESPACE

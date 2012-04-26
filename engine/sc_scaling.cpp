@@ -15,11 +15,11 @@ static bool is_scaling_stat( sim_t* sim,
   if ( ! sim -> scaling -> scale_only_str.empty() )
   {
     std::vector<std::string> stat_list;
-    util::string_split( stat_list, sim -> scaling -> scale_only_str, ",:;/|" );
+    util_t::string_split( stat_list, sim -> scaling -> scale_only_str, ",:;/|" );
     bool found = false;
     for ( size_t i = 0; i < stat_list.size() && ! found; i++ )
     {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
+      found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
     if ( ! found ) return false;
   }
@@ -59,7 +59,7 @@ static bool parse_normalize_scale_factors( sim_t* sim,
   }
   else
   {
-    if ( ( sim -> normalized_stat = util::parse_stat_type( value ) ) == STAT_NONE )
+    if ( ( sim -> normalized_stat = util_t::parse_stat_type( value ) ) == STAT_NONE )
     {
       return false;
     }
@@ -121,7 +121,7 @@ double scaling_t::progress( std::string& phase )
   }
 
   phase  = "Scaling - ";
-  phase += util::stat_type_abbrev( current_scaling_stat );
+  phase += util_t::stat_type_abbrev( current_scaling_stat );
 
   double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / ( double ) num_scaling_stats;
 
@@ -223,7 +223,7 @@ void scaling_t::analyze_stats()
   {
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating smooth baseline...\n" );
+      util_t::fprintf( stdout, "\nGenerating smooth baseline...\n" );
       fflush( stdout );
     }
 
@@ -245,7 +245,7 @@ void scaling_t::analyze_stats()
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( i ) );
+      util_t::fprintf( stdout, "\nGenerating scale factors for %s...\n", util_t::stat_type_string( i ) );
       fflush( stdout );
     }
 
@@ -306,7 +306,7 @@ void scaling_t::analyze_stats()
            scale_factor_noise < error / fabs( delta_score - ref_score ) )
       {
         sim -> errorf( "Player %s may have insufficient iterations (%d) to calculate scale factor for %s (error is >%.0f%% delta score)\n",
-                       p -> name(), sim -> iterations, util::stat_type_string( i ), scale_factor_noise * 100.0 );
+                       p -> name(), sim -> iterations, util_t::stat_type_string( i ), scale_factor_noise * 100.0 );
       }
 
       error = fabs( error / divisor );
@@ -332,9 +332,9 @@ void scaling_t::analyze_stats()
 
     if ( debug_scale_factors )
     {
-      log_t::output( ref_sim, "\nref_sim report for %s...\n", util::stat_type_string( i ) );
+      log_t::output( ref_sim, "\nref_sim report for %s...\n", util_t::stat_type_string( i ) );
       report_t::print_text( sim -> output_file,   ref_sim, true );
-      log_t::output( delta_sim, "\ndelta_sim report for %s...\n", util::stat_type_string( i ) );
+      log_t::output( delta_sim, "\ndelta_sim report for %s...\n", util_t::stat_type_string( i ) );
       report_t::print_text( sim -> output_file, delta_sim, true );
     }
 
@@ -383,7 +383,7 @@ void scaling_t::analyze_lag()
 
   if ( sim -> report_progress )
   {
-    util::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
+    util_t::fprintf( stdout, "\nGenerating scale factors for lag...\n" );
     fflush( stdout );
   }
 

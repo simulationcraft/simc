@@ -30,7 +30,7 @@ std::string& format_server( std::string& name )
     }
     else if ( isalpha( ( int ) c ) )
     {
-      c = std::tolower( ( unsigned ) c );
+      c = tolower( ( unsigned ) c );
     }
     buffer += c;
   }
@@ -62,7 +62,7 @@ static js_node_t* download_profile( sim_t* sim,
       {
         result.resize( finish + 1 );
         result.erase( 0, start );
-        if ( sim -> debug ) util::fprintf( sim -> output_file, "Profile JS:\n%s\n", result.c_str() );
+        if ( sim -> debug ) util_t::fprintf( sim -> output_file, "Profile JS:\n%s\n", result.c_str() );
         return js_t::create( sim, result );
       }
     }
@@ -96,22 +96,22 @@ static void parse_stats( std::string& encoding,
   std::vector<std::string> splits;
   std::string temp_stats_str = stats_str;
 
-  util::string_strip_quotes( temp_stats_str );
+  util_t::string_strip_quotes( temp_stats_str );
 
-  int num_splits = util::string_split( splits, temp_stats_str, ",", true );
+  int num_splits = util_t::string_split( splits, temp_stats_str, ",", true );
 
   for ( int i=0; i < num_splits; i++ )
   {
     std::string type_str, value_str;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
-      stat_type_e type = util::parse_stat_type( type_str );
+      stat_type_e type = util_t::parse_stat_type( type_str );
       if ( type != STAT_NONE )
       {
         encoding += '_';
         encoding += value_str;
-        encoding += util::stat_type_abbrev( type );
+        encoding += util_t::stat_type_abbrev( type );
       }
     }
   }
@@ -131,12 +131,12 @@ static bool parse_gems( item_t&           item,
 
   std::string temp_stats_str = stats_str;
 
-  util::string_strip_quotes( temp_stats_str );
-  util::tolower( temp_stats_str );
+  util_t::string_strip_quotes( temp_stats_str );
+  util_t::tolower( temp_stats_str );
 
   int sockets[ 3 ] = { 0, 0, 0 };
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_stats_str, "," );
+  int num_splits = util_t::string_split( splits, temp_stats_str, "," );
   int num_sockets = 0;
 
   for ( int i=0; i < num_splits; i++ )
@@ -144,7 +144,7 @@ static bool parse_gems( item_t&           item,
     std::string type_str;
     int value;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S i", &type_str, &value ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S i", &type_str, &value ) )
     {
       if ( type_str == "socket1" ) sockets[ 0 ] = value;
       if ( type_str == "socket2" ) sockets[ 1 ] = value;
@@ -179,7 +179,7 @@ static bool parse_gems( item_t&           item,
     default: socket = GEM_NONE;     break;
     }
 
-    if ( ! util::socket_gem_match( socket, gem ) )
+    if ( ! util_t::socket_gem_match( socket, gem ) )
       match = false;
   }
 
@@ -202,7 +202,7 @@ static bool parse_gems( item_t&           item,
     }
   }
 
-  util::tokenize( item.armory_gems_str );
+  util_t::tokenize( item.armory_gems_str );
 
   return true;
 }
@@ -218,17 +218,17 @@ static bool parse_weapon( item_t&     item,
 
   std::string temp_stats_str = stats_str;
 
-  util::string_strip_quotes( temp_stats_str );
+  util_t::string_strip_quotes( temp_stats_str );
 
   std::string speed, dps, dmgmin, dmgmax;
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_stats_str, "," );
+  int num_splits = util_t::string_split( splits, temp_stats_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
     std::string type_str, value_str;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
       if ( type_str == "speed"  ) speed  = value_str;
       if ( type_str == "dps"    ) dps    = value_str;
@@ -268,7 +268,7 @@ static bool parse_weapon( item_t&     item,
   if ( type == WEAPON_NONE ) return false;
   if ( type == WEAPON_WAND ) return true;
 
-  item.armory_weapon_str = util::weapon_type_string( type );
+  item.armory_weapon_str = util_t::weapon_type_string( type );
   item.armory_weapon_str += "_" + speed + "speed" + "_" + dmgmin + "min" + "_" + dmgmax + "max";
 
   return true;
@@ -286,7 +286,7 @@ static bool parse_item_stats( item_t&     item,
     return true;
 
   parse_stats( item.armory_stats_str, stats_str );
-  util::tokenize( item.armory_stats_str );
+  util_t::tokenize( item.armory_stats_str );
 
   return true;
 }
@@ -305,7 +305,7 @@ static bool parse_item_reforge( item_t&     item,
     return true;
 
   parse_stats( item.armory_reforge_str, stats_str );
-  util::tokenize( item.armory_reforge_str );
+  util_t::tokenize( item.armory_reforge_str );
 #endif
   return true;
 }
@@ -321,7 +321,7 @@ static bool parse_item_name( item_t&     item,
   if ( ! xml_t::get_value( item.armory_id_str, node, "item/id" ) )
     return false;
 
-  util::tokenize( item.armory_name_str );
+  util_t::tokenize( item.armory_name_str );
 
   return true;
 }
@@ -339,16 +339,16 @@ static bool parse_item_heroic( item_t&     item,
 
   std::string temp_info_str = info_str;
 
-  util::string_strip_quotes( temp_info_str );
+  util_t::string_strip_quotes( temp_info_str );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
+  int num_splits = util_t::string_split( splits, temp_info_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
     std::string type_str, value_str;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
       if ( type_str == "heroic"   )
       {
@@ -358,7 +358,7 @@ static bool parse_item_heroic( item_t&     item,
     }
   }
 
-  util::tokenize( item.armory_heroic_str );
+  util_t::tokenize( item.armory_heroic_str );
 
   return true;
 }
@@ -379,16 +379,16 @@ static bool parse_item_lfr( item_t&     item,
 
   std::string temp_info_str = info_str;
 
-  util::string_strip_quotes( temp_info_str );
+  util_t::string_strip_quotes( temp_info_str );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
+  int num_splits = util_t::string_split( splits, temp_info_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
     std::string type_str, value_str;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
       if ( type_str == "raid_finder"   )
       {
@@ -398,7 +398,7 @@ static bool parse_item_lfr( item_t&     item,
     }
   }
 
-  util::tokenize( item.armory_lfr_str );
+  util_t::tokenize( item.armory_lfr_str );
 
   return true;
 }
@@ -416,7 +416,7 @@ static bool parse_item_quality( item_t&     item,
   // Let's just convert the quality id to text, and then
   // in decode() parse it into an integer
   if ( quality > 1 )
-    item.armory_quality_str = util::item_quality_string( quality );
+    item.armory_quality_str = util_t::item_quality_string( quality );
 
   return true;
 }
@@ -453,16 +453,16 @@ static bool parse_item_armor_type( item_t&     item,
 
   std::string temp_info_str = info_str;
 
-  util::string_strip_quotes( temp_info_str );
+  util_t::string_strip_quotes( temp_info_str );
 
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, temp_info_str, "," );
+  int num_splits = util_t::string_split( splits, temp_info_str, "," );
 
   for ( int i=0; i < num_splits; i++ )
   {
     std::string type_str, value_str;
 
-    if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
+    if ( 2 == util_t::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
       if ( type_str == "classs"   )
       {
@@ -486,7 +486,7 @@ static bool parse_item_armor_type( item_t&     item,
     else if ( temp_str == "3" ) { item.armory_armor_type_str = "mail"; }
     else if ( temp_str == "4" ) { item.armory_armor_type_str = "plate"; }
 
-    util::tokenize( item.armory_heroic_str );
+    util_t::tokenize( item.armory_heroic_str );
   }
 
   return true;
@@ -580,7 +580,7 @@ player_t* download_player_profile( sim_t* sim,
 
   sim -> current_name = name_str;
 
-  util::format_text ( name_str, sim -> input_is_utf8 );
+  util_t::format_text ( name_str, sim -> input_is_utf8 );
 
   std::string level_str;
   if ( ! js_t::get_value( level_str, profile_js, "level"  ) )
@@ -596,8 +596,8 @@ player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  player_type_e player_type = util::translate_class_id( atoi( cid_str.c_str() ) );
-  std::string type_str = util::player_type_string( player_type );
+  player_type_e player_type = util_t::translate_class_id( atoi( cid_str.c_str() ) );
+  std::string type_str = util_t::player_type_string( player_type );
 
   std::string rid_str;
   if ( ! js_t::get_value( rid_str, profile_js, "race" ) )
@@ -605,7 +605,7 @@ player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  race_type_e r = util::translate_race_id( atoi( rid_str.c_str() ) );
+  race_type_e r = util_t::translate_race_id( atoi( rid_str.c_str() ) );
 
   player_t* p = player_t::create( sim, type_str, name_str, r );
   sim -> active_player = p;
@@ -636,7 +636,7 @@ player_t* download_player_profile( sim_t* sim,
     std::string server_name = p -> server_str;
     std::string character_name = name_str;
     format_server( server_name );
-    util::tokenize( character_name, FORMAT_CHAR_NAME );
+    util_t::tokenize( character_name, FORMAT_CHAR_NAME );
     p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
@@ -646,7 +646,7 @@ player_t* download_player_profile( sim_t* sim,
     if ( 2 == js_t::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
     {
       if ( ! p -> professions_str.empty()) p -> professions_str += '/';
-      p -> professions_str += util::profession_type_string( i );
+      p -> professions_str += util_t::profession_type_string( i );
       p -> professions_str += "=";
       p -> professions_str += skill_levels[ 0 ];
     }
@@ -656,13 +656,13 @@ player_t* download_player_profile( sim_t* sim,
   js_t::get_value( active_talents, profile_js, "talents/active" );
 
   int use_talents;
-  if ( util::str_compare_ci( spec, "active" ) )
+  if ( util_t::str_compare_ci( spec, "active" ) )
     use_talents = active_talents;
-  else if ( util::str_compare_ci( spec, "inactive" ) )
+  else if ( util_t::str_compare_ci( spec, "inactive" ) )
     use_talents = 1 - active_talents;
-  else if ( util::str_compare_ci( spec, "primary" ) )
+  else if ( util_t::str_compare_ci( spec, "primary" ) )
     use_talents = 0;
-  else if ( util::str_compare_ci( spec, "secondary" ) )
+  else if ( util_t::str_compare_ci( spec, "secondary" ) )
     use_talents = 1;
   else
   {
@@ -704,7 +704,7 @@ player_t* download_player_profile( sim_t* sim,
     }
 
     std::vector<std::string> glyph_ids;
-    int num_glyphs = util::string_split( glyph_ids, glyph_encoding, ":" );
+    int num_glyphs = util_t::string_split( glyph_ids, glyph_encoding, ":" );
     for ( int i=0; i < num_glyphs; i++ )
     {
       std::string& glyph_id = glyph_ids[ i ];
@@ -739,7 +739,7 @@ player_t* download_player_profile( sim_t* sim,
     if ( num_builds == 2 )
     {
       std::vector<std::string> glyph_ids;
-      int num_glyphs = util::string_split( glyph_ids, glyph_encodings[ use_talents ], ":" );
+      int num_glyphs = util_t::string_split( glyph_ids, glyph_encodings[ use_talents ], ":" );
       for ( int i=0; i < num_glyphs; i++ )
       {
         std::string& glyph_id = glyph_ids[ i ];
@@ -812,8 +812,8 @@ gem_type_e wowhead_t::parse_gem( item_t&            item,
   {
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
-    util::tokenize( color_str );
-    type = util::parse_gem_type( color_str );
+    util_t::tokenize( color_str );
+    type = util_t::parse_gem_type( color_str );
 
     if ( type == GEM_META )
     {
@@ -822,7 +822,7 @@ gem_type_e wowhead_t::parse_gem( item_t&            item,
       {
         std::string::size_type new_pos = name_str.find( " Diamond" );
         if ( new_pos != std::string::npos ) name_str.erase( new_pos );
-        util::tokenize( name_str );
+        util_t::tokenize( name_str );
         item.armory_gems_str += "_";
         item.armory_gems_str += name_str;
       }
@@ -1050,7 +1050,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
   if ( ! is_valid_profile_id( id ) )
   {
     std::string character_name = name;
-    util::tokenize( character_name, FORMAT_CHAR_NAME );
+    util_t::tokenize( character_name, FORMAT_CHAR_NAME );
 
     std::string server_name = server;
     format_server( server_name );
@@ -1059,7 +1059,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
     std::string result;
     if ( http_t::get( result, url, caching, "profilah.initialize(" ) )
     {
-      if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
+      if ( sim -> debug ) util_t::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
 
       std::string::size_type start = result.find( "profilah.initialize(" );
       if ( start != std::string::npos )
@@ -1068,7 +1068,7 @@ player_t* wowhead_t::download_player( sim_t* sim,
         if ( finish != std::string::npos )
         {
           std::vector<std::string> splits;
-          int num_splits = util::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
+          int num_splits = util_t::string_split( splits, result.substr( start, finish-start ), "(){}.;,: \t\n" );
           for ( int i=0; i < num_splits-1; i++ )
           {
             if ( splits[ i ] == "id" )

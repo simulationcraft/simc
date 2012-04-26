@@ -356,7 +356,10 @@ action_t* enemy_t::create_action( const std::string& name,
 
 void enemy_t::init()
 {
+  level = sim -> max_player_level + 3;
 
+  if ( sim -> target_level >= 0 )
+    level = sim -> target_level;
 
   player_t::init();
 }
@@ -365,11 +368,6 @@ void enemy_t::init()
 
 void enemy_t::init_base()
 {
-  level = sim -> max_player_level + 3;
-
-  if ( sim -> target_level >= 0 )
-    level = sim -> target_level;
-
   waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds - 1 ) );
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );

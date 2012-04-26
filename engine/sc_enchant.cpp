@@ -1084,8 +1084,8 @@ bool enchant_t::get_reforge_encoding( std::string& name,
       if ( i == j ) continue;
       if ( ++start == target )
       {
-        std::string source_stat = util::stat_type_abbrev( reforge_stats[ i ] );
-        std::string target_stat = util::stat_type_abbrev( reforge_stats[ j ] );
+        std::string source_stat = util_t::stat_type_abbrev( reforge_stats[ i ] );
+        std::string target_stat = util_t::stat_type_abbrev( reforge_stats[ j ] );
 
         name += "Reforge " + source_stat + " to " + target_stat;
         encoding = source_stat + "_" + target_stat;
@@ -1144,7 +1144,7 @@ bool enchant_t::download( item_t&            item,
   std::string description;
   if ( get_encoding( description, item.armory_enchant_str, enchant_id, item.ptr() ) )
   {
-    util::tokenize( item.armory_enchant_str );
+    util_t::tokenize( item.armory_enchant_str );
     return true;
   }
 
@@ -1164,7 +1164,7 @@ bool enchant_t::download_addon( item_t&            item,
   std::string description;
   if ( get_addon_encoding( description, item.armory_addon_str, addon_id, item.ptr() ) )
   {
-    util::tokenize( item.armory_addon_str );
+    util_t::tokenize( item.armory_addon_str );
     return true;
   }
 
@@ -1184,7 +1184,7 @@ bool enchant_t::download_reforge( item_t&            item,
   std::string description;
   if ( get_reforge_encoding( description, item.armory_reforge_str, reforge_id ) )
   {
-    util::tokenize( item.armory_reforge_str );
+    util_t::tokenize( item.armory_reforge_str );
     return true;
   }
 

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "../utf8.h"
 
 #include <fstream>
 
@@ -122,7 +123,7 @@ static bool download( url_cache_entry_t& entry,
   }
 
   std::string wURL = url;
-  wURL = util::urlencode( wURL );
+  wURL = util_t::urlencode( wURL );
 
   InetWrapper hFile( InternetOpenUrlA( hINet, wURL.c_str(), wHeaders.data(), static_cast<DWORD>( wHeaders.length() ),
                                        INTERNET_FLAG_RELOAD | INTERNET_FLAG_NO_CACHE_WRITE, 0 ) );
@@ -636,7 +637,7 @@ bool http_t::get( std::string&       result,
     if ( caching == cache::ONLY )
       return false;
 
-    util::printf( "@" ); fflush( stdout );
+    util_t::printf( "@" ); fflush( stdout );
 
     if ( ! download( entry, encoded_url ) )
       return false;
@@ -649,8 +650,8 @@ bool http_t::get( std::string&       result,
 
     if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )
     {
-      //util::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
-      //util::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
+      //util_t::printf( "\nsimulationcraft: HTTP failed on '%s'\n", url.c_str() );
+      //util_t::printf( "%s\n", ( result.empty() ? "empty" : result.c_str() ) );
       //fflush( stdout );
       return false;
     }
@@ -666,7 +667,7 @@ void http_t::format_( std::string& encoded_url,
                       const std::string& url )
 {
   encoded_url = url;
-  util::urlencode( util::str_to_utf8( encoded_url ) );
+  util_t::urlencode( util_t::str_to_utf8( encoded_url ) );
 }
 
 #ifdef UNIT_TEST

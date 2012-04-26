@@ -397,7 +397,7 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
              "\t\t\t\t\t\t\t<th class=\"left\">Raid Event List</th>\n"
              "\t\t\t\t\t\t</tr>\n" );
     std::vector<std::string> raid_event_names;
-    size_t num_raid_events = util::string_split( raid_event_names, sim -> raid_events_str, "/" );
+    size_t num_raid_events = util_t::string_split( raid_event_names, sim -> raid_events_str, "/" );
     for ( size_t i = 0; i < num_raid_events; i++ )
     {
       fprintf( file,
@@ -491,9 +491,9 @@ void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
   fprintf( file, "];\n" );
 
   char imgid[32];
-  util::snprintf( imgid, sizeof( imgid ), "%sIMG%d", ( dps ) ? "DPS" : "HPS", num );
+  util_t::snprintf( imgid, sizeof( imgid ), "%sIMG%d", ( dps ) ? "DPS" : "HPS", num );
   char mapid[32];
-  util::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
+  util_t::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
 
   fprintf( file,
            "\t\t\tu = document.getElementById('%s').src;\n"
@@ -577,7 +577,7 @@ void print_html_scale_factors( FILE*  file, const sim_t* sim )
         {
           fprintf( file,
                    "\t\t\t\t\t\t<th class=\"small\">%s</th>\n",
-                   util::stat_type_abbrev( j ) );
+                   util_t::stat_type_abbrev( j ) );
         }
       }
       fprintf( file,
@@ -1257,17 +1257,17 @@ void print_html_beta_warning( FILE* file )
   fprintf( file,
            "\t\t\t<h2>Beta Release</h2>\n" );
   int ii = 0;
-  if ( !report::beta_warnings[ 0 ].empty() )
+  if ( !beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t<ul>\n" );
-  while ( !report::beta_warnings[ ii ].empty() )
+  while ( !beta_warnings[ ii ].empty() )
   {
     fprintf( file,
              "\t\t\t\t<li>%s</li>\n",
-             report::beta_warnings[ ii ].c_str() );
+             beta_warnings[ ii ].c_str() );
     ii++;
   }
-  if ( !report::beta_warnings[ 0 ].empty() )
+  if ( !beta_warnings[ 0 ].empty() )
     fprintf( file,
              "\t\t\t</ul>\n" );
   fprintf( file,
@@ -1527,9 +1527,7 @@ void print_html_( FILE* file, const sim_t* sim )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-namespace report {
-
-void print_html( sim_t* sim )
+void report::print_html( sim_t* sim )
 {
   if ( !sim -> players_by_name.size() ) return;
   if ( sim -> simulation_length.mean == 0 ) return;
@@ -1546,5 +1544,3 @@ void print_html( sim_t* sim )
 
   print_html_( file, sim );
 }
-
-} // END report NAMESPACE

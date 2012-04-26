@@ -1977,7 +1977,7 @@ void warlock_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.backdraft[ i ] = get_benefit( "backdraft_" + util::to_string( i ) );
+    benefits.backdraft[ i ] = get_benefit( "backdraft_" + util_t::to_string( i ) );
 }
 
 
@@ -2271,8 +2271,8 @@ bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, boo
   if ( stype == SAVE_ALL )
   {
     if ( use_pre_soulburn )            profile_str += "use_pre_soulburn=1\n";
-    if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util::to_string( initial_burning_embers ) + "\n";
-    if ( initial_demonic_fury != 200 ) profile_str += "burning_embers=" + util::to_string( initial_demonic_fury ) + "\n";
+    if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util_t::to_string( initial_burning_embers ) + "\n";
+    if ( initial_demonic_fury != 200 ) profile_str += "burning_embers=" + util_t::to_string( initial_demonic_fury ) + "\n";
   }
 
   return true;
@@ -2368,7 +2368,7 @@ bool warlock_t::verify_nightfall()
 
 player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<warlock_t,SC_WARLOCK>()( "Warlock", sim, name, r );
+  SC_CREATE_WARLOCK( sim, name, r );
 }
 
 

@@ -152,14 +152,14 @@ static bool parse_gems( item_t&           item,
     std::string& s = socket_colors[ i ];
     std::string::size_type pos = s.find( " " );
     if ( pos != std::string::npos ) s.erase( pos );
-    util::tokenize( s );
-    sockets[ i ] = util::parse_gem_type( s );
+    util_t::tokenize( s );
+    sockets[ i ] = util_t::parse_gem_type( s );
   }
 
   bool match = true;
   for ( int i=0; i < 3; i++ )
   {
-    if ( ! util::socket_gem_match( sockets[ i ],
+    if ( ! util_t::socket_gem_match( sockets[ i ],
                                      item_t::parse_gem( item, gem_ids[ i ] ) ) )
       match = false;
   }
@@ -177,7 +177,7 @@ static bool parse_gems( item_t&           item,
     }
   }
 
-  util::tokenize( item.armory_gems_str );
+  util_t::tokenize( item.armory_gems_str );
 
   return true;
 }
@@ -201,11 +201,11 @@ static bool parse_weapon( item_t&     item,
   std::string speed_str, dps_str, dmg_min_str, dmg_max_str;
 
   std::vector<std::string> tokens;
-  int num_tokens = util::string_split( tokens, tti_speed, " " );
+  int num_tokens = util_t::string_split( tokens, tti_speed, " " );
   if ( num_tokens == 2 ) speed_str = tokens[ 1 ];
 
   tokens.clear();
-  num_tokens = util::string_split( tokens, tti_dmg, " " );
+  num_tokens = util_t::string_split( tokens, tti_dmg, " " );
   if ( ( num_tokens == 4 ) || ( num_tokens == 5 ) )
   {
     dmg_min_str = tokens[ 0 ];
@@ -213,7 +213,7 @@ static bool parse_weapon( item_t&     item,
   }
 
   tokens.clear();
-  num_tokens = util::string_split( tokens, tti_dps, " ()" );
+  num_tokens = util_t::string_split( tokens, tti_dps, " ()" );
   if ( num_tokens == 4 ) dps_str = tokens[ 0 ];
 
   if ( speed_str.empty() || dps_str.empty() || dmg_min_str.empty() || dmg_max_str.empty() ) return false;
@@ -248,7 +248,7 @@ static bool parse_weapon( item_t&     item,
   if ( type == WEAPON_NONE ) return false;
   if ( type == WEAPON_WAND ) return true;
 
-  item.armory_weapon_str = util::weapon_type_string( type );
+  item.armory_weapon_str = util_t::weapon_type_string( type );
   item.armory_weapon_str += "_" + speed_str + "speed" + "_" + dmg_min_str + "min" + "_" + dmg_max_str + "max";
 
   return true;
@@ -299,7 +299,7 @@ static bool parse_item_stats( item_t&     item,
     item.armory_stats_str += block_str + "blockv";
   }
 
-  util::tokenize( item.armory_stats_str );
+  util_t::tokenize( item.armory_stats_str );
 
   return true;
 }
@@ -313,7 +313,7 @@ static bool parse_item_reforge( item_t&     item,
 
   // TO-DO (if it even makes sense)
 
-  util::tokenize( item.armory_reforge_str );
+  util_t::tokenize( item.armory_reforge_str );
 
   return true;
 }
@@ -342,7 +342,7 @@ static bool parse_item_name( item_t&            item,
     }
   }
 
-  util::tokenize( s );
+  util_t::tokenize( s );
 
   item.armory_id_str = item_id;
 
@@ -362,7 +362,7 @@ static bool parse_item_heroic( item_t&     item,
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_heroic_str = "1";
-    util::tokenize( item.armory_heroic_str );
+    util_t::tokenize( item.armory_heroic_str );
   }
 
   return true;
@@ -383,7 +383,7 @@ static bool parse_item_lfr( item_t& item, xml_node_t* node )
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_lfr_str = "1";
-    util::tokenize( item.armory_lfr_str );
+    util_t::tokenize( item.armory_lfr_str );
   }
 
   return true;
@@ -402,7 +402,7 @@ static bool parse_item_armor_type( item_t&     item,
   if ( ! descriptions.empty() && ! descriptions[ 0 ].empty() )
   {
     item.armory_armor_type_str = descriptions[ 0 ];
-    util::tokenize( item.armory_armor_type_str );
+    util_t::tokenize( item.armory_armor_type_str );
   }
 
   return true;
@@ -439,7 +439,7 @@ static bool parse_quality( item_t&     item,
   std::string info_str;
   if ( ! get_tti_value( info_str, node, "tti-quality" ) ) return false;
 
-  item.armory_quality_str = util::tolower( info_str );
+  item.armory_quality_str = tolower( info_str );
 
   return true;
 }
@@ -532,8 +532,8 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
     std::string color_str;
     if ( get_tti_value( color_str, node, "tti-subclass" ) )
     {
-      util::tokenize( color_str );
-      gem_type_e type = util::parse_gem_type( color_str );
+      util_t::tokenize( color_str );
+      gem_type_e type = util_t::parse_gem_type( color_str );
 
       std::string property_str;
       xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
@@ -551,7 +551,7 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
         if ( mtype != META_GEM_NONE )
         {
           s += '_';
-          s += util::meta_gem_type_string( mtype );
+          s += util_t::meta_gem_type_string( mtype );
         }
         else
         {

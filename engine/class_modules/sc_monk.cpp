@@ -591,7 +591,7 @@ role_type_e monk_t::primary_role() const
 
 player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<monk_t,SC_MONK>()( "Monk", sim, name, r );
+  SC_CREATE_MONK( sim, name, r );
 }
 
 // player_t::monk_init ======================================================

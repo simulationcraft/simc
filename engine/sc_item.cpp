@@ -22,7 +22,7 @@ static int parse_tokens( std::vector<token_t>& tokens,
                          const std::string&    encoded_str )
 {
   std::vector<std::string> splits;
-  int num_splits = util::string_split( splits, encoded_str, "_" );
+  int num_splits = util_t::string_split( splits, encoded_str, "_" );
 
   tokens.resize( num_splits );
   for ( int i=0; i < num_splits; i++ )
@@ -55,7 +55,7 @@ static bool is_meta_prefix( const std::string& option_name )
 {
   for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
-    const char* meta_gem_name = util::meta_gem_type_string( i );
+    const char* meta_gem_name = util_t::meta_gem_type_string( i );
 
     for ( int j=0; tolower( meta_gem_name[ j ] ) == tolower( option_name[ j ] ); j++ )
       if ( option_name[ j+1 ] == '\0' )
@@ -71,7 +71,7 @@ static bool is_meta_suffix( const std::string& option_name )
 {
   for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
-    const char* meta_gem_name = util::meta_gem_type_string( i );
+    const char* meta_gem_name = util_t::meta_gem_type_string( i );
 
     const char* s = strstr( meta_gem_name, "_" );
     if ( ! s ) continue;
@@ -91,7 +91,7 @@ meta_gem_type_e parse_meta_gem( const std::string& prefix,
                                 const std::string& suffix )
 {
   if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
-  return util::parse_meta_gem_type( prefix + '_' + suffix );
+  return util_t::parse_meta_gem_type( prefix + '_' + suffix );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -167,14 +167,14 @@ const char* item_t::name() const
 
 const char* item_t::slot_name() const
 {
-  return util::slot_type_string( slot );
+  return util_t::slot_type_string( slot );
 }
 
 // item_t::slot_name ========================================================
 
 const char* item_t::armor_type()
 {
-  return util::armor_type_string( player -> type, slot );
+  return util_t::armor_type_string( player -> type, slot );
 }
 
 // item_t::weapon ===========================================================
@@ -227,23 +227,23 @@ bool item_t::parse_options()
 
   option_t::parse( sim, option_name_str.c_str(), options, remainder );
 
-  util::tokenize( option_name_str );
+  util_t::tokenize( option_name_str );
 
-  util::tolower( option_id_str            );
-  util::tolower( option_stats_str         );
-  util::tolower( option_gems_str          );
-  util::tolower( option_enchant_str       );
-  util::tolower( option_addon_str         );
-  util::tolower( option_equip_str         );
-  util::tolower( option_use_str           );
-  util::tolower( option_weapon_str        );
-  util::tolower( option_heroic_str        );
-  util::tolower( option_lfr_str           );
-  util::tolower( option_armor_type_str    );
-  util::tolower( option_reforge_str       );
-  util::tolower( option_random_suffix_str );
-  util::tolower( option_ilevel_str        );
-  util::tolower( option_quality_str       );
+  util_t::tolower( option_id_str            );
+  util_t::tolower( option_stats_str         );
+  util_t::tolower( option_gems_str          );
+  util_t::tolower( option_enchant_str       );
+  util_t::tolower( option_addon_str         );
+  util_t::tolower( option_equip_str         );
+  util_t::tolower( option_use_str           );
+  util_t::tolower( option_weapon_str        );
+  util_t::tolower( option_heroic_str        );
+  util_t::tolower( option_lfr_str           );
+  util_t::tolower( option_armor_type_str    );
+  util_t::tolower( option_reforge_str       );
+  util_t::tolower( option_random_suffix_str );
+  util_t::tolower( option_ilevel_str        );
+  util_t::tolower( option_quality_str       );
 
   return true;
 }
@@ -447,7 +447,7 @@ bool item_t::decode_ilevel()
 bool item_t::decode_quality()
 {
   if ( ! encoded_quality_str.empty() )
-    quality = util::parse_item_quality( encoded_quality_str );
+    quality = util_t::parse_item_quality( encoded_quality_str );
   return true;
 }
 
@@ -464,7 +464,7 @@ bool item_t::decode_stats()
   {
     token_t& t = tokens[ i ];
 
-    stat_type_e s = util::parse_stat_type( t.name );
+    stat_type_e s = util_t::parse_stat_type( t.name );
 
     if ( s != STAT_NONE )
     {
@@ -517,8 +517,8 @@ bool item_t::decode_reforge()
     return false;
   }
 
-  stat_type_e s1 = util::parse_reforge_type( tokens[ 0 ].name );
-  stat_type_e s2 = util::parse_reforge_type( tokens[ 1 ].name );
+  stat_type_e s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
+  stat_type_e s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
   if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
     sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n",
@@ -614,7 +614,7 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type_e stat = util::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
+      stat_type_e stat = util_t::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -624,8 +624,8 @@ bool item_t::decode_random_suffix()
         base_stats.add_stat( stat, static_cast< int >( stat_amount ) );
         stats.add_stat( stat, static_cast< int >( stat_amount ) );
 
-        std::string stat_str = util::stat_type_abbrev( stat );
-        stat_str = util::tolower( stat_str );
+        std::string stat_str = util_t::stat_type_abbrev( stat );
+        stat_str = tolower( stat_str );
         char statbuf[32];
         snprintf( statbuf, sizeof( statbuf ), "%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
         stat_list.push_back( statbuf );
@@ -645,7 +645,7 @@ bool item_t::decode_random_suffix()
   }
 
   std::string name_str = suffix_data.suffix;
-  util::tokenize( name_str );
+  util_t::tokenize( name_str );
 
   if ( encoded_name_str.find( name_str ) == std::string::npos )
   {
@@ -686,7 +686,7 @@ bool item_t::decode_gems()
     token_t& t = tokens[ i ];
     stat_type_e s;
 
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -762,7 +762,7 @@ bool item_t::decode_enchant()
     token_t& t = tokens[ i ];
     stat_type_e s;
 
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -812,7 +812,7 @@ bool item_t::decode_addon()
     token_t& t = tokens[ i ];
     stat_type_e s;
 
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -842,18 +842,18 @@ bool item_t::decode_special( special_effect_t& effect,
     stat_type_e s;
     school_type_e sc;
 
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       effect.stat = s;
       effect.stat_amount = t.value;
     }
-    else if ( ( sc = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( sc = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       effect.school = sc;
       effect.discharge_amount = t.value;
 
       std::vector<std::string> splits;
-      if ( 2 == util::string_split( splits, t.value_str, "+" ) )
+      if ( 2 == util_t::string_split( splits, t.value_str, "+" ) )
       {
         effect.discharge_amount  = atof( splits[ 0 ].c_str() );
         effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
@@ -1244,11 +1244,11 @@ bool item_t::decode_weapon()
     weapon_type_e type;
     school_type_e school;
 
-    if ( ( type = util::parse_weapon_type( t.name ) ) != WEAPON_NONE )
+    if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
       w -> type = type;
     }
-    else if ( ( school = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( school = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       w -> school = school;
     }
@@ -1489,7 +1489,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     }
   }
 
-  util::glyph_name( glyph_name );
+  util_t::glyph_name( glyph_name );
 
   return success;
 }

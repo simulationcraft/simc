@@ -20,262 +20,16 @@ template <typename T, T Min, T Max, const char* F( T )>
 inline T parse_enum( const std::string& name )
 {
   for ( T i = Min; i < Max; ++i )
-    if ( util::str_compare_ci( name, F( i ) ) )
+    if ( util_t::str_compare_ci( name, F( i ) ) )
       return i;
   return Min;
 }
 
 } // ANONYMOUS namespace ====================================================
 
-namespace util {
+// util_t::str_compare_ci ===================================================
 
-namespace {
-
-
-// str_to_utf8_ =====================================================
-
-void str_to_utf8_( std::string& str )
-{
-  std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
-  if ( p == str.end() ) return;
-
-  std::string temp( str.begin(), p );
-  for ( std::string::iterator e = str.end(); p != e; ++p )
-    utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
-
-  str.swap( temp );
-}
-
-// str_to_latin1_ ===================================================
-
-void str_to_latin1_( std::string& str )
-{
-  if ( str.empty() ) return;
-  if ( ! range::is_valid_utf8( str ) ) return;
-
-
-  std::string temp;
-  std::string::iterator i = str.begin(), e = str.end();
-
-  while ( i != e )
-    temp += ( unsigned char ) utf8::next( i, e );
-
-  str.swap( temp );
-}
-
-// urlencode_ =======================================================
-
-void urlencode_( std::string& str )
-{
-  std::string::size_type l = str.length();
-  if ( ! l ) return;
-
-  std::string temp;
-
-  for ( std::string::size_type i = 0; i < l; ++i )
-  {
-    unsigned char c = str[ i ];
-
-    if ( c > 0x7F || c == ' ' || c == '\'' )
-    {
-      char enc_str[4];
-      snprintf( enc_str, sizeof( enc_str ), "%%%02X", c );
-      temp += enc_str;
-    }
-    else if ( c == '+' )
-      temp += "%20";
-    else if ( c < 0x20 )
-      continue;
-    else
-      temp += c;
-  }
-
-  str.swap( temp );
-}
-
-// urldecode_ =======================================================
-
-void urldecode_( std::string& str )
-{
-  std::string::size_type l = str.length();
-  if ( ! l ) return;
-
-  std::string temp;
-
-  for ( std::string::size_type i = 0; i < l; ++i )
-  {
-    unsigned char c = ( unsigned char ) str[ i ];
-
-    if ( c == '%' && i + 2 < l )
-    {
-      long v = strtol( str.substr( i + 1, 2 ).c_str(), 0, 16 );
-      if ( v ) temp += ( unsigned char ) v;
-      i += 2;
-    }
-    else if ( c == '+' )
-      temp += ' ';
-    else
-      temp += c;
-  }
-
-  str.swap( temp );
-}
-
-// format_text ======================================================
-
-void format_text_( std::string& name, bool input_is_utf8 )
-{
-  if ( name.empty() ) return;
-  bool is_utf8 = range::is_valid_utf8( name );
-
-  if ( is_utf8 && ! input_is_utf8 )
-    str_to_latin1( name );
-  else if ( ! is_utf8 && input_is_utf8 )
-    str_to_utf8( name );
-}
-
-// html_special_char_decode_ ========================================
-
-void html_special_char_decode_( std::string& str )
-{
-  std::string::size_type pos = 0;
-
-  while ( ( pos = str.find( "&", pos ) ) != std::string::npos )
-  {
-    if ( str[ pos+1 ] == '#' )
-    {
-      std::string::size_type end = str.find( ';', pos + 2 );
-      char encoded = ( char ) atoi( str.substr( pos + 2, end ).c_str() );
-      str.erase( pos, end - pos + 1 );
-      str.insert( pos, 1, encoded );
-    }
-    else if ( 0 == str.compare( pos, 6, "&quot;" ) )
-    {
-      str.erase( pos, 6 );
-      str.insert( pos, "\"" );
-    }
-    else if ( 0 == str.compare( pos, 5, "&amp;" ) )
-    {
-      str.erase( pos, 5 );
-      str.insert( pos, "&" );
-    }
-    else if ( 0 == str.compare( pos, 4, "&lt;" ) )
-    {
-      str.erase( pos, 4 );
-      str.insert( pos, "<" );
-    }
-    else if ( 0 == str.compare( pos, 4, "&gt;" ) )
-    {
-      str.erase( pos, 4 );
-      str.insert( pos, ">" );
-    }
-  }
-}
-
-void tolower_( std::string& str )
-{
-  // Transform all chars to lower case
-  range::transform_self( str, ( int( * )( int ) ) std::tolower );
-}
-void string_split_( std::vector<std::string>& results,
-                            const std::string&        str,
-                            const char*               delim,
-                            bool                      allow_quotes )
-{
-  std::string buffer = str;
-  std::string::size_type cut_pt, start = 0;
-
-  std::string not_in_quote = delim;
-  if ( allow_quotes )
-    not_in_quote += '"';
-
-  static const std::string in_quote = "\"";
-  const std::string* search = &not_in_quote;
-
-  while ( ( cut_pt = buffer.find_first_of( *search, start ) ) != buffer.npos )
-  {
-    if ( allow_quotes && ( buffer[ cut_pt ] == '"' ) )
-    {
-      buffer.erase( cut_pt, 1 );
-      start = cut_pt;
-      search = ( search == &not_in_quote ) ? &in_quote : &not_in_quote;
-    }
-    else if ( search == &not_in_quote )
-    {
-      if ( cut_pt > 0 )
-        results.push_back( buffer.substr( 0, cut_pt ) );
-      buffer.erase( 0, cut_pt + 1 );
-      start = 0;
-    }
-  }
-
-  if ( buffer.length() > 0 )
-    results.push_back( buffer );
-
-  /*
-    std::string buffer = str;
-    std::string::size_type cut_pt;
-
-    while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
-    {
-      if ( cut_pt > 0 )
-      {
-        results.push_back( buffer.substr( 0, cut_pt ) );
-      }
-      buffer = buffer.substr( cut_pt + 1 );
-    }
-    if ( buffer.length() > 0 )
-    {
-      results.push_back( buffer );
-    }
-  */
-}
-
-void replace_all_( std::string& s, const char* from, char to )
-{
-  std::string::size_type pos = s.find( from );
-  if ( pos != s.npos )
-  {
-    std::size_t len = std::strlen( from );
-    do
-      s.replace( pos, len, 1, to );
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-}
-
-void replace_all_( std::string& s, char from, const char* to )
-{
-  std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
-  {
-    std::size_t len = std::strlen( to );
-    do
-    {
-      s.replace( pos, 1, to, len );
-      pos += len;
-    }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-}
-
-int vfprintf_helper( FILE *stream, const char *format, va_list args )
-{
-  std::string p_locale = setlocale( LC_CTYPE, NULL );
-  setlocale( LC_CTYPE, "" );
-
-  int retcode = ::vfprintf( stream, format, args );
-
-  setlocale( LC_CTYPE, p_locale.c_str() );
-
-  return retcode;
-}
-
-} // END ANONYMOUS NAMESPACE
-
-
-// str_compare_ci ===================================================
-
-bool str_compare_ci( const std::string& l,
+bool util_t::str_compare_ci( const std::string& l,
                              const std::string& r )
 {
   if ( l.size() != r.size() || l.size() == 0 )
@@ -284,9 +38,9 @@ bool str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-std::string& glyph_name( std::string& n )
+std::string& util_t::glyph_name( std::string& n )
 {
-  tokenize( n );
+  util_t::tokenize( n );
 
   if ( n.size() >= 9 )
   {
@@ -301,9 +55,9 @@ std::string& glyph_name( std::string& n )
   return n;
 }
 
-// str_prefix_ci ====================================================
+// util_t::str_prefix_ci ====================================================
 
-bool str_prefix_ci( const std::string& str,
+bool util_t::str_prefix_ci( const std::string& str,
                             const std::string& prefix )
 {
   if ( str.size() < prefix.size() )
@@ -312,17 +66,17 @@ bool str_prefix_ci( const std::string& str,
   return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
-// str_in_str_ci ====================================================
+// util_t::str_in_str_ci ====================================================
 
-bool str_in_str_ci( const std::string& l,
+bool util_t::str_in_str_ci( const std::string& l,
                             const std::string& r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-// ability_rank =====================================================
+// util_t::ability_rank =====================================================
 
-double ability_rank( int    player_level,
+double util_t::ability_rank( int    player_level,
                              double ability_value,
                              int    ability_level, ... )
 {
@@ -340,9 +94,9 @@ double ability_rank( int    player_level,
   return ability_value;
 }
 
-// ability_rank =====================================================
+// util_t::ability_rank =====================================================
 
-int ability_rank( int player_level,
+int util_t::ability_rank( int player_level,
                           int ability_value,
                           int ability_level, ... )
 {
@@ -378,9 +132,9 @@ int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
 }
 #endif
 
-// dot_behavior_type_string =========================================
+// util_t::dot_behavior_type_string =========================================
 
-const char* dot_behavior_type_string( dot_behavior_type_e t )
+const char* util_t::dot_behavior_type_string( dot_behavior_type_e t )
 {
   switch ( t )
   {
@@ -391,9 +145,9 @@ const char* dot_behavior_type_string( dot_behavior_type_e t )
   }
 }
 
-// role_type_string =================================================
+// util_t::role_type_string =================================================
 
-const char* role_type_string( role_type_e role )
+const char* util_t::role_type_string( role_type_e role )
 {
   switch ( role )
   {
@@ -408,14 +162,14 @@ const char* role_type_string( role_type_e role )
   }
 }
 
-// parse_role_type ==================================================
+// util_t::parse_role_type ==================================================
 
-role_type_e parse_role_type( const std::string& name )
+role_type_e util_t::parse_role_type( const std::string& name )
 { return parse_enum<role_type_e,ROLE_NONE,ROLE_MAX,role_type_string>( name ); }
 
-// race_type_string =================================================
+// util_t::race_type_string =================================================
 
-const char* race_type_string( race_type_e type )
+const char* util_t::race_type_string( race_type_e type )
 {
   switch ( type )
   {
@@ -440,14 +194,14 @@ const char* race_type_string( race_type_e type )
   }
 }
 
-// parse_race_type ==================================================
+// util_t::parse_race_type ==================================================
 
-race_type_e parse_race_type( const std::string &name )
+race_type_e util_t::parse_race_type( const std::string &name )
 { return parse_enum<race_type_e,RACE_NONE,RACE_MAX,race_type_string>( name ); }
 
-// position_type_string =============================================
+// util_t::position_type_string =============================================
 
-const char* position_type_string( position_type_e type )
+const char* util_t::position_type_string( position_type_e type )
 {
   switch ( type )
   {
@@ -460,14 +214,14 @@ const char* position_type_string( position_type_e type )
   }
 }
 
-// parse_position_type ==============================================
+// util_t::parse_position_type ==============================================
 
-position_type_e parse_position_type( const std::string &name )
+position_type_e util_t::parse_position_type( const std::string &name )
 { return parse_enum<position_type_e,POSITION_NONE,POSITION_MAX,position_type_string>( name ); }
 
-// profession_type_string ===========================================
+// util_t::profession_type_string ===========================================
 
-const char* profession_type_string( profession_type_e type )
+const char* util_t::profession_type_string( profession_type_e type )
 {
   switch ( type )
   {
@@ -487,14 +241,14 @@ const char* profession_type_string( profession_type_e type )
   }
 }
 
-// parse_profession_type ============================================
+// util_t::parse_profession_type ============================================
 
-profession_type_e parse_profession_type( const std::string& name )
+profession_type_e util_t::parse_profession_type( const std::string& name )
 { return parse_enum<profession_type_e,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name ); }
 
-// translate_profession_id ==========================================
+// util_t::translate_profession_id ==========================================
 
-profession_type_e translate_profession_id( int skill_id )
+profession_type_e util_t::translate_profession_id( int skill_id )
 {
   switch ( skill_id )
   {
@@ -513,9 +267,9 @@ profession_type_e translate_profession_id( int skill_id )
   return PROFESSION_NONE;
 }
 
-// player_type_string ===============================================
+// util_t::player_type_string ===============================================
 
-const char* player_type_string( player_type_e type )
+const char* util_t::player_type_string( player_type_e type )
 {
   switch ( type )
   {
@@ -539,22 +293,22 @@ const char* player_type_string( player_type_e type )
   }
 }
 
-// parse_player_type ================================================
+// util_t::parse_player_type ================================================
 
-player_type_e parse_player_type( const std::string& name )
+player_type_e util_t::parse_player_type( const std::string& name )
 { return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name ); }
 
-// translate_class_str ================================================
+// util_t::translate_class_str ================================================
 
-player_type_e translate_class_str( std::string& s )
+player_type_e util_t::translate_class_str( std::string& s )
 {
   return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s );
 }
 
 
-// pet_type_string ==================================================
+// util_t::pet_type_string ==================================================
 
-const char* pet_type_string( pet_type_e type )
+const char* util_t::pet_type_string( pet_type_e type )
 {
   switch ( type )
   {
@@ -617,14 +371,14 @@ const char* pet_type_string( pet_type_e type )
   }
 }
 
-// parse_pet_type ===================================================
+// util_t::parse_pet_type ===================================================
 
-pet_type_e parse_pet_type( const std::string& name )
+pet_type_e util_t::parse_pet_type( const std::string& name )
 { return parse_enum<pet_type_e,PET_NONE,PET_MAX,pet_type_string>( name ); }
 
-// attribute_type_string ============================================
+// util_t::attribute_type_string ============================================
 
-const char* attribute_type_string( attribute_type_e type )
+const char* util_t::attribute_type_string( attribute_type_e type )
 {
   switch ( type )
   {
@@ -637,14 +391,14 @@ const char* attribute_type_string( attribute_type_e type )
   }
 }
 
-// parse_attribute_type =============================================
+// util_t::parse_attribute_type =============================================
 
-attribute_type_e parse_attribute_type( const std::string& name )
+attribute_type_e util_t::parse_attribute_type( const std::string& name )
 { return parse_enum<attribute_type_e,ATTRIBUTE_NONE,ATTRIBUTE_MAX,attribute_type_string>( name ); }
 
-// dmg_type_string ==================================================
+// util_t::dmg_type_string ==================================================
 
-const char* dmg_type_string( dmg_type_e type )
+const char* util_t::dmg_type_string( dmg_type_e type )
 {
   switch ( type )
   {
@@ -657,9 +411,9 @@ const char* dmg_type_string( dmg_type_e type )
   }
 }
 
-// gem_type_string ==================================================
+// util_t::gem_type_string ==================================================
 
-const char* gem_type_string( gem_type_e type )
+const char* util_t::gem_type_string( gem_type_e type )
 {
   switch ( type )
   {
@@ -676,14 +430,14 @@ const char* gem_type_string( gem_type_e type )
   }
 }
 
-// parse_gem_type ===================================================
+// util_t::parse_gem_type ===================================================
 
-gem_type_e parse_gem_type( const std::string& name )
+gem_type_e util_t::parse_gem_type( const std::string& name )
 { return parse_enum<gem_type_e,GEM_NONE,GEM_MAX,gem_type_string>( name ); }
 
-// meta_gem_type_string =============================================
+// util_t::meta_gem_type_string =============================================
 
-const char* meta_gem_type_string( meta_gem_type_e type )
+const char* util_t::meta_gem_type_string( meta_gem_type_e type )
 {
   switch ( type )
   {
@@ -748,14 +502,14 @@ const char* meta_gem_type_string( meta_gem_type_e type )
   }
 }
 
-// parse_meta_gem_type ==============================================
+// util_t::parse_meta_gem_type ==============================================
 
-meta_gem_type_e parse_meta_gem_type( const std::string& name )
+meta_gem_type_e util_t::parse_meta_gem_type( const std::string& name )
 { return parse_enum<meta_gem_type_e,META_GEM_NONE,META_GEM_MAX,meta_gem_type_string>( name ); }
 
-// result_type_string ===============================================
+// util_t::result_type_string ===============================================
 
-const char* result_type_string( result_type_e type )
+const char* util_t::result_type_string( result_type_e type )
 {
   switch ( type )
   {
@@ -772,14 +526,14 @@ const char* result_type_string( result_type_e type )
   }
 }
 
-// parse_result_type ================================================
+// util_t::parse_result_type ================================================
 
-result_type_e parse_result_type( const std::string& name )
+result_type_e util_t::parse_result_type( const std::string& name )
 { return parse_enum<result_type_e,RESULT_NONE,RESULT_MAX,result_type_string>( name ); }
 
-// resource_type_string =============================================
+// util_t::resource_type_string =============================================
 
-const char* resource_type_string( resource_type_e resource_type )
+const char* util_t::resource_type_string( resource_type_e resource_type )
 {
   switch ( resource_type )
   {
@@ -805,22 +559,22 @@ const char* resource_type_string( resource_type_e resource_type )
   }
 }
 
-// parse_resource_type ==============================================
+// util_t::parse_resource_type ==============================================
 
-resource_type_e parse_resource_type( const std::string& name )
+resource_type_e util_t::parse_resource_type( const std::string& name )
 { return parse_enum<resource_type_e,RESOURCE_NONE,RESOURCE_MAX,resource_type_string>( name ); }
 
-// school_type_component ============================================
+// util_t::school_type_component ============================================
 
-uint32_t school_type_component( school_type_e s_type, school_type_e c_type )
+uint32_t util_t::school_type_component( school_type_e s_type, school_type_e c_type )
 {
   return spell_data_t::get_school_mask( s_type )
          & spell_data_t::get_school_mask( c_type );
 }
 
-// school_type_string ===============================================
+// util_t::school_type_string ===============================================
 
-const char* school_type_string( school_type_e school )
+const char* util_t::school_type_string( school_type_e school )
 {
   switch ( school )
   {
@@ -862,205 +616,205 @@ const char* school_type_string( school_type_e school )
   }
 }
 
-// parse_school_type ================================================
+// util_t::parse_school_type ================================================
 
-school_type_e parse_school_type( const std::string& name )
+school_type_e util_t::parse_school_type( const std::string& name )
 {
   return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name );
 }
 
-// translate_spec_str ===============================================
+// util_t::translate_spec_str ===============================================
 
-specialization_e translate_spec_str( player_type_e ptype, const std::string& spec_str )
+specialization_e util_t::translate_spec_str( player_type_e ptype, const std::string& spec_str )
 {
   switch ( ptype )
   {
   case DEATH_KNIGHT:
   {
-    if ( str_compare_ci( spec_str, "blood" ) )
+    if ( util_t::str_compare_ci( spec_str, "blood" ) )
       return DEATH_KNIGHT_BLOOD;
-    if ( str_compare_ci( spec_str, "tank" ) )
+    if ( util_t::str_compare_ci( spec_str, "tank" ) )
       return DEATH_KNIGHT_BLOOD;
-    else if ( str_compare_ci( spec_str, "frost" ) )
+    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
       return DEATH_KNIGHT_FROST;
-    else if ( str_compare_ci( spec_str, "unholy" ) )
+    else if ( util_t::str_compare_ci( spec_str, "unholy" ) )
       return DEATH_KNIGHT_UNHOLY;
     break;
   }
   case DRUID:
   {
-    if ( str_compare_ci( spec_str, "balance" ) )
+    if ( util_t::str_compare_ci( spec_str, "balance" ) )
       return DRUID_BALANCE;
-    if ( str_compare_ci( spec_str, "caster" ) )
+    if ( util_t::str_compare_ci( spec_str, "caster" ) )
       return DRUID_BALANCE;
-    else if ( str_compare_ci( spec_str, "feral" ) )
+    else if ( util_t::str_compare_ci( spec_str, "feral" ) )
       return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "cat" ) )
+    else if ( util_t::str_compare_ci( spec_str, "cat" ) )
       return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "melee" ) )
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
       return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "guardian" ) )
+    else if ( util_t::str_compare_ci( spec_str, "guardian" ) )
       return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "bear" ) )
+    else if ( util_t::str_compare_ci( spec_str, "bear" ) )
       return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "tank" ) )
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
       return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "restoration" ) )
+    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
       return DRUID_RESTORATION;
-    else if ( str_compare_ci( spec_str, "resto" ) )
+    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
       return DRUID_RESTORATION;
-    else if ( str_compare_ci( spec_str, "healer" ) )
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
       return DRUID_RESTORATION;
 
     break;
   }
   case HUNTER:
   {
-    if ( str_compare_ci( spec_str, "beast_mastery" ) )
+    if ( util_t::str_compare_ci( spec_str, "beast_mastery" ) )
       return HUNTER_BEAST_MASTERY;
-    if ( str_compare_ci( spec_str, "bm" ) )
+    if ( util_t::str_compare_ci( spec_str, "bm" ) )
       return HUNTER_BEAST_MASTERY;
-    else if ( str_compare_ci( spec_str, "marksmanship" ) )
+    else if ( util_t::str_compare_ci( spec_str, "marksmanship" ) )
       return HUNTER_MARKSMANSHIP;
-    else if ( str_compare_ci( spec_str, "mm" ) )
+    else if ( util_t::str_compare_ci( spec_str, "mm" ) )
       return HUNTER_MARKSMANSHIP;
-    else if ( str_compare_ci( spec_str, "survival" ) )
+    else if ( util_t::str_compare_ci( spec_str, "survival" ) )
       return HUNTER_SURVIVAL;
-    else if ( str_compare_ci( spec_str, "sv" ) )
+    else if ( util_t::str_compare_ci( spec_str, "sv" ) )
       return HUNTER_SURVIVAL;
     break;
   }
   case MAGE:
   {
-    if ( str_compare_ci( spec_str, "arcane" ) )
+    if ( util_t::str_compare_ci( spec_str, "arcane" ) )
       return MAGE_ARCANE;
-    else if ( str_compare_ci( spec_str, "fire" ) )
+    else if ( util_t::str_compare_ci( spec_str, "fire" ) )
       return MAGE_FIRE;
-    else if ( str_compare_ci( spec_str, "frost" ) )
+    else if ( util_t::str_compare_ci( spec_str, "frost" ) )
       return MAGE_FROST;
     break;
   }
   case MONK:
   {
-    if ( str_compare_ci( spec_str, "brewmaster" ) )
+    if ( util_t::str_compare_ci( spec_str, "brewmaster" ) )
       return MONK_BREWMASTER;
-    if ( str_compare_ci( spec_str, "tank" ) )
+    if ( util_t::str_compare_ci( spec_str, "tank" ) )
       return MONK_BREWMASTER;
-    else if ( str_compare_ci( spec_str, "mistweaver" ) )
+    else if ( util_t::str_compare_ci( spec_str, "mistweaver" ) )
       return MONK_MISTWEAVER;
-    else if ( str_compare_ci( spec_str, "healer" ) )
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
       return MONK_MISTWEAVER;
-    else if ( str_compare_ci( spec_str, "windwalker" ) )
+    else if ( util_t::str_compare_ci( spec_str, "windwalker" ) )
       return MONK_WINDWALKER;
-    else if ( str_compare_ci( spec_str, "dps" ) )
+    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
       return MONK_WINDWALKER;
-    else if ( str_compare_ci( spec_str, "melee" ) )
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
       return MONK_WINDWALKER;
     break;
   }
   case PALADIN:
   {
-    if ( str_compare_ci( spec_str, "holy" ) )
+    if ( util_t::str_compare_ci( spec_str, "holy" ) )
       return PALADIN_HOLY;
-    if ( str_compare_ci( spec_str, "healer" ) )
+    if ( util_t::str_compare_ci( spec_str, "healer" ) )
       return PALADIN_HOLY;
-    else if ( str_compare_ci( spec_str, "protection" ) )
+    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
       return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "prot" ) )
+    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
       return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "tank" ) )
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
       return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "retribution" ) )
+    else if ( util_t::str_compare_ci( spec_str, "retribution" ) )
       return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "ret" ) )
+    else if ( util_t::str_compare_ci( spec_str, "ret" ) )
       return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "dps" ) )
+    else if ( util_t::str_compare_ci( spec_str, "dps" ) )
       return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "melee" ) )
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
       return PALADIN_RETRIBUTION;
     break;
   }
   case PRIEST:
   {
-    if ( str_compare_ci( spec_str, "discipline" ) )
+    if ( util_t::str_compare_ci( spec_str, "discipline" ) )
       return PRIEST_DISCIPLINE;
-    if ( str_compare_ci( spec_str, "disc" ) )
+    if ( util_t::str_compare_ci( spec_str, "disc" ) )
       return PRIEST_DISCIPLINE;
-    else if ( str_compare_ci( spec_str, "holy" ) )
+    else if ( util_t::str_compare_ci( spec_str, "holy" ) )
       return PRIEST_HOLY;
-    else if ( str_compare_ci( spec_str, "shadow" ) )
+    else if ( util_t::str_compare_ci( spec_str, "shadow" ) )
       return PRIEST_SHADOW;
-    else if ( str_compare_ci( spec_str, "caster" ) )
+    else if ( util_t::str_compare_ci( spec_str, "caster" ) )
       return PRIEST_SHADOW;
     break;
   }
   case ROGUE:
   {
-    if ( str_compare_ci( spec_str, "assassination" ) )
+    if ( util_t::str_compare_ci( spec_str, "assassination" ) )
       return ROGUE_ASSASSINATION;
-    if ( str_compare_ci( spec_str, "ass" ) )
+    if ( util_t::str_compare_ci( spec_str, "ass" ) )
       return ROGUE_ASSASSINATION;
-    if ( str_compare_ci( spec_str, "mut" ) )
+    if ( util_t::str_compare_ci( spec_str, "mut" ) )
       return ROGUE_ASSASSINATION;
-    else if ( str_compare_ci( spec_str, "combat" ) )
+    else if ( util_t::str_compare_ci( spec_str, "combat" ) )
       return ROGUE_COMBAT;
-    else if ( str_compare_ci( spec_str, "subtlety" ) )
+    else if ( util_t::str_compare_ci( spec_str, "subtlety" ) )
       return ROGUE_SUBTLETY;
-    else if ( str_compare_ci( spec_str, "sub" ) )
+    else if ( util_t::str_compare_ci( spec_str, "sub" ) )
       return ROGUE_SUBTLETY;
     break;
   }
   case SHAMAN:
   {
-    if ( str_compare_ci( spec_str, "elemental" ) )
+    if ( util_t::str_compare_ci( spec_str, "elemental" ) )
       return SHAMAN_ELEMENTAL;
-    if ( str_compare_ci( spec_str, "ele" ) )
+    if ( util_t::str_compare_ci( spec_str, "ele" ) )
       return SHAMAN_ELEMENTAL;
-    if ( str_compare_ci( spec_str, "caster" ) )
+    if ( util_t::str_compare_ci( spec_str, "caster" ) )
       return SHAMAN_ELEMENTAL;
-    else if ( str_compare_ci( spec_str, "enhancement" ) )
+    else if ( util_t::str_compare_ci( spec_str, "enhancement" ) )
       return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "enh" ) )
+    else if ( util_t::str_compare_ci( spec_str, "enh" ) )
       return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "melee" ) )
+    else if ( util_t::str_compare_ci( spec_str, "melee" ) )
       return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "restoration" ) )
+    else if ( util_t::str_compare_ci( spec_str, "restoration" ) )
       return SHAMAN_RESTORATION;
-    else if ( str_compare_ci( spec_str, "resto" ) )
+    else if ( util_t::str_compare_ci( spec_str, "resto" ) )
       return SHAMAN_RESTORATION;
-    else if ( str_compare_ci( spec_str, "healer" ) )
+    else if ( util_t::str_compare_ci( spec_str, "healer" ) )
       return SHAMAN_RESTORATION;
     break;
   }
   case WARLOCK:
   {
-    if ( str_compare_ci( spec_str, "affliction" ) )
+    if ( util_t::str_compare_ci( spec_str, "affliction" ) )
       return WARLOCK_AFFLICTION;
-    if ( str_compare_ci( spec_str, "affl" ) )
+    if ( util_t::str_compare_ci( spec_str, "affl" ) )
       return WARLOCK_AFFLICTION;
-    if ( str_compare_ci( spec_str, "aff" ) )
+    if ( util_t::str_compare_ci( spec_str, "aff" ) )
       return WARLOCK_AFFLICTION;
-    else if ( str_compare_ci( spec_str, "demonology" ) )
+    else if ( util_t::str_compare_ci( spec_str, "demonology" ) )
       return WARLOCK_DEMONOLOGY;
-    else if ( str_compare_ci( spec_str, "demo" ) )
+    else if ( util_t::str_compare_ci( spec_str, "demo" ) )
       return WARLOCK_DEMONOLOGY;
-    else if ( str_compare_ci( spec_str, "destruction" ) )
+    else if ( util_t::str_compare_ci( spec_str, "destruction" ) )
       return WARLOCK_DESTRUCTION;
-    else if ( str_compare_ci( spec_str, "destro" ) )
+    else if ( util_t::str_compare_ci( spec_str, "destro" ) )
       return WARLOCK_DESTRUCTION;
     break;
   }
   case WARRIOR:
   {
-    if ( str_compare_ci( spec_str, "arms" ) )
+    if ( util_t::str_compare_ci( spec_str, "arms" ) )
       return WARRIOR_ARMS;
-    else if ( str_compare_ci( spec_str, "fury" ) )
+    else if ( util_t::str_compare_ci( spec_str, "fury" ) )
       return WARRIOR_FURY;
-    else if ( str_compare_ci( spec_str, "protection" ) )
+    else if ( util_t::str_compare_ci( spec_str, "protection" ) )
       return WARRIOR_PROTECTION;
-    else if ( str_compare_ci( spec_str, "prot" ) )
+    else if ( util_t::str_compare_ci( spec_str, "prot" ) )
       return WARRIOR_PROTECTION;
-    else if ( str_compare_ci( spec_str, "tank" ) )
+    else if ( util_t::str_compare_ci( spec_str, "tank" ) )
       return WARRIOR_PROTECTION;
     break;
   }
@@ -1069,9 +823,9 @@ specialization_e translate_spec_str( player_type_e ptype, const std::string& spe
   return SPEC_NONE;
 }
 
-// specialization_string ===============================================
+// util_t::specialization_string ===============================================
 
-std::string specialization_string( specialization_e spec )
+std::string util_t::specialization_string( specialization_e spec )
 {
   switch ( spec )
   {
@@ -1116,7 +870,7 @@ std::string specialization_string( specialization_e spec )
   }
 }
 
-resource_type_e translate_power_type( power_type_e pt )
+resource_type_e util_t::translate_power_type( power_type_e pt )
 {
   switch ( pt )
   {
@@ -1137,9 +891,9 @@ resource_type_e translate_power_type( power_type_e pt )
   }
 }
 
-// weapon_type_string ===============================================
+// util_t::weapon_type_string ===============================================
 
-const char* weapon_type_string( weapon_type_e weapon )
+const char* util_t::weapon_type_string( weapon_type_e weapon )
 {
   switch ( weapon )
   {
@@ -1165,9 +919,9 @@ const char* weapon_type_string( weapon_type_e weapon )
   }
 }
 
-// weapon_subclass_string ===========================================
+// util_t::weapon_subclass_string ===========================================
 
-const char* weapon_subclass_string( item_subclass_weapon subclass )
+const char* util_t::weapon_subclass_string( item_subclass_weapon subclass )
 {
   switch ( subclass )
   {
@@ -1190,9 +944,9 @@ const char* weapon_subclass_string( item_subclass_weapon subclass )
   }
 }
 
-// weapon_class_string ==============================================
+// util_t::weapon_class_string ==============================================
 
-const char* weapon_class_string( inventory_type it )
+const char* util_t::weapon_class_string( inventory_type it )
 {
   switch ( it )
   {
@@ -1211,9 +965,9 @@ const char* weapon_class_string( inventory_type it )
   }
 }
 
-// set_item_type_string =============================================
+// util_t::set_item_type_string =============================================
 
-const char* set_item_type_string( int item_set )
+const char* util_t::set_item_type_string( int item_set )
 {
   switch ( item_set )
   {
@@ -1251,14 +1005,14 @@ const char* set_item_type_string( int item_set )
   return 0;
 }
 
-// parse_weapon_type ================================================
+// util_t::parse_weapon_type ================================================
 
-weapon_type_e parse_weapon_type( const std::string& name )
+weapon_type_e util_t::parse_weapon_type( const std::string& name )
 { return parse_enum<weapon_type_e,WEAPON_NONE,WEAPON_MAX,weapon_type_string>( name ); }
 
-// flask_type_string ================================================
+// util_t::flask_type_string ================================================
 
-const char* flask_type_string( flask_type_e flask )
+const char* util_t::flask_type_string( flask_type_e flask )
 {
   switch ( flask )
   {
@@ -1279,14 +1033,14 @@ const char* flask_type_string( flask_type_e flask )
   }
 }
 
-// parse_flask_type =================================================
+// util_t::parse_flask_type =================================================
 
-flask_type_e parse_flask_type( const std::string& name )
+flask_type_e util_t::parse_flask_type( const std::string& name )
 { return parse_enum<flask_type_e,FLASK_NONE,FLASK_MAX,flask_type_string>( name ); }
 
-// food_type_string =================================================
+// util_t::food_type_string =================================================
 
-const char* food_type_string( food_type_e food )
+const char* util_t::food_type_string( food_type_e food )
 {
   switch ( food )
   {
@@ -1309,14 +1063,14 @@ const char* food_type_string( food_type_e food )
   }
 }
 
-// parse_food_type ==================================================
+// util_t::parse_food_type ==================================================
 
-food_type_e parse_food_type( const std::string& name )
+food_type_e util_t::parse_food_type( const std::string& name )
 { return parse_enum<food_type_e,FOOD_NONE,FOOD_MAX,food_type_string>( name ); }
 
-// set_bonus_string =================================================
+// util_t::set_bonus_string =================================================
 
-const char* set_bonus_string( set_type_e type )
+const char* util_t::set_bonus_string( set_type_e type )
 {
   switch ( type )
   {
@@ -1364,14 +1118,14 @@ const char* set_bonus_string( set_type_e type )
   }
 }
 
-// parse_set_bonus ==================================================
+// util_t::parse_set_bonus ==================================================
 
-set_type_e parse_set_bonus( const std::string& name )
+set_type_e util_t::parse_set_bonus( const std::string& name )
 { return parse_enum<set_type_e,SET_NONE,SET_MAX,set_bonus_string>( name ); }
 
-// slot_type_string =================================================
+// util_t::slot_type_string =================================================
 
-const char* slot_type_string( slot_type_e slot )
+const char* util_t::slot_type_string( slot_type_e slot )
 {
   switch ( slot )
   {
@@ -1398,9 +1152,9 @@ const char* slot_type_string( slot_type_e slot )
   }
 }
 
-// armor_type_string ================================================
+// util_t::armor_type_string ================================================
 
-const char* armor_type_string( player_type_e ptype, slot_type_e s )
+const char* util_t::armor_type_string( player_type_e ptype, slot_type_e s )
 {
   switch ( s )
   {
@@ -1439,14 +1193,14 @@ const char* armor_type_string( player_type_e ptype, slot_type_e s )
   }
 }
 
-// parse_slot_type ==================================================
+// util_t::parse_slot_type ==================================================
 
-slot_type_e parse_slot_type( const std::string& name )
+slot_type_e util_t::parse_slot_type( const std::string& name )
 { return parse_enum<slot_type_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name ); }
 
-// stat_type_string =================================================
+// util_t::stat_type_string =================================================
 
-const char* stat_type_string( stat_type_e stat )
+const char* util_t::stat_type_string( stat_type_e stat )
 {
   switch ( stat )
   {
@@ -1503,9 +1257,9 @@ const char* stat_type_string( stat_type_e stat )
   }
 }
 
-// stat_type_abbrev =================================================
+// util_t::stat_type_abbrev =================================================
 
-const char* stat_type_abbrev( stat_type_e stat )
+const char* util_t::stat_type_abbrev( stat_type_e stat )
 {
   switch ( stat )
   {
@@ -1562,9 +1316,9 @@ const char* stat_type_abbrev( stat_type_e stat )
   }
 }
 
-// stat_type_wowhead ================================================
+// util_t::stat_type_wowhead ================================================
 
-const char* stat_type_wowhead( stat_type_e stat )
+const char* util_t::stat_type_wowhead( stat_type_e stat )
 {
   switch ( stat )
   {
@@ -1606,9 +1360,9 @@ const char* stat_type_wowhead( stat_type_e stat )
   }
 }
 
-// parse_stat_type ==================================================
+// util_t::parse_stat_type ==================================================
 
-stat_type_e parse_stat_type( const std::string& name )
+stat_type_e util_t::parse_stat_type( const std::string& name )
 {
   stat_type_e s = parse_enum<stat_type_e,STAT_NONE,STAT_MAX,stat_type_string>( name );
   if ( s != STAT_NONE ) return s;
@@ -1633,17 +1387,17 @@ stat_type_e parse_stat_type( const std::string& name )
   if ( name == "resiliencertng" ) return STAT_RESILIENCE_RATING;
   if ( name == "splpwr"         ) return STAT_SPELL_POWER;
   if ( name == "spi"            ) return STAT_SPIRIT;
-  if ( str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
-  if ( str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
+  if ( util_t::str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
+  if ( util_t::str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
 
   return STAT_NONE;
 }
 
-// parse_reforge_type ===============================================
+// util_t::parse_reforge_type ===============================================
 
-stat_type_e parse_reforge_type( const std::string& name )
+stat_type_e util_t::parse_reforge_type( const std::string& name )
 {
-  stat_type_e s = parse_stat_type( name );
+  stat_type_e s = util_t::parse_stat_type( name );
 
   switch ( s )
   {
@@ -1661,9 +1415,9 @@ stat_type_e parse_reforge_type( const std::string& name )
   }
 }
 
-// parse_origin =====================================================
+// util_t::parse_origin =====================================================
 
-bool parse_origin( std::string& region_str,
+bool util_t::parse_origin( std::string& region_str,
                            std::string& server_str,
                            std::string& name_str,
                            const std::string& origin_str )
@@ -1673,7 +1427,7 @@ bool parse_origin( std::string& region_str,
     return false;
 
   std::vector<std::string> tokens;
-  size_t num_tokens = string_split( tokens, origin_str, "/:.?&=" );
+  size_t num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
 
   for ( size_t i = 0; i < num_tokens; i++ )
   {
@@ -1709,18 +1463,18 @@ bool parse_origin( std::string& region_str,
   return true;
 }
 
-// class_id_mask ====================================================
+// util_t::class_id_mask ====================================================
 
-int class_id_mask( player_type_e type )
+int util_t::class_id_mask( player_type_e type )
 {
   int cid = class_id( type );
   if ( cid <= 0 ) return 0;
   return 1 << ( cid - 1 );
 }
 
-// class_id =========================================================
+// util_t::class_id =========================================================
 
-int class_id( player_type_e type )
+int util_t::class_id( player_type_e type )
 {
   switch ( type )
   {
@@ -1740,9 +1494,9 @@ int class_id( player_type_e type )
   }
 }
 
-// race_id ==========================================================
+// util_t::race_id ==========================================================
 
-unsigned race_id( race_type_e r )
+unsigned util_t::race_id( race_type_e r )
 {
   switch ( r )
   {
@@ -1765,9 +1519,9 @@ unsigned race_id( race_type_e r )
   }
 }
 
-// race_mask ========================================================
+// util_t::race_mask ========================================================
 
-unsigned race_mask( race_type_e r )
+unsigned util_t::race_mask( race_type_e r )
 {
   uint32_t id = race_id( r );
 
@@ -1777,9 +1531,9 @@ unsigned race_mask( race_type_e r )
   return 0x00;
 }
 
-// pet_class_type ===================================================
+// util_t::pet_class_type ===================================================
 
-player_type_e pet_class_type( pet_type_e c )
+player_type_e util_t::pet_class_type( pet_type_e c )
 {
   player_type_e p = WARRIOR;
 
@@ -1803,9 +1557,9 @@ player_type_e pet_class_type( pet_type_e c )
   return p;
 }
 
-// pet_mask =========================================================
+// util_t::pet_mask =========================================================
 
-unsigned pet_mask( pet_type_e p )
+unsigned util_t::pet_mask( pet_type_e p )
 {
   if ( p <= PET_FEROCITY_TYPE )
     return 0x1;
@@ -1817,9 +1571,9 @@ unsigned pet_mask( pet_type_e p )
   return 0x0;
 }
 
-// pet_id ===========================================================
+// util_t::pet_id ===========================================================
 
-unsigned pet_id( pet_type_e p )
+unsigned util_t::pet_id( pet_type_e p )
 {
   uint32_t mask = pet_mask( p );
 
@@ -1833,9 +1587,9 @@ unsigned pet_id( pet_type_e p )
   return 0;
 }
 
-// class_id_string ==================================================
+// util_t::class_id_string ==================================================
 
-const char* class_id_string( player_type_e type )
+const char* util_t::class_id_string( player_type_e type )
 {
   switch ( type )
   {
@@ -1854,9 +1608,9 @@ const char* class_id_string( player_type_e type )
   }
 }
 
-// translate_class_id ===============================================
+// util_t::translate_class_id ===============================================
 
-player_type_e translate_class_id( int cid )
+player_type_e util_t::translate_class_id( int cid )
 {
   switch ( cid )
   {
@@ -1875,9 +1629,9 @@ player_type_e translate_class_id( int cid )
   }
 }
 
-// translate_race_id ================================================
+// util_t::translate_race_id ================================================
 
-race_type_e translate_race_id( int rid )
+race_type_e util_t::translate_race_id( int rid )
 {
   switch ( rid )
   {
@@ -1901,9 +1655,9 @@ race_type_e translate_race_id( int rid )
   return RACE_NONE;
 }
 
-// translate_item_mod ===============================================
+// util_t::translate_item_mod ===============================================
 
-stat_type_e translate_item_mod( item_mod_type item_mod )
+stat_type_e util_t::translate_item_mod( item_mod_type item_mod )
 {
   switch ( item_mod )
   {
@@ -1929,9 +1683,9 @@ stat_type_e translate_item_mod( item_mod_type item_mod )
   }
 }
 
-// translate_weapon_subclass ========================================
+// util_t::translate_weapon_subclass ========================================
 
-weapon_type_e translate_weapon_subclass( item_subclass_weapon id )
+weapon_type_e util_t::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
   {
@@ -1956,9 +1710,9 @@ weapon_type_e translate_weapon_subclass( item_subclass_weapon id )
   return WEAPON_NONE;
 }
 
-// translate_invtype ================================================
+// util_t::translate_invtype ================================================
 
-slot_type_e translate_invtype( inventory_type inv_type )
+slot_type_e util_t::translate_invtype( inventory_type inv_type )
 {
   switch ( inv_type )
   {
@@ -2007,9 +1761,9 @@ slot_type_e translate_invtype( inventory_type inv_type )
   }
 }
 
-// socket_gem_match =================================================
+// util_t::socket_gem_match =================================================
 
-bool socket_gem_match( gem_type_e socket, gem_type_e gem )
+bool util_t::socket_gem_match( gem_type_e socket, gem_type_e gem )
 {
   if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
 
@@ -2023,18 +1777,9 @@ bool socket_gem_match( gem_type_e socket, gem_type_e gem )
   return false;
 }
 
-size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes )
-{ string_split_( results, str, delim, allow_quotes ); return results.size(); }
+// util_t::translate_gem_color ==============================================
 
-std::string& replace_all( std::string& s, const char* from, char to )
-{ replace_all_( s, from, to ); return s; }
-
-std::string& replace_all( std::string& s, char from, const char* to )
-{ replace_all_( s, from, to ); return s; }
-
-// translate_gem_color ==============================================
-
-gem_type_e translate_socket_color( item_socket_color c )
+gem_type_e util_t::translate_socket_color( item_socket_color c )
 {
   switch ( c )
   {
@@ -2049,9 +1794,9 @@ gem_type_e translate_socket_color( item_socket_color c )
   }
 }
 
-// item_quality_string ==============================================
+// util_t::item_quality_string ==============================================
 
-const char* item_quality_string( int quality )
+const char* util_t::item_quality_string( int quality )
 {
   switch ( quality )
   {
@@ -2064,9 +1809,9 @@ const char* item_quality_string( int quality )
   }
 }
 
-// parse_item_quality ===============================================
+// util_t::parse_item_quality ===============================================
 
-int parse_item_quality( const std::string& quality )
+int util_t::parse_item_quality( const std::string& quality )
 {
   int i = 6;
 
@@ -2077,17 +1822,73 @@ int parse_item_quality( const std::string& quality )
   return i;
 }
 
-// string_split =====================================================
+// util_t::string_split =====================================================
 
-int string_split( const std::string& str,
+void util_t::string_split_( std::vector<std::string>& results,
+                            const std::string&        str,
+                            const char*               delim,
+                            bool                      allow_quotes )
+{
+  std::string buffer = str;
+  std::string::size_type cut_pt, start = 0;
+
+  std::string not_in_quote = delim;
+  if ( allow_quotes )
+    not_in_quote += '"';
+
+  static const std::string in_quote = "\"";
+  const std::string* search = &not_in_quote;
+
+  while ( ( cut_pt = buffer.find_first_of( *search, start ) ) != buffer.npos )
+  {
+    if ( allow_quotes && ( buffer[ cut_pt ] == '"' ) )
+    {
+      buffer.erase( cut_pt, 1 );
+      start = cut_pt;
+      search = ( search == &not_in_quote ) ? &in_quote : &not_in_quote;
+    }
+    else if ( search == &not_in_quote )
+    {
+      if ( cut_pt > 0 )
+        results.push_back( buffer.substr( 0, cut_pt ) );
+      buffer.erase( 0, cut_pt + 1 );
+      start = 0;
+    }
+  }
+
+  if ( buffer.length() > 0 )
+    results.push_back( buffer );
+
+  /*
+    std::string buffer = str;
+    std::string::size_type cut_pt;
+
+    while ( ( cut_pt = buffer.find_first_of( delim ) ) != buffer.npos )
+    {
+      if ( cut_pt > 0 )
+      {
+        results.push_back( buffer.substr( 0, cut_pt ) );
+      }
+      buffer = buffer.substr( cut_pt + 1 );
+    }
+    if ( buffer.length() > 0 )
+    {
+      results.push_back( buffer );
+    }
+  */
+}
+
+// util_t::string_split =====================================================
+
+int util_t::string_split( const std::string& str,
                           const char*        delim,
                           const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;
 
-  int    str_size = string_split(    str_splits, str,    delim );
-  int format_size = string_split( format_splits, format, " "   );
+  int    str_size = util_t::string_split(    str_splits, str,    delim );
+  int format_size = util_t::string_split( format_splits, format, " "   );
 
   if ( str_size == format_size )
   {
@@ -2112,9 +1913,9 @@ int string_split( const std::string& str,
   return str_size;
 }
 
-// string_strip_quotes ==============================================
+// util_t::string_strip_quotes ==============================================
 
-void string_strip_quotes( std::string& str )
+void util_t::string_strip_quotes( std::string& str )
 {
   std::string::size_type pos = str.find( '"' );
   if ( pos == str.npos ) return;
@@ -2129,18 +1930,47 @@ void string_strip_quotes( std::string& str )
   str.resize( dst - str.begin() );
 }
 
-// to_string ========================================================
+// util_t::replace_all ======================================================
 
-std::string to_string( double f, int precision )
+void util_t::replace_all_( std::string& s, const char* from, char to )
+{
+  std::string::size_type pos = s.find( from );
+  if ( pos != s.npos )
+  {
+    std::size_t len = std::strlen( from );
+    do
+      s.replace( pos, len, 1, to );
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+}
+
+void util_t::replace_all_( std::string& s, char from, const char* to )
+{
+  std::string::size_type pos;
+  if ( ( pos = s.find( from ) ) != s.npos )
+  {
+    std::size_t len = std::strlen( to );
+    do
+    {
+      s.replace( pos, 1, to, len );
+      pos += len;
+    }
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+}
+
+// util_t::to_string ========================================================
+
+std::string util_t::to_string( double f, int precision )
 {
   std::ostringstream ss;
   ss << std::fixed << std::setprecision( precision ) << f;
   return ss.str();
 }
 
-// to_string ========================================================
+// util_t::to_string ========================================================
 
-std::string to_string( double f )
+std::string util_t::to_string( double f )
 {
   if ( std::abs( f - static_cast<int>( f ) ) < 0.001 )
     return to_string( static_cast<int>( f ) );
@@ -2148,26 +1978,26 @@ std::string to_string( double f )
     return to_string( f, 3 );
 }
 
-// milliseconds =====================================================
+// util_t::milliseconds =====================================================
 
-int64_t milliseconds()
+int64_t util_t::milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
-// parse_date =======================================================
+// util_t::parse_date =======================================================
 
-int64_t parse_date( const std::string& month_day_year )
+int64_t util_t::parse_date( const std::string& month_day_year )
 {
   std::vector<std::string> splits;
-  size_t num_splits = string_split( splits, month_day_year, " _,;-/ \t\n\r" );
+  size_t num_splits = util_t::string_split( splits, month_day_year, " _,;-/ \t\n\r" );
   if ( num_splits != 3 ) return 0;
 
   std::string& month = splits[ 0 ];
   std::string& day   = splits[ 1 ];
   std::string& year  = splits[ 2 ];
 
-  tolower_( month );
+  util_t::tolower_( month );
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
@@ -2195,37 +2025,51 @@ int64_t parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// fprintf ==========================================================
+// util_t::vfprintf_helper ==================================================
 
-int fprintf( FILE *stream, const char *format,  ... )
+int util_t::vfprintf_helper( FILE *stream, const char *format, va_list args )
+{
+  std::string p_locale = setlocale( LC_CTYPE, NULL );
+  setlocale( LC_CTYPE, "" );
+
+  int retcode = ::vfprintf( stream, format, args );
+
+  setlocale( LC_CTYPE, p_locale.c_str() );
+
+  return retcode;
+}
+
+// util_t::fprintf ==========================================================
+
+int util_t::fprintf( FILE *stream, const char *format,  ... )
 {
   va_list fmtargs;
   va_start( fmtargs, format );
 
-  int retcode = util::vfprintf_helper( stream, format, fmtargs );
+  int retcode = vfprintf_helper( stream, format, fmtargs );
 
   va_end( fmtargs );
 
   return retcode;
 }
 
-// printf ===========================================================
+// util_t::printf ===========================================================
 
-int printf( const char *format,  ... )
+int util_t::printf( const char *format,  ... )
 {
   va_list fmtargs;
   va_start( fmtargs, format );
 
-  int retcode = util::vfprintf_helper( stdout, format, fmtargs );
+  int retcode = vfprintf_helper( stdout, format, fmtargs );
 
   va_end( fmtargs );
 
   return retcode;
 }
 
-// snprintf =========================================================
+// util_t::snprintf =========================================================
 
-int snprintf( char* buf, size_t size, const char* fmt, ... )
+int util_t::snprintf( char* buf, size_t size, const char* fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );
@@ -2236,33 +2080,150 @@ int snprintf( char* buf, size_t size, const char* fmt, ... )
   return rval;
 }
 
-int vfprintf( FILE *stream, const char *format, va_list fmtargs )
-{ return util::vfprintf_helper( stream, format, fmtargs ); }
 
-int vprintf( const char *format, va_list fmtargs )
-{ return util::vfprintf( stdout, format, fmtargs ); }
+// util_t::str_to_utf8_ =====================================================
 
-std::string& str_to_utf8( std::string& str )
-{ str_to_utf8_( str ); return str; }
+void util_t::str_to_utf8_( std::string& str )
+{
+  std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
+  if ( p == str.end() ) return;
 
-std::string& str_to_latin1( std::string& str )
-{ str_to_latin1_( str ); return str; }
+  std::string temp( str.begin(), p );
+  for ( std::string::iterator e = str.end(); p != e; ++p )
+    utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 
-std::string& urlencode( std::string& str )
-{ urlencode_( str ); return str; }
+  str.swap( temp );
+}
 
-std::string& urldecode( std::string& str )
-{ urldecode_( str ); return str; }
+// util_t::str_to_latin1_ ===================================================
 
-std::string& format_text( std::string& name, bool input_is_utf8 )
-{ util::format_text_( name, input_is_utf8 ); return name; }
+void util_t::str_to_latin1_( std::string& str )
+{
+  if ( str.empty() ) return;
+  if ( ! range::is_valid_utf8( str ) ) return;
 
-std::string& html_special_char_decode( std::string& str )
-{ util::html_special_char_decode_( str ); return str; }
 
-// floor ============================================================
+  std::string temp;
+  std::string::iterator i = str.begin(), e = str.end();
 
-double floor( double X, unsigned int decplaces )
+  while ( i != e )
+    temp += ( unsigned char ) utf8::next( i, e );
+
+  str.swap( temp );
+}
+
+// util_t::urlencode_ =======================================================
+
+void util_t::urlencode_( std::string& str )
+{
+  std::string::size_type l = str.length();
+  if ( ! l ) return;
+
+  std::string temp;
+
+  for ( std::string::size_type i = 0; i < l; ++i )
+  {
+    unsigned char c = str[ i ];
+
+    if ( c > 0x7F || c == ' ' || c == '\'' )
+    {
+      char enc_str[4];
+      snprintf( enc_str, sizeof( enc_str ), "%%%02X", c );
+      temp += enc_str;
+    }
+    else if ( c == '+' )
+      temp += "%20";
+    else if ( c < 0x20 )
+      continue;
+    else
+      temp += c;
+  }
+
+  str.swap( temp );
+}
+
+// util_t::urldecode_ =======================================================
+
+void util_t::urldecode_( std::string& str )
+{
+  std::string::size_type l = str.length();
+  if ( ! l ) return;
+
+  std::string temp;
+
+  for ( std::string::size_type i = 0; i < l; ++i )
+  {
+    unsigned char c = ( unsigned char ) str[ i ];
+
+    if ( c == '%' && i + 2 < l )
+    {
+      long v = strtol( str.substr( i + 1, 2 ).c_str(), 0, 16 );
+      if ( v ) temp += ( unsigned char ) v;
+      i += 2;
+    }
+    else if ( c == '+' )
+      temp += ' ';
+    else
+      temp += c;
+  }
+
+  str.swap( temp );
+}
+
+// util_t::format_text ======================================================
+
+void util_t::format_text_( std::string& name, bool input_is_utf8 )
+{
+  if ( name.empty() ) return;
+  bool is_utf8 = range::is_valid_utf8( name );
+
+  if ( is_utf8 && ! input_is_utf8 )
+    util_t::str_to_latin1( name );
+  else if ( ! is_utf8 && input_is_utf8 )
+    util_t::str_to_utf8( name );
+}
+
+// util_t::html_special_char_decode_ ========================================
+
+void util_t::html_special_char_decode_( std::string& str )
+{
+  std::string::size_type pos = 0;
+
+  while ( ( pos = str.find( "&", pos ) ) != std::string::npos )
+  {
+    if ( str[ pos+1 ] == '#' )
+    {
+      std::string::size_type end = str.find( ';', pos + 2 );
+      char encoded = ( char ) atoi( str.substr( pos + 2, end ).c_str() );
+      str.erase( pos, end - pos + 1 );
+      str.insert( pos, 1, encoded );
+    }
+    else if ( 0 == str.compare( pos, 6, "&quot;" ) )
+    {
+      str.erase( pos, 6 );
+      str.insert( pos, "\"" );
+    }
+    else if ( 0 == str.compare( pos, 5, "&amp;" ) )
+    {
+      str.erase( pos, 5 );
+      str.insert( pos, "&" );
+    }
+    else if ( 0 == str.compare( pos, 4, "&lt;" ) )
+    {
+      str.erase( pos, 4 );
+      str.insert( pos, "<" );
+    }
+    else if ( 0 == str.compare( pos, 4, "&gt;" ) )
+    {
+      str.erase( pos, 4 );
+      str.insert( pos, ">" );
+    }
+  }
+}
+
+// util_t::floor ============================================================
+
+double util_t::floor( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2284,9 +2245,9 @@ double floor( double X, unsigned int decplaces )
   }
 }
 
-// ceil =============================================================
+// util_t::ceil =============================================================
 
-double ceil( double X, unsigned int decplaces )
+double util_t::ceil( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2308,9 +2269,9 @@ double ceil( double X, unsigned int decplaces )
   }
 }
 
-// round ============================================================
+// util_t::round ============================================================
 
-double round( double X, unsigned int decplaces )
+double util_t::round( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2332,8 +2293,13 @@ double round( double X, unsigned int decplaces )
   }
 }
 
-std::string& tolower( std::string& str )
-{ tolower_( str ); return str; }
+// util_t::tolower_ =========================================================
+
+void util_t::tolower_( std::string& str )
+{
+  // Transform all chars to lower case
+  range::transform_self( str, ( int( * )( int ) ) std::tolower );
+}
 
 std::string tolower( const std::string& src )
 {
@@ -2343,24 +2309,24 @@ std::string tolower( const std::string& src )
   return dest;
 }
 
-std::string encode_html( const std::string& s )
+std::string util_t::encode_html( const std::string& s )
 {
   std::string buffer = std::string();
   buffer += s;
-  replace_all( buffer, '&', "&amp;" );
-  replace_all( buffer, '<', "&lt;" );
-  replace_all( buffer, '>', "&gt;" );
+  util_t::replace_all( buffer, '&', "&amp;" );
+  util_t::replace_all( buffer, '<', "&lt;" );
+  util_t::replace_all( buffer, '>', "&gt;" );
   return buffer;
 }
 
 
-void tokenize( std::string& name, format_type_e f )
+void util_t::tokenize( std::string& name, format_type_e f )
 {
   std::string::size_type l = name.length();
   if ( ! l ) return;
 
 
-  str_to_utf8( name );
+  util_t::str_to_utf8( name );
 
   // remove leading '_' or '+'
   while ( ( name[ 0 ] == '_' || name[ 0 ] == '+' ) && !name.empty() )
@@ -2405,7 +2371,7 @@ void tokenize( std::string& name, format_type_e f )
   name.swap( buffer );
 }
 
-void inverse_tokenize( std::string& name )
+void util_t::inverse_tokenize( std::string& name )
 {
   // Converts underscores to whitespace and converts leading chars to uppercase
 
@@ -2413,7 +2379,7 @@ void inverse_tokenize( std::string& name )
   if ( ! l ) return;
 
 
-  str_to_utf8( name );
+  util_t::str_to_utf8( name );
 
   for ( std::string::iterator i = name.begin(); i != name.end(); ++i )
   {
@@ -2433,7 +2399,7 @@ void inverse_tokenize( std::string& name )
 }
 
 
-std::string inverse_tokenize( const std::string& name )
+std::string util_t::inverse_tokenize( const std::string& name )
 {
   std::string s = std::string( name );
 
@@ -2442,7 +2408,7 @@ std::string inverse_tokenize( const std::string& name )
   return s;
 }
 
-bool is_number( const std::string& s )
+bool util_t::is_number( const std::string& s )
 {
   for ( std::string::size_type i = 0, l = s.length(); i < l; ++i )
     if ( ! std::isdigit( s[ i ] ) )
@@ -2522,5 +2488,3 @@ bool str_to_float( std::string src, double& dest )
   return res;
 }
 #endif
-
-} // END util NAMESPACE
