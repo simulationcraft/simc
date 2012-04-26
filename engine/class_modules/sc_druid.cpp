@@ -424,7 +424,6 @@ struct druid_t : public player_t
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* shooting_stars;
     const spell_data_t* starfall;
-    const spell_data_t* sunfire;
 
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
@@ -3661,7 +3660,7 @@ struct sunfire_t : public druid_spell_t
   // Identical to moonfire, except damage type and usability
 
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, player -> specialization.sunfire ),
+    druid_spell_t( "sunfire", player, spell_data_t::nil() /*player -> find_spell( 93402 )*/ ),
     starsurge_cd( 0 )
   {
     parse_options( NULL, options_str );
@@ -4094,8 +4093,6 @@ void druid_t::init_spells()
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
   specialization.starfall               = find_specialization_spell( "Starfall" );
-  // Which is the acutal spell on beta? Still http://mop.wowhead.com/spell=93402 ?
-  specialization.sunfire                = find_specialization_spell( "Sunfire" );
 
   specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   spell.moonkin_form                    = find_spell( 24905 ); // This is the passive applied on shapeshift!
@@ -4560,29 +4557,24 @@ void druid_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      if ( talent.typhoon -> ok() )
-        action_list_str += "/typhoon,moving=1";
-      if ( specialization.starfall -> ok() )
-      {
+      if ( primary_tree() == DRUID_BALANCE )
         action_list_str += "/starfall,if=eclipse<-80";
-      }
-
-      if ( specialization.sunfire -> ok() )
-      {
-        action_list_str += "/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)";
-      }
-      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2";
-      if ( specialization.sunfire -> ok() )
-        action_list_str += "&!dot.sunfire.remains>0";
-      action_list_str += ")|(eclipse>-20&dot.moonfire.remains<10))";
 
       if ( primary_tree() == DRUID_BALANCE )
-      {
+        action_list_str += "/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)";
+
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2";
+      if ( primary_tree() == DRUID_BALANCE )
+        action_list_str += "&!dot.sunfire.remains>0";
+
+      action_list_str += ")|(eclipse>-20&dot.moonfire.remains<10))";
+      if ( primary_tree() == DRUID_BALANCE )
         action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-      }
+
       action_list_str += "/innervate,if=mana_pct<50";
       if ( talent.force_of_nature -> ok() )
         action_list_str += "/treants,time>=5";
+
       action_list_str += use_str;
       action_list_str += init_use_profession_actions();
       action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
