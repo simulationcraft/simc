@@ -21,9 +21,6 @@
     <ClCompile Include="engine\sc_action.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\interfaces\sc_armory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\sc_attack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

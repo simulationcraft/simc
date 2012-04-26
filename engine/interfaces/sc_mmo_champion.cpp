@@ -172,7 +172,7 @@ static bool parse_gems( item_t&           item,
       std::string socket_bonus_str;
       if ( xml_t::get_value( socket_bonus_str, socket_bonus_node, "a/." ) )
       {
-        armory_t::fuzzy_stats( item.armory_gems_str, socket_bonus_str );
+        util::fuzzy_stats( item.armory_gems_str, socket_bonus_str );
       }
     }
   }
@@ -267,7 +267,7 @@ static bool parse_item_stats( item_t&     item,
   size_t num_descriptions = descriptions.size();
   for ( size_t i=0; i < num_descriptions; i++ )
   {
-    armory_t::fuzzy_stats( item.armory_stats_str, descriptions[ i ] );
+    util::fuzzy_stats( item.armory_stats_str, descriptions[ i ] );
   }
 
   std::vector<xml_node_t*> spells;
@@ -277,7 +277,7 @@ static bool parse_item_stats( item_t&     item,
     std::string description;
     if ( xml_t::get_value( description, spells[ i ], "a/." ) )
     {
-      armory_t::fuzzy_stats( item.armory_stats_str, description );
+      util::fuzzy_stats( item.armory_stats_str, description );
     }
   }
 
@@ -555,12 +555,12 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
         }
         else
         {
-          armory_t::fuzzy_stats( s, property_str );
+          util::fuzzy_stats( s, property_str );
         }
       }
       else
       {
-        armory_t::fuzzy_stats( s, property_str );
+        util::fuzzy_stats( s, property_str );
       }
 
       return type;

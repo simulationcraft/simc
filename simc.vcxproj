@@ -186,7 +186,6 @@
     <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
     <ClCompile Include="engine\sc_action.cpp" />
     <ClCompile Include="engine\sc_action_state.cpp" />
-    <ClCompile Include="engine\interfaces\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
     <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />

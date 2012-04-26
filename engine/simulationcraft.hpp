@@ -1667,6 +1667,7 @@ namespace util {
   bool is_number( const std::string& s );
 
   int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
+  void fuzzy_stats( std::string& encoding, const std::string& description );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -4971,24 +4972,16 @@ void replace_str( std::string& str, const std::string& old_str, const std::strin
 bool str_to_float( const std::string& src, double& dest );
 #endif // UNUSED
 
-// Armory ===================================================================
-
-struct armory_t
-{
-  static void fuzzy_stats( std::string& encoding, const std::string& description );
-};
-
 // Wowhead  =================================================================
 
-struct wowhead_t
-{
-  static player_t* download_player( sim_t* sim,
+namespace wowhead {
+  player_t* download_player( sim_t* sim,
                                     const std::string& region,
                                     const std::string& server,
                                     const std::string& name,
                                     const std::string& spec,
                                     cache::behavior_e b=cache::players() );
-  static bool download_slot( item_t&,
+  bool download_slot( item_t&,
                              const std::string& item_id,
                              const std::string& enchant_id,
                              const std::string& addon_id,
@@ -4997,20 +4990,20 @@ struct wowhead_t
                              const std::string gem_ids[ 3 ],
                              bool ptr=false,
                              cache::behavior_e b=cache::items() );
-  static bool download_item( item_t&, const std::string& item_id,
+  bool download_item( item_t&, const std::string& item_id,
                              bool ptr=false, cache::behavior_e b=cache::items() );
-  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                               bool ptr=false, cache::behavior_e b=cache::items() );
-  static gem_type_e parse_gem( item_t& item, const std::string& gem_id,
+  gem_type_e parse_gem( item_t& item, const std::string& gem_id,
                                bool ptr=false, cache::behavior_e b=cache::items() );
-};
+}
 
 // CharDev  =================================================================
 
-struct chardev_t
-{
-  static player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
-};
+namespace chardev {
+
+  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
+}
 
 // MMO Champion =============================================================
 

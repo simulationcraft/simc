@@ -196,7 +196,7 @@ static bool parse_gems( item_t&           item,
         std::string::size_type new_pos = tooltip_str.find( "<", start );
         if ( new_pos != std::string::npos )
         {
-          armory_t::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, new_pos-start ) );
+          util::fuzzy_stats( item.armory_gems_str, tooltip_str.substr( start, new_pos-start ) );
         }
       }
     }
@@ -787,9 +787,10 @@ player_t* download_player_profile( sim_t* sim,
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// wowhead_t::parse_gem =====================================================
+namespace wowhead {
+// wowhead::parse_gem =====================================================
 
-gem_type_e wowhead_t::parse_gem( item_t&            item,
+gem_type_e parse_gem( item_t&            item,
                                  const std::string& gem_id,
                                  bool               ptr,
                                  cache::behavior_e  caching )
@@ -840,9 +841,9 @@ gem_type_e wowhead_t::parse_gem( item_t&            item,
   return type;
 }
 
-// wowhead_t::download_glyph ================================================
+// wowhead::download_glyph ================================================
 
-bool wowhead_t::download_glyph( player_t*          player,
+bool download_glyph( player_t*          player,
                                 std::string&       glyph_name,
                                 const std::string& glyph_id,
                                 bool               ptr,
@@ -859,9 +860,9 @@ bool wowhead_t::download_glyph( player_t*          player,
   return true;
 }
 
-// wowhead_t::download_item =================================================
+// wowhead::download_item =================================================
 
-bool wowhead_t::download_item( item_t&            item,
+bool download_item( item_t&            item,
                                const std::string& item_id,
                                bool               ptr,
                                cache::behavior_e  caching )
@@ -927,9 +928,9 @@ bool wowhead_t::download_item( item_t&            item,
   return true;
 }
 
-// wowhead_t::download_slot =================================================
+// wowhead::download_slot =================================================
 
-bool wowhead_t::download_slot( item_t&            item,
+bool download_slot( item_t&            item,
                                const std::string& item_id,
                                const std::string& enchant_id,
                                const std::string& addon_id,
@@ -1036,9 +1037,9 @@ bool wowhead_t::download_slot( item_t&            item,
   return true;
 }
 
-// wowhead_t::download_player ===============================================
+// wowhead::download_player ===============================================
 
-player_t* wowhead_t::download_player( sim_t* sim,
+player_t* download_player( sim_t* sim,
                                       const std::string& region,
                                       const std::string& server,
                                       const std::string& name,
@@ -1084,3 +1085,5 @@ player_t* wowhead_t::download_player( sim_t* sim,
 
   return download_player_profile( sim, id, spec, caching );
 }
+
+} // END wowhead NAMESPACE

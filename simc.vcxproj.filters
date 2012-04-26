@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="engine\sc_action.cpp" />
-    <ClCompile Include="engine\interfaces\sc_armory.cpp" />
     <ClCompile Include="engine\sc_attack.cpp" />
     <ClCompile Include="engine\sc_buff.cpp" />
     <ClCompile Include="engine\report\sc_chart.cpp" />

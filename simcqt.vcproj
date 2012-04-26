@@ -244,10 +244,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\interfaces\sc_armory.cpp"
-				>
-			</File>
-			<File
 				RelativePath="engine\sc_attack.cpp"
 				>
 			</File>

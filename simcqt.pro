@@ -96,7 +96,6 @@ SOURCES += engine/dbc/sc_item_data.cpp
 SOURCES += engine/dbc/sc_spell_data.cpp
 SOURCES += engine/dbc/sc_spell_info.cpp
 SOURCES += engine/dbc/sc_data.cpp
-SOURCES += engine/interfaces/sc_armory.cpp
 SOURCES += engine/interfaces/sc_bcp_api.cpp
 SOURCES += engine/interfaces/sc_chardev.cpp
 SOURCES += engine/interfaces/sc_http.cpp

@@ -54,9 +54,10 @@ static const char* translate_slot( int slot )
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// chardev_t::download_player ===============================================
+namespace chardev {
+// chardev::download_player ===============================================
 
-player_t* chardev_t::download_player( sim_t* sim,
+player_t* download_player( sim_t* sim,
                                       const std::string& id,
                                       cache::behavior_e caching )
 {
@@ -213,3 +214,5 @@ player_t* chardev_t::download_player( sim_t* sim,
 
   return p;
 }
+
+} // END chardev NAMESPACE

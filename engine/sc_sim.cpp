@@ -359,10 +359,10 @@ bool parse_armory( sim_t*             sim,
 
       player_t* p;
       if ( name == "wowhead" )
-        p = wowhead_t::download_player( sim, stuff.region, stuff.server,
+        p = wowhead::download_player( sim, stuff.region, stuff.server,
                                         player_name, description, stuff.cache );
       else if ( name == "chardev" )
-        p = chardev_t::download_player( sim, player_name, stuff.cache );
+        p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "wowreforge" )
         p = wowreforge::download_player( sim, player_name, stuff.cache );
       else

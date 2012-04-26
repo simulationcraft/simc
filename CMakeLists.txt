@@ -30,7 +30,6 @@ SET(SIMC_ENGINE_INCLUDE_DIRS
 SET(SIMC_ENGINE_SOURCE
   "engine/sc_action.cpp"
   "engine/sc_action_state.cpp"
-  "engine/interfaces/sc_armory.cpp"
   "engine/sc_attack.cpp"
   "engine/interfaces/sc_bcp_api.cpp"
   "engine/sc_buff.cpp"
