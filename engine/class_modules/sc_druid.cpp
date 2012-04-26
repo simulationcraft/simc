@@ -407,19 +407,16 @@ struct druid_t : public player_t
     // NYI / Needs checking
     // Generic
     const spell_data_t* leather_specialization;
-    const spell_data_t* natural_insight;
+    const spell_data_t* omen_of_clarity; // Feral and Resto have this
 
-    // By my shaggy bark (Restoration)
-    const spell_data_t* omen_of_clarity;
-
-    // Boom badoom boom boom badoom boomkin. (Balance)
+    // Balance
     const spell_data_t* balance_of_power;
-    const spell_data_t* celestial_focus;
     const spell_data_t* celestial_alignment;
+    const spell_data_t* celestial_focus;
     const spell_data_t* eclipse;
     const spell_data_t* euphoria;
     const spell_data_t* lunar_shower;
-    const spell_data_t* moonkin_form; // http://mop.wowhead.com/spell=24905
+    const spell_data_t* moonkin_form;
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* shooting_stars;
     const spell_data_t* starfall;
@@ -436,11 +433,9 @@ struct druid_t : public player_t
     // Restoration
     const spell_data_t* living_seed;
     const spell_data_t* meditation;
+    const spell_data_t* natural_insight;
     const spell_data_t* natures_focus;
     const spell_data_t* revitalize;
-
-    // Tehm whos bare durids, can B 4 tank (Guardian)
-
   } specialization;
 
 
@@ -3382,18 +3377,20 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual void execute()
+  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
-    druid_spell_t::execute();
+    druid_spell_t::impact( t, impact_result, travel_dmg );
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( impact_result ) )
     {
       if ( p -> specialization.eclipse -> ok() )
       {
         if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
-          td -> dots_moonfire -> refresh_duration();
+        {
+          //td -> dots_moonfire -> refresh_duration();
+        }
 
         if ( ! p -> buff.eclipse_solar -> check() )
         {
@@ -3413,7 +3410,7 @@ struct starfire_t : public druid_spell_t
             }
           }
 
-          trigger_eclipse_gain_delay( this, gain );
+          //trigger_eclipse_gain_delay( this, gain );
         }
         else
         {
@@ -3894,7 +3891,9 @@ struct wrath_t : public druid_spell_t
       if ( p -> specialization.eclipse -> ok() )
       {
         if ( p -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
+        {
           td -> dots_sunfire -> refresh_duration();
+        }
 
         if ( p -> eclipse_bar_direction <= 0 )
         {
@@ -3915,9 +3914,7 @@ struct wrath_t : public druid_spell_t
           }
           trigger_eclipse_gain_delay( this, -gain );
         }
-
       }
-
     }
   }
 
@@ -4030,45 +4027,52 @@ void druid_t::init_spells()
   player_t::init_spells();
 
   // Specializations
+  // Generic / Multiple specs
   specialization.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  specialization.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
 
   // Balance
   // Eclipse are 2 spells, the mana energize is not in the main spell!
   // http://mop.wowhead.com/spell=79577 => Specialization spell
   // http://mop.wowhead.com/spell=81070 => The mana gain energize spell
-  spell.eclipse      = find_spell( 81070 );
-  specialization.eclipse                = find_specialization_spell( "Eclipse" );
-  specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
-  specialization.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
-  specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
-  specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
-  specialization.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
+  // Moonkin is also split up into two spells
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
+  specialization.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
+  specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
+  specialization.eclipse                = find_specialization_spell( "Eclipse" );
+  spell.eclipse                         = find_spell( 81070 );
+  specialization.euphoria               = find_specialization_spell( "Euphoria" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
-  specialization.starfall               = find_specialization_spell( "Starfall" );
-
   specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   spell.moonkin_form                    = find_spell( 24905 ); // This is the passive applied on shapeshift!
+  specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
+  specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
+  specialization.starfall               = find_specialization_spell( "Starfall" );
+
+  // Feral
+  specialization.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
+  specialization.primal_fury            = find_specialization_spell( "Primal Fury" );
+                                                                         
+  // Guardian                                                            
+  specialization.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
+  specialization.thick_hide             = find_specialization_spell( "Thick Hide" );
+  specialization.vengeance              = find_specialization_spell( "Vengeance" );
+  spell.bear_form                       = find_spell( 1178 ); // This is the passive applied on shapeshift!
+                                                                         
+  // Restoration                                                         
+  specialization.living_seed            = find_specialization_spell( "Living Seed" );
+  specialization.meditation             = find_specialization_spell( "Meditation" );
+  specialization.natural_insight        = find_specialization_spell( "Natural Insight" );
+  specialization.natures_focus          = find_specialization_spell( "Nature's Focus" );
+  specialization.revitalize             = find_specialization_spell( "Revitalize" );
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
-  spell.bear_form                       = find_spell( 1178 ); // This is the passive applied on shapeshift!
-
-  specialization.vengeance       = find_specialization_spell( "Vengeance" );
-
 
   // Masteries
   mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
   mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
   mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
-
-  /*
-  specialization.meditation      = spell_data_t::find( 85101, "Meditation",      dbc.ptr );
-  specialization.razor_claws     = spell_data_t::find( 77493, "Razor Claws",     dbc.ptr );
-  specialization.savage_defender = spell_data_t::find( 77494, "Savage Defender", dbc.ptr );
-  specialization.harmony         = spell_data_t::find( 77495, "Harmony",         dbc.ptr );
-  specialization.vengeance       = spell_data_t::find( 84840, "Vengeance",       dbc.ptr );
-  */
 
   // Talents
   talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
