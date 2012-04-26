@@ -1554,10 +1554,6 @@ void sim_t::analyze_player( player_t* p )
     }
   }
 
-  p -> timeline_dps.reserve( max_buckets );
-  range::sliding_window_average<10>( p -> timeline_dmg,
-                                     std::back_inserter( p -> timeline_dps ) );
-  assert( p -> timeline_dps.size() == ( std::size_t ) max_buckets );
 
   p -> recreate_talent_str();
 

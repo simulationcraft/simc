@@ -6,6 +6,63 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
+namespace {
+
+template <unsigned HW, typename Fwd, typename Out>
+void sliding_window_average( Fwd first, Fwd last, Out out )
+{
+  typedef typename std::iterator_traits<Fwd>::value_type value_t;
+  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
+  const diff_t n = std::distance( first, last );
+  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
+
+  if ( n >= 2 * HALFWINDOW )
+  {
+    value_t window_sum = value_t();
+
+    // Fill right half of sliding window
+    Fwd right = first;
+    for ( diff_t count = 0; count < HALFWINDOW; ++count )
+      window_sum += *right++;
+
+    // Fill left half of sliding window
+    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( count + 1 );
+    }
+
+    // Slide until window hits end of data
+    while ( right != last )
+    {
+      window_sum += *right++;
+      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
+      window_sum -= *first++;
+    }
+
+    // Empty right half of sliding window
+    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
+    {
+      *out++ = window_sum / count;
+      window_sum -= *first++;
+    }
+  }
+  else
+  {
+    // input is pathologically small compared to window size, just average everything.
+    fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+  }
+}
+} // END UNNAMED NAMESPACE
+
+namespace range {
+
+template <unsigned HW, typename Range, typename Out>
+inline Range& sliding_window_average( Range& r, Out out )
+{ ::sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
+
+}
+
 // ==========================================================================
 // Report
 // ==========================================================================
@@ -536,12 +593,12 @@ void generate_player_charts( const player_t*  p, player_t::report_information_t&
       stats_t* s = stats_list[ i ];
 
       // Create Stats Timeline Chart
-      s -> timeline_aps.clear();
-      s -> timeline_aps.reserve( max_buckets );
+      std::vector<double> timeline_aps;
+      timeline_aps.reserve( max_buckets );
       s -> timeline_amount.resize( max_buckets );
-      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( s -> timeline_aps ) );
-      assert( s -> timeline_aps.size() == ( std::size_t ) max_buckets );
-      s -> timeline_aps_chart = chart::timeline( p, s -> timeline_aps, s -> name_str + " APS", s -> aps );
+      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
+      assert( timeline_aps.size() == max_buckets );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + " APS", s -> aps );
       s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
 
     }
@@ -559,7 +616,14 @@ void generate_player_charts( const player_t*  p, player_t::report_information_t&
   std::string encoded_name;
   http_t::format( encoded_name, p -> name_str );
 
-  ri.timeline_dps_chart = chart::timeline( p, p -> timeline_dps, encoded_name + " DPS", p -> dps.mean );
+  {
+    std::vector<double> timeline_dps;
+    timeline_dps.reserve( max_buckets );
+    range::sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
+    assert( timeline_dps.size() == max_buckets );
+    ri.timeline_dps_chart = chart::timeline( p, timeline_dps, encoded_name + " DPS", p -> dps.mean );
+  }
+
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
   ri.dps_error_chart = chart::dps_error         ( p );
 
@@ -619,6 +683,8 @@ void generate_sim_report_information( const sim_t* s , sim_t::report_information
 {
   if ( ri.charts_generated )
     return;
+
+
 
   chart::raid_aps     ( ri.dps_charts, s, s -> players_by_dps, true );
   chart::raid_aps     ( ri.hps_charts, s, s -> players_by_hps, false );

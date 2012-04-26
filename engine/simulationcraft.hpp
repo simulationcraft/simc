@@ -983,52 +983,6 @@ template <typename I>
 inline void dispose( I first, I last )
 { dispose( first, last, delete_disposer_t() ); }
 
-template <unsigned HW, typename Fwd, typename Out>
-void sliding_window_average( Fwd first, Fwd last, Out out )
-{
-  typedef typename std::iterator_traits<Fwd>::value_type value_t;
-  typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
-  const diff_t n = std::distance( first, last );
-  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
-
-  if ( n >= 2 * HALFWINDOW )
-  {
-    value_t window_sum = value_t();
-
-    // Fill right half of sliding window
-    Fwd right = first;
-    for ( diff_t count = 0; count < HALFWINDOW; ++count )
-      window_sum += *right++;
-
-    // Fill left half of sliding window
-    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( count + 1 );
-    }
-
-    // Slide until window hits end of data
-    while ( right != last )
-    {
-      window_sum += *right++;
-      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
-      window_sum -= *first++;
-    }
-
-    // Empty right half of sliding window
-    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
-    {
-      *out++ = window_sum / count;
-      window_sum -= *first++;
-    }
-  }
-  else
-  {
-    // input is pathologically small compared to window size, just average everything.
-    fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
-  }
-}
-
 // Machinery for range-based generic algorithms =============================
 
 namespace range { // ========================================================
@@ -1172,10 +1126,6 @@ inline Out set_union( const Range1& left, const Range2& right, Out o, Compare c 
   return std::set_union( range::begin( left ), range::end( left ),
                          range::begin( right ), range::end( right ), o, c );
 }
-
-template <unsigned HW, typename Range, typename Out>
-inline Range& sliding_window_average( Range& r, Out out )
-{ ::sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
 
 template <typename Range>
 inline Range& sort( Range& r )
@@ -3335,7 +3285,6 @@ struct player_t : public noncopyable
   sample_data_t dtps;
   sample_data_t dmg_taken;
   std::vector<double> timeline_dmg;
-  std::vector<double> timeline_dps;
   std::vector<double> dps_convergence_error;
   double dps_convergence;
 
@@ -4008,7 +3957,6 @@ struct stats_t
   timespan_t total_time;
   std::string aps_distribution_chart;
 
-  std::vector<double> timeline_aps;
   std::string timeline_aps_chart;
 
   // Scale factor container
