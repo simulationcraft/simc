@@ -370,7 +370,6 @@ struct druid_t : public player_t
     const spell_data_t* total_eclipse;
 
     // NYI / TODO!
-    const spell_data_t* meditation;
     const spell_data_t* razor_claws;
     const spell_data_t* natures_guardian; // NYI
     const spell_data_t* harmony;
@@ -4104,11 +4103,10 @@ void druid_t::init_spells()
 
 
   // Masteries
-
-  mastery.total_eclipse   = find_specialization_spell( "Total Eclipse" );
-  mastery.meditation      = find_specialization_spell( "Meditation" );
-  mastery.razor_claws     = find_specialization_spell( "Razor Claws" );
-  mastery.harmony         = find_specialization_spell( "Harmony" );
+  mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
+  mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
+  mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
+  mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
 
   /*
   specialization.meditation      = spell_data_t::find( 85101, "Meditation",      dbc.ptr );
@@ -4234,14 +4232,33 @@ void druid_t::init_buffs()
 
   buff.barkskin              = create_buff( 22812, "barkskin" );
   //buff.enrage                = create_buff( dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buff.enrage                = buff_creator_t( sim, "enrage" , spell_data_t::nil() );
   //buff.frenzied_regeneration = new frenzied_regeneration_buff_t( this );
-  //buff.frenzied_regeneration -> cooldown -> duration = timespan_t::zero(); //CD is handled by the ability
+  buff.frenzied_regeneration = buff_creator_t( sim, "frenzied_regeneration" , spell_data_t::nil() );
   buff.harmony               = create_buff( 100977, "harmony" );
   //buff.lacerate              = create_buff( dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
+  buff.lacerate              = buff_creator_t( sim, "lacerate" , spell_data_t::nil() );
   buff.natures_grace         = create_buff( 16886, "natures_grace" );
   buff.natures_swiftness     = create_buff( talent.natures_swiftness, "natures_swiftness" );
   buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
   buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity -> effect1().trigger_spell_id(), "omen_of_clarity" );
+  
+  // We track the mushrooms as a 3-stack buff
+  buff.wild_mushroom         = buff_creator_t( sim, "wild_mushroom", spell_data_t::nil() )
+                               .max_stack( 3 ).duration( timespan_t::from_seconds( 300.0 ) );
+  
+  buff.glyph_of_innervate  = buff_creator_t( sim, "glyph_of_innervate" , spell_data_t::nil() );
+  buff.pulverize           = buff_creator_t( sim, "pulverize"          , spell_data_t::nil() );
+  buff.revitalize          = buff_creator_t( sim, "revitalize"         , spell_data_t::nil() );
+  buff.stampede_bear       = buff_creator_t( sim, "stampede_bear"      , spell_data_t::nil() );
+  buff.stampede_cat        = buff_creator_t( sim, "stampede_cat"       , spell_data_t::nil() );
+  buff.t13_4pc_melee       = buff_creator_t( sim, "t13_4pc_melee"      , spell_data_t::nil() );
+  buff.savage_defense      = buff_creator_t( sim, "savage_defense"     , spell_data_t::nil() );
+  buff.survival_instincts  = buff_creator_t( sim, "survival_instincts" , spell_data_t::nil() );
+  buff.tree_of_life        = buff_creator_t( sim, "tree_of_life"       , spell_data_t::nil() );
+  buff.primal_madness_cat  = buff_creator_t( sim, "primal_madness_cat" , spell_data_t::nil() );
+  buff.primal_madness_bear = buff_creator_t( sim, "primal_madness_bear", spell_data_t::nil() );
+  buff.berserk             = buff_creator_t( sim, "berserk"            , spell_data_t::nil() );
 
   /*
   buff.glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), glyph.innervate -> ok() );
@@ -4250,7 +4267,6 @@ void druid_t::init_buffs()
   buff.stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0 ), timespan_t::zero(), talent.stampede -> ok() );
   buff.stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talent.stampede -> ok() );
   buff.t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
-  buff.wild_mushroom      = new buff_t( this, "wild_mushroom"     , 3, timespan_t::from_seconds(   0 ), timespan_t::zero(), 1.0, true );
   buff.savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
   buff.survival_instincts    = new buff_t( this, talent.survival_instincts -> spell_id(), "survival_instincts" );
   buff.tree_of_life          = new buff_t( this, talent.tree_of_life, NULL );
