@@ -201,9 +201,11 @@
     <ClCompile Include="engine\class_modules\sc_monk.cpp" />
     <ClCompile Include="engine\class_modules\sc_paladin.cpp" />
     <ClCompile Include="engine\class_modules\sc_priest.cpp" />
+    <ClCompile Include="engine\class_modules\sc_priest_pets.cpp" />
     <ClCompile Include="engine\class_modules\sc_rogue.cpp" />
     <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
+    <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
     <ClCompile Include="release\moc_simulationcraftqt.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -224,11 +226,20 @@
     <None Include="engine\dbc\sc_spell_data_ptr.inc" />
     <None Include="engine\dbc\sc_spell_lists.inc" />
     <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
-    <None Include="engine\dbc\c_talent_data.inc" />
+    <None Include="engine\dbc\sc_talent_data.inc" />
     <None Include="engine\dbc\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="qt\sc_autoupdate.h" />
+    <ClInclude Include="engine\dbc\data_definitions.hh" />
+    <ClInclude Include="engine\dbc\data_enums.hh" />
+    <ClInclude Include="engine\dbc\dbc.hh" />
+    <ClInclude Include="engine\dbc\specialization.hpp" />
+    <ClInclude Include="engine\utf8\checked.h" />
+    <ClInclude Include="engine\utf8\core.h" />
+    <ClInclude Include="engine\utf8\unchecked.h" />
+    <ClInclude Include="engine\class_modules\sc_priest.hpp" />
+    <ClInclude Include="engine\class_modules\sc_warlock.hpp" />
     <ClInclude Include="engine\simulationcraft.hpp" />
     <CustomBuild Include="qt\simulationcraftqt.hpp">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MOC qt\simulationcraftqt.hpp</Message>

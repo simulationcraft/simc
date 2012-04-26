@@ -476,6 +476,11 @@
 				>
 			</File>
 			<File
+				RelativePath=".\engine\class_modules\sc_priest_pets.cpp"
+				>
+			</File>
+
+			<File
 				RelativePath="engine\sc_raid_event.cpp"
 				>
 			</File>
@@ -900,6 +905,32 @@
 			<File
 				RelativePath=".\engine\dbc\specialization.hpp"
 				>
+			</File>
+			<File
+				RelativePath=".\engine\class_modules\sc_priest.hpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step"
+						CommandLine=""
+						AdditionalDependencies=""
+						Outputs=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\engine\class_modules\sc_warlock.hpp"

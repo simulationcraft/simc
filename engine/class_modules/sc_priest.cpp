@@ -4,27 +4,9 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_priest.hpp"
 
 #if SC_PRIEST == 1
-
-namespace {
-struct remove_dots_event_t;
-}
-
-struct priest_targetdata_t : public targetdata_t
-{
-  dot_t*  dots_shadow_word_pain;
-  dot_t*  dots_vampiric_touch;
-  dot_t*  dots_holy_fire;
-  dot_t*  dots_renew;
-
-  buff_t* buffs_power_word_shield;
-  buff_t* buffs_divine_aegis;
-
-  remove_dots_event_t* remove_dots_event;
-
-  priest_targetdata_t( priest_t* p, player_t* target );
-};
 
 void register_priest_targetdata( sim_t* sim )
 {
@@ -44,271 +26,6 @@ void register_priest_targetdata( sim_t* sim )
 // Priest
 // ==========================================================================
 
-struct priest_t : public player_t
-{
-  // Buffs
-
-  struct buffs_t
-  {
-    // Discipline
-    buff_t* holy_evangelism;
-    buff_t* dark_archangel;
-    buff_t* holy_archangel;
-    buff_t* inner_fire;
-    buff_t* inner_focus;
-    buff_t* inner_will;
-
-    // Holy
-    buff_t* chakra_pre;
-    buff_t* chakra_chastise;
-    buff_t* chakra_sanctuary;
-    buff_t* chakra_serenity;
-    buff_t* serenity;
-
-    // Shadow
-    buff_t* shadow_word_death_reset_cooldown;
-    buff_t* mind_spike;
-    buff_t* glyph_mind_spike;
-    buff_t* shadowform;
-    buff_t* shadowfiend;
-    buff_t* vampiric_embrace;
-    buff_t* shadow_of_death;
-    buff_t* surge_of_darkness;
-  } buffs;
-
-  // Talents
-  struct talents_t
-  {
-    const spell_data_t* void_tendrils;
-    const spell_data_t* psyfiend;
-    const spell_data_t* dominate_mind;
-    const spell_data_t* body_and_soul;
-    const spell_data_t* feathers_from_heaven;
-    const spell_data_t* phantasm;
-    const spell_data_t* from_darkness_comes_light;
-    // "coming soon"
-    const spell_data_t* archangel;
-    const spell_data_t* desperate_prayer;
-    const spell_data_t* void_shift;
-    const spell_data_t* angelic_bulwark;
-    const spell_data_t* twist_of_fate;
-    const spell_data_t* power_infusion;
-    const spell_data_t* divine_insight;
-    const spell_data_t* cascade;
-    const spell_data_t* divine_star;
-    const spell_data_t* halo;
-  } talents;
-
-  // Specialization Spells
-  struct specs_t
-  {
-    // General
-
-    // Discipline
-    const spell_data_t* meditation_disc;
-    const spell_data_t* divine_aegis;
-    const spell_data_t* grace;
-    const spell_data_t* evangelism;
-    const spell_data_t* train_of_thought;
-    const spell_data_t* divine_fury;
-
-    // Holy
-    const spell_data_t* meditation_holy;
-    const spell_data_t* revelations;
-    const spell_data_t* chakra_chastise;
-    const spell_data_t* chakra_sanctuary;
-    const spell_data_t* chakra_serenity;
-
-    // Shadow
-    const spell_data_t* spiritual_precision;
-    const spell_data_t* shadowform;
-    const spell_data_t* shadowy_apparition;
-    const spell_data_t* shadowfiend_cooldown_reduction;
-  } spec;
-
-  // Mastery Spells
-  struct mastery_spells_t
-  {
-    const spell_data_t* shield_discipline;
-    const spell_data_t* echo_of_light;
-    const spell_data_t* shadow_orb_power;
-  } mastery_spells;
-
-  // Cooldowns
-  struct cooldowns_t
-  {
-    cooldown_t* mind_blast;
-    cooldown_t* shadow_fiend;
-    cooldown_t* chakra;
-    cooldown_t* inner_focus;
-    cooldown_t* penance;
-  } cooldowns;
-
-  // Gains
-  struct gains_t
-  {
-    gain_t* dispersion;
-    gain_t* shadow_fiend;
-    gain_t* archangel;
-    gain_t* hymn_of_hope;
-    gain_t* shadow_orb_swp;
-    gain_t* shadow_orb_mb;
-    gain_t* shadow_orb_mastery_refund;
-    gain_t* vampiric_touch_health;
-    gain_t* vampiric_touch_mana;
-  } gains;
-
-  // Benefits
-  struct benefits_t
-  {
-    std::array<benefit_t*, 4> mind_spike;
-    benefits_t() { range::fill( mind_spike, 0 ); }
-  } benefits;
-
-  // Procs
-  struct procs_t
-  {
-    proc_t* sa_shadow_orb_mastery;
-    proc_t* shadowfiend_cooldown_reduction;
-  } procs;
-
-  // Special
-
-  struct spells_t
-  {
-    std::queue<spell_t*> apparitions_free;
-    std::list<spell_t*>  apparitions_active;
-    heal_t* echo_of_light;
-    bool echo_of_light_merged;
-    spells_t() : echo_of_light(), echo_of_light_merged() {}
-  } spells;
-
-
-  // Random Number Generators
-  struct rngs_t
-  {
-    rng_t* sa_shadow_orb_mastery;
-  } rngs;
-
-  // Pets
-  struct pets_t
-  {
-    pet_t* shadow_fiend;
-    pet_t* lightwell;
-  } pets;
-
-  // Options
-  int initial_shadow_orbs;
-  std::string atonement_target_str;
-  std::vector<player_t *> party_list;
-
-  // Glyphs
-  struct glyphs_t
-  {
-    const spell_data_t* circle_of_healing;
-    const spell_data_t* dispersion;
-    const spell_data_t* holy_nova;
-    const spell_data_t* inner_fire;
-    const spell_data_t* lightwell;
-    const spell_data_t* penance;
-    const spell_data_t* power_word_shield;
-    const spell_data_t* prayer_of_mending;
-    const spell_data_t* renew;
-    const spell_data_t* smite;
-
-    // Mop
-    const spell_data_t* atonement;
-    const spell_data_t* holy_fire;
-    const spell_data_t* mind_spike;
-    const spell_data_t* strength_of_soul;
-    const spell_data_t* inner_sanctum;
-
-    const spell_data_t* mind_flay;
-    const spell_data_t* mind_blast;
-    const spell_data_t* vampiric_touch;
-    const spell_data_t* vampiric_embrace;
-    const spell_data_t* shadowy_apparition;
-    const spell_data_t* fortitude;
-  } glyphs;
-
-  // Constants
-  struct constants_t
-  {
-    double meditation_value;
-  } constants;
-
-  priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
-    player_t( sim, PRIEST, name, r ),
-    // initialize containers. For POD containers this sets all elements to 0.
-    buffs( buffs_t() ),
-    talents( talents_t() ),
-    spec( specs_t() ),
-    mastery_spells( mastery_spells_t() ),
-    cooldowns( cooldowns_t() ),
-    gains( gains_t() ),
-    benefits( benefits_t() ),
-    procs( procs_t() ),
-    spells( spells_t() ),
-    rngs( rngs_t() ),
-    pets( pets_t() ),
-    initial_shadow_orbs(),
-    glyphs( glyphs_t() ),
-    constants( constants_t() )
-  {
-    distance                             = 40.0;
-    default_distance                     = 40.0;
-
-    cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
-    cooldowns.shadow_fiend               = get_cooldown( "shadow_fiend" );
-    cooldowns.chakra                     = get_cooldown( "chakra"   );
-    cooldowns.inner_focus                = get_cooldown( "inner_focus" );
-    cooldowns.penance                    = get_cooldown( "penance" );
-
-    create_options();
-  }
-
-  // Character Definition
-  virtual priest_targetdata_t* new_targetdata( player_t* target )
-  { return new priest_targetdata_t( this, target ); }
-  virtual void      init_base();
-  virtual void      init_gains();
-  virtual void      init_benefits();
-  virtual void      init_rng();
-  virtual void      init_spells();
-  virtual void      init_buffs();
-  virtual void      init_values();
-  virtual void      init_actions();
-  virtual void      init_procs();
-  virtual void      init_scaling();
-  virtual void      reset();
-  virtual void      init_party();
-  virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
-  virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
-  virtual void      create_pets();
-  virtual void      copy_from( player_t* source );
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type_e primary_role() const;
-  virtual void      combat_begin();
-  virtual double    composite_armor() const;
-  virtual double    composite_spell_power( school_type_e school ) const;
-  virtual double    composite_spell_hit() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_movement_speed() const;
-
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-
-  virtual double    target_mitigation( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a=0 );
-
-  virtual double    shadow_orb_amount() const;
-
-  void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
-  virtual void pre_analyze_hook();
-};
-
 priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
   targetdata_t( p, target ), remove_dots_event( NULL )
 {
@@ -323,7 +40,7 @@ priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
   target -> absorb_buffs.push_back( new_da );
 }
 
-namespace // ANONYMOUS NAMESPACE ============================================
+namespace remove_dots_event // ANONYMOUS NAMESPACE ============================================
 {
 
 struct remove_dots_event_t : public event_t
@@ -354,6 +71,40 @@ public:
     cancel_dot( td -> dots_vampiric_touch );
   }
 };
+
+}
+
+priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
+  player_t( sim, PRIEST, name, r ),
+  // initialize containers. For POD containers this sets all elements to 0.
+  buffs( buffs_t() ),
+  talents( talents_t() ),
+  spec( specs_t() ),
+  mastery_spells( mastery_spells_t() ),
+  cooldowns( cooldowns_t() ),
+  gains( gains_t() ),
+  benefits( benefits_t() ),
+  procs( procs_t() ),
+  spells( spells_t() ),
+  rngs( rngs_t() ),
+  pets( pets_t() ),
+  initial_shadow_orbs( 0 ),
+  glyphs( glyphs_t() ),
+  constants( constants_t() )
+{
+  distance                             = 40.0;
+  default_distance                     = 40.0;
+
+  cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
+  cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
+  cooldowns.mindbender                 = get_cooldown( "mindbender" );
+  cooldowns.chakra                     = get_cooldown( "chakra"   );
+  cooldowns.inner_focus                = get_cooldown( "inner_focus" );
+  cooldowns.penance                    = get_cooldown( "penance" );
+
+  create_options();
+}
+
 
 // ==========================================================================
 // Priest Absorb
@@ -655,6 +406,8 @@ struct priest_heal_t : public heal_t
 
   virtual void impact_s( action_state_t* s )
   {
+    double save_health_percentage = s -> target -> health_percentage();
+
     heal_t::impact_s( s );
 
     if ( s -> result_amount > 0 )
@@ -669,6 +422,11 @@ struct priest_heal_t : public heal_t
 
       if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots_renew -> ticking )
         td( s -> target ) -> dots_renew -> refresh_duration();
+
+      if ( p() -> talents.twist_of_fate -> ok() && ( save_health_percentage < p() -> talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+      {
+        p() -> buffs.twist_of_fate -> trigger();
+      }
     }
   }
 
@@ -914,6 +672,22 @@ struct priest_spell_t : public spell_t
     return c;
   }
 
+  virtual void impact_s( action_state_t* s )
+  {
+    double save_health_percentage = s -> target -> health_percentage();
+
+    spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talents.twist_of_fate -> ok() && ( save_health_percentage < p() -> talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+      {
+        p() -> buffs.twist_of_fate -> trigger();
+      }
+    }
+  }
+
+
   virtual void consume_resource()
   {
     spell_t::consume_resource();
@@ -968,229 +742,6 @@ private:
   friend void priest_t::init_spells();
 public:
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
-};
-
-// ==========================================================================
-// Pet Shadow Fiend
-// ==========================================================================
-
-struct shadow_fiend_pet_t : public pet_t
-{
-  struct shadowcrawl_t : public spell_t
-  {
-    shadowcrawl_t( shadow_fiend_pet_t* p ) :
-      spell_t( "shadowcrawl", p, p -> shadowcrawl )
-    {
-      may_miss = false;
-      stateless = true;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-
-      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
-
-      p -> buffs.shadowcrawl -> trigger();
-    }
-  };
-
-  struct melee_t : public melee_attack_t
-  {
-    melee_t( shadow_fiend_pet_t* p ) :
-      melee_attack_t( "melee", p, spell_data_t::nil(), SCHOOL_SHADOW )
-    {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      weapon_multiplier = 0;
-      direct_power_mod = 0.0063928 * p -> o() -> level;
-      if ( harmful ) base_spell_power_multiplier = 1.0;
-      base_attack_power_multiplier = 0.0;
-      base_dd_min = util_t::ability_rank( player -> level,  290.0,85,  197.0,82,  175.0,80,  1.0,0 );
-      base_dd_max = util_t::ability_rank( player -> level,  373.0,85,  245.0,82,  222.0,80,  2.0,0 );
-      background = true;
-      repeating  = true;
-      may_dodge  = true;
-      may_miss   = false;
-      may_parry  = false; // Technically it can be parried on the first swing or if the rear isn't reachable
-      may_crit   = true;
-      may_block  = false; // Technically it can be blocked on the first swing or if the rear isn't reachable
-      stateless  = true;
-    }
-
-    virtual double action_multiplier( const action_state_t* s ) const
-    {
-      double am = attack_t::action_multiplier( s );
-
-      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
-
-      am *= 1.0 + p -> buffs.shadowcrawl -> up() * p -> shadowcrawl -> effectN( 2 ).percent();
-
-      return am;
-    }
-
-    virtual void execute()
-    {
-      attack_t::execute();
-
-      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
-
-      if ( p -> bad_swing )
-        p -> bad_swing = false;
-    }
-
-    virtual void impact_s( action_state_t* s )
-    {
-      shadow_fiend_pet_t* p = static_cast<shadow_fiend_pet_t*>( player );
-
-      attack_t::impact_s( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p -> o() -> resource_gain( RESOURCE_MANA, p -> o() -> resources.max[ RESOURCE_MANA ] *
-                                   p -> mana_leech -> effectN( 1 ).percent(),
-                                   p -> o() -> gains.shadow_fiend );
-      }
-    }
-  };
-
-  double bad_spell_power;
-  struct buffs_t
-  {
-    buff_t* shadowcrawl;
-  } buffs;
-
-  const spell_data_t* shadowcrawl;
-  const spell_data_t* mana_leech;
-  bool bad_swing;
-  bool extra_tick;
-
-  shadow_fiend_pet_t( sim_t* sim, priest_t* owner ) :
-    pet_t( sim, owner, "shadow_fiend" ),
-    bad_spell_power( util_t::ability_rank( owner -> level,  370.0,85,  358.0,82,  352.0,80,  0.0,0 ) ),
-    shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() ),
-    bad_swing( false ), extra_tick( false )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    main_hand_weapon.school     = SCHOOL_SHADOW;
-
-    stamina_per_owner           = 0.30;
-    intellect_per_owner         = 0.50;
-
-    action_list_str             = "/snapshot_stats";
-    action_list_str            += "/shadowcrawl";
-    action_list_str            += "/wait_for_shadowcrawl";
-  }
-
-  priest_t* o() const
-  { return static_cast<priest_t*>( owner ); }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "shadowcrawl" ) return new shadowcrawl_t( this );
-    if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  virtual void init_spells()
-  {
-    player_t::init_spells();
-
-    shadowcrawl = find_pet_spell( "Shadowcrawl" );
-    mana_leech  = find_spell( 34650, "mana_leech" );
-  }
-
-  virtual void init_base()
-  {
-    pet_t::init_base();
-
-    stats_base.attribute[ ATTR_STRENGTH  ]  = 0; // Unknown
-    stats_base.attribute[ ATTR_AGILITY   ]  = 0; // Unknown
-    stats_base.attribute[ ATTR_STAMINA   ]  = 0; // Unknown
-    stats_base.attribute[ ATTR_INTELLECT ]  = 0; // Unknown
-    resources.base[ RESOURCE_HEALTH ]  = util_t::ability_rank( owner -> level,  18480.0,85,  7475.0,82,  6747.0,80,  100.0,0 );
-    resources.base[ RESOURCE_MANA   ]  = util_t::ability_rank( owner -> level,  16828.0,85,  9824.0,82,  7679.0,80,  100.0,0 );
-    stats_base.attack_power                 = 0;  // Unknown
-    stats_base.attack_crit                  = 0.07; // Needs more testing
-    stats_initial.attack_power_per_strength = 0; // Unknown
-
-    main_hand_attack = new melee_t( this );
-  }
-
-  virtual void init_buffs()
-  {
-    pet_t::init_buffs();
-
-    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", shadowcrawl );
-  }
-
-  virtual double composite_spell_power( school_type_e school ) const
-  {
-    double sp;
-
-    if ( bad_swing )
-      sp = bad_spell_power;
-    else
-      sp = o() -> composite_spell_power( school ) * o() -> composite_spell_power_multiplier();
-
-    return sp;
-  }
-
-  virtual double composite_attack_hit() const
-  {
-    return owner -> composite_spell_hit();
-  }
-
-  virtual double composite_attack_expertise( const weapon_t* /* w */ ) const
-  {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
-  }
-
-  virtual double composite_attack_crit( const weapon_t* /* w */ ) const
-  {
-    double c = stats_current.attack_crit;
-
-    c += owner -> composite_spell_crit(); // Needs confirming that it benefits from ALL owner crit.
-
-    return c;
-  }
-
-  virtual void summon( timespan_t duration )
-  {
-    // Simulate "Bad" swings
-    if ( owner -> bugs && owner -> sim -> roll( 0.3 ) )
-    {
-      bad_swing = true;
-    }
-    // Simulate extra tick
-    if ( !bugs || !owner -> sim -> roll( 0.5 ) )
-    {
-      duration -= timespan_t::from_seconds( 0.1 );
-    }
-
-    dismiss();
-
-    pet_t::summon( duration );
-
-    o() -> buffs.shadowfiend -> start();
-  }
-
-  virtual void dismiss()
-  {
-    pet_t::dismiss();
-
-    o() -> buffs.shadowfiend -> expire();
-  }
-
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
-                               bool   waiting=false )
-  {
-    pet_t::schedule_ready( delta_time, waiting );
-    if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
-  }
 };
 
 // ==========================================================================
@@ -1751,37 +1302,112 @@ struct shadowform_t : public priest_spell_t
   }
 };
 
-// Shadow Fiend Spell =======================================================
+// PET SPELLS
 
-struct shadow_fiend_spell_t : public priest_spell_t
+struct summon_pet_t : public priest_spell_t
 {
-  shadow_fiend_spell_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_fiend", p, p -> find_class_spell( "Shadowfiend" ) )
+  timespan_t summoning_duration;
+  pet_t* pet;
+
+public:
+  summon_pet_t( const std::string& n, priest_t* p, const spell_data_t* sd = spell_data_t::nil() ) :
+    priest_spell_t( n, p, sd ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
-    parse_options( NULL, options_str );
-
-    cooldown = p -> cooldowns.shadow_fiend;
-    cooldown -> duration = data().cooldown();
-
     harmful = false;
+
+    pet = player -> find_pet( n );
+    if ( ! pet )
+    {
+      sim -> errorf( "Player %s unable to find pet %s for summons.\n", player -> name(), n.c_str() );
+    }
   }
 
   virtual void execute()
   {
+    pet -> summon( summoning_duration );
+
     priest_spell_t::execute();
-
-    p() -> pets.shadow_fiend -> summon( data().duration() );
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.shadowfiend -> check() )
-      return false;
-
-    return priest_spell_t::ready();
   }
 };
 
+
+struct summon_shadowfiend2_t : public summon_pet_t
+{
+  summon_shadowfiend2_t( priest_t* p ) :
+    summon_pet_t( "shadowfiend", p, p -> find_class_spell( "Shadowfiend" ) )
+  {
+    harmful    = false;
+    background = true;
+    summoning_duration = data().duration();
+  }
+};
+
+struct summon_shadowfiend_t : public priest_spell_t
+{
+  summon_shadowfiend2_t* summon_shadowfiend2;
+
+  summon_shadowfiend_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "Summon Shadowfiend", p, p -> find_class_spell( "Shadowfiend" ) ),
+    summon_shadowfiend2( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    cooldown = p -> cooldowns.shadowfiend;
+    cooldown -> duration = data().cooldown();
+
+    summon_shadowfiend2 = new summon_shadowfiend2_t( p );
+  }
+
+  virtual void execute()
+  {
+    consume_resource();
+    update_ready();
+
+    p() -> cooldowns.shadowfiend -> start();
+
+    summon_shadowfiend2 -> execute();
+  }
+};
+
+struct summon_mindbender2_t : public summon_pet_t
+{
+  summon_mindbender2_t( priest_t* p ) :
+    summon_pet_t( "mindbender", p, p -> find_talent_spell( "Mindbender" ) )
+  {
+    harmful    = false;
+    background = true;
+    summoning_duration = data().duration();
+  }
+};
+
+struct summon_mindbender_t : public priest_spell_t
+{
+  summon_mindbender2_t* summon_mindbender2;
+
+  summon_mindbender_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "Summon Mindbender", p, p -> find_talent_spell( "Mindbender" ) ),
+    summon_mindbender2( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    cooldown = p -> cooldowns.mindbender;
+    cooldown -> duration = data().cooldown();
+
+    summon_mindbender2 = new summon_mindbender2_t( p );
+  }
+
+  virtual void execute()
+  {
+    consume_resource();
+    update_ready();
+
+    p() -> cooldowns.mindbender -> start();
+
+    summon_mindbender2 -> execute();
+  }
+};
 
 // ==========================================================================
 // Priest Damage Spells
@@ -1934,7 +1560,14 @@ struct mind_flay_t : public priest_spell_t
     if ( d -> state -> result == RESULT_CRIT )
     {
       p() -> procs.shadowfiend_cooldown_reduction -> occur();
-      p() -> cooldowns.shadow_fiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+      if ( p() -> talents.mindbender -> ok() )
+      {
+        p() -> cooldowns.mindbender  -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+      }
+      else
+      {
+        p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+      }
     }
   }
 };
@@ -2003,13 +1636,13 @@ struct mind_spike_t : public priest_spell_t
 
       if ( p() -> buffs.surge_of_darkness -> up() )
       {
-        p() -> buffs.surge_of_darkness -> expire();
+        p() -> buffs.surge_of_darkness -> decrement();
       }
       else
       {
         if ( ! td( s -> target ) -> remove_dots_event )
         {
-          td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
+          td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event::remove_dots_event_t( sim, p(), td( s -> target ) );
         }
       }
     }
@@ -3358,7 +2991,7 @@ struct renew_t : public priest_heal_t
     return am;
   }
 };
-} // ANONYMOUS NAMESPACE ====================================================
+
 
 // ==========================================================================
 // Priest Character Definition
@@ -3451,9 +3084,10 @@ double priest_t::composite_player_multiplier( const school_type_e school, const 
       m *= 1.0 + 0.15;
     }
   }
-  if ( talents.twist_of_fate -> ok() && ( a -> target -> health_percentage() < 20.0 ) )
+
+  if ( buffs.twist_of_fate -> check() )
   {
-    m *= 1.0 + talents.twist_of_fate -> effect1().percent();
+    m *= 1.0 + buffs.twist_of_fate -> value();
   }
 
   return m;
@@ -3525,7 +3159,13 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
-  if ( name == "shadow_fiend"           ) return new shadow_fiend_spell_t    ( this, options_str );
+  if ( ( name == "shadowfiend"          ) || ( name == "mindbender" ) )
+  {
+    if ( talents.mindbender -> ok() )
+      return new summon_mindbender_t    ( this, options_str );
+    else
+      return new summon_shadowfiend_t   ( this, options_str );
+  }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "shadowy_apparition"     ) return new shadowy_apparition_t    ( this, options_str );
 
@@ -3557,8 +3197,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "shadow_fiend" ) return new shadow_fiend_pet_t( sim, this );
-  if ( pet_name == "lightwell" ) return new lightwell_pet_t( sim, this );
+  if ( pet_name == "shadowfiend" ) return new shadowfiend_pet_t( sim, this );
+  if ( pet_name == "mindbender"  ) return new mindbender_pet_t ( sim, this );
+  if ( pet_name == "lightwell"   ) return new lightwell_pet_t  ( sim, this );
 
   return 0;
 }
@@ -3567,8 +3208,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
 void priest_t::create_pets()
 {
-  pets.shadow_fiend      = create_pet( "shadow_fiend"      );
-  pets.lightwell         = create_pet( "lightwell"         );
+  pets.shadowfiend      = create_pet( "shadowfiend" );
+  pets.mindbender       = create_pet( "mindbender"  );
+  pets.lightwell        = create_pet( "lightwell"   );
 }
 
 // priest_t::init_base ======================================================
@@ -3596,7 +3238,8 @@ void priest_t::init_gains()
   player_t::init_gains();
 
   gains.dispersion                = get_gain( "dispersion" );
-  gains.shadow_fiend              = get_gain( "shadow_fiend" );
+  gains.shadowfiend               = get_gain( "shadowfiend" );
+  gains.mindbender                = get_gain( "mindbender" );
   gains.archangel                 = get_gain( "archangel" );
   gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
   gains.shadow_orb_swp            = get_gain( "Shadow Orbs from Shadow Word: Pain" );
@@ -3667,10 +3310,10 @@ void priest_t::init_spells()
   talents.psyfiend                    = find_talent_spell( "Psyfiend" );
   talents.dominate_mind               = find_talent_spell( "Dominate Mind" );
   talents.body_and_soul               = find_talent_spell( "Body and Soul" );
-  talents.feathers_from_heaven        = find_talent_spell( "Feathers From Heaven" );
+  talents.angelic_feather             = find_talent_spell( "Angelic Feather" );
   talents.phantasm                    = find_talent_spell( "Phantasm" );
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
-  // "coming soon"
+  talents.mindbender                  = find_talent_spell( "Mindbender" );
   talents.archangel                   = find_talent_spell( "Archangel" );
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.void_shift                  = find_talent_spell( "Void Shift" );
@@ -3766,6 +3409,11 @@ void priest_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
 
+  // Talents
+  buffs.twist_of_fate                    = buff_creator_t( this, "twist_of_fate", find_talent_spell( "Twist of Fate" ) )
+                                           .duration( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> duration() )
+                                           .default_value( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+
   // Discipline
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( spec.evangelism -> ok() )
@@ -3799,14 +3447,13 @@ void priest_t::init_buffs()
                                            .max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
   buffs.mind_spike                       = buff_creator_t( this, "mind_spike" )
                                            .max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
-  buffs.shadowfiend                      = buff_creator_t( this, "shadowfiend" )
-                                           .max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) ); // Pet Tracking Buff
   buffs.shadow_of_death                  = buff_creator_t( this, "shadow_of_death", talents.divine_insight )
                                            .chance( talents.divine_insight -> effectN( 1 ).percent() )
                                            .max_stack( 1 )
                                            .duration( timespan_t::from_seconds( 10.0 ) );
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
-                                           .duration( find_spell( 114257 ) -> duration() );
+                                           .duration( find_spell( 114257 ) -> duration() )
+                                           .max_stack( 2 );
 
 
   // Set Bonus
@@ -3908,8 +3555,10 @@ void priest_t::init_actions()
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
-      if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        buffer += "/shadow_fiend";
+      if ( find_talent_spell( "Mindbender" ) -> ok() )
+        buffer += "/mindbender";
+      else if ( find_class_spell( "Shadowfiend" ) -> ok() )
+        buffer += "/shadowfiend";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
         buffer += "/mind_flay";
@@ -3938,11 +3587,11 @@ void priest_t::init_actions()
         if ( race == RACE_BLOOD_ELF )
           buffer += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
-          buffer += "/shadow_fiend,if=mana_pct<=60";
+          buffer += "/shadowfiend,if=mana_pct<=60";
         if ( level >= 64 )
           buffer += "/hymn_of_hope";
         if ( level >= 66 )
-          buffer += ",if=pet.shadow_fiend.active&mana_pct<=20";
+          buffer += ",if=pet.shadowfiend.active&mana_pct<=20";
         if ( race == RACE_TROLL )
           buffer += "/berserking";
         buffer += "/power_infusion";
@@ -3966,11 +3615,11 @@ void priest_t::init_actions()
         if ( race == RACE_BLOOD_ELF )
           list_default  += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
-          list_default += "/shadow_fiend,if=mana_pct<=20";
+          list_default += "/shadowfiend,if=mana_pct<=20";
         if ( level >= 64 )
           list_default += "/hymn_of_hope";
         if ( level >= 66 )
-          list_default += ",if=pet.shadow_fiend.active";
+          list_default += ",if=pet.shadowfiend.active";
         if ( race == RACE_TROLL )
           list_default += "/berserking";
         list_default += "/inner_focus";
@@ -3995,11 +3644,11 @@ void priest_t::init_actions()
         if ( race == RACE_BLOOD_ELF )
           list_pws  += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
-          list_pws += "/shadow_fiend,if=mana_pct<=20";
+          list_pws += "/shadowfiend,if=mana_pct<=20";
         if ( level >= 64 )
           list_pws += "/hymn_of_hope";
         if ( level >= 66 )
-          list_pws += ",if=pet.shadow_fiend.active";
+          list_pws += ",if=pet.shadowfiend.active";
         if ( race == RACE_TROLL )
           list_pws += "/berserking";
         list_pws += "/inner_focus";
@@ -4019,9 +3668,9 @@ void priest_t::init_actions()
       {
                                                          list_default += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )                    list_default += "/arcane_torrent,if=mana_pct<=90";
-        if ( level >= 66 )                               list_default += "/shadow_fiend,if=mana_pct<=50";
+        if ( level >= 66 )                               list_default += "/shadowfiend,if=mana_pct<=50";
         if ( level >= 64 )                               list_default += "/hymn_of_hope";
-        if ( level >= 66 )                               list_default += ",if=pet.shadow_fiend.active&time>200";
+        if ( level >= 66 )                               list_default += ",if=pet.shadowfiend.active&time>200";
         if ( race == RACE_TROLL )                        list_default += "/berserking";
                                                          list_default += "/chakra";
                                                          list_default += "/holy_fire";
@@ -4034,17 +3683,17 @@ void priest_t::init_actions()
       {
                                                          list_default += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )                    list_default += "/arcane_torrent,if=mana_pct<80";
-        if ( level >= 66 )                               list_default += "/shadow_fiend,if=mana_pct<=20";
+        if ( level >= 66 )                               list_default += "/shadowfiend,if=mana_pct<=20";
         if ( level >= 64 )                               list_default += "/hymn_of_hope";
-        if ( level >= 66 )                               list_default += ",if=pet.shadow_fiend.active";
+        if ( level >= 66 )                               list_default += ",if=pet.shadowfiend.active";
         if ( race == RACE_TROLL )                        list_default += "/berserking";
       }
       break;
     default:
                                                          list_default += "/mana_potion,if=mana_pct<=75";
-      if ( level >= 66 )                                 list_default += "/shadow_fiend,if=mana_pct<=50";
+      if ( level >= 66 )                                 list_default += "/shadowfiend,if=mana_pct<=50";
       if ( level >= 64 )                                 list_default += "/hymn_of_hope";
-      if ( level >= 66 )                                 list_default += ",if=pet.shadow_fiend.active&time>200";
+      if ( level >= 66 )                                 list_default += ",if=pet.shadowfiend.active&time>200";
       if ( race == RACE_TROLL )                          list_default += "/berserking";
       if ( race == RACE_BLOOD_ELF )                      list_default += "/arcane_torrent,if=mana_pct<=90";
                                                          list_default += "/holy_fire";

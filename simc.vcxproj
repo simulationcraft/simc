@@ -182,6 +182,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\class_modules\sc_priest_pets.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
     <ClCompile Include="engine\sc_action.cpp" />
     <ClCompile Include="engine\sc_action_state.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\class_modules\sc_priest.hpp" />
     <ClInclude Include="engine\class_modules\sc_warlock.hpp" />
     <ClInclude Include="engine\report\sc_report.hpp" />
     <ClInclude Include="engine\simulationcraft.hpp" />
