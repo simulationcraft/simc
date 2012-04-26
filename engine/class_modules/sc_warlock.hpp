@@ -187,6 +187,7 @@ struct warlock_t : public player_t
   meta_cost_event_t* meta_cost_event;
   
   void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
+  void cancel_metamorphosis() { event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
 
   int nightfall_index;
   timespan_t nightfall_times[ NIGHTFALL_LIMIT ];

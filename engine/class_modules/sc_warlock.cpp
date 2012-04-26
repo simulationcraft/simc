@@ -974,6 +974,31 @@ struct metamorphosis_t : public warlock_spell_t
 };
 
 
+struct cancel_metamorphosis_t : public warlock_spell_t
+{
+  cancel_metamorphosis_t( warlock_t* p ) :
+    warlock_spell_t( "cancel_metamorphosis", p )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> cancel_metamorphosis();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
+  }
+};
+
+
 struct hand_of_guldan_t : public warlock_spell_t
 {
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
@@ -1725,6 +1750,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "life_tap"              ) a = new              life_tap_t( this );
   else if ( name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
   else if ( name == "metamorphosis"         ) a = new         metamorphosis_t( this );
+  else if ( name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
   else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
