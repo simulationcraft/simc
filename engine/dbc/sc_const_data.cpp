@@ -1167,7 +1167,7 @@ spell_data_t* spelleffect_data_t::spell()   const
 
 spell_data_t* spelleffect_data_t::trigger() const
 {
-  return _trigger_spell ? _trigger_spell : spell_data_t::nil();
+  return _trigger_spell ? _trigger_spell : spell_data_t::not_found();
 }
 
 void spellpower_data_t::link( bool ptr )

@@ -963,7 +963,7 @@ class SpellDataGenerator(DataGenerator):
         ), 
         ( ( 85692, 5 ), ),     # Warlock: doomguard "Doom Bolt"
         (), # Monk:
-        (), # Druid:
+        ( ( 93402, 1 ), ), # Druid: Whitelist Sunfire
     ]
 
     # Class specific item sets, T13
