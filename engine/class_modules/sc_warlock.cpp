@@ -1528,8 +1528,6 @@ struct summon_doomguard_t : public warlock_spell_t
     consume_resource();
     update_ready();
 
-    p() -> cooldowns.infernal -> start();
-
     summon_doomguard2 -> execute();
   }
 };
