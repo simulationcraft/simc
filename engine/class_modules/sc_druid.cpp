@@ -492,49 +492,6 @@ struct druid_t : public player_t
     const spell_data_t* heart_of_the_wild;
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* disentanglement;
-
-    // 4.x talents (convert/remove)
-    const spell_data_t* berserk;
-    const spell_data_t* blood_in_the_water;
-    const spell_data_t* brutal_impact;
-    const spell_data_t* endless_carnage;
-    const spell_data_t* feral_aggression;
-    const spell_data_t* feral_charge;
-    const spell_data_t* feral_swiftness;
-    const spell_data_t* furor;
-    const spell_data_t* infected_wounds;
-    const spell_data_t* king_of_the_jungle;
-    const spell_data_t* leader_of_the_pack;
-    const spell_data_t* natural_reaction;
-    const spell_data_t* nurturing_instict; // NYI
-    const spell_data_t* predatory_strikes;
-    const spell_data_t* primal_fury;
-    const spell_data_t* primal_madness;
-    const spell_data_t* pulverize;
-    const spell_data_t* rend_and_tear;
-    const spell_data_t* stampede;
-    const spell_data_t* survival_instincts;
-
-    const spell_data_t* blessing_of_the_grove;
-    const spell_data_t* efflorescence;
-    const spell_data_t* empowered_touch;
-    const spell_data_t* fury_of_stormrage; // NYI
-    const spell_data_t* gift_of_the_earthmother;
-    const spell_data_t* improved_rejuvenation;
-    const spell_data_t* living_seed;
-    const spell_data_t* malfurions_gift;
-    const spell_data_t* master_shapeshifter;
-    const spell_data_t* natural_shapeshifter;
-    const spell_data_t* natures_bounty;
-    const spell_data_t* natures_cure; // NYI
-    const spell_data_t* natures_ward; // NYI
-    const spell_data_t* naturalist;
-    const spell_data_t* perseverance;
-    const spell_data_t* revitalize;
-    const spell_data_t* swift_rejuvenation;
-    const spell_data_t* tree_of_life;
-    const spell_data_t* wild_growth;
-
   } talent;
   
   // Up-Times
@@ -2629,8 +2586,6 @@ struct tranquility_t : public druid_heal_t
     parse_spell_data( ( *player -> dbc.spell( data().effect1().trigger_spell_id() ) ) );
 
     // FIXME: The hot should stack
-
-    //cooldown -> duration += p -> talent.malfurions_gift -> mod_additive_time( P_COOLDOWN );
   }
 };
 
@@ -3196,12 +3151,11 @@ struct innervate_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "mark_of_the_wild", player, player -> find_class_spell( "Mark of the Wild" )  )
+    druid_spell_t( "mark_of_the_wild", player, player -> find_spell( 1126 )  )
   {
     parse_options( NULL, options_str );
 
     trigger_gcd = timespan_t::zero();
-    id          = 1126;
     //base_costs[ current_resource() ]  *= 1.0 + p -> glyph.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
     background  = ( sim -> overrides.str_agi_int != 0 );
@@ -4452,7 +4406,7 @@ void druid_t::init_actions()
         action_list_str += "/thrash";
         action_list_str += "/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2";
         action_list_str += "/lacerate,if=buff.lacerate.stack<3";
-        if ( talent.berserk -> ok() ) action_list_str+="/berserk";
+        if ( primary_tree() == DRUID_FERAL ) action_list_str+="/berserk";
         action_list_str += "/faerie_fire_feral";
       }
       else
@@ -4492,7 +4446,7 @@ void druid_t::init_actions()
         {
           action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
         }
-        if ( talent.berserk -> ok() )
+        if ( primary_tree() == DRUID_FERAL )
         {
           action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<";
           action_list_str += ( glyph.berserk -> ok() ) ? "25" : "15";
@@ -4511,7 +4465,7 @@ void druid_t::init_actions()
         action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
         action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&(buff.stampede_cat.remains<=1|buff.t13_4pc_melee.remains<=1)";
 
-        if ( talent.blood_in_the_water -> ok() )
+        if ( primary_tree() == DRUID_FERAL )
         {
           action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health_pct<=" + bitw_hp;
           action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=" + bitw_hp;
@@ -4520,7 +4474,7 @@ void druid_t::init_actions()
         action_list_str += init_use_profession_actions();
         action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4";
         action_list_str += "/mangle_cat,extend_rip=1,if=position_front&dot.rip.ticking&dot.rip.remains<=4";
-        if ( talent.blood_in_the_water -> ok() )
+        if ( primary_tree() == DRUID_FERAL )
           action_list_str += "&target.health_pct>" + bitw_hp;
         action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
         action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
@@ -4621,12 +4575,12 @@ void druid_t::init_actions()
       action_list_str += "/volcanic_potion,if=!in_combat";
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       action_list_str += "/innervate";
-      if ( talent.tree_of_life -> ok() ) action_list_str += "/tree_of_life";
+      if ( primary_tree() == DRUID_RESTORATION ) action_list_str += "/tree_of_life";
       action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
       action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
       action_list_str += "/lifebloom,if=buffs_lifebloom.stack<3";
       action_list_str += "/swiftmend";
-      if ( talent.tree_of_life -> ok() )
+      if ( primary_tree() == DRUID_RESTORATION )
       {
         action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana_pct>=5";
         action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana_pct>=30";
@@ -4967,19 +4921,10 @@ double druid_t::assess_damage( double        amount,
                                result_type_e result,
                                action_t*     action )
 {
-  if ( result == RESULT_DODGE && talent.natural_reaction -> ok() )
-    resource_gain( RESOURCE_RAGE, talent.natural_reaction -> effect2().base_value(), gain.natural_reaction );
-
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
   double rage_gain = amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
   resource_gain( RESOURCE_RAGE, rage_gain, gain.incoming_damage );
-
-  if ( SCHOOL_SPELL_MASK & ( int64_t( 1 ) << school ) && talent.perseverance -> ok() )
-    amount *= 1.0 + talent.perseverance -> effect1().percent();
-
-  if ( talent.natural_reaction -> ok() )
-    amount *= 1.0 + talent.natural_reaction -> effect3().percent();
 
   if ( buff.barkskin -> up() )
     amount *= 1.0 + buff.barkskin -> value();
