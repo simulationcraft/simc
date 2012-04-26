@@ -3204,12 +3204,9 @@ struct moonfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> specialization.shooting_stars -> ok() &&
-         d -> state -> result == RESULT_CRIT )
-      if ( p -> buff.shooting_stars -> trigger() )
-        p -> cooldown.starsurge -> reset();
+    if ( result == RESULT_CRIT )
+      if ( p() -> buff.shooting_stars -> trigger() )
+        p() -> cooldown.starsurge -> reset();
   }
 
   virtual void execute()
@@ -3634,12 +3631,9 @@ struct sunfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> specialization.shooting_stars -> ok() &&
-         d -> state -> result == RESULT_CRIT )
-      if ( p -> buff.shooting_stars -> trigger() )
-        p -> cooldown.starsurge -> reset();
+    if ( result == RESULT_CRIT )
+      if ( p() -> buff.shooting_stars -> trigger() )
+        p() -> cooldown.starsurge -> reset();
   }
 
   virtual void execute()
