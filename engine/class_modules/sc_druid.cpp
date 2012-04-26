@@ -3151,7 +3151,7 @@ struct innervate_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "mark_of_the_wild", player, player -> find_spell( 1126 )  )
+    druid_spell_t( "mark_of_the_wild", player, player -> find_spell( "Mark of the Wild" )  )
   {
     parse_options( NULL, options_str );
 
