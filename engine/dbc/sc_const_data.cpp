@@ -209,7 +209,7 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
 
 double dbc_t::melee_crit_base( player_type_e t ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() );
 #if SC_USE_PTR
@@ -222,12 +222,12 @@ double dbc_t::melee_crit_base( player_type_e t ) const
 
 double dbc_t::melee_crit_base( pet_type_e t ) const
 {
-  return melee_crit_base( util_t::pet_class_type( t ) );
+  return melee_crit_base( util::pet_class_type( t ) );
 }
 
 double dbc_t::spell_crit_base( player_type_e t ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() );
 #if SC_USE_PTR
@@ -240,12 +240,12 @@ double dbc_t::spell_crit_base( player_type_e t ) const
 
 double dbc_t::spell_crit_base( pet_type_e t ) const
 {
-  return spell_crit_base( util_t::pet_class_type( t ) );
+  return spell_crit_base( util::pet_class_type( t ) );
 }
 
 double dbc_t::dodge_base( player_type_e t ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() );
 #if SC_USE_PTR
@@ -258,12 +258,12 @@ double dbc_t::dodge_base( player_type_e t ) const
 
 double dbc_t::dodge_base( pet_type_e t ) const
 {
-  return dodge_base( util_t::pet_class_type( t ) );
+  return dodge_base( util::pet_class_type( t ) );
 }
 
 stat_data_t& dbc_t::race_base( race_type_e r ) const
 {
-  uint32_t race_id = util_t::race_id( r );
+  uint32_t race_id = util::race_id( r );
 
   assert( race_id < race_ability_tree_size() );
 #if SC_USE_PTR
@@ -281,7 +281,7 @@ stat_data_t& dbc_t::race_base( pet_type_e /* r */ ) const
 
 double dbc_t::spell_scaling( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() + 2 && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -295,7 +295,7 @@ double dbc_t::spell_scaling( player_type_e t, unsigned level ) const
 // FIXME: apparently melee crit per agility is gone. This should probably be removed.
 double dbc_t::melee_crit_scaling( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -308,12 +308,12 @@ double dbc_t::melee_crit_scaling( player_type_e t, unsigned level ) const
 
 double dbc_t::melee_crit_scaling( pet_type_e t, unsigned level ) const
 {
-  return melee_crit_scaling( util_t::pet_class_type( t ), level );
+  return melee_crit_scaling( util::pet_class_type( t ), level );
 }
 
 double dbc_t::spell_crit_scaling( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -326,12 +326,12 @@ double dbc_t::spell_crit_scaling( player_type_e t, unsigned level ) const
 
 double dbc_t::spell_crit_scaling( pet_type_e t, unsigned level ) const
 {
-  return spell_crit_scaling( util_t::pet_class_type( t ), level );
+  return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
 double dbc_t::dodge_scaling( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -344,12 +344,12 @@ double dbc_t::dodge_scaling( player_type_e t, unsigned level ) const
 
 double dbc_t::dodge_scaling( pet_type_e t, unsigned level ) const
 {
-  return dodge_scaling( util_t::pet_class_type( t ), level );
+  return dodge_scaling( util::pet_class_type( t ), level );
 }
 
 double dbc_t::regen_base( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -362,12 +362,12 @@ double dbc_t::regen_base( player_type_e t, unsigned level ) const
 
 double dbc_t::regen_base( pet_type_e t, unsigned level ) const
 {
-  return regen_base( util_t::pet_class_type( t ), level );
+  return regen_base( util::pet_class_type( t ), level );
 }
 
 double dbc_t::health_base( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -380,7 +380,7 @@ double dbc_t::health_base( player_type_e t, unsigned level ) const
 
 double dbc_t::resource_base( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -393,7 +393,7 @@ double dbc_t::resource_base( player_type_e t, unsigned level ) const
 
 double dbc_t::regen_spirit( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -406,12 +406,12 @@ double dbc_t::regen_spirit( player_type_e t, unsigned level ) const
 
 double dbc_t::regen_spirit( pet_type_e t, unsigned level ) const
 {
-  return regen_spirit( util_t::pet_class_type( t ), level );
+  return regen_spirit( util::pet_class_type( t ), level );
 }
 
 double dbc_t::mp5_per_spirit( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -424,7 +424,7 @@ double dbc_t::mp5_per_spirit( player_type_e t, unsigned level ) const
 
 double dbc_t::mp5_per_spirit( pet_type_e t, unsigned level ) const
 {
-  return mp5_per_spirit( util_t::pet_class_type( t ), level );
+  return mp5_per_spirit( util::pet_class_type( t ), level );
 }
 
 double dbc_t::health_per_stamina( unsigned level ) const
@@ -441,7 +441,7 @@ double dbc_t::health_per_stamina( unsigned level ) const
 
 stat_data_t& dbc_t::attribute_base( player_type_e t, unsigned level ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
@@ -454,7 +454,7 @@ stat_data_t& dbc_t::attribute_base( player_type_e t, unsigned level ) const
 
 stat_data_t& dbc_t::attribute_base( pet_type_e t, unsigned level ) const
 {
-  return attribute_base( util_t::pet_class_type( t ), level );
+  return attribute_base( util::pet_class_type( t ), level );
 }
 
 double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
@@ -470,7 +470,7 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 
 double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type_e t ) const
 {
-  uint32_t class_id = util_t::class_id( t );
+  uint32_t class_id = util::class_id( t );
 
   assert( combat_rating_id < RATING_MAX && class_id < PLAYER_PET + 1 );
 #if SC_USE_PTR
@@ -1118,15 +1118,15 @@ talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
 {
   const std::string name = name_cstr;
   std::string token1 = name;
-  util_t::tokenize( token1 );
+  util::tokenize( token1 );
 
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
     const std::string p_name = p -> name_cstr();
     std::string token2 = p_name;
-    util_t::tokenize( token2 );
+    util::tokenize( token2 );
 
-    if ( util_t::str_compare_ci( name, p_name ) || util_t::str_compare_ci( token1, token2 ) )
+    if ( util::str_compare_ci( name, p_name ) || util::str_compare_ci( token1, token2 ) )
     {
       return p;
     }
@@ -1283,7 +1283,7 @@ double dbc_t::effect_min( unsigned effect_id, unsigned level ) const
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  unsigned c_id = util_t::class_id( e -> _spell -> scaling_class() );
+  unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
@@ -1324,7 +1324,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 
   assert( e && ( level > 0 ) && ( level <= MAX_LEVEL ) );
 
-  unsigned c_id = util_t::class_id( e -> _spell -> scaling_class() );
+  unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( effect_id, level );
 
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
@@ -1358,7 +1358,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
 
 unsigned dbc_t::talent_ability_id( player_type_e c, const char* spell_name ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
 
   assert( spell_name && spell_name[ 0 ] );
 
@@ -1377,7 +1377,7 @@ unsigned dbc_t::talent_ability_id( player_type_e c, const char* spell_name ) con
 
 unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, const char* spell_name ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
   unsigned class_idx = -1;
   unsigned spec_index = -1;
   unsigned spell_id;
@@ -1415,7 +1415,7 @@ unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, con
       if ( ! spell( spell_id ) -> id() )
         continue;
 
-      if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
       {
         // Spell has been replaced by another, so don't return id
         if ( ! replaced_id( spell_id ) )
@@ -1439,7 +1439,7 @@ unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, con
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1459,7 +1459,7 @@ unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, con
 
 unsigned dbc_t::pet_ability_id( player_type_e c, const char* spell_name ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
   unsigned spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
@@ -1475,7 +1475,7 @@ unsigned dbc_t::pet_ability_id( player_type_e c, const char* spell_name ) const
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1494,8 +1494,8 @@ unsigned dbc_t::pet_ability_id( player_type_e c, const char* spell_name ) const
 
 unsigned dbc_t::race_ability_id( player_type_e c, race_type_e r, const char* spell_name ) const
 {
-  unsigned rid = util_t::race_id( r );
-  unsigned cid = util_t::class_id( c );
+  unsigned rid = util::race_id( r );
+  unsigned cid = util::class_id( c );
   unsigned spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
@@ -1512,7 +1512,7 @@ unsigned dbc_t::race_ability_id( player_type_e c, race_type_e r, const char* spe
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1529,7 +1529,7 @@ unsigned dbc_t::race_ability_id( player_type_e c, race_type_e r, const char* spe
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1567,7 +1567,7 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1612,7 +1612,7 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
 
 specialization_e dbc_t::class_ability_specialization( const player_type_e c, uint32_t spell_id ) const
 {
-  unsigned cid = util_t::class_id( c );
+  unsigned cid = util::class_id( c );
   unsigned t = class_ability_tree( c, spell_id );
 
   if ( ! spell_id || ( t < 1 ) )
@@ -1628,7 +1628,7 @@ specialization_e dbc_t::class_ability_specialization( const player_type_e c, uin
 
 specialization_e dbc_t::mastery_specialization( const player_type_e c, uint32_t spell_id ) const
 {
-  unsigned cid = util_t::class_id( c );
+  unsigned cid = util::class_id( c );
   int t = mastery_ability_tree( c, spell_id );
 
   if ( ! spell_id || ( t < 0 ) || ( t >= ( int )specialization_max_per_class() ) )
@@ -1639,7 +1639,7 @@ specialization_e dbc_t::mastery_specialization( const player_type_e c, uint32_t 
 
 int dbc_t::class_ability_tree( player_type_e c, uint32_t spell_id ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
 
   for ( unsigned tree = 0; tree < class_ability_tree_size(); tree++ )
   {
@@ -1655,7 +1655,7 @@ int dbc_t::class_ability_tree( player_type_e c, uint32_t spell_id ) const
 
 unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
 {
-  unsigned cid = util_t::class_id( c );
+  unsigned cid = util::class_id( c );
   unsigned spell_id;
   std::string token, token2;
 
@@ -1663,7 +1663,7 @@ unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
     return 0;
 
   token = spell_name;
-  util_t::glyph_name( token );
+  util::glyph_name( token );
 
   for ( unsigned type = 0; type < GLYPH_MAX; type++ )
   {
@@ -1676,10 +1676,10 @@ unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
         continue;
 
       token2 = spell( spell_id ) -> name_cstr();
-      util_t::glyph_name( token2 );
+      util::glyph_name( token2 );
 
-      if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) ||
-           util_t::str_compare_ci( token2, token ) )
+      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) ||
+           util::str_compare_ci( token2, token ) )
       {
         // Spell has been replaced by another, so don't return id
         if ( ! replaced_id( spell_id ) )
@@ -1699,7 +1699,7 @@ unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
 
 unsigned dbc_t::set_bonus_spell_id( player_type_e c, const char* name, int tier ) const
 {
-  unsigned cid = util_t::class_id( c );
+  unsigned cid = util::class_id( c );
   unsigned spell_id;
 
   assert( name && name[ 0 ] && ( tier >= MIN_TIER ) && ( tier < ( MIN_TIER + N_TIER ) ) );
@@ -1716,7 +1716,7 @@ unsigned dbc_t::set_bonus_spell_id( player_type_e c, const char* name, int tier 
       if ( ! spell( spell_id ) -> id() )
         continue;
 
-      if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), name ) )
+      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), name ) )
       {
         if ( ! replaced_id( spell_id ) )
         {
@@ -1755,7 +1755,7 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_nam
     if ( ! spell( spell_id ) -> id() )
       continue;
 
-    if ( util_t::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
       if ( ! replaced_id( spell_id ) )
@@ -1797,7 +1797,7 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, uint32_t idx ) const
 
 int dbc_t::mastery_ability_tree( player_type_e c, uint32_t spell_id ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
 
   for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
   {
@@ -2055,7 +2055,7 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
 
 specialization_e dbc_t::spec_by_idx( const player_type_e c, uint32_t& idx ) const
 {
-  uint32_t cid = util_t::class_id( c );
+  uint32_t cid = util::class_id( c );
 
   if ( ( cid == 0 ) || ( cid >= specialization_max_class() ) || ( idx >= MAX_SPECS_PER_CLASS ) )
   {
@@ -2081,7 +2081,7 @@ bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr
     else
     {
       std::string t = sp -> name_cstr();
-      util_t::tokenize( t );
+      util::tokenize( t );
       return tokens.add( id_spell, t );
     }
   }

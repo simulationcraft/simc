@@ -60,7 +60,7 @@ event_freelist_t::~event_freelist_t()
 
 void* event_t::operator new( std::size_t /* size */ ) throw()
 {
-  util_t::fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
+  util::fprintf( stderr, "All events must be allocated via: new (sim) event_class_name_t()\n" );
   fflush( stderr );
   assert( 0 );
   return NULL;
@@ -110,7 +110,7 @@ void event_t::early_( event_t* e )
 
 void event_t::execute()
 {
-  util_t::printf( "event_t::execute() called for event \"%s\"\n",
+  util::printf( "event_t::execute() called for event \"%s\"\n",
                   name ? name : "(no name)" );
   assert( 0 );
 }

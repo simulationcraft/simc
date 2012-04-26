@@ -647,7 +647,7 @@ void buff_t::aura_gain()
 {
   if ( sim -> log )
   {
-    std::string s = name_str + "_" + util_t::to_string( current_stack );
+    std::string s = name_str + "_" + util::to_string( current_stack );
 
     if ( player )
     {

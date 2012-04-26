@@ -52,9 +52,9 @@ static int create_children( sim_t* sim, xml_node_t* root, const std::string& inp
 
 static void simplify_xml( std::string& buffer )
 {
-  util_t::replace_all( buffer, "&lt;", '<' );
-  util_t::replace_all( buffer, "&gt;", '>' );
-  util_t::replace_all( buffer, "&amp;", '&' );
+  util::replace_all( buffer, "&lt;", '<' );
+  util::replace_all( buffer, "&gt;", '>' );
+  util::replace_all( buffer, "&amp;", '&' );
 }
 
 // is_white_space ===========================================================
@@ -316,7 +316,7 @@ static xml_node_t* split_path( xml_node_t*        node,
   else
   {
     std::vector<std::string> splits;
-    int num_splits = util_t::string_split( splits, path, "/" );
+    int num_splits = util::string_split( splits, path, "/" );
 
     for ( int i=0; i < num_splits-1; i++ )
     {
@@ -592,15 +592,15 @@ void xml_t::print( xml_node_t* root,
 
   if ( ! file ) file = stdout;
 
-  util_t::fprintf( file, "%*s%s", spacing, "", root -> name() );
+  util::fprintf( file, "%*s%s", spacing, "", root -> name() );
 
   int num_parms = ( int ) root -> parameters.size();
   for ( int i=0; i < num_parms; i++ )
   {
     xml_parm_t& parm = root -> parameters[ i ];
-    util_t::fprintf( file, " %s=\"%s\"", parm.name(), parm.value_str.c_str() );
+    util::fprintf( file, " %s=\"%s\"", parm.name(), parm.value_str.c_str() );
   }
-  util_t::fprintf( file, "\n" );
+  util::fprintf( file, "\n" );
 
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )

@@ -9,11 +9,11 @@
 // ==========================================================================
 // Report
 // ==========================================================================
-
+namespace report {
 
 // report::print_profiles =================================================
 
-void report::print_profiles( sim_t* sim )
+void print_profiles( sim_t* sim )
 {
   int k = 0;
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -85,7 +85,7 @@ void report::print_profiles( sim_t* sim )
       }
       file_name += sim -> save_suffix_str;
       file_name += ".simc";
-      util_t::urlencode( util_t::format_text( file_name, sim -> input_is_utf8 ) );
+      util::urlencode( util::format_text( file_name, sim -> input_is_utf8 ) );
     }
 
     if ( file_name.empty() ) continue;
@@ -112,7 +112,7 @@ void report::print_profiles( sim_t* sim )
     std::string filename = "Raid_Summary.simc";
     std::string player_str = "#Raid Summary\n";
     player_str += "# Contains ";
-    player_str += util_t::to_string( k );
+    player_str += util::to_string( k );
     player_str += " Players.\n\n";
 
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -130,7 +130,7 @@ void report::print_profiles( sim_t* sim )
         file_name += " Spec: ";
         file_name += p -> primary_tree_name();
         file_name += " Role: ";
-        file_name += util_t::role_type_string( p -> primary_role() );
+        file_name += util::role_type_string( p -> primary_role() );
         file_name += "\n";
         profile_name += sim -> save_prefix_str;
         profile_name += p -> name_str;
@@ -141,7 +141,7 @@ void report::print_profiles( sim_t* sim )
         }
         profile_name += sim -> save_suffix_str;
         profile_name += ".simc";
-        util_t::urlencode( util_t::format_text( profile_name, sim -> input_is_utf8 ) );
+        util::urlencode( util::format_text( profile_name, sim -> input_is_utf8 ) );
         file_name += profile_name;
         file_name += "\n\n";
       }
@@ -164,7 +164,7 @@ void report::print_profiles( sim_t* sim )
 
 // report::print_spell_query ==============================================
 
-void report::print_spell_query( sim_t* sim, unsigned level )
+void print_spell_query( sim_t* sim, unsigned level )
 {
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
@@ -173,7 +173,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
-      util_t::fprintf( sim -> output_file, "%s", spell_info_t::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
+      util::fprintf( sim -> output_file, "%s", spell_info_t::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
@@ -186,19 +186,19 @@ void report::print_spell_query( sim_t* sim, unsigned level )
                                      sim -> dbc.effect( *i ),
                                      sqs );
       }
-      util_t::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
+      util::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
     else
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      util_t::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell, level ).c_str() );
+      util::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell, level ).c_str() );
     }
   }
 }
 
 // report::print_suite ====================================================
 
-void report::print_suite( sim_t* sim )
+void print_suite( sim_t* sim )
 {
   report::print_text( sim -> output_file, sim, sim -> report_details != 0 );
   report::print_html( sim );
@@ -206,7 +206,7 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_rng_information( FILE* file, const rng_t* rng, double confidence_estimator )
+void print_html_rng_information( FILE* file, const rng_t* rng, double confidence_estimator )
 {
   fprintf( file,
            "\t\t\t\t\t\t\t<table>\n"
@@ -234,7 +234,7 @@ void report::print_html_rng_information( FILE* file, const rng_t* rng, double co
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-void report::print_html_sample_data( FILE* file, const player_t* p, const sample_data_t& data, const std::string& name )
+void print_html_sample_data( FILE* file, const player_t* p, const sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -421,6 +421,10 @@ void report::print_html_sample_data( FILE* file, const player_t* p, const sample
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
+} // END report NAMESPACE
+
+
+namespace generate_report_information {
 
 struct buff_is_dynamic
 {
@@ -466,7 +470,7 @@ struct buff_comp
   }
 };
 
-void generate_report_information::generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
+void generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -496,7 +500,7 @@ void generate_report_information::generate_player_buff_lists( const player_t*  p
   ri.buff_lists_generated = true;
 }
 
-void generate_report_information::generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
+void generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -589,7 +593,7 @@ void generate_report_information::generate_player_charts( const player_t*  p, pl
     ri.timeline_resource_chart[ rt ] =
       chart::timeline( p,
                        p -> resource_timelines[ i ].timeline,
-                       encoded_name + ' ' + util_t::inverse_tokenize( util_t::resource_type_string( rt ) ),
+                       encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
                        0,
                        chart::resource_color( rt ) );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
@@ -611,7 +615,7 @@ void generate_report_information::generate_player_charts( const player_t*  p, pl
   ri.charts_generated = true;
 }
 
-void generate_report_information::generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
+void generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -628,6 +632,7 @@ void generate_report_information::generate_sim_report_information( const sim_t* 
 
   ri.charts_generated = true;
 }
+} // END generate_report_information NAMESPACE
 
 void report_t::print_spell_query( sim_t* s , unsigned level )
 { return report::print_spell_query( s, level ); }

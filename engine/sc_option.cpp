@@ -37,34 +37,34 @@ void option_t::print( FILE* file )
   if ( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
+    util::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
   else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    util_t::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
+    util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
   }
   else if ( type == OPT_INT )
   {
     int v = *( ( int* ) address );
-    util_t::fprintf( file, "%s=%d\n", name, v );
+    util::fprintf( file, "%s=%d\n", name, v );
   }
   else if ( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
-    util_t::fprintf( file, "%s=%.2f\n", name, v );
+    util::fprintf( file, "%s=%.2f\n", name, v );
   }
   else if ( type == OPT_TIMESPAN )
   {
     timespan_t v = *( ( timespan_t* ) address );
-    util_t::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
+    util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
-    util_t::fprintf( file, "%s=", name );
-    for ( unsigned i=0; i < v.size(); i++ ) util_t::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
-    util_t::fprintf( file, "\n" );
+    util::fprintf( file, "%s=", name );
+    for ( unsigned i=0; i < v.size(); i++ ) util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+    util::fprintf( file, "\n" );
   }
 }
 
@@ -75,38 +75,38 @@ void option_t::save( FILE* file )
   if ( type == OPT_STRING )
   {
     std::string& v = *( ( std::string* ) address );
-    if ( ! v.empty() ) util_t::fprintf( file, "%s=%s\n", name, v.c_str() );
+    if ( ! v.empty() ) util::fprintf( file, "%s=%s\n", name, v.c_str() );
   }
   else if ( type == OPT_BOOL )
   {
     int v = *( ( int* ) address );
-    if ( v != 0 ) util_t::fprintf( file, "%s=1\n", name );
+    if ( v != 0 ) util::fprintf( file, "%s=1\n", name );
   }
   else if ( type == OPT_INT )
   {
     int v = *( ( int* ) address );
-    if ( v != 0 ) util_t::fprintf( file, "%s=%d\n", name, v );
+    if ( v != 0 ) util::fprintf( file, "%s=%d\n", name, v );
   }
   else if ( type == OPT_FLT )
   {
     double v = *( ( double* ) address );
-    if ( v != 0 ) util_t::fprintf( file, "%s=%.2f\n", name, v );
+    if ( v != 0 ) util::fprintf( file, "%s=%.2f\n", name, v );
   }
   else if ( type == OPT_TIMESPAN )
   {
     timespan_t v = *( ( timespan_t* ) address );
-    if ( v != timespan_t::zero() ) util_t::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
+    if ( v != timespan_t::zero() ) util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
   }
   else if ( type == OPT_LIST )
   {
     std::vector<std::string>& v = *( ( std::vector<std::string>* ) address );
     if ( ! v.empty() )
     {
-      util_t::fprintf( file, "%s=", name );
+      util::fprintf( file, "%s=", name );
       for ( size_t i = 0; i < v.size(); i++ )
-        util_t::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+        util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
 
-      util_t::fprintf( file, "\n" );
+      util::fprintf( file, "\n" );
     }
   }
 }
@@ -235,7 +235,7 @@ bool option_t::parse( sim_t*                 sim,
                       const std::string&     options_str )
 {
   std::vector<std::string> splits;
-  util_t::string_split( splits, options_str, "," );
+  util::string_split( splits, options_str, "," );
   return option_t::parse( sim, context, options, splits );
 }
 
@@ -281,7 +281,7 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
 FILE* option_db_t::open_file( const std::string& name )
 {
   std::vector<std::string> splits;
-  util_t::string_split( splits, auto_path, ",;|" );
+  util::string_split( splits, auto_path, ",;|" );
 
   for ( size_t i = 0; i < splits.size(); i++ )
   {
@@ -325,7 +325,7 @@ bool option_db_t::parse_line( const char* line )
   if ( *line == '#' ) return true;
 
   std::vector<std::string> tokens;
-  int num_tokens = util_t::string_split( tokens, line, " \t\n\r", true );
+  int num_tokens = util::string_split( tokens, line, " \t\n\r", true );
 
   for ( int i=0; i < num_tokens; i++ )
     if ( ! parse_token( tokens[ i ] ) )

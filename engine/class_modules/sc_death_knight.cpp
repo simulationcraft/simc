@@ -3473,9 +3473,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, name_str, "." );
+  int num_splits = util::string_split( splits, name_str, "." );
 
-  if ( util_t::str_compare_ci( splits[ 0 ], "rune" ) )
+  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = true; // whether to include death runes
@@ -3498,11 +3498,11 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     }
 
     int act = 0;
-    if ( num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
+    if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains" ) )
       act = 1;
-    else if ( num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
+    else if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "cooldown_remains_all" ) )
       act = 2;
-    else if ( num_splits == 3 && util_t::str_compare_ci( splits[ 2 ], "depleted" ) )
+    else if ( num_splits == 3 && util::str_compare_ci( splits[ 2 ], "depleted" ) )
       act = 3;
 
     struct rune_inspection_expr_t : public expr_t
@@ -3535,16 +3535,16 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   else if ( num_splits == 2 )
   {
     rune_type rt = RUNE_TYPE_NONE;
-    if ( util_t::str_compare_ci( splits[ 0 ], "blood" ) || util_t::str_compare_ci( splits[ 0 ], "b" ) )
+    if ( util::str_compare_ci( splits[ 0 ], "blood" ) || util::str_compare_ci( splits[ 0 ], "b" ) )
       rt = RUNE_TYPE_BLOOD;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "frost" ) || util_t::str_compare_ci( splits[ 0 ], "f" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "frost" ) || util::str_compare_ci( splits[ 0 ], "f" ) )
       rt = RUNE_TYPE_FROST;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "unholy" ) || util_t::str_compare_ci( splits[ 0 ], "u" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "unholy" ) || util::str_compare_ci( splits[ 0 ], "u" ) )
       rt = RUNE_TYPE_UNHOLY;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "death" ) || util::str_compare_ci( splits[ 0 ], "d" ) )
       rt = RUNE_TYPE_DEATH;
 
-    if ( rt != RUNE_TYPE_NONE && util_t::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
+    if ( rt != RUNE_TYPE_NONE && util::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
     {
       struct rune_cooldown_expr_t : public expr_t
       {
@@ -3564,13 +3564,13 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   else
   {
     rune_type rt = RUNE_TYPE_NONE;
-    if ( util_t::str_compare_ci( splits[ 0 ], "blood" ) || util_t::str_compare_ci( splits[ 0 ], "b" ) )
+    if ( util::str_compare_ci( splits[ 0 ], "blood" ) || util::str_compare_ci( splits[ 0 ], "b" ) )
       rt = RUNE_TYPE_BLOOD;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "frost" ) || util_t::str_compare_ci( splits[ 0 ], "f" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "frost" ) || util::str_compare_ci( splits[ 0 ], "f" ) )
       rt = RUNE_TYPE_FROST;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "unholy" ) || util_t::str_compare_ci( splits[ 0 ], "u" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "unholy" ) || util::str_compare_ci( splits[ 0 ], "u" ) )
       rt = RUNE_TYPE_UNHOLY;
-    else if ( util_t::str_compare_ci( splits[ 0 ], "death" ) || util_t::str_compare_ci( splits[ 0 ], "d" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "death" ) || util::str_compare_ci( splits[ 0 ], "d" ) )
       rt = RUNE_TYPE_DEATH;
 
     struct rune_expr_t : public expr_t
@@ -4631,7 +4631,7 @@ void death_knight_t::arise()
 
 player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type_e r )
 {
-  SC_CREATE_DEATH_KNIGHT( sim, name, r );
+  return sc_create_class<death_knight_t,SC_DEATH_KNIGHT>()( "Death Knight", sim, name, r );
 }
 
 // player_t::death_knight_init ==============================================

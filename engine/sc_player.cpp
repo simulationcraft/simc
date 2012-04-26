@@ -154,7 +154,7 @@ static bool parse_role_string( sim_t* sim,
 {
   assert( name == "role" ); ( void )name;
 
-  sim -> active_player -> role = util_t::parse_role_type( value );
+  sim -> active_player -> role = util::parse_role_type( value );
 
   return true;
 }
@@ -244,7 +244,7 @@ static bool parse_specialization( sim_t* sim,
                                   const std::string&,
                                   const std::string& value )
 {
-  sim -> active_player -> spec = util_t::translate_spec_str( sim -> active_player -> type, value );
+  sim -> active_player -> spec = util::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> spec == SPEC_NONE )
     sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
@@ -376,7 +376,7 @@ player_t::player_t( sim_t*             s,
     index = - ( ++( sim -> num_enemies ) );
   }
 
-  race_str = util_t::race_type_string( race );
+  race_str = util::race_type_string( race );
 
   if ( is_pet() ) skill = 1.0;
 
@@ -607,7 +607,7 @@ bool player_t::init( sim_t* sim )
       party_index++;
 
       std::vector<std::string> player_names;
-      size_t num_players = util_t::string_split( player_names, party_str, ",;/" );
+      size_t num_players = util::string_split( player_names, party_str, ",;/" );
       int member_index=0;
 
       for ( size_t j = 0; j < num_players; j++ )
@@ -718,7 +718,7 @@ void player_t::init_base()
     for ( attribute_type_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
     {
       stats_base.attribute[ a ] *= 1.0 + matching_gear_multiplier( a );
-      stats_base.attribute[ a ] = util_t::floor( stats_base.attribute[ a ] );
+      stats_base.attribute[ a ] = util::floor( stats_base.attribute[ a ] );
     }
   }
 
@@ -735,7 +735,7 @@ void player_t::init_items()
   if ( sim -> debug ) log_t::output( sim, "Initializing items for player (%s)", name() );
 
   std::vector<std::string> splits;
-  util_t::string_split( splits, items_str, "/" );
+  util::string_split( splits, items_str, "/" );
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     if ( find_item( splits[ i ] ) )
@@ -749,7 +749,7 @@ void player_t::init_items()
 
   bool slots[ SLOT_MAX ];
   for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    slots[ i ] = ! util_t::armor_type_string( type, i );
+    slots[ i ] = ! util::armor_type_string( type, i );
 
   unsigned num_ilvl_items = 0;
   for ( size_t i = 0; i < items.size(); i++ )
@@ -829,7 +829,7 @@ void player_t::init_items()
 
 void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
-  if ( ! meta_gem_str.empty() ) meta_gem = util_t::parse_meta_gem_type( meta_gem_str );
+  if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 
   if ( sim -> debug ) log_t::output( sim, "Initializing meta-gem for player (%s)", name() );
 
@@ -945,11 +945,11 @@ void player_t::init_position()
 
   if ( position_str.empty() )
   {
-    position_str = util_t::position_type_string( position );
+    position_str = util::position_type_string( position );
   }
   else
   {
-    position = util_t::parse_position_type( position_str );
+    position = util::parse_position_type( position_str );
   }
 
   // default to back when we have an invalid position
@@ -957,7 +957,7 @@ void player_t::init_position()
   {
     sim -> errorf( "Player %s has an invalid position of %s, defaulting to back.\n", name(), position_str.c_str() );
     position = POSITION_BACK;
-    position_str = util_t::position_type_string( position );
+    position_str = util::position_type_string( position );
   }
 }
 
@@ -969,11 +969,11 @@ void player_t::init_race()
 
   if ( race_str.empty() )
   {
-    race_str = util_t::race_type_string( race );
+    race_str = util::race_type_string( race );
   }
   else
   {
-    race = util_t::parse_race_type( race_str );
+    race = util::parse_race_type( race_str );
   }
 }
 
@@ -1173,20 +1173,20 @@ void player_t::init_professions()
   if ( sim -> debug ) log_t::output( sim, "Initializing professions for player (%s)", name() );
 
   std::vector<std::string> splits;
-  int size = util_t::string_split( splits, professions_str, ",/" );
+  int size = util::string_split( splits, professions_str, ",/" );
 
   for ( int i=0; i < size; i++ )
   {
     std::string prof_name;
     int prof_value=0;
 
-    if ( 2 != util_t::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
+    if ( 2 != util::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
       prof_name  = splits[ i ];
       prof_value = 525;
     }
 
-    int prof_type = util_t::parse_profession_type( prof_name );
+    int prof_type = util::parse_profession_type( prof_name );
     if ( prof_type == PROFESSION_NONE )
     {
       sim -> errorf( "Invalid profession encoding: %s\n", professions_str.c_str() );
@@ -1432,7 +1432,7 @@ void player_t::init_actions()
     }
 
     std::vector<std::string> splits;
-    size_t num_splits = util_t::string_split( splits, action_list_str, "/" );
+    size_t num_splits = util::string_split( splits, action_list_str, "/" );
 
     for ( size_t i = 0; i < num_splits; i++ )
     {
@@ -1510,7 +1510,7 @@ void player_t::init_actions()
       log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
 
     std::vector<std::string> splits;
-    size_t num_splits = util_t::string_split( splits, action_list_skip, "/" );
+    size_t num_splits = util::string_split( splits, action_list_skip, "/" );
     for ( size_t i = 0; i < num_splits; i++ )
     {
       action_t* action = find_action( splits[ i ] );
@@ -1538,7 +1538,7 @@ void player_t::init_rating()
 {
   if ( sim -> debug )
     log_t::output( sim, "player_t::init_rating(): level=%d type=%s",
-                   level, util_t::player_type_string( type ) );
+                   level, util::player_type_string( type ) );
 
   rating.init( sim, dbc, level, type );
 }
@@ -1548,7 +1548,7 @@ void player_t::init_rating()
 void player_t::init_glyphs()
 {
   std::vector<std::string> glyph_names;
-  util_t::string_split( glyph_names, glyphs_str, ",/" );
+  util::string_split( glyph_names, glyphs_str, ",/" );
 
   for ( size_t i = 0; i < glyph_names.size(); i++ )
   {
@@ -1707,7 +1707,7 @@ void player_t::init_procs()
 
 void player_t::init_uptimes()
 {
-  uptimes.primary_resource_cap = get_uptime( util_t::inverse_tokenize( util_t::resource_type_string( primary_resource() ) ) +  " Cap" );
+  uptimes.primary_resource_cap = get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) +  " Cap" );
 }
 
 // player_t::init_benefits ===================================================
@@ -2548,7 +2548,7 @@ double player_t::composite_attribute( attribute_type_e attr ) const
     break;
   }
 
-  a = util_t::floor( ( a - stats_base.attribute[ attr ] ) * m ) + stats_base.attribute[ attr ];
+  a = util::floor( ( a - stats_base.attribute[ attr ] ) * m ) + stats_base.attribute[ attr ];
 
   return a;
 }
@@ -2586,7 +2586,7 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
 double player_t::get_attribute( attribute_type_e a ) const
 {
-  return util_t::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
+  return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
 // player_t::combat_begin ===================================================
@@ -3306,7 +3306,7 @@ double player_t::resource_loss( resource_type_e resource_type,
 
   if ( sim -> debug )
     log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
-                   name(), actual_amount, amount, util_t::resource_type_string( resource_type ), health_percentage()  );
+                   name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage()  );
 
   return actual_amount;
 }
@@ -3343,7 +3343,7 @@ double player_t::resource_gain( resource_type_e resource_type,
   {
     log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
                    name(), actual_amount, amount,
-                   util_t::resource_type_string( resource_type ),
+                   util::resource_type_string( resource_type ),
                    source ? source -> name() : action ? action -> name() : "unknown",
                    resources.current[ resource_type ], resources.max[ resource_type ] );
   }
@@ -3400,14 +3400,7 @@ role_type_e player_t::primary_role() const
 
 const char* player_t::primary_tree_name() const
 {
-  return util_t::specialization_string( primary_tree() ).c_str();
-}
-
-// player_t::primary_tree ===================================================
-
-specialization_e player_t::primary_tree() const
-{
-  return spec;
+  return util::specialization_string( primary_tree() ).c_str();
 }
 
 // player_t::normalize_by ===================================================
@@ -3472,7 +3465,7 @@ void player_t::stat_gain( stat_type_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s%s", name(), amount, util_t::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
+  if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
@@ -3560,7 +3553,7 @@ void player_t::stat_loss( stat_type_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s%s", name(), amount, util_t::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
+  if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
@@ -3660,13 +3653,13 @@ void player_t::cost_reduction_gain( school_type_e school,
 
   if ( sim -> log )
     log_t::output( sim, "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
-                   util_t::school_type_string( school ) );
+                   util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
     for ( school_type_e i = SCHOOL_NONE; ++i < SCHOOL_MAX_PRIMARY; )
     {
-      if ( util_t::school_type_component( school, i ) )
+      if ( util::school_type_component( school, i ) )
       {
         stats_current.resource_reduction[ i ] += amount;
       }
@@ -3688,13 +3681,13 @@ void player_t::cost_reduction_loss( school_type_e school,
 
   if ( sim -> log )
     log_t::output( sim, "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
-                   util_t::school_type_string( school ) );
+                   util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
     for ( school_type_e i = SCHOOL_NONE; ++i < SCHOOL_MAX_PRIMARY; )
     {
-      if ( util_t::school_type_component( school, i ) )
+      if ( util::school_type_component( school, i ) )
       {
         stats_current.resource_reduction[ i ] -= amount;
       }
@@ -3730,7 +3723,8 @@ double player_t::assess_damage( double        amount,
     absorb_buff_t* ab = absorb_buffs[ i ];
     double buff_value = ab -> value();
     double value = std::min( mitigated_amount - absorbed_amount, buff_value );
-    ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
+    if ( ab -> absorb_source )
+      ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
     absorbed_amount += value;
     if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
                                        name(), ab -> name_str.c_str(), value );
@@ -4464,7 +4458,7 @@ struct arcane_torrent_t : public action_t
   {
     parse_options( NULL, options_str );
 
-    resource = util_t::translate_power_type( static_cast<power_type_e>( data().effectN( 2 ).misc_value1() ) );
+    resource = util::translate_power_type( static_cast<power_type_e>( data().effectN( 2 ).misc_value1() ) );
 
     switch ( resource )
     {
@@ -5139,7 +5133,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
 
-  return consumable_t::create_action( this, name, options_str );
+  return consumable::create_action( this, name, options_str );
 }
 
 // player_t::find_pet =======================================================
@@ -5258,7 +5252,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   if ( w_class != type )
   {
     sim -> errorf( "Player %s has malformed wowhead talent string. Talent string class %s does not match player class %s.\n", name(),
-                   util_t::player_type_string( w_class ), util_t::player_type_string( type ) );
+                   util::player_type_string( w_class ), util::player_type_string( type ) );
     return false;
   }
 
@@ -5282,7 +5276,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     if ( w_spec != primary_tree() )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
-                     util_t::specialization_string( w_spec ).c_str(), util_t::specialization_string( primary_tree() ).c_str() );
+                     util::specialization_string( w_spec ).c_str(), util::specialization_string( primary_tree() ).c_str() );
       return false;
     }
   }
@@ -5327,7 +5321,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
     for ( size_t i = 0; i < encoding.size(); i++ )
       str_out << encoding[ i ];
 
-    util_t::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.str().c_str() );
+    util::fprintf( sim -> output_file, "%s Wowhead talent string translation: %s\n", name(), str_out.str().c_str() );
   }
 
   for ( uint32_t j = 0; j < talent_list.size(); j++ )
@@ -5717,7 +5711,7 @@ expr_t* player_t::create_expression( action_t* a,
     return q;
 
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, name_str, "." );
+  int num_splits = util::string_split( splits, name_str, "." );
 
   if ( splits[ 0 ] == "pet" && num_splits == 3 )
   {
@@ -5776,7 +5770,7 @@ expr_t* player_t::create_expression( action_t* a,
 
   else if ( splits[ 0 ] == "temporary_bonus" && num_splits == 2 )
   {
-    stat_type_e stat = util_t::parse_stat_type( splits[ 1 ] );
+    stat_type_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
     {
     case STAT_STRENGTH:
@@ -6010,11 +6004,11 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
   };
 
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, name_str, "." );
+  int num_splits = util::string_split( splits, name_str, "." );
   if ( num_splits <= 0 )
     return 0;
 
-  resource_type_e r = util_t::parse_resource_type( splits[ 0 ] );
+  resource_type_e r = util::parse_resource_type( splits[ 0 ] );
   if ( r == RESOURCE_NONE )
     return 0;
 
@@ -6131,7 +6125,7 @@ void player_t::recreate_talent_str()
 {
   talents_str.clear();
   talents_str = "http://www.wowhead.com/talent#";
-  talents_str += util_t::player_type_string( type );
+  talents_str += util::player_type_string( type );
   talents_str += "-";
   // This is necessary because sometimes the talent trees change shape between live/ptr.
   for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
@@ -6140,7 +6134,7 @@ void player_t::recreate_talent_str()
     {
       int t = talent_list[ j * MAX_TALENT_COLS + i ];
 
-      talents_str += util_t::to_string( t );
+      talents_str += util::to_string( t );
     }
   }
 }
@@ -6168,17 +6162,17 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
 
   if ( stype == SAVE_ALL )
   {
-    profile_str += util_t::player_type_string( type );
+    profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
     profile_str += "origin=\"" + origin_str + '"' + term;
-    profile_str += "level=" + util_t::to_string( level ) + term;
+    profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
     profile_str += std::string( primary_tree_name() ) + term;
     profile_str += "role=";
-    profile_str += util_t::role_type_string( primary_role() ) + term;
+    profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
-    profile_str += "use_pre_potion=" + util_t::to_string( use_pre_potion ) + term;
+    profile_str += "use_pre_potion=" + util::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
     {
@@ -6211,7 +6205,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
         profile_str += i ? "+=/" : "=";
         std::string encoded_action = a -> signature_str;
         if ( save_html )
-          util_t::encode_html( encoded_action );
+          util::encode_html( encoded_action );
         profile_str += encoded_action + term;
       }
     }
@@ -6241,14 +6235,14 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
       if ( value != 0 )
       {
         profile_str += "# gear_";
-        profile_str += util_t::stat_type_string( i );
-        profile_str += "=" + util_t::to_string( value, 0 ) + term;
+        profile_str += util::stat_type_string( i );
+        profile_str += "=" + util::to_string( value, 0 ) + term;
       }
     }
     if ( meta_gem != META_GEM_NONE )
     {
       profile_str += "# meta_gem=";
-      profile_str += util_t::meta_gem_type_string( meta_gem );
+      profile_str += util::meta_gem_type_string( meta_gem );
       profile_str += term;
     }
 
@@ -6315,26 +6309,26 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
       }
     }
 
-    if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="         + util_t::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
-    if ( enchant.attribute[ ATTR_AGILITY   ] != 0 )  profile_str += "enchant_agility="          + util_t::to_string( enchant.attribute[ ATTR_AGILITY   ] ) + term;
-    if ( enchant.attribute[ ATTR_STAMINA   ] != 0 )  profile_str += "enchant_stamina="          + util_t::to_string( enchant.attribute[ ATTR_STAMINA   ] ) + term;
-    if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="        + util_t::to_string( enchant.attribute[ ATTR_INTELLECT ] ) + term;
-    if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="           + util_t::to_string( enchant.attribute[ ATTR_SPIRIT    ] ) + term;
-    if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="      + util_t::to_string( enchant.spell_power ) + term;
-    if ( enchant.mp5                         != 0 )  profile_str += "enchant_mp5="              + util_t::to_string( enchant.mp5 ) + term;
-    if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="     + util_t::to_string( enchant.attack_power ) + term;
-    if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating=" + util_t::to_string( enchant.expertise_rating ) + term;
-    if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="            + util_t::to_string( enchant.armor ) + term;
-    if ( enchant.haste_rating                != 0 )  profile_str += "enchant_haste_rating="     + util_t::to_string( enchant.haste_rating ) + term;
-    if ( enchant.hit_rating                  != 0 )  profile_str += "enchant_hit_rating="       + util_t::to_string( enchant.hit_rating ) + term;
-    if ( enchant.crit_rating                 != 0 )  profile_str += "enchant_crit_rating="      + util_t::to_string( enchant.crit_rating ) + term;
-    if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="   + util_t::to_string( enchant.mastery_rating ) + term;
-    if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="           + util_t::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
-    if ( enchant.resource[ RESOURCE_MANA   ] != 0 )  profile_str += "enchant_mana="             + util_t::to_string( enchant.resource[ RESOURCE_MANA   ] ) + term;
-    if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="             + util_t::to_string( enchant.resource[ RESOURCE_RAGE   ] ) + term;
-    if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="           + util_t::to_string( enchant.resource[ RESOURCE_ENERGY ] ) + term;
-    if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="            + util_t::to_string( enchant.resource[ RESOURCE_FOCUS  ] ) + term;
-    if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="            + util_t::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
+    if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="         + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
+    if ( enchant.attribute[ ATTR_AGILITY   ] != 0 )  profile_str += "enchant_agility="          + util::to_string( enchant.attribute[ ATTR_AGILITY   ] ) + term;
+    if ( enchant.attribute[ ATTR_STAMINA   ] != 0 )  profile_str += "enchant_stamina="          + util::to_string( enchant.attribute[ ATTR_STAMINA   ] ) + term;
+    if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="        + util::to_string( enchant.attribute[ ATTR_INTELLECT ] ) + term;
+    if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="           + util::to_string( enchant.attribute[ ATTR_SPIRIT    ] ) + term;
+    if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="      + util::to_string( enchant.spell_power ) + term;
+    if ( enchant.mp5                         != 0 )  profile_str += "enchant_mp5="              + util::to_string( enchant.mp5 ) + term;
+    if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="     + util::to_string( enchant.attack_power ) + term;
+    if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating=" + util::to_string( enchant.expertise_rating ) + term;
+    if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="            + util::to_string( enchant.armor ) + term;
+    if ( enchant.haste_rating                != 0 )  profile_str += "enchant_haste_rating="     + util::to_string( enchant.haste_rating ) + term;
+    if ( enchant.hit_rating                  != 0 )  profile_str += "enchant_hit_rating="       + util::to_string( enchant.hit_rating ) + term;
+    if ( enchant.crit_rating                 != 0 )  profile_str += "enchant_crit_rating="      + util::to_string( enchant.crit_rating ) + term;
+    if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="   + util::to_string( enchant.mastery_rating ) + term;
+    if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="           + util::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
+    if ( enchant.resource[ RESOURCE_MANA   ] != 0 )  profile_str += "enchant_mana="             + util::to_string( enchant.resource[ RESOURCE_MANA   ] ) + term;
+    if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="             + util::to_string( enchant.resource[ RESOURCE_RAGE   ] ) + term;
+    if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="           + util::to_string( enchant.resource[ RESOURCE_ENERGY ] ) + term;
+    if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="            + util::to_string( enchant.resource[ RESOURCE_FOCUS  ] ) + term;
+    if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="            + util::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
   }
 
   return true;
@@ -6353,7 +6347,7 @@ void player_t::copy_from( player_t* source )
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   talents_str = "http://www.wowhead.com/talent#";
-  talents_str += util_t::player_type_string( type );
+  talents_str += util::player_type_string( type );
   talents_str += "-";
   // This is necessary because sometimes the talent trees change shape between live/ptr.
   for ( int j=0; j < MAX_TALENT_ROWS; j++ )

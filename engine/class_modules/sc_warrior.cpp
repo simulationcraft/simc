@@ -718,7 +718,7 @@ static void trigger_flurry( attack_t* a, int stacks )
   sim_t *sim = p -> sim;
 
   // Default mult is the up -> down case
-  double mult = 1 + util_t::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
+  double mult = 1 + util::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
 
   // down -> up case
   if ( ! up_before && up_after )
@@ -1492,7 +1492,7 @@ struct execute_t : public warrior_attack_t
 
     if ( sim -> debug )
       log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
-                     resource_consumed, util_t::resource_type_string( current_resource() ), name() );
+                     resource_consumed, util::resource_type_string( current_resource() ), name() );
 
     player -> resource_loss( current_resource(), resource_consumed );
 
@@ -3839,7 +3839,7 @@ int warrior_t::decode_set( const item_t& item ) const
 
 player_t* player_t::create_warrior( sim_t* sim, const std::string& name, race_type_e r )
 {
-  SC_CREATE_WARRIOR( sim, name, r );
+  return sc_create_class<warrior_t,SC_WARRIOR>()( "Warrior", sim, name, r );
 }
 
 // warrior_init =============================================================

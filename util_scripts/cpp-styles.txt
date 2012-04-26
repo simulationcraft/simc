@@ -3,7 +3,7 @@
   // stylesheet; otherwise, embed the styles.
   if ( sim -> hosted_html )
   {
-    util_t::fprintf( file,
+    util::fprintf( file,
       "\t\t<style type=\"text/css\" media=\"screen\">\n"
       "\t\t\t@import url('http://www.simulationcraft.org/css/styles.css');\n"
       "\t\t</style>\n"
@@ -13,7 +13,7 @@
   }
   else if ( sim -> print_styles )
   {
-    util_t::fprintf( file,
+    util::fprintf( file,
       "\t\t<style type=\"text/css\" media=\"all\">\n"
       "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
       "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background-color: #f9f9f9;color: #333;text-align: center; }\n"
@@ -118,7 +118,7 @@
   }
   else
   {
-    util_t::fprintf( file,
+    util::fprintf( file,
       "\t\t<style type=\"text/css\" media=\"all\">\n"
       "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
       "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #333;color: #FFF;text-align: center; }\n"

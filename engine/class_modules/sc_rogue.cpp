@@ -4033,7 +4033,7 @@ int rogue_t::decode_set( const item_t& item ) const
 
 player_t* player_t::create_rogue( sim_t* sim, const std::string& name, race_type_e r )
 {
-  SC_CREATE_ROGUE( sim, name, r );
+  return sc_create_class<rogue_t,SC_ROGUE>()( "Rogue", sim, name, r );
 }
 
 // player_t::rogue_init =====================================================
