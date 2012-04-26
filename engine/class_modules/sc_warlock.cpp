@@ -1653,6 +1653,16 @@ double warlock_t::composite_spell_power_multiplier() const
 }
 
 
+double warlock_t::composite_player_dd_multiplier( school_type_e school, const action_t* a ) const
+{
+  double player_multiplier = player_t::composite_player_dd_multiplier( school, a );
+
+  player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
+
+  return player_multiplier;
+}
+
+
 double warlock_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
   double player_multiplier = player_t::composite_player_multiplier( school, a );
@@ -1664,8 +1674,6 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
     player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
                          + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
   }
-
-  player_multiplier *= 1.0 + talents.grimoire_of_sacrifice -> effectN( 2 ).percent() * buffs.grimoire_of_sacrifice -> stack();
 
   return player_multiplier;
 }

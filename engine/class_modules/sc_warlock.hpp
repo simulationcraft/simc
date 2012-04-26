@@ -228,6 +228,7 @@ struct warlock_t : public player_t
   virtual double    composite_spell_power_multiplier() const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
+  virtual double composite_player_dd_multiplier( school_type_e school, const action_t* a ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
   virtual double composite_mastery() const;
