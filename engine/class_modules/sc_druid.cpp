@@ -753,9 +753,8 @@ struct druid_spell_t : public spell_t
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string(),
-                 school_type_e school = SCHOOL_NATURE ) :
-    spell_t( token, p, s, school ),
+                 const std::string& options = std::string() ) :
+    spell_t( token, p, s ),
     additive_multiplier( 0.0 )
   {
     parse_options( 0, options );
@@ -765,8 +764,7 @@ struct druid_spell_t : public spell_t
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string(),
-                 school_type_e school = SCHOOL_NATURE ) :
+                 const std::string& options = std::string() ) :
     spell_t( "", p, s, school ), additive_multiplier( 0.0 )
   {
     parse_options( 0, options );
