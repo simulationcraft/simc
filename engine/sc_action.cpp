@@ -175,14 +175,14 @@ action_t::action_t( action_type_e       ty,
     if ( name_str.empty() )
     {
       name_str = data().name_cstr();
-      util_t::tokenize( name_str );
+      util::tokenize( name_str );
       assert( ! name_str.empty() );
       dbc_t::add_token( data().id(), name_str );
     }
   }
   else
   {
-    util_t::tokenize( name_str );
+    util::tokenize( name_str );
   }
 
   init_dot( name_str );
@@ -450,7 +450,7 @@ double action_t::cost() const
   if ( is_dtr_action )
     c = 0;
 
-  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util_t::resource_type_string( current_resource() ) );
+  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util::resource_type_string( current_resource() ) );
 
   return floor( c );
 }
@@ -779,7 +779,7 @@ void action_t::consume_resource()
 
   if ( sim -> log )
     log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util_t::resource_type_string( current_resource() ),
+                   resource_consumed, util::resource_type_string( current_resource() ),
                    name(), player -> resources.current[ current_resource() ] );
 
   stats -> consume_resource( current_resource(), resource_consumed );
@@ -1059,7 +1059,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util_t::result_type_string( impact_result ) );
+      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( impact_result ) );
     }
   }
 
@@ -1084,8 +1084,8 @@ void action_t::assess_damage( player_t*     t,
       log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      t -> name(), dmg_adjusted,
-                     util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
+                     util::school_type_string( school ),
+                     util::result_type_string( result ) );
     }
 
     direct_dmg = dmg_adjusted;
@@ -1101,8 +1101,8 @@ void action_t::assess_damage( player_t*     t,
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), dmg_adjusted,
-                     util_t::school_type_string( school ),
-                     util_t::result_type_string( result ) );
+                     util::school_type_string( school ),
+                     util::result_type_string( result ) );
     }
 
     tick_dmg = dmg_adjusted;
@@ -1463,7 +1463,7 @@ void action_t::check_race( race_type_e race )
 {
   if ( player -> race != race )
   {
-    sim -> errorf( "Player %s attempting to execute action %s while not being a %s.\n", player -> name(), name(), util_t::race_type_string( race ) );
+    sim -> errorf( "Player %s attempting to execute action %s while not being a %s.\n", player -> name(), name(), util::race_type_string( race ) );
 
     background = true; // prevent action from being executed
   }
@@ -1476,7 +1476,7 @@ void action_t::check_spec( specialization_e necessary_spec )
   if ( player -> primary_tree() != necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
-                   player -> name(), name(), util_t::specialization_string( necessary_spec ).c_str() );
+                   player -> name(), name(), util::specialization_string( necessary_spec ).c_str() );
 
     background = true; // prevent action from being executed
   }
@@ -1625,7 +1625,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, name_str, "." );
+  int num_splits = util::string_split( splits, name_str, "." );
 
   if ( num_splits == 2 )
   {
@@ -1783,10 +1783,10 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state -> attack_power = util_t::round( composite_attack_power() * composite_attack_power_multiplier() );
+    state -> attack_power = util::round( composite_attack_power() * composite_attack_power_multiplier() );
 
   if ( flags & STATE_SP )
-    state -> spell_power = util_t::round( composite_spell_power() * composite_spell_power_multiplier() );
+    state -> spell_power = util::round( composite_spell_power() * composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
     state -> da_multiplier = composite_da_multiplier( state );

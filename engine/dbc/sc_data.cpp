@@ -31,7 +31,7 @@ bool spell_data_t::is_class( player_type_e c ) const
   if ( ! _class_mask )
     return true;
 
-  unsigned mask = util_t::class_id_mask( c );
+  unsigned mask = util::class_id_mask( c );
   return ( _class_mask & mask ) == mask;
 }
 
@@ -39,7 +39,7 @@ bool spell_data_t::is_class( player_type_e c ) const
 
 bool spell_data_t::is_race( race_type_e r ) const
 {
-  unsigned mask = util_t::race_mask( r );
+  unsigned mask = util::race_mask( r );
   return ( _race_mask & mask ) == mask;
 }
 
@@ -120,7 +120,7 @@ std::string spell_data_t::to_str() const
   s << " (ok=" << ( ok() ? "true" : "false" ) << ")";
   s << " id=" << id();
   s << " name=" << name_cstr();
-  s << " school=" << util_t::school_type_string( get_school_type() );
+  s << " school=" << util::school_type_string( get_school_type() );
   return s.str();
 }
 
@@ -136,7 +136,7 @@ spelleffect_data_nil_t::spelleffect_data_nil_t() :
 
 resource_type_e spelleffect_data_t::resource_gain_type() const
 {
-  return util_t::translate_power_type( static_cast< power_type_e >( misc_value1() ) );
+  return util::translate_power_type( static_cast< power_type_e >( misc_value1() ) );
 }
 
 double spelleffect_data_t::resource( resource_type_e resource_type ) const
@@ -167,7 +167,7 @@ spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
 resource_type_e spellpower_data_t::resource() const
 {
-  return util_t::translate_power_type( type() );
+  return util::translate_power_type( type() );
 }
 
 double spellpower_data_t::cost() const
@@ -210,7 +210,7 @@ talent_data_nil_t::talent_data_nil_t() :
 
 bool talent_data_t::is_class( player_type_e c ) const
 {
-  unsigned mask = util_t::class_id_mask( c );
+  unsigned mask = util::class_id_mask( c );
 
   if ( mask == 0 )
     return false;
@@ -220,7 +220,7 @@ bool talent_data_t::is_class( player_type_e c ) const
 
 bool talent_data_t::is_pet( pet_type_e p ) const
 {
-  unsigned mask = util_t::pet_mask( p );
+  unsigned mask = util::pet_mask( p );
 
   if ( mask == 0 )
     return false;

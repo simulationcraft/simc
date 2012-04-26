@@ -84,10 +84,10 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  util_t::tokenize( type_str );
-  util_t::tokenize( race_str );
+  util::tokenize( type_str );
+  util::tokenize( race_str );
 
-  player_t* p = player_t::create( sim, type_str, name_str, util_t::parse_race_type( race_str ) );
+  player_t* p = player_t::create( sim, type_str, name_str, util::parse_race_type( race_str ) );
   sim -> active_player = p;
   if ( ! p )
   {
@@ -131,9 +131,9 @@ player_t* chardev_t::download_player( sim_t* sim,
     {
       if ( ( reforge_from >= 0 ) && ( reforge_to >= 0 ) )
       {
-        stat_type_e from = util_t::translate_item_mod( static_cast<item_mod_type>( reforge_from ) );
-        stat_type_e to   = util_t::translate_item_mod( static_cast<item_mod_type>( reforge_to ) );
-        reforge_id = util_t::to_string( enchant_t::get_reforge_id( from, to ) );
+        stat_type_e from = util::translate_item_mod( static_cast<item_mod_type>( reforge_from ) );
+        stat_type_e to   = util::translate_item_mod( static_cast<item_mod_type>( reforge_to ) );
+        reforge_id = util::to_string( enchant_t::get_reforge_id( from, to ) );
       }
     }
 
@@ -173,7 +173,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     return 0;
   }
 
-  std::string player_type_string = util_t::player_type_string( p -> type );
+  std::string player_type_string = util::player_type_string( p -> type );
   p -> talents_str = "http://www.wowhead.com/talent#" + player_type_string + "-" + talents_encoding;
 
   p -> glyphs_str = "";
@@ -184,7 +184,7 @@ player_t* chardev_t::download_player( sim_t* sim,
     std::string glyph_name;
     if ( js_t::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
     {
-      util_t::glyph_name( glyph_name );
+      util::glyph_name( glyph_name );
       if ( ! p -> glyphs_str.empty() )
         p -> glyphs_str += '/';
       p -> glyphs_str += glyph_name;
@@ -204,7 +204,7 @@ player_t* chardev_t::download_player( sim_t* sim,
       if ( js_t::get_value( skill_id, skill_nodes[ i ], "0" ) &&
            js_t::get_value( skill_level, skill_nodes[ i ], "1" ) )
       {
-        std::string skill_name_str = util_t::profession_type_string( util_t::translate_profession_id( skill_id ) );
+        std::string skill_name_str = util::profession_type_string( util::translate_profession_id( skill_id ) );
         if ( i ) p -> professions_str += "/";
         p -> professions_str += skill_name_str + "=" + skill_level;
       }

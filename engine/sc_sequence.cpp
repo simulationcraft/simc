@@ -18,7 +18,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   trigger_gcd = timespan_t::zero();
 
   std::vector<std::string> splits;
-  size_t size = util_t::string_split( splits, sub_action_str, ":" );
+  size_t size = util::string_split( splits, sub_action_str, ":" );
   if ( ! splits.empty() )
   {
     option_t options[] =

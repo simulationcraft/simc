@@ -14,7 +14,7 @@
 void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_type_e type )
 {
   if ( sim -> debug ) log_t::output( sim, "rating_t::init: level=%d type=%s",
-                                     level, util_t::player_type_string( type ) );
+                                     level, util::player_type_string( type ) );
 
   if ( type == ENEMY || type == ENEMY_ADD )
   {

@@ -521,7 +521,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   if ( ! xml_t::get_value(  name_str, root_node, "Name/."  ) )
   {
     std::vector<std::string> tokens;
-    int num_tokens = util_t::string_split( tokens, character_file, "\\/" );
+    int num_tokens = util::string_split( tokens, character_file, "\\/" );
     assert( num_tokens > 0 );
     name_str = tokens[ num_tokens-1 ];
   }
@@ -531,8 +531,8 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   std::string talents_parm = class_str + "Talents/.";
 
-  util_t::tokenize(  name_str );
-  util_t::tokenize( class_str );
+  util::tokenize(  name_str );
+  util::tokenize( class_str );
 
   race_type_e r = translate_rawr_race_str( race_str );
 
@@ -557,7 +557,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   }
 
   std::string talents_encoding, glyphs_encoding;
-  if ( 2 != util_t::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
+  if ( 2 != util::string_split( talents_str, ".", "S S", &talents_encoding, &glyphs_encoding ) )
   {
     sim -> errorf( "Player %s expected 'talents.glyphs' in Rawr Character Save XML, but found: %s\n", p -> name(), talents_str.c_str() );
     return 0;
@@ -570,7 +570,7 @@ player_t* rawr_t::load_player( sim_t* sim,
   }
 
   p -> talents_str = "http://www.wowhead.com/talent#";
-  p -> talents_str += util_t::player_type_string( p -> type );
+  p -> talents_str += util::player_type_string( p -> type );
   p -> talents_str += "-" + talents_encoding;
 
   p -> glyphs_str = "";
@@ -598,7 +598,7 @@ player_t* rawr_t::load_player( sim_t* sim,
       if ( sd )
       {
         std::string glyph_name = sd -> name_cstr();
-        util_t::glyph_name( glyph_name );
+        util::glyph_name( glyph_name );
         if ( ! p -> glyphs_str.empty() ) p -> glyphs_str += '/';
         p -> glyphs_str += glyph_name;
       }
@@ -627,7 +627,7 @@ player_t* rawr_t::load_player( sim_t* sim,
       std::string rsuffix_id;
 
       std::vector<std::string> splits;
-      int num_splits = util_t::string_split( splits, slot_encoding, "." );
+      int num_splits = util::string_split( splits, slot_encoding, "." );
 
       if ( num_splits == 7 )
       {
@@ -670,12 +670,12 @@ player_t* rawr_t::load_player( sim_t* sim,
   xml_t::get_value( profession_value[1], root_node, "SecondaryProfession/." );
   if ( ! profession_value[0].empty() )
   {
-    p -> professions_str = util_t::tolower( profession_value[0] );
+    p -> professions_str = util::tolower( profession_value[0] );
     if ( ! profession_value[1].empty() )
       p -> professions_str += "/";
   }
   if ( ! profession_value[1].empty() )
-    p -> professions_str += util_t::tolower( profession_value[1] );
+    p -> professions_str += util::tolower( profession_value[1] );
 
   return p;
 }

@@ -23,6 +23,7 @@ struct priest_targetdata_t : public targetdata_t
 
   buff_t* buffs_power_word_shield;
   buff_t* buffs_divine_aegis;
+  buff_t* buffs_spirit_shell;
 
   remove_dots_event::remove_dots_event_t* remove_dots_event;
 

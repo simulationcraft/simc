@@ -143,7 +143,7 @@ bool set_bonus_t::init( player_t* p )
 expr_t* set_bonus_t::create_expression( player_t* player,
                                         const std::string& type )
 {
-  set_type_e bonus_type = util_t::parse_set_bonus( type );
+  set_type_e bonus_type = util::parse_set_bonus( type );
 
   if ( bonus_type == SET_NONE )
     return 0;
@@ -153,7 +153,7 @@ expr_t* set_bonus_t::create_expression( player_t* player,
     player_t& player;
     set_type_e set_bonus_type;
     set_bonus_expr_t( player_t& p, set_type_e t ) :
-      expr_t( util_t::set_bonus_string( t ) ), player( p ), set_bonus_type( t ) {}
+      expr_t( util::set_bonus_string( t ) ), player( p ), set_bonus_type( t ) {}
     virtual double evaluate()
     { return player.sets -> has_set_bonus( set_bonus_type ); }
   };

@@ -8,6 +8,24 @@
 
 #if SC_PRIEST == 1
 
+namespace {
+struct remove_dots_event_t;
+
+struct spirit_shell_buff_t : public absorb_buff_t
+{
+  spirit_shell_buff_t( actor_pair_t p ) :
+    absorb_buff_t( absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ) )
+  { }
+
+  virtual void expire()
+  {
+    absorb_buff_t::expire();
+
+  }
+};
+
+}
+
 void register_priest_targetdata( sim_t* sim )
 {
   player_type_e t = PRIEST;
@@ -20,6 +38,7 @@ void register_priest_targetdata( sim_t* sim )
 
   REGISTER_BUFF( power_word_shield );
   REGISTER_BUFF( divine_aegis );
+  REGISTER_BUFF( spirit_shell );
 }
 
 // ==========================================================================
@@ -38,6 +57,11 @@ priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
                           .source( source -> get_stats( "divine_aegis" ) );
   buffs_divine_aegis = add_aura( new_da );
   target -> absorb_buffs.push_back( new_da );
+
+  absorb_buff_t* new_ss = new spirit_shell_buff_t( this );
+
+  buffs_spirit_shell = add_aura( new_ss );
+  target -> absorb_buffs.push_back( new_ss );
 }
 
 namespace remove_dots_event // ANONYMOUS NAMESPACE ============================================
@@ -104,7 +128,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
 
   create_options();
 }
-
 
 // ==========================================================================
 // Priest Absorb
@@ -579,13 +602,6 @@ struct atonement_heal_t : public priest_heal_t
 // ==========================================================================
 // Priest Spell
 // ==========================================================================
-
-struct priest_spell_state_t : public action_state_t
-{
-  priest_spell_state_t( action_t* a, priest_t* t ) :
-    action_state_t( a, t )
-  { }
-};
 
 struct priest_spell_t : public spell_t
 {
@@ -2992,6 +3008,22 @@ struct renew_t : public priest_heal_t
   }
 };
 
+struct spirit_shell_t : priest_heal_t
+{
+  spirit_shell_t( priest_t* p, const std::string& options_str ) :
+    priest_heal_t( "spirit_shell", p, p -> find_class_spell( "Spirit Shell" ) )
+  {
+    parse_options( NULL, options_str );
+
+    // Parse values from buff spell effect
+    action_t::parse_effect_data( p -> find_spell( 114908 ) -> effectN( 1 ) );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    td( s -> target ) -> buffs_spirit_shell -> trigger();
+  }
+};
 
 // ==========================================================================
 // Priest Character Definition
@@ -3288,7 +3320,7 @@ void priest_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util_t::to_string( i ) );
+    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util::to_string( i ) );
 }
 
 // priest_t::init_rng =======================================================
@@ -3869,7 +3901,7 @@ bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool 
     if ( initial_shadow_orbs != 0 )
     {
       profile_str += "initial_shadow_orbs=";
-      profile_str += util_t::to_string( initial_shadow_orbs );
+      profile_str += util::to_string( initial_shadow_orbs );
       profile_str += "\n";
     }
   }
@@ -3949,7 +3981,7 @@ int priest_t::decode_set( const item_t& item ) const
 
 player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type_e r )
 {
-  SC_CREATE_PRIEST( sim, name, r );
+  return sc_create_class<priest_t,SC_PRIEST>()( "Priest", sim, name, r );
 }
 
 // player_t::priest_init ====================================================

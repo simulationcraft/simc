@@ -233,7 +233,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
     switch ( e -> type() )
     {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util_t::school_type_string( spell -> get_school_type() );
+      s << ": " << util::school_type_string( spell -> get_school_type() );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
@@ -262,7 +262,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
       switch ( e -> subtype() )
       {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util_t::school_type_string( spell -> get_school_type() );
+        s << ": " << util::school_type_string( spell -> get_school_type() );
         if ( e -> period() != timespan_t::zero() )
           s << " every " << e -> period().total_seconds() << " seconds";
         break;
@@ -354,7 +354,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
          e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util_t::resource_type_string( util_t::translate_power_type( static_cast<power_type_e>( e -> misc_value1() ) ) ) );
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_type_e>( e -> misc_value1() ) ) ) );
     else
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer;
@@ -401,7 +401,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); iter++ )
       {
-        s << util_t::inverse_tokenize( util_t::specialization_string( *iter ) ) << " ";
+        s << util::inverse_tokenize( util::specialization_string( *iter ) ) << " ";
       }
       spec_list.clear();
     }
