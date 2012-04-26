@@ -326,7 +326,7 @@ struct mana_potion_t : public action_t
   virtual void execute()
   {
     if ( sim -> log ) log_t::output( sim, "%s uses Mana potion", player -> name() );
-    double gain = sim -> rng -> range( min, max );
+    double gain = sim -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> potion_used = 1;
   }

@@ -289,7 +289,7 @@ void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_
 
   }
 
-  report::print_html_rng_information( file, sim -> rng, sim -> confidence_estimator );
+  report::print_html_rng_information( file, sim -> default_rng(), sim -> confidence_estimator );
 
   fprintf( file,
            "\t\t\t\t\t\t</table>\n" );

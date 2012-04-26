@@ -460,7 +460,7 @@ void print_text_performance( FILE* file, const sim_t* sim )
 
   util_t::fprintf( file,
                    "%s",
-                   sim -> rng -> report( sim -> confidence_estimator ).c_str() );
+                   sim -> default_rng() -> report( sim -> confidence_estimator ).c_str() );
 }
 
 // print_text_scale_factors =================================================
