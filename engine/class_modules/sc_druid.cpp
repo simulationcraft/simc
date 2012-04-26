@@ -3438,7 +3438,7 @@ struct starfire_t : public druid_spell_t
     {
       if ( p -> specialization.eclipse -> ok() )
       {
-        if ( td -> dots_moonfire -> ticking )
+        if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
           td -> dots_moonfire -> refresh_duration();
 
         if ( ! p -> buff.eclipse_solar -> check() )
@@ -3564,10 +3564,10 @@ struct starsurge_t : public druid_spell_t
     {
       if ( p -> specialization.eclipse -> ok() )
       {
-        if ( td -> dots_moonfire -> ticking )
+        if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
           td -> dots_moonfire -> refresh_duration();
 
-        if ( td -> dots_sunfire -> ticking )
+        if ( p -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
           td -> dots_sunfire -> refresh_duration();
 
         // gain is positive for p -> eclipse_bar_direction==0
@@ -3939,7 +3939,7 @@ struct wrath_t : public druid_spell_t
     {
       if ( p -> specialization.eclipse -> ok() )
       {
-        if ( td -> dots_sunfire -> ticking )
+        if ( p -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
           td -> dots_sunfire -> refresh_duration();
 
         if ( p -> eclipse_bar_direction <= 0 )
