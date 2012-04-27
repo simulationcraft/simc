@@ -930,7 +930,7 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
         return s
 
 class SpellDataGenerator(DataGenerator):
-    _spell_ref_rx = r'\$(?:\?[A-z]|@spell(?:name|desc|icon))?([0-9]+)(?:\[|[A-z][0-9]?|)'
+    _spell_ref_rx = r'\$(?:\?[A-z]|@spell(?:name|desc|icon|tooltip))?([0-9]+)(?:\[|[A-z][0-9]?|)'
     
     # Explicitly included list of spells per class, that cannot be 
     # found from talents, or based on a SkillLine category
