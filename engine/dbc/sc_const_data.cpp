@@ -554,12 +554,11 @@ unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type_e, unsigned 
 
 unsigned dbc_t::set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const
 {
+  assert( class_id < dbc_t::class_max_size() && tier < dbc_t::num_tiers() && n < set_bonus_spell_size() );
 #if SC_USE_PTR
-  assert( class_id < dbc_t::class_max_size() && tier < ( unsigned ) ( ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER ) && n < set_bonus_spell_size() );
   return ptr ? __ptr_tier_bonuses_data[ class_id ][ tier ][ n ]
              : __tier_bonuses_data[ class_id ][ tier ][ n ];
 #else
-  assert( class_id < dbc_t::class_max_size() && tier < TIER_BONUSES_MAX_TIER && n < set_bonus_spell_size() );
   return __tier_bonuses_data[ class_id ][ tier ][ n ];
 #endif
 }
@@ -570,6 +569,24 @@ unsigned dbc_t::class_max_size() const
   return ptr ? PTR_MAX_CLASS : MAX_CLASS;
 #else
   return MAX_CLASS;
+#endif
+}
+
+unsigned dbc_t::num_tiers() const
+{
+#if SC_USE_PTR
+  return ptr ? PTR_TIER_BONUSES_MAX_TIER : TIER_BONUSES_MAX_TIER;
+#else
+  return TIER_BONUSES_MAX_TIER;
+#endif
+}
+
+unsigned dbc_t::first_tier() const
+{
+#if SC_USE_PTR
+  return ptr ? PTR_TIER_BONUSES_TIER_BASE : TIER_BONUSES_TIER_BASE;
+#else
+  return TIER_BONUSES_TIER_BASE;
 #endif
 }
 
@@ -1702,9 +1719,12 @@ unsigned dbc_t::set_bonus_spell_id( player_type_e c, const char* name, int tier 
   unsigned cid = util::class_id( c );
   unsigned spell_id;
 
-  assert( name && name[ 0 ] && ( tier >= MIN_TIER ) && ( tier < ( MIN_TIER + N_TIER ) ) );
+  assert( name && name[ 0 ] && ( tier >= MIN_TIER ) && ( tier < ( MIN_TIER + N_TIER ) ) && ( MIN_TIER == dbc_t::first_tier() ) );
 
   tier -= MIN_TIER;
+
+  if ( tier >= (int)dbc_t::num_tiers() )
+    return 0;
 
   for ( int t = 0; t < tier; t++ )
   {
@@ -1903,11 +1923,11 @@ bool dbc_t::is_set_bonus_spell( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
   {
-    for ( unsigned tier = MIN_TIER; tier <= ( MIN_TIER + N_TIER ); tier++ )
+    for ( unsigned tier = dbc_t::first_tier(); tier < ( dbc_t::first_tier() + dbc_t::num_tiers() ); tier++ )
     {
       for ( unsigned n = 0; n < set_bonus_spell_size(); n++ )
       {
-        if ( set_bonus_spell( cls, tier - MIN_TIER, n ) == spell_id )
+        if ( set_bonus_spell( cls, tier - dbc_t::first_tier(), n ) == spell_id )
           return true;
       }
     }

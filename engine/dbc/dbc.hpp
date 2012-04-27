@@ -467,6 +467,9 @@ public:
   const item_armor_type_data_t&  item_armor_inv_type( unsigned inv_type ) const;
 
   // Derived data access
+  unsigned num_tiers() const;
+  unsigned first_tier() const;
+
   unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned pet_ability( unsigned class_id, unsigned n ) const;
   unsigned class_ability_tree_size() const;
@@ -481,7 +484,7 @@ public:
   unsigned specialization_ability_size() const;
   unsigned specialization_max_per_class() const;
   unsigned specialization_max_class() const;
-  bool ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
+  bool     ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
 
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;

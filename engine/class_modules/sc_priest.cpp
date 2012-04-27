@@ -1686,11 +1686,12 @@ struct mind_spike_t : public priest_spell_t
 struct mind_sear_tick_t : public priest_spell_t
 {
   mind_sear_tick_t( priest_t* player ) :
-    priest_spell_t( "mind_sear_tick", player, player -> find_spell( 49821 ) )
+    priest_spell_t( "mind_sear_tick", player, player -> find_class_spell( "Mind Sear" ) -> effectN( 1 ).trigger() )
   {
     background  = true;
     dual        = true;
     direct_tick = true;
+    aoe         = -1;
   }
 };
 
