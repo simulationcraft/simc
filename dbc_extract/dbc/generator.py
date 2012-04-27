@@ -930,7 +930,7 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
         return s
 
 class SpellDataGenerator(DataGenerator):
-    _spell_ref_rx = r'\$(?:\?[A-z])?([0-9]+)(?:\[|[A-z][0-9]?)'
+    _spell_ref_rx = r'\$(?:\?[A-z]|@spell(?:name|desc|icon))?([0-9]+)(?:\[|[A-z][0-9]?|)'
     
     # Explicitly included list of spells per class, that cannot be 
     # found from talents, or based on a SkillLine category
@@ -1624,10 +1624,16 @@ class SpellDataGenerator(DataGenerator):
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
+            if generic_spell_id in ids.keys():
+                sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
+                    generic_spell_id, self._spell_db[generic_spell_id].name) )
             self.process_spell(generic_spell_id, ids, 0, 0)
 
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
+                if spell_tuple[0] in ids.keys():
+                    sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
+                        spell_tuple[0], self._spell_db[spell_tuple[0]].name) )
                 self.process_spell(spell_tuple[0], ids, self._class_masks[cls], 0)
         
         # After normal spells have been fetched, go through all spell ids, 
