@@ -409,6 +409,7 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" )
   {
+    direct_power_mod = 1.5; // from tooltip
     generate_fury = data().effectN( 2 ).base_value();
 
     if ( ! dtr && player -> has_dtr )
@@ -714,26 +715,6 @@ struct immolate_t : public warlock_spell_t
 };
 
 
-struct shadowflame_t : public warlock_spell_t
-{
-  shadowflame_t( warlock_t* p ) :
-    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
-  {
-    proc       = true;
-    background = true;
-    generate_fury = 2;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.05 ) )
-      p() -> buffs.molten_core -> trigger();
-  }
-};
-
-
 struct conflagrate_t : public warlock_spell_t
 {
   conflagrate_t( warlock_t* p, bool dtr = false ) :
@@ -880,6 +861,9 @@ struct soul_fire_t : public warlock_spell_t
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.tier13_4pc );
       }
     }
+
+    if ( p() -> buffs.molten_core -> check() )
+      p() -> buffs.molten_core -> expire();
   }
 
   virtual timespan_t execute_time() const
@@ -888,7 +872,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p() -> buffs.molten_core -> up() )
     {
-      t *= 1.0 - p() -> spec.molten_core -> effectN( 1 ).percent();
+      t *= 1.0 - p() -> buffs.molten_core -> data().effectN( 1 ).percent();
     }
     if ( p() -> buffs.soulburn -> up() )
     {
@@ -934,7 +918,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p() -> buffs.molten_core -> check() )
     {
-      c *= 1.0 + p() -> spec.molten_core -> effectN( 1 ).percent();
+      c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
     }
 
     return c;
@@ -1076,14 +1060,51 @@ struct cancel_metamorphosis_t : public warlock_spell_t
 };
 
 
+struct shadowflame_t : public warlock_spell_t
+{
+  shadowflame_t( warlock_t* p ) :
+    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
+  {
+    proc       = true;
+    background = true;
+    generate_fury = 2;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.05 ) )
+      p() -> buffs.molten_core -> trigger();
+  }
+};
+
+
+struct hand_of_guldan_dmg_t : public warlock_spell_t
+{
+  hand_of_guldan_dmg_t( warlock_t* p ) :
+    warlock_spell_t( "hand_of_guldan_dmg", p, p -> find_spell( 86040 ) )
+  {
+    proc       = true;
+    background = true;
+  }
+};
+
+
 struct hand_of_guldan_t : public warlock_spell_t
 {
   shadowflame_t* shadowflame;
+  hand_of_guldan_dmg_t* hog_damage;
 
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
+    current_charges = max_charges = 3;
+    recharge_seconds = 15;
+
     shadowflame = new shadowflame_t( p );
+    hog_damage  = new hand_of_guldan_dmg_t( p );
+
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -1111,6 +1132,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       shadowflame -> execute();
+      hog_damage  -> execute();
     }
   }
 };
@@ -2087,7 +2109,7 @@ void warlock_t::init_buffs()
   buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
-  buffs.molten_core           = buff_creator_t( this, "molten_core", spec.molten_core );
+  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
@@ -2116,6 +2138,7 @@ void warlock_t::init_gains()
   gains.nightfall              = get_gain( "nightfall"  );
   gains.drain_soul             = get_gain( "drain_soul" );
   gains.incinerate             = get_gain( "incinerate" );
+  gains.demonic_fury           = get_gain( "demonic_fury" );
 }
 
 
