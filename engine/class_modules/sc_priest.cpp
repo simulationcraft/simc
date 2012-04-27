@@ -180,9 +180,9 @@ public:
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    return absorb_t::action_multiplier( s ) * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
+    return absorb_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
   }
 
   virtual double cost() const
@@ -369,9 +369,9 @@ struct priest_heal_t : public heal_t
   priest_t* p() const
   { return static_cast<priest_t*>( player ); }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_crit() const
   {
-    double cc = heal_t::composite_crit( s );
+    double cc = heal_t::composite_crit();
 
     if ( p() -> buffs.chakra_serenity -> up() )
       cc += p() -> buffs.chakra_serenity -> data().effectN( 1 ).percent();
@@ -382,9 +382,9 @@ struct priest_heal_t : public heal_t
     return cc;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    return heal_t::action_multiplier( s ) * ( 1.0 + p() -> buffs.holy_archangel -> value() );
+    return heal_t::action_multiplier() * ( 1.0 + p() -> buffs.holy_archangel -> value() );
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -875,9 +875,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     p() -> spells.apparitions_free.push( this );
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( s );
+    double m = priest_spell_t::action_multiplier();
 
     // Bug: Last tested Build 15589
     if ( p() -> buffs.shadowform -> check() )
@@ -1459,9 +1459,9 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
-  virtual double action_multiplier( const action_state_t* a ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( a );
+    double m = priest_spell_t::action_multiplier();
 
     if ( p() -> buffs.dark_archangel -> check() )
     {
@@ -1489,11 +1489,11 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_target_crit( player_t* target ) const
   {
-    double c = priest_spell_t::composite_crit( s );
+    double c = priest_spell_t::composite_target_crit( target );
 
-    c += td( s -> target ) -> debuffs_mind_spike -> value() * td( s -> target ) -> debuffs_mind_spike -> stack();
+    c += td( target ) -> debuffs_mind_spike -> value() * td( target ) -> debuffs_mind_spike -> stack();
 
     return c;
   }
@@ -1543,9 +1543,9 @@ struct mind_flay_t : public priest_spell_t
     priest_spell_t::execute();
   }
 
-  virtual double action_multiplier( const action_state_t* a ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( a );
+    double m = priest_spell_t::action_multiplier();
 
     if ( p() -> buffs.dark_archangel -> up() )
     {
@@ -1634,9 +1634,9 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* a ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( a );
+    double m = priest_spell_t::action_multiplier();
 
     if ( p() -> buffs.dark_archangel -> up() )
     {
@@ -1800,9 +1800,9 @@ struct shadow_word_death_t : public priest_spell_t
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
-  virtual double action_multiplier( const action_state_t* a ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( a );
+    double m = priest_spell_t::action_multiplier();
 
     if ( p() -> buffs.dark_archangel -> up() )
     {
@@ -1944,9 +1944,9 @@ struct holy_fire_t : public priest_spell_t
     p() -> buffs.holy_evangelism  -> trigger();
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = priest_spell_t::action_multiplier( s );
+    double m = priest_spell_t::action_multiplier();
 
     m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
@@ -1989,9 +1989,9 @@ struct penance_t : public priest_spell_t
       base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
     }
 
-    virtual double action_multiplier( const action_state_t* s ) const
+    virtual double action_multiplier() const
     {
-      double m = priest_spell_t::action_multiplier( s );
+      double m = priest_spell_t::action_multiplier();
 
       m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
@@ -2087,15 +2087,22 @@ struct smite_t : public priest_spell_t
         p() -> cooldowns.penance -> reset();
     }
   }
-
-  virtual double action_multiplier( const action_state_t* s ) const
+  
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    double am = priest_spell_t::action_multiplier( s );
+    double m = priest_spell_t::composite_target_multiplier( target );
+    
+    if ( td( target ) -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
+      m *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
+    
+    return m;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = priest_spell_t::action_multiplier();
 
     am *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-    if ( td( s -> target ) -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
-      am *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2195,9 +2202,9 @@ struct binding_heal_t : public priest_heal_t
     trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_crit() const
   {
-    double cc = priest_heal_t::composite_crit( s );
+    double cc = priest_heal_t::composite_crit();
 
     if ( p() -> buffs.inner_focus -> check() )
       cc += p() -> buffs.inner_focus -> data().effectN( 2 ).percent();
@@ -2243,9 +2250,9 @@ struct circle_of_healing_t : public priest_heal_t
     priest_heal_t::execute();
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double am = priest_heal_t::action_multiplier( s );
+    double am = priest_heal_t::action_multiplier();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
@@ -2266,9 +2273,9 @@ struct divine_hymn_tick_t : public priest_heal_t
     aoe = nr_targets - 1;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double am = priest_heal_t::action_multiplier( s );
+    double am = priest_heal_t::action_multiplier();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
@@ -2329,9 +2336,9 @@ struct flash_heal_t : public priest_heal_t
     trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_crit() const
   {
-    double cc = priest_heal_t::composite_crit( s );
+    double cc = priest_heal_t::composite_crit();
 
     if ( p() -> buffs.inner_focus -> check() )
       cc += p() -> buffs.inner_focus -> data().effectN( 2 ).percent();
@@ -2412,9 +2419,9 @@ struct greater_heal_t : public priest_heal_t
     trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_crit() const
   {
-    double cc = priest_heal_t::composite_crit( s );
+    double cc = priest_heal_t::composite_crit();
 
     if ( p() -> buffs.inner_focus -> check() )
       cc += p() -> buffs.inner_focus -> data().effectN( 2 ).percent();
@@ -2473,9 +2480,9 @@ struct holy_word_sanctuary_t : public priest_heal_t
       direct_tick = true;
     }
 
-    virtual double action_multiplier( const action_state_t* s ) const
+    virtual double action_multiplier() const
     {
-      double am = priest_heal_t::action_multiplier( s );
+      double am = priest_heal_t::action_multiplier();
 
       if ( p() -> buffs.chakra_sanctuary -> up() )
         am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
@@ -2891,9 +2898,9 @@ struct prayer_of_healing_t : public priest_heal_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double am = priest_heal_t::action_multiplier( s );
+    double am = priest_heal_t::action_multiplier();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
@@ -2901,9 +2908,9 @@ struct prayer_of_healing_t : public priest_heal_t
     return am;
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_crit() const
   {
-    double cc = priest_heal_t::composite_crit( s );
+    double cc = priest_heal_t::composite_crit();
 
     if ( p() -> buffs.inner_focus -> check() )
       cc += p() -> buffs.inner_focus -> data().effectN( 2 ).percent();
@@ -2945,9 +2952,9 @@ struct prayer_of_mending_t : public priest_heal_t
     aoe = 4;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double am = priest_heal_t::action_multiplier( s );
+    double am = priest_heal_t::action_multiplier();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
@@ -3003,9 +3010,9 @@ struct renew_t : public priest_heal_t
     num_ticks       += ( int ) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double am = priest_heal_t::action_multiplier( s );
+    double am = priest_heal_t::action_multiplier();
 
     if ( p() -> buffs.chakra_sanctuary -> up() )
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();

@@ -465,11 +465,11 @@ struct shaman_spell_t : public spell_t
     return spell_t::usable_moving();
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_target_crit( player_t* target ) const
   {
-    double c = spell_t::composite_crit( s );
+    double c = spell_t::composite_target_crit( target );
 
-    shaman_targetdata_t* td = targetdata( s -> target );
+    shaman_targetdata_t* td = targetdata( target );
     if ( school == SCHOOL_NATURE && td -> debuffs_stormstrike -> up() )
       c += td -> debuffs_stormstrike -> data().effectN( 1 ).percent();
 
@@ -492,9 +492,9 @@ struct shaman_spell_t : public spell_t
     return h;
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier() const
   {
-    double m = spell_t::composite_da_multiplier( s );
+    double m = spell_t::composite_da_multiplier();
 
     if ( maelstrom && p() -> buff.maelstrom_weapon -> stack() > 0 )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -532,7 +532,7 @@ struct eoe_execute_event_t : public event_t
     // EoE proc re-executes the "effect" with the same snapshot stats
     shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( spell -> get_state( spell -> execute_state ) );
     ss -> eoe_proc = true;
-    ss -> result = spell -> calculate_result( ss -> crit,
+    ss -> result = spell -> calculate_result( ss -> composite_crit(),
                                               ss -> target -> level );
     if ( spell -> result_is_hit( ss -> result ) )
       ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0,
@@ -1401,12 +1401,12 @@ struct lava_burst_overload_t : public shaman_spell_t
     }
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_target_crit( player_t* target ) const
   {
-    if ( targetdata( s -> target ) -> dots_flame_shock -> ticking )
+    if ( targetdata( target ) -> dots_flame_shock -> ticking )
       return 1.0;
     else
-      return shaman_spell_t::composite_crit( s );
+      return shaman_spell_t::composite_target_crit( target );
   }
 };
 
@@ -1506,12 +1506,12 @@ struct searing_flames_t : public shaman_spell_t
     shaman_spell_t::init();
 
     // Override snapshot flags
-    snapshot_flags = STATE_HASTE | STATE_CRIT | STATE_MUL_TA;
+    snapshot_flags = STATE_HASTE | STATE_CRIT | STATE_TGT_CRIT | STATE_TGT_MUL_TA;
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    return targetdata( s -> target ) -> debuffs_searing_flames -> stack();
+    return targetdata( target ) -> debuffs_searing_flames -> stack();
   }
 
   void last_tick( dot_t* d )
@@ -1541,9 +1541,9 @@ struct lightning_charge_t : public shaman_spell_t
     }
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier() const
   {
-    double m = spell_t::composite_da_multiplier( s );
+    double m = shaman_spell_t::composite_da_multiplier();
 
     if ( threshold > 0 )
     {
@@ -1903,11 +1903,11 @@ struct lava_lash_t : public shaman_melee_attack_t
   // Lava Lash multiplier calculation from
   // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
   // MoP: Vastly simplified, most bonuses are gone
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    double m = shaman_melee_attack_t::action_multiplier( s );
+    double m = shaman_melee_attack_t::composite_target_multiplier( target );
 
-    m *= 1.0 + ( targetdata( s -> target ) -> debuffs_searing_flames -> check() * sf_bonus ) +
+    m *= 1.0 + ( targetdata( target ) -> debuffs_searing_flames -> check() * sf_bonus ) +
                ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
@@ -2493,9 +2493,9 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = shaman_spell_t::action_multiplier( s );
+    double m = shaman_spell_t::action_multiplier();
 
     if ( p() -> buff.unleash_flame -> up() )
       m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
@@ -2514,12 +2514,12 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_crit( const action_state_t* s ) const
+  virtual double composite_target_crit( player_t* target ) const
   {
-    if ( targetdata( s -> target ) -> dots_flame_shock -> ticking )
+    if ( targetdata( target ) -> dots_flame_shock -> ticking )
       return 1.0;
     else
-      return shaman_spell_t::composite_crit( s );
+      return shaman_spell_t::composite_target_crit( target );
   }
 
   virtual void execute()

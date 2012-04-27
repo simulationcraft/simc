@@ -160,7 +160,7 @@ action_t::action_t( action_type_e       ty,
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
-  update_flags = STATE_MUL_TGT_DA | STATE_MUL_TGT_TA;
+  update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA;
   state_cache = 0;
   execute_state = 0;
 
@@ -894,7 +894,7 @@ void action_t::execute()
         action_state_t* s = get_state();
         s -> target = tl[ t ];
         snapshot_state( s, snapshot_flags );
-        s -> result = calculate_result( s -> crit, s -> target -> level );
+        s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
         if ( result_is_hit( s -> result ) )
           s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
@@ -910,7 +910,7 @@ void action_t::execute()
       action_state_t* s = get_state();
       s -> target = target;
       snapshot_state( s, snapshot_flags );
-      s -> result = calculate_result( s -> crit, s -> target -> level );
+      s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
         s -> result_amount = calculate_direct_damage( s -> result, 0, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
@@ -970,7 +970,7 @@ void action_t::tick( dot_t* d )
 
     if ( tick_may_crit )
     {
-      if ( rng_result -> roll( crit_chance( d -> state -> crit, d -> state -> target -> level - player -> level ) ) )
+      if ( rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
         d -> state -> result = RESULT_CRIT;
     }
 
@@ -1358,13 +1358,13 @@ void action_t::init()
   }
 
   if ( may_crit || tick_may_crit )
-    snapshot_flags |= STATE_CRIT;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( base_td > 0 || num_ticks > 0 )
-    snapshot_flags |= STATE_MUL_TA | STATE_MUL_TGT_TA;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
 
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
-    snapshot_flags |= STATE_MUL_DA | STATE_MUL_TGT_DA;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
   if ( ! ( background || sequence ) )
     player->foreground_action_list.push_back( this );
@@ -1777,7 +1777,7 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
   assert( state );
 
   if ( flags & STATE_CRIT )
-    state -> crit = composite_crit( state );
+    state -> crit = composite_crit();
 
   if ( flags & STATE_HASTE )
     state -> haste = composite_haste();
@@ -1789,15 +1789,18 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> spell_power = util::round( composite_spell_power() * composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
-    state -> da_multiplier = composite_da_multiplier( state );
+    state -> da_multiplier = composite_da_multiplier();
 
   if ( flags & STATE_MUL_TA )
-    state -> ta_multiplier = composite_ta_multiplier( state );
+    state -> ta_multiplier = composite_ta_multiplier();
 
-  if ( flags & STATE_MUL_TGT_DA )
+  if ( flags & STATE_TGT_MUL_DA )
     state -> target_da_multiplier = composite_target_da_multiplier( state -> target );
 
-  if ( flags & STATE_MUL_TGT_TA )
+  if ( flags & STATE_TGT_MUL_TA )
     state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
+  
+  if ( flags & STATE_TGT_CRIT )
+    state -> target_crit = composite_target_crit( state -> target );
 }
 

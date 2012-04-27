@@ -906,8 +906,9 @@ enum snapshot_state_e
 
   STATE_MUL_DA        = 0x000010,
   STATE_MUL_TA        = 0x000020,
-  STATE_MUL_TGT_DA    = 0x000040,
-  STATE_MUL_TGT_TA    = 0x000080,
+  STATE_TGT_CRIT      = 0x000100,
+  STATE_TGT_MUL_DA    = 0x000200,
+  STATE_TGT_MUL_TA    = 0x000400,
 };
 
 enum ready_type_e
@@ -4196,30 +4197,31 @@ public:
 
   virtual void   snapshot_state( action_state_t*, uint32_t );
 
-  virtual double action_multiplier( const action_state_t* ) const { return base_multiplier; }
+  virtual double action_multiplier() const { return base_multiplier; }
   virtual double action_da_multiplier() const { return base_dd_multiplier; }
   virtual double action_ta_multiplier() const { return base_td_multiplier; }
 
   virtual double composite_hit() const { return base_hit; }
   virtual double composite_expertise() const { return 0.0; }
-  virtual double composite_crit( const action_state_t* ) const { return base_crit; }
+  virtual double composite_crit() const { return base_crit; }
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power + player -> composite_attack_power(); }
   virtual double composite_attack_power_multiplier() const { return base_attack_power_multiplier * player -> composite_attack_power_multiplier(); }
   virtual double composite_spell_power() const { return base_spell_power + player -> composite_spell_power( school ); }
   virtual double composite_spell_power_multiplier() const { return base_spell_power_multiplier * player -> composite_spell_power_multiplier(); }
+  virtual double composite_target_crit( player_t* /* target */ ) const { return 0.0; }
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
   virtual double composite_target_ta_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier() const
   {
-    return action_multiplier( s ) * action_da_multiplier() *
+    return action_multiplier() * action_da_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_dd_multiplier( school, this );
   }
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier() const
   {
-    return action_multiplier( s ) * action_ta_multiplier() *
+    return action_multiplier() * action_ta_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_td_multiplier( school, this );
   }
@@ -4236,6 +4238,7 @@ struct action_state_t
   // Snapshotted stats during execution
   double          haste;
   double          crit;
+  double          target_crit;
   double          attack_power;
   double          spell_power;
   // Multipliers
@@ -4252,6 +4255,11 @@ struct action_state_t
   virtual void copy_state( const action_state_t* );
 
   virtual void debug() const;
+  
+  virtual double composite_crit() const
+  {
+    return crit + target_crit;
+  }
 
   virtual double composite_power() const
   {
@@ -4297,8 +4305,8 @@ struct attack_t : public action_t
   /* New stuffs */
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> composite_attack_hit(); }
-  virtual double composite_crit( const action_state_t* s ) const
-  { return action_t::composite_crit( s ) + player -> composite_attack_crit( weapon ); }
+  virtual double composite_crit() const
+  { return action_t::composite_crit() + player -> composite_attack_crit( weapon ); }
   virtual double composite_haste() const
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
 };
@@ -4363,8 +4371,8 @@ struct spell_base_t : public action_t
   virtual void   init();
 
   /* New stuffs */
-  virtual double composite_crit( const action_state_t* s ) const
-  { return action_t::composite_crit( s ) + player -> composite_spell_crit(); }
+  virtual double composite_crit() const
+  { return action_t::composite_crit() + player -> composite_spell_crit(); }
   virtual double composite_haste() const { return action_t::composite_haste() * player -> composite_spell_haste(); }
 };
 

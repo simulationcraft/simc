@@ -233,9 +233,9 @@ public:
     return t;
   }
 
-  virtual double action_dd_multiplier( const action_state_t* s ) const
+  virtual double action_da_multiplier() const
   {
-    double m = spell_t::action_multiplier( s );
+    double m = spell_t::action_da_multiplier();
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && aoe == 0 )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -328,9 +328,9 @@ struct agony_t : public warlock_spell_t
     return warlock_spell_t::calculate_tick_damage( r, p, m ) * ( 70 + 5 * damage_level ) / 12;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
     {
@@ -351,9 +351,9 @@ struct doom_t : public warlock_spell_t
     tick_power_mod = 1.0; // from tooltip
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
     {
@@ -439,9 +439,9 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = spell_t::action_multiplier( s );
+    double m = spell_t::action_multiplier();
 
     // The extra flat 0.1 is from the tooltip
     m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
@@ -478,9 +478,9 @@ struct corruption_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
     {
@@ -563,11 +563,11 @@ struct drain_soul_t : public warlock_spell_t
     tick_power_mod = 2; // from tooltip
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::composite_target_multiplier( target );
 
-    if ( s -> target -> health_percentage() < data().effectN( 3 ).base_value() )
+    if ( target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
       m *= 2.0;
     }
@@ -632,9 +632,9 @@ struct unstable_affliction_t : public warlock_spell_t
     tick_power_mod = 0.2; // from tooltip
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
     {
@@ -686,9 +686,9 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
-  virtual double action_dd_multiplier( const action_state_t* s ) const
+  virtual double action_da_multiplier() const
   {
-    double m = warlock_spell_t::action_dd_multiplier( s );
+    double m = warlock_spell_t::action_da_multiplier();
     
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -727,9 +727,9 @@ struct conflagrate_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -758,9 +758,9 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -887,9 +887,9 @@ struct soul_fire_t : public warlock_spell_t
     return r;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
@@ -923,9 +923,9 @@ struct chaos_bolt_t : public warlock_spell_t
     return r;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     // The extra flat 0.25 is from the tooltip
     m *= 1.0 + 0.25 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
@@ -1081,9 +1081,9 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     // Exclude demonology because it's already covered by warlock_spell_t::action_dd_multiplier()
 
@@ -1108,9 +1108,9 @@ struct malefic_grasp_t : public warlock_spell_t
     may_crit     = false;
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double m = warlock_spell_t::action_multiplier( s );
+    double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 

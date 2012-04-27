@@ -420,11 +420,11 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
     }
   }
 
-  virtual double action_multiplier( const action_state_t* s ) const
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    double m = warlock_pet_spell_t::action_multiplier( s );
-
-    if ( s -> target -> health_percentage() < 20 )
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+    
+    if ( target -> health_percentage() < 20 )
     {
       m *= 1.0 + data().effectN( 2 ).percent();
     }
