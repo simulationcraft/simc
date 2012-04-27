@@ -3071,7 +3071,7 @@ struct faerie_fire_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   incarnation_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> find_talent_spell( "Incarnation" )
+    druid_spell_t( "incarnation", player, player -> find_talent_spell( "Incarnation" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4548,7 +4548,7 @@ void druid_t::init_actions()
         action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
       }
       action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-      if ( specialization.moonkin_form -> ok() )
+      if ( primary_tree() == DRUID_BALANCE )
         action_list_str += "/moonkin_form";
       action_list_str += "/snapshot_stats";
       action_list_str += "/volcanic_potion,if=!in_combat";
