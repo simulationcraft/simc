@@ -129,8 +129,13 @@ static const _weapon_list_t voidwalker_weapon[]=
 };
 
 }
+
 namespace warlock_pet_actions {
 
+static double get_fury_gain( const spell_data_t& data )
+{
+  return data.effectN( 3 ).base_value();
+}
 
 // ==========================================================================
 // Warlock Pet Melee
@@ -138,18 +143,32 @@ namespace warlock_pet_actions {
 
 struct warlock_pet_melee_t : public melee_attack_t
 {
+  double generate_fury;
+
   warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
-    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL )
+    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL ), generate_fury( 0 )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     may_crit    = true;
     background  = true;
     repeating   = true;
+    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
+  
+  virtual void assess_damage( player_t*     t,
+                                double        amount,
+                                dmg_type_e    type,
+                                result_type_e result )
+  {
+    melee_attack_t::assess_damage( t, amount, type, result );
+
+    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
+  }
 };
 
 // ==========================================================================
@@ -158,12 +177,15 @@ struct warlock_pet_melee_t : public melee_attack_t
 
 struct warlock_pet_melee_attack_t : public melee_attack_t
 {
+  double generate_fury;
+
   warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    melee_attack_t( n, p, p -> find_pet_spell( n ), sc )
+    melee_attack_t( n, p, p -> find_pet_spell( n ), sc ), generate_fury( 0 )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
+    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
@@ -172,6 +194,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
+    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_t* p() const
@@ -184,8 +207,18 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
     return melee_attack_t::ready();
   }
-};
+  
+  virtual void assess_damage( player_t*     t,
+                                double        amount,
+                                dmg_type_e    type,
+                                result_type_e result )
+  {
+    melee_attack_t::assess_damage( t, amount, type, result );
 
+    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
+  }
+};
 
 // ==========================================================================
 // Warlock Pet Spell
@@ -193,17 +226,20 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
 struct warlock_pet_spell_t : public spell_t
 {
+  double generate_fury;
 
   warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_pet_spell( n ), sc )
+    spell_t( n, p, p -> find_pet_spell( n ), sc ), generate_fury( 0 )
   {
     may_crit = true;
+    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( token, p, s, sc )
+    spell_t( token, p, s, sc ), generate_fury( 0 )
   {
     may_crit = true;
+    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_t* p() const
@@ -216,7 +252,17 @@ struct warlock_pet_spell_t : public spell_t
 
     return spell_t::ready();
   }
+  
+  virtual void assess_damage( player_t*     t,
+                                double        amount,
+                                dmg_type_e    type,
+                                result_type_e result )
+  {
+    spell_t::assess_damage( t, amount, type, result );
 
+    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
+  }
 };
 
 }
@@ -770,7 +816,6 @@ felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string&
   warlock_main_pet_t( sim, owner, name, PET_FELGUARD )
 {
   action_list_str += "/snapshot_stats";
-  action_list_str += "/felstorm";
   action_list_str += "/legion_strike";
 }
 

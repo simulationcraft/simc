@@ -252,14 +252,6 @@ public:
     }
   }
 
-  static void trigger_decimation( warlock_spell_t* s, int result )
-  {
-    warlock_t* p = s -> p();
-    if ( ( result != RESULT_HIT ) && ( result != RESULT_CRIT ) ) return;
-    if ( s -> target -> health_percentage() > p -> spec.decimation -> effectN( 2 ).base_value() ) return;
-    p -> buffs.decimation -> trigger();
-  }
-
   static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
   {
     if ( dot -> ticking )
@@ -277,7 +269,6 @@ public:
                                        * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
     }
   }
-
 
   virtual void assess_damage( player_t*     t,
                                 double        amount,
@@ -418,7 +409,7 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" )
   {
-    generate_fury = 25;
+    generate_fury = data().effectN( 2 ).base_value();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -432,11 +423,7 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-    {
-      trigger_decimation( this, s -> result );
-
       trigger_soul_leech( p(), s -> result_amount );
-    }
   }
 
   virtual bool ready()
@@ -730,11 +717,19 @@ struct immolate_t : public warlock_spell_t
 struct shadowflame_t : public warlock_spell_t
 {
   shadowflame_t( warlock_t* p ) :
-    warlock_spell_t( p, "Shadowflame" )
+    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
     proc       = true;
     background = true;
     generate_fury = 2;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.05 ) )
+      p() -> buffs.molten_core -> trigger();
   }
 };
 
@@ -864,6 +859,8 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
+    generate_fury = data().effectN( 2 ).base_value();
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new soul_fire_t( p, true );
@@ -889,9 +886,9 @@ struct soul_fire_t : public warlock_spell_t
   {
     timespan_t t = warlock_spell_t::execute_time();
 
-    if ( p() -> buffs.decimation -> up() )
+    if ( p() -> buffs.molten_core -> up() )
     {
-      t *= 1.0 - p() -> spec.decimation -> effectN( 1 ).percent();
+      t *= 1.0 - p() -> spec.molten_core -> effectN( 1 ).percent();
     }
     if ( p() -> buffs.soulburn -> up() )
     {
@@ -905,7 +902,8 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    trigger_decimation( this, s -> result );
+    if ( s -> target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+      p() -> buffs.molten_core -> trigger();
   }
 
   virtual result_type_e calculate_result( double crit, unsigned int level )
@@ -928,6 +926,18 @@ struct soul_fire_t : public warlock_spell_t
     m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
 
     return m;
+  }
+
+  virtual double cost() const
+  {
+    double c = warlock_spell_t::cost();
+
+    if ( p() -> buffs.molten_core -> check() )
+    {
+      c *= 1.0 + p() -> spec.molten_core -> effectN( 1 ).percent();
+    }
+
+    return c;
   }
 };
 
@@ -1109,7 +1119,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 struct demonic_slash_t : public warlock_spell_t
 {
   demonic_slash_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Demonic Slash" )
+    warlock_spell_t( "demonic_slash", p, p -> find_spell( 103964 ) )
   {
     direct_power_mod = 0.8; // from tooltip
 
@@ -1876,6 +1886,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "doom"                  ) a = new                  doom_t( this );
   else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
   else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
+  else if ( name == "demonic_slash"         ) a = new         demonic_slash_t( this );
   else if ( name == "drain_life"            ) a = new            drain_life_t( this );
   else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
@@ -2075,7 +2086,6 @@ void warlock_t::init_buffs()
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
-  buffs.decimation            = buff_creator_t( this, "decimation", spec.decimation );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
   buffs.molten_core           = buff_creator_t( this, "molten_core", spec.molten_core );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
@@ -2128,7 +2138,8 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  rngs.nightfall               = get_rng( "nightfall" );
+  rngs.molten_core = get_rng( "molten_core" );
+  rngs.nightfall   = get_rng( "nightfall" );
 }
 
 

@@ -51,7 +51,6 @@ struct warlock_t : public player_t
   {
     buff_t* backdraft;
     buff_t* dark_soul;
-    buff_t* decimation;
     buff_t* metamorphosis;
     buff_t* molten_core;
     buff_t* soulburn;
@@ -156,6 +155,7 @@ struct warlock_t : public player_t
   // Random Number Generators
   struct rngs_t
   {
+    rng_t* molten_core;
     rng_t* nightfall;
   } rngs;
 
