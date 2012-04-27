@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (50)
+#define CLASS_ABILITY_SIZE (49)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 // Class based active abilities, wow build 15640
@@ -59,7 +59,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34428, // Victory Rush
            0,
     },
-    // Arms tree, 6 abilities
+    // Arms tree, 7 abilities
     {
        86346, // Colossus Smash (Arms, Fury)
       118038, // Die by the Sword (Arms, Fury)
@@ -67,11 +67,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         7384, // Overpower
         1464, // Slam
        12328, // Sweeping Strikes
+        1680, // Whirlwind (Arms, Fury)
            0,
     },
-    // Fury tree, 4 abilities
+    // Fury tree, 6 abilities
     {
        23881, // Bloodthirst
+       86346, // Colossus Smash (Arms, Fury)
+      118038, // Die by the Sword (Arms, Fury)
        85288, // Raging Blow
         1680, // Whirlwind (Arms, Fury)
       100130, // Wild Strike
@@ -139,12 +142,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 6 abilities
+    // Protection tree, 7 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
        26573, // Consecration
        86659, // Guardian of Ancient Kings
+       53595, // Hammer of the Righteous
       119072, // Holy Wrath
        53600, // Shield of the Righteous
            0,
@@ -211,11 +215,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        82654, // Widow Venom
            0,
     },
-    // Beast Mastery tree, 4 abilities
+    // Beast Mastery tree, 5 abilities
     {
        19574, // Bestial Wrath
        77767, // Cobra Shot
        82692, // Focus Fire
+       19577, // Intimidation
        34026, // Kill Command
            0,
     },
@@ -225,16 +230,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        53209, // Chimera Shot
            0,
     },
-    // Survival tree, 2 abilities
+    // Survival tree, 3 abilities
     {
         3674, // Black Arrow
+       77767, // Cobra Shot
        53301, // Explosive Shot
            0,
     },
     {
            0,
     },
-    // Pet tree, 50 abilities
+    // Pet tree, 49 abilities
     {
        55749, // Acid Spit (Special Ability)
        90355, // Ancient Hysteria
@@ -256,7 +262,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2649, // Growl
        93434, // Horn Toss (Exotic Ability)
        19577, // Intimidation
-       24394, // Intimidation
        58604, // Lava Breath (Special Ability)
        24844, // Lightning Breath (Special Ability)
        90327, // Lock Jaw (Special Ability)
@@ -388,17 +393,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       108968, // Void Shift
            0,
     },
-    // Discipline tree, 6 abilities
+    // Discipline tree, 8 abilities
     {
+        2050, // Heal
        89485, // Inner Focus
        33206, // Pain Suppression
        47540, // Penance
        62618, // Power Word: Barrier
+         596, // Prayer of Healing
          527, // Purify
       109964, // Spirit Shell
            0,
     },
-    // Holy tree, 11 abilities
+    // Holy tree, 12 abilities
     {
        81209, // Chakra: Chastise
        81206, // Chakra: Sanctuary
@@ -411,6 +418,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        88625, // Holy Word: Chastise
          724, // Lightwell
          596, // Prayer of Healing
+         527, // Purify
            0,
     },
     // Shadow tree, 10 abilities
@@ -565,12 +573,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8232, // Windfury Weapon
            0,
     },
-    // Restoration tree, 8 abilities
+    // Restoration tree, 9 abilities
     {
          974, // Earth Shield
        51730, // Earthliving Weapon
        77472, // Greater Healing Wave
          331, // Healing Wave
+       51505, // Lava Burst
        16190, // Mana Tide Totem
        77130, // Purify Spirit
        61295, // Riptide
@@ -580,13 +589,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 5 abilities
     {
        36213, // Angered Earth
        57984, // Fire Blast
-       12470, // Fire Nova
       117588, // Fire Nova
-       13376, // Fire Shield
       118297, // Immolate
       118345, // Pulverize
            0,
@@ -719,7 +726,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30146, // Summon Felguard (Summon)
            0,
     },
-    // Destruction tree, 10 abilities
+    // Destruction tree, 11 abilities
     {
       116858, // Chaos Bolt (Destruction)
        17962, // Conflagrate
@@ -730,6 +737,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
+        5740, // Rain of Fire
        17877, // Shadowburn
            0,
     },
@@ -842,7 +850,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 46 abilities
+    // General tree, 45 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -873,7 +881,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        16689, // Nature's Grasp
        17116, // Nature's Swiftness
         9005, // Pounce (Cat Form)
-        5215, // Prowl (Cat Form)
         1822, // Rake (Cat Form)
        20484, // Rebirth
          774, // Rejuvenation
@@ -892,19 +899,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath
            0,
     },
-    // Balance tree, 7 abilities
+    // Balance tree, 9 abilities
     {
+      106996, // Astral Storm
        24858, // Moonkin Form (Shapeshift)
        78675, // Solar Beam
        48505, // Starfall
         2912, // Starfire
        78674, // Starsurge
+       93402, // Sunfire
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
            0,
     },
-    // Feral tree, 6 abilities
+    // Feral tree, 7 abilities
     {
+      106952, // Berserk
         6785, // Ravage (Cat Form)
         1079, // Rip (Cat Form)
        52610, // Savage Roar (Cat Form)
@@ -913,16 +923,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury (Cat Form)
            0,
     },
-    // Guardian tree, 5 abilities
+    // Guardian tree, 6 abilities
     {
       102795, // Bear Hug
       106952, // Berserk
         5229, // Enrage (Bear Form)
        62606, // Savage Defense (Bear Form)
+      106839, // Skull Bash
        61336, // Survival Instincts (Bear Form)
            0,
     },
-    // Restoration tree, 8 abilities
+    // Restoration tree, 9 abilities
     {
       102342, // Ironbark
        33763, // Lifebloom
@@ -931,6 +942,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8936, // Regrowth
        18562, // Swiftmend
        48438, // Wild Growth
+       88747, // Wild Mushroom
       102791, // Wild Mushroom: Bloom
            0,
     },

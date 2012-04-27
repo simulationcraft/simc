@@ -70,9 +70,9 @@ _DIFF_DATA = {
         
     },
     15640 : {
-	'SpellClassOptions.dbc' : [
-	    ( 'unk_15464', _REMOVE_FIELD ),
-	],
+        'SpellClassOptions.dbc' : [
+            ( 'ofs_desc', _REMOVE_FIELD ),
+        ],
         'SkillLineAbility.dbc' : [
             ( 'unk_15640', _ADD_FIELD, 'min_value' ),
         ],
@@ -296,8 +296,7 @@ _DBC_FIELDS = {
         'f41', 'f42', 'f43', 'f44',
     ],
     'SpellClassOptions.dbc' : [
-          'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), 'spell_family_name', 'desc',
-          'unk_15464'
+          'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), ( 'spell_family_flags_4', '%#.8x' ), 'spell_family_name', 'ofs_desc'
     ],
     'SpellCastingRequirements.dbc' : [
           'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
@@ -760,34 +759,24 @@ class SpellPower(DBCRecord):
 
         return f
 
-class TalentTab(DBCRecord):
+class SpellClassOptions(DBCRecord):
     def __init__(self, dbc_parser, record):
         DBCRecord.__init__(self, dbc_parser, record)
 
-        self.name     = 0
-        self.desc     = 0
-        self.internal_name = 0
+        self.desc     = ''
 
     def parse(self):
         DBCRecord.parse(self)
 
         # Find DBCStrings available for the spell
-        if self.ofs_name != 0:
-            self.name = self._dbc_parser.get_string_block(self.ofs_name)
-
-        if self.ofs_internal_name != 0:
-            self.internal_name = self._dbc_parser.get_string_block(self.ofs_internal_name)
-
         if self.ofs_desc != 0:
             self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
-    
+
     def __str__(self):
-        s = 'name="%s" internal_name="%s" ' % (self.name, self.internal_name)
+        s = DBCRecord.__str__(self)
 
         if self.desc:
             s += 'desc=\"%s\" ' % self.desc
-
-        s += DBCRecord.__str__(self)
 
         return s
 

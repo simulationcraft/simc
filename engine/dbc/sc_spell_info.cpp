@@ -561,6 +561,28 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 
   if ( spell -> extra_coeff() > 0 )
     s << "Coefficient   : " << spell -> extra_coeff() << std::endl;
+  
+  s << "Attributes    : ";
+  for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
+  {
+    for ( unsigned flag = 0; flag < 32; flag++ )
+    {
+      if ( spell -> _attributes[ i ] & (1 << flag ) )
+        s << "x";
+      else
+        s << ".";
+      
+      if ( ( flag + 1 ) % 8 == 0 )
+        s << " ";
+      
+      if ( flag == 31 && i % 2 == 0 )
+        s << "  ";
+    }
+    
+    if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
+      s << std::endl << "              : ";
+  }
+  s << std::endl;
 
   s << "Effects       :" << std::endl;
 

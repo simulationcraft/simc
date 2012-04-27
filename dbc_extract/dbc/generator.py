@@ -934,11 +934,14 @@ class SpellDataGenerator(DataGenerator):
     
     # Explicitly included list of spells per class, that cannot be 
     # found from talents, or based on a SkillLine category
-    # The list contains a tuple ( spell_id, category ), 
+    # The list contains a tuple ( spell_id, category[, activated ] ), 
     # where category is an entry in the _class_categories class-specific
     # tuples, e.g. general = 0, specialization0..3 = 1..4 and pets as a whole
-    # are 5. Manually entered general spells do not appear in class activated lists, even if
-    # they pass the "activated" check
+    # are 5. The optional activated parameter forces the spell to appear (if set 
+    # to True) or disappear (if set to False) from the class activated spell list, 
+    # regardless of the automated activated check.
+    # Manually entered general spells ("tree" 0) do not appear in class activated lists, even if
+    # they pass the "activated" check.
     # The first tuple in the list is for non-class related, generic spells that are whitelisted,
     # without a category
     _spell_id_list = [
@@ -955,7 +958,8 @@ class SpellDataGenerator(DataGenerator):
         ( ( 63619, 5 ), ( 94472, 0 ), ( 114255, 0 ), ( 114257, 0 ) ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. From Darkness Comes Light spells
         ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 5 ), ), # DK: Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike.
         (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
-            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ) ),     # Shaman Greater Fire Elemental abilities
+#            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ),       # Shaman Greater Fire Elemental abilities
+        ),     
         ( 
             ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
@@ -963,7 +967,7 @@ class SpellDataGenerator(DataGenerator):
         ), 
         ( ( 85692, 5 ), ),     # Warlock: doomguard "Doom Bolt"
         (), # Monk:
-        ( ( 93402, 1 ), ), # Druid: Whitelist Sunfire
+        ( ( 93402, 1, True ), ( 106996, 1, True ), ), # Druid: Whitelist Sunfire
     ]
 
     # Class specific item sets, T13
@@ -2293,10 +2297,6 @@ class SpellListGenerator(SpellDataGenerator):
             if not spell.id:
                 continue
 
-            # Skip triggered spells
-            if ability_data.id_spell in triggered_spell_ids:
-                continue
-
             # Blacklist all triggered spells for this
             for effect in spell._effects:
                 if not effect:
@@ -2314,8 +2314,7 @@ class SpellListGenerator(SpellDataGenerator):
             else:
                 ids[ability_data.id_spell] = { 
                     'mask_class': ability_data.mask_class or mask_class,
-                    'tree'      : spell_tree,
-                    'tree_name' : spell_tree_name,
+                    'tree'      : [ spell_tree ]
                 }
 
         # Specialization spells
@@ -2335,11 +2334,12 @@ class SpellListGenerator(SpellDataGenerator):
         
             if ids.get(ss_data.spell_id):
                 ids[ss_data.spell_id]['mask_class'] |= DataGenerator._class_masks[chrspec.class_id]
+                if chrspec.spec_id + 1 not in ids[ss_data.spell_id]['tree']:
+                    ids[ss_data.spell_id]['tree'].append( chrspec.spec_id + 1 )
             else:
                 ids[ss_data.spell_id] = { 
                     'mask_class': DataGenerator._class_masks[chrspec.class_id],
-                    'tree'      : chrspec.spec_id + 1,
-                    'tree_name' : chrspec.name,
+                    'tree'      : [ chrspec.spec_id + 1 ]
                 }
 
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
@@ -2352,17 +2352,26 @@ class SpellListGenerator(SpellDataGenerator):
                 if not spell.id:
                     continue
 
-                if not self.spell_state(spell):
+                if len(spell_tuple) == 2 and not self.spell_state(spell):
+                    continue
+                elif len(spell_tuple) == 3 and spell_tuple[2] == False:
                     continue
 
                 if ids.get(spell_tuple[0]):
                     ids[spell_tuple[0]]['mask_class'] |= self._class_masks[cls]
+                    if spell_tuple[1] not in ids[spell_tuple[0]]['tree']:
+                        ids[spell_tuple[0]]['tree'].append( spell_tuple[1] )
                 else:
                     ids[spell_tuple[0]] = { 
                         'mask_class': self._class_masks[cls], 
-                        'tree'      : spell_tuple[1],
-                        'tree_name' : spell_tuple[1] == 5 and 'Pet' or None
+                        'tree'      : [ spell_tuple[1] ],
                     }
+
+        # Finally, go through the spells and remove any triggered spell
+        # as the order in dbcs is arbitrary
+        for id in ids.keys():
+            if id in triggered_spell_ids:
+                del ids[id]
 
         return ids
 
@@ -2389,7 +2398,8 @@ class SpellListGenerator(SpellDataGenerator):
                 continue
 
             spell = self._spell_db[k]
-            keys[self._class_map[v['mask_class']]][v['tree']].append(( spell.name, spell.id ))
+            for tree in v['tree']:
+                keys[self._class_map[v['mask_class']]][tree].append(( spell.name, spell.id ))
 
         # Find out the maximum size of a key array
         max_ids = 0
@@ -2424,9 +2434,19 @@ class SpellListGenerator(SpellDataGenerator):
             for j in xrange(0, len(keys[i])):
                 # See if we can describe the tree
                 for t in keys[i][j]:
-                    if ids[t[1]]['tree_name']:
-                        s += '    // %s tree, %d abilities\n' % ( ids[keys[i][j][0][1]]['tree_name'], len(keys[i][j]) )
-                        break
+                    tree_name = ''
+                    if j == 0:
+                        tree_name = 'General'
+                    elif j == 5:
+                        tree_name = 'Pet'
+                    else:
+                        for chrspec_id, chrspec_data in self._chrspecialization_db.iteritems():
+                            if chrspec_data.class_id == i and chrspec_data.spec_id == j - 1:
+                                tree_name = chrspec_data.name
+                                break
+                    
+                    s += '    // %s tree, %d abilities\n' % ( tree_name, len(keys[i][j]) )
+                    break
                 s += '    {\n'
                 for spell_id in sorted(keys[i][j], key = lambda k_: k_[0]):
                     r = ''
