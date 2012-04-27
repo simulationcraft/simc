@@ -123,6 +123,7 @@ private:
 
 public:
   int recharge_seconds, max_charges, current_charges;
+  double generate_fury;
 
   struct recharge_event_t : event_t
   {
@@ -153,13 +154,13 @@ public:
   recharge_event_t* recharge_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_class_spell( n ), sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 )
+    spell_t( n, p, p -> find_class_spell( n ), sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 ), generate_fury( 0 )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( token, p, s, sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 )
+    spell_t( token, p, s, sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 ), generate_fury( 0 )
   {
     _init_warlock_spell_t();
   }
@@ -275,6 +276,18 @@ public:
       dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
                                        * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
     }
+  }
+
+
+  virtual void assess_damage( player_t*     t,
+                                double        amount,
+                                dmg_type_e    type,
+                                result_type_e result )
+  {
+    spell_t::assess_damage( t, amount, type, result );
+
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
   }
 };
 
@@ -405,13 +418,14 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" )
   {
+    generate_fury = 25;
+
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new shadow_bolt_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
   }
-
 
   virtual void impact_s( action_state_t* s )
   {
@@ -423,6 +437,13 @@ struct shadow_bolt_t : public warlock_spell_t
 
       trigger_soul_leech( p(), s -> result_amount );
     }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -466,6 +487,7 @@ struct corruption_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.2; // from tooltip
+    generate_fury = 6;
   };
 
   virtual void tick( dot_t* d )
@@ -488,6 +510,13 @@ struct corruption_t : public warlock_spell_t
     }
 
     return m;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -521,6 +550,7 @@ struct drain_life_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
+    generate_fury = 10;
 
     heal = new drain_life_heal_t( p );
   }
@@ -704,6 +734,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     proc       = true;
     background = true;
+    generate_fury = 2;
   }
 };
 
@@ -1037,9 +1068,13 @@ struct cancel_metamorphosis_t : public warlock_spell_t
 
 struct hand_of_guldan_t : public warlock_spell_t
 {
+  shadowflame_t* shadowflame;
+
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
+    shadowflame = new shadowflame_t( p );
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new hand_of_guldan_t( p, true );
@@ -1050,6 +1085,46 @@ struct hand_of_guldan_t : public warlock_spell_t
   virtual timespan_t travel_time() const
   {
     return timespan_t::from_seconds( 1.5 );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      shadowflame -> execute();
+    }
+  }
+};
+
+
+struct demonic_slash_t : public warlock_spell_t
+{
+  demonic_slash_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Demonic Slash" )
+  {
+    direct_power_mod = 0.8; // from tooltip
+
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new hand_of_guldan_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -1722,7 +1797,11 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
   if ( buffs.metamorphosis -> up() )
   {
     player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
-                         + ( buffs.metamorphosis -> value() * mastery_value / 10000.0 );
+                         + ( composite_mastery() * mastery_value / 10000.0 ) * 2;
+  }
+  else
+  {
+    player_multiplier *= 1.0 + ( composite_mastery() * mastery_value / 10000.0 ) * 0.667;
   }
 
   return player_multiplier;

@@ -139,6 +139,7 @@ struct warlock_t : public player_t
     gain_t* drain_soul;
     gain_t* incinerate;
     gain_t* metamorphosis;
+    gain_t* demonic_fury;
   } gains;
 
   // Uptimes
@@ -248,9 +249,6 @@ struct warlock_pet_t : public pet_t
   double ap_per_owner_sp;
   int stats_avaiable;
   int stats2_avaiable;
-
-  gain_t* gains_mana_feed;
-  proc_t* procs_mana_feed;
 
   double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
 private:

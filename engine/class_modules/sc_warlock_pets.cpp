@@ -583,8 +583,6 @@ timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian ) :
   pet_t( sim, owner, pet_name, pt, guardian )
 {
-  gains_mana_feed = get_gain( "mana_feed" );
-  procs_mana_feed = get_proc( "mana_feed" );
   stats_avaiable = 0;
   stats2_avaiable = 0;
   ap_per_owner_sp = 3.5;
