@@ -262,6 +262,7 @@ struct druid_t : public player_t
     buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
+    buff_t* celestial_alignment;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* enrage;
@@ -898,9 +899,13 @@ static void trigger_soul_of_the_forest( druid_t* p )
 
 static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
 {
-  if ( gain == 0 ) return;
+  if ( gain == 0 ) 
+    return;
 
   druid_t* p = s -> player -> cast_druid();
+
+  if ( p -> buff.celestial_alignment -> check() )
+    return;
 
   // Gain will only happen if it is either aligned with the bar direction or
   // the bar direction has not been set yet.
@@ -2919,6 +2924,27 @@ struct cat_form_t : public druid_spell_t
   }
 };
 
+// Celestial Ailgnment Buff =================================================
+
+struct celestial_alignment_buff_t : public buff_t
+{
+  celestial_alignment_buff_t( druid_t* p ) :
+    buff_t( buff_creator_t( p, "celestial_alignment", p -> specialization.celestial_alignment ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire()
+  {
+    buff_t::expire();
+
+    druid_t* p = static_cast<druid_t*>( player );
+    p -> buff.eclipse_lunar -> expire();
+    p -> buff.eclipse_solar -> expire();
+    trigger_soul_of_the_forest( p ); 
+  }
+};
+
 // Celestial Alignment ======================================================
 
 struct celestial_alignment_t : public druid_spell_t
@@ -2927,14 +2953,27 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t( player, player -> specialization.celestial_alignment, options_str )
   {
     parse_options( NULL, options_str );
+    
+    school = SCHOOL_NATURE;
 
     harmful = false;
   }
 
   virtual void execute()
   {
-    // TODO: One buff per spec?
     druid_spell_t::execute();
+    // http://elitistjerks.com/f73/t126893-mists_pandaria_all_specs/p11/#post2136096      
+    // I can confirm that CA works EXACTLY like combining the two eclipses 
+    // (starfall reset, dot refresh, SotF gives 20 energy afterwards, you 
+    // gain 35% mana back as you would from eclipse).
+    p() -> buff.celestial_alignment -> trigger();
+    p() -> eclipse_bar_value = 0;
+    p() -> buff.eclipse_lunar -> expire();
+    p() -> buff.eclipse_solar -> expire();
+    p() -> buff.eclipse_lunar -> trigger();
+    p() -> buff.eclipse_solar -> trigger();
+    trigger_eclipse_proc( p() );
+    p() -> cooldown.starfall -> reset();
   }
 };
 
@@ -3215,7 +3254,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    dot_t* sf = td ->dots_sunfire;
+    dot_t* sf = td -> dots_sunfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -3225,14 +3264,9 @@ struct moonfire_t : public druid_spell_t
       if ( sf -> ticking )
         sf -> cancel();
 
-
       if ( p -> specialization.lunar_shower -> ok() )
       {
-        // TODO: BETA?
-        //if ( p -> buff.lunar_shower -> check() )
-        //  trigger_eclipse_gain_delay( this, ( p -> eclipse_bar_direction > 0 ? 8 : -8 ) );
-
-        p -> buff.lunar_shower -> trigger();
+        p -> buff.lunar_shower -> trigger( 1 );
       }
     }
   }
@@ -3661,11 +3695,6 @@ struct sunfire_t : public druid_spell_t
 
       if ( p -> specialization.lunar_shower -> ok() )
       {
-        // TODO: BETA?
-        //if ( p -> buff.lunar_shower -> check() )
-        //  trigger_eclipse_gain_delay( this, -8 );
-
-        // If moving trigger all 3 stacks, because it will stack up immediately
         p -> buff.lunar_shower -> trigger( 1 );
       }
     }
@@ -3935,6 +3964,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "claw"                   ) return new                   claw_t( this, options_str );
+  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "faerie_fire_feral"      ) return new      faerie_fire_feral_t( this, options_str );
@@ -4161,10 +4191,13 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // MoP checked
+
+  buff.celestial_alignment   = new celestial_alignment_buff_t( this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_spell( 48518 ) );
   buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_spell( 48517 ) );
-  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", find_spell( specialization.shooting_stars -> effect1().trigger_spell_id() ) );
-  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   find_spell( specialization.lunar_shower -> effect1().trigger_spell_id() ) );
+  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", specialization.shooting_stars -> effect1().trigger() )
+                               .chance( specialization.shooting_stars -> effect1().percent() );
+  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effect1().trigger() );
 
 
   buff.barkskin              = buff_creator_t( this, "barkskin", find_spell( 22812 ) );
@@ -4180,7 +4213,7 @@ void druid_t::init_buffs()
   buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
                                .cd( timespan_t::zero() );
   buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
-  buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", find_spell( specialization.omen_of_clarity -> effect1().trigger_spell_id() ) );
+  buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", specialization.omen_of_clarity -> effect1().trigger() );
   
   // We track the mushrooms as a 3-stack buff
   buff.wild_mushroom         = buff_creator_t( sim, "wild_mushroom", spell_data_t::nil() )
