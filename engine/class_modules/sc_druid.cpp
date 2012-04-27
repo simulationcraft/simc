@@ -416,10 +416,8 @@ struct druid_t : public player_t
     const spell_data_t* eclipse;
     const spell_data_t* euphoria;
     const spell_data_t* lunar_shower;
-    const spell_data_t* moonkin_form;
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* shooting_stars;
-    const spell_data_t* starfall;
 
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
@@ -3073,11 +3071,26 @@ struct faerie_fire_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   incarnation_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation )
+    druid_spell_t( "incarnation", player, player -> find_talent_spell( "Incarnation" )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
+    /*
+    Buff Spell: http://mop.wowhead.com/spell=117679
+
+    Balance Passive: http://mop.wowhead.com/spell=122114
+
+    Bear Passive: http://mop.wowhead.com/spell=113711
+
+    Cat Passive: http://mop.wowhead.com/spell=102548
+    Seems to replaces 3 spells:
+      New Prowl http://mop.wowhead.com/spell=102547
+      New Pounce http://mop.wowhead.com/spell=102546
+      New Ravage http://mop.wowhead.com/spell=102545
+
+    Resto Passive: http://mop.wowhead.com/spell=5420
+    */
   }
 
   virtual void execute()
