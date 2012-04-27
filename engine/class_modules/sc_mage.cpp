@@ -983,6 +983,7 @@ struct arcane_barrage_t : public mage_spell_t
   {
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
+    base_aoe_multiplier *= 1.0 + data().effectN( 2 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
