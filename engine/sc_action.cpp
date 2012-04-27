@@ -160,7 +160,7 @@ action_t::action_t( action_type_e       ty,
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
-  update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA;
+  update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
   state_cache = 0;
   execute_state = 0;
 
