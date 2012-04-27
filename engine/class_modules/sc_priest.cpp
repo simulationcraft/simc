@@ -1493,7 +1493,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double c = priest_spell_t::composite_target_crit( target );
 
-    c += td( target ) -> debuffs_mind_spike -> value() * td( target ) -> debuffs_mind_spike -> stack();
+    c += td( target ) -> debuffs_mind_spike -> value() * td( target ) -> debuffs_mind_spike -> check();
 
     return c;
   }
