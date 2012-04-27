@@ -25,6 +25,8 @@ struct priest_targetdata_t : public targetdata_t
   buff_t* buffs_divine_aegis;
   buff_t* buffs_spirit_shell;
 
+  buff_t* debuffs_mind_spike;
+
   remove_dots_event::remove_dots_event_t* remove_dots_event;
 
   priest_targetdata_t( priest_t* p, player_t* target );
@@ -59,7 +61,6 @@ struct priest_t : public player_t
 
     // Shadow
     buff_t* shadow_word_death_reset_cooldown;
-    buff_t* mind_spike;
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;

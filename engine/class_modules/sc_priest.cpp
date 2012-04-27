@@ -39,6 +39,8 @@ void register_priest_targetdata( sim_t* sim )
   REGISTER_BUFF( power_word_shield );
   REGISTER_BUFF( divine_aegis );
   REGISTER_BUFF( spirit_shell );
+
+  REGISTER_DEBUFF( mind_spike );
 }
 
 // ==========================================================================
@@ -62,6 +64,11 @@ priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
 
   buffs_spirit_shell = add_aura( new_ss );
   target -> absorb_buffs.push_back( new_ss );
+
+  debuffs_mind_spike    = add_aura( buff_creator_t( this, "mind_spike", p -> find_class_spell( "Mind Spike" ) )
+                                    .max_stack( p -> find_class_spell( "Mind Spike" ) -> effectN( 3 ).base_value() )
+                                    .duration( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).trigger() -> duration() )
+                                    .default_value( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).percent() ) ) ;
 }
 
 namespace remove_dots_event // ANONYMOUS NAMESPACE ============================================
@@ -1449,14 +1456,6 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    for ( int i=0; i < 4; i++ )
-    {
-      p() -> benefits.mind_spike[ i ] -> update( i == p() -> buffs.mind_spike -> stack() );
-    }
-
-    p() -> buffs.mind_spike -> expire();
-    p() -> buffs.glyph_mind_spike -> expire();
-
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
@@ -1478,6 +1477,14 @@ struct mind_blast_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
+      for ( int i=0; i < 4; i++ )
+      {
+        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> stack() );
+      }
+
+      td( s -> target ) -> debuffs_mind_spike -> expire();
+      p() -> buffs.glyph_mind_spike -> expire();
+
       p() -> buffs.shadow_of_death -> trigger();
     }
   }
@@ -1486,7 +1493,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double c = priest_spell_t::composite_crit( s );
 
-    c += p() -> buffs.mind_spike -> value() * p() -> buffs.mind_spike -> check();
+    c += td( s -> target ) -> debuffs_mind_spike -> value() * td( s -> target ) -> debuffs_mind_spike -> stack();
 
     return c;
   }
@@ -1645,8 +1652,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-
-      p() -> buffs.mind_spike -> trigger( 1, data().effectN( 2 ).percent() );
+      td( s -> target ) -> debuffs_mind_spike -> trigger();
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
@@ -3477,8 +3483,6 @@ void priest_t::init_buffs()
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
                                            .max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
-  buffs.mind_spike                       = buff_creator_t( this, "mind_spike" )
-                                           .max_stack( 3 ).duration( timespan_t::from_seconds( 12.0 ) );
   buffs.shadow_of_death                  = buff_creator_t( this, "shadow_of_death", talents.divine_insight )
                                            .chance( talents.divine_insight -> effectN( 1 ).percent() )
                                            .max_stack( 1 )
@@ -3486,7 +3490,6 @@ void priest_t::init_buffs()
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
                                            .duration( find_spell( 114257 ) -> duration() )
                                            .max_stack( 2 );
-
 
   // Set Bonus
 }
