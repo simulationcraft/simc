@@ -3604,6 +3604,8 @@ struct sunfire_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
+    check_spec( DRUID_BALANCE ) ;
+
     dot_behavior = DOT_REFRESH;
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
