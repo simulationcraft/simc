@@ -412,7 +412,6 @@ struct druid_t : public player_t
 
     // Balance
     const spell_data_t* balance_of_power;
-    const spell_data_t* celestial_alignment;
     const spell_data_t* celestial_focus;
     const spell_data_t* eclipse;
     const spell_data_t* euphoria;
@@ -2929,7 +2928,7 @@ struct cat_form_t : public druid_spell_t
 struct celestial_alignment_buff_t : public buff_t
 {
   celestial_alignment_buff_t( druid_t* p ) :
-    buff_t( buff_creator_t( p, "celestial_alignment", p -> specialization.celestial_alignment ) )
+    buff_t( buff_creator_t( p, "celestial_alignment", p -> find_specialization_spell( "Celestial Alignment" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -2950,12 +2949,10 @@ struct celestial_alignment_buff_t : public buff_t
 struct celestial_alignment_t : public druid_spell_t
 {
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> specialization.celestial_alignment, options_str )
+    druid_spell_t( player, player -> find_specialization_spell( "Celestial Alignment" ), options_str )
   {
     parse_options( NULL, options_str );
     
-    school = SCHOOL_NATURE;
-
     harmful = false;
   }
 
@@ -2967,13 +2964,19 @@ struct celestial_alignment_t : public druid_spell_t
     // (starfall reset, dot refresh, SotF gives 20 energy afterwards, you 
     // gain 35% mana back as you would from eclipse).
     p() -> buff.celestial_alignment -> trigger();
+    
+    // CA consumes ALL curent eclipse energy, so just set the bar to 0
     p() -> eclipse_bar_value = 0;
-    p() -> buff.eclipse_lunar -> expire();
-    p() -> buff.eclipse_solar -> expire();
-    p() -> buff.eclipse_lunar -> trigger();
-    p() -> buff.eclipse_solar -> trigger();
-    trigger_eclipse_proc( p() );
+    
+    if ( ! p() -> buff.eclipse_lunar -> check() )
+      p() -> buff.eclipse_lunar -> trigger();
+
+    if ( ! p() -> buff.eclipse_solar -> check() )
+      p() -> buff.eclipse_solar -> trigger();
+    
     p() -> cooldown.starfall -> reset();
+
+    trigger_eclipse_proc( p() );
   }
 };
 
@@ -3474,7 +3477,7 @@ struct starfall_t : public druid_spell_t
   spell_t* starfall_star;
 
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> specialization.starfall ),
+    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
     starfall_star( 0 )
   {
     parse_options( NULL, options_str );
@@ -4056,17 +4059,14 @@ void druid_t::init_spells()
   // http://mop.wowhead.com/spell=81070 => The mana gain energize spell
   // Moonkin is also split up into two spells
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
-  specialization.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
   specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
   specialization.eclipse                = find_specialization_spell( "Eclipse" );
   spell.eclipse                         = find_spell( 81070 );
   specialization.euphoria               = find_specialization_spell( "Euphoria" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
-  specialization.moonkin_form           = find_specialization_spell( "Moonkin Form" ); // Shapeshift spell
   spell.moonkin_form                    = find_spell( 24905 ); // This is the passive applied on shapeshift!
   specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
   specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
-  specialization.starfall               = find_specialization_spell( "Starfall" );
 
   // Feral
   specialization.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
