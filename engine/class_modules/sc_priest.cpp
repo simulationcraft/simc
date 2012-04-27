@@ -1479,7 +1479,7 @@ struct mind_blast_t : public priest_spell_t
     {
       for ( int i=0; i < 4; i++ )
       {
-        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> stack() );
+        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> check() );
       }
 
       td( s -> target ) -> debuffs_mind_spike -> expire();
