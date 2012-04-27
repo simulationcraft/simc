@@ -3423,6 +3423,8 @@ struct starfall_star_t : public druid_spell_t
     dual        = true;
     direct_tick = true;
 
+    if ( player -> set_bonus.tier14_2pc_caster() )
+      base_multiplier *= 1.0 + player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3449,10 +3451,7 @@ struct starfall_t : public druid_spell_t
 
     harmful = false;
 
-    starfall_star = new starfall_star_t( player, data().effect1().trigger_spell_id() );
-    
-    if ( player -> set_bonus.tier14_2pc_caster() )
-      base_multiplier *= 1.0 + player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    starfall_star = new starfall_star_t( player, data().effect1().trigger_spell_id() );    
   }
 
   virtual void init()
