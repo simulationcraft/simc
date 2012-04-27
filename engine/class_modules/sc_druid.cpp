@@ -565,8 +565,6 @@ struct druid_t : public player_t
   virtual double    composite_tank_crit( school_type_e school ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  buff_t*   create_buff( const spell_data_t* sd, const std::string& token );
-  buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( const item_t& ) const;
@@ -3177,6 +3175,9 @@ struct moonfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
+    
+    if ( player -> set_bonus.tier14_4pc_caster() )
+      num_ticks++;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3449,6 +3450,9 @@ struct starfall_t : public druid_spell_t
     harmful = false;
 
     starfall_star = new starfall_star_t( player, data().effect1().trigger_spell_id() );
+    
+    if ( player -> set_bonus.tier14_2pc_caster() )
+      base_multiplier *= 1.0 + player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void init()
@@ -3604,6 +3608,9 @@ struct sunfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
 
     may_trigger_dtr = false; // Disable the dot ticks procing DTR
+
+    if ( player -> set_bonus.tier14_4pc_caster() )
+      num_ticks++;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -4110,8 +4117,10 @@ void druid_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
-    { 105722, 105717, 105725, 105735,     0,     0, 105715, 105770 }, // Tier13
-    {      0,     0,      0,       0,     0,     0,      0,      0 },
+    { 105722, 105717, 105725, 105735,      0,      0, 105715, 105770 }, // Tier13
+    { 123082, 123083, 123084, 123085, 123086, 123087, 123088, 123089 }, // Tier14
+    {      0,      0,      0,      0,      0,      0,      0,      0 }, // Tier15
+    {      0,      0,      0,      0,      0,      0,      0,      0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4146,41 +4155,31 @@ void druid_t::init_base()
 
 // druid_t::init_buffs ======================================================
 
-// helpers
-
-buff_t* druid_t::create_buff( const spell_data_t* sd, const std::string& token )
-{
-  return buff_creator_t( this, token, sd );
-}
-
-buff_t* druid_t::create_buff( int id, const std::string& token )
-{
-  return buff_creator_t( this, token, find_spell( id, token ) );
-}
-
 void druid_t::init_buffs()
 {
   player_t::init_buffs();
 
   // MoP checked
-  buff.eclipse_lunar         = create_buff( 48518, "lunar_eclipse" );
-  buff.eclipse_solar         = create_buff( 48517, "solar_eclipse" );
-  buff.shooting_stars        = create_buff( specialization.shooting_stars -> effect1().trigger_spell_id(), "shooting_stars" );
-  buff.lunar_shower          = create_buff( specialization.lunar_shower -> effect1().trigger_spell_id(), "lunar_shower" );
+  buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_spell( 48518 ) );
+  buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_spell( 48517 ) );
+  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", find_spell( specialization.shooting_stars -> effect1().trigger_spell_id() ) );
+  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   find_spell( specialization.lunar_shower -> effect1().trigger_spell_id() ) );
 
 
-  buff.barkskin              = create_buff( 22812, "barkskin" );
-  //buff.enrage                = create_buff( dbc.class_ability_id( type, "Enrage" ), "enrage" );
-  buff.enrage                = buff_creator_t( sim, "enrage" , spell_data_t::nil() );
+  buff.barkskin              = buff_creator_t( this, "barkskin", find_spell( 22812 ) );
+  //buff.enrage                = buff_creator_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
+  buff.enrage                = buff_creator_t( this, "enrage" , spell_data_t::nil() );
   //buff.frenzied_regeneration = new frenzied_regeneration_buff_t( this );
-  buff.frenzied_regeneration = buff_creator_t( sim, "frenzied_regeneration" , spell_data_t::nil() );
-  buff.harmony               = create_buff( 100977, "harmony" );
-  //buff.lacerate              = create_buff( dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
-  buff.lacerate              = buff_creator_t( sim, "lacerate" , spell_data_t::nil() );
-  buff.natures_grace         = create_buff( 16886, "natures_grace" );
-  buff.natures_swiftness     = create_buff( talent.natures_swiftness, "natures_swiftness" );
+  buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration" , spell_data_t::nil() );
+  buff.harmony               = buff_creator_t( this, "harmony", find_spell( 100977 ) );
+  //buff.lacerate              = buff_creator_t( this, dbc.class_ability_id( type, "Lacerate" ), "lacerate" );
+  buff.lacerate              = buff_creator_t( this, "lacerate" , spell_data_t::nil() );
+  buff.natures_grace         = buff_creator_t( this, "natures_grace", find_spell( 16886 ) );
+  // Cooldown is handled in the spell
+  buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
+                               .cd( timespan_t::zero() );
   buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
-  buff.omen_of_clarity       = create_buff( specialization.omen_of_clarity -> effect1().trigger_spell_id(), "omen_of_clarity" );
+  buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", find_spell( specialization.omen_of_clarity -> effect1().trigger_spell_id() ) );
   
   // We track the mushrooms as a 3-stack buff
   buff.wild_mushroom         = buff_creator_t( sim, "wild_mushroom", spell_data_t::nil() )
@@ -4214,14 +4213,14 @@ void druid_t::init_buffs()
   buff.primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
   buff.berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) );
   */
-  buff.tigers_fury         = create_buff( 5217, "tigers_fury" );
+  buff.tigers_fury         = buff_creator_t( this, "tigers_fury", find_spell( 5217 ) );
 
   // simple
-  buff.bear_form    = create_buff( 5487,  "bear_form" );
-  buff.cat_form     = create_buff( 768,   "cat_form" );
-  buff.moonkin_form = create_buff( 24858, "moonkin_form" );
-  buff.savage_roar  = create_buff( 52610, "savage_roar" );
-  buff.stealthed    = create_buff( 5215,  "stealthed" );
+  buff.bear_form    = buff_creator_t( this, "bear_form", find_spell( 5487 ) );
+  buff.cat_form     = buff_creator_t( this, "cat_form", find_spell( 768 ) );
+  buff.moonkin_form = buff_creator_t( this, "moonkin_form", find_spell( 24858 ) );
+  buff.savage_roar  = buff_creator_t( this, "savage_roar", find_spell( 52610 ) );
+  buff.stealthed    = buff_creator_t( this, "stealthed", find_spell( 5215 ) );
 }
 
 // druid_t::init_values ====================================================
