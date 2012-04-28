@@ -2605,8 +2605,7 @@ double warlock_t::resource_loss( resource_type_e resource_type, double amount, g
 
   if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 )
   {
-    assert( buffs.metamorphosis -> check() );
-    buffs.metamorphosis -> expire();
+    if ( buffs.metamorphosis -> check() ) buffs.metamorphosis -> expire();
     event_t::cancel( meta_cost_event );
   }
 
