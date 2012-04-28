@@ -154,13 +154,13 @@ public:
   recharge_event_t* recharge_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_class_spell( n ), sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 ), generate_fury( 0 )
+    spell_t( n, p, p -> find_class_spell( n ), sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), generate_fury( 0 ), recharge_event( 0 )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( token, p, s, sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), recharge_event( 0 ), generate_fury( 0 )
+    spell_t( token, p, s, sc ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), generate_fury( 0 ), recharge_event( 0 )
   {
     _init_warlock_spell_t();
   }
