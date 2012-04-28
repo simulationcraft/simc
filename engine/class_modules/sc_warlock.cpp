@@ -812,11 +812,6 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    for ( int i=0; i < 4; i++ )
-    {
-      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
-    }
-
     if ( p() -> buffs.backdraft -> up() )
     {
       p() -> buffs.backdraft -> decrement();
@@ -1001,11 +996,6 @@ struct chaos_bolt_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-
-    for ( int i=0; i < 4; i++ )
-    {
-      p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
-    }
 
     if ( p() -> buffs.backdraft -> check() >= 3 )
     {
@@ -2247,9 +2237,6 @@ void warlock_t::init_gains()
 void warlock_t::init_benefits()
 {
   player_t::init_benefits();
-
-  for ( size_t i = 0; i < 4; ++i )
-    benefits.backdraft[ i ] = get_benefit( "backdraft_" + util::to_string( i ) );
 }
 
 

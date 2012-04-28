@@ -140,12 +140,6 @@ struct warlock_t : public player_t
     gain_t* demonic_fury;
   } gains;
 
-  // Uptimes
-  struct benefits_t
-  {
-    benefit_t* backdraft[ 4 ];
-  } benefits;
-
   // Procs
   struct procs_t
   {
