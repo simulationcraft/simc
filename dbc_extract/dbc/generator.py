@@ -946,17 +946,17 @@ class SpellDataGenerator(DataGenerator):
     # without a category
     _spell_id_list = [
         (
-         109871, 109869, 109867,    # No'Kaled the Elements of Death - LFR
-         107785, 107789, 107787,    # No'Kaled the Elements of Death - Normal
-         109872, 109870, 109868,    # No'Kaled the Elements of Death - Heroic
+         109871, 109869,            # No'Kaled the Elements of Death - LFR
+         107785, 107789,            # No'Kaled the Elements of Death - Normal
+         109872, 109870,            # No'Kaled the Elements of Death - Heroic
           52586,  68043,  68044,    # Gurthalak, Voice of the Deeps - LFR, N, H
         ),
         (),     # Warrior:
-        ( ( 86700, 5 ), ( 86704, 5 ) ),     # Paladin: Ancient Power and Ancient Fury
+        ( ( 86700, 5 ), ),     # Paladin: Ancient Power
         ( ( 83381, 0 ), ), # Hunter: Kill Command base dmg
         ( ), # Rogue: 
-        ( ( 63619, 5 ), ( 94472, 0 ), ( 114255, 0 ), ( 114257, 0 ) ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. From Darkness Comes Light spells
-        ( ( 50401, 0 ), ( 70890, 0 ), ( 51963, 5 ), ), # DK: Razorice runeforge, weird Scourge Strike secondary effect, gargoyle strike.
+        ( ( 63619, 5 ), ( 94472, 0 ) ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit.
+        ( ( 70890, 0 ), ( 51963, 5 ), ), # DK: weird Scourge Strike secondary effect, gargoyle strike.
         (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
 #            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ),       # Shaman Greater Fire Elemental abilities
         ),     
@@ -965,9 +965,9 @@ class SpellDataGenerator(DataGenerator):
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        ( ( 85692, 5 ), ),     # Warlock: doomguard "Doom Bolt"
+        (),     # Warlock: 
         (), # Monk:
-        ( ( 93402, 1, True ), ( 106996, 1, True ), ), # Druid: Whitelist Sunfire
+        ( ( 93402, 1, True ), ), # Druid: Whitelist Sunfire
     ]
 
     # Class specific item sets, T13

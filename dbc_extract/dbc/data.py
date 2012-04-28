@@ -77,6 +77,12 @@ _DIFF_DATA = {
             ( 'unk_15640', _ADD_FIELD, 'min_value' ),
         ],
 
+    },
+    15650 : {
+        'ChrSpecialization.dbc' : [
+            ( 'unk_15650', _ADD_FIELD, 'id_icon' ),
+        ],
+
     }
 }
 
