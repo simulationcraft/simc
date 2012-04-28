@@ -874,6 +874,7 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 50;
     generate_fury = data().effectN( 2 ).base_value();
 
     if ( ! dtr && p -> has_dtr )
@@ -901,6 +902,14 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
       p() -> buffs.molten_core -> trigger();
+  }
+
+  virtual resource_type_e current_resource() const
+  {
+    if ( p() -> buffs.metamorphosis -> check() )
+      return RESOURCE_DEMONIC_FURY;
+    else
+      return spell_t::current_resource();
   }
 
   virtual timespan_t execute_time() const
