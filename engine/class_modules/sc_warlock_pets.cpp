@@ -497,15 +497,20 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
   virtual void execute()
   {
+    warlock_pet_spell_t::execute();
+
+    firebolt_count++;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_pet_spell_t::impact_s( s );
+
     if ( firebolt_count >= 10 )
     {
       ( ( wild_imp_pet_t* ) player ) -> dismiss();
       return;
     }
-
-    warlock_pet_spell_t::execute();
-
-    firebolt_count++;
   }
 
   virtual void reset()
@@ -513,6 +518,13 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
     warlock_pet_spell_t::reset();
 
     firebolt_count = 0;
+  }
+
+  virtual bool ready()
+  {
+    if ( firebolt_count >= 10 ) return false;
+
+    return warlock_pet_spell_t::ready();
   }
 };
 
@@ -1032,6 +1044,13 @@ action_t* wild_imp_pet_t::create_action( const std::string& name,
   if ( name == "firebolt" ) return new wild_imp_spells::firebolt_t( this );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
+}
+
+void wild_imp_pet_t::demise()
+{
+  warlock_guardian_pet_t::demise();
+  // FIXME: This should not be necessary, but it asserts later due to negative event count if we don't do this
+  sim -> cancel_events( this );
 }
 
 #endif // SC_WARLOCK

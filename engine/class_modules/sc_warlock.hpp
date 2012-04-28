@@ -408,6 +408,7 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
   int firebolt_count;
   wild_imp_pet_t( sim_t* sim, warlock_t* owner );
   virtual void init_base();
+  virtual void demise();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };
