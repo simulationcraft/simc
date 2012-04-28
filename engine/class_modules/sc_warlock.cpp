@@ -75,7 +75,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   talents( talents_t() ),
   mastery_spells( mastery_spells_t() ),
   gains( gains_t() ),
-  benefits( benefits_t() ),
   procs( procs_t() ),
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
