@@ -198,9 +198,7 @@ public:
   {
     spell_t::tick( d );
 
-    // FIXME: Test whether ticking dots generate fury during metamorphosis
-    //        (currently untestable because dots don't generate fury on beta at all)
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
   }
 
@@ -618,7 +616,7 @@ struct drain_soul_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
-    if ( target -> health_percentage() < data().effectN( 3 ).base_value() )
+    if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
     {
       m *= 2.0;
     }
