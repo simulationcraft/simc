@@ -1007,7 +1007,7 @@ struct chaos_bolt_t : public warlock_spell_t
       p() -> benefits.backdraft[ i ] -> update( i == p() -> buffs.backdraft -> check() );
     }
 
-    if ( p() -> buffs.backdraft -> check() == 3 )
+    if ( p() -> buffs.backdraft -> check() >= 3 )
     {
       p() -> buffs.backdraft -> decrement( 3 );
     }
@@ -1018,7 +1018,7 @@ struct chaos_bolt_t : public warlock_spell_t
     timespan_t h = warlock_spell_t::execute_time();
 
     // FIXME: currently bugged on beta to give the benefit even when the stack isn't 3, but that's such an obvious bug I won't simulate it
-    if ( p() -> buffs.backdraft -> stack() == 3 )
+    if ( p() -> buffs.backdraft -> stack() >= 3 )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
@@ -2206,7 +2206,7 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
+  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 ); // FIXME: May be a bug, not sure
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) );
