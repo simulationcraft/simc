@@ -3847,12 +3847,12 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_e pt, bool guardian=false );
 
-  // Pets gain their owners' hit rating, but it rounds down to a
-  // percentage.  Also, heroic presence does not contribute to pet
+  // Pets gain their owners' hit rating, 
+  // Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise( const weapon_t* ) const { return floor( floor( 100.0 * owner -> stats_current.attack_hit ) * ( 26.0 / 8.0 ) ) / 100.0; }
-  virtual double composite_attack_hit() const { return floor( 100.0 * owner -> composite_attack_hit() ) / 100.0; }
-  virtual double composite_spell_hit() const { return floor( 100.0 * owner -> composite_spell_hit() ) / 100.0;  }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> stats_current.attack_hit + owner -> composite_attack_expertise(); }
+  virtual double composite_attack_hit() const { return owner -> composite_attack_hit(); }
+  virtual double composite_spell_hit() const  { return owner -> composite_spell_hit(); }
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
 
   virtual double composite_attribute( attribute_type_e attr ) const;

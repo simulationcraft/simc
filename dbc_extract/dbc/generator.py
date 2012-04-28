@@ -965,9 +965,9 @@ class SpellDataGenerator(DataGenerator):
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        (),     # Warlock: 
+        ( ( 85692, 5 ), ),     # Warlock: doomguard "Doom Bolt"
         (), # Monk:
-        ( ( 93402, 1, True ), ), # Druid: Whitelist Sunfire
+        ( ( 93402, 1, True ), ( 106996, 1, True ), ), # Druid: Whitelist Sunfire
     ]
 
     # Class specific item sets, T13

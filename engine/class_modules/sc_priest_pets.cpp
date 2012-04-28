@@ -26,14 +26,14 @@ static const _stat_list_t pet_base_stats[]=
 static const _stat_list_t shadowfiend_base_stats[]=
 {
   //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5026,      0,         0,     0,     0,     0,   0,       0 } },
+  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
 static const _stat_list_t mindbender_base_stats[]=
 {
   //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,  5026,      0,         0,     0,     0,     0,   0,       0 } },
+  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
   { 0, { 0 } }
 };
 
@@ -47,14 +47,14 @@ struct _weapon_list_t
 
 static const _weapon_list_t shadowfiend_weapon[]=
 {
-  { 85, 368, 436,  0.51, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.006 * level
-  {  0,   0,   0,   0.0, timespan_t::zero() }
+  { 85, 360, 433,  0.5114705, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.0060173 * level
+  {  0,   0,   0,        0.0, timespan_t::zero() }
 };
 
 static const _weapon_list_t mindbender_weapon[]=
 {
-  { 85, 368, 436, 1.164, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.0137 * level
-  {  0,   0,   0,   0.0, timespan_t::zero() }
+  { 85, 360, 433, 1.16349445, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.01368817 * level
+  {  0,   0,   0,        0.0, timespan_t::zero() }
 };
 
 }
@@ -67,8 +67,11 @@ namespace priest_pet_actions {
 
 struct priest_pet_melee_t : public melee_attack_t
 {
+  mutable bool first_swing;
+
   priest_pet_melee_t( priest_pet_t* p, const char* name ) :
-    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_SHADOW )
+    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_SHADOW ),
+    first_swing( true )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
@@ -77,8 +80,24 @@ struct priest_pet_melee_t : public melee_attack_t
     repeating   = true;
   }
 
+  virtual void reset()
+  {
+    melee_attack_t::reset();
+    first_swing = true;
+  }
+
   priest_pet_t* p() const
   { return static_cast<priest_pet_t*>( player ); }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( first_swing )
+    {
+      first_swing = false;
+      return timespan_t::from_seconds( 0.0 );
+    }
+    return melee_attack_t::execute_time();
+  }
 };
 
 // ==========================================================================
@@ -383,8 +402,6 @@ void priest_pet_t::init_base()
   stamina_per_owner = 0.6496; // level invariant, tested
   intellect_per_owner = 0; // removed in cata, tested
 
-  stats_base.attack_crit                  += 0.0328; // seems to be level invariant, untested
-  stats_base.spell_crit                   += 0.0328; // seems to be level invariant, untested
   stats_initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
   stats_initial.spell_crit_per_intellect  += owner -> stats_initial.spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
@@ -472,7 +489,8 @@ void priest_guardian_pet_t::summon( timespan_t duration )
 base_fiend_pet_t::base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_type_e pt, const std::string& name ) :
   priest_guardian_pet_t( sim, owner, name, pt ),
   buffs( buffs_t() ),
-  shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() )
+  shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() ),
+  shadowcrawl_action( 0 )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/shadowcrawl";
@@ -489,7 +507,7 @@ void base_fiend_pet_t::init_base()
 action_t* base_fiend_pet_t::create_action( const std::string& name,
                                            const std::string& options_str )
 {
-  if ( name == "shadowcrawl" )          return new fiend_spells::shadowcrawl_t( this );
+  if ( name == "shadowcrawl" )          { shadowcrawl_action = new fiend_spells::shadowcrawl_t( this ); return shadowcrawl_action; }
   if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
 
   return priest_guardian_pet_t::create_action( name, options_str );
@@ -521,13 +539,26 @@ void base_fiend_pet_t::init_gains()
     gains.fiend = get_gain( "basefiend" );
 }
 
+void base_fiend_pet_t::init_resources( bool force )
+{
+  priest_guardian_pet_t::init_resources( force );
+
+  resources.initial[ RESOURCE_HEALTH ] = o() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
+  resources.initial[ RESOURCE_MANA   ] = o() -> resources.max[ RESOURCE_MANA   ];
+  resources.current = resources.max = resources.initial;
+}
+
 void base_fiend_pet_t::summon( timespan_t duration )
 {
   dismiss();
 
-  // Adjust duration for haste
-
   priest_guardian_pet_t::summon( duration );
+
+  if ( shadowcrawl_action )
+  {
+    // Ensure that it gets used after the first melee strike. In the combat logs that happen at the same time, but the melee comes first.
+    shadowcrawl_action -> cooldown -> ready = sim -> current_time + timespan_t::from_seconds( 0.001 );
+  }
 }
 
 // ==========================================================================
