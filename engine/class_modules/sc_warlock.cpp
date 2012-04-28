@@ -894,7 +894,7 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.molten_core -> check() )
       p() -> buffs.molten_core -> expire();
 
-    if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+    if ( result_is_hit() && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
       p() -> buffs.molten_core -> trigger();
   }
 
@@ -1173,7 +1173,7 @@ struct hand_of_guldan_t : public warlock_spell_t
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
-    current_charges = max_charges = 3;
+    current_charges = max_charges = 2;
     recharge_seconds = 15;
 
     shadowflame = new shadowflame_t( p );
