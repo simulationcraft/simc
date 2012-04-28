@@ -761,7 +761,7 @@ struct druid_spell_t : public spell_t
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    spell_t( "", p, s, school ), additive_multiplier( 0.0 )
+    spell_t( "", p, s ), additive_multiplier( 0.0 )
   {
     parse_options( 0, options );
 
@@ -3222,8 +3222,40 @@ struct mark_of_the_wild_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
+  spell_t* sunfire;
+  // Celestial Alignment makes you MF also apply the dot of SF, but not the
+  // direct damage!
+  struct sunfire_CA_t : public druid_spell_t
+  {
+    sunfire_CA_t( druid_t* player ) :
+      druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+    {
+      dot_behavior = DOT_REFRESH;
+      
+      base_dd_min      = 0.0;
+      base_dd_max      = 0.0;
+      direct_power_mod = 0.0;
+      background = true;
+      may_miss = false; // Assuming that if MF hits, this will too
+      may_trigger_dtr = false; 
+  
+      if ( player -> set_bonus.tier14_4pc_caster() )
+        num_ticks++;
+    }
+    
+    virtual void tick( dot_t* d )
+    {
+      druid_spell_t::tick( d );
+      // Todo: Does this sunfire proc SS?
+      if ( result == RESULT_CRIT )
+        if ( p() -> buff.shooting_stars -> trigger() )
+          p() -> cooldown.starsurge -> reset();
+    }
+  };
+
   moonfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" )  )
+    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" )  ),
+    sunfire( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3239,6 +3271,8 @@ struct moonfire_t : public druid_spell_t
       dtr_action = new moonfire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+    if ( player -> primary_tree() == DRUID_BALANCE )
+      sunfire = new sunfire_CA_t( player );
   }
 
   virtual void player_buff()
@@ -3279,11 +3313,14 @@ struct moonfire_t : public druid_spell_t
     {
       if ( sf -> ticking )
         sf -> cancel();
-
+        
       if ( p -> specialization.lunar_shower -> ok() )
       {
         p -> buff.lunar_shower -> trigger( 1 );
       }
+
+      if ( p -> buff.celestial_alignment -> check() )
+        sunfire -> execute();
     }
   }
 
@@ -3304,7 +3341,7 @@ struct moonfire_t : public druid_spell_t
 
     druid_t* p = player -> cast_druid();
 
-    if ( p -> specialization.eclipse -> ok() && p -> buff.eclipse_solar -> check() )
+    if ( p -> buff.eclipse_solar -> check() && ! p -> buff.celestial_alignment -> check() )
       return false;
 
     return true;
@@ -3734,6 +3771,9 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     if ( ! p -> buff.eclipse_solar -> check() )
+      return false;
+    
+    if ( p -> buff.celestial_alignment -> check() )
       return false;
 
     return true;
