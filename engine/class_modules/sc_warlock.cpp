@@ -62,7 +62,7 @@ void register_warlock_targetdata( sim_t* sim )
 }
 
 warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
-  : targetdata_t( p, target )
+  : targetdata_t( p, target ), ds_started_below_20( false ), shadowflame_stack( 0 )
 {
   debuffs_haunt = add_aura( buff_creator_t( this, "haunt", source -> find_spell( "haunt" ) ) );
 }
@@ -371,7 +371,7 @@ struct doom_t : public warlock_spell_t
     warlock_spell_t( "doom", p, ( p -> primary_tree() != WARLOCK_DESTRUCTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
     may_crit = false;
-    tick_power_mod = 1.0; // from tooltip
+    tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
     generate_fury = 40;
   }
 
@@ -505,7 +505,7 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t( "corruption", p, p -> glyphs.doom -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Corruption" ) )
   {
     may_crit = false;
-    tick_power_mod = 0.2; // from tooltip
+    tick_power_mod = 0.3; // tested on beta 2012/04/28
     generate_fury = 6;
   };
 
@@ -678,7 +678,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    tick_power_mod = 0.2; // from tooltip
+    tick_power_mod = 0.2; // from tooltip, also tested on beta 2012/04/28
   }
 
   virtual double action_multiplier() const
@@ -1148,6 +1148,27 @@ struct shadowflame_t : public warlock_spell_t
 
     if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.05 ) )
       p() -> buffs.molten_core -> trigger();
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock(); 
+
+    if ( td -> dots_shadowflame -> ticking ) 
+      td -> shadowflame_stack++;
+    else
+      td -> shadowflame_stack = 1;
+
+    warlock_spell_t::impact_s( s );
+  }
+
+  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
+  {
+    warlock_targetdata_t* td = targetdata( dot() -> state -> target ) -> cast_warlock(); 
+
+    assert( td -> shadowflame_stack >= 1 );
+
+    return warlock_spell_t::calculate_tick_damage( r, power * td -> shadowflame_stack, multiplier );
   }
 };
 

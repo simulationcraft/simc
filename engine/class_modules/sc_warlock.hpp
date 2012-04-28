@@ -28,6 +28,7 @@ struct warlock_targetdata_t : public targetdata_t
   buff_t* debuffs_haunt;
 
   bool ds_started_below_20;
+  int shadowflame_stack;
 
   int affliction_effects();
   int active_dots();
