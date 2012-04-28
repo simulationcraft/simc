@@ -742,13 +742,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 22 abilities
+    // Pet tree, 23 abilities
     {
        89766, // Axe Toss (Special Ability)
         6307, // Blood Pact (Special Ability)
       119899, // Cauterize Master (Special Ability)
        19505, // Devour Magic (Special Ability)
       118093, // Disarm (Special Ability)
+       85692, // Doom Bolt
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
        89792, // Flee (Special Ability)
@@ -895,8 +896,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath
            0,
     },
-    // Balance tree, 8 abilities
+    // Balance tree, 9 abilities
     {
+      106996, // Astral Storm
        24858, // Moonkin Form (Shapeshift)
        78675, // Solar Beam
        48505, // Starfall
