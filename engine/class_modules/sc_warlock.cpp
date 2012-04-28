@@ -1911,7 +1911,7 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
 
   if ( buffs.metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + spec.metamorphosis -> effectN( 3 ).percent()
+    player_multiplier *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 2
                          + ( composite_mastery() * mastery_value / 10000.0 ) * 2;
   }
   else
@@ -2116,6 +2116,7 @@ void warlock_t::init_spells()
 
   // Demonology
   spec.decimation    = find_specialization_spell( "Decimation" );
+  spec.demonic_fury  = find_specialization_spell( "Demonic Fury" );
   spec.metamorphosis = find_specialization_spell( "Metamorphosis" );
   spec.molten_core   = find_specialization_spell( "Molten Core" );
 

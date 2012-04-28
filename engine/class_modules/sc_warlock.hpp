@@ -108,6 +108,7 @@ struct warlock_t : public player_t
 
     // Demonology
     const spell_data_t* decimation;
+    const spell_data_t* demonic_fury;
     const spell_data_t* metamorphosis;
     const spell_data_t* molten_core;
 
