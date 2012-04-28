@@ -1047,6 +1047,16 @@ struct touch_of_chaos_t : public attack_t
     base_execute_time = timespan_t::from_seconds( 1 );
   }
 
+  static void extend( dot_t* dot, int ticks, double haste )
+  {
+    if ( dot -> ticking )
+    {
+      int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
+      int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
+      if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
+    }
+  }
+
   virtual void execute()
   {
     attack_t::execute();
@@ -1054,22 +1064,8 @@ struct touch_of_chaos_t : public attack_t
     if ( result_is_hit() )
     {
       warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-      // FIXME: this is how it currently works on beta (extending to 32 and 100 seconds), but seems strange and may be a bug
-
-      if ( td -> dots_corruption -> ticking )
-      {
-        timespan_t sec = timespan_t::from_seconds( 32 ) - td -> dots_corruption -> remains();
-        if ( sec > timespan_t::zero() )
-          td -> dots_corruption -> extend_duration_seconds( sec );
-      }
-      
-      if ( td -> dots_doom -> ticking )
-      {
-        timespan_t sec = timespan_t::from_seconds( 100 ) - td -> dots_doom -> remains();
-        if ( sec > timespan_t::zero() )
-          td -> dots_doom -> extend_duration_seconds( sec );
-      }
+      extend( td -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend( td -> dots_doom, 1, player -> composite_spell_haste() );
     }
   }
 
@@ -1164,6 +1160,8 @@ struct shadowflame_t : public warlock_spell_t
 
   virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
+    // FIXME: Technicaly, this won't be correct in multitarget/aoe situations
+    //        - we would need to be passed the dot or the target from action_t::tick()
     warlock_targetdata_t* td = targetdata( dot() -> state -> target ) -> cast_warlock(); 
 
     assert( td -> shadowflame_stack >= 1 );
