@@ -823,7 +823,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
-  return owner -> stats_current.spell_hit * 26.0 / 17.0;
+  return owner -> stats_current.spell_hit + owner -> composite_attack_expertise();
 }
 
 // ==========================================================================
