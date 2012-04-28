@@ -80,11 +80,11 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
   meta_cost_event( 0 ),
+  touch_of_chaos( 0 ),
   demonic_calling_event( 0 ),
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),
-  touch_of_chaos( 0 ),
   ember_react( timespan_t::zero() )
 {
   distance = 40;
