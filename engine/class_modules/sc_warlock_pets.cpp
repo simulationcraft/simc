@@ -73,6 +73,14 @@ static const _stat_list_t doomguard_base_stats[]=
   { 0, { 0 } }
 };
 
+static const _stat_list_t wild_imp_base_stats[]=
+{
+  //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 80, {    0,   0,    0,   0,    0,     0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
+
 static const _stat_list_t voidwalker_base_stats[]=
 {
   //       str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
@@ -128,6 +136,10 @@ static const _weapon_list_t voidwalker_weapon[]=
   { 0, 0, 0, timespan_t::zero() }
 };
 
+static const _weapon_list_t wild_imp_weapon[]=
+{
+  { 0, 0, 0, timespan_t::zero() }
+};
 }
 
 namespace warlock_pet_actions {
@@ -143,32 +155,18 @@ static double get_fury_gain( const spell_data_t& data )
 
 struct warlock_pet_melee_t : public melee_attack_t
 {
-  double generate_fury;
-
   warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
-    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL ), generate_fury( 0 )
+    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL )
   {
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     may_crit    = true;
     background  = true;
     repeating   = true;
-    generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( player ); }
-  
-  virtual void assess_damage( player_t*     t,
-                                double        amount,
-                                dmg_type_e    type,
-                                result_type_e result )
-  {
-    melee_attack_t::assess_damage( t, amount, type, result );
-
-    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
-  }
 };
 
 // ==========================================================================
@@ -185,15 +183,17 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
+    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
   warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    melee_attack_t( token, p, s, sc )
+    melee_attack_t( token, p, s, sc ), generate_fury( 0 )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
     special = true;
+    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
@@ -208,14 +208,11 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     return melee_attack_t::ready();
   }
   
-  virtual void assess_damage( player_t*     t,
-                                double        amount,
-                                dmg_type_e    type,
-                                result_type_e result )
+  virtual void execute()
   {
-    melee_attack_t::assess_damage( t, amount, type, result );
+    melee_attack_t::execute();
 
-    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
   }
 };
@@ -232,6 +229,7 @@ struct warlock_pet_spell_t : public spell_t
     spell_t( n, p, p -> find_pet_spell( n ), sc ), generate_fury( 0 )
   {
     may_crit = true;
+    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
@@ -239,6 +237,7 @@ struct warlock_pet_spell_t : public spell_t
     spell_t( token, p, s, sc ), generate_fury( 0 )
   {
     may_crit = true;
+    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
@@ -253,14 +252,11 @@ struct warlock_pet_spell_t : public spell_t
     return spell_t::ready();
   }
   
-  virtual void assess_damage( player_t*     t,
-                                double        amount,
-                                dmg_type_e    type,
-                                result_type_e result )
+  virtual void execute()
   {
-    spell_t::assess_damage( t, amount, type, result );
+    spell_t::execute();
 
-    if ( p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
   }
 };
@@ -481,6 +477,47 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
 }
 
+namespace wild_imp_spells
+{
+
+struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
+{
+  int firebolt_count;
+
+  firebolt_t( wild_imp_pet_t* p ) :
+    warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) ), firebolt_count( 0 )
+  {
+    // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
+    if ( p -> owner -> bugs )
+    {
+      ability_lag = timespan_t::from_seconds( 0.22 );
+      ability_lag_stddev = timespan_t::from_seconds( 0.01 );
+    }
+  }
+
+  virtual void execute()
+  {
+    if ( firebolt_count >= 10 )
+    {
+      ( ( wild_imp_pet_t* ) player ) -> dismiss();
+      return;
+    }
+
+    warlock_pet_spell_t::execute();
+
+    firebolt_count++;
+  }
+
+  virtual void reset()
+  {
+    warlock_pet_spell_t::reset();
+
+    firebolt_count = 0;
+  }
+};
+
+}
+
 // ==========================================================================
 // Warlock Pet
 // ==========================================================================
@@ -501,6 +538,7 @@ double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e
   else if ( pet_type == PET_INFERNAL   ) pet_list = pet_stats::infernal_base_stats;
   else if ( pet_type == PET_DOOMGUARD  ) pet_list = pet_stats::doomguard_base_stats;
   else if ( pet_type == PET_VOIDWALKER ) pet_list = pet_stats::voidwalker_base_stats;
+  else if ( pet_type == PET_WILD_IMP   ) pet_list = pet_stats::wild_imp_base_stats;
 
   if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
   {
@@ -557,6 +595,7 @@ const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_e pet_type 
   else if ( pet_type == PET_INFERNAL     ) weapon_list = pet_stats::infernal_weapon;
   else if ( pet_type == PET_DOOMGUARD    ) weapon_list = pet_stats::doomguard_weapon;
   else if ( pet_type == PET_VOIDWALKER   ) weapon_list = pet_stats::voidwalker_weapon;
+  else if ( pet_type == PET_WILD_IMP     ) weapon_list = pet_stats::wild_imp_weapon;
 
   return weapon_list;
 }
@@ -967,6 +1006,30 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
   if ( name == "doom_bolt" ) return new doomguard_spells::doom_bolt_t( this );
+
+  return warlock_guardian_pet_t::create_action( name, options_str );
+}
+
+// ==========================================================================
+// Pet Wild Imp
+// ==========================================================================
+
+wild_imp_pet_t::wild_imp_pet_t( sim_t* sim, warlock_t* owner ) :
+  warlock_guardian_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
+{ }
+
+void wild_imp_pet_t::init_base()
+{
+  warlock_guardian_pet_t::init_base();
+
+  action_list_str += "/snapshot_stats";
+  action_list_str += "/firebolt";
+}
+
+action_t* wild_imp_pet_t::create_action( const std::string& name,
+                                          const std::string& options_str )
+{
+  if ( name == "firebolt" ) return new wild_imp_spells::firebolt_t( this );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
 }

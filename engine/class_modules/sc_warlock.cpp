@@ -80,17 +80,20 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
   meta_cost_event( 0 ),
+  demonic_calling_event( 0 ),
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
-  initial_demonic_fury( 200 ),  
+  initial_demonic_fury( 200 ),
+  touch_of_chaos( 0 ),
   ember_react( timespan_t::zero() )
 {
   distance = 40;
   default_distance = 40;
 
-  cooldowns.metamorphosis      = get_cooldown ( "metamorphosis" );
   cooldowns.infernal           = get_cooldown ( "summon_infernal" );
   cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
+
+  main_hand_attack = touch_of_chaos;
 
   create_options();
 }
@@ -185,7 +188,21 @@ public:
         cooldown -> duration = recharge_event -> time - sim -> current_time;
       }
     }
+
     spell_t::execute();
+
+    if ( result_is_hit() && p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
+       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    spell_t::tick( d );
+
+    // FIXME: Test whether ticking dots generate fury during metamorphosis
+    //        (currently untestable because dots don't generate fury on beta at all)
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
+       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
   }
 
   virtual void reset()
@@ -252,6 +269,22 @@ public:
     }
   }
 
+  static void trigger_wild_imp( warlock_t* p )
+  {
+    if ( p -> buffs.demonic_calling -> up() )
+    {
+      for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+      {
+        if ( p -> pets.wild_imps[ i ] -> sleeping )
+        {
+          p -> pets.wild_imps[ i ] -> summon();
+          p -> buffs.demonic_calling -> expire();
+          break;
+        }
+      }
+    }
+  }
+
   static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
   {
     if ( dot -> ticking )
@@ -268,17 +301,6 @@ public:
       dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
                                        * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
     }
-  }
-
-  virtual void assess_damage( player_t*     t,
-                                double        amount,
-                                dmg_type_e    type,
-                                result_type_e result )
-  {
-    spell_t::assess_damage( t, amount, type, result );
-
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
   }
 };
 
@@ -353,6 +375,7 @@ struct doom_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip
+    generate_fury = 40;
   }
 
   virtual double action_multiplier() const
@@ -375,6 +398,13 @@ struct doom_t : public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -424,7 +454,11 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       trigger_soul_leech( p(), s -> result_amount );
+
+      trigger_wild_imp( p() );
+    }
   }
 
   virtual bool ready()
@@ -864,6 +898,9 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p() -> buffs.molten_core -> check() )
       p() -> buffs.molten_core -> expire();
+
+    if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+      p() -> buffs.molten_core -> trigger();
   }
 
   virtual timespan_t execute_time() const
@@ -880,14 +917,6 @@ struct soul_fire_t : public warlock_spell_t
     }
 
     return t;
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( s -> target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
-      p() -> buffs.molten_core -> trigger();
   }
 
   virtual result_type_e calculate_result( double crit, unsigned int level )
@@ -1008,6 +1037,52 @@ struct life_tap_t : public warlock_spell_t
 };
 
 
+struct touch_of_chaos_t : public attack_t
+{
+  touch_of_chaos_t( warlock_t* p ) :
+    attack_t( "touch_of_chaos", p, p -> find_spell( 103988 ) )
+  {
+    may_crit          = true;
+    background        = true;
+    repeating         = true;
+    weapon_multiplier            = 0.0;
+    base_spell_power_multiplier  = 1.0;
+    base_attack_power_multiplier = 0.0;
+    base_execute_time = timespan_t::from_seconds( 1 );
+  }
+
+  virtual void execute()
+  {
+    attack_t::execute();
+
+    if ( result_is_hit() )
+    {
+      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
+
+      // FIXME: this is how it currently works on beta (extending to 32 and 100 seconds), but seems strange and may be a bug
+
+      if ( td -> dots_corruption -> ticking )
+      {
+        timespan_t sec = timespan_t::from_seconds( 32 ) - td -> dots_corruption -> remains();
+        if ( sec > timespan_t::zero() )
+          td -> dots_corruption -> extend_duration_seconds( sec );
+      }
+      
+      if ( td -> dots_doom -> ticking )
+      {
+        timespan_t sec = timespan_t::from_seconds( 100 ) - td -> dots_doom -> remains();
+        if ( sec > timespan_t::zero() )
+          td -> dots_doom -> extend_duration_seconds( sec );
+      }
+    }
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    return timespan_t::from_seconds( 1 );
+  }
+};
+
 
 struct metamorphosis_t : public warlock_spell_t
 {
@@ -1016,6 +1091,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    if ( ! p -> touch_of_chaos ) p -> touch_of_chaos = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
@@ -1105,12 +1181,21 @@ struct hand_of_guldan_t : public warlock_spell_t
     shadowflame = new shadowflame_t( p );
     hog_damage  = new hand_of_guldan_dmg_t( p );
 
+    add_child( shadowflame );
+    add_child( hog_damage );
 
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new hand_of_guldan_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+    
+    hog_damage  -> stats = stats;
   }
 
   virtual timespan_t travel_time() const
@@ -1147,7 +1232,7 @@ struct demonic_slash_t : public warlock_spell_t
 
     if ( ! dtr && p -> has_dtr )
     {
-      dtr_action = new hand_of_guldan_t( p, true );
+      dtr_action = new demonic_slash_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -1563,7 +1648,7 @@ struct summon_main_pet_t : public summon_pet_t
   {
     summon_pet_t::execute();
 
-    p() -> pets.active = ( warlock_main_pet_t* ) pet;
+    p() -> pets.active = pet;
 
     if ( p() -> buffs.soulburn -> check() )
       p() -> buffs.soulburn -> expire();
@@ -1969,6 +2054,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "voidwalker"   ) return new  voidwalker_pet_t( sim, this );
   if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
+  if ( pet_name == "wild_imp"     ) return new    wild_imp_pet_t( sim, this );
 
   if ( pet_name == "grimoire_of_service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
   if ( pet_name == "grimoire_of_service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
@@ -1989,6 +2075,11 @@ void warlock_t::create_pets()
   create_pet( "voidwalker" );
   create_pet( "infernal"  );
   create_pet( "doomguard" );
+
+  for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+  {
+    pets.wild_imps[ i ] = create_pet( "wild_imp" );
+  }
 
   create_pet( "grimoire_of_service_felguard"  );
   create_pet( "grimoire_of_service_felhunter" );
@@ -2112,6 +2203,7 @@ void warlock_t::init_buffs()
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
+  buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 
@@ -2139,6 +2231,7 @@ void warlock_t::init_gains()
   gains.drain_soul             = get_gain( "drain_soul" );
   gains.incinerate             = get_gain( "incinerate" );
   gains.demonic_fury           = get_gain( "demonic_fury" );
+  gains.metamorphosis          = get_gain( "metamorphosis" );
 }
 
 
@@ -2160,9 +2253,10 @@ void warlock_t::init_procs()
 void warlock_t::init_rng()
 {
   player_t::init_rng();
-
-  rngs.molten_core = get_rng( "molten_core" );
-  rngs.nightfall   = get_rng( "nightfall" );
+  
+  rngs.demonic_calling = get_rng( "demonic_calling" );
+  rngs.molten_core     = get_rng( "molten_core" );
+  rngs.nightfall       = get_rng( "nightfall" );
 }
 
 
@@ -2399,6 +2493,9 @@ void warlock_t::combat_begin()
 
   resources.current[ RESOURCE_BURNING_EMBER ] = initial_burning_embers;
   resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
+
+  buffs.demonic_calling -> trigger();
+  demonic_calling_event = new (sim) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( 20 ) ) );
 }
 
 
@@ -2410,6 +2507,7 @@ void warlock_t::reset()
   pets.active = 0;
   ember_react = timespan_t::zero();
   event_t::cancel( meta_cost_event );
+  event_t::cancel( demonic_calling_event );
 
   for ( int i = 0; i < NIGHTFALL_LIMIT; i++ )
   {

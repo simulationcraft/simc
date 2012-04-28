@@ -11,6 +11,7 @@
 #if SC_WARLOCK == 1
 
 #define NIGHTFALL_LIMIT 5
+#define WILD_IMP_LIMIT 5
 
 struct warlock_targetdata_t : public targetdata_t
 {
@@ -34,16 +35,13 @@ struct warlock_targetdata_t : public targetdata_t
   warlock_targetdata_t( warlock_t* source, player_t* target );
 };
 
-struct warlock_pet_t;
-struct warlock_main_pet_t;
-struct warlock_guardian_pet_t;
-
 struct warlock_t : public player_t
 {
   // Active Pet
   struct pets_t
   {
-    warlock_main_pet_t* active;
+    pet_t* active;
+    pet_t* wild_imps[ WILD_IMP_LIMIT ];
   } pets;
 
   // Buffs
@@ -57,12 +55,13 @@ struct warlock_t : public player_t
     buff_t* bane_of_havoc;
     buff_t* tier13_4pc_caster;
     buff_t* grimoire_of_sacrifice;
+    buff_t* demonic_calling;
   } buffs;
 
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* metamorphosis;
+    cooldown_t* demonic_calling;
     cooldown_t* infernal;
     cooldown_t* doomguard;
   } cooldowns;
@@ -155,6 +154,7 @@ struct warlock_t : public player_t
   // Random Number Generators
   struct rngs_t
   {
+    rng_t* demonic_calling;
     rng_t* molten_core;
     rng_t* nightfall;
   } rngs;
@@ -186,9 +186,29 @@ struct warlock_t : public player_t
   };
 
   meta_cost_event_t* meta_cost_event;
-  
-  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
-  void cancel_metamorphosis() { event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
+
+  attack_t* touch_of_chaos;
+
+  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); touch_of_chaos -> execute(); };
+  void cancel_metamorphosis() { touch_of_chaos -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
+
+  struct demonic_calling_event_t : event_t
+  {
+    demonic_calling_event_t( player_t* p, timespan_t delay = timespan_t::from_seconds( 20 ) ) :
+      event_t( p -> sim, p, "demonic_calling" )
+    {
+      sim -> add_event( this, delay );
+    }
+
+    virtual void execute()
+    {
+      warlock_t* p = ( warlock_t* ) player;
+      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player );
+      p -> buffs.demonic_calling -> trigger();
+    }
+  };
+
+  demonic_calling_event_t* demonic_calling_event;
 
   int nightfall_index;
   timespan_t nightfall_times[ NIGHTFALL_LIMIT ];
@@ -374,6 +394,19 @@ struct infernal_pet_t : public warlock_guardian_pet_t
 struct doomguard_pet_t : public warlock_guardian_pet_t
 {
   doomguard_pet_t( sim_t* sim, warlock_t* owner );
+  virtual void init_base();
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str );
+};
+
+// ==========================================================================
+// Pet Wild Imp
+// ==========================================================================
+
+struct wild_imp_pet_t : public warlock_guardian_pet_t
+{
+  int firebolt_count;
+  wild_imp_pet_t( sim_t* sim, warlock_t* owner );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );

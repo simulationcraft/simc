@@ -3081,7 +3081,7 @@ void player_t::demise()
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ] -> cancel();
 
-  //sim -> cancel_events( this );
+  sim -> cancel_events( this );
 
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> demise();

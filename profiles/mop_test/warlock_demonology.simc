@@ -9,7 +9,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://www.wowhead.com/talent#warlock-000000000000010000
-glyphs=life_tap/demon_training
+glyphs=life_tap/demon_training/doom
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_felguard
@@ -20,10 +20,10 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=
 actions+=/dark_soul
 actions+=/metamorphosis,if=demonic_fury=1000
 actions+=/cancel_metamorphosis,if=demonic_fury<=500
-actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions+=/doom,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/hand_of_guldan,if=!target.dot.shadowflame.ticking
-actions+=/soul_fire,if=buff.molten_core.react
 actions+=/life_tap,if=mana.pct<=35
+actions+=/soul_fire,if=buff.molten_core.react|target.health.pct<25
 actions+=/demonic_slash
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
