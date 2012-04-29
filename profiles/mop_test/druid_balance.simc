@@ -1,6 +1,7 @@
 #!./simc 
 
 druid=Druid_Balance_T13H
+infinite_mana=1
 level=85
 race=troll
 spec=balance
@@ -8,7 +9,10 @@ position=back
 role=spell
 use_pre_potion=1
 professions=blacksmithing=525/tailoring=525
-talents=http://www.wowhead.com/talent#druid-000000000000000000
+#SotF
+#talents=http://www.wowhead.com/talent#druid-000000001000000000
+#Incarnation
+talents=http://www.wowhead.com/talent#druid-000000000010000000
 glyphs=
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
@@ -19,15 +23,18 @@ actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/berserking
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up
+actions+=/celestial_alignment,if=(buff.solar_eclipse.up&prev.wrath=1&eclipse<16)|(buff.lunar_eclipse.up&prev.starfire=1&eclipse>-21)&buff.chosen_of_elune.up
 actions+=/starfall,if=buff.lunar_eclipse.up
-actions+=/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)
-actions+=/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2&!dot.sunfire.remains>0)|(eclipse>-20&dot.moonfire.remains<10))
+actions+=/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.remains>0|!dot.moonfire.remains>0)
+actions+=/sunfire,if=buff.solar_eclipse.up&buff.natures_grace.up&!dot.sunfire.remains>0
+actions+=/moonfire,if=buff.lunar_eclipse.up&buff.natures_grace.up&!dot.moonfire.remains>0
 actions+=/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up
 actions+=/innervate,if=mana.pct<50
-actions+=/treants,if=time>=5
+#actions+=/treants,if=time>=5
 actions+=/starfire,if=eclipse_dir=1&eclipse<80
-actions+=/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<-87
-actions+=/wrath,if=eclipse_dir=-1&eclipse>=-87
+actions+=/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<-85
+actions+=/wrath,if=eclipse_dir=-1&eclipse>=-85
 actions+=/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80
 actions+=/starfire,if=eclipse_dir=1
 actions+=/wrath,if=eclipse_dir=-1
