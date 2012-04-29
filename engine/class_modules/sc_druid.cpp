@@ -1639,7 +1639,7 @@ struct rake_t : public druid_cat_attack_t
 struct ravage_t : public druid_cat_attack_t
 {
   ravage_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_specialization_spell( "Ravage" ), options_str )
+    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ), options_str )
   {
     requires_position = POSITION_BACK;
     requires_stealth  = true;
@@ -1712,7 +1712,7 @@ struct rip_t : public druid_cat_attack_t
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Rip" ), options_str ),
+    druid_cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     base_dmg_per_point( 0 ), ap_per_point( 0 )
   {
     base_dmg_per_point    = data().effectN( 1 ).bonus( p );
@@ -1777,7 +1777,7 @@ struct savage_roar_t : public druid_cat_attack_t
   double buff_value;
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Savage Roar" ), options_str ),
+    druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
     buff_value( 0.0 )
   {
     buff_value            = data().effectN( 2 ).percent();
@@ -1806,7 +1806,7 @@ struct shred_t : public druid_cat_attack_t
   int extend_rip;
 
   shred_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Shred" ) ),
+    druid_cat_attack_t( p, p -> find_class_spell( "Shred" ) ),
     extend_rip( 0 )
   {
     option_t options[] =
@@ -1861,7 +1861,7 @@ struct shred_t : public druid_cat_attack_t
 struct skull_bash_cat_t : public druid_cat_attack_t
 {
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Skull Bash" ), options_str )
+    druid_cat_attack_t( p, p -> find_class_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -1901,7 +1901,7 @@ struct swipe_cat_t : public druid_cat_attack_t
 struct tigers_fury_t : public druid_cat_attack_t
 {
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
+    druid_cat_attack_t( p, p -> find_class_spell( "Tiger's Fury" ), options_str )
   {
     harmful = false;
   }
@@ -2141,7 +2141,7 @@ struct maul_t : public druid_bear_attack_t
 struct skull_bash_bear_t : public druid_bear_attack_t
 {
   skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( player, player -> find_specialization_spell( "Skull Bash" ), options_str )
+    druid_bear_attack_t( player, player -> find_class_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -2393,7 +2393,7 @@ struct lifebloom_t : public druid_heal_t
   lifebloom_bloom_t* bloom;
 
   lifebloom_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_specialization_spell( "Lifebloom" ), options_str ), bloom( 0 )
+    druid_heal_t( p, p -> find_class_spell( "Lifebloom" ), options_str ), bloom( 0 )
   {
     //base_crit += p -> glyph.lifebloom -> mod_additive( P_CRIT );
     may_crit   = false;
@@ -2444,7 +2444,7 @@ struct lifebloom_t : public druid_heal_t
 struct nourish_t : public druid_heal_t
 {
   nourish_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_specialization_spell( "Nourish" ), options_str )
+    druid_heal_t( p, p -> find_class_spell( "Nourish" ), options_str )
   {
   }
 
@@ -2473,7 +2473,7 @@ struct nourish_t : public druid_heal_t
 struct regrowth_t : public druid_heal_t
 {
   regrowth_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_specialization_spell( "Regrowth" ), options_str )
+    druid_heal_t( p, p -> find_class_spell( "Regrowth" ), options_str )
   {
     base_crit   += 0.6;
     consume_ooc  = true;
@@ -2542,7 +2542,7 @@ struct rejuvenation_t : public druid_heal_t
 struct swiftmend_t : public druid_heal_t
 {
   swiftmend_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_specialization_spell( "Swiftmend" ), options_str )
+    druid_heal_t( p, p -> find_class_spell( "Swiftmend" ), options_str )
   {
     consume_ooc       = true;
   }
@@ -2592,7 +2592,7 @@ struct tranquility_t : public druid_heal_t
 struct wild_growth_t : public druid_heal_t
 {
   wild_growth_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_specialization_spell( "Wild Growth" ), options_str )
+    druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
     aoe = data().effect3().base_value();
   }
@@ -2845,7 +2845,7 @@ struct bear_form_t : public druid_spell_t
 struct berserk_t : public druid_spell_t
 {
   berserk_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str  )
+    druid_spell_t( "berserk", player, player -> find_class_spell( "Berserk" ), options_str  )
   {
     harmful = false;
   }
@@ -2931,7 +2931,7 @@ struct cat_form_t : public druid_spell_t
 struct celestial_alignment_buff_t : public buff_t
 {
   celestial_alignment_buff_t( druid_t* p ) :
-    buff_t( buff_creator_t( p, "celestial_alignment", p -> find_specialization_spell( "Celestial Alignment" ) ) )
+    buff_t( buff_creator_t( p, "celestial_alignment", p -> find_class_spell( "Celestial Alignment" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -2952,7 +2952,7 @@ struct celestial_alignment_buff_t : public buff_t
 struct celestial_alignment_t : public druid_spell_t
 {
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_specialization_spell( "Celestial Alignment" ), options_str )
+    druid_spell_t( player, player -> find_class_spell( "Celestial Alignment" ), options_str )
   {
     parse_options( NULL, options_str );
     
@@ -2988,7 +2988,7 @@ struct celestial_alignment_t : public druid_spell_t
 struct enrage_t : public druid_spell_t
 {
   enrage_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_specialization_spell( "Enrage" ), options_str )
+    druid_spell_t( player, player -> find_class_spell( "Enrage" ), options_str )
   {
     harmful = false;
   }
@@ -3362,7 +3362,7 @@ struct moonfire_t : public druid_spell_t
 struct moonkin_form_t : public druid_spell_t
 {
   moonkin_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonkin_form", player, player -> find_specialization_spell( "Moonkin Form" )  )
+    druid_spell_t( "moonkin_form", player, player -> find_class_spell( "Moonkin Form" )  )
   {
     parse_options( NULL, options_str );
 
@@ -3536,7 +3536,7 @@ struct starfall_t : public druid_spell_t
   spell_t* starfall_star;
 
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
+    druid_spell_t( "starfall", player, player -> find_class_spell( "Starfall" ) ),
     starfall_star( 0 )
   {
     parse_options( NULL, options_str );
@@ -3576,7 +3576,7 @@ struct starfall_t : public druid_spell_t
 struct starsurge_t : public druid_spell_t
 {
   starsurge_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ) )
+    druid_spell_t( "starsurge", player, player -> find_class_spell( "Starsurge" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3794,7 +3794,7 @@ struct sunfire_t : public druid_spell_t
 struct survival_instincts_t : public druid_spell_t
 {
   survival_instincts_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "survival_instincts", player, player -> find_specialization_spell( "Survival Instincts" ) )
+    druid_spell_t( "survival_instincts", player, player -> find_class_spell( "Survival Instincts" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3885,7 +3885,7 @@ struct typhoon_t : public druid_spell_t
 struct wild_mushroom_t : public druid_spell_t
 {
   wild_mushroom_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "wild_mushroom", player, player -> find_specialization_spell( "Wild Mushroom" ) )
+    druid_spell_t( "wild_mushroom", player, player -> find_class_spell( "Wild Mushroom" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3906,7 +3906,7 @@ struct wild_mushroom_t : public druid_spell_t
 struct wild_mushroom_detonate_t : public druid_spell_t
 {
   wild_mushroom_detonate_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "wild_mushroom_detonate", player, player -> find_specialization_spell( "Wild Mushroom: Detonate" ) )
+    druid_spell_t( "wild_mushroom_detonate", player, player -> find_class_spell( "Wild Mushroom: Detonate" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4124,10 +4124,10 @@ void druid_t::init_spells()
   specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
   specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
   specialization.eclipse                = find_specialization_spell( "Eclipse" );
-  spell.eclipse                         = find_spell( 81070 );
+  spell.eclipse                         = specialization.eclipse -> ok() ? find_spell( 81070 ) : spell_data_t::not_found();
   specialization.euphoria               = find_specialization_spell( "Euphoria" );
   specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
-  spell.moonkin_form                    = find_spell( 24905 ); // This is the passive applied on shapeshift!
+  spell.moonkin_form                    = find_class_spell( "Moonkin Form" ) -> ok() ? find_spell( 24905 ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
   specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
 
@@ -4139,7 +4139,7 @@ void druid_t::init_spells()
   specialization.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
   specialization.thick_hide             = find_specialization_spell( "Thick Hide" );
   specialization.vengeance              = find_specialization_spell( "Vengeance" );
-  spell.bear_form                       = find_spell( 1178 ); // This is the passive applied on shapeshift!
+  spell.bear_form                       = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
                                                                          
   // Restoration                                                         
   specialization.living_seed            = find_specialization_spell( "Living Seed" );
@@ -4182,30 +4182,30 @@ void druid_t::init_spells()
   talent.disentanglement    = find_talent_spell( "Disentanglement" );
 
   // Glyphs
-  glyph.berserk               = find_glyph( "Glyph of Berserk" );
-  glyph.bloodletting          = find_glyph( "Glyph of Bloodletting" );
-  glyph.ferocious_bite        = find_glyph( "Glyph of Ferocious Bite" );
-  glyph.focus                 = find_glyph( "Glyph of Focus" );
-  glyph.frenzied_regeneration = find_glyph( "Glyph of Frenzied Regeneration" );
-  glyph.healing_touch         = find_glyph( "Glyph of Healing Touch" );
-  glyph.innervate             = find_glyph( "Glyph of Innervate" );
-  glyph.lacerate              = find_glyph( "Glyph of Lacerate" );
-  glyph.lifebloom             = find_glyph( "Glyph of Lifebloom" );
-  glyph.mangle                = find_glyph( "Glyph of Mangle" );
-  glyph.mark_of_the_wild      = find_glyph( "Glyph of Mark of the Wild" );
-  glyph.maul                  = find_glyph( "Glyph of Maul" );
-  glyph.monsoon               = find_glyph( "Glyph of Monsoon" );
-  glyph.moonfire              = find_glyph( "Glyph of Moonfire" );
-  glyph.regrowth              = find_glyph( "Glyph of Regrowth" );
-  glyph.rejuvenation          = find_glyph( "Glyph of Rejuvenation" );
-  glyph.rip                   = find_glyph( "Glyph of Rip" );
-  glyph.savage_roar           = find_glyph( "Glyph of Savage Roar" );
-  glyph.starfall              = find_glyph( "Glyph of Starfall" );
-  glyph.starfire              = find_glyph( "Glyph of Starfire" );
-  glyph.starsurge             = find_glyph( "Glyph of Starsurge" );
-  glyph.swiftmend             = find_glyph( "Glyph of Swiftmend" );
-  glyph.wild_growth           = find_glyph( "Glyph of Wild Growth" );
-  glyph.wrath                 = find_glyph( "Glyph of Wrath" );
+  glyph.berserk               = find_glyph_spell( "Glyph of Berserk" );
+  glyph.bloodletting          = find_glyph_spell( "Glyph of Bloodletting" );
+  glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
+  glyph.focus                 = find_glyph_spell( "Glyph of Focus" );
+  glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
+  glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
+  glyph.innervate             = find_glyph_spell( "Glyph of Innervate" );
+  glyph.lacerate              = find_glyph_spell( "Glyph of Lacerate" );
+  glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
+  glyph.mangle                = find_glyph_spell( "Glyph of Mangle" );
+  glyph.mark_of_the_wild      = find_glyph_spell( "Glyph of Mark of the Wild" );
+  glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
+  glyph.monsoon               = find_glyph_spell( "Glyph of Monsoon" );
+  glyph.moonfire              = find_glyph_spell( "Glyph of Moonfire" );
+  glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
+  glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
+  glyph.rip                   = find_glyph_spell( "Glyph of Rip" );
+  glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
+  glyph.starfall              = find_glyph_spell( "Glyph of Starfall" );
+  glyph.starfire              = find_glyph_spell( "Glyph of Starfire" );
+  glyph.starsurge             = find_glyph_spell( "Glyph of Starsurge" );
+  glyph.swiftmend             = find_glyph_spell( "Glyph of Swiftmend" );
+  glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
+  glyph.wrath                 = find_glyph_spell( "Glyph of Wrath" );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
