@@ -3546,14 +3546,19 @@ struct starfall_t : public druid_spell_t
     hasted_ticks   = false;
 
     harmful = false;
-
-    starfall_star = new starfall_star_t( player, data().effect1().trigger_spell_id() );    
+    // Starfall triggers a spell each second, that triggers the damage spell.
+    const spell_data_t* stars_trigger_spell = data().effect1().trigger();
+    if ( ! stars_trigger_spell -> ok() )
+    {
+      background = true;
+    }
+    starfall_star = new starfall_star_t( player, stars_trigger_spell -> effect1().base_value() );    
   }
 
   virtual void init()
   {
     druid_spell_t::init();
-
+    
     starfall_star -> stats = stats;
   }
 
