@@ -191,7 +191,7 @@ public:
     spell_t::execute();
 
     if ( result_is_hit() && p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
-       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
   }
 
   virtual void tick( dot_t* d )
@@ -273,7 +273,7 @@ public:
         virtual double evaluate()
         {
           if ( spell -> recharge_event )
-            return ( spell -> sim -> current_time - spell -> recharge_event -> time ).total_seconds();
+            return ( spell -> recharge_event -> time - spell -> sim -> current_time ).total_seconds();
           else
             return spell -> recharge_seconds;
         }
