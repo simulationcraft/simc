@@ -300,7 +300,6 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     warlock_pet_actions::warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     aoe               = -1;
-    // direct_power_mod  = 0.264; FIXME: Retest in MoP
     weapon   = &( p -> main_hand_weapon );
   }
 

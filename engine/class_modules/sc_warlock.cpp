@@ -258,6 +258,32 @@ public:
     return m;
   }
 
+  virtual expr_t* create_expression( const std::string& name_str )
+  {
+    if ( name_str == "charges" )
+      return make_ref_expr( name_str, current_charges );
+    else if ( name_str == "max_charges" )
+      return make_ref_expr( name_str, max_charges );
+    else if ( name_str == "recharge_time" )
+    {
+      struct recharge_time_expr_t : public expr_t
+      {
+        warlock_spell_t* spell;
+        recharge_time_expr_t( warlock_spell_t* s ) : expr_t( "recharge_time" ), spell( s ) {}
+        virtual double evaluate()
+        {
+          if ( spell -> recharge_event )
+            return ( spell -> sim -> current_time - spell -> recharge_event -> time ).total_seconds();
+          else
+            return spell -> recharge_seconds;
+        }
+      };
+      return new recharge_time_expr_t( this );
+    }
+    else
+      return spell_t::create_expression( name_str );
+  }
+
   static void trigger_soul_leech( warlock_t* p, double dmg )
   {
     if ( p -> talents.soul_leech -> ok() )
@@ -1163,7 +1189,7 @@ struct shadowflame_t : public warlock_spell_t
 
   virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
   {
-    // FIXME: Technicaly, this won't be correct in multitarget/aoe situations
+    // FIXME: Technically, this won't be correct in multitarget/aoe situations
     //        - we would need to be passed the dot or the target from action_t::tick()
     warlock_targetdata_t* td = targetdata( dot() -> state -> target ) -> cast_warlock(); 
 
