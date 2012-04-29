@@ -257,29 +257,31 @@ struct druid_t : public player_t
   struct buffs_t
   {
     // DONE
+    buff_t* celestial_alignment;
+    buff_t* chosen_of_elune;
+    buff_t* eclipse_lunar;
+    buff_t* eclipse_solar;
+    buff_t* lunar_shower;
+    buff_t* moonkin_form;
+    buff_t* natures_grace;
+    buff_t* shooting_stars;
+
 
     // NYI / Needs checking
     buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
-    buff_t* celestial_alignment;
-    buff_t* eclipse_lunar;
-    buff_t* eclipse_solar;
     buff_t* enrage;
     buff_t* frenzied_regeneration;
     buff_t* glyph_of_innervate;
     buff_t* harmony;
     buff_t* lacerate;
-    buff_t* lunar_shower;
-    buff_t* moonkin_form;
-    buff_t* natures_grace;
     buff_t* natures_swiftness;
     buff_t* omen_of_clarity;
     buff_t* pulverize;
     buff_t* revitalize;
     buff_t* savage_defense;
     buff_t* savage_roar;
-    buff_t* shooting_stars;
     buff_t* stampede_bear;
     buff_t* stampede_cat;
     buff_t* stealthed;
@@ -290,7 +292,10 @@ struct druid_t : public player_t
     buff_t* primal_madness_bear;
     buff_t* primal_madness_cat;
     buff_t* tigers_fury;
+    buff_t* king_of_the_jungle;
+    buff_t* son_of_ursoc;
     buff_t* tree_of_life;
+    
   } buff;
 
   // Cooldowns
@@ -3095,8 +3100,12 @@ struct incarnation_t : public druid_spell_t
 
   virtual void execute()
   {
-    // TODO: One buff per spec?
     druid_spell_t::execute();
+    p() -> buff.chosen_of_elune -> trigger();
+    p() -> buff.king_of_the_jungle -> trigger();
+    p() -> buff.son_of_ursoc -> trigger();
+    p() -> buff.tree_of_life -> trigger();
+
   }
 };
 
@@ -4029,6 +4038,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
+  if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -4244,6 +4254,33 @@ void druid_t::init_buffs()
   player_t::init_buffs();
 
   // MoP checked
+  
+  // Generic druid buffs
+  
+  // Talent buffs
+
+  // http://mop.wowhead.com/spell=122114 Chosen of Elune
+  buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , find_spell( 122114 ) )
+                            .duration( talent.incarnation -> duration() )
+                            .chance( primary_tree() == DRUID_BALANCE );
+
+  // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
+  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", find_spell( 102548 ) )
+                            .duration( talent.incarnation -> duration() )
+                            .chance( primary_tree() == DRUID_FERAL );
+
+  // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc	Passive
+  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , find_spell( 113711 ) )
+                            .duration( talent.incarnation -> duration() )
+                            .chance( primary_tree() == DRUID_GUARDIAN );
+
+  // http://mop.wowhead.com/spell=5420 Incarnation: Tree of Life	Passive 
+  buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , find_spell( 5420 ) )
+                            .duration( talent.incarnation -> duration() )
+                            .chance( primary_tree() == DRUID_RESTORATION );
+  
+  
+  // Balance
 
   buff.celestial_alignment   = new celestial_alignment_buff_t( this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_spell( 48518 ) );
@@ -4252,7 +4289,15 @@ void druid_t::init_buffs()
                                .chance( specialization.shooting_stars -> effect1().percent() );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effect1().trigger() );
 
-
+  // Feral
+  
+  // Guardian
+  
+  // Restoration
+  
+  
+  // Not checked for MoP
+  
   buff.barkskin              = buff_creator_t( this, "barkskin", find_spell( 22812 ) );
   //buff.enrage                = buff_creator_t( this, dbc.class_ability_id( type, "Enrage" ), "enrage" );
   buff.enrage                = buff_creator_t( this, "enrage" , spell_data_t::nil() );
@@ -4272,34 +4317,17 @@ void druid_t::init_buffs()
   buff.wild_mushroom         = buff_creator_t( sim, "wild_mushroom", spell_data_t::nil() )
                                .max_stack( 3 ).duration( timespan_t::from_seconds( 300.0 ) );
   
-  buff.glyph_of_innervate  = buff_creator_t( sim, "glyph_of_innervate" , spell_data_t::nil() );
-  buff.pulverize           = buff_creator_t( sim, "pulverize"          , spell_data_t::nil() );
-  buff.revitalize          = buff_creator_t( sim, "revitalize"         , spell_data_t::nil() );
-  buff.stampede_bear       = buff_creator_t( sim, "stampede_bear"      , spell_data_t::nil() );
-  buff.stampede_cat        = buff_creator_t( sim, "stampede_cat"       , spell_data_t::nil() );
-  buff.t13_4pc_melee       = buff_creator_t( sim, "t13_4pc_melee"      , spell_data_t::nil() );
-  buff.savage_defense      = buff_creator_t( sim, "savage_defense"     , spell_data_t::nil() );
-  buff.survival_instincts  = buff_creator_t( sim, "survival_instincts" , spell_data_t::nil() );
-  buff.tree_of_life        = buff_creator_t( sim, "tree_of_life"       , spell_data_t::nil() );
-  buff.primal_madness_cat  = buff_creator_t( sim, "primal_madness_cat" , spell_data_t::nil() );
-  buff.primal_madness_bear = buff_creator_t( sim, "primal_madness_bear", spell_data_t::nil() );
-  buff.berserk             = buff_creator_t( sim, "berserk"            , spell_data_t::nil() );
-
-  /*
-  buff.glyph_of_innervate = new buff_t( this, "glyph_of_innervate", 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), glyph.innervate -> ok() );
-  buff.pulverize          = new buff_t( this, "pulverize"         , 1, timespan_t::from_seconds( 10.0 ) + talent.endless_carnage -> effect2().time_value() );
-  buff.revitalize         = new buff_t( this, "revitalize"        , 1, timespan_t::from_seconds( 1.0 ), timespan_t::from_seconds( talent.revitalize -> spell( 1 ).effect2().base_value() ), talent.revitalize -> ok() ? 0.20 : 0, true );
-  buff.stampede_bear      = new buff_t( this, "stampede_bear"     , 1, timespan_t::from_seconds( 8.0 ), timespan_t::zero(), talent.stampede -> ok() );
-  buff.stampede_cat       = new buff_t( this, "stampede_cat"      , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), talent.stampede -> ok() );
-  buff.t13_4pc_melee      = new buff_t( this, "t13_4pc_melee"     , 1, timespan_t::from_seconds( 10.0 ), timespan_t::zero(), ( set_bonus.tier13_4pc_melee() ) ? 1.0 : 0 );
-  buff.savage_defense        = new buff_t( this, 62606, "savage_defense", 0.5 ); // Correct chance is stored in the ability, 62600
-  buff.survival_instincts    = new buff_t( this, talent.survival_instincts -> spell_id(), "survival_instincts" );
-  buff.tree_of_life          = new buff_t( this, talent.tree_of_life, NULL );
-  buff.tree_of_life -> buff_duration += talent.natural_shapeshifter -> mod_additive_time( P_DURATION );
-  buff.primal_madness_cat  = new stat_buff_t( this, "primal_madness_cat", STAT_MAX_ENERGY, spells.primal_madness_cat -> effect1().base_value() );
-  buff.primal_madness_bear = new      buff_t( this, "primal_madness_bear" );
-  buff.berserk             = new      buff_t( this, "berserk", 1, timespan_t::from_seconds( 15.0 ) );
-  */
+  buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() );
+  buff.pulverize           = buff_creator_t( this, "pulverize"          , spell_data_t::nil() );
+  buff.revitalize          = buff_creator_t( this, "revitalize"         , spell_data_t::nil() );
+  buff.stampede_bear       = buff_creator_t( this, "stampede_bear"      , spell_data_t::nil() );
+  buff.stampede_cat        = buff_creator_t( this, "stampede_cat"       , spell_data_t::nil() );
+  buff.t13_4pc_melee       = buff_creator_t( this, "t13_4pc_melee"      , spell_data_t::nil() );
+  buff.savage_defense      = buff_creator_t( this, "savage_defense"     , spell_data_t::nil() );
+  buff.survival_instincts  = buff_creator_t( this, "survival_instincts" , spell_data_t::nil() );
+  buff.primal_madness_cat  = buff_creator_t( this, "primal_madness_cat" , spell_data_t::nil() );
+  buff.primal_madness_bear = buff_creator_t( this, "primal_madness_bear", spell_data_t::nil() );
+  buff.berserk             = buff_creator_t( this, "berserk"            , spell_data_t::nil() );
   buff.tigers_fury         = buff_creator_t( this, "tigers_fury", find_spell( 5217 ) );
 
   // simple
@@ -4782,15 +4810,18 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
 
   if ( primary_tree() == DRUID_BALANCE )
   {
+
     // Both eclipse buffs need their own checks
     if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_lunar -> up() )
         m *= 1.0 + ( buff.eclipse_lunar -> data().effect1().percent()
+                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
                  + composite_mastery() * mastery.total_eclipse -> effect1().coeff() * 0.01 );
 
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_solar -> up() )
         m *= 1.0 + ( buff.eclipse_solar -> data().effect1().percent()
+                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
                  + composite_mastery() * mastery.total_eclipse -> effect1().coeff() * 0.01 );
   }
 
