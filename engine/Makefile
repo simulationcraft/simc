@@ -133,6 +133,19 @@ SRC = \
 	dbc$(PATHSEP)sc_spell_data.cpp \
 	dbc$(PATHSEP)sc_spell_info.cpp \
 	dbc$(PATHSEP)sc_data.cpp \
+	dbc$(PATHSEP)sc_extra_data.inc \
+	dbc$(PATHSEP)sc_extra_data_ptr.inc \
+	dbc$(PATHSEP)sc_item_data.inc \
+	dbc$(PATHSEP)sc_item_data_ptr.inc \
+	dbc$(PATHSEP)sc_scale_data.inc \
+	dbc$(PATHSEP)sc_scale_data_ptr.inc \
+	dbc$(PATHSEP)sc_spec_list.inc \
+	dbc$(PATHSEP)sc_spell_data.inc \
+	dbc$(PATHSEP)sc_spell_data_ptr.inc \
+	dbc$(PATHSEP)sc_spell_lists.inc \
+	dbc$(PATHSEP)sc_spell_lists_ptr.inc \
+	dbc$(PATHSEP)sc_talent_data.inc \
+	dbc$(PATHSEP)sc_talent_data_ptr.inc \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
 	class_modules$(PATHSEP)sc_hunter.cpp \
@@ -148,7 +161,7 @@ SRC = \
 	class_modules$(PATHSEP)sc_warlock.cpp \
 	class_modules$(PATHSEP)sc_warlock_pets.cpp \
 	class_modules$(PATHSEP)sc_warrior.cpp
-SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC))
+SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
 OBJ_DIR = .
 OBJ_EXT = o
