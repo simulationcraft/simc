@@ -3498,14 +3498,20 @@ struct starfire_t : public druid_spell_t
 
           trigger_eclipse_gain_delay( this, gain );
         }
-        else
-        {
-          // Cast starfire, but solar eclipse was up?
-          p -> proc.wrong_eclipse_starfire -> occur();
-        }
       }
     }
   }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    druid_t* p = player -> cast_druid();
+
+    // Cast starfire, but solar eclipse was up?
+    if ( p -> buff.eclipse_solar -> check() && ! p -> buff.celestial_alignment -> check() )
+      p -> proc.wrong_eclipse_starfire -> occur();
+  }
+  
 };
 
 // Starfall Spell ===========================================================
@@ -4012,7 +4018,7 @@ struct wrath_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     // Cast wrath, but lunar eclipse was up?
-    if ( p -> buff.eclipse_lunar -> check() )
+    if ( p -> buff.eclipse_lunar -> check() && ! p -> buff.celestial_alignment -> check() )
       p -> proc.wrong_eclipse_wrath -> occur();
   }
 };
