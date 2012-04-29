@@ -175,8 +175,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
   {
     double am = priest_pet_actions::priest_pet_melee_t::action_multiplier();
 
-//    am *= 1.0 + p() -> buffs.shadowcrawl -> up() * p() -> shadowcrawl -> effectN( 2 ).percent();
-    am *= 1.15;
+    am *= 1.0 + p() -> buffs.shadowcrawl -> up() * p() -> shadowcrawl -> effectN( 2 ).percent();
 
     return am;
   }
