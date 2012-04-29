@@ -896,9 +896,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath
            0,
     },
-    // Balance tree, 9 abilities
+    // Balance tree, 10 abilities
     {
       106996, // Astral Storm
+      112071, // Celestial Alignment
        24858, // Moonkin Form (Shapeshift)
        78675, // Solar Beam
        48505, // Starfall

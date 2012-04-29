@@ -4241,8 +4241,7 @@ void druid_t::init_base()
   base_energy_regen_per_second = 10;
 
   // Natural Insight: +400% mana
-  // resources.base[ RESOURCE_MANA ] *= 1.0 + specialization.natural_insight -> effect1().percent();
-  // mana_per_intellect              *= 1.0 + specialization.natural_insight -> effect1().percent();
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + specialization.natural_insight -> effect1().percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }

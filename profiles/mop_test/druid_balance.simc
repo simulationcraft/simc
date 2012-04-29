@@ -1,7 +1,6 @@
 #!./simc 
 
 druid=Druid_Balance_T13H
-infinite_mana=1
 level=85
 race=troll
 spec=balance
@@ -16,7 +15,7 @@ talents=http://www.wowhead.com/talent#druid-000000000010000000
 glyphs=
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/mark_of_the_wild
+actions+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions+=/moonkin_form
 actions+=/snapshot_stats
 actions+=/volcanic_potion,if=!in_combat
