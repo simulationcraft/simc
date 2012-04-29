@@ -183,10 +183,8 @@ struct warlock_t : public player_t
 
   meta_cost_event_t* meta_cost_event;
 
-  attack_t* touch_of_chaos;
-
-  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); touch_of_chaos -> schedule_execute(); };
-  void cancel_metamorphosis() { touch_of_chaos -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
+  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); main_hand_attack -> schedule_execute(); };
+  void cancel_metamorphosis()  { main_hand_attack -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
 
   struct demonic_calling_event_t : event_t
   {

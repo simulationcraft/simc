@@ -79,7 +79,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
   meta_cost_event( 0 ),
-  touch_of_chaos( 0 ),
   demonic_calling_event( 0 ),
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
@@ -91,8 +90,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
 
   cooldowns.infernal           = get_cooldown ( "summon_infernal" );
   cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
-
-  main_hand_attack = touch_of_chaos;
 
   create_options();
 }
@@ -1109,7 +1106,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
-    if ( ! p -> touch_of_chaos ) p -> touch_of_chaos = new touch_of_chaos_t( p );
+    if ( ! p -> main_hand_attack ) p -> main_hand_attack = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
@@ -2647,8 +2644,7 @@ double warlock_t::resource_loss( resource_type_e resource_type, double amount, g
 
   if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 )
   {
-    if ( buffs.metamorphosis -> check() ) buffs.metamorphosis -> expire();
-    event_t::cancel( meta_cost_event );
+    if ( buffs.metamorphosis -> check() ) cancel_metamorphosis();
   }
 
   return r;
