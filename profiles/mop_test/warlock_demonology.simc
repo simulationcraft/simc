@@ -12,13 +12,13 @@ talents=http://www.wowhead.com/talent#warlock-000000000000010000
 glyphs=life_tap/demon_training
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/summon_felguard
-actions+=/grimoire_of_service_felguard
+actions+=/summon_imp
+actions+=/grimoire_of_service_imp
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
 actions+=/dark_soul
-actions+=/metamorphosis,if=demonic_fury=1000
+actions+=/metamorphosis,if=demonic_fury=1000|demonic_fury>=target.time_to_die*8
 actions+=/cancel_metamorphosis,if=demonic_fury<40
 actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/hand_of_guldan

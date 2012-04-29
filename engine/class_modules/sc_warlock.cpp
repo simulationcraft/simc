@@ -1150,10 +1150,13 @@ struct shadowflame_t : public warlock_spell_t
   {
     warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock(); 
 
-    if ( td -> dots_shadowflame -> ticking ) 
-      td -> shadowflame_stack++;
-    else
-      td -> shadowflame_stack = 1;
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( td -> dots_shadowflame -> ticking ) 
+        td -> shadowflame_stack++;
+      else
+        td -> shadowflame_stack = 1;
+    }
 
     warlock_spell_t::impact_s( s );
   }
