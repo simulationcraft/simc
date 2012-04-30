@@ -335,7 +335,7 @@ player_t::player_t( sim_t*             s,
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
-  iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::zero() ),
+  iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
@@ -2832,7 +2832,6 @@ void player_t::reset()
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
 
-  current.sleeping = 1;
   events = 0;
 
   stats = initial_stats;
@@ -2845,6 +2844,7 @@ void player_t::reset()
   // Reset current stats to initial stats
   current = initial;
 
+  current.sleeping = true;
   current.mastery = initial.mastery + initial.mastery_rating / rating.mastery;
   recalculate_haste();
 
@@ -3041,7 +3041,7 @@ void player_t::arise()
     log_t::output( sim, "%s arises.", name() );
 
   if ( ! initial.sleeping )
-    current.sleeping = 0;
+    current.sleeping = false;
 
   if ( current.sleeping )
     return;
@@ -3063,7 +3063,8 @@ void player_t::arise()
 void player_t::demise()
 {
   // No point in demising anything if we're not even active
-  if ( current.sleeping == 1 ) return;
+  if ( current.sleeping )
+    return;
 
   if ( sim -> log )
     log_t::output( sim, "%s demises.", name() );
@@ -3072,7 +3073,7 @@ void player_t::demise()
   iteration_fight_length += sim -> current_time - arise_time;
   arise_time = timespan_t::min();
 
-  current.sleeping = 1;
+  current.sleeping = true;
   if ( readying )
   {
     event_t::cancel( readying );

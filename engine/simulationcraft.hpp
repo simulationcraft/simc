@@ -3106,7 +3106,7 @@ struct player_t : public noncopyable
 
     double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
     double skill, distance;
-    int sleeping;
+    bool sleeping;
 
     std::array<double,SCHOOL_MAX> resource_reduction;
 
