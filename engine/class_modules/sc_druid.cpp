@@ -3453,6 +3453,13 @@ struct starfire_t : public druid_spell_t
     }
   }
 
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    if (  p() -> set_bonus.tier13_2pc_caster() )
+      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+  }
+
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
@@ -3592,6 +3599,13 @@ struct starsurge_t : public druid_spell_t
       dtr_action = new starsurge_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    if (  p() -> set_bonus.tier13_2pc_caster() )
+      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
@@ -4020,6 +4034,13 @@ struct wrath_t : public druid_spell_t
         }
       }
     }
+  }
+  
+  virtual void player_buff()
+  {
+    druid_spell_t::player_buff();
+    if (  p() -> set_bonus.tier13_2pc_caster() )
+      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()
