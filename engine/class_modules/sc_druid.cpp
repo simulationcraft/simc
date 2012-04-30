@@ -3307,16 +3307,19 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( sf -> ticking )
-        sf -> cancel();
-        
       if ( p -> specialization.lunar_shower -> ok() )
       {
         p -> buff.lunar_shower -> trigger( 1 );
       }
 
       if ( p -> buff.celestial_alignment -> check() )
+      {
         sunfire -> execute();
+      }
+      else
+      {
+        sf -> cancel();
+      }
     }
   }
 
@@ -3325,7 +3328,7 @@ struct moonfire_t : public druid_spell_t
     double cr = druid_spell_t::cost_reduction();
     druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> stack() );
+    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -3765,7 +3768,7 @@ struct sunfire_t : public druid_spell_t
     double cr = druid_spell_t::cost_reduction();
     druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> stack() );
+    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -4837,13 +4840,13 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
       if ( buff.eclipse_lunar -> up() )
         m *= 1.0 + ( buff.eclipse_lunar -> data().effect1().percent()
                  + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
-                 + composite_mastery() * mastery.total_eclipse -> effect1().coeff() * 0.01 );
+                 + composite_mastery() * mastery.total_eclipse -> effect1().mastery_value() );
 
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_solar -> up() )
         m *= 1.0 + ( buff.eclipse_solar -> data().effect1().percent()
                  + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
-                 + composite_mastery() * mastery.total_eclipse -> effect1().coeff() * 0.01 );
+                 + composite_mastery() * mastery.total_eclipse -> effect1().mastery_value() );
   }
 
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
