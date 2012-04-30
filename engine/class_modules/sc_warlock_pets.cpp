@@ -739,6 +739,12 @@ void warlock_pet_t::init_base()
   //mp5_per_intellect  = 2.0 / 3.0; // untested!
 }
 
+double warlock_pet_t::energy_regen_per_second() const
+{
+  // pet energy regen does not appear to scale with haste
+  return base_energy_regen_per_second;
+}
+
 timespan_t warlock_pet_t::available() const
 {
   assert( primary_resource() == RESOURCE_ENERGY );

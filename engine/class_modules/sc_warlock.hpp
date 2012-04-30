@@ -286,6 +286,7 @@ public:
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
   virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
+  virtual double energy_regen_per_second() const;
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 };
