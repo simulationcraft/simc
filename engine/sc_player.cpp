@@ -393,8 +393,8 @@ player_t::player_t( sim_t*             s,
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   next( 0 ), index( -1 ), type( t ), role( ROLE_HYBRID ), target( 0 ), level( is_enemy() ? 88 : 85 ), use_pre_potion( 1 ),
   party( 0 ), member( 0 ), ready_type( READY_POLL ),
-  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ), 
-  gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero ), 
+  skill( 0 ), initial_skill( s -> default_skill ), distance( 0 ), default_distance( 0 ),
+  gcd_ready( timespan_t::zero ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero ),
   potion_used( 0 ), sleeping( 1 ), initial_sleeping( 0 ), initialized( 0 ),
   pet_list( 0 ), bugs( true ), specialization( TALENT_TAB_NONE ), invert_scaling( 0 ),
   vengeance_enabled( false ), vengeance_damage( 0.0 ), vengeance_value( 0.0 ), vengeance_max( 0.0 ), vengeance_was_attacked( false ),
@@ -6436,10 +6436,8 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
 
   if ( save_type == SAVE_ALL )
   {
-    std::string pname = name_str;
-
     profile_str += util_t::player_type_string( type );
-    profile_str += "=" + util_t::format_text( pname, sim -> input_is_utf8 ) + term;
+    profile_str += "=\"" + name_str + '"' + term;
     profile_str += "origin=\"" + origin_str + "\"" + term;
     profile_str += "level=" + util_t::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
@@ -6451,7 +6449,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( professions_str.size() > 0 )
     {
       profile_str += "professions=" + professions_str + term;
-    };
+    }
   }
 
   if ( save_type == SAVE_ALL || save_type == SAVE_TALENTS )
@@ -6474,7 +6472,7 @@ bool player_t::create_profile( std::string& profile_str, int save_type, bool sav
     if ( talents_str.size() > 0 )
     {
       profile_str += "talents=" + talents_str + term;
-    };
+    }
 
     if ( glyphs_str.size() > 0 )
     {
