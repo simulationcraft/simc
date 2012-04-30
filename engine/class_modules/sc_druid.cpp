@@ -327,6 +327,7 @@ struct druid_t : public player_t
     gain_t* primal_fury;
     gain_t* primal_madness;
     gain_t* revitalize;
+    gain_t* soul_of_the_forest;
     gain_t* tigers_fury;
   } gain;
 
@@ -598,18 +599,17 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct druid_cat_attack_t : public melee_attack_t
 {
-  bool requires_stealth;
-  int  requires_position;
+  bool             requires_stealth_;
+  position_type_e  requires_position_;
   bool requires_combo_points;
   int  adds_combo_points;
-  int  combo_points_spent;
 
   druid_cat_attack_t( const std::string& token, druid_t* p,
                       const spell_data_t* s = spell_data_t::nil(),
                       const std::string& options = std::string(),
                       school_type_e school = SCHOOL_PHYSICAL ) :
     melee_attack_t( token, p, s, school ),
-    requires_stealth( false ), requires_position( POSITION_NONE ),
+    requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 )
   {
     parse_options( 0, options );
@@ -636,7 +636,7 @@ struct druid_cat_attack_t : public melee_attack_t
                       const std::string& options = std::string(),
                       school_type_e school = SCHOOL_PHYSICAL ) :
     melee_attack_t( "", p, s, school ),
-    requires_stealth( false ), requires_position( POSITION_NONE ),
+    requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 )
   {
     parse_options( 0, options );
@@ -666,6 +666,14 @@ struct druid_cat_attack_t : public melee_attack_t
   virtual void   execute();
   virtual void   consume_resource();
   virtual bool   ready();
+  virtual bool requires_stealth() const
+  {
+    if ( p() -> buff.king_of_the_jungle -> up() )
+      return false;
+
+    return requires_stealth_;
+  }
+  virtual position_type_e requires_position() const { return requires_position_; }
 };
 
 // ==========================================================================
@@ -1236,14 +1244,13 @@ double druid_cat_attack_t::cost() const
   return c;
 }
 
-// druid_cat_attack_t::consume_resource =====================================
+// druid_cat_attack_t  =====================================
 
 void druid_cat_attack_t::consume_resource()
 {
   melee_attack_t::consume_resource();
-  druid_t* p = player -> cast_druid();
 
-  combo_points_spent = 0;
+  int combo_points_spent = 0;
   if ( requires_combo_points && result_is_hit() )
   {
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
@@ -1251,15 +1258,22 @@ void druid_cat_attack_t::consume_resource()
     td -> combo_points -> clear( name() );
   }
 
-  if ( harmful && p -> buff.omen_of_clarity -> up() )
+  if ( harmful && p() -> buff.omen_of_clarity -> up() )
   {
     // Treat the savings like a energy gain.
     double amount = melee_attack_t::cost();
     if ( amount > 0 )
     {
-      p -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
-      p -> buff.omen_of_clarity -> expire();
+      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
+      p() -> buff.omen_of_clarity -> expire();
     }
+  }
+  
+  if ( combo_points_spent > 0 && p() -> talent.soul_of_the_forest -> ok() )
+  {
+    p() -> resource_gain( RESOURCE_ENERGY,
+                          combo_points_spent * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
+                          p() -> gain.soul_of_the_forest );
   }
 }
 
@@ -1302,11 +1316,11 @@ bool druid_cat_attack_t::ready()
   if ( ! p -> buff.cat_form -> check() )
     return false;
 
-  if ( requires_position != POSITION_NONE )
-    if ( p -> position != requires_position )
+  if ( requires_position() != POSITION_NONE )
+    if ( p -> position != requires_position() )
       return false;
 
-  if ( requires_stealth )
+  if ( requires_stealth() )
     if ( ! p -> buff.stealthed -> check() )
       return false;
 
@@ -1602,7 +1616,7 @@ struct pounce_t : public druid_cat_attack_t
     druid_cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str ),
     pounce_bleed( 0 )
   {
-    requires_stealth = true;
+    requires_stealth_ = true;
     pounce_bleed     = new pounce_bleed_t( p );
   }
 
@@ -1642,23 +1656,35 @@ struct ravage_t : public druid_cat_attack_t
   ravage_t( druid_t* player, const std::string& options_str ) :
     druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ), options_str )
   {
-    requires_position = POSITION_BACK;
-    requires_stealth  = true;
+    requires_position_ = POSITION_BACK;
+    requires_stealth_  = true;
+  }
+  
+  virtual position_type_e requires_position() const
+  {
+    if ( p() -> buff.t13_4pc_melee -> check() )
+      return POSITION_NONE;
+    
+    return druid_cat_attack_t::requires_position();
+  }
+  
+  virtual bool requires_stealth() const
+  {
+    if ( p() -> buff.t13_4pc_melee -> check() )
+      return false;
+    
+    return druid_cat_attack_t::requires_stealth();
   }
 
   virtual void execute()
   {
     druid_cat_attack_t::execute();
-    druid_t* p = player -> cast_druid();
-
-    p -> buff.t13_4pc_melee -> decrement();
-    requires_stealth = true;
-    requires_position = POSITION_BACK;
+    p() -> buff.t13_4pc_melee -> expire();
   }
 
   virtual double cost() const
   {
-    if ( unlikely( p() -> buff.t13_4pc_melee -> up() ) )
+    if ( p() -> buff.t13_4pc_melee -> up() )
       return 0.0;
     return druid_cat_attack_t::cost();
   }
@@ -1689,19 +1715,6 @@ struct ravage_t : public druid_cat_attack_t
     if ( target -> health_percentage() >= p -> specialization.predatory_swiftness -> effectN( 2 ).base_value() )
       player_crit += p -> specialization.predatory_swiftness -> effectN( 1 ).percent();
 
-  }
-
-  virtual bool ready()
-  {
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buff.t13_4pc_melee -> check() )
-    {
-      requires_stealth = false;
-      requires_position = POSITION_NONE;
-    }
-
-    return druid_cat_attack_t::ready();
   }
 };
 
@@ -1817,7 +1830,7 @@ struct shred_t : public druid_cat_attack_t
     };
     parse_options( options, options_str );
 
-    requires_position  = POSITION_BACK;
+    requires_position_ = POSITION_BACK;
   }
 
   virtual void execute()
@@ -3049,10 +3062,8 @@ struct faerie_fire_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   incarnation_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> find_talent_spell( "Incarnation" ) )
+    druid_spell_t( player, player -> find_talent_spell( "Incarnation" ), options_str )
   {
-    parse_options( NULL, options_str );
-
     harmful = false;
     /*
     Buff Spell: http://mop.wowhead.com/spell=117679
@@ -3074,11 +3085,15 @@ struct incarnation_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    p() -> buff.chosen_of_elune -> trigger();
-    p() -> buff.king_of_the_jungle -> trigger();
-    p() -> buff.son_of_ursoc -> trigger();
-    p() -> buff.tree_of_life -> trigger();
 
+    if ( p() -> spec == DRUID_BALANCE )
+      p() -> buff.chosen_of_elune -> trigger();
+    else if ( p() -> spec == DRUID_FERAL )
+      p() -> buff.king_of_the_jungle -> trigger();
+    else if ( p() -> spec == DRUID_GUARDIAN )
+      p() -> buff.son_of_ursoc -> trigger();
+    else
+      p() -> buff.tree_of_life -> trigger();
   }
 };
 
@@ -4411,6 +4426,7 @@ void druid_t::init_gains()
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.primal_madness        = get_gain( "primal_madness"        );
   gain.revitalize            = get_gain( "revitalize"            );
+  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
