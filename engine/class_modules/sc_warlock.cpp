@@ -174,6 +174,8 @@ public:
       assert( current_charges > 0 );
       current_charges--;
 
+      cooldown -> duration = timespan_t::zero();
+
       if ( current_charges == max_charges - 1 )
       {
         recharge_event = new ( sim ) recharge_event_t( p(), this );
@@ -778,7 +780,6 @@ struct conflagrate_t : public warlock_spell_t
     {
       current_charges = max_charges = 2;
       recharge_seconds = 12;
-      cooldown -> duration = timespan_t::zero();
     }
 
     if ( ! dtr && p -> has_dtr )
