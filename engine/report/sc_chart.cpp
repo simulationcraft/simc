@@ -2105,8 +2105,6 @@ std::string gear_weights_pawn( const player_t*    p,
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
     stats.push_back( i );
 
-  range::sort( stats, compare_scale_factors( p ) );
-
   std::string s = std::string();
   char buffer[ 1024 ];
   bool first = true;

@@ -70,6 +70,19 @@ static bool parse_normalize_scale_factors( sim_t* sim,
   return true;
 }
 
+struct compare_scale_factors
+{
+  const player_t* player;
+
+  compare_scale_factors( const player_t* p ) : player( p ) {}
+
+  bool operator()( const stat_type_e& l, const stat_type_e& r ) const
+  {
+    return player -> scaling.get_stat( l ) >
+           player -> scaling.get_stat( r );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================

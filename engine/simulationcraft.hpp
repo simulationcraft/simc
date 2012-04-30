@@ -2545,7 +2545,7 @@ public:
   spell_data_expr_t* spell_query;
   unsigned           spell_query_level;
 
-  sim_t( sim_t* parent=0, int thrdID=0 );
+  sim_t( sim_t* parent = 0, int thrdID = 0 );
   virtual ~sim_t();
 
   int       main( int argc, char** argv );
@@ -3786,19 +3786,6 @@ struct player_t : public noncopyable
   virtual double composite_ranged_attack_player_vulnerability() const;
 };
 
-struct compare_scale_factors
-{
-  const player_t* player;
-
-  compare_scale_factors( const player_t* p ) : player( p ) {}
-
-  bool operator()( const stat_type_e& l, const stat_type_e& r ) const
-  {
-    return player -> scaling.get_stat( l ) >
-           player -> scaling.get_stat( r );
-  }
-};
-
 struct targetdata_t : public noncopyable
 {
   player_t* const source;
@@ -3888,17 +3875,17 @@ struct gain_t
     range::fill( overflow, 0.0 );
     range::fill( count, 0.0 );
   }
-  void add( const resource_type_e resource_type, const double a, const double o=0 )
-  { actual[ resource_type ] += a; overflow[ resource_type ] += o; count[ resource_type ]++; }
+  void add( resource_type_e rt, double amount, double overflow_=0 )
+  { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
   void merge( const gain_t& other )
   {
-    for ( size_t i=0; i<RESOURCE_MAX; i++ )
-    { actual[i] += other.actual[i]; overflow[i] += other.overflow[i]; count[i] += other.count[i]; }
+    for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+    { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
   void analyze( const sim_t* sim )
   {
-    for ( size_t i=0; i<RESOURCE_MAX; i++ )
-    { actual[i] /= sim -> iterations; overflow[i] /= sim -> iterations; count[i] /= sim -> iterations; }
+    for ( size_t i = 0; i < RESOURCE_MAX; i++ )
+    { actual[ i ] /= sim -> iterations; overflow[ i ] /= sim -> iterations; count[ i ] /= sim -> iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
