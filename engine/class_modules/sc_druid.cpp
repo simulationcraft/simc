@@ -431,7 +431,6 @@ struct druid_t : public player_t
 
     // Guardian
     const spell_data_t* thick_hide;
-    const spell_data_t* vengeance;
 
     // Restoration
     const spell_data_t* living_seed;
@@ -454,7 +453,6 @@ struct druid_t : public player_t
     const spell_data_t* primal_fury; // Primal fury mana gain
     const spell_data_t* regrowth; // Old GoRegrowth
     const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
-    const spell_data_t* vengeance;
   } spell;
 
   // Eclipse Management
@@ -3156,7 +3154,6 @@ struct innervate_t : public druid_spell_t
     option_t options[] =
     {
       { "trigger", OPT_INT,    &trigger    },
-      { "target",  OPT_STRING, &target_str },
       { NULL, OPT_UNKNOWN, NULL }
     };
     parse_options( options, options_str );
@@ -3830,6 +3827,28 @@ struct survival_instincts_t : public druid_spell_t
   }
 };
 
+// Symbiosis Spell ==========================================================
+
+struct symbiosis_t : public druid_spell_t
+{
+  symbiosis_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ) )
+  {
+    std::string class_str;
+    option_t options[] =
+    {
+      { "class",  OPT_STRING, &class_str  },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+    
+    harmful = false;
+    // Override these as we can precast before combat begins
+    trigger_gcd       = timespan_t::zero();
+    base_execute_time = timespan_t::zero();
+  }
+};
+
 // Treants Spell ============================================================
 
 struct treants_spell_t : public druid_spell_t
@@ -4148,7 +4167,6 @@ void druid_t::init_spells()
   // Guardian                                                            
   specialization.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
   specialization.thick_hide             = find_specialization_spell( "Thick Hide" );
-  specialization.vengeance              = find_specialization_spell( "Vengeance" );
   spell.bear_form                       = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
                                                                          
   // Restoration                                                         
