@@ -310,10 +310,8 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   felstorm_tick_t( felguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
   {
-    direct_power_mod = 0.33; // hardcoded from the tooltip
-    dual        = true;
-    background  = true;
     aoe         = -1;
+    background  = true;
     direct_tick = true;
   }
 
@@ -324,22 +322,28 @@ struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   felstorm_tick_t* felstorm_tick;
 
   felstorm_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( p, "Felstorm" ), felstorm_tick( 0 )
+    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
   {
     aoe       = -1;
     harmful   = false;
     tick_zero = true;
+    channeled = true;
+    weapon_multiplier = 0;
 
     felstorm_tick = new felstorm_tick_t( p );
     felstorm_tick -> weapon = &( p -> main_hand_weapon );
+
+    add_child( felstorm_tick );
   }
 
   virtual void tick( dot_t* d )
   {
-    felstorm_tick -> execute();
+    warlock_pet_actions::warlock_pet_melee_attack_t::tick( d );
 
-    stats -> add_tick( d -> time_to_tick );
+    felstorm_tick -> execute();
   }
+
+  virtual double haste() const { return 1.0; }
 };
 
 struct melee_t : public warlock_pet_actions::warlock_pet_melee_t
@@ -866,6 +870,7 @@ felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string&
   warlock_main_pet_t( sim, owner, name, PET_FELGUARD )
 {
   action_list_str += "/snapshot_stats";
+  action_list_str += "/felstorm";
   action_list_str += "/legion_strike";
 }
 
