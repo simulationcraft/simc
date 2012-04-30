@@ -13,7 +13,7 @@ glyphs=life_tap/demon_training
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_imp
-actions+=/grimoire_of_service_imp
+actions+=/service_imp
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20

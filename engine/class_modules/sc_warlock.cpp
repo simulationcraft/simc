@@ -2068,11 +2068,11 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
-  else if ( name == "grimoire_of_service_felguard"   ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "grimoire_of_service_felhunter"  ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "grimoire_of_service_imp"        ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "grimoire_of_service_succubus"   ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "grimoire_of_service_voidwalker" ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, name );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
@@ -2098,11 +2098,11 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
   if ( pet_name == "wild_imp"     ) return new    wild_imp_pet_t( sim, this );
 
-  if ( pet_name == "grimoire_of_service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
-  if ( pet_name == "grimoire_of_service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
-  if ( pet_name == "grimoire_of_service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
-  if ( pet_name == "grimoire_of_service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
-  if ( pet_name == "grimoire_of_service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_imp"          ) return new         imp_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_succubus"     ) return new    succubus_pet_t( sim, this, pet_name );
+  if ( pet_name == "service_voidwalker"   ) return new  voidwalker_pet_t( sim, this, pet_name );
 
   return 0;
 }
@@ -2123,11 +2123,11 @@ void warlock_t::create_pets()
     pets.wild_imps[ i ] = create_pet( "wild_imp" );
   }
 
-  create_pet( "grimoire_of_service_felguard"  );
-  create_pet( "grimoire_of_service_felhunter" );
-  create_pet( "grimoire_of_service_imp"       );
-  create_pet( "grimoire_of_service_succubus"  );
-  create_pet( "grimoire_of_service_voidwalker" );
+  create_pet( "service_felguard"  );
+  create_pet( "service_felhunter" );
+  create_pet( "service_imp"       );
+  create_pet( "service_succubus"  );
+  create_pet( "service_voidwalker" );
 }
 
 
