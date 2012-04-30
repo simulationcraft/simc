@@ -2648,6 +2648,13 @@ struct explosive_shot_t : public hunter_attack_t
     p -> buffs_lock_and_load -> decrement();
 
     trigger_thrill_of_the_hunt( this );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    hunter_attack_t::tick( d );
+
+    hunter_t* p = player -> cast_hunter();
 
     if ( result == RESULT_CRIT && p -> active_pet )
       p -> active_pet -> buffs_sic_em -> trigger();
