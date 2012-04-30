@@ -3151,14 +3151,20 @@ struct player_t : public noncopyable
 
     resources_t()
     {
-      base.assign( 0.0 ); initial.assign( 0.0 ); max.assign( 0.0 ); current.assign( 0.0 );
-      base_multiplier.assign( 1.0 ); initial_multiplier.assign( 1.0 );
-      infinite_resource.assign( 0 );
+      range::fill( base, 0.0 );
+      range::fill( initial, 0.0 );
+      range::fill( max, 0.0 );
+      range::fill( current, 0.0 );
+      range::fill( base_multiplier, 1.0 );
+      range::fill( initial_multiplier, 1.0 );
+      range::fill( infinite_resource, 0 );
     }
+
     double pct( resource_type_e rt ) const
     { return current[ rt ] / max[ rt ]; }
+
     bool is_infinite( resource_type_e rt ) const
-    { return infinite_resource[ rt ] == 0 ? false : true; }
+    { return infinite_resource[ rt ] != 0; }
   } resources;
 
   // Consumables
@@ -3835,7 +3841,7 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_e pt, bool guardian=false );
 
-  // Pets gain their owners' hit rating, 
+  // Pets gain their owners' hit rating,
   // Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
   virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> current.attack_hit + owner -> composite_attack_expertise(); }
@@ -4244,7 +4250,7 @@ struct action_state_t
   virtual void copy_state( const action_state_t* );
 
   virtual void debug() const;
-  
+
   virtual double composite_crit() const
   {
     return crit + target_crit;
@@ -5130,14 +5136,10 @@ inline double sim_t::averaged_range( double min, double max )
   return default_rng_ -> range( min, max );
 }
 
+// Needs to be a class template with overloaded () operator, because partial function template specialization
+// is not allowed in C++98.
 template <typename Class, bool X>
-// Needs to be a class template with overloaded () operator, because partial function template specialization is not allowed.
 struct sc_create_class
-{ };
-
-// Template specialization if class is enabled
-template <typename Class>
-struct sc_create_class<Class,true>
 {
   player_t* operator() ( std::string /* class_name */, sim_t* s, std::string name, race_type_e rt )
   {
