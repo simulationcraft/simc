@@ -18,7 +18,7 @@ actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
 actions+=/dark_soul
-actions+=/metamorphosis,if=(demonic_fury>=200&action.hand_of_guldan.charges=2)|demonic_fury>=target.time_to_die*8
+actions+=/metamorphosis,if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8
 actions+=/cancel_metamorphosis,if=demonic_fury<40|action.hand_of_guldan.charges=2
 actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/hand_of_guldan
