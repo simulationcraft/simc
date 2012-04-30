@@ -3919,7 +3919,7 @@ struct stats_t
   sample_data_t total_intervals;
   timespan_t last_execute;
   double iteration_actual_amount, iteration_total_amount;
-  sample_data_t actual_amount, total_amount, portion_aps;
+  sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
   std::vector<stats_t*> children;
   double compound_actual;
   double opportunity_cost;

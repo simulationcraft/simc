@@ -28,7 +28,9 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   last_execute( timespan_t::min() ),
   iteration_actual_amount( 0 ), iteration_total_amount( 0 ),
   actual_amount( p -> sim -> statistics_level < 3 ),
-  total_amount( p -> sim -> statistics_level < 3 ),portion_aps( p -> sim -> statistics_level < 3 ),
+  total_amount( p -> sim -> statistics_level < 3 ),
+  portion_aps( p -> sim -> statistics_level < 3 ),
+  portion_apse( p -> sim -> statistics_level < 3 ),
   compound_actual( 0 ), opportunity_cost( 0 ),
   direct_results( RESULT_MAX, stats_results_t( p -> sim ) ),
   tick_results( RESULT_MAX, stats_results_t( p -> sim ) ),
@@ -50,6 +52,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   actual_amount.reserve( sim -> iterations );
   total_amount.reserve( sim -> iterations );
   portion_aps.reserve( sim -> iterations );
+  portion_apse.reserve( sim -> iterations );
 }
 
 // stats_t::add_child =======================================================
@@ -162,6 +165,7 @@ void stats_t::combat_end()
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
+  portion_apse.add( sim -> current_time != timespan_t::zero() ? iteration_actual_amount / sim -> current_time.total_seconds() : 0 );
 
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -216,6 +220,7 @@ void stats_t::analyze()
   }
 
   portion_aps.analyze( true, true, true, 50 );
+  portion_apse.analyze( true, true, true, 50 );
 
   resource_gain.analyze( sim );
 
@@ -343,6 +348,7 @@ void stats_t::merge( const stats_t* other )
   total_amount.merge( other -> total_amount );
   actual_amount.merge( other -> actual_amount );
   portion_aps.merge( other -> portion_aps );
+  portion_apse.merge( other -> portion_apse );
 
   for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; ++i )
   {

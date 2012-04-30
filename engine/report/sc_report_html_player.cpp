@@ -170,11 +170,13 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
     fprintf ( file,
               "\t\t\t\t\t\t\t\t\t\t</tr>\n"
               "\t\t\t\t\t\t\t\t\t</table>\n" );
-    if ( ! s -> portion_aps.simple || ! s -> actual_amount.simple )
+    if ( ! s -> portion_aps.simple || ! s -> portion_apse.simple || ! s -> actual_amount.simple )
     {
       report::print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
 
       report::print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
+
+      report::print_html_sample_data( file, p, s -> portion_apse, "portion Effective Amount per Second ( pAPSe )" );
 
       if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
       {
