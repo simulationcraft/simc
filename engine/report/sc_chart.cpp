@@ -845,7 +845,11 @@ std::string action_dpet( const player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
+    std::string petname = "";
+    if ( st -> player -> type == PLAYER_PET
+      || st -> player -> type == PLAYER_GUARDIAN )
+      petname = std::string( st -> player -> name_str.c_str() ) + ": ";
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, petname.c_str(), st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
   s += "&amp;";
 
@@ -949,6 +953,12 @@ std::string aps_portion( const player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     if ( i ) s += "|";
+    std::string petname = "";
+    if ( stats_list[ i ] -> player -> type == PLAYER_PET || stats_list[ i ] -> player -> type == PLAYER_GUARDIAN )
+    {
+      s += stats_list[ i ] -> player -> name_str.c_str();
+      s += ": ";
+    }
     s += stats_list[ i ] -> name_str.c_str();
   }
   s += "&amp;";
