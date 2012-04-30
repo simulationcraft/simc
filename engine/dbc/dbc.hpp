@@ -102,6 +102,7 @@ public:
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
   resource_type_e            resource_gain_type() const;
   double resource( resource_type_e resource_type ) const;
+  double                     mastery_value() const { return _coeff * ( 1 / 100.0 ); }
 
   int                        misc_value1() const { return _misc_value; }
   int                        misc_value2() const { return _misc_value_2; }
