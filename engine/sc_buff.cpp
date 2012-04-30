@@ -167,7 +167,6 @@ void buff_t::init()
   {
     _max_stack = 1;
     sim->errorf( "buff %s: initialized with max_stack < 1. Setting max_stack to 1.", name_str.c_str() );
-    assert( 0 );
   }
 
   if ( _max_stack > 999 )
@@ -328,7 +327,7 @@ bool buff_t::trigger( int        stacks,
   if ( cooldown -> remains() > timespan_t::zero() )
     return false;
 
-  if ( player && player -> sleeping )
+  if ( player && player -> current.sleeping )
     return false;
 
   trigger_attempts++;
@@ -651,7 +650,7 @@ void buff_t::aura_gain()
 
     if ( player )
     {
-      if ( sim -> log && ! player->sleeping )
+      if ( sim -> log && ! player->current.sleeping )
       {
         log_t::output( sim, "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
       }
@@ -669,7 +668,7 @@ void buff_t::aura_loss()
 {
   if ( player )
   {
-    if ( sim -> log && ! player -> sleeping )
+    if ( sim -> log && ! player -> current.sleeping )
       log_t::output( sim, "%s loses %s", player -> name(), name_str.c_str() );
   }
   else

@@ -439,7 +439,7 @@ double action_t::cost() const
 
   double c = base_costs[ current_resource() ];
 
-  c -= player -> stats_current.resource_reduction[ school ];
+  c -= player -> current.resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
   if ( current_resource() == RESOURCE_MANA )
@@ -471,9 +471,9 @@ timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
-  if ( player -> distance == 0 ) return timespan_t::zero();
+  if ( player -> current.distance == 0 ) return timespan_t::zero();
 
-  double t = player -> distance / travel_speed;
+  double t = player -> current.distance / travel_speed;
 
   double v = sim -> travel_variance;
 
@@ -796,7 +796,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
-    if ( ! sim -> actor_list[ i ] -> sleeping &&
+    if ( ! sim -> actor_list[ i ] -> current.sleeping &&
          ( ( type == ACTION_HEAL && !sim -> actor_list[ i ] -> is_enemy() ) || ( type != ACTION_HEAL && sim -> actor_list[ i ] -> is_enemy() ) ) &&
          sim -> actor_list[ i ] != target )
       tl.push_back( sim -> actor_list[ i ] );
@@ -1284,7 +1284,7 @@ bool action_t::ready()
   if ( unlikely( is_dtr_action ) )
     assert( false );
 
-  if ( player -> skill < 1.0 && ! sim -> roll( player -> skill ) )
+  if ( player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
     return false;
 
   if ( cooldown -> remains() > timespan_t::zero() )
@@ -1299,7 +1299,7 @@ bool action_t::ready()
   if ( sync_action && ! sync_action -> ready() )
     return false;
 
-  if ( unlikely( t -> sleeping ) )
+  if ( unlikely( t -> current.sleeping ) )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )
@@ -1343,7 +1343,7 @@ void action_t::init()
     interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str );
   }
 
-  if ( sim -> travel_variance && travel_speed && player -> distance )
+  if ( sim -> travel_variance && travel_speed && player -> current.distance )
     rng_travel = player -> get_rng( name_str + "_travel" );
 
   if ( is_dtr_action )

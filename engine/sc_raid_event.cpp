@@ -70,7 +70,7 @@ struct casting_event_t : public raid_event_t
     sim -> target -> debuffs.casting -> increment();
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       p -> interrupt();
     }
   }
@@ -104,7 +104,7 @@ struct distraction_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      p -> skill -= skill;
+      p -> current.skill -= skill;
     }
   }
 
@@ -113,7 +113,7 @@ struct distraction_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      p -> skill += skill;
+      p -> current.skill += skill;
     }
   }
 };
@@ -134,7 +134,7 @@ struct invulnerable_event_t : public raid_event_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
       p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
@@ -210,10 +210,10 @@ struct movement_event_t : public raid_event_t
         double my_move_distance = move_distance;
         if ( move_to >= -1 )
         {
-          double new_distance = ( move_to < 0 ) ? p -> default_distance : move_to;
+          double new_distance = ( move_to < 0 ) ? p -> initial.distance : move_to;
           if ( ! my_move_distance )
-            my_move_distance = fabs( new_distance - p -> distance );
-          p -> distance = new_distance;
+            my_move_distance = fabs( new_distance - p -> current.distance );
+          p -> current.distance = new_distance;
         }
         my_duration = my_move_distance / p -> composite_movement_speed();
       }
@@ -226,7 +226,7 @@ struct movement_event_t : public raid_event_t
         p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
         p -> buffs.raid_movement -> trigger();
       }
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
@@ -252,7 +252,7 @@ struct stun_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       p -> buffs.stunned -> increment();
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
@@ -264,12 +264,12 @@ struct stun_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       p -> buffs.stunned -> decrement();
       if ( ! p -> buffs.stunned -> check() )
       {
         // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
-        if ( ! p -> channeling && ! p -> executing && ! p -> readying && ! p -> sleeping )
+        if ( ! p -> channeling && ! p -> executing && ! p -> readying && ! p -> current.sleeping )
           p -> schedule_ready();
       }
     }
@@ -291,7 +291,7 @@ struct interrupt_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       p -> interrupt();
     }
   }
@@ -346,7 +346,7 @@ struct damage_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
       raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> range( amount - amount_range, amount + amount_range );
       raid_damage -> target = p;
       raid_damage -> execute();
@@ -383,7 +383,7 @@ struct heal_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      if ( p -> sleeping ) continue;
+      if ( p -> current.sleeping ) continue;
 
       double x = rng -> range( amount - amount_range, amount + amount_range );
       if ( sim -> log ) log_t::output( sim, "%s takes %.0f raid heal.", p -> name(), x );
@@ -534,11 +534,11 @@ void raid_event_t::start()
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
     if ( distance_min &&
-         distance_min > p -> distance )
+         distance_min > p -> current.distance )
       continue;
 
     if ( distance_max &&
-         distance_max < p -> distance )
+         distance_max < p -> current.distance )
       continue;
 
     affected_players.push_back( p );

@@ -37,7 +37,7 @@ struct enemy_t : public player_t
   { return RESOURCE_NONE; }
 
   virtual double base_armor() const
-  { return stats_current.armor; }
+  { return current.armor; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual void init();
@@ -111,7 +111,7 @@ struct melee_t : public attack_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> sleeping &&
+      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
            sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -220,7 +220,7 @@ struct spell_nuke_t : public spell_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
     {
-      if ( ! sim -> actor_list[ i ] -> sleeping &&
+      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() && sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
            sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -274,7 +274,7 @@ struct spell_aoe_t : public spell_t
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
     {
-      if ( ! sim -> actor_list[ i ] -> sleeping &&
+      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
            !sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] != target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -327,7 +327,7 @@ struct summon_add_t : public spell_t
 
   virtual bool ready()
   {
-    if ( ! pet -> sleeping )
+    if ( ! pet -> current.sleeping )
       return false;
 
     return spell_t::ready();
@@ -374,11 +374,11 @@ void enemy_t::init_base()
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );
 
-  stats_base.attack_crit = 0.05;
+  base.attack_crit = 0.05;
 
-  if ( stats_initial.armor <= 0 )
+  if ( initial.armor <= 0 )
   {
-    double& a = stats_initial.armor;
+    double& a = initial.armor;
     // TO-DO: Fill in the blanks.
     // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
     switch ( level )
@@ -397,7 +397,7 @@ void enemy_t::init_base()
       break;
     }
   }
-  stats_base.armor = stats_initial.armor;
+  base.armor = initial.armor;
 
   initial_health = fixed_health;
 

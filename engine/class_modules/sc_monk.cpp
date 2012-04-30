@@ -410,8 +410,7 @@ void monk_t::init_base()
 
   int tree = primary_tree();
 
-  default_distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
-  distance = default_distance;
+  initial.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
 
   base_gcd = timespan_t::from_seconds( 1.0 ); // FIXME: assumption
 

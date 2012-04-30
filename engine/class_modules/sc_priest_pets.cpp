@@ -358,8 +358,7 @@ priest_pet_t::priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_
   direct_power_mod( get_weapon_direct_power_mod( level, pt ) )
 {
   position                    = POSITION_BACK;
-  distance                    = 3;
-  default_distance            = 3;
+  initial.distance            = 3;
   main_hand_weapon.type       = WEAPON_BEAST;
   main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
   main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
@@ -376,19 +375,19 @@ void priest_pet_t::init_base()
 {
   pet_t::init_base();
 
-  stats_base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
-  stats_base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
-  stats_base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
-  stats_base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
-  stats_base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
+  base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
+  base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
+  base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
+  base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
+  base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
   resources.base[ RESOURCE_HEALTH ]       = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
   resources.base[ RESOURCE_MANA ]         = get_attribute_base( level, BASE_STAT_MANA, pet_type );
-  stats_initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
-  stats_initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
-  stats_initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
-  stats_base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
-  stats_base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
-  stats_base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
+  initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
+  initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
+  initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
+  base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
+  base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
+  base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
   if ( stats_avaiable != 13 )
     sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
@@ -396,13 +395,13 @@ void priest_pet_t::init_base()
     sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
 
   resources.base[ RESOURCE_MANA ]         = o() -> resources.max[ RESOURCE_MANA ];
-  stats_initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
-  stats_base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
+  initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
+  base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
   stamina_per_owner = 0.6496; // level invariant, tested
   intellect_per_owner = 0; // removed in cata, tested
 
-  stats_initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
-  stats_initial.spell_crit_per_intellect  += owner -> stats_initial.spell_crit_per_intellect; // untested
+  initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
+  initial.spell_crit_per_intellect  += owner -> initial.spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
   //mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
   //mp5_per_intellect  = 2.0 / 3.0; // untested!

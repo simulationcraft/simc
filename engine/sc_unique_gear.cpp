@@ -540,13 +540,13 @@ static void register_darkmoon_card_greatness( item_t* item )
   static const attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
 
   stat_type_e max_stat = stat_from_attr( attr[ 0 ] );
-  double max_value = p -> stats_current.attribute[ attr[ 0 ] ];
+  double max_value = p -> current.attribute[ attr[ 0 ] ];
 
   for ( unsigned i = 1; i < sizeof_array( attr ); i++ )
   {
-    if ( p -> stats_current.attribute[ attr[ i ] ] > max_value )
+    if ( p -> current.attribute[ attr[ i ] ] > max_value )
     {
-      max_value = p -> stats_current.attribute[ attr[ i ] ];
+      max_value = p -> current.attribute[ attr[ i ] ];
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
@@ -731,7 +731,7 @@ static void register_shard_of_woe( item_t* item )
 
   for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
-    p -> stats_initial.resource_reduction[ i ] += 205;
+    p -> initial.resource_reduction[ i ] += 205;
   }
 }
 
@@ -898,15 +898,6 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
   };
 
   double chance = 0.0;
-
-  if ( p -> sim -> dtr_proc_chance >= 0.0 )
-  {
-    chance = p -> sim-> dtr_proc_chance;
-  }
-  if ( p -> dtr_base_proc_chance >= 0.0 )
-  {
-    chance = p -> dtr_base_proc_chance;
-  }
 
   // FIXME: Need the proper chances here
   switch ( p -> type )

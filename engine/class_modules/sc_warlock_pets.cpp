@@ -699,19 +699,19 @@ void warlock_pet_t::init_base()
 {
   pet_t::init_base();
 
-  stats_base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
-  stats_base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
-  stats_base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
-  stats_base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
-  stats_base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
+  base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
+  base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
+  base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
+  base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
+  base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
   resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
   resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type );
-  stats_initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
-  stats_initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
-  stats_initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
-  stats_base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
-  stats_base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
-  stats_base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
+  initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
+  initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
+  initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
+  base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
+  base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
+  base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
   if ( stats_avaiable != 13 )
     sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
@@ -721,15 +721,15 @@ void warlock_pet_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
 
-  stats_initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
-  stats_base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
+  initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
+  base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
   stamina_per_owner = 0.6496; // level invariant, tested
   intellect_per_owner = 0; // removed in cata, tested
 
-  stats_base.attack_crit                  += 0.0328; // seems to be level invariant, untested
-  stats_base.spell_crit                   += 0.0328; // seems to be level invariant, untested
-  stats_initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
-  stats_initial.spell_crit_per_intellect  += owner -> stats_initial.spell_crit_per_intellect; // untested
+  base.attack_crit                  += 0.0328; // seems to be level invariant, untested
+  base.spell_crit                   += 0.0328; // seems to be level invariant, untested
+  initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
+  initial.spell_crit_per_intellect  += owner -> initial.spell_crit_per_intellect; // untested
   //health_per_stamina = 10.0; // untested!
   //mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
   //mp5_per_intellect  = 2.0 / 3.0; // untested!
@@ -822,7 +822,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
-  return owner -> stats_current.spell_hit + owner -> composite_attack_expertise();
+  return owner -> current.spell_hit + owner -> composite_attack_expertise();
 }
 
 // ==========================================================================

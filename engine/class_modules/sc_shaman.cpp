@@ -627,14 +627,14 @@ struct spirit_wolf_pet_t : public pet_t
 
     // New approximated pet values at 85, roughly the same ratio of str/agi as per the old ones
     // At 85, the wolf has a base attack power of 932
-    stats_base.attribute[ ATTR_STRENGTH  ] = 407;
-    stats_base.attribute[ ATTR_AGILITY   ] = 138;
-    stats_base.attribute[ ATTR_STAMINA   ] = 361;
-    stats_base.attribute[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
-    stats_base.attribute[ ATTR_SPIRIT    ] = 109;
+    base.attribute[ ATTR_STRENGTH  ] = 407;
+    base.attribute[ ATTR_AGILITY   ] = 138;
+    base.attribute[ ATTR_STAMINA   ] = 361;
+    base.attribute[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
+    base.attribute[ ATTR_SPIRIT    ] = 109;
 
-    stats_base.attack_power = -20;
-    stats_initial.attack_power_per_strength = 2.0;
+    base.attack_power = -20;
+    initial.attack_power_per_strength = 2.0;
 
     melee = new melee_t( this );
   }
@@ -663,7 +663,7 @@ struct spirit_wolf_pet_t : public pet_t
 
   virtual double composite_attack_power_multiplier() const
   {
-    return stats_current.attack_power_multiplier;
+    return current.attack_power_multiplier;
   }
 
   virtual double composite_player_multiplier( school_type_e, const action_t* ) const
@@ -679,9 +679,9 @@ struct earth_elemental_pet_t : public pet_t
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
-    virtual void execute() { player -> distance = 1; }
-    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> distance / 10.0 ); }
-    virtual bool ready() { return ( player -> distance > 1 ); }
+    virtual void execute() { player -> current.distance = 1; }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    virtual bool ready() { return ( player -> current.distance > 1 ); }
     virtual bool usable_moving() { return true; }
   };
 
@@ -818,9 +818,9 @@ struct fire_elemental_pet_t : public pet_t
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
-    virtual void execute() { player -> distance = 1; }
-    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> distance / 10.0 ); }
-    virtual bool ready() { return ( player -> distance > 1 ); }
+    virtual void execute() { player -> current.distance = 1; }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    virtual bool ready() { return ( player -> current.distance > 1 ); }
     virtual timespan_t gcd() const { return timespan_t::zero(); }
     virtual bool usable_moving() { return true; }
   };
@@ -883,7 +883,7 @@ struct fire_elemental_pet_t : public pet_t
 
     virtual void execute()
     {
-      if ( player -> distance <= 11.0 )
+      if ( player -> current.distance <= 11.0 )
         fire_elemental_spell_t::execute();
       else // Out of range, just re-schedule it
         schedule_execute();
@@ -1068,7 +1068,7 @@ struct fire_elemental_pet_t : public pet_t
     pet_t::summon();
 
     owner_int = owner -> intellect();
-    owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> stats_current.spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
+    owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> current.spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
     fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
     fire_shield -> execute();
 
@@ -1254,7 +1254,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     {
       for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
       {
-        if ( sim -> actor_list[ i ] -> sleeping )
+        if ( sim -> actor_list[ i ] -> current.sleeping )
           continue;
 
         if ( ! sim -> actor_list[ i ] -> is_enemy() )
@@ -2178,7 +2178,7 @@ struct bloodlust_t : public shaman_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping || p -> buffs.exhaustion -> check() )
+      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() )
         continue;
       p -> buffs.bloodlust -> trigger();
       p -> buffs.exhaustion -> trigger();
@@ -2342,7 +2342,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   {
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> sleeping &&
+      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
              sim -> actor_list[ i ] -> is_enemy() &&
              sim -> actor_list[ i ] != emit_target )
         tl.push_back( sim -> actor_list[ i ] );
@@ -2400,7 +2400,7 @@ struct fire_nova_t : public shaman_spell_t
 
     for ( player_t* e = sim -> target_list; e; e = e -> next )
     {
-      if ( e -> sleeping || ! e -> is_enemy() )
+      if ( e -> current.sleeping || ! e -> is_enemy() )
         continue;
 
       shaman_targetdata_t* td = p() -> targetdata( e );
@@ -3573,7 +3573,7 @@ struct unleash_flame_buff_t : public buff_t
   {
     // Active player's Unleash Flame buff has a short aura expiration delay, which allows
     // "Double Casting" with a single buff
-    if ( ! player -> sleeping )
+    if ( ! player -> current.sleeping )
     {
       if ( current_stack <= 0 ) return;
       if ( expiration_delay ) return;
@@ -3772,16 +3772,16 @@ void shaman_t::init_base()
 {
   player_t::init_base();
 
-  stats_base.attack_power = ( level * 2 ) - 30;
-  stats_initial.attack_power_per_strength = 1.0;
-  stats_initial.attack_power_per_agility  = 2.0;
-  stats_initial.spell_power_per_intellect = 1.0;
+  base.attack_power = ( level * 2 ) - 30;
+  initial.attack_power_per_strength = 1.0;
+  initial.attack_power_per_agility  = 2.0;
+  initial.spell_power_per_intellect = 1.0;
 
   if ( primary_tree() == SHAMAN_ELEMENTAL )
     resources.initial_multiplier[ RESOURCE_MANA ] = specialization.spiritual_insight -> effectN( 1 ).percent();
 
-  distance = ( primary_tree() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
-  default_distance = distance;
+  current.distance = ( primary_tree() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
+  initial.distance = current.distance;
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_capi = 0.006870;
@@ -3814,7 +3814,7 @@ void shaman_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -3869,22 +3869,22 @@ void shaman_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
+    initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
+    initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // shaman_t::init_gains =====================================================
@@ -4151,7 +4151,7 @@ void shaman_t::moving()
     // availability
     if ( swg &&
          executing &&
-         sim -> roll( skill ) &&
+         sim -> roll( current.skill ) &&
          swg -> cooldown -> remains() == timespan_t::zero() &&
          resource_available( swg -> current_resource(), swg -> cost() ) )
     {
@@ -4214,7 +4214,7 @@ double shaman_t::composite_spell_hit() const
   double hit = player_t::composite_spell_hit();
 
   hit += ( specialization.elemental_precision -> ok() *
-    ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
+    ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
 }

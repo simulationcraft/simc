@@ -311,11 +311,11 @@ public:
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> stats_current.spell_hit + owner -> composite_attack_expertise(); }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> current.spell_hit + owner -> composite_attack_expertise(); }
   virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   priest_t* o() const
-  { return static_cast<priest_t*>( owner ); }
+  { return debug_cast<priest_t*>( owner ); }
 };
 
 // ==========================================================================

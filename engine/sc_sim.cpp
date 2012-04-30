@@ -619,7 +619,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   input_is_utf8( false ),
-  dtr_proc_chance( -1.0 ),
   target_death( 0 ), target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
@@ -1080,7 +1079,7 @@ void sim_t::combat_begin()
         {
           for ( player_t* p = sim -> player_list; p; p = p -> next )
           {
-            if ( p -> sleeping || p -> buffs.exhaustion -> check() )
+            if ( p -> current.sleeping || p -> buffs.exhaustion -> check() )
               continue;
 
             p -> buffs.bloodlust -> trigger();
@@ -2024,7 +2023,6 @@ void sim_t::create_options()
     { "debug_exp",                        OPT_INT,    &( debug_exp                                ) },
     { "weapon_speed_scale_factors",       OPT_BOOL,   &( weapon_speed_scale_factors               ) },
     { "main_target",                      OPT_STRING, &( main_target_str                          ) },
-    { "default_dtr_proc_chance",          OPT_FLT,    &( dtr_proc_chance                          ) },
     { "target_death_pct",                 OPT_FLT,    &( target_death_pct                         ) },
     { "target_level",                     OPT_INT,    &( target_level                             ) },
     { "target_race",                      OPT_STRING, &( target_race                              ) },

@@ -393,8 +393,7 @@ struct rogue_t : public player_t
     virtual_hat_interval = timespan_t::min();
     tricks_of_the_trade_target_str = "";
 
-    distance = 3;
-    default_distance = 3;
+    stats_initial.distance = 3;
 
     create_talents();
     create_glyphs();

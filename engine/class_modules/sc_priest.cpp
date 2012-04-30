@@ -123,8 +123,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
   glyphs( glyphs_t() ),
   constants( constants_t() )
 {
-  distance                             = 40.0;
-  default_distance                     = 40.0;
+  initial.distance                     = 40.0;
 
   cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
   cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
@@ -155,7 +154,7 @@ public:
     tick_may_crit     = false;
     may_miss          = false;
     min_interval      = player -> get_cooldown( "min_interval_" + name_str );
-    can_cancel_shadowform = p() -> autoUnshift != 0;
+    can_cancel_shadowform = p() -> autoUnshift;
     castable_in_shadowform = false;
     stateless         = true;
   }
@@ -164,7 +163,7 @@ public:
   { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
 
   priest_t* p() const
-  { return static_cast<priest_t*>( player ); }
+  { return debug_cast<priest_t*>( player ); }
 
   inline bool check_shadowform()
   {
@@ -358,7 +357,7 @@ struct priest_heal_t : public heal_t
     heal_t( n, player, s, sc ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
-    can_cancel_shadowform = p() -> autoUnshift != 0;
+    can_cancel_shadowform = p() -> autoUnshift;
     castable_in_shadowform = false;
     stateless = true;
   }
@@ -367,7 +366,7 @@ struct priest_heal_t : public heal_t
   { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
 
   priest_t* p() const
-  { return static_cast<priest_t*>( player ); }
+  { return debug_cast<priest_t*>( player ); }
 
   virtual double composite_crit() const
   {
@@ -646,7 +645,7 @@ struct priest_spell_t : public spell_t
 
     can_trigger_atonement = false;
 
-    can_cancel_shadowform = p() -> autoUnshift != 0;
+    can_cancel_shadowform = p() -> autoUnshift;
     castable_in_shadowform = true;
     sform = p() -> buffs.shadowform;
   }
@@ -3108,7 +3107,7 @@ double priest_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -3265,12 +3264,12 @@ void priest_t::init_base()
 {
   player_t::init_base();
 
-  stats_base.attack_power = 0;
+  base.attack_power = 0;
 
   resources.base[ RESOURCE_SHADOW_ORB ] = 3;
 
-  stats_initial.attack_power_per_strength = 1.0;
-  stats_initial.spell_power_per_intellect = 1.0;
+  initial.attack_power_per_strength = 1.0;
+  initial.spell_power_per_intellect = 1.0;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -3322,7 +3321,7 @@ void priest_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -3798,16 +3797,16 @@ void priest_t::init_values()
 
   // Shadow
   if ( set_bonus.pvp_2pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // priest_t::reset ==========================================================

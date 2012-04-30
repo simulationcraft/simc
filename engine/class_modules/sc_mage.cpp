@@ -245,8 +245,7 @@ struct mage_t : public player_t
     cooldowns.evocation   = get_cooldown( "evocation"   );
 
     // Options
-    distance         = 40;
-    default_distance = 40;
+    initial.distance = 40;
     mana_gem_charges = 3;
     ignite_sampling_delta = timespan_t::from_seconds( 0.2 );
 
@@ -411,10 +410,10 @@ struct water_elemental_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
-    stats_base.attribute[ ATTR_AGILITY   ] =  38;
-    stats_base.attribute[ ATTR_STAMINA   ] = 190;
-    stats_base.attribute[ ATTR_INTELLECT ] = 133;
+    base.attribute[ ATTR_STRENGTH  ] = 145;
+    base.attribute[ ATTR_AGILITY   ] =  38;
+    base.attribute[ ATTR_STAMINA   ] = 190;
+    base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
     //mana_per_intellect = 5;
@@ -585,10 +584,10 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
-    stats_base.attribute[ ATTR_AGILITY   ] =  38;
-    stats_base.attribute[ ATTR_STAMINA   ] = 190;
-    stats_base.attribute[ ATTR_INTELLECT ] = 133;
+    base.attribute[ ATTR_STRENGTH  ] = 145;
+    base.attribute[ ATTR_AGILITY   ] =  38;
+    base.attribute[ ATTR_STAMINA   ] = 190;
+    base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
     //mana_per_intellect = 5;
@@ -669,7 +668,7 @@ struct mirror_image_pet_t : public pet_t
 
     sequence_finished = 0;
 
-    distance = o() -> distance;
+    current.distance = owner -> current.distance;
 
     for ( int i = 0; i < num_images; i++ )
     {
@@ -2463,7 +2462,7 @@ struct time_warp_t : public mage_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> sleeping || p -> buffs.exhaustion -> check() )
+      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
@@ -2505,7 +2504,7 @@ struct water_elemental_spell_t : public mage_spell_t
     if ( ! mage_spell_t::ready() )
       return false;
 
-    return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> sleeping );
+    return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> current.sleeping );
   }
 };
 
@@ -2553,7 +2552,7 @@ struct choose_rotation_t : public action_t
 
   virtual void execute()
   {
-    mage_t* p = player -> cast_mage();
+    mage_t* p = debug_cast<mage_t*>( player );
 
     if ( force_dps || force_dpm )
     {
@@ -2868,10 +2867,10 @@ void mage_t::init_base()
 {
   player_t::init_base();
 
-  stats_initial.spell_power_per_intellect = 1.0;
+  initial.spell_power_per_intellect = 1.0;
 
-  stats_base.attack_power = -10;
-  stats_initial.attack_power_per_strength = 1.0;
+  base.attack_power = -10;
+  initial.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -2894,10 +2893,10 @@ void mage_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // mage_t::init_buffs =======================================================
@@ -3310,7 +3309,7 @@ void mage_t::regen( timespan_t periodicity )
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
 
   if ( pets.water_elemental )
-    benefits.water_elemental -> update( pets.water_elemental -> sleeping == 0 );
+    benefits.water_elemental -> update( pets.water_elemental -> current.sleeping == 0 );
 }
 
 // mage_t::resource_gain ====================================================

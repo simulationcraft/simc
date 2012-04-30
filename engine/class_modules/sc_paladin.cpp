@@ -221,8 +221,7 @@ struct paladin_t : public player_t
     beacon_target = 0;
     ret_pvp_gloves = -1;
 
-    distance = ( primary_tree() == PALADIN_HOLY ) ? 30 : 3;
-    default_distance = distance;
+    initial.distance = ( primary_tree() == PALADIN_HOLY ) ? 30 : 3;
 
     create_options();
   }
@@ -286,7 +285,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     paladin_t* owner;
 
-    melee_t( player_t *p )
+    melee_t( guardian_of_ancient_kings_ret_t* p )
       : melee_attack_t( "melee", p, spell_data_t::nil(), SCHOOL_PHYSICAL ), owner( 0 )
     {
       weapon = &( p -> main_hand_weapon );
@@ -296,7 +295,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       repeating  = true;
       trigger_gcd = timespan_t::zero();
 
-      owner = p -> cast_pet() -> owner -> cast_paladin();
+      owner = p -> o();
     }
 
     virtual void execute()
@@ -318,6 +317,9 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     main_hand_weapon.max_dmg = util::ability_rank( p -> level, 7557.0,85, 1.0,0 ); // TODO
   }
 
+  paladin_t* o() const
+  { return debug_cast<paladin_t*>( owner ); }
+
   virtual void init_base()
   {
     pet_t::init_base();
@@ -327,12 +329,12 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   virtual void dismiss()
   {
     // Only trigger the explosion if we're not sleeping
-    if ( sleeping ) return;
+    if ( current.sleeping ) return;
 
     pet_t::dismiss();
 
-    if ( owner -> cast_paladin() -> ancient_fury_explosion )
-      owner -> cast_paladin() -> ancient_fury_explosion -> execute();
+    if ( o() -> ancient_fury_explosion )
+      o() -> ancient_fury_explosion -> execute();
   }
 
   virtual void arise()
@@ -467,7 +469,7 @@ struct paladin_melee_attack_t : public melee_attack_t
 
     if ( result_is_hit() )
     {
-      if ( ! p() -> guardian_of_ancient_kings -> sleeping )
+      if ( ! p() -> guardian_of_ancient_kings -> current.sleeping )
       {
         p() -> buffs.ancient_power -> trigger();
       }
@@ -599,9 +601,9 @@ struct beacon_of_light_heal_t : public heal_t
     target = p -> beacon_target;
   }
 };
-static void trigger_beacon_of_light( heal_t* h )
+static void trigger_beacon_of_light( paladin_heal_t* h )
 {
-  paladin_t* p = h -> player -> cast_paladin();
+  paladin_t* p = h -> p();
 
   if ( ! p -> beacon_target )
     return;
@@ -632,9 +634,9 @@ static void trigger_beacon_of_light( heal_t* h )
 
 // trigger_hand_of_light ====================================================
 
-static void trigger_hand_of_light( action_t* a )
+static void trigger_hand_of_light( paladin_melee_attack_t* a )
 {
-  paladin_t* p = a -> player -> cast_paladin();
+  paladin_t* p = a -> p();
 
   if ( p -> passives.hand_of_light -> ok() )
   {
@@ -654,7 +656,7 @@ struct illuminated_healing_t : public absorb_t
 };
 // trigger_illuminated_healing ==============================================
 
-static void trigger_illuminated_healing( heal_t* h )
+static void trigger_illuminated_healing( paladin_heal_t* h )
 {
   if ( h -> direct_dmg <= 0 )
     return;
@@ -662,7 +664,7 @@ static void trigger_illuminated_healing( heal_t* h )
   if ( h -> proc )
     return;
 
-  paladin_t* p = h -> player -> cast_paladin();
+  paladin_t* p = h -> p();
 
   if ( ! p -> passives.illuminated_healing -> ok() )
     return;
@@ -2222,7 +2224,7 @@ void paladin_t::init_defense()
 {
   player_t::init_defense();
 
-  stats_initial.parry_rating_per_strength = 0.27;
+  initial.parry_rating_per_strength = 0.27;
 }
 
 // paladin_t::init_base =====================================================
@@ -2231,18 +2233,18 @@ void paladin_t::init_base()
 {
   player_t::init_base();
 
-  stats_initial.attack_power_per_strength = 2.0;
-  stats_initial.spell_power_per_intellect = 1.0;
+  initial.attack_power_per_strength = 2.0;
+  initial.spell_power_per_intellect = 1.0;
 
   base_spell_power  = 0;
-  stats_base.attack_power = level * 3;
+  base.attack_power = level * 3;
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // FIXME! Level-specific!
-  stats_base.miss    = 0.060;
-  stats_base.parry   = 0.044; // 85
-  stats_base.block   = 0.030; // 85
+  base.miss    = 0.060;
+  base.parry   = 0.044; // 85
+  base.block   = 0.030; // 85
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -2251,8 +2253,8 @@ void paladin_t::init_base()
   switch ( primary_tree() )
   {
   case PALADIN_HOLY:
-    stats_base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
-    stats_base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
+    base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
+    base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
     break;
 
   case PALADIN_PROTECTION:
@@ -2733,16 +2735,16 @@ void paladin_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    stats_initial.attribute[ ATTR_STRENGTH ] += 70;
+    initial.attribute[ ATTR_STRENGTH ] += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    stats_initial.attribute[ ATTR_STRENGTH ] += 90;
+    initial.attribute[ ATTR_STRENGTH ] += 90;
 }
 
 void paladin_t::init_items()

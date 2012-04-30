@@ -533,8 +533,7 @@ struct druid_t : public player_t
 
     equipped_weapon_dps = 0;
 
-    distance = ( primary_tree() == DRUID_FERAL || primary_tree() == DRUID_GUARDIAN ) ? 3 : 30;
-    default_distance = distance;
+    initial.distance = ( primary_tree() == DRUID_FERAL || primary_tree() == DRUID_GUARDIAN ) ? 3 : 30;
 
     create_options();
   }
@@ -826,15 +825,15 @@ struct treants_pet_t : public pet_t
     pet_t::init_base();
 
     // At 85 base AP of 932
-    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
-    stats_base.attribute[ ATTR_AGILITY   ] = 113;
-    stats_base.attribute[ ATTR_STAMINA   ] = 361;
-    stats_base.attribute[ ATTR_INTELLECT ] = 65;
-    stats_base.attribute[ ATTR_SPIRIT    ] = 109;
+    base.attribute[ ATTR_STRENGTH  ] = 476;
+    base.attribute[ ATTR_AGILITY   ] = 113;
+    base.attribute[ ATTR_STAMINA   ] = 361;
+    base.attribute[ ATTR_INTELLECT ] = 65;
+    base.attribute[ ATTR_SPIRIT    ] = 109;
 
-    stats_base.attack_crit  = .05;
-    stats_base.attack_power = -20;
-    stats_initial.attack_power_per_strength = 2.0;
+    base.attack_crit  = .05;
+    base.attack_power = -20;
+    initial.attack_power_per_strength = 2.0;
 
     main_hand_attack = new melee_t( this );
   }
@@ -4237,10 +4236,10 @@ void druid_t::init_base()
 {
   player_t::init_base();
 
-  stats_base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  stats_initial.attack_power_per_strength = 1.0;
-  stats_initial.spell_power_per_intellect = 1.0;
+  initial.attack_power_per_strength = 1.0;
+  initial.spell_power_per_intellect = 1.0;
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_capi = 0.008555;
@@ -4355,22 +4354,22 @@ void druid_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_heal() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 
   if ( set_bonus.pvp_2pc_melee() )
-    stats_initial.attribute[ ATTR_AGILITY ]   += 70;
+    initial.attribute[ ATTR_AGILITY ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    stats_initial.attribute[ ATTR_AGILITY ]   += 90;
+    initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // druid_t::init_scaling ====================================================
@@ -4393,7 +4392,7 @@ void druid_t::init_scaling()
     if ( ! sim -> scaling -> positive_scale_delta )
     {
       invert_scaling = 1;
-      stats_initial.attribute[ ATTR_SPIRIT ] -= v * 2;
+      initial.attribute[ ATTR_SPIRIT ] -= v * 2;
     }
   }
 }
@@ -4851,7 +4850,7 @@ double druid_t::composite_spell_hit() const
   double hit = player_t::composite_spell_hit();
 
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - stats_base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
+  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
 
   return hit;
 }

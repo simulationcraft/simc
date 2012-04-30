@@ -85,8 +85,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   initial_demonic_fury( 200 ),
   ember_react( timespan_t::zero() )
 {
-  distance = 40;
-  default_distance = 40;
+  current.distance = 40;
+  initial.distance = 40;
 
   cooldowns.infernal           = get_cooldown ( "summon_infernal" );
   cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
@@ -297,7 +297,7 @@ public:
     {
       for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
       {
-        if ( p -> pets.wild_imps[ i ] -> sleeping )
+        if ( p -> pets.wild_imps[ i ] -> current.sleeping )
         {
           p -> pets.wild_imps[ i ] -> summon();
           p -> buffs.demonic_calling -> expire();
@@ -961,7 +961,7 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.soulburn -> check() )
       m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
 
-    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
+    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> current.spell_crit_per_intellect / 100.0 );
 
     return m;
   }
@@ -1009,7 +1009,7 @@ struct chaos_bolt_t : public warlock_spell_t
     // The extra flat 0.25 is from the tooltip
     m *= 1.0 + 0.25 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
 
-    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> stats_current.spell_crit_per_intellect / 100.0 );
+    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> current.spell_crit_per_intellect / 100.0 );
 
     return m;
   }
@@ -2212,11 +2212,11 @@ void warlock_t::init_base()
 {
   player_t::init_base();
 
-  stats_base.attack_power = -10;
-  stats_initial.attack_power_per_strength = 2.0;
-  stats_initial.spell_power_per_intellect = 1.0;
+  base.attack_power = -10;
+  initial.attack_power_per_strength = 2.0;
+  initial.spell_power_per_intellect = 1.0;
 
-  if ( spec.chaotic_energy -> ok() ) stats_base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
+  if ( spec.chaotic_energy -> ok() ) base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
   if ( primary_tree() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
@@ -2256,10 +2256,10 @@ void warlock_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 70;
+    initial.attribute[ ATTR_INTELLECT ] += 70;
 
   if ( set_bonus.pvp_4pc_caster() )
-    stats_initial.attribute[ ATTR_INTELLECT ] += 90;
+    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 

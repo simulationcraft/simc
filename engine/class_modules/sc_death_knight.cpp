@@ -314,7 +314,7 @@ struct death_knight_t : public player_t
 
     create_options();
 
-    default_distance = 0;
+    initial.distance = 0;
   }
 
   // Character Definition
@@ -741,7 +741,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   virtual double composite_attack_crit( const weapon_t* ) const        { return snapshot_attack_crit; }
   virtual double composite_attack_haste() const       { return haste_snapshot; }
   virtual double composite_attack_speed() const       { return speed_snapshot; }
-  virtual double composite_attack_power() const       { return stats_current.attack_power; }
+  virtual double composite_attack_power() const       { return current.attack_power; }
   virtual double composite_spell_crit() const         { return snapshot_spell_crit;  }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -752,7 +752,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     snapshot_attack_crit = o -> composite_attack_crit();
     haste_snapshot       = o -> composite_attack_haste();
     speed_snapshot       = o -> composite_attack_speed();
-    stats_current.attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
+    current.attack_power         = o -> composite_attack_power() * o -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
   }
 };
@@ -851,15 +851,15 @@ struct army_ghoul_pet_t : public pet_t
   virtual void init_base()
   {
     // FIXME: Copied from the pet ghoul
-    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
-    stats_base.attribute[ ATTR_AGILITY   ] = 3343;
-    stats_base.attribute[ ATTR_STAMINA   ] = 546;
-    stats_base.attribute[ ATTR_INTELLECT ] = 69;
-    stats_base.attribute[ ATTR_SPIRIT    ] = 116;
+    base.attribute[ ATTR_STRENGTH  ] = 476;
+    base.attribute[ ATTR_AGILITY   ] = 3343;
+    base.attribute[ ATTR_STAMINA   ] = 546;
+    base.attribute[ ATTR_INTELLECT ] = 69;
+    base.attribute[ ATTR_SPIRIT    ] = 116;
 
-    stats_base.attack_power = -20;
-    stats_initial.attack_power_per_strength = 2.0;
-    stats_initial.attack_power_per_agility  = 0.0;
+    base.attack_power = -20;
+    initial.attack_power_per_strength = 2.0;
+    initial.attack_power_per_agility  = 0.0;
 
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -958,10 +958,10 @@ struct bloodworms_pet_t : public pet_t
     pet_t::init_base();
 
     // Stolen from Priest's Shadowfiend
-    stats_base.attribute[ ATTR_STRENGTH  ] = 145;
-    stats_base.attribute[ ATTR_AGILITY   ] =  38;
-    stats_base.attribute[ ATTR_STAMINA   ] = 190;
-    stats_base.attribute[ ATTR_INTELLECT ] = 133;
+    base.attribute[ ATTR_STRENGTH  ] = 145;
+    base.attribute[ ATTR_AGILITY   ] =  38;
+    base.attribute[ ATTR_STAMINA   ] = 190;
+    base.attribute[ ATTR_INTELLECT ] = 133;
 
     //health_per_stamina = 7.5;
     //mana_per_intellect = 5;
@@ -1013,11 +1013,11 @@ struct gargoyle_pet_t : public pet_t
   virtual void init_base()
   {
     // FIX ME!
-    stats_base.attribute[ ATTR_STRENGTH  ] = 0;
-    stats_base.attribute[ ATTR_AGILITY   ] = 0;
-    stats_base.attribute[ ATTR_STAMINA   ] = 0;
-    stats_base.attribute[ ATTR_INTELLECT ] = 0;
-    stats_base.attribute[ ATTR_SPIRIT    ] = 0;
+    base.attribute[ ATTR_STRENGTH  ] = 0;
+    base.attribute[ ATTR_AGILITY   ] = 0;
+    base.attribute[ ATTR_STAMINA   ] = 0;
+    base.attribute[ ATTR_INTELLECT ] = 0;
+    base.attribute[ ATTR_SPIRIT    ] = 0;
 
     action_list_str = "/snapshot_stats/gargoyle_strike";
   }
@@ -1050,10 +1050,10 @@ struct gargoyle_pet_t : public pet_t
     if ( sim -> log )
       log_t::output( sim, "%s arises.", name() );
 
-    if ( ! initial_sleeping )
-      sleeping = 0;
+    if ( ! initial.sleeping )
+      current.sleeping = 0;
 
-    if ( sleeping )
+    if ( current.sleeping )
       return;
 
     init_resources( true );
@@ -1186,17 +1186,17 @@ struct ghoul_pet_t : public pet_t
 
 
     // Value for the ghoul of a naked worgen as of 4.2
-    stats_base.attribute[ ATTR_STRENGTH  ] = 476;
-    stats_base.attribute[ ATTR_AGILITY   ] = 3343;
-    stats_base.attribute[ ATTR_STAMINA   ] = 546;
-    stats_base.attribute[ ATTR_INTELLECT ] = 69;
-    stats_base.attribute[ ATTR_SPIRIT    ] = 116;
+    base.attribute[ ATTR_STRENGTH  ] = 476;
+    base.attribute[ ATTR_AGILITY   ] = 3343;
+    base.attribute[ ATTR_STAMINA   ] = 546;
+    base.attribute[ ATTR_INTELLECT ] = 69;
+    base.attribute[ ATTR_SPIRIT    ] = 116;
 
-    stats_base.attack_power = -20;
-    stats_initial.attack_power_per_strength = 2.0;
-    stats_initial.attack_power_per_agility  = 0.0;//no AP per agi.
+    base.attack_power = -20;
+    initial.attack_power_per_strength = 2.0;
+    initial.attack_power_per_agility  = 0.0;//no AP per agi.
 
-    stats_initial.attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
+    initial.attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -1211,7 +1211,7 @@ struct ghoul_pet_t : public pet_t
   virtual double composite_attribute( attribute_type_e attr ) const
   {
     death_knight_t* o = owner -> cast_death_knight();
-    double a = stats_current.attribute[ attr ];
+    double a = current.attribute[ attr ];
     if ( attr == ATTR_STRENGTH )
     {
       double strength_scaling = 1.01;
@@ -1262,7 +1262,7 @@ struct ghoul_pet_t : public pet_t
     // Perma Ghouls are updated constantly
     if ( o -> spells.master_of_ghouls -> ok() )
     {
-      return ( ( 100.0 * o -> stats_current.attack_hit ) * 26.0 / 8.0 ) / 100.0;
+      return ( ( 100.0 * o -> current.attack_hit ) * 26.0 / 8.0 ) / 100.0;
     }
     else
     {
@@ -1947,7 +1947,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> pets.army_ghoul && ! p -> pets.army_ghoul -> sleeping )
+    if ( p -> pets.army_ghoul && ! p -> pets.army_ghoul -> current.sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3209,7 +3209,7 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_t* p = player -> cast_death_knight();
 
-    if ( p -> pets.ghoul && ! p -> pets.ghoul -> sleeping )
+    if ( p -> pets.ghoul && ! p -> pets.ghoul -> current.sleeping )
       return false;
 
     return death_knight_spell_t::ready();
@@ -3691,7 +3691,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  stats_initial.parry_rating_per_strength = 0.27;
+  initial.parry_rating_per_strength = 0.27;
 }
 
 // death_knight_t::init_base ================================================
@@ -3704,14 +3704,14 @@ void death_knight_t::init_base()
 
   str_mult += spells.unholy_might -> effect1().percent();
 
-  stats_initial.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + str_mult;
+  initial.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
-  stats_initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
-  stats_base.attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
+  initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
+  base.attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
 
-  stats_base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  stats_initial.attack_power_per_strength = 2.0;
+  initial.attack_power_per_strength = 2.0;
 
   if ( primary_tree() == DEATH_KNIGHT_BLOOD )
     vengeance.enabled = true;
@@ -4150,10 +4150,10 @@ void death_knight_t::init_values()
   player_t::init_values();
 
   if ( set_bonus.pvp_2pc_melee() )
-    stats_initial.attribute[ ATTR_STRENGTH ]   += 70;
+    initial.attribute[ ATTR_STRENGTH ]   += 70;
 
   if ( set_bonus.pvp_4pc_melee() )
-    stats_initial.attribute[ ATTR_STRENGTH ]   += 90;
+    initial.attribute[ ATTR_STRENGTH ]   += 90;
 }
 
 // death_knight_t::init_gains ===============================================

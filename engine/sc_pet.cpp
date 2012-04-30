@@ -21,8 +21,8 @@ void pet_t::init_pet_t_()
   owner -> pet_list.push_back( this );
 
   // Pets have inherent 5% critical strike chance if not overridden.
-  stats_base.spell_crit  = 0.05;
-  stats_base.attack_crit = 0.05;
+  base.spell_crit  = 0.05;
+  base.attack_crit = 0.05;
 
   stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;
@@ -57,7 +57,7 @@ pet_t::pet_t( sim_t*             s,
 
 double pet_t::composite_attribute( attribute_type_e attr ) const
 {
-  double a = stats_current.attribute[ attr ];
+  double a = current.attribute[ attr ];
 
   switch ( attr )
   {
@@ -113,7 +113,7 @@ void pet_t::summon( timespan_t duration )
     log_t::output( sim, "%s summons %s. for %.2fs", owner -> name(), name(), duration.total_seconds() );
   }
 
-  distance = owner -> distance;
+  current.distance = owner -> current.distance;
 
   owner -> active_pets++;
 
@@ -139,7 +139,7 @@ void pet_t::summon( timespan_t duration )
       virtual void execute()
       {
         player -> cast_pet() -> expiration = 0;
-        if ( ! player -> sleeping ) player -> cast_pet() -> dismiss();
+        if ( ! player -> current.sleeping ) player -> cast_pet() -> dismiss();
       }
     };
     expiration = new ( sim ) expiration_t( sim, this, duration );

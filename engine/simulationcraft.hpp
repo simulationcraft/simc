@@ -2383,7 +2383,6 @@ struct sim_t : private thread_t
   bool        input_is_utf8;
   std::vector<player_t*> actor_list;
   std::string main_target_str;
-  double      dtr_proc_chance;
 
   // Target options
   double      target_death;
@@ -3014,42 +3013,45 @@ public:
 
 struct player_t : public noncopyable
 {
+  // static values
   sim_t* const sim;
   const player_type_e type;
   std::string name_str;
-  race_type_e race;
+
+  player_t*   next;
+  int         index;
+  // (static) attributes - things which should not change during combat
+  race_type_e       race;
+  role_type_e       role;
+  int               level;
+  bool              use_pre_potion;
+  int               party, member;
+  ready_type_e      ready_type;
+  specialization_e  spec;
+  bool              bugs, scale_player, has_dtr;
+  double      dtr_proc_chance;
+
+  // dynamic attributes - things which change during combat
+  player_t*   target;
+  position_type_e position;
+  int         active_pets;
+  int         potion_used, initialized;
+
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
-  player_t*   next;
-  int         index;
-  role_type_e   role;
-  player_t*   target;
-  int         level, use_pre_potion, party, member;
-  ready_type_e ready_type;
-  double      skill, initial_skill, distance, default_distance;
   timespan_t  gcd_ready, base_gcd, started_waiting;
-  int         potion_used, sleeping, initial_sleeping, initialized;
   rating_t    rating;
   std::vector<pet_t*> pet_list;
-  int         bugs;
-  specialization_e spec;
   int         invert_scaling;
-  int         active_pets;
-  double      dtr_proc_chance;
-  double      dtr_base_proc_chance;
   timespan_t  reaction_mean,reaction_stddev,reaction_nu;
   std::vector<absorb_buff_t*> absorb_buffs;
-  int         scale_player;
-  bool        has_dtr;
   double      avg_ilvl;
-  position_type_e position;
 
   struct p_vengeance_t
   {
-    bool        enabled;
-    double      damage, value, max;
-    bool        was_attacked;
+    bool   enabled, was_attacked;
+    double damage, value, max;
   } vengeance;
 
   // Latency
@@ -3065,8 +3067,8 @@ struct player_t : public noncopyable
   // Option Parsing
   std::vector<option_t> options;
 
-  // Misc values
-  int autoUnshift;
+  // Shift automatically out of stance/form
+  bool autoUnshift;
 
   // Talent Parsing
   std::array<uint32_t,MAX_TALENT_SLOTS> talent_list;
@@ -3103,13 +3105,15 @@ struct player_t : public noncopyable
     double dodge_per_agility, parry_rating_per_strength;
 
     double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
+    double skill, distance;
+    int sleeping;
 
     std::array<double,SCHOOL_MAX> resource_reduction;
 
     extended_player_stats_t();
   };
-  player_stats_t stats_base;
-  extended_player_stats_t stats_initial, stats_current;
+  player_stats_t base;
+  extended_player_stats_t initial, current;
 
   // Spell Mechanics
   double base_spell_power;
@@ -3147,9 +3151,9 @@ struct player_t : public noncopyable
 
     resources_t()
     {
-      range::fill( base, 0.0 ); range::fill( initial, 0.0 ); range::fill( max, 0.0 ); range::fill( current, 0.0 );
-      range::fill( base_multiplier, 1.0 ); range::fill( initial_multiplier, 1.0 );
-      range::fill( infinite_resource, 0 );
+      base.assign( 0.0 ); initial.assign( 0.0 ); max.assign( 0.0 ); current.assign( 0.0 );
+      base_multiplier.assign( 1.0 ); initial_multiplier.assign( 1.0 );
+      infinite_resource.assign( 0 );
     }
     double pct( resource_type_e rt ) const
     { return current[ rt ] / max[ rt ]; }
@@ -3745,9 +3749,6 @@ struct player_t : public noncopyable
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
   druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
   hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
-  mage_t        * cast_mage        () { assert( type == MAGE         ); return ( mage_t        * ) this; }
-  monk_t        * cast_monk        () { assert( type == MONK         ); return ( monk_t        * ) this; }
-  paladin_t     * cast_paladin     () { assert( type == PALADIN      ); return ( paladin_t     * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
@@ -3837,7 +3838,7 @@ public:
   // Pets gain their owners' hit rating, 
   // Also, heroic presence does not contribute to pet
   // expertise, so we use raw attack_hit.
-  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> stats_current.attack_hit + owner -> composite_attack_expertise(); }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> current.attack_hit + owner -> composite_attack_expertise(); }
   virtual double composite_attack_hit() const { return owner -> composite_attack_hit(); }
   virtual double composite_spell_hit() const  { return owner -> composite_spell_hit(); }
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;

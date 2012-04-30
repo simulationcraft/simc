@@ -173,7 +173,7 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
 
     for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
     {
-      if ( ! sim -> actor_list[ i ] -> sleeping &&
+      if ( ! sim -> actor_list[ i ] -> current.sleeping &&
            ! sim -> actor_list[ i ] -> is_enemy() &&
            sim -> actor_list[ i ] != target && sim -> actor_list[ i ] -> party == target -> party )
         tl.push_back( sim -> actor_list[ i ] );
