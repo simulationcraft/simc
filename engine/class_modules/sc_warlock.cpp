@@ -934,7 +934,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( p() -> buffs.molten_core -> up() )
     {
-      t *= 1.0 - p() -> buffs.molten_core -> data().effectN( 1 ).percent();
+      t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
     }
     if ( p() -> buffs.soulburn -> up() )
     {
