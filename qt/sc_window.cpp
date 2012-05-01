@@ -1409,7 +1409,7 @@ void SimulateThread::run()
   }
   for ( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
 
-  sim_description_t description;
+  sim_control_t description;
 
   success = description.options.parse_args( argc, argv );
 
