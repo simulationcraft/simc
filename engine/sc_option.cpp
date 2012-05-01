@@ -320,16 +320,18 @@ bool option_db_t::parse_file( FILE* file )
 
 // option_db_t::parse_line =====================================================
 
-bool option_db_t::parse_line( const char* line )
+bool option_db_t::parse_line( const std::string& line )
 {
-  if ( *line == '#' ) return true;
+  if ( line[ 0 ] == '#' ) return true;
 
   std::vector<std::string> tokens;
-  int num_tokens = util::string_split( tokens, line, " \t\n\r", true );
+  size_t num_tokens = util::string_split( tokens, line, " \t\n\r", true );
 
-  for ( int i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; ++i )
+  {
     if ( ! parse_token( tokens[ i ] ) )
       return false;
+  }
 
   return true;
 }
@@ -351,7 +353,7 @@ bool option_db_t::parse_token( const std::string& token )
     FILE* file = open_file( token );
     if ( ! file )
     {
-      printf( "Unexpected parameter '%s'.  Expected format: name=value\n", token.c_str() );
+      printf( "Unexpected parameter '%s'. Expected format: name=value\n", token.c_str() );
       return false;
     }
     parse_file( file );
@@ -407,11 +409,10 @@ bool option_db_t::parse_token( const std::string& token )
 
 // option_db_t::parse_args =====================================================
 
-bool option_db_t::parse_args( int argc,
-                              char** argv )
+bool option_db_t::parse_args( const std::vector<std::string>& args )
 {
-  for ( int i=1; i < argc; i++ )
-    if ( ! parse_line( argv[ i ] ) )
+  for ( size_t i = 0; i < args.size(); ++i )
+    if ( ! parse_line( args[ i ] ) )
       return false;
 
   return true;

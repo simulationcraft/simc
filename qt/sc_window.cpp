@@ -1398,20 +1398,13 @@ void SimulateThread::run()
 
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
-  int argc = stringList.count() + 1;
-  char** argv = new char*[ argc ];
-
-  QList<QByteArray> lines;
-  lines.append( "simc" );
-  for ( int i=1; i < argc; i++ )
-  {
-    lines.append( stringList[ i-1 ].toUtf8().constData() );
-  }
-  for ( int i=0; i < argc; i++ ) argv[ i ] = lines[ i ].data();
+  std::vector<std::string> args;
+  for ( int i=0; i < stringList.count(); ++i )
+    args.push_back( stringList[ i ].toUtf8().constData() );
 
   sim_control_t description;
 
-  success = description.options.parse_args( argc, argv );
+  success = description.options.parse_args( args );
 
   if ( success )
   {

@@ -14,6 +14,6 @@ int main( int argc, char** argv )
 {
   std::locale::global( std::locale( "C" ) );
   sim_t sim;
-  return sim.main( argc, argv );
+  return sim.main( std::vector<std::string>( argv + 1, argv + argc ) );
 }
 

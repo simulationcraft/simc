@@ -2264,7 +2264,7 @@ double sim_t::progress( std::string& phase )
 
 // sim_t::main ==============================================================
 
-int sim_t::main( int argc, char** argv )
+int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
@@ -2273,7 +2273,7 @@ int sim_t::main( int argc, char** argv )
 
   sim_control_t control;
 
-  if ( ! control.options.parse_args( argc, argv ) )
+  if ( ! control.options.parse_args( args ) )
   {
     errorf( "ERROR! Incorrect option format..\n" );
     return 0;

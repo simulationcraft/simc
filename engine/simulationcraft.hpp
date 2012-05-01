@@ -2297,8 +2297,8 @@ struct option_db_t : public std::vector<option_tuple_t>
   FILE* open_file( const std::string& name );
   bool parse_file( FILE* file );
   bool parse_token( const std::string& token );
-  bool parse_line( const char* line );
-  bool parse_args( int argc, char** argv );
+  bool parse_line( const std::string& line );
+  bool parse_args( const std::vector<std::string>& args );
 };
 
 struct player_description_t
@@ -2547,7 +2547,7 @@ public:
   sim_t( sim_t* parent = 0, int thrdID = 0 );
   virtual ~sim_t();
 
-  int       main( int argc, char** argv );
+  int       main( const std::vector<std::string>& args );
   void      cancel();
   double    progress( std::string& phase );
   void      combat( int iteration );
