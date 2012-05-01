@@ -155,7 +155,7 @@ static double get_fury_gain( const spell_data_t& data )
 
 struct warlock_pet_melee_t : public melee_attack_t
 {
-  warlock_pet_melee_t( warlock_pet_t* p, const char* name ) :
+  warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
     melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL )
   {
     weapon = &( p -> main_hand_weapon );
@@ -311,6 +311,7 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
     warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
   {
     aoe         = -1;
+    dual        = true;
     background  = true;
     direct_tick = true;
   }
@@ -324,32 +325,37 @@ struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   felstorm_t( felguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
   {
+    callbacks    = false;
     aoe       = -1;
     harmful   = false;
     tick_zero = true;
     channeled = true;
+    hasted_ticks = false;
     weapon_multiplier = 0;
 
     felstorm_tick = new felstorm_tick_t( p );
     felstorm_tick -> weapon = &( p -> main_hand_weapon );
+  }
 
-    add_child( felstorm_tick );
+  virtual void init()
+  {
+    warlock_pet_melee_attack_t::init();
+    
+    felstorm_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
   {
-    warlock_pet_actions::warlock_pet_melee_attack_t::tick( d );
-
     felstorm_tick -> execute();
-  }
 
-  virtual double haste() const { return 1.0; }
+    stats -> add_tick( d -> time_to_tick );
+  }
 };
 
 struct melee_t : public warlock_pet_actions::warlock_pet_melee_t
 {
   melee_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_t( p, "melee" )
+    warlock_pet_actions::warlock_pet_melee_t( p )
   { }
 };
 
@@ -911,7 +917,7 @@ void felhunter_pet_t::init_base()
 {
   warlock_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "felhunter_melee" );
+  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
 }
 
 action_t* felhunter_pet_t::create_action( const std::string& name,
@@ -938,7 +944,7 @@ void succubus_pet_t::init_base()
 {
   warlock_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "succubus_melee" );
+  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
 }
 
 action_t* succubus_pet_t::create_action( const std::string& name,
@@ -964,7 +970,7 @@ void voidwalker_pet_t::init_base()
 {
   warlock_main_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "voidwalker_melee" );
+  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
 }
 
 action_t* voidwalker_pet_t::create_action( const std::string& name,
@@ -997,7 +1003,7 @@ void infernal_pet_t::init_base()
 {
   warlock_guardian_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this, "Infernal Melee" );
+  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
 }
 
 action_t* infernal_pet_t::create_action( const std::string& name,
