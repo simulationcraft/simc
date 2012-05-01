@@ -20,7 +20,7 @@ std::string chart_type( chart_type_e );
 std::string chart_size( unsigned width, unsigned height );
 std::string fill_chart( fill_area_e, fill_type_e, const std::string& color );
 std::string chart_title( const std::string& );
-std::string chart_title_formating ( const std::string& color, unsigned font_size );
+std::string chart_title_formatting ( const std::string& color, unsigned font_size );
 
 std::string chart_type( chart_type_e t )
 {
@@ -93,7 +93,7 @@ std::string chart_title( const std::string& t )
   return s.str();
 }
 
-std::string chart_title_formating ( const std::string& color, unsigned font_size )
+std::string chart_title_formatting ( const std::string& color, unsigned font_size )
 {
   std::ostringstream s;
 
@@ -106,7 +106,7 @@ std::string chart_title_formating ( const std::string& color, unsigned font_size
   return s.str();
 }
 
-};
+}
 
 namespace {
 
@@ -150,9 +150,8 @@ std::string class_color( player_type_e type )
   case WARRIOR:      return color::taupe;
   case ENEMY:        return color::white;
   case ENEMY_ADD:    return color::nearly_white;
-  default: assert( 0 ); break;
+  default: assert( 0 ); return std::string();
   }
-  return std::string();
 }
 
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
@@ -165,14 +164,11 @@ std::string class_text_color( player_type_e type )
   case ROGUE:        return color::darker_yellow;
   default:           return class_color( type );
   }
-
-  return std::string();
 }
 
-std::string get_chart_base_url()
+const std::string& get_chart_base_url()
 {
-  int round_robin = -1;
-  static std::string base_urls[] =
+  static const std::string base_urls[] =
   {
     "http://0.chart.apis.google.com/chart?",
     "http://1.chart.apis.google.com/chart?",
@@ -185,6 +181,11 @@ std::string get_chart_base_url()
     "http://8.chart.apis.google.com/chart?",
     "http://9.chart.apis.google.com/chart?",
   };
+  static int round_robin = -1;
+  static mutex_t rr_mutex;
+
+  auto_lock_t lock( rr_mutex );
+
   round_robin = ( round_robin + 1 ) % sizeof_array( base_urls );
 
   return base_urls[ round_robin ];
@@ -225,7 +226,6 @@ std::string school_color( school_type_e type )
   case SCHOOL_NONE:         return "FFFFFF";
   default: return std::string();
   }
-  return std::string();
 }
 
 std::string stat_color( stat_type_e type )
@@ -380,9 +380,9 @@ std::string raid_downtime( const std::vector<player_t*>& players_by_name, int pr
 
   // Format chart title with color and font size
   if ( print_styles )
-    s << google_chart::chart_title_formating( "666666", 18 );
+    s << google_chart::chart_title_formatting( "666666", 18 );
   else
-    s << google_chart::chart_title_formating( "dddddd", 18 );
+    s << google_chart::chart_title_formatting( "dddddd", 18 );
 
   return s.str();
 }
@@ -1160,9 +1160,9 @@ std::string gains( const player_t* p, resource_type_e type )
   s << google_chart::chart_title( formatted_name + "+" + r + " Gains" );
 
   if ( p -> sim -> print_styles )
-    s << google_chart::chart_title_formating( "666666", 18 );
+    s << google_chart::chart_title_formatting( "666666", 18 );
   else
-    s << google_chart::chart_title_formating( "dddddd", 18 );
+    s << google_chart::chart_title_formatting( "dddddd", 18 );
 
   return s.str();
 }
@@ -1179,7 +1179,6 @@ std::string scale_factors( const player_t* p )
       scaling_stats.push_back( i );
   }
 
-  assert( scaling_stats.size() <= std::numeric_limits<size_t>::max() );
   size_t num_scaling_stats = scaling_stats.size();
   if ( num_scaling_stats == 0 )
     return std::string();
