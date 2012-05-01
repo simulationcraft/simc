@@ -265,6 +265,7 @@ struct druid_t : public player_t
     buff_t* moonkin_form;
     buff_t* natures_grace;
     buff_t* shooting_stars;
+    buff_t* starfall;
 
 
     // NYI / Needs checking
@@ -3562,8 +3563,13 @@ struct starfall_t : public druid_spell_t
   virtual void init()
   {
     druid_spell_t::init();
-    
     starfall_star -> stats = stats;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    p() -> buff.starfall -> trigger();
   }
 
   virtual void tick( dot_t* d )
@@ -4352,6 +4358,8 @@ void druid_t::init_buffs()
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effect1().trigger() );
   buff.shooting_stars        = buff_creator_t( this, "shooting_stars", specialization.shooting_stars -> effect1().trigger() )
                                .chance( specialization.shooting_stars -> effect1().percent() );
+  buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
+                               .cd( timespan_t::zero() );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
