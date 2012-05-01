@@ -3035,7 +3035,8 @@ struct player_t : public noncopyable
   player_t*   target;
   position_type_e position;
   int         active_pets;
-  int         potion_used, initialized;
+  int         initialized;
+  bool        potion_used;
 
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;

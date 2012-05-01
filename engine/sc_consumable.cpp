@@ -321,7 +321,7 @@ struct mana_potion_t : public action_t
     if ( sim -> log ) log_t::output( sim, "%s uses Mana potion", player -> name() );
     double gain = sim -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
-    player -> potion_used = 1;
+    player -> potion_used = true;
   }
 
   virtual bool ready()
@@ -444,20 +444,23 @@ struct dark_rune_t : public action_t
 
 struct potion_base_t : public action_t
 {
+  static timespan_t cd() { return timespan_t::from_seconds( 60 ); }
+  static timespan_t duration_lost_ooc() { return timespan_t::from_seconds( 5 ); }
+
   buff_t* potion_buff;
-  const timespan_t cd;
 
   potion_base_t( player_t* p, const std::string& n, buff_t* pb, const std::string& options_str ) :
     action_t( ACTION_USE, n, p ),
-    potion_buff( pb ),
-    cd( timespan_t::from_seconds( 60.0 ) )
+    potion_buff( pb )
   {
+    assert( pb );
+
     parse_options( NULL, options_str );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = cd;
+    cooldown -> duration = cd();
   }
 
   virtual void execute()
@@ -465,25 +468,26 @@ struct potion_base_t : public action_t
     if ( player -> in_combat )
     {
       potion_buff -> trigger();
+      player -> potion_used = true;
     }
     else
     {
-      cooldown -> duration -= timespan_t::from_seconds( 5.0 );
-      potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance, ( potion_buff->buff_duration - timespan_t::from_seconds( 5.0 ) ) );
+          cooldown -> duration -= duration_lost_ooc();
+          potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance,
+                                  potion_buff ->  buff_duration - duration_lost_ooc() );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
-    if ( player -> in_combat ) player -> potion_used = 1;
     update_ready();
-    cooldown -> duration = cd;
+    cooldown -> duration = cd();
   }
 
   virtual bool ready()
   {
-    if ( ! player -> in_combat && player -> use_pre_potion <= 0 )
+    if ( player -> potion_used )
       return false;
 
-    if ( player -> potion_used )
+    if ( ! player -> in_combat && ! player -> use_pre_potion )
       return false;
 
     return action_t::ready();
@@ -497,25 +501,25 @@ struct potion_base_t : public action_t
 namespace consumable {
 
 action_t* create_action( player_t*          p,
-                                       const std::string& name,
-                                       const std::string& options_str )
+                         const std::string& name,
+                         const std::string& options_str )
 {
-  if ( name == "dark_rune"             ) return new             dark_rune_t( p, options_str );
-  if ( name == "flask"                 ) return new                 flask_t( p, options_str );
-  if ( name == "food"                  ) return new                  food_t( p, options_str );
-  if ( name == "health_stone"          ) return new          health_stone_t( p, options_str );
-  if ( name == "mana_potion"           ) return new           mana_potion_t( p, options_str );
-  if ( name == "mythical_mana_potion"  ) return new           mana_potion_t( p, options_str );
-  if ( name == "speed_potion"          ) return new  potion_base_t( p, name, p -> potion_buffs.speed, options_str );
-  if ( name == "volcanic_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.volcanic, options_str );
-  if ( name == "earthen_potion"        ) return new  potion_base_t( p, name, p -> potion_buffs.earthen, options_str );
-  if ( name == "golemblood_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.golemblood, options_str );
-  if ( name == "tolvir_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.tolvir, options_str );
+  if ( name == "dark_rune"            ) return new    dark_rune_t( p, options_str );
+  if ( name == "flask"                ) return new        flask_t( p, options_str );
+  if ( name == "food"                 ) return new         food_t( p, options_str );
+  if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
+  if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
+  if ( name == "mythical_mana_potion" ) return new  mana_potion_t( p, options_str );
+  if ( name == "speed_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.speed, options_str );
+  if ( name == "volcanic_potion"      ) return new  potion_base_t( p, name, p -> potion_buffs.volcanic, options_str );
+  if ( name == "earthen_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.earthen, options_str );
+  if ( name == "golemblood_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.golemblood, options_str );
+  if ( name == "tolvir_potion"        ) return new  potion_base_t( p, name, p -> potion_buffs.tolvir, options_str );
   // new mop potions
-  if ( name == "jinyu_potion"          ) return new  potion_base_t( p, name, p -> potion_buffs.jinyu, options_str );
-  if ( name == "mountains_potion"      ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
-  if ( name == "mogu_power_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
-  if ( name == "virmens_bite_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
+  if ( name == "jinyu_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.jinyu, options_str );
+  if ( name == "mountains_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
+  if ( name == "mogu_power_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
+  if ( name == "virmens_bite_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
 
   return 0;
 }

@@ -289,7 +289,7 @@ player_t::player_t( sim_t*             s,
   target( 0 ),
   position( POSITION_BACK ),
   active_pets( 0 ),
-  potion_used( 0 ), initialized( 0 ),
+  initialized( 0 ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str( "unknown" ),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::zero() ),
