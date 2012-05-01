@@ -6,7 +6,12 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
-namespace {
+// ==========================================================================
+// Report
+// ==========================================================================
+namespace report {
+
+namespace { // ANONYMOUS ====================================================
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )
@@ -50,25 +55,17 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
   else
   {
     // input is pathologically small compared to window size, just average everything.
-    fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
+    std::fill_n( out, n, std::accumulate( first, last, value_t() ) / n );
   }
 }
-} // END UNNAMED NAMESPACE
-
-namespace range {
 
 template <unsigned HW, typename Range, typename Out>
 inline Range& sliding_window_average( Range& r, Out out )
-{ ::sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
+{ sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
 
-}
+} // ANONYMOUS NAMESPACE ====================================================
 
-// ==========================================================================
-// Report
-// ==========================================================================
-namespace report {
-
-// report::print_profiles =================================================
+// report::print_profiles ===================================================
 
 void print_profiles( sim_t* sim )
 {
@@ -478,10 +475,9 @@ void print_html_sample_data( FILE* file, const player_t* p, const sample_data_t&
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-} // END report NAMESPACE
+} // namespace report =======================================================
 
-
-namespace generate_report_information {
+namespace generate_report_information { // ==================================
 
 struct buff_is_dynamic
 {
@@ -504,6 +500,7 @@ struct buff_is_constant
     return true;
   }
 };
+
 struct buff_comp
 {
   bool operator()( const buff_t* i, const buff_t* j )
@@ -557,7 +554,7 @@ void generate_player_buff_lists( const player_t*  p, player_t::report_informatio
   ri.buff_lists_generated = true;
 }
 
-void generate_player_charts( const player_t*  p, player_t::report_information_t& ri )
+void generate_player_charts( const player_t* p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -593,14 +590,13 @@ void generate_player_charts( const player_t*  p, player_t::report_information_t&
       stats_t* s = stats_list[ i ];
 
       // Create Stats Timeline Chart
-      std::vector<double> timeline_aps;
-      timeline_aps.reserve( max_buckets );
       s -> timeline_amount.resize( max_buckets );
-      range::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
-      assert( timeline_aps.size() == max_buckets );
+      std::vector<double> timeline_aps;
+      timeline_aps.reserve( s -> timeline_amount.size() );
+      report::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
       s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + " APS", s -> aps );
-      s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS", s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
-
+      s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS",
+                                                         s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
     }
   }
   // End Stats Charts
@@ -618,9 +614,8 @@ void generate_player_charts( const player_t*  p, player_t::report_information_t&
 
   {
     std::vector<double> timeline_dps;
-    timeline_dps.reserve( max_buckets );
-    range::sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
-    assert( timeline_dps.size() == max_buckets );
+    timeline_dps.reserve( p -> timeline_dmg.size() );
+    report::sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
     ri.timeline_dps_chart = chart::timeline( p, timeline_dps, encoded_name + " DPS", p -> dps.mean );
   }
 
