@@ -96,13 +96,13 @@ public:
     current_state = TAG;
   }
 
-  void end_tag()
+  void end_tag( const std::string & tag )
   {
     assert( current_state != NONE );
     assert( ! current_tags.empty() );
     assert( indentation.size() == tabulation.size() * current_tags.size() );
 
-    std::string tag = current_tags.top();
+    assert( tag == current_tags.top() );
     current_tags.pop();
 
     indentation.resize( indentation.size() - tabulation.size() );
@@ -211,9 +211,9 @@ void print_xml_errors( sim_t* sim, xml_writer_t & writer )
     {
       writer.begin_tag( "error" );
       writer.print_attribute( "message", sim -> error_list[ i ] );
-      writer.end_tag(); // </error>
+      writer.end_tag( "error" );
     }
-    writer.end_tag(); // </errors>
+    writer.end_tag( "errors" );
   }
 }
 
@@ -231,10 +231,10 @@ void print_xml_raid_events( sim_t* sim, xml_writer_t & writer )
       writer.begin_tag( "raid_event" );
       writer.print_attribute( "index", util::to_string( i ) );
       writer.print_attribute( "name", raid_event_names[i] );
-      writer.end_tag(); // </raid_event>
+      writer.end_tag( "raid_event" );
     }
 
-    writer.end_tag(); // </raid_events>
+    writer.end_tag( "raid_events" );
   }
 }
 
@@ -256,7 +256,7 @@ void print_xml_roster( sim_t* sim, xml_writer_t & writer )
     }
   }
 
-  writer.end_tag(); // </players>
+  writer.end_tag( "players" );
 }
 
 void print_xml_targets( sim_t* sim, xml_writer_t & writer )
@@ -276,7 +276,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
     }
   }
 
-  writer.end_tag(); // </targets>
+  writer.end_tag( "targets" );
 }
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
@@ -294,7 +294,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.print_attribute( "type", util::player_type_string( p->type ) );
   if ( p -> is_pet() )
     writer.print_attribute( "subtype", util::pet_type_string( p -> cast_pet() -> pet_type ) );
-  writer.end_tag(); // </class>
+  writer.end_tag( "class" );
   writer.print_tag( "specialization", util::specialization_string( p -> primary_tree() ) );
   writer.print_tag( "primary_role", util::role_type_string( p -> primary_role() ) );
   writer.print_tag( "position", p -> position_str );
@@ -304,7 +304,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.print_attribute( "error", util::to_string( p -> dps_error ) );
   writer.print_attribute( "range", util::to_string( ( p -> dps.max - p -> dps.min ) / 2.0 ) );
   writer.print_attribute( "convergence", util::to_string( p -> dps_convergence ) );
-  writer.end_tag(); // </dps>
+  writer.end_tag( "dps" );
 
   if ( p -> rps_loss > 0 )
   {
@@ -313,15 +313,15 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.print_attribute( "rps_loss", util::to_string( p -> rps_loss ) );
     writer.print_attribute( "rps_gain", util::to_string( p -> rps_gain ) );
     writer.print_attribute( "resource", util::resource_type_string( p -> primary_resource() ) );
-    writer.end_tag(); // </dpr>
+    writer.end_tag( "dpr" );
   }
 
   writer.begin_tag( "waiting_time" );
   writer.print_attribute( "pct", util::to_string( p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0 ) );
-  writer.end_tag(); // </waiting_time>
+  writer.end_tag( "waiting_time" );
   writer.begin_tag( "active_time" );
   writer.print_attribute( "pct", util::to_string( sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 ) );
-  writer.end_tag(); // </active_time>
+  writer.end_tag( "active_time" );
   writer.print_tag( "apm", util::to_string( p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0 ) );
 
   if ( p -> origin_str.compare( "unknown" ) )
@@ -341,7 +341,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   print_xml_player_dps_plots( writer, p );
   print_xml_player_charts( writer, p->report_information );
 
-  writer.end_tag(); // </player>
+  writer.end_tag( "player" );
 }
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p )
@@ -395,13 +395,13 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   writer.print_attribute( "name", "health" );
   writer.print_attribute( "base", util::to_string( p -> resources.max[ RESOURCE_HEALTH ], 0 ) );
   writer.print_attribute( "buffed", util::to_string( p -> buffed.attribute[ RESOURCE_HEALTH ], 0 ) );
-  writer.end_tag(); // </resource>
+  writer.end_tag( "resource" );
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "mana" );
   writer.print_attribute( "base", util::to_string( p -> resources.max[ RESOURCE_MANA ], 0 ) );
   writer.print_attribute( "buffed", util::to_string( p -> buffed.resource[ RESOURCE_MANA ], 0 ) );
-  writer.end_tag(); // </resource>
+  writer.end_tag( "resource" );
 }
 
 void print_xml_player_attribute( xml_writer_t & writer, const std::string & attribute, double initial, double gear, double buffed )
@@ -411,7 +411,7 @@ void print_xml_player_attribute( xml_writer_t & writer, const std::string & attr
   writer.print_attribute( "base", util::to_string( initial, 0 ) );
   writer.print_attribute( "gear", util::to_string( gear, 0 ) );
   writer.print_attribute( "buffed", util::to_string( buffed, 0 ) );
-  writer.end_tag(); // </attribute>
+  writer.end_tag( "attribute" );
 }
 
 void print_xml_player_actions( xml_writer_t & writer, player_t* p )
@@ -423,9 +423,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
   {
     writer.begin_tag( "glyph" );
     writer.print_attribute( "name", glyph_names[i] );
-    writer.end_tag(); // </glyph>
+    writer.end_tag( "glyph" );
   }
-  writer.end_tag(); // </glyphs>
+  writer.end_tag( "glyphs" );
 
   writer.begin_tag( "priorities" );
   std::vector<std::string> action_list;
@@ -435,9 +435,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
     writer.begin_tag( "action" );
     writer.print_attribute( "index", util::to_string( i ) );
     writer.print_attribute( "value", action_list[ i ] );
-    writer.end_tag(); // </action>
+    writer.end_tag( "action" );
   }
-  writer.end_tag(); // </priorities>
+  writer.end_tag( "priorities" );
 
 
   writer.begin_tag( "actions" );
@@ -472,7 +472,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.begin_tag( "chart" );
         writer.print_attribute( "type", "timeline_aps" );
         writer.print_attribute( "href", s -> timeline_aps_chart );
-        writer.end_tag(); // </chart>
+        writer.end_tag( "chart" );
       }
 
       writer.print_tag( "etpe", util::to_string( s -> etpe ) );
@@ -504,11 +504,11 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "actual", util::to_string( s -> direct_results[ i ].fight_actual_amount.mean ) );
             writer.print_attribute( "total", util::to_string( s -> direct_results[ i ].fight_total_amount.mean ) );
             writer.print_attribute( "overkill_pct", util::to_string( s -> direct_results[ i ].overkill_pct ) );
-            writer.end_tag(); // </result>
+            writer.end_tag( "result" );
           }
         }
 
-        writer.end_tag(); // </direct_result>
+        writer.end_tag( "direct_results" );
       }
 
       if ( s -> num_ticks > 0 )
@@ -533,18 +533,18 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
             writer.print_attribute( "actual", util::to_string( s -> tick_results[ i ].fight_actual_amount.mean ) );
             writer.print_attribute( "total", util::to_string( s -> tick_results[ i ].fight_total_amount.mean ) );
             writer.print_attribute( "overkill_pct", util::to_string( s -> tick_results[ i ].overkill_pct ) );
-            writer.end_tag(); // </result>
+            writer.end_tag( "result" );
           }
         }
 
-        writer.end_tag(); // </tick_result>
+        writer.end_tag( "tick_results" );
       }
 
 
       writer.begin_tag( "chart" );
       writer.print_attribute( "type", "timeline_stat_aps" );
       writer.print_attribute_unescaped( "href", s -> timeline_aps_chart );
-      writer.end_tag(); // </chart>
+      writer.end_tag( "chart" );
 
       // Action Details
       std::vector<std::string> processed_actions;
@@ -566,11 +566,11 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
           writer.print_tag( "target", a -> target -> name() );
         }
       }
-      writer.end_tag(); // </action>
+      writer.end_tag( "action" );
     }
   }
 
-  writer.end_tag(); // </actions>
+  writer.end_tag( "actions" );
 
   print_xml_player_action_definitions( writer, p );
 }
@@ -602,10 +602,10 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p )
         writer.print_attribute( "benefit", util::to_string( b -> benefit_pct ) );
       }
     }
-    writer.end_tag(); // </buff>
+    writer.end_tag( "buff" );
   }
 
-  writer.end_tag(); // </buffs>
+  writer.end_tag( "buffs" );
 }
 
 void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
@@ -619,11 +619,11 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
       writer.begin_tag( "benefit" );
       writer.print_attribute( "name", u -> name() );
       writer.print_attribute( "ratio_pct", util::to_string( u -> ratio * 100.0, 1 ) );
-      writer.end_tag();
+      writer.end_tag( "benefit" );
     }
   }
 
-  writer.end_tag(); // </benefits>
+  writer.end_tag( "benefits" );
 
 
   writer.begin_tag( "uptimes" );
@@ -635,11 +635,11 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
       writer.begin_tag( "uptime" );
       writer.print_attribute( "name", u -> name_str );
       writer.print_attribute( "pct", util::to_string( u -> uptime_sum.mean * 100.0, 1 ) );
-      writer.end_tag();
+      writer.end_tag( "uptime" );
     }
   }
 
-  writer.end_tag(); // </uptimes>
+  writer.end_tag( "uptimes" );
 }
 
 void print_xml_player_procs( xml_writer_t & writer, player_t * p )
@@ -654,11 +654,11 @@ void print_xml_player_procs( xml_writer_t & writer, player_t * p )
       writer.print_attribute( "name", proc -> name() );
       writer.print_attribute( "count", util::to_string( proc -> count, 1 ) );
       writer.print_attribute( "frequency", util::to_string( proc -> interval_sum.mean, 2 ) );
-      writer.end_tag(); // </proc>
+      writer.end_tag( "proc" );
     }
   }
 
-  writer.end_tag(); // </procs>
+  writer.end_tag( "procs" );
 }
 
 void print_xml_player_gains( xml_writer_t & writer, player_t * p )
@@ -677,12 +677,12 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
         double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
         if ( overflow_pct > 1.0 )
           writer.print_attribute( "overflow_pct", util::to_string( overflow_pct, 1 ) );
-        writer.end_tag();
+        writer.end_tag( "gain" );
       }
     }
   }
 
-  writer.end_tag();
+  writer.end_tag( "gains" );
 }
 
 void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const player_t::report_information_t& ri )
@@ -712,7 +712,7 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const 
       writer.print_attribute( "scaling_error", util::to_string( p -> scaling_error.get_stat( i ), p -> sim -> report_precision ) );
       writer.print_attribute( "delta", util::to_string( p -> sim -> scaling -> stats.get_stat( i ) ) );
 
-      writer.end_tag(); // </stat>
+      writer.end_tag( "stat" );
     }
   }
 
@@ -732,24 +732,24 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const 
         writer.print_attribute( "relative_to_previous", "=" );
     }
 
-    writer.end_tag(); // </scaling_stat>
+    writer.end_tag( "scaling_stat" );
   }
 
-  writer.end_tag(); // </weights>
+  writer.end_tag( "weights" );
 
   if ( p -> sim -> scaling -> normalize_scale_factors )
   {
     writer.begin_tag( "dps_per_point" );
     writer.print_attribute( "stat", util::stat_type_abbrev( p -> normalize_by() ) );
     writer.print_attribute( "value", util::to_string( p -> scaling.get_stat( p -> normalize_by() ), p -> sim -> report_precision ) );
-    writer.end_tag(); // </dps_per_point>
+    writer.end_tag( "dps_per_point" );
   }
   if ( p -> sim -> scaling -> scale_lag )
   {
     writer.begin_tag( "scale_lag_ms" );
     writer.print_attribute( "value", util::to_string( p -> scaling_lag, p -> sim -> report_precision ) );
     writer.print_attribute( "error", util::to_string( p -> scaling_lag_error, p -> sim -> report_precision ) );
-    writer.end_tag(); // </scale_lag_ms>
+    writer.end_tag( "scale_lag_ms" );
   }
 
 
@@ -763,21 +763,21 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const 
   writer.print_attribute( "name", "wowhead" );
   writer.print_attribute( "type", "ranking" );
   writer.print_attribute_unescaped( "href", wowhead );
-  writer.end_tag(); // </link>
+  writer.end_tag( "link" );
 
   writer.begin_tag( "link" );
   writer.print_attribute( "name", "lootrank" );
   writer.print_attribute( "type", "ranking" );
   writer.print_attribute( "href", lootrank );
-  writer.end_tag(); // </link>
+  writer.end_tag( "link" );
 
   writer.begin_tag( "link" );
   writer.print_attribute( "name", "wowreforge" );
   writer.print_attribute( "type", "optimizer" );
   writer.print_attribute( "href", wowreforge );
-  writer.end_tag(); // </link>
+  writer.end_tag( "link" );
 
-  writer.end_tag(); // </scale_factors>
+  writer.end_tag( "scale_factors" );
 }
 
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
@@ -811,11 +811,11 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
       {
         writer.print_tag( "value", util::to_string( pd[ j ], 0 ) );
       }
-      writer.end_tag(); // </dps>
+      writer.end_tag( "dps" );
     }
   }
 
-  writer.end_tag(); // </dps_plot_data>
+  writer.end_tag( "dps_plot_data" );
 }
 
 void print_xml_player_charts( xml_writer_t & writer, const player_t::report_information_t& ri )
@@ -827,7 +827,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
     writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.action_dmg_chart.empty() )
@@ -835,7 +835,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dmg" );
     writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.scaling_dps_chart.empty() )
@@ -843,7 +843,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scaling_dps" );
     writer.print_attribute_unescaped( "href", ri.scaling_dps_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.reforge_dps_chart.empty() )
@@ -851,7 +851,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "reforge_dps" );
     writer.print_attribute_unescaped( "href", ri.reforge_dps_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.scale_factors_chart.empty() )
@@ -859,7 +859,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "scale_factors" );
     writer.print_attribute_unescaped( "href", ri.scale_factors_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.timeline_dps_chart.empty() )
@@ -867,7 +867,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "timeline_dps" );
     writer.print_attribute_unescaped( "href", ri.timeline_dps_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.distribution_dps_chart.empty() )
@@ -875,7 +875,7 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "distribution_dps" );
     writer.print_attribute_unescaped( "href", ri.distribution_dps_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
   if ( ! ri.time_spent_chart.empty() )
@@ -883,10 +883,10 @@ void print_xml_player_charts( xml_writer_t & writer, const player_t::report_info
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "time_spent" );
     writer.print_attribute_unescaped( "href", ri.time_spent_chart );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
 
-  writer.end_tag(); // </charts>
+  writer.end_tag( "charts" );
 }
 
 void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
@@ -921,10 +921,10 @@ void print_xml_buffs( sim_t* sim, xml_writer_t & writer )
         writer.print_attribute( "trigger_pct", util::to_string( b -> trigger_pct ) );
       }
     }
-    writer.end_tag(); // </buff>
+    writer.end_tag( "buff" );
   }
 
-  writer.end_tag(); // </buffs>
+  writer.end_tag( "buffs" );
 }
 
 
@@ -956,10 +956,10 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
       writer.print_attribute( "name", p -> name() );
       writer.print_attribute( "frequency_sec", util::to_string( proc -> interval_sum.mean, 2 ) );
       writer.print_attribute( "frequency_pct", util::to_string( ( 1.0 / proc -> interval_sum.mean ), 3 ) );
-      writer.end_tag(); // </donors>
+      writer.end_tag( "donors" );
     }
 
-    writer.end_tag(); // </honor_among_thieves>
+    writer.end_tag( "honor_among_thieves" );
   }
 }
 
@@ -974,9 +974,9 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
   writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds(), 0 ) );
   writer.print_tag( "rng", sim -> default_rng() -> report( sim -> confidence_estimator ) );
-  writer.end_tag(); // </rng>
+  writer.end_tag( "rng" );
 
-  writer.end_tag(); // </performance>
+  writer.end_tag( "performance" );
 }
 
 void print_xml_config( sim_t* sim, xml_writer_t & writer )
@@ -990,7 +990,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "report_targets", sim -> report_targets ? "true" : "false" );
   writer.print_tag( "normalize_scale_factors", sim -> scaling ->normalize_scale_factors ? "true" : "false" );
 
-  writer.end_tag(); // </config>
+  writer.end_tag( "config" );
 }
 
 void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_information_t& ri )
@@ -1015,12 +1015,12 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.print_attribute( "max", util::to_string( sim -> simulation_length.max, 0 ) );
   }
   writer.print_attribute( "total", util::to_string( sim -> simulation_length.sum, 0 ) );
-  writer.end_tag(); // </simulation_length>
+  writer.end_tag( "simulation_length" );
 
   writer.begin_tag( "events" );
   writer.print_attribute( "processed", util::to_string( sim -> total_events_processed ) );
   writer.print_attribute( "max_remaining", util::to_string( sim -> max_events_remaining ) );
-  writer.end_tag(); // </events>
+  writer.end_tag( "events" );
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
@@ -1030,13 +1030,13 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
   writer.print_attribute( "type", "world" );
   writer.print_attribute( "value", util::to_string( sim -> world_lag.total_millis() ) );
   writer.print_attribute( "stddev", util::to_string( sim -> world_lag_stddev.total_millis() ) );
-  writer.end_tag(); // </lag>
+  writer.end_tag( "lag" );
 
   writer.begin_tag( "lag" );
   writer.print_attribute( "type", "queue" );
   writer.print_attribute( "value", util::to_string( sim -> queue_lag.total_millis() ) );
   writer.print_attribute( "stddev", util::to_string( sim -> queue_lag_stddev.total_millis() ) );
-  writer.end_tag(); // </lag>
+  writer.end_tag( "lag" );
 
   if ( sim -> strict_gcd_queue )
   {
@@ -1044,18 +1044,18 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.print_attribute( "type", "gcd" );
     writer.print_attribute( "value", util::to_string( sim -> gcd_lag.total_millis() ) );
     writer.print_attribute( "stddev", util::to_string( sim -> gcd_lag_stddev.total_millis() ) );
-    writer.end_tag(); // </lag>
+    writer.end_tag( "lag" );
 
     writer.begin_tag( "lag" );
     writer.print_attribute( "type", "channel" );
     writer.print_attribute( "value", util::to_string( sim -> channel_lag.total_millis() ) );
     writer.print_attribute( "stddev", util::to_string( sim -> channel_lag_stddev.total_millis() ) );
-    writer.end_tag(); // </lag>
+    writer.end_tag( "lag" );
 
     writer.begin_tag( "lag" );
     writer.print_attribute( "type", "queue_gcd" );
     writer.print_attribute( "value", util::to_string( sim -> queue_gcd_reduction.total_millis() ) );
-    writer.end_tag(); // </lag>
+    writer.end_tag( "lag" );
   }
 
   size_t count = ri.dps_charts.size();
@@ -1066,7 +1066,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dps" );
     writer.print_attribute_unescaped( "img_src", ri.dps_charts[ i ] );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
   count = ri.hps_charts.size();
   for ( size_t i=0; i < count; i++ )
@@ -1074,7 +1074,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "hps" );
     writer.print_attribute_unescaped( "img_src", ri.hps_charts[ i ] );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
   count = ri.gear_charts.size();
   for ( size_t i=0; i < count; i++ )
@@ -1082,7 +1082,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "gear" );
     writer.print_attribute_unescaped( "img_src", ri.gear_charts[ i ] );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
   count = ri.dpet_charts.size();
   for ( size_t i=0; i < count; i++ )
@@ -1090,19 +1090,19 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
     writer.print_attribute_unescaped( "img_src", ri.dpet_charts[ i ] );
-    writer.end_tag(); // </chart>
+    writer.end_tag( "chart" );
   }
-  writer.end_tag();
+  writer.end_tag( "charts" );
 
   writer.begin_tag( "dmg" );
   writer.print_attribute( "total", util::to_string( sim -> total_dmg.mean, 0 ) );
   writer.print_attribute( "dps", util::to_string( sim -> raid_dps.mean, 0 ) );
-  writer.end_tag(); // </dmg>
+  writer.end_tag( "dmg" );
 
   writer.begin_tag( "heal" );
   writer.print_attribute( "total", util::to_string( sim -> total_heal.mean, 0 ) );
   writer.print_attribute( "hps", util::to_string( sim -> raid_hps.mean, 0 ) );
-  writer.end_tag(); // </heal>
+  writer.end_tag( "heal" );
 
   writer.begin_tag( "player_by_dps" );
   count = sim -> players_by_dps.size();
@@ -1113,9 +1113,9 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.print_attribute( "name", p -> name() );
     writer.print_attribute( "index", util::to_string( i ) );
     writer.print_attribute( "dps", util::to_string( p -> dps.mean ) );
-    writer.end_tag(); // </player>
+    writer.end_tag( "player" );
   }
-  writer.end_tag(); // </player_by_dps>
+  writer.end_tag( "player_by_dps" );
 
   writer.begin_tag( "player_by_hps" );
   count = sim -> players_by_dps.size();
@@ -1126,13 +1126,13 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_i
     writer.print_attribute( "name", p -> name() );
     writer.print_attribute( "index", util::to_string( i ) );
     writer.print_attribute( "hps", util::to_string( p -> hps.mean ) );
-    writer.end_tag(); // </player>
+    writer.end_tag( "player" );
   }
-  writer.end_tag(); // </player_by_hps>
+  writer.end_tag( "player_by_hps" );
 
   print_xml_raid_events( sim, writer );
 
-  writer.end_tag(); // </summary>
+  writer.end_tag( "summary" );
 }
 
 void print_xml_get_action_list( sim_t* sim, player_t* p, std::map<int, action_t*> & all_actions )
@@ -1200,7 +1200,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.print_tag( "base_cost", util::to_string( a -> base_costs[ a -> current_resource() ] ) );
         writer.begin_tag( "cooldown" );
         writer.print_attribute( "duration", util::to_string( a -> cooldown -> duration.total_seconds() ) );
-        writer.end_tag(); // </cooldown>
+        writer.end_tag( "cooldown" );
         writer.print_tag( "base_execute_time", util::to_string( a -> base_execute_time.total_seconds() ) );
         writer.print_tag( "base_crit", util::to_string( a -> base_crit ) );
         if ( a -> target )
@@ -1222,8 +1222,8 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.begin_tag( "base" );
           writer.print_attribute( "min", util::to_string( a -> base_dd_min ) );
           writer.print_attribute( "max", util::to_string( a -> base_dd_max ) );
-          writer.end_tag(); // </base>
-          writer.end_tag(); // </direct_damage>
+          writer.end_tag( "base" );
+          writer.end_tag( "direct_damage" );
         }
 
         if ( a -> num_ticks )
@@ -1237,7 +1237,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "base_tick_time", util::to_string( a -> base_tick_time.total_seconds() ) );
           writer.print_tag( "hasted_ticks", util::to_string( a -> hasted_ticks ) );
           writer.print_tag( "dot_behavior", util::dot_behavior_type_string( a -> dot_behavior ) );
-          writer.end_tag(); // </damage_over_time>
+          writer.end_tag( "damage_over_time" );
         }
         // Extra Reporting for DKs
         if ( a -> player -> type == DEATH_KNIGHT )
@@ -1247,7 +1247,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "frost", util::to_string( ( a -> data().rune_cost() >> 4 ) & 0x1 ) );
           writer.print_tag( "unholy", util::to_string( ( a -> data().rune_cost() >> 2 ) & 0x1 ) );
           writer.print_tag( "runic_power_gain", util::to_string( a -> rp_gain ) );
-          writer.end_tag(); // </runes>
+          writer.end_tag( "runes" );
         }
         if ( a -> weapon )
         {
@@ -1255,15 +1255,15 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.print_tag( "normalize_speed", a -> normalize_weapon_speed ? "true" : "false" );
           writer.print_tag( "power_mod", util::to_string( a -> weapon_power_mod ) );
           writer.print_tag( "multiplier", util::to_string( a -> weapon_multiplier ) );
-          writer.end_tag(); // </weapon>
+          writer.end_tag( "weapon" );
         }
 
-        writer.end_tag(); // </action_detail>
+        writer.end_tag( "action_detail" );
       }
     }
   }
 
-  writer.end_tag(); // </action_definitions>
+  writer.end_tag( "action_definitions" );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -1316,7 +1316,7 @@ void print_xml( sim_t* sim )
 
   print_xml_errors( sim, writer );
 
-  writer.end_tag(); // </simulationcraft>
+  writer.end_tag( "simulationcraft" );
 }
 
 } // END report NAMESPACE
