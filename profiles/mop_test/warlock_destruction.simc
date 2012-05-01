@@ -12,14 +12,14 @@ talents=http://www.wowhead.com/talent#warlock-000000000000010000
 glyphs=demon_training/conflagrate
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/summon_felhunter
-actions+=/service_felhunter
+actions+=/summon_succubus
+actions+=/service_succubus
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<20
 actions+=/dark_soul
 actions+=/shadowburn,if=ember_react
-actions+=/chaos_bolt,if=ember_react
+actions+=/chaos_bolt,if=ember_react&(buff.dark_soul.up|burning_ember>=20)&target.health.pct>=25
 actions+=/summon_doomguard
 actions+=/conflagrate,if=buff.backdraft.down
 actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react

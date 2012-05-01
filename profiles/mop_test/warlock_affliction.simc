@@ -12,8 +12,8 @@ talents=http://www.wowhead.com/talent#warlock-000000000000010000
 glyphs=demon_training
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/summon_felhunter
-actions+=/service_felhunter
+actions+=/summon_succubus
+actions+=/service_succubus
 actions+=/snapshot_stats
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=20
