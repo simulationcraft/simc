@@ -2967,7 +2967,7 @@ struct celestial_alignment_buff_t : public buff_t
 struct celestial_alignment_t : public druid_spell_t
 {
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_class_spell( "Celestial Alignment" ), options_str )
+    druid_spell_t( "celestial_alignment", player, player -> find_class_spell( "Celestial Alignment" ), options_str )
   {
     parse_options( NULL, options_str );
     
@@ -3063,8 +3063,9 @@ struct faerie_fire_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   incarnation_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_talent_spell( "Incarnation" ), options_str )
+    druid_spell_t( "incarnation", player, player -> talent.incarnation, options_str )
   {
+    parse_options( NULL, options_str );
     harmful = false;
     /*
     Buff Spell: http://mop.wowhead.com/spell=117679
