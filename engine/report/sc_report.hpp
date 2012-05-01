@@ -61,19 +61,28 @@ namespace report {
     }
   };
 
-  struct tabs_t
+  class tabs_t
   {
     int level;
-    tabs_t( int l=0 ) : level(l) {}
-    tabs_t operator+(int c) { return tabs_t(level+c); }
-    tabs_t operator-(int c) { return tabs_t(level-c); }
-    tabs_t operator++() { ++level; return *this; }
-    tabs_t operator--() { --level; return *this; }
-    tabs_t operator++(int c) { level+=c; return *this; }
-    tabs_t operator--(int c) { level-=c; return *this; }
-    const char* operator*()
+
+  public:
+    tabs_t( int l = 0 ) : level( l ) {}
+
+    tabs_t& operator+=( int c ) { assert( level + c >= 0 ); level += c; return *this; }
+    tabs_t& operator-=( int c ) { assert( level - c >= 0 ); level -= c; return *this; }
+
+    tabs_t& operator++() { ++level; return *this; }
+    tabs_t& operator--() { assert( level > 0 ); --level; return *this; }
+
+    tabs_t operator++( int ) { tabs_t tmp = *this; ++*this; return tmp; }
+    tabs_t operator--( int ) { tabs_t tmp = *this; --*this; return tmp; }
+
+    friend tabs_t operator+( tabs_t t, int c ) { return t += c; }
+    friend tabs_t operator-( tabs_t t, int c ) { return t -= c; }
+
+    const char* operator*() const
     {
-      switch(level)
+      switch( level )
       {
       case  0: return "";
       case  1: return "\t";
@@ -88,9 +97,8 @@ namespace report {
       case 10: return "\t\t\t\t\t\t\t\t\t\t";
       case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
       case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
-      default: assert(0); break;
+      default: assert(0); return NULL;
       }
-      return NULL;
     }
   };
 
