@@ -103,7 +103,7 @@ namespace report {
   };
 
 #if SC_BETA
-  const std::string beta_warnings[] =
+  static const char* const beta_warnings[] =
   {
     "Beta! Beta! Beta! Beta! Beta! Beta!",
     "Not All classes are yet supported.",
@@ -113,7 +113,6 @@ namespace report {
     "Some trinkets not yet implemented.",
     "Constructive feedback regarding our output will shorten the Beta phase dramatically.",
     "Beta! Beta! Beta! Beta! Beta! Beta!",
-    ""
   };
 #endif // SC_BETA
 }

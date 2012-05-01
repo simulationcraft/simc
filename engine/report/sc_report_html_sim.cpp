@@ -1253,24 +1253,13 @@ void print_html_beta_warning( FILE* file )
 {
 #if SC_BETA
   fprintf( file,
-           "\t\t<div id=\"notice\" class=\"section section-open\">\n" );
+           "\t\t<div id=\"notice\" class=\"section section-open\">\n"
+           "\t\t\t<h2>Beta Release</h2>\n"
+           "\t\t\t<ul>\n" );
+  for ( size_t i = 0; i < sizeof_array( report::beta_warnings ); ++i )
+    fprintf( file, "\t\t\t\t<li>%s</li>\n", report::beta_warnings[ i ] );
   fprintf( file,
-           "\t\t\t<h2>Beta Release</h2>\n" );
-  int ii = 0;
-  if ( !report::beta_warnings[ 0 ].empty() )
-    fprintf( file,
-             "\t\t\t<ul>\n" );
-  while ( !report::beta_warnings[ ii ].empty() )
-  {
-    fprintf( file,
-             "\t\t\t\t<li>%s</li>\n",
-             report::beta_warnings[ ii ].c_str() );
-    ii++;
-  }
-  if ( !report::beta_warnings[ 0 ].empty() )
-    fprintf( file,
-             "\t\t\t</ul>\n" );
-  fprintf( file,
+           "\t\t\t</ul>\n"
            "\t\t</div>\n\n" );
 #endif
 }

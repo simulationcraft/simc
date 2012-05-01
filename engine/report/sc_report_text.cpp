@@ -755,12 +755,8 @@ void print_text( FILE* file, sim_t* sim, bool detail )
 
 #if SC_BETA
   util::fprintf( file, "\n\n*** Beta Release ***\n" );
-  int i = 0;
-  while ( !beta_warnings[ i ].empty() )
-  {
-    util::fprintf( file, " * %s\n", beta_warnings[ i ].c_str() );
-    i++;
-  }
+  for ( size_t i = 0; i < sizeof_array( beta_warnings ); ++i )
+    util::fprintf( file, " * %s\n", beta_warnings[ i ] );
   util::fprintf( file, "\n" );
 #endif
 
