@@ -2589,12 +2589,12 @@ struct tranquility_t : public druid_heal_t
   tranquility_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Tranquility" ), options_str )
   {
-    aoe               = data().effect3().base_value(); // Heals 5 targets
+    aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
     channeled         = true;
 
     // Healing is in spell effect 1
-    parse_spell_data( ( *player -> dbc.spell( data().effect1().trigger_spell_id() ) ) );
+    parse_spell_data( ( *player -> dbc.spell( data().effectN( 1 ).trigger_spell_id() ) ) );
 
     // FIXME: The hot should stack
   }
@@ -2607,7 +2607,7 @@ struct wild_growth_t : public druid_heal_t
   wild_growth_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
-    aoe = data().effect3().base_value();
+    aoe = data().effectN( 3 ).base_value();
   }
 
   virtual void execute()
@@ -2620,7 +2620,7 @@ struct wild_growth_t : public druid_heal_t
     druid_heal_t::execute();
 
     // Reset AoE
-    aoe = data().effect3().base_value();// + ( int ) p -> glyph.wild_growth -> mod_additive( P_EFFECT_3 );
+    aoe = data().effectN( 3 ).base_value();// + ( int ) p -> glyph.wild_growth -> mod_additive( P_EFFECT_3 );
   }
 };
 
@@ -3278,7 +3278,7 @@ struct moonfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p -> buff.lunar_shower -> data().effect1().percent() * p -> buff.lunar_shower -> stack() );
+    additive_multiplier += ( p -> buff.lunar_shower -> data().effectN( 1 ).percent() * p -> buff.lunar_shower -> stack() );
 
     druid_spell_t::player_buff();
   }
@@ -3330,7 +3330,7 @@ struct moonfire_t : public druid_spell_t
     double cr = druid_spell_t::cost_reduction();
     druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> check() );
+    cr += ( p -> buff.lunar_shower -> data().effectN( 2 ).percent() * p -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -3482,11 +3482,11 @@ struct starfire_t : public druid_spell_t
           // BUG (FEATURE?) ON LIVE, TODO: Beta too?
           // #1 Euphoria does not proc, if you are more than 35 into the side the
           // Eclipse bar is moving towards, >35 for Starfire/towards Solar
-          int gain = data().effect2().base_value();
+          int gain = data().effectN( 2 ).base_value();
 
           if ( ! p -> buff.eclipse_lunar -> check() )
           {
-            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
             {
               if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
               {
@@ -3553,12 +3553,12 @@ struct starfall_t : public druid_spell_t
 
     harmful = false;
     // Starfall triggers a spell each second, that triggers the damage spell.
-    const spell_data_t* stars_trigger_spell = data().effect1().trigger();
+    const spell_data_t* stars_trigger_spell = data().effectN( 1 ).trigger();
     if ( ! stars_trigger_spell -> ok() )
     {
       background = true;
     }
-    starfall_star = new starfall_star_t( player, stars_trigger_spell -> effect1().base_value() );    
+    starfall_star = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );    
   }
 
   virtual void init()
@@ -3634,12 +3634,12 @@ struct starsurge_t : public druid_spell_t
 
         // gain is positive for p -> eclipse_bar_direction==0
         // else it is towards p -> eclipse_bar_direction
-        int gain = data().effect2().base_value();
+        int gain = data().effectN( 2 ).base_value();
         if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
 
         if ( ! p -> buff.eclipse_lunar -> check() && ! p -> buff.eclipse_solar -> check() )
         {
-          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
           {
             if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
             {
@@ -3744,7 +3744,7 @@ struct sunfire_t : public druid_spell_t
     druid_t* p = player -> cast_druid();
 
     // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p -> buff.lunar_shower -> data().effect1().percent() * p -> buff.lunar_shower -> stack() );
+    additive_multiplier += ( p -> buff.lunar_shower -> data().effectN( 1 ).percent() * p -> buff.lunar_shower -> stack() );
 
     druid_spell_t::player_buff();
   }
@@ -3790,7 +3790,7 @@ struct sunfire_t : public druid_spell_t
     double cr = druid_spell_t::cost_reduction();
     druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effect2().percent() * p -> buff.lunar_shower -> check() );
+    cr += ( p -> buff.lunar_shower -> data().effectN( 2 ).percent() * p -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -3908,7 +3908,7 @@ struct tree_of_life_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
 
-    p -> buff.tree_of_life -> trigger( 1, p -> dbc.spell( 5420 ) -> effect1().percent() );
+    p -> buff.tree_of_life -> trigger( 1, p -> dbc.spell( 5420 ) -> effectN( 1 ).percent() );
   }
 };
 
@@ -3955,9 +3955,9 @@ struct wild_mushroom_detonate_t : public druid_spell_t
 
     // Actual ability is 88751, all damage is in spell 78777
     const spell_data_t* damage_spell = player -> dbc.spell( 78777 );
-    direct_power_mod   = damage_spell -> effect1().coeff();
-    base_dd_min        = player -> dbc.effect_min( damage_spell -> effect1().id(), player -> level );
-    base_dd_max        = player -> dbc.effect_max( damage_spell -> effect1().id(), player -> level );
+    direct_power_mod   = damage_spell -> effectN( 1 ).coeff();
+    base_dd_min        = player -> dbc.effect_min( damage_spell -> effectN( 1 ).id(), player -> level );
+    base_dd_max        = player -> dbc.effect_max( damage_spell -> effectN( 1 ).id(), player -> level );
     school             = damage_spell -> get_school_type();
     stats -> school    = school;
     aoe                = -1;
@@ -4023,14 +4023,14 @@ struct wrath_t : public druid_spell_t
 
         if ( p -> eclipse_bar_direction <= 0 )
         {
-          int gain = data().effect2().base_value();
+          int gain = data().effectN( 2 ).base_value();
 
           // BUG (FEATURE?) ON LIVE
           // #1 Euphoria does not proc, if you are more than 35 into the side the
           // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
           if ( ! p -> buff.eclipse_solar -> check() )
           {
-            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effect1().percent() ) )
+            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
             {
               if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
               {
@@ -4298,7 +4298,7 @@ void druid_t::init_base()
   base_energy_regen_per_second = 10;
 
   // Natural Insight: +400% mana
-  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + specialization.natural_insight -> effect1().percent();
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + specialization.natural_insight -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
@@ -4356,9 +4356,9 @@ void druid_t::init_buffs()
   buff.celestial_alignment   = new celestial_alignment_buff_t( this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_spell( 48518 ) );
   buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_spell( 48517 ) );
-  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effect1().trigger() );
-  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", specialization.shooting_stars -> effect1().trigger() )
-                               .chance( specialization.shooting_stars -> effect1().percent() );
+  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effectN( 1 ).trigger() );
+  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", specialization.shooting_stars -> effectN( 1 ).trigger() )
+                               .chance( specialization.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
@@ -4829,9 +4829,9 @@ double druid_t::composite_armor_multiplier() const
     // TODO: http://mop.wowhead.com/spell=5487 spell tooltip => +120% armor
     // But the actual spell data suggests +65% armor
     if ( specialization.thick_hide -> ok() )
-      a += specialization.thick_hide -> effect2().percent();
+      a += specialization.thick_hide -> effectN( 2 ).percent();
     else
-      a += buff.bear_form -> data().effect3().percent();
+      a += buff.bear_form -> data().effectN( 3 ).percent();
   }
   return a;
 }
@@ -4869,15 +4869,15 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
     // Both eclipse buffs need their own checks
     if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_lunar -> up() )
-        m *= 1.0 + ( buff.eclipse_lunar -> data().effect1().percent()
-                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
-                 + composite_mastery() * mastery.total_eclipse -> effect1().mastery_value() );
+        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
 
     if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_solar -> up() )
-        m *= 1.0 + ( buff.eclipse_solar -> data().effect1().percent()
-                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effect1().percent()
-                 + composite_mastery() * mastery.total_eclipse -> effect1().mastery_value() );
+        m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
+                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
   }
 
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
@@ -4896,7 +4896,7 @@ double druid_t::composite_spell_hit() const
   double hit = player_t::composite_spell_hit();
 
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effect1().percent() ) / rating.spell_hit;
+  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -4914,7 +4914,7 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
   {
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
-      m *= 1.0 + spell.bear_form -> effect2().percent();
+      m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
     break;
   default:
     break;
@@ -4956,7 +4956,7 @@ double druid_t::composite_tank_crit( school_type_e school ) const
   double c = player_t::composite_tank_crit( school );
 
   if ( school == SCHOOL_PHYSICAL )
-    c += specialization.thick_hide -> effect1().percent();
+    c += specialization.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
@@ -5116,7 +5116,7 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
                                             result_type_e result,
                                             action_t*     action )
 {
-  amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effect1().percent();
+  amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
 
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
