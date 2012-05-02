@@ -833,7 +833,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> buffs.backdraft -> up() )
+    if ( p() -> buffs.backdraft -> check() && ! is_dtr_action )
     {
       p() -> buffs.backdraft -> decrement();
     }
@@ -862,7 +862,7 @@ struct incinerate_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
-    if ( p() -> buffs.backdraft -> check() )
+    if ( p() -> buffs.backdraft -> up() )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
     }
