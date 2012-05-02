@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15650
+// 224 talents, wow build 15657
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -234,7 +234,7 @@ static struct talent_data_t __talent_data[] = {
   { "Charging Ox Wave"                  , 19994, 0x00, 0x0200, 0x00,     0,   1,   3,  119392,         0,  0 },
   { "Leg Sweep"                         , 19995, 0x00, 0x0200, 0x00,     0,   2,   3,  119381,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
-  { "Karma"                             , 20173, 0x00, 0x0200, 0x00,     0,   2,   4,  122783,         0,  0 },
+  { "Diffuse Magic"                     , 20173, 0x00, 0x0200, 0x00,     0,   2,   4,  122783,         0,  0 },
   { "Healing Elixirs"                   , 20174, 0x00, 0x0200, 0x00,     0,   0,   4,  122280,         0,  0 },
   { "Dampen Harm"                       , 20175, 0x00, 0x0200, 0x00,     0,   1,   4,  122278,         0,  0 },
   { "Invoke Xuen, the White Tiger"      , 20184, 0x00, 0x0200, 0x00,     0,   1,   5,  123904,         0,  0 },
