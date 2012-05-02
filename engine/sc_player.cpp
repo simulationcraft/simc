@@ -307,8 +307,8 @@ player_t::player_t( sim_t*             s,
   // Haste
   spell_haste( 1.0 ), attack_haste( 1.0 ),
   // Mastery
-  base( player_stats_t() ),
-  initial( extended_player_stats_t() ), current( extended_player_stats_t() ),
+  base( base_initial_current_t() ),
+  initial( initial_current_extended_t() ), current( initial_current_extended_t() ),
   // Spell Mechanics
   base_spell_power( 0 ),
   mana_regen_base( 0 ),
@@ -432,9 +432,9 @@ player_t::player_t( sim_t*             s,
     reaction_stddev = reaction_mean * 0.25;
 }
 
-player_t::extended_player_stats_t::extended_player_stats_t()
+player_t::initial_current_extended_t::initial_current_extended_t()
 {
-  memset( this, 0, sizeof( extended_player_stats_t ) );
+  memset( this, 0, sizeof( initial_current_extended_t ) );
 
   range::fill( resource_reduction, 0 );
 

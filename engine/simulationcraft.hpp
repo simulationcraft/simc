@@ -3083,7 +3083,7 @@ struct player_t : public noncopyable
   // Haste
   double spell_haste, attack_haste;
 
-  struct player_stats_t
+  struct base_initial_current_t
   {
     std::array<double,ATTRIBUTE_MAX> attribute;
 
@@ -3096,7 +3096,7 @@ struct player_t : public noncopyable
     double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
   };
 
-  struct extended_player_stats_t : player_stats_t
+  struct initial_current_extended_t : base_initial_current_t
   {
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
@@ -3111,10 +3111,10 @@ struct player_t : public noncopyable
 
     std::array<double,SCHOOL_MAX> resource_reduction;
 
-    extended_player_stats_t();
+    initial_current_extended_t();
   };
-  player_stats_t base;
-  extended_player_stats_t initial, current;
+  base_initial_current_t base;
+  initial_current_extended_t initial, current;
 
   // Spell Mechanics
   double base_spell_power;
