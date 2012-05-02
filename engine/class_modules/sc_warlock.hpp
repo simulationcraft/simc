@@ -138,8 +138,6 @@ struct warlock_t : public player_t
     gain_t* nightfall;
     gain_t* drain_soul;
     gain_t* incinerate;
-    gain_t* metamorphosis;
-    gain_t* demonic_fury;
   } gains;
 
   // Procs
@@ -177,7 +175,7 @@ struct warlock_t : public player_t
     {
       warlock_t* p = ( warlock_t* ) player;
       p -> meta_cost_event = new ( sim ) meta_cost_event_t( player );
-      p -> resource_loss( RESOURCE_DEMONIC_FURY, 6, p -> gains.metamorphosis );
+      p -> resource_loss( RESOURCE_DEMONIC_FURY, 6 );
     }
   };
 
@@ -248,7 +246,7 @@ struct warlock_t : public player_t
   virtual double composite_mastery() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
-  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* gain, action_t* action = 0 );
+  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* gain = 0, action_t* action = 0 );
 };
 
 // ==========================================================================
@@ -263,6 +261,7 @@ struct warlock_pet_t : public pet_t
   double ap_per_owner_sp;
   int stats_avaiable;
   int stats2_avaiable;
+  gain_t* owner_fury_gain;
 
   double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
 private:

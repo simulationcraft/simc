@@ -118,11 +118,13 @@ private:
     stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
+    gain_fury = p() -> get_gain( name_str );
   }
 
 public:
   int recharge_seconds, max_charges, current_charges;
   double generate_fury;
+  gain_t* gain_fury;
 
   struct recharge_event_t : event_t
   {
@@ -190,7 +192,7 @@ public:
     spell_t::execute();
 
     if ( result_is_hit() && p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
   }
 
   virtual void tick( dot_t* d )
@@ -198,7 +200,7 @@ public:
     spell_t::tick( d );
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> gains.demonic_fury );
+       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
   }
 
   virtual void reset()
@@ -2273,8 +2275,6 @@ void warlock_t::init_gains()
   gains.nightfall              = get_gain( "nightfall"  );
   gains.drain_soul             = get_gain( "drain_soul" );
   gains.incinerate             = get_gain( "incinerate" );
-  gains.demonic_fury           = get_gain( "demonic_fury" );
-  gains.metamorphosis          = get_gain( "metamorphosis" );
 }
 
 

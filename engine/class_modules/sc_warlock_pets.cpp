@@ -213,7 +213,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     melee_attack_t::execute();
 
     if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
+       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
@@ -257,7 +257,7 @@ struct warlock_pet_spell_t : public spell_t
     spell_t::execute();
 
     if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> o() -> gains.demonic_fury );
+       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
@@ -692,6 +692,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   stats_avaiable = 0;
   stats2_avaiable = 0;
   ap_per_owner_sp = 3.5;
+  owner_fury_gain = owner -> get_gain( pet_name );
 
   main_hand_weapon.type       = WEAPON_BEAST;
   main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
