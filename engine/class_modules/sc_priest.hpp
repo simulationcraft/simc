@@ -16,6 +16,7 @@ struct remove_dots_event_t;
 
 struct priest_targetdata_t : public targetdata_t
 {
+  dot_t*  dots_devouring_plague;
   dot_t*  dots_shadow_word_pain;
   dot_t*  dots_vampiric_touch;
   dot_t*  dots_holy_fire;
@@ -61,6 +62,7 @@ struct priest_t : public player_t
 
     // Shadow
     buff_t* shadow_word_death_reset_cooldown;
+    buff_t* mind_surge;
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
@@ -112,9 +114,11 @@ struct priest_t : public player_t
     const spell_data_t* chakra_serenity;
 
     // Shadow
+    const spell_data_t* devouring_plague;
+    const spell_data_t* mind_surge;
     const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
-    const spell_data_t* shadowy_apparition;
+    const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadowfiend_cooldown_reduction;
   } spec;
 
@@ -123,7 +127,7 @@ struct priest_t : public player_t
   {
     const spell_data_t* shield_discipline;
     const spell_data_t* echo_of_light;
-    const spell_data_t* shadow_orb_power;
+    const spell_data_t* shadowy_recall;
   } mastery_spells;
 
   // Cooldowns
@@ -145,10 +149,8 @@ struct priest_t : public player_t
     gain_t* mindbender;
     gain_t* archangel;
     gain_t* hymn_of_hope;
-    gain_t* shadow_orb_swp;
     gain_t* shadow_orb_mb;
-    gain_t* shadow_orb_mastery_refund;
-    gain_t* vampiric_touch_health;
+    gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
   } gains;
 
@@ -162,7 +164,10 @@ struct priest_t : public player_t
   // Procs
   struct procs_t
   {
-    proc_t* sa_shadow_orb_mastery;
+    proc_t* mastery_extra_tick;
+    proc_t* shadowy_apparition;
+    proc_t* mind_surge;
+    proc_t* from_darkness_comes_light;
     proc_t* shadowfiend_cooldown_reduction;
   } procs;
 
@@ -181,7 +186,8 @@ struct priest_t : public player_t
   // Random Number Generators
   struct rngs_t
   {
-    rng_t* sa_shadow_orb_mastery;
+    rng_t* mastery_extra_tick;
+    rng_t* shadowy_apparitions;
   } rngs;
 
   // Pets
@@ -222,7 +228,6 @@ struct priest_t : public player_t
     const spell_data_t* mind_blast;
     const spell_data_t* vampiric_touch;
     const spell_data_t* vampiric_embrace;
-    const spell_data_t* shadowy_apparition;
     const spell_data_t* fortitude;
   } glyphs;
 
@@ -263,14 +268,13 @@ struct priest_t : public player_t
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_player_td_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_movement_speed() const;
 
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
 
   virtual double    target_mitigation( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a=0 );
 
-  virtual double    shadow_orb_amount() const;
+  virtual double    shadowy_recall_chance() const;
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();

@@ -424,18 +424,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          527, // Purify
            0,
     },
-    // Shadow tree, 10 abilities
+    // Shadow tree, 14 abilities
     {
         2944, // Devouring Plague
+      124467, // Devouring Plague
        47585, // Dispersion
         8092, // Mind Blast
        15407, // Mind Flay
+      124468, // Mind Flay
        73510, // Mind Spike
        64044, // Psychic Horror
+      124464, // Shadow Word: Pain
        15473, // Shadowform
        15487, // Silence
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
+      124465, // Vampiric Touch
            0,
     },
     {

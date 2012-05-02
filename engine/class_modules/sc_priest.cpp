@@ -33,6 +33,7 @@ void register_priest_targetdata( sim_t* sim )
 
   REGISTER_DOT( holy_fire );
   REGISTER_DOT( renew );
+  REGISTER_DOT( devouring_plague );
   REGISTER_DOT( shadow_word_pain );
   REGISTER_DOT( vampiric_touch );
 
@@ -758,7 +759,7 @@ struct priest_spell_t : public spell_t
       atonement -> trigger( amount, type, impact_result );
   }
 
-  static unsigned trigger_shadowy_apparition( priest_t* player );
+  static void trigger_shadowy_apparition( dot_t* d );
 private:
   static void add_more_shadowy_apparitions( priest_t*, size_t );
   friend void priest_t::init_spells();
@@ -855,7 +856,7 @@ struct lightwell_pet_t : public pet_t
 struct shadowy_apparition_spell_t : public priest_spell_t
 {
   shadowy_apparition_spell_t( priest_t* player ) :
-    priest_spell_t( "shadowy_apparition_spell", player, player -> find_spell( 87532 ) )
+    priest_spell_t( "shadowy_apparition", player, player -> spec.shadowy_apparitions -> ok() ? player -> find_spell( 87532 ) : spell_data_t::not_found() )
   {
     background        = true;
     proc              = true;
@@ -878,41 +879,37 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     double m = priest_spell_t::action_multiplier();
 
-    // Bug: Last tested Build 15589
+    // Bug: Last tested Build 15657
     if ( p() -> buffs.shadowform -> check() )
       m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
     return m;
   }
 };
 
-unsigned priest_spell_t::trigger_shadowy_apparition( priest_t* p )
+void priest_spell_t::trigger_shadowy_apparition( dot_t* d )
 {
-  // Trigger Shadowy apparitions and report back the number of successful Shadow Orb refunds
-  unsigned shadow_orb_procs = 0;
+  priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
 
-  assert ( p -> spec.shadowy_apparition -> ok() );
+  if ( ! pr -> spec.shadowy_apparitions -> ok() )
+    return;
 
-  if ( ! p -> spells.apparitions_free.empty() )
+  if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> spec.shadowy_apparitions -> effectN( 1 ).percent() ) )
+    return;
+
+  if ( ! pr -> spells.apparitions_free.empty() )
   {
-    for ( int i = static_cast<int>( p -> resources.current[ RESOURCE_SHADOW_ORB ] ); i > 0; i-- )
-    {
-      spell_t* s = p -> spells.apparitions_free.front();
+    spell_t* s = pr -> spells.apparitions_free.front();
 
-      p -> spells.apparitions_free.pop();
+    s -> target = d -> state -> target;
 
-      p -> spells.apparitions_active.push_back( s );
+    pr -> spells.apparitions_free.pop();
 
-      if ( p -> rngs.sa_shadow_orb_mastery -> roll( p -> shadow_orb_amount() ) )
-      {
-        p -> procs.sa_shadow_orb_mastery -> occur();
-        shadow_orb_procs++;
-      }
+    pr -> spells.apparitions_active.push_back( s );
 
-      s -> execute();
-    }
+    pr -> procs.shadowy_apparition -> occur();
+
+    s -> execute();
   }
-
-  return shadow_orb_procs;
 }
 
 void priest_spell_t::add_more_shadowy_apparitions( priest_t* p, size_t n )
@@ -1497,9 +1494,21 @@ struct mind_blast_t : public priest_spell_t
     return c;
   }
 
+  virtual void schedule_execute()
+  {
+    priest_spell_t::schedule_execute();
+
+    p() -> buffs.mind_surge -> expire();
+  }
+
   virtual timespan_t execute_time() const
   {
     timespan_t a = priest_spell_t::execute_time();
+
+    if ( p() -> buffs.mind_surge -> up() )
+    {
+      return timespan_t::zero();
+    }
 
     a *= 1 + ( p() -> buffs.glyph_mind_spike -> stack() * p() -> glyphs.mind_spike -> effect1().percent() );
 
@@ -1818,6 +1827,101 @@ struct shadow_word_death_t : public priest_spell_t
   }
 };
 
+// Devouring Plague Spell ===================================================
+
+struct devouring_plague_t : public priest_spell_t
+{
+  const spell_data_t* burst_spell;
+  const spell_data_t* tick_spell;
+
+  devouring_plague_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
+    burst_spell( 0 ), tick_spell( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    may_crit      = false;
+    tick_may_crit = true;
+
+    burst_spell = p -> find_spell( 124432 );
+    tick_spell = p -> find_spell( 124486 );
+    if ( ! tick_spell -> ok() || ! burst_spell -> ok() )
+    {
+      background = true;
+    }
+    else
+    {
+      parse_effect_data( tick_spell -> effectN( 1 ) );
+      parse_effect_data( tick_spell -> effectN( 2 ) );
+      base_td_init = base_td = base_dd_min;
+      tick_power_mod = direct_power_mod;
+      parse_effect_data( burst_spell -> effectN( 1 ) );
+    }
+  }
+
+  virtual void consume_resource()
+  {
+    resource_consumed = cost();
+
+    if ( execute_state -> result != RESULT_MISS )
+    {
+      resource_consumed = p() -> resources.current[ current_resource() ];
+    }
+
+    player -> resource_loss( current_resource(), resource_consumed, 0, this );
+
+    if ( sim -> log )
+      log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( current_resource() ),
+                     name(), player -> resources.current[ current_resource() ] );
+
+    stats -> consume_resource( current_resource(), resource_consumed );
+  }
+
+  virtual double action_da_multiplier() const
+  {
+    double m = priest_spell_t::action_da_multiplier();
+
+    m *= p() -> resources.current[ current_resource() ];
+
+    return m;
+  }
+
+  virtual void assess_damage( player_t* t,
+                              double amount,
+                              dmg_type_e type,
+                              result_type_e impact_result )
+  {
+    priest_spell_t::assess_damage( t, amount, type, impact_result );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      double a = amount * 0.15;
+      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+    }
+  }
+
+  virtual void execute()
+  {
+    int nt = num_ticks;
+
+    num_ticks *= (int) p() -> resources.current[ current_resource() ];
+
+    priest_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      double m = player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+      player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
+    }
+
+    num_ticks = nt;
+  }
+};
+
+// Shadow Word: Pain Mastery Proc ===========================================
+
+
 // Shadow Word Pain Spell ===================================================
 
 struct shadow_word_pain_t : public priest_spell_t
@@ -1828,25 +1932,18 @@ struct shadow_word_pain_t : public priest_spell_t
     parse_options( NULL, options_str );
 
     may_crit   = false;
-    tick_zero = true;
+    tick_zero  = true;
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
-  }
-
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-
-    generate_shadow_orb( this, p() -> gains.shadow_orb_swp );
   }
 
   virtual void tick( dot_t* d )
   {
     priest_spell_t::tick( d );
 
-    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+    if ( ( tick_dmg > 0 ) && ( p() -> spec.shadowy_apparitions -> ok() ) )
     {
-      p() -> buffs.surge_of_darkness -> trigger();
+      trigger_shadowy_apparition( d );
     }
   }
 };
@@ -1894,22 +1991,30 @@ struct vampiric_touch_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    double h = tick_dmg * ( data().effectN( 3 ).percent() + p() -> glyphs.vampiric_touch -> effectN( 1 ).percent() );
-    player -> resource_gain( RESOURCE_HEALTH, h, p() -> gains.vampiric_touch_health, this );
-
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
 
     if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
     {
-      p() -> buffs.surge_of_darkness -> trigger();
+      if ( p() -> buffs.surge_of_darkness -> trigger() )
+      {
+        p() -> procs.from_darkness_comes_light -> occur();
+      }
+    }
+
+    if ( ( tick_dmg > 0 ) && ( p() -> spec.mind_surge -> ok() ) )
+    {
+      if ( p() -> buffs.mind_surge -> trigger() )
+      {
+        p() -> cooldowns.mind_blast -> reset();
+        p() -> procs.mind_surge -> occur();
+      }
     }
 
     /* FIX-ME: Make sure this is still the case when MoP goes live */
-    /* VT ticks are triggering OnHarmfulSpellCast procs. Twice at that..... */
+    /* VT ticks are triggering OnHarmfulSpellCast procs. ..... */
     if ( callbacks )
     {
-      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
       action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
     }
   }
@@ -2114,54 +2219,6 @@ struct smite_t : public priest_spell_t
     c *= 1.0 + ( p() -> buffs.holy_evangelism -> check() * p() -> buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
-  }
-};
-
-struct shadowy_apparition_t : priest_spell_t
-{
-  unsigned triggered_shadow_orb_mastery;
-
-  shadowy_apparition_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "shadowy_apparition", player, player -> find_class_spell( "Shadowy Apparition" ), SCHOOL_SHADOW ),
-    triggered_shadow_orb_mastery( 0 )
-  {
-    parse_options( NULL, options_str );
-
-    may_crit = false;
-  }
-
-  virtual void init()
-  {
-    priest_spell_t::init();
-
-    stats_t* s = player -> find_stats( "shadowy_apparition_spell" );
-    if ( s )
-      stats -> add_child( s );
-  }
-
-  virtual void schedule_travel_s( action_state_t* s )
-  {
-    priest_spell_t::schedule_travel_s( s );
-
-    triggered_shadow_orb_mastery = trigger_shadowy_apparition( p() );
-  }
-
-  virtual void consume_resource()
-  {
-    priest_spell_t::consume_resource();
-
-    // implement mastery shadow orb restore, after the original resource got consumed,
-    // but directly at spell execution, not when shadowy apparitions reach the target.
-    // tested in mop beta, 02/04/2012 by philoptik@gmail.com
-
-    priest_spell_t::generate_shadow_orb( this, p() -> gains.shadow_orb_mastery_refund, triggered_shadow_orb_mastery );
-
-    triggered_shadow_orb_mastery = 0;
-  }
-
-  virtual double cost() const
-  {
-    return std::max( 1.0, player -> resources.current[ RESOURCE_SHADOW_ORB ] );
   }
 };
 
@@ -3042,11 +3099,11 @@ struct spirit_shell_t : priest_heal_t
 // Priest Character Definition
 // ==========================================================================
 
-// priest_t::shadow_orb_amount ==============================================
+// priest_t::shadowy_recall_chance ==============================================
 
-double priest_t::shadow_orb_amount() const
+double priest_t::shadowy_recall_chance() const
 {
-  return mastery_spells.shadow_orb_power -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
+  return mastery_spells.shadowy_recall -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
 }
 
 // priest_t::primary_role ===================================================
@@ -3138,21 +3195,6 @@ double priest_t::composite_player_multiplier( const school_type_e school, const 
   return m;
 }
 
-// priest_t::composite_player_td_multiplier =================================
-
-double priest_t::composite_player_td_multiplier( const school_type_e school, const action_t* a ) const
-{
-  double player_multiplier = player_t::composite_player_td_multiplier( school, a );
-
-  if ( school == SCHOOL_SHADOW )
-  {
-    // Shadow TD
-    player_multiplier *= 1.0 + shadow_orb_amount();
-  }
-
-  return player_multiplier;
-}
-
 // priest_t::composite_movement_speed =======================================
 
 double priest_t::composite_movement_speed() const
@@ -3195,6 +3237,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_embrace"       ) return new vampiric_embrace_t      ( this, options_str );
 
   // Damage
+  if ( name == "devouring_plague"       ) return new devouring_plague_t      ( this, options_str );
   if ( name == "holy_fire"              ) return new holy_fire_t             ( this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_t             ( this, options_str );
@@ -3212,7 +3255,6 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t   ( this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
-  if ( name == "shadowy_apparition"     ) return new shadowy_apparition_t    ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -3287,10 +3329,8 @@ void priest_t::init_gains()
   gains.mindbender                = get_gain( "mindbender" );
   gains.archangel                 = get_gain( "archangel" );
   gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
-  gains.shadow_orb_swp            = get_gain( "Shadow Orbs from Shadow Word: Pain" );
   gains.shadow_orb_mb             = get_gain( "Shadow Orbs from Mind Blast" );
-  gains.shadow_orb_mastery_refund = get_gain( "Shadow Orbs refunded from Shadow Orb Mastery" );
-  gains.vampiric_touch_health     = get_gain( "Vampiric Touch Health" );
+  gains.devouring_plague_health   = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana       = get_gain( "Vampiric Touch Mana" );
 }
 
@@ -3300,8 +3340,11 @@ void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.sa_shadow_orb_mastery = get_proc( "Shadowy Apparation Shadow Orb Mastery" );
+  procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"      );
   procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction" );
+  procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"     );
+  procs.mind_surge                     = get_proc( "Mind Surge Mind Blast CD Reset" );
+  procs.from_darkness_comes_light      = get_proc( "FDCL Free Mind Spike proc"      );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3342,7 +3385,8 @@ void priest_t::init_rng()
 {
   player_t::init_rng();
 
-  rngs.sa_shadow_orb_mastery = get_rng( "sa_shadow_orb_mastery" );
+  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
+  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
 }
 
 // priest_t::init_spells
@@ -3390,15 +3434,16 @@ void priest_t::init_spells()
   spec.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
 
   // Shadow
+  spec.mind_surge                     = find_specialization_spell( "Mind Surge (NNF)" );
   spec.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   spec.shadowform                     = find_class_spell( "Shadowform" );
-  spec.shadowy_apparition             = find_class_spell( "Shadowy Apparition" );
+  spec.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
   spec.shadowfiend_cooldown_reduction = find_spell( find_class_spell( "Mind Flay" ) -> ok() ? 87100 : 0 );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light        = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.shadow_orb_power     = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.shadowy_recall       = find_mastery_spell( PRIEST_SHADOW );
 
   // Glyphs
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
@@ -3420,7 +3465,6 @@ void priest_t::init_spells()
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
   glyphs.vampiric_touch               = find_glyph_spell( "Glyph of Vampiric Touch" );
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
-  glyphs.shadowy_apparition           = find_glyph_spell( "Glyph of Shadowy Apparition" );
   glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
 
   if ( mastery_spells.echo_of_light -> ok() )
@@ -3428,9 +3472,9 @@ void priest_t::init_spells()
   else
     spells.echo_of_light = NULL;
 
-  if ( spec.shadowy_apparition -> ok() )
+  if ( spec.shadowy_apparitions -> ok() )
   {
-    priest_spell_t::add_more_shadowy_apparitions( this, 15 );
+    priest_spell_t::add_more_shadowy_apparitions( this, spec.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
   // Set Bonuses
@@ -3483,6 +3527,8 @@ void priest_t::init_buffs()
                                            .activated( false );
 
   // Shadow
+  buffs.mind_surge                       = buff_creator_t( this, "mind_surge", spec.mind_surge )
+                                           .duration( spec.mind_surge -> effectN( 1 ).trigger() -> duration() );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -3579,9 +3625,6 @@ void priest_t::init_actions()
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
-
-      if ( find_class_spell( "Shadowy Apparition" ) -> ok() )
-        buffer += "/shadowy_apparition,if=shadow_orb=3";
 
       if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness, Comes Light" ) -> ok() )
         buffer += "/mind_spike,if=buff.surge_of_darkness.react";
@@ -3815,7 +3858,7 @@ void priest_t::reset()
 {
   player_t::reset();
 
-  if ( spec.shadowy_apparition -> ok() )
+  if ( spec.shadowy_apparitions -> ok() )
   {
     while ( spells.apparitions_active.size() )
     {

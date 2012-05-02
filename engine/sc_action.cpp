@@ -340,7 +340,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case A_PERIODIC_DUMMY:
     case A_PERIODIC_TRIGGER_SPELL:
       base_tick_time   = spelleffect_data.period();
-      num_ticks        = ( int ) ( data().duration() / base_tick_time );
+      num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
       break;
     case A_SCHOOL_ABSORB:
       direct_power_mod = spelleffect_data.coeff();
@@ -1030,7 +1030,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
-        if ( ! channeled )
+        // if ( ! channeled )     // Happens with channeled spells too
         {
           // Recasting a dot while it's still ticking gives it an extra tick in total
           dot -> num_ticks++;
