@@ -491,10 +491,8 @@ namespace wild_imp_spells
 
 struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 {
-  int firebolt_count;
-
   firebolt_t( wild_imp_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) ), firebolt_count( 0 )
+    warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
     // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
     if ( p -> owner -> bugs )
@@ -504,36 +502,20 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    warlock_pet_spell_t::execute();
-
-    firebolt_count++;
-  }
-
   virtual void impact_s( action_state_t* s )
   {
     warlock_pet_spell_t::impact_s( s );
 
-    if ( firebolt_count >= 10 )
+    if ( player -> resources.current[ RESOURCE_ENERGY ] == 0 )
     {
       ( ( wild_imp_pet_t* ) player ) -> dismiss();
       return;
     }
   }
 
-  virtual void reset()
-  {
-    warlock_pet_spell_t::reset();
-
-    firebolt_count = 0;
-  }
-
   virtual bool ready()
   {
-    if ( firebolt_count >= 10 ) return false;
-
-    return warlock_pet_spell_t::ready();
+    return spell_t::ready();
   }
 };
 
@@ -765,6 +747,7 @@ timespan_t warlock_pet_t::available() const
     timespan_t::from_seconds( 0.1 )
   );
 }
+
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( main_hand_attack && ! main_hand_attack -> execute_event )
@@ -1053,6 +1036,14 @@ void wild_imp_pet_t::init_base()
 
   action_list_str += "/snapshot_stats";
   action_list_str += "/firebolt";
+
+  resources.base[ RESOURCE_ENERGY ] = 10;
+  base_energy_regen_per_second = 0;
+}
+
+timespan_t wild_imp_pet_t::available() const
+{
+  return timespan_t::from_seconds( 0.1 );
 }
 
 action_t* wild_imp_pet_t::create_action( const std::string& name,

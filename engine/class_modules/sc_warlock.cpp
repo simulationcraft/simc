@@ -418,7 +418,7 @@ struct doom_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> rngs.nightfall -> roll( 0.4 ) && p() -> verify_nightfall() )
+    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.4 ) && p() -> verify_nightfall() )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
@@ -540,7 +540,7 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> rngs.nightfall -> roll( 0.1 ) && p() -> verify_nightfall() )
+    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) && p() -> verify_nightfall() )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
