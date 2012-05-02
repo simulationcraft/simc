@@ -119,7 +119,7 @@ namespace std {using namespace tr1; }
 // Enabled classes
 #define SC_DEATH_KNIGHT 1
 #define SC_DRUID        1
-#define SC_HUNTER       0
+#define SC_HUNTER       1
 #define SC_MAGE         1
 #define SC_MONK         1
 #define SC_PALADIN      1
@@ -3212,7 +3212,6 @@ struct player_t : public noncopyable
 
     void reset();
 
-    void register_callbacks();
     void register_resource_gain_callback( resource_type_e,     action_callback_t* );
     void register_resource_loss_callback( resource_type_e,     action_callback_t* );
     void register_attack_callback       ( int64_t result_mask, action_callback_t* );
@@ -3226,6 +3225,8 @@ struct player_t : public noncopyable
     void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
     void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
   } callbacks;
+
+  virtual void register_callbacks();
 
   // Action Priority List
   std::vector<action_t*>  action_list;

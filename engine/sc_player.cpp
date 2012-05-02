@@ -654,7 +654,7 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> callbacks.register_callbacks();
+    p -> register_callbacks();
   }
 
   return true;
@@ -3899,7 +3899,7 @@ void player_t::dismiss_pet( const std::string& pet_name )
 
 // player_t::register_callbacks =============================================
 
-void player_t::callbacks_t::register_callbacks()
+void player_t::register_callbacks()
 {
 }
 
