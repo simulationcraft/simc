@@ -23,6 +23,7 @@ actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<25&cooldown.tigers_
 actions+=/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/berserking
 actions+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions+=/savage_roar,if=combo_points>=1&buff.savage_roar.remains<=1
 actions+=/ravage,if=buff.t13_4pc_melee.up&buff.t13_4pc_melee.remains<=1
 actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=60
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=60
@@ -32,7 +33,6 @@ actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar
 actions+=/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0
 actions+=/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)
 actions+=/shred,if=position_back&buff.omen_of_clarity.react
-actions+=/savage_roar,if=combo_points>=1&buff.savage_roar.remains<=1
 actions+=/ravage,if=buff.t13_4pc_melee.up&cooldown.tigers_fury.remains=0
 actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1
 actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0
@@ -57,7 +57,6 @@ trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_
 trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd_NoDodge_NoParry_NoBlock
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=50agi_50agi_20agi,enchant=65crit
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
-ranged=ripfang_relic,ilevel=397,quality=epic,stats=153agi_230sta_104crit_99exp,reforge=exp_haste,gems=50agi
 # Gear Summary
 # gear_strength=20
 # gear_agility=7362

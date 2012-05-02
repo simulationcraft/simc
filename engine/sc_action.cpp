@@ -117,6 +117,7 @@ action_t::action_t( action_type_e       ty,
   base_dd_adder                  = 0.0;
   player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
+  base_ta_adder                  = 0.0;
   player_haste                   = 1.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
@@ -661,7 +662,7 @@ double action_t::calculate_tick_damage( result_type_e r, double power, double mu
 
   if ( base_td == 0 && tick_power_mod == 0 ) return 0;
 
-  dmg  = floor( base_td + 0.5 ) + power * tick_power_mod;
+  dmg  = floor( base_td + 0.5 ) + base_ta_adder + power * tick_power_mod;
   dmg *= multiplier;
 
   double init_tick_dmg = dmg;

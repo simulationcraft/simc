@@ -4019,6 +4019,7 @@ struct action_t
   double player_spell_power_multiplier, player_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder, player_dd_adder, target_dd_adder;
+  double base_ta_adder;
   double player_haste;
   double direct_dmg, tick_dmg;
   double snapshot_crit, snapshot_haste, snapshot_mastery;

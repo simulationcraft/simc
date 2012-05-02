@@ -38,7 +38,7 @@ void action_t::release_state( action_state_t* s )
 
 void action_state_t::copy_state( const action_state_t* o )
 {
-  if ( o == 0 ) return;
+  if ( this == o || o == 0 ) return;
 
   action = o -> action; target = o -> target;
   result = o -> result; result_amount = o -> result_amount;
@@ -69,14 +69,16 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
 void action_state_t::debug() const
 {
   log_t::output( action -> sim,
-                 "[NEW] %s %s %s: flags=%#.4x result=%s amount=%.2f "
-                 "haste=%.2f crit=%.2f tgt_crit=%.2f"
+                 "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s amount=%.2f "
+                 "haste=%.2f crit=%.2f tgt_crit=%.2f "
                  "ap=%.0f sp=%.0f "
                  "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
                  action -> player -> name(),
                  action -> name(),
                  target -> name(),
+                 this,
                  action -> snapshot_flags,
+                 action -> update_flags,
                  util::result_type_string( result ), result_amount,
                  haste, crit, target_crit,
                  attack_power, spell_power,
