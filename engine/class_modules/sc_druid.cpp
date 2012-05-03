@@ -3,95 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// ==========================================================================
-// MoP PROGRESS, check every single bit
-// ==========================================================================
-// -- Balance of Power (Passive)
-// -- Barkskin
-// -- Bear Form
-// -- Bear Hug
-// -- Berserk
-// -- Cat Form
-// -- Celestial Alignment
-// -- Celestial Focus (Passive)
-// ++ Eclipse (Passive)
-// -- Enrage
-// -- Entangling Roots
-// -- Euphoria (Passive)
-// -- Faerie Fire
-// -- Feline Grace (Passive)
-// -- Feral Instinct (Passive)
-// -- Ferocious Bite
-// -- Frenzied Regeneration
-// -- Growl
-// -- Healing Touch
-// -- Hurricane
-// -- Innervate
-// -- Ironbark
-// -- Killer Instinct (Passive)
-// -- Lacerate
-// -- Leader of the Pack (Passive)
-// -- Leather Specialization (Passive)
-// -- Lifebloom
-// -- Living Seed (Passive)
-// -- Lunar Shower (Passive)
-// -- Maim
-// -- Malfurion's Gift (Passive)
-// -- Mangle
-// -- Mark of the Wild
-// -- Mastery: Harmony (Passive)
-// -- Mastery: Nature's Guardian (Passive)
-// -- Mastery: Razor Claws (Passive)
-// ++ Mastery: Total Eclipse (Passive)
-// -- Maul
-// -- Meditation (Passive)
-// -- Might of Ursoc
-// ++ Moonfire
-// -- Moonkin Form
-// -- Natural Insight (Passive)
-// -- Nature's Focus (Passive)
-// -- Nourish
-// -- Nurturing Instinct (Passive)
-// -- Omen of Clarity (Passive)
-// -- Owlkin Frenzy (Passive)
-// -- Pounce
-// -- Predatory Swiftness (Passive)
-// -- Primal Fury (Passive)
-// -- Prowl
-// -- Rake
-// -- Ravage
-// -- Rebirth
-// -- Regrowth
-// -- Rejuvenation
-// -- Remove Corruption
-// -- Revitalize (Passive)
-// -- Revive
-// -- Rip
-// -- Savage Defense
-// -- Savage Roar
-// ++ Shooting Stars (Passive)
-// -- Shred
-// -- Skull Bash
-// -- Solar Beam
-// -- Stampeding Roar
-// -- Starfall
-// ++ Starfire
-// ++ Starsurge
-// -- Survival Instincts
-// -- Swift Rejuvenation (Passive)
-// -- Swiftmend
-// -- Swipe
-// -- Symbiosis
-// -- Thick Hide (Passive)
-// -- Thrash
-// -- Tiger's Fury
-// -- Tranquility
-// -- Vengeance (Passive)
-// -- Wild Growth
-// -- Wild Mushroom
-// -- Wild Mushroom: Bloom
-// -- Wild Mushroom: Detonate
-// ++ Wrath
 #include "simulationcraft.hpp"
 
 // ==========================================================================
@@ -317,15 +228,14 @@ struct druid_t : public player_t
     gain_t* primal_fury;
     gain_t* soul_of_the_forest;
     gain_t* tigers_fury;
+    gain_t* eclipse;
 
     // NYI / Needs checking
     gain_t* bear_melee;
-    gain_t* eclipse;
     gain_t* glyph_of_innervate;
     gain_t* glyph_ferocious_bite;
     gain_t* incoming_damage;
     gain_t* mangle;
-    gain_t* moonkin_form;
     gain_t* natural_reaction;
     gain_t* revitalize;
   } gain;
@@ -3155,9 +3065,11 @@ struct incarnation_t : public druid_spell_t
 
 struct innervate_buff_t : public buff_t
 {
-  innervate_buff_t( const buff_creator_t& params ) :
-    buff_t ( params )
-  {}
+  innervate_buff_t( player_t* player ) :
+    buff_t ( buff_creator_t( player, "innervate", player -> find_spell( 29166 ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
@@ -3188,8 +3100,6 @@ struct innervate_buff_t : public buff_t
 struct innervate_t : public druid_spell_t
 {
   int trigger;
-  player_t* innervate_target;
-
   innervate_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "innervate", player, player -> find_class_spell( "Innervate" )  ),
     trigger( 0 )
@@ -3205,8 +3115,8 @@ struct innervate_t : public druid_spell_t
     harmful = false;
 
     // If no target is set, assume we have innervate for ourself
-    innervate_target = target_str.empty() ? player : sim -> find_player( target_str );
-    assert ( innervate_target != 0 );
+    if ( ! target )
+      target = player;
   }
 
   virtual void execute()
@@ -3216,7 +3126,7 @@ struct innervate_t : public druid_spell_t
 
     double gain;
 
-    if ( innervate_target == player )
+    if ( target == player )
     {
       gain = 0.20;
     }
@@ -3225,7 +3135,7 @@ struct innervate_t : public druid_spell_t
       gain = 0.10;
       p -> buff.glyph_of_innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * 0.1 / 10.0 );
     }
-    innervate_target -> buffs.innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * gain / 10.0 );
+    target -> buffs.innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * gain / 10.0 );
   }
 
   virtual bool ready()
@@ -3234,10 +3144,10 @@ struct innervate_t : public druid_spell_t
       return false;
 
     if ( trigger < 0 )
-      return ( innervate_target -> resources.current[ RESOURCE_MANA ] + trigger ) < 0;
+      return ( target -> resources.current[ RESOURCE_MANA ] + trigger ) < 0;
 
-    return ( innervate_target -> resources.max    [ RESOURCE_MANA ] -
-             innervate_target -> resources.current[ RESOURCE_MANA ] ) > trigger;
+    return ( target -> resources.max    [ RESOURCE_MANA ] -
+             target -> resources.current[ RESOURCE_MANA ] ) > trigger;
   }
 };
 
@@ -3913,7 +3823,7 @@ struct symbiosis_t : public druid_spell_t
     base_execute_time = timespan_t::zero();
   }
 };
-
+ 
 // Treants Spell ============================================================
 
 struct treants_spell_t : public druid_spell_t
@@ -3939,7 +3849,7 @@ struct treants_spell_t : public druid_spell_t
     druid_spell_t::execute();
     druid_t* p = player -> cast_druid();
 
-    p -> pet_treants -> summon( timespan_t::from_seconds( 30.0 ) );
+    p -> pet_treants -> summon( p -> talent.force_of_nature -> duration() );
   }
 };
 
@@ -5184,8 +5094,7 @@ void player_t::druid_init( sim_t* sim )
     player_t* p = sim -> actor_list[ i ];
 #if SC_DRUID == 1
     // TODO: Figure this out
-    //p -> buffs.innervate              = new innervate_buff_t( p );
-    p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
+    p -> buffs.innervate              = new innervate_buff_t( p );
 #else
     p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
 #endif // SC_DRUID
