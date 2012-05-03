@@ -774,9 +774,8 @@ public:
 struct priest_procced_mastery_spell_t : public priest_spell_t
 {
   priest_procced_mastery_spell_t( const std::string& n, priest_t* p,
-                                  const spell_data_t* s = spell_data_t::nil(), 
-                                  school_type_e sc = SCHOOL_NONE ) :
-    priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found(), sc )
+                                  const spell_data_t* s = spell_data_t::nil() ) :
+    priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
   {
     background       = true;
     may_crit         = true;
