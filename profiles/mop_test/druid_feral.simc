@@ -12,7 +12,7 @@ spec=feral
 talents=http://www.wowhead.com/talent#druid-001000000100000000
 actions=flask,type=winds
 actions+=/food,type=seafood_magnifique_feast
-actions+=/mark_of_the_wild
+actions+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions+=/cat_form
 actions+=/snapshot_stats
 actions+=/tolvir_potion,if=!in_combat

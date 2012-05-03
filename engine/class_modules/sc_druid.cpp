@@ -152,7 +152,7 @@ void sim_t::register_druid_targetdata( sim_t* sim )
 struct druid_t : public player_t
 {
   // Active
-  heal_t*   active_efflorescence;
+  heal_t*   active_swiftmend_aoe;
   heal_t*   active_living_seed;
 
   // Pets
@@ -344,7 +344,7 @@ struct druid_t : public player_t
     const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Lacerate mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
-    const spell_data_t* primal_fury; // Primal fury mana gain
+    const spell_data_t* primal_fury; // Primal fury rage gain
     const spell_data_t* regrowth; // Old GoRegrowth
     const spell_data_t* survival_instincts; // Survival instincts aura
     const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
@@ -407,7 +407,7 @@ struct druid_t : public player_t
     uptime( uptimes_t() )
 
   {
-    active_efflorescence      = 0;
+    active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
 
     pet_treants         = 0;
@@ -417,6 +417,7 @@ struct druid_t : public player_t
 
     cooldown.lotp           = get_cooldown( "lotp"           );
     cooldown.mangle_bear    = get_cooldown( "mangle_bear"    );
+    cooldown.revitalize     = get_cooldown( "revitalize"     );
     cooldown.starfall       = get_cooldown( "starfall"       );
     cooldown.starsurge      = get_cooldown( "starsurge"      );
     cooldown.swiftmend      = get_cooldown( "swiftmend"      );
@@ -676,6 +677,7 @@ struct druid_bear_attack_t : public melee_attack_t
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
+    stateless     = true;
   }
 
   druid_bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -688,14 +690,13 @@ struct druid_bear_attack_t : public melee_attack_t
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
+    stateless     = true;
   }
 
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual double cost() const;
-  virtual void   execute();
-  virtual void   consume_resource();
+  virtual void   impact_s( action_state_t* );
 };
 
 // ==========================================================================
@@ -1043,11 +1044,11 @@ static void trigger_swiftmend( druid_heal_t* a )
     }
   };
 
-  if ( ! p -> active_efflorescence ) p -> active_efflorescence = new swiftmend_aoe_heal_t( p );
+  if ( ! p -> active_swiftmend_aoe ) p -> active_swiftmend_aoe = new swiftmend_aoe_heal_t( p );
 
   double heal = a -> direct_dmg * 0.12; // Hardcoded into tooltip now, sigh, could use the triggered spell though
-  p -> active_efflorescence -> base_td = heal;
-  p -> active_efflorescence -> execute();
+  p -> active_swiftmend_aoe -> base_td = heal;
+  p -> active_swiftmend_aoe -> execute();
 }
 
 // trigger_lifebloom_refresh ==================================================
@@ -1108,30 +1109,6 @@ static void trigger_living_seed( druid_heal_t* a )
 
 // trigger_lotp =============================================================
 
-static void trigger_lotp( action_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  if ( p -> cooldown.lotp -> remains() > timespan_t::zero() )
-    return;
-
-  // Has to do damage and can't be a proc
-  if ( ( a -> direct_dmg <= 0 && a -> tick_dmg <= 0 ) || a -> proc )
-    return;
-
-  p -> resource_gain( RESOURCE_HEALTH,
-                      p -> resources.max[ RESOURCE_HEALTH ] *
-                      p -> spell.leader_of_the_pack -> effectN( 2 ).percent(),
-                      p -> gain.lotp_health );
-
-  p -> resource_gain( RESOURCE_MANA,
-                      p -> resources.max[ RESOURCE_MANA ] *
-                      p -> specialization.leader_of_the_pack -> effectN( 1 ).percent(),
-                      p -> gain.lotp_mana );
-
-  p -> cooldown.lotp -> start( timespan_t::from_seconds( 6.0 ) );
-};
-
 static void trigger_lotp( action_state_t* s )
 {
   druid_t* p = s -> action -> player -> cast_druid();
@@ -1140,7 +1117,7 @@ static void trigger_lotp( action_state_t* s )
     return;
 
   // Has to do damage and can't be a proc
-  if ( ( s -> result_amount ) || s -> action -> proc )
+  if ( s -> result_amount || s -> action -> proc )
     return;
 
   p -> resource_gain( RESOURCE_HEALTH,
@@ -1165,22 +1142,6 @@ static void trigger_omen_of_clarity( action_t* a )
   if ( a -> proc ) return;
 
   p -> buff.omen_of_clarity -> trigger();
-}
-
-// trigger_primal_fury (Bear) ===============================================
-
-static void trigger_primal_fury( druid_bear_attack_t* a )
-{
-  druid_t* p = a -> player -> cast_druid();
-
-  // Has to do damage and can't be a proc
-  if ( ( a -> direct_dmg <= 0 && a -> tick_dmg <= 0 ) || a -> proc )
-    return;
-
-  p -> resource_gain( RESOURCE_RAGE,
-                      p -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                      p -> gain.primal_fury );
-  p -> proc.primal_fury -> occur();
 }
 
 // trigger_rage_gain ========================================================
@@ -1906,53 +1867,14 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-// druid_bear_attack_t::cost ================================================
+// druid_bear_attack_t::impact_s ============================================
 
-double druid_bear_attack_t::cost() const
+void druid_bear_attack_t::impact_s( action_state_t* state )
 {
-  druid_t* p = player -> cast_druid();
+  melee_attack_t::impact_s( state );
 
-  double c = melee_attack_t::cost();
-
-  if ( harmful && p -> buff.omen_of_clarity -> check() )
-    return 0;
-
-  return c;
-}
-
-// druid_bear_attack_t::consume_resource ====================================
-
-void druid_bear_attack_t::consume_resource()
-{
-  melee_attack_t::consume_resource();
-  druid_t* p = player -> cast_druid();
-
-  if ( harmful && p -> buff.omen_of_clarity -> up() )
-  {
-    // Treat the savings like a rage gain.
-    double amount = melee_attack_t::cost();
-    if ( amount > 0 )
-    {
-      p -> gain.omen_of_clarity -> add( RESOURCE_RAGE, amount );
-      p -> buff.omen_of_clarity -> expire();
-    }
-  }
-}
-
-// druid_bear_attack_t::execute =============================================
-
-void druid_bear_attack_t::execute()
-{
-  melee_attack_t::execute();
-
-  if ( result_is_hit() )
-  {
-    if ( result == RESULT_CRIT )
-    {
-      trigger_lotp( this );
-      trigger_primal_fury( this );
-    }
-  }
+  if ( state -> result == RESULT_CRIT )
+      trigger_lotp( state );
 }
 
 // Bear Melee Attack ========================================================
@@ -1960,9 +1882,8 @@ void druid_bear_attack_t::execute()
 struct bear_melee_t : public druid_bear_attack_t
 {
   bear_melee_t( druid_t* player ) :
-    druid_bear_attack_t( "bear_melee", player, spell_data_t::nil(), "" )
+    druid_bear_attack_t( "bear_melee", player )
   {
-    school = SCHOOL_PHYSICAL;
     special     = false;
     may_glance  = true;
     background  = true;
@@ -1978,15 +1899,20 @@ struct bear_melee_t : public druid_bear_attack_t
     return druid_bear_attack_t::execute_time();
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_bear_attack_t::execute();
+    druid_bear_attack_t::impact_s( state );
 
-    if ( result != RESULT_MISS )
+    if ( state -> result != RESULT_MISS )
       trigger_rage_gain( this );
 
-    if ( result_is_hit() )
-      trigger_omen_of_clarity( this );
+    if ( state -> result == RESULT_CRIT )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                          p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                          p() -> gain.primal_fury );
+      p() -> proc.primal_fury -> occur();
+    }
   }
 };
 
@@ -2024,38 +1950,41 @@ struct lacerate_t : public druid_bear_attack_t
   lacerate_t( druid_t* p, const std::string& options_str ) :
     druid_bear_attack_t( p, p -> find_class_spell( "Lacerate" ), options_str )
   {
-    direct_power_mod     = 0.386;
-    tick_power_mod       = 0.0516;
+    direct_power_mod     = 0.822;
+    tick_power_mod       = 0.0682;
     dot_behavior         = DOT_REFRESH;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_bear_attack_t::execute();
-    druid_t* p = player -> cast_druid();
+    druid_bear_attack_t::impact_s( state );
 
-    if ( result_is_hit() )
-    {
-      p -> buff.lacerate -> trigger();
-      base_td_multiplier  = p -> buff.lacerate -> current_stack;
-    }
+    if ( result_is_hit( state -> result ) )
+      p() -> buff.lacerate -> trigger();
+  }
+  
+  virtual double action_ta_multiplier() const
+  {
+    double tm = druid_bear_attack_t::action_ta_multiplier();
+    
+    tm *= 1.0 + p() -> buff.lacerate -> check();
+    
+    return tm;
   }
 
   virtual void tick( dot_t* d )
   {
     druid_bear_attack_t::tick( d );
-    druid_t* p = player -> cast_druid();
 
-    if ( p -> rng.mangle -> roll( p -> spell.mangle -> effectN( 1 ).percent() ) )
-      p -> cooldown.mangle_bear -> reset();
+    if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
+      p() -> cooldown.mangle_bear -> reset();
   }
 
   virtual void last_tick( dot_t* d )
   {
     druid_bear_attack_t::last_tick( d );
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.lacerate -> expire();
+    p() -> buff.lacerate -> expire();
   }
 };
 
@@ -2079,8 +2008,22 @@ struct mangle_bear_t : public druid_bear_attack_t
       cooldown -> reset();
 
     p() -> resource_gain( RESOURCE_RAGE,
-                        data().effectN( 3 ).resource( RESOURCE_RAGE ),
+                        data().effectN( 3 ).resource( RESOURCE_RAGE ) + 
+                        p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
                         p() -> gain.mangle );
+  }
+  
+  virtual void impact_s( action_state_t* state )
+  {
+    druid_bear_attack_t::impact_s( state );
+    
+    if ( state -> result == RESULT_CRIT )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                          p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                          p() -> gain.primal_fury );
+      p() -> proc.primal_fury -> occur();
+    }
   }
 };
 
@@ -2097,12 +2040,14 @@ struct maul_t : public druid_bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    druid_bear_attack_t::target_debuff( t, dtype );
+    double tm = druid_bear_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
+      tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent();
+    
+    return tm;
   }
 };
 
@@ -2140,38 +2085,37 @@ struct swipe_bear_t : public druid_bear_attack_t
     weapon_multiplier = 0;
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    druid_bear_attack_t::target_debuff( t, dtype );
+    double tm = druid_bear_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
-      target_multiplier *= 1.0 + data().effectN( 2 ).percent();
+      tm *= 1.0 + data().effectN( 2 ).percent();
+    
+    return tm;
   }
 };
 
 // Thrash ===================================================================
 
-struct thrash_t : public druid_bear_attack_t
+struct thrash_bear_t : public druid_bear_attack_t
 {
-  thrash_t( druid_t* player, const std::string& options_str ) :
-    druid_bear_attack_t( player, player -> find_spell( 77758 ), options_str )
+  thrash_bear_t( druid_t* player, const std::string& options_str ) :
+    druid_bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = 0.172;
-    tick_power_mod    = 0.0585;
+    direct_power_mod  = 0.203;
+    tick_power_mod    = 0.0936;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* state )
   {
-    druid_bear_attack_t::impact( t, impact_result, travel_dmg );
+    druid_bear_attack_t::impact_s( state );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      if ( ! sim -> overrides.weakened_blows )
-        t -> debuffs.weakened_blows -> trigger();
-    }
+    if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
+        state -> target -> debuffs.weakened_blows -> trigger();
   }
   
   virtual void tick( dot_t* d )
@@ -3852,26 +3796,6 @@ struct treants_spell_t : public druid_spell_t
   }
 };
 
-// Tree of Life =============================================================
-
-struct tree_of_life_t : public druid_spell_t
-{
-  // TODO: Only available with the right specialization + talent combo
-  tree_of_life_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "tree_of_life", player, player -> find_class_spell( "Incarnation: Tree of Life" ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
-
-    p -> buff.tree_of_life -> trigger( 1, p -> dbc.spell( 5420 ) -> effectN( 1 ).percent() );
-  }
-};
-
 // Typhoon ==================================================================
 
 struct typhoon_t : public druid_spell_t
@@ -4078,9 +4002,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
-  if ( name == "thrash"                 ) return new                 thrash_t( this, options_str );
+  if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
   if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
-  if ( name == "tree_of_life"           ) return new           tree_of_life_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
@@ -5045,16 +4968,6 @@ double druid_t::assess_damage( double        amount,
 
   // Call here to benefit from -10% physical damage before SD is taken into account
   amount = player_t::assess_damage( amount, school, dtype, result, action );
-
-  if ( school == SCHOOL_PHYSICAL && buff.savage_defense -> up() )
-  {
-    amount -= buff.savage_defense -> value();
-
-    if ( amount < 0 )
-      amount = 0;
-
-    buff.savage_defense -> expire();
-  }
 
   return amount;
 }
