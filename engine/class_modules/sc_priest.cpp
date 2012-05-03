@@ -767,6 +767,42 @@ public:
   static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
 };
 
+struct priest_procced_mastery_spell_t : public priest_spell_t
+{
+  priest_procced_mastery_spell_t( const std::string& n, priest_t* p,
+                                  const spell_data_t* s = spell_data_t::nil(), 
+                                  school_type_e sc = SCHOOL_NONE ) :
+    priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found(), sc )
+  {
+    background       = true;
+    may_crit         = true;
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    p() -> procs.mastery_extra_tick -> occur();
+  }
+
+  virtual void assess_damage( player_t*     t,
+                              double        amount,
+                              dmg_type_e    type,
+                              result_type_e result )
+  {
+    priest_spell_t::assess_damage( t, amount, type, result );
+    if ( amount > 0 )
+    {
+      if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
+    }
+  }
+};
+
 // ==========================================================================
 // Pet Lightwell
 // ==========================================================================
@@ -1516,39 +1552,38 @@ struct mind_blast_t : public priest_spell_t
   }
 };
 
+// Mind Flay Mastery Proc ===========================================
+
+struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
+{
+  mind_flay_mastery_t( priest_t* p ) :
+    priest_procced_mastery_spell_t( "mind_flay_mastery", p, 
+      p -> find_class_spell( "Mind Flay" ) -> ok() ? p -> find_spell( 124468 ) : spell_data_t::not_found() )
+  {
+  }
+};
+
 // Mind Flay Spell ==========================================================
 
 struct mind_flay_t : public priest_spell_t
 {
-  timespan_t mb_wait;
-  int    cut_for_mb;
-  int    no_dmg;
+  mind_flay_mastery_t* proc_spell;
 
   mind_flay_t( priest_t* p, const std::string& options_str,
                const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p -> find_class_spell( "Mind Flay" ) ), mb_wait( timespan_t::zero() ), cut_for_mb( 0 ), no_dmg( 0 )
+    priest_spell_t( name, p, p -> find_class_spell( "Mind Flay" ) ),
+    proc_spell( 0 )
   {
-    option_t options[] =
-    {
-      { "cut_for_mb",  OPT_BOOL, &cut_for_mb  },
-      { "mb_wait",     OPT_TIMESPAN,  &mb_wait     },
-      { "no_dmg",      OPT_BOOL, &no_dmg      },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
-  }
 
-  virtual void execute()
-  {
-    if ( cut_for_mb )
-      if ( p() -> cooldowns.mind_blast -> remains() <= ( 2 * base_tick_time * haste() ) )
-        num_ticks = 2;
-
-    priest_spell_t::execute();
+    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new mind_flay_mastery_t( p );
+    }
   }
 
   virtual double action_multiplier() const
@@ -1561,27 +1596,6 @@ struct mind_flay_t : public priest_spell_t
     }
 
     return m;
-  }
-
-  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
-  {
-    if ( no_dmg )
-      return 0.0;
-
-    return priest_spell_t::calculate_tick_damage( r, power, multiplier );
-  }
-
-  virtual bool ready()
-  {
-    // If this option is set (with a value in seconds), don't cast Mind Flay if Mind Blast
-    // is about to come off it's cooldown.
-    if ( mb_wait != timespan_t::zero() )
-    {
-      if ( p() -> cooldowns.mind_blast -> remains() < mb_wait )
-        return false;
-    }
-
-    return priest_spell_t::ready();
   }
 
   virtual void tick( dot_t* d )
@@ -1599,6 +1613,10 @@ struct mind_flay_t : public priest_spell_t
       {
         p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
       }
+    }
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
     }
   }
 };
@@ -1689,6 +1707,17 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
+// Mind Sear Mastery Proc ===========================================
+
+struct mind_sear_mastery_t : public priest_procced_mastery_spell_t
+{
+  mind_sear_mastery_t( priest_t* p ) :
+    priest_procced_mastery_spell_t( "mind_sear_mastery", p, 
+      p -> find_class_spell( "Mind Sear" ) -> ok() ? p -> find_spell( 124469 ) : spell_data_t::not_found() )
+  {
+  }
+};
+
 // Mind Sear Spell ==========================================================
 
 struct mind_sear_tick_t : public priest_spell_t
@@ -1701,22 +1730,37 @@ struct mind_sear_tick_t : public priest_spell_t
     direct_tick = true;
     aoe         = -1;
   }
+
+  virtual void assess_damage( player_t*     t,
+                              double        amount,
+                              dmg_type_e    type,
+                              result_type_e result )
+  {
+    priest_spell_t::assess_damage( t, amount, type, result );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
+  }
 };
 
 struct mind_sear_t : public priest_spell_t
 {
   mind_sear_tick_t* mind_sear_tick;
+  mind_sear_mastery_t* proc_spell;
 
-  mind_sear_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "mind_sear", player, player -> find_class_spell( "Mind Sear" ) ),
-    mind_sear_tick( 0 )
+  mind_sear_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "mind_sear", p, p -> find_class_spell( "Mind Sear" ) ),
+    mind_sear_tick( 0 ), proc_spell( 0 )
   {
     parse_options( NULL, options_str );
 
     channeled = true;
     may_crit  = false;
 
-    mind_sear_tick = new mind_sear_tick_t( player );
+    mind_sear_tick = new mind_sear_tick_t( p );
+
+    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new mind_sear_mastery_t( p );
+    }
   }
 
   virtual void init()
@@ -1730,6 +1774,11 @@ struct mind_sear_t : public priest_spell_t
   {
     if ( mind_sear_tick )
       mind_sear_tick -> execute();
+
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
+    }
 
     stats -> add_tick( d -> time_to_tick );
   }
@@ -1827,16 +1876,29 @@ struct shadow_word_death_t : public priest_spell_t
   }
 };
 
+// Devouring Plague Mastery Proc ===========================================
+
+struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
+{
+  devouring_plague_mastery_t( priest_t* p ) :
+    priest_procced_mastery_spell_t( "devouring_plague_mastery", p, 
+      p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() )
+  {
+  }
+};
+
+
 // Devouring Plague Spell ===================================================
 
 struct devouring_plague_t : public priest_spell_t
 {
   const spell_data_t* burst_spell;
   const spell_data_t* tick_spell;
+  devouring_plague_mastery_t* proc_spell;
 
   devouring_plague_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
-    burst_spell( 0 ), tick_spell( 0 )
+    burst_spell( 0 ), tick_spell( 0 ), proc_spell( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1856,6 +1918,11 @@ struct devouring_plague_t : public priest_spell_t
       base_td_init = base_td = base_dd_min;
       tick_power_mod = direct_power_mod;
       parse_effect_data( burst_spell -> effectN( 1 ) );
+    }
+
+    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new devouring_plague_mastery_t( p );
     }
   }
 
@@ -1909,25 +1976,42 @@ struct devouring_plague_t : public priest_spell_t
 
     priest_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      double m = player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
-      player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
-    }
-
     num_ticks = nt;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
+
+#if 0  // BUG 15657: Doesn't actually proc.
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
+    }
+#endif
   }
 };
 
 // Shadow Word: Pain Mastery Proc ===========================================
 
+struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
+{
+  shadow_word_pain_mastery_t( priest_t* p ) :
+    priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p, 
+      p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
+  {
+  }
+};
 
 // Shadow Word Pain Spell ===================================================
 
 struct shadow_word_pain_t : public priest_spell_t
 {
+  shadow_word_pain_mastery_t* proc_spell;
+
   shadow_word_pain_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_pain", p, p -> find_class_spell( "Shadow Word: Pain" ) )
+    priest_spell_t( "shadow_word_pain", p, p -> find_class_spell( "Shadow Word: Pain" ) ),
+    proc_spell( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1935,6 +2019,11 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_zero  = true;
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+
+    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new shadow_word_pain_mastery_t( p );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -1944,6 +2033,10 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( ( tick_dmg > 0 ) && ( p() -> spec.shadowy_apparitions -> ok() ) )
     {
       trigger_shadowy_apparition( d );
+    }
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
     }
   }
 };
@@ -1976,15 +2069,41 @@ struct vampiric_embrace_t : public priest_spell_t
   }
 };
 
+// Vampiric Touch Mastery Proc ===========================================
+
+struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
+{
+  vampiric_touch_mastery_t( priest_t* p ) :
+    priest_procced_mastery_spell_t( "vampiric_touch_mastery", p, 
+      p -> find_class_spell( "Vampiric Touch" ) -> ok() ? p -> find_spell( 124465 ) : spell_data_t::not_found() )
+  {
+  }
+
+  virtual void execute()
+  {
+    priest_procced_mastery_spell_t::execute();
+
+    double m = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
+    player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mastery_mana, this );
+  }
+};
+
 // Vampiric Touch Spell =====================================================
 
 struct vampiric_touch_t : public priest_spell_t
 {
-  vampiric_touch_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "vampiric_touch", player, player -> find_class_spell( "Vampiric Touch" ) )
+  vampiric_touch_mastery_t* proc_spell;
+
+  vampiric_touch_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "vampiric_touch", p, p -> find_class_spell( "Vampiric Touch" ) ),
+    proc_spell( 0 )
   {
     parse_options( NULL, options_str );
     may_crit   = false;
+    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new vampiric_touch_mastery_t( p );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -2009,6 +2128,11 @@ struct vampiric_touch_t : public priest_spell_t
         p() -> cooldowns.mind_blast -> reset();
         p() -> procs.mind_surge -> occur();
       }
+    }
+
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
     }
 
     /* FIX-ME: Make sure this is still the case when MoP goes live */
@@ -3324,14 +3448,15 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.dispersion                = get_gain( "dispersion" );
-  gains.shadowfiend               = get_gain( "shadowfiend" );
-  gains.mindbender                = get_gain( "mindbender" );
-  gains.archangel                 = get_gain( "archangel" );
-  gains.hymn_of_hope              = get_gain( "hymn_of_hope" );
-  gains.shadow_orb_mb             = get_gain( "Shadow Orbs from Mind Blast" );
-  gains.devouring_plague_health   = get_gain( "Devouring Plague Health" );
-  gains.vampiric_touch_mana       = get_gain( "Vampiric Touch Mana" );
+  gains.dispersion                  = get_gain( "dispersion" );
+  gains.shadowfiend                 = get_gain( "shadowfiend" );
+  gains.mindbender                  = get_gain( "mindbender" );
+  gains.archangel                   = get_gain( "archangel" );
+  gains.hymn_of_hope                = get_gain( "hymn_of_hope" );
+  gains.shadow_orb_mb               = get_gain( "Shadow Orbs from Mind Blast" );
+  gains.devouring_plague_health     = get_gain( "Devouring Plague Health" );
+  gains.vampiric_touch_mana         = get_gain( "Vampiric Touch Mana" );
+  gains.vampiric_touch_mastery_mana = get_gain( "Vampiric Touch Mastery Mana" );
 }
 
 // priest_t::init_procs. =====================================================
@@ -3609,18 +3734,26 @@ void priest_t::init_actions()
         buffer += "/vampiric_embrace";
       */
 
+      if ( find_class_spell( "Devouring Plague" ) -> ok() )
+        buffer += "/devouring_plague,if=shadow_orb=3";
+
       if ( find_talent_spell( "Archangel" ) -> ok() )
         buffer += "/archangel";
 
-      if ( find_class_spell( "Mind Blast" ) -> ok() && find_class_spell( "Mind Spike" ) -> ok() )
-        buffer += "/mind_blast,if=buff.mind_spike.react>=1";
+      if ( find_class_spell( "Mind Blast" ) -> ok() )
+        buffer += "/mind_blast";
 
-
-      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+      if ( set_bonus.tier13_2pc_caster() )
       {
-        buffer += "/shadow_word_death,if=target.health.pct<=20";
-        if ( find_talent_spell( "Divine Insight" ) -> ok() )
-          buffer += "|buff.shadow_of_death.react";
+        if ( find_class_spell( "Mind Blast" ) -> ok() && find_class_spell( "Mind Spike" ) -> ok() )
+          buffer += ",if=buff.mind_spike.react>=1";
+
+        if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+        {
+          buffer += "/shadow_word_death,if=target.health.pct<=20";
+          if ( find_talent_spell( "Divine Insight" ) -> ok() )
+            buffer += "|buff.shadow_of_death.react";
+        }
       }
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
@@ -3636,6 +3769,16 @@ void priest_t::init_actions()
 
       if ( find_class_spell( "Vampiric Touch" ) -> ok() )
         buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
+
+      if ( ! set_bonus.tier13_2pc_caster() )
+      {
+        if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+        {
+          buffer += "/shadow_word_death,if=target.health.pct<=20";
+          if ( find_talent_spell( "Divine Insight" ) -> ok() )
+            buffer += "|buff.shadow_of_death.react";
+        }
+      }
 
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
@@ -3783,7 +3926,6 @@ void priest_t::init_actions()
       if ( race == RACE_BLOOD_ELF )                      list_default += "/arcane_torrent,if=mana_pct<=90";
                                                          list_default += "/holy_fire";
                                                          list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
-                                                         list_default += "/mind_blast";
                                                          list_default += "/smite";
       break;
     }

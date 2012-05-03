@@ -822,7 +822,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
 {
-  return owner -> current.spell_hit + owner -> composite_attack_expertise();
+  return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); 
 }
 
 // ==========================================================================

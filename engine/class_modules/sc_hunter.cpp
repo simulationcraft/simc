@@ -3628,7 +3628,7 @@ void hunter_t::init_buffs()
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( talents.the_beast_within -> ok() );
-  buffs.bombardment                 = buff_creator_t( this, talents.bombardment -> ok() == 2 ? 35110 : talents.bombardment -> ok() == 1 ? 35104 : 0, "bombardment" );
+  buffs.bombardment                 = buff_creator_t( this, talents.bombardment -> ok() ? 35104 : 0, "bombardment" );
   buffs.call_of_the_wild            = buff_creator_t( this, 53434, "call_of_the_wild" );
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( talents.cobra_strikes -> proc_chance() );
   buffs.culling_the_herd            = buff_creator_t( this, 70893, "culling_the_herd" );
@@ -3640,7 +3640,7 @@ void hunter_t::init_buffs()
   if ( bugs ) buffs.lock_and_load -> cooldown -> duration = timespan_t::from_seconds( 10.0 ); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( talents.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
-  buffs.sniper_training             = buff_creator_t( this, talents.sniper_training -> ok() == 3 ? 64420 : talents.sniper_training -> ok() == 2 ? 64419 : talents.sniper_training -> ok() == 1 ? 64418 : 0, "sniper_training" ).chance( talents.sniper_training -> ok() );
+  buffs.sniper_training             = buff_creator_t( this, talents.sniper_training -> ok() ? 64418 : 0, "sniper_training" ).chance( talents.sniper_training -> ok() );
 
   buffs.rapid_fire                  = buff_creator_t( this, 3045, "rapid_fire" );
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
@@ -4098,10 +4098,10 @@ void hunter_t::copy_from( player_t* source )
 
 // hunter_t::armory_extensions ==============================================
 
-void hunter_t::armory_extensions( const std::string& region,
-                                  const std::string& server,
-                                  const std::string& character,
-                                  cache::behavior_e  caching )
+void hunter_t::armory_extensions( const std::string& /* region */,
+                                  const std::string& /* server */,
+                                  const std::string& /* character */,
+                                  cache::behavior_e  /* caching */ )
 {
 #if 0
   // Pet support

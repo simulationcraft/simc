@@ -152,6 +152,7 @@ struct priest_t : public player_t
     gain_t* shadow_orb_mb;
     gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
+    gain_t* vampiric_touch_mastery_mana;
   } gains;
 
   // Benefits
@@ -315,7 +316,7 @@ public:
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
   virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> current.spell_hit + owner -> composite_attack_expertise(); }
+  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
   virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   priest_t* o() const

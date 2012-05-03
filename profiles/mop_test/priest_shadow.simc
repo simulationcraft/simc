@@ -23,7 +23,6 @@ actions+=/devouring_plague,if=shadow_orb=3
 actions+=/mind_blast,if=buff.mind_spike.react>=1
 actions+=/shadow_word_death,if=target.health.pct<=20|buff.shadow_of_death.react
 actions+=/mind_blast
-actions+=/devouring_plague,if=shadow_orb=3
 actions+=/berserking
 actions+=/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react
 actions+=/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react
@@ -52,7 +51,7 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_
 # gear_agility=20
 # gear_stamina=7944
 # gear_intellect=7089
-# gear_spirit=1222
+# gear_spirit=1221
 # gear_spell_power=2786
 # gear_hit_rating=314
 # gear_crit_rating=1316
