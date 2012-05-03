@@ -1321,8 +1321,6 @@ void action_t::init()
 
   rng_result = player -> get_rng( name_str + "_result" );
 
-  stats -> school      = school;
-
   if ( ! sync_str.empty() )
   {
     sync_action = player -> find_action( sync_str );
@@ -1357,6 +1355,8 @@ void action_t::init()
 
     background = true;
   }
+
+  stats -> school      = school;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
