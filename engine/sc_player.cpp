@@ -4395,6 +4395,20 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   return a;
 }
 
+// Wait For Cooldown Action =================================================
+
+wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :
+  wait_action_base_t( player, "wait_for_" + cd_name ),
+  wait_cd( player -> get_cooldown( cd_name ) ), a( player -> find_action( cd_name ) )
+{
+  assert( a );
+}
+
+timespan_t wait_for_cooldown_t::execute_time() const
+{ assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
+
+namespace special_actions {
+
 // Chosen Movement Actions ==================================================
 
 struct start_moving_t : public action_t
@@ -4861,18 +4875,6 @@ struct wait_until_ready_t : public wait_fixed_t
   }
 };
 
-// Wait For Cooldown Action =================================================
-
-wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :
-  wait_action_base_t( player, "wait_for_" + cd_name ),
-  wait_cd( player -> get_cooldown( cd_name ) ), a( player -> find_action( cd_name ) )
-{
-  assert( a );
-}
-
-timespan_t wait_for_cooldown_t::execute_time() const
-{ assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
-
 // Use Item Action ==========================================================
 
 struct use_item_t : public action_t
@@ -5117,11 +5119,14 @@ struct cancel_buff_t : public action_t
   }
 };
 
+} // END specil_actions NAMESPACE
+
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  using namespace special_actions;
   if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
   if ( name == "berserking"       ) return new       berserking_t( this, options_str );
   if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );

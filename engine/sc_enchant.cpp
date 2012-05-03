@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+namespace {
+
 struct enchant_data_t
 {
   const char* id;
@@ -657,9 +659,13 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
   }
 };
 
+} // END ANONYMOUS NAMESPACE
+
+namespace special_enchants {
+
 // register_synapse_springs =================================================
 
-static void register_synapse_springs( item_t* item )
+void register_synapse_springs( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -690,74 +696,28 @@ static void register_synapse_springs( item_t* item )
   item -> use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
-// ==========================================================================
-// Enchant
-// ==========================================================================
-
-// enchant_t::init ==========================================================
-
-void enchant_t::init( player_t* p )
+void register_avalanche( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
-  if ( p -> is_pet() ) return;
-
-  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
-  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
-  std::string& ranged_enchant = p -> items[ SLOT_RANGED    ].encoded_enchant_str;
-
-  weapon_t* mhw = &( p -> main_hand_weapon );
-  weapon_t* ohw = &( p -> off_hand_weapon );
-  weapon_t* rw  = &( p -> ranged_weapon );
-
   if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
   {
-    // Reference: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p4/#post1832162
     if ( mh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, mhw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_mh", p, mhw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "avalanche" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_w", p, ohw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_oh", p, ohw, 1, SCHOOL_NATURE, 500, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
+    // Reference: http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p4/#post1832162
     action_callback_t* cb = new weapon_discharge_proc_callback_t( "avalanche_s", p, 0, 1, SCHOOL_NATURE, 500, 0.25/*FIXED*/, 0, timespan_t::from_seconds( 10.0 )/*CD*/ );
     p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
   }
-  if ( mh_enchant == "berserking" )
-  {
-    stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "berserking_mh" )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15 ) )
-                          .cd( timespan_t::zero() )
-                          .chance( 0 )
-                          .activated( false ) )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( 400.0 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
-  }
-  if ( oh_enchant == "berserking" )
-  {
-    stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "berserking_oh" )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15 ) )
-                          .cd( timespan_t::zero() )
-                          .chance( 0 )
-                          .activated( false ) )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( 400.0 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
-  }
-  if ( mh_enchant == "elemental_slayer" )
-  {
-    // TO-DO
-  }
-  if ( oh_enchant == "elemental_slayer" )
-  {
-    // TO-DO
-  }
+}
+
+void register_executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+{
   if ( mh_enchant == "executioner" || oh_enchant == "executioner" )
   {
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
@@ -781,109 +741,111 @@ void enchant_t::init( player_t* p )
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
     }
   }
+}
+
+void register_hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+{
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
-  {
-    stat_buff_t *mh_buff=0, *oh_buff=0;
-    if ( mh_enchant == "hurricane" )
     {
-      mh_buff = stat_buff_creator_t(
-                  buff_creator_t( p, "hurricane_mh" )
-                  .max_stack( 1 )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .cd( timespan_t::zero() )
-                  .chance( 0 )
-                  .activated( false ) )
-                .stat( STAT_HASTE_RATING )
-                .amount( 450.0 );
-      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
-      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
-    }
-    if ( oh_enchant == "hurricane" )
-    {
-      oh_buff = stat_buff_creator_t(
-                  buff_creator_t( p, "hurricane_oh" )
-                  .max_stack( 1 )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .cd( timespan_t::zero() )
-                  .chance( 0 )
-                  .activated( false ) )
-                .stat( STAT_HASTE_RATING )
-                .amount( 450.0 );
-      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
-      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
-    }
-    // Custom proc is required for spell damage procs.
-    // If MH buff is up, then refresh it, else
-    // IF OH buff is up, then refresh it, else
-    // Trigger a new buff not associated with either MH or OH
-    // This means that it is possible to have three stacks
-    struct hurricane_spell_proc_callback_t : public action_callback_t
-    {
-      buff_t *mh_buff, *oh_buff, *s_buff;
-      hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
-        action_callback_t( p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
+      stat_buff_t *mh_buff=0, *oh_buff=0;
+      if ( mh_enchant == "hurricane" )
       {
+        mh_buff = stat_buff_creator_t(
+                    buff_creator_t( p, "hurricane_mh" )
+                    .max_stack( 1 )
+                    .duration( timespan_t::from_seconds( 12 ) )
+                    .cd( timespan_t::zero() )
+                    .chance( 0 )
+                    .activated( false ) )
+                  .stat( STAT_HASTE_RATING )
+                  .amount( 450.0 );
+        p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
+        p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
       }
-      virtual void trigger( action_t* /* a */, void* /* call_data */ )
+      if ( oh_enchant == "hurricane" )
       {
-        if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
-        if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
-        if ( mh_buff && mh_buff -> check() )
-        {
-          mh_buff -> trigger();
-          s_buff -> cooldown -> start();
-        }
-        else if ( oh_buff && oh_buff -> check() )
-        {
-          oh_buff -> trigger();
-          s_buff -> cooldown -> start();
-        }
-        else s_buff -> trigger();
+        oh_buff = stat_buff_creator_t(
+                    buff_creator_t( p, "hurricane_oh" )
+                    .max_stack( 1 )
+                    .duration( timespan_t::from_seconds( 12 ) )
+                    .cd( timespan_t::zero() )
+                    .chance( 0 )
+                    .activated( false ) )
+                  .stat( STAT_HASTE_RATING )
+                  .amount( 450.0 );
+        p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
+        p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       }
-    };
-    stat_buff_t* s_buff = stat_buff_creator_t(
-                            buff_creator_t( p, "hurricane_s" )
-                            .duration( timespan_t::from_seconds( 12 ) )
-                            .cd( timespan_t::from_seconds( 45.0 ) )
-                            .activated( false ) )
-                          .stat( STAT_HASTE_RATING ).amount( 450 );
-    p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-    p -> callbacks.register_tick_heal_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-  }
-  if ( mh_enchant == "landslide" )
+      // Custom proc is required for spell damage procs.
+      // If MH buff is up, then refresh it, else
+      // IF OH buff is up, then refresh it, else
+      // Trigger a new buff not associated with either MH or OH
+      // This means that it is possible to have three stacks
+      struct hurricane_spell_proc_callback_t : public action_callback_t
+      {
+        buff_t *mh_buff, *oh_buff, *s_buff;
+        hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
+          action_callback_t( p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
+        {
+        }
+        virtual void trigger( action_t* /* a */, void* /* call_data */ )
+        {
+          if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
+          if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
+          if ( mh_buff && mh_buff -> check() )
+          {
+            mh_buff -> trigger();
+            s_buff -> cooldown -> start();
+          }
+          else if ( oh_buff && oh_buff -> check() )
+          {
+            oh_buff -> trigger();
+            s_buff -> cooldown -> start();
+          }
+          else s_buff -> trigger();
+        }
+      };
+      stat_buff_t* s_buff = stat_buff_creator_t(
+                              buff_creator_t( p, "hurricane_s" )
+                              .duration( timespan_t::from_seconds( 12 ) )
+                              .cd( timespan_t::from_seconds( 45.0 ) )
+                              .activated( false ) )
+                            .stat( STAT_HASTE_RATING ).amount( 450 );
+      p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+      p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+      p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+      p -> callbacks.register_tick_heal_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    }
+}
+
+void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( enchant == "landslide" )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "landslide_mh" ).duration( timespan_t::from_seconds( 12 ) ).activated( false ) )
+                          buff_creator_t( p, "landslide_" + weapon_appendix ).duration( timespan_t::from_seconds( 12 ) ).activated( false ) )
                         .stat( STAT_ATTACK_POWER ).amount( 1000 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 1.0/*PPM*/ ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
-  if ( oh_enchant == "landslide" )
-  {
-    stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "landslide_oh" ).duration( timespan_t::from_seconds( 12 ) ).activated( false ) )
-                        .stat( STAT_ATTACK_POWER ).amount( 1000 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 1.0/*PPM*/ ) );
-  }
-  if ( mh_enchant == "mongoose" )
+}
+
+void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( enchant == "mongoose" )
   {
     p -> buffs.mongoose_mh = stat_buff_creator_t(
-                               buff_creator_t( p, "mongoose_main_hand" ).duration( timespan_t::from_seconds( 15 ) ).activated( false ) )
+                               buff_creator_t( p, "mongoose_" + weapon_appendix ).duration( timespan_t::from_seconds( 15 ) ).activated( false ) )
                              .stat( STAT_AGILITY ).amount( 120 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
   }
-  if ( oh_enchant == "mongoose" )
-  {
-    p -> buffs.mongoose_oh = stat_buff_creator_t(
-                               buff_creator_t( p, "mongoose_off_hand" ).duration( timespan_t::from_seconds( 15 ) ).activated( false ) )
-                             .stat( STAT_AGILITY ).amount( 120 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, p -> buffs.mongoose_oh, 1.0/*PPM*/ ) );
-  }
-  if ( mh_enchant == "power_torrent" )
+}
+
+void register_power_torrent( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
+{
+  if ( enchant == "power_torrent" )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "power_torrent_mh" )
+                          buff_creator_t( p, "power_torrent" + weapon_appendix )
                           .duration( timespan_t::from_seconds( 12 ) )
                           .cd( timespan_t::from_seconds( 45 ) )
                           .chance( 0.20 )
@@ -895,43 +857,103 @@ void enchant_t::init( player_t* p )
     p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
     p -> callbacks.register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
   }
-  if ( oh_enchant == "power_torrent" )
+}
+
+void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( enchant == "windwalk" )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "power_torrent_oh" )
-                          .duration( timespan_t::from_seconds( 12 ) )
-                          .cd( timespan_t::from_seconds( 45 ) )
-                          .chance( 0.20 )
-                          .activated( false ) )
-                        .stat( STAT_INTELLECT ).amount( 500 );
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
-    p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
-    p -> callbacks.register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
-  }
-  if ( mh_enchant == "windwalk" )
-  {
-    stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "windwalk_mh" )
+                          buff_creator_t( p, "windwalk_" + weapon_appendix )
                           .duration( timespan_t::from_seconds( 10 ) )
                           .cd( timespan_t::from_seconds( 45 ) )
                           .chance( 0.15 )
                           .activated( false ) )
                         .stat( STAT_DODGE_RATING ).amount( 600 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff ) );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff ) );
   }
-  if ( oh_enchant == "windwalk" )
+}
+
+void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( enchant == "berserking" )
   {
     stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "windwalk_oh" )
-                          .duration( timespan_t::from_seconds( 10 ) )
-                          .cd( timespan_t::from_seconds( 45 ) )
-                          .chance( 0.15 )
+                          buff_creator_t( p, "berserking_" + weapon_appendix )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15 ) )
+                          .cd( timespan_t::zero() )
+                          .chance( 0 )
                           .activated( false ) )
-                        .stat( STAT_DODGE_RATING ).amount( 600 );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff ) );
+                        .stat( STAT_ATTACK_POWER )
+                        .amount( 400.0 );
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
+}
+
+void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w )
+{
+  if ( enchant == "gnomish_xray" )
+  {
+    //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
+    stat_buff_t* buff = stat_buff_creator_t(
+                          buff_creator_t( p, "xray_targeting" )
+                          .spell( p -> find_spell( 95712 ) )
+                          .cd( timespan_t::from_seconds( 40 ) )
+                          .activated( false ) )
+                        .stat( STAT_ATTACK_POWER )
+                        .amount( p->find_spell( 95712 )->effectN( 1 ).base_value() );
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
+  }
+}
+
+} // END special_enchants NAMESPACE
+
+// ==========================================================================
+// Enchant
+// ==========================================================================
+
+// enchant_t::init ==========================================================
+
+void enchant_t::init( player_t* p )
+{
+  if ( p -> is_pet() ) return;
+
+  std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
+  std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
+  std::string& ranged_enchant = p -> items[ SLOT_RANGED    ].encoded_enchant_str;
+
+  weapon_t* mhw = &( p -> main_hand_weapon );
+  weapon_t* ohw = &( p -> off_hand_weapon );
+  weapon_t* rw  = &( p -> ranged_weapon );
+
+  using namespace special_enchants;
+
+  register_avalanche( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_berserking( p, mh_enchant, mhw, "mh" );
+  register_berserking( p, oh_enchant, ohw, "oh" );
+
+  register_landslide( p, mh_enchant, mhw, "mh" );
+  register_landslide( p, oh_enchant, ohw, "oh" );
+
+  register_mongoose( p, mh_enchant, mhw, "mh" );
+  register_mongoose( p, oh_enchant, ohw, "oh" );
+
+  register_power_torrent( p, mh_enchant, "mh" );
+  register_power_torrent( p, oh_enchant, "oh" );
+
+
+  register_windwalk( p, mh_enchant, mhw, "mh" );
+  register_windwalk( p, oh_enchant, ohw, "oh" );
+
+  register_gnomish_xray( p, ranged_enchant, rw );
+
   if ( ranged_enchant == "gnomish_xray" )
   {
     //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
@@ -973,6 +995,7 @@ void enchant_t::init( player_t* p )
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
+
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
     item_t& item = p -> items[ i ];

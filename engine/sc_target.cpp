@@ -8,83 +8,11 @@
 // ==========================================================================
 // Enemy
 // ==========================================================================
+namespace {
 
-struct enemy_t : public player_t
-{
-  double fixed_health, initial_health;
-  double fixed_health_percentage, initial_health_percentage;
-  timespan_t waiting_time;
-
-  enemy_t( sim_t* s, const std::string& n, race_type_e r = RACE_HUMANOID ) :
-    player_t( s, ENEMY, n, r ),
-    fixed_health( 0 ), initial_health( 0 ),
-    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
-    waiting_time( timespan_t::from_seconds( 1.0 ) )
-
-  {
-    player_t** last = &( sim -> target_list );
-    while ( *last ) last = &( ( *last ) -> next );
-    *last = this;
-    next = 0;
-
-    create_options();
-  }
-
-  virtual role_type_e primary_role() const
-  { return ROLE_TANK; }
-
-  virtual resource_type_e primary_resource() const
-  { return RESOURCE_NONE; }
-
-  virtual double base_armor() const
-  { return current.armor; }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual void init();
-  virtual void init_base();
-  virtual void init_resources( bool force=false );
-  virtual void init_target();
-  virtual void init_actions();
-  virtual double composite_tank_block() const;
-  virtual void create_options();
-  virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
-  virtual void create_pets();
-  virtual double health_percentage() const;
-  virtual void combat_end();
-  virtual void recalculate_health();
-  virtual expr_t* create_expression( action_t* action, const std::string& type );
-  virtual timespan_t available() const { return waiting_time; }
-};
-
-// ==========================================================================
-// Enemy Add
-// ==========================================================================
-
-struct enemy_add_t : public pet_t
-{
-  enemy_add_t( sim_t* s, enemy_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
-    pet_t( s, o, n, pt )
-  {
-    create_options();
-  }
-
-  virtual void init_actions()
-  {
-    if ( action_list_str.empty() )
-    {
-      action_list_str += "/snapshot_stats";
-    }
-
-    pet_t::init_actions();
-  }
-
-  virtual resource_type_e primary_resource() const
-  { return RESOURCE_HEALTH; }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str );
-};
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace enemy_actions{ // ANONYMOUS NAMESPACE ==========================================
+// Enemy actions are generic to serve both enemy_t and enemy_add_t,
+// so they can only rely on player_t and should have no knowledge of class definitions
 
 // Melee ====================================================================
 
@@ -338,37 +266,130 @@ struct summon_add_t : public spell_t
     return spell_t::ready();
   }
 };
+
+action_t* create_action( player_t* p, const std::string& name, const std::string& options_str )
+{
+  if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
+  if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
+  if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, options_str );
+  if ( name == "summon_add"  ) return new  summon_add_t( p, options_str );
+
+  return NULL;
 }
 
+} // END enemy_actions NAMESPACE
+
+namespace enemy {
+
+struct class_t : public player_t
+{
+  double fixed_health, initial_health;
+  double fixed_health_percentage, initial_health_percentage;
+  timespan_t waiting_time;
+
+  class_t( sim_t* s, const std::string& n, race_type_e r = RACE_HUMANOID ) :
+    player_t( s, ENEMY, n, r ),
+    fixed_health( 0 ), initial_health( 0 ),
+    fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
+    waiting_time( timespan_t::from_seconds( 1.0 ) )
+
+  {
+    player_t** last = &( sim -> target_list );
+    while ( *last ) last = &( ( *last ) -> next );
+    *last = this;
+    next = 0;
+
+    create_options();
+  }
+
+  virtual role_type_e primary_role() const
+  { return ROLE_TANK; }
+
+  virtual resource_type_e primary_resource() const
+  { return RESOURCE_NONE; }
+
+  virtual double base_armor() const
+  { return current.armor; }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str );
+  virtual void init();
+  virtual void init_base();
+  virtual void init_resources( bool force=false );
+  virtual void init_target();
+  virtual void init_actions();
+  virtual double composite_tank_block() const;
+  virtual void create_options();
+  virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
+  virtual void create_pets();
+  virtual double health_percentage() const;
+  virtual void combat_end();
+  virtual void recalculate_health();
+  virtual expr_t* create_expression( action_t* action, const std::string& type );
+  virtual timespan_t available() const { return waiting_time; }
+};
+
 // ==========================================================================
-// Enemy Extensions
+// Enemy Add
 // ==========================================================================
 
-// enemy_t::create_action ===================================================
+struct add_t : public pet_t
+{
+  add_t( sim_t* s, class_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
+    pet_t( s, o, n, pt )
+  {
+    create_options();
+  }
 
-action_t* enemy_t::create_action( const std::string& name,
+  virtual void init_actions()
+  {
+    if ( action_list_str.empty() )
+    {
+      action_list_str += "/snapshot_stats";
+    }
+
+    pet_t::init_actions();
+  }
+
+  virtual resource_type_e primary_resource() const
+  { return RESOURCE_HEALTH; }
+
+  virtual action_t* create_action( const std::string& name,
+                                        const std::string& options_str )
+  {
+    action_t* a = enemy_actions::create_action( this, name, options_str );
+
+    if ( !a )
+      a = pet_t::create_action( name, options_str );
+
+    return a;
+  }
+};
+
+// class_t::create_action ===================================================
+
+action_t* class_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
-  if ( name == "spell_nuke"  ) return new  spell_nuke_t( this, options_str );
-  if ( name == "spell_aoe"   ) return new   spell_aoe_t( this, options_str );
-  if ( name == "summon_add"  ) return new  summon_add_t( this, options_str );
+  action_t* a = enemy_actions::create_action( this, name, options_str );
 
-  return player_t::create_action( name, options_str );
+  if ( !a )
+    a = player_t::create_action( name, options_str );
+
+  return a;
 }
 
-// enemy_t::init ============================================================
+// class_t::init ============================================================
 
-void enemy_t::init()
+void class_t::init()
 {
 
 
   player_t::init();
 }
 
-// enemy_t::init_base =======================================================
+// class_t::init_base =======================================================
 
-void enemy_t::init_base()
+void class_t::init_base()
 {
   level = sim -> max_player_level + 3;
 
@@ -413,9 +434,9 @@ void enemy_t::init_base()
   }
 }
 
-// enemy_t::init_resources ==================================================
+// class_t::init_resources ==================================================
 
-void enemy_t::init_resources( bool /* force */ )
+void class_t::init_resources( bool /* force */ )
 {
   double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
 
@@ -429,9 +450,9 @@ void enemy_t::init_resources( bool /* force */ )
   }
 }
 
-// enemy_t::init_target ====================================================
+// class_t::init_target ====================================================
 
-void enemy_t::init_target()
+void class_t::init_target()
 {
   if ( ! target_str.empty() )
   {
@@ -454,9 +475,9 @@ void enemy_t::init_target()
     target = sim -> target;
 }
 
-// enemy_t::init_actions ====================================================
+// class_t::init_actions ====================================================
 
-void enemy_t::init_actions()
+void class_t::init_actions()
 {
   if ( !is_add() )
   {
@@ -486,9 +507,9 @@ void enemy_t::init_actions()
   }
 }
 
-// enemy_t::composite_tank_block ============================================
+// class_t::composite_tank_block ============================================
 
-double enemy_t::composite_tank_block() const
+double class_t::composite_tank_block() const
 {
   double b = player_t::composite_tank_block();
 
@@ -497,9 +518,9 @@ double enemy_t::composite_tank_block() const
   return b;
 }
 
-// enemy_t::create_options ==================================================
+// class_t::create_options ==================================================
 
-void enemy_t::create_options()
+void class_t::create_options()
 {
   option_t target_options[] =
   {
@@ -515,21 +536,21 @@ void enemy_t::create_options()
   player_t::create_options();
 }
 
-// enemy_t::create_add ======================================================
+// class_t::create_add ======================================================
 
-pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
+pet_t* class_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( add_name );
   if ( p ) return p;
 
-  return new enemy_add_t( sim, this, add_name, PET_ENEMY );
+  return new add_t( sim, this, add_name, PET_ENEMY );
 
   return 0;
 }
 
-// enemy_t::create_pets =====================================================
+// class_t::create_pets =====================================================
 
-void enemy_t::create_pets()
+void class_t::create_pets()
 {
   for ( int i=0; i < sim -> target_adds; i++ )
   {
@@ -538,9 +559,9 @@ void enemy_t::create_pets()
   }
 }
 
-// enemy_t::health_percentage() =============================================
+// class_t::health_percentage() =============================================
 
-double enemy_t::health_percentage() const
+double class_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 
@@ -554,9 +575,9 @@ double enemy_t::health_percentage() const
   return resources.pct( RESOURCE_HEALTH ) * 100 ;
 }
 
-// enemy_t::recalculate_health ==============================================
+// class_t::recalculate_health ==============================================
 
-void enemy_t::recalculate_health()
+void class_t::recalculate_health()
 {
   if ( sim -> expected_time <= timespan_t::zero() || fixed_health > 0 ) return;
 
@@ -579,9 +600,9 @@ void enemy_t::recalculate_health()
   if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
 }
 
-// enemy_t::create_expression ===============================================
+// class_t::create_expression ===============================================
 
-expr_t* enemy_t::create_expression( action_t* action,
+expr_t* class_t::create_expression( action_t* action,
                                     const std::string& name_str )
 {
   if ( name_str == "adds" )
@@ -589,42 +610,35 @@ expr_t* enemy_t::create_expression( action_t* action,
 
   // override enemy health.pct expression
   if ( name_str == "health.pct" )
-    return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
+    return make_mem_fn_expr( name_str, *this, &class_t::health_percentage );
 
   return player_t::create_expression( action, name_str );
 }
 
-// enemy_t::combat_end ======================================================
+// class_t::combat_end ======================================================
 
-void enemy_t::combat_end()
+void class_t::combat_end()
 {
   player_t::combat_end();
 
   recalculate_health();
 }
 
-// ==========================================================================
-// Enemy Add Extensions
-// ==========================================================================
+} // END enemy NAMESPACE
 
-action_t* enemy_add_t::create_action( const std::string& name,
-                                      const std::string& options_str )
-{
-  if ( name == "auto_attack"             ) return new auto_attack_t( this, options_str );
-  if ( name == "spell_nuke"              ) return new spell_nuke_t( this, options_str );
-
-  return pet_t::create_action( name, options_str );
-}
+} // END ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
+using enemy::class_t;
+
 // player_t::create_enemy ===================================================
 
 player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type_e /* r */ )
 {
-  return new enemy_t( sim, name );
+  return new class_t( sim, name );
 }
 
 // player_t::enemy_init =====================================================

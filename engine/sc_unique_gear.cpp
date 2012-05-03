@@ -7,6 +7,7 @@
 
 // stat_proc_callback =======================================================
 
+namespace {
 struct stat_proc_callback_t : public action_callback_t
 {
   std::string name_str;
@@ -148,10 +149,10 @@ struct cost_reduction_proc_callback_t : public action_callback_t
   }
 };
 
-namespace {
-struct discharge_spell_t : public spell_t
+namespace discharge_actions {
+struct spell : public spell_t
 {
-  discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+  spell( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                      unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
@@ -173,9 +174,9 @@ struct discharge_spell_t : public spell_t
   }
 };
 
-struct discharge_attack_t : public attack_t
+struct attack : public attack_t
 {
-  discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
+  attack( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                       unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     attack_t( n, p, spell_data_t::nil() )
   {
@@ -232,11 +233,11 @@ struct discharge_proc_callback_base_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_actions::spell( name_str, p, amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_actions::attack( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, override_result_type_es_mask, result_type_es_mask );
     }
 
     proc = p -> get_proc( name_str );
@@ -458,6 +459,10 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     }
   }
 };
+
+} // END callbacks_internal NAMESPACE
+
+namespace special_gear {
 
 // register_apparatus_of_khazgoroth =========================================
 
@@ -1693,6 +1698,8 @@ static void register_titahk( item_t* item )
   p -> callbacks.register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
+} // END special_gear NAMESPACE
+
 // ==========================================================================
 // unique_gear_t::init
 // ==========================================================================
@@ -1726,6 +1733,7 @@ void unique_gear_t::init( player_t* p )
       register_discharge_proc( item, item.equip );
     }
 
+    using namespace special_gear;
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
     if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );

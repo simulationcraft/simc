@@ -155,7 +155,6 @@ struct dot_t;
 struct druid_t;
 struct effect_t;
 struct enchant_t;
-struct enemy_t;
 struct event_t;
 class  expr_t;
 struct gain_t;
@@ -3736,7 +3735,6 @@ struct player_t : public noncopyable
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
-  enemy_t       * cast_enemy       () { assert( type == ENEMY        ); return ( enemy_t       * ) this; }
 
   bool      in_gcd() const { return gcd_ready > sim -> current_time; }
   bool      recent_cast() const;
