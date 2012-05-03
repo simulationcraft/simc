@@ -3135,6 +3135,8 @@ struct prayer_of_mending_t : public priest_heal_t
     can_trigger_DA = false;
 
     aoe = 4;
+
+    castable_in_shadowform = p -> glyphs.dark_binding -> ok();
   }
 
   virtual double action_multiplier() const
@@ -3193,6 +3195,8 @@ struct renew_t : public priest_heal_t
     base_multiplier *= 1.0 + p -> glyphs.renew -> effectN( 1 ).percent();
 
     num_ticks       += ( int ) ( p -> glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
+
+    castable_in_shadowform = p -> glyphs.dark_binding -> ok();
   }
 
   virtual double action_multiplier() const
@@ -3587,6 +3591,7 @@ void priest_t::init_spells()
   glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
   glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
   glyphs.atonement                    = find_glyph_spell( "Atonement" );
+  glyphs.dark_binding                 = find_glyph_spell( "Glyph of Dark Binding" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
   glyphs.strength_of_soul             = find_glyph_spell( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );

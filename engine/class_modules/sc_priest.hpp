@@ -226,7 +226,7 @@ struct priest_t : public player_t
     const spell_data_t* mind_spike;
     const spell_data_t* strength_of_soul;
     const spell_data_t* inner_sanctum;
-
+    const spell_data_t* dark_binding;
     const spell_data_t* mind_flay;
     const spell_data_t* mind_blast;
     const spell_data_t* vampiric_touch;
