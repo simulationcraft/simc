@@ -3111,7 +3111,7 @@ struct innervate_t : public druid_spell_t
     harmful = false;
 
     // If no target is set, assume we have innervate for ourself
-    if ( ! target )
+    if ( target -> is_enemy() )
       target = player;
   }
 
@@ -3141,9 +3141,12 @@ struct innervate_t : public druid_spell_t
 
     if ( trigger < 0 )
       return ( target -> resources.current[ RESOURCE_MANA ] + trigger ) < 0;
-
-    return ( target -> resources.max    [ RESOURCE_MANA ] -
+      
+    if ( trigger > 0 )
+      return ( target -> resources.max    [ RESOURCE_MANA ] -
              target -> resources.current[ RESOURCE_MANA ] ) > trigger;
+    
+    return true;
   }
 };
 
@@ -4336,7 +4339,8 @@ void druid_t::init_buffs()
                                .cd( timespan_t::zero() );
   buff.natures_swiftness -> cooldown -> duration = timespan_t::zero();// CD is handled by the ability
   
-  buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() );
+  buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() )
+                             .chance( glyph.innervate -> ok() );
   buff.revitalize          = buff_creator_t( this, "revitalize"         , spell_data_t::nil() );
 }
 
