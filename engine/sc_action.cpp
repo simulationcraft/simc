@@ -28,7 +28,7 @@ action_t::action_t( action_type_e       ty,
   name_str( token ),
   player( p ),
   target( p -> target ),
-  school(),
+  school( SCHOOL_NONE ),
   id(),
   result(),
   aoe(),
@@ -1800,7 +1800,7 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
 
   if ( flags & STATE_TGT_MUL_TA )
     state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
-  
+
   if ( flags & STATE_TGT_CRIT )
     state -> target_crit = composite_target_crit( state -> target );
 }
