@@ -4713,16 +4713,15 @@ struct restore_mana_t : public action_t
 
 struct snapshot_stats_t : public action_t
 {
-  attack_t* attack;
-  spell_t* spell;
   bool completed;
 
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "snapshot_stats", player ), attack( 0 ), spell( 0 ),
+    action_t( ACTION_OTHER, "snapshot_stats", player ),
     completed( false )
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
+    harmful = false;
   }
 
   virtual void execute()
@@ -4734,30 +4733,30 @@ struct snapshot_stats_t : public action_t
     for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
       p -> buffed.attribute[ i ] = floor( p -> get_attribute( i ) );
 
-    p -> buffed.resource = p -> resources.max;
+    p -> buffed.resource     = p -> resources.max;
 
     p -> buffed.spell_haste  = p -> composite_spell_haste();
     p -> buffed.attack_haste = p -> composite_attack_haste();
     p -> buffed.attack_speed = p -> composite_attack_speed();
     p -> buffed.mastery      = p -> composite_mastery();
 
-    p -> buffed.spell_power       = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
-    p -> buffed.spell_hit         = p -> composite_spell_hit();
-    p -> buffed.spell_crit        = p -> composite_spell_crit();
-    p -> buffed.mp5               = p -> composite_mp5();
+    p -> buffed.spell_power  = floor( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
+    p -> buffed.spell_hit    = p -> composite_spell_hit();
+    p -> buffed.spell_crit   = p -> composite_spell_crit();
+    p -> buffed.mp5          = p -> composite_mp5();
 
-    p -> buffed.attack_power       = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
-    p -> buffed.attack_hit         = p -> composite_attack_hit();
-    p -> buffed.mh_attack_expertise   = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
-    p -> buffed.oh_attack_expertise   = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed.attack_crit        = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
+    p -> buffed.attack_power = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
+    p -> buffed.attack_hit   = p -> composite_attack_hit();
+    p -> buffed.mh_attack_expertise = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
+    p -> buffed.oh_attack_expertise = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
+    p -> buffed.attack_crit  = p -> composite_attack_crit( &( p -> main_hand_weapon ) );
 
-    p -> buffed.armor       = p -> composite_armor();
-    p -> buffed.miss        = p -> composite_tank_miss( SCHOOL_PHYSICAL );
-    p -> buffed.dodge       = p -> composite_tank_dodge() - p -> diminished_dodge();
-    p -> buffed.parry       = p -> composite_tank_parry() - p -> diminished_parry();
-    p -> buffed.block       = p -> composite_tank_block();
-    p -> buffed.crit        = p -> composite_tank_crit( SCHOOL_PHYSICAL );
+    p -> buffed.armor        = p -> composite_armor();
+    p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
+    p -> buffed.dodge        = p -> composite_tank_dodge() - p -> diminished_dodge();
+    p -> buffed.parry        = p -> composite_tank_parry() - p -> diminished_parry();
+    p -> buffed.block        = p -> composite_tank_block();
+    p -> buffed.crit         = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 
     role_type_e role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;
@@ -4765,12 +4764,9 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
-      if ( ! spell )
-      {
-        spell = new spell_t( "snapshot_spell", p  );
-        spell -> background = true;
-        spell -> init();
-      }
+      spell_t* spell = new spell_t( "snapshot_spell", p  );
+      spell -> background = true;
+      spell -> init();
       spell -> player_buff();
       spell -> target_debuff( target, DMG_DIRECT );
       double chance = spell -> miss_chance( spell -> composite_hit(), delta_level );
@@ -4779,12 +4775,9 @@ struct snapshot_stats_t : public action_t
 
     if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
-      if ( ! attack )
-      {
-        attack = new melee_attack_t( "snapshot_attack", p );
-        attack -> background = true;
-        attack -> init();
-      }
+      attack_t* attack = new melee_attack_t( "snapshot_attack", p );
+      attack -> background = true;
+      attack -> init();
       attack -> player_buff();
       attack -> target_debuff( target, DMG_DIRECT );
       double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
