@@ -24,7 +24,7 @@ struct death_knight_targetdata_t : public targetdata_t
   death_knight_targetdata_t( death_knight_t* source, player_t* target );
 };
 
-void register_death_knight_targetdata( sim_t* sim )
+void sim_t::register_death_knight_targetdata( sim_t* sim )
 {
   player_type_e t = DEATH_KNIGHT;
   typedef death_knight_targetdata_t type;
@@ -556,8 +556,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   struct drw_melee_attack_t : public melee_attack_t
   {
-    drw_melee_attack_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_PHYSICAL ) :
-      melee_attack_t( n, p, s, sc )
+    drw_melee_attack_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+      melee_attack_t( n, p, s )
     { }
 
     virtual bool ready() { return false; }

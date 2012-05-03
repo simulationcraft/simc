@@ -21,12 +21,16 @@ struct spirit_shell_buff_t : public absorb_buff_t
   {
     absorb_buff_t::expire();
 
+    if ( current_value > 0 )
+    {
+
+    }
   }
 };
 
 }
 
-void register_priest_targetdata( sim_t* sim )
+void sim_t::register_priest_targetdata( sim_t* sim )
 {
   player_type_e t = PRIEST;
   typedef priest_targetdata_t type;
@@ -148,8 +152,8 @@ struct priest_absorb_t : public absorb_t
 
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
-                   const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    absorb_t( n, player, s, sc )
+                   const spell_data_t* s = spell_data_t::nil() ) :
+    absorb_t( n, player, s )
   {
     may_crit          = false;
     tick_may_crit     = false;
@@ -354,8 +358,8 @@ struct priest_heal_t : public heal_t
   }
 
   priest_heal_t( const std::string& n, priest_t* player,
-                 const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE ) :
-    heal_t( n, player, s, sc ), can_trigger_DA( true ), da()
+                 const spell_data_t* s = spell_data_t::nil() ) :
+    heal_t( n, player, s ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
     can_cancel_shadowform = p() -> autoUnshift;
@@ -633,8 +637,8 @@ struct priest_spell_t : public spell_t
   }
 
   priest_spell_t( const std::string& n, priest_t* player,
-                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, player, s, sc ),
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, player, s ),
     atonement( 0 ), can_trigger_atonement( 0 )
   {
     may_crit          = true;
@@ -2813,9 +2817,10 @@ struct holy_word_t : public priest_spell_t
   holy_word_serenity_t*  hw_serenity;
 
   holy_word_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "holy_word", p, spell_data_t::nil(), SCHOOL_HOLY ),
+    priest_spell_t( "holy_word", p, spell_data_t::nil() ),
     hw_sanctuary( 0 ), hw_chastise( 0 ), hw_serenity( 0 )
   {
+    school = SCHOOL_HOLY;
     hw_sanctuary = new holy_word_sanctuary_t( p, options_str );
     hw_chastise  = new holy_word_chastise_t ( p, options_str );
     hw_serenity  = new holy_word_serenity_t ( p, options_str );

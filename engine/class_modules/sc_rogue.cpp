@@ -137,7 +137,7 @@ struct rogue_targetdata_t : public targetdata_t
   }
 };
 
-void register_rogue_targetdata( sim_t* sim )
+void sim_t::register_rogue_targetdata( sim_t* sim )
 {
   player_type_e t = ROGUE;
   typedef rogue_targetdata_t type;

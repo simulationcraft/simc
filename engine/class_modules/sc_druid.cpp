@@ -130,7 +130,7 @@ struct druid_targetdata_t : public targetdata_t
   }
 };
 
-void register_druid_targetdata( sim_t* sim )
+void sim_t::register_druid_targetdata( sim_t* sim )
 {
   player_type_e t = DRUID;
   typedef druid_targetdata_t type;
@@ -536,9 +536,8 @@ struct druid_cat_attack_t : public melee_attack_t
 
   druid_cat_attack_t( const std::string& token, druid_t* p,
                       const spell_data_t* s = spell_data_t::nil(),
-                      const std::string& options = std::string(),
-                      school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( token, p, s, school ),
+                      const std::string& options = std::string() ) :
+    melee_attack_t( token, p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0 ), base_ta_bonus( 0 )
@@ -571,9 +570,8 @@ struct druid_cat_attack_t : public melee_attack_t
   }
 
   druid_cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                      const std::string& options = std::string(),
-                      school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( "", p, s, school ),
+                      const std::string& options = std::string() ) :
+    melee_attack_t( "", p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0 ), base_ta_bonus( 0 )
@@ -669,9 +667,8 @@ struct druid_bear_attack_t : public melee_attack_t
 {
   druid_bear_attack_t( const std::string& token, druid_t* p,
                        const spell_data_t* s = spell_data_t::nil(),
-                       const std::string& options = std::string(),
-                       school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( token, p, s, school )
+                       const std::string& options = std::string() ) :
+    melee_attack_t( token, p, s )
   {
     parse_options( 0, options );
 
@@ -682,9 +679,8 @@ struct druid_bear_attack_t : public melee_attack_t
   }
 
   druid_bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                       const std::string& options = std::string(),
-                       school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( "", p, s, school )
+                       const std::string& options = std::string() ) :
+    melee_attack_t( "", p, s )
   {
     parse_options( 0, options );
 
@@ -713,9 +709,8 @@ struct druid_heal_t : public heal_t
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string(),
-                school_type_e school = SCHOOL_NATURE ) :
-    heal_t( token, p, s, school ),
+                const std::string& options = std::string() ) :
+    heal_t( token, p, s ),
     additive_factors( 0 ), consume_ooc( false )
   {
     parse_options( 0, options );
@@ -728,9 +723,8 @@ struct druid_heal_t : public heal_t
   }
 
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string(),
-                school_type_e school = SCHOOL_NATURE ) :
-    heal_t( "", p, s, school ),
+                const std::string& options = std::string() ) :
+    heal_t( "", p, s ),
     additive_factors( 0 ), consume_ooc( false )
   {
     parse_options( 0, options );
@@ -1332,8 +1326,9 @@ bool druid_cat_attack_t::ready()
 struct cat_melee_t : public druid_cat_attack_t
 {
   cat_melee_t( druid_t* player ) :
-    druid_cat_attack_t( "cat_melee", player, spell_data_t::nil(), "", SCHOOL_PHYSICAL )
+    druid_cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
+    school = SCHOOL_PHYSICAL;
     special     = false;
     may_glance  = true;
     background  = true;
@@ -1965,8 +1960,9 @@ void druid_bear_attack_t::execute()
 struct bear_melee_t : public druid_bear_attack_t
 {
   bear_melee_t( druid_t* player ) :
-    druid_bear_attack_t( "bear_melee", player, spell_data_t::nil(), "", SCHOOL_PHYSICAL )
+    druid_bear_attack_t( "bear_melee", player, spell_data_t::nil(), "" )
   {
+    school = SCHOOL_PHYSICAL;
     special     = false;
     may_glance  = true;
     background  = true;

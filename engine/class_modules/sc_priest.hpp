@@ -14,6 +14,8 @@ namespace remove_dots_event {
 struct remove_dots_event_t;
 }
 
+struct priest_t;
+
 struct priest_targetdata_t : public targetdata_t
 {
   dot_t*  dots_devouring_plague;

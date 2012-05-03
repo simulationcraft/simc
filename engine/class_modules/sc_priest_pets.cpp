@@ -70,9 +70,10 @@ struct priest_pet_melee_t : public melee_attack_t
   mutable bool first_swing;
 
   priest_pet_melee_t( priest_pet_t* p, const char* name ) :
-    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_SHADOW ),
+    melee_attack_t( name, p, spell_data_t::nil() ),
     first_swing( true )
   {
+    school = SCHOOL_SHADOW;
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     may_crit    = true;
@@ -107,14 +108,14 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t
 {
 
-  priest_pet_spell_t( priest_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_pet_spell( n ), sc )
+  priest_pet_spell_t( priest_pet_t* p, const std::string& n ) :
+    spell_t( n, p, p -> find_pet_spell( n ) )
   {
     may_crit = true;
   }
 
-  priest_pet_spell_t( const std::string& token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( token, p, s, sc )
+  priest_pet_spell_t( const std::string& token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( token, p, s )
   {
     may_crit = true;
   }

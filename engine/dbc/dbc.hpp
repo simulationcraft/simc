@@ -13,6 +13,20 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "data_definitions.hh"
 #include "data_enums.hh"
 
+// Spell ID class
+
+enum s_type_e
+{
+  T_SPELL = 0,
+  T_TALENT,
+  T_MASTERY,
+  T_GLYPH,
+  T_CLASS,
+  T_RACE,
+  T_SPEC,
+  T_ITEM
+};
+
 // DBC related classes ======================================================
 
 class dbc_t;

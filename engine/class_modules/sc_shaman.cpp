@@ -71,6 +71,8 @@ struct shaman_melee_attack_t;
 struct shaman_spell_t;
 }
 
+struct shaman_t;
+
 struct shaman_targetdata_t : public targetdata_t
 {
   dot_t* dots_flame_shock;
@@ -83,7 +85,7 @@ struct shaman_targetdata_t : public targetdata_t
   shaman_targetdata_t( shaman_t* source, player_t* target );
 };
 
-void register_shaman_targetdata( sim_t* sim )
+void sim_t::register_shaman_targetdata( sim_t* sim )
 {
   player_type_e t = SHAMAN;
   typedef shaman_targetdata_t type;
@@ -361,8 +363,8 @@ struct shaman_melee_attack_t : public melee_attack_t
   bool windfury;
   bool flametongue;
 
-  shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( token, p, s, school ),
+  shaman_melee_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
+    melee_attack_t( token, p, s ),
     windfury( true ), flametongue( true )
   {
     special = true;
@@ -370,8 +372,8 @@ struct shaman_melee_attack_t : public melee_attack_t
     may_glance = false;
   }
 
-  shaman_melee_attack_t( shaman_t* p, const spell_data_t* s, school_type_e school = SCHOOL_PHYSICAL ) :
-    melee_attack_t( "", p, s, school ),
+  shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
+    melee_attack_t( "", p, s ),
     windfury( true ), flametongue( true )
   {
     special = true;
@@ -555,7 +557,7 @@ struct spirit_wolf_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     melee_t( spirit_wolf_pet_t* player ) :
-      melee_attack_t( "wolf_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
+      melee_attack_t( "wolf_melee", player, spell_data_t::nil() )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
@@ -711,8 +713,9 @@ struct earth_elemental_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     melee_t( earth_elemental_pet_t* player ) :
-      melee_attack_t( "earth_melee", player, spell_data_t::nil(), SCHOOL_PHYSICAL )
+      melee_attack_t( "earth_melee", player, spell_data_t::nil() )
     {
+      school = SCHOOL_PHYSICAL;
       may_crit          = true;
       background        = true;
       repeating         = true;
@@ -831,9 +834,10 @@ struct fire_elemental_pet_t : public pet_t
     double sp_multiplier;
 
     fire_elemental_spell_t( const std::string& t, fire_elemental_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-      spell_t( t, p, s, SCHOOL_FIRE ),
+      spell_t( t, p, s  ),
       int_multiplier( 0.85 ), sp_multiplier ( 0.53419 )
     {
+      school = SCHOOL_FIRE;
       // Apparently, fire elemental spell crit damage bonus is 100% now.
       crit_bonus_multiplier = 2.0;
     }
@@ -955,9 +959,10 @@ struct fire_elemental_pet_t : public pet_t
     double sp_multiplier;
 
     fire_melee_t( fire_elemental_pet_t* player ) :
-      melee_attack_t( "fire_melee", player, spell_data_t::nil(), SCHOOL_FIRE ),
+      melee_attack_t( "fire_melee", player, spell_data_t::nil() ),
       int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
     {
+      school = SCHOOL_FIRE;
       may_crit                     = true;
       background                   = true;
       repeating                    = true;
@@ -1885,11 +1890,13 @@ struct lava_lash_t : public shaman_melee_attack_t
   double sf_bonus;
 
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
-    shaman_melee_attack_t( player, player -> find_class_spell( "Lava Lash" ), SCHOOL_FIRE ),
+    shaman_melee_attack_t( player, player -> find_class_spell( "Lava Lash" ) ),
     ft_bonus( data().effectN( 2 ).percent() ),
     sf_bonus( player -> spell.searing_flames -> effectN( 1 ).percent() )
   {
     check_spec( SHAMAN_ENHANCEMENT );
+
+    school = SCHOOL_FIRE;
 
     parse_options( NULL, options_str );
 

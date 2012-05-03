@@ -22,7 +22,7 @@ struct hunter_targetdata_t : public targetdata_t
   hunter_targetdata_t( hunter_t* source, player_t* target );
 };
 
-void register_hunter_targetdata( sim_t* sim )
+void sim_t::register_hunter_targetdata( sim_t* sim )
 {
   player_type_e t = HUNTER;
   typedef hunter_targetdata_t type;
@@ -62,8 +62,11 @@ struct hunter_t : public player_t
   } buffs;
 
   // Cooldowns
-  cooldown_t* cooldowns_explosive_shot;
-  cooldown_t* cooldowns_vishanka;
+  struct cooldowns_t
+  {
+    cooldown_t* explosive_shot;
+    cooldown_t* vishanka;
+  } cooldowns;
 
   // Custom Parameters
   std::string summon_pet_str;
@@ -98,11 +101,14 @@ struct hunter_t : public player_t
   } procs;
 
   // Random Number Generation
-  rng_t* rng_frenzy;
-  rng_t* rng_invigoration;
-  rng_t* rng_owls_focus;
-  rng_t* rng_rabid_power;
-  rng_t* rng_thrill_of_the_hunt;
+  struct rngs_t
+  {
+    rng_t* frenzy;
+    rng_t* invigoration;
+    rng_t* owls_focus;
+    rng_t* rabid_power;
+    rng_t* thrill_of_the_hunt;
+  } rngs;
 
   // Talents
   struct talents_t
@@ -212,8 +218,10 @@ struct hunter_t : public player_t
   hunter_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
     buffs( buffs_t() ),
+    cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
+    rngs( rngs_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
     passive_spells( passive_spells_t() )
@@ -227,8 +235,8 @@ struct hunter_t : public player_t
     merge_piercing_shots = 0;
 
     // Cooldowns
-    cooldowns_explosive_shot = get_cooldown( "explosive_shot" );
-    cooldowns_vishanka       = get_cooldown( "vishanka"       );
+    cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
+    cooldowns.vishanka       = get_cooldown( "vishanka"       );
 
     ranged_attack = 0;
     summon_pet_str = "";
@@ -698,8 +706,8 @@ namespace { // ANONYMOUS NAMESPACE =========================================
 struct hunter_ranged_attack_t : public ranged_attack_t
 {
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
-                          const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    ranged_attack_t( n, player, s, sc )
+                          const spell_data_t* s = spell_data_t::nil() ) :
+    ranged_attack_t( n, player, s )
   {
     may_crit               = true;
     tick_may_crit          = true;
@@ -743,8 +751,8 @@ struct hunter_spell_t : public spell_t
 {
 
   hunter_spell_t( const std::string& n, hunter_t* player,
-                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, player, s, sc )
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, player, s )
   {
   }
 
@@ -881,7 +889,7 @@ static void trigger_thrill_of_the_hunt( attack_t* a )
   if ( ! p -> talents.thrill_of_the_hunt -> ok() )
     return;
 
-  if ( p -> rng_thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
+  if ( p -> rngs.thrill_of_the_hunt -> roll ( p -> talents.thrill_of_the_hunt -> proc_chance() ) )
   {
     double gain = a -> base_costs[ a -> current_resource() ] * p -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
 
@@ -899,7 +907,7 @@ static void trigger_vishanka( attack_t* a )
   if ( ! p -> vishanka )
     return;
 
-  if ( p -> cooldowns_vishanka -> remains() > timespan_t::zero() )
+  if ( p -> cooldowns.vishanka -> remains() > timespan_t::zero() )
     return;
 
   if ( ! p -> active_vishanka )
@@ -928,8 +936,8 @@ static void trigger_vishanka( attack_t* a )
   if ( a -> sim -> roll( p -> dbc.spell( p -> vishanka ) -> proc_chance() ) )
   {
     p -> active_vishanka -> execute();
-    p -> cooldowns_vishanka -> duration = timespan_t::from_seconds( 15.0 ); // Assume a ICD until testing proves one way or another
-    p -> cooldowns_vishanka -> start();
+    p -> cooldowns.vishanka -> duration = timespan_t::from_seconds( 15.0 ); // Assume a ICD until testing proves one way or another
+    p -> cooldowns.vishanka -> start();
   }
 }
 
@@ -941,8 +949,8 @@ struct hunter_pet_attack_t : public attack_t
 {
 
   hunter_pet_attack_t( const std::string& n, hunter_pet_t* player,
-                       const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    attack_t( n, player, s, sc )
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    attack_t( n, player, s )
   {
     may_crit = true;
 
@@ -1281,8 +1289,8 @@ struct hunter_pet_spell_t : public spell_t
   }
 
   hunter_pet_spell_t( const std::string& n, hunter_pet_t* player,
-                      const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, player, s, sc )
+                      const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, player, s )
   {
   }
 
@@ -1773,10 +1781,11 @@ double hunter_ranged_attack_t::swing_haste() const
 struct ranged_t : public hunter_ranged_attack_t
 {
   ranged_t( hunter_t* player, const char* name="ranged" ) :
-    hunter_ranged_attack_t( name, player, spell_data_t::nil(), SCHOOL_PHYSICAL /*, special true */ )
+    hunter_ranged_attack_t( name, player, spell_data_t::nil() /*, special true */ )
   {
     hunter_t* p = player -> cast_hunter();
 
+    school = SCHOOL_PHYSICAL;
     weapon = &( p -> ranged_weapon );
     base_execute_time = weapon -> swing_time;
 
@@ -2138,7 +2147,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p -> buffs.lock_and_load -> trigger( 2 ) )
     {
       p -> procs.lock_and_load -> occur();
-      p -> cooldowns_explosive_shot -> reset();
+      p -> cooldowns.explosive_shot -> reset();
     }
   }
 
@@ -2178,7 +2187,7 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
     if ( p -> buffs.lock_and_load -> trigger( 2 ) )
     {
       p -> procs.lock_and_load -> occur();
-      p -> cooldowns_explosive_shot -> reset();
+      p -> cooldowns.explosive_shot -> reset();
     }
   }
 };
@@ -2456,11 +2465,11 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 struct kill_shot_t : public hunter_ranged_attack_t
 {
 
-  cooldown_t* cooldowns_glyph_kill_shot;
+  cooldown_t* cd_glyph_kill_shot;
 
   kill_shot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "kill_shot", player, player -> find_class_spell( "Kill Shot" ) ),
-    cooldowns_glyph_kill_shot( 0 )
+    cd_glyph_kill_shot( 0 )
   {
     hunter_t* p = player -> cast_hunter();
 
@@ -2477,8 +2486,8 @@ struct kill_shot_t : public hunter_ranged_attack_t
 
     if ( p -> glyphs.kill_shot -> ok() )
     {
-      cooldowns_glyph_kill_shot = p -> get_cooldown( "cooldowns_glyph_kill_shot" );
-      cooldowns_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration();
+      cd_glyph_kill_shot = p -> get_cooldown( "cooldowns.glyph_kill_shot" );
+      cd_glyph_kill_shot -> duration = p -> dbc.spell( 90967 ) -> duration();
     }
 
     normalize_weapon_speed = true;
@@ -2488,10 +2497,10 @@ struct kill_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( cooldowns_glyph_kill_shot && cooldowns_glyph_kill_shot -> remains() == timespan_t::zero() )
+    if ( cd_glyph_kill_shot && cd_glyph_kill_shot -> remains() == timespan_t::zero() )
     {
       cooldown -> reset();
-      cooldowns_glyph_kill_shot -> start();
+      cd_glyph_kill_shot -> start();
     }
   }
 
@@ -2527,8 +2536,9 @@ struct scatter_shot_t : public hunter_ranged_attack_t
 struct serpent_sting_burst_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "serpent_sting_burst", player, spell_data_t::nil(), SCHOOL_NATURE )
+    hunter_ranged_attack_t( "serpent_sting_burst", player, spell_data_t::nil() )
   {
+    school = SCHOOL_NATURE;
     proc       = true;
     background = true;
   }
@@ -3272,7 +3282,7 @@ struct summon_pet_t : public hunter_spell_t
   pet_t* pet;
 
   summon_pet_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "summon_pet", player, spell_data_t::nil(), SCHOOL_PHYSICAL ),
+    hunter_spell_t( "summon_pet", player, spell_data_t::nil() ),
     pet( 0 )
   {
     hunter_t* p = player -> cast_hunter();
@@ -3724,15 +3734,15 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
 
-  rng_invigoration         = get_rng( "invigoration"       );
-  rng_owls_focus           = get_rng( "owls_focus"         );
-  rng_thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
+  rngs.invigoration         = get_rng( "invigoration"       );
+  rngs.owls_focus           = get_rng( "owls_focus"         );
+  rngs.thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
   // also useful for frequent checks with low probability of proc and timed effect
 
-  rng_frenzy               = get_rng( "frenzy" );
-  rng_rabid_power          = get_rng( "rabid_power" );
+  rngs.frenzy               = get_rng( "frenzy" );
+  rngs.rabid_power          = get_rng( "rabid_power" );
 }
 
 // hunter_t::init_scaling ===================================================

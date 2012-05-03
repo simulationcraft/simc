@@ -8,6 +8,8 @@
 
 #include "simulationcraft.hpp"
 
+#define MAX_PLAYERS_PER_CHART 20
+
 namespace chart {
   std::string resource_color( int type );
 

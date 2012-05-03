@@ -4956,8 +4956,9 @@ struct use_item_t : public action_t
       struct discharge_spell_t : public spell_t
       {
         discharge_spell_t( const char* n, player_t* p, double a, const school_type_e s, unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-          spell_t( n, p, spell_data_t::nil(), s )
+          spell_t( n, p, spell_data_t::nil() )
         {
+          school = s;
           trigger_gcd = timespan_t::zero();
           base_dd_min = a;
           base_dd_max = a;

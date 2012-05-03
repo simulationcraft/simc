@@ -91,8 +91,9 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 struct melee_t : public attack_t
 {
   melee_t( const std::string& name, player_t* player ) :
-    attack_t( name, player, spell_data_t::nil(), SCHOOL_PHYSICAL )
+    attack_t( name, player, spell_data_t::nil() )
   {
+    school = SCHOOL_PHYSICAL;
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -126,8 +127,9 @@ struct melee_t : public attack_t
 struct auto_attack_t : public attack_t
 {
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    attack_t( "auto_attack", p, spell_data_t::nil(), SCHOOL_PHYSICAL )
+    attack_t( "auto_attack", p, spell_data_t::nil() )
   {
+    school = SCHOOL_PHYSICAL;
     p -> main_hand_attack = new melee_t( "melee_main_hand", p );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
@@ -180,8 +182,9 @@ struct auto_attack_t : public attack_t
 struct spell_nuke_t : public spell_t
 {
   spell_nuke_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_nuke", p, spell_data_t::nil(), SCHOOL_FIRE )
+    spell_t( "spell_nuke", p, spell_data_t::nil() )
   {
+    school = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
 
@@ -236,8 +239,9 @@ struct spell_nuke_t : public spell_t
 struct spell_aoe_t : public spell_t
 {
   spell_aoe_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_aoe", p, spell_data_t::nil(), SCHOOL_FIRE )
+    spell_t( "spell_aoe", p, spell_data_t::nil() )
   {
+    school = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 50000;
 
@@ -294,7 +298,7 @@ struct summon_add_t : public spell_t
   pet_t* pet;
 
   summon_add_t( player_t* p, const std::string& options_str ) :
-    spell_t( "summon_add", player, spell_data_t::nil(), SCHOOL_PHYSICAL ),
+    spell_t( "summon_add", player, spell_data_t::nil() ),
     add_name( "" ), summoning_duration( timespan_t::zero() ), pet( 0 )
   {
     option_t options[] =
@@ -306,6 +310,7 @@ struct summon_add_t : public spell_t
     };
     parse_options( options, options_str );
 
+    school = SCHOOL_PHYSICAL;
     pet = p -> find_pet( add_name );
     if ( ! pet )
     {

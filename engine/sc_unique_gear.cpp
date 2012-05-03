@@ -153,8 +153,9 @@ struct discharge_spell_t : public spell_t
 {
   discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                      unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-    spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+    spell_t( n, p, spell_data_t::nil() )
   {
+    school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
     discharge_proc = true;
     item_proc = true;
     trigger_gcd = timespan_t::zero();
@@ -176,8 +177,9 @@ struct discharge_attack_t : public attack_t
 {
   discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd,
                       unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-    attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+    attack_t( n, p, spell_data_t::nil() )
   {
+    school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
     discharge_proc = true;
     item_proc = true;
     trigger_gcd = timespan_t::zero();
@@ -381,8 +383,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        spell_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        spell_t( n, p, spell_data_t::nil() )
       {
+        school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
         discharge_proc = true;
         item_proc = true;
         trigger_gcd = timespan_t::zero();
@@ -406,8 +409,9 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
       discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
-        attack_t( n, p, spell_data_t::nil(), ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s )
+        attack_t( n, p, spell_data_t::nil() )
       {
+        school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
         discharge_proc = true;
         item_proc = true;
         trigger_gcd = timespan_t::zero();
@@ -775,8 +779,9 @@ static void register_tyrandes_favorite_doll( item_t* item )
   struct tyrandes_spell_t : public spell_t
   {
     tyrandes_spell_t( player_t* p, double max_mana ) :
-      spell_t( "tyrandes_doll", p, spell_data_t::nil(), SCHOOL_ARCANE )
+      spell_t( "tyrandes_doll", p, spell_data_t::nil() )
     {
+      school = SCHOOL_ARCANE;
       trigger_gcd = timespan_t::zero();
       base_dd_min = max_mana;
       base_dd_max = max_mana;

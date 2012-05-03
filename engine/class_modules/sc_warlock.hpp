@@ -13,6 +13,8 @@
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 5
 
+struct warlock_t;
+
 struct warlock_targetdata_t : public targetdata_t
 {
   dot_t*  dots_corruption;

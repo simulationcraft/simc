@@ -21,8 +21,7 @@ void action_t::init_dot( const std::string& name )
 action_t::action_t( action_type_e       ty,
                     const std::string&  token,
                     player_t*           p,
-                    const spell_data_t* s,
-                    school_type_e       school ) :
+                    const spell_data_t* s ) :
   s_data( s ? s : spell_data_t::nil() ),
   sim( p -> sim ),
   type( ty ),
@@ -268,8 +267,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   range                = spell_data.max_range();
   travel_speed         = spell_data.missile_speed();
   trigger_gcd          = spell_data.gcd();
-  school               = ( ( school == SCHOOL_NONE ) && spell_data.ok() ) ? spell_data.get_school_type() : school;
-  stats -> school      = school;
+  school               = spell_data.get_school_type();
   rp_gain              = spell_data.runic_power_gain();
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
@@ -1322,6 +1320,8 @@ void action_t::init()
   if ( initialized ) return;
 
   rng_result = player -> get_rng( name_str + "_result" );
+
+  stats -> school      = school;
 
   if ( ! sync_str.empty() )
   {

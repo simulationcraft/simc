@@ -19,9 +19,8 @@
 
 heal_t::heal_t( const std::string&  token,
                 player_t*           p,
-                const spell_data_t* s,
-                school_type_e       sc ) :
-  spell_base_t( ACTION_HEAL, token, p, s, sc )
+                const spell_data_t* s ) :
+  spell_base_t( ACTION_HEAL, token, p, s )
 {
   if ( target -> is_enemy() || target -> is_add() )
     target = player;

@@ -13,6 +13,8 @@
 
 enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
+struct mage_t;
+
 struct mage_targetdata_t : public targetdata_t
 {
   dot_t* dots_flamestrike;
@@ -26,7 +28,7 @@ struct mage_targetdata_t : public targetdata_t
   mage_targetdata_t( mage_t* source, player_t* target );
 };
 
-void register_mage_targetdata( sim_t* sim )
+void sim_t::register_mage_targetdata( sim_t* sim )
 {
   player_type_e t = MAGE;
   typedef mage_targetdata_t type;
@@ -306,8 +308,8 @@ struct mage_spell_t : public spell_t
   int dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
-                const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, s, sc ),
+                const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, p, s ),
     frozen( false ), may_hot_streak( false ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {

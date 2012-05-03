@@ -22,6 +22,8 @@ enum seal_type_e
   SEAL_MAX
 };
 
+struct paladin_t;
+
 struct paladin_targetdata_t : public targetdata_t
 {
   dot_t* dots_word_of_glory;
@@ -33,7 +35,7 @@ struct paladin_targetdata_t : public targetdata_t
   paladin_targetdata_t( paladin_t* source, player_t* target );
 };
 
-void register_paladin_targetdata( sim_t* sim )
+void sim_t::register_paladin_targetdata( sim_t* sim )
 {
   player_type_e t = PALADIN;
   typedef paladin_targetdata_t type;
@@ -115,7 +117,6 @@ struct paladin_t : public player_t
   } gains;
 
   // Cooldowns
-  // Cooldowns
   struct cooldowns_t
   {
     cooldown_t* avengers_shield;
@@ -141,9 +142,7 @@ struct paladin_t : public player_t
     const spell_data_t* vengeance;
     const spell_data_t* the_art_of_war;
     const spell_data_t* sanctity_of_battle;
-    passives_t() { memset( ( void* ) this, 0x0, sizeof( passives_t ) ); }
-  };
-  passives_t passives;
+  } passives;
 
   // Pets
   pet_t* guardian_of_ancient_kings;
@@ -163,16 +162,13 @@ struct paladin_t : public player_t
   {
     const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
-    spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   } spells;
 
   // Talents
   struct talents_t
   {
     const spell_data_t* divine_purpose;
-    talents_t() { memset( ( void* ) this, 0x0, sizeof( talents_t ) ); }
-  };
-  talents_t talents;
+  } talents;
 
   // Glyphs
   struct glyphs_t
@@ -185,10 +181,7 @@ struct paladin_t : public player_t
     const spell_data_t* hammer_of_wrath;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
-
-    glyphs_t() { memset( ( void* ) this, 0x0, sizeof( glyphs_t ) ); }
-  };
-  glyphs_t glyphs;
+  } glyphs;
 
   player_t* beacon_target;
   int ret_pvp_gloves;
@@ -197,7 +190,15 @@ struct paladin_t : public player_t
   bool bom_up;
 
   paladin_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
-    player_t( sim, PALADIN, name, r )
+    player_t( sim, PALADIN, name, r ),
+    buffs( buffs_t() ),
+    gains( gains_t() ),
+    cooldowns( cooldowns_t() ),
+    passives( passives_t() ),
+    procs( procs_t() ),
+    spells( spells_t() ),
+    talents( talents_t() ),
+    glyphs( glyphs_t() )
   {
     active_beacon_of_light             = 0;
     active_enlightened_judgments       = 0;
@@ -286,8 +287,9 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     paladin_t* owner;
 
     melee_t( guardian_of_ancient_kings_ret_t* p )
-      : melee_attack_t( "melee", p, spell_data_t::nil(), SCHOOL_PHYSICAL ), owner( 0 )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
     {
+      school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       weapon_multiplier = 1.0;
@@ -357,8 +359,8 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 struct paladin_heal_t : public heal_t
 {
   paladin_heal_t( const std::string& n, paladin_t* p,
-                  const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    heal_t( n, p, s, sc )
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    heal_t( n, p, s )
   {
     may_crit          = true;
     tick_may_crit     = true;
@@ -409,9 +411,8 @@ struct paladin_melee_attack_t : public melee_attack_t
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
-                          school_type_e sc = SCHOOL_NONE,
                           bool use2hspec = true ) :
-    melee_attack_t( n, p, s, sc ),
+    melee_attack_t( n, p, s ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false )
   {
     may_crit = true;
@@ -533,9 +534,8 @@ struct paladin_melee_attack_t : public melee_attack_t
 struct paladin_spell_t : public spell_t
 {
   paladin_spell_t( const std::string& n, paladin_t* p,
-                   const spell_data_t* s = spell_data_t::nil(),
-                   school_type_e sc = SCHOOL_NONE )
-    : spell_t( n, p, s, sc )
+                   const spell_data_t* s = spell_data_t::nil() )
+    : spell_t( n, p, s )
   {
   }
 
@@ -687,8 +687,9 @@ static void trigger_illuminated_healing( paladin_heal_t* h )
 struct melee_t : public paladin_melee_attack_t
 {
   melee_t( paladin_t* p )
-    : paladin_melee_attack_t( "melee", p, spell_data_t::nil(), SCHOOL_PHYSICAL, true )
+    : paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true )
   {
+    school = SCHOOL_PHYSICAL;
     special           = false;
     trigger_seal      = true;
     background        = true;
@@ -732,8 +733,9 @@ struct melee_t : public paladin_melee_attack_t
 struct auto_melee_attack_t : public paladin_melee_attack_t
 {
   auto_melee_attack_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil(), SCHOOL_PHYSICAL, true )
+    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil(), true )
   {
+    school = SCHOOL_PHYSICAL;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
 
@@ -998,7 +1000,7 @@ struct fist_of_justice_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), SCHOOL_NONE, false )
+    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), false )
   {
     may_dodge = false;
     may_parry = false;
@@ -1016,7 +1018,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   hammer_of_the_righteous_aoe_t *proc;
 
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), SCHOOL_NONE, true ), proc( 0 )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ), proc( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -1053,7 +1055,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), SCHOOL_NONE, true )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), true )
   {
     parse_options( NULL, options_str );
 
@@ -1109,8 +1111,9 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 struct hand_of_light_proc_t : public melee_attack_t
 {
   hand_of_light_proc_t( paladin_t* p )
-    : melee_attack_t( "hand_of_light", p, spell_data_t::nil(), SCHOOL_HOLY )
+    : melee_attack_t( "hand_of_light", p, spell_data_t::nil() )
   {
+    school = SCHOOL_HOLY;
     may_crit    = false;
     may_miss    = false;
     may_dodge   = false;
@@ -1270,7 +1273,7 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 struct seal_of_truth_dot_t : public paladin_melee_attack_t
 {
   seal_of_truth_dot_t( paladin_t* p )
-    : paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), SCHOOL_NONE, false )
+    : paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), false )
   {
     background       = true;
     proc             = true;
@@ -1377,7 +1380,7 @@ struct judgment_t : public paladin_melee_attack_t
   player_t* old_target;
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), SCHOOL_NONE, false ), old_target( 0 )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 )
   {
     parse_options( NULL, options_str );
 

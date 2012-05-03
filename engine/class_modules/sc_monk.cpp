@@ -13,12 +13,14 @@
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
+struct monk_t;
+
 struct monk_targetdata_t : public targetdata_t
 {
   monk_targetdata_t( monk_t* source, player_t* target );
 };
 
-void register_monk_targetdata( sim_t* /* sim */ )
+void sim_t::register_monk_targetdata( sim_t* /* sim */ )
 {
   /* player_type_e t = MONK; */
   typedef monk_targetdata_t type;
@@ -128,8 +130,8 @@ struct monk_melee_attack_t : public melee_attack_t
   int stancemask;
 
   monk_melee_attack_t( const std::string& n, monk_t* player,
-                       const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    melee_attack_t( n, player, s, sc ),
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    melee_attack_t( n, player, s ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
     may_crit   = true;
@@ -147,8 +149,8 @@ struct monk_spell_t : public spell_t
   int stancemask;
 
   monk_spell_t( const std::string& n, monk_t* player,
-                const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, player, s, sc ),
+                const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, player, s ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
     may_crit   = true;
@@ -165,8 +167,8 @@ struct monk_heal_t : public heal_t
   int stancemask;
 
   monk_heal_t( const std::string& n, monk_t* player,
-               const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    heal_t( n, player, s, sc ),
+               const spell_data_t* s = spell_data_t::nil() ) :
+    heal_t( n, player, s ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
     may_crit   = true;

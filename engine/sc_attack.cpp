@@ -14,9 +14,8 @@
 // == Attack Constructor ===============
 attack_t::attack_t( const std::string&  n,
                     player_t*           p,
-                    const spell_data_t* s,
-                    school_type_e       school ) :
-  action_t( ACTION_ATTACK, n, p, s, school )
+                    const spell_data_t* s ) :
+  action_t( ACTION_ATTACK, n, p, s )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
@@ -332,9 +331,8 @@ void attack_t::init()
 
 melee_attack_t::melee_attack_t( const std::string&  n,
                                 player_t*           p,
-                                const spell_data_t* s,
-                                school_type_e       sc ) :
-  attack_t( n, p, s, sc ),
+                                const spell_data_t* s ) :
+  attack_t( n, p, s ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   may_miss = may_dodge = may_parry = may_glance = may_block = true;
@@ -415,9 +413,8 @@ double melee_attack_t::glance_chance( int delta_level ) const
 
 ranged_attack_t::ranged_attack_t( const std::string& token,
                                   player_t* p,
-                                  const spell_data_t* s,
-                                  school_type_e sc ) :
-  attack_t( token, p, s, sc ),
+                                  const spell_data_t* s ) :
+  attack_t( token, p, s ),
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   may_miss  = true;

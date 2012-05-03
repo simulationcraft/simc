@@ -156,8 +156,9 @@ static double get_fury_gain( const spell_data_t& data )
 struct warlock_pet_melee_t : public melee_attack_t
 {
   warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
-    melee_attack_t( name, p, spell_data_t::nil(), SCHOOL_PHYSICAL )
+    melee_attack_t( name, p, spell_data_t::nil() )
   {
+    school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     may_crit    = true;
@@ -177,8 +178,8 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 {
   double generate_fury;
 
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    melee_attack_t( n, p, p -> find_pet_spell( n ), sc ), generate_fury( 0 )
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) :
+    melee_attack_t( n, p, p -> find_pet_spell( n ) ), generate_fury( 0 )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
@@ -187,8 +188,8 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    melee_attack_t( token, p, s, sc ), generate_fury( 0 )
+  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    melee_attack_t( token, p, s ), generate_fury( 0 )
   {
     weapon = &( p -> main_hand_weapon );
     may_crit   = true;
@@ -225,16 +226,16 @@ struct warlock_pet_spell_t : public spell_t
 {
   double generate_fury;
 
-  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n, school_type_e sc = SCHOOL_NONE ) :
-    spell_t( n, p, p -> find_pet_spell( n ), sc ), generate_fury( 0 )
+  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) :
+    spell_t( n, p, p -> find_pet_spell( n ) ), generate_fury( 0 )
   {
     may_crit = true;
     stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE ) :
-    spell_t( token, p, s, sc ), generate_fury( 0 )
+  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( token, p, s ), generate_fury( 0 )
   {
     may_crit = true;
     stateless = true;

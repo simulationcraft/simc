@@ -15,9 +15,8 @@
 
 spell_t::spell_t( const std::string&  token,
                   player_t*           p,
-                  const spell_data_t* s,
-                  school_type_e       sc ) :
-  spell_base_t( ACTION_SPELL, token, p, s, sc )
+                  const spell_data_t* s ) :
+  spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
 

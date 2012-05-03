@@ -329,8 +329,9 @@ struct damage_event_t : public raid_event_t
     struct raid_damage_t : public spell_t
     {
       raid_damage_t( const char* n, player_t* player, const school_type_e s ) :
-        spell_t( n, player, spell_data_t::nil(), s )
+        spell_t( n, player, spell_data_t::nil() )
       {
+        school = s;
         may_crit = false;
         background = true;
         trigger_gcd = timespan_t::zero();

@@ -85,7 +85,7 @@ struct warrior_targetdata_t : public targetdata_t
   warrior_targetdata_t( warrior_t* source, player_t* target );
 };
 
-void register_warrior_targetdata( sim_t* sim )
+void sim_t::register_warrior_targetdata( sim_t* sim )
 {
   player_type_e t = WARRIOR;
   typedef warrior_targetdata_t type;

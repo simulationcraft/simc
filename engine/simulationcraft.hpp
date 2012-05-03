@@ -129,8 +129,6 @@ namespace std {using namespace tr1; }
 #define SC_WARLOCK      1
 #define SC_WARRIOR      0
 
-#define MAX_PLAYERS_PER_CHART 20
-
 // TODO: Integer time is only partially working.
 #define SC_USE_INTEGER_TIME
 
@@ -165,14 +163,10 @@ struct heal_t;
 struct hunter_t;
 struct item_t;
 struct js_node_t;
-struct mage_t;
-struct monk_t;
 struct option_t;
-struct paladin_t;
 struct pet_t;
 struct player_t;
 struct plot_t;
-struct priest_t;
 struct proc_t;
 struct raid_event_t;
 struct rating_t;
@@ -183,7 +177,6 @@ struct rng_t;
 struct rogue_t;
 struct sample_data_t;
 struct scaling_t;
-struct shaman_t;
 struct sim_t;
 struct spell_data_t;
 struct spell_id_t;
@@ -193,7 +186,6 @@ struct stats_t;
 struct stat_buff_t;
 struct unique_gear_t;
 struct uptime_t;
-struct warlock_t;
 struct warrior_t;
 struct weapon_t;
 struct xml_node_t;
@@ -205,23 +197,9 @@ struct hunter_targetdata_t;
 struct mage_targetdata_t;
 struct monk_targetdata_t;
 struct paladin_targetdata_t;
-struct priest_targetdata_t;
 struct rogue_targetdata_t;
-struct shaman_targetdata_t;
 struct warlock_targetdata_t;
 struct warrior_targetdata_t;
-
-void register_death_knight_targetdata( sim_t* sim );
-void register_druid_targetdata( sim_t* sim );
-void register_hunter_targetdata( sim_t* sim );
-void register_mage_targetdata( sim_t* sim );
-void register_monk_targetdata( sim_t* sim );
-void register_paladin_targetdata( sim_t* sim );
-void register_priest_targetdata( sim_t* sim );
-void register_rogue_targetdata( sim_t* sim );
-void register_shaman_targetdata( sim_t* sim );
-void register_warlock_targetdata( sim_t* sim );
-void register_warrior_targetdata( sim_t* sim );
 
 #define DATA_DOT 0
 #define DATA_AURA 1
@@ -1632,20 +1610,6 @@ struct spell_info_t
   static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level=MAX_LEVEL );
 };
 
-// Spell ID class
-
-enum s_type_e
-{
-  T_SPELL = 0,
-  T_TALENT,
-  T_MASTERY,
-  T_GLYPH,
-  T_CLASS,
-  T_RACE,
-  T_SPEC,
-  T_ITEM
-};
-
 
 // Raid Event
 
@@ -2593,6 +2557,18 @@ public:
   {
     return ( buff_t* )get_targetdata_item( source, target, DATA_AURA, name );
   }
+
+  static void register_death_knight_targetdata( sim_t* sim );
+  static void register_druid_targetdata( sim_t* sim );
+  static void register_hunter_targetdata( sim_t* sim );
+  static void register_mage_targetdata( sim_t* sim );
+  static void register_monk_targetdata( sim_t* sim );
+  static void register_paladin_targetdata( sim_t* sim );
+  static void register_priest_targetdata( sim_t* sim );
+  static void register_rogue_targetdata( sim_t* sim );
+  static void register_shaman_targetdata( sim_t* sim );
+  static void register_warlock_targetdata( sim_t* sim );
+  static void register_warrior_targetdata( sim_t* sim );
 };
 
 // Scaling ==================================================================
@@ -2939,6 +2915,7 @@ struct item_t
 };
 
 // Item database ============================================================
+
 struct item_database_t
 {
   static bool     download_slot(      item_t& item,
@@ -3007,7 +2984,6 @@ public:
   bool              has_set_bonus( set_type_e s ) const;
   const spell_data_t* set( set_type_e s ) const;
 };
-
 
 // Player ===================================================================
 
@@ -4062,7 +4038,7 @@ private:
   mutable targetdata_t* cached_targetdata;
 
 public:
-  action_t( action_type_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e school = SCHOOL_NONE );
+  action_t( action_type_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
@@ -4279,7 +4255,7 @@ struct action_state_t
 
 struct attack_t : public action_t
 {
-  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
   virtual double haste() const;
@@ -4315,7 +4291,7 @@ struct melee_attack_t : public attack_t
 {
   double base_expertise, player_expertise, target_expertise;
 
-  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
   virtual void   player_buff();
@@ -4336,7 +4312,7 @@ struct ranged_attack_t : public attack_t
 {
   double base_expertise, player_expertise, target_expertise;
 
-  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
   virtual void   player_buff();
@@ -4356,7 +4332,7 @@ struct ranged_attack_t : public attack_t
 
 struct spell_base_t : public action_t
 {
-  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   // Spell Overrides
   virtual double haste() const;
   virtual timespan_t gcd() const;
@@ -4379,7 +4355,7 @@ struct spell_base_t : public action_t
 struct spell_t : public spell_base_t
 {
 public:
-  spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc = SCHOOL_NONE );
+  spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
   virtual void   player_buff();
@@ -4397,7 +4373,7 @@ struct heal_t : public spell_base_t
 {
   bool group_only;
 
-  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual void player_buff();
   virtual void execute();
@@ -4411,7 +4387,7 @@ struct heal_t : public spell_base_t
 
 struct absorb_t : public spell_base_t
 {
-  absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil(), school_type_e sc=SCHOOL_NONE );
+  absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual void player_buff();
   virtual void execute();
