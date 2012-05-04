@@ -915,16 +915,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     p() -> spells.apparitions_active.remove( this );
     p() -> spells.apparitions_free.push( this );
   }
-
-  virtual double action_multiplier() const
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    // Bug: Last tested Build 15657
-    if ( p() -> buffs.shadowform -> check() )
-      m *= 1.15 / ( 1.0 + p() -> spec.shadowform -> effectN( 2 ).percent() );
-    return m;
-  }
 };
 
 void priest_spell_t::trigger_shadowy_apparition( dot_t* d )
@@ -1619,7 +1609,11 @@ struct mind_flay_t : public priest_spell_t
     }
     if ( p() -> talents.divine_insight -> ok() )
     {
+      // Disable the tick_zero for the refresh then restore
+      bool tz = td() -> dots_shadow_word_pain -> action -> tick_zero;
+      td() -> dots_shadow_word_pain -> action -> tick_zero = false;
       td() -> dots_shadow_word_pain -> refresh_duration();
+      td() -> dots_shadow_word_pain -> action -> tick_zero = tz;
       p() -> procs.refresh_shadow_word_pain -> occur();
     }
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
