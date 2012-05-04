@@ -504,7 +504,6 @@ struct shadowburn_t : public warlock_spell_t
   {
     double m = spell_t::action_multiplier();
 
-    // FIXME: Formula from tooltip, needs retesting after 2012-05-03
     m *= 1.0 + data().effectN( 1 ).base_value() / 100.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     return m;
@@ -1014,6 +1013,17 @@ struct chaos_bolt_t : public warlock_spell_t
     }
 
     return h;
+  }
+
+  virtual double cost() const
+  {
+    double c = warlock_spell_t::cost();
+
+    // BUG: DTR-copied chaos bolts currently (beta 2012-05-04) cost embers
+    if ( is_dtr_action && p() -> bugs )
+      c = base_costs[ RESOURCE_BURNING_EMBER ];
+
+    return c;
   }
 };
 
