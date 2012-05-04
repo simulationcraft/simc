@@ -346,6 +346,7 @@ static void extend_dot( dot_t* dot, int ticks, double haste )
 {
   if ( dot -> ticking )
   {
+    //FIXME: This is roughly how it works, but we need more testing - seems inconsistent for doom and immolate
     int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
     int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
     if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
@@ -1310,7 +1311,6 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      //FIXME: Exact mechanic needs testing - seems inconsistent, particularly for Doom
       warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       extend_dot(            td -> dots_immolate, 2, player -> composite_spell_haste() );
       extend_dot( td -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
@@ -1334,6 +1334,47 @@ struct fel_flame_t : public warlock_spell_t
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
+  }
+};
+
+
+struct void_ray_t : public warlock_spell_t
+{
+  void_ray_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "void_ray", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 115422 ) : spell_data_t::not_found() )
+  {
+    aoe = -1;
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new void_ray_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
+      extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot(       td -> dots_doom, 1, player -> composite_spell_haste() );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -2047,6 +2088,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
   else if ( name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
   else if ( name == "fel_flame"             ) a = new             fel_flame_t( this );
+  else if ( name == "void_ray"              ) a = new              void_ray_t( this );
   else if ( name == "dark_intent"           ) a = new           dark_intent_t( this );
   else if ( name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( name == "soulburn"              ) a = new              soulburn_t( this );
