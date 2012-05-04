@@ -8,11 +8,10 @@
 
 #if SC_PRIEST == 1
 
-namespace {
-struct remove_dots_event_t;
-
-struct spirit_shell_buff_t : public absorb_buff_t
+namespace priest {
+class spirit_shell_buff_t : public absorb_buff_t
 {
+public:
   spirit_shell_buff_t( actor_pair_t p ) :
     absorb_buff_t( absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ) )
   { }
@@ -27,54 +26,6 @@ struct spirit_shell_buff_t : public absorb_buff_t
     }
   }
 };
-
-}
-
-void sim_t::register_priest_targetdata( sim_t* sim )
-{
-  player_type_e t = PRIEST;
-  typedef priest_targetdata_t type;
-
-  REGISTER_DOT( holy_fire );
-  REGISTER_DOT( renew );
-  REGISTER_DOT( devouring_plague );
-  REGISTER_DOT( shadow_word_pain );
-  REGISTER_DOT( vampiric_touch );
-
-  REGISTER_BUFF( power_word_shield );
-  REGISTER_BUFF( divine_aegis );
-  REGISTER_BUFF( spirit_shell );
-
-  REGISTER_DEBUFF( mind_spike );
-}
-
-// ==========================================================================
-// Priest
-// ==========================================================================
-
-priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
-  targetdata_t( p, target ), remove_dots_event( NULL )
-{
-  absorb_buff_t* new_pws = absorb_buff_creator_t( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) )
-                                          .source( source -> get_stats( "power_word_shield" ) );
-  buffs_power_word_shield = add_aura( new_pws );
-  target -> absorb_buffs.push_back( new_pws );
-
-  absorb_buff_t* new_da = absorb_buff_creator_t( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) )
-                          .source( source -> get_stats( "divine_aegis" ) );
-  buffs_divine_aegis = add_aura( new_da );
-  target -> absorb_buffs.push_back( new_da );
-
-  absorb_buff_t* new_ss = new spirit_shell_buff_t( this );
-
-  buffs_spirit_shell = add_aura( new_ss );
-  target -> absorb_buffs.push_back( new_ss );
-
-  debuffs_mind_spike    = add_aura( buff_creator_t( this, "mind_spike", p -> find_class_spell( "Mind Spike" ) )
-                                    .max_stack( p -> find_class_spell( "Mind Spike" ) -> effectN( 3 ).base_value() )
-                                    .duration( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).trigger() -> duration() )
-                                    .default_value( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).percent() ) ) ;
-}
 
 namespace remove_dots_event // ANONYMOUS NAMESPACE ============================================
 {
@@ -110,35 +61,7 @@ public:
 
 }
 
-priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
-  player_t( sim, PRIEST, name, r ),
-  // initialize containers. For POD containers this sets all elements to 0.
-  buffs( buffs_t() ),
-  talents( talents_t() ),
-  spec( specs_t() ),
-  mastery_spells( mastery_spells_t() ),
-  cooldowns( cooldowns_t() ),
-  gains( gains_t() ),
-  benefits( benefits_t() ),
-  procs( procs_t() ),
-  spells( spells_t() ),
-  rngs( rngs_t() ),
-  pets( pets_t() ),
-  initial_shadow_orbs( 0 ),
-  glyphs( glyphs_t() ),
-  constants( constants_t() )
-{
-  initial.distance                     = 40.0;
-
-  cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
-  cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
-  cooldowns.mindbender                 = get_cooldown( "mindbender" );
-  cooldowns.chakra                     = get_cooldown( "chakra"   );
-  cooldowns.inner_focus                = get_cooldown( "inner_focus" );
-  cooldowns.penance                    = get_cooldown( "penance" );
-
-  create_options();
-}
+namespace actions { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Priest Absorb
@@ -803,86 +726,6 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     {
       if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
     }
-  }
-};
-
-// ==========================================================================
-// Pet Lightwell
-// ==========================================================================
-
-struct lightwell_pet_t : public pet_t
-{
-  struct lightwell_renew_t : public heal_t
-  {
-    lightwell_renew_t( lightwell_pet_t* player ) :
-      heal_t( "lightwell_renew", player, player -> find_spell( 7001 ) )
-    {
-      may_crit = false;
-      tick_may_crit = true;
-      stateless = true;
-
-      tick_power_mod = 0.308;
-    }
-
-    lightwell_pet_t* p()
-    { return static_cast<lightwell_pet_t*>( player ); }
-
-    virtual void execute()
-    {
-      p() -> charges--;
-
-      target = find_lowest_player();
-
-      heal_t::execute();
-    }
-
-    virtual void last_tick( dot_t* d )
-    {
-      heal_t::last_tick( d );
-
-      if ( p() -> charges <= 0 )
-        p() -> dismiss();
-    }
-
-    virtual bool ready()
-    {
-      if ( p() -> charges <= 0 )
-        return false;
-      return heal_t::ready();
-    }
-  };
-
-  int charges;
-
-  lightwell_pet_t( sim_t* sim, priest_t* p ) :
-    pet_t( sim, p, "lightwell", PET_NONE, true ),
-    charges( 0 )
-  {
-    role = ROLE_HEAL;
-
-    action_list_str  = "/snapshot_stats";
-    action_list_str += "/lightwell_renew";
-    action_list_str += "/wait,sec=cooldown.lightwell_renew.remains";
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "lightwell_renew" ) return new lightwell_renew_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  virtual void summon( timespan_t duration )
-  {
-    priest_t* o = static_cast<priest_t*>( owner );
-
-    spell_haste = o -> spell_haste;
-    spell_power[ SCHOOL_HOLY ] = o -> composite_spell_power( SCHOOL_HOLY ) * o -> composite_spell_power_multiplier();
-
-    charges = 10 + o -> glyphs.lightwell -> effectN( 1 ).base_value();
-
-    pet_t::summon( duration );
   }
 };
 
@@ -3208,9 +3051,65 @@ struct spirit_shell_t : priest_heal_t
   }
 };
 
+}
+
 // ==========================================================================
-// Priest Character Definition
+// Priest
 // ==========================================================================
+
+priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
+  targetdata_t( p, target ), remove_dots_event( NULL )
+{
+  absorb_buff_t* new_pws = absorb_buff_creator_t( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) )
+                                          .source( source -> get_stats( "power_word_shield" ) );
+  buffs_power_word_shield = add_aura( new_pws );
+  target -> absorb_buffs.push_back( new_pws );
+
+  absorb_buff_t* new_da = absorb_buff_creator_t( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) )
+                          .source( source -> get_stats( "divine_aegis" ) );
+  buffs_divine_aegis = add_aura( new_da );
+  target -> absorb_buffs.push_back( new_da );
+
+  absorb_buff_t* new_ss = new spirit_shell_buff_t( this );
+
+  buffs_spirit_shell = add_aura( new_ss );
+  target -> absorb_buffs.push_back( new_ss );
+
+  debuffs_mind_spike    = add_aura( buff_creator_t( this, "mind_spike", p -> find_class_spell( "Mind Spike" ) )
+                                    .max_stack( p -> find_class_spell( "Mind Spike" ) -> effectN( 3 ).base_value() )
+                                    .duration( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).trigger() -> duration() )
+                                    .default_value( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).percent() ) ) ;
+}
+
+priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
+  player_t( sim, PRIEST, name, r ),
+  // initialize containers. For POD containers this sets all elements to 0.
+  buffs( buffs_t() ),
+  talents( talents_t() ),
+  spec( specs_t() ),
+  mastery_spells( mastery_spells_t() ),
+  cooldowns( cooldowns_t() ),
+  gains( gains_t() ),
+  benefits( benefits_t() ),
+  procs( procs_t() ),
+  spells( spells_t() ),
+  rngs( rngs_t() ),
+  pets( pets_t() ),
+  initial_shadow_orbs( 0 ),
+  glyphs( glyphs_t() ),
+  constants( constants_t() )
+{
+  initial.distance                     = 40.0;
+
+  cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
+  cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
+  cooldowns.mindbender                 = get_cooldown( "mindbender" );
+  cooldowns.chakra                     = get_cooldown( "chakra"   );
+  cooldowns.inner_focus                = get_cooldown( "inner_focus" );
+  cooldowns.penance                    = get_cooldown( "penance" );
+
+  create_options();
+}
 
 // priest_t::shadowy_recall_chance ==============================================
 
@@ -3335,6 +3234,7 @@ double priest_t::matching_gear_multiplier( const attribute_type_e attr ) const
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  using namespace actions;
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
@@ -3585,13 +3485,13 @@ void priest_t::init_spells()
   glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    spells.echo_of_light = new echo_of_light_t( this );
+    spells.echo_of_light = new actions::echo_of_light_t( this );
   else
     spells.echo_of_light = NULL;
 
   if ( spec.shadowy_apparitions -> ok() )
   {
-    priest_spell_t::add_more_shadowy_apparitions( this, spec.shadowy_apparitions -> effectN( 2 ).base_value() );
+    actions::priest_spell_t::add_more_shadowy_apparitions( this, spec.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
   // Set Bonuses
@@ -4149,7 +4049,30 @@ int priest_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+} // END priest NAMESPACE
+
+using priest::priest_t;
+using priest::priest_targetdata_t;
+
+void sim_t::register_priest_targetdata( sim_t* sim )
+{
+  player_type_e t = PRIEST;
+  typedef priest_targetdata_t type;
+
+  REGISTER_DOT( holy_fire );
+  REGISTER_DOT( renew );
+  REGISTER_DOT( devouring_plague );
+  REGISTER_DOT( shadow_word_pain );
+  REGISTER_DOT( vampiric_touch );
+
+  REGISTER_BUFF( power_word_shield );
+  REGISTER_BUFF( divine_aegis );
+  REGISTER_BUFF( spirit_shell );
+
+  REGISTER_DEBUFF( mind_spike );
+}
 #endif // SC_PRIEST
+
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS

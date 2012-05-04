@@ -7,6 +7,8 @@
 
 #if SC_PRIEST == 1
 
+namespace priest {
+
 namespace priest_pet_stats { // ====================================================
 
 struct _stat_list_t
@@ -349,6 +351,48 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
 
 }
 
+namespace lightwell_spells {
+struct lightwell_renew_t : public heal_t
+  {
+    lightwell_renew_t( lightwell_pet_t* player ) :
+      heal_t( "lightwell_renew", player, player -> find_spell( 7001 ) )
+    {
+      may_crit = false;
+      tick_may_crit = true;
+      stateless = true;
+
+      tick_power_mod = 0.308;
+    }
+
+    lightwell_pet_t* p()
+    { return static_cast<lightwell_pet_t*>( player ); }
+
+    virtual void execute()
+    {
+      p() -> charges--;
+
+      target = find_lowest_player();
+
+      heal_t::execute();
+    }
+
+    virtual void last_tick( dot_t* d )
+    {
+      heal_t::last_tick( d );
+
+      if ( p() -> charges <= 0 )
+        p() -> dismiss();
+    }
+
+    virtual bool ready()
+    {
+      if ( p() -> charges <= 0 )
+        return false;
+      return heal_t::ready();
+    }
+  };
+} // END lightwell_spells NAMESPACE
+
 // ==========================================================================
 // Priest Pet
 // ==========================================================================
@@ -589,6 +633,43 @@ void mindbender_pet_t::init_spells()
 
   mana_leech  = find_spell( 123051, "mana_leech" );
 }
+
+
+// ==========================================================================
+// Pet Lightwell
+// ==========================================================================
+
+
+lightwell_pet_t::lightwell_pet_t( sim_t* sim, priest_t* p ) :
+  priest_pet_t( sim, p, "lightwell", PET_NONE, true ),
+  charges( 0 )
+{
+  role = ROLE_HEAL;
+
+  action_list_str  = "/snapshot_stats";
+  action_list_str += "/lightwell_renew";
+  action_list_str += "/wait,sec=cooldown.lightwell_renew.remains";
+}
+
+action_t* lightwell_pet_t::create_action( const std::string& name,
+                                 const std::string& options_str )
+{
+  if ( name == "lightwell_renew" ) return new lightwell_spells::lightwell_renew_t( this );
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
+void lightwell_pet_t::summon( timespan_t duration )
+{
+  spell_haste = o() -> spell_haste;
+  spell_power[ SCHOOL_HOLY ] = o() -> composite_spell_power( SCHOOL_HOLY ) * o() -> composite_spell_power_multiplier();
+
+  charges = 10 + o() -> glyphs.lightwell -> effectN( 1 ).base_value();
+
+  priest_pet_t::summon( duration );
+}
+
+} // END priest NAMESPACE
 
 #endif // SC_PRIEST
 

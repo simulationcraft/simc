@@ -10,6 +10,8 @@
 
 #if SC_PRIEST == 1
 
+namespace priest {
+
 namespace remove_dots_event {
 struct remove_dots_event_t;
 }
@@ -34,9 +36,6 @@ struct priest_targetdata_t : public targetdata_t
 
   priest_targetdata_t( priest_t* p, player_t* target );
 };
-
-struct priest_pet_t;
-struct priest_guardian_pet_t;
 
 struct priest_t : public player_t
 {
@@ -183,7 +182,7 @@ struct priest_t : public player_t
     std::list<spell_t*>  apparitions_active;
     heal_t* echo_of_light;
     bool echo_of_light_merged;
-    spells_t() : echo_of_light(), echo_of_light_merged() {}
+    spells_t() : echo_of_light( NULL ), echo_of_light_merged( false ) {}
   } spells;
 
 
@@ -288,9 +287,6 @@ struct priest_t : public player_t
 // Priest Pet
 // ==========================================================================
 
-namespace priest_pet_stats{
-struct _weapon_list_t;
-}
 struct priest_pet_t : public pet_t
 {
   double ap_per_owner_sp;
@@ -373,6 +369,16 @@ struct mindbender_pet_t : public base_fiend_pet_t
   virtual void init_spells();
 };
 
+class lightwell_pet_t : public priest_pet_t
+{
+public:
+  int charges;
+  lightwell_pet_t( sim_t* sim, priest_t* p );
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str );
+  virtual void summon( timespan_t duration );
+};
+} // END priest NAMESPACE
 #endif
 
 #endif
