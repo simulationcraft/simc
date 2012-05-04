@@ -379,7 +379,7 @@ void priest_pet_t::init_base()
 
   {
     using namespace priest_pet_stats;
-    int stats_available, stats2_available;
+    int stats_available = 0, stats2_available = 0;
     base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type, stats_available, stats2_available );
     base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type, stats_available, stats2_available );
     base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type, stats_available, stats2_available );
