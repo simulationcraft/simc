@@ -1348,7 +1348,7 @@ struct fel_flame_t : public warlock_spell_t
 struct void_ray_t : public warlock_spell_t
 {
   void_ray_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "void_ray", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 115422 ) : spell_data_t::not_found() )
+    warlock_spell_t( p, "Void Ray" )
   {
     aoe = -1;
     if ( ! dtr && p -> has_dtr )
