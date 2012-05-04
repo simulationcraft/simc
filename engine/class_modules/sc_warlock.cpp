@@ -211,8 +211,6 @@ public:
     current_charges = max_charges;
   }
 
-  // warlock_spell_t::composite_target_ta_multiplier ===================================
-
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = 1.0;
@@ -1565,13 +1563,22 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 struct rain_of_fire_tick_t : public warlock_spell_t
 {
-  rain_of_fire_tick_t( warlock_t* p ) :
-    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
+  warlock_spell_t* rof_spell;
+
+  rain_of_fire_tick_t( warlock_t* p, warlock_spell_t* s ) :
+    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) ), rof_spell( s )
   {
     dual        = true;
     background  = true;
     aoe         = -1;
     direct_tick = true;
+  }
+
+  virtual double cost() const
+  {
+    if ( ! rof_spell -> channeled ) return 0;
+
+    return warlock_spell_t::cost();
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -1595,10 +1602,13 @@ struct rain_of_fire_t : public warlock_spell_t
     warlock_spell_t( p, "Rain of Fire" ),
     rain_of_fire_tick( 0 )
   {
+    dot_behavior = DOT_CLIP;
     harmful = false;
+    tick_zero = true;
+    hasted_ticks = false;
     channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
-    rain_of_fire_tick = new rain_of_fire_tick_t( p );
+    rain_of_fire_tick = new rain_of_fire_tick_t( p, this );
 
     add_child( rain_of_fire_tick );
   }
@@ -1608,6 +1618,14 @@ struct rain_of_fire_t : public warlock_spell_t
     warlock_spell_t::init();
 
     rain_of_fire_tick -> stats = stats;
+    // RoF currently costs mana per tick if it's being channeled
+    rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    // FIXME: Estimate, needs testing
+    return ( channeled ) ? timespan_t::zero() : timespan_t::from_seconds( 1.5 );
   }
 
   virtual void tick( dot_t* d )
@@ -1626,7 +1644,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
   virtual bool usable_moving()
   {
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY ) channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() ) return false;
 
     return warlock_spell_t::usable_moving();
   }
