@@ -274,7 +274,7 @@
     <None Include="engine\dbc\sc_extra_data_ptr.inc" />
     <None Include="engine\dbc\sc_item_data.inc" />
     <None Include="engine\dbc\sc_item_data_ptr.inc" />
-    <None Include="engine\dbc\c_scale_data.inc">
+    <None Include="engine\dbc\sc_scale_data.inc">
       <FileType>Document</FileType>
     </None>
     <None Include="engine\dbc\sc_scale_data_ptr.inc">
