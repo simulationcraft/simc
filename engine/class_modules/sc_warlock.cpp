@@ -1449,51 +1449,6 @@ struct dark_soul_t : public warlock_spell_t
 
 // AOE SPELLS
 
-struct hellfire_tick_t : public warlock_spell_t
-{
-  hellfire_tick_t( warlock_t* p ) :
-    warlock_spell_t( "hellfire_tick", p, p -> find_spell( 5857 ) )
-  {
-    dual        = true;
-    background  = true;
-    aoe         = -1;
-    direct_tick = true;
-  }
-};
-
-
-struct hellfire_t : public warlock_spell_t
-{
-  hellfire_tick_t* hellfire_tick;
-
-  hellfire_t( warlock_t* p ) :
-    warlock_spell_t( p, "Hellfire" ), hellfire_tick( 0 )
-  {
-    // Hellfire has it's own damage effect, which is actually the damage to the player himself, so harmful is set to false.
-    harmful = false;
-
-    channeled    = true;
-    hasted_ticks = false;
-
-    hellfire_tick = new hellfire_tick_t( p );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    hellfire_tick -> stats = stats;
-  }
-
-  virtual bool usable_moving()
-  { return false; }
-
-  virtual void tick( dot_t* /* d */ )
-  {
-    hellfire_tick -> execute();
-  }
-};
-
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
   seed_of_corruption_aoe_t( warlock_t* p ) :
@@ -1564,9 +1519,21 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   rain_of_fire_tick_t( warlock_t* p ) :
     warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
   {
+    dual        = true;
     background  = true;
     aoe         = -1;
     direct_tick = true;
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double m = warlock_spell_t::composite_target_multiplier( t );
+    warlock_targetdata_t* td = targetdata_t::get( player, t ) -> cast_warlock();
+
+    if ( td -> dots_immolate -> ticking )
+      m *= 1.5;
+
+    return m;
   }
 };
 
@@ -1599,6 +1566,20 @@ struct rain_of_fire_t : public warlock_spell_t
     warlock_spell_t::tick( d );
 
     rain_of_fire_tick -> execute();
+  }
+
+  virtual void execute()
+  {
+    channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+
+    warlock_spell_t::execute();
+  }
+
+  virtual bool usable_moving()
+  {
+    channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+
+    return warlock_spell_t::usable_moving();
   }
 };
 
@@ -2061,7 +2042,6 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
-  else if ( name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
