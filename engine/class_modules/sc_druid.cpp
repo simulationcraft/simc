@@ -3061,7 +3061,10 @@ struct innervate_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_spell_t::execute();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
+
     druid_t* p = player -> cast_druid();
 
     double gain;
@@ -3080,9 +3083,6 @@ struct innervate_t : public druid_spell_t
 
   virtual bool ready()
   {
-    if ( ! druid_spell_t::ready() )
-      return false;
-
     if ( trigger < 0 )
       return ( target -> resources.current[ RESOURCE_MANA ] + trigger ) < 0;
       
@@ -3090,7 +3090,7 @@ struct innervate_t : public druid_spell_t
       return ( target -> resources.max    [ RESOURCE_MANA ] -
              target -> resources.current[ RESOURCE_MANA ] ) > trigger;
     
-    return true;
+    return druid_spell_t::ready();
   }
 };
 
