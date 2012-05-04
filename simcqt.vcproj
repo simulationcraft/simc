@@ -803,7 +803,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="engine\sc_target.cpp"
+				RelativePath="engine\class_modules\sc_enemy.cpp"
 				>
 			</File>
 			<File

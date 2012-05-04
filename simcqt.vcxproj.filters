@@ -165,7 +165,7 @@
     <ClCompile Include="engine\sc_talent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_target.cpp">
+    <ClCompile Include="engine\class_modules\sc_enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="engine\sc_thread.cpp">

@@ -36,7 +36,6 @@
     <ClCompile Include="engine\sc_harmful_spell.cpp" />
     <ClCompile Include="engine\sc_absorb.cpp" />
     <ClCompile Include="engine\sc_stats.cpp" />
-    <ClCompile Include="engine\sc_target.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
@@ -57,6 +56,7 @@
     <ClCompile Include="engine\sc_action_state.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
+    <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
     <ClCompile Include="engine\class_modules\sc_hunter.cpp" />
     <ClCompile Include="engine\class_modules\sc_mage.cpp" />
     <ClCompile Include="engine\class_modules\sc_monk.cpp" />

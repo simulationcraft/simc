@@ -920,6 +920,7 @@ void enchant_t::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
+  // Special Weapn Enchants
   std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
   std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
   std::string& ranged_enchant = p -> items[ SLOT_RANGED    ].encoded_enchant_str;
@@ -954,19 +955,7 @@ void enchant_t::init( player_t* p )
 
   register_gnomish_xray( p, ranged_enchant, rw );
 
-  if ( ranged_enchant == "gnomish_xray" )
-  {
-    //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
-    stat_buff_t* buff = stat_buff_creator_t(
-                          buff_creator_t( p, "xray_targeting" )
-                          .spell( p -> find_spell( 95712 ) )
-                          .cd( timespan_t::from_seconds( 40 ) )
-                          .activated( false ) )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( p->find_spell( 95712 )->effectN( 1 ).base_value() );
-
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw, buff, 1.0/*PPM*/ ) );
-  }
+  // Special Meta Gem "Enchants"
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
@@ -996,6 +985,7 @@ void enchant_t::init( player_t* p )
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
 
+  // Special Item Enchants
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
     item_t& item = p -> items[ i ];

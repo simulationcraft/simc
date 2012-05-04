@@ -105,7 +105,6 @@ SRC = \
 	sc_harmful_spell.cpp \
 	sc_absorb.cpp \
 	sc_stats.cpp \
-	sc_target.cpp \
 	sc_thread.cpp \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
@@ -148,6 +147,7 @@ SRC = \
 	dbc$(PATHSEP)sc_talent_data_ptr.inc \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
+	class_modules$(PATHSEP)sc_enemy.cpp \
 	class_modules$(PATHSEP)sc_hunter.cpp \
 	class_modules$(PATHSEP)sc_mage.cpp \
 	class_modules$(PATHSEP)sc_monk.cpp \
