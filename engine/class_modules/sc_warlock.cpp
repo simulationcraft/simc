@@ -341,7 +341,6 @@ public:
 };
 
 
-
 static void extend_dot( dot_t* dot, int ticks, double haste )
 {
   if ( dot -> ticking )
@@ -1597,7 +1596,7 @@ struct rain_of_fire_t : public warlock_spell_t
     rain_of_fire_tick( 0 )
   {
     harmful = false;
-    channeled = true;
+    channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
     rain_of_fire_tick = new rain_of_fire_tick_t( p );
 
@@ -1620,14 +1619,14 @@ struct rain_of_fire_t : public warlock_spell_t
 
   virtual void execute()
   {
-    channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY ) channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
 
     warlock_spell_t::execute();
   }
 
   virtual bool usable_moving()
   {
-    channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY ) channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
 
     return warlock_spell_t::usable_moving();
   }
