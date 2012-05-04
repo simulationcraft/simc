@@ -3730,7 +3730,6 @@ struct player_t : public noncopyable
   bool is_add() const { return type == ENEMY_ADD; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
-  druid_t       * cast_druid       () { assert( type == DRUID        ); return ( druid_t       * ) this; }
   hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }

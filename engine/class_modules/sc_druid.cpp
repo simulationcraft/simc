@@ -909,7 +909,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   if ( gain == 0 ) 
     return;
 
-  druid_t* p = s -> player -> cast_druid();
+  druid_t* p = s -> p();
 
   if ( p -> buff.celestial_alignment -> check() )
     return;
@@ -1024,7 +1024,7 @@ static void trigger_eclipse_gain_delay( druid_spell_t* s, int gain )
 
 static void trigger_swiftmend( druid_heal_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = a -> p();
 
   struct swiftmend_aoe_heal_t : public druid_heal_t
   {
@@ -1068,7 +1068,7 @@ static void trigger_lifebloom_refresh( druid_heal_t* a )
 
 static void trigger_energy_refund( druid_cat_attack_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = a -> p();
 
   double energy_restored = a -> resource_consumed * 0.80;
 
@@ -1079,7 +1079,7 @@ static void trigger_energy_refund( druid_cat_attack_t* a )
 
 static void trigger_living_seed( druid_heal_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = a -> p();
 
   struct living_seed_t : public druid_heal_t
   {
@@ -1111,7 +1111,7 @@ static void trigger_living_seed( druid_heal_t* a )
 
 static void trigger_lotp( action_state_t* s )
 {
-  druid_t* p = s -> action -> player -> cast_druid();
+  druid_t* p = static_cast<druid_t*>( s -> action -> player );
 
   if ( p -> cooldown.lotp -> remains() > timespan_t::zero() )
     return;
@@ -1137,7 +1137,7 @@ static void trigger_lotp( action_state_t* s )
 
 static void trigger_omen_of_clarity( action_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = static_cast<druid_t*>( a -> player );
 
   if ( a -> proc ) return;
 
@@ -1148,7 +1148,7 @@ static void trigger_omen_of_clarity( action_t* a )
 
 static void trigger_rage_gain( druid_bear_attack_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = a -> p();
   p -> resource_gain( RESOURCE_RAGE, 16.0, p -> gain.bear_melee );
 }
 
@@ -1156,7 +1156,7 @@ static void trigger_rage_gain( druid_bear_attack_t* a )
 
 static void trigger_revitalize( druid_heal_t* a )
 {
-  druid_t* p = a -> player -> cast_druid();
+  druid_t* p = a  -> p();
 
   if ( p -> cooldown.revitalize -> remains() > timespan_t::zero() ) return;
 
@@ -1637,16 +1637,15 @@ struct ravage_t : public druid_cat_attack_t
   virtual void consume_resource()
   {
     melee_attack_t::consume_resource();
-    druid_t* p = player -> cast_druid();
 
-    if ( p -> buff.omen_of_clarity -> up() && ! p -> buff.t13_4pc_melee -> check() )
+    if ( p() -> buff.omen_of_clarity -> up() && ! p() -> buff.t13_4pc_melee -> check() )
     {
       // Treat the savings like a energy gain.
       double amount = melee_attack_t::cost();
       if ( amount > 0 )
       {
-        p -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
-        p -> buff.omen_of_clarity -> expire();
+        p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
+        p() -> buff.omen_of_clarity -> expire();
       }
     }
   }
@@ -2136,16 +2135,15 @@ struct thrash_bear_t : public druid_bear_attack_t
 void druid_heal_t::consume_resource()
 {
   heal_t::consume_resource();
-  druid_t* p = player -> cast_druid();
 
-  if ( consume_ooc && p -> buff.omen_of_clarity -> up() )
+  if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
   {
     // Treat the savings like a mana gain.
     double amount = heal_t::cost();
     if ( amount > 0 )
     {
-      p -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
-      p -> buff.omen_of_clarity -> expire();
+      p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
+      p() -> buff.omen_of_clarity -> expire();
     }
   }
 }
@@ -2154,9 +2152,7 @@ void druid_heal_t::consume_resource()
 
 double druid_heal_t::cost() const
 {
-  druid_t* p = player -> cast_druid();
-
-  if ( consume_ooc && p -> buff.omen_of_clarity -> check() )
+  if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
     return 0;
 
   double c = heal_t::cost();
@@ -2173,8 +2169,6 @@ double druid_heal_t::cost() const
 
 double druid_heal_t::cost_reduction() const
 {
-  //druid_t* p = player -> cast_druid();
-
   double cr = 0.0;
 
   return cr;
@@ -2184,18 +2178,16 @@ double druid_heal_t::cost_reduction() const
 
 void druid_heal_t::execute()
 {
-  druid_t* p = player -> cast_druid();
-
   heal_t::execute();
 
-  if ( base_execute_time > timespan_t::zero() && p -> buff.natures_swiftness -> up() )
+  if ( base_execute_time > timespan_t::zero() && p() -> buff.natures_swiftness -> up() )
   {
-    p -> buff.natures_swiftness -> expire();
+    p() -> buff.natures_swiftness -> expire();
   }
 
   if ( direct_dmg > 0 && ! background )
   {
-    p -> buff.harmony -> trigger( 1, p -> mastery.harmony -> effectN( 1 ).percent() * p -> composite_mastery() );
+    p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).percent() * p() -> composite_mastery() );
   }
 }
 
@@ -2203,9 +2195,8 @@ void druid_heal_t::execute()
 
 timespan_t druid_heal_t::execute_time() const
 {
-  druid_t* p = player -> cast_druid();
 
-  if ( p -> buff.natures_swiftness -> check() )
+  if ( p() -> buff.natures_swiftness -> check() )
     return timespan_t::zero();
 
   return heal_t::execute_time();
@@ -2216,9 +2207,8 @@ timespan_t druid_heal_t::execute_time() const
 double druid_heal_t::haste() const
 {
   double h =  heal_t::haste();
-  druid_t* p = player -> cast_druid();
 
-  h *= 1.0 / ( 1.0 +  p -> buff.natures_grace -> data().effectN( 1 ).percent() );
+  h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
   return h;
 }
@@ -2228,24 +2218,23 @@ double druid_heal_t::haste() const
 void druid_heal_t::player_buff()
 {
   heal_t::player_buff();
-  druid_t* p = player -> cast_druid();
 
   player_multiplier *= 1.0 + additive_factors;
-  player_multiplier *= 1.0 + p -> buff.tree_of_life -> value();
+  player_multiplier *= 1.0 + p() -> buff.tree_of_life -> value();
 
-  if ( p -> primary_tree() == DRUID_RESTORATION && direct_dmg > 0 )
+  if ( p() -> primary_tree() == DRUID_RESTORATION && direct_dmg > 0 )
   {
-    player_multiplier *= 1.0 + p -> mastery.harmony -> effectN( 1 ).percent() * p -> composite_mastery();
+    player_multiplier *= 1.0 + p() -> mastery.harmony -> effectN( 1 ).percent() * p() -> composite_mastery();
   }
 
   if ( tick_dmg > 0 )
   {
-    player_multiplier *= 1.0 + p -> buff.harmony -> value();
+    player_multiplier *= 1.0 + p() -> buff.harmony -> value();
   }
 
-  if ( p -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
+  if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
   {
-    player_multiplier *= 1.0 + p -> talent.natures_swiftness -> effectN( 2 ).percent();
+    player_multiplier *= 1.0 + p() -> talent.natures_swiftness -> effectN( 2 ).percent();
   }
 }
 
@@ -2345,9 +2334,8 @@ struct lifebloom_t : public druid_heal_t
   virtual void tick( dot_t* d )
   {
     druid_heal_t::tick( d );
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.omen_of_clarity -> trigger();
+    p() -> buff.omen_of_clarity -> trigger();
 
     trigger_revitalize( this );
   }
@@ -2423,9 +2411,7 @@ struct regrowth_t : public druid_heal_t
 
   virtual timespan_t execute_time() const
   {
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buff.tree_of_life -> check() )
+    if ( p() -> buff.tree_of_life -> check() )
       return timespan_t::zero();
 
     return druid_heal_t::execute_time();
@@ -2513,9 +2499,7 @@ struct wild_growth_t : public druid_heal_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buff.tree_of_life -> check() )
+    if ( p() -> buff.tree_of_life -> check() )
       aoe += 2;
 
     druid_heal_t::execute();
@@ -2533,8 +2517,6 @@ struct wild_growth_t : public druid_heal_t
 
 double druid_spell_t::cost_reduction() const
 {
-  //druid_t* p = player -> cast_druid();
-
   double   cr = 0.0;
 
   return cr;
@@ -2544,9 +2526,7 @@ double druid_spell_t::cost_reduction() const
 
 double druid_spell_t::cost() const
 {
-  druid_t* p = player -> cast_druid();
-
-  if ( harmful && p -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
+  if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
 
   double c = spell_t::cost();
@@ -2564,9 +2544,8 @@ double druid_spell_t::cost() const
 double druid_spell_t::haste() const
 {
   double h =  spell_t::haste();
-  druid_t* p = player -> cast_druid();
 
-  h *= 1.0 / ( 1.0 +  p -> buff.natures_grace -> data().effectN( 1 ).percent() );
+  h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
   return h;
 }
@@ -2575,7 +2554,6 @@ double druid_spell_t::haste() const
 
 timespan_t druid_spell_t::execute_time() const
 {
-  //druid_t* p = player -> cast_druid();
   return spell_t::execute_time();
 }
 
@@ -2584,10 +2562,9 @@ timespan_t druid_spell_t::execute_time() const
 void druid_spell_t::schedule_execute()
 {
   spell_t::schedule_execute();
-  druid_t* p = player -> cast_druid();
 
   if ( base_execute_time > timespan_t::zero() )
-    p -> buff.natures_swiftness -> expire();
+    p() -> buff.natures_swiftness -> expire();
 }
 
 // druid_spell_t::execute ===================================================
@@ -2602,16 +2579,15 @@ void druid_spell_t::execute()
 void druid_spell_t::consume_resource()
 {
   spell_t::consume_resource();
-  druid_t* p = player -> cast_druid();
 
-  if ( harmful && p -> buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
+  if ( harmful && p() -> buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
   {
     // Treat the savings like a mana gain.
     double amount = spell_t::cost();
     if ( amount > 0 )
     {
-      p -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
-      p -> buff.omen_of_clarity -> expire();
+      p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
+      p() -> buff.omen_of_clarity -> expire();
     }
   }
 }
@@ -2620,17 +2596,13 @@ void druid_spell_t::consume_resource()
 
 void druid_spell_t::player_tick()
 {
-  druid_t* p = player -> cast_druid();
-
-  player_crit = p -> composite_spell_crit();
+  player_crit = p() -> composite_spell_crit();
 }
 
 // druid_spell_t::player_buff ===============================================
 
 void druid_spell_t::player_buff()
 {
-  //druid_t* p = player -> cast_druid();
-
   spell_t::player_buff();
 
   // Add in Additive Multipliers
@@ -2654,8 +2626,7 @@ struct auto_attack_t : public melee_attack_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-
+    druid_t* p = static_cast<druid_t*>( player );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
     p -> main_hand_attack -> schedule_execute();
@@ -2663,8 +2634,7 @@ struct auto_attack_t : public melee_attack_t
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
-
+    druid_t* p = static_cast<druid_t*>( player );
     if ( p -> is_moving() )
       return false;
 
@@ -2685,9 +2655,8 @@ struct barkskin_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.barkskin -> trigger();
+    p() -> buff.barkskin -> trigger();
   }
 };
 
@@ -2707,12 +2676,11 @@ struct bear_form_t : public druid_spell_t
   virtual void execute()
   {
     spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    if ( p -> primary_tree() == DRUID_GUARDIAN )
-      p -> vengeance.enabled = true;
+    if ( p() -> primary_tree() == DRUID_GUARDIAN )
+      p() -> vengeance.enabled = true;
 
-    weapon_t* w = &( p -> main_hand_weapon );
+    weapon_t* w = &( p() -> main_hand_weapon );
 
     if ( w -> type != WEAPON_BEAST )
     {
@@ -2723,25 +2691,25 @@ struct bear_form_t : public druid_spell_t
     }
 
     // Force melee swing to restart if necessary
-    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+    if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
 
-    p -> main_hand_attack = p -> bear_melee_attack;
-    p -> main_hand_attack -> weapon = w;
+    p() -> main_hand_attack = p() -> bear_melee_attack;
+    p() -> main_hand_attack -> weapon = w;
 
-    if ( p -> buff.cat_form -> check() )
+    if ( p() -> buff.cat_form -> check() )
     {
       sim -> auras.critical_strike -> decrement();
-      p -> buff.cat_form           -> expire();
+      p() -> buff.cat_form           -> expire();
     }
-    if ( p -> buff.moonkin_form -> check() )
+    if ( p() -> buff.moonkin_form -> check() )
     {
       sim -> auras.spell_haste -> decrement();
-      p -> buff.moonkin_form   -> expire();
+      p() -> buff.moonkin_form   -> expire();
     }
 
-    p -> buff.bear_form -> start();
-    p -> base_gcd = timespan_t::from_seconds( 1.0 );
-    p -> reset_gcd();
+    p() -> buff.bear_form -> start();
+    p() -> base_gcd = timespan_t::from_seconds( 1.0 );
+    p() -> reset_gcd();
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
@@ -2749,8 +2717,7 @@ struct bear_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    druid_t* d = player -> cast_druid();
-    return ! d -> buff.bear_form -> check();
+    return ! p() -> buff.bear_form -> check();
   }
 };
 
@@ -2794,9 +2761,8 @@ struct cat_form_t : public druid_spell_t
   virtual void execute()
   {
     spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    weapon_t* w = &( p -> main_hand_weapon );
+    weapon_t* w = &( p() -> main_hand_weapon );
 
     if ( w -> type != WEAPON_BEAST )
     {
@@ -2810,25 +2776,25 @@ struct cat_form_t : public druid_spell_t
     }
 
     // Force melee swing to restart if necessary
-    if ( p -> main_hand_attack ) p -> main_hand_attack -> cancel();
+    if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
 
-    p -> main_hand_attack = p -> cat_melee_attack;
-    p -> main_hand_attack -> weapon = w;
+    p() -> main_hand_attack = p() -> cat_melee_attack;
+    p() -> main_hand_attack -> weapon = w;
 
-    if ( p -> buff.bear_form -> check() )
+    if ( p() -> buff.bear_form -> check() )
     {
       sim -> auras.critical_strike -> decrement();
-      p -> buff.bear_form          -> expire();
+      p() -> buff.bear_form          -> expire();
     }
-    if ( p -> buff.moonkin_form -> check() )
+    if ( p() -> buff.moonkin_form -> check() )
     {
       sim -> auras.spell_haste -> decrement();
-      p -> buff.moonkin_form   -> expire();
+      p() -> buff.moonkin_form   -> expire();
     }
 
-    p -> buff.cat_form -> start();
-    p -> base_gcd = timespan_t::from_seconds( 1.0 );
-    p -> reset_gcd();
+    p() -> buff.cat_form -> start();
+    p() -> base_gcd = timespan_t::from_seconds( 1.0 );
+    p() -> reset_gcd();
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
@@ -2836,9 +2802,7 @@ struct cat_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    druid_t* d = player -> cast_druid();
-
-    return ! d -> buff.cat_form -> check();
+    return ! p() -> buff.cat_form -> check();
   }
 };
 
@@ -2912,17 +2876,14 @@ struct enrage_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.enrage -> trigger();
-    p -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ), p -> gain.enrage );
+    p() -> buff.enrage -> trigger();
+    p() -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
   }
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
-
-    if ( ! p -> buff.bear_form -> check() )
+    if ( ! p() -> buff.bear_form -> check() )
       return false;
 
     return druid_spell_t::ready();
@@ -3065,8 +3026,6 @@ struct innervate_t : public druid_spell_t
     consume_resource();
     update_ready();
 
-    druid_t* p = player -> cast_druid();
-
     double gain;
 
     if ( target == player )
@@ -3076,9 +3035,9 @@ struct innervate_t : public druid_spell_t
     else
     {
       gain = 0.10;
-      p -> buff.glyph_of_innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * 0.1 / 10.0 );
+      p() -> buff.glyph_of_innervate -> trigger( 1, p() -> resources.max[ RESOURCE_MANA ] * 0.1 / 10.0 );
     }
-    target -> buffs.innervate -> trigger( 1, p -> resources.max[ RESOURCE_MANA ] * gain / 10.0 );
+    target -> buffs.innervate -> trigger( 1, p() -> resources.max[ RESOURCE_MANA ] * gain / 10.0 );
   }
 
   virtual bool ready()
@@ -3179,17 +3138,14 @@ struct moonfire_t : public druid_spell_t
 
   virtual void player_buff()
   {
-    druid_t* p = player -> cast_druid();
-
     // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p -> buff.lunar_shower -> data().effectN( 1 ).percent() * p -> buff.lunar_shower -> stack() );
+    additive_multiplier += ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
     druid_spell_t::player_buff();
   }
 
   void player_buff_tick()
   {
-    //druid_t* p = player -> cast_druid();
     druid_spell_t::player_buff();
   }
 
@@ -3204,7 +3160,7 @@ struct moonfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
+
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
     dot_t* sf = td -> dots_sunfire;
 
@@ -3213,12 +3169,12 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p -> specialization.lunar_shower -> ok() )
+      if ( p() -> specialization.lunar_shower -> ok() )
       {
-        p -> buff.lunar_shower -> trigger( 1 );
+        p() -> buff.lunar_shower -> trigger( 1 );
       }
 
-      if ( p -> buff.celestial_alignment -> check() )
+      if ( p() -> buff.celestial_alignment -> check() )
       {
         sunfire -> execute();
       }
@@ -3232,9 +3188,8 @@ struct moonfire_t : public druid_spell_t
   virtual double cost_reduction() const
   {
     double cr = druid_spell_t::cost_reduction();
-    druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effectN( 2 ).percent() * p -> buff.lunar_shower -> check() );
+    cr += ( p() -> buff.lunar_shower -> data().effectN( 2 ).percent() * p() -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -3244,9 +3199,7 @@ struct moonfire_t : public druid_spell_t
     if ( ! druid_spell_t::ready() )
       return false;
 
-    druid_t* p = player -> cast_druid();
-
-    if ( p -> buff.eclipse_solar -> check() && ! p -> buff.celestial_alignment -> check() )
+    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       return false;
 
     return true;
@@ -3271,20 +3224,19 @@ struct moonkin_form_t : public druid_spell_t
   virtual void execute()
   {
     spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    if ( p -> buff.bear_form -> check() )
+    if ( p() -> buff.bear_form -> check() )
     {
       sim -> auras.critical_strike -> decrement();
-      p -> buff.bear_form -> expire();
+      p() -> buff.bear_form -> expire();
     }
-    if ( p -> buff.cat_form  -> check() )
+    if ( p() -> buff.cat_form  -> check() )
     {
       sim -> auras.critical_strike -> decrement();
-      p -> buff.cat_form  -> expire();
+      p() -> buff.cat_form  -> expire();
     }
 
-    p -> buff.moonkin_form -> start();
+    p() -> buff.moonkin_form -> start();
 
     if ( ! sim -> overrides.spell_haste )
       sim -> auras.spell_haste -> trigger();
@@ -3292,9 +3244,7 @@ struct moonkin_form_t : public druid_spell_t
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
-
-    return ! p -> buff.moonkin_form -> check();
+    return ! p() -> buff.moonkin_form -> check();
   }
 };
 
@@ -3324,9 +3274,8 @@ struct druids_swiftness_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.natures_swiftness -> trigger();
+    p() -> buff.natures_swiftness -> trigger();
   }
 
   virtual bool ready()
@@ -3369,30 +3318,29 @@ struct starfire_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p -> specialization.eclipse -> ok() )
+      if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
+        if ( p() -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
         {
           td -> dots_moonfire -> refresh_duration();
         }
 
-        if ( ! p -> buff.eclipse_solar -> check() )
+        if ( ! p() -> buff.eclipse_solar -> check() )
         {
           // BUG (FEATURE?) ON LIVE, TODO: Beta too?
           // #1 Euphoria does not proc, if you are more than 35 into the side the
           // Eclipse bar is moving towards, >35 for Starfire/towards Solar
           int gain = data().effectN( 2 ).base_value();
 
-          if ( ! p -> buff.eclipse_lunar -> check() )
+          if ( ! p() -> buff.eclipse_lunar -> check() )
           {
-            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
+            if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
             {
-              if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+              if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
               {
                 gain *= 2;
               }
@@ -3408,11 +3356,10 @@ struct starfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
     // Cast starfire, but solar eclipse was up?
-    if ( p -> buff.eclipse_solar -> check() && ! p -> buff.celestial_alignment -> check() )
-      p -> proc.wrong_eclipse_starfire -> occur();
+    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
+      p() -> proc.wrong_eclipse_starfire -> occur();
   }
   
 };
@@ -3523,29 +3470,28 @@ struct starsurge_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p -> specialization.eclipse -> ok() )
+      if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
+        if ( p() -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
           td -> dots_moonfire -> refresh_duration();
 
-        if ( p -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
+        if ( p() -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
           td -> dots_sunfire -> refresh_duration();
 
         // gain is positive for p -> eclipse_bar_direction==0
         // else it is towards p -> eclipse_bar_direction
         int gain = data().effectN( 2 ).base_value();
-        if ( p -> eclipse_bar_direction < 0 ) gain = -gain;
+        if ( p() -> eclipse_bar_direction < 0 ) gain = -gain;
 
-        if ( ! p -> buff.eclipse_lunar -> check() && ! p -> buff.eclipse_solar -> check() )
+        if ( ! p() -> buff.eclipse_lunar -> check() && ! p() -> buff.eclipse_solar -> check() )
         {
-          if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
+          if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
           {
-            if ( ! ( p -> bugs && p -> eclipse_bar_value > 35 ) )
+            if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
             {
               gain *= 2;
             }
@@ -3559,16 +3505,14 @@ struct starsurge_t : public druid_spell_t
   virtual void schedule_execute()
   {
     druid_spell_t::schedule_execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.shooting_stars -> expire();
+    p() -> buff.shooting_stars -> expire();
   }
 
   virtual timespan_t execute_time() const
   {
-    druid_t* p = player -> cast_druid();
 
-    if ( p -> buff.shooting_stars -> up() )
+    if ( p() -> buff.shooting_stars -> up() )
       return timespan_t::zero();
 
     return druid_spell_t::execute_time();
@@ -3600,19 +3544,15 @@ struct stealth_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_t* p = player -> cast_druid();
-
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+      log_t::output( sim, "%s performs %s", player -> name(), name() );
 
-    p -> buff.stealthed -> trigger();
+    p() -> buff.stealthed -> trigger();
   }
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
-
-    return ! p -> buff.stealthed -> check();
+    return ! p() -> buff.stealthed -> check();
   }
 };
 
@@ -3645,17 +3585,14 @@ struct sunfire_t : public druid_spell_t
 
   virtual void player_buff()
   {
-    druid_t* p = player -> cast_druid();
-
     // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p -> buff.lunar_shower -> data().effectN( 1 ).percent() * p -> buff.lunar_shower -> stack() );
+    additive_multiplier += ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
     druid_spell_t::player_buff();
   }
 
   void player_buff_tick()
   {
-    // druid_t* p = player -> cast_druid();
     druid_spell_t::player_buff();
   }
 
@@ -3670,7 +3607,6 @@ struct sunfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
     dot_t* mf = td -> dots_moonfire;
 
@@ -3682,9 +3618,9 @@ struct sunfire_t : public druid_spell_t
       if ( mf -> ticking )
         mf -> cancel();
 
-      if ( p -> specialization.lunar_shower -> ok() )
+      if ( p() -> specialization.lunar_shower -> ok() )
       {
-        p -> buff.lunar_shower -> trigger( 1 );
+        p() -> buff.lunar_shower -> trigger( 1 );
       }
     }
   }
@@ -3692,9 +3628,8 @@ struct sunfire_t : public druid_spell_t
   virtual double cost_reduction() const
   {
     double cr = druid_spell_t::cost_reduction();
-    druid_t* p = player -> cast_druid();
 
-    cr += ( p -> buff.lunar_shower -> data().effectN( 2 ).percent() * p -> buff.lunar_shower -> check() );
+    cr += ( p() -> buff.lunar_shower -> data().effectN( 2 ).percent() * p() -> buff.lunar_shower -> check() );
 
     return cr;
   }
@@ -3704,12 +3639,10 @@ struct sunfire_t : public druid_spell_t
     if ( ! druid_spell_t::ready() )
       return false;
 
-    druid_t* p = player -> cast_druid();
-
-    if ( ! p -> buff.eclipse_solar -> check() )
+    if ( ! p() -> buff.eclipse_solar -> check() )
       return false;
     
-    if ( p -> buff.celestial_alignment -> check() )
+    if ( p() -> buff.celestial_alignment -> check() )
       return false;
 
     return true;
@@ -3729,16 +3662,14 @@ struct survival_instincts_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.survival_instincts -> trigger(); // DBC value is 60 for some reason
+    p() -> buff.survival_instincts -> trigger(); // DBC value is 60 for some reason
   }
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
 
-    if ( ! ( p -> buff.cat_form -> check() || p -> buff.bear_form -> check() ) )
+    if ( ! ( p() -> buff.cat_form -> check() || p() -> buff.bear_form -> check() ) )
       return false;
 
     return druid_spell_t::ready();
@@ -3790,9 +3721,8 @@ struct treants_spell_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> pet_treants -> summon( p -> talent.force_of_nature -> duration() );
+    p() -> pet_treants -> summon( p() -> talent.force_of_nature -> duration() );
   }
 };
 
@@ -3822,9 +3752,8 @@ struct wild_mushroom_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.wild_mushroom -> trigger();
+    p() -> buff.wild_mushroom -> trigger();
   }
 };
 
@@ -3850,24 +3779,21 @@ struct wild_mushroom_detonate_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
-    p -> buff.wild_mushroom -> expire();
+    p() -> buff.wild_mushroom -> expire();
   }
 
   virtual void player_buff()
   {
     druid_spell_t::player_buff();
-    druid_t* p = player -> cast_druid();
 
-    player_multiplier *= p -> buff.wild_mushroom -> stack();
+    player_multiplier *= p() -> buff.wild_mushroom -> stack();
   }
 
   virtual bool ready()
   {
-    druid_t* p = player -> cast_druid();
 
-    if ( ! p -> buff.wild_mushroom -> stack() )
+    if ( ! p() -> buff.wild_mushroom -> stack() )
       return false;
 
     return druid_spell_t::ready();
@@ -3893,30 +3819,29 @@ struct wrath_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_t* p = player -> cast_druid();
     druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p -> specialization.eclipse -> ok() )
+      if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
+        if ( p() -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
         {
           td -> dots_sunfire -> refresh_duration();
         }
 
-        if ( p -> eclipse_bar_direction <= 0 )
+        if ( p() -> eclipse_bar_direction <= 0 )
         {
           int gain = data().effectN( 2 ).base_value();
 
           // BUG (FEATURE?) ON LIVE
           // #1 Euphoria does not proc, if you are more than 35 into the side the
           // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
-          if ( ! p -> buff.eclipse_solar -> check() )
+          if ( ! p() -> buff.eclipse_solar -> check() )
           {
-            if ( p -> rng.euphoria -> roll( p -> specialization.euphoria -> effectN( 1 ).percent() ) )
+            if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
             {
-              if ( !( p -> bugs && p -> eclipse_bar_value < -35 ) )
+              if ( !( p() -> bugs && p() -> eclipse_bar_value < -35 ) )
               {
                 gain *= 2;
               }
@@ -3938,11 +3863,10 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_t* p = player -> cast_druid();
 
     // Cast wrath, but lunar eclipse was up?
-    if ( p -> buff.eclipse_lunar -> check() && ! p -> buff.celestial_alignment -> check() )
-      p -> proc.wrong_eclipse_wrath -> occur();
+    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
+      p() -> proc.wrong_eclipse_wrath -> occur();
   }
 };
 
