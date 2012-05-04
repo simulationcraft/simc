@@ -381,9 +381,8 @@ struct agony_t : public warlock_spell_t
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -404,8 +403,7 @@ struct doom_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -545,9 +543,8 @@ struct corruption_t : public warlock_spell_t
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -705,9 +702,8 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
+    
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -2206,7 +2202,7 @@ void warlock_t::init_base()
   initial.attack_power_per_strength = 2.0;
   initial.spell_power_per_intellect = 1.0;
 
-  if ( spec.chaotic_energy -> ok() ) base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
+  base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
   if ( primary_tree() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
