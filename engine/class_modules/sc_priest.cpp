@@ -3216,7 +3216,7 @@ struct spirit_shell_t : priest_heal_t
 
 double priest_t::shadowy_recall_chance() const
 {
-  return mastery_spells.shadowy_recall -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
+  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
 }
 
 // priest_t::primary_role ===================================================
