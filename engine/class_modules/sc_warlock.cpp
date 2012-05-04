@@ -285,11 +285,11 @@ public:
       return spell_t::create_expression( name_str );
   }
 
-  static void trigger_soul_leech( warlock_t* p, double dmg )
+  static void trigger_soul_leech( warlock_t* p, double amount )
   {
     if ( p -> talents.soul_leech -> ok() )
     {
-      p -> resource_gain( RESOURCE_HEALTH, dmg * p -> talents.soul_leech -> effectN( 1 ).percent(), p -> gains.soul_leech );
+      p -> resource_gain( RESOURCE_HEALTH, amount, p -> gains.soul_leech );
     }
   }
 
@@ -383,9 +383,7 @@ struct agony_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-    {
-      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
-    }
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
 
     return m;
   }
@@ -407,9 +405,7 @@ struct doom_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-    {
-      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
-    }
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
 
     return m;
   }
@@ -479,7 +475,7 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_soul_leech( p(), s -> result_amount );
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
 
       trigger_wild_imp( p() );
     }
@@ -510,8 +506,8 @@ struct shadowburn_t : public warlock_spell_t
   {
     double m = spell_t::action_multiplier();
 
-    // The extra flat 0.1 is from the tooltip
-    m *= 1.0 + 0.1 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    // FIXME: Formula from tooltip, needs retesting after 2012-05-03
+    m *= 1.0 + ( data().effectN( 1 ).base_value() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).coeff() ) / 100;
 
     return m;
   }
@@ -551,9 +547,7 @@ struct corruption_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-    {
-      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
-    }
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
 
     return m;
   }
@@ -713,9 +707,7 @@ struct unstable_affliction_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-    {
-      m *= 1.0 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
-    }
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
 
     return m;
   }
@@ -780,7 +772,7 @@ struct conflagrate_t : public warlock_spell_t
   {
     if ( p -> glyphs.conflagrate -> ok() )
     {
-      current_charges = max_charges = 2;
+      max_charges = 2;
       recharge_seconds = 12;
     }
 
@@ -856,7 +848,7 @@ struct incinerate_t : public warlock_spell_t
       else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
         p() -> ember_react = sim -> current_time;
 
-      trigger_soul_leech( p(), s -> result_amount );
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
     }
   }
 
@@ -906,20 +898,19 @@ struct soul_fire_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> buffs.soulburn -> check() )
-    {
-      p() -> buffs.soulburn -> expire();
-      if ( p() -> set_bonus.tier13_4pc_caster() )
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.tier13_4pc );
-      }
-    }
-
     if ( p() -> buffs.molten_core -> check() )
       p() -> buffs.molten_core -> expire();
 
     if ( result_is_hit() && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
       p() -> buffs.molten_core -> trigger();
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
   virtual resource_type_e current_resource() const
@@ -935,13 +926,7 @@ struct soul_fire_t : public warlock_spell_t
     timespan_t t = warlock_spell_t::execute_time();
 
     if ( p() -> buffs.molten_core -> up() )
-    {
       t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
-    }
-    if ( p() -> buffs.soulburn -> up() )
-    {
-      t = timespan_t::zero();
-    }
 
     return t;
   }
@@ -960,10 +945,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> buffs.soulburn -> check() )
-      m *= p() -> find_spell( 104240 ) -> effectN( 1 ).min( p() ) / data().effectN( 1 ).min( p() );
-
-    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> current.spell_crit_per_intellect / 100.0 );
+    m *= 1.0 + p() -> composite_spell_crit();
 
     return m;
   }
@@ -1008,10 +990,9 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    // The extra flat 0.25 is from the tooltip
-    m *= 1.0 + 0.25 + floor ( ( p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 2 ).base_value() / 10000.0 ) * 1000 ) / 1000;
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).coeff() / 100;
 
-    m *= 1.0 + ( p() -> composite_spell_crit() - p() -> intellect() / p() -> current.spell_crit_per_intellect / 100.0 );
+    m *= 1.0 + p() -> composite_spell_crit();
 
     return m;
   }
@@ -1219,7 +1200,7 @@ struct hand_of_guldan_t : public warlock_spell_t
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
-    current_charges = max_charges = 2;
+    max_charges = 2;
     recharge_seconds = 15;
 
     shadowflame = new shadowflame_t( p );
@@ -1279,6 +1260,14 @@ struct demonic_slash_t : public warlock_spell_t
       dtr_action = new demonic_slash_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
   virtual bool ready()
@@ -1383,7 +1372,7 @@ struct malefic_grasp_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    trigger_soul_leech( p(), d -> state -> result_amount );
+    trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
   }
 };
 
@@ -1951,21 +1940,20 @@ double warlock_t::composite_spell_power_multiplier() const
 
 double warlock_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
 {
-  double player_multiplier = player_t::composite_player_multiplier( school, a );
+  double m = player_t::composite_player_multiplier( school, a );
 
-  double mastery_value = mastery_spells.master_demonologist -> effectN( 3 ).base_value();
+  double mastery_value = composite_mastery() * mastery_spells.master_demonologist -> effectN( 1 ).coeff() / 100;
 
   if ( buffs.metamorphosis -> up() )
   {
-    player_multiplier *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 2
-                         + ( composite_mastery() * mastery_value / 10000.0 ) * 2;
+    m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 2 + mastery_value * 2;
   }
   else
   {
-    player_multiplier *= 1.0 + ( composite_mastery() * mastery_value / 10000.0 ) * 0.667;
+    m *= 1.0 + mastery_value * 0.667;
   }
 
-  return player_multiplier;
+  return m;
 }
 
 
@@ -2008,9 +1996,9 @@ double warlock_t::composite_mastery() const
   if ( primary_tree() == WARLOCK_DEMONOLOGY )
   {
     if ( buffs.dark_soul -> up() )
-      m += spec.dark_soul -> effectN( 1 ).base_value() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
+      m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / rating.mastery;
     else if ( buffs.dark_soul -> cooldown -> remains() == timespan_t::zero() )
-      m += spec.dark_soul -> effectN( 1 ).base_value() * glyphs.dark_soul -> effectN( 1 ).percent();
+      m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / rating.mastery;
   }
 
   return m;
