@@ -3734,9 +3734,6 @@ void priest_t::init_actions()
 
       if ( set_bonus.tier13_2pc_caster() )
       {
-        if ( find_class_spell( "Mind Blast" ) -> ok() && find_class_spell( "Mind Spike" ) -> ok() )
-          buffer += ",if=buff.mind_spike.react>=1";
-
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
           buffer += "/shadow_word_death,if=target.health.pct<=20";
@@ -3747,9 +3744,6 @@ void priest_t::init_actions()
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
         buffer += "/mind_blast";
-
-      if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness, Comes Light" ) -> ok() )
-        buffer += "/mind_spike,if=buff.surge_of_darkness.react";
 
       buffer += init_use_racial_actions();
 
