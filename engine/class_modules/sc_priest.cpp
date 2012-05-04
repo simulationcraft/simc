@@ -909,6 +909,8 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact_s( s );
 
+    generate_shadow_orb( this, p() -> gains.shadow_orb_shadowy_apparition );
+
     // Cleanup. Re-add to free list.
     p() -> spells.apparitions_active.remove( this );
     p() -> spells.apparitions_free.push( this );
@@ -1519,8 +1521,6 @@ struct mind_blast_t : public priest_spell_t
 
       td( s -> target ) -> debuffs_mind_spike -> expire();
       p() -> buffs.glyph_mind_spike -> expire();
-
-      p() -> buffs.shadow_of_death -> trigger();
     }
   }
 
@@ -1617,6 +1617,11 @@ struct mind_flay_t : public priest_spell_t
         p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
       }
     }
+    if ( p() -> talents.divine_insight -> ok() )
+    {
+      td() -> dots_shadow_word_pain -> refresh_duration();
+      p() -> procs.refresh_shadow_word_pain -> occur();
+    }
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
@@ -1685,28 +1690,11 @@ struct mind_spike_t : public priest_spell_t
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
-      if ( p() -> buffs.surge_of_darkness -> up() )
+      if ( ! td( s -> target ) -> remove_dots_event )
       {
-        p() -> buffs.surge_of_darkness -> decrement();
-      }
-      else
-      {
-        if ( ! td( s -> target ) -> remove_dots_event )
-        {
-          td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event::remove_dots_event_t( sim, p(), td( s -> target ) );
-        }
+        td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event::remove_dots_event_t( sim, p(), td( s -> target ) );
       }
     }
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    timespan_t a = priest_spell_t::execute_time();
-
-    if ( p() -> buffs.surge_of_darkness -> check() )
-      a *= 0.0;
-
-    return a;
   }
 };
 
@@ -1825,7 +1813,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     swd_state_t* swd = static_cast< swd_state_t* >( state );
 
-    swd -> talent_proc = p() -> buffs.shadow_of_death -> up();
+    swd -> talent_proc = p() -> buffs.surge_of_darkness -> up();
 
     priest_spell_t::snapshot_state( state, flags );
   }
@@ -1840,7 +1828,7 @@ struct shadow_word_death_t : public priest_spell_t
       p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
     }
 
-    p() -> buffs.shadow_of_death -> expire();
+    p() -> buffs.surge_of_darkness -> expire();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1909,7 +1897,7 @@ struct devouring_plague_t : public priest_spell_t
     tick_may_crit = true;
 
     burst_spell = p -> find_spell( 124432 );
-    tick_spell = p -> find_spell( 124486 );
+    tick_spell  = p -> find_spell( 124486 );
     if ( ! tick_spell -> ok() || ! burst_spell -> ok() )
     {
       background = true;
@@ -1966,7 +1954,7 @@ struct devouring_plague_t : public priest_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      double a = amount * 0.15;
+      double a = amount * ( 0.15 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ;
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
     }
   }
@@ -2036,6 +2024,13 @@ struct shadow_word_pain_t : public priest_spell_t
     if ( ( tick_dmg > 0 ) && ( p() -> spec.shadowy_apparitions -> ok() ) )
     {
       trigger_shadowy_apparition( d );
+    }
+    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+    {
+      if ( p() -> buffs.surge_of_darkness -> trigger() )
+      {
+        p() -> procs.surge_of_darkness -> occur();
+      }
     }
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
@@ -2115,14 +2110,6 @@ struct vampiric_touch_t : public priest_spell_t
 
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
-
-    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
-    {
-      if ( p() -> buffs.surge_of_darkness -> trigger() )
-      {
-        p() -> procs.from_darkness_comes_light -> occur();
-      }
-    }
 
     if ( ( tick_dmg > 0 ) && ( p() -> spec.mind_surge -> ok() ) )
     {
@@ -3456,15 +3443,16 @@ void priest_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.dispersion                  = get_gain( "dispersion" );
-  gains.shadowfiend                 = get_gain( "shadowfiend" );
-  gains.mindbender                  = get_gain( "mindbender" );
-  gains.archangel                   = get_gain( "archangel" );
-  gains.hymn_of_hope                = get_gain( "hymn_of_hope" );
-  gains.shadow_orb_mb               = get_gain( "Shadow Orbs from Mind Blast" );
-  gains.devouring_plague_health     = get_gain( "Devouring Plague Health" );
-  gains.vampiric_touch_mana         = get_gain( "Vampiric Touch Mana" );
-  gains.vampiric_touch_mastery_mana = get_gain( "Vampiric Touch Mastery Mana" );
+  gains.dispersion                    = get_gain( "dispersion" );
+  gains.shadowfiend                   = get_gain( "shadowfiend" );
+  gains.mindbender                    = get_gain( "mindbender" );
+  gains.archangel                     = get_gain( "archangel" );
+  gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
+  gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
+  gains.shadow_orb_shadowy_apparition = get_gain( "Shadow Orbs from Shadowy Apparitions" );
+  gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
+  gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
+  gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
 }
 
 // priest_t::init_procs. =====================================================
@@ -3477,7 +3465,8 @@ void priest_t::init_procs()
   procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction" );
   procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"     );
   procs.mind_surge                     = get_proc( "Mind Surge Mind Blast CD Reset" );
-  procs.from_darkness_comes_light      = get_proc( "FDCL Free Mind Spike proc"      );
+  procs.surge_of_darkness              = get_proc( "FDCL Shadow Word: Death proc"   );
+  procs.refresh_shadow_word_pain       = get_proc( "Mind Flay Tick Refreshes SW:P"  );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3597,7 +3586,7 @@ void priest_t::init_spells()
   glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );
   glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
-  glyphs.vampiric_touch               = find_glyph_spell( "Glyph of Vampiric Touch" );
+  glyphs.devouring_plague             = find_glyph_spell( "Glyph of Devouring Plague" );
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
   glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
 
@@ -3670,13 +3659,10 @@ void priest_t::init_buffs()
 
   buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
                                            .max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
-  buffs.shadow_of_death                  = buff_creator_t( this, "shadow_of_death", talents.divine_insight )
-                                           .chance( talents.divine_insight -> effectN( 1 ).percent() )
-                                           .max_stack( 1 )
-                                           .duration( timespan_t::from_seconds( 10.0 ) );
-  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", talents.from_darkness_comes_light )
-                                           .duration( find_spell( 114257 ) -> duration() )
-                                           .max_stack( 2 );
+
+  const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
+  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
+                                           .chance( surge_of_darkness -> effectN( 1 ).percent() );
 
   // Set Bonus
 }
@@ -3760,8 +3746,8 @@ void priest_t::init_actions()
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
           buffer += "/shadow_word_death,if=target.health.pct<=20";
-          if ( find_talent_spell( "Divine Insight" ) -> ok() )
-            buffer += "|buff.shadow_of_death.react";
+          if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+            buffer += "|buff.surge_of_darkness.react";
         }
       }
 
@@ -3784,8 +3770,8 @@ void priest_t::init_actions()
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
           buffer += "/shadow_word_death,if=target.health.pct<=20";
-          if ( find_talent_spell( "Divine Insight" ) -> ok() )
-            buffer += "|buff.shadow_of_death.react";
+          if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+            buffer += "|buff.surge_of_darkness.react";
         }
       }
 

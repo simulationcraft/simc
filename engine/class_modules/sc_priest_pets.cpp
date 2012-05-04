@@ -57,159 +57,6 @@ static const _weapon_list_t mindbender_weapon[]=
   {  0,   0,   0,        0.0, timespan_t::zero() }
 };
 
-
-double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int& stats_available, int& stats2_available )
-{
-  double r = 0.0;
-  const priest_pet_stats::_stat_list_t* base_list = 0;
-  const priest_pet_stats::_stat_list_t*  pet_list = 0;
-
-
-  base_list = priest_pet_stats::pet_base_stats;
-
-  if      ( pet_type == PET_SHADOWFIEND ) pet_list = priest_pet_stats::shadowfiend_base_stats;
-  else if ( pet_type == PET_MINDBENDER  ) pet_list = priest_pet_stats::mindbender_base_stats;
-
-  if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
-  {
-    return 0.0;
-  }
-
-  if ( base_list )
-  {
-    for ( int i = 0; base_list[ i ].id != 0 ; i++ )
-    {
-      if ( level == base_list[ i ].id )
-      {
-        r += base_list[ i ].stats[ stat_type_e ];
-        stats_available++;
-        break;
-      }
-      if ( level > base_list[ i ].id )
-      {
-        r += base_list[ i ].stats[ stat_type_e ];
-        break;
-      }
-    }
-  }
-
-  if ( pet_list )
-  {
-    for ( int i = 0; pet_list[ i ].id != 0 ; i++ )
-    {
-      if ( level == pet_list[ i ].id )
-      {
-        r += pet_list[ i ].stats[ stat_type_e ];
-        stats2_available++;
-        break;
-      }
-      if ( level > pet_list[ i ].id )
-      {
-        r += pet_list[ i ].stats[ stat_type_e ];
-        break;
-      }
-    }
-  }
-
-  return r;
-}
-
-const _weapon_list_t* get_weapon( pet_type_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = 0;
-
-  if      ( pet_type == PET_SHADOWFIEND ) weapon_list = priest_pet_stats::shadowfiend_weapon;
-  else if ( pet_type == PET_MINDBENDER  ) weapon_list = priest_pet_stats::mindbender_weapon;
-  
-  return weapon_list;
-}
-
-double get_weapon_min( int level, pet_type_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].min_dmg;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].min_dmg;
-      break;
-    }
-  }
-  return r;
-}
-
-double get_weapon_max( int level, pet_type_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].max_dmg;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].max_dmg;
-      break;
-    }
-  }
-  return r;
-}
-
-double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].direct_power_mod;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].direct_power_mod;
-      break;
-    }
-  }
-  return r;
-}
-
-timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
-{
-  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  timespan_t r = timespan_t::zero();
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].swing_time;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].swing_time;
-      break;
-    }
-  }
-  if ( r == timespan_t::zero() )
-    r = timespan_t::from_seconds( 1.0 ); // set swing-time to 1.00 if there is no weapon
-  return r;
-}
-
 }
 namespace priest_pet_actions {
 
@@ -307,7 +154,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
 {
   melee_t( base_fiend_pet_t* p ) :
     priest_pet_actions::priest_pet_melee_t( p, "melee" )
-  {
+  { 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
     base_dd_min       = weapon -> min_dmg;
@@ -323,7 +170,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
   {
     priest_pet_actions::priest_pet_melee_t::execute();
   }
-
+ 
 
   virtual double action_multiplier() const
   {
@@ -353,19 +200,171 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
 // Priest Pet
 // ==========================================================================
 
+double priest_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e pet_type )
+{
+  double r = 0.0;
+  const priest_pet_stats::_stat_list_t* base_list = 0;
+  const priest_pet_stats::_stat_list_t*  pet_list = 0;
+
+
+  base_list = priest_pet_stats::pet_base_stats;
+
+  if      ( pet_type == PET_SHADOWFIEND ) pet_list = priest_pet_stats::shadowfiend_base_stats;
+  else if ( pet_type == PET_MINDBENDER  ) pet_list = priest_pet_stats::mindbender_base_stats;
+
+  if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
+  {
+    return 0.0;
+  }
+
+  if ( base_list )
+  {
+    for ( int i = 0; base_list[ i ].id != 0 ; i++ )
+    {
+      if ( level == base_list[ i ].id )
+      {
+        r += base_list[ i ].stats[ stat_type_e ];
+        stats_avaiable++;
+        break;
+      }
+      if ( level > base_list[ i ].id )
+      {
+        r += base_list[ i ].stats[ stat_type_e ];
+        break;
+      }
+    }
+  }
+
+  if ( pet_list )
+  {
+    for ( int i = 0; pet_list[ i ].id != 0 ; i++ )
+    {
+      if ( level == pet_list[ i ].id )
+      {
+        r += pet_list[ i ].stats[ stat_type_e ];
+        stats2_avaiable++;
+        break;
+      }
+      if ( level > pet_list[ i ].id )
+      {
+        r += pet_list[ i ].stats[ stat_type_e ];
+        break;
+      }
+    }
+  }
+
+  return r;
+}
+
+const priest_pet_stats::_weapon_list_t* priest_pet_t::get_weapon( pet_type_e pet_type )
+{
+  const priest_pet_stats::_weapon_list_t*  weapon_list = 0;
+
+  if      ( pet_type == PET_SHADOWFIEND ) weapon_list = priest_pet_stats::shadowfiend_weapon;
+  else if ( pet_type == PET_MINDBENDER  ) weapon_list = priest_pet_stats::mindbender_weapon;
+  
+  return weapon_list;
+}
+
+double priest_pet_t::get_weapon_min( int level, pet_type_e pet_type )
+{
+  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+  double r = 0.0;
+  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+  {
+    if ( level == weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].min_dmg;
+      break;
+    }
+    if ( level > weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].min_dmg;
+      break;
+    }
+  }
+  return r;
+}
+
+double priest_pet_t::get_weapon_max( int level, pet_type_e pet_type )
+{
+  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+  double r = 0.0;
+  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+  {
+    if ( level == weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].max_dmg;
+      break;
+    }
+    if ( level > weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].max_dmg;
+      break;
+    }
+  }
+  return r;
+}
+
+double priest_pet_t::get_weapon_direct_power_mod( int level, pet_type_e pet_type )
+{
+  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+  double r = 0.0;
+  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+  {
+    if ( level == weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].direct_power_mod;
+      break;
+    }
+    if ( level > weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].direct_power_mod;
+      break;
+    }
+  }
+  return r;
+}
+
+timespan_t priest_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type )
+{
+  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+
+  timespan_t r = timespan_t::zero();
+  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
+  {
+    if ( level == weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].swing_time;
+      break;
+    }
+    if ( level > weapon_list[ i ].id )
+    {
+      r += weapon_list[ i ].swing_time;
+      break;
+    }
+  }
+  if ( r == timespan_t::zero() )
+    r = timespan_t::from_seconds( 1.0 ); // set swing-time to 1.00 if there is no weapon
+  return r;
+}
 
 priest_pet_t::priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian ) :
   pet_t( sim, owner, pet_name, pt, guardian ),
-  ap_per_owner_sp( 1.0 ),
-  direct_power_mod( priest_pet_stats::get_weapon_direct_power_mod( level, pt ) )
+  ap_per_owner_sp( 1.0 ), stats_avaiable( 0 ),
+  stats2_avaiable( 0 ), _pet_type( pt ),
+  direct_power_mod( get_weapon_direct_power_mod( level, pt ) )
 {
   position                    = POSITION_BACK;
   initial.distance            = 3;
   main_hand_weapon.type       = WEAPON_BEAST;
-  main_hand_weapon.min_dmg    = priest_pet_stats::get_weapon_min( level, pet_type );
-  main_hand_weapon.max_dmg    = priest_pet_stats::get_weapon_max( level, pet_type );
+  main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
+  main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
   main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-  main_hand_weapon.swing_time = priest_pet_stats::get_weapon_swing_time( level, pet_type );
+  main_hand_weapon.swing_time = get_weapon_swing_time( level, pet_type );
   if ( main_hand_weapon.swing_time == timespan_t::zero() )
   {
     sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
@@ -377,28 +376,24 @@ void priest_pet_t::init_base()
 {
   pet_t::init_base();
 
-  {
-    using namespace priest_pet_stats;
-    int stats_available, stats2_available;
-    base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type, stats_available, stats2_available );
-    base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type, stats_available, stats2_available );
-    base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type, stats_available, stats2_available );
-    base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type, stats_available, stats2_available );
-    base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type, stats_available, stats2_available );
-    resources.base[ RESOURCE_HEALTH ]       = get_attribute_base( level, BASE_STAT_HEALTH, pet_type, stats_available, stats2_available );
-    resources.base[ RESOURCE_MANA ]         = get_attribute_base( level, BASE_STAT_MANA, pet_type, stats_available, stats2_available );
-    initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type, stats_available, stats2_available );
-    initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type, stats_available, stats2_available );
-    initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type, stats_available, stats2_available );
-    base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type, stats_available, stats2_available );
-    base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type, stats_available, stats2_available );
-    base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type, stats_available, stats2_available );
+  base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type );
+  base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type );
+  base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type );
+  base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type );
+  base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type );
+  resources.base[ RESOURCE_HEALTH ]       = get_attribute_base( level, BASE_STAT_HEALTH, pet_type );
+  resources.base[ RESOURCE_MANA ]         = get_attribute_base( level, BASE_STAT_MANA, pet_type );
+  initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type );
+  initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type );
+  initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type );
+  base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type );
+  base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type );
+  base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type );
 
-    if ( stats_available != 13 )
-      sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
-    if ( stats2_available != 13 )
-      sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
-  }
+  if ( stats_avaiable != 13 )
+    sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
+  if ( stats2_avaiable != 13 )
+    sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
 
   resources.base[ RESOURCE_MANA ]         = o() -> resources.max[ RESOURCE_MANA ];
   initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
@@ -465,6 +460,13 @@ double priest_pet_t::composite_spell_crit() const
   return sc;
 }
 
+double priest_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
+{
+  double m = pet_t::composite_player_multiplier( school, a );
+
+  return m;
+}
+
 // ==========================================================================
 // Priest Guardian Pet
 // ==========================================================================
@@ -528,9 +530,9 @@ void base_fiend_pet_t::init_gains()
 {
   priest_guardian_pet_t::init_gains();
 
-  if      ( pet_type == PET_SHADOWFIEND )
+  if      ( _pet_type == PET_SHADOWFIEND )
     gains.fiend = o() -> gains.shadowfiend;
-  else if ( pet_type == PET_MINDBENDER  )
+  else if ( _pet_type == PET_MINDBENDER  )
     gains.fiend = o() -> gains.mindbender;
   else
     gains.fiend = get_gain( "basefiend" );
@@ -540,8 +542,8 @@ void base_fiend_pet_t::init_resources( bool force )
 {
   priest_guardian_pet_t::init_resources( force );
 
-  resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.3;
-  resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ];
+  resources.initial[ RESOURCE_HEALTH ] = o() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
+  resources.initial[ RESOURCE_MANA   ] = o() -> resources.max[ RESOURCE_MANA   ];
   resources.current = resources.max = resources.initial;
 }
 

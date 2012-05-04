@@ -131,7 +131,7 @@ dbc_index_t<spellpower_data_t> idx_pd;
 } // ANONYMOUS namespace ====================================================
 
 const char* dbc_t::build_level( bool ptr )
-{ return ( SC_USE_PTR && ptr ) ? "15657" : "15657"; }
+{ return ( SC_USE_PTR && ptr ) ? "15662" : "15662"; }
 
 const char* dbc_t::wow_version( bool ptr )
 { return ( SC_USE_PTR && ptr ) ? "5.0.1" : "5.0.1"; }
@@ -147,8 +147,8 @@ void dbc_t::apply_hotfixes()
   s = spell_data_t::find( 87532, false );
   if ( s && s -> ok() && s -> effectN( 1 ).ok() )
   {
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.047;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.988;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5860000253;
+    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.6000000238;
   }
 
   // PALADIN

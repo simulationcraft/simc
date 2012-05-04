@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15657
+// 224 talents, wow build 15662
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -222,21 +222,21 @@ static struct talent_data_t __talent_data[] = {
   { "Cascade"                           , 19767, 0x00, 0x0010, 0x00,     0,   0,   5,  121135,         0,  0 },
   { "Spectral Guise"                    , 19768, 0x00, 0x0010, 0x00,     0,   1,   3,  112833,         0,  0 },
   { "Mindbender"                        , 19769, 0x00, 0x0010, 0x00,     0,   1,   2,  123040,     34433,  0 },
-  { "Ascension"                         , 19771, 0x00, 0x0200, 0x00,     0,   1,   1,  115396,         0,  0 },
-  { "Chi Brew"                          , 19772, 0x00, 0x0200, 0x00,     0,   2,   1,  115399,         0,  0 },
+  { "Ascension"                         , 19771, 0x00, 0x0200, 0x00,     0,   1,   2,  115396,         0,  0 },
+  { "Chi Brew"                          , 19772, 0x00, 0x0200, 0x00,     0,   2,   2,  115399,         0,  0 },
   { "Tiger's Lust"                      , 19818, 0x00, 0x0200, 0x00,     0,   1,   0,  116841,         0,  0 },
   { "Rushing Jade Wind"                 , 19819, 0x00, 0x0200, 0x00,     0,   0,   5,  116847,         0,  0 },
-  { "Zen Sphere"                        , 19820, 0x00, 0x0200, 0x00,     0,   1,   2,  124081,         0,  0 },
-  { "Mystery Talent"                    , 19821, 0x00, 0x0200, 0x00,     0,   0,   2,  119042,         0,  0 },
-  { "Chi Burst"                         , 19823, 0x00, 0x0200, 0x00,     0,   2,   2,  123986,         0,  0 },
-  { "Power Strikes"                     , 19992, 0x00, 0x0200, 0x00,     0,   0,   1,  121817,         0,  0 },
+  { "Zen Sphere"                        , 19820, 0x00, 0x0200, 0x00,     0,   1,   1,  124081,         0,  0 },
+  { "Chi Burst"                         , 19823, 0x00, 0x0200, 0x00,     0,   2,   1,  123986,         0,  0 },
+  { "Power Strikes"                     , 19992, 0x00, 0x0200, 0x00,     0,   0,   2,  121817,         0,  0 },
   { "Deadly Reach"                      , 19993, 0x00, 0x0200, 0x00,     0,   0,   3,  119397,         0,  0 },
   { "Charging Ox Wave"                  , 19994, 0x00, 0x0200, 0x00,     0,   1,   3,  119392,         0,  0 },
   { "Leg Sweep"                         , 19995, 0x00, 0x0200, 0x00,     0,   2,   3,  119381,         0,  0 },
-//{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Diffuse Magic"                     , 20173, 0x00, 0x0200, 0x00,     0,   2,   4,  122783,         0,  0 },
+//{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Healing Elixirs"                   , 20174, 0x00, 0x0200, 0x00,     0,   0,   4,  122280,         0,  0 },
   { "Dampen Harm"                       , 20175, 0x00, 0x0200, 0x00,     0,   1,   4,  122278,         0,  0 },
   { "Invoke Xuen, the White Tiger"      , 20184, 0x00, 0x0200, 0x00,     0,   1,   5,  123904,         0,  0 },
+  { "Chi Wave"                          , 20185, 0x00, 0x0200, 0x00,     0,   0,   1,  115098,         0,  0 },
   { 0                                   ,     0, 0x00, 0x0000, 0x00,     0,   0,   0,       0,         0,  0 },
 };

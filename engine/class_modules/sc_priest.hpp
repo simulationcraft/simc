@@ -68,7 +68,6 @@ struct priest_t : public player_t
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
-    buff_t* shadow_of_death;
     buff_t* surge_of_darkness;
   } buffs;
 
@@ -152,6 +151,7 @@ struct priest_t : public player_t
     gain_t* archangel;
     gain_t* hymn_of_hope;
     gain_t* shadow_orb_mb;
+    gain_t* shadow_orb_shadowy_apparition;
     gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
@@ -170,8 +170,9 @@ struct priest_t : public player_t
     proc_t* mastery_extra_tick;
     proc_t* shadowy_apparition;
     proc_t* mind_surge;
-    proc_t* from_darkness_comes_light;
+    proc_t* surge_of_darkness;
     proc_t* shadowfiend_cooldown_reduction;
+    proc_t* refresh_shadow_word_pain;
   } procs;
 
   // Special
@@ -229,7 +230,7 @@ struct priest_t : public player_t
     const spell_data_t* dark_binding;
     const spell_data_t* mind_flay;
     const spell_data_t* mind_blast;
-    const spell_data_t* vampiric_touch;
+    const spell_data_t* devouring_plague;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* fortitude;
   } glyphs;
@@ -293,8 +294,19 @@ struct _weapon_list_t;
 struct priest_pet_t : public pet_t
 {
   double ap_per_owner_sp;
+  int stats_avaiable;
+  int stats2_avaiable;
+  pet_type_e _pet_type;
   double direct_power_mod;
 
+  double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
+private:
+  const priest_pet_stats::_weapon_list_t* get_weapon( pet_type_e pet_type );
+public:
+  double get_weapon_min( int level, pet_type_e pet_type );
+  double get_weapon_max( int level, pet_type_e pet_type );
+  double get_weapon_direct_power_mod( int level, pet_type_e pet_type );
+  timespan_t get_weapon_swing_time( int level, pet_type_e pet_type );
   priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
@@ -306,6 +318,7 @@ struct priest_pet_t : public pet_t
   virtual double composite_attack_power() const;
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
   virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
   virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }

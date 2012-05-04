@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (49)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15657
+// Class based active abilities, wow build 15662
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -687,6 +687,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
       109773, // Dark Intent
+       77801, // Dark Soul
       111771, // Demonic Gateway
          689, // Drain Life
         1098, // Enslave Demon
@@ -696,7 +697,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1454, // Life Tap
         5740, // Rain of Fire
          686, // Shadow Bolt
-        6353, // Soul Fire
        29858, // Soulshatter
        20707, // Soulstone
        18540, // Summon Doomguard (Guardian)
@@ -723,13 +723,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 6 abilities
+    // Demonology tree, 7 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
       109151, // Demonic Leap
       105174, // Hand of Gul'dan
       103958, // Metamorphosis
+        6353, // Soul Fire
        30146, // Summon Felguard (Summon)
            0,
     },
@@ -821,14 +822,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115315, // Summon Black Ox Statue
            0,
     },
-    // Mistweaver tree, 11 abilities
+    // Mistweaver tree, 10 abilities
     {
-      115098, // Chi Wave
       116849, // Life Cocoon
       115294, // Mana Tea
-      115151, // Renewing Mists
+      115151, // Renewing Mist
       115310, // Revival
-      115175, // Soothing Mists
+      115175, // Soothing Mist
       115070, // Stance of the Wise Serpent (Stance)
       115313, // Summon Jade Serpent Statue
       116694, // Surging Mist
@@ -961,7 +961,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (21)
 
-// Talent tree specialization abilities, wow build 15657
+// Talent tree specialization abilities, wow build 15662
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1016,6 +1016,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81099, // Single-Minded Fury
        46917, // Titan's Grip
         1680, // Whirlwind
+       44949, // Whirlwind Off-Hand
       100130, // Wild Strike
            0,
     },
@@ -1264,6 +1265,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        73510, // Mind Spike
       124431, // Mind Surge (NNF)
        64044, // Psychic Horror
+       95740, // Shadow Orbs
       121196, // Shadow Passive
        87100, // Shadowfiend
        15473, // Shadowform
@@ -1483,6 +1485,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       104315, // Demonic Fury
       109151, // Demonic Leap
       108559, // Demonic Rebirth
+      103131, // Felguard: Axe Toss
       103134, // Felguard: Felstorm
       103129, // Felguard: Pursuit
       105174, // Hand of Gul'dan
@@ -1493,6 +1496,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109797, // Metamorphosis: Immolation Aura
       122351, // Molten Core
       114129, // Nether Plating
+        6353, // Soul Fire
        30146, // Summon Felguard
       114592, // Wild Imps
            0,
@@ -1515,7 +1519,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          348, // Immolate
        29722, // Incinerate
        77220, // Mastery: Emberstorm
-      123686, // Pyromania
+      123686, // Pyroclasm
       116852, // Self Burning Triggers
        17877, // Shadowburn
            0,
@@ -1536,13 +1540,13 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       115180, // Dizzying Haze
       124146, // Dual Wield
       115308, // Elusive Brew
+      124502, // Gift of the Ox
       115295, // Guard
       121253, // Keg Smash
       123192, // Keg Smash
       120225, // Leather Specialization
       117906, // Mastery: Elusive Brawler
       119582, // Purifying Brew
-      116329, // Recoil
       115069, // Stance of the Sturdy Ox
       115315, // Summon Black Ox Statue
       120267, // Vengeance
@@ -1552,7 +1556,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
       116346, // <DND> Soothing Mists Trigger
       123766, // Brewing: Mana Tea
-      115098, // Chi Wave
       122464, // Dematerialize
       115451, // Internal Medicine
       120224, // Leather Specialization
@@ -1561,9 +1564,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       115294, // Mana Tea
       115869, // Mana Tea Driver <DND>
       117907, // Mastery: Gift of the Serpent
-      115151, // Renewing Mists
+      115151, // Renewing Mist
       115310, // Revival
-      115175, // Soothing Mists
+      115175, // Soothing Mist
       115070, // Stance of the Wise Serpent
       115313, // Summon Jade Serpent Statue
       116694, // Surging Mist
@@ -1571,6 +1574,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       118672, // Teachings of the Monastery
       116680, // Thunder Focus Tea
       116670, // Uplift
+           0,
     },
     // Specialization abilities for Windwalker tree
     {
@@ -1689,7 +1693,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15657
+// Class mastery abilities, wow build 15662
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -1915,7 +1919,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15657
+// Racial abilities, wow build 15662
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2627,7 +2631,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (32)
 
-// Glyph spells for classes, wow build 15657
+// Glyph spells for classes, wow build 15662
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2749,10 +2753,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Hunter
   {
-    // Major Glyphs (25 spells)
+    // Major Glyphs (24 spells)
     {
        20895, // Glyph of Animal Bond
-       61648, // Glyph of Aspect of the Beast
       109263, // Glyph of Black Ice
       119449, // Glyph of Camouflage
       119447, // Glyph of Chimera Shot
@@ -2778,8 +2781,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       119384, // Glyph of Tranquilizing Shot
            0,
     },
-    // Minor Glyphs (8 spells)
+    // Minor Glyphs (9 spells)
     {
+       61648, // Glyph of Aspect of the Beast
       119462, // Glyph of Aspect of the Cheetah
        57904, // Glyph of Aspect of the Pack
       122492, // Glyph of Aspects
@@ -2851,6 +2855,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        55675, // Glyph of Circle of Healing
       123671, // Glyph of Dark Binding
        63248, // Glyph of Desperation
+      120583, // Glyph of Devouring Plague
       119864, // Glyph of Dispel Magic
        63229, // Glyph of Dispersion
        55684, // Glyph of Fade
@@ -2879,7 +2884,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       119873, // Glyph of Spirit of Redemption
        89489, // Glyph of Strength of Soul
       120584, // Glyph of Vampiric Embrace
-      120583, // Glyph of Vampiric Touch
     },
     // Minor Glyphs (6 spells)
     {
@@ -3065,7 +3069,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56233, // Glyph of Unstable Affliction
            0,
     },
-    // Minor Glyphs (13 spells)
+    // Minor Glyphs (14 spells)
     {
        56250, // Glyph of Carrion Swarm
        63312, // Glyph of Crimson Banish
@@ -3078,26 +3082,25 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56232, // Glyph of Nightmares
        58094, // Glyph of Ritual of Souls
        56240, // Glyph of Shadow Bolt
+       56217, // Glyph of Subtlety
        58079, // Glyph of Unending Breath
        56241, // Glyph of Verdant Spheres
            0,
     },
-    // Prime Glyphs (3 spells)
+    // Prime Glyphs (2 spells)
     {
       111546, // Chaotic Energy
-       56217, // Glyph of Howl of Terror
        56229, // Glyph of Shadowburn
            0,
     },
   },
   // Glyph spells for Monk
   {
-    // Major Glyphs (15 spells)
+    // Major Glyphs (14 spells)
     {
       123394, // Glyph of Breath of Fire
       122136, // Glyph of Chi Wave
       123399, // Glyph of Dizzying Haze
-      120482, // Glyph of Enduring Healing Sphere
       119724, // Glyph of Expel Harm
       123401, // Glyph of Guard
       123763, // Glyph of Mana Tea
@@ -3181,7 +3184,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15657
+// Tier item set bonuses for class, wow build 15662
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
