@@ -159,7 +159,6 @@ struct event_t;
 class  expr_t;
 struct gain_t;
 struct heal_t;
-struct hunter_t;
 struct item_t;
 struct js_node_t;
 struct option_t;
@@ -192,7 +191,6 @@ struct xml_node_t;
 struct targetdata_t;
 struct death_knight_targetdata_t;
 struct druid_targetdata_t;
-struct hunter_targetdata_t;
 struct mage_targetdata_t;
 struct monk_targetdata_t;
 struct paladin_targetdata_t;
@@ -3730,7 +3728,6 @@ struct player_t : public noncopyable
   bool is_add() const { return type == ENEMY_ADD; }
 
   death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
-  hunter_t      * cast_hunter      () { assert( type == HUNTER       ); return ( hunter_t      * ) this; }
   rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
   warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
@@ -3785,7 +3782,6 @@ struct targetdata_t : public noncopyable
 
   death_knight_targetdata_t* cast_death_knight() { assert( source->type == DEATH_KNIGHT ); return ( death_knight_targetdata_t* ) this; }
   druid_targetdata_t       * cast_druid       () { assert( source->type == DRUID        ); return ( druid_targetdata_t       * ) this; }
-  hunter_targetdata_t      * cast_hunter      () { assert( source->type == HUNTER       ); return ( hunter_targetdata_t      * ) this; }
   mage_targetdata_t        * cast_mage        () { assert( source->type == MAGE         ); return ( mage_targetdata_t        * ) this; }
   monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
   paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }

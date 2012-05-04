@@ -27,8 +27,7 @@ public:
   }
 };
 
-namespace remove_dots_event // ANONYMOUS NAMESPACE ============================================
-{
+namespace remove_dots_event {
 
 struct remove_dots_event_t : public event_t
 {
