@@ -383,7 +383,7 @@ struct agony_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -405,7 +405,7 @@ struct doom_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -507,7 +507,7 @@ struct shadowburn_t : public warlock_spell_t
     double m = spell_t::action_multiplier();
 
     // FIXME: Formula from tooltip, needs retesting after 2012-05-03
-    m *= 1.0 + ( data().effectN( 1 ).base_value() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).coeff() ) / 100;
+    m *= 1.0 + data().effectN( 1 ).base_value() / 100.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -547,7 +547,7 @@ struct corruption_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -707,7 +707,7 @@ struct unstable_affliction_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).coeff() / 100;
+      m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
   }
@@ -990,7 +990,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).coeff() / 100;
+    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     m *= 1.0 + p() -> composite_spell_crit();
 
@@ -1942,7 +1942,7 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  double mastery_value = composite_mastery() * mastery_spells.master_demonologist -> effectN( 1 ).coeff() / 100;
+  double mastery_value = composite_mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
   if ( buffs.metamorphosis -> up() )
   {
