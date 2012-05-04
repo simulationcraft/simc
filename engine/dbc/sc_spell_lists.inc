@@ -723,7 +723,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 7 abilities
+    // Demonology tree, 8 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
@@ -732,6 +732,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103958, // Metamorphosis
         6353, // Soul Fire
        30146, // Summon Felguard (Summon)
+      115422, // Void Ray
            0,
     },
     // Destruction tree, 10 abilities
