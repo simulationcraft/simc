@@ -285,6 +285,18 @@ public:
       return spell_t::create_expression( name_str );
   }
 
+  void trigger_ember_gain( result_type_e r )
+  {
+    double gain_amount = ( r == RESULT_CRIT ) ? 2 : 1;
+    p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
+
+    // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
+    if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
+      p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
+    else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
+      p() -> ember_react = sim -> current_time;
+  }
+
   static void trigger_soul_leech( warlock_t* p, double amount )
   {
     if ( p -> talents.soul_leech -> ok() )
@@ -327,6 +339,18 @@ public:
     }
   }
 };
+
+
+
+static void extend_dot( dot_t* dot, int ticks, double haste )
+{
+  if ( dot -> ticking )
+  {
+    int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
+    int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
+    if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
+  }
+}
 
 
 struct curse_of_elements_t : public warlock_spell_t
@@ -834,14 +858,7 @@ struct incinerate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      double gain_amount = ( s -> result == RESULT_CRIT ) ? 2 : 1;
-      p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
-
-      // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
-      if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
-        p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
-      else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
-        p() -> ember_react = sim -> current_time;
+      trigger_ember_gain( s -> result );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
     }
@@ -1060,16 +1077,6 @@ struct touch_of_chaos_t : public attack_t
     base_execute_time = timespan_t::from_seconds( 1 );
   }
 
-  static void extend( dot_t* dot, int ticks, double haste )
-  {
-    if ( dot -> ticking )
-    {
-      int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
-      int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
-      if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
-    }
-  }
-
   virtual void execute()
   {
     attack_t::execute();
@@ -1077,8 +1084,8 @@ struct touch_of_chaos_t : public attack_t
     if ( result_is_hit() )
     {
       warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-      extend( td -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend( td -> dots_doom, 1, player -> composite_spell_haste() );
+      extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot( td -> dots_doom, 1, player -> composite_spell_haste() );
     }
   }
 
@@ -1305,10 +1312,12 @@ struct fel_flame_t : public warlock_spell_t
     {
       //FIXME: Exact mechanic needs testing - seems inconsistent, particularly for Doom
       warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      td -> dots_corruption          -> extend_duration( 2, true );
-      td -> dots_doom                -> extend_duration( 1, true );
-      td -> dots_immolate            -> extend_duration( 2, true );
-      td -> dots_unstable_affliction -> extend_duration( 2, true );
+      extend_dot(            td -> dots_immolate, 2, player -> composite_spell_haste() );
+      extend_dot( td -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
+      extend_dot(          td -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot(                td -> dots_doom, 1, player -> composite_spell_haste() );
+
+      if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( s -> result );
     }
   }
 
