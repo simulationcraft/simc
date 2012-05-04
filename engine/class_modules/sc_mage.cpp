@@ -847,7 +847,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
     }
   };
 
-  double ignite_dmg = dmg * p -> spec.ignite -> effectN( 1 ).coeff() * 0.01 * p -> composite_mastery();
+  double ignite_dmg = dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery();
 
   if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
   {
@@ -968,7 +968,7 @@ void mage_spell_t::player_buff()
   spell_t::player_buff();
 
   if ( frozen )
-    player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).coeff() * 0.01 * p() -> composite_mastery();
+    player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
 }
 
 // ==========================================================================
@@ -3246,7 +3246,7 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
 
   double mana_pct = resources.pct( RESOURCE_MANA );
-  m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
+  m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
 
   return m;
 }
