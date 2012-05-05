@@ -304,6 +304,8 @@ player_t::player_t( sim_t*             s,
   events( 0 ),
   dbc( s -> dbc ),
   autoUnshift( true ),
+  talent_list(),
+  glyph_list(),
   // Haste
   spell_haste( 1.0 ), attack_haste( 1.0 ),
   // Mastery
@@ -6136,7 +6138,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
-    profile_str += std::string( primary_tree_name() ) + term;
+    profile_str += util::specialization_string( primary_tree() ) + term;
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;

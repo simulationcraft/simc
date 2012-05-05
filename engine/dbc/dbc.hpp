@@ -332,6 +332,7 @@ class spell_data_nil_t : public spell_data_t
 {
 public:
   spell_data_nil_t();
+  ~spell_data_nil_t();
   static spell_data_nil_t singleton;
 };
 
@@ -342,6 +343,7 @@ class spell_data_not_found_t : public spell_data_t
 {
 public:
   spell_data_not_found_t();
+  ~spell_data_not_found_t();
   static spell_data_not_found_t singleton;
 };
 
