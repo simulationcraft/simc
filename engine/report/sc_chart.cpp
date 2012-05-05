@@ -915,7 +915,7 @@ std::string aps_portion( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += google_chart::chart_size( 550, 200 + num_stats * 10 ); // Set chart size
+  s += google_chart::chart_size( 550, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
@@ -1018,7 +1018,7 @@ std::string time_spent( const player_t* p )
 
   std::string s = std::string();
   s = get_chart_base_url();
-  s += google_chart::chart_size( 525, 200 + num_stats * 10 ); // Set chart size
+  s += google_chart::chart_size( 525, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
   if ( ! p -> sim -> print_styles )
