@@ -78,7 +78,7 @@ struct paladin_t : public player_t
     buff_t* double_jeopardy;
     buff_t* gotak_prot;
     buff_t* grand_crusader;
-    buff_t* glyph_hammer_of_wrath;
+    buff_t* glyph_exorcism;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
@@ -178,7 +178,7 @@ struct paladin_t : public player_t
     const spell_data_t* divine_protection;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
-    const spell_data_t* hammer_of_wrath;
+    const spell_data_t* exorcism;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
   } glyphs;
@@ -245,6 +245,7 @@ struct paladin_t : public player_t
   virtual double    composite_attack_speed() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_power( school_type_e school ) const;
+  virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_tank_block() const;
   virtual double    composite_tank_crit( school_type_e school ) const;
   virtual void      create_options();
@@ -1007,7 +1008,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
+    use_spell_haste = p -> passives.sword_of_light -> ok() && p -> passives.sanctity_of_battle -> ok();
 
     direct_power_mod = data().extra_coeff();
   }
@@ -1022,7 +1023,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
+    use_spell_haste = p -> passives.sword_of_light -> ok() && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
   }
@@ -1083,23 +1084,22 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( result_is_hit() )
     {
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_wrath );
-      if ( p() -> buffs.holy_avenger -> check() )
+      if ( p() -> passives.sword_of_light -> ok() )
       {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+        int g = 1;
+        p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_wrath );
+        if ( p() -> buffs.holy_avenger -> check() )
+        {
+          p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
+        }
       }
-
-      if ( p() -> glyphs.hammer_of_wrath -> ok() )
-      {
-        p() -> buffs.glyph_hammer_of_wrath -> trigger();
-      }
+      trigger_hand_of_light( this );
     }
   }
 
   virtual bool ready()
   {
-    if ( target -> health_percentage() > 20 && ! ( p() -> buffs.avenging_wrath -> check() ) )
+    if ( target -> health_percentage() > 20 && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
       return false;
 
     return paladin_melee_attack_t::ready();
@@ -1409,6 +1409,15 @@ struct judgment_t : public paladin_melee_attack_t
     old_target = 0;
   }
 
+  virtual double cost() const
+  {
+    double m = paladin_melee_attack_t::cost();
+
+    m *= 1.0 + p() -> glyphs.ascetic_crusader -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
@@ -1714,6 +1723,10 @@ struct exorcism_t : public paladin_spell_t
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
+    }
+    if ( p() -> glyphs.exorcism -> ok() )
+    {
+      p() -> buffs.glyph_exorcism -> trigger();
     }
   }
 };
@@ -2404,9 +2417,9 @@ void paladin_t::init_buffs()
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
                                  .duration( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                  .default_value( find_spell( glyphs.double_jeopardy -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
-  buffs.glyph_hammer_of_wrath  = buff_creator_t( this, "glyph_hammer_of_wrath", glyphs.hammer_of_wrath )
-                                 .duration( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> duration() )
-                                 .default_value( find_spell( glyphs.hammer_of_wrath -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+  buffs.glyph_exorcism         = buff_creator_t( this, "glyph_exorcism", glyphs.exorcism )
+                                 .duration( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> duration() )
+                                 .default_value( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
@@ -2710,7 +2723,7 @@ void paladin_t::init_spells()
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
-  glyphs.hammer_of_wrath          = find_glyph_spell( "Glyph of Hammer of Wrath" );
+  glyphs.exorcism                 = find_glyph_spell( "Glyph of Exorcism" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
 
@@ -2840,12 +2853,21 @@ double paladin_t::composite_spell_power( school_type_e school ) const
   case PALADIN_PROTECTION:
     break;
   case PALADIN_RETRIBUTION:
-    sp += passives.sword_of_light -> effectN( 1 ).percent() * strength();
+    sp = passives.sword_of_light -> effectN( 1 ).percent() * composite_attack_power();
     break;
   default:
     break;
   }
   return sp;
+}
+
+// paladin_t::composite_spell_power_multiplier ==============================
+
+double paladin_t::composite_spell_power_multiplier() const
+{
+  if ( passives.sword_of_light -> ok() ) return 1.0;
+
+  return player_t::composite_spell_power_multiplier();
 }
 
 // paladin_t::composite_tank_block ==========================================
@@ -2945,9 +2967,9 @@ double paladin_t::assess_damage( double        amount,
     }
   }
 
-  if ( buffs.glyph_hammer_of_wrath -> check() )
+  if ( buffs.glyph_exorcism -> check() )
   {
-    amount *= 1.0 + buffs.glyph_hammer_of_wrath -> value();
+    amount *= 1.0 + buffs.glyph_exorcism -> value();
   }
 
   if ( result == RESULT_PARRY )
