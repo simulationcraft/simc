@@ -2542,6 +2542,7 @@ public:
   }
 
   static void register_class_targetdata( sim_t* sim );
+  static option_t* get_class_option( void* );
 };
 
 // Scaling ==================================================================

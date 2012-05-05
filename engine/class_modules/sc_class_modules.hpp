@@ -126,7 +126,7 @@ struct sc_create_class<Class,false>
 {
   player_t* operator() ( std::string class_name, sim_t* s, std::string name, race_type_e )
   {
-    s -> errorf( "\n %s module for player %s is currently not available.\n", class_name.c_str(), name.c_str() );
+    s -> errorf( "\n%s module for player %s is currently not available.\n", class_name.c_str(), name.c_str() );
     return 0;
   }
 };
