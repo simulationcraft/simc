@@ -39,6 +39,14 @@ static const _stat_list_t mindbender_base_stats[]=
   { 0, { 0 } }
 };
 
+static const _stat_list_t none_base_stats[]=
+{
+  //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
+  { 0, { 0 } }
+};
+
+
 struct _weapon_list_t
 {
   int id;
@@ -59,6 +67,12 @@ static const _weapon_list_t mindbender_weapon[]=
   {  0,   0,   0,        0.0, timespan_t::zero() }
 };
 
+static const _weapon_list_t none_weapon[]=
+{
+  { 85,   0,   0,        0.0, timespan_t::from_seconds( 1.5 ) },   
+  {  0,   0,   0,        0.0, timespan_t::zero() }
+};
+
 
 double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int& stats_available, int& stats2_available )
 {
@@ -71,6 +85,7 @@ double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int&
 
   if      ( pet_type == PET_SHADOWFIEND ) pet_list = priest_pet_stats::shadowfiend_base_stats;
   else if ( pet_type == PET_MINDBENDER  ) pet_list = priest_pet_stats::mindbender_base_stats;
+  else if ( pet_type == PET_NONE        ) pet_list = priest_pet_stats::none_base_stats;
 
   if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
   {
@@ -122,7 +137,8 @@ const _weapon_list_t* get_weapon( pet_type_e pet_type )
 
   if      ( pet_type == PET_SHADOWFIEND ) weapon_list = priest_pet_stats::shadowfiend_weapon;
   else if ( pet_type == PET_MINDBENDER  ) weapon_list = priest_pet_stats::mindbender_weapon;
-  
+  else if ( pet_type == PET_NONE        ) weapon_list = priest_pet_stats::none_weapon;
+
   return weapon_list;
 }
 
@@ -131,6 +147,10 @@ double get_weapon_min( int level, pet_type_e pet_type )
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   double r = 0.0;
+  
+  if ( ! weapon_list )
+    return 0.0;
+
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
   {
     if ( level == weapon_list[ i ].id )
@@ -152,6 +172,10 @@ double get_weapon_max( int level, pet_type_e pet_type )
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   double r = 0.0;
+  
+  if ( ! weapon_list )
+    return 0.0;
+
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
   {
     if ( level == weapon_list[ i ].id )
@@ -173,6 +197,10 @@ double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   double r = 0.0;
+
+  if ( ! weapon_list )
+    return 0.0;
+
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
   {
     if ( level == weapon_list[ i ].id )
@@ -194,6 +222,10 @@ timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
   const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   timespan_t r = timespan_t::zero();
+  
+  if ( ! weapon_list )
+    return timespan_t::from_seconds( 1.5 );
+
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
   {
     if ( level == weapon_list[ i ].id )
@@ -429,8 +461,8 @@ void priest_pet_t::init_base()
     base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type, stats_available, stats2_available );
     base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type, stats_available, stats2_available );
     base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type, stats_available, stats2_available );
-    resources.base[ RESOURCE_HEALTH ]       = get_attribute_base( level, BASE_STAT_HEALTH, pet_type, stats_available, stats2_available );
-    resources.base[ RESOURCE_MANA ]         = get_attribute_base( level, BASE_STAT_MANA, pet_type, stats_available, stats2_available );
+    resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type, stats_available, stats2_available );
+    resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type, stats_available, stats2_available );
     initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type, stats_available, stats2_available );
     initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type, stats_available, stats2_available );
     initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type, stats_available, stats2_available );
@@ -444,7 +476,7 @@ void priest_pet_t::init_base()
       sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
   }
 
-  resources.base[ RESOURCE_MANA ]         = o() -> resources.max[ RESOURCE_MANA ];
+  resources.base[ RESOURCE_MANA ]   = o() -> resources.max[ RESOURCE_MANA ];
   initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
   base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
   stamina_per_owner = 0.6496; // level invariant, tested
