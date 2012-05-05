@@ -22,8 +22,6 @@ class class_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
-struct class_t;
-
 class class_targetdata_t : public targetdata_t
 {
 public:
