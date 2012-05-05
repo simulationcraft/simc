@@ -169,6 +169,9 @@ public:
   warlock_t* p() const
   { return static_cast<warlock_t*>( player ); }
 
+  warlock_targetdata_t* td( player_t* t ) const
+  { return targetdata( t ) -> cast_warlock(); }
+
   virtual void execute()
   {
     if ( max_charges > 0 )
@@ -214,11 +217,10 @@ public:
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = 1.0;
-    warlock_targetdata_t* td = targetdata_t::get( player, t ) -> cast_warlock();
 
-    if ( td -> debuffs_haunt -> up() )
+    if ( td( t ) -> debuffs_haunt -> up() )
     {
-      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+      m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -238,10 +240,8 @@ public:
 
     if ( channeled ) return t;
 
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    if ( td -> dots_malefic_grasp -> ticking ||
-       ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
+    if ( td( target ) -> dots_malefic_grasp -> ticking ||
+       ( td( target ) -> dots_drain_soul -> ticking && td( target ) -> ds_started_below_20 ) )
       t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
 
     return t;
@@ -675,14 +675,12 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_spell_t::last_tick( d );
 
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    if ( td -> ds_started_below_20 )
+    if ( td( d -> state -> target ) -> ds_started_below_20 )
     {
-      stop_malefic_grasp( this, td -> dots_agony );
-      stop_malefic_grasp( this, td -> dots_corruption );
-      stop_malefic_grasp( this, td -> dots_doom );
-      stop_malefic_grasp( this, td -> dots_unstable_affliction );
+      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
+      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
+      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
+      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
     }
   }
 
@@ -692,19 +690,17 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-
       if ( s -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
       {
-        td -> ds_started_below_20 = true;
-        start_malefic_grasp( this, td -> dots_agony );
-        start_malefic_grasp( this, td -> dots_corruption );
-        start_malefic_grasp( this, td -> dots_doom );
-        start_malefic_grasp( this, td -> dots_unstable_affliction );
+        td( s -> target ) -> ds_started_below_20 = true;
+        start_malefic_grasp( this, td( s -> target ) -> dots_agony );
+        start_malefic_grasp( this, td( s -> target ) -> dots_corruption );
+        start_malefic_grasp( this, td( s -> target ) -> dots_doom );
+        start_malefic_grasp( this, td( s -> target ) -> dots_unstable_affliction );
       }
       else
       {
-        td -> ds_started_below_20 = false;
+        td( s -> target ) -> ds_started_below_20 = false;
       }
     }
   }
@@ -749,8 +745,7 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      td -> debuffs_haunt -> trigger();
+      td( s -> target ) -> debuffs_haunt -> trigger();
     }
   }
 };
@@ -1166,14 +1161,12 @@ struct shadowflame_t : public warlock_spell_t
 
   virtual void impact_s( action_state_t* s )
   {
-    warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock(); 
-
     if ( result_is_hit( s -> result ) )
     {
-      if ( td -> dots_shadowflame -> ticking ) 
-        td -> shadowflame_stack++;
+      if ( td( s -> target ) -> dots_shadowflame -> ticking ) 
+        td( s -> target ) -> shadowflame_stack++;
       else
-        td -> shadowflame_stack = 1;
+        td( s -> target ) -> shadowflame_stack = 1;
     }
 
     warlock_spell_t::impact_s( s );
@@ -1308,11 +1301,10 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      extend_dot(            td -> dots_immolate, 2, player -> composite_spell_haste() );
-      extend_dot( td -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
-      extend_dot(          td -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend_dot(                td -> dots_doom, 1, player -> composite_spell_haste() );
+      extend_dot(            td( s -> target ) -> dots_immolate, 2, player -> composite_spell_haste() );
+      extend_dot( td( s -> target ) -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
+      extend_dot(          td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot(                td( s -> target ) -> dots_doom, 1, player -> composite_spell_haste() );
 
       if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( s -> result );
     }
@@ -1361,9 +1353,8 @@ struct void_ray_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend_dot(       td -> dots_doom, 1, player -> composite_spell_haste() );
+      extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+      extend_dot(       td( s -> target ) -> dots_doom, 1, player -> composite_spell_haste() );
     }
   }
 
@@ -1398,13 +1389,11 @@ struct malefic_grasp_t : public warlock_spell_t
   virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
-
-    warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
-
-    stop_malefic_grasp( this, td -> dots_agony );
-    stop_malefic_grasp( this, td -> dots_corruption );
-    stop_malefic_grasp( this, td -> dots_doom );
-    stop_malefic_grasp( this, td -> dots_unstable_affliction );
+    
+    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
+    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
+    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
+    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1413,11 +1402,10 @@ struct malefic_grasp_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
-      start_malefic_grasp( this, td -> dots_agony );
-      start_malefic_grasp( this, td -> dots_corruption );
-      start_malefic_grasp( this, td -> dots_doom );
-      start_malefic_grasp( this, td -> dots_unstable_affliction );
+      start_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
+      start_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
+      start_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
+      start_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
     }
   }
 
@@ -1538,11 +1526,10 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_targetdata_t* td = targetdata( s -> target ) -> cast_warlock();
       dot_damage_done = s -> target -> iteration_dmg_taken;
-      if ( td -> dots_corruption -> ticking )
+      if ( td( s -> target ) -> dots_corruption -> ticking )
       {
-        td -> dots_corruption -> cancel();
+        td( s -> target ) -> dots_corruption -> cancel();
       }
     }
   }
@@ -1584,9 +1571,8 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
-    warlock_targetdata_t* td = targetdata_t::get( player, t ) -> cast_warlock();
 
-    if ( td -> dots_immolate -> ticking )
+    if ( td( t ) -> dots_immolate -> ticking )
       m *= 1.5;
 
     return m;
