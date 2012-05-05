@@ -61,6 +61,8 @@
 // Shaman
 // ==========================================================================
 
+struct shaman_t;
+
 #if SC_SHAMAN == 1
 
 namespace {
@@ -71,8 +73,6 @@ enum imbue_type_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
 }
-
-struct shaman_t;
 
 struct shaman_targetdata_t : public targetdata_t
 {

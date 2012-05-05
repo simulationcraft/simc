@@ -10,6 +10,8 @@
 // Paladin
 // ==========================================================================
 
+struct paladin_t;
+
 #if SC_PALADIN == 1
 
 enum seal_type_e
@@ -22,8 +24,6 @@ enum seal_type_e
   SEAL_OF_COMMAND,
   SEAL_MAX
 };
-
-struct paladin_t;
 
 struct paladin_targetdata_t : public targetdata_t
 {

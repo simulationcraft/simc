@@ -12,9 +12,11 @@ namespace {
 // Hunter
 // ==========================================================================
 
-#if SC_HUNTER == 1
-
 namespace hunter {
+
+struct class_t;
+
+#if SC_HUNTER == 1
 
 struct class_pet_t;
 
@@ -4273,22 +4275,25 @@ void class_t::moving()
   if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
+#endif // SC_HUNTER
+
 } // END hunter NAMESPACE
 
 } // END ANONYMOUS NAMESPACE
 
-using hunter::class_t;
-using hunter::class_targetdata_t;
+#if SC_HUNTER == 1
 
 void class_modules::register_targetdata::hunter( sim_t* sim )
 {
+  using hunter::class_targetdata_t;
   player_type_e t = HUNTER;
   typedef class_targetdata_t type;
 
   REGISTER_DOT( serpent_sting );
 }
-
 #endif // SC_HUNTER
+
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
@@ -4297,7 +4302,8 @@ void class_modules::register_targetdata::hunter( sim_t* sim )
 
 player_t* class_modules::create::hunter( sim_t* sim, const std::string& name, race_type_e r )
 {
-  return sc_create_class<class_t,SC_HUNTER>()( "Hunter", sim, name, r );
+
+  return sc_create_class<hunter::class_t,SC_HUNTER>()( "Hunter", sim, name, r );
 }
 
 // class_modules::init::hunter ====================================================

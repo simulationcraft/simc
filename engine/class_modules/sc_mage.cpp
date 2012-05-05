@@ -10,11 +10,11 @@
 // Mage
 // ==========================================================================
 
+struct mage_t;
+
 #if SC_MAGE == 1
 
 enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
-
-struct mage_t;
 
 struct mage_targetdata_t : public targetdata_t
 {

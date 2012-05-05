@@ -10,6 +10,8 @@
 // Custom Combo Point Impl.
 // ==========================================================================
 
+struct rogue_t;
+
 #if SC_ROGUE == 1
 
 #define COMBO_POINTS_MAX 5

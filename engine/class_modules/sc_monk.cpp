@@ -10,11 +10,11 @@
 // Monk
 // ==========================================================================
 
+struct monk_t;
+
 #if SC_MONK == 1
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
-
-struct monk_t;
 
 struct monk_targetdata_t : public targetdata_t
 {
