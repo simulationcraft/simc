@@ -9,11 +9,13 @@
 #ifndef SC_PRIEST_HPP
 #define SC_PRIEST_HPP
 
+
+
+namespace priest {
+
 struct priest_t;
 
 #if SC_PRIEST == 1
-
-namespace priest {
 
 namespace remove_dots_event {
 struct remove_dots_event_t;
