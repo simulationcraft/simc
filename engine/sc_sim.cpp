@@ -588,6 +588,29 @@ struct sim_end_event_t : event_t
   }
 };
 
+struct resource_timeline_collect_event_t : public event_t
+{
+  resource_timeline_collect_event_t( sim_t* s ) :
+    event_t( s,0, "resource_timeline_collect_event_t" )
+  {
+    sim -> add_event( this, timespan_t::from_native( 1000 ) );
+  }
+
+  virtual void execute()
+  {
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      if ( p -> current.sleeping ) continue;
+      if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+
+      p -> collect_resource_timeline_information();
+    }
+
+    new ( sim ) resource_timeline_collect_event_t( sim );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
@@ -1026,6 +1049,7 @@ void sim_t::combat_begin()
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
+  new ( this ) resource_timeline_collect_event_t( this );
 
 
   if ( overrides.bloodlust )

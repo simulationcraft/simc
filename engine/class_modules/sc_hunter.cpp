@@ -14,11 +14,11 @@ namespace {
 
 namespace hunter {
 
-struct class_t;
+class class_t;
 
 #if SC_HUNTER == 1
 
-struct class_pet_t;
+class class_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
@@ -32,7 +32,7 @@ public:
   class_targetdata_t( class_t* source, player_t* target );
 };
 
-struct class_t : public player_t
+class class_t : public player_t
 {
 public:
   // Active
@@ -299,7 +299,7 @@ class_targetdata_t::class_targetdata_t( class_t* source, player_t* target ) :
 // Hunter Pet
 // ==========================================================================
 
-struct class_pet_t : public pet_t
+class class_pet_t : public pet_t
 {
 public:
   action_t* kill_command;

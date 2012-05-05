@@ -3219,19 +3219,17 @@ void player_t::regen( const timespan_t periodicity )
   if ( gain && base )
     resource_gain( r, base * periodicity.total_seconds(), gain );
   
-  // FIXME: This is an ugly hack and doesn't work for all values of regen_periodicity.
-  //        This whole block should be moved to its own once-per-second event. 
+}
+void player_t::collect_resource_timeline_information()
+{
   const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
-  if ( sim -> current_time.total_seconds() - index < sim -> regen_periodicity.total_seconds() )
+
+  for ( size_t j = 0; j < resource_timeline_count; ++j )
   {
-    for ( size_t j = 0; j < resource_timeline_count; ++j )
-    {
-      resource_timelines[ j ].timeline[ index ] +=
-        resources.current[ resource_timelines[ j ].type ];
-    }
+    resource_timelines[ j ].timeline[ index ] +=
+      resources.current[ resource_timelines[ j ].type ];
   }
 }
-
 // player_t::resource_loss ==================================================
 
 double player_t::resource_loss( resource_type_e resource_type,
