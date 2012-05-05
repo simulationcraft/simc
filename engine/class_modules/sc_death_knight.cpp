@@ -4638,18 +4638,18 @@ player_t* class_modules::create::death_knight( sim_t* sim, const std::string& na
 
 // class_modules::init::death_knight ======================================
 
-void class_modules::init::death_knight( sim_t* )
-{
-}
-// class_modules::combat_begin::death_knight ==============================================
-
-void class_modules::combat_begin::death_knight( sim_t* sim )
+void class_modules::init::death_knight( sim_t* sim )
 {
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
     p -> buffs.unholy_frenzy = buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) );
   }
+}
+// class_modules::combat_begin::death_knight ==============================================
+
+void class_modules::combat_begin::death_knight( sim_t* )
+{
 }
 
 // class_modules::combat_end::death_knight ======================================
