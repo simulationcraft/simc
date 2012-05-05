@@ -182,7 +182,6 @@ struct mage_targetdata_t;
 struct monk_targetdata_t;
 struct paladin_targetdata_t;
 struct rogue_targetdata_t;
-struct warlock_targetdata_t;
 struct warrior_targetdata_t;
 
 #define DATA_DOT 0
@@ -3691,7 +3690,6 @@ struct targetdata_t : public noncopyable
   monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
   paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
   rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
-  warlock_targetdata_t     * cast_warlock     () { assert( source->type == WARLOCK      ); return ( warlock_targetdata_t     * ) this; }
   warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }
 
 protected:

@@ -148,10 +148,10 @@ public:
   }
 
   warlock_t* p() const
-  { return static_cast<warlock_t*>( player ); }
+  { return debug_cast<warlock_t*>( player ); }
 
   warlock_targetdata_t* td( player_t* t ) const
-  { return targetdata( t ) -> cast_warlock(); }
+  { return debug_cast<warlock_targetdata_t*>( targetdata( t ) ); }
 
   virtual void execute()
   {
@@ -1057,7 +1057,7 @@ struct touch_of_chaos_t : public attack_t
 
     if ( result_is_hit() )
     {
-      warlock_targetdata_t* td = targetdata( target ) -> cast_warlock();
+      warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( targetdata( target ) );
       extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
       extend_dot( td -> dots_doom, 1, player -> composite_spell_haste() );
     }
@@ -1129,7 +1129,7 @@ struct shadowflame_state_t : public action_state_t
 
   virtual double composite_power() const
   {
-    warlock_targetdata_t* td = action -> targetdata( target ) -> cast_warlock();
+    warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( action -> targetdata( target ) );
     assert( td -> shadowflame_stack >= 1 );
 
     return action_state_t::composite_power() * td -> shadowflame_stack;
