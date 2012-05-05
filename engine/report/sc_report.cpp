@@ -594,7 +594,7 @@ void generate_player_charts( const player_t* p, player_t::report_information_t& 
       std::vector<double> timeline_aps;
       timeline_aps.reserve( s -> timeline_amount.size() );
       report::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
-      s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + " APS", s -> aps );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + " APS", s -> portion_aps.mean );
       s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + " APS",
                                                          s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
     }

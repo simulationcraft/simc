@@ -1723,7 +1723,14 @@ std::string timeline( const player_t* p,
   s += "&amp;";
   s += "chxt=x,y";
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|sec=%d|1:|0|avg=%.0f|max=%.0f", ( int ) max_buckets, avg, timeline_max ); s += buffer;
+  std::ostringstream f;
+  f << "chxl=0:|0|sec=" << util::to_string( max_buckets ) << "|1:|0";
+  if ( avg )
+    f << "|avg=" << util::to_string( avg, 0 );
+  else f << "|";
+  if ( timeline_max )
+    f << "|max=" << util::to_string( timeline_max, 0 );
+  s += f.str();
   s += "&amp;";
   snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * avg / timeline_max ); s += buffer;
   s += "&amp;";
