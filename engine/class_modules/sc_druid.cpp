@@ -385,13 +385,6 @@ struct druid_t : public player_t
     const spell_data_t* disentanglement;
   } talent;
   
-  // Up-Times
-  struct uptimes_t
-  {
-    benefit_t* energy_cap;
-    benefit_t* rage_cap;
-  } uptime;
-
   druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     buff( buffs_t() ),
@@ -403,9 +396,7 @@ struct druid_t : public player_t
     rng( rngs_t() ),
     specialization( specializations_t() ),
     spell( spells_t() ),
-    talent( talents_t() ),
-    uptime( uptimes_t() )
-
+    talent( talents_t() )
   {
     active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
@@ -4278,14 +4269,11 @@ void druid_t::init_procs()
   proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
 }
 
-// druid_t::init_uptimes ====================================================
+// druid_t::init_benefits ===================================================
 
 void druid_t::init_benefits()
 {
   player_t::init_benefits();
-
-  uptime.energy_cap   = get_benefit( "energy_cap" );
-  uptime.rage_cap     = get_benefit( "rage_cap"   );
 }
 
 // druid_t::init_rng ========================================================
@@ -4561,12 +4549,7 @@ void druid_t::regen( timespan_t periodicity )
 {
   resource_type_e resource_type = primary_resource();
 
-  if ( resource_type == RESOURCE_ENERGY )
-  {
-    uptime.energy_cap -> update( resources.current[ RESOURCE_ENERGY ] ==
-                                 resources.max    [ RESOURCE_ENERGY ] );
-  }
-  else if ( resource_type == RESOURCE_MANA )
+  if ( resource_type == RESOURCE_MANA )
   {
     if ( buff.glyph_of_innervate -> check() )
       resource_gain( RESOURCE_MANA, buff.glyph_of_innervate -> value() * periodicity.total_seconds(), gain.glyph_of_innervate );
@@ -4575,9 +4558,6 @@ void druid_t::regen( timespan_t periodicity )
   {
     if ( buff.enrage -> up() )
       resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gain.enrage );
-
-    uptime.rage_cap -> update( resources.current[ RESOURCE_RAGE ] ==
-                               resources.max    [ RESOURCE_RAGE ] );
   }
 
   player_t::regen( periodicity );
