@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Enemy
@@ -634,23 +635,30 @@ void class_t::combat_end()
 
 using enemy::class_t;
 
-// player_t::create_enemy ===================================================
+// class_modules::create::enemy ===================================================
 
-player_t* player_t::create_enemy( sim_t* sim, const std::string& name, race_type_e /* r */ )
+player_t* class_modules::create::enemy( sim_t* sim, const std::string& name, race_type_e /* r */ )
 {
   return new class_t( sim, name );
 }
 
 // player_t::enemy_init =====================================================
 
-void player_t::enemy_init( sim_t* /* sim */ )
+void class_modules::init::enemy( sim_t* /* sim */ )
 {
 
 }
 
 // player_t::enemy_combat_begin =============================================
 
-void player_t::enemy_combat_begin( sim_t* /* sim */ )
+void class_modules::combat_begin::enemy( sim_t* /* sim */ )
+{
+
+}
+
+// player_t::enemy_combat_end =============================================
+
+void class_modules::combat_end::enemy( sim_t* /* sim */ )
 {
 
 }

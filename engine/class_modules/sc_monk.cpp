@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Monk
@@ -19,12 +20,6 @@ struct monk_targetdata_t : public targetdata_t
 {
   monk_targetdata_t( monk_t* source, player_t* target );
 };
-
-void sim_t::register_monk_targetdata( sim_t* /* sim */ )
-{
-  /* player_type_e t = MONK; */
-  typedef monk_targetdata_t type;
-}
 
 struct monk_t : public player_t
 {
@@ -582,31 +577,43 @@ role_type_e monk_t::primary_role() const
   return ROLE_HYBRID;
 }
 
-#endif // SC_MONK
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_monk  ===================================================
+void class_modules::register_targetdata::monk( sim_t* /* sim */ )
+{
+  /* player_type_e t = MONK; */
+  typedef monk_targetdata_t type;
+}
 
-player_t* player_t::create_monk( sim_t* sim, const std::string& name, race_type_e r )
+#endif // SC_MONK
+
+// class_modules::create::monk  ===================================================
+
+player_t* class_modules::create::monk( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<monk_t,SC_MONK>()( "Monk", sim, name, r );
 }
 
 // player_t::monk_init ======================================================
 
-void player_t::monk_init( sim_t* /* sim */ )
+void class_modules::init::monk( sim_t* /* sim */ )
 {
-  //for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  //{}
+
 }
 
 // player_t::monk_combat_begin ==============================================
 
-void player_t::monk_combat_begin( sim_t* /* sim */ )
+void class_modules::combat_begin::monk( sim_t* /* sim */ )
 {
-  //for ( player_t* p = sim -> player_list; p; p = p -> next )
-  //{}
+
+}
+
+// class_modules::combat_end::monk ==============================================
+
+void class_modules::combat_end::monk( sim_t* /* sim */ )
+{
+
 }

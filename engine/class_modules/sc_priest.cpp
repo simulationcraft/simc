@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
+#include "sc_class_modules.hpp"
 
 #if SC_PRIEST == 1
 
@@ -4053,7 +4054,7 @@ int priest_t::decode_set( const item_t& item ) const
 using priest::priest_t;
 using priest::priest_targetdata_t;
 
-void sim_t::register_priest_targetdata( sim_t* sim )
+void class_modules::register_targetdata::priest( sim_t* sim )
 {
   player_type_e t = PRIEST;
   typedef priest_targetdata_t type;
@@ -4070,6 +4071,7 @@ void sim_t::register_priest_targetdata( sim_t* sim )
 
   REGISTER_DEBUFF( mind_spike );
 }
+
 #endif // SC_PRIEST
 
 
@@ -4077,16 +4079,16 @@ void sim_t::register_priest_targetdata( sim_t* sim )
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_priest  =================================================
+// class_modules::create::priest  =================================================
 
-player_t* player_t::create_priest( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::priest( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<priest_t,SC_PRIEST>()( "Priest", sim, name, r );
 }
 
 // player_t::priest_init ====================================================
 
-void player_t::priest_init( sim_t* sim )
+void class_modules::init::priest( sim_t* sim )
 {
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4100,5 +4102,8 @@ void player_t::priest_init( sim_t* sim )
 
 // player_t::priest_combat_begin ============================================
 
-void player_t::priest_combat_begin( sim_t* )
+void class_modules::combat_begin::priest( sim_t* )
+{}
+
+void class_modules::combat_end::priest( sim_t* )
 {}

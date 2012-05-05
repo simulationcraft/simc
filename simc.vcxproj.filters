@@ -54,6 +54,7 @@
     <ClCompile Include="engine\report\sc_report_text.cpp" />
     <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
     <ClCompile Include="engine\sc_action_state.cpp" />
+    <ClCompile Include="engine\class_modules\sc_class_modules.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
     <ClCompile Include="engine\class_modules\sc_enemy.cpp" />

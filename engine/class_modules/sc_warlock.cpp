@@ -4,6 +4,7 @@
 // ==========================================================================
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
+#include "sc_class_modules.hpp"
 
 /*
  * To Do:
@@ -40,25 +41,6 @@ int warlock_targetdata_t::active_dots()
   if ( dots_unstable_affliction -> ticking      ) dots++;
   if ( dots_malefic_grasp -> ticking            ) dots++;
   return dots;
-}
-
-
-void sim_t::register_warlock_targetdata( sim_t* sim )
-{
-  player_type_e t = WARLOCK;
-  typedef warlock_targetdata_t type;
-
-  REGISTER_DOT( corruption );
-  REGISTER_DOT( unstable_affliction );
-  REGISTER_DOT( agony );
-  REGISTER_DOT( doom );
-  REGISTER_DOT( immolate );
-  REGISTER_DOT( drain_life );
-  REGISTER_DOT( drain_soul );
-  REGISTER_DOT( shadowflame );
-  REGISTER_DOT( malefic_grasp );
-
-  REGISTER_DEBUFF( haunt );
 }
 
 warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
@@ -2700,23 +2682,44 @@ bool warlock_t::verify_nightfall()
   }
 }
 
+void class_modules::register_targetdata::warlock( sim_t* sim )
+{
+  player_type_e t = WARLOCK;
+  typedef warlock_targetdata_t type;
+
+  REGISTER_DOT( corruption );
+  REGISTER_DOT( unstable_affliction );
+  REGISTER_DOT( agony );
+  REGISTER_DOT( doom );
+  REGISTER_DOT( immolate );
+  REGISTER_DOT( drain_life );
+  REGISTER_DOT( drain_soul );
+  REGISTER_DOT( shadowflame );
+  REGISTER_DOT( malefic_grasp );
+
+  REGISTER_DEBUFF( haunt );
+}
+
 #endif // SC_WARLOCK
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-player_t* player_t::create_warlock( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::warlock( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<warlock_t,SC_WARLOCK>()( "Warlock", sim, name, r );
 }
 
 
-void player_t::warlock_init( sim_t* )
+void class_modules::init::warlock( sim_t* )
 {
 }
 
+void class_modules::combat_begin::warlock( sim_t* )
+{
+}
 
-void player_t::warlock_combat_begin( sim_t* )
+void class_modules::combat_end::warlock( sim_t* )
 {
 }

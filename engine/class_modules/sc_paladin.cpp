@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Paladin
@@ -34,18 +35,6 @@ struct paladin_targetdata_t : public targetdata_t
 
   paladin_targetdata_t( paladin_t* source, player_t* target );
 };
-
-void sim_t::register_paladin_targetdata( sim_t* sim )
-{
-  player_type_e t = PALADIN;
-  typedef paladin_targetdata_t type;
-
-  REGISTER_DOT( censure );
-  REGISTER_DOT( word_of_glory );
-  REGISTER_DOT( holy_radiance );
-
-  REGISTER_DEBUFF( censure );
-}
 
 struct paladin_t : public player_t
 {
@@ -3139,20 +3128,32 @@ expr_t* paladin_t::create_expression( action_t* a,
   return player_t::create_expression( a, name_str );
 }
 
-#endif // SC_PALADIN
-
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-player_t* player_t::create_paladin( sim_t* sim, const std::string& name, race_type_e r )
+void class_modules::register_targetdata::paladin( sim_t* sim )
+{
+  player_type_e t = PALADIN;
+  typedef paladin_targetdata_t type;
+
+  REGISTER_DOT( censure );
+  REGISTER_DOT( word_of_glory );
+  REGISTER_DOT( holy_radiance );
+
+  REGISTER_DEBUFF( censure );
+}
+
+#endif // SC_PALADIN
+
+player_t* class_modules::create::paladin( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<paladin_t,SC_PALADIN>()( "Paladin", sim, name, r );
 }
 
-// player_t::paladin_init ===================================================
+// class_modules::init::paladin ===================================================
 
-void player_t::paladin_init( sim_t* sim )
+void class_modules::init::paladin( sim_t* sim )
 {
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -3163,8 +3164,14 @@ void player_t::paladin_init( sim_t* sim )
   }
 }
 
-// player_t::paladin_combat_begin ===========================================
+// class_modules::combat_begin::paladin ===========================================
 
-void player_t::paladin_combat_begin( sim_t* )
+void class_modules::combat_begin::paladin( sim_t* )
+{
+}
+
+// class_modules::combat_end::paladin ===========================================
+
+void class_modules::combat_end::paladin( sim_t* )
 {
 }

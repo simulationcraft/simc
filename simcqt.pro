@@ -37,6 +37,7 @@ INCLUDEPATH += engine
 DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.hpp
+HEADERS += engine/class_modules/sc_class_modules.hpp
 HEADERS += engine/class_modules/sc_priest.hpp
 HEADERS += engine/class_modules/sc_warlock.hpp
 HEADERS += engine/dbc/data_enums.hh
@@ -103,6 +104,7 @@ SOURCES += engine/interfaces/sc_mmo_champion.cpp
 SOURCES += engine/interfaces/sc_rawr.cpp
 SOURCES += engine/interfaces/sc_wowhead.cpp
 SOURCES += engine/interfaces/sc_xml.cpp
+SOURCES += engine/class_modules/sc_class_modules.cpp
 SOURCES += engine/class_modules/sc_death_knight.cpp
 SOURCES += engine/class_modules/sc_druid.cpp
 SOURCES += engine/class_modules/sc_enemy.cpp

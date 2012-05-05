@@ -570,18 +570,7 @@ bool player_t::init( sim_t* sim )
 
   player_t::debuff_init( sim );
 
-  player_t::death_knight_init( sim );
-  player_t::druid_init       ( sim );
-  player_t::hunter_init      ( sim );
-  player_t::mage_init        ( sim );
-  player_t::monk_init        ( sim );
-  player_t::paladin_init     ( sim );
-  player_t::priest_init      ( sim );
-  player_t::rogue_init       ( sim );
-  player_t::shaman_init      ( sim );
-  player_t::warlock_init     ( sim );
-  player_t::warrior_init     ( sim );
-  player_t::enemy_init       ( sim );
+  player_t::init_class_modules( sim );
 
   if ( sim -> debug )
     log_t::output( sim, "Initializing Players." );
@@ -2609,23 +2598,6 @@ double player_t::get_attribute( attribute_type_e a ) const
 
 // player_t::combat_begin ===================================================
 
-void player_t::combat_begin( sim_t* sim )
-{
-  player_t::death_knight_combat_begin( sim );
-  player_t::druid_combat_begin       ( sim );
-  player_t::hunter_combat_begin      ( sim );
-  player_t::mage_combat_begin        ( sim );
-  player_t::monk_combat_begin        ( sim );
-  player_t::paladin_combat_begin     ( sim );
-  player_t::priest_combat_begin      ( sim );
-  player_t::rogue_combat_begin       ( sim );
-  player_t::shaman_combat_begin      ( sim );
-  player_t::warlock_combat_begin     ( sim );
-  player_t::warrior_combat_begin     ( sim );
-}
-
-// player_t::combat_begin ===================================================
-
 void player_t::combat_begin()
 {
   if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
@@ -2660,23 +2632,6 @@ void player_t::combat_begin()
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_begin();
-}
-
-// player_t::combat_end =====================================================
-
-void player_t::combat_end( sim_t* sim )
-{
-  player_t::death_knight_combat_end( sim );
-  player_t::druid_combat_end       ( sim );
-  player_t::hunter_combat_end      ( sim );
-  player_t::mage_combat_end        ( sim );
-  player_t::monk_combat_end        ( sim );
-  player_t::paladin_combat_end     ( sim );
-  player_t::priest_combat_end      ( sim );
-  player_t::rogue_combat_end       ( sim );
-  player_t::shaman_combat_end      ( sim );
-  player_t::warlock_combat_end     ( sim );
-  player_t::warrior_combat_end     ( sim );
 }
 
 // player_t::combat_end =====================================================
@@ -6394,7 +6349,7 @@ void player_t::copy_from( player_t* source )
   enchant = source -> enchant;
 }
 
-// player_t::create_options =================================================
+// class_modules::create::options =================================================
 
 void player_t::create_options()
 {
@@ -6577,64 +6532,6 @@ void player_t::create_options()
   };
 
   option_t::copy( options, player_options );
-}
-
-// player_t::create =========================================================
-
-player_t* player_t::create( sim_t*             sim,
-                            const std::string& type,
-                            const std::string& name,
-                            race_type_e r )
-{
-  if ( type == "death_knight" || type == "deathknight" )
-  {
-    return player_t::create_death_knight( sim, name, r );
-  }
-  else if ( type == "druid" )
-  {
-    return player_t::create_druid( sim, name, r );
-  }
-  else if ( type == "hunter" )
-  {
-    return player_t::create_hunter( sim, name, r );
-  }
-  else if ( type == "mage" )
-  {
-    return player_t::create_mage( sim, name, r );
-  }
-  else if ( type == "monk" )
-  {
-    return player_t::create_monk( sim, name, r );
-  }
-  else if ( type == "priest" )
-  {
-    return player_t::create_priest( sim, name, r );
-  }
-  else if ( type == "paladin" )
-  {
-    return player_t::create_paladin( sim, name, r );
-  }
-  else if ( type == "rogue" )
-  {
-    return player_t::create_rogue( sim, name, r );
-  }
-  else if ( type == "shaman" )
-  {
-    return player_t::create_shaman( sim, name, r );
-  }
-  else if ( type == "warlock" )
-  {
-    return player_t::create_warlock( sim, name, r );
-  }
-  else if ( type == "warrior" )
-  {
-    return player_t::create_warrior( sim, name, r );
-  }
-  else if ( type == "enemy" )
-  {
-    return player_t::create_enemy( sim, name, r );
-  }
-  return 0;
 }
 
 // player_t::create =========================================================

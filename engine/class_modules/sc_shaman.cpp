@@ -55,6 +55,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Shaman
@@ -84,19 +85,6 @@ struct shaman_targetdata_t : public targetdata_t
 
   shaman_targetdata_t( shaman_t* source, player_t* target );
 };
-
-void sim_t::register_shaman_targetdata( sim_t* sim )
-{
-  player_type_e t = SHAMAN;
-  typedef shaman_targetdata_t type;
-
-  REGISTER_DOT( flame_shock );
-  REGISTER_DOT( searing_flames );
-
-  REGISTER_DEBUFF( searing_flames );
-  REGISTER_DEBUFF( stormstrike );
-  REGISTER_DEBUFF( unleashed_fury_ft );
-}
 
 struct shaman_t : public player_t
 {
@@ -4396,22 +4384,47 @@ role_type_e shaman_t::primary_role() const
   return ROLE_NONE;
 }
 
-#endif // SC_SHAMAN
+shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
+  : targetdata_t( p, target )
+{
+  debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
+                                     .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
+                                     .duration( p -> dbc.spell( 77661 ) -> duration() )
+                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
+                                     .quiet( true ) );
+  debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
+  debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
+}
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_shaman  =================================================
+void class_modules::register_targetdata::shaman( sim_t* sim )
+{
+  player_type_e t = SHAMAN;
+  typedef shaman_targetdata_t type;
 
-player_t* player_t::create_shaman( sim_t* sim, const std::string& name, race_type_e r )
+  REGISTER_DOT( flame_shock );
+  REGISTER_DOT( searing_flames );
+
+  REGISTER_DEBUFF( searing_flames );
+  REGISTER_DEBUFF( stormstrike );
+  REGISTER_DEBUFF( unleashed_fury_ft );
+}
+
+#endif // SC_SHAMAN
+
+// class_modules::create::shaman  =================================================
+
+player_t* class_modules::create::shaman( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<shaman_t,SC_SHAMAN>()( "Shaman", sim, name, r );
 }
 
 // player_t::shaman_init ====================================================
 
-void player_t::shaman_init( sim_t* sim )
+void class_modules::init::shaman( sim_t* sim )
 {
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4430,22 +4443,11 @@ void player_t::shaman_init( sim_t* sim )
 
 // player_t::shaman_combat_begin ============================================
 
-void player_t::shaman_combat_begin( sim_t* )
+void class_modules::combat_begin::shaman( sim_t* )
 {
 }
 
-#if SC_SHAMAN == 1
-
-shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
-  : targetdata_t( p, target )
+void class_modules::combat_end::shaman( sim_t* )
 {
-  debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
-                                     .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
-                                     .duration( p -> dbc.spell( 77661 ) -> duration() )
-                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
-                                     .quiet( true ) );
-  debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
-  debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
 }
 
-#endif

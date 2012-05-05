@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 namespace {
 
@@ -4273,14 +4274,13 @@ void class_t::moving()
 }
 
 } // END hunter NAMESPACE
-#endif // DISABLED
 
 } // END ANONYMOUS NAMESPACE
 
 using hunter::class_t;
 using hunter::class_targetdata_t;
 
-void sim_t::register_hunter_targetdata( sim_t* sim )
+void class_modules::register_targetdata::hunter( sim_t* sim )
 {
   player_type_e t = HUNTER;
   typedef class_targetdata_t type;
@@ -4288,25 +4288,32 @@ void sim_t::register_hunter_targetdata( sim_t* sim )
   REGISTER_DOT( serpent_sting );
 }
 
+#endif // SC_HUNTER
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_hunter  =================================================
+// class_modules::create::hunter  =================================================
 
-player_t* player_t::create_hunter( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::hunter( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<class_t,SC_HUNTER>()( "Hunter", sim, name, r );
 }
 
-// player_t::hunter_init ====================================================
+// class_modules::init::hunter ====================================================
 
-void player_t::hunter_init( sim_t* )
+void class_modules::init::hunter( sim_t* )
 {
 }
 
-// player_t::hunter_combat_begin ============================================
+// class_modules::combat_begin::hunter ============================================
 
-void player_t::hunter_combat_begin( sim_t* )
+void class_modules::combat_begin::hunter( sim_t* )
+{
+}
+
+// class_modules::combat_end::hunter ============================================
+
+void class_modules::combat_end::hunter( sim_t* )
 {
 }

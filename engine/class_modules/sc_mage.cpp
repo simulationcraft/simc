@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Mage
@@ -27,20 +28,6 @@ struct mage_targetdata_t : public targetdata_t
 
   mage_targetdata_t( mage_t* source, player_t* target );
 };
-
-void sim_t::register_mage_targetdata( sim_t* sim )
-{
-  player_type_e t = MAGE;
-  typedef mage_targetdata_t type;
-
-  REGISTER_DOT( flamestrike );
-  REGISTER_DOT( ignite );
-  REGISTER_DOT( living_bomb );
-  REGISTER_DOT( nether_tempest );
-  REGISTER_DOT( pyroblast );
-
-  REGISTER_DEBUFF( slow );
-}
 
 struct mage_t : public player_t
 {
@@ -3483,26 +3470,47 @@ int mage_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
-#endif // SC_MAGE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_mage  ===================================================
+void class_modules::register_targetdata::mage( sim_t* sim )
+{
+  player_type_e t = MAGE;
+  typedef mage_targetdata_t type;
 
-player_t* player_t::create_mage( sim_t* sim, const std::string& name, race_type_e r )
+  REGISTER_DOT( flamestrike );
+  REGISTER_DOT( ignite );
+  REGISTER_DOT( living_bomb );
+  REGISTER_DOT( nether_tempest );
+  REGISTER_DOT( pyroblast );
+
+  REGISTER_DEBUFF( slow );
+}
+
+#endif // SC_MAGE
+
+// class_modules::create::mage  ===================================================
+
+player_t* class_modules::create::mage( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<mage_t,SC_MAGE>()( "Mage", sim, name, r );
 }
 
-// player_t::mage_init ======================================================
+// class_modules::init::mage ======================================================
 
-void player_t::mage_init( sim_t* )
+void class_modules::init::mage( sim_t* )
 { }
 
-// player_t::mage_combat_begin ==============================================
+// class_modules::combat_begin::mage ==============================================
 
-void player_t::mage_combat_begin( sim_t* )
+void class_modules::combat_begin::mage( sim_t* )
+{ }
+
+
+// class_modules::combat_end::mage ==============================================
+
+void class_modules::combat_end::mage( sim_t* )
 { }
 

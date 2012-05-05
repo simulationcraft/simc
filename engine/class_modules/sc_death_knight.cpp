@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 #if SC_DEATH_KNIGHT == 1
 
@@ -23,16 +24,6 @@ struct death_knight_targetdata_t : public targetdata_t
 
   death_knight_targetdata_t( death_knight_t* source, player_t* target );
 };
-
-void sim_t::register_death_knight_targetdata( sim_t* sim )
-{
-  player_type_e t = DEATH_KNIGHT;
-  typedef death_knight_targetdata_t type;
-
-  REGISTER_DOT( blood_plague );
-  REGISTER_DOT( death_and_decay );
-  REGISTER_DOT( frost_fever );
-}
 
 struct dancing_rune_weapon_pet_t;
 
@@ -4621,22 +4612,38 @@ void death_knight_t::arise()
   if ( primary_tree() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
 }
 
-#endif // SC_DEATH_KNIGHT
 
 // ==========================================================================
 // player_t implementations
 // ==========================================================================
 
-// player_t::create_death_knight ============================================
+void class_modules::register_targetdata::death_knight( sim_t* sim )
+{
+  player_type_e t = DEATH_KNIGHT;
+  typedef death_knight_targetdata_t type;
 
-player_t* player_t::create_death_knight( sim_t* sim, const std::string& name, race_type_e r )
+  REGISTER_DOT( blood_plague );
+  REGISTER_DOT( death_and_decay );
+  REGISTER_DOT( frost_fever );
+}
+
+#endif // SC_DEATH_KNIGHT
+
+// class_modules::create::death_knight ============================================
+
+player_t* class_modules::create::death_knight( sim_t* sim, const std::string& name, race_type_e r )
 {
   return sc_create_class<death_knight_t,SC_DEATH_KNIGHT>()( "Death Knight", sim, name, r );
 }
 
-// player_t::death_knight_init ==============================================
+// class_modules::init::death_knight ======================================
 
-void player_t::death_knight_init( sim_t* sim )
+void class_modules::init::death_knight( sim_t* )
+{
+}
+// class_modules::combat_begin::death_knight ==============================================
+
+void class_modules::combat_begin::death_knight( sim_t* sim )
 {
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4645,8 +4652,8 @@ void player_t::death_knight_init( sim_t* sim )
   }
 }
 
-// player_t::death_knight_combat_begin ======================================
+// class_modules::combat_end::death_knight ======================================
 
-void player_t::death_knight_combat_begin( sim_t* )
+void class_modules::combat_end::death_knight( sim_t* )
 {
 }

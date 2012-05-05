@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Druid
@@ -129,25 +130,6 @@ struct druid_targetdata_t : public targetdata_t
     delete combo_points;
   }
 };
-
-void sim_t::register_druid_targetdata( sim_t* sim )
-{
-  player_type_e t = DRUID;
-  typedef druid_targetdata_t type;
-
-  REGISTER_DOT( lacerate );
-  REGISTER_DOT( lifebloom );
-  REGISTER_DOT( moonfire );
-  REGISTER_DOT( rake );
-  REGISTER_DOT( regrowth );
-  REGISTER_DOT( rejuvenation );
-  REGISTER_DOT( rip );
-  REGISTER_DOT( sunfire );
-  REGISTER_DOT( wild_growth );
-
-  //REGISTER_BUFF( combo_points );
-  REGISTER_BUFF( lifebloom );
-}
 
 struct druid_t : public player_t
 {
@@ -4887,24 +4869,43 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
-#endif // SC_DRUID
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// player_t::create_druid  ==================================================
+// class_modules::register_targetdata::druid  ==================================================
 
-player_t* player_t::create_druid( sim_t*             sim,
+void class_modules::register_targetdata::druid( sim_t* sim )
+{
+  player_type_e t = DRUID;
+  typedef druid_targetdata_t type;
+
+  REGISTER_DOT( lacerate );
+  REGISTER_DOT( lifebloom );
+  REGISTER_DOT( moonfire );
+  REGISTER_DOT( rake );
+  REGISTER_DOT( regrowth );
+  REGISTER_DOT( rejuvenation );
+  REGISTER_DOT( rip );
+  REGISTER_DOT( sunfire );
+  REGISTER_DOT( wild_growth );
+
+  //REGISTER_BUFF( combo_points );
+  REGISTER_BUFF( lifebloom );
+}
+
+#endif // SC_DRUID
+player_t* class_modules::create::druid( sim_t*             sim,
                                   const std::string& name,
                                   race_type_e r )
 {
   return sc_create_class<druid_t,SC_DRUID>()( "Druid", sim, name, r );
 }
 
-// player_t::druid_init =====================================================
+// class_modules::init::druid =====================================================
 
-void player_t::druid_init( sim_t* sim )
+void class_modules::init::druid( sim_t* sim )
 {
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4918,8 +4919,15 @@ void player_t::druid_init( sim_t* sim )
   }
 }
 
-// player_t::druid_combat_begin =============================================
+// class_modules::combat_begin::druid =============================================
 
-void player_t::druid_combat_begin( sim_t* )
+void class_modules::combat_begin::druid( sim_t* )
 {
 }
+
+// class_modules::combat_end::druid =============================================
+
+void class_modules::combat_end::druid( sim_t* )
+{
+}
+
