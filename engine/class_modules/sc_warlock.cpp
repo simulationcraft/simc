@@ -4,7 +4,6 @@
 // ==========================================================================
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
-#include "sc_class_modules.hpp"
 
 /*
  * To Do:

@@ -116,19 +116,6 @@ namespace std {using namespace tr1; }
 #define M_PI ( 3.14159265358979323846 )
 #endif
 
-// Enabled classes
-#define SC_DEATH_KNIGHT 1
-#define SC_DRUID        1
-#define SC_HUNTER       1
-#define SC_MAGE         1
-#define SC_MONK         1
-#define SC_PALADIN      1
-#define SC_PRIEST       1
-#define SC_ROGUE        0
-#define SC_SHAMAN       1
-#define SC_WARLOCK      1
-#define SC_WARRIOR      0
-
 // TODO: Integer time is only partially working.
 #define SC_USE_INTEGER_TIME
 
@@ -5025,28 +5012,6 @@ inline double sim_t::averaged_range( double min, double max )
 
   return default_rng_ -> range( min, max );
 }
-
-// Needs to be a class template with overloaded () operator, because partial function template specialization
-// is not allowed in C++98.
-template <typename Class, bool X>
-struct sc_create_class
-{
-  player_t* operator() ( std::string /* class_name */, sim_t* s, std::string name, race_type_e rt )
-  {
-    return new Class( s, name, rt );
-  }
-};
-
-// Template specialization if class is disabled
-template <typename Class>
-struct sc_create_class<Class,false>
-{
-  player_t* operator() ( std::string class_name, sim_t* s, std::string name, race_type_e )
-  {
-    s -> errorf( "\n %s module for player %s is currently not available.\n", class_name.c_str(), name.c_str() );
-    return 0;
-  }
-};
 
 
 #ifdef WHAT_IF

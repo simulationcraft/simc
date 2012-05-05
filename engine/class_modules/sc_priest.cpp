@@ -5,7 +5,6 @@
 
 #include "simulationcraft.hpp"
 #include "sc_priest.hpp"
-#include "sc_class_modules.hpp"
 
 #if SC_PRIEST == 1
 

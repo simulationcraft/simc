@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_class_modules.hpp"
 
 #ifndef SC_PRIEST_HPP
 #define SC_PRIEST_HPP
