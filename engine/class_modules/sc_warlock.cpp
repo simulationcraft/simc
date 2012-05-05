@@ -1140,9 +1140,25 @@ struct cancel_metamorphosis_t : public warlock_spell_t
   }
 };
 
+struct shadowflame_state_t : public action_state_t
+{
+  shadowflame_state_t( action_t* spell, player_t* target ) :
+    action_state_t( spell, target )
+  { }
+
+  virtual double composite_power() const
+  {
+    warlock_targetdata_t* td = action -> targetdata( target ) -> cast_warlock();
+    assert( td -> shadowflame_stack >= 1 );
+
+    return action_state_t::composite_power() * td -> shadowflame_stack;
+  }
+};
 
 struct shadowflame_t : public warlock_spell_t
 {
+  action_state_t* new_state() { return new shadowflame_state_t( this, target ); }
+
   shadowflame_t( warlock_t* p ) :
     warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
@@ -1170,17 +1186,6 @@ struct shadowflame_t : public warlock_spell_t
     }
 
     warlock_spell_t::impact_s( s );
-  }
-
-  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
-  {
-    // FIXME: Technically, this won't be correct in multitarget/aoe situations
-    //        - we would need to be passed the dot or the target from action_t::tick()
-    warlock_targetdata_t* td = targetdata( dot() -> state -> target ) -> cast_warlock(); 
-
-    assert( td -> shadowflame_stack >= 1 );
-
-    return warlock_spell_t::calculate_tick_damage( r, power * td -> shadowflame_stack, multiplier );
   }
 };
 
@@ -1402,10 +1407,10 @@ struct malefic_grasp_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      start_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
-      start_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
-      start_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
-      start_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
+      start_malefic_grasp( this, td( s -> target ) -> dots_agony );
+      start_malefic_grasp( this, td( s -> target ) -> dots_corruption );
+      start_malefic_grasp( this, td( s -> target ) -> dots_doom );
+      start_malefic_grasp( this, td( s -> target ) -> dots_unstable_affliction );
     }
   }
 
