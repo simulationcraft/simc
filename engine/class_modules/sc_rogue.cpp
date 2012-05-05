@@ -69,11 +69,6 @@ struct combo_points_t
     }
   }
 
-  void add( int num, const spell_id_t* spell )
-  {
-    add( num, spell -> token().c_str() );
-  }
-
   void clear( const char* action = 0 )
   {
     if ( sim -> log )
@@ -107,7 +102,6 @@ struct combo_points_t
 // ==========================================================================
 
 // ==========================================================================
-// Todo for Cata :
 //  New Ability: Redirect, doable once we allow debuffs on multiple targets
 //  Review: Ability Scaling
 //  Review: Bandit's Guile
@@ -118,10 +112,17 @@ enum poison_type_t { POISON_NONE=0, DEADLY_POISON, INSTANT_POISON, WOUND_POISON 
 
 struct rogue_targetdata_t : public targetdata_t
 {
-  dot_t* dots_rupture;
+  dot_t* dots_crimson_tempest;
+  dot_t* dots_deadly_poison;
+  dot_t* dots_garrote;
   dot_t* dots_hemorrhage;
+  dot_t* dots_rupture;
 
+  buff_t* debuffs_anticipation_charges;
+  buff_t* debuffs_find_weakness;
+  buff_t* debuffs_leeching_poison;
   buff_t* debuffs_poison_doses;
+  buff_t* debuffs_vendetta;
 
   combo_points_t* combo_points;
 
@@ -149,40 +150,54 @@ struct rogue_t : public player_t
   action_t* active_venomous_wound;
   action_t* active_wound_poison;
 
-  // Buffs
-  buff_t* buffs_adrenaline_rush;
-  buff_t* buffs_bandits_guile;
-  buff_t* buffs_blade_flurry;
-  buff_t* buffs_cold_blood;
-  buff_t* buffs_deadly_proc;
-  buff_t* buffs_envenom;
-  buff_t* buffs_find_weakness;
-  buff_t* buffs_killing_spree;
-  buff_t* buffs_master_of_subtlety;
-  buff_t* buffs_overkill;
-  buff_t* buffs_recuperate;
-  buff_t* buffs_revealing_strike;
-  buff_t* buffs_shadow_dance;
-  buff_t* buffs_shadowstep;
-  buff_t* buffs_shiv;
-  buff_t* buffs_slice_and_dice;
-  buff_t* buffs_stealthed;
-  buff_t* buffs_tier13_2pc;
-  buff_t* buffs_tot_trigger;
-  buff_t* buffs_vanish;
-  buff_t* buffs_vendetta;
+  // Benefits
+  struct benefits_t
+  {
+    benefit_t* uptimes_bandits_guile[ 3 ];
+    benefit_t* uptimes_energy_cap;
+    benefit_t* uptimes_poisoned;
+  } benefit;
 
-  // Legendary buffs
-  buff_t* buffs_fof_fod; // Fangs of the Destroyer
-  buff_t* buffs_fof_p1; // Phase 1
-  buff_t* buffs_fof_p2;
-  buff_t* buffs_fof_p3;
+  // Buffs
+  struct buffs_t
+  {
+    buff_t* adrenaline_rush;
+    buff_t* bandits_guile;
+    buff_t* blade_flurry;
+    buff_t* cold_blood;
+    buff_t* deadly_proc;
+    buff_t* envenom;
+    buff_t* find_weakness;
+    buff_t* killing_spree;
+    buff_t* master_of_subtlety;
+    buff_t* overkill;
+    buff_t* recuperate;
+    buff_t* revealing_strike;
+    buff_t* shadow_dance;
+    buff_t* shadowstep;
+    buff_t* shiv;
+    buff_t* slice_and_dice;
+    buff_t* stealthed;
+    buff_t* tier13_2pc;
+    buff_t* tot_trigger;
+    buff_t* vanish;
+    buff_t* vendetta;
+
+    // Legendary buffs
+    buff_t* fof_fod; // Fangs of the Destroyer
+    buff_t* fof_p1; // Phase 1
+    buff_t* fof_p2;
+    buff_t* fof_p3;
+  } buff;
 
   // Cooldowns
-  cooldown_t* cooldowns_adrenaline_rush;
-  cooldown_t* cooldowns_honor_among_thieves;
-  cooldown_t* cooldowns_killing_spree;
-  cooldown_t* cooldowns_seal_fate;
+  struct cooldowns_t
+  {
+    cooldown_t* adrenaline_rush;
+    cooldown_t* honor_among_thieves;
+    cooldown_t* killing_spree;
+    cooldown_t* seal_fate;
+  } cooldown;
 
   // Expirations
   struct expirations_t_
@@ -195,157 +210,88 @@ struct rogue_t : public player_t
   expirations_t_ expirations_;
 
   // Gains
-  gain_t* gains_adrenaline_rush;
-  gain_t* gains_backstab_glyph;
-  gain_t* gains_cold_blood;
-  gain_t* gains_combat_potency;
-  gain_t* gains_energy_refund;
-  gain_t* gains_murderous_intent;
-  gain_t* gains_overkill;
-  gain_t* gains_recuperate;
-  gain_t* gains_relentless_strikes;
-  gain_t* gains_venomous_vim;
+  struct gains_t
+  {
+    gain_t* adrenaline_rush;
+    gain_t* backstab_glyph;
+    gain_t* cold_blood;
+    gain_t* combat_potency;
+    gain_t* energy_refund;
+    gain_t* murderous_intent;
+    gain_t* overkill;
+    gain_t* recuperate;
+    gain_t* relentless_strikes;
+    gain_t* venomous_vim;
+  } gain;
 
-  // Procs
-  proc_t* procs_deadly_poison;
-  proc_t* procs_honor_among_thieves;
-  proc_t* procs_main_gauche;
-  proc_t* procs_ruthlessness;
-  proc_t* procs_seal_fate;
-  proc_t* procs_serrated_blades;
-  proc_t* procs_sinister_strike_glyph;
-  proc_t* procs_venomous_wounds;
-
-  // Up-Times
-  benefit_t* uptimes_bandits_guile[ 3 ];
-  benefit_t* uptimes_energy_cap;
-  benefit_t* uptimes_poisoned;
-
-  // Random Number Generation
-  rng_t* rng_bandits_guile;
-  rng_t* rng_combat_potency;
-  rng_t* rng_cut_to_the_chase;
-  rng_t* rng_deadly_poison;
-  rng_t* rng_hat_interval;
-  rng_t* rng_honor_among_thieves;
-  rng_t* rng_improved_expose_armor;
-  rng_t* rng_initiative;
-  rng_t* rng_instant_poison;
-  rng_t* rng_main_gauche;
-  rng_t* rng_relentless_strikes;
-  rng_t* rng_ruthlessness;
-  rng_t* rng_seal_fate;
-  rng_t* rng_serrated_blades;
-  rng_t* rng_sinister_strike_glyph;
-  rng_t* rng_venomous_wounds;
-  rng_t* rng_vile_poisons;
-  rng_t* rng_wound_poison;
-
-  // Spec passives
-  spell_id_t* spec_ambidexterity;
-  spell_id_t* spec_assassins_resolve;
-  spell_id_t* spec_improved_poisons;
-  spell_id_t* spec_master_of_subtlety;
-  spell_id_t* spec_sinister_calling;
-  spell_id_t* spec_vitality;
-
-  // Spec actives
-  spell_id_t* spec_blade_flurry;
-  spell_id_t* spec_mutilate;
-  spell_id_t* spec_shadowstep;
+  struct glyphs_t
+  {
+  };
+  glyphs_t glyph;
 
   // Masteries
-  mastery_t* mastery_executioner;
-  mastery_t* mastery_main_gauche;
-  mastery_t* mastery_potent_poisons;
+  struct masteries_t
+  {
+    const spell_data_t* executioner;
+    const spell_data_t* main_gauche;
+    const spell_data_t* potent_poisons;
+  } mastery;
+
+  // Procs
+  struct procs_t
+  {
+    proc_t* deadly_poison;
+    proc_t* honor_among_thieves;
+    proc_t* main_gauche;
+    proc_t* ruthlessness;
+    proc_t* seal_fate;
+    proc_t* serrated_blades;
+    proc_t* sinister_strike_glyph;
+    proc_t* venomous_wounds;
+  } proc;
+
+  // Random Number Generation
+  struct rngs_t
+  {
+    rng_t* bandits_guile;
+    rng_t* combat_potency;
+    rng_t* cut_to_the_chase;
+    rng_t* deadly_poison;
+    rng_t* hat_interval;
+    rng_t* honor_among_thieves;
+    rng_t* improved_expose_armor;
+    rng_t* initiative;
+    rng_t* instant_poison;
+    rng_t* main_gauche;
+    rng_t* relentless_strikes;
+    rng_t* ruthlessness;
+    rng_t* seal_fate;
+    rng_t* serrated_blades;
+    rng_t* sinister_strike_glyph;
+    rng_t* venomous_wounds;
+    rng_t* vile_poisons;
+    rng_t* wound_poison;
+  } rng;
+
+  // Spec passives
+  struct specs_t
+  {
+  } spec;
 
   // Spell Data
   struct spells_t
   {
-    spell_data_t* tier13_2pc;
-    spell_data_t* tier13_4pc;
+    const spell_data_t* tier13_2pc;
+    const spell_data_t* tier13_4pc;
 
     spells_t() { memset( ( void* ) this, 0x0, sizeof( spells_t ) ); }
   };
-  spells_t spells;
+  spells_t spell;
 
   // Talents
-  struct talents_list_t
+  struct talents_t
   {
-    // Assasination
-    talent_t* cold_blood;               // done
-    talent_t* coup_de_grace;            // done
-    talent_t* cut_to_the_chase;         // done
-    talent_t* improved_expose_armor;    // XXX: maybe add proc counting for 1/2 setups
-    talent_t* lethality;                // done
-    talent_t* master_poisoner;          // done
-    talent_t* murderous_intent;         // done
-    talent_t* overkill;                 // done
-    talent_t* puncturing_wounds;        // done
-    talent_t* quickening;               // XXX: there is no run speed in simc
-    talent_t* ruthlessness;             // done
-    talent_t* seal_fate;                // done
-    talent_t* vendetta;                 // done
-    talent_t* venomous_wounds;          // done: energy return on target death is not implemented (as we only ever simulate 1 target till it dies)
-    talent_t* vile_poisons;             // done
-
-    // Combat
-    talent_t* adrenaline_rush;          // done
-    talent_t* aggression;               // done
-    talent_t* bandits_guile;            // done XXX incomplete: it updates damage 'in real time' (so rupture ticks for example get boosted as you build it up)
-    talent_t* combat_potency;           // done
-    talent_t* improved_sinister_strike; // done
-    talent_t* improved_slice_and_dice;  // done
-    talent_t* killing_spree;            // done
-    talent_t* lightning_reflexes;       // done
-    talent_t* precision;                // done
-    talent_t* restless_blades;          // done
-    talent_t* revealing_strike;         // XXX: does it get eaten by missed finishers?
-    talent_t* savage_combat;            // done
-
-    // Subtlety
-    talent_t* elusiveness;                // done
-    talent_t* energetic_recovery;         // done
-    talent_t* find_weakness;              // done
-    talent_t* hemorrhage;                 // done
-    talent_t* honor_among_thieves;        // XXX more changes needed?
-    talent_t* improved_ambush;            // done
-    talent_t* initiative;                 // done
-    talent_t* opportunity;                // done
-    talent_t* premeditation;              // done
-    talent_t* preparation;                // done
-    talent_t* relentless_strikes;         // done
-    talent_t* sanguinary_vein;            // done
-    talent_t* serrated_blades;            // XXX: review to check if rupture refreshes the "right" way
-    talent_t* shadow_dance;               // done
-    talent_t* slaughter_from_the_shadows; // done
-    talent_t* waylay;                     // XXX
-  };
-  talents_list_t talents;
-
-  struct glyphs_t
-  {
-    glyph_t* adrenaline_rush;     // done
-    glyph_t* ambush;              // XXX
-    glyph_t* backstab;            // done
-    glyph_t* blade_flurry;        // done
-    glyph_t* eviscerate;          // done
-    glyph_t* expose_armor;        // done
-    glyph_t* feint;               // done
-    glyph_t* hemorrhage;          // done
-    glyph_t* kick;                // done
-    glyph_t* killing_spree;       // done
-    glyph_t* mutilate;            // done
-    glyph_t* preparation;         // done
-    glyph_t* revealing_strike;    // done
-    glyph_t* rupture;             // done
-    glyph_t* shadow_dance;        // done
-    glyph_t* sinister_strike;     // done
-    glyph_t* slice_and_dice;      // done
-    glyph_t* tricks_of_the_trade; // done
-    glyph_t* vendetta;            // done
-  };
-  glyphs_t glyphs;
+  } talent;
 
   action_callback_t* virtual_hat_callback;
 
@@ -358,37 +304,38 @@ struct rogue_t : public player_t
   uint32_t fof_p1, fof_p2, fof_p3;
 
   rogue_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
-    player_t( sim, ROGUE, name, r )
+    player_t( sim, ROGUE, name, r ),
+    active_deadly_poison( 0 ), active_instant_poison( 0 ),
+    active_main_gauche( 0 ), active_venomous_wound( 0 ),
+    active_wound_poison( 0 ),
+    benefit( benefits_t() ),
+    buff( buffs_t() ),
+    cooldown( cooldowns_t() ),
+    gain( gains_t() ),
+    glyph( glyphs_t() ),
+    mastery( masteries_t() ),
+    proc( procs_t() ),
+    rng( rngs_t() ),
+    spec( specs_t() ),
+    spell( spells_t() ),
+    talent( talents_t() ),
+    virtual_hat_callback( 0 ),
+    tot_target( 0 ),
+    virtual_hat_interval( timespan_t::min() ),
+    tricks_of_the_trade_target_str( "" ),
+    fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
-    tree_type[ ROGUE_ASSASSINATION ] = TREE_ASSASSINATION;
-    tree_type[ ROGUE_COMBAT        ] = TREE_COMBAT;
-    tree_type[ ROGUE_SUBTLETY      ] = TREE_SUBTLETY;
-
-    // Active
-    active_deadly_poison    = 0;
-    active_instant_poison   = 0;
-    active_wound_poison     = 0;
-    active_venomous_wound   = 0;
-    active_main_gauche      = 0;
-
-    fof_p1 = fof_p2 = fof_p3 = 0;
-
-    virtual_hat_callback = 0;
 
     // Cooldowns
-    cooldowns_honor_among_thieves = get_cooldown( "honor_among_thieves" );
-    cooldowns_seal_fate           = get_cooldown( "seal_fate"           );
-    cooldowns_adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
-    cooldowns_killing_spree       = get_cooldown( "killing_spree"       );
+    cooldown.honor_among_thieves = get_cooldown( "honor_among_thieves" );
+    cooldown.seal_fate           = get_cooldown( "seal_fate"           );
+    cooldown.adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
+    cooldown.killing_spree       = get_cooldown( "killing_spree"       );
+
+    initial.distance = 3;
 
     // Options
-    virtual_hat_interval = timespan_t::min();
-    tricks_of_the_trade_target_str = "";
 
-    stats_initial.distance = 3;
-
-    create_talents();
-    create_glyphs();
     create_options();
   }
 
@@ -415,7 +362,7 @@ struct rogue_t : public player_t
   virtual timespan_t available() const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual action_expr_t* create_expression( action_t* a, const std::string& name_str );
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
@@ -433,7 +380,7 @@ rogue_targetdata_t::rogue_targetdata_t( rogue_t* source, player_t* target ) :
   targetdata_t( source, target )
 {
   combo_points = new combo_points_t( target );
-  debuffs_poison_doses = add_aura( new buff_t( this, "poison_doses",  5  ) );
+  debuffs_poison_doses = add_aura( buff_creator_t( this, "poison_doses" ).max_stack( 5 ) );
 }
 
 namespace // ANONYMOUS NAMESPACE ============================================
@@ -443,53 +390,100 @@ namespace // ANONYMOUS NAMESPACE ============================================
 // Rogue Attack
 // ==========================================================================
 
+struct rogue_attack_state_t : public action_state_t
+{
+  int combo_points;
+
+  rogue_attack_state_t( action_t* a, player_t* t ) :
+    action_state_t( a, t ), combo_points( 0 )
+  { }
+  
+  virtual void debug() const 
+  {
+    action_state_t::debug();
+    log_t::output( action -> sim, "[NEW] %s %s %s: cp=%d", 
+      action -> player -> name(),
+      action -> name(),
+      target -> name(),
+      combo_points );
+  }
+  
+  virtual void copy_state( const action_state_t* o )
+  {
+    if ( o == 0 || this == o )
+      return;
+
+    action_state_t::copy_state( o );
+    
+    const rogue_attack_state_t* ds_ = static_cast< const rogue_attack_state_t* >( o );
+
+    combo_points = ds_ -> combo_points;
+  }
+};
+
 struct rogue_melee_attack_t : public melee_attack_t
 {
-  /**
-   * Simple actions do not invoke melee_attack_t ::execute and ::player_buff methods.
-   * It's added for simple buff actions ( like AR, CB etc. ) which may consume resources,
-   * require CPs etc, but don't do any damage (by themselves at least).
-   */
-  bool simple;
-  buff_t* m_buff;
-
-  int  requires_weapon;
-  int  requires_position;
-  bool requires_stealth;
-  bool requires_combo_points;
+  bool             requires_stealth_;
+  position_type_e  requires_position_;
+  bool             requires_combo_points;
+  int              adds_combo_points;
+  double           base_da_bonus;
+  double           base_ta_bonus;
+  weapon_type_e    requires_weapon;
   bool affected_by_killing_spree;
 
   // we now track how much CPs can an action give us
-  int adds_combo_points;
+  int    adds_combo_points;
+  double base_da_bonus;
+  double base_ta_bonus;
 
   // we now track how much combo points we spent on an action
   int combo_points_spent;
 
-  rogue_melee_attack_t( const char* n, rogue_t* p, bool special = false ) :
-    melee_attack_t( n, p, RESOURCE_ENERGY, SCHOOL_PHYSICAL, TREE_NONE, special ),
-    simple( false ), m_buff( 0 ), adds_combo_points( 0 )
+  rogue_melee_attack_t( const std::string& token, rogue_t* p,
+                        const spell_data_t* s = spell_data_t::nil(),
+                        const std::string& options = std::string() ) :
+    melee_attack_t( token, p, s ),
+    simple( false ), m_buff( 0 ), requires_weapon( WEAPON_NONE ),
+    requires_position( POSITION_NONE ), requires_stealth( false ),
+    requires_combo_points( false ), affected_by_killing_spree( true ),
+    adds_combo_points( 0 ), base_da_bonus( 0.0 ), base_ta_bonus( 0.0 ),
+    combo_points_spent( 0 )
   {
-    init_rogue_melee_attack_t_();
-  }
+    parse_options( 0, options );
 
-  rogue_melee_attack_t( const char* n, uint32_t id, rogue_t* p, bool simple = false ) :
-    melee_attack_t( n, id, p, TREE_NONE, true ),
-    simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
-  {
-    init_rogue_melee_attack_t_();
-  }
+    may_crit                  = true;
+    may_glance                = false;
+    special                   = true;
+    tick_may_crit             = true;
+    stateless                 = true;
+    hasted_ticks              = false;
 
-  rogue_melee_attack_t( const char* n, const char* sn, rogue_t* p, bool simple = false ) :
-    melee_attack_t( n, sn, p, TREE_NONE, true ),
-    simple( simple ), m_buff( 0 ), adds_combo_points( 0 )
-  {
-    init_rogue_melee_attack_t_();
+    // reset some damage related stuff ::parse_data set which we will overwhire anyway in actual spell ctors/executes
+    direct_power_mod          = 0.0;
+    tick_power_mod            = 0.0;
+
+    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+    {
+      switch ( data().effectN( i ).type() )
+      {
+        case E_ADD_COMBO_POINTS:
+          adds_combo_points = data().effectN( i ).base_value();
+          break;
+        default:
+          break;
+      }
+      
+      if ( data().effectN( i ).type() == E_APPLY_AURA && 
+           data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
+        base_ta_bonus = data().effectN( i ).bonus( p );
+      else if ( data().effectN( i ).type() == E_SCHOOL_DAMAGE )
+        base_da_bonus = data().effectN( i ).bonus( p );
+    }
   }
 
   rogue_t* cast() const
   { return static_cast<rogue_t*>( player ); }
-
-  void init_rogue_melee_attack_t_();
 
   virtual double cost() const;
   virtual void   consume_resource();
@@ -512,7 +506,8 @@ struct rogue_melee_attack_t : public melee_attack_t
 
 struct rogue_poison_t : public spell_t
 {
-  rogue_poison_t( const char* n, const uint32_t id, rogue_t* p ) :
+  rogue_poison_t( const std::string& token, rogue_t* p,
+                  const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, id, p )
   {
     proc             = true;
@@ -947,40 +942,6 @@ double rogue_melee_attack_t::armor() const
   a *= 1.0 - p -> buffs_find_weakness -> value();
 
   return a;
-}
-
-// rogue_melee_attack_t::init_ ====================================================
-
-void rogue_melee_attack_t::init_rogue_melee_attack_t_()
-{
-  may_crit      = true;
-  tick_may_crit = true;
-  hasted_ticks  = false;
-  affected_by_killing_spree = true;
-
-  // reset some damage related stuff ::parse_data set which we will overwhire anyway in actual spell ctors/executes
-  direct_power_mod = 0.0;
-  tick_power_mod   = 0.0;
-
-  requires_weapon       = WEAPON_NONE;
-  requires_position     = POSITION_NONE;
-  requires_stealth      = false;
-  requires_combo_points = false;
-
-  if ( player -> dbc.spell( id ) -> effect1().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect1().base_value();
-  else if ( player -> dbc.spell( id ) -> effect2().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect2().base_value();
-  else if ( player -> dbc.spell( id ) -> effect3().type() == E_ADD_COMBO_POINTS )
-    adds_combo_points   = ( int ) player -> dbc.spell( id ) -> effect3().base_value();
-
-  combo_points_spent    = 0;
-
-  rogue_t* p = cast();
-
-  base_hit += p -> talents.precision -> effect1().percent();
-
-  base_dd_multiplier *= 1.0 + p -> spec_assassins_resolve -> effect2().percent();
 }
 
 // rogue_melee_attack_t::cost =====================================================
@@ -3437,7 +3398,7 @@ action_t* rogue_t::create_action( const std::string& name,
 
 // rogue_t::create_expression ===============================================
 
-action_expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "combo_points" )
   {
@@ -3543,45 +3504,16 @@ void rogue_t::init_spells()
   player_t::init_spells();
 
   // Spec passives
-  spec_improved_poisons   = new spell_id_t( this, "improved_poisons",   14117 );
-  spec_assassins_resolve  = new spell_id_t( this, "assassins_resolve",  84601 );
-  spec_vitality           = new spell_id_t( this, "vitality",           61329 );
-  spec_ambidexterity      = new spell_id_t( this, "ambidexterity",      13852 );
-  spec_master_of_subtlety = new spell_id_t( this, "master_of_subtlety", 31223 );
-  spec_sinister_calling   = new spell_id_t( this, "sinister_calling",   31220 );
 
   // Spec Actives
-  spec_mutilate           = new spell_id_t( this, "mutilate",           1329 );
-  spec_blade_flurry       = new spell_id_t( this, "blade_flurry",       13877 );
-  spec_shadowstep         = new spell_id_t( this, "shadowstep",         36554 );
 
   // Masteries
-  mastery_potent_poisons  = new mastery_t( this, "potent_poisons",     76803, TREE_ASSASSINATION );
-  mastery_main_gauche     = new mastery_t( this, "main_gauche",        76806, TREE_COMBAT );
-  mastery_executioner     = new mastery_t( this, "executioner",        76808, TREE_SUBTLETY );
+  mastery.potent_poisons  = find_mastery_spell( ROGUE_ASSASSINATION );
+  mastery.main_gauche     = find_mastery_spell( ROGUE_COMBAT );
+  mastery.executioner     = find_mastery_spell( ROGUE_SUBTLETY );
 
-  spells.tier13_2pc       = spell_data_t::find( 105864, "Tricks of Time", dbc.ptr );
-  spells.tier13_4pc       = spell_data_t::find( 105865, "Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta)", dbc.ptr );
-
-  glyphs.adrenaline_rush     = find_glyph( "Glyph of Adrenaline Rush"     );
-  glyphs.ambush              = find_glyph( "Glyph of Ambush"              );
-  glyphs.backstab            = find_glyph( "Glyph of Backstab"            );
-  glyphs.blade_flurry        = find_glyph( "Glyph of Blade Flurry"        );
-  glyphs.eviscerate          = find_glyph( "Glyph of Eviscerate"          );
-  glyphs.expose_armor        = find_glyph( "Glyph of Expose Armor"        );
-  glyphs.feint               = find_glyph( "Glyph of Feint"               );
-  glyphs.hemorrhage          = find_glyph( "Glyph of Hemorrhage"          );
-  glyphs.kick                = find_glyph( "Glyph of Kick"                );
-  glyphs.killing_spree       = find_glyph( "Glyph of Killing Spree"       );
-  glyphs.mutilate            = find_glyph( "Glyph of Mutilate"            );
-  glyphs.preparation         = find_glyph( "Glyph of Preparation"         );
-  glyphs.revealing_strike    = find_glyph( "Glyph of Revealing Strike"    );
-  glyphs.rupture             = find_glyph( "Glyph of Rupture"             );
-  glyphs.shadow_dance        = find_glyph( "Glyph of Shadow Dance"        );
-  glyphs.sinister_strike     = find_glyph( "Glyph of Sinister Strike"     );
-  glyphs.slice_and_dice      = find_glyph( "Glyph of Slice and Dice"      );
-  glyphs.tricks_of_the_trade = find_glyph( "Glyph of Tricks of the Trade" );
-  glyphs.vendetta            = find_glyph( "Glyph of Vendetta"            );
+  spells.tier13_2pc              = find_spell( 105864 );
+  spells.tier13_4pc              = find_spell( 105865 );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -3713,18 +3645,9 @@ void rogue_t::init_buffs()
   buffs_vanish             = new buff_t( this, "vanish",        1, timespan_t::from_seconds( 3.0 ) );
 
   buffs_blade_flurry       = new buff_t( this, spec_blade_flurry -> spell_id(), "blade_flurry" );
-  buffs_cold_blood         = new buff_t( this, talents.cold_blood -> spell_id(), "cold_blood" );
-  buffs_shadow_dance       = new buff_t( this, talents.shadow_dance -> spell_id(), "shadow_dance" );
 
-  buffs_adrenaline_rush    = new adrenaline_rush_buff_t    ( this, talents.adrenaline_rush -> spell_id() );
   buffs_envenom            = new envenom_buff_t            ( this );
-  buffs_find_weakness      = new find_weakness_buff_t      ( this, talents.find_weakness -> spell_id() );
-  buffs_killing_spree      = new killing_spree_buff_t      ( this, talents.killing_spree -> spell_id() );
-  buffs_master_of_subtlety = new master_of_subtlety_buff_t ( this, spec_master_of_subtlety -> spell_id()  );
-  buffs_revealing_strike   = new revealing_strike_buff_t   ( this, talents.revealing_strike -> spell_id() );
-  buffs_shadowstep         = new shadowstep_buff_t         ( this, spec_shadowstep -> effect_trigger_spell( 1 ) );
   buffs_slice_and_dice     = new slice_and_dice_buff_t     ( this );
-  buffs_vendetta           = new vendetta_buff_t           ( this, talents.vendetta -> spell_id() );
 
   // Legendary buffs
   // buffs_fof_p1            = new stat_buff_t( this, 109959, "legendary_daggers_p1", STAT_AGILITY, dbc.spell( 109959 ) -> effect1().base_value(), fof_p1 );
@@ -4024,10 +3947,17 @@ void class_modules::register_targetdata::rogue( sim_t* sim )
   player_type_e t = ROGUE;
   typedef rogue_targetdata_t type;
 
-  REGISTER_DOT( rupture );
-  REGISTER_DOT( hemorrhage );
+  REGISTER_DOT( crimson_tempest );
+  REGISTER_DOT( deadly_poison   );
+  REGISTER_DOT( garrote         );
+  REGISTER_DOT( hemorrhage      );
+  REGISTER_DOT( rupture         );
 
-  REGISTER_DEBUFF( poison_doses );
+  REGISTER_DEBUFF( anticipation_charges );
+  REGISTER_DEBUFF( find_weakness        );
+  REGISTER_DEBUFF( leeching_poison      );
+  REGISTER_DEBUFF( poison_doses         );
+  REGISTER_DEBUFF( vendetta             );
 }
 
 #endif // SC_ROGUE
