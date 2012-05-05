@@ -1507,7 +1507,6 @@ void sim_t::analyze_player( player_t* p )
     for ( size_t j = 0; j < max_buckets; j++ )
     {
       timeline[ j ] /= divisor_timeline[ j ];
-      timeline[ j ] *= regen_periodicity.total_seconds();
     }
   }
 
