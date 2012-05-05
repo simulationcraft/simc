@@ -29,7 +29,7 @@ public:
   class_targetdata_t( class_t* source, player_t* target );
 };
 
-class class_t : public player_t
+struct class_t : public player_t
 {
 public:
   // Active
@@ -296,7 +296,7 @@ class_targetdata_t::class_targetdata_t( class_t* source, player_t* target ) :
 // Hunter Pet
 // ==========================================================================
 
-class class_pet_t : public pet_t
+struct class_pet_t : public pet_t
 {
 public:
   action_t* kill_command;
