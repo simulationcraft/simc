@@ -654,8 +654,6 @@ struct drain_soul_t : public warlock_spell_t
 
   virtual void last_tick( dot_t* d )
   {
-    warlock_spell_t::last_tick( d );
-
     if ( td( d -> state -> target ) -> ds_started_below_20 )
     {
       stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
@@ -663,6 +661,8 @@ struct drain_soul_t : public warlock_spell_t
       stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
       stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
     }
+
+    warlock_spell_t::last_tick( d );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1373,13 +1373,13 @@ struct malefic_grasp_t : public warlock_spell_t
   }
 
   virtual void last_tick( dot_t* d )
-  {
-    warlock_spell_t::last_tick( d );
-    
+  {    
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
+
+    warlock_spell_t::last_tick( d );
   }
 
   virtual void impact_s( action_state_t* s )
