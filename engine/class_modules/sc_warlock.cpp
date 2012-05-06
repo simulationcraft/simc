@@ -69,8 +69,9 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   current.distance = 40;
   initial.distance = 40;
 
-  cooldowns.infernal           = get_cooldown ( "summon_infernal" );
-  cooldowns.doomguard          = get_cooldown ( "summon_doomguard" );
+  cooldowns.infernal  = get_cooldown ( "summon_infernal" );
+  cooldowns.doomguard = get_cooldown ( "summon_doomguard" );
+  cooldowns.imp_swarm = get_cooldown ( "imp_swarm" );
 
   create_options();
 }
@@ -296,10 +297,12 @@ public:
         if ( p -> pets.wild_imps[ i ] -> current.sleeping )
         {
           p -> pets.wild_imps[ i ] -> summon();
+          p -> procs.wild_imp -> occur();
           p -> buffs.demonic_calling -> expire();
-          break;
+          return;
         }
       }
+      assert( false ); // Will only get here if there are no available imps
     }
   }
 
@@ -1471,6 +1474,44 @@ struct dark_soul_t : public warlock_spell_t
 };
 
 
+struct imp_swarm_t : public warlock_spell_t
+{
+  imp_swarm_t( warlock_t* p ) :
+    warlock_spell_t( "imp_swarm", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
+  {
+    harmful = false;
+  }
+  
+  virtual resource_type_e current_resource() const
+  {
+    if ( p() -> buffs.metamorphosis -> check() )
+      return RESOURCE_DEMONIC_FURY;
+    else
+      return RESOURCE_MANA;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.demonic_calling -> expire();
+
+    int j = 0;
+
+    for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+    {
+      if ( p() -> pets.wild_imps[ i ] -> current.sleeping )
+      {
+        p() -> pets.wild_imps[ i ] -> summon();
+        if ( ++j == 5 ) break;
+      }
+    }
+
+    assert( j == 5 );  // Assert fails if we didn't have enough available wild imps
+  }
+};
+
+
 // AOE SPELLS
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
@@ -2094,6 +2135,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
+  else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
@@ -2231,6 +2273,7 @@ void warlock_t::init_spells()
   glyphs.demon_training       = find_glyph_spell( "Glyph of Demon Training" );
   glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.imp_swarm            = find_glyph_spell( "Glyph of Imp Swarm" );
 }
 
 
@@ -2313,6 +2356,8 @@ void warlock_t::init_benefits()
 void warlock_t::init_procs()
 {
   player_t::init_procs();
+
+  procs.wild_imp = get_proc( "wild_imp" );
 }
 
 
@@ -2670,7 +2715,7 @@ double warlock_t::resource_loss( resource_type_e resource_type, double amount, g
 {
   double r = player_t::resource_loss( resource_type, amount, gain, action );
 
-  if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 )
+  if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] < 40 )
   {
     if ( buffs.metamorphosis -> check() ) cancel_metamorphosis();
   }

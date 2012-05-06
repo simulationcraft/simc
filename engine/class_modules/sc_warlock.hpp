@@ -13,7 +13,7 @@ struct warlock_t;
 
 #if SC_WARLOCK == 1
 
-#define NIGHTFALL_LIMIT 5
+#define NIGHTFALL_LIMIT 10
 #define WILD_IMP_LIMIT 5
 
 struct warlock_targetdata_t : public targetdata_t
@@ -68,6 +68,7 @@ struct warlock_t : public player_t
     cooldown_t* demonic_calling;
     cooldown_t* infernal;
     cooldown_t* doomguard;
+    cooldown_t* imp_swarm;
   } cooldowns;
 
   // Talents
@@ -148,6 +149,7 @@ struct warlock_t : public player_t
   // Procs
   struct procs_t
   {
+    proc_t* wild_imp;
   } procs;
 
   // Random Number Generators
@@ -166,6 +168,7 @@ struct warlock_t : public player_t
     const spell_data_t* demon_training;
     const spell_data_t* doom;
     const spell_data_t* life_tap;
+    const spell_data_t* imp_swarm;
   };
   glyphs_t glyphs;
 
@@ -202,7 +205,7 @@ struct warlock_t : public player_t
     {
       warlock_t* p = ( warlock_t* ) player;
       p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player );
-      p -> buffs.demonic_calling -> trigger();
+      if ( p -> cooldowns.imp_swarm -> remains() == timespan_t::zero() ) p -> buffs.demonic_calling -> trigger();
     }
   };
 
