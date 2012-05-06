@@ -64,7 +64,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),
-  ember_react( timespan_t::zero() )
+  ember_react( timespan_t::max() )
 {
   current.distance = 40;
   initial.distance = 40;
@@ -264,16 +264,19 @@ public:
       return spell_t::create_expression( name_str );
   }
 
-  void trigger_ember_gain( result_type_e r )
+  void trigger_ember_gain( double amount, gain_t* gain, double chance = 1.0 )
   {
-    double gain_amount = ( r == RESULT_CRIT ) ? 2 : 1;
-    p() -> resource_gain( RESOURCE_BURNING_EMBER, gain_amount, p() -> gains.incinerate );
+    if ( ! p() -> rngs.ember_gain -> roll( chance ) ) return;
 
-    // If this gain was a crit that brought us from 8 to 10, that is a surprise the player would have to react to
-    if ( gain_amount == 2 && p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 )
+    p() -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
+
+    // If getting to 10 was a surprise, the player would have to react to it
+    if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 && amount > 1 && chance < 1.0 )
       p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
     else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
       p() -> ember_react = sim -> current_time;
+    else
+      p() -> ember_react = timespan_t::max();
   }
 
   static void trigger_soul_leech( warlock_t* p, double amount )
@@ -832,7 +835,7 @@ struct incinerate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_ember_gain( s -> result );
+      trigger_ember_gain( s -> result == RESULT_CRIT ? 2 : 1, p() -> gains.incinerate  );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
     }
@@ -1292,7 +1295,7 @@ struct fel_flame_t : public warlock_spell_t
       extend_dot(          td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
       extend_dot(                td( s -> target ) -> dots_doom, 1, player -> composite_spell_haste() );
 
-      if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( s -> result );
+      if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( 1, p() -> gains.fel_flame );
     }
   }
 
@@ -1562,6 +1565,13 @@ struct rain_of_fire_tick_t : public warlock_spell_t
       m *= 1.5;
 
     return m;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( result_is_hit() ) trigger_ember_gain( 1, p() -> gains.rain_of_fire, 0.50 );
   }
 };
 
@@ -2283,12 +2293,14 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.life_tap               = get_gain( "life_tap"   );
-  gains.soul_leech             = get_gain( "soul_leech" );
-  gains.tier13_4pc             = get_gain( "tier13_4pc" );
-  gains.nightfall              = get_gain( "nightfall"  );
-  gains.drain_soul             = get_gain( "drain_soul" );
-  gains.incinerate             = get_gain( "incinerate" );
+  gains.life_tap     = get_gain( "life_tap"     );
+  gains.soul_leech   = get_gain( "soul_leech"   );
+  gains.tier13_4pc   = get_gain( "tier13_4pc"   );
+  gains.nightfall    = get_gain( "nightfall"    );
+  gains.drain_soul   = get_gain( "drain_soul"   );
+  gains.incinerate   = get_gain( "incinerate"   );
+  gains.rain_of_fire = get_gain( "rain_of_fire" );
+  gains.fel_flame    = get_gain( "fel_flame"    );
 }
 
 
@@ -2311,6 +2323,7 @@ void warlock_t::init_rng()
   rngs.demonic_calling = get_rng( "demonic_calling" );
   rngs.molten_core     = get_rng( "molten_core" );
   rngs.nightfall       = get_rng( "nightfall" );
+  rngs.ember_gain      = get_rng( "ember_gain" );
 }
 
 
@@ -2559,7 +2572,7 @@ void warlock_t::reset()
 
   // Active
   pets.active = 0;
-  ember_react = timespan_t::zero();
+  ember_react = timespan_t::max();
   event_t::cancel( meta_cost_event );
   event_t::cancel( demonic_calling_event );
 

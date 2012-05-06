@@ -141,6 +141,8 @@ struct warlock_t : public player_t
     gain_t* nightfall;
     gain_t* drain_soul;
     gain_t* incinerate;
+    gain_t* rain_of_fire;
+    gain_t* fel_flame;
   } gains;
 
   // Procs
@@ -154,6 +156,7 @@ struct warlock_t : public player_t
     rng_t* demonic_calling;
     rng_t* molten_core;
     rng_t* nightfall;
+    rng_t* ember_gain;
   } rngs;
 
   struct glyphs_t
