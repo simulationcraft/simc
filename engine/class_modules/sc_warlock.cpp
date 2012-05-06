@@ -483,9 +483,14 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-
-      trigger_wild_imp( p() );
     }
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    trigger_wild_imp( p() );
   }
 
   virtual bool ready()
@@ -1266,6 +1271,13 @@ struct demonic_slash_t : public warlock_spell_t
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    trigger_wild_imp( p() );
+  }
+
   virtual bool ready()
   {
     if ( ! p() -> buffs.metamorphosis -> check() ) return false;
@@ -1480,14 +1492,6 @@ struct imp_swarm_t : public warlock_spell_t
     warlock_spell_t( "imp_swarm", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
   {
     harmful = false;
-  }
-  
-  virtual resource_type_e current_resource() const
-  {
-    if ( p() -> buffs.metamorphosis -> check() )
-      return RESOURCE_DEMONIC_FURY;
-    else
-      return RESOURCE_MANA;
   }
 
   virtual void execute()
