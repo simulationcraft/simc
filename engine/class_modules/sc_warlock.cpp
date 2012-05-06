@@ -1567,9 +1567,9 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     return m;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::impact_s( s );
 
     if ( result_is_hit() ) trigger_ember_gain( 1, p() -> gains.rain_of_fire, 0.50 );
   }
