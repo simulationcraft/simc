@@ -39,13 +39,15 @@ struct warlock_targetdata_t : public targetdata_t
   warlock_targetdata_t( warlock_t* source, player_t* target );
 };
 
+struct wild_imp_pet_t;
+
 struct warlock_t : public player_t
 {
   // Active Pet
   struct pets_t
   {
     pet_t* active;
-    pet_t* wild_imps[ WILD_IMP_LIMIT ];
+    wild_imp_pet_t* wild_imps[ WILD_IMP_LIMIT ];
   } pets;
 
   // Buffs
@@ -409,7 +411,9 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
 
 struct wild_imp_pet_t : public warlock_guardian_pet_t
 {
-  wild_imp_pet_t( sim_t* sim, warlock_t* owner );
+  wild_imp_pet_t* main_imp;
+
+  wild_imp_pet_t( sim_t* sim, warlock_t* owner, wild_imp_pet_t* m = 0 );
   virtual void init_base();
   virtual timespan_t available() const;
   virtual void demise();

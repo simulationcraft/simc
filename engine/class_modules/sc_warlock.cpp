@@ -2199,9 +2199,11 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
 
-  for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+  pets.wild_imps[ 0 ] = new wild_imp_pet_t( sim, this );
+
+  for ( int i = 1; i < WILD_IMP_LIMIT; i++ )
   {
-    pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
+    pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this, pets.wild_imps[ 0 ] );
   }
 
   create_pet( "service_felguard"  );

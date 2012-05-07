@@ -495,6 +495,8 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   firebolt_t( wild_imp_pet_t* p ) :
     warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
+    if ( p -> main_imp ) stats = p -> main_imp -> get_stats( "firebolt" );
+
     // FIXME: Exact casting mechanics need testing - this is copied from the old doomguard lag
     if ( p -> owner -> bugs )
     {
@@ -1027,9 +1029,10 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
 // Pet Wild Imp
 // ==========================================================================
 
-wild_imp_pet_t::wild_imp_pet_t( sim_t* sim, warlock_t* owner ) :
-  warlock_guardian_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
-{ }
+wild_imp_pet_t::wild_imp_pet_t( sim_t* sim, warlock_t* owner, wild_imp_pet_t* m ) :
+  warlock_guardian_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), main_imp( m )
+{ 
+}
 
 void wild_imp_pet_t::init_base()
 {
