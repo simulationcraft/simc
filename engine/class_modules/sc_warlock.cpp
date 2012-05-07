@@ -2178,7 +2178,6 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
   if ( pet_name == "voidwalker"   ) return new  voidwalker_pet_t( sim, this );
   if ( pet_name == "infernal"     ) return new    infernal_pet_t( sim, this );
   if ( pet_name == "doomguard"    ) return new   doomguard_pet_t( sim, this );
-  if ( pet_name == "wild_imp"     ) return new    wild_imp_pet_t( sim, this );
 
   if ( pet_name == "service_felguard"     ) return new    felguard_pet_t( sim, this, pet_name );
   if ( pet_name == "service_felhunter"    ) return new   felhunter_pet_t( sim, this, pet_name );
@@ -2202,7 +2201,7 @@ void warlock_t::create_pets()
 
   for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
   {
-    pets.wild_imps[ i ] = create_pet( "wild_imp" );
+    pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
   }
 
   create_pet( "service_felguard"  );
