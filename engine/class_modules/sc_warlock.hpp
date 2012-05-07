@@ -13,8 +13,8 @@ struct warlock_t;
 
 #if SC_WARLOCK == 1
 
-#define NIGHTFALL_LIMIT 10
-#define WILD_IMP_LIMIT 5
+#define NIGHTFALL_LIMIT 5
+#define WILD_IMP_LIMIT 10
 
 struct warlock_targetdata_t : public targetdata_t
 {
