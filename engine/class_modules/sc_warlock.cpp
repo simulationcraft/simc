@@ -1586,13 +1586,23 @@ struct rain_of_fire_tick_t : public warlock_spell_t
 {
   warlock_spell_t* rof_spell;
 
-  rain_of_fire_tick_t( warlock_t* p, warlock_spell_t* s ) :
+  rain_of_fire_tick_t( warlock_t* p, warlock_spell_t* s, bool dtr = false ) :
     warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) ), rof_spell( s )
   {
-    dual        = true;
     background  = true;
     aoe         = -1;
-    direct_tick = true;
+    
+    if ( ! dtr )
+    {
+      dual        = true;
+      direct_tick = true;
+    }
+
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new rain_of_fire_tick_t( p, s, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual double cost() const
@@ -1640,6 +1650,12 @@ struct rain_of_fire_t : public warlock_spell_t
     add_child( rain_of_fire_tick );
   }
 
+  virtual timespan_t travel_time() const
+  {
+    // FIXME: Estimate, needs testing
+    return ( channeled ) ? timespan_t::zero() : timespan_t::from_seconds( 1.5 );
+  }
+
   virtual void init()
   {
     warlock_spell_t::init();
@@ -1649,17 +1665,11 @@ struct rain_of_fire_t : public warlock_spell_t
     rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
   }
 
-  virtual timespan_t travel_time() const
-  {
-    // FIXME: Estimate, needs testing
-    return ( channeled ) ? timespan_t::zero() : timespan_t::from_seconds( 1.5 );
-  }
-
   virtual void tick( dot_t* d )
   {
-    warlock_spell_t::tick( d );
-
     rain_of_fire_tick -> execute();
+
+    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual void execute()
