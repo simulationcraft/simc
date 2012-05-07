@@ -516,6 +516,7 @@ const char* race_type_string( race_type_e type )
   case RACE_UNDEAD:    return "undead";
   case RACE_GOBLIN:    return "goblin";
   case RACE_WORGEN:    return "worgen";
+  case RACE_PANDAREN:  return "pandaren";
   default:             return "unknown";
   }
 }

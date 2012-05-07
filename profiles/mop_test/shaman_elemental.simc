@@ -24,14 +24,12 @@ actions+=/wind_shear
 actions+=/bloodlust,if=time>5
 actions+=/bloodlust,if=target.time_to_die<=60
 actions+=/berserking
-#actions+=/elemental_mastery
 actions+=/unleash_elements,moving=1
-actions+=/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)
+actions+=/flame_shock,if=!ticking|ticks_remain<2|(buff.bloodlust.react&ticks_remain<3)
 actions+=/lava_burst,if=dot.flame_shock.remains>cast_time
-actions+=/earth_shock,if=buff.lightning_shield.react=9
-actions+=/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
-actions+=/fire_elemental_totem,if=!ticking&buff.volcanic_potion.up&temporary_bonus.spell_power>=2400
-actions+=/fire_elemental_totem,if=!ticking&!buff.volcanic_potion.up&temporary_bonus.spell_power>=1200
+actions+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions+=/earth_shock,if=buff.lightning_shield.react>buff.lightning_shield.max_stack-3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+actions+=/fire_elemental_totem,if=!ticking
 actions+=/earth_elemental_totem,if=!ticking
 actions+=/searing_totem
 actions+=/spiritwalkers_grace,moving=1
@@ -53,7 +51,6 @@ trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspell
 trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
-ranged=lightning_spirit_in_a_bottle,ilevel=397,quality=epic,stats=153int_230sta_109spi_90mastery,reforge=mastery_hit,gems=50int
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

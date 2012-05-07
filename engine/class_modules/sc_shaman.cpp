@@ -8,11 +8,10 @@
 // ==========================================================================
 // Fire Elemental:
 // - Fire blast is on a ~6second cooldown, like spell data indicates
-// - Melee swing every second, does not inherit owner haste
-// - Seems to inherit owner crit/spellcrit
+// - Melee swing every 1.4 seconds
+// - Seems to inherit owner crit/haste
 // - Inherits owner's crit damage bonus
-// - Fire blast base damage might be 1 + (owner_level - 10) or so
-// - Separate SP/INT scaling seems to be gone, seems to inherit ~0.577425 of 
+// - Separate SP/INT scaling seems to be gone, seems to inherit ~0.55 of 
 //   owner spell power (at 85), needs validation at 90
 // - Stats update dynamically
 // - Even with flame shock on target and meleeing, elemental suffers from an
@@ -106,6 +105,7 @@ struct shaman_t : public player_t
   // Pets
   pet_t* pet_spirit_wolf;
   pet_t* pet_fire_elemental;
+  pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
 
   // Totems
@@ -804,7 +804,7 @@ struct earth_elemental_pet_t : public pet_t
   }
 };
 
-struct fire_elemental_pet_t : public pet_t
+struct fire_elemental_t : public pet_t
 {
   struct travel_t : public action_t
   {
@@ -818,47 +818,17 @@ struct fire_elemental_pet_t : public pet_t
 
   struct fire_elemental_spell_t : public spell_t
   {
-    double int_multiplier;
-    double sp_multiplier;
-
-    fire_elemental_spell_t( const std::string& t, fire_elemental_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-      spell_t( t, p, s  ),
-      int_multiplier( 0.85 ), sp_multiplier ( 0.53419 )
+    fire_elemental_t* p;
+    
+    fire_elemental_spell_t( const std::string& t, fire_elemental_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+      spell_t( t, p, s ), p( p )
     {
-      school = SCHOOL_FIRE;
-      // Apparently, fire elemental spell crit damage bonus is 100% now.
-      crit_bonus_multiplier = 2.0;
+      school    = SCHOOL_FIRE;
+      stateless = true;
+      crit_bonus_multiplier *= 1.0 + p -> o() -> specialization.elemental_fury -> effectN( 1 ).percent();
     }
-
-    virtual double total_spell_power() const
-    {
-      return floor( player -> intellect() * int_multiplier +
-                    player -> composite_spell_power( school ) * sp_multiplier );
-    }
-
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-      // Fire elemental has approx 3% crit
-      player_crit = 0.03;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-
-      // Fire Nova and Fire Blast both seem to reset the swing time of the elemental, or
-      // at least incur some sort of delay penalty to melee swings, so push back the
-      // auto attack an execute time
-      if ( ! background && player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-      {
-        timespan_t time_to_next_hit = player -> main_hand_attack -> execute_time();
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-    }
-
   };
-
+/*
   struct fire_shield_t : public fire_elemental_spell_t
   {
     fire_shield_t( fire_elemental_pet_t* player ) :
@@ -910,47 +880,31 @@ struct fire_elemental_pet_t : public pet_t
       fire_elemental_spell_t::execute();
     }
   };
-
+*/
   struct fire_blast_t : public fire_elemental_spell_t
   {
-    fire_blast_t( fire_elemental_pet_t* player ) :
-      fire_elemental_spell_t( "fire_blast", player )
+    fire_blast_t( fire_elemental_t* player ) :
+      fire_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ) )
     {
-      may_crit             = true;
-      base_costs[ RESOURCE_MANA ] = ( player -> level ) * 3.554;
-      base_execute_time    = timespan_t::zero();
-      direct_power_mod     = player -> dbc.spell( 57984 ) -> effect1().coeff();
-      cooldown -> duration = timespan_t::from_seconds( player -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
+      may_crit                    = true;
+      base_costs[ RESOURCE_MANA ] = 0;
 
-      base_dd_min        = 276;
-      base_dd_max        = 321;
+      base_dd_min        = 1 + ( p -> o() -> level - 10 );
+      base_dd_max        = 1 + ( p -> o() -> level - 10 ) + 1;
     }
 
     virtual bool usable_moving()
     {
       return true;
     }
-
-    virtual void execute()
-    {
-      fire_elemental_pet_t* fe = static_cast< fire_elemental_pet_t* >( player );
-      // Randomize next cooldown duration here
-      cooldown -> duration = timespan_t::from_seconds( fe -> rng_ability_cooldown -> range( 5.0, 7.0 ) );
-
-      fire_elemental_spell_t::execute();
-    }
   };
 
   struct fire_melee_t : public melee_attack_t
   {
-    double int_multiplier;
-    double sp_multiplier;
-
-    fire_melee_t( fire_elemental_pet_t* player ) :
-      melee_attack_t( "fire_melee", player, spell_data_t::nil() ),
-      int_multiplier( 0.9647 ), sp_multiplier ( 0.6457 )
+    fire_melee_t( fire_elemental_t* player ) :
+      melee_attack_t( "fire_melee", player, spell_data_t::nil() )
     {
-      school = SCHOOL_FIRE;
+      special                      = false;
       may_crit                     = true;
       background                   = true;
       repeating                    = true;
@@ -958,16 +912,9 @@ struct fire_elemental_pet_t : public pet_t
       direct_power_mod             = 1.0;
       base_spell_power_multiplier  = 1.0;
       base_attack_power_multiplier = 0.0;
-      // 166% crit damage bonus
-      crit_bonus_multiplier        = 1.66;
-      // Fire elemental has approx 1.5% crit
-      base_crit                    = 0.015;
-    }
-
-    virtual double total_spell_power() const
-    {
-      return floor( player -> intellect() * int_multiplier +
-                    player -> composite_spell_power( school ) * sp_multiplier );
+      stateless                    = true;
+      school                       = SCHOOL_FIRE;
+      crit_bonus_multiplier       *= 1.0 + player -> o() -> specialization.elemental_fury -> effectN( 1 ).percent();
     }
 
     virtual void execute()
@@ -982,7 +929,7 @@ struct fire_elemental_pet_t : public pet_t
 
   struct auto_melee_attack_t : public melee_attack_t
   {
-    auto_melee_attack_t( fire_elemental_pet_t* player ) :
+    auto_melee_attack_t( fire_elemental_t* player ) :
       melee_attack_t( "auto_attack", player )
     {
       player -> main_hand_attack = new fire_melee_t( player );
@@ -1004,24 +951,19 @@ struct fire_elemental_pet_t : public pet_t
     }
   };
 
-  rng_t*      rng_ability_cooldown;
-  cooldown_t* cooldown_fire_nova;
-  cooldown_t* cooldown_fire_blast;
-  spell_t*    fire_shield;
-  double      owner_int;
-  double      owner_sp;
+  shaman_t* o() const { return static_cast< shaman_t* >( owner ); }
 
-  fire_elemental_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "fire_elemental", true /*GUARDIAN*/ ), owner_int( 0.0 ), owner_sp( 0.0 )
+  fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
+    pet_t( sim, owner, "fire_elemental", guardian /*GUARDIAN*/ )
   {
-    intellect_per_owner         = 1.0;
+    intellect_per_owner         = 0.0;
     stamina_per_owner           = 1.0;
   }
 
   virtual void init_base()
   {
     pet_t::init_base();
-
+    
     resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
 
@@ -1029,20 +971,14 @@ struct fire_elemental_pet_t : public pet_t
     //hp_per_stamina = 10.5;
 
     main_hand_weapon.type            = WEAPON_BEAST;
-    main_hand_weapon.min_dmg         = 427; // Level 85 Values, approximated
-    main_hand_weapon.max_dmg         = 461;
+    main_hand_weapon.min_dmg         = 307; // Level 85 Values, approximated
+    main_hand_weapon.max_dmg         = 344;
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time      = timespan_t::from_seconds( 2.0 );
-
-    rng_ability_cooldown             = get_rng( "fire_elemental_ability_cooldown" );
-
-    cooldown_fire_nova               = get_cooldown( "fire_nova" );
-    cooldown_fire_blast              = get_cooldown( "fire_blast" );
+    main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
     // Run menacingly to the target, start meleeing and acting erratically
-    action_list_str                  = "travel/auto_attack/fire_nova/fire_blast";
-
-    fire_shield                      = new fire_shield_t( this );
+    //action_list_str                  = "travel/auto_attack/fire_nova/fire_blast";
+    action_list_str                  = "travel/fire_blast/auto_attack";
   }
 
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
@@ -1054,37 +990,40 @@ struct fire_elemental_pet_t : public pet_t
       resource_gain( RESOURCE_MANA, 10.66 * periodicity.total_seconds() ); // FIXME! Does regen scale with gear???
     }
   }
-
-  // Snapshot int, spell power from player
-  virtual void summon( timespan_t duration )
+  
+  virtual double composite_player_multiplier( school_type_e school, const action_t* a = 0 ) const
   {
-    pet_t::summon();
-
-    owner_int = owner -> intellect();
-    owner_sp  = ( owner -> composite_spell_power( SCHOOL_FIRE ) - owner -> current.spell_power_per_intellect * owner_int ) * owner -> composite_spell_power_multiplier();
-    fire_shield -> num_ticks = ( int ) ( duration / fire_shield -> base_execute_time );
-    fire_shield -> execute();
-
-    cooldown_fire_nova -> start();
-    cooldown_fire_blast -> start();
+    return pet_t::composite_player_multiplier( school, a ) * ( ( type == PLAYER_PET ) ? 1.5 : 1.0 );
   }
 
-  virtual double composite_attribute( attribute_type_e attr ) const
+  virtual double composite_spell_power( school_type_e school ) const
   {
-    if ( attr == ATTR_INTELLECT )
-      return owner_int;
-
-    return pet_t::composite_attribute( attr );
+    return owner -> composite_spell_power( school ) * 0.55;
   }
-
-  virtual double composite_spell_power( school_type_e ) const
-  {
-    return owner_sp;
-  }
-
+  
   virtual double composite_attack_power() const
   {
     return 0.0;
+  }
+
+  virtual double composite_spell_crit() const
+  {
+    return owner -> composite_spell_crit();
+  }
+  
+  virtual double composite_attack_crit( const weapon_t* w = 0 ) const
+  {
+    return owner -> composite_attack_crit( w );
+  }
+  
+  virtual double composite_spell_haste() const
+  {
+    return owner -> composite_spell_haste();
+  }
+  
+  virtual double composite_attack_haste() const
+  {
+    return owner -> composite_attack_haste();
   }
 
   virtual double composite_attack_hit() const
@@ -1101,7 +1040,7 @@ struct fire_elemental_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "travel"      ) return new travel_t     ( this );
-    if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
+//    if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
     if ( name == "fire_blast"  ) return new fire_blast_t ( this );
     if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
 
@@ -3154,6 +3093,7 @@ struct fire_elemental_totem_t : public shaman_totem_t
   {
     cooldown -> duration *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 1 ).percent();
     totem_duration       *= 1.0 + p() -> glyph.fire_elemental_totem -> effectN( 2 ).percent();
+    base_tick_time        = totem_duration;
     // Skip a pointless cancel call (and debug=1 cancel line)
     dot_behavior = DOT_REFRESH;
   }
@@ -3161,13 +3101,19 @@ struct fire_elemental_totem_t : public shaman_totem_t
   virtual void execute()
   {
     shaman_totem_t::execute();
-    p() -> pet_fire_elemental -> summon();
+    if ( p() -> talent.primal_elementalist -> ok() )
+      p() -> pet_fire_elemental -> summon();
+    else
+      p() -> guardian_fire_elemental -> summon();
   }
 
   virtual void last_tick( dot_t* d )
   {
     shaman_totem_t::last_tick( d );
-    p() -> pet_fire_elemental -> dismiss();
+    if ( p() -> talent.primal_elementalist -> ok() )
+      p() -> pet_fire_elemental -> dismiss();
+    else
+      p () -> guardian_fire_elemental -> dismiss();
   }
 
   // Allow Fire Elemental Totem to override any active fire totems
@@ -3659,9 +3605,10 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "spirit_wolf"     ) return new spirit_wolf_pet_t    ( sim, this );
-  if ( pet_name == "fire_elemental"  ) return new fire_elemental_pet_t ( sim, this );
-  if ( pet_name == "earth_elemental" ) return new earth_elemental_pet_t( sim, this );
+  if ( pet_name == "spirit_wolf"         ) return new spirit_wolf_pet_t    ( sim, this );
+  if ( pet_name == "fire_elemental_pet"  ) return new fire_elemental_t ( sim, this, false );
+  if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t ( sim, this, true );
+  if ( pet_name == "earth_elemental"     ) return new earth_elemental_pet_t( sim, this );
 
   return 0;
 }
@@ -3671,7 +3618,8 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 void shaman_t::create_pets()
 {
   pet_spirit_wolf     = create_pet( "spirit_wolf"     );
-  pet_fire_elemental  = create_pet( "fire_elemental"  );
+  pet_fire_elemental  = create_pet( "fire_elemental_pet"  );
+  guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
   pet_earth_elemental = create_pet( "earth_elemental" );
 }
 

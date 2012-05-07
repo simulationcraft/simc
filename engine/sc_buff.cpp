@@ -803,7 +803,8 @@ expr_t* buff_t::create_expression( const std::string& type )
 
   else if ( type == "stack" )
     return make_mem_fn_expr( type, *this, &buff_t::check );
-
+  else if ( type == "max_stack" )
+    return make_mem_fn_expr( type, *this, &buff_t::max_stack );
   else if ( type == "value" )
     return make_mem_fn_expr( type, *this, &buff_t::value );
 
