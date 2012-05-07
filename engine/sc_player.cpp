@@ -4701,6 +4701,14 @@ struct snapshot_stats_t : public action_t
   {
     player_t* p = player;
 
+    if ( completed ) return;
+
+    p -> in_combat = true;
+
+    completed = true;
+
+    if ( sim -> current_iteration > 0 ) return;
+
     if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
 
     for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
@@ -4762,13 +4770,17 @@ struct snapshot_stats_t : public action_t
 
     p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
     p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+  }
 
-    completed = true;
+  virtual void reset()
+  {
+    action_t::reset();
+
+    completed = false;
   }
 
   virtual bool ready()
   {
-    if ( sim -> current_iteration > 0 ) return false;
     if ( completed ) return false;
     return action_t::ready();
   }
