@@ -8,7 +8,7 @@ position=back
 role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
-talents=http://www.wowhead.com/talent#warlock-000000000000010000
+talents=http://www.wowhead.com/talent#warlock-000020
 glyphs=life_tap/imp_swarm
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

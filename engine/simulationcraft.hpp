@@ -3581,6 +3581,7 @@ struct player_t : public noncopyable
 
   virtual bool parse_talents_armory ( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
+  virtual void create_talents_wowhead();
 
   void replace_spells();
 
@@ -3599,7 +3600,7 @@ struct player_t : public noncopyable
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  void recreate_talent_str();
+  void recreate_talent_str( bool wowhead = false );
   virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
 
   virtual void copy_from( player_t* source );

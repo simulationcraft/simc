@@ -9,9 +9,9 @@ role=spell
 use_pre_potion=1
 professions=blacksmithing=525/tailoring=525
 #SotF
-#talents=http://www.wowhead.com/talent#druid-000000001000000000
+#talents=000100
 #Incarnation
-talents=http://www.wowhead.com/talent#druid-000000000010000000
+talents=000200
 glyphs=
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

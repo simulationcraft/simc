@@ -9,7 +9,7 @@ role=spell
 spec=arcane
 use_pre_potion=1
 professions=blacksmithing=525/tailoring=525
-talents=http://www.wowhead.com/talent#mage-3033220212301002121212300200000000000000000300000000000000000
+talents=000000
 glyphs=arcane_blast/arcane_missiles/mage_armor/arcane_power/evocation/slow/arcane_brilliance/conjuring/mirror_image
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

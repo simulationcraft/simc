@@ -5136,11 +5136,11 @@ pet_t* player_t::find_pet( const std::string& pet_name )
 
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
-  std::array<int,MAX_TALENT_SLOTS> encoding;
+  std::array<int,MAX_TALENT_ROWS> encoding;
 
   size_t i, j;
   size_t i_max = std::min( talent_string.size(),
-                           static_cast< size_t >( MAX_TALENT_SLOTS ) );
+                           static_cast< size_t >( MAX_TALENT_ROWS ) );
 
   for ( j = 0; j < MAX_TALENT_ROWS; j++ )
   {
@@ -5153,7 +5153,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   for ( i = 0; i < i_max; i++ )
   {
     char c = talent_string[ i ];
-    if ( c < '0' || c > '1' )
+    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS )  )
     {
       sim -> errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
       return false;
@@ -5164,29 +5164,105 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   while ( i < encoding.size() )
     encoding[ i++ ] = 0;
 
-  for ( i = 0; i < encoding.size(); )
-  {
-    bool talent_on_row = encoding[ i++ ] != 0;
-    for ( ; ( i ) % MAX_TALENT_COLS ; i++ )
-    {
-      if ( encoding[ i ] )
-      {
-        if ( talent_on_row )
-        {
-          sim -> errorf( "Player %s has more than 1 talent on row %d in talent encoding.\n", name(), static_cast<int> ( ( i / MAX_TALENT_COLS ) + 1 ) );
-          return false;
-        }
-        talent_on_row = true;
-      }
-    }
-  }
-
   for ( j = 0; j < talent_list.size(); j++ )
   {
-    talent_list[ j ] = encoding[ j ];
+    talent_list[ j ] = encoding[ j / MAX_TALENT_COLS ] == ( ( j % MAX_TALENT_COLS ) + 1 );
   }
 
   return true;
+}
+
+// player_t::create_talents_wowhead =========================================
+void player_t::create_talents_wowhead()
+{
+  talents_str.clear();
+  talents_str += "http://mop.wowhead.com/mists-of-pandaria-talent-calculator#";
+
+  // Class Type
+  char c = '\0';
+  switch ( type )
+  {
+  case DEATH_KNIGHT : c = 'k'; break;
+  case DRUID:         c = 'd'; break;
+  case HUNTER:        c = 'h'; break;
+  case MAGE:          c = 'm'; break;
+  case MONK:          c = 'n'; break;
+  case PALADIN:       c = 'l'; break;
+  case PRIEST:        c = 'p'; break;
+  case ROGUE:         c = 'r'; break;
+  case SHAMAN:        c = 's'; break;
+  case WARLOCK:       c = 'o'; break;
+  case WARRIOR:       c = 'w'; break;
+  default: break;
+  }
+  talents_str += c;
+
+  // Spec if specified
+  uint32_t idx = 0;
+  uint32_t cid = 0;
+  if ( dbc.spec_idx( spec, cid, idx ) && ( ( int ) cid == util::class_id( type ) ) )
+  {
+    switch ( idx )
+    {
+    case 0 : talents_str += '!'; break;
+    case 1 : talents_str += 'x'; break;
+    case 2 : talents_str += 'y'; break;
+    default: break;
+    }
+  }
+
+  std::array< int, 9 > key = {{ 48, 32, 16, 12, 8, 4, 2, 1, 0 }};
+
+  bool found_tier = false;
+  bool found_this_char = false;
+
+  char v[ 2 ];
+
+  for ( int k = 1; k >= 0; k-- )
+  {
+    c = '\0';
+    v[ k ] = '\0';
+
+    found_this_char = false;
+    
+    for ( int j = 2; j >= 0; j-- )
+    {
+      unsigned int i = 0;
+      for ( ; i < MAX_TALENT_COLS; i++ )
+      {
+        if ( talent_list[ ( ( k * 2 ) + j ) * MAX_TALENT_COLS + i ] )
+        {
+          found_tier = true;
+          found_this_char = true;
+          break;
+        }
+      }
+      if ( i >= MAX_TALENT_COLS ) // Wowhead can't actually handle this case properly if it's not a trailing tier. 
+      {
+        if ( found_tier ) // There's a later row that has talents. Set the talent on this tier to the first until Wowhead supports it right.
+        {
+          c += key[ 8 - ( j * 3 ) ]; 
+        }
+      }
+      else
+      {
+        c += key[ 8 - ( ( j * 3 ) + i ) ]; 
+      }
+    }
+
+    if ( found_this_char )
+      c += '0';
+
+    v[ k ] = c;
+  }
+  
+  if ( v[ 0 ] == 0 )
+  {
+    return;
+  }
+  talents_str += v[ 0 ];
+  if ( v[ 1 ] != 0 )
+    talents_str += v[ 1 ];
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -6103,20 +6179,31 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
   return 0;
 }
 
-void player_t::recreate_talent_str()
+void player_t::recreate_talent_str( bool wowhead )
 {
-  talents_str.clear();
-  talents_str = "http://www.wowhead.com/talent#";
-  talents_str += util::player_type_string( type );
-  talents_str += "-";
-  // This is necessary because sometimes the talent trees change shape between live/ptr.
-  for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
+  if ( wowhead )
   {
-    for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      int t = talent_list[ j * MAX_TALENT_COLS + i ];
+    create_talents_wowhead();
+  }
+  else
+  {
+    talents_str.clear();
 
-      talents_str += util::to_string( t );
+    // This is necessary because sometimes the talent trees change shape between live/ptr.
+    for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
+    {
+      unsigned i = 0;
+      for ( ; i < MAX_TALENT_COLS; i++ )
+      {
+        if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+          break;
+      }
+      if ( i >= MAX_TALENT_COLS )
+        i = 0;
+      else
+        i++;
+
+      talents_str += util::to_string( i );
     }
   }
 }
@@ -6316,6 +6403,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   return true;
 }
 
+
 // player_t::copy_from ======================================================
 
 void player_t::copy_from( player_t* source )
@@ -6328,20 +6416,7 @@ void player_t::copy_from( player_t* source )
   position_str = source -> position_str;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
-  talents_str = "http://www.wowhead.com/talent#";
-  talents_str += util::player_type_string( type );
-  talents_str += "-";
-  // This is necessary because sometimes the talent trees change shape between live/ptr.
-  for ( int j=0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( unsigned i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      talent_list[ j * MAX_TALENT_COLS + i ] = source -> talent_list[ j * MAX_TALENT_COLS + i ];
-      std::stringstream ss;
-      ss << talent_list[ j * MAX_TALENT_COLS + i ];
-      talents_str += ss.str();
-    }
-  }
+  recreate_talent_str( false );
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   action_priority_list.clear();

@@ -9,7 +9,7 @@ role=hybrid
 position=back
 use_pre_potion=1
 professions=blacksmithing=525/enchanting=525
-talents=http://www.wowhead.com/talent#paladin-000000000000010000
+talents=000020
 glyphs=ascetic_crusader
 actions+=/flask,type=titanic_strength
 actions+=/food,type=beer_basted_crocolisk

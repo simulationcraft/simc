@@ -9,9 +9,8 @@ role=spell
 spec=elemental
 use_pre_potion=1
 professions=tailoring=525/alchemy=525
-#talents=http://www.wowhead.com/talent#shaman-3232023212231101321203000200000000000000000000000000000000
-#talents=http://www.wowhead.com/talent#shaman-100001100100001000
-talents=http://www.wowhead.com/talent#shaman-100001100001001000
+#talents=131130
+talents=131330
 glyphs=fire_elemental_totem/flame_shock/thunder/thunderstorm
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

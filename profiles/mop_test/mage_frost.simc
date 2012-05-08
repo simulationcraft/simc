@@ -9,7 +9,7 @@ role=spell
 spec=frost
 use_pre_potion=1
 professions=blacksmithing=525/tailoring=525
-talents=http://www.wowhead.com/talent#mage-0020000000000000000002303000000000000000002323021013331301021
+talents=000000
 glyphs=frostbolt/frostfire/deep_freeze/evocation/ice_barrier/blink/arcane_brilliance/conjuring/slow_fall
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast

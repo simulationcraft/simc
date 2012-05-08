@@ -9,7 +9,7 @@ role=spell
 position=back
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
-talents=http://www.wowhead.com/talent#priest-100010100010100000
+talents=121210
 glyphs=inner_fire,inner_sanctum,devouring_plague
 actions+=/flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
