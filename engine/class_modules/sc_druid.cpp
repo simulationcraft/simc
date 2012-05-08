@@ -4096,7 +4096,7 @@ void druid_t::init_buffs()
                                .chance( find_spell( 113043 ) -> proc_chance() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
-  buff.wild_mushroom         = buff_creator_t( sim, "wild_mushroom", find_specialization_spell( "Wild Mushroom" ) )
+  buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_specialization_spell( "Wild Mushroom" ) )
                                .max_stack( ( spec == DRUID_BALANCE || spec == DRUID_RESTORATION ) 
                                            ? find_specialization_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
                                            : 1 )
