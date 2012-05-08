@@ -20,12 +20,13 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<=
 actions+=/dark_soul
 actions+=/drain_soul,if=soul_shard=0,interrupt_if=1
 actions+=/haunt,if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time
-actions+=/agony,if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react
-actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions+=/agony,if=(!ticking|remains<=tick_time+action.haunt.cast_time+action.drain_soul.new_tick_time+gcd)&target.time_to_die>=7&miss_react
+actions+=/corruption,if=(!ticking|remains<=tick_time)&target.time_to_die>=6&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/summon_doomguard
 actions+=/drain_soul,interrupt=1,if=target.health.pct<=20
 actions+=/life_tap,if=mana.pct<=35
+actions+=/fel_flame,if=!in_flight&target.dot.corruption.ticking&target.dot.unstable_affliction.ticking&(target.dot.corruption.remains<24|target.dot.unstable_affliction.remains<19)
 actions+=/malefic_grasp
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
