@@ -1658,7 +1658,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
+    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() && ! p() -> buffs.surge_of_darkness -> check() ) // BUG: Currently if Surge of Darkness is up it doesn't reset the cooldown.
     {
       cooldown -> reset();
       p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
