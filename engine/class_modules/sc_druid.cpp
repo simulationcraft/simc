@@ -4435,47 +4435,70 @@ void druid_t::init_actions()
       }
       action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
       if ( primary_tree() == DRUID_BALANCE )
+      {
         action_list_str += "/moonkin_form";
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat";
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
-      action_list_str += "/wild_mushroom_detonate,if=buff.wild_mushroom.stack=3";
-      action_list_str += init_use_racial_actions();
-
-      action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      if ( primary_tree() == DRUID_BALANCE )
-        action_list_str += "/starfall,if=eclipse<-80";
-
-      if ( primary_tree() == DRUID_BALANCE )
-        action_list_str += "/sunfire,if=(ticks_remain<2&!dot.moonfire.remains>0)|(eclipse<15&dot.sunfire.remains<10)";
-
-      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&((ticks_remain<2";
-      if ( primary_tree() == DRUID_BALANCE )
-        action_list_str += "&!dot.sunfire.remains>0";
-
-      action_list_str += ")|(eclipse>-20&dot.moonfire.remains<10))";
-      if ( primary_tree() == DRUID_BALANCE )
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/volcanic_potion,if=!in_combat";
+        if ( talent.incarnation -> ok() )
+        {
+          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
+        }
+        else
+        {
+          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
+        }
+        action_list_str += "/starfall,if=!buff.starfall.up";
+        action_list_str += init_use_racial_actions();
+        action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
+        if ( talent.incarnation -> ok() )
+        {
+          // Align the use of Incarnation and Celestial Alignment
+          action_list_str += "/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16&buff.chosen_of_elune.up";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21&buff.chosen_of_elune.up";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21&buff.chosen_of_elune.up";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21&buff.chosen_of_elune.up";
+        }
+        else
+        {
+          // CA just as we are going to leave Eclipse
+          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21";
+          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21";
+        }
+        action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
+        action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
+        action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
         action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-
-      action_list_str += "/innervate,if=mana_pct<50";
-      if ( talent.force_of_nature -> ok() )
-        action_list_str += "/treants,time>=5";
-
-      action_list_str += use_str;
-      action_list_str += init_use_profession_actions();
-      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-      action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<-87";
-      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>=-87";
-      action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
-      action_list_str += "/starfire,if=eclipse_dir=1";
-      action_list_str += "/wrath,if=eclipse_dir=-1";
-      action_list_str += "/starfire";
-      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
-
-      action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
-      action_list_str += "/moonfire,moving=1";
-      action_list_str += "/sunfire,moving=1";
+        action_list_str += "/innervate,if=mana.pct<20";
+        if ( talent.force_of_nature -> ok() )
+          action_list_str += "/treants,if=time>=5";
+        action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
+        action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
+        action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<=-85";
+        action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>-85";
+        action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
+        action_list_str += "/starfire,if=eclipse_dir=1";
+        action_list_str += "/wrath,if=eclipse_dir=-1";
+        action_list_str += "/wrath";
+        action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
+        action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
+        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+        action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
+        action_list_str += "/moonfire,moving=1";
+        action_list_str += "/sunfire,moving=1";
+      }
+      else
+      {
+        // ROLE_SPELL without DRUID_BALANCE? USE ALL (both) THE NUKES!
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/volcanic_potion,if=!in_combat";
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/moonfire,if=!dot.moonfire.ticking";
+        action_list_str += "/wrath";
+        
+      }
     }
     else
     {
