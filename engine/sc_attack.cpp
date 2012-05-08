@@ -314,6 +314,15 @@ void attack_t::init()
 {
   action_t::init();
 
+  if ( special )
+    may_galnce = false;
+
+  if ( player -> position == POSITION_BACK )
+  {
+    may_block = false;
+    may_parry = false;
+  }
+
   if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
     snapshot_flags |= STATE_AP;
 
@@ -336,15 +345,6 @@ melee_attack_t::melee_attack_t( const std::string&  n,
   base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
 {
   may_miss = may_dodge = may_parry = may_glance = may_block = true;
-
-  if ( special )
-    may_glance = false;
-
-  if ( player -> position == POSITION_BACK )
-  {
-    may_block = false;
-    may_parry = false;
-  }
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 ) range = 5;
