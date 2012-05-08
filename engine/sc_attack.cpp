@@ -315,7 +315,7 @@ void attack_t::init()
   action_t::init();
 
   if ( special )
-    may_galnce = false;
+    may_glance = false;
 
   if ( player -> position == POSITION_BACK )
   {
