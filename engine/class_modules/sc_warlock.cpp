@@ -258,7 +258,7 @@ static void extend_dot( dot_t* dot, int ticks, double haste )
 {
   if ( dot -> ticking )
   {
-    //FIXME: This is roughly how it works, but we need more testing - seems inconsistent for doom and immolate
+    //FIXME: This is roughly how it works, but we need more testing - seems inconsistent for immolate
     int max_ticks = ( int ) ( dot -> action -> hasted_num_ticks( haste ) * 1.667 ) + 1;
     int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
     if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
@@ -807,7 +807,7 @@ struct soul_fire_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     if ( p() -> buffs.molten_core -> check() )
-      p() -> buffs.molten_core -> expire();
+      p() -> buffs.molten_core -> decrement();
 
     if ( result_is_hit() && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
       p() -> buffs.molten_core -> trigger();
@@ -919,7 +919,6 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
 
-    // FIXME: currently bugged on beta to give the benefit even when the stack isn't 3, but that's such an obvious bug I won't simulate it
     if ( p() -> buffs.backdraft -> stack() >= 3 )
     {
       h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
@@ -1074,6 +1073,7 @@ struct shadowflame_t : public warlock_spell_t
 
   virtual timespan_t travel_time() const
   {
+    // FIXME: Needs testing
     return timespan_t::from_seconds( 1.5 );
   }
 
@@ -1107,10 +1107,12 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
   {
     proc       = true;
     background = true;
+    dual       = true;
   }
 
   virtual timespan_t travel_time() const
   {
+    // FIXME: Needs testing
     return timespan_t::from_seconds( 1.5 );
   }
 };
@@ -1182,10 +1184,12 @@ struct chaos_wave_dmg_t : public warlock_spell_t
     proc       = true;
     background = true;
     aoe        = -1;
+    dual       = true;
   }
 
   virtual timespan_t travel_time() const
   {
+    // FIXME: Needs testing.
     return timespan_t::from_seconds( 1.5 );
   }
 };
@@ -2326,7 +2330,7 @@ void warlock_t::init_buffs()
   buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 ); // FIXME: May be a bug, not sure
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
-  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) );
+  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).max_stack( 99 ); // FIXME: May be a bug, not sure
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
