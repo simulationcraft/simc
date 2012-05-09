@@ -1599,6 +1599,27 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new miss_react_expr_t( *this );
   }
+  else if ( name_str == "cooldown_react" )
+  {
+    struct cooldown_react_expr_t : public action_expr_t
+    {
+      cooldown_react_expr_t( const action_t& a ) : action_expr_t( "cooldown_react", a ) {}
+      virtual double evaluate()
+      {
+        if ( action.cooldown -> reset_react == timespan_t::zero() )
+          return true;
+        else
+        {
+          if ( action.cooldown -> remains() == timespan_t::zero() &&
+               action.cooldown -> reset_react > action.sim -> current_time )
+               return false;
+          else
+            return true;
+        }
+      }
+    };
+    return new cooldown_react_expr_t( *this );
+  }
   else if ( name_str == "cast_delay" )
   {
     struct cast_delay_expr_t : public action_expr_t

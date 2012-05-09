@@ -2901,7 +2901,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( p() -> rng.lava_surge -> roll ( p() -> specialization.lava_surge -> proc_chance() ) )
     {
       p() -> proc.lava_surge -> occur();
-      p() -> cooldown.lava_burst -> reset();
+      p() -> cooldown.lava_burst -> reset( p() -> cooldown.lava_burst -> remains() > timespan_t::zero() );
     }
   }
 };
@@ -4013,7 +4013,7 @@ void shaman_t::init_actions()
   // Potion use
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
-    if ( level >= 80 )s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+    if ( level >= 80 ) s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
   }
   else
   {
@@ -4059,7 +4059,7 @@ void shaman_t::init_actions()
     if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
       s << "/unleash_elements,moving=1";
     if ( level >= 12 ) s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
-    if ( level >= 34 ) s << "/lava_burst,if=dot.flame_shock.remains>cast_time";
+    if ( level >= 34 ) s << "/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react";
     if ( specialization.fulmination -> ok() && level >= 6 )
     {
       s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
