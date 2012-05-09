@@ -4658,6 +4658,11 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
 {
   double m = player_t::composite_player_multiplier( school, a );
 
+  if ( buff.natures_vigil -> up() )
+  {
+    m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
+  }
+
   if ( ( school == SCHOOL_PHYSICAL ) || ( school == SCHOOL_BLEED ) )
   {
     m *= 1.0 + buff.tigers_fury -> value();
@@ -4692,14 +4697,6 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
     }
   }
   
-  if ( school == SCHOOL_NATURE )
-  {
-    if ( buff.natures_vigil -> up() )
-    {
-      m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
-    }
-  }
-
   return m;
 }
 
