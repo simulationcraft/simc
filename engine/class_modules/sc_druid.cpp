@@ -227,11 +227,13 @@ struct druid_t : public player_t
   struct glyphs_t
   {
     // DONE
+    const spell_data_t* blooming;
     const spell_data_t* ferocious_bite;
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maul;
     const spell_data_t* skull_bash;
+    const spell_data_t* wild_growth;
 
     // NYI / Needs checking
     const spell_data_t* focus;
@@ -246,7 +248,6 @@ struct druid_t : public player_t
     const spell_data_t* starfire;
     const spell_data_t* starsurge;
     const spell_data_t* swiftmend;
-    const spell_data_t* wild_growth;
     const spell_data_t* wrath;
   } glyph;
 
@@ -329,6 +330,7 @@ struct druid_t : public player_t
     const spell_data_t* moonkin_form; // Moonkin form bonuses
     const spell_data_t* primal_fury; // Primal fury rage gain
     const spell_data_t* regrowth; // Old GoRegrowth
+    const spell_data_t* swiftmend; // Swiftmend AOE heal trigger
     const spell_data_t* survival_instincts; // Survival instincts aura
     const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
   } spell;
@@ -680,14 +682,13 @@ struct druid_bear_attack_t : public melee_attack_t
 
 struct druid_heal_t : public heal_t
 {
-  double additive_factors;
   bool   consume_ooc;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     heal_t( token, p, s ),
-    additive_factors( 0 ), consume_ooc( false )
+    consume_ooc( false )
   {
     parse_options( 0, options );
 
@@ -695,13 +696,14 @@ struct druid_heal_t : public heal_t
     may_crit          = true;
     may_miss          = false;
     tick_may_crit     = true;
+    stateless         = true;
     weapon_multiplier = 0;
   }
 
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     heal_t( "", p, s ),
-    additive_factors( 0 ), consume_ooc( false )
+    consume_ooc( false )
   {
     parse_options( 0, options );
 
@@ -709,11 +711,15 @@ struct druid_heal_t : public heal_t
     may_crit          = true;
     may_miss          = false;
     tick_may_crit     = true;
+    stateless         = true;
     weapon_multiplier = 0;
   }
 
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
+
+  druid_targetdata_t* td( player_t* t ) const
+  { return targetdata( t ) -> cast_druid(); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -721,7 +727,9 @@ struct druid_heal_t : public heal_t
   virtual void   execute();
   virtual timespan_t execute_time() const;
   virtual double haste() const;
-  virtual void   player_buff();
+  //virtual void   player_buff();
+  virtual double action_da_multiplier() const;
+  virtual double action_ta_multiplier() const;
 };
 
 // ==========================================================================
@@ -1011,26 +1019,24 @@ static void trigger_swiftmend( druid_heal_t* a )
       base_tick_time = timespan_t::from_seconds( 1.0 );
       hasted_ticks   = true;
       may_crit       = false;
-      num_ticks      = 7;
+      num_ticks      = p() -> spell.swiftmend -> duration().total_seconds();
       proc           = true;
       tick_may_crit  = false;
-
-      init();
     }
   };
 
-  if ( ! p -> active_swiftmend_aoe ) p -> active_swiftmend_aoe = new swiftmend_aoe_heal_t( p );
-
-  double heal = a -> direct_dmg * 0.12; // Hardcoded into tooltip now, sigh, could use the triggered spell though
-  p -> active_swiftmend_aoe -> base_td = heal;
-  p -> active_swiftmend_aoe -> execute();
+  if ( ! p -> active_swiftmend_aoe )
+  {
+    p -> active_swiftmend_aoe = new swiftmend_aoe_heal_t( p );
+    p -> init();
+  }
 }
 
-// trigger_lifebloom_refresh ==================================================
+// trigger_lifebloom_refresh =================================================
 
-static void trigger_lifebloom_refresh( druid_heal_t* a )
+static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_targetdata_t* td = a -> targetdata( a -> target ) -> cast_druid();
+  druid_targetdata_t* td = targetdata_t::get( s -> action -> player, s -> target ) -> cast_druid();
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -1052,9 +1058,9 @@ static void trigger_energy_refund( druid_cat_attack_t* a )
 
 // trigger_living_seed ======================================================
 
-static void trigger_living_seed( druid_heal_t* a )
+static void trigger_living_seed( action_state_t* s )
 {
-  druid_t* p = a -> p();
+  druid_t* p = static_cast< druid_t* >( s -> action -> player );
 
   struct living_seed_t : public druid_heal_t
   {
@@ -1064,19 +1070,25 @@ static void trigger_living_seed( druid_heal_t* a )
       background = true;
       may_crit   = false;
       proc       = true;
-
-      init();
     }
 
-    virtual void player_buff()
-    { } // no double dipping
+    virtual void init()
+    {
+      druid_heal_t::init();
+
+      snapshot_flags = STATE_SP;
+    }
   };
 
-  if ( ! p -> active_living_seed ) p -> active_living_seed = new living_seed_t( p );
+  if ( ! p -> active_living_seed )
+  {
+    p -> active_living_seed = new living_seed_t( p );
+    p -> active_living_seed -> init();
+  }
 
   // Technically this should be a buff on the target, then bloom when they're attacked
   // For simplicity we're going to assume it always heals the target
-  double heal = a -> direct_dmg * p -> specialization.living_seed -> effectN( 1 ).percent();
+  double heal = s -> result_amount * p -> specialization.living_seed -> effectN( 1 ).percent();
   p -> active_living_seed -> base_dd_min = heal;
   p -> active_living_seed -> base_dd_max = heal;
   p -> active_living_seed -> execute();
@@ -2162,7 +2174,7 @@ void druid_heal_t::execute()
 
   if ( direct_dmg > 0 && ! background )
   {
-    p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).percent() * p() -> composite_mastery() );
+    p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery() );
   }
 }
 
@@ -2181,36 +2193,45 @@ timespan_t druid_heal_t::execute_time() const
 
 double druid_heal_t::haste() const
 {
-  double h =  heal_t::haste();
+  double h = heal_t::haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
   return h;
 }
 
-// druid_heal_t::player_buff ================================================
+// druid_heal_t::action_da_multiplier =======================================
 
-void druid_heal_t::player_buff()
+double druid_heal_t::action_da_multiplier() const
 {
-  heal_t::player_buff();
+  double adm = heal_t::action_da_multiplier();
+  
+  if ( p() -> buff.tree_of_life -> up() )
+    adm += p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
 
-  player_multiplier *= 1.0 + additive_factors;
-  player_multiplier *= 1.0 + p() -> buff.tree_of_life -> value();
+  if ( p() -> buff.natures_swiftness -> up() && base_execute_time > timespan_t::zero() )
+    adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
-  if ( p() -> primary_tree() == DRUID_RESTORATION && direct_dmg > 0 )
-  {
-    player_multiplier *= 1.0 + p() -> mastery.harmony -> effectN( 1 ).percent() * p() -> composite_mastery();
-  }
+  adm += p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
 
-  if ( tick_dmg > 0 )
-  {
-    player_multiplier *= 1.0 + p() -> buff.harmony -> value();
-  }
+  return adm;
+}
 
-  if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-  {
-    player_multiplier *= 1.0 + p() -> talent.natures_swiftness -> effectN( 2 ).percent();
-  }
+// druid_heal_t::action_ta_multiplier =======================================
+
+double druid_heal_t::action_ta_multiplier() const
+{
+  double adm = heal_t::action_ta_multiplier();
+
+  if ( p() -> buff.tree_of_life -> up() )
+    adm += p() -> buff.tree_of_life -> data().effectN( 2 ).percent();
+
+  if ( p() -> buff.natures_swiftness -> up() && base_execute_time > timespan_t::zero() )
+    adm += p() -> talent.natures_swiftness -> effectN( 3 ).percent();
+
+  adm += p() -> buff.harmony -> value();
+
+  return adm;
 }
 
 // Healing Touch ============================================================
@@ -2220,17 +2241,18 @@ struct healing_touch_t : public druid_heal_t
   healing_touch_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
-    consume_ooc         = true;
+    consume_ooc = true;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_heal_t::execute();
+    druid_heal_t::impact_s( state );
 
-    trigger_lifebloom_refresh( this );
+    if ( ! p() -> glyph.blooming -> ok() )
+      trigger_lifebloom_refresh( state );
 
-    if ( result == RESULT_CRIT )
-      trigger_living_seed( this );
+    if ( state -> result == RESULT_CRIT )
+      trigger_living_seed( state );
 
     p() -> cooldown.swiftmend -> ready -= timespan_t::from_seconds( p() -> glyph.healing_touch -> effectN( 1 ).base_value() );
   }
@@ -2241,28 +2263,34 @@ struct healing_touch_t : public druid_heal_t
 struct lifebloom_bloom_t : public druid_heal_t
 {
   lifebloom_bloom_t( druid_t* p ) :
-    druid_heal_t( "lifebloom_bloom", p, 0 )
+    druid_heal_t( "lifebloom_bloom", p, p -> find_class_spell( "Lifebloom" ) )
   {
-    background = true;
-    dual       = true;
-    // stats      = player -> get_stats( "lifebloom", this );
-    // The stats doesn't work as expected when merging
-
-    // All the data exists in the original lifebloom spell
-    const spell_data_t* bloom = player -> dbc.spell( 33763 );
-    direct_power_mod   = bloom -> effectN( 2 ).coeff();
-    base_dd_min        = player -> dbc.effect_min( bloom -> effectN( 2 ).id(), player -> level );
-    base_dd_max        = player -> dbc.effect_max( bloom -> effectN( 2 ).id(), player -> level );
-    school             = bloom -> get_school_type();
+    background       = true;
+    dual             = true;
+    num_ticks        = 0;
+    base_td          = 0;
+    tick_power_mod   = 0;
+    base_dd_min      = data().effectN( 2 ).min( p );
+    base_dd_max      = data().effectN( 2 ).max( p );
+    direct_power_mod = data().effectN( 2 ).coeff();
   }
-
-  virtual void execute()
+  
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
+    double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    base_dd_multiplier = td -> buffs_lifebloom -> check();
+    ctm *= 1.0 + td( target ) -> buffs_lifebloom -> check();
 
-    druid_heal_t::execute();
+    return ctm;
+  }
+  
+  virtual double composite_da_multiplier() const 
+  {
+    double cdm = druid_heal_t::composite_da_multiplier();
+    
+    cdm *= 1.0 + p() -> glyph.blooming -> effectN( 1 ).percent();
+    
+    return cdm;
   }
 };
 
@@ -2271,9 +2299,9 @@ struct lifebloom_t : public druid_heal_t
   lifebloom_bloom_t* bloom;
 
   lifebloom_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Lifebloom" ), options_str ), bloom( 0 )
+    druid_heal_t( p, p -> find_class_spell( "Lifebloom" ), options_str ),
+    bloom( 0 )
   {
-    //base_crit += p -> glyph.lifebloom -> mod_additive( P_CRIT );
     may_crit   = false;
 
     bloom = new lifebloom_bloom_t( p );
@@ -2281,29 +2309,28 @@ struct lifebloom_t : public druid_heal_t
     // TODO: this can be only cast on one target, unless Tree of Life is up
   }
 
-  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
+    double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    return druid_heal_t::calculate_tick_damage( r, power, multiplier ) * td -> buffs_lifebloom -> check();
+    ctm *= 1.0 + td( target ) -> buffs_lifebloom -> check();
+
+    return ctm;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_heal_t::execute();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
+    druid_heal_t::impact_s( state );
 
-    td -> buffs_lifebloom -> trigger();
+    td( state -> target ) -> buffs_lifebloom -> trigger();
   }
 
   virtual void last_tick( dot_t* d )
   {
     bloom -> execute();
+    td( d -> state -> target ) -> buffs_lifebloom -> expire();
 
     druid_heal_t::last_tick( d );
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    td -> buffs_lifebloom -> expire();
   }
 
   virtual void tick( dot_t* d )
@@ -2322,26 +2349,27 @@ struct nourish_t : public druid_heal_t
 {
   nourish_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Nourish" ), options_str )
+  { }
+
+  virtual void impact_s( action_state_t* state )
   {
+    druid_heal_t::impact_s( state );
+
+    if ( ! p() -> glyph.blooming -> ok() )
+      trigger_lifebloom_refresh( state );
+
+    if ( state -> result == RESULT_CRIT )
+      trigger_living_seed( state );
   }
 
-  virtual void execute()
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    druid_heal_t::execute();
+    double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    trigger_lifebloom_refresh( this );
+    if ( td( t ) -> hot_ticking() )
+      ctm *= 1.20;
 
-    if ( result == RESULT_CRIT )
-      trigger_living_seed( this );
-  }
-
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
-  {
-    druid_heal_t::target_debuff( t, dtype );
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
-    if ( td -> hot_ticking() )
-      target_multiplier *= 1.20;
+    return ctm;
   }
 };
 
@@ -2363,24 +2391,25 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_heal_t::execute();
-    trigger_lifebloom_refresh( this );
+    druid_heal_t::impact_s( state );
 
-    if ( result == RESULT_CRIT )
-      trigger_living_seed( this );
+    if ( ! p() -> glyph.blooming -> ok() )
+      trigger_lifebloom_refresh( state );
+
+    if ( state -> result == RESULT_CRIT )
+      trigger_living_seed( state );
   }
   
   virtual void tick( dot_t* d )
   {
     druid_heal_t::tick( d );
 
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    if ( target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() && 
-         td -> dots_regrowth -> ticking )
+    if ( d -> state -> target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() && 
+         td( d -> state -> target ) -> dots_regrowth -> ticking )
     {
-      td -> dots_regrowth -> refresh_duration();
+      td( d -> state -> target )-> dots_regrowth -> refresh_duration();
     }
   }
 
@@ -2419,25 +2448,26 @@ struct swiftmend_t : public druid_heal_t
   swiftmend_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Swiftmend" ), options_str )
   {
-    consume_ooc       = true;
+    consume_ooc = true;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* state )
   {
-    druid_heal_t::execute();
+    druid_heal_t::impact_s( state );
 
-    if ( result == RESULT_CRIT )
-      trigger_living_seed( this );
+    if ( state -> result == RESULT_CRIT )
+      trigger_living_seed( state );
 
     trigger_swiftmend( this );
   }
 
   virtual bool ready()
   {
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-
+    player_t* t = ( execute_state ) ? execute_state -> target : target;
+    
     // Note: with the glyph you can use other people's regrowth/rejuv
-    if ( ! ( td -> dots_regrowth -> ticking || td -> dots_rejuvenation -> ticking ) )
+    if ( ! ( td( t ) -> dots_regrowth -> ticking || 
+         td( t ) -> dots_rejuvenation -> ticking ) )
       return false;
 
     return druid_heal_t::ready();
@@ -2470,6 +2500,9 @@ struct wild_growth_t : public druid_heal_t
     druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
     aoe = data().effectN( 3 ).base_value();
+    
+    aoe += p -> glyph.wild_growth -> effectN( 1 ).base_value();
+    cooldown -> duration += p -> glyph.wild_growth -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
@@ -4011,6 +4044,7 @@ void druid_t::init_spells()
   spell.primal_fury                     = find_spell( 16959 );  // Primal fury rage gain trigger
   spell.regrowth                        = find_spell( 93036 );  // Regrowth refresh
   spell.survival_instincts              = find_spell( 50322 );  // Survival Instincts aura
+  spell.swiftmend                       = find_class_spell( "Swiftmend") -> effectN( 2 ).trigger();
   spell.swipe                           = find_spell( 62078 );  // Bleed damage multiplier for Shred etc.
                                                                          
   // Masteries
@@ -4045,6 +4079,7 @@ void druid_t::init_spells()
   talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
 
   // Glyphs
+  glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
   glyph.focus                 = find_glyph_spell( "Glyph of Focus" );
   glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
@@ -4099,7 +4134,7 @@ void druid_t::init_base()
   base_energy_regen_per_second = 10;
 
   // Natural Insight: +400% mana
-  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + specialization.natural_insight -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + specialization.natural_insight -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
@@ -4542,22 +4577,22 @@ void druid_t::init_actions()
       }
       action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
       action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat";
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      action_list_str += "/innervate";
-      if ( primary_tree() == DRUID_RESTORATION ) action_list_str += "/tree_of_life";
+      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/innervate,if=mana.pct<90";
+      if ( talent.incarnation -> ok() && spec == DRUID_RESTORATION ) 
+        action_list_str += "/incarnation";
       action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
       action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
-      action_list_str += "/lifebloom,if=buffs_lifebloom.stack<3";
+      action_list_str += "/lifebloom,if=buff.lifebloom.stack<3";
       action_list_str += "/swiftmend";
-      if ( primary_tree() == DRUID_RESTORATION )
+      if ( spec == DRUID_RESTORATION )
       {
-        action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana_pct>=5";
-        action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana_pct>=30";
+        action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana.pct>=5";
+        action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana.pct>=30";
       }
       else
       {
-        action_list_str += "/healing_touch,if=mana_pct>=30";
+        action_list_str += "/healing_touch,if=mana.pct>=30";
       }
       action_list_str += "/nourish";
     }

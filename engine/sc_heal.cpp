@@ -96,7 +96,7 @@ void heal_t::assess_damage( player_t* t,
       log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
                      t -> name(), heal.amount, heal.actual,
-                     util::result_type_string( result ) );
+                     util::result_type_string( heal_result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this );
@@ -110,7 +110,7 @@ void heal_t::assess_damage( player_t* t,
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), heal.amount, heal.actual,
-                     util::result_type_string( result ) );
+                     util::result_type_string( heal_result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this );
