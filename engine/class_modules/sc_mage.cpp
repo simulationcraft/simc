@@ -264,6 +264,7 @@ struct mage_t : public player_t
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_type_e primary_role() const { return ROLE_SPELL; }
   virtual double    composite_mastery() const;
+  virtual double    composite_mp5() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
@@ -363,7 +364,7 @@ struct water_elemental_pet_t : public pet_t
   struct water_bolt_t : public spell_t
   {
     water_bolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "water_bolt", player, p -> find_spell( 31707 ) )
+      spell_t( "water_bolt", p, p -> find_spell( 31707 ) )
     {
       parse_options( NULL, options_str );
       may_crit = true;
@@ -1471,7 +1472,7 @@ struct dragons_breath_t : public mage_spell_t
 struct evocation_t : public mage_spell_t
 {
   evocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "evocation", p, p -> talents.rune_of_power ? spell_data_t::not_found() : p -> find_spell( 12051 ) )
+    mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_spell( 12051 ) )
   {
     parse_options( NULL, options_str );
 
@@ -1484,6 +1485,8 @@ struct evocation_t : public mage_spell_t
 
     cooldown = p -> cooldowns.evocation;
     cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
+
+    // FIXME: Does Nether Attunement affect this as well?
   }
 
   virtual void tick( dot_t* d )
@@ -3217,6 +3220,18 @@ double mage_t::composite_mastery() const
   return m;
 }
 
+// mage_t::composite_mp5 ====================================================
+
+double mage_t::composite_mp5() const
+{
+  double mp5 = player_t::composite_mp5();
+
+  if ( passives.nether_attunement -> ok() )
+    mp5 *= 1.0 + mage_t::composite_spell_haste();
+
+  return mp5;
+}
+
 // mage_t::composite_player_multipler =======================================
 
 double mage_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
@@ -3294,7 +3309,7 @@ void mage_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs.rune_of_power -> up() )
+  if ( buffs.rune_of_power -> up() ) // FIXME: Does Nether Attunement affect this as well?
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
 
   if ( pets.water_elemental )
