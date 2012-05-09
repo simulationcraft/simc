@@ -849,6 +849,7 @@ enum effect_subtype_t {
     A_402 = 402,
     A_403 = 403,
     A_404 = 404,
+    A_408 = 408,
     A_MAX
 };
 

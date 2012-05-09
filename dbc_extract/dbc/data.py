@@ -83,7 +83,12 @@ _DIFF_DATA = {
             ( 'unk_15650', _ADD_FIELD, 'id_icon' ),
         ],
 
-    }
+    },
+    15668: {
+        'SpellMisc.dbc' : [
+            ( 'unk15668', _ADD_FIELD, 'unk_2' ),
+        ],
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
@@ -283,7 +288,7 @@ _DBC_FIELDS = {
     'SpellMisc.dbc' : [
         'id', 'id_spell', 'unk_1', ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
         ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_12694', '%#.8x' ),
-        ( 'flags_8', '%#.8x' ), 'unk_2', 'id_cast_time', 'id_duration',
+        ( 'flags_8', '%#.8x' ), ( 'unk_2', '%#.8x' ), 'id_cast_time', 'id_duration',
         'id_range', ( 'prj_speed', '%f' ), 'id_spell_visual_1', 'id_spell_visual_2', 'id_icon',
         'id_active_icon', ( 'mask_school', '%#.2x' )
     ],

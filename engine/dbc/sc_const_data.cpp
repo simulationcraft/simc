@@ -142,7 +142,7 @@ void dbc_t::apply_hotfixes()
   spell_data_t* s;
 
   // PRIEST
-  // Build Last Checked: 15589
+  // Build Last Checked: 1568
   // Description: Shadowy Apparition avg and coeff values are off.
   s = spell_data_t::find( 87532, false );
   if ( s && s -> ok() && s -> effectN( 1 ).ok() )
@@ -150,6 +150,17 @@ void dbc_t::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.63;
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.98775;
   }
+
+  // PRIEST
+  // Build Last Checked: 1568
+  // Description: DP dot avg and coeff values are off.
+  s = spell_data_t::find( 124486, false );
+  if ( s && s -> ok() && s -> effectN( 2 ).ok() )
+  {
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.009;
+    const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.4538;
+  }
+
 
   // PALADIN
   // Build Last Checked: 15589
