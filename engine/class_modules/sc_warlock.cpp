@@ -1652,6 +1652,9 @@ struct rain_of_fire_t : public warlock_spell_t
     hasted_ticks = false;
     channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
+    // FIXME: Seems to cost roughly 36k mana at 85 for destro
+    if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 9;
+
     rain_of_fire_tick = new rain_of_fire_tick_t( p, this );
 
     add_child( rain_of_fire_tick );
@@ -1669,7 +1672,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
     rain_of_fire_tick -> stats = stats;
     // RoF currently costs mana per tick if it's being channeled
-    rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
+    if ( channeled ) rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
   }
 
   virtual void tick( dot_t* d )
