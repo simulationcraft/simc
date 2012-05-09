@@ -2816,7 +2816,9 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_spell_t::execute();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    consume_resource();
+    update_ready();
     // http://elitistjerks.com/f73/t126893-mists_pandaria_all_specs/p11/#post2136096      
     // I can confirm that CA works EXACTLY like combining the two eclipses 
     // (starfall reset, dot refresh, SotF gives 20 energy afterwards, you 
@@ -2923,7 +2925,9 @@ struct incarnation_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_spell_t::execute();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
 
     if ( p() -> spec == DRUID_BALANCE )
       p() -> buff.chosen_of_elune -> trigger();
@@ -3280,7 +3284,9 @@ struct natures_vigil_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_spell_t::execute();
+    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+
+    update_ready();
     p() -> buff.natures_vigil -> trigger();
   }
 };
