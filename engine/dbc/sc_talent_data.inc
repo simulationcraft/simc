@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15662
+// 224 talents, wow build 15668
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -95,7 +95,7 @@ static struct talent_data_t __talent_data[] = {
   { "Mighty Bash"                       , 18583, 0x00, 0x0400, 0x00,     0,   2,   4,    5211,         0,  0 },
   { "Heart of the Wild"                 , 18584, 0x00, 0x0400, 0x00,     0,   0,   5,  108288,         0,  0 },
   { "Dream of Cenarius"                 , 18585, 0x00, 0x0400, 0x00,     0,   1,   5,  108373,         0,  0 },
-  { "Disentanglement"                   , 18586, 0x00, 0x0400, 0x00,     0,   2,   5,   96429,         0,  0 },
+  { "Nature's Vigil"                    , 18586, 0x00, 0x0400, 0x00,     0,   2,   5,  124974,         0,  0 },
   { "Avatar"                            , 19138, 0x00, 0x0001, 0x00,     0,   0,   5,  107574,         0,  0 },
   { "Bloodbath"                         , 19139, 0x00, 0x0001, 0x00,     0,   1,   5,   12292,         0,  0 },
   { "Storm Bolt"                        , 19140, 0x00, 0x0001, 0x00,     0,   2,   5,  107570,         0,  0 },
