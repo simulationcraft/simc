@@ -12,18 +12,25 @@ namespace priest {
 class spirit_shell_buff_t : public absorb_buff_t
 {
 public:
+  heal_t* spirit_shell_heal;
   spirit_shell_buff_t( actor_pair_t p ) :
-    absorb_buff_t( absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ) )
+    absorb_buff_t(
+        absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ).source( p.source -> get_stats( "spirit_shell" ) ) ),
+    spirit_shell_heal( NULL )
   { }
 
   virtual void expire()
   {
-    absorb_buff_t::expire();
-
     if ( current_value > 0 )
     {
-
+      if ( spirit_shell_heal )
+      {
+        spirit_shell_heal -> base_dd_min = spirit_shell_heal -> base_dd_max = current_value * data().effectN( 2 ).percent();
+        spirit_shell_heal->execute();
+      }
     }
+
+    absorb_buff_t::expire();
   }
 };
 
@@ -3033,12 +3040,26 @@ struct renew_t : public priest_heal_t
   }
 };
 
-struct spirit_shell_t : priest_heal_t
+struct spirit_shell_heal_t : priest_heal_t
 {
-  spirit_shell_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "spirit_shell", p, p -> find_class_spell( "Spirit Shell" ) )
+  spirit_shell_heal_t( priest_t* p ) :
+    priest_heal_t( "spirit_shell_heal", p, spell_data_t::nil() )
+  {
+    background = true;
+    school = SCHOOL_HOLY;
+  }
+};
+
+struct spirit_shell_absorb_t : priest_absorb_t
+{
+  spirit_shell_absorb_t( priest_t* p, const std::string& options_str ) :
+    priest_absorb_t( "spirit_shell", p, p -> find_class_spell( "Spirit Shell" ) )
   {
     parse_options( NULL, options_str );
+
+    stats->add_child( p->get_stats( "spirit_shell_heal" ) );
+
+    dynamic_cast<spirit_shell_buff_t*>( td( target )->buffs_spirit_shell ) ->spirit_shell_heal = p -> spells.spirit_shell;
 
     // Parse values from buff spell effect
     action_t::parse_effect_data( p -> find_spell( 114908 ) -> effectN( 1 ) );
@@ -3046,7 +3067,8 @@ struct spirit_shell_t : priest_heal_t
 
   virtual void impact_s( action_state_t* s )
   {
-    td( s -> target ) -> buffs_spirit_shell -> trigger();
+    td( s -> target ) -> buffs_spirit_shell -> trigger( 1, s -> result_amount );
+    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 };
 
@@ -3283,6 +3305,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( this, options_str );
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
+  if ( name == "spirit_shell"           ) return new spirit_shell_absorb_t   ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3487,6 +3510,8 @@ void priest_t::init_spells()
     spells.echo_of_light = new actions::echo_of_light_t( this );
   else
     spells.echo_of_light = NULL;
+
+  spells.spirit_shell = new actions::spirit_shell_heal_t( this );
 
   if ( spec.shadowy_apparitions -> ok() )
   {

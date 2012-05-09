@@ -184,8 +184,9 @@ struct priest_t : public player_t
     std::queue<spell_t*> apparitions_free;
     std::list<spell_t*>  apparitions_active;
     heal_t* echo_of_light;
+    heal_t* spirit_shell;
     bool echo_of_light_merged;
-    spells_t() : echo_of_light( NULL ), echo_of_light_merged( false ) {}
+    spells_t() : echo_of_light( NULL ), spirit_shell( NULL ), echo_of_light_merged( false ) {}
   } spells;
 
 
