@@ -296,6 +296,7 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 0.02; // from tooltip
+    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual void last_tick( dot_t* d )
@@ -333,6 +334,7 @@ struct doom_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
+    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual bool ready()
@@ -453,6 +455,7 @@ struct corruption_t : public warlock_spell_t
     may_crit = false;
     tick_power_mod = 0.3; // tested on beta 2012/04/28
     generate_fury = 6;
+    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   };
 
   virtual void tick( dot_t* d )
@@ -620,6 +623,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     tick_power_mod = 0.2; // from tooltip, also tested on beta 2012/04/28
+    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual double action_multiplier() const
@@ -662,8 +666,8 @@ struct immolate_t : public warlock_spell_t
   immolate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Immolate" )
   {
-    // No tick power mod in dbc for some reason
-    tick_power_mod = direct_power_mod;
+    tick_power_mod = direct_power_mod; // No tick power mod in dbc for some reason
+    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2287,11 +2291,12 @@ void warlock_t::init_spells()
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   // Major
-  glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
-  glyphs.dark_soul            = find_glyph_spell( "Glyph of Dark Soul" );
-  glyphs.demon_training       = find_glyph_spell( "Glyph of Demon Training" );
-  glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
-  glyphs.imp_swarm            = find_glyph_spell( "Glyph of Imp Swarm" );
+  glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
+  glyphs.dark_soul              = find_glyph_spell( "Glyph of Dark Soul" );
+  glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
+  glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
+  glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
 }
 
 
