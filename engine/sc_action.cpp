@@ -1624,6 +1624,26 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_delay_expr_t( *this );
   }
+  else if ( name_str == "charges" )
+    return make_ref_expr( name_str, cooldown -> current_charge );
+  else if ( name_str == "max_charges" )
+    return make_ref_expr( name_str, cooldown -> charges );
+  else if ( name_str == "recharge_time" )
+  {
+    struct recharge_time_expr_t : public expr_t
+    {
+      action_t* action;
+      recharge_time_expr_t( action_t* a ) : expr_t( "recharge_time" ), action( a ) {}
+      virtual double evaluate()
+      {
+        if ( action -> cooldown -> recharge_event )
+          return ( action -> cooldown -> recharge_event -> time - action -> sim -> current_time ).total_seconds();
+        else
+          return action -> cooldown -> duration.total_seconds();
+      }
+    };
+    return new recharge_time_expr_t( this );
+  }
 
   std::vector<std::string> splits;
   int num_splits = util::string_split( splits, name_str, "." );

@@ -69,9 +69,11 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   current.distance = 40;
   initial.distance = 40;
 
-  cooldowns.infernal  = get_cooldown ( "summon_infernal" );
-  cooldowns.doomguard = get_cooldown ( "summon_doomguard" );
-  cooldowns.imp_swarm = get_cooldown ( "imp_swarm" );
+  cooldowns.infernal       = get_cooldown ( "summon_infernal" );
+  cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );
+  cooldowns.imp_swarm      = get_cooldown ( "imp_swarm" );
+  cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
+  cooldowns.chaos_wave     = get_cooldown ( "chaos_wave" );
 
   create_options();
 }
@@ -104,46 +106,17 @@ private:
   }
 
 public:
-  int recharge_seconds, max_charges, current_charges;
   double generate_fury;
   gain_t* gain_fury;
 
-  struct recharge_event_t : event_t
-  {
-    warlock_spell_t* action;
-
-    recharge_event_t( player_t* p, warlock_spell_t* a ) :
-      event_t( p -> sim, p, ( a -> name_str + "_recharge" ).c_str() ), action( a )
-    {
-      sim -> add_event( this, timespan_t::from_seconds( action -> recharge_seconds ) );
-    }
-
-    virtual void execute()
-    {
-      assert( action -> current_charges < action -> max_charges );
-      action -> current_charges++;
-
-      if ( action -> current_charges < action -> max_charges )
-      {
-        action -> recharge_event = new ( sim ) recharge_event_t( player, action );
-      }
-      else
-      {
-        action -> recharge_event = 0;
-      }
-    }
-  };
-
-  recharge_event_t* recharge_event;
-
   warlock_spell_t( warlock_t* p, const std::string& n ) :
-    spell_t( n, p, p -> find_class_spell( n ) ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), generate_fury( 0 ), recharge_event( 0 )
+    spell_t( n, p, p -> find_class_spell( n ) ), generate_fury( 0 )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( token, p, s ), recharge_seconds( 0 ), max_charges( 0 ), current_charges( 0 ), generate_fury( 0 ), recharge_event( 0 )
+    spell_t( token, p, s ), generate_fury( 0 )
   {
     _init_warlock_spell_t();
   }
@@ -156,24 +129,6 @@ public:
 
   virtual void execute()
   {
-    if ( max_charges > 0 )
-    {
-      assert( current_charges > 0 );
-      current_charges--;
-
-      cooldown -> duration = timespan_t::zero();
-
-      if ( current_charges == max_charges - 1 )
-      {
-        recharge_event = new ( sim ) recharge_event_t( p(), this );
-      }
-      else if ( current_charges == 0 )
-      {
-        assert( recharge_event );
-        cooldown -> duration = recharge_event -> time - sim -> current_time;
-      }
-    }
-
     spell_t::execute();
 
     if ( result_is_hit() && p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
@@ -186,14 +141,6 @@ public:
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
-  }
-
-  virtual void reset()
-  {
-    spell_t::reset();
-
-    event_t::cancel( recharge_event );
-    current_charges = max_charges;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -238,7 +185,7 @@ public:
 
     return m;
   }
-
+  /*
   virtual expr_t* create_expression( const std::string& name_str )
   {
     if ( name_str == "charges" )
@@ -264,6 +211,7 @@ public:
     else
       return spell_t::create_expression( name_str );
   }
+  */
 
   void trigger_ember_gain( double amount, gain_t* gain, double chance = 1.0 )
   {
@@ -401,35 +349,15 @@ struct agony_t : public warlock_spell_t
 struct doom_t : public warlock_spell_t
 {
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, ( p -> primary_tree() != WARLOCK_DESTRUCTION && p -> glyphs.doom -> ok() ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
+    warlock_spell_t( "doom", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
-    generate_fury = 40;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
-
-    return m;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.4 ) && p() -> verify_nightfall() )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
-    }
   }
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
 
     return warlock_spell_t::ready();
   }
@@ -536,7 +464,7 @@ struct shadowburn_t : public warlock_spell_t
 struct corruption_t : public warlock_spell_t
 {
   corruption_t( warlock_t* p ) :
-    warlock_spell_t( "corruption", p, p -> glyphs.doom -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Corruption" ) )
+    warlock_spell_t( p, "Corruption" )
   {
     may_crit = false;
     tick_power_mod = 0.3; // tested on beta 2012/04/28
@@ -775,10 +703,7 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t( p, "Conflagrate" )
   {
     if ( p -> glyphs.conflagrate -> ok() )
-    {
-      max_charges = 2;
-      recharge_seconds = 12;
-    }
+      cooldown -> charges = 2;
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -1070,7 +995,6 @@ struct touch_of_chaos_t : public attack_t
     {
       warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( targetdata( target ) );
       extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend_dot( td -> dots_doom, 1, player -> composite_spell_haste() );
     }
   }
 
@@ -1201,8 +1125,8 @@ struct hand_of_guldan_t : public warlock_spell_t
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
-    max_charges = 2;
-    recharge_seconds = 15;
+    cooldown -> duration = timespan_t::from_seconds( 15 );
+    cooldown -> charges = 2;
 
     shadowflame = new shadowflame_t( p );
     hog_damage  = new hand_of_guldan_dmg_t( p );
@@ -1245,6 +1169,85 @@ struct hand_of_guldan_t : public warlock_spell_t
       shadowflame -> execute();
       hog_damage  -> execute();
     }
+  }
+  
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> cooldowns.chaos_wave -> start();
+  }
+};
+
+
+struct chaos_wave_dmg_t : public warlock_spell_t
+{
+  chaos_wave_dmg_t( warlock_t* p ) :
+    warlock_spell_t( "chaos_wave_dmg", p, p -> find_spell( 124915 ) )
+  {
+    proc       = true;
+    background = true;
+    aoe        = -1;
+  }
+};
+
+
+struct chaos_wave_t : public warlock_spell_t
+{
+  chaos_wave_dmg_t* cw_damage;
+
+  chaos_wave_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "chaos_wave", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 124916 ) : spell_data_t::not_found() )
+  {
+    cooldown -> duration = timespan_t::from_seconds( 15 );
+    cooldown -> charges = 2;
+
+    cw_damage  = new chaos_wave_dmg_t( p );
+
+    add_child( cw_damage );
+
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new chaos_wave_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+    
+    cw_damage  -> stats = stats;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    // FIXME: Needs testing
+    return timespan_t::from_seconds( 1.5 );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      cw_damage -> execute();
+    }
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> cooldowns.hand_of_guldan -> start();
   }
 };
 
@@ -1308,7 +1311,6 @@ struct fel_flame_t : public warlock_spell_t
       extend_dot(            td( s -> target ) -> dots_immolate, 2, player -> composite_spell_haste() );
       extend_dot( td( s -> target ) -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
       extend_dot(          td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend_dot(                td( s -> target ) -> dots_doom, 1, player -> composite_spell_haste() );
 
       if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( 1, p() -> gains.fel_flame );
     }
@@ -1358,7 +1360,6 @@ struct void_ray_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
-      extend_dot(       td( s -> target ) -> dots_doom, 1, player -> composite_spell_haste() );
     }
   }
 
@@ -2115,6 +2116,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "agony"                 ) a = new                 agony_t( this );
   else if ( name == "doom"                  ) a = new                  doom_t( this );
   else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
+  else if ( name == "chaos_wave"            ) a = new            chaos_wave_t( this );
   else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
   else if ( name == "demonic_slash"         ) a = new         demonic_slash_t( this );
   else if ( name == "drain_life"            ) a = new            drain_life_t( this );
@@ -2286,7 +2288,6 @@ void warlock_t::init_spells()
   glyphs.conflagrate          = find_glyph_spell( "Glyph of Conflagrate" );
   glyphs.dark_soul            = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training       = find_glyph_spell( "Glyph of Demon Training" );
-  glyphs.doom                 = find_glyph_spell( "Glyph of Doom" );
   glyphs.life_tap             = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm            = find_glyph_spell( "Glyph of Imp Swarm" );
 }

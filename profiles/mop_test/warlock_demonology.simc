@@ -23,6 +23,7 @@ actions+=/metamorphosis,if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|d
 actions+=/cancel_metamorphosis,if=action.hand_of_guldan.charges=2
 actions+=/imp_swarm
 actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
+actions+=/doom,if=(!ticking|remains<tick_time)&target.time_to_die>=30&miss_react
 actions+=/hand_of_guldan,if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
 actions+=/soul_fire,if=buff.molten_core.react|target.health.pct<25
 actions+=/demonic_slash

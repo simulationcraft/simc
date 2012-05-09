@@ -71,6 +71,8 @@ struct warlock_t : public player_t
     cooldown_t* infernal;
     cooldown_t* doomguard;
     cooldown_t* imp_swarm;
+    cooldown_t* hand_of_guldan;
+    cooldown_t* chaos_wave;
   } cooldowns;
 
   // Talents
@@ -168,7 +170,6 @@ struct warlock_t : public player_t
     const spell_data_t* conflagrate;
     const spell_data_t* dark_soul;
     const spell_data_t* demon_training;
-    const spell_data_t* doom;
     const spell_data_t* life_tap;
     const spell_data_t* imp_swarm;
   };

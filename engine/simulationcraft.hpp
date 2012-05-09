@@ -4324,15 +4324,66 @@ struct cooldown_t
   timespan_t duration;
   timespan_t ready;
   cooldown_t* next;
+  int charges;
+  int current_charge;
 
-  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), next( 0 ) {}
-  cooldown_t( const std::string& n, sim_t* s ) : sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), next( 0 ) {}
+  struct recharge_event_t : event_t
+  {
+    cooldown_t* cooldown;
 
-  void reset() { ready=ready_init(); }
+    recharge_event_t( player_t* p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
+      event_t( p -> sim, p, ( cd -> name_str + "_recharge" ).c_str() ), cooldown( cd )
+    {
+      sim -> add_event( this, cd -> duration + delay );
+    }
+
+    virtual void execute()
+    {
+      assert( cooldown -> current_charge < cooldown -> charges );
+      cooldown -> current_charge++;
+
+      if ( cooldown -> current_charge < cooldown -> charges )
+      {
+        cooldown -> recharge_event = new ( sim ) recharge_event_t( player, cooldown );
+      }
+      else
+      {
+        cooldown -> recharge_event = 0;
+      }
+    }
+  };
+
+  recharge_event_t* recharge_event;
+  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() )
+                                                                 , recharge_event( 0 ), next( 0 ), charges( 1 ), current_charge( 1 ) {}
+  cooldown_t( const std::string& n, sim_t* s )    : sim( s ),      player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() )
+                                                                 , recharge_event( 0 ), next( 0 ), charges( 1 ), current_charge( 1 ) {}
+  void reset() { ready=ready_init(); current_charge = charges; event_t::cancel( recharge_event ); }
   void start( timespan_t override=timespan_t::min(), timespan_t delay=timespan_t::zero() )
   {
     if ( override >= timespan_t::zero() ) duration = override;
-    if ( duration > timespan_t::zero() ) ready = sim -> current_time + duration + delay;
+    if ( duration > timespan_t::zero() )
+    {
+      if ( charges > 1 )
+      {
+        assert( current_charge > 0 );
+        current_charge--;
+
+        if ( current_charge == charges - 1 )
+        {
+          recharge_event = new ( sim ) recharge_event_t( player, this, delay );
+        }
+        else if ( current_charge == 0 )
+        {
+          assert( recharge_event );
+          ready = recharge_event -> time + timespan_t::from_millis( 1 );
+        }
+      }
+      else
+      {
+        ready = sim -> current_time + duration + delay;
+      }
+    }
   }
   timespan_t remains() const
   {
