@@ -864,7 +864,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 45 abilities
+    // General tree, 46 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -894,6 +894,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8921, // Moonfire
        16689, // Nature's Grasp
        17116, // Nature's Swiftness
+      124974, // Nature's Vigil
         9005, // Pounce
         1822, // Rake
        20484, // Rebirth
