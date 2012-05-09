@@ -892,6 +892,15 @@ struct fire_elemental_t : public pet_t
       base_dd_min        = 1 + ( p -> o() -> level - 10 );
       base_dd_max        = 1 + ( p -> o() -> level - 10 ) + 1;
     }
+    
+    virtual void execute()
+    {
+      fire_elemental_spell_t::execute();
+
+      // Reset swing timer
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+        player -> main_hand_attack -> execute_event -> reschedule( player -> main_hand_attack -> execute_time() );
+    }
 
     virtual bool usable_moving()
     {
@@ -924,6 +933,18 @@ struct fire_elemental_t : public pet_t
         schedule_execute();
       else
         melee_attack_t::execute();
+    }
+    
+    virtual void impact_s( action_state_t* state )
+    {
+      melee_attack_t::impact_s( state );
+      
+      fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
+      if ( p -> o() -> spec == SHAMAN_ENHANCEMENT )
+      {
+        shaman_targetdata_t* td = debug_cast< shaman_targetdata_t* >( targetdata_t::get( p -> o(), state -> target ) );
+        td -> debuffs_searing_flames -> trigger();
+      }
     }
   };
 
