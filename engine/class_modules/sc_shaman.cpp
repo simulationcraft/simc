@@ -103,7 +103,7 @@ struct shaman_t : public player_t
   action_t* action_improved_lava_lash;
 
   // Pets
-  pet_t* pet_spirit_wolf;
+  pet_t* pet_feral_spirit;
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
@@ -278,7 +278,7 @@ struct shaman_t : public player_t
     action_improved_lava_lash = 0;
 
     // Pets
-    pet_spirit_wolf     = 0;
+    pet_feral_spirit     = 0;
     pet_fire_elemental  = 0;
     pet_earth_elemental = 0;
 
@@ -540,11 +540,11 @@ struct eoe_execute_event_t : public event_t
 // Pet Spirit Wolf
 // ==========================================================================
 
-struct spirit_wolf_pet_t : public pet_t
+struct feral_spirit_pet_t : public pet_t
 {
   struct melee_t : public melee_attack_t
   {
-    melee_t( spirit_wolf_pet_t* player ) :
+    melee_t( feral_spirit_pet_t* player ) :
       melee_attack_t( "wolf_melee", player, spell_data_t::nil() )
     {
       weapon = &( player -> main_hand_weapon );
@@ -559,7 +559,7 @@ struct spirit_wolf_pet_t : public pet_t
       weapon_power_mod /= player -> main_hand_weapon.swing_time.total_seconds();
     }
 
-    spirit_wolf_pet_t* p() const { return static_cast<spirit_wolf_pet_t*>( player ); }
+    feral_spirit_pet_t* p() const { return static_cast<feral_spirit_pet_t*>( player ); }
 
     virtual void execute()
     {
@@ -599,8 +599,8 @@ struct spirit_wolf_pet_t : public pet_t
 
   melee_t* melee;
 
-  spirit_wolf_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
+  feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
+    pet_t( sim, owner, "feral_spirit" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 655; // Level 85 Values, approximated
@@ -1654,7 +1654,8 @@ void shaman_melee_attack_t::impact_s( action_state_t* state )
     // TODO: Chance is based on Rank 3, i.e., 10 PPM?
     double chance = weapon -> proc_chance_on_swing( 10.0 );
 
-    if ( p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
+    if ( p() -> spec == SHAMAN_ENHANCEMENT && 
+         p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
       if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
         p() -> proc.wasted_mw -> occur();
@@ -1713,7 +1714,7 @@ struct melee_t : public shaman_melee_attack_t
     special     = false;
     may_glance  = true;
 
-    if ( p() -> dual_wield() ) base_hit -= 0.19;
+    if ( p() -> spec == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
   }
 
   virtual timespan_t execute_time() const
@@ -1784,7 +1785,7 @@ struct auto_attack_t : public shaman_melee_attack_t
     p() -> main_hand_attack -> weapon = &( p() -> main_hand_weapon );
     p() -> main_hand_attack -> base_execute_time = p() -> main_hand_weapon.swing_time;
 
-    if ( p() -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p() -> off_hand_weapon.type != WEAPON_NONE && p() -> spec == SHAMAN_ENHANCEMENT )
     {
       if ( ! p() -> dual_wield() ) return;
       p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
@@ -2631,9 +2632,9 @@ struct shamanistic_rage_t : public shaman_spell_t
 
 // Spirit Wolf Spell ========================================================
 
-struct spirit_wolf_spell_t : public shaman_spell_t
+struct feral_spirit_spell_t : public shaman_spell_t
 {
-  spirit_wolf_spell_t( shaman_t* player, const std::string& options_str ) :
+  feral_spirit_spell_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Feral Spirit" ), options_str )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -2646,7 +2647,7 @@ struct spirit_wolf_spell_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> pet_spirit_wolf -> summon( data().duration() );
+    p() -> pet_feral_spirit -> summon( data().duration() );
   }
 };
 
@@ -3584,7 +3585,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if ( name == "spirit_wolf"             ) return new        spirit_wolf_spell_t( this, options_str );
+  if ( name == "feral_spirit"             ) return new        feral_spirit_spell_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -3605,7 +3606,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "spirit_wolf"         ) return new spirit_wolf_pet_t    ( sim, this );
+  if ( pet_name == "feral_spirit"         ) return new feral_spirit_pet_t    ( sim, this );
   if ( pet_name == "fire_elemental_pet"  ) return new fire_elemental_t ( sim, this, false );
   if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t ( sim, this, true );
   if ( pet_name == "earth_elemental"     ) return new earth_elemental_pet_t( sim, this );
@@ -3617,7 +3618,7 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  pet_spirit_wolf     = create_pet( "spirit_wolf"     );
+  pet_feral_spirit     = create_pet( "feral_spirit"     );
   pet_fire_elemental  = create_pet( "fire_elemental_pet"  );
   guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
   pet_earth_elemental = create_pet( "earth_elemental" );
@@ -3774,7 +3775,7 @@ void shaman_t::init_buffs()
   buff.elemental_mastery   = buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                              .chance( 1.0 );
   buff.flurry              = buff_creator_t( this, "flurry",            specialization.flurry -> effectN( 1 ).trigger() )
-                             .chance( 1.0 )
+                             .chance( specialization.flurry -> proc_chance() )
                              .activated( false );
   buff.lava_surge          = buff_creator_t( this, "lava_surge",        specialization.lava_surge )
                              .activated( false );
@@ -3783,6 +3784,7 @@ void shaman_t::init_buffs()
                                          ? static_cast< int >( specialization.rolling_thunder -> effectN( 1 ).base_value() )
                                          : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
   buff.maelstrom_weapon    = buff_creator_t( this, "maelstrom_weapon",  specialization.maelstrom_weapon -> effectN( 1 ).trigger() )
+                             .chance( specialization.maelstrom_weapon -> proc_chance() )
                              .activated( false );
   buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  specialization.shamanistic_rage );
   buff.spiritwalkers_grace = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
@@ -3903,176 +3905,161 @@ void shaman_t::init_actions()
   if ( primary_tree() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
   {
     if ( ! quiet )
-      sim -> errorf( "Restoration Shaman support for player %s is not currently supported.", name() );
+      sim -> errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );
 
     quiet = true;
     return;
   }
-
-  bool has_power_torrent      = false;
-  bool has_dmc_volcano        = false;
-  bool has_lightweave         = false;
-  bool has_fiery_quintessence = false;
-  bool has_will_of_unbinding  = false;
-  bool has_bottled_wishes     = false;
-
-  // Detect some stuff so we can figure out how much int should be used to summon FE
-  for ( int i = 0; i < SLOT_MAX; i++ )
+  
+  if ( ! action_list_str.empty() )
   {
-    if ( util::str_compare_ci( items[ i ].name(), "darkmoon_card_volcano" ) )
-      has_dmc_volcano = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
-      has_fiery_quintessence = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "will_of_unbinding" ) )
-      has_will_of_unbinding = true;
-    else if ( util::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
-      has_bottled_wishes = true;
-    else if ( util::str_compare_ci( items[ i ].encoded_enchant_str, "power_torrent" ) )
-      has_power_torrent = true;
-    else if ( util::str_compare_ci( items[ i ].encoded_enchant_str, "lightweave_embroidery" ) )
-      has_lightweave = true;
+    player_t::init_actions();
+    return;
+  }
+  
+  std::string use_items_str;
+  int num_items = ( int ) items.size();
+  for ( int i=0; i < num_items; i++ )
+  {
+    if ( items[ i ].use.active() )
+    {
+      use_items_str += "/use_item,name=";
+      use_items_str += items[ i ].name();
+    }
   }
 
-  if ( action_list_str.empty() )
+  std::ostringstream s;
+
+  // Flask
+  if ( level >= 80 ) s << "flask,type=";
+  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    s << ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+  else
+    s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+
+  // Food
+  if ( level >= 80 ) s << "/food,type=seafood_magnifique_feast";
+
+  // Weapon Enchants
+  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) )
   {
-    if ( primary_tree() == SHAMAN_ENHANCEMENT )
+    if ( level >= 30 ) s << "/windfury_weapon,weapon=main";
+    if ( off_hand_weapon.type != WEAPON_NONE )
+      if ( level >= 10 ) s << "/flametongue_weapon,weapon=off";
+  }
+  else
+  {
+    if ( level >= 10 ) s << "/flametongue_weapon,weapon=main";
+    if ( spec == SHAMAN_ENHANCEMENT && off_hand_weapon.type != WEAPON_NONE )
+      if ( level >= 10 ) s << "/flametongue_weapon,weapon=off";
+  }
+
+  // Active Shield, presume any non-restoration / healer wants lightning shield
+  if ( spec != SHAMAN_RESTORATION || primary_role() != ROLE_HEAL )
+    if ( level >= 8  ) s << "/lightning_shield";
+  else
+    if ( level >= 20 ) s << "/water_shield";
+
+  // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
+  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    if ( level >= 80 ) s << "/tolvir_potion,if=!in_combat";
+  else
+    if ( level >= 80 ) s << "/volcanic_potion,if=!in_combat";
+
+  // Snapshot stats
+  s << "/snapshot_stats";
+  
+  // All Shamans Bloodlust and Wind Shear by default
+  if ( level >= 16 ) s << "/wind_shear";
+  if ( level >= 70 ) s << "/bloodlust,if=target.health.pct<=25|target.time_to_die<=60";
+
+  // Potion use
+  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    if ( level >= 80 ) s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+  else
+    if ( level >= 80 ) s << "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+
+  // Melee turns on auto attack
+  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    s << "/auto_attack";
+
+  // On use stuff and racial / profession abilities
+  s << use_items_str;
+  s << init_use_profession_actions();
+  s << init_use_racial_actions();
+
+  if ( talent.call_of_the_elements -> ok() )
+    s << "/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0";
+
+  if ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
+  {
+    if ( level >= 66 )     s << "/fire_elemental_totem,if=!ticking";
+    if ( level >= 16 )     s << "/searing_totem";
+    if ( level >= 26 )     s << "/stormstrike";
+    else if ( level >= 3 ) s << "/primal_strike";
+    if ( level >= 10 )     s << "/lava_lash";
+    s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)";
+    if ( level >= 81 ) s << "/unleash_elements";
+    if ( level >= 12 ) s << "/flame_shock,if=!ticking|buff.unleash_flame.up";
+    if ( level >= 6  ) s << "/earth_shock";
+    if ( level >= 60 ) s << "/feral_spirit";
+    if ( level >= 58 ) s << "/earth_elemental_totem";
+    if ( level >= 20 ) s << "/fire_nova,if=target.adds>1";
+    if ( level >= 85 ) s << "/spiritwalkers_grace,moving=1";
+    s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
+  }
+  else if ( spec == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
+  {
+    if ( level >= 66 ) s << "/fire_elemental_totem,if=!ticking";
+    if ( talent.elemental_mastery -> ok() )
+      s << "/elemental_mastery";
+    if ( set_bonus.tier13_4pc_heal() && level >= 85 )
+      s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
+    if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
+      s << "/unleash_elements,moving=1";
+    if ( level >= 12 ) s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
+    if ( level >= 34 ) s << "/lava_burst,if=dot.flame_shock.remains>cast_time";
+    if ( specialization.fulmination -> ok() && level >= 6 )
     {
-      action_list_str  = "flask,type=winds/food,type=seafood_magnifique_feast";
-
-      action_list_str +="/windfury_weapon,weapon=main";
-      if ( off_hand_weapon.type != WEAPON_NONE )
-        action_list_str += "/flametongue_weapon,weapon=off";
-      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/auto_attack";
-      action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
-      int num_items = ( int ) items.size();
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( items[ i ].use.active() )
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
-        }
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
-
-      if ( level <= 80 )
-        action_list_str += "/fire_elemental_totem,if=!ticking";
-
-      action_list_str += "/searing_totem";
-      action_list_str += "/stormstrike";
-      action_list_str += "/lava_lash";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
-      if ( level > 80 )
-      {
-        action_list_str += "/unleash_elements";
-      }
-      action_list_str += "/flame_shock,if=!ticking|buff.unleash_flame.up";
-      action_list_str += "/earth_shock";
-      action_list_str += "/spirit_wolf";
-      action_list_str += "/earth_elemental_totem";
-      action_list_str += "/fire_nova,if=target.adds>1";
-      action_list_str += "/spiritwalkers_grace,moving=1";
-      action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
+      s << "/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack";
+      s << "/earth_shock,if=buff.lightning_shield.react>buff.lightning_shield.max_stack-3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
     }
-    else
+    if ( level >= 58 ) s << "/earth_elemental_totem,if=!ticking";
+    if ( level >= 16 ) s << "/searing_totem";
+    if ( level >= 85 )
     {
-      int sp_threshold = 0;
-      sp_threshold = ( ( has_power_torrent || has_lightweave )?1:0 ) * 500 + ( has_dmc_volcano?1:0 ) * 1600 + ( has_will_of_unbinding?1:0 ) * 700;
-
-      action_list_str  = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
-
-      action_list_str += "/flametongue_weapon,weapon=main/lightning_shield";
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
-
-      action_list_str += "/wind_shear";
-      action_list_str += "/bloodlust,health_percentage<=25/bloodlust,if=target.time_to_die<=60";
-      int num_items = ( int ) items.size();
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( ! items[ i ].use.active() ) continue;
-
-        int duration = 0;
-
-        // Fiery Quintessence / Bottled Wishes are aligned to fire elemental and
-        // only used when the required temporary spell power threshold is exceeded
-        if ( util::str_compare_ci( items[ i ].name(), "fiery_quintessence" ) )
-          duration = 25;
-        else if ( util::str_compare_ci( items[ i ].name(), "bottled_wishes" ) )
-          duration = 15;
-
-        action_list_str += "/use_item,name=" + std::string( items[ i ].name() );
-
-        if ( duration > 0 )
-        {
-          action_list_str += ",if=(cooldown.fire_elemental_totem.remains=0&temporary_bonus.spell_power>=" +
-                             util::to_string( sp_threshold ) +
-                             ")";
-        }
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
-
-      if ( talent.elemental_mastery -> ok() )
-      {
-        if ( level > 80 )
-          action_list_str += "/elemental_mastery";
-        else
-        {
-          action_list_str += "/elemental_mastery,time_to_die<=17";
-          action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
-        }
-      }
-
-      if ( set_bonus.tier13_4pc_heal() )
-        action_list_str += "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
-
-      if ( ! glyph.unleashed_lightning -> ok() )
-        action_list_str += "/unleash_elements,moving=1";
-      action_list_str += "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
-      if ( level >= 75 ) action_list_str += "/lava_burst,if=dot.flame_shock.remains>cast_time";
-      if ( specialization.fulmination -> ok() )
-      {
-        action_list_str += "/earth_shock,if=buff.lightning_shield.react=9";
-        action_list_str += "/earth_shock,if=buff.lightning_shield.react>6&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time";
-      }
-
-      // Fire elemental summoning logic
-      // 1) Make sure we fully use some commonly used temporary int bonuses of the profile, calculating the following
-      // additively as a sum of temporary intellect buffs on the profile during iteration
-      //    - Power Torrent or Lightweave Embroidery is up (either being up is counted as a temporary int buff of 500)
-      //    - DMC: Volcano (temporary int buff of 1600)
-      //    - Will of Unbinding (all versions are a temporary int buff of 700 int)
-      // 2) If the profile hase Fiery Quintessence, align Fire Elemental summoning always with FQ (and require an
-      //    additional 1100 temporary int)
-      // 3) If the profile hase Bottled Wishes, align Fire Elemental summoning always with BW (and require an
-      //    additional 2290 temporary spell power)
-      // 4) If the profile uses pre-potting, make sure we try to use the FE during potion, so that
-      //    all the other temporary int/sp buffs are also up
-      sp_threshold += ( has_fiery_quintessence?1:0 ) * 1149;
-      sp_threshold += ( has_bottled_wishes?1:0 ) * 2290;
-
-      action_list_str += "/earth_elemental_totem,if=!ticking";
-      action_list_str += "/searing_totem";
-
+      s << "/spiritwalkers_grace,moving=1";
       if ( glyph.unleashed_lightning -> ok() )
-      {
-        action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0";
-      }
-      else
-        action_list_str += "/spiritwalkers_grace,moving=1";
-
-      action_list_str += "/chain_lightning,if=target.adds>2";
-      action_list_str += "/lightning_bolt";
-      if ( primary_tree() == SHAMAN_ELEMENTAL ) action_list_str += "/thunderstorm";
+        s << ",if=cooldown.lava_burst.remains=0";
     }
-
-    action_list_default = 1;
+    if ( level >= 28 ) s << "/chain_lightning,if=target.adds>2";
+    s << "/lightning_bolt";
+    if ( level >= 10 ) s << "/thunderstorm";
   }
+  else if ( primary_role() == ROLE_SPELL )
+  {
+    if ( level >= 66 ) s << "/fire_elemental_totem,if=!ticking";
+    if ( level >= 16 ) s << "/searing_totem";
+    if ( level >= 58 ) s << "/earth_elemental_totem";
+    if ( level >= 85 ) s << "/spiritwalkers_grace,moving=1";
+    if ( level >= 12 ) s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
+    if ( level >= 28 ) s << "/chain_lightning,if=target.adds>2&mana.pct>25";
+    s << "/lightning_bolt";
+  }
+  else if ( primary_role() == ROLE_ATTACK )
+  {
+    if ( level >= 66 ) s << "/fire_elemental_totem,if=!ticking";
+    if ( level >= 16 ) s << "/searing_totem";
+    if ( level >= 3  ) s << "/primal_strike";
+    if ( level >= 81 ) s << "/unleash_elements";
+    if ( level >= 12 ) s << "/flame_shock,if=!ticking|buff.unleash_flame.up";
+    if ( level >= 6  ) s << "/earth_shock";
+    if ( level >= 58 ) s << "/earth_elemental_totem";
+    if ( level >= 85 ) s << "/spiritwalkers_grace,moving=1";
+    s << "/lightning_bolt,moving=1";
+  }
+  action_list_str = s.str();
+  action_list_default = 1;
 
   player_t::init_actions();
 }
@@ -4324,12 +4311,12 @@ role_type_e shaman_t::primary_role() const
   }
 
   else if ( primary_tree() == SHAMAN_ENHANCEMENT )
-    return ROLE_HYBRID;
+    return ROLE_ATTACK;
 
   else if ( primary_tree() == SHAMAN_ELEMENTAL )
     return ROLE_SPELL;
 
-  return ROLE_NONE;
+  return player_t::primary_role();
 }
 
 shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
