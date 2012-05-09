@@ -3898,6 +3898,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
+  if ( name == "natures_vigil"          ) return new          natures_vigil_t( this, options_str );
   if ( name == "nourish"                ) return new                nourish_t( this, options_str );
   if ( name == "pounce"                 ) return new                 pounce_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
