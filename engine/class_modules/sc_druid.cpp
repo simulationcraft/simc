@@ -163,6 +163,7 @@ struct druid_t : public player_t
     buff_t* lunar_shower;
     buff_t* moonkin_form;
     buff_t* natures_grace;
+    buff_t* natures_vigil;
     buff_t* omen_of_clarity;
     buff_t* savage_roar;
     buff_t* shooting_stars;
@@ -364,7 +365,7 @@ struct druid_t : public player_t
 
     const spell_data_t* heart_of_the_wild;
     const spell_data_t* dream_of_cenarius;
-    const spell_data_t* disentanglement;
+    const spell_data_t* natures_vigil;
   } talent;
   
   druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
@@ -425,6 +426,7 @@ struct druid_t : public player_t
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_attack_power() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
+  virtual double    composite_player_heal_multiplier( school_type_e school ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
@@ -3265,6 +3267,24 @@ struct druids_swiftness_t : public druid_spell_t
   }
 };
 
+// Nature's Vigil ===========================================================
+
+struct natures_vigil_t : public druid_spell_t
+{
+  natures_vigil_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "natures_vigil", player, player -> find_talent_spell( "Nature's Vigil" ) )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    p() -> buff.natures_vigil -> trigger();
+  }
+};
+
 // Starfire Spell ===========================================================
 
 struct starfire_t : public druid_spell_t
@@ -4015,7 +4035,7 @@ void druid_t::init_spells()
 
   talent.heart_of_the_wild  = find_talent_spell( "Heart of the Wild" );
   talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
-  talent.disentanglement    = find_talent_spell( "Disentanglement" );
+  talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
 
   // Glyphs
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
@@ -4123,6 +4143,9 @@ void druid_t::init_buffs()
   buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , find_spell( 5420 ) )
                             .duration( talent.incarnation -> duration() )
                             .chance( primary_tree() == DRUID_RESTORATION );
+                            
+  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", find_spell( 124974 ) )
+                            .cd( timespan_t::zero() );
   
   
   // Balance
@@ -4664,7 +4687,31 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
   {
     if ( buff.moonkin_form -> check() )
+    {
       m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
+    }
+  }
+  
+  if ( school == SCHOOL_NATURE )
+  {
+    if ( buff.natures_vigil -> up() )
+    {
+      m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
+    }
+  }
+
+  return m;
+}
+
+// druid_t::composite_player_heal_multiplier ================================
+   
+double druid_t::composite_player_heal_multiplier( const school_type_e school ) const
+{
+  double m = player_t::composite_player_heal_multiplier( school );
+
+  if ( buff.natures_vigil -> up() )
+  {
+    m *= 1.0 + buff.natures_vigil -> data().effectN( 2 ).percent();
   }
 
   return m;
