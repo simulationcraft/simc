@@ -48,6 +48,7 @@ struct priest_t : public player_t
   {
     // Talents
     buff_t* twist_of_fate;
+    buff_t* surge_of_light;
 
     // Discipline
     buff_t* holy_evangelism;

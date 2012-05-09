@@ -2360,11 +2360,22 @@ struct flash_heal_t : public priest_heal_t
     return cc;
   }
 
+  virtual timespan_t execute_time() const
+  {
+    if ( p () -> buffs.surge_of_light -> up() )
+      return timespan_t::zero();
+
+    return priest_heal_t::execute_time();
+  }
+
   virtual double cost() const
   {
     double c = priest_heal_t::cost();
 
     if ( p() -> buffs.inner_focus -> check() )
+      c = 0;
+
+    if ( p() -> buffs.surge_of_light -> check() )
       c = 0;
 
     return c;
@@ -3544,6 +3555,7 @@ void priest_t::init_buffs()
                                            .duration( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> duration() )
                                            .default_value( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
+  buffs.surge_of_light = buff_creator_t( this, "surge_of_light", find_spell( 114255 ) ).chance( find_talent_spell( "From Darkness, Comes Light" )->effectN( 1 ).percent() );
   // Discipline
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( spec.evangelism -> ok() )
