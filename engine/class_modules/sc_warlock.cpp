@@ -134,6 +134,14 @@ public:
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
   }
 
+  virtual bool ready()
+  {
+    if ( p() -> buffs.metamorphosis -> check() && p() -> resources.current[ RESOURCE_DEMONIC_FURY ] < 40 )
+      p() -> cancel_metamorphosis();
+
+    return spell_t::ready();
+  }
+
   virtual void tick( dot_t* d )
   {
     spell_t::tick( d );
@@ -184,33 +192,6 @@ public:
 
     return m;
   }
-  /*
-  virtual expr_t* create_expression( const std::string& name_str )
-  {
-    if ( name_str == "charges" )
-      return make_ref_expr( name_str, current_charges );
-    else if ( name_str == "max_charges" )
-      return make_ref_expr( name_str, max_charges );
-    else if ( name_str == "recharge_time" )
-    {
-      struct recharge_time_expr_t : public expr_t
-      {
-        warlock_spell_t* spell;
-        recharge_time_expr_t( warlock_spell_t* s ) : expr_t( "recharge_time" ), spell( s ) {}
-        virtual double evaluate()
-        {
-          if ( spell -> recharge_event )
-            return ( spell -> recharge_event -> time - spell -> sim -> current_time ).total_seconds();
-          else
-            return spell -> recharge_seconds;
-        }
-      };
-      return new recharge_time_expr_t( this );
-    }
-    else
-      return spell_t::create_expression( name_str );
-  }
-  */
 
   void trigger_ember_gain( double amount, gain_t* gain, double chance = 1.0 )
   {
@@ -356,9 +337,11 @@ struct doom_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -422,9 +405,11 @@ struct shadow_bolt_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -491,9 +476,11 @@ struct corruption_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -1024,7 +1011,7 @@ struct metamorphosis_t : public warlock_spell_t
   virtual bool ready()
   {
     if ( p() -> buffs.metamorphosis -> check() ) return false;
-    if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= 0 ) return false;
+    if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= 40 ) return false;
 
     return warlock_spell_t::ready();
   }
@@ -1049,9 +1036,11 @@ struct cancel_metamorphosis_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -1077,9 +1066,15 @@ struct shadowflame_t : public warlock_spell_t
   shadowflame_t( warlock_t* p ) :
     warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
+    aoe        = -1;
     proc       = true;
     background = true;
     generate_fury = 2;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 1.5 );
   }
 
   virtual void tick( dot_t* d )
@@ -1112,6 +1107,11 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
   {
     proc       = true;
     background = true;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -1149,14 +1149,16 @@ struct hand_of_guldan_t : public warlock_spell_t
 
   virtual timespan_t travel_time() const
   {
-    return timespan_t::from_seconds( 1.5 );
+    return timespan_t::zero();
   }
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1180,6 +1182,11 @@ struct chaos_wave_dmg_t : public warlock_spell_t
     proc       = true;
     background = true;
     aoe        = -1;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -1213,15 +1220,16 @@ struct chaos_wave_t : public warlock_spell_t
 
   virtual timespan_t travel_time() const
   {
-    // FIXME: Needs testing
-    return timespan_t::from_seconds( 1.5 );
+    return timespan_t::zero();
   }
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1267,9 +1275,11 @@ struct demonic_slash_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -1317,9 +1327,11 @@ struct fel_flame_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -1349,9 +1361,11 @@ struct void_ray_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -2709,18 +2723,6 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   {
     return player_t::create_expression( a, name_str );
   }
-}
-
-double warlock_t::resource_loss( resource_type_e resource_type, double amount, gain_t* gain, action_t* action )
-{
-  double r = player_t::resource_loss( resource_type, amount, gain, action );
-
-  if ( resource_type == RESOURCE_DEMONIC_FURY && resources.current[ RESOURCE_DEMONIC_FURY ] < 40 )
-  {
-    if ( buffs.metamorphosis -> check() ) cancel_metamorphosis();
-  }
-
-  return r;
 }
 
 bool warlock_t::verify_nightfall()

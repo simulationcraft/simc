@@ -257,7 +257,6 @@ struct warlock_t : public player_t
   virtual double composite_mastery() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
-  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* gain = 0, action_t* action = 0 );
 };
 
 // ==========================================================================
