@@ -3985,15 +3985,23 @@ void shaman_t::init_actions()
 
   // Active Shield, presume any non-restoration / healer wants lightning shield
   if ( spec != SHAMAN_RESTORATION || primary_role() != ROLE_HEAL )
+  {
     if ( level >= 8  ) s << "/lightning_shield";
+  }
   else
+  {
     if ( level >= 20 ) s << "/water_shield";
+  }
 
   // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+  {
     if ( level >= 80 ) s << "/tolvir_potion,if=!in_combat";
+  }
   else
+  {
     if ( level >= 80 ) s << "/volcanic_potion,if=!in_combat";
+  }
 
   // Snapshot stats
   s << "/snapshot_stats";
@@ -4004,9 +4012,13 @@ void shaman_t::init_actions()
 
   // Potion use
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-    if ( level >= 80 ) s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+  {
+    if ( level >= 80 )s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+  }
   else
+  {
     if ( level >= 80 ) s << "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+  }
 
   // Melee turns on auto attack
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
