@@ -414,7 +414,6 @@ struct shaman_spell_t : public spell_t
   {
     parse_options( 0, options );
 
-    eoe_stats = p -> get_stats( name_str + "_eoe", this );
     may_crit  = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
@@ -427,7 +426,6 @@ struct shaman_spell_t : public spell_t
   {
     parse_options( 0, options );
 
-    eoe_stats = p -> get_stats( name_str + "_eoe", this );
     may_crit  = true;
 
     crit_bonus_multiplier *= 1.0 + p -> specialization.elemental_fury -> effect1().percent();
@@ -501,6 +499,14 @@ struct shaman_spell_t : public spell_t
     static_cast< shaman_spell_state_t* >( s ) -> eoe_proc = false;
     return s;
   }
+  
+  void init()
+  {
+    spell_t::init();
+
+    eoe_stats = p() -> get_stats( name_str + "_eoe", this );
+    eoe_stats -> school = school;
+  }
 };
 
 struct eoe_execute_event_t : public event_t
@@ -552,6 +558,7 @@ struct feral_spirit_pet_t : public pet_t
       background = true;
       repeating = true;
       may_crit = true;
+      school      = SCHOOL_PHYSICAL;
 
       // Two wolves
       base_multiplier  *= 2.0;
@@ -1734,6 +1741,7 @@ struct melee_t : public shaman_melee_attack_t
     stateless   = true;
     special     = false;
     may_glance  = true;
+    school      = SCHOOL_PHYSICAL;
 
     if ( p() -> spec == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
   }
@@ -4346,8 +4354,7 @@ shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
   debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
                                      .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
                                      .duration( p -> dbc.spell( 77661 ) -> duration() )
-                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() )
-                                     .quiet( true ) );
+                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
   debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
   debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
 }
