@@ -4355,9 +4355,9 @@ struct cooldown_t
 
   recharge_event_t* recharge_event;
   cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() )
-                                                                 , recharge_event( 0 ), next( 0 ), charges( 1 ), current_charge( 1 ) {}
+                                                                 , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
   cooldown_t( const std::string& n, sim_t* s )    : sim( s ),      player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() )
-                                                                 , recharge_event( 0 ), next( 0 ), charges( 1 ), current_charge( 1 ) {}
+                                                                 , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
   void reset() { ready=ready_init(); current_charge = charges; event_t::cancel( recharge_event ); }
   void start( timespan_t override=timespan_t::min(), timespan_t delay=timespan_t::zero() )
   {
