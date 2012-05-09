@@ -73,7 +73,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
   cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );
   cooldowns.imp_swarm      = get_cooldown ( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
-  cooldowns.chaos_wave     = get_cooldown ( "chaos_wave" );
 
   create_options();
 }
@@ -1170,13 +1169,6 @@ struct hand_of_guldan_t : public warlock_spell_t
       hog_damage  -> execute();
     }
   }
-  
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    p() -> cooldowns.chaos_wave -> start();
-  }
 };
 
 
@@ -1199,8 +1191,7 @@ struct chaos_wave_t : public warlock_spell_t
   chaos_wave_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "chaos_wave", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 124916 ) : spell_data_t::not_found() )
   {
-    cooldown -> duration = timespan_t::from_seconds( 15 );
-    cooldown -> charges = 2;
+    cooldown = p -> cooldowns.hand_of_guldan;
 
     cw_damage  = new chaos_wave_dmg_t( p );
 
@@ -1241,13 +1232,6 @@ struct chaos_wave_t : public warlock_spell_t
     {
       cw_damage -> execute();
     }
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    p() -> cooldowns.hand_of_guldan -> start();
   }
 };
 

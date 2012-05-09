@@ -72,7 +72,6 @@ struct warlock_t : public player_t
     cooldown_t* doomguard;
     cooldown_t* imp_swarm;
     cooldown_t* hand_of_guldan;
-    cooldown_t* chaos_wave;
   } cooldowns;
 
   // Talents
