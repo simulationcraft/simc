@@ -167,6 +167,7 @@ struct druid_t : public player_t
     buff_t* omen_of_clarity;
     buff_t* savage_roar;
     buff_t* shooting_stars;
+    buff_t* soul_of_the_forest;
     buff_t* starfall;
     buff_t* stealthed;
     buff_t* survival_instincts;
@@ -266,7 +267,6 @@ struct druid_t : public player_t
   // Procs
   struct procs_t
   {
-    proc_t* empowered_touch;
     proc_t* primal_fury;
     proc_t* revitalize;
     proc_t* wrong_eclipse_wrath;
@@ -330,8 +330,8 @@ struct druid_t : public player_t
     const spell_data_t* moonkin_form; // Moonkin form bonuses
     const spell_data_t* primal_fury; // Primal fury rage gain
     const spell_data_t* regrowth; // Old GoRegrowth
-    const spell_data_t* swiftmend; // Swiftmend AOE heal trigger
     const spell_data_t* survival_instincts; // Survival instincts aura
+    const spell_data_t* swiftmend; // Swiftmend AOE heal trigger
     const spell_data_t* swipe; // Bleed damage multiplier for Shred etc
   } spell;
 
@@ -1028,7 +1028,7 @@ static void trigger_swiftmend( druid_heal_t* a )
   if ( ! p -> active_swiftmend_aoe )
   {
     p -> active_swiftmend_aoe = new swiftmend_aoe_heal_t( p );
-    p -> init();
+    p -> active_swiftmend_aoe -> init();
   }
 }
 
@@ -1061,22 +1061,24 @@ static void trigger_energy_refund( druid_cat_attack_t* a )
 static void trigger_living_seed( action_state_t* s )
 {
   druid_t* p = static_cast< druid_t* >( s -> action -> player );
+  
+  if ( p -> spec != DRUID_RESTORATION )
+    return;
 
   struct living_seed_t : public druid_heal_t
   {
     living_seed_t( druid_t* player ) :
-      druid_heal_t( player, player -> find_spell( 48504 ) )
+      druid_heal_t( player, player -> find_specialization_spell( "Living Seed" ) )
     {
       background = true;
       may_crit   = false;
       proc       = true;
+      school     = SCHOOL_NATURE;
     }
 
-    virtual void init()
+    double composite_da_multiplier() const
     {
-      druid_heal_t::init();
-
-      snapshot_flags = STATE_SP;
+      return data().effectN( 1 ).percent();
     }
   };
 
@@ -1088,9 +1090,8 @@ static void trigger_living_seed( action_state_t* s )
 
   // Technically this should be a buff on the target, then bloom when they're attacked
   // For simplicity we're going to assume it always heals the target
-  double heal = s -> result_amount * p -> specialization.living_seed -> effectN( 1 ).percent();
-  p -> active_living_seed -> base_dd_min = heal;
-  p -> active_living_seed -> base_dd_max = heal;
+  p -> active_living_seed -> base_dd_min = s -> result_amount;
+  p -> active_living_seed -> base_dd_max = s -> result_amount;
   p -> active_living_seed -> execute();
 };
 
@@ -1227,7 +1228,8 @@ void druid_cat_attack_t::execute()
     {
       td( target ) -> combo_points -> add( adds_combo_points, name() );
       
-      if ( execute_state -> result == RESULT_CRIT )
+      if ( ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) && 
+           execute_state -> result == RESULT_CRIT )
       {
         td( target ) -> combo_points -> add( adds_combo_points, name() );
         p() -> proc.primal_fury -> occur();
@@ -1892,7 +1894,8 @@ struct bear_melee_t : public druid_bear_attack_t
     if ( state -> result != RESULT_MISS )
       trigger_rage_gain( this );
 
-    if ( state -> result == RESULT_CRIT )
+    if ( ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) && 
+         state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
                           p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -2167,22 +2170,20 @@ void druid_heal_t::execute()
 {
   heal_t::execute();
 
-  if ( base_execute_time > timespan_t::zero() && p() -> buff.natures_swiftness -> up() )
+  if ( base_execute_time > timespan_t::zero() )
   {
     p() -> buff.natures_swiftness -> expire();
+    p() -> buff.soul_of_the_forest -> expire();
   }
 
-  if ( direct_dmg > 0 && ! background )
-  {
+  if ( base_dd_min > 0 && ! background )
     p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> composite_mastery() );
-  }
 }
 
 // druid_heal_t::execute_time ===============================================
 
 timespan_t druid_heal_t::execute_time() const
 {
-
   if ( p() -> buff.natures_swiftness -> check() )
     return timespan_t::zero();
 
@@ -2196,6 +2197,8 @@ double druid_heal_t::haste() const
   double h = heal_t::haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
+  
+  h *= 1.0 / ( 1.0 + p() -> buff.soul_of_the_forest -> value() );
 
   return h;
 }
@@ -2457,6 +2460,9 @@ struct swiftmend_t : public druid_heal_t
 
     if ( state -> result == RESULT_CRIT )
       trigger_living_seed( state );
+    
+    if ( p() -> talent.soul_of_the_forest -> ok() )
+      p() -> buff.soul_of_the_forest -> trigger();
 
     trigger_swiftmend( this );
   }
@@ -3070,7 +3076,7 @@ struct innervate_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "mark_of_the_wild", player, player -> find_spell( "Mark of the Wild" )  )
+    druid_spell_t( "mark_of_the_wild", player, player -> find_class_spell( "Mark of the Wild" )  )
   {
     parse_options( NULL, options_str );
 
@@ -4156,6 +4162,8 @@ void druid_t::init_buffs()
   buff.moonkin_form          = buff_creator_t( this, "moonkin_form", find_specialization_spell( "Moonkin Form" ) );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", specialization.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( find_spell( 113043 ) -> proc_chance() );
+  buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", find_spell( 114108 ) )
+                               .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_specialization_spell( "Wild Mushroom" ) )
@@ -4212,7 +4220,6 @@ void druid_t::init_buffs()
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
   
   // Restoration
-  
   
   // Not checked for MoP
   
@@ -4359,242 +4366,200 @@ void druid_t::init_actions()
       }
     }
 
-    if ( primary_tree() == DRUID_FERAL )
+    // Flask
+    action_list_str += "flask,type=";
+    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
+    else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+      action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
+    else
+      action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
+
+    // Food
+    action_list_str += "/food,type=seafood_magnifique_feast";
+
+    // MotW
+    action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
+
+    // Forms
+    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      action_list_str += "/cat_form";
+    else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+      action_list_str += "/bear_form";
+    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+      action_list_str += "/moonkin_form";
+
+    // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
+    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      action_list_str += "/tolvir_potion,if=!in_combat";
+    else
+      action_list_str += "/volcanic_potion,if=!in_combat";
+
+    // Snapshot stats
+    action_list_str += "/snapshot_stats";
+    
+    // Potion use
+    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
     {
-      if ( primary_role() == ROLE_TANK )
-      {
-        if ( level > 80 )
-        {
-          action_list_str += "flask,type=steelskin/food,type=seafood_magnifique_feast";
-        }
-        else
-        {
-          action_list_str += "flask,type=endless_rage/food,type=rhinolicious_wormsteak";
-        }
-        action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-        action_list_str += "/bear_form";
-        action_list_str += "/auto_attack";
-        action_list_str += "/snapshot_stats";
-        action_list_str += init_use_racial_actions();
-        action_list_str += "/skull_bash_bear";
-        action_list_str += "/faerie_fire_feral,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/survival_instincts"; // For now use it on CD
-        action_list_str += "/barkskin"; // For now use it on CD
-        action_list_str += "/enrage";
-        action_list_str += use_str;
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/maul,if=rage>=75";
-        action_list_str += "/mangle_bear";
-        action_list_str += "/lacerate,if=!ticking";
-        action_list_str += "/thrash";
-        action_list_str += "/pulverize,if=buff.lacerate.stack=3&buff.pulverize.remains<=2";
-        action_list_str += "/lacerate,if=buff.lacerate.stack<3";
-        if ( primary_tree() == DRUID_FERAL ) action_list_str+="/berserk";
-        action_list_str += "/faerie_fire_feral";
-      }
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      if ( talent.incarnation -> ok() )
+        action_list_str += "|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
       else
-      {
-        std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
-        if ( level > 80 )
-        {
-          action_list_str += "flask,type=winds";
-          action_list_str += "/food,type=seafood_magnifique_feast";
-        }
-        else
-        {
-          action_list_str += "flask,type=endless_rage";
-          action_list_str += "/food,type=hearty_rhino";
-        }
-        action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-        action_list_str += "/cat_form";
-        action_list_str += "/snapshot_stats";
-
-        if ( level > 80 )
-        {
-          action_list_str += "/tolvir_potion,if=!in_combat";
-        }
-        else
-        {
-          action_list_str += "/speed_potion,if=!in_combat";
-        }
-
-        action_list_str += "/feral_charge_cat,if=!in_combat";
-        action_list_str += "/auto_attack";
-        action_list_str += "/skull_bash_cat";
-        if ( set_bonus.tier13_4pc_melee() )
-        {
-          action_list_str += "/tigers_fury,if=energy<=45&(!buff.omen_of_clarity.react)";
-        }
-        else
-        {
-          action_list_str += "/tigers_fury,if=energy<=35&(!buff.omen_of_clarity.react)";
-        }
-        if ( primary_tree() == DRUID_FERAL )
-        {
-          action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15";
-          action_list_str += "&cooldown.tigers_fury.remains>6)";
-        }
-        if ( level > 80 )
-        {
-          action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-        }
-        else
-        {
-          action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-        }
-        action_list_str += init_use_racial_actions();
-        action_list_str += "/faerie_fire_feral,if=debuff.faerie_fire.stack<3|!(debuff.sunder_armor.up|debuff.expose_armor.up)";
-        action_list_str += "/mangle_cat,if=debuff.mangle.remains<=2&(!debuff.mangle.up|debuff.mangle.remains>=0.0)";
-        action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&(buff.stampede_cat.remains<=1|buff.t13_4pc_melee.remains<=1)";
-
-        if ( primary_tree() == DRUID_FERAL )
-        {
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health_pct<=" + bitw_hp;
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.ticking&target.health_pct<=" + bitw_hp;
-        }
-        action_list_str += use_str;
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4";
-        action_list_str += "/mangle_cat,extend_rip=1,if=position_front&dot.rip.ticking&dot.rip.remains<=4";
-        if ( primary_tree() == DRUID_FERAL )
-          action_list_str += "&target.health_pct>" + bitw_hp;
-        action_list_str += "/rip,if=buff.combo_points.stack>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
-        action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
-        action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<multiplier)";
-        action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
-        action_list_str += "/shred,if=position_back&buff.omen_of_clarity.react";
-        action_list_str += "/mangle_cat,if=position_front&buff.omen_of_clarity.react";
-        action_list_str += "/savage_roar,if=buff.combo_points.stack>=1&buff.savage_roar.remains<=1";
-        action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&cooldown.tigers_fury.remains=0";
-        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&buff.combo_points.stack>=5)|target.time_to_die<=1";
-        if ( level <= 80 )
-        {
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=8.0&buff.savage_roar.remains>=4.0";
-        }
-        else
-        {
-          action_list_str += "/ferocious_bite,if=buff.combo_points.stack>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
-        }
-        action_list_str += "/ravage,if=(buff.stampede_cat.up|buff.t13_4pc_melee.up)&!buff.omen_of_clarity.react&buff.tigers_fury.up&time_to_max_energy>1.0";
-        action_list_str += "/shred,if=position_back&(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/shred,if=position_back&((buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2))";
-        action_list_str += "/shred,if=position_back&cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/shred,if=position_back&target.time_to_die<=8.5";
-        action_list_str += "/shred,if=position_back&time_to_max_energy<=1.0";
-        action_list_str += "/mangle_cat,if=position_front&(buff.tigers_fury.up|buff.berserk.up)";
-        action_list_str += "/mangle_cat,if=position_front&((buff.combo_points.stack<5&dot.rip.remains<3.0)|(buff.combo_points.stack=0&buff.savage_roar.remains<2))";
-        action_list_str += "/mangle_cat,if=position_front&cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
-        action_list_str += "/mangle_cat,if=position_front&time_to_max_energy<=1.0";
-      }
-    }
-    else if ( primary_role() == ROLE_SPELL )
-    {
-      if ( level > 80 )
-      {
-        action_list_str += "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
-      }
-      else
-      {
-        action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
-      }
-      action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-      if ( primary_tree() == DRUID_BALANCE )
-      {
-        action_list_str += "/moonkin_form";
-        action_list_str += "/snapshot_stats";
-        action_list_str += "/volcanic_potion,if=!in_combat";
-        if ( talent.incarnation -> ok() )
-        {
-          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
-        }
-        else
-        {
-          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
-        }
-        action_list_str += "/starfall,if=!buff.starfall.up";
-        action_list_str += init_use_racial_actions();
-        action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-        if ( talent.incarnation -> ok() )
-        {
-          // Align the use of Incarnation and Celestial Alignment
-          action_list_str += "/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16&buff.chosen_of_elune.up";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21&buff.chosen_of_elune.up";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21&buff.chosen_of_elune.up";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21&buff.chosen_of_elune.up";
-        }
-        else
-        {
-          // CA just as we are going to leave Eclipse
-          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21";
-          action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21";
-        }
-        action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
-        action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
-        action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
-        action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
-        action_list_str += "/innervate,if=mana.pct<20";
-        if ( talent.force_of_nature -> ok() )
-          action_list_str += "/treants,if=time>=5";
-        action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
-        action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-        action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<=-85";
-        action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>-85";
-        action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
-        action_list_str += "/starfire,if=eclipse_dir=1";
-        action_list_str += "/wrath,if=eclipse_dir=-1";
-        action_list_str += "/wrath";
-        action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
-        action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
-        action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
-        action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
-        action_list_str += "/moonfire,moving=1";
-        action_list_str += "/sunfire,moving=1";
-      }
-      else
-      {
-        // ROLE_SPELL without DRUID_BALANCE? USE ALL (both) THE NUKES!
-        action_list_str += "/snapshot_stats";
-        action_list_str += "/volcanic_potion,if=!in_combat";
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-        action_list_str += "/moonfire,if=!dot.moonfire.ticking";
-        action_list_str += "/wrath";
-        
-      }
+        action_list_str += "|buff.celestial_alignment.up";
     }
     else
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+    
+    if ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
-      if ( level > 80 )
+      std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
+      //action_list_str += "/feral_charge_cat,if=!in_combat";
+      action_list_str += "/auto_attack";
+      action_list_str += "/skull_bash_cat";
+      action_list_str += "/tigers_fury,if=((set_bonus.tier13_4pc_melee=1&energy<=45)|energy<=35)&!buff.omen_of_clarity.react";
+      action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<15&cooldown.tigers_fury.remains>6)";
+      action_list_str += init_use_racial_actions();
+      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+      action_list_str += "/savage_roar,if=combo_points>=1&buff.savage_roar.remains<=1";
+      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&buff.t13_4pc_melee.remains<=1";
+      action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=2.1&target.health.pct<=" + bitw_hp;
+      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=" + bitw_hp;
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
+      action_list_str += "/shred,extend_rip=1,if=position_back&dot.rip.ticking&dot.rip.remains<=4";
+      action_list_str += "/mangle_cat,extend_rip=1,if=position_front&dot.rip.ticking&dot.rip.remains<=4&target.health.pct>" + bitw_hp;
+      action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2.0&(buff.berserk.up|dot.rip.remains<=cooldown.tigers_fury.remains)";
+      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>5.0&buff.savage_roar.remains>=3.0&buff.berserk.up";
+      action_list_str += "/rake,if=target.time_to_die>=8.5&buff.tigers_fury.up&dot.rake.remains<9.0&(!dot.rake.ticking|dot.rake.multiplier<tick_multiplier)";
+      action_list_str += "/rake,if=target.time_to_die>=dot.rake.remains&dot.rake.remains<3.0&(buff.berserk.up|energy>=71|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains)";
+      action_list_str += "/shred,if=position_back&buff.omen_of_clarity.react";
+      action_list_str += "/mangle_cat,if=position_front&buff.omen_of_clarity.react";
+      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&cooldown.tigers_fury.remains=0";
+      action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|target.time_to_die<=1";
+      action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>=14.0&buff.savage_roar.remains>=10.0";
+      action_list_str += "/ravage,if=buff.t13_4pc_melee.up&!buff.omen_of_clarity.react&buff.tigers_fury.up&energy.time_to_max>1.0";
+      action_list_str += "/shred,if=position_back&(buff.tigers_fury.up|buff.berserk.up)";
+      action_list_str += "/shred,if=position_back&((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+      action_list_str += "/shred,if=position_back&cooldown.tigers_fury.remains<=3.0";
+      action_list_str += "/shred,if=position_back&target.time_to_die<=8.5";
+      action_list_str += "/shred,if=position_back&energy.time_to_max<=1.0";
+      action_list_str += "/mangle_cat,if=position_front&(buff.tigers_fury.up|buff.berserk.up)";
+      action_list_str += "/mangle_cat,if=position_front&((combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2))";
+      action_list_str += "/mangle_cat,if=position_front&cooldown.tigers_fury.remains<=3.0";
+      action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
+      action_list_str += "/mangle_cat,if=position_front&energy.time_to_max<=1.0";
+    }
+    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
+    {
+      action_list_str += "/starfall,if=!buff.starfall.up";
+      action_list_str += init_use_racial_actions();
+      action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
+      if ( talent.incarnation -> ok() )
       {
-        action_list_str += "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
+        // Align the use of Incarnation and Celestial Alignment
+        action_list_str += "/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16&buff.chosen_of_elune.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21&buff.chosen_of_elune.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21&buff.chosen_of_elune.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21&buff.chosen_of_elune.up";
       }
       else
       {
-        action_list_str += "flask,type=frost_wyrm/food,type=fish_feast";
+        // CA just as we are going to leave Eclipse
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21";
       }
-      action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
+      action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
+      action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
+      action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
+      action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
+      action_list_str += "/innervate,if=mana.pct<20";
+      if ( talent.force_of_nature -> ok() )
+        action_list_str += "/treants,if=time>=5";
+      action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
+      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
+      action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<=-85";
+      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>-85";
+      action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
+      action_list_str += "/starfire,if=eclipse_dir=1";
+      action_list_str += "/wrath,if=eclipse_dir=-1";
+      action_list_str += "/wrath";
+      action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
+      action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
+      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+      action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
+      action_list_str += "/moonfire,moving=1";
+      action_list_str += "/sunfire,moving=1";
+    }
+    else if ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
+    {
+      action_list_str += "/auto_attack";
+      action_list_str += init_use_racial_actions();
+      action_list_str += "/skull_bash_bear";
+      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
+      action_list_str += "/survival_instincts"; // For now use it on CD
+      action_list_str += "/barkskin"; // For now use it on CD
+      action_list_str += "/enrage";
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
+      action_list_str += "/maul,if=rage>=75";
+      action_list_str += "/mangle_bear";
+      action_list_str += "/lacerate,if=!ticking";
+      action_list_str += "/thrash";
+      action_list_str += "/lacerate,if=buff.lacerate.stack<3";
+      action_list_str += "/berserk";
+      action_list_str += "/faerie_fire";
+    }
+    else if ( spec == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
+    {
+      action_list_str += init_use_racial_actions();
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
       action_list_str += "/innervate,if=mana.pct<90";
-      if ( talent.incarnation -> ok() && spec == DRUID_RESTORATION ) 
+      if ( talent.incarnation -> ok() ) 
         action_list_str += "/incarnation";
       action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
       action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
       action_list_str += "/lifebloom,if=buff.lifebloom.stack<3";
       action_list_str += "/swiftmend";
-      if ( spec == DRUID_RESTORATION )
-      {
-        action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana.pct>=5";
-        action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana.pct>=30";
-      }
-      else
-      {
-        action_list_str += "/healing_touch,if=mana.pct>=30";
-      }
+      action_list_str += "/healing_touch,if=buff.tree_of_life.up&mana.pct>=5";
+      action_list_str += "/healing_touch,if=buff.tree_of_life.down&mana.pct>=30";
       action_list_str += "/nourish";
+    }
+    // Specless (or speced non-main role) druid who has a primary role of caster
+    else if ( primary_role() == ROLE_SPELL )
+    {
+      action_list_str += init_use_racial_actions();
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
+      action_list_str += "/innervate,if=mana.pct<90";
+      action_list_str += "/moonfire,if=!dot.moonfire.ticking";
+      action_list_str += "/wrath";
+    }
+    // Specless (or speced non-main role) druid who has a primary role of a melee
+    else if ( primary_role() == ROLE_ATTACK )
+    {
+      action_list_str += "/faerie_fire,if=!debuff.weakened_armor.stack<3";
+      action_list_str += init_use_racial_actions();
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
+      action_list_str += "/rake,if=!ticking|ticks_remain<2";
+      action_list_str += "/mangle_cat";
+      action_list_str += "/ferocious_bite,if=combo_points>=5";
+    }
+    // Specless (or speced non-main role) druid who has a primary role of a healer
+    else if ( primary_role() == ROLE_HEAL )
+    {
+      action_list_str += init_use_racial_actions();
+      action_list_str += use_str;
+      action_list_str += init_use_profession_actions();
+      action_list_str += "/innervate,if=mana.pct<90";
+      action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
+      action_list_str += "/healing_touch,if=mana.pct>=30";
     }
     action_list_default = 1;
   }
@@ -4899,7 +4864,6 @@ int druid_t::decode_set( const item_t& item ) const
 
 role_type_e druid_t::primary_role() const
 {
-
   if ( primary_tree() == DRUID_BALANCE )
   {
     if ( player_t::primary_role() == ROLE_HEAL )
@@ -4913,9 +4877,15 @@ role_type_e druid_t::primary_role() const
     if ( player_t::primary_role() == ROLE_TANK )
       return ROLE_TANK;
 
-    // Implement Automatic Tank detection
-
     return ROLE_ATTACK;
+  }
+  
+  else if ( spec == DRUID_GUARDIAN )
+  {
+    if ( player_t::primary_role() == ROLE_ATTACK )
+      return ROLE_ATTACK;
+    
+    return ROLE_TANK;
   }
 
   else if ( primary_tree() == DRUID_RESTORATION )
@@ -4926,7 +4896,7 @@ role_type_e druid_t::primary_role() const
     return ROLE_HEAL;
   }
 
-  return ROLE_NONE;
+  return player_t::primary_role();
 }
 
 // druid_t::primary_resource ================================================

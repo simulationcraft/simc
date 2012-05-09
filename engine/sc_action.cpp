@@ -1624,6 +1624,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_delay_expr_t( *this );
   }
+  else if ( name_str == "tick_multiplier" )
+    return make_mem_fn_expr( "tick_multiplier", *this, &action_t::composite_ta_multiplier );
   else if ( name_str == "charges" )
     return make_ref_expr( name_str, cooldown -> current_charge );
   else if ( name_str == "max_charges" )

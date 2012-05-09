@@ -296,6 +296,15 @@ expr_t* dot_t::create_expression( const std::string& name_str )
     };
     return new dot_attack_power_expr_t( *this );
   }
+  else if ( name_str == "multiplier" )
+  {
+    struct dot_multiplier_expr_t : public dot_expr_t
+    {
+      dot_multiplier_expr_t( const dot_t& d ) : dot_expr_t( "dot_multiplier", d ) {}
+      virtual double evaluate() { return dot.state ? dot.state -> ta_multiplier : 0; }
+    };
+    return new dot_multiplier_expr_t( *this );
+  }
 
 #if 0
   else if ( name_str == "mastery" )
