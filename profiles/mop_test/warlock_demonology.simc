@@ -9,7 +9,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=000020
-glyphs=life_tap/imp_swarm
+glyphs=life_tap/everlasting_affliction/imp_swarm
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_felguard
@@ -26,6 +26,7 @@ actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_
 actions+=/doom,if=(!ticking|remains<tick_time)&target.time_to_die>=30&miss_react
 actions+=/hand_of_guldan,if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time
 actions+=/soul_fire,if=buff.molten_core.react|target.health.pct<25
+actions+=/doom,if=demonic_fury<100&remains<40&miss_react
 actions+=/demonic_slash
 actions+=/shadow_bolt
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
