@@ -172,6 +172,8 @@ struct warlock_t : public player_t
     const spell_data_t* life_tap;
     const spell_data_t* imp_swarm;
     const spell_data_t* everlasting_affliction;
+    const spell_data_t* soul_shards;
+    const spell_data_t* burning_embers;
   };
   glyphs_t glyphs;
 

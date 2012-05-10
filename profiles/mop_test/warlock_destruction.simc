@@ -9,7 +9,7 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=000020
-glyphs=conflagrate
+glyphs=conflagrate/burning_embers
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/summon_felhunter

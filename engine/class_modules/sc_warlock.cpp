@@ -956,7 +956,8 @@ struct life_tap_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
+    // FIXME: Implement reduced healing debuff
+    if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
     player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent() / 10, p() -> gains.life_tap );
   }
 };
@@ -2300,6 +2301,8 @@ void warlock_t::init_spells()
   glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
   glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
+  glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
+  glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
 }
 
 
@@ -2313,9 +2316,9 @@ void warlock_t::init_base()
 
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
-  if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3;
+  if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
   if ( primary_tree() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
-  if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30;
+  if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30 + ( ( glyphs.burning_embers -> ok() ) ? 10 : 0 );
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
