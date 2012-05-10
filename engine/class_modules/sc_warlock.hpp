@@ -119,6 +119,9 @@ struct warlock_t : public player_t
     const spell_data_t* demonic_fury;
     const spell_data_t* metamorphosis;
     const spell_data_t* molten_core;
+    const spell_data_t* doom;
+    const spell_data_t* demonic_slash;
+    const spell_data_t* chaos_wave;
 
     // Destruction
     const spell_data_t* backdraft;
@@ -226,6 +229,9 @@ struct warlock_t : public player_t
 
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
+  void add_action( std::string action, std::string options = "" );
+  void add_action( const spell_data_t* s, std::string options = "" );
+
   // Character Definition
   virtual warlock_targetdata_t* new_targetdata( player_t* target )
   { return new warlock_targetdata_t( this, target ); }
@@ -279,9 +285,9 @@ struct warlock_t : public player_t
   {
     switch ( primary_tree() )
     {
-    case WARLOCK_AFFLICTION:  return "life_tap";
-    case WARLOCK_DEMONOLOGY:  return "life_tap/imp_swarm";
-    case WARLOCK_DESTRUCTION: return "conflagrate";
+    case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards";
+    case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm";
+    case WARLOCK_DESTRUCTION: return "everlasting_affliction/conflagrate/burning_embers";
     default: break;
     }
 

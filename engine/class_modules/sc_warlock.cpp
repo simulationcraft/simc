@@ -330,7 +330,7 @@ struct agony_t : public warlock_spell_t
 struct doom_t : public warlock_spell_t
 {
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 603 ) : spell_data_t::not_found() )
+    warlock_spell_t( "doom", p, p -> spec.doom )
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
@@ -1205,7 +1205,7 @@ struct chaos_wave_t : public warlock_spell_t
   chaos_wave_dmg_t* cw_damage;
 
   chaos_wave_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "chaos_wave", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY ) ? p -> find_spell( 124916 ) : spell_data_t::not_found() )
+    warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave )
   {
     cooldown = p -> cooldowns.hand_of_guldan;
 
@@ -1256,7 +1256,7 @@ struct chaos_wave_t : public warlock_spell_t
 struct demonic_slash_t : public warlock_spell_t
 {
   demonic_slash_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "demonic_slash", p, p -> find_spell( 103964 ) )
+    warlock_spell_t( "demonic_slash", p, p -> spec.demonic_slash )
   {
     direct_power_mod = 0.8; // from tooltip
 
@@ -2245,9 +2245,9 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_specialization_spell( "Nethermancy" );
 
-  spec.dark_soul = find_specialization_spell( "Dark Soul: Instability" );
-  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge" );
-  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Misery" );
+  spec.dark_soul = find_specialization_spell( "Dark Soul: Instability", "dark_soul" );
+  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge", "dark_soul" );
+  if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Misery", "dark_soul" );
 
   // Affliction
   spec.nightfall     = find_specialization_spell( "Nightfall" );
@@ -2258,6 +2258,10 @@ void warlock_t::init_spells()
   spec.demonic_fury  = find_specialization_spell( "Demonic Fury" );
   spec.metamorphosis = find_specialization_spell( "Metamorphosis" );
   spec.molten_core   = find_specialization_spell( "Molten Core" );
+  
+  spec.doom          = ( find_specialization_spell( "Metamorphosis: Doom"          ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
+  spec.demonic_slash = ( find_specialization_spell( "Metamorphosis: Demonic Slash" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
+  spec.chaos_wave    = ( find_specialization_spell( "Metamorphosis: Chaos Wave"    ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
 
   // Destruction
   spec.backdraft      = find_specialization_spell( "Backdraft" );
@@ -2400,219 +2404,144 @@ void warlock_t::init_rng()
   rngs.ember_gain      = get_rng( "ember_gain" );
 }
 
+void warlock_t::add_action( std::string action, std::string options )
+{
+  add_action( find_class_spell( action ), options );
+}
+
+void warlock_t::add_action( const spell_data_t* s, std::string options )
+{
+  if ( s -> ok() )
+  {
+    action_list_str += "/" + dbc_t::get_token( s -> id() );
+    if ( ! options.empty() ) action_list_str += "," + options;
+  }
+}
 
 void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
-
-    // Trinket check
-    bool has_mwc = false;
-    bool has_wou = false;
-    for ( int i=0; i < SLOT_MAX; i++ )
-    {
-      item_t& item = items[ i ];
-      if ( strstr( item.name(), "moonwell_chalice" ) )
-      {
-        has_mwc = true;
-      }
-      if ( strstr( item.name(), "will_of_unbinding" ) )
-      {
-        has_wou = true;
-      }
-    }
-
     // Flask
-    if ( level >= 80 )
+    if ( level > 85 )
+      action_list_str = "flask,type=warm_sun";
+    else if ( level >= 80 )
       action_list_str = "flask,type=draconic_mind";
-    else if ( level >= 75 )
-      action_list_str = "flask,type=frost_wyrm";
 
     // Food
     if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
-    else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
 
-    // Armor
-    if ( level >= 62 ) action_list_str += "/fel_armor";
+    add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up" );
 
-    // Choose Pet
-    if ( primary_tree() == WARLOCK_DESTRUCTION )
+    std::string pet;
+
+    switch ( primary_tree() )
     {
-      action_list_str += "/summon_imp";
+    case WARLOCK_DEMONOLOGY:
+      pet = "felguard";
+      break;
+    default:
+      pet = "felhunter";
     }
-    else if ( primary_tree() == WARLOCK_DEMONOLOGY )
-    {
-      if ( has_mwc )
-        action_list_str += "/summon_felguard,if=cooldown.demon_soul.remains<5&cooldown.metamorphosis.remains<5&!pet.felguard.active";
-      else
-        action_list_str += "/summon_felguard,if=!in_combat";
-    }
-    else if ( primary_tree() == WARLOCK_AFFLICTION )
-    {
-      action_list_str += "/summon_felhunter";
-    }
-    else
-      action_list_str += "/summon_imp";
 
-    // Dark Intent
-    if ( level >= 83 )
-      action_list_str += "/dark_intent,if=!aura.spell_power_multiplier.up";
+    action_list_str += "/summon_" + pet;
 
-    // Pre soulburn
-    if ( use_pre_soulburn && !set_bonus.tier13_4pc_caster() )
-      action_list_str += "/soulburn,if=!in_combat";
+    if ( talents.grimoire_of_sacrifice -> ok() )
+      action_list_str += ",if=buff.grimoire_of_sacrifice.down";
 
-    // Snapshot Stats
+    // Pre-potion
+    if ( level >= 80 )
+      action_list_str += "/volcanic_potion,if=!in_combat";
+
     action_list_str += "/snapshot_stats";
 
+    if ( talents.grimoire_of_service -> ok() )
+      action_list_str += "/service_" + pet;
+
+    add_action( find_talent_spell( "Grimoire of Sacrifice" ) );
+
     // Usable Item
-    int num_items = ( int ) items.size();
-    for ( int i = num_items - 1; i >= 0; i-- )
+    for ( int i = items.size() - 1; i >= 0; i-- )
     {
       if ( items[ i ].use.active() )
       {
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
-        if ( primary_tree() == WARLOCK_DEMONOLOGY )
-          action_list_str += ",if=cooldown.metamorphosis.remains=0|cooldown.metamorphosis.remains>cooldown";
       }
     }
 
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();
 
-    // Choose Potion
+    // Potion
     if ( level >= 80 )
-    {
-      if ( primary_tree() == WARLOCK_DEMONOLOGY )
-        action_list_str += "/volcanic_potion,if=buff.metamorphosis.up|!in_combat";
-      else
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health_pct<=20";
-    }
-    else if ( level >= 70 )
-    {
-      if ( primary_tree() == WARLOCK_AFFLICTION )
-        action_list_str += "/speed_potion,if=buff.bloodlust.react|!in_combat";
-      else
-        action_list_str += "/wild_magic_potion,if=buff.bloodlust.react|!in_combat";
-    }
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
+
+    add_action( spec.dark_soul );
+    add_action( "Summon Doomguard" );
 
     switch ( primary_tree() )
     {
 
     case WARLOCK_AFFLICTION:
-      if ( level >= 85 ) action_list_str += "/demon_soul";
-      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soulburn";
-      action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
-      action_list_str += "/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react";
-      if ( level >= 12 ) action_list_str += "/bane_of_doom,if=target.time_to_die>15&!ticking&miss_react";
-      action_list_str += "/haunt";
-      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
-      action_list_str += "/drain_soul,interrupt=1,if=target.health_pct<=25";
-      // If the profile has the Will of Unbinding, we need to make sure the stacks don't drop during execute phase
-      if ( has_wou )
+      add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=1" );
+      add_action( "Haunt",                 "if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time" );
+      add_action( "Agony",                 "if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react" );
+      add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( "Unstable Affliction",   "if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
+      if ( glyphs.everlasting_affliction -> ok() )
       {
-        // Attempt to account for non-default channel_lag settings
-        char delay = ( char ) ( sim -> channel_lag.total_seconds() * 20 + 48 );
-        if ( delay > 57 ) delay = 57;
-        action_list_str += ",interrupt_if=buff.will_of_unbinding.up&cooldown.haunt.remains<tick_time&buff.will_of_unbinding.remains<action.haunt.cast_time+tick_time+0.";
-        action_list_str += delay;
+        add_action( "Agony",               "if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react" );
+        add_action( "Corruption",          "if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
+        add_action( "Unstable Affliction", "if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
       }
-      if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
-      action_list_str += "/life_tap,mana_percentage<=35";
-      if ( ! set_bonus.tier13_4pc_caster() )
-      {
-        action_list_str += "/soulburn,if=buff.demon_soul_felhunter.down";
-        action_list_str += "/soul_fire,if=buff.soulburn.up";
-      }
-      action_list_str += "/shadow_bolt";
+      add_action( "Drain Soul",            "interrupt=1,if=target.health.pct<=20" );
+      add_action( "Life Tap",              "if=mana.pct<=35" );
+      add_action( "Malefic Grasp" );
+      add_action( "Life Tap",              "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
+      add_action( "Fel Flame",             "moving=1" );
       break;
 
     case WARLOCK_DESTRUCTION:
-      if ( level >= 85 ) action_list_str += "/demon_soul";
-      if ( set_bonus.tier13_4pc_caster() )
-      {
-        action_list_str += "/soulburn";
-        action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
-      }
-      else
-      {
-        action_list_str += "/soulburn,if=buff.bloodlust.down";
-        if ( level >= 54 )
-        {
-          action_list_str += "/soul_fire,if=buff.soulburn.up&!in_combat";
-        }
-      }
-      action_list_str += "/immolate,if=(remains<cast_time+gcd|!ticking)&target.time_to_die>=4&miss_react";
-      action_list_str += "/conflagrate";
-      action_list_str += "/immolate,if=buff.bloodlust.react&buff.bloodlust.remains>32&cooldown.conflagrate.remains<=3&remains<12";
-      if ( level >= 20 ) action_list_str += "/bane_of_doom,if=!ticking&target.time_to_die>=15&miss_react";
-      action_list_str += "/corruption,if=(!ticking|dot.corruption.remains<tick_time)&miss_react";
-      if ( level >= 75 ) action_list_str += "/shadowflame";
-      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
-      if ( set_bonus.tier13_4pc_caster() ) action_list_str += "/soul_fire,if=buff.soulburn.up";
-      action_list_str += "/shadowburn";
-      if ( level >= 64 ) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
+      add_action( "Shadowburn",            "if=ember_react" );
+      add_action( "Chaos Bolt",            "if=ember_react&(buff.dark_soul.up|burning_ember>=2)&target.health.pct>=25" );
+      add_action( "Conflagrate",           "if=buff.backdraft.down" );
+      add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
+      if ( glyphs.everlasting_affliction -> ok() )
+        add_action( "Immolate",            "if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
 
+      add_action( "Incinerate" );
+      add_action( "Fel Flame",             "moving=1" );      
       break;
 
     case WARLOCK_DEMONOLOGY:
-      action_list_str += "/metamorphosis";
-      if ( has_mwc ) action_list_str += ",if=buff.moonwell_chalice.up&pet.felguard.active";
-      if ( level >= 85 )
-      {
-        action_list_str += "/demon_soul";
-        if ( has_mwc ) action_list_str += ",if=buff.metamorphosis.up";
-      }
-      if ( level >= 20 )
-      {
-        action_list_str += "/bane_of_doom,if=!ticking&time<10";
-      }
-      if ( level >= 50 ) action_list_str += "/summon_doomguard,if=time>10";
-      action_list_str += "/felguard:felstorm";
-      action_list_str += "/soulburn,if=pet.felguard.active&!pet.felguard.dot.felstorm.ticking";
-      action_list_str += "/summon_felhunter,if=!pet.felguard.dot.felstorm.ticking&pet.felguard.active";
-      if ( set_bonus.tier13_4pc_caster() )
-      {
-        action_list_str += "/soulburn,if=pet.felhunter.active";
-        if ( has_mwc ) action_list_str += "&cooldown.metamorphosis.remains>60";
-        action_list_str += "/soul_fire,if=pet.felhunter.active&buff.soulburn.up";
-        if ( has_mwc ) action_list_str += "&cooldown.metamorphosis.remains>60";
-      }
-      action_list_str += "/immolate,if=!ticking&target.time_to_die>=4&miss_react";
-      if ( level >= 20 )
-      {
-        action_list_str += "/bane_of_doom,if=(!ticking";
-        action_list_str += "|(buff.metamorphosis.up&remains<45)";
-        action_list_str += ")&target.time_to_die>=15&miss_react";
-      }
-      action_list_str += "/corruption,if=(remains<tick_time|!ticking)&target.time_to_die>=6&miss_react";
-      if ( level >= 75 ) action_list_str += "/shadowflame";
-      action_list_str += "/hand_of_guldan";
-      if ( level >= 60 ) action_list_str += "/immolation_aura,if=buff.metamorphosis.remains>10";
-      if ( level >= 64 ) action_list_str += "/incinerate,if=buff.molten_core.react";
-      if ( level >= 54 ) action_list_str += "/soul_fire,if=buff.decimation.up";
-      action_list_str += "/life_tap,if=mana_pct<=30&buff.bloodlust.down&buff.metamorphosis.down&buff.demon_soul_felguard.down";
-      action_list_str += "/shadow_bolt";
+      add_action( "Metamorphosis",         "if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8" );
 
+      if ( find_class_spell( "Metamorphosis" ) -> ok() ) 
+        action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=2";
+      if ( glyphs.imp_swarm -> ok() ) 
+        action_list_str += "/imp_swarm";
+
+      add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( spec.doom,               "if=(!ticking|remains<tick_time)&target.time_to_die>=30&miss_react" );
+      add_action( "Hand of Gul'dan",       "if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
+      add_action( "Soul Fire",             "if=buff.molten_core.react|target.health.pct<25" );
+      if ( glyphs.everlasting_affliction -> ok() )
+        add_action( spec.doom,             "if=demonic_fury<100&remains<40&miss_react" );
+      add_action( spec.demonic_slash );
+      add_action( "Shadow Bolt" );
+      add_action( "Void Ray",              "moving=1" );
+      add_action( "Fel Flame",             "moving=1" );            
       break;
 
     default:
-      action_list_str += "/bane_of_doom,if=(remains<3|!ticking)&target.time_to_die>=15&miss_react";
-      action_list_str += "/corruption,if=(!ticking|remains<tick_time)&miss_react";
-      action_list_str += "/immolate,if=(!ticking|remains<(cast_time+tick_time))&miss_react";
-      if ( level >= 50 ) action_list_str += "/summon_infernal";
-      if ( level >= 64 ) action_list_str += "/incinerate"; else action_list_str += "/shadow_bolt";
-      if ( sim->debug ) log_t::output( sim, "Using generic action string for %s.", name() );
+      add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( "Shadow Bolt" );
       break;
     }
 
-    // Movement
-    action_list_str += "/life_tap,moving=1,if=mana_pct<80&mana_pct<target.health_pct";
-    action_list_str += "/fel_flame,moving=1";
-
-    action_list_str += "/life_tap,if=mana_pct_nonproc<100"; // to use when no mana or nothing else is possible
+    add_action( "Life Tap" );
 
     action_list_default = 1;
   }

@@ -1,26 +1,29 @@
 #!./simc 
 
-warlock=Warlock_Destruction_T13H
+warlock="Warlock_Destruction_T13H"
+origin="unknown"
 level=85
 race=orc
 spec=destruction
-position=back
 role=spell
+position=back
 use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=000020
 glyphs=everlasting_affliction/conflagrate/burning_embers
-actions=flask,type=draconic_mind
+actions+=/flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
+actions+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions+=/summon_felhunter
+actions+=/volcanic_potion,if=!in_combat
 actions+=/snapshot_stats
 actions+=/service_felhunter
 actions+=/blood_fury
-actions+=/volcanic_potion,if=buff.bloodlust.react|!in_combat|target.health.pct<20
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/dark_soul
+actions+=/summon_doomguard
 actions+=/shadowburn,if=ember_react
 actions+=/chaos_bolt,if=ember_react&(buff.dark_soul.up|burning_ember>=2)&target.health.pct>=25
-actions+=/summon_doomguard
 actions+=/conflagrate,if=buff.backdraft.down
 actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
 actions+=/rain_of_fire,if=!ticking&!in_flight
@@ -42,3 +45,20 @@ trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspell
 trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_4774.8+42.32shadow_45%_9cd
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,reforge=mastery_haste,gems=50int_10int,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=7869
+# gear_intellect=7099
+# gear_spirit=75
+# gear_spell_power=2786
+# gear_hit_rating=1537
+# gear_crit_rating=1134
+# gear_haste_rating=3092
+# gear_mastery_rating=804
+# gear_armor=10254
+# meta_gem=burning_shadowspirit
+# tier13_2pc_caster=1
+# tier13_4pc_caster=1
+# back=nanoprecise_cape,enchant=lightweave_embroidery
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent
