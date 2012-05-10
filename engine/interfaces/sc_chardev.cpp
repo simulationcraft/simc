@@ -199,7 +199,22 @@ player_t* download_player( sim_t* sim,
 
     if ( maxv > 0 )
     {
+      if ( p -> type == DRUID && maxi == 2 )
+        maxi = 3;
+
       p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+    }
+
+    if ( p -> spec == DRUID_FERAL )
+    {
+      int a;
+
+      js_t::get_value( a, talent_nodes[ 37 ] );
+
+      if ( a > 0 )
+      {
+        p -> spec = DRUID_GUARDIAN;
+      }
     }
   }
 

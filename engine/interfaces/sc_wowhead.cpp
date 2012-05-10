@@ -708,19 +708,27 @@ player_t* download_player_profile( sim_t* sim,
 
       if ( maxv > 0 )
       {
+        if ( p -> type == DRUID && maxi == 2 )
+          maxi = 3;
+
         p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
       }
     }
     std::string talent_encoding;
-    talent_encoding = p -> set_default_talents();
 
-/*
     if ( ! js_t::get_value( talent_encoding, build, "talents" ) )
     {
       sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
       return 0;
     }
-*/
+
+    if ( p -> spec == DRUID_FERAL && talent_encoding[ 37 ] > '0' )
+    {
+      p -> spec = DRUID_GUARDIAN;
+    }
+
+    talent_encoding = p -> set_default_talents();
+
 
     if ( ! p -> parse_talents_numbers( talent_encoding ) )
     {

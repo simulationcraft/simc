@@ -976,6 +976,8 @@ specialization_e translate_spec_str( player_type_e ptype, const std::string& spe
       return DRUID_BALANCE;
     else if ( str_compare_ci( spec_str, "feral" ) )
       return DRUID_FERAL;
+    else if ( str_compare_ci( spec_str, "feral_combat" ) )
+      return DRUID_FERAL;
     else if ( str_compare_ci( spec_str, "cat" ) )
       return DRUID_FERAL;
     else if ( str_compare_ci( spec_str, "melee" ) )
