@@ -67,6 +67,7 @@ struct mage_t : public player_t
   struct cooldowns_t
   {
     cooldown_t* evocation;
+    cooldown_t* inferno_blast;
   } cooldowns;
 
   // Gains
@@ -231,7 +232,8 @@ struct mage_t : public player_t
     mana_gem_charges( 0 )
   {
     // Cooldowns
-    cooldowns.evocation   = get_cooldown( "evocation"   );
+    cooldowns.evocation     = get_cooldown( "evocation"     );
+    cooldowns.inferno_blast = get_cooldown( "inferno_blast" );
 
     // Options
     initial.distance = 40;
@@ -1381,6 +1383,8 @@ struct combustion_t : public mage_spell_t
     if ( p() -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
 
+    p() -> cooldowns.inferno_blast -> reset();
+
     mage_spell_t::execute();
   }
 
@@ -1965,6 +1969,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
+    cooldown = p -> cooldowns.inferno_blast;
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
