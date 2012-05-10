@@ -111,12 +111,12 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
     std::string timeline_stat_aps_str                    = "";
     if ( ! s -> timeline_aps_chart.empty() )
     {
-      timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"APS Timeline Chart\" />\n";
+      timeline_stat_aps_str = "<img src=\"" + s -> timeline_aps_chart + "\" alt=\"" + ( s -> type == STATS_DMG ? "DPS" : "HPS" ) + " Timeline Chart\" />\n";
     }
     std::string aps_distribution_str                    = "";
     if ( ! s -> aps_distribution_chart.empty() )
     {
-      aps_distribution_str = "<img src=\"" + s -> aps_distribution_chart + "\" alt=\"APS Distribution Chart\" />\n";
+      aps_distribution_str = "<img src=\"" + s -> aps_distribution_chart + "\" alt=\"" + ( s -> type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
     }
     fprintf( file,
              "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
