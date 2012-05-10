@@ -2909,7 +2909,7 @@ void mage_t::init_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", find_spell( 36032 ) );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) ).chance( 0.40 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
-  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) ); // FIX ME, what is the proc chance?
+  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) ).chance( spec.brain_freeze -> ok() ? 0.30 : 0 ); // FIX ME, what is the proc chance, 30% is made up
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
   // FIXME: What is this called now?
