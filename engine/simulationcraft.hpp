@@ -3188,6 +3188,7 @@ struct player_t : public noncopyable
   // Action Priority List
   std::vector<action_t*>  action_list;
   std::vector<action_t*>  foreground_action_list;
+  std::vector<action_t*> precombat_action_list;
   std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
   std::string choose_action_list;
@@ -3881,7 +3882,7 @@ struct action_t
 
   uint32_t id;
   result_type_e result;
-  int aoe;
+  int aoe, pre_combat;
   bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot;
   bool may_trigger_dtr, discharge_proc, auto_cast, initialized;

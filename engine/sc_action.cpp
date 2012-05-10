@@ -32,6 +32,7 @@ action_t::action_t( action_type_e       ty,
   id(),
   result(),
   aoe(),
+  pre_combat( 0 ),
   dual(),
   callbacks( true ),
   special(),
@@ -403,6 +404,7 @@ void action_t::parse_options( option_t*          options,
     { "target",                 OPT_STRING, &target_str            },
     { "label",                  OPT_STRING, &label_str             },
     { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
+    { "precombat",              OPT_BOOL,   &pre_combat            },
     { NULL,                     OPT_NONE,   NULL                   }
   };
 
@@ -1367,8 +1369,13 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-  if ( ! ( background || sequence ) )
-    player->foreground_action_list.push_back( this );
+  if ( pre_combat == true && harmful == true )
+    sim -> errorf( "Action %s cannot be specified as precombat action because it is harmful", name() );
+
+  if ( ! ( background || sequence || ( pre_combat && ! harmful ) ) )
+    player -> foreground_action_list.push_back( this );
+  else if ( pre_combat )
+    player -> precombat_action_list.push_back( this );
 
   initialized = true;
 }

@@ -2611,6 +2611,12 @@ void player_t::combat_begin()
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_begin();
+  
+  for ( size_t i = 0; i < precombat_action_list.size(); i++ )
+    precombat_action_list[ i ] -> execute();
+  
+  if ( precombat_action_list.size() > 0 )
+    in_combat = true;
 }
 
 // player_t::combat_end =====================================================
@@ -4659,12 +4665,18 @@ struct restore_mana_t : public action_t
 struct snapshot_stats_t : public action_t
 {
   bool completed;
+  int  combat;
 
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "snapshot_stats", player ),
-    completed( false )
+    completed( false ), combat( 1 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      { "combat", OPT_BOOL,    &combat },
+      { NULL,     OPT_UNKNOWN, NULL    }
+    };
+    parse_options( options, options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
   }
@@ -4675,7 +4687,8 @@ struct snapshot_stats_t : public action_t
 
     if ( completed ) return;
 
-    p -> in_combat = true;
+    if ( combat )
+      p -> in_combat = true;
 
     completed = true;
 
