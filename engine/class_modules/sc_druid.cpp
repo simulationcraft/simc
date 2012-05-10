@@ -4742,11 +4742,21 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
   // The matching_gear_multiplier is done statically for performance reasons,
   // unfortunately that's before we're in cat form or bear form, so let's compensate here
 
+  // Heart of the Wild: +6% INT/AGI
+  // http://mop.wowhead.com/spell=17005 Did they just use this?
   switch ( attr )
   {
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
       m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
+    break;
+  case ATTR_AGILITY:
+    if ( talent.heart_of_the_wild -> ok() )
+      m *= 1.0 + 0.06;
+    break;
+  case ATTR_INTELLECT:
+    if ( talent.heart_of_the_wild -> ok() )
+      m *= 1.0 + 0.06;
     break;
   default:
     break;
