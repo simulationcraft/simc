@@ -1086,7 +1086,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.05 ) )
+    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.08 ) )
       p() -> buffs.molten_core -> trigger();
   }
 

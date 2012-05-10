@@ -509,6 +509,12 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   {
     warlock_pet_spell_t::impact_s( s );
 
+    if ( result_is_hit( s -> result ) 
+      && p() -> o() -> spec.molten_core -> ok() 
+      && p() -> o() -> rngs.molten_core -> roll( 0.08 ) )
+      p() -> o() -> buffs.molten_core -> trigger();
+
+
     if ( player -> resources.current[ RESOURCE_ENERGY ] == 0 )
     {
       ( ( wild_imp_pet_t* ) player ) -> dismiss();
