@@ -179,7 +179,6 @@ struct targetdata_t;
 struct death_knight_targetdata_t;
 struct druid_targetdata_t;
 struct mage_targetdata_t;
-struct monk_targetdata_t;
 struct paladin_targetdata_t;
 struct rogue_targetdata_t;
 struct warrior_targetdata_t;
@@ -3690,7 +3689,6 @@ struct targetdata_t : public noncopyable
   death_knight_targetdata_t* cast_death_knight() { assert( source->type == DEATH_KNIGHT ); return ( death_knight_targetdata_t* ) this; }
   druid_targetdata_t       * cast_druid       () { assert( source->type == DRUID        ); return ( druid_targetdata_t       * ) this; }
   mage_targetdata_t        * cast_mage        () { assert( source->type == MAGE         ); return ( mage_targetdata_t        * ) this; }
-  monk_targetdata_t        * cast_monk        () { assert( source->type == MONK         ); return ( monk_targetdata_t        * ) this; }
   paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
   rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
   warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }

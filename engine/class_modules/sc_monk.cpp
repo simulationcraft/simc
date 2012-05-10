@@ -9,7 +9,7 @@
 // ==========================================================================
 // Monk
 // ==========================================================================
-
+namespace { // ANONYMOUS NAMESPACE
 struct monk_t;
 
 #if SC_MONK == 1
@@ -133,8 +133,11 @@ struct monk_melee_attack_t : public melee_attack_t
     may_glance = false;
   }
 
-  monk_t* p() const
+  monk_t* cast() const
   { return debug_cast<monk_t*>( player ); }
+
+  monk_targetdata_t* cast_td( player_t* t = 0 ) const
+  { return debug_cast<monk_targetdata_t*>( targetdata( t ) ); }
 
   virtual bool   ready();
 };
@@ -151,7 +154,7 @@ struct monk_spell_t : public spell_t
     may_crit   = true;
   }
 
-  monk_t* p() const
+  monk_t* cast() const
   { return debug_cast<monk_t*>( player ); }
 
   virtual bool   ready();
@@ -169,7 +172,7 @@ struct monk_heal_t : public heal_t
     may_crit   = true;
   }
 
-  monk_t* p() const
+  monk_t* cast() const
   { return debug_cast<monk_t*>( player ); }
 
   virtual bool   ready();
@@ -183,7 +186,7 @@ bool monk_melee_attack_t::ready()
     return false;
 
   // Attack available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
+  if ( ( stancemask & cast() -> active_stance ) == 0 )
     return false;
 
   return true;
@@ -202,7 +205,9 @@ struct jab_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gains.chi );
+    monk_t* p = cast();
+
+    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p -> gains.chi );
   }
 };
 
@@ -292,7 +297,7 @@ bool monk_spell_t::ready()
     return false;
 
   // spell available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
+  if ( ( stancemask & cast() -> active_stance ) == 0 )
     return false;
 
   return true;
@@ -335,12 +340,16 @@ struct stance_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> active_stance = switch_to_stance;
+    monk_t* p = cast();
+
+    p -> active_stance = switch_to_stance;
   }
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == switch_to_stance )
+    monk_t* p = cast();
+
+    if ( p -> active_stance == switch_to_stance )
       return false;
 
     return monk_spell_t::ready();
@@ -355,7 +364,7 @@ bool monk_heal_t::ready()
     return false;
 
   // heal available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
+  if ( ( stancemask & cast() -> active_stance ) == 0 )
     return false;
 
   return true;
@@ -577,6 +586,7 @@ role_type_e monk_t::primary_role() const
   return ROLE_HYBRID;
 }
 
+} // END ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS

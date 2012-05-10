@@ -63,6 +63,8 @@ int main( int argc, char *argv[] )
     w.showNormal();
   }
 
+  w.setWindowTitle( "SimulationCraft " + QString( SC_MAJOR_VERSION ) + "-" + QString( SC_MINOR_VERSION ) );
+
   w.cmdLine->setFocus();
 
   if ( argc > 1 )
