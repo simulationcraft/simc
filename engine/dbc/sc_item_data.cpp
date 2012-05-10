@@ -404,7 +404,6 @@ int item_database_t::random_suffix_type( const item_t& item )
     return 2;
 
   // Ranged non-weapons are relics, which do not have a point allocation
-  case SLOT_RANGED:
   case SLOT_TABARD:
   default:
     return -1;

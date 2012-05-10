@@ -66,6 +66,7 @@ struct priest_t : public player_t
     buff_t* serenity;
 
     // Shadow
+    buff_t* mind_weakening;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* mind_surge;
     buff_t* glyph_mind_spike;
@@ -124,7 +125,7 @@ struct priest_t : public player_t
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadowfiend_cooldown_reduction;
-  } spec;
+  } specs;
 
   // Mastery Spells
   struct mastery_spells_t
@@ -154,7 +155,6 @@ struct priest_t : public player_t
     gain_t* archangel;
     gain_t* hymn_of_hope;
     gain_t* shadow_orb_mb;
-    gain_t* shadow_orb_shadowy_apparition;
     gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
@@ -164,7 +164,8 @@ struct priest_t : public player_t
   struct benefits_t
   {
     std::array<benefit_t*, 4> mind_spike;
-    benefits_t() { range::fill( mind_spike, 0 ); }
+    std::array<benefit_t*, 11> mind_weakening;
+    benefits_t() { range::fill( mind_spike, 0 ); range::fill( mind_weakening, 0 ); }
   } benefits;
 
   // Procs
@@ -175,7 +176,6 @@ struct priest_t : public player_t
     proc_t* mind_surge;
     proc_t* surge_of_darkness;
     proc_t* shadowfiend_cooldown_reduction;
-    proc_t* refresh_shadow_word_pain;
   } procs;
 
   // Special
@@ -263,7 +263,7 @@ struct priest_t : public player_t
   virtual void      reset();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -273,7 +273,7 @@ struct priest_t : public player_t
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
   virtual double    composite_armor() const;
-  virtual double    composite_spell_power( school_type_e school ) const;
+  virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_movement_speed() const;
@@ -286,6 +286,29 @@ struct priest_t : public player_t
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case PRIEST_SHADOW: return "121210";
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 // ==========================================================================
@@ -305,6 +328,7 @@ struct priest_pet_t : public pet_t
   virtual double composite_spell_haste() const;
   virtual double composite_attack_haste() const;
   virtual double composite_spell_power( school_type_e school ) const;
+  virtual double composite_spell_power_multiplier() const;
   virtual double composite_attack_power() const;
   virtual double composite_attack_crit( const weapon_t* ) const;
   virtual double composite_spell_crit() const;

@@ -923,11 +923,9 @@ void enchant_t::init( player_t* p )
   // Special Weapn Enchants
   std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].encoded_enchant_str;
   std::string& oh_enchant     = p -> items[ SLOT_OFF_HAND  ].encoded_enchant_str;
-  std::string& ranged_enchant = p -> items[ SLOT_RANGED    ].encoded_enchant_str;
 
   weapon_t* mhw = &( p -> main_hand_weapon );
   weapon_t* ohw = &( p -> off_hand_weapon );
-  weapon_t* rw  = &( p -> ranged_weapon );
 
   using namespace special_enchants;
 
@@ -953,7 +951,7 @@ void enchant_t::init( player_t* p )
   register_windwalk( p, mh_enchant, mhw, "mh" );
   register_windwalk( p, oh_enchant, ohw, "oh" );
 
-  register_gnomish_xray( p, ranged_enchant, rw );
+  register_gnomish_xray( p, mh_enchant, mhw );
 
   // Special Meta Gem "Enchants"
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
@@ -968,7 +966,6 @@ void enchant_t::init( player_t* p )
                         .amount( p->find_spell( 39959 )->effectN( 1 ).base_value() );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
   if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
   {
@@ -982,7 +979,6 @@ void enchant_t::init( player_t* p )
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
-    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, rw,  buff, 0.2/*PPM*/ ) );
   }
 
   // Special Item Enchants

@@ -446,7 +446,6 @@ struct druid_t : public player_t
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   
-
   void reset_gcd()
   {
     for ( size_t i = 0; i < action_list.size(); ++i )
@@ -454,6 +453,30 @@ struct druid_t : public player_t
       action_t* a = action_list[ i ];
       if ( a -> trigger_gcd != timespan_t::zero() ) a -> trigger_gcd = base_gcd;
     }
+  }
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case DRUID_BALANCE: return "000200"; break;
+    case DRUID_FERAL:   return "300100"; break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
   }
 };
 
@@ -1019,7 +1042,7 @@ static void trigger_swiftmend( druid_heal_t* a )
       base_tick_time = timespan_t::from_seconds( 1.0 );
       hasted_ticks   = true;
       may_crit       = false;
-      num_ticks      = p() -> spell.swiftmend -> duration().total_seconds();
+      num_ticks      = ( int ) p() -> spell.swiftmend -> duration().total_seconds();
       proc           = true;
       tick_may_crit  = false;
     }

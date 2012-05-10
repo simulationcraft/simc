@@ -554,7 +554,7 @@ void generate_player_buff_lists( const player_t*  p, player_t::report_informatio
   ri.buff_lists_generated = true;
 }
 
-void generate_player_charts( const player_t* p, player_t::report_information_t& ri )
+void generate_player_charts( player_t* p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;

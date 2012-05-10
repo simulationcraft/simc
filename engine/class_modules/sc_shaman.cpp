@@ -338,6 +338,31 @@ struct shaman_t : public player_t
 
   // Event Tracking
   virtual void regen( timespan_t periodicity );
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SHAMAN_ELEMENTAL:   return "131330"; break;
+    case SHAMAN_ENHANCEMENT: return "131330"; break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SHAMAN_ELEMENTAL:   return "fire_elemental_totem/flame_shock/thunder/thunderstorm";
+    case SHAMAN_ENHANCEMENT: return "ghost_wolf/lightning_shield/chain_lightning/astral_recall/renewed_life/lava_lash";
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 namespace { // ANONYMOUS NAMESPACE ==========================================

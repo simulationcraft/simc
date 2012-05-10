@@ -2674,7 +2674,7 @@ void warlock_t::create_options()
 }
 
 
-bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
 

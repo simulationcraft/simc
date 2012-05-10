@@ -108,6 +108,29 @@ struct monk_t : public player_t
   virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 monk_targetdata_t::monk_targetdata_t( monk_t* source, player_t* target ) :

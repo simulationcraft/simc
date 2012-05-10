@@ -337,6 +337,29 @@ struct warrior_t : public player_t
   virtual role_type_e primary_role() const;
   virtual double    assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a );
   virtual void      copy_from( player_t* source );
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 warrior_targetdata_t::warrior_targetdata_t( warrior_t* source, player_t* target ) :

@@ -121,8 +121,14 @@ buff_t::buff_t( const buff_creator_t& params ) :
   if ( params._chance == -1.0 )
   {
     if ( data().ok() )
+    {
       if ( data().proc_chance() != 0 )
         default_chance = data().proc_chance();
+    }
+    else if ( ! data().found() )
+    {
+      default_chance = 0.0;
+    }
   }
   else
     default_chance = params._chance;

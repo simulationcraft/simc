@@ -255,6 +255,29 @@ struct paladin_t : public player_t
   double            get_divine_bulwark() const;
   double            get_hand_of_light() const;
   double            jotp_haste() const;
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case PALADIN_RETRIBUTION: return "000020"; break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 paladin_targetdata_t::paladin_targetdata_t( paladin_t* source, player_t* target ) :
@@ -2656,7 +2679,13 @@ void paladin_t::init_actions()
     }
     break;
     default:
-      if ( ! quiet ) abort();
+      if ( level > 80 )
+      {
+        action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
+        action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      }
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/auto_attack";
       break;
     }
     action_list_default = 1;

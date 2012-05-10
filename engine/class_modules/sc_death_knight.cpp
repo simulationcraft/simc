@@ -362,6 +362,29 @@ struct death_knight_t : public player_t
       if ( a -> trigger_gcd != timespan_t::zero() ) a -> trigger_gcd = base_gcd;
     }
   }
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 death_knight_targetdata_t::death_knight_targetdata_t( death_knight_t* p, player_t* target )

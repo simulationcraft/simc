@@ -682,20 +682,57 @@ player_t* download_player_profile( sim_t* sim,
       return 0;
     }
 
+    // FIX-ME: Temporary override until wowhead profile updated for MoP
+
+    // Determine spec from number of talent points spent.
+    js_node_t* spents = js_t::get_node( build, "spent" );
+    if ( p -> spec == SPEC_NONE && spents )
+    {
+      js_node_t* spent[ 3 ];
+      int maxv = 0;
+      uint32_t maxi = 0;
+
+      for ( uint32_t i = 0; i < 3; i++ )
+      {
+        int v;
+        spent[ i ] = js_t::get_node( spents, util::to_string( i ) );
+        if ( spent[ i ] && ( js_t::get_value( v, spent[ i ] ) ) )
+        {
+          if ( v >= maxv )
+          {
+            maxv = v;
+            maxi = i;
+          }
+        }
+      }
+
+      if ( maxv > 0 )
+      {
+        p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+      }
+    }
     std::string talent_encoding;
+    talent_encoding = p -> set_default_talents();
+
+/*
     if ( ! js_t::get_value( talent_encoding, build, "talents" ) )
     {
       sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
       return 0;
     }
+*/
 
-    if ( ! p -> parse_talents_armory( talent_encoding ) )
+    if ( ! p -> parse_talents_numbers( talent_encoding ) )
     {
       sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encoding.c_str() );
       return 0;
     }
-    p -> talents_str = "http://www.wowhead.com/talent#" + type_str + "-" + talent_encoding;
 
+    p -> create_talents_wowhead();
+
+    p -> glyphs_str = p -> set_default_glyphs();
+
+/*
     std::string glyph_encoding;
     if ( ! js_t::get_value( glyph_encoding, build, "glyphs" ) )
     {
@@ -718,10 +755,26 @@ player_t* download_player_profile( sim_t* sim,
       if ( i ) p -> glyphs_str += "/";
       p -> glyphs_str += glyph_name;
     }
+*/
   }
   else // !!! OLD FORMAT !!!
   {
+    // FIX-ME: Temporary override until wowhead profile updated for MoP
+    std::string talent_encodings;
+    talent_encodings = p -> set_default_talents();
+    if ( ! p -> parse_talents_numbers( talent_encodings ) )
+    {
+      sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encodings.c_str() );
+      return 0;
+    }
+
+    p -> create_talents_wowhead();
+    p -> glyphs_str = p -> set_default_glyphs();
+
+
+/*
     std::vector<std::string> talent_encodings;
+
     int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
     if ( num_builds == 2 )
     {
@@ -753,6 +806,7 @@ player_t* download_player_profile( sim_t* sim,
         p -> glyphs_str += glyph_name;
       }
     }
+*/
   }
 
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -779,8 +833,16 @@ player_t* download_player_profile( sim_t* sim,
 
       if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, addon_id, reforge_id, rsuffix_id, gem_ids ) )
         return 0;
+
     }
   }
+  // TO-DO: can remove remaining ranged slot references once BCP updated for MoP
+  if ( p -> type == HUNTER && ! p -> items[ SLOT_RANGED ].armory_name_str.empty() )
+  {
+    p -> items[ SLOT_RANGED ].slot = SLOT_MAIN_HAND;
+    p -> items[ SLOT_MAIN_HAND ] = p -> items[ SLOT_RANGED ];
+  }
+  p -> items[ SLOT_RANGED ].armory_name_str.clear();
 
   return p;
 }

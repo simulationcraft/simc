@@ -1473,7 +1473,6 @@ const char* slot_type_string( slot_type_e slot )
   case SLOT_BACK:      return "back";
   case SLOT_MAIN_HAND: return "main_hand";
   case SLOT_OFF_HAND:  return "off_hand";
-  case SLOT_RANGED:    return "ranged";
   case SLOT_TABARD:    return "tabard";
   default:             return "unknown";
   }
@@ -2052,10 +2051,7 @@ slot_type_e translate_invtype( inventory_type inv_type )
   case INVTYPE_HOLDABLE:
     return SLOT_OFF_HAND;
   case INVTYPE_THROWN:
-  case INVTYPE_RELIC:
-  case INVTYPE_RANGED:
-  case INVTYPE_RANGEDRIGHT:
-    return SLOT_RANGED;
+    return SLOT_MAIN_HAND;
   case INVTYPE_CHEST:
   case INVTYPE_ROBE:
     return SLOT_CHEST;

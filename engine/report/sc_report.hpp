@@ -37,7 +37,7 @@ namespace chart {
 }
 
 namespace generate_report_information {
-  void generate_player_charts  ( const player_t*, player_t::report_information_t& );
+  void generate_player_charts  ( player_t*, player_t::report_information_t& );
   void generate_player_buff_lists ( const player_t*, player_t::report_information_t& );
   void generate_sim_report_information     ( const sim_t*,       sim_t::report_information_t& );
 }

@@ -104,30 +104,28 @@ static bool parse_talent_url( sim_t* sim,
 
   std::string::size_type cut_pt;
 
-  if ( url.find( "worldofwarcraft" ) != url.npos )
+  if ( url.find( ".battle.net" ) != url.npos )
   {
-    if ( ( cut_pt = url.find_first_of( '=' ) ) != url.npos )
+    if ( url.find( "/mists-of-pandaria/" ) != url.npos )
     {
-      return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
+      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
+      {
+        return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
+      }
+    }
+    else
+    {
+      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
+      {
+        return p -> parse_talents_old_armory( url.substr( cut_pt + 1 ) );
+      }
     }
   }
-  else if ( url.find( "wowarmory" ) != url.npos )
+  else if ( url.find( "mop.wowhead.com" ) != url.npos )
   {
-    if ( ( cut_pt = url.find_last_of( '=' ) ) != url.npos )
+    if ( ( cut_pt = url.find_first_of( "#" ) ) != url.npos )
     {
-      return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
-    }
-  }
-  else if ( url.find( "wowhead" ) != url.npos )
-  {
-    if ( ( cut_pt = url.find_first_of( "#=" ) ) != url.npos )
-    {
-      std::string::size_type cut_pt2 = url.find_first_of( '-', cut_pt + 1 );
-      // Add support for http://www.wowhead.com/talent#priest-033211000000000000000000000000000000000000322032210201222100231
-      if ( cut_pt2 != url.npos )
-        return p -> parse_talents_armory( url.substr( cut_pt2 + 1 ) );
-      else
-        return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
+      return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
     }
   }
   else
@@ -139,7 +137,7 @@ static bool parse_talent_url( sim_t* sim,
 
     if ( all_digits )
     {
-      return p -> parse_talents_armory( url );
+      return p -> parse_talents_numbers( url );
     }
   }
 
@@ -322,7 +320,7 @@ player_t::player_t( sim_t*             s,
   armor_coeff( 0 ),
   half_resistance_rating( 0 ),
   // Attacks
-  main_hand_attack( 0 ), off_hand_attack( 0 ), ranged_attack( 0 ),
+  main_hand_attack( 0 ), off_hand_attack( 0 ),
   // Resources
   resources( resources_t() ),
   // Consumables
@@ -428,7 +426,6 @@ player_t::player_t( sim_t*             s,
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
   off_hand_weapon.slot = SLOT_OFF_HAND;
-  ranged_weapon.slot = SLOT_RANGED;
 
   if ( reaction_stddev == timespan_t::zero() )
     reaction_stddev = reaction_mean * 0.25;
@@ -675,7 +672,6 @@ void player_t::init()
   init_defense();
   init_weapon( &main_hand_weapon );
   init_weapon( &off_hand_weapon );
-  init_weapon( &ranged_weapon );
   init_professions_bonus();
   init_unique_gear();
   init_enchant();
@@ -1103,9 +1099,8 @@ void player_t::init_weapon( weapon_t* w )
 {
   if ( w -> type == WEAPON_NONE ) return;
 
-  if ( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
+  if ( w -> slot == SLOT_MAIN_HAND ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_RANGED );
   if ( w -> slot == SLOT_OFF_HAND  ) assert( w -> type >= WEAPON_NONE && w -> type < WEAPON_2H );
-  if ( w -> slot == SLOT_RANGED    ) assert( w -> type > WEAPON_2H && w -> type < WEAPON_RANGED );
 }
 
 // player_t::init_unique_gear ===============================================
@@ -1861,12 +1856,6 @@ void player_t::init_scaling()
           main_hand_weapon.min_dmg += main_hand_weapon.swing_time.total_seconds() * v;
           main_hand_weapon.max_dmg += main_hand_weapon.swing_time.total_seconds() * v;
         }
-        if ( ranged_weapon.damage > 0 )
-        {
-          ranged_weapon.damage     += ranged_weapon.swing_time.total_seconds() * v;
-          ranged_weapon.min_dmg    += ranged_weapon.swing_time.total_seconds() * v;
-          ranged_weapon.max_dmg    += ranged_weapon.swing_time.total_seconds() * v;
-        }
         break;
 
       case STAT_WEAPON_SPEED:
@@ -1880,18 +1869,6 @@ void player_t::init_scaling()
           main_hand_weapon.damage  *= mult;
 
           main_hand_weapon.swing_time = new_speed;
-        }
-        if ( ranged_weapon.swing_time > timespan_t::zero() )
-        {
-          timespan_t new_speed = ( ranged_weapon.swing_time + timespan_t::from_seconds( v ) );
-
-          double mult = new_speed / ranged_weapon.swing_time;
-
-          ranged_weapon.min_dmg *= mult;
-          ranged_weapon.max_dmg *= mult;
-          ranged_weapon.damage  *= mult;
-
-          ranged_weapon.swing_time = new_speed;
         }
         break;
 
@@ -2827,10 +2804,6 @@ void player_t::reset()
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
 
-  ranged_weapon.buff_type  = 0;
-  ranged_weapon.buff_value = 0;
-  ranged_weapon.bonus_dmg  = 0;
-
   elixir_battle   = ELIXIR_NONE;
   elixir_guardian = ELIXIR_NONE;
   flask           = FLASK_NONE;
@@ -3088,7 +3061,6 @@ void player_t::halt()
 
   if ( main_hand_attack ) main_hand_attack -> cancel();
   if (  off_hand_attack )  off_hand_attack -> cancel();
-  if (    ranged_attack )    ranged_attack -> cancel();
 }
 
 // player_t::stun() =========================================================
@@ -5132,9 +5104,117 @@ pet_t* player_t::find_pet( const std::string& pet_name )
   return 0;
 }
 
-// player_t::parse_talents_armory ===========================================
 
-bool player_t::parse_talents_armory( const std::string& talent_string )
+// player_t::parse_talents_old_armory ===========================================
+
+bool player_t::parse_talents_old_armory( const std::string& talent_string )
+{
+  // We don't really care about extracting the actual talents from here. Just the spec and class.
+  player_type_e w_class = PLAYER_NONE;
+  specialization_e w_spec = SPEC_NONE;
+  uint32_t specidx = 0;
+
+  if ( talent_string.size() < 7 )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string. Empty or too short string.\n", name() );
+    return false;
+  }
+
+  if ( talent_string[ 1 ] != 'c' || talent_string[ 2 ] != '0' )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string.\n", name() );
+    return false;
+  }
+
+  // Parse class
+  switch ( talent_string[ 0 ] )
+  {
+  case 'd' : w_class = DEATH_KNIGHT; break;
+  case 'U' : w_class = DRUID; break;
+  case 'Y' : w_class = HUNTER; break;
+  case 'e' : w_class = MAGE; break;
+  case 'b' : w_class = PALADIN; break;
+  case 'X' : w_class = PRIEST; break;
+  case 'c' : w_class = ROGUE; break;
+  case 'W' : w_class = SHAMAN; break;
+  case 'V' : w_class = WARLOCK; break;
+  case 'Z' : w_class = WARRIOR; break;
+  default: 
+    {
+      sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string. Invalid class character.\n", name() );
+      return false;
+    }
+  }
+
+  if ( talent_string[ 4 ] < '0' || talent_string[ 4 ] > '2' )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string. Invalid spec character.\n", name() );
+    return false;
+  }
+  specidx = talent_string[ 4 ] - '0';
+
+  if ( w_class != type )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm talent string. Talent string class %s does not match player class %s.\n", name(),
+                   util::player_type_string( w_class ), util::player_type_string( type ) );
+    return false;
+  }
+
+  /* Specific override for Druids to detect those Feral Druids with Natural Reaction indicating they're Guardian */
+  if ( type == DRUID )
+  {
+    if ( specidx == 2 )
+    {
+      specidx = 3;
+    }
+    else if ( specidx == 1 )
+    {
+      if ( talent_string.size() >= 15 )
+      {
+        switch ( talent_string[ 14 ] )
+        {
+        case 'T':
+        case 'h':
+        case 'e':
+        case 'W':
+        case 'Z':
+        case 'b':
+          specidx = 2;
+          break;
+        default: break;
+        }
+      }
+    }
+  }
+
+  w_spec = dbc.spec_by_idx( type, specidx );
+
+  if ( spec == SPEC_NONE )
+  {
+    // For now we only want to overwrite the spec if it's currently unset.
+    spec = w_spec;
+  }
+  else if ( spec != w_spec )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm talent string. Talent string spec %s does not match player spec %s.\n", name(),
+                   util::specialization_string( w_spec ).c_str(), util::specialization_string( spec ).c_str() );
+    return false;
+  }
+
+  if ( parse_talents_numbers( set_default_talents() ) )
+  {
+    talents_str = set_default_talents();
+    return true;
+  }
+
+  create_talents_armory();
+
+  return false;
+}
+
+// player_t::parse_talents_numbers ===========================================
+
+bool player_t::parse_talents_numbers( const std::string& talent_string )
 {
   std::array<int,MAX_TALENT_ROWS> encoding;
 
@@ -5168,6 +5248,142 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   {
     talent_list[ j ] = encoding[ j / MAX_TALENT_COLS ] == ( ( j % MAX_TALENT_COLS ) + 1 );
   }
+
+  create_talents_numbers();
+
+  return true;
+}
+
+// player_t::parse_talents_armory ===========================================
+
+bool player_t::parse_talents_armory( const std::string& talent_string )
+{
+  player_type_e w_class = PLAYER_NONE;
+  specialization_e w_spec = SPEC_NONE;
+  uint32_t specidx = 0;
+  std::string::size_type cut_pt;
+
+  if ( talent_string.size() < 2 )
+  {
+    sim -> errorf( "Player %s has malformed MoP battle.net talent string. Empty or too short string.\n", name() );
+    return false;
+  }
+
+  // Parse class
+  switch ( talent_string[ 0 ] )
+  {
+  case 'd' : w_class = DEATH_KNIGHT; break;
+  case 'U' : w_class = DRUID; break;
+  case 'Y' : w_class = HUNTER; break;
+  case 'e' : w_class = MAGE; break;
+  case 'o' : w_class = MONK; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
+  case 'b' : w_class = PALADIN; break;
+  case 'X' : w_class = PRIEST; break;
+  case 'c' : w_class = ROGUE; break;
+  case 'W' : w_class = SHAMAN; break;
+  case 'V' : w_class = WARLOCK; break;
+  case 'Z' : w_class = WARRIOR; break;
+  default: 
+    {
+      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid class character.\n", name() );
+      return false;
+    }
+  }
+
+  if ( w_class != type )
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm talent string. Talent string class %s does not match player class %s.\n", name(),
+                   util::player_type_string( w_class ), util::player_type_string( type ) );
+    return false;
+  }
+
+  size_t i, j;
+
+  for ( j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( i = 0; i < MAX_TALENT_COLS; i++ )
+    {
+      talent_list[ j * MAX_TALENT_COLS + i ] = 0;
+    }
+  }
+
+  std::string spec_string;
+
+  if ( ( cut_pt = talent_string.find_first_of( '!' ) ) == talent_string.npos )
+  {
+    sim -> errorf( "Player %s has malformed MoP battle.net talent string.\n", name() );                   
+    return false;
+  }
+
+  spec_string = talent_string.substr( 1, cut_pt - 1 );
+  if ( spec_string.size() != 0 )
+  {
+    // A spec was specified
+    switch ( spec_string[ 0 ] )
+    {
+    case 'a' : specidx = 0; break;
+    case 'Z' : specidx = 1; break;
+    case 'b' : specidx = 2; break;
+    case 'Y' : specidx = 3; break;
+    default:
+      {
+        sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid spec character\n", name() );
+        return false;
+      }
+    }
+
+    w_spec = dbc.spec_by_idx( type, specidx );
+
+    if ( w_spec == SPEC_NONE )
+    {
+      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid spec character\n", name() );
+      return false;
+    }
+
+    if ( spec == SPEC_NONE )
+    {
+      // For now we only want to overwrite the spec if it's currently unset.
+      spec = w_spec;
+    }
+    else if ( spec != w_spec )
+    {
+      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent string spec %s does not match player spec %s.\n", name(),
+                     util::specialization_string( w_spec ).c_str(), util::specialization_string( spec ).c_str() );
+      return false;
+    }
+  }
+
+  std::string t_str = talent_string.substr( cut_pt + 1 );
+
+  if ( t_str.empty() )
+  {
+    // No talents picked.
+    return true;
+  }
+
+  if ( t_str.size() < MAX_TALENT_ROWS )
+  {
+    sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent list too short.\n", name() );
+    return false;
+  }
+
+  for ( j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    switch ( t_str[ j ] )
+    {
+    case '.' : break;
+    case '0' : talent_list[ j * MAX_TALENT_COLS + 0 ] = 1; break;
+    case '1' : talent_list[ j * MAX_TALENT_COLS + 1 ] = 1; break;
+    case '2' : talent_list[ j * MAX_TALENT_COLS + 2 ] = 1; break;
+    default:
+      {
+        sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent list has invalid characters.\n", name() );
+        return false;
+      }
+    }
+  }
+
+  create_talents_armory();
 
   return true;
 }
@@ -5230,7 +5446,7 @@ void player_t::create_talents_wowhead()
       unsigned int i = 0;
       for ( ; i < MAX_TALENT_COLS; i++ )
       {
-        if ( talent_list[ ( ( k * 2 ) + j ) * MAX_TALENT_COLS + i ] )
+        if ( talent_list[ ( ( k * 3 ) + j ) * MAX_TALENT_COLS + i ] )
         {
           found_tier = true;
           found_this_char = true;
@@ -5263,6 +5479,94 @@ void player_t::create_talents_wowhead()
   talents_str += v[ 0 ];
   if ( v[ 1 ] != 0 )
     talents_str += v[ 1 ];
+}
+
+void player_t::create_talents_armory()
+{
+  talents_str.clear();
+
+  talents_str = "http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#";
+
+  switch ( type )
+  {
+  case DEATH_KNIGHT : talents_str += "d"; break;
+  case DRUID        : talents_str += "U"; break;
+  case HUNTER       : talents_str += "Y"; break;
+  case MAGE         : talents_str += "e"; break;
+  case MONK         : talents_str += "o"; break;    // TO-DO. Not yet implemented. Only guessing at 'o'
+  case PALADIN      : talents_str += "b"; break;
+  case PRIEST       : talents_str += "X"; break;
+  case ROGUE        : talents_str += "c"; break;
+  case SHAMAN       : talents_str += "W"; break;
+  case WARLOCK      : talents_str += "V"; break;
+  case WARRIOR      : talents_str += "Z"; break;
+  default:
+    talents_str.clear();
+    return;
+  }
+
+  if ( spec != SPEC_NONE )
+  {
+    uint32_t cid, sid;
+
+    if ( ! dbc.spec_idx( spec, cid, sid ) )
+    {
+      talents_str.clear();
+      return;
+    }
+    switch ( sid )
+    {
+    case 0: talents_str += "a"; break;
+    case 1: talents_str += "Z"; break;
+    case 2: talents_str += "b"; break;
+    case 3: talents_str += "Y"; break;
+    default:
+      talents_str.clear();
+      return;
+    }
+  }
+
+  talents_str += "!";
+
+  for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    unsigned i = 0;
+    for ( ; i < MAX_TALENT_COLS; i++ )
+    {
+      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+        break;
+    }
+    if ( i >= MAX_TALENT_COLS )
+    {
+      talents_str += ".";
+    }
+    else
+    {
+      talents_str += util::to_string( i );
+    }
+  }
+}
+
+void player_t::create_talents_numbers()
+{
+  talents_str.clear();
+
+  // This is necessary because sometimes the talent trees change shape between live/ptr.
+  for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    unsigned i = 0;
+    for ( ; i < MAX_TALENT_COLS; i++ )
+    {
+      if ( talent_list[ j * MAX_TALENT_COLS + i ] )
+        break;
+    }
+    if ( i >= MAX_TALENT_COLS )
+      i = 0;
+    else
+      i++;
+
+    talents_str += util::to_string( i );
+  }
 }
 
 // player_t::parse_talents_wowhead ==========================================
@@ -5331,7 +5635,11 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     specialization_e w_spec = dbc.spec_by_idx( type, w_spec_idx );
 
-    if ( w_spec != primary_tree() )
+    if ( primary_tree() == SPEC_NONE )
+    {
+      spec = w_spec;
+    }
+    else if ( w_spec != primary_tree() )
     {
       sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
                      util::specialization_string( w_spec ).c_str(), util::specialization_string( primary_tree() ).c_str() );
@@ -5361,7 +5669,11 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     while ( key_idx < key.size() )
     {
-      if ( c >= key[ key_idx ] )
+      if ( c == 0 && ! ( encoding[ encoding_idx + 1 ] || encoding[ encoding_idx + 2 ] ) )
+      {
+        encoding[ encoding_idx ] = 1;
+      }
+      else if ( c > 0 && c >= key[ key_idx ] )
       {
         encoding[ encoding_idx + ( key.size() - key_idx ) - 1 ] = 1;
         c -= key[ key_idx ];
@@ -5386,6 +5698,8 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   {
     talent_list[ j ] = encoding[ j ];
   }
+
+  create_talents_wowhead();
 
   return true;
 }
@@ -6179,38 +6493,20 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
   return 0;
 }
 
-void player_t::recreate_talent_str( bool wowhead )
+void player_t::recreate_talent_str( talent_format_e format )
 {
-  if ( wowhead )
+  switch ( format )
   {
-    create_talents_wowhead();
-  }
-  else
-  {
-    talents_str.clear();
-
-    // This is necessary because sometimes the talent trees change shape between live/ptr.
-    for ( unsigned j = 0; j < MAX_TALENT_ROWS; j++ )
-    {
-      unsigned i = 0;
-      for ( ; i < MAX_TALENT_COLS; i++ )
-      {
-        if ( talent_list[ j * MAX_TALENT_COLS + i ] )
-          break;
-      }
-      if ( i >= MAX_TALENT_COLS )
-        i = 0;
-      else
-        i++;
-
-      talents_str += util::to_string( i );
-    }
+  case TALENT_FORMAT_UNCHANGED: break;
+  case TALENT_FORMAT_ARMORY: create_talents_armory(); break;
+  case TALENT_FORMAT_WOWHEAD: create_talents_wowhead(); break;
+  default: create_talents_numbers(); break;
   }
 }
 
 // player_t::create_profile =================================================
 
-bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
 {
   std::string term;
 
@@ -6253,6 +6549,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   {
     if ( talents_str.size() > 0 )
     {
+      recreate_talent_str( sim -> talent_format );
       profile_str += "talents=" + talents_str + term;
     };
 
@@ -6416,7 +6713,7 @@ void player_t::copy_from( player_t* source )
   position_str = source -> position_str;
   use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
-  recreate_talent_str( false );
+  recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   action_priority_list.clear();
@@ -6506,7 +6803,6 @@ void player_t::create_options()
     { "back",                                 OPT_STRING,   &( items[ SLOT_BACK      ].options_str    ) },
     { "main_hand",                            OPT_STRING,   &( items[ SLOT_MAIN_HAND ].options_str    ) },
     { "off_hand",                             OPT_STRING,   &( items[ SLOT_OFF_HAND  ].options_str    ) },
-    { "ranged",                               OPT_STRING,   &( items[ SLOT_RANGED    ].options_str    ) },
     { "tabard",                               OPT_STRING,   &( items[ SLOT_TABARD    ].options_str    ) },
     // Set Bonus
     { "tier13_2pc_caster",                    OPT_BOOL,     &( set_bonus.count[ SET_T13_2PC_CASTER ]  ) },

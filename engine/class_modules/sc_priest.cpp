@@ -212,13 +212,13 @@ struct priest_heal_t : public heal_t
     divine_aegis_t( const std::string& n, priest_t* p ) :
       priest_absorb_t( n, p, p -> find_spell( 47753 ) ), shield_multiple( 0 )
     {
-      check_spell( p -> spec.divine_aegis );
+      check_spell( p -> specs.divine_aegis );
 
       proc             = true;
       background       = true;
       direct_power_mod = 0;
 
-      shield_multiple  = p -> spec.divine_aegis -> effectN( 1 ).percent();
+      shield_multiple  = p -> specs.divine_aegis -> effectN( 1 ).percent();
     }
 
     virtual void impact_s( action_state_t* s )
@@ -278,7 +278,7 @@ struct priest_heal_t : public heal_t
   {
     heal_t::init();
 
-    if ( can_trigger_DA && p() -> spec.divine_aegis -> ok() )
+    if ( can_trigger_DA && p() -> specs.divine_aegis -> ok() )
     {
       da = new divine_aegis_t( name_str + "_divine_aegis", p() );
       add_child( da );
@@ -324,7 +324,7 @@ struct priest_heal_t : public heal_t
   {
     double ctm = heal_t::composite_target_multiplier( t );
 
-    if ( p() -> spec.grace -> ok() )
+    if ( p() -> specs.grace -> ok() )
       ctm *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
 
     return ctm;
@@ -406,8 +406,8 @@ struct priest_heal_t : public heal_t
 
   void trigger_grace( player_t* t )
   {
-    if ( p() -> spec.grace -> ok() )
-      t -> buffs.grace -> trigger( 1, p() -> spec.grace -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 100.0 );
+    if ( p() -> specs.grace -> ok() )
+      t -> buffs.grace -> trigger( 1, p() -> specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 100.0 );
   }
 
   void trigger_strength_of_soul( player_t* t )
@@ -744,7 +744,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
 struct shadowy_apparition_spell_t : public priest_spell_t
 {
   shadowy_apparition_spell_t( priest_t* player ) :
-    priest_spell_t( "shadowy_apparition", player, player -> spec.shadowy_apparitions -> ok() ? player -> find_spell( 87532 ) : spell_data_t::not_found() )
+    priest_spell_t( "shadowy_apparition", player, player -> specs.shadowy_apparitions -> ok() ? player -> find_spell( 87532 ) : spell_data_t::not_found() )
   {
     background        = true;
     proc              = true;
@@ -758,8 +758,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   {
     priest_spell_t::impact_s( s );
 
-    generate_shadow_orb( this, p() -> gains.shadow_orb_shadowy_apparition );
-
     // Cleanup. Re-add to free list.
     p() -> spells.apparitions_active.remove( this );
     p() -> spells.apparitions_free.push( this );
@@ -770,10 +768,10 @@ void priest_spell_t::trigger_shadowy_apparition( dot_t* d )
 {
   priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
 
-  if ( ! pr -> spec.shadowy_apparitions -> ok() )
+  if ( ! pr -> specs.shadowy_apparitions -> ok() )
     return;
 
-  if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> spec.shadowy_apparitions -> effectN( 1 ).percent() ) )
+  if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> specs.shadowy_apparitions -> effectN( 1 ).percent() ) )
     return;
 
   if ( ! pr -> spells.apparitions_free.empty() )
@@ -1344,6 +1342,8 @@ struct mind_blast_t : public priest_spell_t
       m *= 1.0 + p() -> buffs.dark_archangel -> value();
     }
 
+    m *= 1.0 + p() -> buffs.mind_weakening -> check() * p() -> buffs.mind_weakening -> value();
+
     return m;
   }
 
@@ -1356,6 +1356,15 @@ struct mind_blast_t : public priest_spell_t
       for ( int i=0; i < 4; i++ )
       {
         p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> check() );
+      }
+      if ( p() -> talents.divine_insight -> ok() )
+      {
+        for ( int i=0; i < 11; i++ )
+        {
+          p() -> benefits.mind_weakening[ i ] -> update( i == p() -> buffs.mind_weakening -> check() );
+        }
+
+        p() -> buffs.mind_weakening -> expire();
       }
 
       td( s -> target ) -> debuffs_mind_spike -> expire();
@@ -1449,22 +1458,16 @@ struct mind_flay_t : public priest_spell_t
       p() -> procs.shadowfiend_cooldown_reduction -> occur();
       if ( p() -> talents.mindbender -> ok() )
       {
-        p() -> cooldowns.mindbender  -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+        p() -> cooldowns.mindbender  -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
       }
       else
       {
-        p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> spec.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+        p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
       }
     }
-    if ( p() -> talents.divine_insight -> ok() )
-    {
-      // Disable the tick_zero for the refresh then restore
-      bool tz = td() -> dots_shadow_word_pain -> action -> tick_zero;
-      td() -> dots_shadow_word_pain -> action -> tick_zero = false;
-      td() -> dots_shadow_word_pain -> refresh_duration();
-      td() -> dots_shadow_word_pain -> action -> tick_zero = tz;
-      p() -> procs.refresh_shadow_word_pain -> occur();
-    }
+
+    p() -> buffs.mind_weakening -> trigger();
+
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
@@ -1788,6 +1791,15 @@ struct devouring_plague_t : public priest_spell_t
     return m;
   }
 
+  virtual double action_ta_multiplier() const
+  {
+    double m = priest_spell_t::action_ta_multiplier();
+
+    m *= p() -> resources.current[ current_resource() ];
+
+    return m;
+  }
+
   virtual void assess_damage( player_t* t,
                               double amount,
                               dmg_type_e type,
@@ -1797,20 +1809,9 @@ struct devouring_plague_t : public priest_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      double a = amount * ( 0.15 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ;
+      double a = amount * ( 0.30 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ;
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
     }
-  }
-
-  virtual void execute()
-  {
-    int nt = num_ticks;
-
-    num_ticks *= (int) p() -> resources.current[ current_resource() ];
-
-    priest_spell_t::execute();
-
-    num_ticks = nt;
   }
 
   virtual void tick( dot_t* d )
@@ -1864,7 +1865,7 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( ( tick_dmg > 0 ) && ( p() -> spec.shadowy_apparitions -> ok() ) )
+    if ( ( tick_dmg > 0 ) && ( p() -> specs.shadowy_apparitions -> ok() ) )
     {
       trigger_shadowy_apparition( d );
     }
@@ -1954,7 +1955,7 @@ struct vampiric_touch_t : public priest_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
 
-    if ( ( tick_dmg > 0 ) && ( p() -> spec.mind_surge -> ok() ) )
+    if ( ( tick_dmg > 0 ) && ( p() -> specs.mind_surge -> ok() ) )
     {
       if ( p() -> buffs.mind_surge -> trigger() )
       {
@@ -1986,7 +1987,7 @@ struct holy_fire_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p() -> spec.divine_fury -> effectN( 1 ).percent();
+    base_hit += p() -> specs.divine_fury -> effectN( 1 ).percent();
 
     can_trigger_atonement = true;
 
@@ -2048,7 +2049,7 @@ struct penance_t : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
-      base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
+      base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
     }
 
     virtual double action_multiplier() const
@@ -2119,7 +2120,7 @@ struct smite_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_hit += p -> spec.divine_fury -> effectN( 1 ).percent();
+    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
 
     can_trigger_atonement = true;
 
@@ -2141,10 +2142,10 @@ struct smite_t : public priest_spell_t
     trigger_chakra( p(), p() -> buffs.chakra_chastise );
 
     // Train of Thought
-    if ( p() -> spec.train_of_thought -> ok() )
+    if ( p() -> specs.train_of_thought -> ok() )
     {
-      if ( p() -> cooldowns.penance -> remains() > p() -> spec.train_of_thought -> effectN( 2 ).time_value() )
-        p() -> cooldowns.penance -> ready -= p() -> spec.train_of_thought -> effectN( 2 ).time_value();
+      if ( p() -> cooldowns.penance -> remains() > p() -> specs.train_of_thought -> effectN( 2 ).time_value() )
+        p() -> cooldowns.penance -> ready -= p() -> specs.train_of_thought -> effectN( 2 ).time_value();
       else
         p() -> cooldowns.penance -> reset();
     }
@@ -2423,10 +2424,10 @@ struct greater_heal_t : public priest_heal_t
     // Train of Thought
     // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
     //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
-    if ( p() -> spec.train_of_thought -> ok() )
+    if ( p() -> specs.train_of_thought -> ok() )
     {
-      if ( p() -> cooldowns.inner_focus -> remains() > timespan_t::from_seconds( p() -> spec.train_of_thought -> effectN( 1 ).base_value() ) )
-        p() -> cooldowns.inner_focus -> ready -= timespan_t::from_seconds( p() -> spec.train_of_thought -> effectN( 1 ).base_value() );
+      if ( p() -> cooldowns.inner_focus -> remains() > timespan_t::from_seconds( p() -> specs.train_of_thought -> effectN( 1 ).base_value() ) )
+        p() -> cooldowns.inner_focus -> ready -= timespan_t::from_seconds( p() -> specs.train_of_thought -> effectN( 1 ).base_value() );
       else
         p() -> cooldowns.inner_focus -> reset();
     }
@@ -2522,7 +2523,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) ),
     tick_spell( 0 )
   {
-    check_spell( p -> spec.revelations );
+    check_spell( p -> specs.revelations );
 
     parse_options( NULL, options_str );
 
@@ -2602,7 +2603,7 @@ struct holy_word_chastise_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> spec.revelations -> ok() )
+    if ( p() -> specs.revelations -> ok() )
     {
       if ( p() -> buffs.chakra_sanctuary -> check() )
         return false;
@@ -2622,7 +2623,7 @@ struct holy_word_serenity_t : public priest_heal_t
   holy_word_serenity_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "holy_word_serenity", p, p -> find_spell( 88684 ) )
   {
-    check_spell( p -> spec.revelations );
+    check_spell( p -> specs.revelations );
 
     parse_options( NULL, options_str );
 
@@ -2670,12 +2671,12 @@ struct holy_word_t : public priest_spell_t
 
   virtual void schedule_execute()
   {
-    if ( p() -> spec.revelations -> ok() && p() -> buffs.chakra_serenity -> up() )
+    if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_serenity -> up() )
     {
       player -> last_foreground_action = hw_serenity;
       hw_serenity -> schedule_execute();
     }
-    else if ( p() -> spec.revelations -> ok() && p() -> buffs.chakra_sanctuary -> up() )
+    else if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_sanctuary -> up() )
     {
       player -> last_foreground_action = hw_sanctuary;
       hw_sanctuary -> schedule_execute();
@@ -2694,10 +2695,10 @@ struct holy_word_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> spec.revelations -> ok() && p() -> buffs.chakra_serenity -> check() )
+    if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_serenity -> check() )
       return hw_serenity -> ready();
 
-    else if ( p() -> spec.revelations -> ok() && p() -> buffs.chakra_sanctuary -> check() )
+    else if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_sanctuary -> check() )
       return hw_sanctuary -> ready();
 
     else
@@ -3118,7 +3119,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
   // initialize containers. For POD containers this sets all elements to 0.
   buffs( buffs_t() ),
   talents( talents_t() ),
-  spec( specs_t() ),
+  specs( specs_t() ),
   mastery_spells( mastery_spells_t() ),
   cooldowns( cooldowns_t() ),
   gains( gains_t() ),
@@ -3190,16 +3191,15 @@ double priest_t::composite_armor() const
   return floor( a );
 }
 
-// priest_t::composite_spell_power ==========================================
+// priest_t::composite_spell_power_multiplier ===============================
 
-double priest_t::composite_spell_power( const school_type_e school ) const
+double priest_t::composite_spell_power_multiplier() const
 {
-  double sp = player_t::composite_spell_power( school );
+  double m = player_t::composite_spell_power_multiplier();
 
-  if ( buffs.inner_fire -> up() )
-    sp *= 1.0 + buffs.inner_fire -> data().effectN( 2 ).percent();
+  m *= 1.0 + buffs.inner_fire -> data().effectN( 2 ).percent();
 
-  return sp;
+  return m;
 }
 
 // priest_t::composite_spell_hit ============================================
@@ -3208,7 +3208,7 @@ double priest_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * spec.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -3221,7 +3221,7 @@ double priest_t::composite_player_multiplier( const school_type_e school, const 
 
   if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
   {
-    m *= 1.0 + buffs.shadowform -> check() * spec.shadowform -> effectN( 2 ).percent();
+    m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
   if ( spell_data_t::is_school( school, SCHOOL_SHADOWLIGHT ) )
   {
@@ -3376,7 +3376,6 @@ void priest_t::init_gains()
   gains.archangel                     = get_gain( "archangel" );
   gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
-  gains.shadow_orb_shadowy_apparition = get_gain( "Shadow Orbs from Shadowy Apparitions" );
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
@@ -3393,7 +3392,6 @@ void priest_t::init_procs()
   procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"     );
   procs.mind_surge                     = get_proc( "Mind Surge Mind Blast CD Reset" );
   procs.surge_of_darkness              = get_proc( "FDCL Shadow Word: Death proc"   );
-  procs.refresh_shadow_word_pain       = get_proc( "Mind Flay Tick Refreshes SW:P"  );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3406,7 +3404,7 @@ void priest_t::init_scaling()
   scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
-  if ( ( spec.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
+  if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
   {
     double v = sim -> scaling -> scale_value;
 
@@ -3425,7 +3423,10 @@ void priest_t::init_benefits()
   player_t::init_benefits();
 
   for ( size_t i = 0; i < 4; ++i )
-    benefits.mind_spike[ i ] = get_benefit( "Mind Spike " + util::to_string( i ) );
+    benefits.mind_spike[ i ]     = get_benefit( "Mind Spike " + util::to_string( i ) );
+  for ( size_t i = 0; i < 11; ++i )
+    benefits.mind_weakening[ i ] = get_benefit( "Mind Weakening " + util::to_string( i ) );
+
 }
 
 // priest_t::init_rng =======================================================
@@ -3468,26 +3469,26 @@ void priest_t::init_spells()
   // General Spells
 
   // Discipline
-  spec.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
-  spec.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
-  spec.grace                          = find_specialization_spell( "Grace" );
-  spec.evangelism                     = find_specialization_spell( "Evangelism" );
-  spec.train_of_thought               = find_specialization_spell( "Train of Thought" );
-  spec.divine_fury                    = find_specialization_spell( "Divine Fury" );
+  specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
+  specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
+  specs.grace                          = find_specialization_spell( "Grace" );
+  specs.evangelism                     = find_specialization_spell( "Evangelism" );
+  specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
+  specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
 
   // Holy
-  spec.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
-  spec.revelations                    = find_specialization_spell( "Revelations" );
-  spec.chakra_chastise                = find_class_spell( "Chakra: Chastise" );
-  spec.chakra_sanctuary               = find_class_spell( "Chakra: Sanctuary" );
-  spec.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
+  specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
+  specs.revelations                    = find_specialization_spell( "Revelations" );
+  specs.chakra_chastise                = find_class_spell( "Chakra: Chastise" );
+  specs.chakra_sanctuary               = find_class_spell( "Chakra: Sanctuary" );
+  specs.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
 
   // Shadow
-  spec.mind_surge                     = find_specialization_spell( "Mind Surge (NNF)" );
-  spec.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
-  spec.shadowform                     = find_class_spell( "Shadowform" );
-  spec.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
-  spec.shadowfiend_cooldown_reduction = find_spell( find_class_spell( "Mind Flay" ) -> ok() ? 87100 : 0 );
+  specs.mind_surge                     = find_specialization_spell( "Mind Surge (NNF)" );
+  specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
+  specs.shadowform                     = find_class_spell( "Shadowform" );
+  specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
+  specs.shadowfiend_cooldown_reduction = find_spell( find_class_spell( "Mind Flay" ) -> ok() ? 87100 : 0 );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -3524,9 +3525,9 @@ void priest_t::init_spells()
 
   spells.spirit_shell = new actions::spirit_shell_heal_t( this );
 
-  if ( spec.shadowy_apparitions -> ok() )
+  if ( specs.shadowy_apparitions -> ok() )
   {
-    actions::priest_spell_t::add_more_shadowy_apparitions( this, spec.shadowy_apparitions -> effectN( 2 ).base_value() );
+    actions::priest_spell_t::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
   // Set Bonuses
@@ -3558,7 +3559,7 @@ void priest_t::init_buffs()
   buffs.surge_of_light = buff_creator_t( this, "surge_of_light", find_spell( 114255 ) ).chance( find_talent_spell( "From Darkness, Comes Light" )->effectN( 1 ).percent() );
   // Discipline
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
-                                           .chance( spec.evangelism -> ok() )
+                                           .chance( specs.evangelism -> ok() )
                                            .activated( false );
   buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) )
                                            .chance( talents.archangel -> ok() )
@@ -3580,8 +3581,11 @@ void priest_t::init_buffs()
                                            .activated( false );
 
   // Shadow
-  buffs.mind_surge                       = buff_creator_t( this, "mind_surge", spec.mind_surge )
-                                           .duration( spec.mind_surge -> effectN( 1 ).trigger() -> duration() );
+  const spell_data_t* mind_weakening     = ( talents.divine_insight -> ok() && ( primary_tree() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
+  buffs.mind_weakening                   = buff_creator_t( this, "mind_weakening", mind_weakening )
+                                           .default_value( mind_weakening -> effectN( 1 ).percent() );
+  buffs.mind_surge                       = buff_creator_t( this, "mind_surge", specs.mind_surge )
+                                           .duration( specs.mind_surge -> effectN( 1 ).trigger() -> duration() );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -3895,9 +3899,9 @@ void priest_t::init_values()
   player_t::init_values();
 
   // Discipline/Holy
-  constants.meditation_value                = spec.meditation_disc -> ok() ?
-                                              spec.meditation_disc -> effectN( 1 ).base_value() :
-                                              spec.meditation_holy -> effectN( 1 ).base_value();
+  constants.meditation_value                = specs.meditation_disc -> ok() ?
+                                              specs.meditation_disc -> effectN( 1 ).base_value() :
+                                              specs.meditation_holy -> effectN( 1 ).base_value();
 
   // Shadow
   if ( set_bonus.pvp_2pc_caster() )
@@ -3919,7 +3923,7 @@ void priest_t::reset()
 {
   player_t::reset();
 
-  if ( spec.shadowy_apparitions -> ok() )
+  if ( specs.shadowy_apparitions -> ok() )
   {
     while ( spells.apparitions_active.size() )
     {
@@ -4003,7 +4007,7 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html ) const
+bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
 {
   player_t::create_profile( profile_str, type, save_html );
 

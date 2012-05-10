@@ -247,7 +247,7 @@ struct warlock_t : public player_t
   buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
@@ -260,6 +260,33 @@ struct warlock_t : public player_t
   virtual double composite_mastery() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case WARLOCK_AFFLICTION:  return "000020"; break;
+    case WARLOCK_DEMONOLOGY:  return "000020"; break;
+    case WARLOCK_DESTRUCTION: return "000020"; break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case WARLOCK_AFFLICTION:  return "life_tap";
+    case WARLOCK_DEMONOLOGY:  return "life_tap/imp_swarm";
+    case WARLOCK_DESTRUCTION: return "conflagrate";
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 // ==========================================================================

@@ -97,31 +97,43 @@ bool parse_talents( player_t* p, js_node_t* talents )
     p -> sim -> errorf( "BCP API: No talent encoding for player %s.\n", p -> name() );
     return false;
   }
-  if ( talent_encoding.size() > MAX_TALENT_SLOTS )
-    talent_encoding.resize( MAX_TALENT_SLOTS );
-  if ( ! p -> parse_talents_armory( talent_encoding ) )
+
+  // FIX-ME: Temporary until Armory site updated with new talents
+  std::string spec_name;
+  if ( js_t::get_value( spec_name, talents, "name" ) )
+  {
+    util::tokenize( spec_name );
+    specialization_e s = util::translate_spec_str( p -> type, spec_name );
+    if ( p -> spec == SPEC_NONE )
+      p -> spec = s;
+  }
+
+  talent_encoding = p -> set_default_talents();
+
+  if ( ! p -> parse_talents_numbers( talent_encoding ) )
   {
     p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
     return false;
   }
-
-  p -> talents_str  = "http://www.wowhead.com/talent#";
-  p -> talents_str += util::class_id_string( p -> type );
-  p -> talents_str += '-';
-  p -> talents_str += talent_encoding;
 
   return true;
 }
 
 // parse_glyphs =============================================================
 
-bool parse_glyphs( player_t* p, js_node_t* build )
+bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
 {
+/*
   static const char* const glyph_type_e_names[] =
   {
     "glyphs/prime", "glyphs/major", "glyphs/minor"
   };
+*/
 
+  // FIX-ME: Temporary until Armory site updated with new glyphs
+  p -> glyphs_str = p -> set_default_glyphs();
+  
+/*
   for ( std::size_t i = 0; i < sizeof_array( glyph_type_e_names ); ++i )
   {
     if ( js_node_t* glyphs = js_t::get_node( build, glyph_type_e_names[ i ] ) )
@@ -150,7 +162,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
       }
     }
   }
-
+*/
   return true;
 }
 
@@ -185,8 +197,20 @@ bool parse_items( player_t* p, js_node_t* items )
 
   assert( sizeof_array( slot_map ) == SLOT_MAX );
 
+  int mainhand_slot = 0;
+  int ranged_slot   = 0;
+
   for ( unsigned i = 0; i < SLOT_MAX; ++i )
   {
+    if ( util::str_compare_ci( slot_map[ i ], "mainHand" ) )
+    {
+      mainhand_slot = i;
+    }
+    else if ( util::str_compare_ci( slot_map[ i ], "ranged" ) )
+    {
+      ranged_slot = i;
+    }
+
     js_node_t* item = js_t::get_child( items, slot_map[ i ] );
     if ( ! item ) continue;
 
@@ -213,6 +237,14 @@ bool parse_items( player_t* p, js_node_t* items )
     if ( ! item_t::download_slot( p -> items[ i ], item_id, enchant_id, tinker_id, reforge_id, suffix_id, gem_ids ) )
       return false;
   }
+
+  // TO-DO: can remove remaining ranged slot references once BCP updated for MoP
+  if ( p -> type == HUNTER && ranged_slot > 0 && mainhand_slot > 0 && ! p -> items[ ranged_slot ].armory_name_str.empty() )
+  {
+    p -> items[ ranged_slot ].slot = SLOT_MAIN_HAND;
+    p -> items[ mainhand_slot ]    = p -> items[ ranged_slot ];
+  }
+  p -> items[ ranged_slot ].armory_name_str.clear();
 
   return true;
 }
@@ -335,6 +367,7 @@ parse_player( sim_t*             sim,
                    player.talent_spec.c_str(), name.c_str() );
     return 0;
   }
+
   if ( ! parse_talents( p, build ) )
     return 0;
 

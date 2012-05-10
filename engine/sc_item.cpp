@@ -183,7 +183,6 @@ weapon_t* item_t::weapon() const
 {
   if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
   if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );
-  if ( slot == SLOT_RANGED    ) return &( player ->    ranged_weapon );
   return 0;
 }
 

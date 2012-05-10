@@ -46,7 +46,6 @@ static const char* translate_slot( int slot )
   case SLOT_TRINKET_2: return "15";
   case SLOT_MAIN_HAND: return "16";
   case SLOT_OFF_HAND:  return "17";
-  case SLOT_RANGED:    return "18";
   }
 
   return "unknown";
@@ -102,7 +101,9 @@ player_t* download_player( sim_t* sim,
 
   js_node_t*        gear_root = js_t::get_child( profile_js, "1" );
   js_node_t*     talents_root = js_t::get_child( profile_js, "2" );
+/*
   js_node_t*      glyphs_root = js_t::get_child( profile_js, "3" );
+*/
   js_node_t* professions_root = js_t::get_child( profile_js, "5" );
 
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -157,6 +158,62 @@ player_t* download_player( sim_t* sim,
       return 0;
   }
 
+  // TO-DO: can remove remaining ranged slot references once BCP updated for MoP
+  if ( p -> type == HUNTER && ! p -> items[ SLOT_RANGED ].armory_name_str.empty() )
+  {
+    p -> items[ SLOT_RANGED ].slot = SLOT_MAIN_HAND;
+    p -> items[ SLOT_MAIN_HAND ] = p -> items[ SLOT_RANGED ];
+  }
+  p -> items[ SLOT_RANGED ].armory_name_str.clear();
+
+
+  // FIX-ME: Temporary override until wowhead profile updated for MoP
+  std::string talent_encodings;
+
+  if ( p -> spec == SPEC_NONE )
+  {
+    uint32_t maxv = 0;
+    uint32_t maxi = 0;
+    uint32_t v[ 3 ];
+    v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
+
+    std::vector<js_node_t*> talent_nodes;
+    int num_talents = js_t::get_children( talent_nodes, talents_root );
+    for ( int i=0; i < num_talents; i++ )
+    {
+      int ranks;
+      if ( js_t::get_value( ranks, talent_nodes[ i ] ) )
+      {
+        v[ ( 3 * i ) / num_talents ] += ranks;
+      }
+    }
+    maxv = v[ 0 ];
+    for ( int i = 1; i < 3; i++ )
+    {
+      if ( v[ i ] >= maxv )
+      {
+        maxi = i;
+        maxv = v[ i ];
+      }
+    }
+
+    if ( maxv > 0 )
+    {
+      p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+    }
+  }
+
+  talent_encodings = p -> set_default_talents();
+  if ( ! p -> parse_talents_numbers( talent_encodings ) )
+  {
+    sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encodings.c_str() );
+    return 0;
+  }
+  p -> glyphs_str = p -> set_default_glyphs();
+
+  p -> create_talents_armory();
+
+/*
   std::string talents_encoding;
   std::vector<js_node_t*> talent_nodes;
   int num_talents = js_t::get_children( talent_nodes, talents_root );
@@ -168,6 +225,7 @@ player_t* download_player( sim_t* sim,
       talents_encoding += ranks;
     }
   }
+
   if ( ! p -> parse_talents_armory( talents_encoding ) )
   {
     sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
@@ -191,6 +249,7 @@ player_t* download_player( sim_t* sim,
       p -> glyphs_str += glyph_name;
     }
   }
+*/
 
   p -> professions_str = "";
   if ( professions_root )

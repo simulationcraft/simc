@@ -277,6 +277,29 @@ struct mage_t : public player_t
   virtual void   regen( timespan_t periodicity );
   virtual double resource_gain( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
   virtual double resource_loss( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target ) :

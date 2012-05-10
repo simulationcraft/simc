@@ -251,6 +251,35 @@ static bool parse_cache( sim_t*             /* sim */,
   return true;
 }
 
+// parse_talent_format ======================================================
+
+bool parse_talent_format( sim_t*             sim,
+                          const std::string& name,
+                          const std::string& value )
+{
+  if ( name != "talent_format" ) return false;
+
+  if ( util::str_compare_ci( value, "unchanged" ) )
+  {
+    sim -> talent_format = TALENT_FORMAT_UNCHANGED;
+  }
+  else if ( util::str_compare_ci( value, "armory" ) )
+  {
+    sim -> talent_format = TALENT_FORMAT_ARMORY;
+  }
+  else if ( util::str_compare_ci( value, "wowhead" ) )
+  {
+    sim -> talent_format = TALENT_FORMAT_WOWHEAD;
+  }
+  else if ( util::str_compare_ci( value, "numbers" ) || util::str_compare_ci( value, "default" ) )
+  {
+    sim -> talent_format = TALENT_FORMAT_NUMBERS;
+  }
+
+  return true;
+}
+
+
 // parse_armory =============================================================
 
 class names_and_options_t
@@ -284,19 +313,26 @@ public:
     option_t::merge( options, base_options, client_options );
 
     size_t n = util::string_split( names, input, "," );
+
+    std::vector<std::string> names2 = names;
     size_t count = 0;
     for ( size_t i = 0; i < n; ++i )
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
         if ( unlikely( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) ) )
+        {
           throw option_error();
+        }
       }
-      else if ( count != i )
-        names[ count++ ].swap( names[ i ] );
+      else
+      {
+        names2[ count++ ] = names[ i ];
+      }
     }
 
-    names.resize( count );
+    names2.resize( count );
+    names = names2;
 
     if ( region.empty() )
     {
@@ -311,6 +347,18 @@ public:
         region = sim -> default_region_str;
         server = sim -> default_server_str;
       }
+    }
+    else if ( server.empty() )
+    {
+      if ( names.size() > 1 )
+      {
+        server = names[ 0 ];
+        names.erase( names.begin(), names.begin() + 1 );
+      }
+      else
+      {
+        server = sim -> default_server_str;
+      }     
     }
 
     cache = use_cache ? cache::ANY : cache::players();
@@ -641,6 +689,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
+  talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ),
   target_death( 0 ), target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
@@ -1545,7 +1594,7 @@ void sim_t::analyze_player( player_t* p )
   }
 
 
-  p -> recreate_talent_str();
+  p -> recreate_talent_str( p -> sim -> talent_format );
 
   // Error Convergence ======================================================
   player_convergence( iterations, convergence_scale, confidence_estimator,
@@ -2033,6 +2082,7 @@ void sim_t::create_options()
     { "save_prefix",                      OPT_STRING, &( save_prefix_str                          ) },
     { "save_suffix",                      OPT_STRING, &( save_suffix_str                          ) },
     { "save_talent_str",                  OPT_BOOL,   &( save_talent_str                          ) },
+    { "talent_format",                    OPT_FUNC,   ( void* ) ::parse_talent_format               },
     // Stat Enchants
     { "default_enchant_strength",                 OPT_FLT,  &( enchant.attribute[ ATTR_STRENGTH  ] ) },
     { "default_enchant_agility",                  OPT_FLT,  &( enchant.attribute[ ATTR_AGILITY   ] ) },

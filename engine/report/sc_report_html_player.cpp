@@ -619,7 +619,7 @@ void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<ite
 
 // print_html_profile =======================================================
 
-void print_html_profile ( FILE* file, const player_t* a )
+void print_html_profile ( FILE* file, player_t* a )
 {
   if ( a -> fight_length.mean > 0 )
   {
@@ -2456,7 +2456,7 @@ void print_html_player_( FILE* file, const sim_t* sim, player_t* q, int j=0 )
 
   print_html_talents( file, p );
 
-  print_html_profile( file, p );
+  print_html_profile( file, q );
 
   print_html_player_gear_weights( file, p, p -> report_information );
 

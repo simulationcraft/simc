@@ -517,9 +517,15 @@ double priest_pet_t::composite_attack_haste() const
 double priest_pet_t::composite_spell_power( const school_type_e school ) const
 {
   double sp = 0;
-  sp += owner -> composite_spell_power( school );
+  sp += owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier();
   return sp;
 }
+
+double priest_pet_t::composite_spell_power_multiplier() const
+{
+  return 1.0;
+}
+
 
 double priest_pet_t::composite_attack_power() const
 {

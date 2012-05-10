@@ -360,6 +360,29 @@ struct rogue_t : public player_t
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL ) const;
+
+  // Temporary
+  virtual std::string set_default_talents() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;    
+    }
+
+    return player_t::set_default_talents();
+  }
+
+  virtual std::string set_default_glyphs() const
+  {
+    switch ( primary_tree() )
+    {
+    case SPEC_NONE: break;
+    default: break;
+    }
+
+    return player_t::set_default_glyphs();
+  }
 };
 
 rogue_targetdata_t::rogue_targetdata_t( rogue_t* source, player_t* target ) :

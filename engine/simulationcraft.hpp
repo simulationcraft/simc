@@ -271,6 +271,15 @@ operator ++ ( T& s, int )
 // Enumerations =============================================================
 // annex _e to enumerations
 
+enum talent_format_e
+{
+  TALENT_FORMAT_NUMBERS=0,
+  TALENT_FORMAT_ARMORY,
+  TALENT_FORMAT_WOWHEAD,
+  TALENT_FORMAT_UNCHANGED,
+  TALENT_FORMAT_MAX
+};
+
 enum race_type_e
 {
   RACE_NONE=0,
@@ -2326,6 +2335,7 @@ struct sim_t : private thread_t
   stat_type_e normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str,save_suffix_str;
   int         save_talent_str;
+  talent_format_e talent_format;
   bool        input_is_utf8;
   std::vector<player_t*> actor_list;
   std::string main_target_str;
@@ -3085,12 +3095,10 @@ struct player_t : public noncopyable
   // Weapons
   weapon_t main_hand_weapon;
   weapon_t off_hand_weapon;
-  weapon_t ranged_weapon;
 
   // Main, offhand, and ranged attacks
   attack_t* main_hand_attack;
   attack_t*  off_hand_attack;
-  attack_t* ranged_attack;
 
   // Resources
   struct resources_t
@@ -3578,9 +3586,14 @@ struct player_t : public noncopyable
 
   bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
-  virtual bool parse_talents_armory ( const std::string& talent_string );
+  virtual bool parse_talents_old_armory( const std::string& talent_string );
+  virtual bool parse_talents_numbers( const std::string& talent_string );
+  virtual bool parse_talents_armory( const std::string& talent_string );
   virtual bool parse_talents_wowhead( const std::string& talent_string );
+
   virtual void create_talents_wowhead();
+  virtual void create_talents_armory();
+  virtual void create_talents_numbers();
 
   void replace_spells();
 
@@ -3599,8 +3612,14 @@ struct player_t : public noncopyable
   expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  void recreate_talent_str( bool wowhead = false );
-  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
+  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+
+
+  // FIXME: Temporary "default" talent choices. (Overridden by each class/spec)
+  virtual std::string set_default_talents() const { return "000000"; };
+  virtual std::string set_default_glyphs()  const { return ""; };
+
 
   virtual void copy_from( player_t* source );
 
