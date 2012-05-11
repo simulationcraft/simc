@@ -3720,7 +3720,7 @@ struct sunfire_t : public druid_spell_t
 struct survival_instincts_t : public druid_spell_t
 {
   survival_instincts_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_talent_spell( "Survival Instincts" ), options_str )
+    druid_spell_t( player, player -> find_class_spell( "Survival Instincts" ), options_str )
   {
     harmful = false;
   }
@@ -3735,7 +3735,7 @@ struct survival_instincts_t : public druid_spell_t
   virtual bool ready()
   {
 
-    if ( ! ( p() -> buff.cat_form -> check() || p() -> buff.bear_form -> check() ) )
+    if ( ! p() -> buff.bear_form -> check() )
       return false;
 
     return druid_spell_t::ready();
