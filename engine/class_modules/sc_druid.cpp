@@ -4372,6 +4372,15 @@ void druid_t::init_rng()
 
 void druid_t::init_actions()
 {
+  if ( ! ( primary_role() == ROLE_SPELL  && primary_tree() == DRUID_BALANCE ) &&
+       ! ( primary_role() == ROLE_ATTACK && primary_tree() == DRUID_FERAL   ) )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( primary_role() == ROLE_ATTACK && main_hand_weapon.type == WEAPON_NONE )
   {
     if ( ! quiet )

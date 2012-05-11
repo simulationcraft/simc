@@ -270,8 +270,8 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
                            const option_t*        options2 )
 {
   merged_options.clear();
-  if ( options1 ) while ( options1 -> name ) merged_options.push_back( *options1++ );
-  if ( options2 ) while ( options2 -> name ) merged_options.push_back( *options2++ );
+  if ( options1 ) while ( options1 && options1 -> name ) merged_options.push_back( *options1++ );
+  if ( options2 ) while ( options2 && options2 -> name ) merged_options.push_back( *options2++ );
   merged_options.push_back( option_t() );
   return &merged_options[ 0 ];
 }

@@ -3795,6 +3795,14 @@ void death_knight_t::init_spells()
 
 void death_knight_t::init_actions()
 {
+  if ( true )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's class isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( ! quiet )

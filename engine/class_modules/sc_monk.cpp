@@ -509,6 +509,14 @@ void monk_t::init_rng()
 
 void monk_t::init_actions()
 {
+  if ( true )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's class isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
 

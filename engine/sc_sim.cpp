@@ -307,6 +307,7 @@ public:
       { "region", OPT_STRING, &region    },
       { "server", OPT_STRING, &server    },
       { "cache",  OPT_BOOL,   &use_cache },
+      { NULL,     OPT_UNKNOWN, NULL      }
     };
 
     std::vector<option_t> options;
@@ -391,7 +392,7 @@ bool parse_armory( sim_t*             sim,
       {
         player_name.erase( 0, 1 );
         description = "inactive";
-        sim -> errorf( "Warning: use of \"!%s\" to indicate a player's inactive talent spec is deprecated. Use \"%s|inactive\" instead.\n",
+        sim -> errorf( "Warning: use of \"!%s\" to indicate a player's inactive talent spec is deprecated. Use \"%s,spec=inactive\" instead.\n",
                        player_name.c_str(), player_name.c_str() );
       }
 

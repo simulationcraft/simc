@@ -2477,6 +2477,14 @@ void paladin_t::init_buffs()
 
 void paladin_t::init_actions()
 {
+  if ( ! ( primary_role() == ROLE_HYBRID && primary_tree() == PALADIN_RETRIBUTION ) )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )

@@ -3607,6 +3607,14 @@ void priest_t::init_buffs()
 
 void priest_t::init_actions()
 {
+  if ( primary_role() != ROLE_SPELL || primary_tree() != PRIEST_SHADOW )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   std::string& list_default = get_action_priority_list( "default" ) -> action_list_str;
 
   std::string& list_pws = get_action_priority_list( "pws" ) -> action_list_str;

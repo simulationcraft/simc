@@ -3758,6 +3758,14 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
+  if ( true )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s's class isn't supported yet.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( main_hand_weapon.group() != WEAPON_RANGED )
   {
     sim -> errorf( "Player %s does not have a ranged weapon at the Main Hand slot.", name() );
