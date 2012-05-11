@@ -1749,6 +1749,30 @@ struct rain_of_fire_t : public warlock_spell_t
 };
 
 
+struct carrion_swarm_t : public warlock_spell_t
+{
+  carrion_swarm_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Carrion Swarm" )
+  {
+    aoe = -1;
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new carrion_swarm_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
+  }
+};
+
+
 // PET SPELLS
 
 struct summon_pet_t : public warlock_spell_t
@@ -2211,6 +2235,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
+  else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
