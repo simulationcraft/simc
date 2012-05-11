@@ -879,6 +879,11 @@ enum snapshot_state_e
   STATE_TGT_CRIT      = 0x000100,
   STATE_TGT_MUL_DA    = 0x000200,
   STATE_TGT_MUL_TA    = 0x000400,
+
+  STATE_USER_1        = 0x000800,
+  STATE_USER_2        = 0x001000,
+  STATE_USER_3        = 0x002000,
+  STATE_USER_4        = 0x004000,
 };
 
 enum ready_type_e

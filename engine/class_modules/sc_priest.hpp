@@ -66,9 +66,8 @@ struct priest_t : public player_t
     buff_t* serenity;
 
     // Shadow
-    buff_t* mind_weakening;
+    buff_t* divine_insight_shadow;
     buff_t* shadow_word_death_reset_cooldown;
-    buff_t* mind_surge;
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
@@ -155,6 +154,7 @@ struct priest_t : public player_t
     gain_t* archangel;
     gain_t* hymn_of_hope;
     gain_t* shadow_orb_mb;
+    gain_t* shadow_orb_swd;
     gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
@@ -164,8 +164,7 @@ struct priest_t : public player_t
   struct benefits_t
   {
     std::array<benefit_t*, 4> mind_spike;
-    std::array<benefit_t*, 11> mind_weakening;
-    benefits_t() { range::fill( mind_spike, 0 ); range::fill( mind_weakening, 0 ); }
+    benefits_t() { range::fill( mind_spike, 0 ); }
   } benefits;
 
   // Procs
@@ -173,9 +172,10 @@ struct priest_t : public player_t
   {
     proc_t* mastery_extra_tick;
     proc_t* shadowy_apparition;
-    proc_t* mind_surge;
     proc_t* surge_of_darkness;
+    proc_t* divine_insight_shadow;
     proc_t* shadowfiend_cooldown_reduction;
+    proc_t* mind_spike_dot_removal;
   } procs;
 
   // Special

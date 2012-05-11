@@ -40,6 +40,7 @@ struct remove_dots_event_t : public event_t
 {
 private:
   priest_targetdata_t* const td;
+  priest_t* pr;
 
   static void cancel_dot( dot_t* dot )
   {
@@ -52,7 +53,7 @@ private:
 
 public:
   remove_dots_event_t( sim_t* sim, priest_t* pr, priest_targetdata_t* td ) :
-    event_t( sim, pr, "mind_spike_remove_dots" ), td( td )
+    event_t( sim, pr, "mind_spike_remove_dots" ), td( td ), pr( pr )
   {
     sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
   }
@@ -60,6 +61,7 @@ public:
   virtual void execute()
   {
     td -> remove_dots_event = 0;
+    pr -> procs.mind_spike_dot_removal -> occur();
     cancel_dot( td -> dots_shadow_word_pain );
     cancel_dot( td -> dots_vampiric_touch );
   }
@@ -708,6 +710,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
   {
     background       = true;
     may_crit         = true;
+    callbacks        = false;
   }
 
   virtual timespan_t execute_time() const
@@ -720,18 +723,6 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     priest_spell_t::execute();
 
     p() -> procs.mastery_extra_tick -> occur();
-  }
-
-  virtual void assess_damage( player_t*     t,
-                              double        amount,
-                              dmg_type_e    type,
-                              result_type_e result )
-  {
-    priest_spell_t::assess_damage( t, amount, type, result );
-    if ( amount > 0 )
-    {
-      if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
-    }
   }
 };
 
@@ -1342,8 +1333,6 @@ struct mind_blast_t : public priest_spell_t
       m *= 1.0 + p() -> buffs.dark_archangel -> value();
     }
 
-    m *= 1.0 + p() -> buffs.mind_weakening -> check() * p() -> buffs.mind_weakening -> value();
-
     return m;
   }
 
@@ -1357,16 +1346,6 @@ struct mind_blast_t : public priest_spell_t
       {
         p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> check() );
       }
-      if ( p() -> talents.divine_insight -> ok() )
-      {
-        for ( int i=0; i < 11; i++ )
-        {
-          p() -> benefits.mind_weakening[ i ] -> update( i == p() -> buffs.mind_weakening -> check() );
-        }
-
-        p() -> buffs.mind_weakening -> expire();
-      }
-
       td( s -> target ) -> debuffs_mind_spike -> expire();
       p() -> buffs.glyph_mind_spike -> expire();
     }
@@ -1385,14 +1364,23 @@ struct mind_blast_t : public priest_spell_t
   {
     priest_spell_t::schedule_execute();
 
-    p() -> buffs.mind_surge -> expire();
+    p() -> buffs.divine_insight_shadow -> expire();
+  }
+
+  virtual void update_ready()
+  {
+    if ( p() -> specs.mind_surge -> ok() && ! p() -> buffs.divine_insight_shadow -> check() )
+    {
+      cooldown -> duration = data().cooldown() * composite_haste();
+    }
+    priest_spell_t::update_ready();
   }
 
   virtual timespan_t execute_time() const
   {
     timespan_t a = priest_spell_t::execute_time();
 
-    if ( p() -> buffs.mind_surge -> up() )
+    if ( p() -> buffs.divine_insight_shadow -> up() )
     {
       return timespan_t::zero();
     }
@@ -1466,8 +1454,6 @@ struct mind_flay_t : public priest_spell_t
       }
     }
 
-    p() -> buffs.mind_weakening -> trigger();
-
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
@@ -1536,10 +1522,12 @@ struct mind_spike_t : public priest_spell_t
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
-      if ( ! td( s -> target ) -> remove_dots_event )
+      if ( ! p() -> buffs.surge_of_darkness -> up() && ! td( s -> target ) -> remove_dots_event )
       {
         td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event::remove_dots_event_t( sim, p(), td( s -> target ) );
       }
+
+      p() -> buffs.surge_of_darkness -> expire();
     }
   }
 };
@@ -1566,15 +1554,7 @@ struct mind_sear_tick_t : public priest_spell_t
     dual        = true;
     direct_tick = true;
     aoe         = -1;
-  }
-
-  virtual void assess_damage( player_t*     t,
-                              double        amount,
-                              dmg_type_e    type,
-                              result_type_e result )
-  {
-    priest_spell_t::assess_damage( t, amount, type, result );
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
+    callbacks   = false;
   }
 };
 
@@ -1625,17 +1605,6 @@ struct mind_sear_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
-  struct swd_state_t : public action_state_t
-  {
-    bool talent_proc;
-
-    swd_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      talent_proc ( false )
-    {
-
-    }
-  };
-
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) )
   {
@@ -1650,44 +1619,28 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual action_state_t* new_state()
-  {
-    return new swd_state_t( this, target );
-  }
-
-  virtual void snapshot_state( action_state_t* state, uint32_t flags )
-  {
-    swd_state_t* swd = static_cast< swd_state_t* >( state );
-
-    swd -> talent_proc = p() -> buffs.surge_of_darkness -> up();
-
-    priest_spell_t::snapshot_state( state, flags );
-  }
-
   virtual void execute()
   {
     priest_spell_t::execute();
 
-    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() && ! p() -> buffs.surge_of_darkness -> check() ) // BUG: Currently if Surge of Darkness is up it doesn't reset the cooldown.
+    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
     {
       cooldown -> reset();
       p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
     }
-
-    p() -> buffs.surge_of_darkness -> expire();
   }
 
   virtual void impact_s( action_state_t* s )
   {
-    swd_state_t* swds = static_cast< swd_state_t* >( s );
-
     s -> result_amount = floor( s -> result_amount );
 
     double health_loss = s -> result_amount;
 
-    if ( ( target -> health_percentage() < 20.0 ) || ( swds -> talent_proc ) )
+    if ( target -> health_percentage() < 20.0 )
     {
       s -> result_amount *= 4.0;
+
+      generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
     }
 
     priest_spell_t::impact_s( s );
@@ -1706,21 +1659,43 @@ struct shadow_word_death_t : public priest_spell_t
 
     return m;
   }
-
-  virtual bool ready()
-  {
-    return priest_spell_t::ready();
-  }
 };
 
 // Devouring Plague Mastery Proc ===========================================
 
 struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
 {
+  int orbs_used;
+
   devouring_plague_mastery_t( priest_t* p ) :
     priest_procced_mastery_spell_t( "devouring_plague_mastery", p, 
-      p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() )
+      p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() ),
+      orbs_used( 0 )
   {
+    // Treat this just as direct damage rather than DoT damage. It's not like it procs anything anyway.
+  }
+
+  virtual double action_da_multiplier() const
+  {
+    double m = priest_spell_t::action_ta_multiplier();
+
+    // m *= orbs_used;  // BUG: Not actually being used as of 15677
+
+    return m;
+  }
+
+  virtual void assess_damage( player_t* t,
+                              double amount,
+                              dmg_type_e type,
+                              result_type_e impact_result )
+  {
+    priest_procced_mastery_spell_t::assess_damage( t, amount, type, impact_result );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      double a = amount * ( 0.15 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ; // Procced DP still only heals for 15% base, not 30%
+      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+    }
   }
 };
 
@@ -1729,38 +1704,78 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
 
 struct devouring_plague_t : public priest_spell_t
 {
-  const spell_data_t* burst_spell;
-  const spell_data_t* tick_spell;
+  struct devouring_plague_state_t : public action_state_t
+  {
+    int orbs_used;
+
+    devouring_plague_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+      orbs_used ( 0 )
+    {
+
+    }
+
+    virtual void copy_state( const action_state_t* o )
+    {
+      if ( this == o || o == 0 ) return;
+
+      action_state_t::copy_state( o );
+
+      const devouring_plague_state_t* dps_t = static_cast< const devouring_plague_state_t* >( o );
+      orbs_used = dps_t -> orbs_used;
+    }
+  };
+
   devouring_plague_mastery_t* proc_spell;
 
   devouring_plague_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
-    burst_spell( 0 ), tick_spell( 0 ), proc_spell( 0 )
+    proc_spell( 0 )
   {
     parse_options( NULL, options_str );
 
     may_crit      = false;
     tick_may_crit = true;
 
-    burst_spell = p -> find_spell( 124432 );
-    tick_spell  = p -> find_spell( 124486 );
-    if ( ! tick_spell -> ok() || ! burst_spell -> ok() )
-    {
-      background = true;
-    }
-    else
-    {
-      parse_effect_data( tick_spell -> effectN( 1 ) );
-      parse_effect_data( tick_spell -> effectN( 2 ) );
-      base_td_init = base_td = base_dd_min;
-      tick_power_mod = direct_power_mod;
-      parse_effect_data( burst_spell -> effectN( 1 ) );
-    }
-
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new devouring_plague_mastery_t( p );
     }
+  }
+
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    // Override snapshot flags
+    snapshot_flags |= STATE_USER_1;
+  }
+
+  virtual action_state_t* new_state()
+  {
+    return new devouring_plague_state_t( this, target );
+  }
+
+  virtual action_state_t* get_state( const action_state_t* s )
+  {
+    action_state_t* s_ = priest_spell_t::get_state( s );
+
+    if ( s == 0 )
+    {
+      devouring_plague_state_t* ds_ = static_cast< devouring_plague_state_t* >( s_ );
+      ds_ -> orbs_used = 0;
+    }
+
+    return s_;
+  }
+
+  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  {
+    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( state );
+
+    if ( flags & STATE_USER_1 )
+      dps_t -> orbs_used = ( int ) p() -> resources.current[ current_resource() ];
+
+    priest_spell_t::snapshot_state( state, flags );
   }
 
   virtual void consume_resource()
@@ -1807,7 +1822,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::assess_damage( t, amount, type, impact_result );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( impact_result ) && type == DMG_DIRECT ) // BUG 15677: No longer heals off (non-Mastery) procs
     {
       double a = amount * ( 0.30 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ;
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
@@ -1818,12 +1833,12 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-#if 0  // BUG 15657: Doesn't actually proc.
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
+      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> action -> execute_state );
+      proc_spell -> orbs_used = dps_t -> orbs_used;
       proc_spell -> schedule_execute();
     }
-#endif
   }
 };
 
@@ -1869,11 +1884,12 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       trigger_shadowy_apparition( d );
     }
-    if ( ( tick_dmg > 0 ) && ( p() -> talents.from_darkness_comes_light -> ok() ) )
+    if ( ( tick_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
     {
-      if ( p() -> buffs.surge_of_darkness -> trigger() )
+      if ( p() -> buffs.divine_insight_shadow -> trigger() )
       {
-        p() -> procs.surge_of_darkness -> occur();
+        p() -> cooldowns.mind_blast -> reset();
+        p() -> procs.divine_insight_shadow -> occur();
       }
     }
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
@@ -1955,25 +1971,14 @@ struct vampiric_touch_t : public priest_spell_t
     double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
 
-    if ( ( tick_dmg > 0 ) && ( p() -> specs.mind_surge -> ok() ) )
+    if ( p() -> buffs.surge_of_darkness -> trigger() )
     {
-      if ( p() -> buffs.mind_surge -> trigger() )
-      {
-        p() -> cooldowns.mind_blast -> reset();
-        p() -> procs.mind_surge -> occur();
-      }
+      p() -> procs.surge_of_darkness -> occur();
     }
 
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
-    }
-
-    /* FIX-ME: Make sure this is still the case when MoP goes live */
-    /* VT ticks are triggering OnHarmfulSpellCast procs. ..... */
-    if ( callbacks )
-    {
-      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
     }
   }
 };
@@ -3376,6 +3381,7 @@ void priest_t::init_gains()
   gains.archangel                     = get_gain( "archangel" );
   gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
+  gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
@@ -3387,11 +3393,12 @@ void priest_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"      );
-  procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction" );
-  procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"     );
-  procs.mind_surge                     = get_proc( "Mind Surge Mind Blast CD Reset" );
-  procs.surge_of_darkness              = get_proc( "FDCL Shadow Word: Death proc"   );
+  procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"          );
+  procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction"     );
+  procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"         );
+  procs.divine_insight_shadow          = get_proc( "Divine Insight Mind Blast CD Reset" );
+  procs.surge_of_darkness              = get_proc( "FDCL Mind Spike proc"               );
+  procs.mind_spike_dot_removal         = get_proc( "Mind Spike removed DoTs"            );
 }
 
 // priest_t::init_scaling ===================================================
@@ -3424,9 +3431,6 @@ void priest_t::init_benefits()
 
   for ( size_t i = 0; i < 4; ++i )
     benefits.mind_spike[ i ]     = get_benefit( "Mind Spike " + util::to_string( i ) );
-  for ( size_t i = 0; i < 11; ++i )
-    benefits.mind_weakening[ i ] = get_benefit( "Mind Weakening " + util::to_string( i ) );
-
 }
 
 // priest_t::init_rng =======================================================
@@ -3581,11 +3585,9 @@ void priest_t::init_buffs()
                                            .activated( false );
 
   // Shadow
-  const spell_data_t* mind_weakening     = ( talents.divine_insight -> ok() && ( primary_tree() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
-  buffs.mind_weakening                   = buff_creator_t( this, "mind_weakening", mind_weakening )
-                                           .default_value( mind_weakening -> effectN( 1 ).percent() );
-  buffs.mind_surge                       = buff_creator_t( this, "mind_surge", specs.mind_surge )
-                                           .duration( specs.mind_surge -> effectN( 1 ).trigger() -> duration() );
+  const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( primary_tree() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
+  buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
+                                           .chance( talents.divine_insight -> proc_chance() );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -3677,13 +3679,11 @@ void priest_t::init_actions()
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
           buffer += "/shadow_word_death,if=target.health.pct<=20";
-          if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-            buffer += "|buff.surge_of_darkness.react";
         }
       }
 
-      if ( find_class_spell( "Mind Blast" ) -> ok() )
-        buffer += "/mind_blast";
+      if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+        buffer += "/mind_spike,if=buff.surge_of_darkness.react";
 
       buffer += init_use_racial_actions();
 
@@ -3698,8 +3698,6 @@ void priest_t::init_actions()
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
           buffer += "/shadow_word_death,if=target.health.pct<=20";
-          if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-            buffer += "|buff.surge_of_darkness.react";
         }
       }
 
@@ -3712,7 +3710,7 @@ void priest_t::init_actions()
         buffer += "/shadowfiend";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
-        buffer += "/mind_flay,chain=1";
+        buffer += "/mind_flay,chain=1,interrupt=1";
 
       if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
       {
