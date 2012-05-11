@@ -163,10 +163,10 @@ void action_t::impact_s( action_state_t* s )
         // Recasting a dot while it's still ticking gives it an extra tick in total
         dot -> num_ticks++;
 
-        // Fix to refreshing tick_zero dots
+        // tick_zero dots tick again when reapplied
         if ( tick_zero )
         {
-          dot -> num_ticks++;
+          tick( dot );
         }
       }
       else
