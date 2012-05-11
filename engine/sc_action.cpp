@@ -142,6 +142,7 @@ action_t::action_t( action_type_e       ty,
   moving                         = -1;
   wait_on_ready                  = -1;
   interrupt                      = 0;
+  chain                          = 0;
   round_base_dmg                 = true;
   class_flag1                    = false;
   if_expr_str.clear();
@@ -391,6 +392,7 @@ void action_t::parse_options( option_t*          options,
     { "if",                     OPT_STRING, &if_expr_str           },
     { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
     { "interrupt",              OPT_BOOL,   &interrupt             },
+    { "chain",                  OPT_BOOL,   &chain                 },
     { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
     { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
     { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
@@ -1031,16 +1033,14 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
-        // if ( ! channeled )     // Happens with channeled spells too
-        {
-          // Recasting a dot while it's still ticking gives it an extra tick in total
-          dot -> num_ticks++;
 
-          // tick_zero dots tick again when reapplied
-          if ( tick_zero )
-          {
-            tick( dot );
-          }
+        // Recasting a dot while it's still ticking gives it an extra tick in total
+        dot -> num_ticks++;
+
+        // tick_zero dots tick again when reapplied
+        if ( tick_zero )
+        {
+          tick( dot );
         }
       }
       else

@@ -232,7 +232,28 @@ void dot_t::schedule_tick()
 
   ticking = 1;
 
-  if ( action -> channeled ) action -> player -> channeling = action;
+  if ( action -> channeled ) 
+  {
+    // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early 
+    if ( action -> chain && current_tick + 1 == num_ticks && action -> ready() )
+    {
+      action -> player -> channeling = 0;
+      action -> execute();
+      if ( action -> result_is_hit() )
+      {
+        action -> player -> channeling = action;
+      }
+      else
+      {
+        cancel();
+        action -> player -> schedule_ready();
+      }
+    }
+    else
+    {
+      action -> player -> channeling = action;
+    }
+  }
 }
 
 // dot_t::ticks =============================================================

@@ -156,18 +156,17 @@ void action_t::impact_s( action_state_t* s )
 
       if ( dot -> ticking )
       {
-        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
         assert( dot -> tick_event );
-        if ( ! channeled )
-        {
-          // Recasting a dot while it's still ticking gives it an extra tick in total
-          dot -> num_ticks++;
+        
+        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
 
-          // Fix to refreshing tick_zero dots
-          if ( tick_zero )
-          {
-            dot -> num_ticks++;
-          }
+        // Recasting a dot while it's still ticking gives it an extra tick in total
+        dot -> num_ticks++;
+
+        // Fix to refreshing tick_zero dots
+        if ( tick_zero )
+        {
+          dot -> num_ticks++;
         }
       }
       else
