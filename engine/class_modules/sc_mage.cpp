@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
+namespace {
 // ==========================================================================
 // Mage
 // ==========================================================================
@@ -332,7 +333,10 @@ struct mage_spell_t : public spell_t
   }
 
   mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
+  { return debug_cast<mage_t*>( player ); }
+
+  mage_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<mage_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
@@ -1392,16 +1396,14 @@ struct combustion_t : public mage_spell_t
   {
     double ignite_dmg = 0;
 
-    mage_targetdata_t* td = targetdata( target ) -> cast_mage();
-
-    if ( td -> dots_ignite -> ticking )
+    if ( td() -> dots_ignite -> ticking )
     {
-      ignite_dmg += calculate_dot_dps( td -> dots_ignite );
+      ignite_dmg += calculate_dot_dps( td() -> dots_ignite );
     }
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td -> dots_pyroblast );
+    base_td += calculate_dot_dps( td() -> dots_pyroblast );
 
     if ( p() -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
@@ -2460,8 +2462,7 @@ struct slow_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    mage_targetdata_t* td = targetdata_t::get( player, target ) -> cast_mage();
-    td -> debuffs_slow -> trigger();
+    td() -> debuffs_slow -> trigger();
   }
 };
 
@@ -3512,12 +3513,15 @@ int mage_t::decode_set( const item_t& item ) const
 
   return SET_NONE;
 }
+#endif // SC_MAGE
 
+} // END ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
+#if SC_MAGE == 1
 void class_modules::register_targetdata::mage( sim_t* sim )
 {
   player_type_e t = MAGE;

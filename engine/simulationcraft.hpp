@@ -136,10 +136,8 @@ struct callback_t;
 struct cooldown_t;
 struct cost_reduction_buff_t;
 class  dbc_t;
-struct death_knight_t;
 struct debuff_t;
 struct dot_t;
-struct druid_t;
 struct effect_t;
 struct enchant_t;
 struct event_t;
@@ -159,7 +157,6 @@ struct reforge_plot_data_t;
 struct reforge_plot_t;
 struct report_t;
 struct rng_t;
-struct rogue_t;
 struct sample_data_t;
 struct scaling_t;
 struct sim_t;
@@ -171,17 +168,10 @@ struct stats_t;
 struct stat_buff_t;
 struct unique_gear_t;
 struct uptime_t;
-struct warrior_t;
 struct weapon_t;
 struct xml_node_t;
 
 struct targetdata_t;
-struct death_knight_targetdata_t;
-struct druid_targetdata_t;
-struct mage_targetdata_t;
-struct paladin_targetdata_t;
-struct rogue_targetdata_t;
-struct warrior_targetdata_t;
 
 #define DATA_DOT 0
 #define DATA_AURA 1
@@ -3658,9 +3648,6 @@ struct player_t : public noncopyable
   bool is_enemy() const { return type == ENEMY || type == ENEMY_ADD; }
   bool is_add() const { return type == ENEMY_ADD; }
 
-  death_knight_t* cast_death_knight() { assert( type == DEATH_KNIGHT ); return ( death_knight_t* ) this; }
-  rogue_t       * cast_rogue       () { assert( type == ROGUE        ); return ( rogue_t       * ) this; }
-  warrior_t     * cast_warrior     () { assert( type == WARRIOR      ); return ( warrior_t     * ) this; }
   pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
 
   bool      in_gcd() const { return gcd_ready > sim -> current_time; }
@@ -3710,13 +3697,6 @@ struct targetdata_t : public noncopyable
   virtual void clear_debuffs();
 
   static targetdata_t* get( player_t* source, player_t* target );
-
-  death_knight_targetdata_t* cast_death_knight() { assert( source->type == DEATH_KNIGHT ); return ( death_knight_targetdata_t* ) this; }
-  druid_targetdata_t       * cast_druid       () { assert( source->type == DRUID        ); return ( druid_targetdata_t       * ) this; }
-  mage_targetdata_t        * cast_mage        () { assert( source->type == MAGE         ); return ( mage_targetdata_t        * ) this; }
-  paladin_targetdata_t     * cast_paladin     () { assert( source->type == PALADIN      ); return ( paladin_targetdata_t     * ) this; }
-  rogue_targetdata_t       * cast_rogue       () { assert( source->type == ROGUE        ); return ( rogue_targetdata_t       * ) this; }
-  warrior_targetdata_t     * cast_warrior     () { assert( source->type == WARRIOR      ); return ( warrior_targetdata_t     * ) this; }
 
 protected:
   dot_t* add_dot( dot_t* d );

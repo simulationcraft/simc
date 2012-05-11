@@ -6,9 +6,12 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
+namespace {
 // ==========================================================================
 // Druid
 // ==========================================================================
+
+struct druid_t;
 
 #if SC_DRUID == 1
 
@@ -605,10 +608,10 @@ struct druid_cat_attack_t : public melee_attack_t
   }
 
   druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-  
-  druid_targetdata_t* td( player_t* t ) const
-  { return targetdata( t ) -> cast_druid(); }
+  { return debug_cast<druid_t*>( player ); }
+
+  druid_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
 
   virtual double cost() const;
   virtual void   execute();
@@ -694,7 +697,10 @@ struct druid_bear_attack_t : public melee_attack_t
   }
 
   druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
+  { return debug_cast<druid_t*>( player ); }
+
+  druid_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
 
   virtual void   impact_s( action_state_t* );
 };
@@ -739,10 +745,10 @@ struct druid_heal_t : public heal_t
   }
 
   druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
+  { return debug_cast<druid_t*>( player ); }
 
-  druid_targetdata_t* td( player_t* t ) const
-  { return targetdata( t ) -> cast_druid(); }
+  druid_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -786,7 +792,10 @@ struct druid_spell_t : public spell_t
   }
 
   druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
+  { return debug_cast<druid_t*>( player ); }
+
+  druid_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -1059,7 +1068,7 @@ static void trigger_swiftmend( druid_heal_t* a )
 
 static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_targetdata_t* td = targetdata_t::get( s -> action -> player, s -> target ) -> cast_druid();
+  druid_targetdata_t* td = debug_cast<druid_targetdata_t*>( targetdata_t::get( s -> action -> player, s -> target ) );
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -3202,8 +3211,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    dot_t* sf = td -> dots_sunfire;
+    dot_t* sf = td() -> dots_sunfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -3379,15 +3387,14 @@ struct starfire_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
       if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
+        if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
         {
-          td -> dots_moonfire -> refresh_duration();
+          td( t ) -> dots_moonfire -> refresh_duration();
         }
 
         if ( ! p() -> buff.eclipse_solar -> check() )
@@ -3531,17 +3538,16 @@ struct starsurge_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
       if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_lunar -> check() && td -> dots_moonfire -> ticking )
-          td -> dots_moonfire -> refresh_duration();
+        if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
+          td( t ) -> dots_moonfire -> refresh_duration();
 
-        if ( p() -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
-          td -> dots_sunfire -> refresh_duration();
+        if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
+          td( t ) -> dots_sunfire -> refresh_duration();
 
         // gain is positive for p -> eclipse_bar_direction==0
         // else it is towards p -> eclipse_bar_direction
@@ -3668,8 +3674,7 @@ struct sunfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
-    dot_t* mf = td -> dots_moonfire;
+    dot_t* mf = td() -> dots_moonfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
@@ -3880,15 +3885,14 @@ struct wrath_t : public druid_spell_t
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
-    druid_targetdata_t* td = targetdata( target ) -> cast_druid();
 
     if ( result_is_hit( impact_result ) )
     {
       if ( p() -> specialization.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_solar -> check() && td -> dots_sunfire -> ticking )
+        if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
         {
-          td -> dots_sunfire -> refresh_duration();
+          td( t ) -> dots_sunfire -> refresh_duration();
         }
 
         if ( p() -> eclipse_bar_direction <= 0 )
@@ -4840,7 +4844,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
-    druid_targetdata_t* td = targetdata_t::get( a -> player, a -> target ) -> cast_druid();
+    druid_targetdata_t* td = debug_cast<druid_targetdata_t*>( targetdata_t::get( a -> player, a -> target ) );
     return make_ref_expr( "combo_points", td -> combo_points -> count );
   }
 
@@ -4980,7 +4984,9 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
 
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
+#endif // SC_DRUID
 
+} // END ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
@@ -4988,6 +4994,7 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
 
 // class_modules::register_targetdata::druid  ==================================================
 
+#if SC_DRUID == 1
 void class_modules::register_targetdata::druid( sim_t* sim )
 {
   player_type_e t = DRUID;
@@ -5006,8 +5013,8 @@ void class_modules::register_targetdata::druid( sim_t* sim )
   //REGISTER_BUFF( combo_points );
   REGISTER_BUFF( lifebloom );
 }
-
 #endif // SC_DRUID
+
 player_t* class_modules::create::druid( sim_t*             sim,
                                   const std::string& name,
                                   race_type_e r )

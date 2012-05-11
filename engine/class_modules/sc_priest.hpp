@@ -9,8 +9,6 @@
 #ifndef SC_PRIEST_HPP
 #define SC_PRIEST_HPP
 
-
-
 namespace priest {
 
 struct priest_t;
@@ -407,7 +405,9 @@ public:
                                    const std::string& options_str );
   virtual void summon( timespan_t duration );
 };
+
+#endif // SC_PRIEST
+
 } // END priest NAMESPACE
-#endif
 
 #endif

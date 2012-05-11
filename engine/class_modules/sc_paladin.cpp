@@ -6,6 +6,8 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
+namespace {
+
 // ==========================================================================
 // Paladin
 // ==========================================================================
@@ -383,7 +385,7 @@ struct paladin_heal_t : public heal_t
   }
 
   paladin_t* p() const
-  { return static_cast<paladin_t*>( player ); }
+  { return debug_cast<paladin_t*>( player ); }
 
   virtual double cost() const
   {
@@ -434,7 +436,10 @@ struct paladin_melee_attack_t : public melee_attack_t
   }
 
   paladin_t* p() const
-  { return static_cast<paladin_t*>( player ); }
+  { return debug_cast<paladin_t*>( player ); }
+
+  paladin_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<paladin_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual double haste() const
   {
@@ -488,7 +493,6 @@ struct paladin_melee_attack_t : public melee_attack_t
         p() -> buffs.ancient_power -> trigger();
       }
 
-      paladin_targetdata_t* td = targetdata() -> cast_paladin();
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) ) )
       {
         switch ( p() -> active_seal )
@@ -506,7 +510,7 @@ struct paladin_melee_attack_t : public melee_attack_t
           break;
         case SEAL_OF_TRUTH:
           p() -> active_seal_of_truth_dot -> execute();
-          if ( td -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+          if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
           break;
         default:
           ;
@@ -553,7 +557,10 @@ struct paladin_spell_t : public spell_t
   }
 
   paladin_t* p() const
-  { return static_cast<paladin_t*>( player ); }
+  { return debug_cast<paladin_t*>( player ); }
+
+  paladin_targetdata_t* td( player_t* t = 0 ) const
+  { return debug_cast<paladin_targetdata_t*>( action_t::targetdata( t ) ); }
 
   virtual double cost() const
   {
@@ -1314,8 +1321,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
   {
     if ( result_is_hit( impact_result ) )
     {
-      paladin_targetdata_t* td = targetdata( t ) -> cast_paladin();
-      td -> debuffs_censure -> trigger();
+      td( t ) -> debuffs_censure -> trigger();
       player_buff();
     }
     paladin_melee_attack_t::impact( t, impact_result, travel_dmg );
@@ -1324,8 +1330,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
   virtual void player_buff()
   {
     paladin_melee_attack_t::player_buff();
-    paladin_targetdata_t* td = targetdata() -> cast_paladin();
-    player_multiplier *= td -> debuffs_censure -> stack();
+    player_multiplier *= td() -> debuffs_censure -> stack();
   }
 
   virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
@@ -1336,9 +1341,8 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
 
   virtual void last_tick( dot_t* d )
   {
-    paladin_targetdata_t* td = targetdata() -> cast_paladin();
     paladin_melee_attack_t::last_tick( d );
-    td -> debuffs_censure -> expire();
+    td() -> debuffs_censure -> expire();
   }
 };
 
@@ -3156,11 +3160,15 @@ expr_t* paladin_t::create_expression( action_t* a,
 
   return player_t::create_expression( a, name_str );
 }
+#endif // SC_PALADIN
+
+} // END ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
+#if SC_PALADIN == 1
 void class_modules::register_targetdata::paladin( sim_t* sim )
 {
   player_type_e t = PALADIN;
@@ -3172,7 +3180,6 @@ void class_modules::register_targetdata::paladin( sim_t* sim )
 
   REGISTER_DEBUFF( censure );
 }
-
 #endif // SC_PALADIN
 
 player_t* class_modules::create::paladin( sim_t* sim, const std::string& name, race_type_e r )

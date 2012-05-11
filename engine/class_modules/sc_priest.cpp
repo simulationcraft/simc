@@ -4089,7 +4089,6 @@ int priest_t::decode_set( const item_t& item ) const
 
 } // END priest NAMESPACE
 
-using priest::priest_t;
 using priest::priest_targetdata_t;
 
 void class_modules::register_targetdata::priest( sim_t* sim )
@@ -4116,6 +4115,8 @@ void class_modules::register_targetdata::priest( sim_t* sim )
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
+
+using priest::priest_t;
 
 // class_modules::create::priest  =================================================
 

@@ -67,10 +67,13 @@
 //
 // ==========================================================================
 
+namespace {
 
 // ==========================================================================
 // Warrior
 // ==========================================================================
+
+struct warrior_t;
 
 #if SC_WARRIOR == 1
 
@@ -365,7 +368,7 @@ struct warrior_t : public player_t
 warrior_targetdata_t::warrior_targetdata_t( warrior_t* source, player_t* target ) :
   targetdata_t( source, target )
 {
-  debuffs_colossus_smash = add_aura( new buff_t( this, "colossus_smash", 1, timespan_t::from_seconds( 6.0 ) ) );
+  debuffs_colossus_smash = add_aura( buff_creator_t( this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) ) );
 }
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -397,7 +400,15 @@ struct warrior_attack_t : public melee_attack_t
   }
 
   warrior_t* cast() const
-  { return static_cast<warrior_t*>( player ); }
+  { return debug_cast<warrior_t*>( player ); }
+
+  warrior_targetdata_t* cast_td( player_t* t = 0 ) const
+  {
+    if ( !t )
+      t = target;
+
+    return debug_cast<warrior_targetdata_t*>( targetdata( t ) );
+  }
 
   virtual double armor() const;
   virtual void   consume_resource();
@@ -748,7 +759,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 double warrior_attack_t::armor() const
 {
-  warrior_targetdata_t* td = targetdata() -> cast_warrior();
+  warrior_targetdata_t* td = cast_td();
 
   double a = attack_t::armor();
 
@@ -1237,7 +1248,7 @@ struct bloodthirst_t : public warrior_attack_t
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
       {
-        warrior_targetdata_t* td = targetdata() -> cast_warrior();
+        warrior_targetdata_t* td = cast_td();
         td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
       }
@@ -1387,7 +1398,7 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_targetdata_t* td = targetdata() -> cast_warrior();
+      warrior_targetdata_t* td = cast_td();
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
 
       if ( ! sim -> overrides.physical_vulnerability )
@@ -1459,7 +1470,7 @@ struct devastate_t : public warrior_attack_t
 struct execute_t : public warrior_attack_t
 {
   execute_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, p -> find_class_spell( "Execute" )
+    warrior_attack_t( "execute", p, p -> find_class_spell( "Execute" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1649,7 +1660,7 @@ struct mortal_strike_t : public warrior_attack_t
   double additive_multipliers;
 
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) )
+    warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) ),
     additive_multipliers( 0 )
   {
     check_spec( WARRIOR_ARMS );
@@ -1670,7 +1681,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_targetdata_t* td = targetdata() -> cast_warrior();
+      warrior_targetdata_t* td = cast_td();
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
@@ -1822,7 +1833,7 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* oh_attack;
 
   raging_blow_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "raging_blow", p, p -> find_class_spell( "Raging Blow" ) )
+    warrior_attack_t( "raging_blow", p, p -> find_class_spell( "Raging Blow" ) ),
     mh_attack( 0 ), oh_attack( 0 )
   {
     check_talent( p -> talents.raging_blow -> rank() );
@@ -2334,7 +2345,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-    warrior_targetdata_t* td = targetdata() -> cast_warrior();
+    warrior_targetdata_t* td = cast_td();
 
     p -> buffs_thunderstruck -> trigger();
 
@@ -2442,19 +2453,27 @@ struct warrior_spell_t : public spell_t
 
 
   warrior_t* cast() const
-  { return static_cast<warrior_t*>( player ); }
+  { return debug_cast<warrior_t*>( player ); }
+
+  warrior_targetdata_t* cast_td( player_t* t = 0 ) const
+  {
+    if ( !t )
+      t = target;
+
+    return debug_cast<warrior_targetdata_t*>( targetdata( t ) );
+  }
 
   void _init_warrior_spell_t()
   {
   }
 
-  virtual timespan_t warrior_spell_t::gcd() const
+  virtual timespan_t gcd() const
   {
     // Unaffected by haste
     return trigger_gcd;
   }
 
-  virtual bool warrior_spell_t::ready()
+  virtual bool ready()
   {
     warrior_t* p = cast();
 
@@ -2513,7 +2532,7 @@ struct commanding_shout_t : public warrior_spell_t
     rage_gain = 20 + p -> talents.booming_voice -> effectN( 2 ).resource( RESOURCE_RAGE );
 
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = spell_id_t::cooldown() + p -> talents.booming_voice -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p -> talents.booming_voice -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -2710,9 +2729,10 @@ struct retaliation_t : public warrior_spell_t
 struct shield_block_buff_t : public buff_t
 {
   shield_block_buff_t( warrior_t* p ) :
-    buff_t( p, 2565, "shield_block" )
+    buff_t( buff_creator_t( p, "shield_block", p -> find_spell( 2565 )  ) )
   { }
 };
+
 struct shield_block_t : public warrior_spell_t
 {
   shield_block_t( warrior_t* p, const std::string& options_str ) :
@@ -2876,7 +2896,7 @@ struct buff_last_stand_t : public buff_t
   int health_gain;
 
   buff_last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ) :
-    buff_t( p, id, n ), health_gain( 0 )
+    buff_t( buff_creator_t( p, n, p -> find_spell( id ) ) ), health_gain( 0 )
   { }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -2952,7 +2972,7 @@ action_t* warrior_t::create_action( const std::string& name,
 void warrior_t::init_talents()
 {
   // Talents
-
+#if 0
   // Arms
   talents.bladestorm              = find_talent( "Bladestorm" );
   talents.blitz                   = find_talent( "Blitz" );
@@ -3010,7 +3030,7 @@ void warrior_t::init_talents()
   talents.safeguard               = find_talent( "Safeguard" );
   talents.sword_and_board         = find_talent( "Sword and Board" );
   talents.shockwave               = find_talent( "Shockwave" );
-
+#endif
   player_t::init_talents();
 }
 
@@ -3090,21 +3110,21 @@ void warrior_t::init_base()
 
   resources.base[  RESOURCE_RAGE  ] = 100;
 
-  initial_attack_power_per_strength = 2.0;
-  initial_attack_power_per_agility  = 0.0;
+  initial.attack_power_per_strength = 2.0;
+  initial.attack_power_per_agility  = 0.0;
 
-  base_attack_power = level * 2 + 60;
+  base.attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
-  base_miss    = 0.05;
-  base_parry   = 0.05;
-  base_block   = 0.05;
+  base.miss    = 0.05;
+  base.parry   = 0.05;
+  base.block   = 0.05;
 
   if ( primary_tree() == WARRIOR_PROTECTION )
     vengeance.enabled = true;
 
   if ( talents.toughness -> ok() )
-    initial_armor_multiplier *= 1.0 + talents.toughness -> effectN( 1 ).percent();
+    initial.armor_multiplier *= 1.0 + talents.toughness -> effectN( 1 ).percent();
 
   diminished_kfactor    = 0.009560;
   diminished_dodge_capi = 0.01523660;
@@ -3112,8 +3132,8 @@ void warrior_t::init_base()
 
   if ( spec.sentinel -> ok() )
   {
-    attribute_multiplier_initial[ ATTR_STAMINA ] *= 1.0  + spec.sentinel -> effectN( 1 ).percent();
-    base_block += spec.sentinel -> effectN( 3 ).percent();
+    initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0  + spec.sentinel -> effectN( 1 ).percent();
+    base.block += spec.sentinel -> effectN( 3 ).percent();
   }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -3511,7 +3531,7 @@ void warrior_t::register_callbacks()
 {
   player_t::register_callbacks();
 
-  register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
+  callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new bloodthirst_buff_callback_t( this, buffs_bloodthirst ) );
 }
 
 // warrior_t::reset =========================================================
@@ -3761,7 +3781,9 @@ void warrior_t::create_options()
 void warrior_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
-  warrior_t* p = source -> cast_warrior();
+
+  warrior_t* p = dynamic_cast<warrior_t*>( source );
+  assert( p );
 
   initial_rage            = p -> initial_rage;
   instant_flurry_haste    = p -> instant_flurry_haste;
@@ -3805,6 +3827,11 @@ int warrior_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+#endif // SC_WARRIOR
+
+} // END ANONYMOUS NAMESPACE
+
+#if SC_WARRIOR == 1
 void class_modules::register_targetdata::warrior( sim_t* sim )
 {
   player_type_e t = WARRIOR;
@@ -3816,6 +3843,7 @@ void class_modules::register_targetdata::warrior( sim_t* sim )
   REGISTER_DEBUFF( colossus_smash );
 }
 #endif // SC_WARRIOR
+
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
