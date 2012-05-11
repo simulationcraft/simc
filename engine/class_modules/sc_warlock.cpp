@@ -2531,6 +2531,7 @@ void warlock_t::init_actions()
 
     action_list_str += "/snapshot_stats";
 
+ 
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 

@@ -3639,6 +3639,15 @@ void priest_t::init_actions()
     if ( find_class_spell( "Inner Fire" ) -> ok() )
       buffer += "/inner_fire";
 
+
+    if ( find_class_spell( "Shadowform" ) -> ok() )
+      buffer += "/shadowform";
+
+    if ( level > 80 )
+    {
+      buffer += "/volcanic_potion,if=!in_combat";
+    }
+
     buffer += "/snapshot_stats";
 
     buffer += init_use_item_actions();
@@ -3659,12 +3668,8 @@ void priest_t::init_actions()
       // SHADOW =============================================================
     case PRIEST_SHADOW:
 
-      if ( find_class_spell( "Shadowform" ) -> ok() )
-        buffer += "/shadowform";
-
       if ( level > 80 )
       {
-        buffer += "/volcanic_potion,if=!in_combat";
         buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 

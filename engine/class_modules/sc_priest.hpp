@@ -290,7 +290,7 @@ struct priest_t : public player_t
   {
     switch ( primary_tree() )
     {
-    case PRIEST_SHADOW: return "121210";
+    case PRIEST_SHADOW: return "002030";
     default: break;    
     }
 
@@ -301,6 +301,7 @@ struct priest_t : public player_t
   {
     switch ( primary_tree() )
     {
+    case PRIEST_SHADOW: if ( talent_list[ 2 * MAX_TALENT_COLS + 0 ] ) return "mind_spike"; break;
     case SPEC_NONE: break;
     default: break;
     }

@@ -342,6 +342,9 @@ struct druid_t : public player_t
   int eclipse_bar_value; // Tracking the current value of the eclipse bar
   int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
 
+  int initial_eclipse;
+  int preplant_mushrooms;
+
   // Talents
   struct talents_t
   {
@@ -389,10 +392,13 @@ struct druid_t : public player_t
     active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
 
-    pet_treants         = 0;
+    pet_treants           = 0;
 
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
+
+    initial_eclipse = 0;
+    preplant_mushrooms = true;
 
     cooldown.lotp           = get_cooldown( "lotp"           );
     cooldown.mangle_bear    = get_cooldown( "mangle_bear"    );
@@ -448,6 +454,8 @@ struct druid_t : public player_t
   virtual role_type_e primary_role() const;
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual void      create_options();
+  virtual bool      create_profile( std::string& profile_str, save_type_e type=SAVE_ALL, bool save_html=false );
   
   void reset_gcd()
   {
@@ -4193,9 +4201,9 @@ void druid_t::init_buffs()
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
-  buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_specialization_spell( "Wild Mushroom" ) )
+  buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( spec == DRUID_BALANCE || spec == DRUID_RESTORATION ) 
-                                           ? find_specialization_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
+                                           ? find_class_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
                                            : 1 )
                                .quiet( true );
   
@@ -4425,7 +4433,7 @@ void druid_t::init_actions()
     else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       action_list_str += "/moonkin_form";
 
-    // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
+    // Prepotion 
     if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       action_list_str += "/tolvir_potion,if=!in_combat";
     else
@@ -4660,8 +4668,31 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage
   resources.current[ RESOURCE_RAGE ] = 0;
 
-  // Moonkins can precast 3 wild mushrooms without aggroing the boss
-  buff.wild_mushroom -> trigger( 3 );
+  // Moonkins and Resto can precast 3 wild mushrooms without aggroing the boss
+  if ( preplant_mushrooms )
+    buff.wild_mushroom -> trigger( 3 );
+
+  if ( ( primary_tree() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
+  {
+    if ( initial_eclipse > 0 )
+    {
+      eclipse_bar_value = std::min( specialization.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
+      if ( buff.eclipse_solar -> trigger() )
+      {
+        // Solar proc => bar direction changes to -1 (towards Lunar)
+        eclipse_bar_direction = -1;
+      }
+    }
+    else
+    {
+      eclipse_bar_value = std::max( specialization.eclipse -> effectN( 2 ).base_value(), initial_eclipse );
+      if ( buff.eclipse_lunar -> trigger() )
+      {
+        // Lunar proc => bar direction changes to 1 (towards Solar)
+        eclipse_bar_direction = 1;
+      }
+    }
+  }
 }
 
 // druid_t::composite_armor_multiplier ======================================
@@ -4858,6 +4889,47 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
 
   return player_t::create_expression( a, name_str );
+}
+
+// druid_t::create_options =================================================
+
+void druid_t::create_options()
+{
+  player_t::create_options();
+
+  option_t druid_options[] =
+  {
+    { "initial_eclipse",               OPT_INT,  &( initial_eclipse    ) },
+    { "preplant_mushrooms",            OPT_BOOL, &( preplant_mushrooms ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+
+  option_t::copy( options, druid_options );
+}
+
+// druid_t::create_profile =================================================
+
+bool druid_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
+{
+  player_t::create_profile( profile_str, type, save_html );
+
+  if ( type == SAVE_ALL )
+  {
+    if ( initial_eclipse != 0 )
+    {
+      profile_str += "initial_eclipse=";
+      profile_str += util::to_string( initial_eclipse );
+      profile_str += "\n";
+    }
+    if ( preplant_mushrooms == 0 )
+    {
+      profile_str += "preplant_mushrooms=";
+      profile_str += util::to_string( preplant_mushrooms );
+      profile_str += "\n";
+    }
+  }
+
+  return true;
 }
 
 // druid_t::decode_set ======================================================

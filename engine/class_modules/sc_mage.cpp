@@ -3045,6 +3045,12 @@ void mage_t::init_actions()
     // Water Elemental
     if ( primary_tree() == MAGE_FROST ) action_list_str += "/water_elemental";
 
+    //Potions
+    if ( level > 80 )
+    {
+      action_list_str += "/volcanic_potion,if=!in_combat";
+    }
+
     // Snapshot Stats
     action_list_str += "/snapshot_stats";
     // Counterspell
@@ -3070,11 +3076,6 @@ void mage_t::init_actions()
       }
     }
     action_list_str += init_use_profession_actions();
-    //Potions
-    if ( level > 80 )
-    {
-      action_list_str += "/volcanic_potion,if=!in_combat";
-    }
     if ( level > 80 )
     {
       if ( primary_tree() == MAGE_FROST )

@@ -2534,7 +2534,7 @@ void paladin_t::init_actions()
 
       if ( level > 80 )
       {
-        action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/golemblood_potion,if=!in_combat/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
       // This should<tm> get Censure up before the auto attack lands
