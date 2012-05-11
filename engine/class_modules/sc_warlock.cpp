@@ -2509,9 +2509,9 @@ void warlock_t::init_actions()
         add_action( "Corruption",          "if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
         add_action( "Unstable Affliction", "if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
       }
-      add_action( "Drain Soul",            "interrupt=1,if=target.health.pct<=20" );
+      add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
       add_action( "Life Tap",              "if=mana.pct<=35" );
-      add_action( "Malefic Grasp" );
+      add_action( "Malefic Grasp",         "chain=1" );
       add_action( "Life Tap",              "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
       add_action( "Fel Flame",             "moving=1" );
       break;

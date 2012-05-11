@@ -217,11 +217,7 @@ const item_data_t* download_common( item_t& item, const std::string& item_id )
   long iid = strtol( item_id.c_str(), 0, 10 );
   const item_data_t* item_data = item.player -> dbc.item( iid );
   if ( iid <= 0 || ! item_data )
-  {
-    item.sim -> errorf( "Player %s unable to find item id %s at slot %s.\n",
-                        item.player -> name(), item_id.c_str(), item.slot_name() );
     return 0;
-  }
 
   if ( ! item_database_t::load_item_from_data( item, item_data ) )
     return 0;

@@ -3712,7 +3712,7 @@ void priest_t::init_actions()
         buffer += "/shadowfiend";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
-        buffer += "/mind_flay";
+        buffer += "/mind_flay,chain=1";
 
       if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
       {
