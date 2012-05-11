@@ -1586,6 +1586,8 @@ struct seed_of_corruption_t : public warlock_spell_t
     if ( soulburned )
     {
       background = true;
+      cooldown = p -> get_cooldown( "soulburn_seed_of_corruption" );
+      cooldown -> duration = timespan_t::from_seconds( 30 ); // FIXME: This stuff seems buggy on beta currently, need to retest
     }
     else
     {
@@ -1626,6 +1628,14 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     dot_damage_limit = data().effectN( 3 ).base_value();
     dot_damage_limit += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier() * data().effectN( 3 ).coeff(); 
+  }
+
+  virtual bool ready()
+  {
+    if ( soulburned_spell != 0 && p() -> buffs.soulburn -> check() )
+      return soulburned_spell -> ready();
+
+    return warlock_spell_t::ready();
   }
 };
 
