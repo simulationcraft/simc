@@ -1473,18 +1473,8 @@ struct soulburn_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if ( p() -> use_pre_soulburn || player -> in_combat )
-    {
-      p() -> buffs.soulburn -> trigger();
-      p() -> buffs.tier13_4pc_caster -> trigger();
-      // If this was a pre-combat soulburn, ensure we model the 3 seconds needed to regenerate the soul shard
-      if ( ! player -> in_combat )
-      {
-        p() -> buffs.soulburn -> extend_duration( player, timespan_t::from_seconds( -3 ) );
-        if ( p() -> buffs.tier13_4pc_caster -> check() )
-          p() -> buffs.tier13_4pc_caster -> extend_duration( player, timespan_t::from_seconds( -3 ) );
-      }
-    }
+    p() -> buffs.soulburn -> trigger();
+    p() -> buffs.tier13_4pc_caster -> trigger();
 
     warlock_spell_t::execute();
   }
@@ -1542,23 +1532,37 @@ struct imp_swarm_t : public warlock_spell_t
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
+  corruption_t* corruption;
+  bool trigger_corruption;
+
   seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p ) ), trigger_corruption( false )
   {
     proc       = true;
     background = true;
     aoe        = -1;
+    may_miss   = false; // FIXME: Assumed, needs testing
+    corruption -> background = true;
+    corruption -> dual = true;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::impact_s( s );
 
-    if ( p() -> buffs.soulburn -> check() )
+    if ( trigger_corruption )
     {
-      // Trigger Multiple Corruptions
-      p() -> buffs.soulburn -> expire();
+      corruption -> target = s -> target;
+      corruption -> execute();
     }
+  }
+
+  void trigger( bool soulburned ) {
+    trigger_corruption = soulburned;
+
+    if ( soulburned ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
+
+    execute();
   }
 };
 
@@ -1566,14 +1570,28 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
 struct seed_of_corruption_t : public warlock_spell_t
 {
   seed_of_corruption_aoe_t* seed_of_corruption_aoe;
-  double dot_damage_done;
+  double dot_damage_done, dot_damage_limit;
+  seed_of_corruption_t* soulburned_spell;
 
-  seed_of_corruption_t( warlock_t* p ) :
+  seed_of_corruption_t( warlock_t* p, bool soulburned = false ) :
     warlock_spell_t( p, "Seed of Corruption" ),
-    seed_of_corruption_aoe( 0 ), dot_damage_done( 0 )
+    seed_of_corruption_aoe( 0 ), dot_damage_done( 0 ), dot_damage_limit( 0 ), soulburned_spell( 0 )
   {
+    may_crit = false;
+    tick_power_mod = 0.3;
+
     seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
     add_child( seed_of_corruption_aoe );
+    
+    if ( soulburned )
+    {
+      background = true;
+    }
+    else
+    {
+      soulburned_spell = new seed_of_corruption_t( p, true );
+      add_child( soulburned_spell );
+    }
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1581,25 +1599,33 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-    {
       dot_damage_done = s -> target -> iteration_dmg_taken;
-      if ( td( s -> target ) -> dots_corruption -> ticking )
-      {
-        td( s -> target ) -> dots_corruption -> cancel();
-      }
-    }
   }
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
 
-    if ( target -> iteration_dmg_taken - dot_damage_done > data().effectN( 2 ).base_value() )
+    if ( d -> state -> target -> iteration_dmg_taken - dot_damage_done > dot_damage_limit )
     {
-      dot_damage_done=0.0;
-      seed_of_corruption_aoe -> execute();
-      spell_t::cancel();
+      seed_of_corruption_aoe -> trigger( soulburned_spell == 0 );
+      d -> cancel();
     }
+  }
+
+  virtual void execute()
+  {
+    if ( soulburned_spell != 0 && p() -> buffs.soulburn -> check() )
+    { 
+      p() -> buffs.soulburn -> expire();
+      soulburned_spell -> execute();
+      return;
+    }
+
+    warlock_spell_t::execute();
+
+    dot_damage_limit = data().effectN( 3 ).base_value();
+    dot_damage_limit += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier() * data().effectN( 3 ).coeff(); 
   }
 };
 
@@ -2383,14 +2409,15 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.life_tap     = get_gain( "life_tap"     );
-  gains.soul_leech   = get_gain( "soul_leech"   );
-  gains.tier13_4pc   = get_gain( "tier13_4pc"   );
-  gains.nightfall    = get_gain( "nightfall"    );
-  gains.drain_soul   = get_gain( "drain_soul"   );
-  gains.incinerate   = get_gain( "incinerate"   );
-  gains.rain_of_fire = get_gain( "rain_of_fire" );
-  gains.fel_flame    = get_gain( "fel_flame"    );
+  gains.life_tap           = get_gain( "life_tap"     );
+  gains.soul_leech         = get_gain( "soul_leech"   );
+  gains.tier13_4pc         = get_gain( "tier13_4pc"   );
+  gains.nightfall          = get_gain( "nightfall"    );
+  gains.drain_soul         = get_gain( "drain_soul"   );
+  gains.incinerate         = get_gain( "incinerate"   );
+  gains.rain_of_fire       = get_gain( "rain_of_fire" );
+  gains.fel_flame          = get_gain( "fel_flame"    );
+  gains.seed_of_corruption = get_gain( "seed_of_corruption" );
 }
 
 
@@ -2524,7 +2551,6 @@ void warlock_t::init_actions()
       add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
-
       add_action( "Incinerate" );
       add_action( "Fel Flame",             "moving=1" );      
       break;

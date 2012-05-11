@@ -305,19 +305,22 @@ void dot_tick_event_t::execute()
     }
   }
 
-  if ( dot -> current_tick == dot -> num_ticks )
+  if ( dot -> ticking )
   {
-    dot -> time_to_tick = timespan_t::zero();
-    dot -> action -> last_tick( dot );
-
-    if ( dot -> action -> channeled )
+    if ( dot -> current_tick == dot -> num_ticks )
     {
-      if ( dot -> action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+      dot -> time_to_tick = timespan_t::zero();
+      dot -> action -> last_tick( dot );
 
-      dot -> action -> player -> schedule_ready( timespan_t::zero() );
+      if ( dot -> action -> channeled )
+      {
+        if ( dot -> action -> player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  %s\n", dot -> name() );
+
+        dot -> action -> player -> schedule_ready( timespan_t::zero() );
+      }
     }
+    else dot -> schedule_tick();
   }
-  else dot -> schedule_tick();
 }
 
 // ==========================================================================
