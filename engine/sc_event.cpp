@@ -292,10 +292,10 @@ void dot_tick_event_t::execute()
     if ( dot -> action -> interrupt || ( dot -> action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) )
     {
       // Interrupt if any higher priority action is ready.
-      for ( size_t i = 0; dot -> action -> player -> action_list[ i ] != dot -> action; ++i )
+      for ( size_t i = 0; dot -> action -> player -> foreground_action_list[ i ] != dot -> action; ++i )
       {
         action_t* a = dot -> action -> player -> action_list[ i ];
-        if ( a -> background || a -> id == dot -> action -> id ) continue;
+        if ( a -> id == dot -> action -> id ) continue;
         if ( a -> ready() )
         {
           dot -> current_tick = dot -> num_ticks;
