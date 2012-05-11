@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15668
+// 224 talents, wow build 15677
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -176,9 +176,9 @@ static struct talent_data_t __talent_data[] = {
   { "Archimonde's Vengeance"            , 19296, 0x00, 0x0100, 0x00,     0,   0,   5,  108505,         0,  0 },
   { "Kil'jaeden's Cunning"              , 19297, 0x00, 0x0100, 0x00,     0,   1,   5,  119049,         0,  0 },
   { "Mannoroth's Fury"                  , 19298, 0x00, 0x0100, 0x00,     0,   2,   5,  108508,         0,  0 },
-  { "Nether Tempest"                    , 19299, 0x00, 0x0080, 0x00,     0,   0,   4,  114923,         0,  0 },
-  { "Living Bomb"                       , 19300, 0x00, 0x0080, 0x00,     0,   1,   4,   44457,         0,  0 },
-  { "Frost Bomb"                        , 19301, 0x00, 0x0080, 0x00,     0,   2,   4,  112948,         0,  0 },
+  { "Nether Tempest"                    , 19299, 0x00, 0x0080, 0x00,     0,   0,   4,  114923,    125430,  0 },
+  { "Living Bomb"                       , 19300, 0x00, 0x0080, 0x00,     0,   1,   4,   44457,    125430,  0 },
+  { "Frost Bomb"                        , 19301, 0x00, 0x0080, 0x00,     0,   2,   4,  112948,    125430,  0 },
   { "Celerity"                          , 19302, 0x00, 0x0200, 0x00,     0,   0,   0,  115173,         0,  0 },
   { "Momentum"                          , 19304, 0x00, 0x0200, 0x00,     0,   2,   0,  115174,         0,  0 },
   { "Chi Torpedo"                       , 19313, 0x00, 0x0200, 0x00,     0,   2,   5,  115008,    109132,  0 },
