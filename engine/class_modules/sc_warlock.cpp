@@ -541,6 +541,11 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    // costs mana per tick
+    consume_resource();
+    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
+      d -> current_tick = d -> num_ticks;
+
     warlock_spell_t::tick( d );
 
     heal -> execute();
@@ -573,6 +578,11 @@ struct drain_soul_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    // costs mana per tick
+    consume_resource();
+    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
+      d -> current_tick = d -> num_ticks;
+
     warlock_spell_t::tick( d );
 
     p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
@@ -957,7 +967,7 @@ struct life_tap_t : public warlock_spell_t
 
     // FIXME: Implement reduced healing debuff
     if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
-    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent() / 10, p() -> gains.life_tap );
+    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p() -> gains.life_tap );
   }
 };
 
@@ -1422,6 +1432,11 @@ struct malefic_grasp_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    // costs mana per tick
+    consume_resource();
+    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
+      d -> current_tick = d -> num_ticks;
+
     warlock_spell_t::tick( d );
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
