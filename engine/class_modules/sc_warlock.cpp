@@ -490,17 +490,26 @@ struct corruption_t : public warlock_spell_t
 
 struct drain_life_heal_t : public warlock_heal_t
 {
+  const spell_data_t* real_data;
+  const spell_data_t* soulburned_data;
+
   drain_life_heal_t( warlock_t* p ) :
     warlock_heal_t( "drain_life_heal", p, 89653 )
   {
     background = true;
     may_miss = false;
     base_dd_min = base_dd_max = 0; // Is parsed as 2
+    real_data       = p -> find_spell( 689 );
+    soulburned_data = p -> find_spell( 89420 );
   }
 
   virtual void execute()
   {
-    double heal_pct = data().effectN( 1 ).percent();
+    double heal_pct = real_data -> effectN( 2 ).percent();
+
+    if ( p() -> buffs.soulburn -> up() )
+      heal_pct = soulburned_data -> effectN( 2 ).percent();
+
     base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
 
     warlock_heal_t::execute();
@@ -528,16 +537,6 @@ struct drain_life_t : public warlock_spell_t
 
     if ( p() -> buffs.soulburn -> check() )
       p() -> buffs.soulburn -> expire();
-  }
-
-  virtual timespan_t tick_time( double haste ) const
-  {
-    timespan_t t = warlock_spell_t::tick_time( haste );
-
-    if ( p() -> buffs.soulburn -> up() )
-      t *= 1.0 - 0.5;
-
-    return t;
   }
 
   virtual void tick( dot_t* d )
