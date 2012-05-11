@@ -5202,17 +5202,7 @@ bool player_t::parse_talents_old_armory( const std::string& talent_string )
 
   w_spec = dbc.spec_by_idx( type, specidx );
 
-  if ( spec == SPEC_NONE )
-  {
-    // For now we only want to overwrite the spec if it's currently unset.
-    spec = w_spec;
-  }
-  else if ( spec != w_spec )
-  {
-    sim -> errorf( "Player %s has malformed Cataclysm talent string. Talent string spec %s does not match player spec %s.\n", name(),
-                   util::specialization_string( w_spec ).c_str(), util::specialization_string( spec ).c_str() );
-    return false;
-  }
+  spec = w_spec;
 
   if ( parse_talents_numbers( set_default_talents() ) )
   {
@@ -5347,23 +5337,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
     w_spec = dbc.spec_by_idx( type, specidx );
 
-    if ( w_spec == SPEC_NONE )
-    {
-      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid spec character\n", name() );
-      return false;
-    }
-
-    if ( spec == SPEC_NONE )
-    {
-      // For now we only want to overwrite the spec if it's currently unset.
-      spec = w_spec;
-    }
-    else if ( spec != w_spec )
-    {
-      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent string spec %s does not match player spec %s.\n", name(),
-                     util::specialization_string( w_spec ).c_str(), util::specialization_string( spec ).c_str() );
-      return false;
-    }
+    spec = w_spec;
   }
 
   std::string t_str = talent_string.substr( cut_pt + 1 );
@@ -5648,16 +5622,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     specialization_e w_spec = dbc.spec_by_idx( type, w_spec_idx );
 
-    if ( primary_tree() == SPEC_NONE )
-    {
-      spec = w_spec;
-    }
-    else if ( w_spec != primary_tree() )
-    {
-      sim -> errorf( "Player %s has malformed wowhead talent string. String specialization \"%s\" differs from player specialization \"%s\".\n", name(),
-                     util::specialization_string( w_spec ).c_str(), util::specialization_string( primary_tree() ).c_str() );
-      return false;
-    }
+    spec = w_spec;
   }
 
   if ( ( talent_string.size() - idx ) > 2 )

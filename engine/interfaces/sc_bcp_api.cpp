@@ -108,8 +108,7 @@ bool parse_talents( player_t* p, js_node_t* talents )
     {
       s = DRUID_GUARDIAN;
     }
-    if ( p -> spec == SPEC_NONE )
-      p -> spec = s;
+    p -> spec = s;
   }
 
   talent_encoding = p -> set_default_talents();

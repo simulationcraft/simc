@@ -1369,7 +1369,7 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-  if ( pre_combat == true && harmful == true )
+  if ( ( pre_combat != 0 ) && harmful == true )
     sim -> errorf( "Action %s cannot be specified as precombat action because it is harmful", name() );
 
   if ( ! ( background || sequence || ( pre_combat && ! harmful ) ) )

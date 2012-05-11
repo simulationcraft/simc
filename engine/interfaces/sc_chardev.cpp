@@ -170,51 +170,48 @@ player_t* download_player( sim_t* sim,
   // FIX-ME: Temporary override until wowhead profile updated for MoP
   std::string talent_encodings;
 
-  if ( p -> spec == SPEC_NONE )
+  uint32_t maxv = 0;
+  uint32_t maxi = 0;
+  uint32_t v[ 3 ];
+  v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
+
+  std::vector<js_node_t*> talent_nodes;
+  int num_talents = js_t::get_children( talent_nodes, talents_root );
+  for ( int i=0; i < num_talents; i++ )
   {
-    uint32_t maxv = 0;
-    uint32_t maxi = 0;
-    uint32_t v[ 3 ];
-    v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
-
-    std::vector<js_node_t*> talent_nodes;
-    int num_talents = js_t::get_children( talent_nodes, talents_root );
-    for ( int i=0; i < num_talents; i++ )
+    int ranks;
+    if ( js_t::get_value( ranks, talent_nodes[ i ] ) )
     {
-      int ranks;
-      if ( js_t::get_value( ranks, talent_nodes[ i ] ) )
-      {
-        v[ ( 3 * i ) / num_talents ] += ranks;
-      }
+      v[ ( 3 * i ) / num_talents ] += ranks;
     }
-    maxv = v[ 0 ];
-    for ( int i = 1; i < 3; i++ )
+  }
+  maxv = v[ 0 ];
+  for ( int i = 1; i < 3; i++ )
+  {
+    if ( v[ i ] >= maxv )
     {
-      if ( v[ i ] >= maxv )
-      {
-        maxi = i;
-        maxv = v[ i ];
-      }
+      maxi = i;
+      maxv = v[ i ];
     }
+  }
 
-    if ( maxv > 0 )
+  if ( maxv > 0 )
+  {
+    if ( p -> type == DRUID && maxi == 2 )
+      maxi = 3;
+
+    p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+  }
+
+  if ( p -> spec == DRUID_FERAL )
+  {
+    int a;
+
+    js_t::get_value( a, talent_nodes[ 37 ] );
+
+    if ( a > 0 )
     {
-      if ( p -> type == DRUID && maxi == 2 )
-        maxi = 3;
-
-      p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
-    }
-
-    if ( p -> spec == DRUID_FERAL )
-    {
-      int a;
-
-      js_t::get_value( a, talent_nodes[ 37 ] );
-
-      if ( a > 0 )
-      {
-        p -> spec = DRUID_GUARDIAN;
-      }
+      p -> spec = DRUID_GUARDIAN;
     }
   }
 

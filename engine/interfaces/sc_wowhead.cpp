@@ -686,7 +686,7 @@ player_t* download_player_profile( sim_t* sim,
 
     // Determine spec from number of talent points spent.
     js_node_t* spents = js_t::get_node( build, "spent" );
-    if ( p -> spec == SPEC_NONE && spents )
+    if ( spents )
     {
       js_node_t* spent[ 3 ];
       int maxv = 0;
