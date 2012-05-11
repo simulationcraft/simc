@@ -8,9 +8,9 @@ name=Priest_Shadow_T13H
 professions=tailoring=525/blacksmithing=525
 save=Priest_Shadow_T13H.simc
 
-wowhead=33771407
-talents=121210
-name=Priest_Shadow_T13H_2dot
-professions=tailoring=525/blacksmithing=525
-action_list=double_dot
-save=Priest_Shadow_T13H_2dot.simc
+#wowhead=33771407
+#talents=121210
+#name=Priest_Shadow_T13H_2dot
+#professions=tailoring=525/blacksmithing=525
+#action_list=double_dot
+#save=Priest_Shadow_T13H_2dot.simc
