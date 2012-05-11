@@ -1835,7 +1835,7 @@ struct devouring_plague_t : public priest_spell_t
 
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
-      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> action -> execute_state );
+      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
       proc_spell -> orbs_used = dps_t -> orbs_used;
       proc_spell -> schedule_execute();
     }
@@ -3671,9 +3671,6 @@ void priest_t::init_actions()
       if ( find_talent_spell( "Archangel" ) -> ok() )
         buffer += "/archangel";
 
-      if ( find_class_spell( "Mind Blast" ) -> ok() )
-        buffer += "/mind_blast,if=cooldown_react";
-
       if ( set_bonus.tier13_2pc_caster() )
       {
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
@@ -3682,10 +3679,13 @@ void priest_t::init_actions()
         }
       }
 
+      buffer += init_use_racial_actions();
+
+      if ( find_class_spell( "Mind Blast" ) -> ok() )
+        buffer += "/mind_blast,if=cooldown_react";
+
       if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         buffer += "/mind_spike,if=buff.surge_of_darkness.react";
-
-      buffer += init_use_racial_actions();
 
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
         buffer += "/power_infusion";
