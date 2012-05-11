@@ -4362,6 +4362,14 @@ struct cooldown_t
                                                                  , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
   cooldown_t( const std::string& n, sim_t* s )    : sim( s ),      player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), reset_react( timespan_t::zero() )
                                                                  , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
+
+  void adjust( timespan_t amount )
+  {
+    ready += amount;
+
+    if ( remains() == timespan_t::zero() )
+      reset( true );
+  }
   void reset( bool early = false )
   {
     ready = ready_init();

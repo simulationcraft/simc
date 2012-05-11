@@ -1446,11 +1446,11 @@ struct mind_flay_t : public priest_spell_t
       p() -> procs.shadowfiend_cooldown_reduction -> occur();
       if ( p() -> talents.mindbender -> ok() )
       {
-        p() -> cooldowns.mindbender  -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+        p() -> cooldowns.mindbender  -> adjust( timespan_t::from_seconds( -1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value() );
       }
       else
       {
-        p() -> cooldowns.shadowfiend -> ready -= timespan_t::from_seconds( 1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value();
+        p() -> cooldowns.shadowfiend -> adjust( timespan_t::from_seconds( -1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value() );
       }
     }
 
@@ -1888,7 +1888,7 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       if ( p() -> buffs.divine_insight_shadow -> trigger() )
       {
-        p() -> cooldowns.mind_blast -> reset();
+        p() -> cooldowns.mind_blast -> reset( true );
         p() -> procs.divine_insight_shadow -> occur();
       }
     }
@@ -2150,7 +2150,7 @@ struct smite_t : public priest_spell_t
     if ( p() -> specs.train_of_thought -> ok() )
     {
       if ( p() -> cooldowns.penance -> remains() > p() -> specs.train_of_thought -> effectN( 2 ).time_value() )
-        p() -> cooldowns.penance -> ready -= p() -> specs.train_of_thought -> effectN( 2 ).time_value();
+        p() -> cooldowns.penance -> adjust ( - p() -> specs.train_of_thought -> effectN( 2 ).time_value() );
       else
         p() -> cooldowns.penance -> reset();
     }
@@ -2432,7 +2432,7 @@ struct greater_heal_t : public priest_heal_t
     if ( p() -> specs.train_of_thought -> ok() )
     {
       if ( p() -> cooldowns.inner_focus -> remains() > timespan_t::from_seconds( p() -> specs.train_of_thought -> effectN( 1 ).base_value() ) )
-        p() -> cooldowns.inner_focus -> ready -= timespan_t::from_seconds( p() -> specs.train_of_thought -> effectN( 1 ).base_value() );
+        p() -> cooldowns.inner_focus -> adjust( timespan_t::from_seconds( - p() -> specs.train_of_thought -> effectN( 1 ).base_value() ) );
       else
         p() -> cooldowns.inner_focus -> reset();
     }
@@ -3672,7 +3672,7 @@ void priest_t::init_actions()
         buffer += "/archangel";
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
-        buffer += "/mind_blast";
+        buffer += "/mind_blast,if=cooldown_react";
 
       if ( set_bonus.tier13_2pc_caster() )
       {
@@ -3705,9 +3705,9 @@ void priest_t::init_actions()
         buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
-        buffer += "/mindbender";
+        buffer += "/mindbender,if=cooldown_react";
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        buffer += "/shadowfiend";
+        buffer += "/shadowfiend,if=cooldown_react";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
         buffer += "/mind_flay,chain=1,interrupt=1";
