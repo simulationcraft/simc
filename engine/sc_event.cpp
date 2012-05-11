@@ -295,7 +295,7 @@ void dot_tick_event_t::execute()
       for ( size_t i = 0; dot -> action -> player -> action_list[ i ] != dot -> action; ++i )
       {
         action_t* a = dot -> action -> player -> action_list[ i ];
-        if ( a -> background ) continue;
+        if ( a -> background || a -> id == dot -> action -> id ) continue;
         if ( a -> ready() )
         {
           dot -> current_tick = dot -> num_ticks;
