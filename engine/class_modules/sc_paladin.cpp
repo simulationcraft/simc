@@ -117,7 +117,6 @@ struct paladin_t : public player_t
   // Passives
   struct passives_t
   {
-    const spell_data_t* tier13_4pc_melee_value;
     const spell_data_t* boundless_conviction;
     const spell_data_t* crusaders_zeal;
     const spell_data_t* divine_bulwark;
@@ -233,7 +232,7 @@ struct paladin_t : public player_t
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
-  virtual double    composite_attack_speed() const;
+  virtual double    composite_attack_crit( const weapon_t* = 0 ) const;
   virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
   virtual double    composite_spell_power( school_type_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
@@ -732,8 +731,7 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p() -> passives.crusaders_zeal -> ok() )
       {
-        p() -> buffs.zealotry -> decrement();
-        p() -> buffs.zealotry -> trigger( 3 );
+        p() -> buffs.zealotry -> trigger();
       }
       if ( p() -> passives.the_art_of_war -> ok() && sim -> roll( p() -> passives.the_art_of_war -> proc_chance() ) )
       {
@@ -1550,6 +1548,16 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( result_is_hit() )
     {
       trigger_hand_of_light( this );
+    }
+  }
+
+  virtual void player_buff()
+  {
+    paladin_melee_attack_t::player_buff();
+
+    if ( p() -> set_bonus.tier13_4pc_melee() )
+    {
+      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     }
   }
 };
@@ -2460,9 +2468,9 @@ void paladin_t::init_buffs()
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
-                                 .default_value( find_spell( 107397 ) -> effectN( 1 ).percent() )
+                                 .default_value( passives.crusaders_zeal -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                  .max_stack( 3 )
-                                 .duration( find_spell( 107397 ) -> duration() );
+                                 .duration( passives.crusaders_zeal -> effectN( 1 ).trigger() -> duration() );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2736,10 +2744,7 @@ void paladin_t::init_spells()
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
 
-  // Gear passives
-  passives.tier13_4pc_melee_value = find_spell( 105819 );
-
-  // Glyphs
+    // Glyphs
   glyphs.ascetic_crusader         = find_glyph_spell( "Glyph of the Ascetic Crusader" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
@@ -2827,14 +2832,13 @@ double paladin_t::composite_attribute_multiplier( attribute_type_e attr ) const
   return m;
 }
 
-double paladin_t::composite_attack_speed() const
-{
-  double m = player_t::composite_attack_speed();
+// paladin_t::composite_attack_crit ===================================
 
-  if ( buffs.zealotry -> check() )
-  {
-    m /= 1.0 + buffs.zealotry -> value();
-  }
+double paladin_t::composite_attack_crit( const weapon_t* w ) const
+{
+  double m = player_t::composite_attack_crit( w );
+
+  m *= 1.0 + buffs.zealotry -> value() * buffs.zealotry -> check();  // BUG: 15677. Multiplies with crit rather than adding to it.
 
   return m;
 }
@@ -2847,8 +2851,6 @@ double paladin_t::composite_player_multiplier( school_type_e school, const actio
 
   // These affect all damage done by the paladin
   m *= 1.0 + buffs.avenging_wrath -> value();
-
-  m *= 1.0 + ( ( buffs.zealotry -> up() ) ? set_bonus.tier13_4pc_melee() * passives.tier13_4pc_melee_value -> effectN( 1 ).percent() : 0.0 );
 
   if ( school == SCHOOL_HOLY )
   {
