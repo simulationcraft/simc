@@ -328,6 +328,7 @@ struct druid_t : public player_t
     const spell_data_t* bear_form; // Bear form bonuses
     const spell_data_t* combo_point; // Combo point spell
     const spell_data_t* eclipse; // Eclipse mana gain
+    const spell_data_t* heart_of_the_wild; // HotW INT/AGI bonus
     const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Lacerate mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
@@ -4079,6 +4080,7 @@ void druid_t::init_spells()
   spell.berserk_cat                     = find_spell( 106951 ); // Berserk cat resource cost reducer
   spell.combo_point                     = find_spell( 34071 );  // Combo point add "spell", weird
   spell.eclipse                         = find_spell( 81070 );  // Eclipse mana gain trigger
+  spell.heart_of_the_wild               = find_spell( 17005 );  // HotW INT/AGI bonus
   spell.leader_of_the_pack              = find_spell( 24932 );  // LotP aura
   spell.mangle                          = find_spell( 93622 );  // Lacerage mangle cooldown reset
   spell.moonkin_form                    = find_spell( 24905 );  // This is the passive applied on shapeshift!
@@ -4819,11 +4821,11 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
     break;
   case ATTR_AGILITY:
     if ( talent.heart_of_the_wild -> ok() )
-      m *= 1.0 + 0.06;
+      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
     break;
   case ATTR_INTELLECT:
     if ( talent.heart_of_the_wild -> ok() )
-      m *= 1.0 + 0.06;
+      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
     break;
   default:
     break;
