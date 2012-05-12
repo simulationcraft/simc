@@ -2504,18 +2504,30 @@ void paladin_t::init_actions()
     {
       if ( level > 80 )
       {
-        action_list_str += "/flask,type=titanic_strength/food,type=beer_basted_crocolisk";
+        action_list_str += "/flask,precombat=1,type=titanic_strength/food,precombat=1,type=beer_basted_crocolisk";
       }
 
       if ( find_class_spell( "Blessing of Kings" ) -> ok() ) 
-        action_list_str += "/blessing_of_kings,if=!aura.str_agi_int.up";
+        action_list_str += "/blessing_of_kings,precombat=1,if=!aura.str_agi_int.up";
       if ( find_class_spell( "Blessing of Might" ) -> ok() )
       {
-        action_list_str += "/blessing_of_might,if=!aura.mastery.up";
+        action_list_str += "/blessing_of_might,precombat=1,if=!aura.mastery.up";
         if ( find_class_spell( "Blessing of Kings" ) -> ok() )
           action_list_str += "&!aura.str_agi_int.up";
       }
-      action_list_str += "/snapshot_stats";
+
+      if ( find_class_spell( "Seal of Truth" ) -> ok() )
+      {
+        action_list_str += "/seal_of_truth,precombat=1";
+      }
+
+      action_list_str += "/snapshot_stats,precombat=1,combat=0";
+
+      if ( level > 80 )
+      {
+        action_list_str += "/golemblood_potion,precombat=1";
+      }
+
       if ( find_class_spell( "Rebuke" ) -> ok() )
         action_list_str += "/rebuke";
 
@@ -2534,7 +2546,7 @@ void paladin_t::init_actions()
 
       if ( level > 80 )
       {
-        action_list_str += "/golemblood_potion,if=!in_combat/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
       // This should<tm> get Censure up before the auto attack lands

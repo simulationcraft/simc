@@ -11,12 +11,12 @@ use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=000020
 glyphs=everlasting_affliction/imp_swarm
-actions+=/flask,type=draconic_mind
-actions+=/food,type=seafood_magnifique_feast
-actions+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions+=/flask,precombat=1,type=draconic_mind
+actions+=/food,precombat=1,type=seafood_magnifique_feast
+actions+=/dark_intent,precombat=1,if=!aura.spell_power_multiplier.up
 actions+=/summon_felguard
-actions+=/volcanic_potion,if=!in_combat
-actions+=/snapshot_stats
+actions+=/snapshot_stats,precombat=1,combat=0
+actions+=/volcanic_potion,precombat=1
 actions+=/service_felguard
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20

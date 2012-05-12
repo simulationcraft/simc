@@ -3624,31 +3624,35 @@ void priest_t::init_actions()
 
   if ( buffer.empty() )
   {
+    // Flask
+    if ( level > 85 )
+      buffer += "/flask,precombat=1,type=warm_sun";
+    else if ( level >= 80 )
+      buffer += "/flask,precombat=1,type=draconic_mind";
+
     if ( level > 80 )
     {
-      buffer = "flask,type=draconic_mind/food,type=seafood_magnifique_feast";
-    }
-    else if ( level >= 75 )
-    {
-      buffer = "flask,type=frost_wyrm/food,type=fish_feast";
+      buffer += "/food,precombat=1,type=seafood_magnifique_feast";
     }
 
     if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
-      buffer += "/fortitude,if=!aura.stamina.up";
+      buffer += "/fortitude,precombat=1,if=!aura.stamina.up";
 
     if ( find_class_spell( "Inner Fire" ) -> ok() )
-      buffer += "/inner_fire";
-
+      buffer += "/inner_fire,precombat=1";
 
     if ( find_class_spell( "Shadowform" ) -> ok() )
-      buffer += "/shadowform";
+      buffer += "/shadowform,precombat=1";
+
+    buffer += "/snapshot_stats,precombat=1,combat=0";
 
     if ( level > 80 )
     {
-      buffer += "/volcanic_potion,if=!in_combat";
+      buffer += "/volcanic_potion,precombat=1";
     }
 
-    buffer += "/snapshot_stats";
+    if ( find_class_spell( "Shadowform" ) -> ok() )
+      buffer += "/shadowform";
 
     buffer += init_use_item_actions();
 

@@ -4411,7 +4411,7 @@ void druid_t::init_actions()
     }
 
     // Flask
-    action_list_str += "flask,type=";
+    action_list_str += "flask,precombat=1,type=";
     if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
     else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
@@ -4420,27 +4420,27 @@ void druid_t::init_actions()
       action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
 
     // Food
-    action_list_str += "/food,type=seafood_magnifique_feast";
+    action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
 
     // MotW
-    action_list_str += "/mark_of_the_wild,if=!aura.str_agi_int.up";
+    action_list_str += "/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up";
 
     // Forms
     if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += "/cat_form";
+      action_list_str += "/cat_form,precombat=1";
     else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-      action_list_str += "/bear_form";
+      action_list_str += "/bear_form,precombat=1";
     else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
-      action_list_str += "/moonkin_form";
+      action_list_str += "/moonkin_form,precombat=1";
+
+    // Snapshot stats
+    action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
     // Prepotion 
     if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += "/tolvir_potion,if=!in_combat";
+      action_list_str += "/tolvir_potion,precombat=1";
     else
-      action_list_str += "/volcanic_potion,if=!in_combat";
-
-    // Snapshot stats
-    action_list_str += "/snapshot_stats";
+      action_list_str += "/volcanic_potion,precombat=1";
     
     // Potion use
     if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )

@@ -2500,14 +2500,14 @@ void warlock_t::init_actions()
   {
     // Flask
     if ( level > 85 )
-      action_list_str = "flask,type=warm_sun";
+      action_list_str = "flask,precombat=1,type=warm_sun";
     else if ( level >= 80 )
-      action_list_str = "flask,type=draconic_mind";
+      action_list_str = "flask,precombat=1,type=draconic_mind";
 
     // Food
-    if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
+    if ( level >= 80 ) action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
 
-    add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up" );
+    add_action( "Dark Intent", "precombat=1,if=!aura.spell_power_multiplier.up" );
 
     std::string pet;
 
@@ -2525,12 +2525,11 @@ void warlock_t::init_actions()
     if ( talents.grimoire_of_sacrifice -> ok() )
       action_list_str += ",if=buff.grimoire_of_sacrifice.down";
 
+    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+
     // Pre-potion
     if ( level >= 80 )
-      action_list_str += "/volcanic_potion,if=!in_combat";
-
-    action_list_str += "/snapshot_stats";
-
+      action_list_str += "/volcanic_potion,precombat=1";
  
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;

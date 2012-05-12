@@ -3994,53 +3994,52 @@ void shaman_t::init_actions()
   std::ostringstream s;
 
   // Flask
-  if ( level >= 80 ) s << "flask,type=";
+  if ( level >= 80 ) s << "flask,precombat=1,type=";
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
     s << ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
   else
     s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 
   // Food
-  if ( level >= 80 ) s << "/food,type=seafood_magnifique_feast";
+  if ( level >= 80 ) s << "/food,precombat=1,type=seafood_magnifique_feast";
 
   // Weapon Enchants
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) )
   {
-    if ( level >= 30 ) s << "/windfury_weapon,weapon=main";
+    if ( level >= 30 ) s << "/windfury_weapon,precombat=1,weapon=main";
     if ( off_hand_weapon.type != WEAPON_NONE )
-      if ( level >= 10 ) s << "/flametongue_weapon,weapon=off";
+      if ( level >= 10 ) s << "/flametongue_weapon,precombat=1,weapon=off";
   }
   else
   {
-    if ( level >= 10 ) s << "/flametongue_weapon,weapon=main";
+    if ( level >= 10 ) s << "/flametongue_weapon,precombat=1,weapon=main";
     if ( spec == SHAMAN_ENHANCEMENT && off_hand_weapon.type != WEAPON_NONE )
-      if ( level >= 10 ) s << "/flametongue_weapon,weapon=off";
+      if ( level >= 10 ) s << "/flametongue_weapon,precombat=1,weapon=off";
   }
 
   // Active Shield, presume any non-restoration / healer wants lightning shield
   if ( spec != SHAMAN_RESTORATION || primary_role() != ROLE_HEAL )
   {
-    if ( level >= 8  ) s << "/lightning_shield";
+    if ( level >= 8  ) s << "/lightning_shield,precombat=1";
   }
   else
   {
-    if ( level >= 20 ) s << "/water_shield";
+    if ( level >= 20 ) s << "/water_shield,precombat=1";
   }
+
+  // Snapshot stats
+  s << "/snapshot_stats,precombat=1,combat=0";
 
   // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
-    if ( level >= 80 ) s << "/tolvir_potion,if=!in_combat";
+    if ( level >= 80 ) s << "/tolvir_potion,precombat=1";
   }
   else
   {
-    if ( level >= 80 ) s << "/volcanic_potion,if=!in_combat";
+    if ( level >= 80 ) s << "/volcanic_potion,precombat=1";
   }
-
-  // Snapshot stats
-  s << "/snapshot_stats";
   
-
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) s << "/wind_shear";
   if ( level >= 70 ) s << "/bloodlust,if=target.health.pct<=25|target.time_to_die<=60";

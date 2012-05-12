@@ -3016,43 +3016,44 @@ void mage_t::init_actions()
 
     // Flask
     if ( level >= 80 )
-      action_list_str = "flask,type=draconic_mind";
+      action_list_str = "flask,precombat=1,type=draconic_mind";
     else if ( level >= 75 )
-      action_list_str = "flask,type=frost_wyrm";
+      action_list_str = "flask,precombat=1,type=frost_wyrm";
 
     // Food
-    if ( level >= 80 ) action_list_str += "/food,type=seafood_magnifique_feast";
-    else if ( level >= 70 ) action_list_str += "/food,type=fish_feast";
+    if ( level >= 80 ) action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
+    else if ( level >= 70 ) action_list_str += "/food,precombat=1,type=fish_feast";
 
     // Arcane Brilliance
-    if ( level >= 58 ) action_list_str += "/arcane_brilliance,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
+    if ( level >= 58 ) action_list_str += "/arcane_brilliance,precombat=1,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
 
     // Armor
     if ( primary_tree() == MAGE_ARCANE )
     {
-      action_list_str += "/mage_armor";
+      action_list_str += "/mage_armor,precombat=1";
     }
     else if ( primary_tree() == MAGE_FIRE )
     {
-      action_list_str += "/molten_armor,if=buff.mage_armor.down&buff.molten_armor.down";
-      action_list_str += "/molten_armor,if=mana_pct>45&buff.mage_armor.up";
+      action_list_str += "/molten_armor,precombat=1,if=buff.mage_armor.down&buff.molten_armor.down";
+      action_list_str += "/molten_armor,precombat=1,if=mana_pct>45&buff.mage_armor.up";
     }
     else
     {
-      action_list_str += "/molten_armor";
+      action_list_str += "/molten_armor,precombat=1";
     }
 
     // Water Elemental
-    if ( primary_tree() == MAGE_FROST ) action_list_str += "/water_elemental";
+    if ( primary_tree() == MAGE_FROST ) action_list_str += "/water_elemental,precombat=1";
+
+    // Snapshot Stats
+    action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
     //Potions
     if ( level > 80 )
     {
-      action_list_str += "/volcanic_potion,if=!in_combat";
+      action_list_str += "/volcanic_potion,precombat=1";
     }
 
-    // Snapshot Stats
-    action_list_str += "/snapshot_stats";
     // Counterspell
     action_list_str += "/counterspell";
     // Refresh Gem during invuln phases
