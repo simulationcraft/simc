@@ -13,37 +13,8 @@
 
 #if SC_WARLOCK == 1
 
-int warlock_targetdata_t::affliction_effects()
-{
-  int effects = 0;
-  if ( dots_agony -> ticking                ) effects++;
-  if ( dots_doom -> ticking                 ) effects++;
-  if ( dots_corruption -> ticking           ) effects++;
-  if ( dots_drain_life -> ticking           ) effects++;
-  if ( dots_drain_soul -> ticking           ) effects++;
-  if ( dots_unstable_affliction -> ticking  ) effects++;
-  if ( dots_malefic_grasp -> ticking        ) effects++;
-  if ( debuffs_haunt        -> check()      ) effects++;
-  return effects;
-}
-
-int warlock_targetdata_t::active_dots()
-{
-  int dots = 0;
-  if ( dots_agony -> ticking                    ) dots++;
-  if ( dots_doom -> ticking                     ) dots++;
-  if ( dots_corruption -> ticking               ) dots++;
-  if ( dots_drain_life -> ticking               ) dots++;
-  if ( dots_drain_soul -> ticking               ) dots++;
-  if ( dots_immolate -> ticking                 ) dots++;
-  if ( dots_shadowflame -> ticking              ) dots++;
-  if ( dots_unstable_affliction -> ticking      ) dots++;
-  if ( dots_malefic_grasp -> ticking            ) dots++;
-  return dots;
-}
-
 warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
-  : targetdata_t( p, target ), ds_started_below_20( false ), shadowflame_stack( 0 )
+  : targetdata_t( p, target ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
 {
   debuffs_haunt = add_aura( buff_creator_t( this, "haunt", source -> find_spell( "haunt" ) ) );
 }
@@ -142,12 +113,23 @@ public:
     return spell_t::ready();
   }
 
+  static void trigger_seed_of_corruption( warlock_targetdata_t* td, spell_t* spell, double amount );
+
   virtual void tick( dot_t* d )
   {
     spell_t::tick( d );
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
+
+    trigger_seed_of_corruption( td( d -> state -> target ), p() -> seed_of_corruption_aoe, d -> state -> result_amount );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    spell_t::impact_s( s );
+
+    trigger_seed_of_corruption( td( s -> target ), p() -> seed_of_corruption_aoe, s -> result_amount );
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -449,14 +431,23 @@ struct shadowburn_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  corruption_t( warlock_t* p ) :
-    warlock_spell_t( p, "Corruption" )
+  bool soc_triggered;
+
+  corruption_t( warlock_t* p, bool soc = false ) :
+    warlock_spell_t( p, "Corruption" ), soc_triggered( soc )
   {
     may_crit = false;
     tick_power_mod = 0.3; // tested on beta 2012/04/28
     generate_fury = 6;
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   };
+
+  virtual timespan_t travel_time() const
+  {
+    if ( soc_triggered ) return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+
+    return warlock_spell_t::travel_time();
+  }
 
   virtual void tick( dot_t* d )
   {
@@ -1530,13 +1521,25 @@ struct imp_swarm_t : public warlock_spell_t
 
 // AOE SPELLS
 
+struct soc_state_t : public action_state_t
+{
+  bool soulburned;
+
+  soc_state_t( action_t* spell, player_t* target, warlock_t* p ) :
+    action_state_t( spell, target ), soulburned( false )
+  {
+  }
+};
+
+
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
+  action_state_t* new_state() { return new soc_state_t( this, target, p() ); }
+
   corruption_t* corruption;
-  bool trigger_corruption;
 
   seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p ) ), trigger_corruption( false )
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
   {
     proc       = true;
     background = true;
@@ -1544,56 +1547,60 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     may_miss   = false; // FIXME: Assumed, needs testing
     corruption -> background = true;
     corruption -> dual = true;
+    corruption -> proc = true;
+  }
+
+  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  {
+    warlock_spell_t::snapshot_state( state, flags );
+    soc_state_t* soc_state = debug_cast< soc_state_t* >( td( state -> target ) -> dots_seed_of_corruption -> state );
+    debug_cast< soc_state_t* >( state ) -> soulburned = soc_state -> soulburned;
   }
 
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
 
-    if ( trigger_corruption )
+    if ( debug_cast< soc_state_t* >( s ) -> soulburned )
     {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
       corruption -> target = s -> target;
       corruption -> execute();
     }
   }
-
-  void trigger( bool soulburned ) {
-    trigger_corruption = soulburned;
-
-    if ( soulburned ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
-
-    execute();
-  }
 };
+
+
+void warlock_spell_t::trigger_seed_of_corruption( warlock_targetdata_t* td, spell_t* spell, double amount )
+{
+  dot_t* soc = td -> dots_seed_of_corruption;
+  if ( soc -> ticking && td -> soc_trigger > 0 )
+  {
+    td -> soc_trigger -= amount;
+    if ( td -> soc_trigger <= 0 )
+    {
+      spell -> execute();
+      soc -> cancel();
+    }
+  }
+}
 
 
 struct seed_of_corruption_t : public warlock_spell_t
 {
-  seed_of_corruption_aoe_t* seed_of_corruption_aoe;
-  double dot_damage_done, dot_damage_limit;
-  seed_of_corruption_t* soulburned_spell;
+  action_state_t* new_state() { return new soc_state_t( this, target, p() ); }
+
+  cooldown_t* soulburn_cooldown;
 
   seed_of_corruption_t( warlock_t* p, bool soulburned = false ) :
-    warlock_spell_t( p, "Seed of Corruption" ),
-    seed_of_corruption_aoe( 0 ), dot_damage_done( 0 ), dot_damage_limit( 0 ), soulburned_spell( 0 )
+    warlock_spell_t( p, "Seed of Corruption" ), soulburn_cooldown( p -> get_cooldown( "soulburn_seed_of_corruption" ) )
   {
     may_crit = false;
     tick_power_mod = 0.3;
+    soulburn_cooldown -> duration = timespan_t::from_seconds( 30 ); // FIXME: Needs testing
 
-    seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
-    add_child( seed_of_corruption_aoe );
-    
-    if ( soulburned )
-    {
-      background = true;
-      cooldown = p -> get_cooldown( "soulburn_seed_of_corruption" );
-      cooldown -> duration = timespan_t::from_seconds( 30 ); // FIXME: This stuff seems buggy on beta currently, need to retest
-    }
-    else
-    {
-      soulburned_spell = new seed_of_corruption_t( p, true );
-      add_child( soulburned_spell );
-    }
+    p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    add_child( p -> seed_of_corruption_aoe );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1601,39 +1608,30 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-      dot_damage_done = s -> target -> iteration_dmg_taken;
+      td( s -> target ) -> soc_trigger = data().effectN( 3 ).base_value() + s -> composite_power() * data().effectN( 3 ).coeff(); 
   }
 
-  virtual void tick( dot_t* d )
+  virtual void snapshot_state( action_state_t* state, uint32_t flags )
   {
-    warlock_spell_t::tick( d );
-
-    if ( d -> state -> target -> iteration_dmg_taken - dot_damage_done > dot_damage_limit )
-    {
-      seed_of_corruption_aoe -> trigger( soulburned_spell == 0 );
-      d -> cancel();
-    }
+    warlock_spell_t::snapshot_state( state, flags );
+    debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> check() ) ? true : false;
   }
 
   virtual void execute()
   {
-    if ( soulburned_spell != 0 && p() -> buffs.soulburn -> check() )
-    { 
-      p() -> buffs.soulburn -> expire();
-      soulburned_spell -> execute();
-      return;
-    }
-
     warlock_spell_t::execute();
 
-    dot_damage_limit = data().effectN( 3 ).base_value();
-    dot_damage_limit += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier() * data().effectN( 3 ).coeff(); 
+    if ( p() -> buffs.soulburn -> check() )
+    {
+      p() -> buffs.soulburn -> expire();
+      soulburn_cooldown -> start();
+    }
   }
 
   virtual bool ready()
   {
-    if ( soulburned_spell != 0 && p() -> buffs.soulburn -> check() )
-      return soulburned_spell -> ready();
+    if ( p() -> buffs.soulburn -> check() )
+      if ( soulburn_cooldown -> remains() > timespan_t::zero() ) return false;
 
     return warlock_spell_t::ready();
   }
@@ -2774,6 +2772,7 @@ void class_modules::register_targetdata::warlock( sim_t* sim )
   REGISTER_DOT( drain_soul );
   REGISTER_DOT( shadowflame );
   REGISTER_DOT( malefic_grasp );
+  REGISTER_DOT( seed_of_corruption );
 
   REGISTER_DEBUFF( haunt );
 }

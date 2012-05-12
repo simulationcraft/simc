@@ -27,11 +27,13 @@ struct warlock_targetdata_t : public targetdata_t
   dot_t*  dots_drain_soul;
   dot_t*  dots_shadowflame;
   dot_t*  dots_malefic_grasp;
+  dot_t*  dots_seed_of_corruption;
 
   buff_t* debuffs_haunt;
 
   bool ds_started_below_20;
   int shadowflame_stack;
+  double soc_trigger;
 
   int affliction_effects();
   int active_dots();
@@ -43,6 +45,8 @@ struct wild_imp_pet_t;
 
 struct warlock_t : public player_t
 {
+  spell_t* seed_of_corruption_aoe;
+
   // Active Pet
   struct pets_t
   {
