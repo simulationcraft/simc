@@ -651,13 +651,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        31589, // Slow
            0,
     },
-    // Fire tree, 5 abilities
+    // Fire tree, 6 abilities
     {
        11129, // Combustion
        31661, // Dragon's Breath
          133, // Fireball
       108853, // Inferno Blast
        11366, // Pyroblast
+       48108, // Pyroblast!
            0,
     },
     // Frost tree, 4 abilities

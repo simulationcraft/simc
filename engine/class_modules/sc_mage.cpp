@@ -53,8 +53,8 @@ struct mage_t : public player_t
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
     buff_t* frost_armor;
-    buff_t* hot_streak;
-    buff_t* hot_streak_crits;
+    buff_t* heating_up;
+    buff_t* pyroblast;
     buff_t* icy_veins;
     buff_t* invocation;
     buff_t* mage_armor;
@@ -166,6 +166,8 @@ struct mage_t : public player_t
 
     const spell_data_t* stolen_time;
 
+    const spell_data_t* arcane_charge_arcane_blast;
+
   } spells;
 
   // Specializations
@@ -174,6 +176,7 @@ struct mage_t : public player_t
     // Arcane
     const spell_data_t* arcane_charge;
     const spell_data_t* mana_adept;
+    const spell_data_t* slow;
 
     // Fire
     const spell_data_t* critical_mass;
@@ -306,7 +309,7 @@ struct mage_t : public player_t
 mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target ) :
   targetdata_t( source, target )
 {
-  debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> find_spell( 31589 ) ) );
+  debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> spec.slow ) );
 }
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
@@ -344,6 +347,7 @@ struct mage_spell_t : public spell_t
   virtual double haste() const;
   virtual void   execute();
   virtual void   player_buff();
+  virtual double total_crit() const;
   virtual timespan_t execute_time() const;
   virtual double hot_streak_crit() { return player_crit; }
 };
@@ -357,7 +361,7 @@ struct water_elemental_pet_t : public pet_t
   struct freeze_t : public spell_t
   {
     freeze_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "freeze", p, p -> find_spell( 33395 ) )
+      spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
     {
       parse_options( NULL, options_str );
       aoe = -1;
@@ -393,7 +397,7 @@ struct water_elemental_pet_t : public pet_t
   struct water_bolt_t : public spell_t
   {
     water_bolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "water_bolt", p, p -> find_spell( 31707 ) )
+      spell_t( "water_bolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       parse_options( NULL, options_str );
       may_crit = true;
@@ -482,7 +486,7 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     arcane_blast_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_arcane_blast", p, p -> find_spell( 88084 ) ), next_in_sequence( nis )
+      spell_t( "mirror_arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) ), next_in_sequence( nis )
     {
       may_crit          = true;
       background        = true;
@@ -494,7 +498,9 @@ struct mirror_image_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spec.arcane_charge -> effectN( 1 ).percent();
+      double s = p() -> o() -> buffs.arcane_charge -> stack();
+      double v = p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+      player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
     }
 
     virtual void execute()
@@ -519,7 +525,7 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     fire_blast_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_fire_blast", p, p -> find_spell( 59637 ) ),
+      spell_t( "mirror_fire_blast", p, p -> find_pet_spell( "Fire Blast" ) ),
       next_in_sequence( nis )
     {
       background        = true;
@@ -547,7 +553,7 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     fireball_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_fireball", p, p -> find_spell( 88082 ) ),
+      spell_t( "mirror_fireball", p, p -> find_pet_spell( "Fireball" ) ),
       next_in_sequence( nis )
     {
       may_crit          = true;
@@ -575,7 +581,7 @@ struct mirror_image_pet_t : public pet_t
     action_t* next_in_sequence;
 
     frostbolt_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_frost_bolt", p, p -> find_spell( 59638 ) ),
+      spell_t( "mirror_frost_bolt", p, p -> find_pet_spell( "Frostbolt" ) ),
       next_in_sequence( nis )
     {
       may_crit          = true;
@@ -736,19 +742,20 @@ static void trigger_hot_streak( mage_spell_t* s )
     p -> procs.crit_for_hotstreak -> occur();
     // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
-    double hot_streak_chance = -2.73 * s -> hot_streak_crit() + 0.95;
-
-    if ( hot_streak_chance < 0.0 ) hot_streak_chance = 0.0;
-
-    if ( hot_streak_chance > 0 && p -> buffs.hot_streak -> trigger( 1, 0, hot_streak_chance ) )
+    if ( ! p -> buffs.heating_up -> up() )
     {
-      p -> procs.hotstreak -> occur();
-      p -> buffs.hot_streak_crits -> expire();
+      p -> buffs.heating_up -> trigger();
+    }
+    else
+    {
+      p -> procs.hotstreak  -> occur();
+      p -> buffs.heating_up -> expire();
+      p -> buffs.pyroblast  -> trigger();
     }
   }
   else
   {
-    p -> buffs.hot_streak_crits -> expire();
+    p -> buffs.heating_up -> expire();
   }
 }
 
@@ -757,7 +764,7 @@ static void trigger_hot_streak( mage_spell_t* s )
 struct ignite_t : public mage_spell_t
 {
   ignite_t( mage_t* player ) :
-    mage_spell_t( "ignite", player, player -> find_spell( 12654 ) )
+    mage_spell_t( "ignite", player, player -> spec.ignite )
   {
     background = true;
 
@@ -988,6 +995,20 @@ void mage_spell_t::player_buff()
     player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
 }
 
+// mage_spell_t::total_crit ================================================
+
+double mage_spell_t::total_crit() const
+{
+  double c = spell_t::total_crit();
+
+  if ( frozen && p() -> passives.shatter -> ok() )
+  {
+    c = c * 2.0 + 0.40;
+  }
+
+  return c;
+}
+
 // ==========================================================================
 // Mage Spells
 // ==========================================================================
@@ -997,7 +1018,7 @@ void mage_spell_t::player_buff()
 struct arcane_barrage_t : public mage_spell_t
 {
   arcane_barrage_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "arcane_barrage", p, p -> find_spell( 44425 ) )
+    mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) )
   {
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
@@ -1032,7 +1053,7 @@ struct arcane_barrage_t : public mage_spell_t
 struct arcane_blast_t : public mage_spell_t
 {
   arcane_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "arcane_blast", p, p -> find_spell( 30451 ) )
+    mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1049,11 +1070,7 @@ struct arcane_blast_t : public mage_spell_t
   virtual double cost() const
   {
     double c = spell_t::cost();
-    double base_cost = c;
-    double stack_cost = 0;
 
-    // Arcane Power only affects the initial base cost, it doesn't inflate the stack cost too
-    // ( BaseCost * AP ) + ( BaseCost * 1.5 * ABStacks )
     if ( p() -> buffs.arcane_power -> check() )
     {
       c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
@@ -1061,10 +1078,8 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( p() -> buffs.arcane_charge -> check() )
     {
-      stack_cost = base_cost * p() -> buffs.arcane_charge -> check() * p() -> spec.arcane_charge -> effectN( 2 ).percent();
+      c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent();
     }
-
-    c += stack_cost;
 
     return c;
   }
@@ -1100,7 +1115,7 @@ struct arcane_blast_t : public mage_spell_t
 struct arcane_brilliance_t : public mage_spell_t
 {
   arcane_brilliance_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_brilliance", p, p -> find_spell( 1459 ) )
+    mage_spell_t( "arcane_brilliance", p, p -> find_class_spell( "Arcane Brilliance" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1126,7 +1141,7 @@ struct arcane_brilliance_t : public mage_spell_t
 struct arcane_explosion_t : public mage_spell_t
 {
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_explosion", p, p -> find_spell( 1449 ) )
+    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -1146,7 +1161,7 @@ struct arcane_explosion_t : public mage_spell_t
 struct arcane_missiles_tick_t : public mage_spell_t
 {
   arcane_missiles_tick_t( mage_t* p, bool dtr=false ) :
-    mage_spell_t( "arcane_missiles_tick", p, p -> find_spell( 7268 ) )
+    mage_spell_t( "arcane_missiles_tick", p, p -> find_class_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
   {
     dual        = true;
     background  = true;
@@ -1172,7 +1187,7 @@ struct arcane_missiles_t : public mage_spell_t
   arcane_missiles_tick_t* tick_spell;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p, p -> find_spell( 5143 ) )
+    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
   {
     parse_options( NULL, options_str );
     channeled = true;
@@ -1194,7 +1209,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> expire();
-    p() -> buffs.arcane_charge -> trigger();
+    p() -> buffs.arcane_charge   -> trigger();
   }
 
   virtual void tick( dot_t* d )
@@ -1217,7 +1232,7 @@ struct arcane_missiles_t : public mage_spell_t
 struct arcane_power_buff_t : public buff_t
 {
   arcane_power_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "arcane_power", p -> find_specialization_spell( "Arcane Power" ) ) )
+    buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -1238,7 +1253,7 @@ struct arcane_power_t : public mage_spell_t
   timespan_t orig_duration;
 
   arcane_power_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_power", p, p -> find_spell( 12042 ) ),
+    mage_spell_t( "arcane_power", p, p -> find_class_spell( "Arcane Power" ) ),
     orig_duration( timespan_t::zero() )
   {
     check_spec( MAGE_ARCANE );
@@ -1273,7 +1288,7 @@ struct arcane_power_t : public mage_spell_t
 struct blink_t : public mage_spell_t
 {
   blink_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "blink", p, p -> find_spell( 1953 ) )
+    mage_spell_t( "blink", p, p -> find_class_spell( "Blink" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -1292,7 +1307,7 @@ struct blink_t : public mage_spell_t
 struct blizzard_shard_t : public mage_spell_t
 {
   blizzard_shard_t( mage_t* p ) :
-    mage_spell_t( "blizzard_shard", p, p -> find_spell( 42208 ) )
+    mage_spell_t( "blizzard_shard", p, p -> find_class_spell( "Blizzard" ) -> effectN( 2 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -1313,7 +1328,7 @@ struct blizzard_t : public mage_spell_t
 {
   blizzard_shard_t* shard;
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "blizzard", p, p -> find_spell( 10 ) ),
+    mage_spell_t( "blizzard", p, p -> find_class_spell( "Blizzard" ) ),
     shard( 0 )
   {
     parse_options( NULL, options_str );
@@ -1371,7 +1386,7 @@ struct combustion_t : public mage_spell_t
   timespan_t orig_duration;
 
   combustion_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "combustion", p, p -> find_spell( 11129 ) ),
+    mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) ),
     orig_duration( timespan_t::zero() )
   {
     check_spec( MAGE_FIRE );
@@ -1429,7 +1444,7 @@ struct combustion_t : public mage_spell_t
 struct cone_of_cold_t : public mage_spell_t
 {
   cone_of_cold_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "cone_of_cold", p, p -> find_spell( 120 ) )
+    mage_spell_t( "cone_of_cold", p, p -> find_class_spell( "Cone of Cold" ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -1441,7 +1456,7 @@ struct cone_of_cold_t : public mage_spell_t
 struct conjure_mana_gem_t : public mage_spell_t
 {
   conjure_mana_gem_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "conjure_mana_gem", p, p -> find_spell( 759 ) )
+    mage_spell_t( "conjure_mana_gem", p, p -> find_class_spell( "Conjure Mana Gem" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1469,7 +1484,7 @@ struct conjure_mana_gem_t : public mage_spell_t
 struct counterspell_t : public mage_spell_t
 {
   counterspell_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "counterspell", p, p -> find_spell( 2139 ) )
+    mage_spell_t( "counterspell", p, p -> find_class_spell( "Counterspell" ) )
   {
     parse_options( NULL, options_str );
     may_miss = may_crit = false;
@@ -1489,7 +1504,7 @@ struct counterspell_t : public mage_spell_t
 struct dragons_breath_t : public mage_spell_t
 {
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "dragons_breath", p, p -> find_spell( 31661 ) )
+    mage_spell_t( "dragons_breath", p, p -> find_class_spell( "Dragon's Breath" ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -1501,7 +1516,7 @@ struct dragons_breath_t : public mage_spell_t
 struct evocation_t : public mage_spell_t
 {
   evocation_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_spell( 12051 ) )
+    mage_spell_t( "evocation", p, p -> talents.rune_of_power -> ok() ? spell_data_t::not_found() : p -> find_class_spell( "Evocation" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1559,7 +1574,7 @@ struct evocation_t : public mage_spell_t
 struct fire_blast_t : public mage_spell_t
 {
   fire_blast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "fire_blast", p, p -> find_spell( 2136 ) )
+    mage_spell_t( "fire_blast", p, p -> find_class_spell( "Fire Blast" ) )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -1577,7 +1592,7 @@ struct fire_blast_t : public mage_spell_t
 struct fireball_t : public mage_spell_t
 {
   fireball_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "fireball", p, p -> find_spell( 133 ) )
+    mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -1624,7 +1639,7 @@ struct fireball_t : public mage_spell_t
 struct flamestrike_t : public mage_spell_t
 {
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "flamestrike", p, p -> find_spell( 2120 ) )
+    mage_spell_t( "flamestrike", p, p -> find_class_spell( "Flamestrike" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1637,7 +1652,7 @@ struct flamestrike_t : public mage_spell_t
 struct frost_armor_t : public mage_spell_t
 {
   frost_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_armor", p, p -> find_spell( 7302 ) )
+    mage_spell_t( "frost_armor", p, p -> find_class_spell( "Frost Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -1666,7 +1681,7 @@ struct frost_armor_t : public mage_spell_t
 struct frost_bomb_explosion_t : public mage_spell_t
 {
   frost_bomb_explosion_t( mage_t* p, bool dtr = false ) :
-    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
+    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( p -> talents.frost_bomb -> effectN( 2 ).base_value() ) )
   {
     aoe = -1;
     base_aoe_multiplier = 0.5; // This is stored in effectN( 2 ), but it's just 50% of effectN( 1 )
@@ -1724,7 +1739,7 @@ struct frost_bomb_t : public mage_spell_t
 struct frostbolt_t : public mage_spell_t
 {
   frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostbolt", p, p -> find_spell( 116 ) )
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -1748,6 +1763,16 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
+  virtual void player_buff()
+  {
+    mage_spell_t::player_buff();
+
+    if ( p() -> passives.shatter -> ok() )
+    {
+      player_multiplier *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
+    }
+  }
+
   virtual void impact( player_t* t, result_type_e travel_result, double travel_dmg )
   {
     mage_spell_t::impact( t, travel_result, travel_dmg );
@@ -1765,7 +1790,7 @@ struct frostbolt_t : public mage_spell_t
 struct frostfire_bolt_t : public mage_spell_t
 {
   frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
+    mage_spell_t( "frostfire_bolt", p, p -> find_class_spell( "Frostfire Bolt" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1802,8 +1827,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
 
-    if ( p() -> buffs.brain_freeze -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 1 ).percent();
+    player_multiplier *= 1.0 + p() -> buffs.brain_freeze -> check() * p() -> buffs.brain_freeze -> value();
   }
 
   virtual void execute()
@@ -1812,22 +1836,19 @@ struct frostfire_bolt_t : public mage_spell_t
     frozen = p() -> buffs.brain_freeze -> check() > 0;
 
     mage_spell_t::execute();
-
-    p() -> buffs.brain_freeze -> expire();
-
-    if ( result_is_hit() )
-    {
-      if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
-    }
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
+    p() -> buffs.brain_freeze -> expire();
+
     if ( result_is_hit( impact_result ) )
     {
+      if ( p() -> set_bonus.tier13_2pc_caster() )
+        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+
       trigger_ignite( this, travel_dmg );
 
       if ( p() -> primary_tree() == MAGE_FROST )
@@ -1850,7 +1871,7 @@ struct frostfire_bolt_t : public mage_spell_t
 struct frozen_orb_bolt_t : public mage_spell_t
 {
   frozen_orb_bolt_t( mage_t* p ) :
-    mage_spell_t( "frozen_orb_bolt", p, p -> find_spell( 84721 ) )
+    mage_spell_t( "frozen_orb_bolt", p, p -> find_class_spell( "Frozen Orb" ) -> ok() ? p -> find_spell( 84721 ) : spell_data_t::not_found() )
   {
     background = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
@@ -1862,7 +1883,7 @@ struct frozen_orb_t : public mage_spell_t
   frozen_orb_bolt_t* bolt;
 
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frozen_orb", p, p -> find_spell( 84714 ) ),
+    mage_spell_t( "frozen_orb", p, p -> find_class_spell( "Frozen Orb" ) ),
     bolt( 0 )
   {
     check_spec( MAGE_FROST );
@@ -1903,7 +1924,7 @@ struct ice_lance_t : public mage_spell_t
   double fof_multiplier;
 
   ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "ice_lance", p, p -> find_spell( 30455 ) ),
+    mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
@@ -1912,7 +1933,7 @@ struct ice_lance_t : public mage_spell_t
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
-    fof_multiplier = p -> find_spell( 44544 ) -> effectN( 2 ).percent();
+    fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1945,7 +1966,7 @@ struct ice_lance_t : public mage_spell_t
 struct icy_veins_buff_t : public buff_t
 {
   icy_veins_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) )
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
@@ -1966,7 +1987,7 @@ struct icy_veins_t : public mage_spell_t
   timespan_t orig_duration;
 
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "icy_veins", p, p -> find_spell( 12472 ) ),
+    mage_spell_t( "icy_veins", p, p -> find_class_spell( "Icy Veins" ) ),
     orig_duration( timespan_t::zero() )
   {
     check_spec( MAGE_FROST );
@@ -1990,7 +2011,7 @@ struct icy_veins_t : public mage_spell_t
 struct inferno_blast_t : public mage_spell_t
 {
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "inferno_blast", p, p -> find_spell( 108853 ) )
+    mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) )
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
@@ -2017,7 +2038,7 @@ struct inferno_blast_t : public mage_spell_t
 struct living_bomb_explosion_t : public mage_spell_t
 {
   living_bomb_explosion_t( mage_t* p, bool dtr=false ) :
-    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
+    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) )
   {
     aoe = 3;
     background = true;
@@ -2081,7 +2102,7 @@ struct living_bomb_t : public mage_spell_t
 struct mage_armor_t : public mage_spell_t
 {
   mage_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mage_armor", p, p -> find_spell( 6117 ) )
+    mage_spell_t( "mage_armor", p, p -> find_class_spell( "Mage Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2162,7 +2183,7 @@ struct mana_gem_t : public action_t
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mirror_image", p, p -> find_spell( 55342 ) )
+    mage_spell_t( "mirror_image", p, p -> find_class_spell( "Mirror Image" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2191,7 +2212,7 @@ struct mirror_image_t : public mage_spell_t
 struct molten_armor_t : public mage_spell_t
 {
   molten_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "molten_armor", p, p -> find_spell( 30482 ) )
+    mage_spell_t( "molten_armor", p, p -> find_class_spell( "Molten Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2274,7 +2295,7 @@ struct presence_of_mind_t : public mage_spell_t
 struct pyroblast_t : public mage_spell_t
 {
   pyroblast_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "pyroblast", p, p -> find_spell( 11366 ) )
+    mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) )
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
@@ -2288,15 +2309,24 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
-  virtual void execute()
+  virtual timespan_t execute_time() const
   {
-    mage_spell_t::execute();
+    timespan_t a = mage_spell_t::execute_time();
 
-    if ( result_is_hit() )
+    if ( p() -> buffs.pyroblast -> up() )
     {
-      if ( player -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
+      return timespan_t::zero();
     }
+
+    return a;
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buffs.pyroblast -> check() )
+      return 0.0;
+
+    return mage_spell_t::cost();
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -2304,68 +2334,14 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
     trigger_ignite( this, travel_dmg );
-  }
 
-  virtual double total_crit() const
-  {
-    double c = mage_spell_t::total_crit();
-
-    c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
-
-    return c;
-  }
-};
-
-// Pyroblast! Spell =========================================================
-
-// FIX ME: This doesn't appear to exist in the DBC, see if it's still seperate in-game
-
-struct pyroblast_hs_t : public mage_spell_t
-{
-  pyroblast_hs_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "pyroblast_hs", p, p -> find_spell( 92315 ) )
-  {
-    init_dot( "pyroblast" );
-    check_spec( MAGE_FIRE );
-    parse_options( NULL, options_str );
-    dot_behavior = DOT_REFRESH;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new pyroblast_hs_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> buffs.hot_streak -> up() )
-    {
-      p() -> buffs.hot_streak -> expire();
-    }
-
-    mage_spell_t::execute();
+    p() -> buffs.pyroblast -> expire();
 
     if ( result_is_hit() )
     {
       if ( player -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
-  }
-
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
-  {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
-
-    trigger_ignite( this, travel_dmg );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! mage_spell_t::ready() )
-      return false;
-
-    return ( p() -> buffs.hot_streak -> check() > 0 );
   }
 
   virtual double total_crit() const
@@ -2452,7 +2428,7 @@ struct scorch_t : public mage_spell_t
 struct slow_t : public mage_spell_t
 {
   slow_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "slow", p, p -> find_spell( 31589 ) )
+    mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
   {
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
@@ -2471,7 +2447,7 @@ struct slow_t : public mage_spell_t
 struct time_warp_t : public mage_spell_t
 {
   time_warp_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "time_warp", p, p -> find_spell( 80353 ) )
+    mage_spell_t( "time_warp", p, p -> find_class_spell( "Time Warp" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2505,7 +2481,7 @@ struct time_warp_t : public mage_spell_t
 struct water_elemental_spell_t : public mage_spell_t
 {
   water_elemental_spell_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "water_elemental", p, p -> find_spell( 31687 ) )
+    mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
   {
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
@@ -2784,7 +2760,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
-  if ( name == "pyroblast_hs"      ) return new            pyroblast_hs_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
@@ -2824,53 +2799,58 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   // Talents
-  talents.blazing_speed    = find_talent_spell( "Blazing Speed" );
-  talents.cauterize        = find_talent_spell( "Cauterize" );
-  talents.cold_snap        = find_talent_spell( "Cold Snap" );
-  talents.frostjaw         = find_talent_spell( "Frostjaw" );
-  talents.frost_bomb       = find_talent_spell( "Frost Bomb" );
-  talents.greater_invis    = find_talent_spell( "Greater Invisibility" );
-  talents.ice_barrier      = find_talent_spell( "Ice Barrier" );
-  talents.ice_flows        = find_talent_spell( "Ice Flows" );
-  talents.ice_ward         = find_talent_spell( "Ice Ward" );
-  talents.incanters_ward   = find_talent_spell( "Incanter's Ward" );
-  talents.invocation       = find_talent_spell( "Invocation" );
-  talents.living_bomb      = find_talent_spell( "Living Bomb" );
-  talents.nether_tempest   = find_talent_spell( "Nether Tempest" );
-  talents.presence_of_mind = find_talent_spell( "Presence of Mind" );
-  talents.ring_of_frost    = find_talent_spell( "Ring of Frost" );
-  talents.rune_of_power    = find_talent_spell( "Rune of Power" );
-  talents.scorch           = find_talent_spell( "Scorch" );
-  talents.temporal_shield  = find_talent_spell( "Temporal Shield" );
+  talents.blazing_speed      = find_talent_spell( "Blazing Speed" );
+  talents.cauterize          = find_talent_spell( "Cauterize" );
+  talents.cold_snap          = find_talent_spell( "Cold Snap" );
+  talents.frostjaw           = find_talent_spell( "Frostjaw" );
+  talents.frost_bomb         = find_talent_spell( "Frost Bomb" );
+  talents.greater_invis      = find_talent_spell( "Greater Invisibility" );
+  talents.ice_barrier        = find_talent_spell( "Ice Barrier" );
+  talents.ice_flows          = find_talent_spell( "Ice Flows" );
+  talents.ice_ward           = find_talent_spell( "Ice Ward" );
+  talents.incanters_ward     = find_talent_spell( "Incanter's Ward" );
+  talents.invocation         = find_talent_spell( "Invocation" );
+  talents.living_bomb        = find_talent_spell( "Living Bomb" );
+  talents.nether_tempest     = find_talent_spell( "Nether Tempest" );
+  talents.presence_of_mind   = find_talent_spell( "Presence of Mind" );
+  talents.ring_of_frost      = find_talent_spell( "Ring of Frost" );
+  talents.rune_of_power      = find_talent_spell( "Rune of Power" );
+  talents.scorch             = find_talent_spell( "Scorch" );
+  talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
 
   // Passive Spells
-  passives.nether_attunement     = find_class_spell( "Nether Attunement" );
-  passives.shatter               = find_class_spell( "Shatter" );
+  passives.nether_attunement = find_specialization_spell( "Nether Attunement" );
+  passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
+  passives.shatter           = ( primary_role() == MAGE_FROST && find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
 
   // Spec Spells
-  spec.arcane_charge    = find_class_spell( "Arcane Charge" );
-  spec.brain_freeze     = find_class_spell( "Brain Freeze" );
-  spec.critical_mass    = find_class_spell( "Critical Mass" );
-  spec.fingers_of_frost = find_class_spell( "Fingers of Frost" );
+  spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
+  spells.arcane_charge_arcane_blast = spec.arcane_charge -> ok() ? find_spell( 36032 ) : spell_data_t::not_found();
+
+  spec.slow                  = find_class_spell( "Slow" );
+
+  spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
+  spec.critical_mass         = find_specialization_spell( "Critical Mass" );
+  spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
 
   // Mastery
-  spec.frostburn  = find_mastery_spell( MAGE_FROST );
-  spec.ignite     = find_mastery_spell( MAGE_FIRE );
-  spec.mana_adept = find_mastery_spell( MAGE_ARCANE );
+  spec.frostburn             = find_mastery_spell( MAGE_FROST );
+  spec.ignite                = find_mastery_spell( MAGE_FIRE );
+  spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
-  spells.stolen_time = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+  spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
 
   if ( spec.ignite -> ok() )
     active_ignite = new ignite_t( this );
 
   // Glyphs
-  glyphs.arcane_brilliance = find_glyph_spell( "Glyph of Arcane Brilliance" );
-  glyphs.arcane_power      = find_glyph_spell( "Glyph of Arcane Power" );
-  glyphs.conjuring         = find_glyph_spell( "Glyph of Conjuring" );
-  glyphs.frostfire         = find_glyph_spell( "Glyph of Frostfire" );
-  glyphs.ice_lance         = find_glyph_spell( "Glyph of Ice Lance" );
-  glyphs.living_bomb       = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.mirror_image      = find_glyph_spell( "Glyph of Mirror Image" );
+  glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
+  glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
+  glyphs.conjuring           = find_glyph_spell( "Glyph of Conjuring" );
+  glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
+  glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
+  glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
+  glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -2930,14 +2910,19 @@ void mage_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", find_spell( 36032 ) );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_spell( 79683 ) ).chance( 0.40 );
+  buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.25 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
-  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", find_spell( 44549 ) ).chance( spec.brain_freeze -> ok() ? 0.30 : 0 ); // FIX ME, what is the proc chance, 30% is made up
+  buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
+                               .duration( find_spell( 57761 ) -> duration() )
+                               .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
+                               .chance( spec.brain_freeze      -> ok() ? 
+                                      ( talents.nether_tempest -> ok() ? 0.1 :
+                                      ( talents.living_bomb    -> ok() ? 0.2 :
+                                      ( talents.frost_bomb     -> ok() ? 1.0 : 0.0 ) ) ) : 0 );
+
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
-  // FIXME: What is this called now?
-  buffs.hot_streak           = buff_creator_t( this, "hot_streak" );
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
   buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
@@ -2945,7 +2930,8 @@ void mage_t::init_buffs()
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) ); // FIXME: can this stack?
 
-  buffs.hot_streak_crits     = buff_creator_t( this, "hot_streak_crits" ).max_stack( 2 ).quiet( true );
+  buffs.heating_up           = buff_creator_t( this, "heating_up", find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
+  buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
 
   buffs.tier13_2pc           = stat_buff_creator_t(
                                  buff_creator_t( this, "tier13_2pc" ).duration( timespan_t::from_seconds( 30.0 ) ).max_stack( 10 )
