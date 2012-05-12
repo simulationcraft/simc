@@ -67,6 +67,7 @@ struct warlock_t : public player_t
     buff_t* tier13_4pc_caster;
     buff_t* grimoire_of_sacrifice;
     buff_t* demonic_calling;
+    buff_t* fire_and_brimstone;
   } buffs;
 
   // Cooldowns

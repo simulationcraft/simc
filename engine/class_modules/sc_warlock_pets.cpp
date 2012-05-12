@@ -416,7 +416,6 @@ struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
     may_crit    = false;
     direct_tick = true;
     stats = p -> get_stats( "immolation", this );
-    direct_power_mod = 0.2;
   }
 };
 
@@ -432,7 +431,7 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
     callbacks    = false;
     num_ticks    = 1;
     hasted_ticks = false;
-    harmful = false;
+    harmful      = false;
     trigger_gcd = timespan_t::from_seconds( 1.5 );
 
     immolation_damage = new immolation_damage_t( p );

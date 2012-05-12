@@ -676,11 +676,33 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
+  virtual void execute()
+  {
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = -1;
+    }
+
+    warlock_spell_t::execute();
+
+    aoe = 0;
+  }
+
   virtual double action_da_multiplier() const
   {
     double m = warlock_spell_t::action_da_multiplier();
     
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
     return m;
   }
@@ -702,9 +724,24 @@ struct conflagrate_t : public warlock_spell_t
     }
   }
 
+  virtual void execute()
+  {
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = -1;
+    }
+
+    warlock_spell_t::execute();
+
+    aoe = 0;
+  }
+
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
+
+    if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -737,6 +774,8 @@ struct incinerate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
+    if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
+
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -744,7 +783,15 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = -1;
+    }
+
     warlock_spell_t::execute();
+
+    aoe = 0;
 
     if ( p() -> buffs.backdraft -> check() && ! is_dtr_action )
     {
@@ -1519,6 +1566,23 @@ struct imp_swarm_t : public warlock_spell_t
 };
 
 
+struct fire_and_brimstone_t : public warlock_spell_t
+{
+  fire_and_brimstone_t( warlock_t* p ) :
+    warlock_spell_t( p, "Fire and Brimstone" )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.fire_and_brimstone -> trigger();
+  }
+};
+
+
 // AOE SPELLS
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
@@ -2267,6 +2331,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
+  else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
@@ -2454,6 +2519,7 @@ void warlock_t::init_buffs()
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
+  buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 
