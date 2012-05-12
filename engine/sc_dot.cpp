@@ -238,6 +238,7 @@ void dot_t::schedule_tick()
     if ( action -> chain && current_tick + 1 == num_ticks && action -> ready() )
     {
       action -> player -> channeling = 0;
+      player -> gcd_ready = sim -> current_time + action -> gcd();
       action -> execute();
       if ( action -> result_is_hit() )
       {
