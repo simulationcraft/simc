@@ -289,12 +289,12 @@ void dot_tick_event_t::execute()
     {
       dot -> current_tick = dot -> num_ticks;
     }
-    if ( dot -> action -> interrupt || ( dot -> action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) )
+    if ( ( dot -> action -> interrupt || ( dot -> action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> action -> player -> gcd_ready <=  sim -> current_time ) )
     {
       // Interrupt if any higher priority action is ready.
       for ( size_t i = 0; dot -> action -> player -> foreground_action_list[ i ] != dot -> action; ++i )
       {
-        action_t* a = dot -> action -> player -> action_list[ i ];
+        action_t* a = dot -> action -> player -> foreground_action_list[ i ];
         if ( a -> id == dot -> action -> id ) continue;
         if ( a -> ready() )
         {
