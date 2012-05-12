@@ -312,6 +312,7 @@ public:
   double               scaling_multiplier() const { return _c_scaling; }
   unsigned             scaling_threshold() const { return _c_scaling_level; }
   double               extra_coeff() const { return _extra_coeff; }
+  unsigned             replace_spell_id() const { return _replace_spell_id; }
 
   std::string          to_str() const;
 

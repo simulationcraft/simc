@@ -388,6 +388,12 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
   }
 
   s <<   "Name          : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
+  
+  if ( spell -> replace_spell_id() > 0 )
+  {
+    s << "Replaces      : " << sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
+    s << " (id=" << spell -> replace_spell_id() << ")" << std::endl;
+  }
 
   if ( spell -> class_mask() )
   {
