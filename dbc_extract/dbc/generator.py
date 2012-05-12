@@ -961,7 +961,7 @@ class SpellDataGenerator(DataGenerator):
 #            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ),       # Shaman Greater Fire Elemental abilities
         ),     
         ( 
-            ( 48107, 0, false ), ( 48108, 0, false ), # Heating Up and Pyroblast! buffs
+            ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs
             ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
