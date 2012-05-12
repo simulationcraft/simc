@@ -300,6 +300,15 @@ expr_t* dot_t::create_expression( const std::string& name_str )
     return make_mem_fn_expr( name_str, *this, &dot_t::ticks );
   else if ( name_str == "ticking" )
     return make_ref_expr( "dot_ticking", ticking );
+  else if ( name_str == "ticking_on_target" )
+  {
+    struct ticking_on_target_expr_t : public dot_expr_t
+    {
+      ticking_on_target_expr_t( const dot_t& d ) : dot_expr_t( "ticking_on_target", d ) {}
+      virtual double evaluate() { return ( dot.action != 0 && dot.action -> dot() -> ticking ) ? 1 : 0; }
+    };
+    return new ticking_on_target_expr_t( *this );
+  }
   else if ( name_str == "spell_power" )
   {
     struct dot_spell_power_expr_t : public dot_expr_t

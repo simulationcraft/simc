@@ -3916,7 +3916,7 @@ struct action_t
   event_t* travel_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
-  int moving, wait_on_ready, interrupt, chain;
+  int moving, wait_on_ready, interrupt, chain, cycle_targets;
   bool round_base_dmg;
   bool class_flag1;
   std::string if_expr_str;

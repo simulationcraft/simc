@@ -143,6 +143,7 @@ action_t::action_t( action_type_e       ty,
   wait_on_ready                  = -1;
   interrupt                      = 0;
   chain                          = 0;
+  cycle_targets                  = 0;
   round_base_dmg                 = true;
   class_flag1                    = false;
   if_expr_str.clear();
@@ -393,6 +394,7 @@ void action_t::parse_options( option_t*          options,
     { "interrupt_if",           OPT_STRING, &interrupt_if_expr_str },
     { "interrupt",              OPT_BOOL,   &interrupt             },
     { "chain",                  OPT_BOOL,   &chain                 },
+    { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
     { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
     { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
     { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
@@ -1294,6 +1296,29 @@ bool action_t::ready()
   if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
+  if ( cycle_targets )
+  {
+    player_t* orig_target = target;
+    cycle_targets = 0;
+
+    std::vector< player_t* > tl;
+
+    size_t total_targets = available_targets( tl );
+
+    for ( size_t i = 0; i < total_targets; i++ )
+    { 
+      target = tl[ i ];
+      if ( ready() )
+      {
+        cycle_targets = 1;
+        return true;
+      }
+    }
+
+    target = orig_target;
+    cycle_targets = 1;
+  }
+
   if ( if_expr && ! if_expr -> success() )
     return false;
 
@@ -1582,6 +1607,20 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       in_flight_expr_t( const action_t& a ) : action_expr_t( "in_flight", a ) {}
       virtual double evaluate() { return action.travel_event != NULL; }
+    };
+    return new in_flight_expr_t( *this );
+  }  
+  else if ( name_str == "in_flight_to_target" )
+  {
+    struct in_flight_expr_t : public action_expr_t
+    {
+      in_flight_expr_t( const action_t& a ) : action_expr_t( "in_flight_to_target", a ) {}
+      virtual double evaluate()
+      { 
+        if ( action.travel_event == NULL ) return false;
+        stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action.travel_event );
+        return te -> state -> target == action.target;
+      }
     };
     return new in_flight_expr_t( *this );
   }
