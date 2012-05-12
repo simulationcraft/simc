@@ -46,6 +46,7 @@ struct wild_imp_pet_t;
 struct warlock_t : public player_t
 {
   spell_t* seed_of_corruption_aoe;
+  spell_t* soulburn_seed_of_corruption_aoe;
 
   // Active Pet
   struct pets_t

@@ -113,7 +113,7 @@ public:
     return spell_t::ready();
   }
 
-  static void trigger_seed_of_corruption( warlock_targetdata_t* td, spell_t* spell, double amount );
+  static void trigger_seed_of_corruption( warlock_targetdata_t* td, warlock_t* p, double amount );
 
   virtual void tick( dot_t* d )
   {
@@ -122,14 +122,14 @@ public:
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
 
-    trigger_seed_of_corruption( td( d -> state -> target ), p() -> seed_of_corruption_aoe, d -> state -> result_amount );
+    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
 
   virtual void impact_s( action_state_t* s )
   {
     spell_t::impact_s( s );
 
-    trigger_seed_of_corruption( td( s -> target ), p() -> seed_of_corruption_aoe, s -> result_amount );
+    trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -1521,6 +1521,55 @@ struct imp_swarm_t : public warlock_spell_t
 
 // AOE SPELLS
 
+struct seed_of_corruption_aoe_t : public warlock_spell_t
+{
+  seed_of_corruption_aoe_t( warlock_t* p ) :
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+  {
+    dual       = true;
+    proc       = true;
+    background = true;
+    aoe        = -1;
+    may_miss   = false; // FIXME: Assumed, needs testing
+  }
+};
+
+
+struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
+{
+  corruption_t* corruption;
+
+  soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
+    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
+  {
+    dual       = true;
+    proc       = true;
+    background = true;
+    aoe        = -1;
+    may_miss   = false; // FIXME: Assumed, needs testing
+    corruption -> background = true;
+    corruption -> dual = true;
+    corruption -> proc = true;
+    corruption -> may_miss = false; // FIXME: Assumed, needs testing
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    corruption -> target = s -> target;
+    corruption -> execute();
+  }
+};
+
+
 struct soc_state_t : public action_state_t
 {
   bool soulburned;
@@ -1529,58 +1578,31 @@ struct soc_state_t : public action_state_t
     action_state_t( spell, target ), soulburned( false )
   {
   }
-};
 
-
-struct seed_of_corruption_aoe_t : public warlock_spell_t
-{
-  action_state_t* new_state() { return new soc_state_t( this, target, p() ); }
-
-  corruption_t* corruption;
-
-  seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
+  virtual void copy_state( const action_state_t* s )
   {
-    proc       = true;
-    background = true;
-    aoe        = -1;
-    may_miss   = false; // FIXME: Assumed, needs testing
-    corruption -> background = true;
-    corruption -> dual = true;
-    corruption -> proc = true;
-  }
-
-  virtual void snapshot_state( action_state_t* state, uint32_t flags )
-  {
-    warlock_spell_t::snapshot_state( state, flags );
-    soc_state_t* soc_state = debug_cast< soc_state_t* >( td( state -> target ) -> dots_seed_of_corruption -> state );
-    debug_cast< soc_state_t* >( state ) -> soulburned = soc_state -> soulburned;
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( debug_cast< soc_state_t* >( s ) -> soulburned )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
-      corruption -> target = s -> target;
-      corruption -> execute();
-    }
+    action_state_t::copy_state( s );
+    soulburned = ( s != 0 ) ? debug_cast< const soc_state_t* >( s ) -> soulburned : false;
   }
 };
 
 
-void warlock_spell_t::trigger_seed_of_corruption( warlock_targetdata_t* td, spell_t* spell, double amount )
+void warlock_spell_t::trigger_seed_of_corruption( warlock_targetdata_t* td, warlock_t* p, double amount )
 {
-  dot_t* soc = td -> dots_seed_of_corruption;
-  if ( soc -> ticking && td -> soc_trigger > 0 )
+  if ( td -> dots_seed_of_corruption -> ticking && td -> soc_trigger > 0 )
   {
     td -> soc_trigger -= amount;
     if ( td -> soc_trigger <= 0 )
     {
-      spell -> execute();
-      soc -> cancel();
+      if ( debug_cast< soc_state_t* >( td -> dots_seed_of_corruption -> state ) -> soulburned )
+      {
+        p -> soulburn_seed_of_corruption_aoe -> execute();
+      }
+      else
+      {
+        p -> seed_of_corruption_aoe -> execute();
+      }
+      td -> dots_seed_of_corruption -> cancel();
     }
   }
 }
@@ -1592,7 +1614,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   cooldown_t* soulburn_cooldown;
 
-  seed_of_corruption_t( warlock_t* p, bool soulburned = false ) :
+  seed_of_corruption_t( warlock_t* p ) :
     warlock_spell_t( p, "Seed of Corruption" ), soulburn_cooldown( p -> get_cooldown( "soulburn_seed_of_corruption" ) )
   {
     may_crit = false;
@@ -1601,6 +1623,16 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
     add_child( p -> seed_of_corruption_aoe );
+    p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
+    add_child( p -> soulburn_seed_of_corruption_aoe );
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    p() -> seed_of_corruption_aoe -> stats = stats;
+    p() -> soulburn_seed_of_corruption_aoe -> stats = stats;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1614,7 +1646,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   virtual void snapshot_state( action_state_t* state, uint32_t flags )
   {
     warlock_spell_t::snapshot_state( state, flags );
-    debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> check() ) ? true : false;
+    debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> up() ) ? true : false;
   }
 
   virtual void execute()
