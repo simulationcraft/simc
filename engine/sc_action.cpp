@@ -1374,6 +1374,10 @@ void action_t::init()
 
   if ( is_dtr_action )
   {
+    // FIXME: This is a hacky solution to avoid the DTR being superinflated in value for aoe situations.
+    // Long term we probably need to move DTR proc handling to execute() for aoe spells. Needs testing to see what happens in-game.
+    aoe = 0;
+
     cooldown = player -> get_cooldown( name_str + "_DTR" );
     cooldown -> duration = timespan_t::zero();
 
