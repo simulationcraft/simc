@@ -1778,7 +1778,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit() ) trigger_ember_gain( 1, p() -> gains.rain_of_fire, 0.50 );
+    if ( result_is_hit( s -> result ) && p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( 1, p() -> gains.rain_of_fire, 0.50 );
   }
 };
 
