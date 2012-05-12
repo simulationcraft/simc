@@ -140,7 +140,7 @@ void action_t::impact_s( action_state_t* s )
   {
     if ( num_ticks > 0 )
     {
-      dot_t* dot = this -> dot();
+      dot_t* dot = this -> dot( s -> target );
       int remaining_ticks = dot -> num_ticks - dot -> current_tick;
       if ( dot_behavior == DOT_CLIP ) dot -> cancel();
       dot -> action = this;
