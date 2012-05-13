@@ -2596,8 +2596,6 @@ void player_t::combat_begin()
   if ( primary_role() == ROLE_TANK && !is_enemy() && ! is_add() )
     new ( sim ) vengeance_event_t( this );
 
-  report_information.action_sequence = "";
-
   iteration_fight_length = timespan_t::zero();
   iteration_waiting_time = timespan_t::zero();
   iteration_executed_foreground_actions = 0;
@@ -3154,7 +3152,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     iteration_executed_foreground_actions++;
-    if ( action -> marker ) report_information.action_sequence += action -> marker;
+    if ( action -> marker && sim -> current_iteration == 0 ) report_information.action_sequence += action -> marker;
     if ( ! action -> label_str.empty() )
       action_map[ action -> label_str ] += 1;
   }
