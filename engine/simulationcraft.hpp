@@ -2840,12 +2840,13 @@ struct item_t
     unsigned int override_result_type_es_mask;
     unsigned result_type_es_mask;
     bool reverse;
+    bool aoe;
     special_effect_t() :
       trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
       max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
       proc_chance( 0 ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
       tick( timespan_t::zero() ), cost_reduction( false ), no_player_benefits( false ), no_debuffs( false ),
-      no_refresh( false ), chance_to_discharge( false ), override_result_type_es_mask( 0 ), result_type_es_mask( 0 ), reverse( false ) {}
+      no_refresh( false ), chance_to_discharge( false ), override_result_type_es_mask( 0 ), result_type_es_mask( 0 ), reverse( false ), aoe( false ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
@@ -4595,18 +4596,18 @@ struct unique_gear_t
 
   static action_callback_t* register_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
                                                      int max_stacks, school_type_e, double amount, double scaling,
-                                                     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool aoe,
                                                      unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_chance_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
                                                             int max_stacks, school_type_e, double amount, double scaling,
-                                                            double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                            double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool aoe,
                                                             unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_stat_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
                                                           int max_stacks, stat_type_e, double stat_amount,
                                                           school_type_e, double discharge_amount, double discharge_scaling,
-                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs,
+                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, bool aoe,
                                                           unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
   static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );

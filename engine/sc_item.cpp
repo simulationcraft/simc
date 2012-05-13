@@ -957,6 +957,10 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.no_refresh = true;
     }
+    else if ( t.name == "aoe" )
+    {
+      effect.aoe = true;
+    }
     else if ( t.full == "ondamage" )
     {
       effect.trigger_str  = t.full;

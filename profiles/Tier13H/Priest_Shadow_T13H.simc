@@ -41,7 +41,7 @@ hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1
 finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=40int_10int
 finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,gems=40int_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
-trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_3978.8+35.3shadow_45%_9cd
+trinket2=cunning_of_the_cruel,heroic=1,ilevel=410,quality=epic,stats=517int,equip=onspelldamage_3978.8+35.3shadow_45%_9cd_aoe
 back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=haste_mastery,gems=40int_10int,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
 # Gear Summary

@@ -4895,7 +4895,7 @@ struct use_item_t : public action_t
       {
         trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
                                                           e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.override_result_type_es_mask, e.result_type_es_mask );
+                                                          e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
       }
 
       if ( trigger ) trigger -> deactivate();
