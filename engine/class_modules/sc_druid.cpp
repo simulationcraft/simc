@@ -1631,7 +1631,7 @@ struct ravage_t : public druid_cat_attack_t
   int extend_rip;
   
   ravage_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ), options_str ),
+    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
     extend_rip( 0 )
   {
     option_t options[] =
