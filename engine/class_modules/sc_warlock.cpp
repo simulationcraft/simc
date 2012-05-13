@@ -554,7 +554,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 2; // from tooltip
+    tick_power_mod = 1.5; // tested in beta 2012/05/13
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
