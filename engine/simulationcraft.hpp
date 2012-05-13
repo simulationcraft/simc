@@ -4450,7 +4450,7 @@ struct dot_t
   timespan_t remains() const;
   void   schedule_tick();
   int    ticks() const;
-  expr_t* create_expression( const std::string& name_str );
+  expr_t* create_expression( const std::string& name_str, player_t* specific_target = 0 );
 
   const char* name() const { return name_str.c_str(); }
   /* New stuff */

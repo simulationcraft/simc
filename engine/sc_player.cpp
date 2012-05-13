@@ -6216,7 +6216,7 @@ expr_t* player_t::create_expression( action_t* a,
       if ( ! dot )
         dot = get_dot( splits[ 1 ] );
       if ( dot )
-        return dot -> create_expression( splits[ 2 ] );
+        return dot -> create_expression( splits[ 2 ], this );
     }
     else if ( splits[ 0 ] == "swing" )
     {

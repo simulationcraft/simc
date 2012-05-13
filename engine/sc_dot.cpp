@@ -266,115 +266,117 @@ int dot_t::ticks() const
   return ( num_ticks - current_tick );
 }
 
-expr_t* dot_t::create_expression( const std::string& name_str )
+expr_t* dot_t::create_expression( const std::string& name_str, player_t* specific_target )
 {
   struct dot_expr_t : public expr_t
   {
-    const dot_t& dot;
+    const dot_t* dot;
+    player_t* target;
 
-    dot_expr_t( const std::string& n, const dot_t& d ) :
-      expr_t( n ), dot( d ) {}
+    dot_expr_t( const std::string& n, const dot_t* d, player_t* t = 0 ) :
+      expr_t( n ), dot( d ), target( t ) {}
+
+    const dot_t* get_dot()
+    {
+      return ( dot -> action == 0 ) ? dot : dot -> action -> dot( target );
+    }
   };
 
   if ( name_str == "ticks" )
   {
     struct ticks_expr_t : public dot_expr_t
     {
-      ticks_expr_t( const dot_t& d ) : dot_expr_t( "dot_ticks", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 ) ? dot.action -> dot() -> current_tick : 0; }
+      ticks_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_ticks", d, t ) {}
+      virtual double evaluate() { return get_dot() -> current_tick; }
     };
-    return new ticks_expr_t( *this );
+    return new ticks_expr_t( this, specific_target );
   }
   else if ( name_str == "duration" )
   {
     struct duration_expr_t : public dot_expr_t
     {
-      duration_expr_t( const dot_t& d ) : dot_expr_t( "dot_duration", d ) {}
+      duration_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_duration", d, t ) {}
       virtual double evaluate()
       {
-        if ( dot.action == 0 ) return 0;
-        dot_t* d = dot.action -> dot();
+        const dot_t* d = get_dot();
         // FIXME: What exactly is this supposed to be calculating?
         double haste = d -> state ? d -> state -> haste : d -> action -> player_haste;
         return ( d -> action -> num_ticks * d -> action -> tick_time( haste ) ).total_seconds();
       }
     };
-    return new duration_expr_t( *this );
+    return new duration_expr_t( this, specific_target );
   }
   else if ( name_str == "remains" )
   {
     struct remains_expr_t : public dot_expr_t
     {
-      remains_expr_t( const dot_t& d ) : dot_expr_t( "dot_remains", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 ) ? dot.action -> dot() -> remains().total_seconds() : 0; }
+      remains_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_remains", d, t ) {}
+      virtual double evaluate() { return get_dot() -> remains().total_seconds(); }
     };
-    return new remains_expr_t( *this );
+    return new remains_expr_t( this, specific_target );
   }
   else if ( name_str == "tick_dmg" )
   {
     struct tick_dmg_expr_t : public dot_expr_t
     {
-      tick_dmg_expr_t( const dot_t& d ) : dot_expr_t( "dot_tick_dmg", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 ) ? dot.action -> dot() -> prev_tick_amount : 0; }
+      tick_dmg_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_tick_dmg", d, t ) {}
+      virtual double evaluate() { return get_dot() -> prev_tick_amount; }
     };
-    return new tick_dmg_expr_t( *this );
+    return new tick_dmg_expr_t( this, specific_target );
   }
   else if ( name_str == "ticks_remain" )
   {
     struct ticks_remain_expr_t : public dot_expr_t
     {
-      ticks_remain_expr_t( const dot_t& d ) : dot_expr_t( "dot_ticks_remain", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 ) ? dot.action -> dot() -> ticks() : 0; }
+      ticks_remain_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_ticks_remain", d, t ) {}
+      virtual double evaluate() { return get_dot() -> ticks(); }
     };
-    return new ticks_remain_expr_t( *this );
+    return new ticks_remain_expr_t( this, specific_target );
   }
   else if ( name_str == "ticking" )
   {
     struct ticking_expr_t : public dot_expr_t
     {
-      ticking_expr_t( const dot_t& d ) : dot_expr_t( "dot_ticking", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 && dot.action -> dot() -> ticking ) ? 1 : 0; }
+      ticking_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_ticking", d, t ) {}
+      virtual double evaluate() { return get_dot() -> ticking; }
     };
-    return new ticking_expr_t( *this );
+    return new ticking_expr_t( this, specific_target );
   }
   else if ( name_str == "spell_power" )
   {
     struct dot_spell_power_expr_t : public dot_expr_t
     {
-      dot_spell_power_expr_t( const dot_t& d ) : dot_expr_t( "dot_spell_power", d ) {}
+      dot_spell_power_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_spell_power", d, t ) {}
       virtual double evaluate() {
-        if ( dot.action == 0 ) return 0;
-        dot_t* d = dot.action -> dot();
+        const dot_t* d = get_dot();
         return d -> state ? d -> state -> spell_power : 0;
       }
     };
-    return new dot_spell_power_expr_t( *this );
+    return new dot_spell_power_expr_t( this, specific_target );
   }
   else if ( name_str == "attack_power" )
   {
     struct dot_attack_power_expr_t : public dot_expr_t
     {
-      dot_attack_power_expr_t( const dot_t& d ) : dot_expr_t( "dot_attack_power", d ) {}
+      dot_attack_power_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_attack_power", d, t ) {}
       virtual double evaluate() {
-        if ( dot.action == 0 ) return 0;
-        dot_t* d = dot.action -> dot();
+        const dot_t* d = get_dot();
         return d -> state ? d -> state -> attack_power : 0;
       }
     };
-    return new dot_attack_power_expr_t( *this );
+    return new dot_attack_power_expr_t( this, specific_target );
   }
   else if ( name_str == "multiplier" )
   {
     struct dot_multiplier_expr_t : public dot_expr_t
     {
-      dot_multiplier_expr_t( const dot_t& d ) : dot_expr_t( "dot_multiplier", d ) {}
+      dot_multiplier_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_multiplier", d, t ) {}
       virtual double evaluate() {
-        if ( dot.action == 0 ) return 0;
-        dot_t* d = dot.action -> dot();
+        const dot_t* d = get_dot();
         return d -> state ? d -> state -> ta_multiplier : 0;
       }
     };
-    return new dot_multiplier_expr_t( *this );
+    return new dot_multiplier_expr_t( this, specific_target );
   }
 
 #if 0
@@ -393,23 +395,22 @@ expr_t* dot_t::create_expression( const std::string& name_str )
   {
     struct dot_haste_pct_expr_t : public dot_expr_t
     {
-      dot_haste_pct_expr_t( const dot_t& d ) : dot_expr_t( "dot_haste_pct", d ) {}
+      dot_haste_pct_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_haste_pct", d, t ) {}
       virtual double evaluate() {
-        if ( dot.action == 0 ) return 0;
-        dot_t* d = dot.action -> dot();
+        const dot_t* d = get_dot();
         return d -> state ? d -> state -> haste : 0;
       }
     };
-    return new dot_haste_pct_expr_t( *this );
+    return new dot_haste_pct_expr_t( this, specific_target );
   }
   else if ( name_str == "current_ticks" )
   {
     struct current_ticks_expr_t : public dot_expr_t
     {
-      current_ticks_expr_t( const dot_t& d ) : dot_expr_t( "dot_current_ticks", d ) {}
-      virtual double evaluate() { return ( dot.action != 0 ) ? dot.action -> dot() -> num_ticks : 0; }
+      current_ticks_expr_t( const dot_t* d, player_t* t ) : dot_expr_t( "dot_current_ticks", d, t ) {}
+      virtual double evaluate() { return get_dot() -> num_ticks; }
     };
-    return new current_ticks_expr_t( *this );
+    return new current_ticks_expr_t( this, specific_target );
   }
 
   return 0;
