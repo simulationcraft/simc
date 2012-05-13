@@ -103,7 +103,7 @@ struct mage_t : public player_t
   // Passives
   struct passives_t
   {
-    const spell_data_t* nether_attunement; // NYI
+    const spell_data_t* nether_attunement;
     const spell_data_t* shatter;
   } passives;
 
@@ -498,8 +498,6 @@ struct mirror_image_pet_t : public pet_t
     virtual void player_buff()
     {
       spell_t::player_buff();
-      double s = p() -> o() -> buffs.arcane_charge -> stack();
-      double v = p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
       player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
     }
 
@@ -683,13 +681,30 @@ struct mirror_image_pet_t : public pet_t
     return 0;
   }
 
+  virtual double composite_spell_power_multiplier() const
+  {
+    return 1.0;
+  }
+
+  virtual double composite_spell_haste() const
+  {
+    double h = player_t::composite_spell_haste();
+    h *= owner -> spell_haste;
+    return h;
+  }
+
+  virtual double composite_spell_crit() const
+  {
+    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
+  }
+
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
 
-    snapshot_arcane_sp = o() -> composite_spell_power( SCHOOL_ARCANE );
-    snapshot_fire_sp   = o() -> composite_spell_power( SCHOOL_FIRE   );
-    snapshot_frost_sp  = o() -> composite_spell_power( SCHOOL_FROST  );
+    snapshot_arcane_sp = o() -> composite_spell_power( SCHOOL_ARCANE ) * owner -> composite_spell_power_multiplier();
+    snapshot_fire_sp   = o() -> composite_spell_power( SCHOOL_FIRE   ) * owner -> composite_spell_power_multiplier();
+    snapshot_frost_sp  = o() -> composite_spell_power( SCHOOL_FROST  ) * owner -> composite_spell_power_multiplier();
 
     sequence_finished = 0;
 
@@ -1836,13 +1851,13 @@ struct frostfire_bolt_t : public mage_spell_t
     frozen = p() -> buffs.brain_freeze -> check() > 0;
 
     mage_spell_t::execute();
+
+    p() -> buffs.brain_freeze -> expire();
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
-
-    p() -> buffs.brain_freeze -> expire();
 
     if ( result_is_hit( impact_result ) )
     {
@@ -2819,9 +2834,10 @@ void mage_t::init_spells()
   talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
 
   // Passive Spells
-  passives.nether_attunement = find_specialization_spell( "Nether Attunement" );
+  passives.nether_attunement = find_specialization_spell( "Nether Attunement" ); // BUG: Not in spell lists at present.
+  passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
-  passives.shatter           = ( primary_role() == MAGE_FROST && find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
+  passives.shatter           = ( find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
 
   // Spec Spells
   spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
@@ -3244,7 +3260,7 @@ double mage_t::composite_mp5() const
   double mp5 = player_t::composite_mp5();
 
   if ( passives.nether_attunement -> ok() )
-    mp5 *= 1.0 + mage_t::composite_spell_haste();
+    mp5 /= mage_t::composite_spell_haste();
 
   return mp5;
 }
