@@ -1748,14 +1748,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return buff -> create_expression( splits[ 2 ] );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "dot" )
-  {
-    dot_t* dot = player -> get_dot( splits[ 1 ] );
-    if ( dot )
-      return dot -> create_expression( splits[ 2 ] );
-  }
-
-  if ( num_splits >= 2 && splits[ 0 ] == "debuff" )
+  if ( num_splits >= 2 && ( splits[ 0 ] == "debuff" || splits[ 0 ] == "dot" ) )
   {
     return target -> create_expression( this, name_str );
   }
