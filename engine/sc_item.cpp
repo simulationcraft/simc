@@ -957,9 +957,15 @@ bool item_t::decode_special( special_effect_t& effect,
     {
       effect.no_refresh = true;
     }
+    else if ( t.full == "aoe" )
+    {
+      effect.aoe = -1;
+    }
     else if ( t.name == "aoe" )
     {
-      effect.aoe = true;
+      effect.aoe = ( int ) t.value;
+      if ( effect.aoe < -1 )
+        effect.aoe = -1;
     }
     else if ( t.full == "ondamage" )
     {

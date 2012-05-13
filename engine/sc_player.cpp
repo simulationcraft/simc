@@ -438,7 +438,8 @@ player_t::initial_current_extended_t::initial_current_extended_t()
   range::fill( resource_reduction, 0 );
 
   range::fill( attribute_multiplier, 1 );
-  spell_power_multiplier = attack_power_multiplier = armor_multiplier = mp5_from_spirit_multiplier = 1.0;
+  spell_power_multiplier = attack_power_multiplier = armor_multiplier = 1.0;
+  mp5_from_spirit_multiplier = 0.0;
 }
 
 // player_t::~player_t ======================================================

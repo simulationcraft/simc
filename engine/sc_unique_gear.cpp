@@ -152,7 +152,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 namespace discharge_actions {
 struct spell : public spell_t
 {
-  spell( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, bool ae,
+  spell( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, int ae,
                      unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
@@ -169,7 +169,7 @@ struct spell : public spell_t
     background  = true;
     no_buffs = nb;
     no_debuffs = nd;
-    aoe = ( ae ) ? -1 : 0;
+    aoe = ae;
     // Pure casters get their innate crit damage bonus applied to discharge procs, hybrids don't
     if ( p -> type == WARLOCK || p -> type == MAGE ) crit_multiplier *= 1.33;
   }
@@ -177,7 +177,7 @@ struct spell : public spell_t
 
 struct attack : public attack_t
 {
-  attack( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, bool ae,
+  attack( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, int ae,
                       unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     attack_t( n, p, spell_data_t::nil() )
   {
@@ -200,7 +200,7 @@ struct attack : public attack_t
     background  = true;
     no_buffs = nb;
     no_debuffs = nd;
-    aoe = ( ae ) ? -1 : 0;
+    aoe = ae;
   }
 };
 }
@@ -225,7 +225,7 @@ struct discharge_proc_callback_base_t : public action_callback_t
                                   timespan_t cd,
                                   bool no_buffs,
                                   bool no_debuffs,
-                                  bool aoe,
+                                  int aoe,
                                   unsigned int override_result_type_es_mask = 0,
                                   unsigned int result_type_es_mask = 0 ) :
     action_callback_t( p ),
@@ -309,7 +309,7 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
                              timespan_t cd,
                              bool no_buffs,
                              bool no_debuffs,
-                             bool aoe,
+                             int aoe,
                              unsigned int override_result_type_es_mask = 0,
                              unsigned int result_type_es_mask = 0 ) :
     discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_type_es_mask,result_type_es_mask )
@@ -331,7 +331,7 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
                                     timespan_t cd,
                                     bool no_buffs,
                                     bool no_debuffs,
-                                    bool aoe,
+                                    int aoe,
                                     unsigned int override_result_type_es_mask = 0,
                                     unsigned int result_type_es_mask = 0 ) :
     discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_type_es_mask,result_type_es_mask )
@@ -367,7 +367,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                                   timespan_t cooldown,
                                   bool no_buffs,
                                   bool no_debuffs,
-                                  bool aoe,
+                                  int aoe,
                                   bool activated = true,
                                   unsigned int override_result_type_es_mask = 0,
                                   unsigned int result_type_es_mask = 0 ) :
@@ -388,7 +388,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, bool ae,
+      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil() )
       {
@@ -405,7 +405,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
-        aoe = ( ae ) ? -1 : 0;
+        aoe = ae;
       }
     };
 
@@ -413,7 +413,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       bool no_buffs;
 
-      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, bool ae,
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
                           unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil() )
       {
@@ -436,7 +436,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
-        aoe = ( ae ) ? -1 : 0;
+        aoe = ae;
       }
     };
 
@@ -979,7 +979,7 @@ static void register_blazing_power( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if ( a -> aoe      ||
+      if ( ( a -> aoe != 0 ) ||
            a -> proc     ||
            a -> dual     ||
            ! a -> harmful   )
@@ -1042,7 +1042,7 @@ static void register_windward_heart( item_t* item )
 
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
-      if ( a -> aoe      ||
+      if ( ( a -> aoe != 0 ) ||
            a -> proc     ||
            a -> dual     ||
            ! a -> harmful   )
@@ -1902,7 +1902,7 @@ action_callback_t* unique_gear_t::register_discharge_proc( proc_type_e        ty
                                                            timespan_t         cooldown,
                                                            bool               no_buffs,
                                                            bool               no_debuffs,
-                                                           bool               aoe,
+                                                           int                aoe,
                                                            unsigned int       override_result_type_es_mask,
                                                            unsigned int       result_type_es_mask )
 {
@@ -1972,7 +1972,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( proc_type_e   
                                                                   timespan_t         cooldown,
                                                                   bool               no_buffs,
                                                                   bool               no_debuffs,
-                                                                  bool               aoe,
+                                                                  int                aoe,
                                                                   unsigned int       override_result_type_es_mask,
                                                                   unsigned int       result_type_es_mask )
 {
@@ -2045,7 +2045,7 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( proc_type_e     
                                                                 timespan_t         cooldown,
                                                                 bool               no_buffs,
                                                                 bool               no_debuffs,
-                                                                bool               aoe,
+                                                                int                aoe,
                                                                 unsigned int       override_result_type_es_mask,
                                                                 unsigned int       result_type_es_mask )
 {
