@@ -1183,7 +1183,10 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
                "\t\t\t\t\t\t\t\t\t</div>\n"
                "\t\t\t\t\t\t\t\t</div>\n",
                seq.c_str() );
+    }
 
+    if ( p -> action_map.size() > 0 )
+    {
       fprintf( file,
                "\t\t\t\t\t\t\t\t<div class=\"subsection subsection-small\">\n"
                "\t\t\t\t\t\t\t\t\t<h4>Labels</h4>\n"
