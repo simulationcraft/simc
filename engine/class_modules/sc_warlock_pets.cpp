@@ -432,7 +432,6 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
     num_ticks    = 1;
     hasted_ticks = false;
     harmful      = false;
-    trigger_gcd = timespan_t::from_seconds( 1.5 );
 
     immolation_damage = new immolation_damage_t( p );
   }
