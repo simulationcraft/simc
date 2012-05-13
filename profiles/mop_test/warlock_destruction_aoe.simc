@@ -1,14 +1,5 @@
 #!./simc 
 
-enemy=enemy1
-enemy=enemy2
-enemy=enemy3
-enemy=enemy4
-enemy=enemy5
-enemy=enemy6
-enemy=enemy7
-enemy=enemy8
-
 warlock="Warlock_Destruction_T13H"
 origin="unknown"
 level=85
