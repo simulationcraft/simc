@@ -1659,7 +1659,7 @@ struct soc_state_t : public action_state_t
 {
   bool soulburned;
 
-  soc_state_t( action_t* spell, player_t* target, warlock_t* p ) :
+  soc_state_t( action_t* spell, player_t* target ) :
     action_state_t( spell, target ), soulburned( false )
   {
   }
@@ -1695,7 +1695,7 @@ void warlock_spell_t::trigger_seed_of_corruption( warlock_targetdata_t* td, warl
 
 struct seed_of_corruption_t : public warlock_spell_t
 {
-  action_state_t* new_state() { return new soc_state_t( this, target, p() ); }
+  action_state_t* new_state() { return new soc_state_t( this, target ); }
 
   cooldown_t* soulburn_cooldown;
 
