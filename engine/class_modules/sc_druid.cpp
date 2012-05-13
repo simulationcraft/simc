@@ -1628,9 +1628,18 @@ struct rake_t : public druid_cat_attack_t
 
 struct ravage_t : public druid_cat_attack_t
 {
+  int extend_rip;
+  
   ravage_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ), options_str )
+    druid_cat_attack_t( player, player -> find_class_spell( "Ravage" ), options_str ),
+    extend_rip( 0 )
   {
+    option_t options[] =
+    {
+      { "extend_rip", OPT_BOOL, &extend_rip },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
     requires_position_ = POSITION_BACK;
     requires_stealth_  = true;
   }
@@ -1655,6 +1664,22 @@ struct ravage_t : public druid_cat_attack_t
   {
     druid_cat_attack_t::execute();
     p() -> buff.t13_4pc_melee -> expire();
+  }
+  
+  virtual void impact_s( action_state_t* state )
+  {
+    druid_cat_attack_t::impact_s( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      if ( td( state -> target ) -> dots_rip -> ticking && 
+           td( state -> target ) -> dots_rip -> added_ticks < 4 )
+      {
+        // Glyph adds 1/1/2 ticks on execute
+        int extra_ticks = ( td( state -> target ) -> dots_rip -> added_ticks < 2 ) ? 1 : 2;
+        td( state -> target ) -> dots_rip -> extend_duration( extra_ticks );
+      }
+    }
   }
 
   virtual double cost() const
@@ -1688,6 +1713,16 @@ struct ravage_t : public druid_cat_attack_t
       tc += p() -> specialization.predatory_swiftness -> effectN( 1 ).percent();
     
     return tc;
+  }
+
+  virtual bool ready()
+  {
+    if ( extend_rip )
+      if ( ! td( target ) -> dots_rip -> ticking ||
+           ( td( target ) -> dots_rip -> added_ticks == 4 ) )
+        return false;
+
+    return druid_cat_attack_t::ready();
   }
 };
 

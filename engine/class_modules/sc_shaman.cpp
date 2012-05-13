@@ -2621,8 +2621,11 @@ struct lightning_bolt_t : public shaman_spell_t
 
       if ( p() -> glyph.telluric_currents -> ok() )
       {
+        double mana_gain = p() -> glyph.telluric_currents -> effectN( 2 ).percent();
+        if ( p() -> spec == SHAMAN_ELEMENTAL || p() -> spec == SHAMAN_RESTORATION )
+          mana_gain *= 1.2;
         p() -> resource_gain( RESOURCE_MANA,
-                              state -> result_amount * p() -> glyph.telluric_currents -> effectN( 2 ).percent(),
+                              state -> result_amount * mana_gain,
                               p() -> gain.telluric_currents );
       }
     }
