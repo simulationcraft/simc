@@ -1555,7 +1555,7 @@ struct imp_swarm_t : public warlock_spell_t
 
   virtual void execute()
   {
-    cooldown -> duration = base_cooldown *= haste();
+    cooldown -> duration = base_cooldown * haste();
 
     warlock_spell_t::execute();
 
