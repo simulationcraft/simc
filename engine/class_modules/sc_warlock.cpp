@@ -546,8 +546,10 @@ struct drain_life_t : public warlock_spell_t
 
 struct drain_soul_t : public warlock_spell_t
 {
+  bool generate_shard;
+
   drain_soul_t( warlock_t* p ) :
-    warlock_spell_t( p, "Drain Soul" )
+    warlock_spell_t( p, "Drain Soul" ), generate_shard( false )
   {
     channeled    = true;
     hasted_ticks = true; // informative
@@ -576,7 +578,8 @@ struct drain_soul_t : public warlock_spell_t
 
     warlock_spell_t::tick( d );
 
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
+    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
+    generate_shard = ! generate_shard;
   }
 
 
@@ -599,6 +602,8 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
+      generate_shard = false;
+
       if ( s -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
       {
         td( s -> target ) -> ds_started_below_20 = true;
@@ -1538,14 +1543,20 @@ struct dark_soul_t : public warlock_spell_t
 
 struct imp_swarm_t : public warlock_spell_t
 {
+  timespan_t base_cooldown;
+
   imp_swarm_t( warlock_t* p ) :
     warlock_spell_t( "imp_swarm", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
   {
     harmful = false;
+
+    base_cooldown = cooldown -> duration;
   }
 
   virtual void execute()
   {
+    cooldown -> duration = base_cooldown *= haste();
+
     warlock_spell_t::execute();
 
     p() -> buffs.demonic_calling -> expire();
@@ -1587,14 +1598,19 @@ struct fire_and_brimstone_t : public warlock_spell_t
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
-  seed_of_corruption_aoe_t( warlock_t* p ) :
+  seed_of_corruption_aoe_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
   {
     dual       = true;
-    proc       = true;
     background = true;
     aoe        = -1;
     may_miss   = false; // FIXME: Assumed, needs testing
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new seed_of_corruption_aoe_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 };
 
@@ -1603,11 +1619,10 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
 {
   corruption_t* corruption;
 
-  soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
+  soulburn_seed_of_corruption_aoe_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
   {
     dual       = true;
-    proc       = true;
     background = true;
     aoe        = -1;
     may_miss   = false; // FIXME: Assumed, needs testing
@@ -1615,6 +1630,12 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> dual = true;
     corruption -> proc = true;
     corruption -> may_miss = false; // FIXME: Assumed, needs testing
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new soulburn_seed_of_corruption_aoe_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void execute()
