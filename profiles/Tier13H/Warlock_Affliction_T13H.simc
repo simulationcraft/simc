@@ -7,9 +7,9 @@ race=orc
 spec=affliction
 role=spell
 position=back
-use_pre_potion=0
+use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Va!....1.
+talents=http://mop.wowhead.com/mists-of-pandaria-talent-calculator#o!8
 glyphs=everlasting_affliction/soul_shards
 actions+=/flask,precombat=1,type=draconic_mind
 actions+=/food,precombat=1,type=seafood_magnifique_feast

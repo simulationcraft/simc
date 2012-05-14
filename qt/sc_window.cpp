@@ -902,7 +902,10 @@ void SimulationCraftWindow::createBestInSlotTab()
           bisTree->addTopLevelItem( top );
           for ( int j=0; j < TIER_MAX; j++ )
           {
-            top->addChild( rootItems[ player ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
+            QTreeWidgetItem* tier = new QTreeWidgetItem( QStringList( tierNames[ j ] ) );
+            top->addChild( rootItems[ player ][ j ] =  tier );
+
+            tier -> setExpanded( true ); // Expand the subclass Tier bullets by default for now
           }
         }
 

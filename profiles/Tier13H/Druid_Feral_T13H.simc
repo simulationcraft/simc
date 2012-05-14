@@ -7,7 +7,7 @@ race=troll
 spec=guardian
 role=tank
 position=back
-use_pre_potion=0
+use_pre_potion=1
 professions=blacksmithing=525/enchanting=525
 talents=000000
 head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,reforge=hit_mastery,gems=agile_shadowspirit_40agi_30agi,enchant=60agi_35haste
