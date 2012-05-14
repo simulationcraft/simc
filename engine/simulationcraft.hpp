@@ -2979,7 +2979,6 @@ struct player_t : public noncopyable
   race_type_e       race;
   role_type_e       role;
   int               level;
-  bool              use_pre_potion;
   int               party, member;
   ready_type_e      ready_type;
   specialization_e  spec;
@@ -3437,6 +3436,7 @@ struct player_t : public noncopyable
 
   virtual targetdata_t* new_targetdata( player_t* target );
   virtual void init();
+  virtual void init_talents();
   virtual void init_glyphs();
   virtual void init_base() = 0;
   virtual void init_items();

@@ -207,7 +207,7 @@ player_t* download_player( sim_t* sim,
   {
     int a;
 
-    js_t::get_value( a, talent_nodes[ 37 ] );
+    js_t::get_value( a, talent_nodes[ 30 ] );
 
     if ( a > 0 )
     {

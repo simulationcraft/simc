@@ -7,7 +7,6 @@ race=orc
 spec=demonology
 role=spell
 position=back
-use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=000020
 glyphs=everlasting_affliction/imp_swarm

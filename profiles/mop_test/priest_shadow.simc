@@ -7,7 +7,6 @@ race=troll
 spec=shadow
 role=spell
 position=back
-use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=002030
 actions+=/flask,precombat=1,type=draconic_mind

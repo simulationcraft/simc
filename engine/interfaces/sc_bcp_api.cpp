@@ -104,7 +104,7 @@ bool parse_talents( player_t* p, js_node_t* talents )
   {
     util::tokenize( spec_name );
     specialization_e s = util::translate_spec_str( p -> type, spec_name );
-    if ( s == DRUID_FERAL && ( talent_encoding[ 37 ] > '0' ) )
+    if ( s == DRUID_FERAL && ( talent_encoding[ 30 ] > '0' ) )
     {
       s = DRUID_GUARDIAN;
     }

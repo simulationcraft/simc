@@ -7,7 +7,6 @@ race=troll
 spec=elemental
 role=spell
 position=back
-use_pre_potion=1
 professions=tailoring=525/alchemy=525
 talents=131330
 glyphs=fire_elemental_totem/flame_shock/thunder/thunderstorm

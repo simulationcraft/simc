@@ -5,7 +5,6 @@ spec=restoration
 level=85
 race=worgen
 role=heal
-use_pre_potion=1
 professions=Jewelcrafting=525/Alchemy=525
 glyphs=healing_touch/blooming
 talents=010200

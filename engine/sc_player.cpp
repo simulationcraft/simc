@@ -275,7 +275,7 @@ player_t::player_t( sim_t*             s,
   race( r ),
   role( ROLE_HYBRID ),
   level( is_enemy() ? 88 : 85 ),
-  use_pre_potion( 1 ), party( 0 ), member( 0 ),
+  party( 0 ), member( 0 ),
   ready_type( READY_POLL ),
   spec( SPEC_NONE ),
   bugs( true ),
@@ -658,6 +658,7 @@ void player_t::init()
   initialized = 1;
   init_target();
   init_race();
+  init_talents();
   init_glyphs();
   replace_spells();
   init_spells();
@@ -1547,6 +1548,20 @@ void player_t::init_rating()
 
   rating.init( sim, dbc, level, type );
 }
+
+// player_t::init_talents ====================================================
+
+void player_t::init_talents()
+{
+  if ( talents_str.empty() )
+  {
+    parse_talents_numbers( set_default_talents() );
+
+    if ( glyphs_str.empty() )
+      glyphs_str = set_default_glyphs();
+  }
+}
+
 
 // player_t::init_glyphs ====================================================
 
@@ -5181,19 +5196,24 @@ bool player_t::parse_talents_old_armory( const std::string& talent_string )
     }
     else if ( specidx == 1 )
     {
-      if ( talent_string.size() >= 15 )
+      std::vector<std::string> splits;
+      int num_splits = util::string_split( splits, talent_string, "!" );
+      if ( num_splits >= 3 )
       {
-        switch ( talent_string[ 14 ] )
+        if ( splits[ 2 ].size() >= 6 )
         {
-        case 'T':
-        case 'h':
-        case 'e':
-        case 'W':
-        case 'Z':
-        case 'b':
-          specidx = 2;
-          break;
-        default: break;
+          switch ( splits[ 2 ][ 5 ] )
+          {
+          case 'd':
+          case 'g':
+          case 'j':
+          case 'W':
+          case 'T':
+          case 'Q':
+            specidx = 2;
+            break;
+          default: break;
+          }
         }
       }
     }
@@ -6520,7 +6540,6 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
-    profile_str += "use_pre_potion=" + util::to_string( use_pre_potion ) + term;
 
     if ( professions_str.size() > 0 )
     {
@@ -6694,7 +6713,6 @@ void player_t::copy_from( player_t* source )
   role = source -> role;
   position = source -> position;
   position_str = source -> position_str;
-  use_pre_potion = source -> use_pre_potion;
   professions_str = source -> professions_str;
   recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   glyphs_str = source -> glyphs_str;
@@ -6733,7 +6751,6 @@ void player_t::create_options()
     { "race",                                 OPT_STRING,   &( race_str                               ) },
     { "level",                                OPT_INT,      &( level                                  ) },
     { "ready_trigger",                        OPT_INT,      &( ready_type                             ) },
-    { "use_pre_potion",                       OPT_INT,      &( use_pre_potion                         ) },
     { "role",                                 OPT_FUNC,     ( void* ) ::parse_role_string               },
     { "target",                               OPT_STRING,   &( target_str                             ) },
     { "skill",                                OPT_FLT,      &( initial.skill                          ) },

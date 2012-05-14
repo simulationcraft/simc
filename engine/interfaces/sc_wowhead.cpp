@@ -722,7 +722,7 @@ player_t* download_player_profile( sim_t* sim,
       return 0;
     }
 
-    if ( p -> spec == DRUID_FERAL && talent_encoding[ 37 ] > '0' )
+    if ( p -> spec == DRUID_FERAL && talent_encoding[ 30 ] > '0' )
     {
       p -> spec = DRUID_GUARDIAN;
     }

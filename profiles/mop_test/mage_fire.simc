@@ -7,7 +7,6 @@ race=troll
 position=back
 role=spell
 spec=fire
-use_pre_potion=1
 professions=blacksmithing=525/tailoring=525
 talents=000000
 glyphs=fireball/pyroblast/molten_armor/evocation/dragons_breath/mana_shield/conjuring/arcane_brilliance/slow_fall

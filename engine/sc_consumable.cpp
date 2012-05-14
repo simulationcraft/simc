@@ -444,23 +444,38 @@ struct dark_rune_t : public action_t
 
 struct potion_base_t : public action_t
 {
-  static timespan_t cd() { return timespan_t::from_seconds( 60 ); }
-  static timespan_t duration_lost_ooc() { return timespan_t::from_seconds( 5 ); }
-
-  buff_t* potion_buff;
+  timespan_t pre_pot_time;
+  buff_t*    potion_buff;
 
   potion_base_t( player_t* p, const std::string& n, buff_t* pb, const std::string& options_str ) :
     action_t( ACTION_USE, n, p ),
+    pre_pot_time( timespan_t::from_seconds( 5.0 ) ),
     potion_buff( pb )
   {
     assert( pb );
 
-    parse_options( NULL, options_str );
+    double temp_pre_pot_time = pre_pot_time.total_seconds();
+
+    option_t options[] =
+    {
+      { "pre_pot_time", OPT_FLT,  &temp_pre_pot_time },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( temp_pre_pot_time < 0.0 )
+      pre_pot_time = timespan_t::from_seconds( 0.0 );
+    else if ( temp_pre_pot_time > potion_buff -> buff_duration.total_seconds() )
+    {
+      pre_pot_time = potion_buff -> buff_duration;
+    }
+    else
+      pre_pot_time = timespan_t::from_seconds( temp_pre_pot_time );
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = cd();
+    cooldown -> duration = potion_buff -> buff_cooldown;
   }
 
   virtual void execute()
@@ -472,22 +487,19 @@ struct potion_base_t : public action_t
     }
     else
     {
-          cooldown -> duration -= duration_lost_ooc();
-          potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance,
-                                  potion_buff ->  buff_duration - duration_lost_ooc() );
+      cooldown -> duration -= pre_pot_time;
+      potion_buff -> trigger( 1, -1.0, potion_buff -> default_chance,
+                              potion_buff ->  buff_duration - pre_pot_time );
     }
 
     if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
     update_ready();
-    cooldown -> duration = cd();
+    cooldown -> duration = potion_buff -> buff_cooldown;
   }
 
   virtual bool ready()
   {
     if ( player -> potion_used )
-      return false;
-
-    if ( ! player -> in_combat && ! player -> use_pre_potion )
       return false;
 
     return action_t::ready();

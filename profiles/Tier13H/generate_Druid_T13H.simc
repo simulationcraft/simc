@@ -4,14 +4,12 @@
 wowhead=33895173
 name=Druid_Balance_T13H
 professions=blacksmithing=525/tailoring=525
-talents=
 save=Druid_Balance_T13H.simc
 
 # Feral
 wowhead=33895242
 name=Druid_Feral_T13H
 professions=blacksmithing=525/enchanting=525
-talents=
 save=Druid_Feral_T13H.simc
 
 

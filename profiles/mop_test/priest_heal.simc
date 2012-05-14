@@ -7,7 +7,6 @@ race=troll
 position=back
 spec=discipline
 role=heal
-use_pre_potion=1
 professions=enchanting=525/tailoring=525
 talents=000000
 glyphs=prayer_of_mending/dispel_magic/desperation/levitate/fortitude/fading/power_word_shield/penance

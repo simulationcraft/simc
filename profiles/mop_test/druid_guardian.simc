@@ -5,7 +5,6 @@ spec=guardian
 level=85
 role=tank
 race=night_elf
-use_pre_potion=1
 professions=Alchemy=525/Herbalism=525
 #actions=flask,type=steelskin
 #actions+=/food,type=seafood_magnifique_feast

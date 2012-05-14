@@ -7,7 +7,6 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-use_pre_potion=1
 professions=enchanting=525/alchemy=525
 talents=131330
 glyphs=fire_elemental_totem

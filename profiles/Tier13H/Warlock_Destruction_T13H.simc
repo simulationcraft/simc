@@ -7,7 +7,6 @@ race=orc
 spec=destruction
 role=spell
 position=back
-use_pre_potion=1
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Vb!....1.
 glyphs=everlasting_affliction/conflagrate/burning_embers

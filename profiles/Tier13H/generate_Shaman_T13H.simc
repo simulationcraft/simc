@@ -9,7 +9,6 @@ role=attack
 use_pre_potion=1
 professions=enchanting=525/alchemy=525
 spec=enhancement
-talents=
 glyphs=ghost_wolf/lightning_shield/chain_lightning/astral_recall/renewed_life/water_walking/windfury_weapon/lava_lash/stormstrike
 head=spiritwalkers_helmet,id=78686,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste,reforge=haste_mastery
 neck=choker_of_the_vanquished_lord,id=71610,reforge=haste_hit
@@ -36,7 +35,6 @@ role=spell
 use_pre_potion=1
 professions=tailoring=525/alchemy=525
 spec=elemental
-talents=
 glyphs=fire_nova/thunder/lightning_shield/astral_recall/renewed_life/thunderstorm/lightning_bolt/lava_burst/flame_shock
 head=spiritwalkers_headpiece,id=78685,enchant=60int_35crit,gems=burning_shadowspirit_50int_30int
 neck=petrified_fungal_heart,id=78364,reforge=spi_mastery
