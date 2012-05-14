@@ -9,7 +9,7 @@ role=spell
 position=back
 use_pre_potion=0
 professions=tailoring=525/blacksmithing=525
-talents=000020
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Va!....1.
 glyphs=everlasting_affliction/soul_shards
 actions+=/flask,precombat=1,type=draconic_mind
 actions+=/food,precombat=1,type=seafood_magnifique_feast
@@ -37,9 +37,9 @@ actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
-neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_hit,gems=50int_10int
-shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_hit,gems=50int_50int_20int,enchant=50int_25haste
-chest=robes_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,gems=50int_50int_25int_25haste_25int_25haste_30int,enchant=20all
+neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_crit,gems=50int_10int
+shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_haste,gems=50int_50int_20int,enchant=50int_25haste
+chest=robes_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,gems=50int_50int_25int_25haste_30int,enchant=20all
 waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,gems=50int_50int_50int_20int
 legs=leggings_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=mastery_hit,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi
 feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=crit_hit,gems=50int_50int_20int,enchant=35mastery
@@ -55,12 +55,12 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7869
-# gear_intellect=7124
+# gear_intellect=7099
 # gear_spirit=75
 # gear_spell_power=2786
-# gear_hit_rating=1697
-# gear_crit_rating=1081
-# gear_haste_rating=3010
+# gear_hit_rating=1537
+# gear_crit_rating=1134
+# gear_haste_rating=3092
 # gear_mastery_rating=804
 # gear_armor=10250
 # meta_gem=burning_shadowspirit
