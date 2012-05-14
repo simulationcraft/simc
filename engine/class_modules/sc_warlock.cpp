@@ -16,7 +16,7 @@
 warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
   : targetdata_t( p, target ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
 {
-  debuffs_haunt = add_aura( buff_creator_t( this, "haunt", source -> find_spell( "haunt" ) ) );
+  debuffs_haunt = add_aura( buff_creator_t( this, "haunt", source -> find_class_spell( "Haunt" ) ) );
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
@@ -679,6 +679,10 @@ struct haunt_t : public warlock_spell_t
   haunt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Haunt" )
   {
+    // overriding because effect #4 makes the dbc parsing code think this is a dot
+    num_ticks = 0;
+    base_tick_time = timespan_t::zero();
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new haunt_t( p, true );
