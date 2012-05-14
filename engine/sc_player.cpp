@@ -5426,10 +5426,12 @@ void player_t::create_talents_wowhead()
     v[ k ] = '\0';
 
     found_this_char = false;
+    found_tier = false;
     
     for ( int j = 2; j >= 0; j-- )
     {
       unsigned int i = 0;
+
       for ( ; i < MAX_TALENT_COLS; i++ )
       {
         if ( talent_list[ ( ( k * 3 ) + j ) * MAX_TALENT_COLS + i ] )
@@ -5460,7 +5462,11 @@ void player_t::create_talents_wowhead()
   
   if ( v[ 0 ] == 0 )
   {
-    return;
+    if ( v[ 1 ] > 0 )
+    {
+      v[ 0 ] = '0';
+    }
+    else return;
   }
   talents_str += v[ 0 ];
   if ( v[ 1 ] != 0 )

@@ -119,6 +119,8 @@ bool parse_talents( player_t* p, js_node_t* talents )
     return false;
   }
 
+  p -> create_talents_armory();
+
   return true;
 }
 

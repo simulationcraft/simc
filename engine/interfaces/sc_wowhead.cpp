@@ -736,7 +736,7 @@ player_t* download_player_profile( sim_t* sim,
       return 0;
     }
 
-    p -> create_talents_wowhead();
+    p -> create_talents_armory();
 
     p -> glyphs_str = p -> set_default_glyphs();
 
