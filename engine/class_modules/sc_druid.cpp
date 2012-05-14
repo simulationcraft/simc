@@ -2926,6 +2926,8 @@ struct celestial_alignment_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
     
+    check_spec( DRUID_BALANCE );
+    
     harmful = false;
   }
 
@@ -3307,6 +3309,8 @@ struct moonkin_form_t : public druid_spell_t
     druid_spell_t( "moonkin_form", player, player -> find_class_spell( "Moonkin Form" )  )
   {
     parse_options( NULL, options_str );
+    
+    check_spec( DRUID_BALANCE );
 
     // Override these as we can precast before combat begins
     trigger_gcd       = timespan_t::zero();
@@ -3413,6 +3417,8 @@ struct starfire_t : public druid_spell_t
     druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) )
   {
     parse_options( NULL, options_str );
+    
+    check_spec( DRUID_BALANCE );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -3558,6 +3564,8 @@ struct starsurge_t : public druid_spell_t
     druid_spell_t( "starsurge", player, player -> find_class_spell( "Starsurge" ) )
   {
     parse_options( NULL, options_str );
+    
+    check_spec( DRUID_BALANCE );
 
     if ( player -> set_bonus.tier13_4pc_caster() )
     {
@@ -3678,7 +3686,7 @@ struct sunfire_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    check_spec( DRUID_BALANCE ) ;
+    check_spec( DRUID_BALANCE );
 
     dot_behavior = DOT_REFRESH;
 
@@ -3875,6 +3883,8 @@ struct wild_mushroom_detonate_t : public druid_spell_t
     druid_spell_t( "wild_mushroom_detonate", player, player -> find_class_spell( "Wild Mushroom: Detonate" ) )
   {
     parse_options( NULL, options_str );
+    
+    check_spec( DRUID_BALANCE );
 
     // Actual ability is 88751, all damage is in spell 78777
     const spell_data_t* damage_spell = player -> dbc.spell( 78777 );
