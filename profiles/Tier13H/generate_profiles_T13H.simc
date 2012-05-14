@@ -16,7 +16,7 @@ optimal_raid=1
 ############################
 # Druids                   #
 ############################
-#generate_Druid_T13H.simc
+generate_Druid_T13H.simc
 
 ############################
 # Hunters                  #
@@ -31,7 +31,7 @@ optimal_raid=1
 ############################
 # Paladins                 #
 ############################
-#generate_Paladin_T13H.simc
+generate_Paladin_T13H.simc
 
 #############################
 # Priests                   #
@@ -46,12 +46,12 @@ generate_Priest_T13H.simc
 #############################
 # Shamans                   #
 #############################
-#generate_Shaman_T13H.simc
+generate_Shaman_T13H.simc
 
 #############################
 # Warlocks                  #
 #############################
-#generate_Warlock_T13H.simc
+generate_Warlock_T13H.simc
 
 #############################
 # Warriors                  #
