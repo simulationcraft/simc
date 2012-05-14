@@ -864,17 +864,10 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
     virtual void trigger( action_t* a, void* call_data )
     {
-      double dmg;
-
       if ( ! a -> may_trigger_dtr ) return;
 
-      if ( a -> tick_dmg > 0 )
-        dmg = a -> tick_dmg;
-      else
-        dmg = a -> direct_dmg;
-
-      discharge_action -> base_dd_min = dmg;
-      discharge_action -> base_dd_max = dmg;
+      discharge_action -> base_dd_min = a -> tick_dmg;
+      discharge_action -> base_dd_max = a -> tick_dmg;
 
       discharge_proc_callback_t::trigger( a, call_data );
     }
