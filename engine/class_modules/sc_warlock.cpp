@@ -2696,7 +2696,7 @@ void warlock_t::init_actions()
     {
 
     case WARLOCK_AFFLICTION:
-      add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=1" );
+      add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
       add_action( "Haunt",                 "if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time" );
       add_action( "Agony",                 "if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
