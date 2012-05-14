@@ -299,23 +299,25 @@ bool item_t::init()
     }
   }
 
-  if ( encoded_name_str != "empty" &&
-       encoded_name_str != "none" )
+  if ( encoded_name_str.empty() || encoded_name_str == "empty" || encoded_name_str == "none" )
   {
-    id_str                    = armory_id_str;
-    encoded_stats_str         = armory_stats_str;
-    encoded_reforge_str       = armory_reforge_str;
-    encoded_gems_str          = armory_gems_str;
-    encoded_enchant_str       = armory_enchant_str;
-    encoded_addon_str         = armory_addon_str;
-    encoded_weapon_str        = armory_weapon_str;
-    encoded_heroic_str        = armory_heroic_str;
-    encoded_lfr_str           = armory_lfr_str;
-    encoded_armor_type_str    = armory_armor_type_str;
-    encoded_ilevel_str        = armory_ilevel_str;
-    encoded_quality_str       = armory_quality_str;
-    encoded_random_suffix_str = armory_random_suffix_str;
+    encode_options();
+    return true;
   }
+
+  id_str                    = armory_id_str;
+  encoded_stats_str         = armory_stats_str;
+  encoded_reforge_str       = armory_reforge_str;
+  encoded_gems_str          = armory_gems_str;
+  encoded_enchant_str       = armory_enchant_str;
+  encoded_addon_str         = armory_addon_str;
+  encoded_weapon_str        = armory_weapon_str;
+  encoded_heroic_str        = armory_heroic_str;
+  encoded_lfr_str           = armory_lfr_str;
+  encoded_armor_type_str    = armory_armor_type_str;
+  encoded_ilevel_str        = armory_ilevel_str;
+  encoded_quality_str       = armory_quality_str;
+  encoded_random_suffix_str = armory_random_suffix_str;
 
   if ( ! option_heroic_str.empty()  ) encoded_heroic_str  = option_heroic_str;
 
