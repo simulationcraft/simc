@@ -11,6 +11,7 @@
 #define MAX_PLAYERS_PER_CHART 20
 
 namespace chart {
+  std::string chart_bg_color( int print_styles );
   std::string resource_color( int type );
 
   std::string raid_downtime ( const std::vector<player_t*> &players_by_name, int print_styles );

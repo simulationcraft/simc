@@ -2029,7 +2029,7 @@ void sim_t::create_options()
     { "debug",                            OPT_BOOL,   &( debug                                    ) },
     { "html",                             OPT_STRING, &( html_file_str                            ) },
     { "hosted_html",                      OPT_BOOL,   &( hosted_html                              ) },
-    { "print_styles",                     OPT_BOOL,   &( print_styles                             ) },
+    { "print_styles",                     OPT_INT,   &( print_styles                             ) },
     { "xml",                              OPT_STRING, &( xml_file_str                             ) },
     { "xml_style",                        OPT_STRING, &( xml_stylesheet_file_str                  ) },
     { "log",                              OPT_BOOL,   &( log                                      ) },

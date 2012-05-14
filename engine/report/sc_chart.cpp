@@ -289,6 +289,19 @@ struct compare_downtime
 
 namespace chart {
 
+std::string chart_bg_color( int print_styles )
+{
+  if ( print_styles == 1 )
+  {
+    return "666666";
+  }
+  else
+  {
+    return "dddddd";
+  }
+
+}
+
 std::string raid_downtime( const std::vector<player_t*>& players_by_name, int print_styles )
 {
   // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
@@ -320,7 +333,7 @@ std::string raid_downtime( const std::vector<player_t*>& players_by_name, int pr
   s << get_chart_base_url();
   s << google_chart::chart_size( 500, ( waiting_list.size() * 30 + 30 ) ); // Set chart size
   s << google_chart::chart_type( google_chart::HORIZONTAL_BAR ); // Set chart type
-  if ( !print_styles )
+  if ( !( print_styles == 1 ) )
   {
     s << google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" ); // fill chart background solid
   }
@@ -379,10 +392,7 @@ std::string raid_downtime( const std::vector<player_t*>& players_by_name, int pr
   s << google_chart::chart_title( "Player Waiting Time" ); // Set chart title
 
   // Format chart title with color and font size
-  if ( print_styles )
-    s << google_chart::chart_title_formatting( "666666", 18 );
-  else
-    s << google_chart::chart_title_formatting( "dddddd", 18 );
+  s << google_chart::chart_title_formatting( chart::chart_bg_color( print_styles ), 18 );
 
   return s.str();
 }
@@ -439,7 +449,7 @@ size_t raid_aps( std::vector<std::string>& images,
     s += google_chart::chart_size( 525, num_players * 20 + ( first ? 20 : 0 ) ); // Set chart size
     s += "cht=bhg";
     s += "&amp;";
-    if ( ! sim -> print_styles )
+    if ( ! ( sim -> print_styles == 1 ) )
     {
       s += "chf=bg,s,333333";
       s += "&amp;";
@@ -476,14 +486,8 @@ size_t raid_aps( std::vector<std::string>& images,
     {
       s += google_chart::chart_title( std::string( dps ? "DPS " : "HPS" ) + " Ranking" ); // Set chart title
     }
-    if ( sim -> print_styles )
-    {
-      s += "chts=666666,18";
-    }
-    else
-    {
-      s += "chts=dddddd,18";
-    }
+
+    s += "chts=" + chart::chart_bg_color( sim -> print_styles ) + ",18";
 
     images.push_back( s );
 
@@ -553,7 +557,7 @@ size_t raid_gear( std::vector<std::string>& images,
     s += google_chart::chart_size( 525, height ); // Set chart size
     s += "cht=bhs";
     s += "&amp;";
-    if ( ! sim -> print_styles )
+    if ( ! ( sim -> print_styles == 1 ) )
     {
       s += "chf=bg,s,333333";
       s += "&amp;";
@@ -601,7 +605,7 @@ size_t raid_gear( std::vector<std::string>& images,
       s += formatted_name.c_str();
     }
     s += "&amp;";
-    if ( sim -> print_styles )
+    if ( sim -> print_styles == 1 )
     {
       s += "chxs=0,000000,14";
     }
@@ -626,20 +630,14 @@ size_t raid_gear( std::vector<std::string>& images,
     {
       s += "chdlp=t&amp;";
     }
-    if ( ! sim -> print_styles )
+    if ( ! ( sim -> print_styles == 1 ) )
     {
       s += "chdls=dddddd,12";
       s += "&amp;";
     }
     s += google_chart::chart_title( "Gear Overview" ); // Set chart title
-    if ( sim -> print_styles )
-    {
-      s += "chts=666666,18";
-    }
-    else
-    {
-      s += "chts=dddddd,18";
-    }
+
+    s += "chts=" + chart::chart_bg_color( sim -> print_styles ) + ",18";
 
     images.push_back( s );
 
@@ -723,7 +721,7 @@ size_t raid_dpet( std::vector<std::string>& images,
     s += google_chart::chart_size( 500, num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); // Set chart size
     s += "cht=bhg";
     s += "&amp;";
-    if ( ! sim -> print_styles )
+    if ( ! ( sim -> print_styles == 1 ) )
     {
       s += "chf=bg,s,333333";
       s += "&amp;";
@@ -761,14 +759,8 @@ size_t raid_dpet( std::vector<std::string>& images,
     {
       s += google_chart::chart_title( "Raid Damage Per Execute Time" ); // Set chart title
     }
-    if ( sim -> print_styles )
-    {
-      s += "chts=666666,18";
-    }
-    else
-    {
-      s += "chts=dddddd,18";
-    }
+
+    s += "chts=" + chart::chart_bg_color( sim -> print_styles ) + ",18";
 
     images.push_back( s );
 
@@ -810,7 +802,7 @@ std::string action_dpet( const player_t* p )
   s += google_chart::chart_size( 550, num_stats * 30 + 30 ); // Set chart size
   s += "cht=bhg";
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     s += "chf=bg,s,333333";
     s += "&amp;";
@@ -857,14 +849,8 @@ std::string action_dpet( const player_t* p )
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += google_chart::chart_title( formatted_name + " Damage Per Execute Time" ); // Set chart title
   s += "&amp;";
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -918,7 +904,7 @@ std::string aps_portion( const player_t* p )
   s += google_chart::chart_size( 550, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     s += "chf=bg,s,333333";
     s += "&amp;";
@@ -965,14 +951,8 @@ std::string aps_portion( const player_t* p )
   std::string formatted_name = p -> name();
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += google_chart::chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " HPS" : " DPS" ) + " Sources" ); // Set chart title
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1021,7 +1001,7 @@ std::string time_spent( const player_t* p )
   s += google_chart::chart_size( 525, 275 ); // Set chart size
   s += "cht=p";
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     s += "chf=bg,s,333333";
     s += "&amp;";
@@ -1077,14 +1057,8 @@ std::string time_spent( const player_t* p )
   std::string formatted_name = p -> name();
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += google_chart::chart_title( formatted_name + " Spent Time" ); // Set chart title
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1122,7 +1096,7 @@ std::string gains( const player_t* p, resource_type_e type )
   s << get_chart_base_url();
   s << google_chart::chart_size( 550, 200 + num_gains * 10 );
   s << google_chart::chart_type( google_chart::PIE );
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
     s << google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" );
 
   // Insert Chart Data
@@ -1159,7 +1133,7 @@ std::string gains( const player_t* p, resource_type_e type )
   util::inverse_tokenize( r );
   s << google_chart::chart_title( formatted_name + "+" + r + " Gains" );
 
-  if ( p -> sim -> print_styles )
+  if ( p -> sim -> print_styles == 1 )
     s << google_chart::chart_title_formatting( "666666", 18 );
   else
     s << google_chart::chart_title_formatting( "dddddd", 18 );
@@ -1194,7 +1168,7 @@ std::string scale_factors( const player_t* p )
   s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
 
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
     s += google_chart::fill_chart( google_chart::FILL_BACKGROUND, google_chart::FILL_SOLID, "333333" );
 
   snprintf( buffer, sizeof( buffer ), "chd=t%i:" , 1 ); s += buffer;
@@ -1235,14 +1209,8 @@ std::string scale_factors( const player_t* p )
   std::string formatted_name = p -> name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += google_chart::chart_title( formatted_name + " Scale Factors" ); // Set chart title
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1279,7 +1247,7 @@ std::string scaling_dps( const player_t* p )
   s += google_chart::chart_size( 550, 300 ); // Set chart size
   s += "cht=lc";
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     s += "chf=bg,s,333333";
     s += "&amp;";
@@ -1327,7 +1295,7 @@ std::string scaling_dps( const player_t* p )
     first = false;
   }
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     s += "chdls=dddddd,12";
     s += "&amp;";
@@ -1349,14 +1317,8 @@ std::string scaling_dps( const player_t* p )
   std::string formatted_name = p -> name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
   s += google_chart::chart_title( formatted_name + "DPS Scaling" ); // Set chart title
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1441,7 +1403,7 @@ std::string reforge_dps( const player_t* p )
     s += google_chart::chart_size( 525, 300 ); // Set chart size
     s += "cht=lxy";
     s += "&amp;";
-    if ( ! p -> sim -> print_styles )
+    if ( ! ( p -> sim -> print_styles == 1 ) )
     {
       s += "chf=bg,s,333333";
       s += "&amp;";
@@ -1533,7 +1495,7 @@ std::string reforge_dps( const player_t* p )
     s += "&amp;";
 
     // Chart legend
-    if ( ! p -> sim -> print_styles )
+    if ( ! ( p -> sim -> print_styles == 1 ) )
     {
       s += "chdls=dddddd,12";
       s += "&amp;";
@@ -1555,11 +1517,7 @@ std::string reforge_dps( const player_t* p )
     util::urlencode( util::str_to_utf8( formatted_name ) );
     s += google_chart::chart_title( formatted_name + " Reforge Scaling" ); // Set chart title
 
-    if ( p -> sim -> print_styles )
-      s += "chts=666666,18";
-    else
-      s += "chts=dddddd,18";
-    s += "&amp;";
+    s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
     // Chart markers (Errorbars and Center-line)
     s += "chm=E,FF2222,1,-1,1:5|h,888888,1,0.5,1,-1.0";
@@ -1589,7 +1547,7 @@ std::string reforge_dps( const player_t* p )
     s += "\n";
     s += "<input type='hidden' name='cht' value='s' />";
     s += "\n";
-    if ( ! p -> sim -> print_styles )
+    if ( ! ( p -> sim -> print_styles == 1 ) )
     {
       s += "<input type='hidden' name='chf' value='bg,s,333333' />";
       s += "\n";
@@ -1621,7 +1579,7 @@ std::string reforge_dps( const player_t* p )
     s += "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
     s += "\n";
 
-    if ( ! p -> sim -> print_styles )
+    if ( ! ( p -> sim -> print_styles == 1 ) )
     {
       s += "<input type='hidden' name='chdls' value='dddddd,12' />";
       s += "\n";
@@ -1633,7 +1591,7 @@ std::string reforge_dps( const player_t* p )
     util::urlencode( util::str_to_utf8( formatted_name ) );
     snprintf( buffer, sizeof( buffer ), "<input type='hidden' name='chtt' value='%s+Reforge+Scaling' />", formatted_name.c_str() ); s += buffer;
     s += "\n";
-    if ( p -> sim -> print_styles )
+    if ( p -> sim -> print_styles == 1 )
     {
       s += "<input type='hidden' name='chts' value='666666,18' />";
     }
@@ -1697,7 +1655,7 @@ std::string timeline( const player_t* p,
   s += "&amp;";
   s += "chxs=0,ffffff|1,ffffff";
   s += "&amp;";
-  if ( p -> sim -> print_styles )
+  if ( p -> sim -> print_styles == 1 )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -1714,7 +1672,7 @@ std::string timeline( const player_t* p,
     s += simple_encoding( ( int ) ( timeline_data[ i ] * timeline_adjust ) );
   }
   s += "&amp;";
-  if ( ! p -> sim -> print_styles )
+  if ( ! ( p -> sim -> print_styles == 1 ) )
   {
     snprintf( buffer, sizeof( buffer ), "chco=%s", color.c_str() ); s += buffer;
     s += "&amp;";
@@ -1737,14 +1695,7 @@ std::string timeline( const player_t* p,
 
   s += google_chart::chart_title( timeline_name + " Timeline" ); // Set chart title
 
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1784,7 +1735,7 @@ std::string timeline_dps_error( const player_t* p )
   s += "&amp;";
   s += "chco=FF0000,0000FF";
   s += "&amp;";
-  if ( p -> sim -> print_styles )
+  if ( p -> sim -> print_styles == 1 )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -1820,14 +1771,8 @@ std::string timeline_dps_error( const player_t* p )
   s += "chdl=DPS Error";
   s += "&amp;";
   s += google_chart::chart_title( "Standard Error Confidence ( n >= 50 )" ); // Set chart title
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -1854,7 +1799,7 @@ std::string distribution( const sim_t* sim,
   s += google_chart::chart_size( 525, 185 ); // Set chart size
   s += "cht=bvs";
   s += "&amp;";
-  if ( sim -> print_styles )
+  if ( sim -> print_styles == 1 )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -1884,14 +1829,8 @@ std::string distribution( const sim_t* sim,
   snprintf( buffer, sizeof( buffer ), "chxp=0,1,%.0f,100", 100.0 * ( avg - min ) / ( max - min ) ); s += buffer;
   s += "&amp;";
   s += google_chart::chart_title( distribution_name + " Distribution" ); // Set chart title
-  if ( sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
+
+  s += "chts=" + chart::chart_bg_color( sim -> print_styles ) + ",18";
 
   return s;
 }
@@ -2199,7 +2138,7 @@ std::string dps_error( const player_t* p )
   snprintf( buffer, sizeof( buffer ), "chxr=0,%.0f,%.0f|2,0,%.4f", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, 1 / ( std_dev * sqrt ( 0.5 * M_PI ) ) ); s += buffer;
 
   s += "&amp;";
-  if ( p -> sim -> print_styles )
+  if ( p -> sim -> print_styles == 1 )
   {
     s += "chf=c,ls,0,EEEEEE,0.2,FFFFFF,0.2";
   }
@@ -2214,7 +2153,7 @@ std::string dps_error( const player_t* p )
   s += "&amp;";
   s += google_chart::chart_title( util::to_string( p -> sim -> confidence * 100.0, 2 ) + "%" + " Confidence Interval" ); // Set chart title
 
-  if ( p -> sim -> print_styles )
+  if ( p -> sim -> print_styles == 1 )
   {
     s += "chxs=0,000000|1,000000|2,000000|3,000000";
   }
@@ -2223,15 +2162,9 @@ std::string dps_error( const player_t* p )
     s += "chxs=0,ffffff|1,ffffff|2,ffffff|3,ffffff";
   }
   s += "&amp;";
-  if ( p -> sim -> print_styles )
-  {
-    s += "chts=666666,18";
-  }
-  else
-  {
-    s += "chts=dddddd,18";
-  }
-  s += "&amp;";
+
+  s += "chts=" + chart::chart_bg_color( p -> sim -> print_styles ) + ",18";
+
   snprintf( buffer, sizeof( buffer ), "chfd=0,x,%.2f,%.2f,%.8f,100*exp(-(x-%.4f)^2/(2*%.2f^2))", p -> dps.mean - std_dev * 4, p -> dps.mean + std_dev * 4, std_dev / 100.0, p -> dps.mean, std_dev ); s += buffer;
 
   s += "&amp;";
