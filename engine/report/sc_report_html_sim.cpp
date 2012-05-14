@@ -1520,7 +1520,6 @@ namespace report {
 
 void print_html( sim_t* sim )
 {
-  if ( !sim -> players_by_name.size() ) return;
   if ( sim -> simulation_length.mean == 0 ) return;
   if ( sim -> html_file_str.empty() ) return;
 
