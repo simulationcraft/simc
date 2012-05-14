@@ -26,5 +26,20 @@ trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=ona
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_haste,gems=40agi_40agi_20agi,enchant=65crit
 main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta_790barmor,enchant=130agi,weapon=polearm_3.50speed_5936min_8905max
 # Gear Summary
+# gear_strength=20
+# gear_agility=6939
+# gear_stamina=8010
+# gear_intellect=20
+# gear_spirit=20
+# gear_attack_power=190
+# gear_expertise_rating=771
+# gear_hit_rating=674
+# gear_crit_rating=1131
+# gear_haste_rating=2125
+# gear_mastery_rating=1327
+# gear_armor=12818
+# gear_bonus_armor=790
 # meta_gem=agile_shadowspirit
+# tier13_2pc_melee=1
+# tier13_4pc_melee=1
 # main_hand=kiril_fury_of_beasts,heroic=1,weapon=polearm_3.50speed_5936min_8905max

@@ -764,14 +764,14 @@ void SimulationCraftWindow::createImportTab()
   charDevView->setUrl( QUrl( "http://chardev.org/?planner" ) );
   importTab->addTab( charDevView, "CharDev" );
 
-  createRawrTab();
+  //createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
   historyList->setSortingEnabled( true );
   importTab->addTab( historyList, "History" );
 
-  connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
+  //connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
 
@@ -813,15 +813,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for ( player_type_e i=DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
-    // Ignore the Monk for now
-    if ( i == MONK ) continue;
-
-    QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( i ) ) );
-    bisTree->addTopLevelItem( top );
-    for ( int j=0; j < TIER_MAX; j++ )
-    {
-      top->addChild( rootItems[ i ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
-    }
+    range::fill( rootItems[ i ], 0 );
   }
 // Scan all subfolders in /profiles/ and create a list
 #ifndef Q_WS_MAC
@@ -904,6 +896,16 @@ void SimulationCraftWindow::createBestInSlotTab()
 
       if ( player != PLAYER_MAX && tier != TIER_MAX )
       {
+        if ( !rootItems[ player ][ tier ] )
+        {
+          QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
+          bisTree->addTopLevelItem( top );
+          for ( int j=0; j < TIER_MAX; j++ )
+          {
+            top->addChild( rootItems[ player ][ j ] = new QTreeWidgetItem( QStringList( tierNames[ j ] ) ) );
+          }
+        }
+
         QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[ i ] << profile );
         rootItems[ player ][ tier ]->addChild( item );
       }
@@ -1305,8 +1307,8 @@ void ImportThread::run()
   {
   case TAB_BATTLE_NET: importBattleNet(); break;
   case TAB_CHAR_DEV:   importCharDev();   break;
-  case TAB_RAWR:       importRawr();      break;
-  default: assert( 0 );
+  //case TAB_RAWR:       importRawr();      break;
+  default: assert( 0 ); break;
   }
 
   if ( player )
@@ -1743,7 +1745,7 @@ void SimulationCraftWindow::mainButtonClicked( bool /* checked */ )
     {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
     case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+//    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     }
     break;
   case TAB_LOG: saveLog(); break;
@@ -1870,7 +1872,7 @@ void SimulationCraftWindow::mainTabChanged( int index )
 
 void SimulationCraftWindow::importTabChanged( int index )
 {
-  if ( index == TAB_RAWR ||
+  if ( /* index == TAB_RAWR || */
        index == TAB_BIS  ||
        index == TAB_CUSTOM  ||
        index == TAB_HISTORY )
@@ -1932,7 +1934,7 @@ void SimulationCraftWindow::historyDoubleClicked( QListWidgetItem* item )
   }
   else
   {
-    importTab->setCurrentIndex( TAB_RAWR );
+    //importTab->setCurrentIndex( TAB_RAWR );
   }
 }
 

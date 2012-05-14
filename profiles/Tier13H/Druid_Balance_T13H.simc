@@ -59,6 +59,19 @@ trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=5
 back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=40int_10int,enchant=lightweave_embroidery
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
 # Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=7908
+# gear_intellect=6816
+# gear_spirit=1561
+# gear_spell_power=2786
+# gear_hit_rating=314
+# gear_crit_rating=440
+# gear_haste_rating=2634
+# gear_mastery_rating=1743
+# gear_armor=12803
 # meta_gem=burning_shadowspirit
+# tier13_2pc_caster=1
+# tier13_4pc_caster=1
 # back=woundlicker_cover,enchant=lightweave_embroidery
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1305max,enchant=power_torrent
