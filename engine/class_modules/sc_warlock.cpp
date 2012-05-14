@@ -2753,7 +2753,7 @@ void warlock_t::init_actions()
 
     case WARLOCK_DESTRUCTION:
       add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Chaos Bolt",            "if=ember_react" );
+      add_action( "Chaos Bolt",            "if=ember_react&buff.bacdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
       add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
