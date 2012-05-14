@@ -1,7 +1,0 @@
-default_actions=1
-Warlock_Demonology_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier13_2pc_caster=0 tier13_4pc_caster=0
-Warlock_Demonology_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier13_2pc_caster=1 tier13_4pc_caster=0 name=Warlock_Demonology_2PT13
-Warlock_Demonology_T12H.simc tier12_2pc_caster=0 tier12_4pc_caster=0 tier13_2pc_caster=1 tier13_4pc_caster=1 name=Warlock_Demonology_4PT13
-Warlock_Demonology_T12H.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier13_2pc_caster=1 tier13_4pc_caster=0 name=Warlock_Demonology_2PT12_2PT13
-Warlock_Demonology_T12H.simc tier12_2pc_caster=1 tier12_4pc_caster=0 tier13_2pc_caster=0 tier13_4pc_caster=0 name=Warlock_Demonology_2PT12
-Warlock_Demonology_T12H.simc tier12_2pc_caster=1 tier12_4pc_caster=1 tier13_2pc_caster=0 tier13_4pc_caster=0 name=Warlock_Demonology_4PT12
