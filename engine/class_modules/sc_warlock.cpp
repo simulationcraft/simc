@@ -2715,8 +2715,9 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
-      add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&(buff.dark_soul.up|burning_ember>=2)&target.health.pct>=25" );
+      // FIXME: Not worth using while destro is still mana constrained
+      // add_action( "Shadowburn",            "if=ember_react" );
+      add_action( "Chaos Bolt",            "if=ember_react" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
       add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
