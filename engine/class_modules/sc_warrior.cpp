@@ -308,7 +308,6 @@ struct warrior_t : public player_t
   // Character Definition
   virtual warrior_targetdata_t* new_targetdata( player_t* target )
   { return new warrior_targetdata_t( this, target ); }
-  virtual void      init_talents();
   virtual void      init_spells();
   virtual void      init_defense();
   virtual void      init_base();
@@ -454,7 +453,7 @@ struct deep_wounds_t : public warrior_attack_t
     dot_behavior  = DOT_REFRESH;
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
-  virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+  virtual timespan_t travel_time() const { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
@@ -1110,7 +1109,7 @@ struct bladestorm_t : public warrior_attack_t
   attack_t* bladestorm_oh;
 
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "bladestorm", "Bladestorm", p ),
+    warrior_attack_t( "bladestorm", p, p -> find_class_spell( "Bladestorm" ) ),
     bladestorm_mh( 0 ), bladestorm_oh( 0 )
   {
     // FIXME
@@ -1263,7 +1262,7 @@ struct charge_t : public warrior_attack_t
   int use_in_combat;
 
   charge_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "charge",  "Charge", p ),
+    warrior_attack_t( "charge", p, p -> find_class_spell( "Charge" ) ),
     use_in_combat( 0 ) // For now it's not usable in combat by default because we can't modell the distance/movement.
   {
     option_t options[] =
@@ -1278,8 +1277,9 @@ struct charge_t : public warrior_attack_t
 
     stancemask = STANCE_BATTLE;
 
-    if ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() )
-      stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
+    // FIXME:
+    // if ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() )
+    //  stancemask  = STANCE_BERSERKER | STANCE_BATTLE | STANCE_DEFENSE;
   }
 
   virtual void execute()
@@ -1305,10 +1305,11 @@ struct charge_t : public warrior_attack_t
 
     if ( p -> in_combat )
     {
-      if ( ! ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() ) )
+      // FIXME:
+      /* if ( ! ( p -> talents.juggernaut -> rank() || p -> talents.warbringer -> rank() ) )
         return false;
 
-      else if ( ! use_in_combat )
+      else */if ( ! use_in_combat )
         return false;
 
       if ( ( p -> position == POSITION_BACK ) || ( p -> position == POSITION_FRONT ) )
@@ -1389,7 +1390,8 @@ struct colossus_smash_t : public warrior_attack_t
 
     stancemask  = STANCE_BERSERKER | STANCE_BATTLE;
 
-    armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
+    // FIXME:
+    // armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
   }
 
   virtual void execute()
@@ -1414,11 +1416,12 @@ struct concussion_blow_t : public warrior_attack_t
   concussion_blow_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "concussion_blow", p, p -> find_class_spell( "Concussion Blow" ) )
   {
-    check_talent( p -> talents.concussion_blow -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.concussion_blow -> rank() );
 
     parse_options( NULL, options_str );
 
-    direct_power_mod  = effectN( 3 ).percent();
+    direct_power_mod  = data().effectN( 3 ).percent();
   }
 };
 
@@ -1429,7 +1432,8 @@ struct devastate_t : public warrior_attack_t
   devastate_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "devastate", p, p -> find_class_spell( "Devastate" ) )
   {
-    check_talent( p -> talents.devastate -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.devastate -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -1445,15 +1449,16 @@ struct devastate_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    warrior_t* p = cast();
+    //warrior_t* p = cast();
 
     trigger_sword_and_board( this, result );
 
-    if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
+    // FIXME:
+    /*if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
     {
       if ( p -> rng_impending_victory -> roll( p -> talents.impending_victory -> proc_chance() ) )
         p -> buffs_victory_rush -> trigger();
-    }
+    }*/
   }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -1686,7 +1691,8 @@ struct mortal_strike_t : public warrior_attack_t
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
 
-      if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
+      // FIXME:
+      /* if ( result == RESULT_CRIT && p -> rng_wrecking_crew -> roll( p -> talents.wrecking_crew -> proc_chance() ) )
       {
         double value = p -> talents.wrecking_crew -> rank() * 0.05;
         p -> buffs_wrecking_crew -> trigger( 1, value );
@@ -1694,6 +1700,7 @@ struct mortal_strike_t : public warrior_attack_t
 
       if ( p -> talents.lambs_to_the_slaughter -> rank() && td -> dots_rend -> ticking )
         td -> dots_rend -> refresh_duration();
+      */
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
       {
@@ -1836,7 +1843,8 @@ struct raging_blow_t : public warrior_attack_t
     warrior_attack_t( "raging_blow", p, p -> find_class_spell( "Raging Blow" ) ),
     mh_attack( 0 ), oh_attack( 0 )
   {
-    check_talent( p -> talents.raging_blow -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.raging_blow -> rank() );
 
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
@@ -1974,14 +1982,16 @@ struct revenge_t : public warrior_attack_t
 
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effectN( 2 ).percent()
                             + p -> glyphs.revenge -> effectN( 1 ).percent();
-    direct_power_mod = extra_coeff();
+
+    direct_power_mod = data().extra_coeff();
     stancemask = STANCE_DEFENSE;
 
-    if ( p -> talents.improved_revenge -> rank() )
+    // FIXME:
+    /* if ( p -> talents.improved_revenge -> rank() )
     {
       aoe = 1;
       base_add_multiplier = p -> talents.improved_revenge -> rank() * 0.50;
-    }
+    }*/
 
     // Needs testing
     if ( p -> set_bonus.tier13_2pc_tank() )
@@ -2152,11 +2162,12 @@ struct shockwave_t : public warrior_attack_t
   shockwave_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "shockwave", p, p -> find_class_spell( "Shockwave" ) )
   {
-    check_talent( p -> talents.shockwave -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.shockwave -> rank() );
 
     parse_options( NULL, options_str );
 
-    direct_power_mod  = effectN( 3 ).percent();
+    direct_power_mod  = data().effectN( 3 ).percent();
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2345,12 +2356,13 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-    warrior_targetdata_t* td = cast_td();
+    //warrior_targetdata_t* td = cast_td();
 
     p -> buffs_thunderstruck -> trigger();
 
-    if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
-      td -> dots_rend -> refresh_duration();
+    // FIXME:
+    // if ( p -> talents.blood_and_thunder -> rank() && td -> dots_rend && td -> dots_rend -> ticking )
+    //  td -> dots_rend -> refresh_duration();
 
     if ( ! sim -> overrides.weakened_blows )
       target -> debuffs.weakened_blows -> trigger();
@@ -2402,7 +2414,8 @@ struct whirlwind_t : public warrior_attack_t
     if ( p -> buffs_meat_cleaver -> up() )
     {
       // Caution: additive
-      player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
+      // FIXME:
+      // player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
     }
   }
 };
@@ -2412,7 +2425,7 @@ struct whirlwind_t : public warrior_attack_t
 struct victory_rush_t : public warrior_attack_t
 {
   victory_rush_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "victory_rush", "Victory Rush", p )
+    warrior_attack_t( "victory_rush", p, p -> find_class_spell( "Victory Rush" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2437,7 +2450,7 @@ struct victory_rush_t : public warrior_attack_t
 struct warrior_spell_t : public spell_t
 {
   int stancemask;
-  warrior_spell_t( const std::string& n, warrior_t* p, spell_data_t* s = spell_data_t::nil() ) :
+  warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
@@ -2492,15 +2505,17 @@ struct battle_shout_t : public warrior_spell_t
   double rage_gain;
 
   battle_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "battle_shout", "Battle Shout", p )
+    warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
   {
     parse_options( NULL, options_str );
 
     harmful   = false;
 
-    rage_gain = p -> dbc.spell( effectN( 3 ).trigger_spell_id() ) -> effectN( 1 ).resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effectN( 2 ).resource( RESOURCE_RAGE );
+    // FIXME:
+    // rage_gain = p -> dbc.spell( effectN( 3 ).trigger_spell_id() ) -> effectN( 1 ).resource( RESOURCE_RAGE ) + p -> talents.booming_voice -> effectN( 2 ).resource( RESOURCE_RAGE );
     cooldown = player -> get_cooldown( "shout" );
-    cooldown -> duration = timespan_t::from_seconds( 10 ) + spell_id_t::cooldown() + p -> talents.booming_voice -> effectN( 1 ).time_value();
+    // FIXME:
+    // cooldown -> duration = timespan_t::from_seconds( 10 ) + spell_id_t::cooldown() + p -> talents.booming_voice -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -2523,7 +2538,7 @@ struct commanding_shout_t : public warrior_spell_t
   double rage_gain;
 
   commanding_shout_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "commanding_shout", "Commanding Shout", p )
+    warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2542,7 +2557,7 @@ struct commanding_shout_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( ! sim -> overrides.stamina )
-      sim -> auras.stamina -> trigger( 1, -1.0, -1.0, duration() );
+      sim -> auras.stamina -> trigger( 1, -1.0, -1.0, data().duration() );
 
     p -> resource_gain( RESOURCE_RAGE, rage_gain , p -> gains_commanding_shout );
   }
@@ -2553,7 +2568,7 @@ struct commanding_shout_t : public warrior_spell_t
 struct berserker_rage_t : public warrior_spell_t
 {
   berserker_rage_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "berserker_rage", "Berserker Rage", p )
+    warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2585,9 +2600,10 @@ struct berserker_rage_t : public warrior_spell_t
 struct deadly_calm_t : public warrior_spell_t
 {
   deadly_calm_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "deadly_calm", 85730, p )
+    warrior_spell_t( "deadly_calm", p, p -> find_spell( 85730 ) )
   {
-    check_talent( p -> talents.deadly_calm -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.deadly_calm -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -2623,10 +2639,11 @@ struct death_wish_t : public warrior_spell_t
   double enrage_bonus;
 
   death_wish_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "death_wish", "Death Wish", p ),
+    warrior_spell_t( "death_wish", p, p -> find_class_spell( "Death Wish" ) ),
     enrage_bonus( 0 )
   {
-    check_talent( p -> talents.death_wish -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.death_wish -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -2654,7 +2671,7 @@ struct death_wish_t : public warrior_spell_t
 struct inner_rage_t : public warrior_spell_t
 {
   inner_rage_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "inner_rage", "Inner Rage", p )
+    warrior_spell_t( "inner_rage", p, p -> find_class_spell( "Inner Rage" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2675,7 +2692,7 @@ struct inner_rage_t : public warrior_spell_t
 struct recklessness_t : public warrior_spell_t
 {
   recklessness_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "recklessness", "Recklessness", p )
+    warrior_spell_t( "recklessness", p, p -> find_class_spell( "Recklessness" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2736,7 +2753,7 @@ struct shield_block_buff_t : public buff_t
 struct shield_block_t : public warrior_spell_t
 {
   shield_block_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "shield_block", "Shield Block", p )
+    warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2848,7 +2865,8 @@ struct sweeping_strikes_t : public warrior_spell_t
   sweeping_strikes_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "sweeping_strikes", 12328, p )
   {
-    check_talent( p -> talents.sweeping_strikes -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.sweeping_strikes -> rank() );
 
     parse_options( NULL, options_str );
 
@@ -2875,7 +2893,8 @@ struct last_stand_t : public warrior_spell_t
   last_stand_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "last_stand", 12975, p )
   {
-    check_talent( p -> talents.last_stand -> rank() );
+    // FIXME:
+    // check_talent( p -> talents.last_stand -> rank() );
 
     harmful = false;
 
@@ -2967,73 +2986,6 @@ action_t* warrior_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-// warrior_t::init_talents ==================================================
-
-void warrior_t::init_talents()
-{
-  // Talents
-#if 0
-  // Arms
-  talents.bladestorm              = find_talent( "Bladestorm" );
-  talents.blitz                   = find_talent( "Blitz" );
-  talents.blood_frenzy            = find_talent( "Blood Frenzy" );
-  talents.deadly_calm             = find_talent( "Deadly Calm" );
-  talents.deep_wounds             = find_talent( "Deep Wounds" );
-  talents.drums_of_war            = find_talent( "Drums of War" );
-  talents.impale                  = find_talent( "Impale" );
-  talents.improved_slam           = find_talent( "Improved Slam" );
-  talents.juggernaut              = find_talent( "Juggernaut" );
-  talents.lambs_to_the_slaughter  = find_talent( "Lambs to the Slaughter" );
-  talents.sudden_death            = find_talent( "Sudden Death" );
-  talents.sweeping_strikes        = find_talent( "Sweeping Strikes" );
-  talents.tactical_mastery        = find_talent( "Tactical Mastery" );
-  talents.taste_for_blood         = find_talent( "Taste for Blood" );
-  talents.war_academy             = find_talent( "War Academy" );
-  talents.wrecking_crew           = find_talent( "Wrecking Crew" );
-
-  // Fury
-  talents.battle_trance           = find_talent( "Battle Trance" );
-  talents.bloodsurge              = find_talent( "Bloodsurge" );
-  talents.booming_voice           = find_talent( "Booming Voice" );
-  talents.cruelty                 = find_talent( "Cruelty" );
-  talents.death_wish              = find_talent( "Death Wish" );
-  talents.enrage                  = find_talent( "Enrage" );
-  talents.executioner             = find_talent( "Executioner" );
-  talents.flurry                  = find_talent( "Flurry" );
-  talents.gag_order               = find_talent( "Gag Order" );
-  talents.intensify_rage          = find_talent( "Intensify Rage" );
-  talents.meat_cleaver            = find_talent( "Meat Cleaver" );
-  talents.raging_blow             = find_talent( "Raging Blow" );
-  talents.rampage                 = find_talent( "Rampage" );
-  talents.rude_interruption       = find_talent( "Rude Interruption" );
-  talents.single_minded_fury      = find_talent( "Single-Minded Fury" );
-  talents.skirmisher              = find_talent( "Skirmisher" );
-  talents.titans_grip             = find_talent( "Titan's Grip" );
-
-  // Prot
-  talents.incite                  = find_talent( "Incite" );
-  talents.toughness               = find_talent( "Toughness" );
-  talents.blood_and_thunder       = find_talent( "Blood and Thunder" );
-  talents.shield_specialization   = find_talent( "Shield Specialization" );
-  talents.shield_mastery          = find_talent( "Shield Mastery" );
-  talents.hold_the_line           = find_talent( "Hold the Line" );
-  talents.last_stand              = find_talent( "Last Stand" );
-  talents.concussion_blow         = find_talent( "Concussion Blow" );
-  talents.bastion_of_defense      = find_talent( "Bastion of Defense" );
-  talents.warbringer              = find_talent( "Warbringer" );
-  talents.improved_revenge        = find_talent( "Improved Revenge" );
-  talents.devastate               = find_talent( "Devastate" );
-  talents.impending_victory       = find_talent( "Impending Victory" );
-  talents.thunderstruck           = find_talent( "Thunderstruck" );
-  talents.vigilance               = find_talent( "Vigilance" );
-  talents.heavy_repercussions     = find_talent( "Heavy Repercussions" );
-  talents.safeguard               = find_talent( "Safeguard" );
-  talents.sword_and_board         = find_talent( "Sword and Board" );
-  talents.shockwave               = find_talent( "Shockwave" );
-#endif
-  player_t::init_talents();
-}
-
 // warrior_t::init_spells ===================================================
 
 void warrior_t::init_spells()
@@ -3041,16 +2993,16 @@ void warrior_t::init_spells()
   player_t::init_spells();
 
   // Mastery
-  mastery.critical_block         = new mastery_t( this, "critical_block",         76857, WARRIOR_PROTECTION );
-  mastery.strikes_of_opportunity = new mastery_t( this, "strikes_of_opportunity", 76838, WARRIOR_ARMS );
-  mastery.unshackled_fury        = new mastery_t( this, "unshackled_fury",        76856, WARRIOR_FURY );
+  mastery.critical_block         = find_mastery_spell( WARRIOR_PROTECTION );
+  mastery.strikes_of_opportunity = find_mastery_spell( WARRIOR_ARMS );
+  mastery.unshackled_fury        = find_mastery_spell( WARRIOR_FURY );
 
   // Spec Passives
-  spec.anger_management                 = new spell_id_t( this, "anger_management",                 12296 );
-  spec.dual_wield_specialization        = new spell_id_t( this, "dual_wield_specialization",        23588 );
-  spec.precision                        = new spell_id_t( this, "precision",                        29592 );
-  spec.sentinel                         = new spell_id_t( this, "sentinel",                         29144 );
-  spec.two_handed_weapon_specialization = new spell_id_t( this, "two_handed_weapon_specialization", 12712 );
+  spec.anger_management                 = find_specialization_spell( "Anger Management" );
+  spec.dual_wield_specialization        = find_specialization_spell( "dual_wield_specialization" );
+  spec.precision                        = find_specialization_spell( "precision" );
+  spec.sentinel                         = find_specialization_spell( "sentinel" );
+  spec.two_handed_weapon_specialization = find_specialization_spell( "two_handed_weapon_specialization" );
 
   glyphs.battle              = find_glyph( "Glyph of Battle" );
   glyphs.berserker_rage      = find_glyph( "Glyph of Berserker Rage" );
@@ -3163,14 +3115,14 @@ void warrior_t::init_scaling()
 
 void warrior_t::init_buffs()
 {
-  timespan_t duration = timespan_t::from_seconds( 12.0 );
+  //timespan_t duration = timespan_t::from_seconds( 12.0 );
 
   player_t::init_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-
+#if 0
   buffs_bastion_of_defense        = new buff_t( this, "bastion_of_defense",        1, timespan_t::from_seconds( 12.0 ),   timespan_t::zero(), talents.bastion_of_defense -> proc_chance() );
   buffs_battle_stance             = new buff_t( this, 21156, "battle_stance" );
   buffs_battle_trance             = new buff_t( this, "battle_trance",             1, timespan_t::from_seconds( 15.0 ),   timespan_t::zero(), talents.battle_trance -> proc_chance() );
@@ -3212,6 +3164,7 @@ void warrior_t::init_buffs()
   case 2 : duration = timespan_t::from_seconds( 6.0 ); break;
   default: duration = timespan_t::from_seconds( 12.0 ); break;
   }
+#endif
 }
 
 // warrior_t::init_values ====================================================
@@ -3603,11 +3556,11 @@ double warrior_t::composite_player_multiplier( const school_type_e school, const
   // Stances affect all damage done
   if ( active_stance == STANCE_BATTLE && buffs_battle_stance -> up() )
   {
-    m *= 1.0 + buffs_battle_stance -> effectN( 1 ).percent();
+    m *= 1.0 + buffs_battle_stance -> data().effectN( 1 ).percent();
   }
   else if ( active_stance == STANCE_BERSERKER && buffs_berserker_stance -> up() )
   {
-    m *= 1.0 + buffs_berserker_stance -> effectN( 1 ).percent();
+    m *= 1.0 + buffs_berserker_stance -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -3660,8 +3613,9 @@ double warrior_t::composite_tank_crit( const school_type_e school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
-  if ( school == SCHOOL_PHYSICAL && talents.bastion_of_defense -> rank() )
-    c += talents.bastion_of_defense -> effectN( 1 ).percent();
+  // FIXME:
+  // if ( school == SCHOOL_PHYSICAL && talents.bastion_of_defense -> rank() )
+  //  c += talents.bastion_of_defense -> effectN( 1 ).percent();
 
   return c;
 }
@@ -3720,7 +3674,8 @@ double warrior_t::assess_damage( double        amount,
   {
     if ( talents.shield_specialization -> ok() )
     {
-      resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gains_shield_specialization );
+      // FIXME:
+      // resource_gain( RESOURCE_RAGE, 5.0 * talents.shield_specialization -> rank(), gains_shield_specialization );
     }
   }
 
