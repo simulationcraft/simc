@@ -3683,7 +3683,7 @@ void priest_t::init_actions()
       */
 
       if ( find_class_spell( "Devouring Plague" ) -> ok() )
-        buffer += "/devouring_plague,if=shadow_orb=3";
+        buffer += "/devouring_plague,if=shadow_orb=3&(!ticking|remains<tick_time)";
 
       if ( find_talent_spell( "Archangel" ) -> ok() )
         buffer += "/archangel";
@@ -3692,7 +3692,7 @@ void priest_t::init_actions()
       {
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
-          buffer += "/shadow_word_death,if=target.health.pct<=20";
+          buffer += "/shadow_word_death,if=target.health.pct<20";
         }
       }
 
@@ -3708,18 +3708,18 @@ void priest_t::init_actions()
         buffer += "/power_infusion";
 
       if ( find_class_spell( "Vampiric Touch" ) -> ok() )
-        buffer += "/vampiric_touch,if=(!ticking|dot.vampiric_touch.remains<cast_time+2.5)&miss_react";
+        buffer += "/vampiric_touch,if=(!ticking|remains<cast_time+tick_time)&miss_react";
 
       if ( ! set_bonus.tier13_2pc_caster() )
       {
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
-          buffer += "/shadow_word_death,if=target.health.pct<=20";
+          buffer += "/shadow_word_death,if=target.health.pct<20";
         }
       }
 
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
-        buffer += "/shadow_word_pain,if=(!ticking|dot.shadow_word_pain.remains<gcd+0.5)&miss_react";
+        buffer += "/shadow_word_pain,if=(!ticking|remains<tick_time)&miss_react";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         buffer += "/mindbender,if=cooldown_react";
