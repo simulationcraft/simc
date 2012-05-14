@@ -671,6 +671,8 @@ struct immolate_t : public warlock_spell_t
   immolate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Immolate" )
   {
+    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+
     tick_power_mod = direct_power_mod; // No tick power mod in dbc for some reason
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
 
@@ -719,6 +721,8 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Conflagrate" )
   {
+    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+
     if ( p -> glyphs.conflagrate -> ok() )
       cooldown -> charges = 2;
 
@@ -768,6 +772,8 @@ struct incinerate_t : public warlock_spell_t
   incinerate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Incinerate" )
   {
+    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new incinerate_t( p, true );
@@ -1350,6 +1356,9 @@ struct fel_flame_t : public warlock_spell_t
   fel_flame_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Fel Flame" )
   {
+    if ( p -> primary_tree() == WARLOCK_DESTRUCTION )
+      base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new fel_flame_t( p, true );
@@ -1818,8 +1827,8 @@ struct rain_of_fire_t : public warlock_spell_t
     hasted_ticks = false;
     channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
-    // FIXME: Seems to cost roughly 36k mana at 85 for destro
-    if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 9;
+    // FIXME: Seems to cost 34k mana at 85 for destro - no idea how/why
+    if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 8.5;
 
     rain_of_fire_tick = new rain_of_fire_tick_t( p, this );
 
@@ -2293,6 +2302,16 @@ double warlock_t::composite_mastery() const
   }
 
   return m;
+}
+
+
+double warlock_t::composite_mp5() const
+{
+  double mp5 = player_t::composite_mp5();
+
+  if ( spec.chaotic_energy -> ok() ) mp5 /= composite_spell_haste();
+
+  return mp5;
 }
 
 

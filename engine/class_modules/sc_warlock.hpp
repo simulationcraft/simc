@@ -271,6 +271,7 @@ struct warlock_t : public player_t
   virtual double composite_spell_crit() const;
   virtual double composite_spell_haste() const;
   virtual double composite_mastery() const;
+  virtual double composite_mp5() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
 
