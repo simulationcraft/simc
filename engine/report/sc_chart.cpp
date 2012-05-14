@@ -1147,10 +1147,10 @@ std::string scale_factors( const player_t* p )
 {
   std::vector<stat_type_e> scaling_stats;
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; ++i )
+  for ( std::vector<stat_type_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
   {
-    if ( p -> scales_with[ i ] && p -> scaling.get_stat( i ) > 0 )
-      scaling_stats.push_back( i );
+    if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) > 0 )
+      scaling_stats.push_back( *it );
   }
 
   size_t num_scaling_stats = scaling_stats.size();
