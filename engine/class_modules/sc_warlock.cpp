@@ -400,14 +400,46 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct shadowburn_t : public warlock_spell_t
 {
-  shadowburn_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Shadowburn" )
+  struct mana_event_t : public event_t
   {
+    shadowburn_t* spell;
+    gain_t* gain;
+
+    mana_event_t( warlock_t* p, shadowburn_t* s ) :
+      event_t( p -> sim, p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+    {
+      sim -> add_event( this, spell -> mana_delay );
+    }
+
+    virtual void execute()
+    {
+      player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * spell -> mana_amount, gain );
+    }
+  };
+
+  mana_event_t* mana_event;
+  double mana_amount;
+  timespan_t mana_delay;
+
+
+  shadowburn_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
+  {
+    mana_delay  = p -> find_spell( 29314 ) -> duration();
+    mana_amount = p -> find_spell( 125882 ) -> effectN( 1 ).percent();
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new shadowburn_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    mana_event = new ( sim ) mana_event_t( p(), this );
   }
 
   virtual double action_multiplier() const
@@ -2589,6 +2621,7 @@ void warlock_t::init_gains()
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.fel_flame          = get_gain( "fel_flame"    );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
+  gains.shadowburn         = get_gain( "shadowburn" );
 }
 
 
@@ -2715,8 +2748,7 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
-      // FIXME: Not worth using while destro is still mana constrained
-      // add_action( "Shadowburn",            "if=ember_react" );
+      add_action( "Shadowburn",            "if=ember_react" );
       add_action( "Chaos Bolt",            "if=ember_react" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );

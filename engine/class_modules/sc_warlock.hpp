@@ -157,6 +157,7 @@ struct warlock_t : public player_t
     gain_t* rain_of_fire;
     gain_t* fel_flame;
     gain_t* seed_of_corruption;
+    gain_t* shadowburn;
   } gains;
 
   // Procs
