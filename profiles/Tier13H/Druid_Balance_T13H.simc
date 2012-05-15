@@ -1,7 +1,7 @@
 #!./simc 
 
 druid="Druid_Balance_T13H"
-origin="http://www.wowhead.com/profile=33895173"
+origin="http://www.wowhead.com/profile=34566555"
 level=85
 race=troll
 spec=balance
@@ -9,8 +9,8 @@ role=spell
 position=back
 professions=blacksmithing=525/tailoring=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Ua!...1..
-actions+=/flask,precombat=1,type=draconic_mind
-actions+=/food,precombat=1,type=seafood_magnifique_feast
+actions+=/flask,type=draconic_mind,precombat=1
+actions+=/food,type=seafood_magnifique_feast,precombat=1
 actions+=/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up
 actions+=/moonkin_form,precombat=1
 actions+=/snapshot_stats,precombat=1,combat=0
@@ -43,32 +43,32 @@ actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
-head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_40int_30int,enchant=60int_35crit
+head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste,reforge=spi_mastery
-shoulders=deep_earth_shoulderwraps,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit,reforge=spi_haste,gems=40int_40int_20int,enchant=50int_25haste
-chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=40int_40int_20int_20haste_30int,enchant=20all
-waist=girdle_of_the_grotesque,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368int_611sta_242spi_261mastery,reforge=mastery_haste,gems=40int_40int_40int_20int
-legs=deep_earth_leggings,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489int_824sta_254mastery_381haste,gems=40int_40int_40int_30int,enchant=95int_55spi
-feet=treads_of_sordid_screams,heroic=1,type=leather,ilevel=410,quality=epic,stats=1439armor_368int_611sta_256spi_248crit,reforge=crit_haste,gems=40int_40int_20int,enchant=35mastery
-wrists=mycosynth_wristguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286int_459sta_203spi_179mastery,reforge=spi_haste,gems=40int_40int_10int,enchant=50int
-hands=deep_earth_gloves,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388int_611sta_276haste_245mastery,gems=40int_40int_10int,enchant=50haste
-finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=40int_10int
-finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=spi_mastery,gems=40int_10int
+shoulders=deep_earth_shoulderwraps,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit,reforge=spi_haste,gems=50int_50int_20int,enchant=50int_25haste
+chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=50int_50int_25int_25haste_30int,enchant=20all
+waist=girdle_of_the_grotesque,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368int_611sta_242spi_261mastery,reforge=spi_haste,gems=50int_50int_50int_20int
+legs=deep_earth_leggings,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489int_824sta_254mastery_381haste,gems=50int_50int_50int_30int,enchant=95int_55spi
+feet=treads_of_sordid_screams,heroic=1,type=leather,ilevel=410,quality=epic,stats=1439armor_368int_611sta_256spi_248crit,reforge=spi_haste,gems=50int_50int_20int,enchant=35mastery
+wrists=mycosynth_wristguards,heroic=1,type=leather,ilevel=410,quality=epic,stats=916armor_286int_459sta_203spi_179mastery,reforge=spi_haste,gems=50int_50int_10int,enchant=50int
+hands=deep_earth_gloves,heroic=1,type=leather,ilevel=410,quality=epic,stats=1308armor_388int_611sta_276haste_245mastery,gems=50int_50int_10int,enchant=50haste
+finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,gems=50int_10int
+finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=spi_mastery,gems=50int_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
-back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=40int_10int,enchant=lightweave_embroidery
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,gems=40int_40int_40int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
+back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=50int_10int,enchant=lightweave_embroidery
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7908
-# gear_intellect=6816
-# gear_spirit=1561
+# gear_intellect=7051
+# gear_spirit=1363
 # gear_spell_power=2786
-# gear_hit_rating=314
-# gear_crit_rating=440
+# gear_hit_rating=189
+# gear_crit_rating=539
 # gear_haste_rating=2634
-# gear_mastery_rating=1743
+# gear_mastery_rating=1972
 # gear_armor=12803
 # meta_gem=burning_shadowspirit
 # tier13_2pc_caster=1
