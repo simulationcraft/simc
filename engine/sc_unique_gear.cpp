@@ -857,7 +857,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     rng_t* rng;
 
     dragonwrath_tarecgosas_rest_callback_t( player_t* p, double pc ) :
-      discharge_proc_callback_t( "dragonwrath_tarecgosas_rest", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), true, true, false, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
+      discharge_proc_callback_t( "wrath_of_tarecgosa", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), true, true, false, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
     {
       rng = p -> get_rng( "dragonwrath_tarecgosas_rest" );
     }
