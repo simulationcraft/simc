@@ -2479,6 +2479,7 @@ public:
   int save_raid_summary;
   int statistics_level;
   int separate_stats_by_actions;
+  int report_raid_summary;
 
   struct report_information_t
   {

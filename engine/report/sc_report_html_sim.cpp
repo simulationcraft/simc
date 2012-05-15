@@ -25,9 +25,9 @@ void print_html_contents( FILE*  file, const sim_t* sim )
   {
     for ( size_t i = 0; i < num_players; i++ )
     {
-      for ( size_t i = 0; i < sim -> players_by_name[ i ] -> pet_list.size(); ++i )
+      for ( size_t j = 0; j < sim -> players_by_name[ i ] -> pet_list.size(); ++j )
       {
-        pet_t* pet = sim -> players_by_name[ i ] -> pet_list[ i ];
+        pet_t* pet = sim -> players_by_name[ i ] -> pet_list[ j ];
 
         if ( pet -> summoned )
           ++c;
@@ -1565,12 +1565,12 @@ void print_html_( FILE* file, const sim_t* sim )
 
   size_t num_players = sim -> players_by_name.size();
 
-  if ( num_players > 1 )
+  if ( num_players > 1 || sim -> report_raid_summary )
   {
     print_html_contents( file, sim );
   }
 
-  if ( num_players > 1 )
+  if ( num_players > 1 || sim -> report_raid_summary )
   {
     print_html_raid_summary( file, sim, sim -> report_information );
     print_html_scale_factors( file, sim );
