@@ -9,7 +9,7 @@
 :: Qt-Framework: C:\Qt\4.7.4
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\4.7.4
+set qt_dir=C:\Qt\4.8.1
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
