@@ -28,6 +28,7 @@ struct warlock_targetdata_t : public targetdata_t
   dot_t*  dots_shadowflame;
   dot_t*  dots_malefic_grasp;
   dot_t*  dots_seed_of_corruption;
+  dot_t*  dots_rain_of_fire;
 
   buff_t* debuffs_haunt;
 

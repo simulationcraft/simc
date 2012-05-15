@@ -2951,6 +2951,7 @@ void class_modules::register_targetdata::warlock( sim_t* sim )
   REGISTER_DOT( shadowflame );
   REGISTER_DOT( malefic_grasp );
   REGISTER_DOT( seed_of_corruption );
+  REGISTER_DOT( rain_of_fire );
 
   REGISTER_DEBUFF( haunt );
 }
