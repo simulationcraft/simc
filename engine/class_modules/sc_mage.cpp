@@ -3016,15 +3016,18 @@ void mage_t::init_actions()
     }
 #endif
 
-    // Flask
     if ( level >= 80 )
-      action_list_str = "flask,precombat=1,type=draconic_mind";
-    else if ( level >= 75 )
-      action_list_str = "flask,precombat=1,type=frost_wyrm";
+    {
+      // Flask
+      action_list_str += "/flash,type=";
+      action_list_str += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      action_list_str += ",precombat=1";
 
-    // Food
-    if ( level >= 80 ) action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
-    else if ( level >= 70 ) action_list_str += "/food,precombat=1,type=fish_feast";
+      // Food
+      action_list_str += "/food,type=";
+      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      action_list_str += ",precombat=1";
+    }
 
     // Arcane Brilliance
     if ( level >= 58 ) action_list_str += "/arcane_brilliance,precombat=1,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
@@ -3051,9 +3054,10 @@ void mage_t::init_actions()
     action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
     //Potions
-    if ( level > 80 )
+    if ( level >= 80 )
     {
-      action_list_str += "/volcanic_potion,precombat=1";
+      action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+      action_list_str += ",precombat=1";
     }
 
     // Counterspell
@@ -3079,25 +3083,23 @@ void mage_t::init_actions()
       }
     }
     action_list_str += init_use_profession_actions();
-    if ( level > 80 )
+    if ( level >= 80 )
     {
       if ( primary_tree() == MAGE_FROST )
       {
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
       }
       else if ( primary_tree() == MAGE_ARCANE )
       {
-        action_list_str += "/volcanic_potion,if=target.time_to_die<=50";
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ",if=target.time_to_die<=50";
       }
       else
       {
-        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
       }
-    }
-    else if ( level >= 70 )
-    {
-      action_list_str += "/speed_potion,if=!in_combat";
-      action_list_str += "/speed_potion,if=buff.bloodlust.react|target.time_to_die<=20";
     }
     // Race Abilities
     if ( race == RACE_TROLL && primary_tree() == MAGE_FIRE )

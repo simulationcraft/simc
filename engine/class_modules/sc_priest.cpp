@@ -3626,13 +3626,17 @@ void priest_t::init_actions()
   {
     // Flask
     if ( level > 85 )
-      buffer += "/flask,precombat=1,type=warm_sun";
+      buffer += "/flask,type=warm_sun,precombat=1";
     else if ( level >= 80 )
-      buffer += "/flask,precombat=1,type=draconic_mind";
+      buffer += "/flask,type=draconic_mind,precombat=1";
 
-    if ( level > 80 )
+    if ( level > 85 )
     {
-      buffer += "/food,precombat=1,type=seafood_magnifique_feast";
+      buffer += "/food,type=great_pandaren_banquet,precombat=1";
+    }
+    else if ( level > 80 )
+    {
+      buffer += "/food,type=seafood_magnifique_feast,precombat=1";
     }
 
     if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
@@ -3646,7 +3650,11 @@ void priest_t::init_actions()
 
     buffer += "/snapshot_stats,precombat=1,combat=0";
 
-    if ( level > 80 )
+    if ( level > 85 )
+    {
+      buffer += "/jinyu_potion,precombat=1";
+    }
+    else if ( level > 80 )
     {
       buffer += "/volcanic_potion,precombat=1";
     }
@@ -3671,8 +3679,11 @@ void priest_t::init_actions()
     {
       // SHADOW =============================================================
     case PRIEST_SHADOW:
-
-      if ( level > 80 )
+      if ( level > 85 )
+      {
+        buffer += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+      else if ( level > 80 )
       {
         buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
@@ -3749,7 +3760,14 @@ void priest_t::init_actions()
       // DAMAGE DISCIPLINE ==================================================
       if ( primary_role() != ROLE_HEAL )
       {
-        buffer += "/volcanic_potion,if=!in_combat|buff.bloodlust.up|time_to_die<=40";
+        if ( level > 85 )
+        {
+          buffer += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        }
+        else if ( level > 80 )
+        {
+          buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        }
         if ( race == RACE_BLOOD_ELF )
           buffer += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )

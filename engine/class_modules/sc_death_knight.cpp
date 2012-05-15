@@ -3817,37 +3817,47 @@ void death_knight_t::init_actions()
 
     if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY || ( tree == DEATH_KNIGHT_BLOOD && primary_role() != ROLE_TANK ) )
     {
-      // Flask
       if ( level >= 80 )
-        action_list_str += "/flask,type=titanic_strength";
-      else if ( level >= 75 )
-        action_list_str += "/flask,type=endless_rage";
+      {
+        // Flask
+        if ( level > 85 )
+          action_list_str += "/flask,type=winters_bite,precombat=1";
+        else
+          action_list_str += "/flask,type=titanic_strength,precombat=1";
 
-      // Food
-      if ( level >= 80 )
-        action_list_str += "/food,type=beer_basted_crocolisk";
-      else if ( level >= 70 )
-        action_list_str += "/food,type=dragonfin_filet";
+        // Food
+        if ( level > 85 )
+        {
+          action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+        }
+        else
+        {
+          action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
+        }
+      }
 
       // Stance
       action_list_str += "/presence,choose=unholy";
     }
     else if ( tree == DEATH_KNIGHT_BLOOD && primary_role() == ROLE_TANK )
     {
-      // Flask
       if ( level >= 80 )
-        action_list_str += "/flask,type=steelskin";
-      else if ( level >= 75 )
-        action_list_str += "/flask,type=stoneblood";
+      {
+        // Flask
+        if ( level >  85 )
+          action_list_str += "/flask,type=earth,precombat=1";
+        else
+          action_list_str += "/flask,type=steelskin,precombat=1";
 
-      // Food
-      if ( level >= 80 )
-        action_list_str += "/food,type=beer_basted_crocolisk";
-      else if ( level >= 70 )
-        action_list_str += "/food,type=dragonfin_filet";
+        // Food
+        if ( level > 85 )
+          action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+        else
+          action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
+      }
 
       // Stance
-      action_list_str += "/presence,choose=blood";
+      action_list_str += "/presence,choose=blood,precombat=1";
     }
 
     action_list_str += "/army_of_the_dead";
@@ -3860,7 +3870,10 @@ void death_knight_t::init_actions()
       action_list_str += init_use_item_actions( ",time>=10" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",time>=10" );
-      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       action_list_str += "/raise_dead,time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
@@ -3879,7 +3892,10 @@ void death_knight_t::init_actions()
       action_list_str += init_use_item_actions( ",time>=10" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",time>=10" );
-      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       action_list_str += "/blood_tap,if=death.cooldown_remains>2.0";
       // this results in a dps loss. which is odd, it probalby shouldn't. although it only ever affects the very first ghoul summon
@@ -3944,7 +3960,10 @@ void death_knight_t::init_actions()
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",time>=2" );
       action_list_str += "/raise_dead";
-      action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       action_list_str += "/auto_attack";
       if ( level > 81 )
         action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";

@@ -3775,15 +3775,32 @@ void hunter_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    action_list_str = "flask,type=winds";
-    action_list_str += "/food,type=seafood_magnifique_feast";
+    if ( level >= 80 )
+    {
+      action_list_str += "/flask,type=";
+      action_list_str += ( level > 85 ) ? "spring_blossoms" : "winds";
+      action_list_str += ",precombat=1";
+
+      action_list_str += "/food,type=";
+      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      action_list_str += ",precombat=1";
+    }
 
     action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     action_list_str += "/summon_pet";
 //    if ( talents.trueshot_aura -> ok() )
 //      action_list_str += "/trueshot_aura,if=!aura.attack_power_multiplier.up|!aura.critical_strike.up";
     action_list_str += "/snapshot_stats";
-    action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+
+    if ( level >= 80 )
+    {
+      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+      action_list_str += ",precombat=1";
+
+      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+      action_list_str += ",if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+    }
+
     if ( glyphs.rapid_fire -> ok() )
       action_list_str += "|buff.rapid_fire.react";
 

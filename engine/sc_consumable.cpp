@@ -60,9 +60,13 @@ static const food_data_t food_data[] =
   { FOOD_DELICIOUS_SAGEFISH_TAIL,     STAT_SPIRIT,    90 },
   { FOOD_DELICIOUS_SAGEFISH_TAIL,     STAT_STAMINA,   90 },
 
+  { FOOD_FISH_CAKE,                   STAT_HIT_RATING, 275 },
+
   { FOOD_FISH_FEAST,                  STAT_ATTACK_POWER,  80 },
   { FOOD_FISH_FEAST,                  STAT_SPELL_POWER,   46 },
   { FOOD_FISH_FEAST,                  STAT_STAMINA,       40 },
+
+  { FOOD_GINSENG_CHICKEN_SOUP,        STAT_HIT_RATING, 275 },
 
   { FOOD_GRILLED_DRAGON,              STAT_HIT_RATING,  90 },
   { FOOD_GRILLED_DRAGON,              STAT_STAMINA,     90 },
@@ -72,6 +76,10 @@ static const food_data_t food_data[] =
 
   { FOOD_MUSHROOM_SAUCE_MUDFISH,      STAT_DODGE_RATING,  90 },
   { FOOD_MUSHROOM_SAUCE_MUDFISH,      STAT_STAMINA,       90 },
+
+  { FOOD_PANDAREN_MEATBALL,           STAT_EXPERTISE_RATING, 275 },
+
+  { FOOD_RICE_PUDDING,                STAT_EXPERTISE_RATING, 275 },
 
   { FOOD_SEVERED_SAGEFISH_HEAD,       STAT_INTELLECT,   90 },
   { FOOD_SEVERED_SAGEFISH_HEAD,       STAT_STAMINA,     90 },
@@ -261,6 +269,33 @@ struct food_t : public action_t
       }
       stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
+    case FOOD_PANDAREN_BANQUET:
+    case FOOD_GREAT_PANDAREN_BANQUET:
+      if ( p -> stats.dodge_rating > 0 )
+      {
+        p -> stat_gain( STAT_DODGE_RATING, 275 * food_stat_multiplier );
+      }
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
+      {
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_STRENGTH, 275 * food_stat_multiplier );
+        }
+        else
+        {
+          p -> stat_gain( STAT_AGILITY, 275 * food_stat_multiplier );
+        }
+      }
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
+      {
+        p -> stat_gain( STAT_INTELLECT, 275 * food_stat_multiplier, gain, this );
+      }
+      else
+      {
+        p -> stat_gain( STAT_AGILITY, 275 * food_stat_multiplier );
+      }
+      break;
+
     default: break;
     }
     // Cap Health / Mana for food if they are used outside of combat
@@ -303,7 +338,7 @@ struct mana_potion_t : public action_t
 
     if ( min == 0 && max == 0 )
     {
-      min = max = util::ability_rank( player -> level,  10000,85, 4300,80,  2400,68,  1800,0 );
+      min = max = util::ability_rank( player -> level,  30001,86, 10000,85, 4300,80,  2400,68,  1800,0 );
     }
 
     if ( min > max ) std::swap( min, max );

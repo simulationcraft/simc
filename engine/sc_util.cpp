@@ -1380,11 +1380,17 @@ const char* food_type_string( food_type_e food )
   case FOOD_BLACKBELLY_SUSHI:         return "blackbelly_sushi";
   case FOOD_CROCOLISK_AU_GRATIN:      return "crocolisk_au_gratin";
   case FOOD_DELICIOUS_SAGEFISH_TAIL:  return "delicious_sagefish_tail";
+  case FOOD_FISH_CAKE:                return "fish_cake";
   case FOOD_FISH_FEAST:               return "fish_feast";
   case FOOD_FORTUNE_COOKIE:           return "fortune_cookie";
+  case FOOD_GINSENG_CHICKEN_SOUP:     return "ginseng_chicken_soup";
+  case FOOD_GREAT_PANDAREN_BANQUET:   return "great_pandaren_banquet";
   case FOOD_GRILLED_DRAGON:           return "grilled_dragon";
   case FOOD_LAVASCALE_FILLET:         return "lavascale_fillet";
   case FOOD_MUSHROOM_SAUCE_MUDFISH:   return "mushroom_sauce_mudfish";
+  case FOOD_PANDAREN_BANQUET:         return "pandaren_banquet";
+  case FOOD_PANDAREN_MEATBALL:        return "pandaren_meatball";
+  case FOOD_RICE_PUDDING:             return "rice_pudding";
   case FOOD_SEAFOOD_MAGNIFIQUE_FEAST: return "seafood_magnifique_feast";
   case FOOD_SEVERED_SAGEFISH_HEAD:    return "severed_sagefish_head";
   case FOOD_SKEWERED_EEL:             return "skewered_eel";

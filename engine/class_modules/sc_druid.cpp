@@ -4449,17 +4449,23 @@ void druid_t::init_actions()
       }
     }
 
-    // Flask
-    action_list_str += "flask,precombat=1,type=";
-    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
-    else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-      action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
-    else
-      action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
+    if ( level >= 80 )
+    {
+      // Flask
+      action_list_str += "flask,type=";
+      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
+      else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+        action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
+      else
+        action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
+      action_list_str += ",precombat=1";
 
-    // Food
-    action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
+      // Food
+      action_list_str += "/food,type=";
+      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      action_list_str += ",precombat=1";
+    }
 
     // MotW
     action_list_str += "/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up";
@@ -4475,25 +4481,36 @@ void druid_t::init_actions()
     // Snapshot stats
     action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
-    // Prepotion 
-    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += "/tolvir_potion,precombat=1";
-    else
-      action_list_str += "/volcanic_potion,precombat=1";
-    
-    // Potion use
-    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+    if ( level >= 80 )
     {
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-      if ( talent.incarnation -> ok() )
-        action_list_str += "|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
+      // Prepotion 
+      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       else
-        action_list_str += "|buff.celestial_alignment.up";
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+      action_list_str += ",precombat=1";
+    
+      // Potion use
+      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      {
+        action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+      else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+      {
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+        if ( talent.incarnation -> ok() )
+          action_list_str += "|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
+        else
+          action_list_str += "|buff.celestial_alignment.up";
+      }
+      else
+      {
+        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+      }
     }
-    else
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
     
     if ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
