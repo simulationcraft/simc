@@ -22,7 +22,7 @@ actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/dark_soul
 actions+=/summon_doomguard
 actions+=/shadowburn,if=ember_react
-actions+=/chaos_bolt,if=ember_react&buff.bacdraft.stack<3
+actions+=/chaos_bolt,if=ember_react&buff.backdraft.stack<3
 actions+=/conflagrate,if=buff.backdraft.down
 actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
 actions+=/rain_of_fire,if=!ticking&!in_flight
