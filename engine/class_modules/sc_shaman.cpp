@@ -4004,7 +4004,8 @@ void shaman_t::init_actions()
     s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 
   // Food
-  if ( level >= 80 ) s << "/food,precombat=1,type=seafood_magnifique_feast";
+  if ( level >= 80 ) s << "/food,precombat=1,type=";
+  s << ( ( level > 85 ) ? "great_pandaren_banquet" : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
 
   // Weapon Enchants
   if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) )
