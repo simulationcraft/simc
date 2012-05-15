@@ -3998,7 +3998,7 @@ void shaman_t::init_actions()
 
   // Flask
   if ( level >= 80 ) s << "flask,precombat=1,type=";
-  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+  if ( primary_role() == ROLE_ATTACK )
     s << ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
   else
     s << ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
@@ -4008,7 +4008,7 @@ void shaman_t::init_actions()
   s << ( ( level > 85 ) ? "great_pandaren_banquet" : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
 
   // Weapon Enchants
-  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) )
+  if ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
     if ( level >= 30 ) s << "/windfury_weapon,precombat=1,weapon=main";
     if ( off_hand_weapon.type != WEAPON_NONE )
@@ -4035,31 +4035,25 @@ void shaman_t::init_actions()
   s << "/snapshot_stats,precombat=1,combat=0";
 
   // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
-  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-  {
-    if ( level >= 80 ) s << "/tolvir_potion,precombat=1";
-  }
+  if ( primary_role() == ROLE_ATTACK )
+    s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
   else
-  {
-    if ( level >= 80 ) s << "/volcanic_potion,precombat=1";
-  }
+    s << ( ( level > 85 ) ? "/jinyu_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+  if ( level >= 80 ) s << ",precombat=1";
   
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) s << "/wind_shear";
   if ( level >= 70 ) s << "/bloodlust,if=target.health.pct<=25|target.time_to_die<=60";
 
   // Potion use
-  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-  {
-    if ( level >= 80 ) s << "/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-  }
+  if ( primary_role() == ROLE_ATTACK )
+    s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
   else
-  {
-    if ( level >= 80 ) s << "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
-  }
+    s << ( ( level > 85 ) ? "/jinyu_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+  if ( level >= 80 ) s << ",if=buff.bloodlust.react|target.time_to_die<=40";
 
   // Melee turns on auto attack
-  if ( ( spec == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+  if ( primary_role() == ROLE_ATTACK )
     s << "/auto_attack";
 
   // On use stuff and racial / profession abilities
