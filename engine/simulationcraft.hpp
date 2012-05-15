@@ -811,7 +811,7 @@ enum format_type_e
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
-#define MAX_LEVEL (90)
+#define MAX_LEVEL (85)
 #endif
 
 #ifndef NUM_SPELL_FLAGS
