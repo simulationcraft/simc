@@ -2693,21 +2693,22 @@ void warlock_t::init_actions()
       pet = "felhunter";
     }
 
-    action_list_str += "/summon_" + pet;
-
-    if ( talents.grimoire_of_sacrifice -> ok() )
-      action_list_str += ",if=buff.grimoire_of_sacrifice.down";
+    action_list_str += "/summon_" + pet + ",precombat=1";
 
     action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
     // Pre-potion
-    if ( level >= 80 )
+    if ( level > 85 )
+      action_list_str += "/jinyu_potion,precombat=1";
+    else if ( level >= 80 )
       action_list_str += "/volcanic_potion,precombat=1";
  
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 
-    add_action( find_talent_spell( "Grimoire of Sacrifice" ) );
+    add_action( talents.grimoire_of_sacrifice );
+    if ( talents.grimoire_of_sacrifice -> ok() )
+      action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
 
     // Usable Item
     for ( int i = items.size() - 1; i >= 0; i-- )
@@ -2723,7 +2724,9 @@ void warlock_t::init_actions()
     action_list_str += init_use_racial_actions();
 
     // Potion
-    if ( level >= 80 )
+    if ( level > 85 )
+      action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.health.pct<=20";
+    else if ( level > 80 )
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
 
     add_action( spec.dark_soul );

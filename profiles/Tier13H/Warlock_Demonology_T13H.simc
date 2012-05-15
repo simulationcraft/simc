@@ -13,7 +13,7 @@ glyphs=everlasting_affliction/imp_swarm
 actions+=/flask,precombat=1,type=draconic_mind
 actions+=/food,precombat=1,type=seafood_magnifique_feast
 actions+=/dark_intent,precombat=1,if=!aura.spell_power_multiplier.up
-actions+=/summon_felguard
+actions+=/summon_felguard,precombat=1
 actions+=/snapshot_stats,precombat=1,combat=0
 actions+=/volcanic_potion,precombat=1
 actions+=/service_felguard
