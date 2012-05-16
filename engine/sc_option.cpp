@@ -70,7 +70,7 @@ void option_t::print( FILE* file )
   {
     std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
     for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
-      util::fprintf( file, "%s.%s=%s\n", name, it->first.c_str(), it->second.c_str() );
+      util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
   }
 }
 
@@ -118,7 +118,7 @@ void option_t::save( FILE* file )
   {
     std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
     for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
-      util::fprintf( file, "%s.%s=%s\n", name, it->first.c_str(), it->second.c_str() );
+      util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
   }
 }
 
@@ -201,7 +201,7 @@ bool option_t::parse( sim_t*             sim,
     std::string::size_type dot = n.rfind( ".", last );
     if( dot != std::string::npos )
     {
-      if( name == n.substr( 0, dot ) )
+      if( name == n.substr( 0, dot+1 ) )
       {
 	std::map<std::string,std::string>* m = (std::map<std::string,std::string>*) address;
 	std::string& value = (*m)[ n.substr( dot+1, last-dot ) ];
