@@ -1079,6 +1079,7 @@ struct touch_of_chaos_t : public attack_t
   touch_of_chaos_t( warlock_t* p ) :
     attack_t( "touch_of_chaos", p, p -> find_spell( 103988 ) )
   {
+    stateless         = true;
     may_crit          = true;
     background        = true;
     repeating         = true;
