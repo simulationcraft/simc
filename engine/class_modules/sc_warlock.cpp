@@ -101,7 +101,8 @@ public:
   {
     spell_t::execute();
 
-    if ( result_is_hit() && p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
+    if ( result_is_hit( execute_state -> result ) && p() -> primary_tree() == WARLOCK_DEMONOLOGY
+         && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
   }
 
@@ -175,19 +176,26 @@ public:
     return m;
   }
 
-  void trigger_ember_gain( double amount, gain_t* gain, double chance = 1.0 )
+  static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
-    if ( ! p() -> rngs.ember_gain -> roll( chance ) ) return;
+    if ( ! p -> rngs.ember_gain -> roll( chance ) ) return;
 
-    p() -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
+    p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
     // If getting to 10 was a surprise, the player would have to react to it
-    if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 && amount > 1 && chance < 1.0 )
-      p() -> ember_react = sim -> current_time + p() -> total_reaction_time();
-    else if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
-      p() -> ember_react = sim -> current_time;
+    if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 && amount > 1 && chance < 1.0 )
+      p -> ember_react = p -> sim -> current_time + p -> total_reaction_time();
+    else if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
+      p -> ember_react = p -> sim -> current_time;
     else
-      p() -> ember_react = timespan_t::max();
+      p -> ember_react = timespan_t::max();
+  }
+
+  static void refund_embers( warlock_t* p )
+  {
+    double refund = ceil( ( p -> resources.current[ RESOURCE_BURNING_EMBER ] + 10.0 ) / 4.0 );
+
+    if ( refund > 0 ) p -> resource_gain( RESOURCE_BURNING_EMBER, refund, p -> gains.miss_refund );
   }
 
   static void trigger_soul_leech( warlock_t* p, double amount )
@@ -260,7 +268,7 @@ struct curse_of_elements_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! sim -> overrides.magic_vulnerability )
         target -> debuffs.magic_vulnerability -> trigger( 1, -1, -1, data().duration() );
@@ -338,7 +346,7 @@ struct bane_of_havoc_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> buffs.bane_of_havoc -> trigger();
     }
@@ -449,6 +457,13 @@ struct shadowburn_t : public warlock_spell_t
     m *= 1.0 + data().effectN( 1 ).base_value() / 100.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value();
 
     return m;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
   }
 
   virtual bool ready()
@@ -849,11 +864,11 @@ struct incinerate_t : public warlock_spell_t
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
+    
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 2 : 1, p() -> gains.incinerate  );
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_ember_gain( s -> result == RESULT_CRIT ? 2 : 1, p() -> gains.incinerate  );
-
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
     }
   }
@@ -907,7 +922,7 @@ struct soul_fire_t : public warlock_spell_t
     if ( p() -> buffs.molten_core -> check() )
       p() -> buffs.molten_core -> decrement();
 
-    if ( result_is_hit() && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+    if ( result_is_hit( execute_state -> result ) && target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
       p() -> buffs.molten_core -> trigger();
   }
 
@@ -1007,6 +1022,8 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
+    if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
+
     if ( p() -> buffs.backdraft -> check() >= 3 )
     {
       p() -> buffs.backdraft -> decrement( 3 );
@@ -1075,7 +1092,7 @@ struct touch_of_chaos_t : public attack_t
   {
     attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( targetdata( target ) );
       extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
@@ -1406,13 +1423,13 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
+    if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 1, p() -> gains.fel_flame );
+
     if ( result_is_hit( s -> result ) )
     {
       extend_dot(            td( s -> target ) -> dots_immolate, 2, player -> composite_spell_haste() );
       extend_dot( td( s -> target ) -> dots_unstable_affliction, 2, player -> composite_spell_haste() );
       extend_dot(          td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
-
-      if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( 1, p() -> gains.fel_flame );
     }
   }
 
@@ -1844,7 +1861,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking ) trigger_ember_gain( 1, p() -> gains.rain_of_fire, 0.50 );
+    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking ) trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, 0.50 );
   }
 };
 
@@ -2626,6 +2643,7 @@ void warlock_t::init_gains()
   gains.fel_flame          = get_gain( "fel_flame"    );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
   gains.shadowburn         = get_gain( "shadowburn" );
+  gains.miss_refund        = get_gain( "miss_refund" );
 }
 
 

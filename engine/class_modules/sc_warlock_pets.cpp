@@ -213,7 +213,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   {
     melee_attack_t::execute();
 
-    if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
@@ -257,7 +257,7 @@ struct warlock_pet_spell_t : public spell_t
   {
     spell_t::execute();
 
-    if ( result_is_hit() && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
        p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
