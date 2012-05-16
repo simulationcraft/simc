@@ -1381,13 +1381,14 @@ enum option_type_e
   OPT_NONE=0,
   OPT_STRING,     // std::string*
   OPT_APPEND,     // std::string* (append)
-  OPT_BOOL,       // int (only valid values are 1 and 0)
-  OPT_INT,        // int
-  OPT_FLT,        // double
+  OPT_BOOL,       // int* (only valid values are 1 and 0)
+  OPT_INT,        // int*
+  OPT_FLT,        // double*
   OPT_TIMESPAN,   // time interval
   OPT_LIST,       // std::vector<std::string>*
+  OPT_MAP,        // std::map<std::string,std::string>*
   OPT_FUNC,       // function pointer
-  OPT_TALENT_RANK, // talent rank
+  OPT_TALENT_RANK,   // talent rank
   OPT_SPELL_ENABLED, // spell enabled
   OPT_DEPRECATED,
   OPT_UNKNOWN

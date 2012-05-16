@@ -66,6 +66,12 @@ void option_t::print( FILE* file )
     for ( unsigned i=0; i < v.size(); i++ ) util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
     util::fprintf( file, "\n" );
   }
+  else if ( type == OPT_MAP )
+  {
+    std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
+    for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
+      util::fprintf( file, "%s.%s=%s\n", name, it->first.c_str(), it->second.c_str() );
+  }
 }
 
 // option_t::save ===========================================================
@@ -105,9 +111,14 @@ void option_t::save( FILE* file )
       util::fprintf( file, "%s=", name );
       for ( size_t i = 0; i < v.size(); i++ )
         util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
-
       util::fprintf( file, "\n" );
     }
+  }
+  else if ( type == OPT_MAP )
+  {
+    std::map<std::string,std::string>& m = *( ( std::map<std::string,std::string>* ) address );
+    for ( std::map<std::string,std::string>::iterator it = m.begin(), end = m.end(); it != end; ++it )
+      util::fprintf( file, "%s.%s=%s\n", name, it->first.c_str(), it->second.c_str() );
   }
 }
 
@@ -140,7 +151,9 @@ bool option_t::parse( sim_t*             sim,
                       const std::string& n,
                       const std::string& v )
 {
-  if ( name && n == name )
+  if ( ! name || n.empty() ) return false;
+
+  if ( n == name )
   {
     switch ( type )
     {
@@ -175,6 +188,26 @@ bool option_t::parse( sim_t*             sim,
       return false;
     }
     return true;
+  }
+  else if( type == OPT_MAP )
+  {
+    std::string::size_type last = n.size() - 1;
+    bool append=false;
+    if( n[ last ] == '+' ) 
+    { 
+      append=true; 
+      --last; 
+    }
+    std::string::size_type dot = n.rfind( ".", last );
+    if( dot != std::string::npos )
+    {
+      if( name == n.substr( 0, dot ) )
+      {
+	std::map<std::string,std::string>* m = (std::map<std::string,std::string>*) address;
+	std::string& value = (*m)[ n.substr( dot+1, last-dot ) ];
+	value = append ? ( value + v ) : v;
+      }
+    }
   }
 
   return false;
