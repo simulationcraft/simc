@@ -655,6 +655,16 @@ void player_t::init()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
+  get_action_priority_list( "default") -> action_list_str = action_list_str;
+
+  for ( std::map<std::string,std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
+  {
+    if ( it -> first == "default" )
+      sim -> errorf( "Ignoring action list named default." );
+    else
+      get_action_priority_list( it -> first ) -> action_list_str = it -> second;
+  }
+
   initialized = 1;
   init_target();
   init_race();
@@ -1395,50 +1405,30 @@ std::string player_t::init_use_racial_actions( const std::string& append )
 
 void player_t::init_actions()
 {
-  if ( ! choose_action_list.empty() )
-  {
-    action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
+  std::string modify_action_options = "";
 
-    if ( chosen_action_list )
-      action_list_str = chosen_action_list -> action_list_str;
-    else if ( choose_action_list != "default" )
+  if ( ! modify_action.empty() )
+  {
+    std::string::size_type cut_pt = modify_action.find( "," );
+
+    if ( cut_pt != modify_action.npos )
     {
-      sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
-      action_priority_list_t* default_action_list = find_action_priority_list( "default" );
-      if ( default_action_list )
-        action_list_str = default_action_list -> action_list_str;
-      else if ( action_list_str.empty() )
-        sim -> errorf( "No Default Action List available.\n" );
+      modify_action_options = modify_action.substr( cut_pt + 1 );
+      modify_action         = modify_action.substr( 0, cut_pt );
     }
   }
-  else if ( action_list_str.empty() )
+
+  find_action_priority_list( "default" ) -> action_list_str = action_list_str;
+
+  for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
-    action_priority_list_t* chosen_action_list = find_action_priority_list( "default" );
-    if ( chosen_action_list )
-      action_list_str = chosen_action_list -> action_list_str;
-  }
-
-  if ( ! action_list_str.empty() )
-  {
-    if ( action_list_default && sim -> debug ) log_t::output( sim, "Player %s using default actions", name() );
-
-    if ( sim -> debug ) log_t::output( sim, "Player %s: action_list_str=%s", name(), action_list_str.c_str() );
-
-    std::string modify_action_options = "";
-
-    if ( ! modify_action.empty() )
-    {
-      std::string::size_type cut_pt = modify_action.find( "," );
-
-      if ( cut_pt != modify_action.npos )
-      {
-        modify_action_options = modify_action.substr( cut_pt + 1 );
-        modify_action         = modify_action.substr( 0, cut_pt );
-      }
-    }
+    if ( sim -> debug )
+      log_t::output( sim, "Player %s: actions.%s=%s", name(),
+                                                      action_priority_list[ alist ] -> name_str.c_str(), 
+                                                      action_priority_list[ alist ] -> action_list_str.c_str() );
 
     std::vector<std::string> splits;
-    size_t num_splits = util::string_split( splits, action_list_str, "/" );
+    size_t num_splits = util::string_split( splits, action_priority_list[ alist ] -> action_list_str, "/" );
 
     for ( size_t i = 0; i < num_splits; i++ )
     {
@@ -1487,6 +1477,7 @@ void player_t::init_actions()
 
       if ( a )
       {
+        a -> action_list = action_priority_list[ alist ] -> name_str;
         a -> marker = ( char ) ( ( i < 10 ) ? ( '0' + i      ) :
                                  ( i < 36 ) ? ( 'A' + i - 10 ) :
                                  ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
@@ -1529,13 +1520,39 @@ void player_t::init_actions()
     action_t* action = action_list[ i ];
     action -> init();
     if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
-      off_gcd_actions.push_back( action );
-
+      find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
   }
+
+  if ( choose_action_list.empty() ) choose_action_list = "default";
+  
+  action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
+
+  if ( ! chosen_action_list && choose_action_list != "default" )
+  {
+    sim -> errorf( "Action List %s not found, using default action list.\n", choose_action_list.c_str() );
+    chosen_action_list = find_action_priority_list( "default" );
+  }
+
+  if ( chosen_action_list )
+  {
+    activate_action_list( chosen_action_list );
+  }
+  else
+  {
+    sim -> errorf( "No Default Action List available.\n" );
+  }
+
 
   int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
   report_information.action_sequence.reserve( capacity );
   report_information.action_sequence.clear();
+}
+
+void player_t::activate_action_list( action_priority_list_t* a )
+{
+  foreground_action_list = a -> foreground_action_list;
+  precombat_action_list  = a -> precombat_action_list;
+  off_gcd_actions        = a -> off_gcd_actions;
 }
 
 // player_t::init_rating ====================================================
@@ -6754,11 +6771,12 @@ void player_t::create_options()
     { "role",                                 OPT_FUNC,     ( void* ) ::parse_role_string               },
     { "target",                               OPT_STRING,   &( target_str                             ) },
     { "skill",                                OPT_FLT,      &( initial.skill                          ) },
-    { "distance",                             OPT_FLT,      &( current.distance                               ) },
+    { "distance",                             OPT_FLT,      &( current.distance                       ) },
     { "position",                             OPT_STRING,   &( position_str                           ) },
     { "professions",                          OPT_STRING,   &( professions_str                        ) },
     { "actions",                              OPT_STRING,   &( action_list_str                        ) },
     { "actions+",                             OPT_APPEND,   &( action_list_str                        ) },
+    { "actions.",                             OPT_MAP,      &( alist_map                              ) },
     { "action_list",                          OPT_STRING,   &( choose_action_list                     ) },
     { "sleeping",                             OPT_BOOL,     &( initial.sleeping                       ) },
     { "quiet",                                OPT_BOOL,     &( quiet                                  ) },

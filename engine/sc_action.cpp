@@ -166,6 +166,7 @@ action_t::action_t( action_type_e       ty,
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
   state_cache = 0;
   execute_state = 0;
+  action_list = "";
 
   range::fill( base_costs, 0.0 );
 
@@ -1402,9 +1403,9 @@ void action_t::init()
     sim -> errorf( "Action %s cannot be specified as precombat action because it is harmful", name() );
 
   if ( ! ( background || sequence || ( pre_combat && ! harmful ) ) )
-    player -> foreground_action_list.push_back( this );
+    player -> find_action_priority_list( action_list ) -> foreground_action_list.push_back( this );
   else if ( pre_combat )
-    player -> precombat_action_list.push_back( this );
+    player -> find_action_priority_list( action_list ) -> precombat_action_list.push_back( this );
 
   initialized = true;
 }

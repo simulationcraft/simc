@@ -3189,8 +3189,8 @@ struct player_t : public noncopyable
   virtual void register_callbacks();
 
   // Action Priority List
-  std::vector<action_t*>  action_list;
-  std::vector<action_t*>  foreground_action_list;
+  std::vector<action_t*> action_list;
+  std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> precombat_action_list;
   std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
@@ -3202,6 +3202,7 @@ struct player_t : public noncopyable
   std::vector<dot_t*> dot_list;
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
+  std::map<std::string,std::string> alist_map;
 
   // Reporting
   int       quiet;
@@ -3690,6 +3691,8 @@ struct player_t : public noncopyable
   virtual double composite_spell_crit_vulnerability() const;
   virtual double composite_attack_crit_vulnerability() const;
   virtual double composite_ranged_attack_player_vulnerability() const;
+
+  virtual void activate_action_list( action_priority_list_t* a );
 };
 
 struct targetdata_t : public noncopyable
@@ -3943,6 +3946,7 @@ struct action_t
   bool is_dtr_action;
   bool can_trigger_dtr;
   int targetdata_dot_offset;
+  std::string action_list;
 
 private:
   mutable player_t* cached_targetdata_target;
@@ -4521,6 +4525,9 @@ struct action_priority_list_t
   const std::string name_str;
   std::string action_list_str;
   player_t* const player;
+  std::vector<action_t*> foreground_action_list;
+  std::vector<action_t*> precombat_action_list;
+  std::vector<action_t*> off_gcd_actions;
   action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p )
   {}
 };
