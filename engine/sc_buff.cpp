@@ -94,6 +94,11 @@ buff_t::buff_t( const buff_creator_t& params ) :
   else
     buff_duration = params._duration;
 
+  if ( buff_duration < timespan_t::zero() )
+  {
+    buff_duration = timespan_t::zero();
+  }
+
   // Set Buff Cooldown
   if ( params._cooldown == timespan_t::min() )
   {

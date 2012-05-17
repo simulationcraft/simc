@@ -3615,64 +3615,50 @@ void priest_t::init_actions()
     return;
   }
 
-  std::string& list_default = get_action_priority_list( "default" ) -> action_list_str;
-
-  std::string& list_pws = get_action_priority_list( "pws" ) -> action_list_str;
-  //std::string& list_aaa = get_action_priority_list( "aaa" ) -> action_list_str;
-  //std::string& list_poh = get_action_priority_list( "poh" ) -> action_list_str;
-  std::string buffer;
-
-  if ( buffer.empty() )
+  if ( action_list_str.empty() )
   {
     // Flask
     if ( level > 85 )
-      buffer += "/flask,type=warm_sun,precombat=1";
+      action_list_str += "/flask,type=warm_sun,precombat=1";
     else if ( level >= 80 )
-      buffer += "/flask,type=draconic_mind,precombat=1";
+      action_list_str += "/flask,type=draconic_mind,precombat=1";
 
     if ( level > 85 )
     {
-      buffer += "/food,type=great_pandaren_banquet,precombat=1";
+      action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
     }
     else if ( level > 80 )
     {
-      buffer += "/food,type=seafood_magnifique_feast,precombat=1";
+      action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
     }
 
     if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
-      buffer += "/fortitude,precombat=1,if=!aura.stamina.up";
+      action_list_str += "/fortitude,precombat=1,if=!aura.stamina.up";
 
     if ( find_class_spell( "Inner Fire" ) -> ok() )
-      buffer += "/inner_fire,precombat=1";
+      action_list_str += "/inner_fire,precombat=1";
 
     if ( find_class_spell( "Shadowform" ) -> ok() )
-      buffer += "/shadowform,precombat=1";
+      action_list_str += "/shadowform,precombat=1";
 
-    buffer += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
     if ( level > 85 )
     {
-      buffer += "/jinyu_potion,precombat=1";
+      action_list_str += "/jinyu_potion,precombat=1";
     }
     else if ( level > 80 )
     {
-      buffer += "/volcanic_potion,precombat=1";
+      action_list_str += "/volcanic_potion,precombat=1";
     }
 
     if ( find_class_spell( "Shadowform" ) -> ok() )
-      buffer += "/shadowform";
+      action_list_str += "/shadowform";
 
-    buffer += init_use_item_actions();
+    action_list_str += init_use_item_actions();
 
-    buffer += init_use_profession_actions();
+    action_list_str += init_use_profession_actions();
 
-    // Save & reset buffer =================================================
-    for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
-    {
-      action_priority_list_t* a = action_priority_list[i];
-      a -> action_list_str += buffer;
-    }
-    buffer.clear();
     // ======================================================================
 
     switch ( primary_tree() )
@@ -3681,75 +3667,75 @@ void priest_t::init_actions()
     case PRIEST_SHADOW:
       if ( level > 85 )
       {
-        buffer += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
       else if ( level > 80 )
       {
-        buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
       /*
       if ( find_class_spell( "Vampiric Embrace" ) -> ok() )
-        buffer += "/vampiric_embrace";
+        action_list_str += "/vampiric_embrace";
       */
 
       if ( find_class_spell( "Devouring Plague" ) -> ok() )
-        buffer += "/devouring_plague,if=shadow_orb=3&(!ticking|remains<tick_time)";
+        action_list_str += "/devouring_plague,if=shadow_orb=3&(!ticking|remains<tick_time)";
 
       if ( find_talent_spell( "Archangel" ) -> ok() )
-        buffer += "/archangel";
+        action_list_str += "/archangel";
 
       if ( set_bonus.tier13_2pc_caster() )
       {
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
-          buffer += "/shadow_word_death,if=target.health.pct<20";
+          action_list_str += "/shadow_word_death,if=target.health.pct<20";
         }
       }
 
-      buffer += init_use_racial_actions();
+      action_list_str += init_use_racial_actions();
 
       if ( find_class_spell( "Mind Blast" ) -> ok() )
-        buffer += "/mind_blast,if=cooldown_react";
+        action_list_str += "/mind_blast,if=cooldown_react";
 
       if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        buffer += "/mind_spike,if=buff.surge_of_darkness.react";
+        action_list_str += "/mind_spike,if=buff.surge_of_darkness.react";
 
       if ( find_talent_spell( "Power Infusion" ) -> ok() )
-        buffer += "/power_infusion";
+        action_list_str += "/power_infusion";
 
       if ( find_class_spell( "Vampiric Touch" ) -> ok() )
-        buffer += "/vampiric_touch,if=(!ticking|remains<cast_time+tick_time)&miss_react";
+        action_list_str += "/vampiric_touch,if=(!ticking|remains<cast_time+tick_time)&miss_react";
 
       if ( ! set_bonus.tier13_2pc_caster() )
       {
         if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
         {
-          buffer += "/shadow_word_death,if=target.health.pct<20";
+          action_list_str += "/shadow_word_death,if=target.health.pct<20";
         }
       }
 
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
-        buffer += "/shadow_word_pain,if=(!ticking|remains<tick_time)&miss_react";
+        action_list_str += "/shadow_word_pain,if=(!ticking|remains<tick_time)&miss_react";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
-        buffer += "/mindbender,if=cooldown_react";
+        action_list_str += "/mindbender,if=cooldown_react";
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
-        buffer += "/shadowfiend,if=cooldown_react";
+        action_list_str += "/shadowfiend,if=cooldown_react";
 
       if ( find_class_spell( "Mind Flay" ) -> ok() )
-        buffer += "/mind_flay,chain=1,interrupt=1";
+        action_list_str += "/mind_flay,chain=1,interrupt=1";
 
       if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
       {
-        buffer += "/shadow_word_death,moving=1";
+        action_list_str += "/shadow_word_death,moving=1";
       }
 
       if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
-        buffer += "/shadow_word_pain,moving=1";
+        action_list_str += "/shadow_word_pain,moving=1";
 
       if ( find_class_spell( "Dispersion" ) -> ok() )
-        buffer += "/dispersion";
+        action_list_str += "/dispersion";
       break;
       // SHADOW END =========================================================
 
@@ -3762,32 +3748,32 @@ void priest_t::init_actions()
       {
         if ( level > 85 )
         {
-          buffer += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
         else if ( level > 80 )
         {
-          buffer += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
         if ( race == RACE_BLOOD_ELF )
-          buffer += "/arcane_torrent,if=mana_pct<=90";
+          action_list_str += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
-          buffer += "/shadowfiend,if=mana_pct<=60";
+          action_list_str += "/shadowfiend,if=mana_pct<=60";
         if ( level >= 64 )
-          buffer += "/hymn_of_hope";
+          action_list_str += "/hymn_of_hope";
         if ( level >= 66 )
-          buffer += ",if=pet.shadowfiend.active&mana_pct<=20";
+          action_list_str += ",if=pet.shadowfiend.active&mana_pct<=20";
         if ( race == RACE_TROLL )
-          buffer += "/berserking";
-        buffer += "/power_infusion";
-        buffer += "/power_word_shield,if=buff.weakened_soul.down";
+          action_list_str += "/berserking";
+        action_list_str += "/power_infusion";
+        action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
 
-        buffer += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
+        action_list_str += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
 
-        buffer += "/holy_fire";
-        buffer += "/penance";
-        buffer += "/mind_blast";
+        action_list_str += "/holy_fire";
+        action_list_str += "/penance";
+        action_list_str += "/mind_blast";
 
-        buffer += "/smite";
+        action_list_str += "/smite";
       }
       // DAMAGE DISCIPLINE END ==============================================
 
@@ -3795,34 +3781,35 @@ void priest_t::init_actions()
       else
       {
         // DEFAULT
-        list_default += "/mana_potion,if=mana_pct<=75";
+        action_list_str += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )
-          list_default  += "/arcane_torrent,if=mana_pct<=90";
+          action_list_str  += "/arcane_torrent,if=mana_pct<=90";
         if ( level >= 66 )
-          list_default += "/shadowfiend,if=mana_pct<=20";
+          action_list_str += "/shadowfiend,if=mana_pct<=20";
         if ( level >= 64 )
-          list_default += "/hymn_of_hope";
+          action_list_str += "/hymn_of_hope";
         if ( level >= 66 )
-          list_default += ",if=pet.shadowfiend.active";
+          action_list_str += ",if=pet.shadowfiend.active";
         if ( race == RACE_TROLL )
-          list_default += "/berserking";
-        list_default += "/inner_focus";
-        list_default += "/power_infusion";
-        list_default += "/power_word_shield";
-        list_default += "/greater_heal,if=buff.inner_focus.up";
+          action_list_str += "/berserking";
+        action_list_str += "/inner_focus";
+        action_list_str += "/power_infusion";
+        action_list_str += "/power_word_shield";
+        action_list_str += "/greater_heal,if=buff.inner_focus.up";
 
-        list_default += "/holy_fire";
+        action_list_str += "/holy_fire";
         if ( glyphs.atonement -> ok() )
         {
-          list_default += "/smite,if=";
+          action_list_str += "/smite,if=";
           if ( glyphs.smite -> ok() )
-            list_default += "dot.holy_fire.remains>cast_time&";
-          list_default += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
+            action_list_str += "dot.holy_fire.remains>cast_time&";
+          action_list_str += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
         }
-        list_default += "/penance_heal";
-        list_default += "/greater_heal";
+        action_list_str += "/penance_heal";
+        action_list_str += "/greater_heal";
         // DEFAULT END
 
+/*
         // PWS
         list_pws += "/mana_potion,if=mana_pct<=75";
         if ( race == RACE_BLOOD_ELF )
@@ -3839,7 +3826,7 @@ void priest_t::init_actions()
         list_pws += "/power_infusion";
 
         list_pws += "/power_word_shield,ignore_debuff=1";
-
+*/
         // PWS END
       }
       break;
@@ -3850,61 +3837,44 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         list_default += "/mana_potion,if=mana_pct<=75";
-        if ( race == RACE_BLOOD_ELF )                    list_default += "/arcane_torrent,if=mana_pct<=90";
-        if ( level >= 66 )                               list_default += "/shadowfiend,if=mana_pct<=50";
-        if ( level >= 64 )                               list_default += "/hymn_of_hope";
-        if ( level >= 66 )                               list_default += ",if=pet.shadowfiend.active&time>200";
-        if ( race == RACE_TROLL )                        list_default += "/berserking";
-                                                         list_default += "/chakra";
-                                                         list_default += "/holy_fire";
-                                                         list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
-                                                         list_default += "/mind_blast";
-                                                         list_default += "/smite";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
+        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana_pct<=50";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active&time>200";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
+                                                         action_list_str += "/chakra";
+                                                         action_list_str += "/holy_fire";
+                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/mind_blast";
+                                                         action_list_str += "/smite";
       }
       // HEALER
       else
       {
-                                                         list_default += "/mana_potion,if=mana_pct<=75";
-        if ( race == RACE_BLOOD_ELF )                    list_default += "/arcane_torrent,if=mana_pct<80";
-        if ( level >= 66 )                               list_default += "/shadowfiend,if=mana_pct<=20";
-        if ( level >= 64 )                               list_default += "/hymn_of_hope";
-        if ( level >= 66 )                               list_default += ",if=pet.shadowfiend.active";
-        if ( race == RACE_TROLL )                        list_default += "/berserking";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
+        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana_pct<=20";
+        if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
+        if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active";
+        if ( race == RACE_TROLL )                        action_list_str += "/berserking";
       }
       break;
     default:
-                                                         list_default += "/mana_potion,if=mana_pct<=75";
-      if ( level >= 66 )                                 list_default += "/shadowfiend,if=mana_pct<=50";
-      if ( level >= 64 )                                 list_default += "/hymn_of_hope";
-      if ( level >= 66 )                                 list_default += ",if=pet.shadowfiend.active&time>200";
-      if ( race == RACE_TROLL )                          list_default += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                      list_default += "/arcane_torrent,if=mana_pct<=90";
-                                                         list_default += "/holy_fire";
-                                                         list_default += "/shadow_word_pain,if=remains<tick_time|!ticking";
-                                                         list_default += "/smite";
+                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+      if ( level >= 66 )                                 action_list_str += "/shadowfiend,if=mana_pct<=50";
+      if ( level >= 64 )                                 action_list_str += "/hymn_of_hope";
+      if ( level >= 66 )                                 action_list_str += ",if=pet.shadowfiend.active&time>200";
+      if ( race == RACE_TROLL )                          action_list_str += "/berserking";
+      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana_pct<=90";
+                                                         action_list_str += "/holy_fire";
+                                                         action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
+                                                         action_list_str += "/smite";
       break;
     }
-
-    // Save & reset buffer =================================================
-    for ( unsigned int i = 0; i < action_priority_list.size(); i++ )
-    {
-      action_priority_list_t* a = action_priority_list[i];
-      a -> action_list_str += buffer;
-    }
-    buffer.clear();
-    // ======================================================================
-
-    action_list_default = 1;
   }
 
   player_t::init_actions();
-/*
-  for ( action_t* a = action_list; a; a = a -> next )
-  {
-    double c = a -> cost();
-    if ( c > max_mana_cost ) max_mana_cost = c;
-  }*/
 }
 
 // priest_t::init_party =====================================================
