@@ -87,7 +87,7 @@ struct vengeance_event_t : public event_t
 
 static bool has_foreground_actions( player_t* p )
 {
-  return ( p -> foreground_action_list.size() > 0 );
+  return ( p -> active_action_list -> foreground_action_list.size() > 0 );
 }
 
 // parse_talent_url =========================================================
@@ -1416,7 +1416,7 @@ void player_t::init_actions()
     }
   }
 
-  get_action_priority_list( "default") -> action_list_str = action_list_str;
+  if ( ! action_list_str.empty() ) get_action_priority_list( "default") -> action_list_str = action_list_str;
 
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
@@ -1548,10 +1548,7 @@ void player_t::init_actions()
 
 void player_t::activate_action_list( action_priority_list_t* a )
 {
-  foreground_action_list = a -> foreground_action_list;
-  precombat_action_list  = a -> precombat_action_list;
-  off_gcd_actions        = a -> off_gcd_actions;
-
+  active_action_list = a;
   a -> used = true;
 }
 
@@ -2643,10 +2640,10 @@ void player_t::combat_begin()
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_begin();
   
-  for ( size_t i = 0; i < precombat_action_list.size(); i++ )
-    precombat_action_list[ i ] -> execute();
+  for ( size_t i = 0; i < active_action_list -> precombat_action_list.size(); i++ )
+    active_action_list -> precombat_action_list[ i ] -> execute();
   
-  if ( precombat_action_list.size() > 0 )
+  if ( active_action_list -> precombat_action_list.size() > 0 )
     in_combat = true;
 }
 
@@ -3158,9 +3155,9 @@ action_t* player_t::execute_action()
 
   action_t* action = 0;
 
-  for ( size_t i = 0, num_actions = foreground_action_list.size(); i < num_actions; ++i )
+  for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
   {
-    action_t* a = foreground_action_list[ i ];
+    action_t* a = active_action_list -> foreground_action_list[ i ];
 
     if ( unlikely( a -> wait_on_ready == 1 ) )
       break;
@@ -5100,6 +5097,53 @@ struct cancel_buff_t : public action_t
   }
 };
 
+struct choose_action_list_t : public action_t
+{
+  action_priority_list_t* alist;
+
+  choose_action_list_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "choose_action_list", player ), alist( 0 )
+  {
+    std::string alist_name;
+    option_t options[] =
+    {
+      { "name", OPT_STRING, &alist_name },
+      { NULL,  OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( alist_name.empty() )
+    {
+      sim -> errorf( "Player %s uses choose_action_list without specifying the name of the action list\n", player -> name() );
+      sim -> cancel();
+    }
+
+    alist = player -> find_action_priority_list( alist_name );
+
+    if ( ! alist )
+    {
+      sim -> errorf( "Player %s uses choose_action_list with unknown action list %s\n", player -> name(), alist_name.c_str() );
+      sim -> cancel();
+    }
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s activates action list %s", player -> name(), alist -> name_str.c_str() );
+    player -> activate_action_list( alist );
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> active_action_list == alist )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+
 } // END specil_actions NAMESPACE
 
 // player_t::create_action ==================================================
@@ -5108,22 +5152,23 @@ action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
   using namespace special_actions;
-  if ( name == "arcane_torrent"   ) return new   arcane_torrent_t( this, options_str );
-  if ( name == "berserking"       ) return new       berserking_t( this, options_str );
-  if ( name == "blood_fury"       ) return new       blood_fury_t( this, options_str );
-  if ( name == "cancel_buff"      ) return new      cancel_buff_t( this, options_str );
-  if ( name == "lifeblood"        ) return new        lifeblood_t( this, options_str );
-  if ( name == "restart_sequence" ) return new restart_sequence_t( this, options_str );
-  if ( name == "restore_mana"     ) return new     restore_mana_t( this, options_str );
-  if ( name == "rocket_barrage"   ) return new   rocket_barrage_t( this, options_str );
-  if ( name == "sequence"         ) return new         sequence_t( this, options_str );
-  if ( name == "snapshot_stats"   ) return new   snapshot_stats_t( this, options_str );
-  if ( name == "start_moving"     ) return new     start_moving_t( this, options_str );
-  if ( name == "stoneform"        ) return new        stoneform_t( this, options_str );
-  if ( name == "stop_moving"      ) return new      stop_moving_t( this, options_str );
-  if ( name == "use_item"         ) return new         use_item_t( this, options_str );
-  if ( name == "wait"             ) return new       wait_fixed_t( this, options_str );
-  if ( name == "wait_until_ready" ) return new wait_until_ready_t( this, options_str );
+  if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
+  if ( name == "berserking"         ) return new         berserking_t( this, options_str );
+  if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );
+  if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
+  if ( name == "choose_action_list" ) return new choose_action_list_t( this, options_str );
+  if ( name == "lifeblood"          ) return new          lifeblood_t( this, options_str );
+  if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
+  if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
+  if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
+  if ( name == "sequence"           ) return new           sequence_t( this, options_str );
+  if ( name == "snapshot_stats"     ) return new     snapshot_stats_t( this, options_str );
+  if ( name == "start_moving"       ) return new       start_moving_t( this, options_str );
+  if ( name == "stoneform"          ) return new          stoneform_t( this, options_str );
+  if ( name == "stop_moving"        ) return new        stop_moving_t( this, options_str );
+  if ( name == "use_item"           ) return new           use_item_t( this, options_str );
+  if ( name == "wait"               ) return new         wait_fixed_t( this, options_str );
+  if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
 }

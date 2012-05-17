@@ -177,8 +177,8 @@ void player_gcd_event_t::execute()
 {
   action_t* a = 0;
 
-  for ( std::vector<action_t*>::const_iterator i = player -> off_gcd_actions.begin();
-        i < player -> off_gcd_actions.end(); i++ )
+  for ( std::vector<action_t*>::const_iterator i = player -> active_action_list -> off_gcd_actions.begin();
+        i < player -> active_action_list -> off_gcd_actions.end(); i++ )
   {
     a = *i;
     if ( a -> ready() )
@@ -226,7 +226,7 @@ void action_execute_event_t::execute()
     player -> schedule_ready( timespan_t::zero() );
   }
 
-  if ( player -> off_gcd_actions.size() == 0 )
+  if ( player -> active_action_list -> off_gcd_actions.size() == 0 )
     return;
 
   // Kick off the during-gcd checker, first run is immediately after
@@ -292,9 +292,9 @@ void dot_tick_event_t::execute()
     if ( ( dot -> action -> interrupt || ( dot -> action -> chain && dot -> current_tick + 1 == dot -> num_ticks ) ) && ( dot -> action -> player -> gcd_ready <=  sim -> current_time ) )
     {
       // Interrupt if any higher priority action is ready.
-      for ( size_t i = 0; dot -> action -> player -> foreground_action_list[ i ] != dot -> action; ++i )
+      for ( size_t i = 0; dot -> action -> player -> active_action_list -> foreground_action_list[ i ] != dot -> action; ++i )
       {
-        action_t* a = dot -> action -> player -> foreground_action_list[ i ];
+        action_t* a = dot -> action -> player -> active_action_list -> foreground_action_list[ i ];
         if ( a -> id == dot -> action -> id ) continue;
         if ( a -> ready() )
         {

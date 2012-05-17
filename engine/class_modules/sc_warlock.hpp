@@ -239,8 +239,8 @@ struct warlock_t : public player_t
 
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
-  void add_action( std::string action, std::string options = "" );
-  void add_action( const spell_data_t* s, std::string options = "" );
+  void add_action( std::string action, std::string options = "", std::string alist = "default" );
+  void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
 
   // Character Definition
   virtual void      init_spells();

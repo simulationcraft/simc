@@ -46,7 +46,7 @@ actions+=/sunfire,moving=1
 head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
 neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste,reforge=spi_mastery
 shoulders=deep_earth_shoulderwraps,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit,reforge=spi_haste,gems=50int_50int_20int,enchant=50int_25haste
-chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=50int_50int_25int_25haste_30int,enchant=20all
+chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=50int_50int_25int_25haste_25int_25haste_30int,enchant=20all
 waist=girdle_of_the_grotesque,heroic=1,type=leather,ilevel=410,quality=epic,stats=1177armor_368int_611sta_242spi_261mastery,reforge=spi_haste,gems=50int_50int_50int_20int
 legs=deep_earth_leggings,heroic=1,type=leather,ilevel=410,quality=epic,stats=1831armor_489int_824sta_254mastery_381haste,gems=50int_50int_50int_30int,enchant=95int_55spi
 feet=treads_of_sordid_screams,heroic=1,type=leather,ilevel=410,quality=epic,stats=1439armor_368int_611sta_256spi_248crit,reforge=spi_haste,gems=50int_50int_20int,enchant=35mastery
@@ -62,12 +62,12 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7908
-# gear_intellect=7051
+# gear_intellect=7076
 # gear_spirit=1363
 # gear_spell_power=2786
 # gear_hit_rating=189
 # gear_crit_rating=539
-# gear_haste_rating=2634
+# gear_haste_rating=2659
 # gear_mastery_rating=1972
 # gear_armor=12803
 # meta_gem=burning_shadowspirit

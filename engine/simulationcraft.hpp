@@ -3205,9 +3205,6 @@ struct player_t : public noncopyable
 
   // Action Priority List
   std::vector<action_t*> action_list;
-  std::vector<action_t*> foreground_action_list;
-  std::vector<action_t*> precombat_action_list;
-  std::vector<action_t*> off_gcd_actions;
   std::string action_list_str;
   std::string choose_action_list;
   std::string action_list_skip;
@@ -3217,6 +3214,7 @@ struct player_t : public noncopyable
   std::vector<dot_t*> dot_list;
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
+  action_priority_list_t* active_action_list;
   std::map<std::string,std::string> alist_map;
 
   // Reporting

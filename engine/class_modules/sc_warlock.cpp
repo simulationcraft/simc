@@ -2686,17 +2686,18 @@ void warlock_t::init_rng()
   rngs.ember_gain      = get_rng( "ember_gain" );
 }
 
-void warlock_t::add_action( std::string action, std::string options )
+void warlock_t::add_action( std::string action, std::string options, std::string alist )
 {
-  add_action( find_class_spell( action ), options );
+  add_action( find_class_spell( action ), options, alist );
 }
 
-void warlock_t::add_action( const spell_data_t* s, std::string options )
+void warlock_t::add_action( const spell_data_t* s, std::string options, std::string alist )
 {
+  std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
   if ( s -> ok() )
   {
-    action_list_str += "/" + dbc_t::get_token( s -> id() );
-    if ( ! options.empty() ) action_list_str += "," + options;
+    *str += "/" + dbc_t::get_token( s -> id() );
+    if ( ! options.empty() ) *str += "," + options;
   }
 }
 
@@ -2763,7 +2764,14 @@ void warlock_t::init_actions()
       action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
 
     add_action( spec.dark_soul );
+
+    get_action_priority_list( "aoe" ) -> action_list_str = action_list_str;
+
+    action_list_str                                      += "/choose_action_list,name=aoe,if=num_targets>1";
+    get_action_priority_list( "aoe" ) -> action_list_str += "/choose_action_list,name=default,if=num_targets=1";
+
     add_action( "Summon Doomguard" );
+    add_action( "Summon Infernal", "", "aoe" );
 
     switch ( primary_tree() )
     {
@@ -2785,6 +2793,12 @@ void warlock_t::init_actions()
       add_action( "Malefic Grasp",         "chain=1" );
       add_action( "Life Tap",              "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
       add_action( "Fel Flame",             "moving=1" );
+
+      // AoE action list
+      add_action( "Soulburn",              "if=buff.soulburn.down&cooldown.soulburn_seed_of_corruption.remains=0", "aoe" );
+      add_action( "Seed of Corruption",    "cycle_targets=1,if=!in_flight_to_target&!ticking",                     "aoe" );
+      add_action( "Life Tap",              "if=mana.pct<70",                                                       "aoe" );
+      add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                              "aoe" );
       break;
 
     case WARLOCK_DESTRUCTION:
@@ -2796,7 +2810,16 @@ void warlock_t::init_actions()
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
       add_action( "Incinerate" );
-      add_action( "Fel Flame",             "moving=1" );      
+      add_action( "Fel Flame",             "moving=1" );
+
+      // AoE action list
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                               "aoe" );
+      add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",                          "aoe" );
+      add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                               "aoe" );
+      add_action( "Conflagrate",           "if=ember_react&buff.fire_and_brimstone.up",                            "aoe" );
+      add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                                        "aoe" );
+      add_action( "Immolate",              "cycle_targets=1,if=!ticking",                                          "aoe" );
+      add_action( "Conflagrate",           "",                                                                     "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:
@@ -2805,7 +2828,7 @@ void warlock_t::init_actions()
       if ( find_class_spell( "Metamorphosis" ) -> ok() ) 
         action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=2";
       if ( glyphs.imp_swarm -> ok() ) 
-        action_list_str += "/imp_swarm";
+        add_action( find_spell( 104316 ) );
 
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( spec.doom,               "if=(!ticking|remains<tick_time)&target.time_to_die>=30&miss_react" );
@@ -2816,12 +2839,25 @@ void warlock_t::init_actions()
       add_action( spec.demonic_slash );
       add_action( "Shadow Bolt" );
       add_action( "Void Ray",              "moving=1" );
-      add_action( "Fel Flame",             "moving=1" );            
+      add_action( "Fel Flame",             "moving=1" );
+
+      // AoE action list
+      add_action( "Metamorphosis",         "if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8", "aoe" );
+      if ( glyphs.imp_swarm -> ok() ) 
+        add_action( find_spell( 104316 ),  "",                                                                                          "aoe" );
+      add_action( "Hand of Gul'dan",       "if=!in_flight",                                                                             "aoe" );
+      add_action( "Chaos Wave",            "",                                                                                          "aoe" );
+      add_action( "Rain of Fire",          "",                                                                                          "aoe" );
+      add_action( "Life Tap",              "",                                                                                          "aoe" );
       break;
 
     default:
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Shadow Bolt" );
+
+      // AoE action list
+      add_action( "Corruption",            "cycle_targets=1,if=!ticking",                                                               "aoe" );
+      add_action( "Shadow Bolt",           "",                                                                                          "aoe" );
       break;
     }
 
