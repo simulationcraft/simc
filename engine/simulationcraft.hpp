@@ -4525,10 +4525,11 @@ struct action_priority_list_t
   const std::string name_str;
   std::string action_list_str;
   player_t* const player;
+  bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> precombat_action_list;
   std::vector<action_t*> off_gcd_actions;
-  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p )
+  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p ), used( false )
   {}
 };
 

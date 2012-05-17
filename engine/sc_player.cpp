@@ -1551,6 +1551,8 @@ void player_t::activate_action_list( action_priority_list_t* a )
   foreground_action_list = a -> foreground_action_list;
   precombat_action_list  = a -> precombat_action_list;
   off_gcd_actions        = a -> off_gcd_actions;
+
+  a -> used = true;
 }
 
 // player_t::init_rating ====================================================

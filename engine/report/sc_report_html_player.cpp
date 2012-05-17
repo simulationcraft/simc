@@ -1138,37 +1138,65 @@ void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player
 
 void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const player_t* p )
 {
-
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"
            "\t\t\t\t\t\t\t<h3 class=\"toggle\">Action Priority List</h3>\n"
-           "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-           "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
-           "\t\t\t\t\t\t\t\t\t<tr>\n"
-           "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">#</th>\n"
-           "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
-           "\t\t\t\t\t\t\t\t\t</tr>\n" );
+           "\t\t\t\t\t\t\t<div class=\"toggle-content hide\">\n" );
+
+  action_priority_list_t* alist = 0;
 
   for ( size_t i = 0; i < p -> action_list.size(); ++i )
   {
     action_t* a = p -> action_list[ i ];
     if ( a -> signature_str.empty() || ! a -> marker ) continue;
+
+    if ( ! alist || a -> action_list != alist -> name_str )
+    {
+      if ( alist )
+      {
+        fprintf( file,
+                 "\t\t\t\t\t\t\t\t</table>\n" );
+      }
+
+      alist = p -> find_action_priority_list( a -> action_list );
+
+      if ( ! alist -> used ) continue;
+
+      fprintf( file,
+               "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
+               "\t\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"right\"></th>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">%s</th>\n"
+               "\t\t\t\t\t\t\t\t\t</tr>\n"
+               "\t\t\t\t\t\t\t\t\t<tr>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">#</th>\n"
+               "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
+               "\t\t\t\t\t\t\t\t\t</tr>\n",
+               ( alist -> name_str == "default" ) ? "" : ( "actions." + alist -> name_str ).c_str() );
+    }
+
+    if ( ! alist -> used ) continue;
+
     fprintf( file,
-             "\t\t\t\t\t\t\t\t<tr" );
+              "\t\t\t\t\t\t\t\t<tr" );
     if ( ( i & 1 ) )
     {
       fprintf( file, " class=\"odd\"" );
     }
     fprintf( file, ">\n" );
     fprintf( file,
-             "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
-             "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-             "\t\t\t\t\t\t\t\t\t</tr>\n",
-             a -> marker,
-             util::encode_html( a -> signature_str ).c_str() );
+              "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
+              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+              "\t\t\t\t\t\t\t\t\t</tr>\n",
+              a -> marker,
+              util::encode_html( a -> signature_str ).c_str() );
   }
-  fprintf( file,
-           "\t\t\t\t\t\t\t\t</table>\n" );
+
+  if ( alist )
+  {
+    fprintf( file,
+              "\t\t\t\t\t\t\t\t</table>\n" );
+  }
 
   if ( ! p -> report_information.action_sequence.empty() )
   {

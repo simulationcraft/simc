@@ -115,22 +115,30 @@ void print_text_actions( FILE* file, const player_t* p )
 {
   if ( ! p -> glyphs_str.empty() ) util::fprintf( file, "  Glyphs: %s\n", p -> glyphs_str.c_str() );
 
-  util::fprintf( file, "  Priorities:\n" );
-
-  std::vector<std::string> action_list;
-  int num_actions = util::string_split( action_list, p -> action_list_str, "/" );
-  int length = 0;
-  for ( int i=0; i < num_actions; i++ )
+  for ( unsigned int idx = 0; idx < p -> action_priority_list.size(); idx++ )
   {
-    if ( length > 80 || ( length > 0 && ( length + action_list[ i ].size() ) > 80 ) )
+    action_priority_list_t* alist = p -> action_priority_list[ idx ];
+
+    if ( alist -> used )
     {
+      util::fprintf( file, "  Priorities%s:\n", ( alist -> name_str == "default" ) ? "" : ( " (actions." + alist -> name_str + ")" ).c_str() );
+
+      std::vector<std::string> action_list;
+      int num_actions = util::string_split( action_list, alist -> action_list_str, "/" );
+      int length = 0;
+      for ( int i=0; i < num_actions; i++ )
+      {
+        if ( length > 80 || ( length > 0 && ( length + action_list[ i ].size() ) > 80 ) )
+        {
+          util::fprintf( file, "\n" );
+          length = 0;
+        }
+        util::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
+        length += ( int ) action_list[ i ].size();
+      }
       util::fprintf( file, "\n" );
-      length = 0;
     }
-    util::fprintf( file, "%s%s", ( ( length > 0 ) ? "/" : "    " ), action_list[ i ].c_str() );
-    length += ( int ) action_list[ i ].size();
   }
-  util::fprintf( file, "\n" );
 
   util::fprintf( file, "  Actions:\n" );
 
