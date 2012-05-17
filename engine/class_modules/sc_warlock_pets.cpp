@@ -326,8 +326,7 @@ struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   felstorm_t( felguard_pet_t* p ) :
     warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
   {
-    callbacks    = false;
-    aoe       = -1;
+    callbacks = false;
     harmful   = false;
     tick_zero = true;
     channeled = true;
