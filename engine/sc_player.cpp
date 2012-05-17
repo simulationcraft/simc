@@ -6582,16 +6582,28 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   {
     if ( action_list_str.size() > 0 )
     {
+      int j = 0;
+      std::string alist_str = "default";
       for ( size_t i = 0; i < action_list.size(); ++i )
       {
         action_t* a = action_list[ i ];
         if ( a -> signature_str.empty() ) continue;
         profile_str += "actions";
-        profile_str += i ? "+=/" : "=";
+        if ( ! a -> action_list.empty() && a -> action_list != "default" )
+        {
+          profile_str += "." + a -> action_list;
+          if ( a -> action_list != alist_str )
+          {
+            j = 0;
+            alist_str = a -> action_list;
+          }
+        }
+        profile_str += j ? "+=/" : "=";
         std::string encoded_action = a -> signature_str;
         if ( save_html )
           util::encode_html( encoded_action );
         profile_str += encoded_action + term;
+        j++;
       }
     }
   }
