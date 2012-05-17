@@ -1418,8 +1418,6 @@ void player_t::init_actions()
     }
   }
 
-  find_action_priority_list( "default" ) -> action_list_str = action_list_str;
-
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
     if ( sim -> debug )
