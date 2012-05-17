@@ -3699,7 +3699,7 @@ struct player_t : public noncopyable
   double      get_position_distance( double m=0, double v=0 ) const;
   action_priority_list_t* get_action_priority_list( const std::string& name );
 
-  virtual target_data_t* create_target_data( player_t* target ) { target=0; return NULL; }
+  virtual target_data_t* create_target_data( player_t* /*target*/ ) { return NULL; }
 
   target_data_t* get_target_data( player_t* target )
   {
