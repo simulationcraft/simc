@@ -73,7 +73,7 @@ struct shaman_melee_attack_t;
 struct shaman_spell_t;
 }
 
-struct shaman_targetdata_t : public targetdata_t
+struct shaman_td_t : public target_data_t
 {
   dot_t* dots_flame_shock;
   dot_t* dots_searing_flames;
@@ -82,7 +82,21 @@ struct shaman_targetdata_t : public targetdata_t
   buff_t* debuffs_stormstrike;
   buff_t* debuffs_unleashed_fury_ft;
 
-  shaman_targetdata_t( shaman_t* source, player_t* target );
+  shaman_td_t( player_t* target, player_t* p ) :
+    target_data_t( target, p )
+  {
+    dots_flame_shock    = target -> get_dot( "flame_shock",    p );
+    dots_searing_flames = target -> get_dot( "searing_flames", p );
+
+    debuffs_searing_flames = ( buff_creator_t( *this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
+			       .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
+			       .duration( p -> dbc.spell( 77661 ) -> duration() )
+			       .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
+
+    debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
+
+    debuffs_unleashed_fury_ft = ( buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
+  }
 };
 
 struct shaman_t : public player_t
@@ -303,12 +317,6 @@ struct shaman_t : public player_t
   }
 
   // Character Definition
-  virtual shaman_targetdata_t* new_targetdata( player_t* target )
-  { return new shaman_targetdata_t( this, target ); }
-
-  shaman_targetdata_t* targetdata( player_t* target )
-  { return debug_cast<shaman_targetdata_t*>( targetdata_t::get( this, target ) ); }
-
   virtual void      init();
   virtual void      init_spells();
   virtual void      init_base();
@@ -335,6 +343,11 @@ struct shaman_t : public player_t
   virtual role_type_e primary_role() const;
   virtual void      combat_begin();
   virtual void      arise();
+
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new shaman_td_t( target, this );
+  }
 
   // Event Tracking
   virtual void regen( timespan_t periodicity );
@@ -397,8 +410,8 @@ struct shaman_melee_attack_t : public melee_attack_t
   shaman_t* p() const
   { return static_cast< shaman_t* >( player ); }
 
-  shaman_targetdata_t* targetdata( player_t* t = 0 ) const
-  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata( t ) ); }
+  shaman_td_t* targetdata( player_t* t = 0 ) const
+  { return debug_cast<shaman_td_t*>( target_data( t ) ); }
 
   virtual void execute();
   virtual void impact_s( action_state_t* );
@@ -457,8 +470,8 @@ struct shaman_spell_t : public spell_t
   }
 
   shaman_t* p() const { return static_cast< shaman_t* >( player ); }
-  shaman_targetdata_t* targetdata( player_t* t = 0 ) const
-  { return debug_cast<shaman_targetdata_t*>( action_t::targetdata( t ) ); }
+  shaman_td_t* targetdata( player_t* t = 0 ) const
+  { return debug_cast<shaman_td_t*>( target_data( t ) ); }
 
   action_state_t* new_state() { return new shaman_spell_state_t( this, target ); }
   virtual bool   is_direct_damage() const { return base_dd_min > 0 && base_dd_max > 0; }
@@ -482,7 +495,7 @@ struct shaman_spell_t : public spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    shaman_targetdata_t* td = targetdata( target );
+    shaman_td_t* td = targetdata( target );
     if ( school == SCHOOL_NATURE && td -> debuffs_stormstrike -> up() )
       c += td -> debuffs_stormstrike -> data().effectN( 1 ).percent();
 
@@ -974,7 +987,7 @@ struct fire_elemental_t : public pet_t
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> spec == SHAMAN_ENHANCEMENT )
       {
-        shaman_targetdata_t* td = debug_cast< shaman_targetdata_t* >( targetdata_t::get( p -> o(), state -> target ) );
+        shaman_td_t* td = debug_cast< shaman_td_t* >( p -> o() -> get_target_data( state -> target ) );
         td -> debuffs_searing_flames -> trigger();
       }
     }
@@ -1248,7 +1261,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        shaman_targetdata_t* td = p() -> targetdata( sim -> actor_list[ i ] );
+        shaman_td_t* td = targetdata( sim -> actor_list[ i ] );
 
         if ( td -> dots_flame_shock -> ticking )
           continue;
@@ -1336,7 +1349,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   if ( a -> sim -> num_enemies == 1 )
     return false;
 
-  shaman_targetdata_t* t = a -> targetdata( a -> target );
+  shaman_td_t* t = a -> targetdata( a -> target );
 
   if ( ! t -> dots_flame_shock -> ticking )
     return false;
@@ -1908,10 +1921,10 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = p() -> targetdata( state -> target );
+      shaman_td_t* td = targetdata( state -> target );
       td -> debuffs_searing_flames -> expire();
       if ( p() -> active_searing_flames_dot )
-        p() -> active_searing_flames_dot -> dot() -> cancel();
+        p() -> active_searing_flames_dot -> get_dot() -> cancel();
 
       trigger_static_shock( this );
       if ( td -> dots_flame_shock -> ticking )
@@ -1985,7 +1998,7 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      shaman_targetdata_t* td = p() -> targetdata( state -> target );
+      shaman_td_t* td = targetdata( state -> target );
       td -> debuffs_stormstrike -> trigger();
 
       stormstrike_mh -> execute();
@@ -2368,7 +2381,7 @@ struct fire_nova_t : public shaman_spell_t
 
   virtual bool ready()
   {
-    shaman_targetdata_t* td = targetdata( target );
+    shaman_td_t* td = targetdata( target );
 
     if ( ! td -> dots_flame_shock -> ticking )
       return false;
@@ -2392,7 +2405,7 @@ struct fire_nova_t : public shaman_spell_t
       if ( e -> current.sleeping || ! e -> is_enemy() )
         continue;
 
-      shaman_targetdata_t* td = p() -> targetdata( e );
+      shaman_td_t* td = targetdata( e );
       if ( td -> dots_flame_shock -> ticking )
         t.push_back( e );
     }
@@ -2496,7 +2509,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
-    shaman_targetdata_t* td = targetdata( target );
+    shaman_td_t* td = targetdata( target );
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -2573,7 +2586,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_da_multiplier();
 
-    shaman_targetdata_t* td = targetdata( target );
+    shaman_td_t* td = targetdata( target );
     if ( td -> debuffs_unleashed_fury_ft -> up() )
       m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
 
@@ -2995,7 +3008,7 @@ struct shaman_totem_t : public shaman_spell_t
     if ( p() -> totems[ totem ] )
     {
       p() -> totems[ totem ] -> cancel();
-      p() -> totems[ totem ] -> dot() -> cancel();
+      p() -> totems[ totem ] -> get_dot() -> cancel();
     }
 
     if ( sim -> log )
@@ -3280,7 +3293,7 @@ struct searing_totem_t : public shaman_totem_t
 
   virtual void tick( dot_t* d )
   {
-    shaman_targetdata_t* td = targetdata( target );
+    shaman_td_t* td = targetdata( target );
     shaman_totem_t::tick( d );
     if ( result_is_hit() && p() -> specialization.searing_flames -> ok() &&
          td -> debuffs_searing_flames -> trigger() )
@@ -4392,33 +4405,9 @@ role_type_e shaman_t::primary_role() const
   return player_t::primary_role();
 }
 
-shaman_targetdata_t::shaman_targetdata_t( shaman_t* p, player_t* target )
-  : targetdata_t( p, target )
-{
-  debuffs_searing_flames = add_aura( buff_creator_t( this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
-                                     .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
-                                     .duration( p -> dbc.spell( 77661 ) -> duration() )
-                                     .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
-  debuffs_stormstrike    = add_aura( buff_creator_t( this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
-  debuffs_unleashed_fury_ft = add_aura( buff_creator_t( this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
-}
-
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
-
-void class_modules::register_targetdata::shaman( sim_t* sim )
-{
-  player_type_e t = SHAMAN;
-  typedef shaman_targetdata_t type;
-
-  REGISTER_DOT( flame_shock );
-  REGISTER_DOT( searing_flames );
-
-  REGISTER_DEBUFF( searing_flames );
-  REGISTER_DEBUFF( stormstrike );
-  REGISTER_DEBUFF( unleashed_fury_ft );
-}
 
 #endif // SC_SHAMAN
 

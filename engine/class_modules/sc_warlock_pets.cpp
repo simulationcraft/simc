@@ -444,12 +444,6 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
 
     stats -> add_tick( d -> time_to_tick );
   }
-
-  virtual void cancel()
-  {
-    if ( action_dot ) action_dot -> reset();
-    action_t::cancel();
-  }
 };
 
 }

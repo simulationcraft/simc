@@ -27,7 +27,7 @@ enum seal_type_e
   SEAL_MAX
 };
 
-struct paladin_targetdata_t : public targetdata_t
+struct paladin_td_t : public target_data_t
 {
   dot_t* dots_word_of_glory;
   dot_t* dots_holy_radiance;
@@ -35,7 +35,15 @@ struct paladin_targetdata_t : public targetdata_t
 
   buff_t* debuffs_censure;
 
-  paladin_targetdata_t( paladin_t* source, player_t* target );
+  paladin_td_t( player_t* target, player_t* paladin ) :
+    target_data_t( target, paladin )
+  {
+    target -> get_dot( "word_of_glory", paladin );
+    target -> get_dot( "holy_radiance", paladin );
+    target -> get_dot( "censure",       paladin );
+
+    debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+  }
 };
 
 struct paladin_t : public player_t
@@ -217,8 +225,6 @@ struct paladin_t : public player_t
     create_options();
   }
 
-  virtual paladin_targetdata_t* new_targetdata( player_t* target )
-  { return new paladin_targetdata_t( this, target ); }
   virtual void      init_defense();
   virtual void      init_base();
   virtual void      init_gains();
@@ -257,6 +263,11 @@ struct paladin_t : public player_t
   double            get_hand_of_light() const;
   double            jotp_haste() const;
 
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new paladin_td_t( target, this );
+  }
+
   // Temporary
   virtual std::string set_default_talents() const
   {
@@ -280,12 +291,6 @@ struct paladin_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-paladin_targetdata_t::paladin_targetdata_t( paladin_t* source, player_t* target ) :
-  targetdata_t( source, target )
-{
-  debuffs_censure = add_aura( buff_creator_t( this, "censure", source -> find_spell( 31803 ) ) );
-}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -437,8 +442,8 @@ struct paladin_melee_attack_t : public melee_attack_t
   paladin_t* p() const
   { return debug_cast<paladin_t*>( player ); }
 
-  paladin_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<paladin_targetdata_t*>( action_t::targetdata( t ) ); }
+  paladin_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<paladin_td_t*>( target_data( t ) ); }
 
   virtual double haste() const
   {
@@ -558,8 +563,8 @@ struct paladin_spell_t : public spell_t
   paladin_t* p() const
   { return debug_cast<paladin_t*>( player ); }
 
-  paladin_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<paladin_targetdata_t*>( action_t::targetdata( t ) ); }
+  paladin_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<paladin_td_t*>( target_data( t ) ); }
 
   virtual double cost() const
   {
@@ -3189,20 +3194,6 @@ expr_t* paladin_t::create_expression( action_t* a,
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
-
-#if SC_PALADIN == 1
-void class_modules::register_targetdata::paladin( sim_t* sim )
-{
-  player_type_e t = PALADIN;
-  typedef paladin_targetdata_t type;
-
-  REGISTER_DOT( censure );
-  REGISTER_DOT( word_of_glory );
-  REGISTER_DOT( holy_radiance );
-
-  REGISTER_DEBUFF( censure );
-}
-#endif // SC_PALADIN
 
 player_t* class_modules::create::paladin( sim_t* sim, const std::string& name, race_type_e r )
 {

@@ -139,8 +139,9 @@ struct invulnerable_event_t : public raid_event_t
       if ( p -> current.sleeping ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
-      p -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
     }
+
+    sim -> target -> clear_debuffs(); // FIXME! this is really just clearing DoTs at the moment
   }
 
   virtual void _finish()

@@ -17,7 +17,7 @@ struct mage_t;
 
 enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
-struct mage_targetdata_t : public targetdata_t
+struct mage_td_t : public target_data_t
 {
   dot_t* dots_flamestrike;
   dot_t* dots_ignite;
@@ -27,7 +27,7 @@ struct mage_targetdata_t : public targetdata_t
 
   buff_t* debuffs_slow;
 
-  mage_targetdata_t( mage_t* source, player_t* target );
+  mage_td_t( player_t* target, mage_t* mage );
 };
 
 struct mage_t : public player_t
@@ -248,8 +248,6 @@ struct mage_t : public player_t
   }
 
   // Character Definition
-  virtual mage_targetdata_t* new_targetdata( player_t* target )
-  { return new mage_targetdata_t( this, target ); }
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -276,6 +274,11 @@ struct mage_t : public player_t
   virtual double    composite_spell_haste() const;
   virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
   virtual void      stun();
+
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new mage_td_t( target, this );
+  }
 
   // Event Tracking
   virtual void   regen( timespan_t periodicity );
@@ -306,12 +309,6 @@ struct mage_t : public player_t
   }
 };
 
-mage_targetdata_t::mage_targetdata_t( mage_t* source, player_t* target ) :
-  targetdata_t( source, target )
-{
-  debuffs_slow = add_aura( buff_creator_t( this, "slow", source -> spec.slow ) );
-}
-
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
@@ -338,8 +335,8 @@ struct mage_spell_t : public spell_t
   mage_t* p() const
   { return debug_cast<mage_t*>( player ); }
 
-  mage_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<mage_targetdata_t*>( action_t::targetdata( t ) ); }
+  mage_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<mage_td_t*>( target_data( t ) ); }
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
@@ -838,7 +835,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 
       assert( p -> active_ignite );
 
-      dot_t* dot = p -> active_ignite -> dot();
+      dot_t* dot = p -> active_ignite -> get_dot();
 
       double ignite_dmg = crit_ignite_bank;
 
@@ -3519,6 +3516,21 @@ int mage_t::decode_set( const item_t& item ) const
 
   return SET_NONE;
 }
+
+// mage_td_t ================================================================
+
+mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
+  target_data_t( target, mage )
+{
+  dots_flamestrike    = target -> get_dot( "flamestrike",    mage );
+  dots_ignite         = target -> get_dot( "ignite",         mage );
+  dots_living_bomb    = target -> get_dot( "living_bomb",    mage );
+  dots_nether_tempest = target -> get_dot( "nether_tempest", mage );
+  dots_pyroblast      = target -> get_dot( "pyroblast",      mage );
+
+  debuffs_slow = buff_creator_t( *this, "slow", mage -> spec.slow );
+}
+
 #endif // SC_MAGE
 
 } // END ANONYMOUS NAMESPACE
@@ -3526,23 +3538,6 @@ int mage_t::decode_set( const item_t& item ) const
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
-
-#if SC_MAGE == 1
-void class_modules::register_targetdata::mage( sim_t* sim )
-{
-  player_type_e t = MAGE;
-  typedef mage_targetdata_t type;
-
-  REGISTER_DOT( flamestrike );
-  REGISTER_DOT( ignite );
-  REGISTER_DOT( living_bomb );
-  REGISTER_DOT( nether_tempest );
-  REGISTER_DOT( pyroblast );
-
-  REGISTER_DEBUFF( slow );
-}
-
-#endif // SC_MAGE
 
 // class_modules::create::mage  ===================================================
 

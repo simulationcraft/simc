@@ -9,11 +9,11 @@
 #define SC_CLASS_MODULES
 
 // Enabled classes
-#define SC_DEATH_KNIGHT 0
+#define SC_DEATH_KNIGHT 1
 #define SC_DRUID        1
-#define SC_HUNTER       0
-#define SC_MAGE         0
-#define SC_MONK         0
+#define SC_HUNTER       1
+#define SC_MAGE         1
+#define SC_MONK         1
 #define SC_PALADIN      1
 #define SC_PRIEST       1
 #define SC_ROGUE        0
@@ -39,21 +39,6 @@ player_t* shaman      ( sim_t* sim, const std::string& name, race_type_e r = RAC
 player_t* warlock     ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
 player_t* warrior     ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
 player_t* enemy       ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-}
-
-namespace register_targetdata {
-
-void death_knight ( sim_t* );
-void druid        ( sim_t* );
-void hunter       ( sim_t* );
-void mage         ( sim_t* );
-void monk         ( sim_t* );
-void paladin      ( sim_t* );
-void priest       ( sim_t* );
-void rogue        ( sim_t* );
-void shaman       ( sim_t* );
-void warlock      ( sim_t* );
-void warrior      ( sim_t* );
 }
 
 namespace combat_begin {

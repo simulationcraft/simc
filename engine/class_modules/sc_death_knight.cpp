@@ -12,7 +12,7 @@ struct death_knight_t;
 
 #if SC_DEATH_KNIGHT == 1
 
-struct death_knight_targetdata_t : public targetdata_t
+struct death_knight_td_t : public target_data_t
 {
   dot_t* dots_blood_plague;
   dot_t* dots_death_and_decay;
@@ -26,7 +26,13 @@ struct death_knight_targetdata_t : public targetdata_t
     return disease_count;
   }
 
-  death_knight_targetdata_t( death_knight_t* source, player_t* target );
+  death_knight_td_t( player_t* target, player_t* death_knight ) :
+    target_data_t( target, death_knight )
+  {
+    dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
+    dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
+    dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+  }
 };
 
 struct dancing_rune_weapon_pet_t;
@@ -313,8 +319,6 @@ struct death_knight_t : public player_t
   }
 
   // Character Definition
-  virtual death_knight_targetdata_t* new_targetdata( player_t* target )
-  { return new death_knight_targetdata_t( this, target ); }
   virtual void      init();
   virtual void      init_spells();
   virtual void      init_actions();
@@ -358,6 +362,11 @@ struct death_knight_t : public player_t
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
 
+  virtual target_data_t* create_target_data( player_t* target )
+  { 
+    return new death_knight_td_t( target, this );
+  }
+
   void reset_gcd()
   {
     for ( size_t i = 0; i < action_list.size(); ++i )
@@ -390,11 +399,6 @@ struct death_knight_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-death_knight_targetdata_t::death_knight_targetdata_t( death_knight_t* p, player_t* target )
-  : targetdata_t( p, target )
-{
-}
 
 static void log_rune_status( death_knight_t* p )
 {
@@ -731,8 +735,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_pestilence( 0 ),
     drw_plague_strike( 0 ), drw_melee( 0 )
   {
-    dots_drw_blood_plague  = get_dot( "blood_plague" );
-    dots_drw_frost_fever   = get_dot( "frost_fever" );
+    dots_drw_blood_plague  = sim -> target -> get_dot( "blood_plague", this );
+    dots_drw_frost_fever   = sim -> target -> get_dot( "frost_fever",  this );
 
     main_hand_weapon.type       = WEAPON_SWORD_2H;
     main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
@@ -1386,11 +1390,12 @@ struct death_knight_melee_attack_t : public melee_attack_t
     _init_dk_attack();
   }
 
-  death_knight_t* cast() const
-  { return debug_cast<death_knight_t*>( player ); }
+  death_knight_t* cast() const { return debug_cast<death_knight_t*>( player ); }
 
-  death_knight_targetdata_t* cast_td( player_t* t = 0 ) const
-  { return debug_cast<death_knight_targetdata_t*>( action_t::targetdata( t ) ); }
+  death_knight_td_t* cast_td( player_t* t = 0 )
+  { 
+    return debug_cast<death_knight_td_t*>( target_data( t ) ); 
+  }
 
   void _init_dk_attack()
   {
@@ -1432,11 +1437,12 @@ struct death_knight_spell_t : public spell_t
     _init_dk_spell();
   }
 
-  death_knight_t* cast() const
-  { return debug_cast<death_knight_t*>( player ); }
+  death_knight_t* cast() const { return debug_cast<death_knight_t*>( player ); }
 
-  death_knight_targetdata_t* cast_td( player_t* t = 0 ) const
-  { return debug_cast<death_knight_targetdata_t*>( action_t::targetdata( t ) ); }
+  death_knight_td_t* cast_td( player_t* t = 0 )
+  { 
+    return debug_cast<death_knight_td_t*>( target_data( t ) );
+  }
 
   void _init_dk_spell()
   {
@@ -1844,7 +1850,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_targetdata_t* td = cast_td();
+      death_knight_td_t* td = cast_td( target );
 
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
@@ -2005,7 +2011,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( t, dtype );
 
-    death_knight_targetdata_t* td = cast_td( t );
+    death_knight_td_t* td = cast_td( t );
 
     base_dd_adder = td -> diseases() ? 95 : 0;
     direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
@@ -2077,10 +2083,9 @@ struct blood_strike_offhand_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = cast_td( t );
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + cast_td() -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2111,9 +2116,7 @@ struct blood_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    death_knight_targetdata_t* td = cast_td( t );
-
-    target_multiplier *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
+    target_multiplier *= 1 + cast_td() -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
   }
 };
 
@@ -2457,7 +2460,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_targetdata_t* td = cast_td();
+      death_knight_td_t* td = cast_td();
       td -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
       td -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
     }
@@ -2591,11 +2594,9 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = cast_td( t );
-
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    target_multiplier *= 1 + td -> diseases() * data().effectN( 3 ).percent();
+    target_multiplier *= 1 + cast_td() -> diseases() * data().effectN( 3 ).percent();
   }
 };
 
@@ -2835,10 +2836,9 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = cast_td( t );
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    target_multiplier *= 1 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
+    target_multiplier *= 1 + cast_td() -> diseases() * data().effectN( 3 ).percent() / 2.0;
   }
 };
 
@@ -2897,10 +2897,9 @@ struct obliterate_t : public death_knight_melee_attack_t
 
   virtual void target_debuff( player_t* t, dmg_type_e dtype )
   {
-    death_knight_targetdata_t* td = cast_td( t );
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
-    target_multiplier *= 1 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
+    target_multiplier *= 1 + cast_td() -> diseases() * data().effectN( 3 ).percent() / 2.0;
   }
 };
 
@@ -2963,7 +2962,8 @@ struct pestilence_t : public death_knight_spell_t
   virtual void execute()
   {
     // See which diseases we can spread
-    death_knight_targetdata_t* td = cast_td();
+    death_knight_td_t* td = cast_td();
+
     spread_bp = td -> dots_blood_plague -> ticking;
     spread_ff = td -> dots_frost_fever -> ticking;
 
@@ -3004,7 +3004,7 @@ struct pestilence_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    death_knight_targetdata_t* td = cast_td();
+    death_knight_td_t* td = cast_td();
 
     // BP or FF must be ticking to use
     if ( ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking ) ||
@@ -3322,9 +3322,8 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
       // death_knight_spell_t::target_debuff( t, dmg_type_e );
 
-      death_knight_targetdata_t* td = cast_td( t );
+      target_multiplier = cast_td() -> diseases() * 0.18;
 
-      target_multiplier = td -> diseases() * 0.18;
       if ( t -> debuffs.magic_vulnerability -> check() )
         target_multiplier *= 1.0 + t -> debuffs.magic_vulnerability -> value();
     }
@@ -4670,6 +4669,7 @@ void death_knight_t::arise()
   if ( primary_tree() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
   if ( primary_tree() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
 }
+
 #endif // SC_DEATH_KNIGHT
 
 } // END ANONYMOUS NAMESPACE
@@ -4677,18 +4677,6 @@ void death_knight_t::arise()
 // ==========================================================================
 // player_t implementations
 // ==========================================================================
-
-#if SC_DEATH_KNIGHT == 1
-void class_modules::register_targetdata::death_knight( sim_t* sim )
-{
-  player_type_e t = DEATH_KNIGHT;
-  typedef death_knight_targetdata_t type;
-
-  REGISTER_DOT( blood_plague );
-  REGISTER_DOT( death_and_decay );
-  REGISTER_DOT( frost_fever );
-}
-#endif // SC_DEATH_KNIGHT
 
 // class_modules::create::death_knight ============================================
 

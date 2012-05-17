@@ -17,9 +17,12 @@ struct monk_t;
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
-struct monk_targetdata_t : public targetdata_t
+struct monk_td_t : public target_data_t
 {
-  monk_targetdata_t( monk_t* source, player_t* target );
+  monk_td_t( player_t* target, player_t* monk ) :
+    target_data_t( target, monk )
+  {
+  }
 };
 
 struct monk_t : public player_t
@@ -93,8 +96,6 @@ struct monk_t : public player_t
   }
 
   // Character Definition
-  virtual monk_targetdata_t* new_targetdata( player_t* target )
-  { return new monk_targetdata_t( this, target ); }
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      init_spells();
   virtual void      init_base();
@@ -109,6 +110,11 @@ struct monk_t : public player_t
   virtual int       decode_set( const item_t& ) const;
   virtual resource_type_e primary_resource() const;
   virtual role_type_e primary_role() const;
+
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new monk_td_t( target, this );
+  }
 
   // Temporary
   virtual std::string set_default_talents() const
@@ -134,10 +140,6 @@ struct monk_t : public player_t
   }
 };
 
-monk_targetdata_t::monk_targetdata_t( monk_t* source, player_t* target ) :
-  targetdata_t( source, target )
-{}
-
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
@@ -160,8 +162,8 @@ struct monk_melee_attack_t : public melee_attack_t
   monk_t* p() const
   { return debug_cast<monk_t*>( player ); }
 
-  monk_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_targetdata_t*>( targetdata( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<monk_td_t*>( target_data( t ) ); }
 
   virtual bool   ready();
 };
@@ -181,8 +183,8 @@ struct monk_spell_t : public spell_t
   monk_t* p() const
   { return debug_cast<monk_t*>( player ); }
 
-  monk_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_targetdata_t*>( targetdata( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<monk_td_t*>( target_data( t ) ); }
 
   virtual bool   ready();
 };
@@ -202,8 +204,8 @@ struct monk_heal_t : public heal_t
   monk_t* p() const
   { return debug_cast<monk_t*>( player ); }
 
-  monk_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_targetdata_t*>( targetdata( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<monk_td_t*>( target_data( t ) ); }
 
   virtual bool   ready();
 };
@@ -624,14 +626,6 @@ role_type_e monk_t::primary_role() const
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
-
-#if SC_MONK == 1
-void class_modules::register_targetdata::monk( sim_t* /* sim */ )
-{
-  /* player_type_e t = MONK; */
-  typedef monk_targetdata_t type;
-}
-#endif // SC_MONK
 
 // class_modules::create::monk  ===================================================
 

@@ -372,7 +372,7 @@ player_t::player_t( sim_t*             s,
   rng_list( 0 ),
   rngs( rngs_t() ),
   uptimes( uptimes_t() ),
-  targetdata_id( -1 )
+  target_data( "target_data", this )
 {
   sim -> actor_list.push_back( this );
 
@@ -446,9 +446,6 @@ player_t::initial_current_extended_t::initial_current_extended_t()
 
 player_t::~player_t()
 {
-  for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
-    delete *i;
-
   range::dispose( action_list );
 
   while ( proc_t* p = proc_list )
@@ -2862,14 +2859,14 @@ void player_t::reset()
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
 
-  for ( std::vector<targetdata_t*>::iterator it = targetdata.begin(), end = targetdata.end(); it != end; ++it )
-  {
-    if ( *it )
-      ( *it )->reset();
-  }
-
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> reset();
+
+  for ( size_t i =0; i < sim -> actor_list.size(); ++i )
+  {
+    target_data_t* td = (target_data_t*) target_data[ sim -> actor_list[ i ] ];
+    if( td ) td -> reset();
+  }
 
   potion_used = 0;
 
@@ -3125,19 +3122,12 @@ void player_t::clear_debuffs()
 {
   // FIXME! At the moment we are just clearing DoTs
 
-  if ( sim -> log ) log_t::output( sim, "%s clears debuffs from %s", name(), sim -> target -> name() );
+  if ( sim -> log ) log_t::output( sim, "%s clears debuffs", name() );
 
-  for ( size_t i = 0; i < action_list.size(); ++i )
+  for ( size_t i = 0; i < dot_list.size(); ++i )
   {
-    action_t* a = action_list[ i ];
-    if ( a -> action_dot && a -> action_dot -> ticking )
-      a -> action_dot -> cancel();
-  }
-
-  for ( std::vector<targetdata_t*>::iterator i = targetdata.begin(); i != targetdata.end(); ++i )
-  {
-    if ( *i )
-      ( *i )->clear_debuffs();
+    dot_t* dot = dot_list[ i ];
+    dot -> cancel();
   }
 }
 
@@ -4098,15 +4088,16 @@ cooldown_t* player_t::find_cooldown( const std::string& name ) const
 
 // player_t::find_dot =======================================================
 
-dot_t* player_t::find_dot( const std::string& name ) const
+dot_t* player_t::find_dot( const std::string& name,
+			   player_t* source ) const
 {
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
     dot_t* d = dot_list[ i ];
-    if ( d -> name_str == name )
+    if ( d -> source == source &&
+	 d -> name_str == name )
       return d;
   }
-
   return 0;
 }
 
@@ -4168,14 +4159,14 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 
 // player_t::get_dot ========================================================
 
-dot_t* player_t::get_dot( const std::string& name )
+dot_t* player_t::get_dot( const std::string& name,
+			  player_t* source )
 {
-  dot_t* d = find_dot( name );
+  dot_t* d = find_dot( name, source );
 
-  if ( !d )
+  if ( ! d )
   {
-    d = new dot_t( name, this );
-
+    d = new dot_t( name, this, source );
     dot_list.push_back( d );
   }
 
@@ -4855,7 +4846,7 @@ struct wait_until_ready_t : public wait_fixed_t
       remains = a -> cooldown -> remains();
       if ( remains > timespan_t::zero() && remains < wait ) wait = remains;
 
-      remains = a -> dot() -> remains();
+      remains = a -> get_dot() -> remains();
       if ( remains > timespan_t::zero() && remains < wait ) wait = remains;
     }
 
@@ -6238,14 +6229,11 @@ expr_t* player_t::create_expression( action_t* a,
 
     // FIXME: report error and return?
   }
-
   else if ( num_splits == 3 )
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
-      buff_t* buff;
-      buff = sim -> get_targetdata_aura( a -> player, this, splits[1] );
-      if ( ! buff ) buff = buff_t::find( this, splits[ 1 ] );
+      buff_t* buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) buff = buff_t::find( sim, splits[ 1 ] );
       if ( ! buff ) return 0;
       return buff -> create_expression( splits[ 2 ] );
@@ -6258,11 +6246,8 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else if ( splits[ 0 ] == "dot" )
     {
-      dot_t* dot = sim -> get_targetdata_dot( a -> player, this, splits[ 1 ] );
-      if ( ! dot )
-        dot = get_dot( splits[ 1 ] );
-      if ( dot )
-        return dot -> create_expression( splits[ 2 ], this );
+      // FIXME! DoT Expressions should not need to get the dot itself.
+      return get_dot( splits[ 1 ], a -> player ) -> create_expression( splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -6958,71 +6943,7 @@ player_t* player_t::create( sim_t*,
   return 0;
 }
 
-targetdata_t* player_t::new_targetdata( player_t* target )
-{ return new targetdata_t( this, target ); }
-
-// ==========================================================================
-// Target data
-// ==========================================================================
-
-targetdata_t* targetdata_t::get( player_t* source, player_t* target )
-{
-  int id = source -> targetdata_id;
-  if ( id < 0 )
-    source -> targetdata_id = id = source -> sim -> num_targetdata_ids++;
-
-  if ( id >= ( int ) target -> targetdata.size() )
-    target -> targetdata.resize( id + 1 );
-
-  targetdata_t* p = target->targetdata[ id ];
-  if ( ! p )
-    target -> targetdata[ id ] = p = source -> new_targetdata( target );
-
-  return p;
-}
-
-targetdata_t::targetdata_t( player_t* source, player_t* target )
-  : source( ( player_t* )source ), target( ( player_t* )target )
-{
-  std::vector<std::pair<size_t, std::string> >& v = source->sim->targetdata_dots[source->type];
-  for ( std::vector<std::pair<size_t, std::string> >::iterator i = v.begin(); i != v.end(); ++i )
-  {
-    *( dot_t** )( ( char* )this + i->first ) = add_dot( new dot_t( i->second, this->target ) );
-  }
-}
-
-targetdata_t::~targetdata_t()
-{
-  range::dispose( dot_list );
-}
-
-void targetdata_t::reset()
-{
-  for ( size_t i = 0; i < dot_list.size(); ++i )
-    dot_list[ i ] -> reset();
-}
-
-void targetdata_t::clear_debuffs()
-{
-  // FIXME: should clear debuffs as well according to similar FIXME in player_t::clear_debuffs()
-
-  for ( size_t i = 0; i < dot_list.size(); ++i )
-    dot_list[ i ] -> cancel();
-}
-
-dot_t* targetdata_t::add_dot( dot_t* d )
-{
-  dot_list.push_back( d );
-
-  return d;
-}
-
-aura_t* targetdata_t::add_aura( aura_t* a )
-{
-  assert( a -> player == this -> target );
-  assert( a -> initial_source == this -> source );
-  return a;
-}
+// player_t::composite_vulnerability ========================================
 
 double player_t::composite_spell_crit_vulnerability() const
 {

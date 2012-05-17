@@ -39,7 +39,7 @@ namespace remove_dots_event {
 struct remove_dots_event_t : public event_t
 {
 private:
-  priest_targetdata_t* const td;
+  priest_td_t* const td;
   priest_t* pr;
 
   static void cancel_dot( dot_t* dot )
@@ -52,7 +52,7 @@ private:
   }
 
 public:
-  remove_dots_event_t( sim_t* sim, priest_t* pr, priest_targetdata_t* td ) :
+  remove_dots_event_t( sim_t* sim, priest_t* pr, priest_td_t* td ) :
     event_t( sim, pr, "mind_spike_remove_dots" ), td( td ), pr( pr )
   {
     sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
@@ -95,8 +95,8 @@ public:
     stateless         = true;
   }
 
-  priest_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
+  priest_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<priest_td_t*>( target_data( t ) ); }
 
   priest_t* p() const
   { return debug_cast<priest_t*>( player ); }
@@ -241,7 +241,7 @@ struct priest_heal_t : public heal_t
     if ( ! p() -> mastery_spells.echo_of_light -> ok() )
       return;
 
-    dot_t* d = p() -> spells.echo_of_light -> dot( t );
+    dot_t* d = p() -> spells.echo_of_light -> get_dot( t );
     if ( d -> ticking )
     {
       if ( p() -> spells.echo_of_light_merged )
@@ -298,11 +298,11 @@ struct priest_heal_t : public heal_t
     stateless = true;
   }
 
-  priest_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
-
   priest_t* p() const
   { return debug_cast<priest_t*>( player ); }
+
+  priest_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<priest_td_t*>( target_data( t ) ); }
 
   virtual double composite_crit() const
   {
@@ -510,7 +510,7 @@ struct atonement_heal_t : public priest_heal_t
       // num_ticks = 1;
       base_td = atonement_dmg;
       tick_may_crit = ( result == RESULT_CRIT );
-      tick( dot() );
+      tick( get_dot() );
     }
     else
     {
@@ -589,8 +589,8 @@ struct priest_spell_t : public spell_t
   priest_t* p() const
   { return debug_cast<priest_t*>( player ); }
 
-  priest_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_targetdata_t*>( action_t::targetdata( t ) ); }
+  priest_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<priest_td_t*>( target_data( t ) ); }
 
   virtual void schedule_execute()
   {
@@ -3095,28 +3095,49 @@ struct spirit_shell_absorb_t : priest_absorb_t
 // Priest
 // ==========================================================================
 
-priest_targetdata_t::priest_targetdata_t( priest_t* p, player_t* target ) :
-  targetdata_t( p, target ), remove_dots_event( NULL )
+priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
+  target_data_t( target, p ), remove_dots_event( NULL )
 {
-  absorb_buff_t* new_pws = absorb_buff_creator_t( buff_creator_t( this, "power_word_shield", source -> find_spell( 17 ) ) )
-                                          .source( source -> get_stats( "power_word_shield" ) );
-  buffs_power_word_shield = add_aura( new_pws );
-  target -> absorb_buffs.push_back( new_pws );
+  if( target -> is_enemy() )
+  {
+    dots_holy_fire        = target -> get_dot( "holy_fire",        p );
+    dots_devouring_plague = target -> get_dot( "devouring_plague", p );
+    dots_shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
+    dots_vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
-  absorb_buff_t* new_da = absorb_buff_creator_t( buff_creator_t( this, "divine_aegis", source -> find_spell( 47753 ) ) )
+    const spell_data_t* sd = p -> find_class_spell( "Mind Spike" );
+
+    debuffs_mind_spike = buff_creator_t( *this, "mind_spike", sd )
+                         .max_stack( sd -> effectN( 3 ).base_value() )
+                         .duration( sd -> effectN( 2 ).trigger() -> duration() )
+                         .default_value( sd -> effectN( 2 ).percent() );
+    dots_renew = 0;
+    buffs_power_word_shield = 0;
+    buffs_divine_aegis = 0;
+    buffs_spirit_shell = 0;
+  }
+  else
+  {
+    dots_holy_fire = 0;
+    dots_devouring_plague = 0;
+    dots_shadow_word_pain = 0;
+    dots_vampiric_touch = 0;
+    debuffs_mind_spike = 0;
+
+    dots_renew = target -> get_dot( "renew", p );
+
+    buffs_power_word_shield = absorb_buff_creator_t( buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) ) )
+                              .source( source -> get_stats( "power_word_shield" ) );
+
+    buffs_divine_aegis = absorb_buff_creator_t( buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) ) )
                           .source( source -> get_stats( "divine_aegis" ) );
-  buffs_divine_aegis = add_aura( new_da );
-  target -> absorb_buffs.push_back( new_da );
 
-  absorb_buff_t* new_ss = new spirit_shell_buff_t( this );
+    buffs_spirit_shell = new spirit_shell_buff_t( *this );
 
-  buffs_spirit_shell = add_aura( new_ss );
-  target -> absorb_buffs.push_back( new_ss );
-
-  debuffs_mind_spike    = add_aura( buff_creator_t( this, "mind_spike", p -> find_class_spell( "Mind Spike" ) )
-                                    .max_stack( p -> find_class_spell( "Mind Spike" ) -> effectN( 3 ).base_value() )
-                                    .duration( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).trigger() -> duration() )
-                                    .default_value( p -> find_class_spell( "Mind Spike" ) -> effectN( 2 ).percent() ) ) ;
+    target -> absorb_buffs.push_back( buffs_power_word_shield );
+    target -> absorb_buffs.push_back( buffs_divine_aegis );
+    target -> absorb_buffs.push_back( buffs_spirit_shell );
+  }
 }
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_type_e r ) :
@@ -4093,26 +4114,6 @@ int priest_t::decode_set( const item_t& item ) const
 }
 
 } // END priest NAMESPACE
-
-using priest::priest_targetdata_t;
-
-void class_modules::register_targetdata::priest( sim_t* sim )
-{
-  player_type_e t = PRIEST;
-  typedef priest_targetdata_t type;
-
-  REGISTER_DOT( holy_fire );
-  REGISTER_DOT( renew );
-  REGISTER_DOT( devouring_plague );
-  REGISTER_DOT( shadow_word_pain );
-  REGISTER_DOT( vampiric_touch );
-
-  REGISTER_BUFF( power_word_shield );
-  REGISTER_BUFF( divine_aegis );
-  REGISTER_BUFF( spirit_shell );
-
-  REGISTER_DEBUFF( mind_spike );
-}
 
 #endif // SC_PRIEST
 

@@ -245,7 +245,7 @@ void action_execute_event_t::execute()
 dot_tick_event_t::dot_tick_event_t( sim_t* sim,
                                     dot_t* d,
                                     timespan_t time_to_tick ) :
-  event_t( sim, d -> player, "DoT Tick" ), dot( d )
+  event_t( sim, d -> source, "DoT Tick" ), dot( d )
 {
   if ( sim -> debug )
     log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",

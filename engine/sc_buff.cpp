@@ -76,6 +76,8 @@ buff_t::buff_t( const buff_creator_t& params ) :
   avg_start(),
   avg_refresh(),
   source( params._player.source ),
+  // FIXME!  It would be great to get rid of "initial_source" and actually
+  // understand if a (de)buff is shared or not.
   initial_source( params._player.source ),
   expiration(),
   delay(),
@@ -203,8 +205,6 @@ void buff_t::init()
   if ( initial_source ) // Player Buffs
   {
     cooldown = initial_source-> get_cooldown( "buff_" + name_str );
-    if ( initial_source != player )
-      name_str = name_str + ':' + initial_source -> name_str;
     rng = initial_source-> get_rng( name_str );
   }
   else // Sim Buffs
@@ -543,7 +543,7 @@ void buff_t::refresh( int        stacks,
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
   // Make sure we always cancel the expiration event if we get an
   // infinite duration
-  if ( d == timespan_t::zero() )
+  if ( d <= timespan_t::zero() )
     event_t::cancel( expiration );
   else
   {
@@ -747,12 +747,20 @@ void buff_t::analyze()
 
 // buff_t::find =============================================================
 
-buff_t* buff_t::find( const std::vector<buff_t*>& b, const std::string& name_str )
+buff_t* buff_t::find( const std::vector<buff_t*>& buffs, 
+		      const std::string& name_str,
+		      player_t* source )
 {
-  for ( size_t i = 0; i < b.size(); i++ )
+  for ( size_t i = 0; i < buffs.size(); i++ )
   {
-    if ( name_str == b[ i ] -> name_str )
-      return b[ i ];
+    buff_t* b = buffs[ i ];
+
+    // FIXME!  It would be great to get rid of "initial_source" and actually
+    // understand if a (de)buff is shared or not.
+
+    if ( name_str == b -> name_str )
+      if ( ! source || ( source == b -> initial_source ) )
+	return b;
   }
 
   return NULL;

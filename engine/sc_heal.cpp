@@ -105,7 +105,7 @@ void heal_t::assess_damage( player_t* t,
   {
     if ( sim -> log )
     {
-      dot_t* dot = this -> dot( t );
+      dot_t* dot = get_dot( t );
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,

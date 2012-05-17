@@ -19,7 +19,7 @@ namespace remove_dots_event {
 struct remove_dots_event_t;
 }
 
-struct priest_targetdata_t : public targetdata_t
+struct priest_td_t : public target_data_t
 {
   dot_t*  dots_devouring_plague;
   dot_t*  dots_shadow_word_pain;
@@ -27,15 +27,15 @@ struct priest_targetdata_t : public targetdata_t
   dot_t*  dots_holy_fire;
   dot_t*  dots_renew;
 
-  buff_t* buffs_power_word_shield;
-  buff_t* buffs_divine_aegis;
-  buff_t* buffs_spirit_shell;
+  absorb_buff_t* buffs_power_word_shield;
+  absorb_buff_t* buffs_divine_aegis;
+  absorb_buff_t* buffs_spirit_shell;
 
-  buff_t* debuffs_mind_spike;
+  debuff_t* debuffs_mind_spike;
 
   remove_dots_event::remove_dots_event_t* remove_dots_event;
 
-  priest_targetdata_t( priest_t* p, player_t* target );
+  priest_td_t( player_t* target, priest_t* p );
 };
 
 struct priest_t : public player_t
@@ -246,8 +246,6 @@ struct priest_t : public player_t
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF );
 
   // Character Definition
-  virtual priest_targetdata_t* new_targetdata( player_t* target )
-  { return new priest_targetdata_t( this, target ); }
   virtual void      init_base();
   virtual void      init_gains();
   virtual void      init_benefits();
@@ -284,6 +282,11 @@ struct priest_t : public player_t
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
+
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new priest_td_t( target, this );
+  }
 
   // Temporary
   virtual std::string set_default_talents() const

@@ -670,7 +670,7 @@ struct resource_timeline_collect_event_t : public event_t
 
 sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ), parent( p ),
-  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), num_targetdata_ids( 0 ), max_player_level( -1 ),
+  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ),
   canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
@@ -716,8 +716,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   threads( 0 ), thread_index( index ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
-  sim_t::register_class_targetdata( this );
-
   // Initialize the default item database source order
   static const char* const dbsources[] = { "local", "bcpapi", "wowhead", "mmoc", "armory", "ptrhead" };
   item_db_sources.assign( range::begin( dbsources ), range::end( dbsources ) );
@@ -2399,23 +2397,3 @@ int sim_t::errorf( const char* format, ... )
   return retcode;
 }
 
-void sim_t::register_targetdata_item( int kind, const char* name, player_type_e type, size_t offset )
-{
-  std::string s = name;
-  targetdata_items[kind][s] = std::make_pair( type, offset );
-  if ( kind == DATA_DOT )
-    targetdata_dots[type].push_back( std::make_pair( offset, s ) );
-}
-
-void* sim_t::get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name )
-{
-  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator i = targetdata_items[kind].find( name );
-  if ( i != targetdata_items[kind].end() )
-  {
-    if ( source->type == i->second.first )
-    {
-      return *( void** )( ( char* )targetdata_t::get( source, target ) + i->second.second );
-    }
-  }
-  return 0;
-}

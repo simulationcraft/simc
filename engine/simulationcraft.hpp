@@ -171,28 +171,6 @@ struct uptime_t;
 struct weapon_t;
 struct xml_node_t;
 
-struct targetdata_t;
-
-#define DATA_DOT 0
-#define DATA_AURA 1
-#define DATA_COUNT 2
-
-struct actor_pair_t
-{
-  player_t* target;
-  player_t* source;
-
-  actor_pair_t( player_t* target, player_t* source )
-    : target( target ), source( source )
-  {}
-
-  actor_pair_t( player_t* p = 0 )
-    : target( p ), source( p )
-  {}
-
-  actor_pair_t( targetdata_t* td );
-};
-
 // Type traits and metaprogramming tools ====================================
 
 template <bool Condition,typename T>
@@ -1745,6 +1723,24 @@ public:
   static double pearson_correlation( const sample_data_t&, const sample_data_t& );
 };
 
+// Actor Pair ===============================================================
+
+struct actor_pair_t
+{
+  player_t* target;
+  player_t* source;
+
+  actor_pair_t( player_t* target, player_t* source )
+    : target( target ), source( source )
+  {}
+
+  actor_pair_t( player_t* p = 0 )
+    : target( p ), source( p )
+  {}
+
+  virtual ~actor_pair_t() {}
+};
+
 // Buffs ====================================================================
 
 struct buff_creator_t
@@ -1930,9 +1926,9 @@ public:
   expr_t* create_expression( const std::string& type );
   std::string to_str() const;
 
-  static buff_t* find( const std::vector<buff_t*>&, const std::string& name );
+  static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source=0 );
   static buff_t* find(    sim_t*, const std::string& name );
-  static buff_t* find( player_t*, const std::string& name );
+  static buff_t* find( player_t*, const std::string& name, player_t* source=0 );
 
   const char* name() const { return name_str.c_str(); }
   int max_stack() const
@@ -2291,11 +2287,34 @@ struct sim_control_t
   bool parse_args( int argc, char** argv );
 };
 
-// Simulation Engine ========================================================
+// Target Specific ==========================================================
 
-#define REGISTER_DOT(n) sim->register_targetdata_item(DATA_DOT, #n, t, nonpod_offsetof(type, dots_##n))
-#define REGISTER_BUFF(n) sim->register_targetdata_item(DATA_AURA, #n, t, nonpod_offsetof(type, buffs_##n))
-#define REGISTER_DEBUFF(n) sim->register_targetdata_item(DATA_AURA, #n, t, nonpod_offsetof(type, debuffs_##n))
+struct target_specific_entry_t
+{
+  size_t index;
+  std::string name;
+  player_t* source;
+  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) : index(i), name(n), source(s) {}
+};
+
+struct target_specific_t
+{
+  size_t index;
+  target_specific_t() : index(-1) {}
+  target_specific_t( const std::string& name, player_t* source );
+  void init(  const std::string& name, player_t* source );
+  void*& operator[]( player_t* target );
+};
+
+
+struct target_data_t : public actor_pair_t
+{
+  target_data_t( player_t* t, player_t* s ) : actor_pair_t( t, s ) {}
+  virtual ~target_data_t() {}
+  virtual void reset() {}
+};
+
+// Simulation Engine ========================================================
 
 struct sim_t : private thread_t
 {
@@ -2310,7 +2329,6 @@ struct sim_t : private thread_t
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
-  int         num_targetdata_ids;
   int         max_player_level;
   int         canceled, iteration_canceled;
   timespan_t  queue_lag, queue_lag_stddev;
@@ -2490,8 +2508,7 @@ public:
     report_information_t() { charts_generated = false; }
   } report_information;
 
-  std::unordered_map<std::string, std::pair<player_type_e, size_t> > targetdata_items[DATA_COUNT];
-  std::vector<std::pair<size_t, std::string> > targetdata_dots[PLAYER_MAX];
+  std::vector<target_specific_entry_t> target_specifics;
 
   // Multi-Threading
   int threads;
@@ -2540,20 +2557,18 @@ public:
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
-  void register_targetdata_item( int kind, const char* name, player_type_e type, size_t offset );
-  void* get_targetdata_item( player_t* source, player_t* target, int kind, const std::string& name );
 
-  dot_t* get_targetdata_dot( player_t* source, player_t* target, const std::string& name )
+  size_t target_specific_index( const std::string& name, player_t* source )
   {
-    return ( dot_t* )get_targetdata_item( source, target, DATA_DOT, name );
+    size_t size = target_specifics.size();
+    for( size_t i=0; i < size; i++ )
+      if( target_specifics[ i ].name == name &&
+          target_specifics[ i ].source == source )
+        return i;
+    target_specifics.push_back( target_specific_entry_t( size, name, source ) );
+    return size;
   }
 
-  buff_t* get_targetdata_aura( player_t* source, player_t* target, const std::string& name )
-  {
-    return ( buff_t* )get_targetdata_item( source, target, DATA_AURA, name );
-  }
-
-  static void register_class_targetdata( sim_t* sim );
   static option_t* get_class_option( void* );
 };
 
@@ -2616,7 +2631,7 @@ struct plot_t
   int    dps_plot_debug;
   stat_type_e current_plot_stat;
   int    num_plot_stats, remaining_plot_stats, remaining_plot_points;
-  bool	 dps_plot_positive;
+  bool   dps_plot_positive;
 
   plot_t( sim_t* s );
 
@@ -3434,8 +3449,8 @@ struct player_t : public noncopyable
     uptime_t* primary_resource_cap;
   } uptimes;
 
-  int targetdata_id;
-  std::vector<targetdata_t*> targetdata;
+  std::vector<void*> target_specific_ptrs;
+  target_specific_t target_data;
 
   player_t( sim_t* sim, player_type_e type, const std::string& name, race_type_e race_type_e = RACE_NONE );
 
@@ -3443,7 +3458,6 @@ struct player_t : public noncopyable
 
   virtual const char* name() const { return name_str.c_str(); }
 
-  virtual targetdata_t* new_targetdata( player_t* target );
   virtual void init();
   virtual void init_talents();
   virtual void init_glyphs();
@@ -3666,13 +3680,15 @@ struct player_t : public noncopyable
   action_t* find_action( const std::string& );
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
 
-  cooldown_t* find_cooldown( const std::string& name ) const;
-  dot_t*      find_dot     ( const std::string& name ) const;
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
+
+  cooldown_t* find_cooldown( const std::string& name ) const;
+  dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
+  buff_t*     find_buff    ( const std::string& name, player_t* source ) const;
   stats_t*    find_stats   ( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
-  dot_t*      get_dot     ( const std::string& name );
+  dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
   proc_t*     get_proc    ( const std::string& name );
   stats_t*    get_stats   ( const std::string& name, action_t* action=0 );
@@ -3682,6 +3698,15 @@ struct player_t : public noncopyable
   double      get_player_distance( const player_t* p ) const;
   double      get_position_distance( double m=0, double v=0 ) const;
   action_priority_list_t* get_action_priority_list( const std::string& name );
+
+  virtual target_data_t* create_target_data( player_t* target ) { target=0; return NULL; }
+
+  target_data_t* get_target_data( player_t* target )
+  {
+    target_data_t*& td = (target_data_t*&) target_data[ target ];
+    if( ! td ) td = create_target_data( target );
+    return td;
+  }
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}
@@ -3693,26 +3718,6 @@ struct player_t : public noncopyable
   virtual double composite_ranged_attack_player_vulnerability() const;
 
   virtual void activate_action_list( action_priority_list_t* a );
-};
-
-struct targetdata_t : public noncopyable
-{
-  player_t* const source;
-  player_t* const target;
-
-  std::vector<dot_t*> dot_list;
-
-  targetdata_t( player_t* source, player_t* target );
-
-  virtual ~targetdata_t();
-  virtual void reset();
-  virtual void clear_debuffs();
-
-  static targetdata_t* get( player_t* source, player_t* target );
-
-protected:
-  dot_t* add_dot( dot_t* d );
-  aura_t* add_aura( aura_t* b );
 };
 
 // Pet ======================================================================
@@ -3922,7 +3927,6 @@ struct action_t
   rng_t* rng_result;
   rng_t* rng_travel;
   cooldown_t* cooldown;
-  mutable dot_t* action_dot;
   stats_t* stats;
   event_t* execute_event;
   event_t* travel_event;
@@ -3945,14 +3949,9 @@ struct action_t
   action_t* dtr_action;
   bool is_dtr_action;
   bool can_trigger_dtr;
-  int targetdata_dot_offset;
+  target_specific_t target_specific_dot;
   std::string action_list;
 
-private:
-  mutable player_t* cached_targetdata_target;
-  mutable targetdata_t* cached_targetdata;
-
-public:
   action_t( action_type_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
@@ -4037,37 +4036,25 @@ public:
 
   virtual expr_t* create_expression( const std::string& name );
 
-  virtual double ppm_proc_chance( double PPM ) const;
+  virtual double ppm_proc_chance( double PPM );
 
-  dot_t* dot( player_t* t = 0 ) const
+  dot_t* find_dot( player_t* t = 0 )
   {
-    if ( !t )
-      t = target;
+    if( ! t ) t = target;
+    return (dot_t*) target_specific_dot[ t ];
+  }
 
-    if ( targetdata_dot_offset >= 0 )
-      return *( dot_t** )( ( char* )targetdata( t ) + targetdata_dot_offset );
-    else
-    {
-      if ( ! action_dot )
-        action_dot = player -> get_dot( name_str );
-      return action_dot;
-    }
+  dot_t* get_dot( player_t* t = 0 )
+  {
+    if( ! t ) t = target;
+    dot_t*& dot = (dot_t*&) target_specific_dot[ t ];
+    if( ! dot ) dot = t -> get_dot( name_str, player );
+    return dot;
   }
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
-  targetdata_t* targetdata( player_t* t = 0 ) const
-  {
-    if ( !t )
-      t = target;
-
-    if ( cached_targetdata_target != t )
-    {
-      cached_targetdata_target = t;
-      cached_targetdata = targetdata_t::get( player, t );
-    }
-    return cached_targetdata;
-  }
+  target_data_t* target_data( player_t* t=0 ) const { return player -> get_target_data( t ? t : target ); }
 
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual std::vector< player_t* > target_list() const;
@@ -4438,7 +4425,8 @@ private:
 struct dot_t
 {
   sim_t* const sim;
-  player_t* const player;
+  player_t* target;
+  player_t* source;
   action_t* action;
   event_t* tick_event;
   int num_ticks, current_tick, added_ticks, ticking;
@@ -4451,7 +4439,7 @@ struct dot_t
   /* New stuff */
   action_state_t* state;
 
-  dot_t( const std::string& n, player_t* p );
+  dot_t( const std::string& n, player_t* target, player_t* source );
 
   void   cancel();
   void   extend_duration( int extra_ticks, bool cap=false );
@@ -4462,7 +4450,7 @@ struct dot_t
   timespan_t remains() const;
   void   schedule_tick();
   int    ticks() const;
-  expr_t* create_expression( const std::string& name_str, player_t* specific_target = 0 );
+  expr_t* create_expression( const std::string& name_str );
 
   const char* name() const { return name_str.c_str(); }
   /* New stuff */
@@ -5080,23 +5068,27 @@ struct wait_for_cooldown_t : public wait_action_base_t
   virtual timespan_t execute_time() const;
 };
 
-// actor_pair_t inlines
-
-inline actor_pair_t::actor_pair_t( targetdata_t* td )
-  : target( td->target ), source( td->source )
-{}
+// Inlines ==================================================================
 
 // buff_t inlines
 
-inline buff_t* buff_t::find( sim_t* s, const std::string& name ) { return find( s -> buff_list, name ); }
-inline buff_t* buff_t::find( player_t* p, const std::string& name ) { return find( p -> buff_list, name ); }
+inline buff_t* buff_t::find( sim_t* s, const std::string& name ) 
+{ 
+  return find( s -> buff_list, name );
+}
+inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source ) 
+{ 
+  return find( p -> buff_list, name, source );
+}
 
 // sim_t inlines
 
 inline double sim_t::real() const                { return default_rng_ -> real(); }
 inline bool   sim_t::roll( double chance ) const { return default_rng_ -> roll( chance ); }
 inline double sim_t::range( double min, double max )
-{ return default_rng_ -> range( min, max ); }
+{ 
+  return default_rng_ -> range( min, max );
+}
 inline double sim_t::averaged_range( double min, double max )
 {
   if ( average_range ) return ( min + max ) / 2.0;
@@ -5104,6 +5096,28 @@ inline double sim_t::averaged_range( double min, double max )
   return default_rng_ -> range( min, max );
 }
 
+// target_specific_t inlines
+
+inline target_specific_t::target_specific_t( const std::string& name, player_t* source )
+{
+  index = source -> sim -> target_specific_index( name, source );
+}
+inline void target_specific_t::init(  const std::string& name, player_t* source )
+{
+  index = source -> sim -> target_specific_index( name, source );
+}
+inline void*& target_specific_t::operator[]( player_t* target )
+{
+  std::vector<void*>& v = target -> target_specific_ptrs;
+  size_t size = v.size();
+  if( index >= size ) 
+  {
+    v.resize( index+1 );
+    for( size_t i=size; i < index; i++ ) 
+      v[i] = NULL;
+  }
+  return v[ index ];
+}
 
 #ifdef WHAT_IF
 

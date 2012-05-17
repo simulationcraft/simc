@@ -13,10 +13,22 @@
 
 #if SC_WARLOCK == 1
 
-warlock_targetdata_t::warlock_targetdata_t( warlock_t* p, player_t* target )
-  : targetdata_t( p, target ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
+warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
+  : target_data_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
 {
-  debuffs_haunt = add_aura( buff_creator_t( this, "haunt", source -> find_class_spell( "Haunt" ) ) );
+  dots_corruption          = target -> get_dot( "corruption", p );
+  dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );
+  dots_agony               = target -> get_dot( "agony", p );
+  dots_doom                = target -> get_dot( "doom", p );
+  dots_immolate            = target -> get_dot( "immolate", p );
+  dots_drain_life          = target -> get_dot( "drain_life", p );
+  dots_drain_soul          = target -> get_dot( "drain_soul", p );
+  dots_shadowflame         = target -> get_dot( "shadowflame", p );
+  dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
+  dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
+  dots_rain_of_fire        = target -> get_dot( "rain_of_fire", p );
+
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
@@ -94,8 +106,8 @@ public:
   warlock_t* p() const
   { return debug_cast<warlock_t*>( player ); }
 
-  warlock_targetdata_t* td( player_t* t ) const
-  { return debug_cast<warlock_targetdata_t*>( targetdata( t ) ); }
+  warlock_td_t* td( player_t* t ) const
+  { return debug_cast<warlock_td_t*>( target_data( t ) ); }
 
   virtual void execute()
   {
@@ -114,7 +126,7 @@ public:
     return spell_t::ready();
   }
 
-  static void trigger_seed_of_corruption( warlock_targetdata_t* td, warlock_t* p, double amount );
+  static void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount );
 
   virtual void tick( dot_t* d )
   {
@@ -159,8 +171,10 @@ public:
 
     if ( channeled ) return t;
 
-    if ( td( target ) -> dots_malefic_grasp -> ticking ||
-       ( td( target ) -> dots_drain_soul -> ticking && td( target ) -> ds_started_below_20 ) )
+    warlock_td_t* td = this->td( target );
+
+    if ( td -> dots_malefic_grasp -> ticking ||
+       ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
       t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
 
     return t;
@@ -1095,7 +1109,7 @@ struct touch_of_chaos_t : public attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( targetdata( target ) );
+      warlock_td_t* td = debug_cast<warlock_td_t*>( target_data( target ) );
       extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
     }
   }
@@ -1168,7 +1182,7 @@ struct shadowflame_state_t : public action_state_t
 
   virtual double composite_power() const
   {
-    warlock_targetdata_t* td = debug_cast<warlock_targetdata_t*>( action -> targetdata( target ) );
+    warlock_td_t* td = debug_cast<warlock_td_t*>( action -> target_data( target ) );
     assert( td -> shadowflame_stack >= 1 );
 
     return action_state_t::composite_power() * td -> shadowflame_stack;
@@ -1735,7 +1749,7 @@ struct soc_state_t : public action_state_t
 };
 
 
-void warlock_spell_t::trigger_seed_of_corruption( warlock_targetdata_t* td, warlock_t* p, double amount )
+void warlock_spell_t::trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
 {
   if ( td -> dots_seed_of_corruption -> ticking && td -> soc_trigger > 0 )
   {
@@ -2953,26 +2967,6 @@ bool warlock_t::verify_nightfall()
   {
     return false;
   }
-}
-
-void class_modules::register_targetdata::warlock( sim_t* sim )
-{
-  player_type_e t = WARLOCK;
-  typedef warlock_targetdata_t type;
-
-  REGISTER_DOT( corruption );
-  REGISTER_DOT( unstable_affliction );
-  REGISTER_DOT( agony );
-  REGISTER_DOT( doom );
-  REGISTER_DOT( immolate );
-  REGISTER_DOT( drain_life );
-  REGISTER_DOT( drain_soul );
-  REGISTER_DOT( shadowflame );
-  REGISTER_DOT( malefic_grasp );
-  REGISTER_DOT( seed_of_corruption );
-  REGISTER_DOT( rain_of_fire );
-
-  REGISTER_DEBUFF( haunt );
 }
 
 #endif // SC_WARLOCK

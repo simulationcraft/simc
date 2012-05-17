@@ -98,7 +98,7 @@ struct combo_points_t
   }
 };
 
-struct druid_targetdata_t : public targetdata_t
+struct druid_td_t : public target_data_t
 {
   dot_t* dots_lacerate;
   dot_t* dots_lifebloom;
@@ -114,23 +114,20 @@ struct druid_targetdata_t : public targetdata_t
 
   combo_points_t* combo_points;
 
+  druid_td_t( player_t* target, druid_t* source );
+
+ ~druid_td_t()
+  {
+    if ( combo_points ) delete combo_points;
+  }
   bool hot_ticking()
   {
     return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
   }
-
-  druid_targetdata_t( druid_t* source, player_t* target );
-
   virtual void reset()
   {
-    targetdata_t::reset();
-
+    target_data_t::reset();
     combo_points->clear();
-  }
-
-  ~druid_targetdata_t()
-  {
-    delete combo_points;
   }
 };
 
@@ -419,8 +416,6 @@ struct druid_t : public player_t
   }
 
   // Character Definition
-  virtual druid_targetdata_t* new_targetdata( player_t* target )
-  { return new druid_targetdata_t( this, target ); }
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
@@ -458,6 +453,11 @@ struct druid_t : public player_t
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_type_e type=SAVE_ALL, bool save_html=false );
   
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new druid_td_t( target, this );
+  }
+
   void reset_gcd()
   {
     for ( size_t i = 0; i < action_list.size(); ++i )
@@ -491,15 +491,6 @@ struct druid_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-druid_targetdata_t::druid_targetdata_t( druid_t* source, player_t* target )
-  : targetdata_t( source, target )
-{
-  combo_points = new combo_points_t( target );
-
-  buffs_lifebloom = add_aura( buff_creator_t( this, "lifebloom", source -> find_class_spell( "Lifebloom" ) )
-                              .duration( timespan_t::from_seconds( 11.0 ) ) );
-}
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
@@ -619,8 +610,8 @@ struct druid_cat_attack_t : public melee_attack_t
   druid_t* p() const
   { return debug_cast<druid_t*>( player ); }
 
-  druid_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_td_t*>( target_data( t ) ); }
 
   virtual double cost() const;
   virtual void   execute();
@@ -708,8 +699,8 @@ struct druid_bear_attack_t : public melee_attack_t
   druid_t* p() const
   { return debug_cast<druid_t*>( player ); }
 
-  druid_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_td_t*>( target_data( t ) ); }
 
   virtual void   impact_s( action_state_t* );
 };
@@ -756,8 +747,8 @@ struct druid_heal_t : public heal_t
   druid_t* p() const
   { return debug_cast<druid_t*>( player ); }
 
-  druid_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_td_t*>( target_data( t ) ); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -803,8 +794,8 @@ struct druid_spell_t : public spell_t
   druid_t* p() const
   { return debug_cast<druid_t*>( player ); }
 
-  druid_targetdata_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_targetdata_t*>( targetdata( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) const
+  { return debug_cast<druid_td_t*>( target_data( t ) ); }
 
   virtual void   consume_resource();
   virtual double cost() const;
@@ -1077,7 +1068,7 @@ static void trigger_swiftmend( druid_heal_t* a )
 
 static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_targetdata_t* td = debug_cast<druid_targetdata_t*>( targetdata_t::get( s -> action -> player, s -> target ) );
+  druid_td_t* td = debug_cast<druid_td_t*>( s -> action -> player -> get_target_data( s -> target ) );
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -1750,17 +1741,20 @@ struct rip_t : public druid_cat_attack_t
 
   virtual bool ready()
   {
-    druid_targetdata_t* data = 0;
-    
-    if ( ! execute_state || ! ( data = td( execute_state -> target ) ) || ! data -> dots_rip -> ticking )
+    if ( ! execute_state )
       return druid_cat_attack_t::ready();
 
-    double cur_base    = ( floor( base_td + 0.5 ) + base_ta_adder * data -> combo_points -> count );
+    druid_td_t* td = this -> td( execute_state -> target );
+    
+    if ( ! td -> dots_rip -> ticking )
+      return druid_cat_attack_t::ready();
+
+    double cur_base    = ( floor( base_td + 0.5 ) + base_ta_adder * td -> combo_points -> count );
     double cur_ap_base = composite_attack_power() * composite_attack_power_multiplier() * tick_power_mod;
     //double cur_mul     = composite_ta_multiplier() * composite_target_multiplier( execute_state -> target );
     double cur_dam     = ( cur_base + cur_ap_base );
 
-    if ( cur_dam < data -> dots_rip -> state -> result_amount )
+    if ( cur_dam < td -> dots_rip -> state -> result_amount )
     {
       // A more powerful spell is active message.
       // Note we're making the assumption that's it is based off the simple sum of: basedmg + tick_mod * AP
@@ -3359,7 +3353,7 @@ struct druids_swiftness_t : public druid_spell_t
     {
       // This will prevent Natures Swiftness from being called before the desired "fast spell" is ready to be cast.
       sub_cooldown = player -> get_cooldown( options_str );
-      sub_dot      = player -> get_dot     ( options_str );
+      sub_dot      = sim -> target -> get_dot( options_str, player );
     }
 
     harmful = false;
@@ -4940,7 +4934,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
-    druid_targetdata_t* td = debug_cast<druid_targetdata_t*>( targetdata_t::get( a -> player, a -> target ) );
+    druid_td_t* td = debug_cast<druid_td_t*>( get_target_data( a -> target ) );
     return make_ref_expr( "combo_points", td -> combo_points -> count );
   }
 
@@ -5121,40 +5115,36 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
 
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
+
 #endif // SC_DRUID
 
 } // END ANONYMOUS NAMESPACE
+
+druid_td_t::druid_td_t( player_t* target, druid_t* source )
+  : target_data_t( target, source )
+{
+  combo_points = new combo_points_t( target );
+
+  dots_lacerate     = target -> get_dot( "lacerate",     source );
+  dots_lifebloom    = target -> get_dot( "lifebloom",    source );
+  dots_moonfire     = target -> get_dot( "moonfire",     source );
+  dots_rake         = target -> get_dot( "rake",         source );
+  dots_regrowth     = target -> get_dot( "regrowth",     source );
+  dots_rejuvenation = target -> get_dot( "rejuvenation", source );
+  dots_rip          = target -> get_dot( "rip",          source );
+  dots_sunfire      = target -> get_dot( "sunfire",      source );
+  dots_wild_growth  = target -> get_dot( "wild_growth",  source );
+
+  buffs_lifebloom = buff_creator_t( *this, "lifebloom", source -> find_class_spell( "Lifebloom" ) ).duration( timespan_t::from_seconds( 11.0 ) );
+}
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-// class_modules::register_targetdata::druid  ==================================================
-
-#if SC_DRUID == 1
-void class_modules::register_targetdata::druid( sim_t* sim )
-{
-  player_type_e t = DRUID;
-  typedef druid_targetdata_t type;
-
-  REGISTER_DOT( lacerate );
-  REGISTER_DOT( lifebloom );
-  REGISTER_DOT( moonfire );
-  REGISTER_DOT( rake );
-  REGISTER_DOT( regrowth );
-  REGISTER_DOT( rejuvenation );
-  REGISTER_DOT( rip );
-  REGISTER_DOT( sunfire );
-  REGISTER_DOT( wild_growth );
-
-  //REGISTER_BUFF( combo_points );
-  REGISTER_BUFF( lifebloom );
-}
-#endif // SC_DRUID
-
 player_t* class_modules::create::druid( sim_t*             sim,
-                                  const std::string& name,
-                                  race_type_e r )
+					const std::string& name,
+					race_type_e r )
 {
   return sc_create_class<druid_t,SC_DRUID>()( "Druid", sim, name, r );
 }

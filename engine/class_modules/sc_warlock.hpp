@@ -16,7 +16,7 @@ struct warlock_t;
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 10
 
-struct warlock_targetdata_t : public targetdata_t
+struct warlock_td_t : public target_data_t
 {
   dot_t*  dots_corruption;
   dot_t*  dots_unstable_affliction;
@@ -39,7 +39,7 @@ struct warlock_targetdata_t : public targetdata_t
   int affliction_effects();
   int active_dots();
 
-  warlock_targetdata_t( warlock_t* source, player_t* target );
+  warlock_td_t( player_t* target, warlock_t* source );
 };
 
 struct wild_imp_pet_t;
@@ -243,8 +243,6 @@ struct warlock_t : public player_t
   void add_action( const spell_data_t* s, std::string options = "" );
 
   // Character Definition
-  virtual warlock_targetdata_t* new_targetdata( player_t* target )
-  { return new warlock_targetdata_t( this, target ); }
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -277,6 +275,11 @@ struct warlock_t : public player_t
   virtual double composite_mp5() const;
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
+
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new warlock_td_t( target, this );
+  }
 
   // Temporary
   virtual std::string set_default_talents() const

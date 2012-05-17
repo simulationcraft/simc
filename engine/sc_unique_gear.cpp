@@ -1378,7 +1378,7 @@ static void register_gurthalak( item_t* item )
       {
         std::string spell_name = "gurthalak_voice_of_the_deeps" + util::to_string( i );
         spell[ i ] = new gurthalak_t( p, tick_damage, spell_name.c_str()  );
-        dot_gurth[ i ] = p -> get_dot( spell_name );
+        dot_gurth[ i ] = p -> target -> get_dot( spell_name, p );
       }
 
       rng = p -> get_rng ( "gurthalak" );

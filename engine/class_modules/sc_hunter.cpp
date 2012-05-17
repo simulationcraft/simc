@@ -11,7 +11,6 @@ namespace {
 // ==========================================================================
 // Hunter
 // ==========================================================================
-class hunter_t;
 
 #if SC_HUNTER == 1
 
@@ -19,12 +18,15 @@ class hunter_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
-class hunter_targetdata_t : public targetdata_t
+struct hunter_td_t : public target_data_t
 {
-public:
   dot_t* dots_serpent_sting;
 
-  hunter_targetdata_t( hunter_t* source, player_t* target );
+  hunter_td_t( player_t* target, player_t* hunter ) :
+    target_data_t( target, hunter )
+  {
+    dots_serpent_sting = target -> get_dot( "serpent_sting", hunter );
+  }
 };
 
 class hunter_t : public player_t
@@ -248,8 +250,6 @@ public:
   }
 
   // Character Definition
-  virtual hunter_targetdata_t* new_targetdata( player_t* target )
-  { return new hunter_targetdata_t( this, target ); }
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_buffs();
@@ -281,6 +281,11 @@ public:
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
 
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new hunter_td_t( target, this );
+  }
+
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 
@@ -307,10 +312,6 @@ public:
     return player_t::set_default_glyphs();
   }
 };
-
-hunter_targetdata_t::hunter_targetdata_t( hunter_t* source, player_t* target ) :
-  targetdata_t( source, target )
-{}
 
 // ==========================================================================
 // Hunter Pet
@@ -795,12 +796,9 @@ struct hunter_ranged_attack_t : public ranged_attack_t
   hunter_t* cast() const
   { return debug_cast<hunter_t*>( player ); }
 
-  hunter_targetdata_t* cast_td( player_t* t = 0 ) const
+  hunter_td_t* cast_td( player_t* t = 0 ) const
   {
-    if ( !t )
-      t = target;
-
-    return debug_cast<hunter_targetdata_t*>( targetdata( t ) );
+    return debug_cast<hunter_td_t*>( target_data( t ) );
   }
 
   virtual void trigger_improved_steady_shot()
@@ -868,8 +866,7 @@ struct hunter_ranged_attack_t : public ranged_attack_t
     if (  p -> buffs.beast_within -> up() )
       player_multiplier *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
 
-    hunter_targetdata_t* td = cast_td();
-    if ( td -> dots_serpent_sting -> ticking )
+    if ( cast_td() -> dots_serpent_sting -> ticking )
       player_multiplier *= 1.0 + p -> talents.noxious_stings -> effectN( 1 ).percent();
 
     if ( p -> buffs.culling_the_herd -> up() )
@@ -921,7 +918,7 @@ struct piercing_shots_t : public attack_t
     attack_t::impact( t, impact_result, 0 );
 
     // FIXME: Is a is_hit check necessary here?
-    base_td = impact_dmg / dot() -> num_ticks;
+    base_td = impact_dmg / get_dot() -> num_ticks;
   }
 
   virtual timespan_t travel_time() const
@@ -955,7 +952,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
     return;
   }
 
-  dot_t* dot = p -> active_piercing_shots -> dot();
+  dot_t* dot = p -> active_piercing_shots -> get_dot();
 
   if ( dot -> ticking )
   {
@@ -1564,8 +1561,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit() )
     {
-      hunter_targetdata_t* td = cast_td();
-      td -> dots_serpent_sting -> refresh_duration();
+      cast_td() -> dots_serpent_sting -> refresh_duration();
     }
   }
 
@@ -1618,9 +1614,8 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     if ( result_is_hit() )
     {
       hunter_t* p = cast();
-      hunter_targetdata_t* td = cast_td();
 
-      td -> dots_serpent_sting -> extend_duration( 2 );
+      cast_td() -> dots_serpent_sting -> extend_duration( 2 );
 
       double focus = focus_gain;
       if ( p -> talents.termination -> ok() )
@@ -4325,18 +4320,6 @@ void hunter_t::moving()
 #endif // SC_HUNTER
 
 } // END ANONYMOUS NAMESPACE
-
-#if SC_HUNTER == 1
-
-void class_modules::register_targetdata::hunter( sim_t* sim )
-{
-  player_type_e t = HUNTER;
-  typedef hunter_targetdata_t type;
-
-  REGISTER_DOT( serpent_sting );
-}
-#endif // SC_HUNTER
-
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS

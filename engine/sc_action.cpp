@@ -11,13 +11,6 @@
 
 // action_t::action_t =======================================================
 
-void action_t::init_dot( const std::string& name )
-{
-  std::unordered_map<std::string, std::pair<player_type_e, size_t> >::iterator doti = sim->targetdata_items[ 0 ].find( name );
-  if ( doti != sim -> targetdata_items[ 0 ].end() && doti -> second.first == player->type )
-    targetdata_dot_offset = ( int ) doti->second.second;
-}
-
 action_t::action_t( action_type_e       ty,
                     const std::string&  token,
                     player_t*           p,
@@ -76,7 +69,6 @@ action_t::action_t( action_type_e       ty,
   tick_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() )
-
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -156,10 +148,6 @@ action_t::action_t( action_type_e       ty,
   last_reaction_time             = timespan_t::zero();
   dtr_action                     = 0;
   is_dtr_action                  = false;
-  cached_targetdata = NULL;
-  cached_targetdata_target = NULL;
-  action_dot = NULL;
-  targetdata_dot_offset = -1;
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
@@ -189,7 +177,7 @@ action_t::action_t( action_type_e       ty,
     util::tokenize( name_str );
   }
 
-  init_dot( name_str );
+  target_specific_dot.init( std::string( "dot." ) + name_str, player );
 
   if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
 
@@ -1026,7 +1014,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
   {
     if ( num_ticks > 0 )
     {
-      dot_t* dot = this -> dot( t );
+      dot_t* dot = get_dot( t );
       if ( dot_behavior == DOT_CLIP ) dot -> cancel();
       dot -> action = this;
       dot -> num_ticks = hasted_num_ticks( player_haste );
@@ -1100,7 +1088,7 @@ void action_t::assess_damage( player_t*     t,
   {
     if ( sim -> log )
     {
-      dot_t* dot = this -> dot( t );
+      dot_t* dot = get_dot( t );
       log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
@@ -1250,7 +1238,7 @@ void action_t::update_ready()
   {
     if ( result_is_miss() )
     {
-      dot_t* dot = this -> dot();
+      dot_t* dot = get_dot();
       last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
         log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
@@ -1415,8 +1403,9 @@ void action_t::init()
 void action_t::reset()
 {
   cooldown -> reset();
-  if ( action_dot )
-    action_dot -> reset();
+  // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
+  dot_t* dot = find_dot();
+  if( dot ) dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
   travel_event = 0;
@@ -1430,7 +1419,7 @@ void action_t::cancel()
 
   if ( channeled )
   {
-    dot_t* dot = this -> dot();
+    dot_t* dot = get_dot();
     if ( dot -> ticking )
     {
       last_tick( dot );
@@ -1463,7 +1452,7 @@ void action_t::interrupt_action()
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this )
   {
-    dot_t* dot = this->dot();
+    dot_t* dot = get_dot();
     if ( dot -> ticking ) last_tick( dot );
     player -> channeling = 0;
     event_t::cancel( dot -> tick_event );
@@ -1537,12 +1526,17 @@ void action_t::check_spell( const spell_data_t* sp )
 
 expr_t* action_t::create_expression( const std::string& name_str )
 {
+  // FIXME!  Hack Alert!  This is necessary to make sure buff_t::find works.
+  // Unlike DoTs, (De)Buffs have custom initialization.
+
+  target_data();
+
   class action_expr_t : public expr_t
   {
   public:
-    const action_t& action;
+    action_t& action;
 
-    action_expr_t( const std::string& name, const action_t& a ) :
+    action_expr_t( const std::string& name, action_t& a ) :
       expr_t( name ), action( a ) {}
   };
 
@@ -1550,12 +1544,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct n_ticks_expr_t : public action_expr_t
     {
-      n_ticks_expr_t( const action_t& a ) : action_expr_t( "n_ticks", a ) {}
+      n_ticks_expr_t( action_t& a ) : action_expr_t( "n_ticks", a ) {}
       virtual double evaluate()
       {
+	dot_t* dot = action.get_dot();
         int n_ticks = action.hasted_num_ticks( action.player -> composite_spell_haste() );
-        if ( action.dot_behavior == DOT_EXTEND && action.dot() -> ticking )
-          n_ticks += std::min( ( int ) ( n_ticks / 2 ), action.dot() -> num_ticks - action.dot() -> current_tick );
+        if ( action.dot_behavior == DOT_EXTEND && dot -> ticking )
+          n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> num_ticks - dot -> current_tick );
         return n_ticks;
       }
     };
@@ -1565,7 +1560,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct add_ticks_expr_t : public action_expr_t
     {
-      add_ticks_expr_t( const action_t& a ) : action_expr_t( "add_ticks", a ) {}
+      add_ticks_expr_t( action_t& a ) : action_expr_t( "add_ticks", a ) {}
       virtual double evaluate() { return action.hasted_num_ticks( action.player -> composite_spell_haste() ); }
     };
     return new add_ticks_expr_t( *this );
@@ -1578,10 +1573,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct tick_time_expr_t : public action_expr_t
     {
-      tick_time_expr_t( const action_t& a ) : action_expr_t( "tick_time", a ) {}
+      tick_time_expr_t( action_t& a ) : action_expr_t( "tick_time", a ) {}
       virtual double evaluate()
       {
-        dot_t* dot = action.dot();
+        dot_t* dot = action.get_dot();
         if ( dot -> ticking )
           return action.tick_time( action.player_haste ).total_seconds();
         else
@@ -1594,7 +1589,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct new_tick_time_expr_t : public action_expr_t
     {
-      new_tick_time_expr_t( const action_t& a ) : action_expr_t( "new_tick_time", a ) {}
+      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ) {}
       virtual double evaluate()
       {
         return action.tick_time( action.player -> composite_spell_haste() ).total_seconds();
@@ -1610,7 +1605,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct in_flight_expr_t : public action_expr_t
     {
-      in_flight_expr_t( const action_t& a ) : action_expr_t( "in_flight", a ) {}
+      in_flight_expr_t( action_t& a ) : action_expr_t( "in_flight", a ) {}
       virtual double evaluate() { return action.travel_event != NULL; }
     };
     return new in_flight_expr_t( *this );
@@ -1619,7 +1614,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct in_flight_expr_t : public action_expr_t
     {
-      in_flight_expr_t( const action_t& a ) : action_expr_t( "in_flight_to_target", a ) {}
+      in_flight_expr_t( action_t& a ) : action_expr_t( "in_flight_to_target", a ) {}
       virtual double evaluate()
       { 
         if ( action.travel_event == NULL ) return false;
@@ -1630,17 +1625,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new in_flight_expr_t( *this );
   }
 
-  else if ( expr_t* q = dot() -> create_expression( name_str ) )
+  // FIXME! DoT Expressions should not need to get the dot itself.
+  else if ( expr_t* q = get_dot() -> create_expression( name_str ) )
     return q;
 
   else if ( name_str == "miss_react" )
   {
     struct miss_react_expr_t : public action_expr_t
     {
-      miss_react_expr_t( const action_t& a ) : action_expr_t( "miss_react", a ) {}
+      miss_react_expr_t( action_t& a ) : action_expr_t( "miss_react", a ) {}
       virtual double evaluate()
       {
-        dot_t* dot = action.dot();
+        dot_t* dot = action.get_dot();
         if ( dot -> miss_time < timespan_t::zero() ||
              action.sim -> current_time >= ( dot -> miss_time + action.last_reaction_time ) )
           return true;
@@ -1654,7 +1650,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cooldown_react_expr_t : public action_expr_t
     {
-      cooldown_react_expr_t( const action_t& a ) : action_expr_t( "cooldown_react", a ) {}
+      cooldown_react_expr_t( action_t& a ) : action_expr_t( "cooldown_react", a ) {}
       virtual double evaluate()
       {
         if ( action.cooldown -> reset_react == timespan_t::zero() )
@@ -1675,7 +1671,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct cast_delay_expr_t : public action_expr_t
     {
-      cast_delay_expr_t( const action_t& a ) : action_expr_t( "cast_delay", a ) {}
+      cast_delay_expr_t( action_t& a ) : action_expr_t( "cast_delay", a ) {}
       virtual double evaluate()
       {
         if ( action.sim -> debug )
@@ -1729,7 +1725,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       struct prev_expr_t : public action_expr_t
       {
         std::string prev_action;
-        prev_expr_t( const action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
+        prev_expr_t( action_t& a, const std::string& prev_action ) : action_expr_t( "prev", a ), prev_action( prev_action ) {}
         virtual double evaluate()
         {
           if ( action.player -> last_foreground_action )
@@ -1742,9 +1738,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
   }
 
-  if ( num_splits == 3 && ( splits[0] == "buff" || splits[0] == "debuff" || splits[0] == "aura" ) )
+  if ( num_splits >= 3 && ( splits[0] == "buff" || splits[0] == "debuff" || splits[0] == "aura" ) )
   {
-    buff_t* buff = sim -> get_targetdata_aura( player, target, splits[1] );
+    buff_t* buff = buff_t::find( player, splits[ 1 ] );
     if ( buff )
       return buff -> create_expression( splits[ 2 ] );
   }
@@ -1801,7 +1797,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     struct ok_expr_t : public action_expr_t
     {
-      ok_expr_t( const action_t& a ) : action_expr_t( "enabled", a ) {}
+      ok_expr_t( action_t& a ) : action_expr_t( "enabled", a ) {}
       virtual double evaluate() { return action.data().found(); }
     };
     return new ok_expr_t( *this );
@@ -1812,7 +1808,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
 // action_t::ppm_proc_chance ================================================
 
-double action_t::ppm_proc_chance( double PPM ) const
+double action_t::ppm_proc_chance( double PPM )
 {
   if ( weapon )
   {
@@ -1820,7 +1816,7 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
   else
   {
-    timespan_t time = channeled ? dot() -> time_to_tick : time_to_execute;
+    timespan_t time = channeled ? get_dot() -> time_to_tick : time_to_execute;
 
     if ( time == timespan_t::zero() ) time = player -> base_gcd;
 
