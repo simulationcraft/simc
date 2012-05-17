@@ -10,7 +10,7 @@ position=back
 professions=enchanting=525/alchemy=525
 talents=131330
 glyphs=fire_elemental_totem
-actions+=/flask,precombat=1,type=winds
+actions=flask,precombat=1,type=winds
 actions+=/food,precombat=1,type=seafood_magnifique_feast
 actions+=/windfury_weapon,precombat=1,weapon=main
 actions+=/flametongue_weapon,precombat=1,weapon=off

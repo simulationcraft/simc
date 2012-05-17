@@ -655,7 +655,8 @@ void player_t::init()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
-  get_action_priority_list( "default") -> action_list_str = action_list_str;
+  // Ensure the default list is the first one
+  get_action_priority_list( "default");
 
   for ( std::map<std::string,std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
   {
@@ -1417,6 +1418,8 @@ void player_t::init_actions()
       modify_action         = modify_action.substr( 0, cut_pt );
     }
   }
+
+  get_action_priority_list( "default") -> action_list_str = action_list_str;
 
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {

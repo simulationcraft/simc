@@ -10,7 +10,7 @@ position=back
 professions=blacksmithing=525/enchanting=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#bb!....1.
 glyphs=ascetic_crusader
-actions+=/flask,precombat=1,type=titanic_strength
+actions=flask,precombat=1,type=titanic_strength
 actions+=/food,precombat=1,type=beer_basted_crocolisk
 actions+=/blessing_of_kings,precombat=1,if=!aura.str_agi_int.up
 actions+=/blessing_of_might,precombat=1,if=!aura.mastery.up&!aura.str_agi_int.up

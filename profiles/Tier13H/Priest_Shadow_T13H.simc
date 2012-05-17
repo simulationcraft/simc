@@ -9,8 +9,8 @@ role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Xb!..1.2.
-actions+=/flask,precombat=1,type=draconic_mind
-actions+=/food,precombat=1,type=seafood_magnifique_feast
+actions=flask,type=draconic_mind,precombat=1
+actions+=/food,type=seafood_magnifique_feast,precombat=1
 actions+=/fortitude,precombat=1,if=!aura.stamina.up
 actions+=/inner_fire,precombat=1
 actions+=/shadowform,precombat=1
