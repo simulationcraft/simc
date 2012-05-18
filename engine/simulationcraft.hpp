@@ -3215,6 +3215,7 @@ struct player_t : public noncopyable
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
   action_priority_list_t* active_action_list;
+  action_priority_list_t* restore_action_list;
   std::map<std::string,std::string> alist_map;
 
   // Reporting

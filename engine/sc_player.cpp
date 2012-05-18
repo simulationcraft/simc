@@ -333,6 +333,7 @@ player_t::player_t( sim_t*             s,
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
+  active_action_list( 0 ), restore_action_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
@@ -3171,6 +3172,12 @@ action_t* player_t::execute_action()
 
   last_foreground_action = action;
 
+  if ( restore_action_list != 0 )
+  {
+    activate_action_list( restore_action_list );
+    restore_action_list = 0;
+  }
+
   if ( action )
   {
     action -> schedule_execute();
@@ -5097,12 +5104,12 @@ struct cancel_buff_t : public action_t
   }
 };
 
-struct choose_action_list_t : public action_t
+struct swap_action_list_t : public action_t
 {
   action_priority_list_t* alist;
 
-  choose_action_list_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "choose_action_list", player ), alist( 0 )
+  swap_action_list_t( player_t* player, const std::string& options_str, const std::string name = "swap_action_list" ) :
+    action_t( ACTION_OTHER, name, player ), alist( 0 )
   {
     std::string alist_name;
     option_t options[] =
@@ -5114,7 +5121,7 @@ struct choose_action_list_t : public action_t
 
     if ( alist_name.empty() )
     {
-      sim -> errorf( "Player %s uses choose_action_list without specifying the name of the action list\n", player -> name() );
+      sim -> errorf( "Player %s uses %s without specifying the name of the action list\n", player -> name(), name );
       sim -> cancel();
     }
 
@@ -5122,7 +5129,7 @@ struct choose_action_list_t : public action_t
 
     if ( ! alist )
     {
-      sim -> errorf( "Player %s uses choose_action_list with unknown action list %s\n", player -> name(), alist_name.c_str() );
+      sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name, alist_name.c_str() );
       sim -> cancel();
     }
     trigger_gcd = timespan_t::zero();
@@ -5130,7 +5137,7 @@ struct choose_action_list_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s activates action list %s", player -> name(), alist -> name_str.c_str() );
+    if ( sim -> log ) log_t::output( sim, "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
     player -> activate_action_list( alist );
   }
 
@@ -5140,6 +5147,22 @@ struct choose_action_list_t : public action_t
       return false;
 
     return action_t::ready();
+  }
+};
+
+struct run_action_list_t : public swap_action_list_t
+{
+  run_action_list_t( player_t* player, const std::string& options_str ) :
+    swap_action_list_t( player, options_str, "run_action_list" )
+  {
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) log_t::output( sim, "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
+    
+    player -> restore_action_list = player -> active_action_list;
+    player -> activate_action_list( alist );
   }
 };
 
@@ -5156,7 +5179,8 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );
   if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
-  if ( name == "choose_action_list" ) return new choose_action_list_t( this, options_str );
+  if ( name == "swap_action_list"   ) return new   swap_action_list_t( this, options_str );
+  if ( name == "run_action_list"    ) return new    run_action_list_t( this, options_str );
   if ( name == "lifeblood"          ) return new          lifeblood_t( this, options_str );
   if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
