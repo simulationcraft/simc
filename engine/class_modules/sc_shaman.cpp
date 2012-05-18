@@ -2180,7 +2180,7 @@ struct bloodlust_t : public shaman_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() )
+      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> type == PLAYER_GUARDIAN )
         continue;
       p -> buffs.bloodlust -> trigger();
       p -> buffs.exhaustion -> trigger();
