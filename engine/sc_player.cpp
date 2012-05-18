@@ -1701,7 +1701,7 @@ void player_t::init_buffs()
 
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
   debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
-  debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 );
+  debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
