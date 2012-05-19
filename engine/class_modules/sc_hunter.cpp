@@ -3785,7 +3785,7 @@ void hunter_t::init_actions()
     action_list_str += "/summon_pet";
 //    if ( talents.trueshot_aura -> ok() )
 //      action_list_str += "/trueshot_aura,if=!aura.attack_power_multiplier.up|!aura.critical_strike.up";
-    action_list_str += "/snapshot_stats";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     if ( level >= 80 )
     {

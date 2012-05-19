@@ -4700,18 +4700,12 @@ struct restore_mana_t : public action_t
 struct snapshot_stats_t : public action_t
 {
   bool completed;
-  int  combat;
 
   snapshot_stats_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "snapshot_stats", player ),
-    completed( false ), combat( 1 )
+    completed( false )
   {
-    option_t options[] =
-    {
-      { "combat", OPT_BOOL,    &combat },
-      { NULL,     OPT_UNKNOWN, NULL    }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
     harmful = false;
   }
@@ -4721,9 +4715,6 @@ struct snapshot_stats_t : public action_t
     player_t* p = player;
 
     if ( completed ) return;
-
-    if ( combat )
-      p -> in_combat = true;
 
     completed = true;
 
@@ -4801,7 +4792,7 @@ struct snapshot_stats_t : public action_t
 
   virtual bool ready()
   {
-    if ( completed ) return false;
+    if ( completed || sim -> current_iteration > 0 ) return false;
     return action_t::ready();
   }
 };

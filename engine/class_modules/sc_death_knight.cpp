@@ -3861,7 +3861,7 @@ void death_knight_t::init_actions()
 
     action_list_str += "/army_of_the_dead";
 
-    action_list_str += "/snapshot_stats";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     switch ( tree )
     {

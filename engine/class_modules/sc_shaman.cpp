@@ -4045,7 +4045,7 @@ void shaman_t::init_actions()
   }
 
   // Snapshot stats
-  s << "/snapshot_stats,precombat=1,combat=0";
+  s << "/snapshot_stats,precombat=1";
 
   // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
   if ( primary_role() == ROLE_ATTACK )

@@ -3276,7 +3276,7 @@ void warrior_t::init_actions()
     break; default: break;
     }
 
-    action_list_str += "/snapshot_stats";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     // Potion
     if ( primary_tree() == WARRIOR_ARMS )

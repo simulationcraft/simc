@@ -2530,7 +2530,7 @@ void paladin_t::init_actions()
         action_list_str += "/seal_of_truth,precombat=1";
       }
 
-      action_list_str += "/snapshot_stats,precombat=1,combat=0";
+      action_list_str += "/snapshot_stats,precombat=1";
 
       if ( level > 85 )
       {

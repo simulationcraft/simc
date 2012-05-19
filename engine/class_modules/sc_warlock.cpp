@@ -2744,7 +2744,7 @@ void warlock_t::init_actions()
 
     action_list_str += "/summon_" + pet + ",precombat=1";
 
-    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     // Pre-potion
     if ( level > 85 )

@@ -3048,7 +3048,7 @@ void mage_t::init_actions()
     if ( primary_tree() == MAGE_FROST ) action_list_str += "/water_elemental,precombat=1";
 
     // Snapshot Stats
-    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     //Potions
     if ( level >= 80 )

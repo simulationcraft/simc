@@ -3158,7 +3158,7 @@ void rogue_t::init_actions()
     }
 
     action_list_str += "/apply_poison,main_hand=instant,off_hand=deadly";
-    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     // Prepotion 
     action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";

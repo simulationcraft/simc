@@ -543,7 +543,7 @@ void monk_t::init_actions()
         action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
       }
 
-      action_list_str += "/snapshot_stats,precombat=1,combat=0";
+      action_list_str += "/snapshot_stats,precombat=1";
 
       action_list_str += "/tiger_palm";
       action_list_str += "/blackout_kick";

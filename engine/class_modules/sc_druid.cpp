@@ -4473,7 +4473,7 @@ void druid_t::init_actions()
       action_list_str += "/moonkin_form,precombat=1";
 
     // Snapshot stats
-    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     if ( level >= 80 )
     {

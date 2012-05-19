@@ -14,7 +14,7 @@ actions=flask,precombat=1,type=draconic_mind
 actions+=/food,precombat=1,type=seafood_magnifique_feast
 actions+=/flametongue_weapon,precombat=1,weapon=main
 actions+=/lightning_shield,precombat=1
-actions+=/snapshot_stats,precombat=1,combat=0
+actions+=/snapshot_stats,precombat=1
 actions+=/volcanic_potion,precombat=1
 actions+=/wind_shear
 actions+=/bloodlust,if=target.health.pct<=25|target.time_to_die<=60

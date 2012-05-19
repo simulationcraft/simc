@@ -14,7 +14,7 @@ actions+=/food,type=seafood_magnifique_feast,precombat=1
 actions+=/fortitude,precombat=1,if=!aura.stamina.up
 actions+=/inner_fire,precombat=1
 actions+=/shadowform,precombat=1
-actions+=/snapshot_stats,precombat=1,combat=0
+actions+=/snapshot_stats,precombat=1
 actions+=/volcanic_potion,precombat=1
 actions+=/shadowform
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40

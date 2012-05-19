@@ -4747,7 +4747,7 @@ void priest_t::init_actions()
     if ( find_class_spell( "Shadowform" ) -> ok() )
       action_list_str += "/shadowform,precombat=1";
 
-    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+    action_list_str += "/snapshot_stats,precombat=1";
 
     if ( level > 85 )
     {
