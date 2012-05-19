@@ -1391,13 +1391,15 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-  if ( ( pre_combat != 0 ) && harmful == true )
-    sim -> errorf( "Action %s cannot be specified as precombat action because it is harmful", name() );
-
-  if ( ! ( background || sequence || ( pre_combat && ! harmful ) ) )
+  if ( pre_combat || action_list == "precombat" )
+  {
+    if ( harmful )
+      sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list", player -> name(), name() );
+    else
+      player -> precombat_action_list.push_back( this );
+  }
+  else if ( ! ( background || sequence ) )
     player -> find_action_priority_list( action_list ) -> foreground_action_list.push_back( this );
-  else if ( pre_combat )
-    player -> find_action_priority_list( action_list ) -> precombat_action_list.push_back( this );
 
   initialized = true;
 }

@@ -3214,6 +3214,7 @@ struct player_t : public noncopyable
   std::vector<dot_t*> dot_list;
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
+  std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
   action_priority_list_t* restore_action_list;
   std::map<std::string,std::string> alist_map;
@@ -4512,9 +4513,9 @@ struct action_priority_list_t
   player_t* const player;
   bool used;
   std::vector<action_t*> foreground_action_list;
-  std::vector<action_t*> precombat_action_list;
   std::vector<action_t*> off_gcd_actions;
-  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p ), used( false )
+  action_priority_list_t( std::string name, player_t* p ) : name_str( name ), player( p ), used( false ),
+    foreground_action_list( 0 ), off_gcd_actions( 0 )
   {}
 };
 

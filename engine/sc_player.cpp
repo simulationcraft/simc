@@ -333,7 +333,7 @@ player_t::player_t( sim_t*             s,
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
-  active_action_list( 0 ), restore_action_list( 0 ),
+  precombat_action_list( 0 ), active_action_list( 0 ), restore_action_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
@@ -2647,10 +2647,10 @@ void player_t::combat_begin()
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_begin();
   
-  for ( size_t i = 0; i < active_action_list -> precombat_action_list.size(); i++ )
-    active_action_list -> precombat_action_list[ i ] -> execute();
+  for ( size_t i = 0; i < precombat_action_list.size(); i++ )
+    precombat_action_list[ i ] -> execute();
   
-  if ( active_action_list -> precombat_action_list.size() > 0 )
+  if ( precombat_action_list.size() > 0 )
     in_combat = true;
 }
 
