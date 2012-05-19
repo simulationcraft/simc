@@ -2716,20 +2716,22 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+
     // Flask
     if ( level > 85 )
-      action_list_str = "flask,precombat=1,type=warm_sun";
+      precombat_list = "flask,type=warm_sun";
     else if ( level >= 80 )
-      action_list_str = "flask,precombat=1,type=draconic_mind";
+      precombat_list = "flask,type=draconic_mind";
 
     // Food
     if ( level >= 80 ) 
     { 
-      action_list_str += "/food,precombat=1,type=";
-      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      precombat_list += "/food,type=";
+      precombat_list += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
     }
 
-    add_action( "Dark Intent", "precombat=1,if=!aura.spell_power_multiplier.up" );
+    add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up", "precombat" );
 
     std::string pet;
 
@@ -2742,15 +2744,15 @@ void warlock_t::init_actions()
       pet = "felhunter";
     }
 
-    action_list_str += "/summon_" + pet + ",precombat=1";
+    precombat_list += "/summon_" + pet;
 
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat_list += "/snapshot_stats";
 
     // Pre-potion
     if ( level > 85 )
-      action_list_str += "/jinyu_potion,precombat=1";
+      precombat_list += "/jinyu_potion";
     else if ( level >= 80 )
-      action_list_str += "/volcanic_potion,precombat=1";
+      precombat_list += "/volcanic_potion";
  
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;

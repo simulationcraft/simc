@@ -654,8 +654,9 @@ void player_t::init()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
 
-  // Ensure the default list is the first one
-  get_action_priority_list( "default");
+  // Ensure the precombat and default lists are the first listed
+  get_action_priority_list( "precombat" ) -> used = true;
+  get_action_priority_list( "default" );
 
   for ( std::map<std::string,std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
   {
@@ -6637,20 +6638,18 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
     if ( action_list_str.size() > 0 )
     {
       int j = 0;
-      std::string alist_str = "default";
+      std::string alist_str = "";
       for ( size_t i = 0; i < action_list.size(); ++i )
       {
         action_t* a = action_list[ i ];
         if ( a -> signature_str.empty() ) continue;
         profile_str += "actions";
         if ( ! a -> action_list.empty() && a -> action_list != "default" )
-        {
           profile_str += "." + a -> action_list;
-          if ( a -> action_list != alist_str )
-          {
-            j = 0;
-            alist_str = a -> action_list;
-          }
+        if ( a -> action_list != alist_str )
+        {
+          j = 0;
+          alist_str = a -> action_list;
         }
         profile_str += j ? "+=/" : "=";
         std::string encoded_action = a -> signature_str;
