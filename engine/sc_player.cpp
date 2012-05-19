@@ -788,7 +788,7 @@ void player_t::init_items()
       return;
     }
 
-    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD && item.active() )
+    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD && item.slot != SLOT_RANGED && item.active() )
     {
       avg_ilvl += item.ilevel;
       num_ilvl_items++;
