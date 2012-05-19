@@ -521,21 +521,35 @@ void monk_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    switch ( primary_tree() )
+    {
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+    case MONK_MISTWEAVER:
+    default:
+      // Flask
+      if ( level > 85 )
+        action_list_str += "/flask,type=warm_sun,precombat=1";
+      else if ( level >= 80 )
+        action_list_str += "/flask,type=draconic_mind,precombat=1";
 
-    // Flask
+      // Food
+      if ( level > 85 )
+      {
+        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+      }
+      else if ( level > 80 )
+      {
+        action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
+      }
 
-    // Food
-    if ( level >= 80 ) action_list_str += "food,type=seafood_magnifique_feast";
-    else if ( level >= 70 ) action_list_str += "food,type=fish_feast";
+      action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
-
-    action_list_str += "/snapshot_stats";
-
-    action_list_str += "/tiger_palm";
-    action_list_str += "/blackout_kick";
-    action_list_str += "/jab";
-
-    action_list_default = 1;
+      action_list_str += "/tiger_palm";
+      action_list_str += "/blackout_kick";
+      action_list_str += "/jab";
+    break;
+    }
   }
 
   player_t::init_actions();

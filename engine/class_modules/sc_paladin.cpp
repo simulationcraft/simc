@@ -2507,7 +2507,11 @@ void paladin_t::init_actions()
     {
     case PALADIN_RETRIBUTION:
     {
-      if ( level > 80 )
+      if ( level > 85 )
+      {
+        action_list_str += "/flask,precombat=1,type=winters_bite/food,precombat=1,type=great_pandaren_banquet";
+      }
+      else if ( level >= 80 )
       {
         action_list_str += "/flask,precombat=1,type=titanic_strength/food,precombat=1,type=beer_basted_crocolisk";
       }
@@ -2528,7 +2532,11 @@ void paladin_t::init_actions()
 
       action_list_str += "/snapshot_stats,precombat=1,combat=0";
 
-      if ( level > 80 )
+      if ( level > 85 )
+      {
+        action_list_str += "/mogu_power_potion,precombat=1";
+      }
+      else if ( level >= 80 )
       {
         action_list_str += "/golemblood_potion,precombat=1";
       }
@@ -2549,7 +2557,11 @@ void paladin_t::init_actions()
           action_list_str += ",if=mana.pct<=30";
       }
 
-      if ( level > 80 )
+      if ( level > 85 )
+      {
+        action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+      }
+      else if ( level >= 80 )
       {
         action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }

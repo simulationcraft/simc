@@ -3144,26 +3144,30 @@ void rogue_t::init_actions()
 
   if ( action_list_str.empty() )
   {
-    if ( level > 80 )
+    if ( level >= 80 )
     {
-      action_list_str += "flask,type=winds";
-      action_list_str += "/food,type=seafood_magnifique_feast";
+      // Flask
+      action_list_str += "/flask,type=";
+      action_list_str += ( level > 85 ) ? "spring_blossoms" : "winds";
+      action_list_str += ",precombat=1";
+
+      // Food
+      action_list_str += "/food,type=";
+      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      action_list_str += ",precombat=1";
     }
-    else
-    {
-      action_list_str += "flask,type=endless_rage";
-      action_list_str += "/food,type=blackened_dragonfin";
-    }
+
     action_list_str += "/apply_poison,main_hand=instant,off_hand=deadly";
-    action_list_str += "/snapshot_stats";
-    if ( level > 80 )
-    {
-      action_list_str += "/tolvir_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<30";
-    }
-    else
-    {
-      action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<20";
-    }
+    action_list_str += "/snapshot_stats,precombat=1,combat=0";
+
+    // Prepotion 
+    action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    action_list_str += ",precombat=1";
+  
+    // Potion use
+    action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
+
     action_list_str += "/auto_attack";
 
     if ( talents.overkill -> rank() || spec.master_of_subtlety -> ok() )

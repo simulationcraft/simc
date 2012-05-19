@@ -3016,7 +3016,7 @@ void mage_t::init_actions()
     if ( level >= 80 )
     {
       // Flask
-      action_list_str += "/flash,type=";
+      action_list_str += "/flask,type=";
       action_list_str += ( level > 85 ) ? "warm_sun" : "draconic_mind";
       action_list_str += ",precombat=1";
 

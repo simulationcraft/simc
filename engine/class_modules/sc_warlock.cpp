@@ -2723,7 +2723,11 @@ void warlock_t::init_actions()
       action_list_str = "flask,precombat=1,type=draconic_mind";
 
     // Food
-    if ( level >= 80 ) action_list_str += "/food,precombat=1,type=seafood_magnifique_feast";
+    if ( level >= 80 ) 
+    { 
+      action_list_str += "/food,precombat=1,type=";
+      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+    }
 
     add_action( "Dark Intent", "precombat=1,if=!aura.spell_power_multiplier.up" );
 

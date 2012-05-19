@@ -3256,31 +3256,31 @@ void warrior_t::init_actions()
     case WARRIOR_FURY:
     case WARRIOR_ARMS:
       // Flask
-      if ( level >= 80 )
-        action_list_str += "/flask,type=titanic_strength";
-      else if ( level >= 75 )
-        action_list_str += "/flask,type=endless_rage";
+      if ( level > 85 )
+        action_list_str += "/flask,type=winters_bite,precombat=1";
+      else if ( level >= 80 )
+        action_list_str += "/flask,type=titanic_strength,precombat=1";
 
       // Food
       if ( level >= 80 )
-        action_list_str += "/food,type=beer_basted_crocolisk";
+        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
       else if ( level >= 70 )
-        action_list_str += "/food,type=dragonfin_filet";
+        action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
 
       break;
 
     case WARRIOR_PROTECTION:
       // Flask
       if ( level >= 80 )
-        action_list_str += "/flask,type=steelskin";
+        action_list_str += "/flask,type=earth,precombat=1";
       else if ( level >= 75 )
-        action_list_str += "/flask,type=stoneblood";
+        action_list_str += "/flask,type=steelskin,precombat=1";
 
       // Food
       if ( level >= 80 )
-        action_list_str += "/food,type=beer_basted_crocolisk";
+        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
       else if ( level >= 70 )
-        action_list_str += "/food,type=dragonfin_filet";
+        action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
 
     break; default: break;
     }
@@ -3290,24 +3290,24 @@ void warrior_t::init_actions()
     // Potion
     if ( primary_tree() == WARRIOR_ARMS )
     {
-      if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=!in_combat|buff.recklessness.up|target.time_to_die<26";
-      else if ( level >= 70 )
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.recklessness.up|target.time_to_die<26";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.recklessness.up|target.time_to_die<26";
     }
     else if ( primary_tree() == WARRIOR_FURY )
     {
-      if ( level >= 80 )
-        action_list_str += "/golemblood_potion,if=!in_combat|buff.bloodlust.react";
-      else if ( level >= 70 )
-        action_list_str += "/speed_potion,if=!in_combat|buff.bloodlust.react";
+      if ( level > 85 )
+        action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react";
+      else if ( level >= 80 )
+        action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.bloodlust.react";
     }
     else
     {
-      if ( level >= 80 )
-        action_list_str += "/earthen_potion,if=!in_combat|health_pct<35&buff.earthen_potion.down";
-      else if ( level >= 70 )
-        action_list_str += "/indestructible_potion,if=!in_combat|health_pct<35&buff.indestructible_potion.down";
+      if ( level > 85 )
+        action_list_str += "/mountains_potion,precombat=1/mountains_potion,if=health_pct<35&buff.mountains_potion.down";
+      else if ( level >= 80 )
+        action_list_str += "/earthen_potion,precombat=1/earthen_potion,if=health_pct<35&buff.earthen_potion.down";
     }
 
     action_list_str += "/auto_attack";

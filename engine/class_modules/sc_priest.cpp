@@ -3718,7 +3718,7 @@ void priest_t::init_actions()
     {
       action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
     }
-    else if ( level > 80 )
+    else if ( level >= 80 )
     {
       action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
     }
@@ -3738,7 +3738,7 @@ void priest_t::init_actions()
     {
       action_list_str += "/jinyu_potion,precombat=1";
     }
-    else if ( level > 80 )
+    else if ( level >= 80 )
     {
       action_list_str += "/volcanic_potion,precombat=1";
     }
