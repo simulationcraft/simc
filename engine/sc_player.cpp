@@ -6317,7 +6317,7 @@ expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "dot" )
     {
       // FIXME! DoT Expressions should not need to get the dot itself.
-      return get_dot( splits[ 1 ], a -> player ) -> create_expression( splits[ 2 ] );
+      return get_dot( splits[ 1 ], a -> player ) -> create_expression( a, splits[ 2 ], false );
     }
     else if ( splits[ 0 ] == "swing" )
     {

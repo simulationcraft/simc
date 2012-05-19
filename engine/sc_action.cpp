@@ -1642,7 +1642,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
 
   // FIXME! DoT Expressions should not need to get the dot itself.
-  else if ( expr_t* q = get_dot() -> create_expression( name_str ) )
+  else if ( expr_t* q = get_dot() -> create_expression( this, name_str, true ) )
     return q;
 
   else if ( name_str == "miss_react" )
