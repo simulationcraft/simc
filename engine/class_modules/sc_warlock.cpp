@@ -222,20 +222,16 @@ public:
 
   static void trigger_wild_imp( warlock_t* p )
   {
-    if ( p -> buffs.demonic_calling -> up() )
+    for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
-      for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
+      if ( p -> pets.wild_imps[ i ] -> current.sleeping )
       {
-        if ( p -> pets.wild_imps[ i ] -> current.sleeping )
-        {
-          p -> pets.wild_imps[ i ] -> summon();
-          p -> procs.wild_imp -> occur();
-          p -> buffs.demonic_calling -> expire();
-          return;
-        }
+        p -> pets.wild_imps[ i ] -> summon();
+        p -> procs.wild_imp -> occur();
+        return;
       }
-      assert( false ); // Will only get here if there are no available imps
     }
+    assert( false ); // Will only get here if there are no available imps
   }
 
   static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
@@ -341,6 +337,13 @@ struct doom_t : public warlock_spell_t
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
+  }
+
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
@@ -406,7 +409,11 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    trigger_wild_imp( p() );
+    if ( p() -> buffs.demonic_calling -> up() )
+    {
+      trigger_wild_imp( p() );
+      p() -> buffs.demonic_calling -> expire();
+    }
   }
 
   virtual bool ready()
@@ -1405,7 +1412,11 @@ struct demonic_slash_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    trigger_wild_imp( p() );
+    if ( p() -> buffs.demonic_calling -> up() )
+    {
+      trigger_wild_imp( p() );
+      p() -> buffs.demonic_calling -> expire();
+    }
   }
 
   virtual bool ready()
@@ -2314,11 +2325,11 @@ double warlock_t::composite_player_multiplier( school_type_e school, const actio
 
   if ( buffs.metamorphosis -> up() )
   {
-    m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 2 + mastery_value * 2;
+    m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
   }
   else
   {
-    m *= 1.0 + mastery_value * 0.667;
+    m *= 1.0 + mastery_value;
   }
 
   return m;
@@ -2765,10 +2776,7 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-    get_action_priority_list( "aoe" ) -> action_list_str = action_list_str;
-
-    action_list_str                                      += "/choose_action_list,name=aoe,if=num_targets>1";
-    get_action_priority_list( "aoe" ) -> action_list_str += "/choose_action_list,name=default,if=num_targets=1";
+    action_list_str += "/run_action_list,name=aoe,if=num_targets>1";
 
     add_action( "Summon Doomguard" );
     add_action( "Summon Infernal", "", "aoe" );
