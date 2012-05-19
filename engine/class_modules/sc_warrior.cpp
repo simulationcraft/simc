@@ -79,14 +79,14 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
-struct warrior_targetdata_t : public targetdata_t
+struct warrior_td_t : public target_data_t
 {
   dot_t* dots_deep_wounds;
   dot_t* dots_rend;
 
   buff_t* debuffs_colossus_smash;
 
-  warrior_targetdata_t( warrior_t* source, player_t* target );
+  warrior_td_t( player_t* target, warrior_t* p );
 };
 
 struct warrior_t : public player_t
@@ -306,8 +306,10 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
-  virtual warrior_targetdata_t* new_targetdata( player_t* target )
-  { return new warrior_targetdata_t( this, target ); }
+  virtual target_data_t* create_target_data( player_t* target )
+  {
+    return new warrior_td_t( target, this );
+  }
   virtual void      init_spells();
   virtual void      init_defense();
   virtual void      init_base();
@@ -364,10 +366,10 @@ struct warrior_t : public player_t
   }
 };
 
-warrior_targetdata_t::warrior_targetdata_t( warrior_t* source, player_t* target ) :
-  targetdata_t( source, target )
+warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
+  target_data_t( target, p )
 {
-  debuffs_colossus_smash = add_aura( buff_creator_t( this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) ) );
+  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
 }
 
 namespace   // ANONYMOUS NAMESPACE ==========================================
@@ -401,13 +403,8 @@ struct warrior_attack_t : public melee_attack_t
   warrior_t* cast() const
   { return debug_cast<warrior_t*>( player ); }
 
-  warrior_targetdata_t* cast_td( player_t* t = 0 ) const
-  {
-    if ( !t )
-      t = target;
-
-    return debug_cast<warrior_targetdata_t*>( targetdata( t ) );
-  }
+  warrior_td_t* cast_td( player_t* t = 0 ) const
+  { return debug_cast<warrior_td_t*>( target_data( t ) ); }
 
   virtual double armor() const;
   virtual void   consume_resource();
@@ -459,7 +456,7 @@ struct deep_wounds_t : public warrior_attack_t
     warrior_attack_t::impact( t, impact_result, 0 );
     if ( result_is_hit( impact_result ) )
     {
-      base_td = travel_dmg / dot() -> num_ticks;
+      base_td = travel_dmg / get_dot( t ) -> num_ticks;
     }
   }
 };
@@ -492,7 +489,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
                              p -> active_deep_wounds -> weapon_multiplier *
                              p -> active_deep_wounds -> player_multiplier );
 
-  dot_t* dot = p -> active_deep_wounds -> dot();
+  dot_t* dot = p -> active_deep_wounds -> get_dot();
 
   if ( dot -> ticking )
   {
@@ -758,7 +755,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 double warrior_attack_t::armor() const
 {
-  warrior_targetdata_t* td = cast_td();
+  warrior_td_t* td = cast_td();
 
   double a = attack_t::armor();
 
@@ -1247,7 +1244,7 @@ struct bloodthirst_t : public warrior_attack_t
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
       {
-        warrior_targetdata_t* td = cast_td();
+        warrior_td_t* td = cast_td();
         td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
       }
@@ -1400,7 +1397,7 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_targetdata_t* td = cast_td();
+      warrior_td_t* td = cast_td();
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
 
       if ( ! sim -> overrides.physical_vulnerability )
@@ -1686,7 +1683,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_targetdata_t* td = cast_td();
+      warrior_td_t* td = cast_td();
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
@@ -1903,7 +1900,6 @@ struct rend_dot_t : public warrior_attack_t
   rend_dot_t( warrior_t* p ) :
     warrior_attack_t( "rend_dot", 94009, p )
   {
-    init_dot( "rend" );
     background = true;
     tick_may_crit          = true;
     may_crit               = false;
@@ -2356,7 +2352,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-    //warrior_targetdata_t* td = cast_td();
+    //warrior_td_t* td = cast_td();
 
     p -> buffs_thunderstruck -> trigger();
 
@@ -2468,13 +2464,8 @@ struct warrior_spell_t : public spell_t
   warrior_t* cast() const
   { return debug_cast<warrior_t*>( player ); }
 
-  warrior_targetdata_t* cast_td( player_t* t = 0 ) const
-  {
-    if ( !t )
-      t = target;
-
-    return debug_cast<warrior_targetdata_t*>( targetdata( t ) );
-  }
+  warrior_td_t* cast_td( player_t* t = 0 ) const
+  { return debug_cast<warrior_td_t*>( target_data( t ) ); }
 
   void _init_warrior_spell_t()
   {
@@ -3785,20 +3776,6 @@ int warrior_t::decode_set( const item_t& item ) const
 #endif // SC_WARRIOR
 
 } // END ANONYMOUS NAMESPACE
-
-#if SC_WARRIOR == 1
-void class_modules::register_targetdata::warrior( sim_t* sim )
-{
-  player_type_e t = WARRIOR;
-  typedef warrior_targetdata_t type;
-
-  REGISTER_DOT( deep_wounds );
-  REGISTER_DOT( rend );
-
-  REGISTER_DEBUFF( colossus_smash );
-}
-#endif // SC_WARRIOR
-
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
