@@ -372,9 +372,10 @@ player_t::player_t( sim_t*             s,
   procs( procs_t() ),
   rng_list( 0 ),
   rngs( rngs_t() ),
-  uptimes( uptimes_t() ),
-  target_data( "target_data", this )
+  uptimes( uptimes_t() )
 {
+  target_data.init( "target_data", this );
+
   sim -> actor_list.push_back( this );
 
   initial.skill = s -> default_skill;
@@ -5121,7 +5122,7 @@ struct swap_action_list_t : public action_t
 
     if ( alist_name.empty() )
     {
-      sim -> errorf( "Player %s uses %s without specifying the name of the action list\n", player -> name(), name );
+      sim -> errorf( "Player %s uses %s without specifying the name of the action list\n", player -> name(), name.c_str() );
       sim -> cancel();
     }
 
@@ -5129,7 +5130,7 @@ struct swap_action_list_t : public action_t
 
     if ( ! alist )
     {
-      sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name, alist_name.c_str() );
+      sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name.c_str(), alist_name.c_str() );
       sim -> cancel();
     }
     trigger_gcd = timespan_t::zero();

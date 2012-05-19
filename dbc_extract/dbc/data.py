@@ -89,6 +89,11 @@ _DIFF_DATA = {
             ( 'unk15668', _ADD_FIELD, 'unk_2' ),
         ],
     },
+    15699: {
+        'ChrSpecialization.dbc' : [
+            ( 'unk15699', _ADD_FIELD, 'ofs_desc' ),
+        ],  
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version

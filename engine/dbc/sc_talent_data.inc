@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15689
+// 224 talents, wow build 15699
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -198,7 +198,7 @@ static struct talent_data_t __talent_data[] = {
   { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  120657,         0,  0 },
   { "Dire Beast"                        , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  120679,         0,  0 },
   { "Lynx Rush"                         , 19362, 0x00, 0x0004, 0x00,     0,   2,   4,  120697,         0,  0 },
-  { "Narrow Escape <NNF>"               , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
+  { "Narrow Escape"                     , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
   { "Exhilaration"                      , 19364, 0x00, 0x0004, 0x00,     0,   2,   0,  109304,         0,  0 },
   { "Thrill of the Hunt"                , 19365, 0x00, 0x0004, 0x00,     0,   2,   3,  109306,         0,  0 },
   { "Vigilance"                         , 19676, 0x00, 0x0001, 0x00,     0,   2,   4,  114030,         0,  0 },

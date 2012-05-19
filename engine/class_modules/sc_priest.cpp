@@ -1360,6 +1360,14 @@ struct mind_blast_t : public priest_spell_t
     return c;
   }
 
+  virtual double cost() const
+  {
+    if ( p() -> buffs.divine_insight_shadow -> check() )
+      return 0.0;
+
+    return priest_spell_t::cost();
+  }
+
   virtual void schedule_execute()
   {
     priest_spell_t::schedule_execute();
@@ -1465,8 +1473,32 @@ struct mind_flay_t : public priest_spell_t
 
 struct mind_spike_t : public priest_spell_t
 {
+  bool consume_surge_of_darkness;
+
+  struct mind_spike_state_t : public action_state_t
+  {
+    bool consume_surge_of_darkness;
+
+    mind_spike_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+      consume_surge_of_darkness( false )
+    {
+
+    }
+
+    virtual void copy_state( const action_state_t* o )
+    {
+      if ( this == o || o == 0 ) return;
+
+      action_state_t::copy_state( o );
+
+      const mind_spike_state_t* mss_t = static_cast< const mind_spike_state_t* >( o );
+      consume_surge_of_darkness = mss_t -> consume_surge_of_darkness;
+    }
+  };
+
   mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) )
+    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) ),
+    consume_surge_of_darkness( false )
   {
     parse_options( NULL, options_str );
 
@@ -1484,20 +1516,31 @@ struct mind_spike_t : public priest_spell_t
     td( target ) -> remove_dots_event = 0;
   }
 
-  virtual void execute()
+  virtual action_state_t* new_state()
   {
-    priest_spell_t::execute();
+    return new mind_spike_state_t( this, target );
+  }
 
-    if ( p() -> buffs.chakra_pre -> up() )
+  virtual action_state_t* get_state( const action_state_t* s )
+  {
+    action_state_t* s_ = priest_spell_t::get_state( s );
+
+    if ( s == 0 )
     {
-      p() -> buffs.chakra_chastise -> trigger();
-
-      p() -> buffs.chakra_pre -> expire();
-
-      p() -> cooldowns.chakra -> reset();
-      p() -> cooldowns.chakra -> duration  = p() -> buffs.chakra_pre -> data().cooldown();
-      p() -> cooldowns.chakra -> start();
+      mind_spike_state_t* ms_ = static_cast< mind_spike_state_t* >( s_ );
+      ms_ -> consume_surge_of_darkness = false;
     }
+
+    return s_;
+  }
+
+  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  {
+    mind_spike_state_t* mss_t = static_cast< mind_spike_state_t* >( state );
+
+    mss_t -> consume_surge_of_darkness = consume_surge_of_darkness;
+
+    priest_spell_t::snapshot_state( state, flags );
   }
 
   virtual double action_multiplier() const
@@ -1522,13 +1565,40 @@ struct mind_spike_t : public priest_spell_t
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
-      if ( ! p() -> buffs.surge_of_darkness -> up() && ! td( s -> target ) -> remove_dots_event )
+      mind_spike_state_t* mss = static_cast< mind_spike_state_t* >( s );
+      if ( ! mss -> consume_surge_of_darkness && ! td( s -> target ) -> remove_dots_event )
       {
         td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event::remove_dots_event_t( sim, p(), td( s -> target ) );
       }
+    }
+  }
 
+  virtual void schedule_execute()
+  {
+    if ( ( consume_surge_of_darkness = p() -> buffs.surge_of_darkness -> up() != 0 ) == true )
+    {
       p() -> buffs.surge_of_darkness -> expire();
     }
+
+    priest_spell_t::schedule_execute();
+  }
+
+  virtual double cost() const
+  {
+    if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
+      return 0.0;
+
+    return priest_spell_t::cost();
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return priest_spell_t::execute_time();
   }
 };
 
@@ -3509,7 +3579,7 @@ void priest_t::init_spells()
   specs.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
 
   // Shadow
-  specs.mind_surge                     = find_specialization_spell( "Mind Surge (NNF)" );
+  specs.mind_surge                     = find_specialization_spell( "Shadow Passive" );
   specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
@@ -3619,7 +3689,7 @@ void priest_t::init_buffs()
 
   const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
-                                           .chance( surge_of_darkness -> effectN( 1 ).percent() );
+                                           .chance( 0.15 );
 
   // Set Bonus
 }
