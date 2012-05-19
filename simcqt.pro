@@ -38,7 +38,6 @@ DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/class_modules/sc_class_modules.hpp
-HEADERS += engine/class_modules/sc_priest.hpp
 HEADERS += engine/class_modules/sc_warlock.hpp
 HEADERS += engine/dbc/data_enums.hh
 HEADERS += engine/dbc/data_definitions.hh
@@ -113,7 +112,6 @@ SOURCES += engine/class_modules/sc_mage.cpp
 SOURCES += engine/class_modules/sc_monk.cpp
 SOURCES += engine/class_modules/sc_paladin.cpp
 SOURCES += engine/class_modules/sc_priest.cpp
-SOURCES += engine/class_modules/sc_priest_pets.cpp
 SOURCES += engine/class_modules/sc_rogue.cpp
 SOURCES += engine/class_modules/sc_shaman.cpp
 SOURCES += engine/class_modules/sc_warlock.cpp

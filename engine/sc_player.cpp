@@ -2352,7 +2352,7 @@ double player_t::composite_spell_haste() const
 
 // player_t::composite_spell_power ==========================================
 
-double player_t::composite_spell_power( const school_type_e school ) const
+double player_t::composite_spell_power( school_type_e school ) const
 {
   double sp = spell_power[ school ];
 

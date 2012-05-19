@@ -390,14 +390,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\class_modules\sc_priest.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_priest_pets.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\sc_raid_event.cpp"
 			>
 		</File>

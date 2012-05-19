@@ -154,9 +154,7 @@ SRC = \
 	class_modules$(PATHSEP)sc_mage.cpp \
 	class_modules$(PATHSEP)sc_monk.cpp \
 	class_modules$(PATHSEP)sc_paladin.cpp \
-	class_modules$(PATHSEP)sc_priest.hpp \
 	class_modules$(PATHSEP)sc_priest.cpp \
-	class_modules$(PATHSEP)sc_priest_pets.cpp \
 	class_modules$(PATHSEP)sc_rogue.cpp \
 	class_modules$(PATHSEP)sc_shaman.cpp \
 	class_modules$(PATHSEP)sc_warlock.hpp \

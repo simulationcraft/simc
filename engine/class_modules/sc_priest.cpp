@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_priest.hpp"
 #include "sc_class_modules.hpp"
 
 #if SC_PRIEST == 1
@@ -697,7 +696,7 @@ struct priest_pet_t : public pet_t
   virtual double composite_attack_haste() const
   { return player_t::composite_attack_haste() * owner -> spell_haste; }
 
-  virtual double composite_spell_power( const school_type_e school ) const
+  virtual double composite_spell_power( school_type_e school ) const
   { return owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier(); }
 
   virtual double composite_spell_power_multiplier() const
@@ -1075,7 +1074,7 @@ void base_fiend_pet_t::init_base()
   main_hand_attack = new fiend_spells::melee_t( this );
 }
 
-action_t* base_fiend_pet_t::base_fiend_pet_t::create_action( const std::string& name,
+action_t* base_fiend_pet_t::create_action( const std::string& name,
                                            const std::string& options_str )
 {
   if ( name == "shadowcrawl" )          { shadowcrawl_action = new fiend_spells::shadowcrawl_t( this ); return shadowcrawl_action; }
