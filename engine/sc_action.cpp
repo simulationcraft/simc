@@ -783,6 +783,28 @@ void action_t::consume_resource()
   stats -> consume_resource( current_resource(), resource_consumed );
 }
 
+// action_t::is_valid_target ==============================================
+
+bool action_t::is_valid_target( player_t* t ) const
+{
+  return ( ! t -> current.sleeping &&
+         ( ( type == ACTION_HEAL && ! t -> is_enemy() )
+        || ( type != ACTION_HEAL && t -> is_enemy() ) ) );
+}
+
+// action_t::available_targets ==============================================
+
+int action_t::num_targets() const
+{
+  int count = 0;
+  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  {
+    if ( is_valid_target( sim -> actor_list[ i ] ) ) count++;
+  }
+
+  return count;
+}
+
 // action_t::available_targets ==============================================
 
 size_t action_t::available_targets( std::vector< player_t* >& tl ) const
@@ -794,9 +816,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
   {
-    if ( ! sim -> actor_list[ i ] -> current.sleeping &&
-         ( ( type == ACTION_HEAL && !sim -> actor_list[ i ] -> is_enemy() ) || ( type != ACTION_HEAL && sim -> actor_list[ i ] -> is_enemy() ) ) &&
-         sim -> actor_list[ i ] != target )
+    if ( is_valid_target( sim -> actor_list[ i ] ) && sim -> actor_list[ i ] != target )
       tl.push_back( sim -> actor_list[ i ] );
   }
 
@@ -1551,10 +1571,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct num_targets_expr_t : public action_expr_t
     {
       num_targets_expr_t( action_t& a ) : action_expr_t( "num_targets", a ) {}
-      virtual double evaluate() {
-        std::vector< player_t* > tl;
-        return action.available_targets( tl );
-      }
+      virtual double evaluate() { return action.num_targets(); }
     };
     return new num_targets_expr_t( *this );
   }

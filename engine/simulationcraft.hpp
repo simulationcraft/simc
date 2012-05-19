@@ -4052,6 +4052,8 @@ struct action_t
 
   target_data_t* target_data( player_t* t=0 ) const { return player -> get_target_data( t ? t : target ); }
 
+  virtual bool is_valid_target( player_t* target ) const;
+  virtual int num_targets() const;
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual std::vector< player_t* > target_list() const;
 
