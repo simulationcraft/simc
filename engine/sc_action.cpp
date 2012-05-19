@@ -24,6 +24,7 @@ action_t::action_t( action_type_e       ty,
   school( SCHOOL_NONE ),
   id(),
   result(),
+  resource_current( RESOURCE_NONE ),
   aoe(),
   pre_combat( 0 ),
   dual(),
@@ -261,6 +262,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   trigger_gcd          = spell_data.gcd();
   school               = spell_data.get_school_type();
   rp_gain              = spell_data.runic_power_gain();
+
+  if ( likely( spell_data._power && spell_data._power -> size() == 1 ) )
+    resource_current = spell_data._power -> at( 0 ) -> resource();
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
   {

@@ -3883,6 +3883,7 @@ struct action_t
 
   uint32_t id;
   result_type_e result;
+  resource_type_e resource_current;
   int aoe, pre_combat;
   bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot;
@@ -3983,12 +3984,7 @@ struct action_t
   virtual double resistance() const;
   virtual void   consume_resource();
   virtual resource_type_e current_resource() const
-  {
-    if ( likely( s_data && s_data -> _power && s_data -> _power -> size() == 1 ) )
-      return s_data -> _power -> at( 0 ) -> resource();
-
-    return RESOURCE_NONE;
-  }
+  { return resource_current; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
