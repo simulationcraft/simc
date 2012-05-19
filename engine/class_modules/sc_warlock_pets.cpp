@@ -823,8 +823,8 @@ double warlock_pet_t::composite_player_multiplier( school_type_e school, const a
 // Warlock Main Pet
 // ==========================================================================
 
-warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt ) :
-  warlock_pet_t( sim, owner, pet_name, pt )
+warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian ) :
+  warlock_pet_t( sim, owner, pet_name, pt, guardian )
 {}
 
 double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
@@ -851,7 +851,7 @@ void warlock_guardian_pet_t::summon( timespan_t duration )
 // ==========================================================================
 
 imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-  warlock_main_pet_t( sim, owner, name, PET_IMP )
+  warlock_main_pet_t( sim, owner, name, PET_IMP, name != "imp" )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/firebolt";
@@ -870,7 +870,7 @@ action_t* imp_pet_t::create_action( const std::string& name,
 // ==========================================================================
 
 felguard_pet_t::felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-  warlock_main_pet_t( sim, owner, name, PET_FELGUARD )
+  warlock_main_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/felstorm";
@@ -898,7 +898,7 @@ action_t* felguard_pet_t::create_action( const std::string& name,
 // ==========================================================================
 
 felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-  warlock_main_pet_t( sim, owner, name, PET_FELHUNTER )
+  warlock_main_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/shadow_bite";
@@ -924,7 +924,7 @@ action_t* felhunter_pet_t::create_action( const std::string& name,
 // ==========================================================================
 
 succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-  warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS )
+  warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/lash_of_pain";
@@ -951,7 +951,7 @@ action_t* succubus_pet_t::create_action( const std::string& name,
 // ==========================================================================
 
 voidwalker_pet_t::voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-  warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER )
+  warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
 {
   action_list_str += "/snapshot_stats";
   action_list_str += "/torment";

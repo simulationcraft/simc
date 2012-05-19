@@ -357,7 +357,7 @@ public:
 
 struct warlock_main_pet_t : public warlock_pet_t
 {
-  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
+  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
   virtual double composite_attack_expertise( const weapon_t* ) const;
 };
 
