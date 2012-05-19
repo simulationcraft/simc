@@ -1095,35 +1095,25 @@ struct life_tap_t : public warlock_spell_t
 };
 
 
-struct touch_of_chaos_t : public attack_t
+struct touch_of_chaos_t : public warlock_spell_t
 {
   touch_of_chaos_t( warlock_t* p ) :
-    attack_t( "touch_of_chaos", p, p -> find_spell( 103988 ) )
+    warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103988 ) )
   {
-    stateless         = true;
-    may_crit          = true;
     background        = true;
     repeating         = true;
-    weapon_multiplier            = 0.0;
-    base_spell_power_multiplier  = 1.0;
-    base_attack_power_multiplier = 0.0;
     base_execute_time = timespan_t::from_seconds( 1 );
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    attack_t::execute();
+    warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      warlock_td_t* td = debug_cast<warlock_td_t*>( target_data( target ) );
+      warlock_td_t* td = debug_cast<warlock_td_t*>( target_data( s -> target ) );
       extend_dot( td -> dots_corruption, 2, player -> composite_spell_haste() );
     }
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    return timespan_t::from_seconds( 1 );
   }
 };
 
@@ -1135,7 +1125,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
-    if ( ! p -> main_hand_attack ) p -> main_hand_attack = new touch_of_chaos_t( p );
+    p -> touch_of_chaos = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
