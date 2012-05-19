@@ -1420,6 +1420,8 @@ void player_t::init_actions()
 
   if ( ! action_list_str.empty() ) get_action_priority_list( "default") -> action_list_str = action_list_str;
 
+  int j = 0;
+
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
     if ( sim -> debug )
@@ -1478,9 +1480,11 @@ void player_t::init_actions()
       if ( a )
       {
         a -> action_list = action_priority_list[ alist ] -> name_str;
-        a -> marker = ( char ) ( ( i < 10 ) ? ( '0' + i      ) :
-                                 ( i < 36 ) ? ( 'A' + i - 10 ) :
-                                 ( i < 58 ) ? ( 'a' + i - 36 ) : '.' );
+        // FIXME: This is hacky - should probably have a way to mark an action as "quiet"
+        if ( a -> name_str != "run_action_list" )
+          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
+                                   ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
 
         a -> signature_str = splits[ i ];
 
@@ -1491,6 +1495,7 @@ void player_t::init_actions()
           if ( a -> dtr_action )
             a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
         }
+        j++;
       }
       else
       {
