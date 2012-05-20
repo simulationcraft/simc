@@ -1437,15 +1437,27 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
       {
         if ( first )
         {
-          first = false;
-	  ++tabs;
-          fprintf( file, "%s<tr>\n", *tabs );
-	  ++tabs;
-	  fprintf( file, "%s<th>pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
-	  fprintf( file, "%s<td colspan=\"6\" class=\"filler\"></td>\n", *tabs );
-	  --tabs;
-	  fprintf( file, "%s</tr>\n", *tabs );
-	  --tabs;
+          bool found = false;
+          for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+          {
+            if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+            {
+              found = true;
+              break;
+            }
+          }
+          if ( found )
+          {
+            first = false;
+	          ++tabs;
+            fprintf( file, "%s<tr>\n", *tabs );
+	          ++tabs;
+	          fprintf( file, "%s<th>pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
+	          fprintf( file, "%s<td colspan=\"6\" class=\"filler\"></td>\n", *tabs );
+	          --tabs;
+	          fprintf( file, "%s</tr>\n", *tabs );
+	          --tabs;
+          }
         }
         print_html_gain( file, tabs, g, j );
       }
