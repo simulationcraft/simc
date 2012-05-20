@@ -1899,6 +1899,7 @@ struct rain_of_fire_t : public warlock_spell_t
     harmful = false;
     tick_zero = true;
     hasted_ticks = false;
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 250;
     channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
     // FIXME: Seems to cost 34k mana at 85 for destro - no idea how/why
@@ -1907,6 +1908,14 @@ struct rain_of_fire_t : public warlock_spell_t
     rain_of_fire_tick = new rain_of_fire_tick_t( p, this );
 
     add_child( rain_of_fire_tick );
+  }
+
+  virtual resource_type_e current_resource() const
+  {
+    if ( p() -> buffs.metamorphosis -> check() )
+      return RESOURCE_DEMONIC_FURY;
+    else
+      return RESOURCE_MANA;
   }
 
   virtual timespan_t travel_time() const
