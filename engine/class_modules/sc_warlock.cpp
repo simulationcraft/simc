@@ -159,8 +159,13 @@ public:
 
   virtual resource_type_e current_resource() const
   {
-    if ( p() -> buffs.metamorphosis -> check() && data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 )
-      return RESOURCE_DEMONIC_FURY;
+    if ( p() -> buffs.metamorphosis -> data().ok() && data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 )
+    {
+      if ( p() -> buffs.metamorphosis -> check() )
+        return RESOURCE_DEMONIC_FURY;
+      else
+        return RESOURCE_MANA;
+    } 
     else
       return spell_t::current_resource();
   }
@@ -996,7 +1001,7 @@ struct soul_fire_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if ( p() -> buffs.molten_core -> check() )
+    if ( ! p() -> buffs.metamorphosis -> check() && p() -> buffs.molten_core -> check() )
     {
       c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
     }
@@ -2126,6 +2131,7 @@ struct summon_infernal_t : public summon_pet_t
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
 
     infernal_awakening = new infernal_awakening_t( p );
+    infernal_awakening -> stats = stats;
   }
 
   virtual void execute()
@@ -2175,6 +2181,7 @@ struct summon_doomguard_t : public warlock_spell_t
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p );
+    summon_doomguard2 -> stats = stats;
   }
 
   virtual void execute()
@@ -2835,12 +2842,13 @@ void warlock_t::init_actions()
         add_action( find_spell( 104316 ) );
 
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( spec.doom,               "if=(!ticking|remains<tick_time)&target.time_to_die>=30&miss_react" );
+      add_action( spec.doom,               "if=(!ticking|remains<tick_time)&target.time_to_die>=12&miss_react" );
       add_action( "Hand of Gul'dan",       "if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
-      add_action( "Soul Fire",             "if=buff.molten_core.react|target.health.pct<25" );
+      add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( spec.doom,             "if=demonic_fury<100&remains<40&miss_react" );
       add_action( spec.demonic_slash );
+      add_action( "Life Tap",              "if=mana.pct<80" );
       add_action( "Shadow Bolt" );
       add_action( "Void Ray",              "moving=1" );
       add_action( "Fel Flame",             "moving=1" );
