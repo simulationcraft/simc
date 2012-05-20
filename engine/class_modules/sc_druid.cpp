@@ -280,7 +280,6 @@ struct druid_t : public player_t
     rng_t* euphoria;
     rng_t* mangle;
     rng_t* revitalize;
-    rng_t* mangle_cd;
   } rng;
 
   // Class Specializations
@@ -1192,17 +1191,6 @@ static void trigger_revitalize( druid_heal_t* a )
   }
 }
 
-static void trigger_mangle_cd_reset( action_state_t* a )
-{
-  // FIXME: assuming on hit
-  if ( a -> action -> result_is_hit( a -> result ) )
-  {
-    druid_t* p = debug_cast<druid_t*>( a-> action -> player );
-    if ( p -> rng.mangle_cd -> roll( 0.25 ) ) // Replace with dbc value once spell 93622 is whitelisted
-      p -> cooldown.mangle_bear -> reset();
-  }
-}
-
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
@@ -2032,8 +2020,6 @@ struct lacerate_t : public druid_bear_attack_t
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.lacerate -> trigger();
-
-    trigger_mangle_cd_reset( state );
   }
   
   virtual double action_ta_multiplier() const
@@ -2189,8 +2175,6 @@ struct thrash_bear_t : public druid_bear_attack_t
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
         state -> target -> debuffs.weakened_blows -> trigger();
-
-    trigger_mangle_cd_reset( state );
   }
   
   virtual void tick( dot_t* d )
@@ -3016,7 +3000,12 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t::impact_s( state );
 
     if ( p() -> buff.bear_form -> check() )
-      trigger_mangle_cd_reset( state );
+    {
+      // FIXME: check wheter it is on hit only or not.
+      if ( result_is_hit( state -> result ) )
+        if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
+          p() -> cooldown.mangle_bear -> reset();
+    }
   }
   
   virtual resource_type_e current_resource() const
@@ -4431,7 +4420,6 @@ void druid_t::init_rng()
   rng.euphoria   = get_rng( "euphoria"   );
   rng.mangle     = get_rng( "mangle"     );
   rng.revitalize = get_rng( "revitalize" );
-  rng.mangle_cd  = get_rng( "mangle!"    );
 }
 
 // druid_t::init_actions ====================================================
