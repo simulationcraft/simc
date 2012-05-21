@@ -2881,7 +2881,7 @@ void warlock_t::init_actions()
       add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight&mana.pct>=70" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
       add_action( "Incinerate" );

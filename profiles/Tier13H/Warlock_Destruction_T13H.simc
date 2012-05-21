@@ -26,7 +26,7 @@ actions+=/shadowburn,if=ember_react
 actions+=/chaos_bolt,if=ember_react&buff.backdraft.stack<3
 actions+=/conflagrate,if=buff.backdraft.down
 actions+=/immolate,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
-actions+=/rain_of_fire,if=!ticking&!in_flight
+actions+=/rain_of_fire,if=!ticking&!in_flight&mana.pct>=70
 actions+=/immolate,if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react
 actions+=/incinerate
 actions+=/fel_flame,moving=1
