@@ -931,7 +931,7 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 100;
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 200;
     generate_fury = data().effectN( 2 ).base_value();
 
     if ( ! dtr && p -> has_dtr )
@@ -1001,10 +1001,8 @@ struct soul_fire_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if ( ! p() -> buffs.metamorphosis -> check() && p() -> buffs.molten_core -> check() )
-    {
+    if ( p() -> buffs.molten_core -> check() )
       c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
-    }
 
     return c;
   }
