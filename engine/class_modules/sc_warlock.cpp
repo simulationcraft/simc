@@ -109,6 +109,13 @@ public:
   warlock_td_t* td( player_t* t ) const
   { return debug_cast<warlock_td_t*>( target_data( t ) ); }
 
+  virtual void init()
+  {
+    spell_t::init();
+
+    if ( harmful) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
+  }
+
   virtual void execute()
   {
     spell_t::execute();
@@ -460,6 +467,8 @@ struct shadowburn_t : public warlock_spell_t
   shadowburn_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
   {
+    min_gcd = timespan_t::from_millis( 500 );
+
     mana_delay  = p -> find_spell( 29314 ) -> duration();
     mana_amount = p -> find_spell( 125882 ) -> effectN( 1 ).percent();
 
