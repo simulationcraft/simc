@@ -335,6 +335,9 @@ struct priest_t : public player_t
   virtual target_data_t* create_target_data( player_t* target )
   { return new priest_td_t( target, this ); }
 
+  void add_action( std::string action, std::string options = "", std::string alist = "default" );
+  void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+
   // Temporary
   virtual std::string set_default_talents() const;
   virtual std::string set_default_glyphs() const;
@@ -4382,7 +4385,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
-  if ( name == "fortitude"              ) return new fortitude_t             ( this, options_str );
+  if ( name == "power_word_fortitude"   ) return new fortitude_t             ( this, options_str );
   if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( this, options_str );
   if ( name == "inner_fire"             ) return new inner_fire_t            ( this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( this, options_str );
@@ -4709,6 +4712,21 @@ void priest_t::init_buffs()
   // Set Bonus
 }
 
+void priest_t::add_action( std::string action, std::string options, std::string alist )
+{
+  add_action( find_class_spell( action ), options, alist );
+}
+
+void priest_t::add_action( const spell_data_t* s, std::string options, std::string alist )
+{
+  std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
+  if ( s -> ok() )
+  {
+    *str += "/" + dbc_t::get_token( s -> id() );
+    if ( ! options.empty() ) *str += "," + options;
+  }
+}
+
 // priest_t::init_actions ===================================================
 
 void priest_t::init_actions()
@@ -4723,43 +4741,42 @@ void priest_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+
     // Flask
     if ( level > 85 )
-      action_list_str += "/flask,type=warm_sun,precombat=1";
+      precombat_list += "/flask,type=warm_sun";
     else if ( level >= 80 )
-      action_list_str += "/flask,type=draconic_mind,precombat=1";
+      precombat_list += "/flask,type=draconic_mind";
 
     if ( level > 85 )
     {
-      action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+      precombat_list += "/food,type=great_pandaren_banquet";
     }
     else if ( level >= 80 )
     {
-      action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
+      precombat_list += "/food,type=seafood_magnifique_feast";
     }
 
-    if ( find_class_spell( "Power Word: Fortitude" ) -> ok() )
-      action_list_str += "/fortitude,precombat=1,if=!aura.stamina.up";
+    add_action( "Power Word: Fortitude", "if=!aura.stamina.up", "precombat" );
+    add_action( "Inner Fire", "", "precombat" );
+    add_action( "Shadowform", "", "precombat" );
+    add_action( "Vampiric Embrace", "", "precombat" );
 
-    if ( find_class_spell( "Inner Fire" ) -> ok() )
-      action_list_str += "/inner_fire,precombat=1";
-
-    if ( find_class_spell( "Shadowform" ) -> ok() )
-      action_list_str += "/shadowform,precombat=1";
-
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat_list += "/snapshot_stats";
 
     if ( level > 85 )
     {
-      action_list_str += "/jinyu_potion,precombat=1";
+      precombat_list += "/jinyu_potion";
     }
     else if ( level >= 80 )
     {
-      action_list_str += "/volcanic_potion,precombat=1";
+      precombat_list += "/volcanic_potion";
     }
 
-    if ( find_class_spell( "Shadowform" ) -> ok() )
-      action_list_str += "/shadowform";
+    // End precombat list
+
+    add_action( "Shadowform" );
 
     action_list_str += init_use_item_actions();
 
@@ -4780,68 +4797,59 @@ void priest_t::init_actions()
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
-      /*
-      if ( find_class_spell( "Vampiric Embrace" ) -> ok() )
-        action_list_str += "/vampiric_embrace";
-      */
 
-      if ( find_class_spell( "Devouring Plague" ) -> ok() )
-        action_list_str += "/devouring_plague,if=shadow_orb=3&(!ticking|remains<tick_time)";
+      add_action( "Devouring Plague", "if=shadow_orb=3&(!ticking|remains<tick_time)" );
 
-      if ( find_talent_spell( "Archangel" ) -> ok() )
-        action_list_str += "/archangel";
+      add_action( "Archangel" );
 
       if ( set_bonus.tier13_2pc_caster() )
       {
-        if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
-        {
-          action_list_str += "/shadow_word_death,if=target.health.pct<20";
-        }
+        add_action( "Shadow Word: Death", "if=target.health.pct<20" );
       }
 
       action_list_str += init_use_racial_actions();
 
-      if ( find_class_spell( "Mind Blast" ) -> ok() )
-        action_list_str += "/mind_blast,if=cooldown_react";
+      add_action( "Mind Blast", "if=cooldown_react" );
 
-      if ( find_class_spell( "Mind Spike" ) -> ok() && find_talent_spell( "From Darkness Comes Light" ) -> ok() )
-        action_list_str += "/mind_spike,if=buff.surge_of_darkness.react";
+      if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
+        add_action( "Mind Spike", "if=buff.surge_of_darkness.react" );
 
-      if ( find_talent_spell( "Power Infusion" ) -> ok() )
-        action_list_str += "/power_infusion";
+      add_action( "Power Infusion" );
 
-      if ( find_class_spell( "Vampiric Touch" ) -> ok() )
-        action_list_str += "/vampiric_touch,if=(!ticking|remains<cast_time+tick_time)&miss_react";
+      add_action( "Vampiric Touch", "if=(!ticking|remains<cast_time+tick_time)&miss_react" );
 
       if ( ! set_bonus.tier13_2pc_caster() )
       {
-        if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
-        {
-          action_list_str += "/shadow_word_death,if=target.health.pct<20";
-        }
+        add_action( "Shadow Word: Death", "if=target.health.pct<20" );
       }
 
-      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
-        action_list_str += "/shadow_word_pain,if=(!ticking|remains<tick_time)&miss_react";
+      add_action( "Shadow Word: Pain", "if=(!ticking|remains<tick_time)&miss_react" );
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         action_list_str += "/mindbender,if=cooldown_react";
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
         action_list_str += "/shadowfiend,if=cooldown_react";
 
-      if ( find_class_spell( "Mind Flay" ) -> ok() )
-        action_list_str += "/mind_flay,chain=1,interrupt=1";
+      add_action( "Mind Flay", "chain=1,interrupt=1" );
 
-      if ( find_class_spell( "Shadow Word: Death" ) -> ok() )
+      action_list_str += "/run_action_list,name=2dot,if=num_targets=2";
+      add_action( "Shadow Word: Death", "moving=1" );
+
+      add_action( "Shadow Word: Pain", "moving=1" );
+
+      add_action( "Dispersion" );
+
+      add_action( "Vampiric Touch", "if=(!ticking|remains<cast_time+tick_time)&miss_react", "2dot" );
+
+      if ( ! set_bonus.tier13_2pc_caster() )
       {
-        action_list_str += "/shadow_word_death,moving=1";
+        add_action( "Shadow Word: Death", "if=target.health.pct<20", "2dot" );
       }
 
-      if ( find_class_spell( "Shadow Word: Pain" ) -> ok() )
-        action_list_str += "/shadow_word_pain,moving=1";
+      add_action( "Shadow Word: Pain", "if=(!ticking|remains<tick_time)&miss_react", "2dot" );
 
-      if ( find_class_spell( "Dispersion" ) -> ok() )
-        action_list_str += "/dispersion";
+      add_action( "Mind Flay", "chain=1,interrupt=1", "2dot" );
+
       break;
       // SHADOW END =========================================================
 
