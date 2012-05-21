@@ -1840,32 +1840,21 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 struct rain_of_fire_tick_t : public warlock_spell_t
 {
-  warlock_spell_t* rof_spell;
-
-  rain_of_fire_tick_t( warlock_t* p, warlock_spell_t* s, bool dtr = false ) :
-    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) ), rof_spell( s )
+  rain_of_fire_tick_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
   {
     background  = true;
     aoe         = -1;
+    direct_tick = true;
     
     if ( ! dtr )
-    {
-      dual        = true;
-      direct_tick = true;
-    }
+      dual = true;
 
     if ( ! dtr && p -> has_dtr )
     {
-      dtr_action = new rain_of_fire_tick_t( p, s, true );
+      dtr_action = new rain_of_fire_tick_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual double cost() const
-  {
-    if ( ! rof_spell -> channeled ) return 0;
-
-    return warlock_spell_t::cost();
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -1899,23 +1888,17 @@ struct rain_of_fire_t : public warlock_spell_t
     harmful = false;
     tick_zero = true;
     hasted_ticks = false;
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 250;
     channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
 
     // FIXME: Seems to cost 34k mana at 85 for destro - no idea how/why
     if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 8.5;
 
-    rain_of_fire_tick = new rain_of_fire_tick_t( p, this );
+    rain_of_fire_tick = new rain_of_fire_tick_t( p );
+
+    // RoF currently costs mana per tick for affliction
+    if ( channeled ) rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
 
     add_child( rain_of_fire_tick );
-  }
-
-  virtual resource_type_e current_resource() const
-  {
-    if ( p() -> buffs.metamorphosis -> check() )
-      return RESOURCE_DEMONIC_FURY;
-    else
-      return RESOURCE_MANA;
   }
 
   virtual timespan_t travel_time() const
@@ -1929,8 +1912,6 @@ struct rain_of_fire_t : public warlock_spell_t
     warlock_spell_t::init();
 
     rain_of_fire_tick -> stats = stats;
-    // RoF currently costs mana per tick if it's being channeled
-    if ( channeled ) rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
   }
 
   virtual void tick( dot_t* d )
@@ -1940,18 +1921,79 @@ struct rain_of_fire_t : public warlock_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual void execute()
+  virtual bool ready()
   {
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY ) channeled = ( p() -> buffs.metamorphosis -> check() ) ? false : true;
+    bool r = warlock_spell_t::ready();
 
-    warlock_spell_t::execute();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
+  }
+};
+
+
+struct immolation_aura_tick_t : public warlock_spell_t
+{
+  immolation_aura_tick_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 5857 ) )
+  {
+    background  = true;
+    aoe         = -1;
+    direct_tick = true;
+    
+    if ( ! dtr )
+      dual = true;
+
+    if ( ! dtr && p -> has_dtr )
+    {
+      dtr_action = new immolation_aura_tick_t( p, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+};
+
+
+struct immolation_aura_t : public warlock_spell_t
+{
+  immolation_aura_tick_t* immolation_aura_tick;
+
+  immolation_aura_t( warlock_t* p ) :
+    warlock_spell_t( p, "Immolation Aura" ),
+    immolation_aura_tick( 0 )
+  {
+    tick_zero    = true;
+
+    immolation_aura_tick = new immolation_aura_tick_t( p );
+
+    add_child( immolation_aura_tick );
   }
 
-  virtual bool usable_moving()
+  virtual void init()
   {
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() ) return false;
+    warlock_spell_t::init();
 
-    return warlock_spell_t::usable_moving();
+    immolation_aura_tick -> stats = stats;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    immolation_aura_tick -> execute();
+
+    stats -> add_tick( d -> time_to_tick );
+  }
+
+  virtual int hasted_num_ticks( double haste, timespan_t d ) const
+  {
+    return num_ticks;
+  }
+
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
   }
 };
 
@@ -2454,6 +2496,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
+  else if ( name == "immolation_aura"       ) a = new       immolation_aura_t( this );
   else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
@@ -2863,13 +2906,14 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Metamorphosis",         "if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8", "aoe" );
+      add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
+      add_action( "Immolation Aura",       "if=demonic_fury>60*num_targets",                         "aoe" );
+      add_action( find_spell( 603 ),       "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
       if ( glyphs.imp_swarm -> ok() ) 
-        add_action( find_spell( 104316 ),  "",                                                                                          "aoe" );
-      add_action( "Hand of Gul'dan",       "if=!in_flight",                                                                             "aoe" );
-      add_action( "Chaos Wave",            "",                                                                                          "aoe" );
-      add_action( "Rain of Fire",          "",                                                                                          "aoe" );
-      add_action( "Life Tap",              "",                                                                                          "aoe" );
+        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
+      add_action( "Hand of Gul'dan",       "if=!in_flight",                                          "aoe" );
+      add_action( "Rain of Fire",          "",                                                       "aoe" );
+      add_action( "Life Tap",              "",                                                       "aoe" );
       break;
 
     default:

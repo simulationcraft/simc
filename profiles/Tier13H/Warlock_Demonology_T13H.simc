@@ -37,8 +37,10 @@ actions+=/void_ray,moving=1
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 actions.aoe=summon_infernal
-actions.aoe+=/metamorphosis,if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8
-actions.aoe+=/imp_swarm
+actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=350+60*num_targets
+actions.aoe+=/immolation_aura,if=demonic_fury>60*num_targets
+actions.aoe+=/doom,cycle_targets=1,if=!ticking|remains<40
+actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
 actions.aoe+=/hand_of_guldan,if=!in_flight
 actions.aoe+=/rain_of_fire
 actions.aoe+=/life_tap
