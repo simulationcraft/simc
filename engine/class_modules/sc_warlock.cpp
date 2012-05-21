@@ -1695,7 +1695,6 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     dual       = true;
     background = true;
     aoe        = -1;
-    may_miss   = false; // FIXME: Assumed, needs testing
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1716,7 +1715,6 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     dual       = true;
     background = true;
     aoe        = -1;
-    may_miss   = false; // FIXME: Assumed, needs testing
     corruption -> background = true;
     corruption -> dual = true;
     corruption -> proc = true;
