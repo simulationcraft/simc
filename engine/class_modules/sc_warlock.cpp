@@ -236,6 +236,7 @@ public:
         return;
       }
     }
+    p -> sim -> errorf( "Player %s ran out of wild imps.\n", p -> name() );
     assert( false ); // Will only get here if there are no available imps
   }
 
@@ -1652,7 +1653,7 @@ struct imp_swarm_t : public warlock_spell_t
         if ( ++j == 5 ) break;
       }
     }
-
+    if ( j != 5 ) sim -> errorf( "Player %s ran out of wild imps.\n", p() -> name() );
     assert( j == 5 );  // Assert fails if we didn't have enough available wild imps
   }
 };
@@ -2539,7 +2540,6 @@ pet_t* warlock_t::create_pet( const std::string& pet_name,
 
 void warlock_t::create_pets()
 {
-  create_pet( "felguard"  );
   create_pet( "felhunter" );
   create_pet( "imp"       );
   create_pet( "succubus"  );
@@ -2547,17 +2547,22 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
 
-  pets.wild_imps[ 0 ] = new wild_imp_pet_t( sim, this );
-
-  for ( int i = 1; i < WILD_IMP_LIMIT; i++ )
+  if ( primary_tree() == WARLOCK_DEMONOLOGY )
   {
-    pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this, pets.wild_imps[ 0 ] );
+    create_pet( "felguard" );
+
+    pets.wild_imps[ 0 ] = new wild_imp_pet_t( sim, this );
+
+    for ( int i = 1; i < WILD_IMP_LIMIT; i++ )
+    {
+      pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this, pets.wild_imps[ 0 ] );
+    }
   }
 
-  create_pet( "service_felguard"  );
-  create_pet( "service_felhunter" );
-  create_pet( "service_imp"       );
-  create_pet( "service_succubus"  );
+  create_pet( "service_felguard"   );
+  create_pet( "service_felhunter"  );
+  create_pet( "service_imp"        );
+  create_pet( "service_succubus"   );
   create_pet( "service_voidwalker" );
 }
 
