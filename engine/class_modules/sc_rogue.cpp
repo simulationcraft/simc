@@ -3144,6 +3144,8 @@ void rogue_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     if ( level >= 80 )
     {
       // Flask

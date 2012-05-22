@@ -3812,6 +3812,8 @@ void death_knight_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     int tree = primary_tree();
 
     if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY || ( tree == DEATH_KNIGHT_BLOOD && primary_role() != ROLE_TANK ) )

@@ -3995,6 +3995,9 @@ void shaman_t::init_actions()
     player_t::init_actions();
     return;
   }
+
+  clear_action_priority_lists();
+
   
   std::string use_items_str;
   int num_items = ( int ) items.size();

@@ -1988,7 +1988,7 @@ struct immolation_aura_t : public warlock_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual int hasted_num_ticks( double haste, timespan_t d ) const
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
   {
     return num_ticks;
   }
@@ -2775,6 +2775,8 @@ void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
 
     // Flask

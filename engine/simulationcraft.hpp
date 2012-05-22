@@ -3681,6 +3681,7 @@ struct player_t : public noncopyable
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
 
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
+  void                    clear_action_priority_lists() const;
 
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name, player_t* source ) const;

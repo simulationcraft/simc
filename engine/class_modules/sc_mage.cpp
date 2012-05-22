@@ -2999,6 +2999,8 @@ void mage_t::init_actions()
 {
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
 #if 0 // UNUSED
     // Shard of Woe check for Arcane
     bool has_shard = false;

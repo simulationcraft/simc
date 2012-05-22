@@ -4445,6 +4445,8 @@ void druid_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     std::string use_str = "";
     int num_items = ( int ) items.size();
     for ( int i=0; i < num_items; i++ )

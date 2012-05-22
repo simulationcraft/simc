@@ -521,6 +521,8 @@ void monk_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     switch ( primary_tree() )
     {
     case MONK_BREWMASTER:

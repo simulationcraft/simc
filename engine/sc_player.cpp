@@ -577,7 +577,11 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    if ( sim -> default_actions && ! p -> is_pet() ) p -> action_list_str.clear();
+    if ( sim -> default_actions && ! p -> is_pet() ) 
+    { 
+      p -> clear_action_priority_lists(); 
+      p -> action_list_str.clear();
+    };
     p -> init();
   }
 
@@ -4124,6 +4128,17 @@ action_priority_list_t* player_t::find_action_priority_list( const std::string& 
   }
 
   return 0;
+}
+
+// player_t::clear_action_priority_lists() ===========
+
+void player_t::clear_action_priority_lists() const
+{
+  for ( size_t i = 0; i < action_priority_list.size(); i++ )
+  {
+    action_priority_list_t* a = action_priority_list[ i ];
+    a -> action_list_str.clear();
+  }
 }
 
 // player_t::find_stats ======================================================

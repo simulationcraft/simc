@@ -4714,7 +4714,7 @@ void priest_t::init_buffs()
 
 void priest_t::add_action( std::string action, std::string options, std::string alist )
 {
-  add_action( find_class_spell( action ), options, alist );
+  add_action( find_talent_spell( action ) -> ok() ? find_talent_spell( action ) : find_class_spell( action ), options, alist );
 }
 
 void priest_t::add_action( const spell_data_t* s, std::string options, std::string alist )
@@ -4741,6 +4741,8 @@ void priest_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
 
     // Flask
@@ -4761,7 +4763,6 @@ void priest_t::init_actions()
     add_action( "Power Word: Fortitude", "if=!aura.stamina.up", "precombat" );
     add_action( "Inner Fire", "", "precombat" );
     add_action( "Shadowform", "", "precombat" );
-    add_action( "Vampiric Embrace", "", "precombat" );
 
     precombat_list += "/snapshot_stats";
 
@@ -4777,6 +4778,7 @@ void priest_t::init_actions()
     // End precombat list
 
     add_action( "Shadowform" );
+//    add_action( "Vampiric Embrace" );
 
     action_list_str += init_use_item_actions();
 

@@ -576,7 +576,6 @@ public:
   {
     if ( action_list_str.empty() )
     {
-
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
 
@@ -3770,6 +3769,8 @@ void hunter_t::init_actions()
 
   if ( action_list_str.empty() )
   {
+    clear_action_priority_lists();
+
     if ( level >= 80 )
     {
       action_list_str += "/flask,type=";
