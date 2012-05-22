@@ -5,8 +5,8 @@
 
 #include "simulationcraft.hpp"
 
-namespace
-{
+namespace { // ANONYMOUS NAMESPACE
+
 struct expiration_t : public event_t
 {
   buff_t* buff;

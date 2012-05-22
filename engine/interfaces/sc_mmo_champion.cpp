@@ -11,9 +11,6 @@
 
 // static const char* base64 = "f-qR3eOHQ9dSIMwk8pabYt6yrJUFNXLTh4n2KWEoz0uC5j7xmAgDlZiPcs_BGV1v";  // sufficiently randomized 10+26+26+2 = 64
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
-
 // download_id ==============================================================
 
 static xml_node_t* download_id( sim_t*             sim,
@@ -23,9 +20,9 @@ static xml_node_t* download_id( sim_t*             sim,
   if ( id_str.empty() || id_str == "0" ) return 0;
   std::string url = "http://db.mmo-champion.com/i/" + id_str + '/';
 
-  xml_node_t* node = xml_t::get( sim, url, caching, "<h4>Item #" );
+  xml_node_t* node = xml::get( sim, url, caching, "<h4>Item #" );
 
-  if ( sim -> debug ) xml_t::print( node );
+  if ( sim -> debug ) xml::print( node );
   return node;
 }
 
@@ -35,7 +32,7 @@ static xml_node_t* get_tti_node( xml_node_t*        root,
                                  const std::string& name )
 {
   std::string class_str;
-  if ( xml_t::get_value( class_str, root, "class" ) )
+  if ( xml::get_value( class_str, root, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
@@ -44,7 +41,7 @@ static xml_node_t* get_tti_node( xml_node_t*        root,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml_t::get_children( children, root );
+  int num_children = xml::get_children( children, root );
   for ( int i=0; i < num_children; i++ )
   {
     xml_node_t* node = get_tti_node( children[ i ], name );
@@ -61,7 +58,7 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
                           const std::string&        name )
 {
   std::string class_str;
-  if ( xml_t::get_value( class_str, root, "class" ) )
+  if ( xml::get_value( class_str, root, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
@@ -70,7 +67,7 @@ static int get_tti_nodes( std::vector<xml_node_t*>& nodes,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml_t::get_children( children, root );
+  int num_children = xml::get_children( children, root );
   for ( int i=0; i < num_children; i++ )
   {
     get_tti_nodes( nodes, children[ i ], name );
@@ -89,11 +86,11 @@ static bool get_tti_value( std::string&       value,
 
   if ( node )
   {
-    if ( xml_t::get_value( value, node, "." ) )
+    if ( xml::get_value( value, node, "." ) )
     {
       return true;
     }
-    else if ( xml_t::get_value( value, node, "a/." ) )
+    else if ( xml::get_value( value, node, "a/." ) )
     {
       return true;
     }
@@ -109,16 +106,16 @@ static int get_tti_value( std::vector<std::string>& values,
                           const std::string&        name )
 {
   std::string class_str;
-  if ( xml_t::get_value( class_str, root, "class" ) )
+  if ( xml::get_value( class_str, root, "class" ) )
   {
     if ( ! strncmp( class_str.c_str(), name.c_str(), name.size() ) )
     {
       std::string value;
-      if ( xml_t::get_value( value, root, "." ) )
+      if ( xml::get_value( value, root, "." ) )
       {
         values.push_back( value );
       }
-      else if ( xml_t::get_value( value, root, "a/." ) )
+      else if ( xml::get_value( value, root, "a/." ) )
       {
         values.push_back( value );
       }
@@ -126,7 +123,7 @@ static int get_tti_value( std::vector<std::string>& values,
   }
 
   std::vector<xml_node_t*> children;
-  int num_children = xml_t::get_children( children, root );
+  int num_children = xml::get_children( children, root );
   for ( int i=0; i < num_children; i++ )
   {
     get_tti_value( values, children[ i ], name );
@@ -170,7 +167,7 @@ static bool parse_gems( item_t&           item,
     if ( socket_bonus_node )
     {
       std::string socket_bonus_str;
-      if ( xml_t::get_value( socket_bonus_str, socket_bonus_node, "a/." ) )
+      if ( xml::get_value( socket_bonus_str, socket_bonus_node, "a/." ) )
       {
         util::fuzzy_stats( item.armory_gems_str, socket_bonus_str );
       }
@@ -275,7 +272,7 @@ static bool parse_item_stats( item_t&     item,
   for ( int i=0; i < num_spells; i++ )
   {
     std::string description;
-    if ( xml_t::get_value( description, spells[ i ], "a/." ) )
+    if ( xml::get_value( description, spells[ i ], "a/." ) )
     {
       util::fuzzy_stats( item.armory_stats_str, description );
     }
@@ -326,7 +323,7 @@ static bool parse_item_name( item_t&            item,
 {
   std::string& s = item.armory_name_str;
 
-  if ( ! xml_t::get_value( s, node, "title/." ) )
+  if ( ! xml::get_value( s, node, "title/." ) )
     return false;
 
   std::string::size_type pos = s.find( " - Items" ); // MMOC appends " - Items - Sigrie" to item names
@@ -506,14 +503,11 @@ static meta_gem_type_e parse_meta_gem( const std::string& description )
   return META_GEM_NONE;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+// mmo_champion::parse_gem ==================================================
 
-
-// mmo_champion_t::parse_gem ================================================
-
-gem_type_e mmo_champion_t::parse_gem( item_t&            item,
-                                      const std::string& gem_id,
-                                      cache::behavior_e  caching )
+gem_type_e mmo_champion::parse_gem( item_t&            item,
+				    const std::string& gem_id,
+				    cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -537,7 +531,7 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
 
       std::string property_str;
       xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
-      if ( property_node ) xml_t::get_value( property_str, property_node, "a/." );
+      if ( property_node ) xml::get_value( property_str, property_node, "a/." );
 
       if ( type == GEM_NONE || property_str.empty() )
         return GEM_NONE;
@@ -570,15 +564,15 @@ gem_type_e mmo_champion_t::parse_gem( item_t&            item,
   return GEM_NONE;
 }
 
-// mmo_champion_t::download_glyph ===========================================
+// mmo_champion::download_glyph =============================================
 
-bool mmo_champion_t::download_glyph( player_t*          player,
-                                     std::string&       glyph_name,
-                                     const std::string& glyph_id,
-                                     cache::behavior_e  caching )
+bool mmo_champion::download_glyph( player_t*          player,
+				   std::string&       glyph_name,
+				   const std::string& glyph_id,
+				   cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching );
-  if ( ! node || ! xml_t::get_value( glyph_name, node, "title/." ) )
+  if ( ! node || ! xml::get_value( glyph_name, node, "title/." ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from mmo-champion\n", glyph_id.c_str() );
@@ -588,11 +582,11 @@ bool mmo_champion_t::download_glyph( player_t*          player,
   return true;
 }
 
-// mmo_champion_t::download_item ============================================
+// mmo_champion::download_item ==============================================
 
-bool mmo_champion_t::download_item( item_t&            item,
-                                    const std::string& item_id,
-                                    cache::behavior_e  caching )
+bool mmo_champion::download_item( item_t&            item,
+				  const std::string& item_id,
+				  cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -655,16 +649,16 @@ bool mmo_champion_t::download_item( item_t&            item,
   return true;
 }
 
-// mmo_champion_t::download_slot ============================================
+// mmo_champion::download_slot ==============================================
 
-bool mmo_champion_t::download_slot( item_t&            item,
-                                    const std::string& item_id,
-                                    const std::string& enchant_id,
-                                    const std::string& addon_id,
-                                    const std::string& reforge_id,
-                                    const std::string& rsuffix_id,
-                                    const std::string  gem_ids[ 3 ],
-                                    cache::behavior_e  caching )
+bool mmo_champion::download_slot( item_t&            item,
+				  const std::string& item_id,
+				  const std::string& enchant_id,
+				  const std::string& addon_id,
+				  const std::string& reforge_id,
+				  const std::string& rsuffix_id,
+				  const std::string  gem_ids[ 3 ],
+				  cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -736,25 +730,25 @@ bool mmo_champion_t::download_slot( item_t&            item,
     return false;
   }
 
-  if ( ! enchant_t::download( item, enchant_id ) )
+  if ( ! enchant::download( item, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_addon( item, addon_id ) )
+  if ( ! enchant::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  if ( ! enchant::download_reforge( item, reforge_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  if ( ! enchant::download_rsuffix( item, rsuffix_id ) )
   {
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;

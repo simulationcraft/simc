@@ -5,11 +5,9 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
 // format_server ============================================================
 
-std::string& format_server( std::string& name )
+static std::string& format_server( std::string& name )
 {
   if ( name.empty() ) return name;
 
@@ -49,8 +47,8 @@ static js_node_t* download_profile( sim_t* sim,
   std::string url_ptr = "http://ptr.wowhead.com/profile=load&id=" + id;
   std::string result;
 
-  if ( http_t::get( result, url_www, caching, "WowheadProfiler.registerProfile(" ) ||
-       http_t::get( result, url_ptr, caching, "WowheadProfiler.registerProfile(" ) )
+  if ( http::get( result, url_www, caching, "WowheadProfiler.registerProfile(" ) ||
+       http::get( result, url_ptr, caching, "WowheadProfiler.registerProfile(" ) )
   {
     std::string::size_type start = result.find( "WowheadProfiler.registerProfile(" );
     if ( start != std::string::npos ) start = result.find( '{', start );
@@ -63,7 +61,7 @@ static js_node_t* download_profile( sim_t* sim,
         result.resize( finish + 1 );
         result.erase( 0, start );
         if ( sim -> debug ) util::fprintf( sim -> output_file, "Profile JS:\n%s\n", result.c_str() );
-        return js_t::create( sim, result );
+        return js::create( sim, result );
       }
     }
   }
@@ -83,8 +81,8 @@ static xml_node_t* download_id( sim_t*             sim,
   std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=" )
                         + id_str + "&xml";
 
-  xml_node_t *node = xml_t::get( sim, url_www, caching, "</json>" );
-  if ( sim -> debug ) xml_t::print( node );
+  xml_node_t *node = xml::get( sim, url_www, caching, "</json>" );
+  if ( sim -> debug ) xml::print( node );
   return node;
 }
 
@@ -126,7 +124,7 @@ static bool parse_gems( item_t&           item,
   item.armory_gems_str.clear();
 
   std::string stats_str;
-  if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
   std::string temp_stats_str = stats_str;
@@ -186,7 +184,7 @@ static bool parse_gems( item_t&           item,
   if ( match )
   {
     std::string tooltip_str;
-    if ( xml_t::get_value( tooltip_str, node, "htmlTooltip/cdata" ) )
+    if ( xml::get_value( tooltip_str, node, "htmlTooltip/cdata" ) )
     {
       const char* search = "Socket Bonus: ";
       std::string::size_type pos = tooltip_str.find( search );
@@ -213,7 +211,7 @@ static bool parse_weapon( item_t&     item,
                           xml_node_t* node )
 {
   std::string stats_str;
-  if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
   std::string temp_stats_str = stats_str;
@@ -243,7 +241,7 @@ static bool parse_weapon( item_t&     item,
   if ( speed.empty() || dps.empty() || dmgmin.empty() || dmgmax.empty() ) return true;
 
   std::string subclass_str;
-  if ( ! xml_t::get_value( subclass_str, node, "subclass/cdata" ) )
+  if ( ! xml::get_value( subclass_str, node, "subclass/cdata" ) )
     return true;
 
   weapon_type_e type = WEAPON_NONE;
@@ -282,7 +280,7 @@ static bool parse_item_stats( item_t&     item,
   item.armory_stats_str.clear();
 
   std::string stats_str;
-  if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
   parse_stats( item.armory_stats_str, stats_str );
@@ -301,7 +299,7 @@ static bool parse_item_reforge( item_t&     item,
 // TO-DO: Find out how wowhead handles them.
 #if 0
   std::string stats_str;
-  if ( ! xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+  if ( ! xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
     return true;
 
   parse_stats( item.armory_reforge_str, stats_str );
@@ -315,10 +313,10 @@ static bool parse_item_reforge( item_t&     item,
 static bool parse_item_name( item_t&     item,
                              xml_node_t* node )
 {
-  if ( ! xml_t::get_value( item.armory_name_str, node, "name/cdata" ) )
+  if ( ! xml::get_value( item.armory_name_str, node, "name/cdata" ) )
     return false;
 
-  if ( ! xml_t::get_value( item.armory_id_str, node, "item/id" ) )
+  if ( ! xml::get_value( item.armory_id_str, node, "item/id" ) )
     return false;
 
   util::tokenize( item.armory_name_str );
@@ -334,7 +332,7 @@ static bool parse_item_heroic( item_t&     item,
   std::string info_str;
   item.armory_heroic_str = "";
 
-  if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
+  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -374,7 +372,7 @@ static bool parse_item_lfr( item_t&     item,
   std::string info_str;
   item.armory_lfr_str = "";
 
-  if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
+  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -409,7 +407,7 @@ static bool parse_item_quality( item_t&     item,
                                 xml_node_t* node )
 {
   int quality;
-  if ( ! xml_t::get_value( quality, node, "quality/id" ) )
+  if ( ! xml::get_value( quality, node, "quality/id" ) )
     return false;
 
   item.armory_quality_str.clear();
@@ -430,7 +428,7 @@ static bool parse_item_level( item_t&     item,
 
   item.armory_ilevel_str.clear();
 
-  if ( ! xml_t::get_value( info_str, node, "level/." ) )
+  if ( ! xml::get_value( info_str, node, "level/." ) )
     return false;
 
   item.armory_ilevel_str = info_str;
@@ -448,7 +446,7 @@ static bool parse_item_armor_type( item_t&     item,
   bool is_armor = false;
   std::string temp_str = "";
 
-  if ( ! xml_t::get_value( info_str, node, "json/cdata" ) )
+  if ( ! xml::get_value( info_str, node, "json/cdata" ) )
     return false;
 
   std::string temp_info_str = info_str;
@@ -542,7 +540,7 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
-bool is_valid_profile_id( const std::string& id )
+static bool is_valid_profile_id( const std::string& id )
 {
   // IIRC, Can't test right now.
   for( size_t i = 0, s = id.size(); i < s; ++i )
@@ -553,10 +551,10 @@ bool is_valid_profile_id( const std::string& id )
 
 // download_player_profile ==================================================
 
-player_t* download_player_profile( sim_t* sim,
-                                   const std::string& id,
-                                   const std::string& spec,
-                                   cache::behavior_e caching )
+static player_t* download_player_profile( sim_t* sim,
+					  const std::string& id,
+					  const std::string& spec,
+					  cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
@@ -569,10 +567,10 @@ player_t* download_player_profile( sim_t* sim,
     return 0;
   }
 
-  if ( sim -> debug ) js_t::print( profile_js, sim -> output_file );
+  if ( sim -> debug ) js::print( profile_js, sim -> output_file );
 
   std::string name_str;
-  if ( ! js_t::get_value( name_str, profile_js, "name"  ) )
+  if ( ! js::get_value( name_str, profile_js, "name"  ) )
   {
     sim -> errorf( "Unable to extract player name from wowhead id '%s'.\n", id.c_str() );
     name_str = "wowhead" + id;
@@ -583,7 +581,7 @@ player_t* download_player_profile( sim_t* sim,
   util::format_text ( name_str, sim -> input_is_utf8 );
 
   std::string level_str;
-  if ( ! js_t::get_value( level_str, profile_js, "level"  ) )
+  if ( ! js::get_value( level_str, profile_js, "level"  ) )
   {
     sim -> errorf( "Unable to extract player level from wowhead id '%s'.\n", id.c_str() );
     return 0;
@@ -591,7 +589,7 @@ player_t* download_player_profile( sim_t* sim,
   int level = atoi( level_str.c_str() );
 
   std::string cid_str;
-  if ( ! js_t::get_value( cid_str, profile_js, "classs" ) )
+  if ( ! js::get_value( cid_str, profile_js, "classs" ) )
   {
     sim -> errorf( "Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
@@ -600,7 +598,7 @@ player_t* download_player_profile( sim_t* sim,
   std::string type_str = util::player_type_string( player_type );
 
   std::string rid_str;
-  if ( ! js_t::get_value( rid_str, profile_js, "race" ) )
+  if ( ! js::get_value( rid_str, profile_js, "race" ) )
   {
     sim -> errorf( "Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
     return 0;
@@ -619,15 +617,15 @@ player_t* download_player_profile( sim_t* sim,
   p -> level = level;
 
   std::vector<std::string> region_data;
-  int num_region = js_t::get_value( region_data, profile_js, "region" );
+  int num_region = js::get_value( region_data, profile_js, "region" );
   if ( num_region > 0 ) p -> region_str = region_data[ 0 ];
 
   std::vector<std::string> realm_data;
-  int num_realm = js_t::get_value( realm_data, profile_js, "realm" );
+  int num_realm = js::get_value( realm_data, profile_js, "realm" );
   if ( num_realm > 0 ) p -> server_str = realm_data[ 0 ];
 
   int user_id=0;
-  if ( js_t::get_value( user_id, profile_js, "id" ) && ( user_id != 0 ) )
+  if ( js::get_value( user_id, profile_js, "id" ) && ( user_id != 0 ) )
   {
     p -> origin_str = "http://www.wowhead.com/profile=" + id;
   }
@@ -643,7 +641,7 @@ player_t* download_player_profile( sim_t* sim,
   for ( profession_type_e i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
   {
     std::vector<std::string> skill_levels;
-    if ( 2 == js_t::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
+    if ( 2 == js::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
     {
       if ( ! p -> professions_str.empty()) p -> professions_str += '/';
       p -> professions_str += util::profession_type_string( i );
@@ -653,7 +651,7 @@ player_t* download_player_profile( sim_t* sim,
   }
 
   int active_talents = 0;
-  js_t::get_value( active_talents, profile_js, "talents/active" );
+  js::get_value( active_talents, profile_js, "talents/active" );
 
   int use_talents;
   if ( util::str_compare_ci( spec, "active" ) )
@@ -671,11 +669,11 @@ player_t* download_player_profile( sim_t* sim,
     use_talents = active_talents;
   }
 
-  js_node_t* builds = js_t::get_node( profile_js, "talents/builds" );
+  js_node_t* builds = js::get_node( profile_js, "talents/builds" );
 
   if ( builds ) // !!! NEW FORMAT !!!
   {
-    js_node_t* build = js_t::get_node( builds, ( use_talents ? "1" : "0" ) );
+    js_node_t* build = js::get_node( builds, ( use_talents ? "1" : "0" ) );
     if ( ! build )
     {
       sim -> errorf( "Player %s unable to access talent/glyph build from profile.\n", p -> name() );
@@ -685,7 +683,7 @@ player_t* download_player_profile( sim_t* sim,
     // FIX-ME: Temporary override until wowhead profile updated for MoP
 
     // Determine spec from number of talent points spent.
-    js_node_t* spents = js_t::get_node( build, "spent" );
+    js_node_t* spents = js::get_node( build, "spent" );
     if ( spents )
     {
       js_node_t* spent[ 3 ];
@@ -695,8 +693,8 @@ player_t* download_player_profile( sim_t* sim,
       for ( uint32_t i = 0; i < 3; i++ )
       {
         int v;
-        spent[ i ] = js_t::get_node( spents, util::to_string( i ) );
-        if ( spent[ i ] && ( js_t::get_value( v, spent[ i ] ) ) )
+        spent[ i ] = js::get_node( spents, util::to_string( i ) );
+        if ( spent[ i ] && ( js::get_value( v, spent[ i ] ) ) )
         {
           if ( v >= maxv )
           {
@@ -716,7 +714,7 @@ player_t* download_player_profile( sim_t* sim,
     }
     std::string talent_encoding;
 
-    if ( ! js_t::get_value( talent_encoding, build, "talents" ) )
+    if ( ! js::get_value( talent_encoding, build, "talents" ) )
     {
       sim -> errorf( "Player %s unable to access talent encoding from profile.\n", p -> name() );
       return 0;
@@ -742,7 +740,7 @@ player_t* download_player_profile( sim_t* sim,
 
 /*
     std::string glyph_encoding;
-    if ( ! js_t::get_value( glyph_encoding, build, "glyphs" ) )
+    if ( ! js::get_value( glyph_encoding, build, "glyphs" ) )
     {
       sim -> errorf( "Player %s unable to access glyph encoding from profile.\n", p -> name() );
       return 0;
@@ -783,7 +781,7 @@ player_t* download_player_profile( sim_t* sim,
 /*
     std::vector<std::string> talent_encodings;
 
-    int num_builds = js_t::get_value( talent_encodings, profile_js, "talents/build" );
+    int num_builds = js::get_value( talent_encodings, profile_js, "talents/build" );
     if ( num_builds == 2 )
     {
       std::string& encoding = talent_encodings[ use_talents ];
@@ -796,7 +794,7 @@ player_t* download_player_profile( sim_t* sim,
     }
 
     std::vector<std::string> glyph_encodings;
-    num_builds = js_t::get_value( glyph_encodings, profile_js, "glyphs" );
+    num_builds = js::get_value( glyph_encodings, profile_js, "glyphs" );
     if ( num_builds == 2 )
     {
       std::vector<std::string> glyph_ids;
@@ -823,7 +821,7 @@ player_t* download_player_profile( sim_t* sim,
     if ( sim -> canceled ) return 0;
 
     std::vector<std::string> inventory_data;
-    if ( js_t::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
+    if ( js::get_value( inventory_data, profile_js, translate_inventory_id( i ) ) )
     {
       std::string    item_id = inventory_data[ 0 ];
       std::string rsuffix_id = ( inventory_data[ 1 ] == "0" ) ? "" : inventory_data[ 1 ];
@@ -855,15 +853,12 @@ player_t* download_player_profile( sim_t* sim,
   return p;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
-
-namespace wowhead {
 // wowhead::parse_gem =====================================================
 
-gem_type_e parse_gem( item_t&            item,
-                                 const std::string& gem_id,
-                                 bool               ptr,
-                                 cache::behavior_e  caching )
+gem_type_e wowhead::parse_gem( item_t&            item,
+			       const std::string& gem_id,
+			       bool               ptr,
+			       cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -879,7 +874,7 @@ gem_type_e parse_gem( item_t&            item,
   gem_type_e type = GEM_NONE;
 
   std::string color_str;
-  if ( xml_t::get_value( color_str, node, "subclass/cdata" ) )
+  if ( xml::get_value( color_str, node, "subclass/cdata" ) )
   {
     std::string::size_type pos = color_str.find( ' ' );
     if ( pos != std::string::npos ) color_str.erase( pos );
@@ -889,7 +884,7 @@ gem_type_e parse_gem( item_t&            item,
     if ( type == GEM_META )
     {
       std::string name_str;
-      if ( xml_t::get_value( name_str, node, "name/cdata" ) )
+      if ( xml::get_value( name_str, node, "name/cdata" ) )
       {
         std::string::size_type new_pos = name_str.find( " Diamond" );
         if ( new_pos != std::string::npos ) name_str.erase( new_pos );
@@ -901,7 +896,7 @@ gem_type_e parse_gem( item_t&            item,
     else
     {
       std::string stats_str;
-      if ( xml_t::get_value( stats_str, node, "jsonEquip/cdata" ) )
+      if ( xml::get_value( stats_str, node, "jsonEquip/cdata" ) )
       {
         parse_stats( item.armory_gems_str, stats_str );
       }
@@ -913,14 +908,14 @@ gem_type_e parse_gem( item_t&            item,
 
 // wowhead::download_glyph ================================================
 
-bool download_glyph( player_t*          player,
-                                std::string&       glyph_name,
-                                const std::string& glyph_id,
-                                bool               ptr,
-                                cache::behavior_e  caching )
+bool wowhead::download_glyph( player_t*          player,
+			      std::string&       glyph_name,
+			      const std::string& glyph_id,
+			      bool               ptr,
+			      cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
-  if ( ! node || ! xml_t::get_value( glyph_name, node, "name/cdata" ) )
+  if ( ! node || ! xml::get_value( glyph_name, node, "name/cdata" ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
@@ -932,10 +927,10 @@ bool download_glyph( player_t*          player,
 
 // wowhead::download_item =================================================
 
-bool download_item( item_t&            item,
-                               const std::string& item_id,
-                               bool               ptr,
-                               cache::behavior_e  caching )
+bool wowhead::download_item( item_t&            item,
+			     const std::string& item_id,
+			     bool               ptr,
+			     cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -1000,15 +995,15 @@ bool download_item( item_t&            item,
 
 // wowhead::download_slot =================================================
 
-bool download_slot( item_t&            item,
-                               const std::string& item_id,
-                               const std::string& enchant_id,
-                               const std::string& addon_id,
-                               const std::string& reforge_id,
-                               const std::string& rsuffix_id,
-                               const std::string  gem_ids[ 3 ],
-                               bool               ptr,
-                               cache::behavior_e  caching )
+bool wowhead::download_slot( item_t&            item,
+			     const std::string& item_id,
+			     const std::string& enchant_id,
+			     const std::string& addon_id,
+			     const std::string& reforge_id,
+			     const std::string& rsuffix_id,
+			     const std::string  gem_ids[ 3 ],
+			     bool               ptr,
+			     cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -1080,25 +1075,25 @@ bool download_slot( item_t&            item,
     return false;
   }
 
-  if ( ! enchant_t::download( item, enchant_id ) )
+  if ( ! enchant::download( item, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n", p -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_addon( item, addon_id ) )
+  if ( ! enchant::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n", p -> name(), addon_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  if ( ! enchant::download_reforge( item, reforge_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n", p -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
     //return false;
   }
 
-  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  if ( ! enchant::download_rsuffix( item, rsuffix_id ) )
   {
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n", p -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );
     return false;
@@ -1109,12 +1104,12 @@ bool download_slot( item_t&            item,
 
 // wowhead::download_player ===============================================
 
-player_t* download_player( sim_t* sim,
-                                      const std::string& region,
-                                      const std::string& server,
-                                      const std::string& name,
-                                      const std::string& spec,
-                                      cache::behavior_e  caching )
+player_t* wowhead::download_player( sim_t* sim,
+				    const std::string& region,
+				    const std::string& server,
+				    const std::string& name,
+				    const std::string& spec,
+				    cache::behavior_e  caching )
 {
   std::string id = name;
 
@@ -1128,7 +1123,7 @@ player_t* download_player( sim_t* sim,
 
     std::string url = "http://www.wowhead.com/profile=" + region + "." + server_name + "." + character_name;
     std::string result;
-    if ( http_t::get( result, url, caching, "profilah.initialize(" ) )
+    if ( http::get( result, url, caching, "profilah.initialize(" ) )
     {
       if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
 
@@ -1155,5 +1150,3 @@ player_t* download_player( sim_t* sim,
 
   return download_player_profile( sim, id, spec, caching );
 }
-
-} // END wowhead NAMESPACE

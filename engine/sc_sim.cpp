@@ -209,9 +209,9 @@ static bool parse_proxy( sim_t*             sim,
   int port = atoi( splits[ 2 ].c_str() );
   if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
   {
-    http_t::proxy.type = splits[ 0 ];
-    http_t::proxy.host = splits[ 1 ];
-    http_t::proxy.port = port;
+    http::proxy.type = splits[ 0 ];
+    http::proxy.host = splits[ 1 ];
+    http::proxy.port = port;
     return true;
   }
 
@@ -493,7 +493,7 @@ static bool parse_rawr( sim_t*             sim,
 {
   if ( name == "rawr" )
   {
-    sim -> active_player = rawr_t::load_player( sim, value );
+    sim -> active_player = rawr::load_player( sim, value );
     if ( ! sim -> active_player )
     {
       sim -> errorf( "Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
@@ -2073,7 +2073,7 @@ void sim_t::create_options()
     { "chardev",                          OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "rawr",                             OPT_FUNC,   ( void* ) ::parse_rawr                        },
     { "wowreforge",                       OPT_FUNC,   ( void* ) ::parse_armory                      },
-    { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http_t::clear_cache               },
+    { "http_clear_cache",                 OPT_FUNC,   ( void* ) ::http::clear_cache                 },
     { "cache_items",                      OPT_FUNC,   ( void* ) ::parse_cache                       },
     { "cache_players",                    OPT_FUNC,   ( void* ) ::parse_cache                       },
     { "default_region",                   OPT_STRING, &( default_region_str                       ) },
@@ -2296,7 +2296,7 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  http_t::cache_load();
+  http::cache_load();
   dbc_t::init();
 
   sim_control_t control;
@@ -2366,7 +2366,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( output_file != stdout ) fclose( output_file );
 
-  http_t::cache_save();
+  http::cache_save();
   dbc_t::de_init();
 
   return 0;

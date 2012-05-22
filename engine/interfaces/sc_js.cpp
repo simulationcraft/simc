@@ -15,8 +15,6 @@ struct js_node_t
   const char* name() { return name_str.c_str(); }
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
 // is_white_space ===========================================================
 
 static bool is_white_space( char c )
@@ -245,18 +243,16 @@ static js_node_t* split_path( js_node_t*         node,
 
   for ( int i=0; i < num_splits; i++ )
   {
-    node = js_t::get_child( node, splits[ i ] );
+    node = js::get_child( node, splits[ i ] );
     if ( ! node ) return 0;
   }
 
   return node;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+// js::create ===============================================================
 
-// js_t::create =============================================================
-
-js_node_t* js_t::create( sim_t* sim, const std::string& input )
+js_node_t* js::create( sim_t* sim, const std::string& input )
 {
   if ( input.empty() ) return 0;
 
@@ -272,9 +268,9 @@ js_node_t* js_t::create( sim_t* sim, const std::string& input )
   return root;
 }
 
-// js_t::create =============================================================
+// js::create ===============================================================
 
-js_node_t* js_t::create( sim_t* sim, FILE* input )
+js_node_t* js::create( sim_t* sim, FILE* input )
 {
   if ( ! input ) return 0;
   std::string buffer;
@@ -283,10 +279,10 @@ js_node_t* js_t::create( sim_t* sim, FILE* input )
   return create( sim, buffer );
 }
 
-// js_t::get_child ==========================================================
+// js::get_child ============================================================
 
-js_node_t* js_t::get_child( js_node_t*         root,
-                            const std::string& name_str )
+js_node_t* js::get_child( js_node_t*         root,
+			  const std::string& name_str )
 {
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
@@ -298,19 +294,19 @@ js_node_t* js_t::get_child( js_node_t*         root,
   return 0;
 }
 
-// js_t::get_children =======================================================
+// js::get_children =========================================================
 
-int js_t::get_children( std::vector<js_node_t*>& nodes,
-                        js_node_t*               root )
+int js::get_children( std::vector<js_node_t*>& nodes,
+		      js_node_t*               root )
 {
   nodes = root -> children;
   return ( int ) nodes.size();
 }
 
-// js_t::get_node ===========================================================
+// js::get_node =============================================================
 
-js_node_t* js_t::get_node( js_node_t*         root,
-                           const std::string& path )
+js_node_t* js::get_node( js_node_t*         root,
+			 const std::string& path )
 {
   if ( path.empty() || path == root -> name() )
     return root;
@@ -318,11 +314,11 @@ js_node_t* js_t::get_node( js_node_t*         root,
   return split_path( root, path );
 }
 
-// js_t::get_value ==========================================================
+// js::get_value ============================================================
 
-bool js_t::get_value( std::string&       value,
-                      js_node_t*         root,
-                      const std::string& path )
+bool js::get_value( std::string&       value,
+		    js_node_t*         root,
+		    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -331,11 +327,11 @@ bool js_t::get_value( std::string&       value,
   return true;
 }
 
-// js_t::get_value ==========================================================
+// js::get_value ============================================================
 
-bool js_t::get_value( int&               value,
-                      js_node_t*         root,
-                      const std::string& path )
+bool js::get_value( int&               value,
+		    js_node_t*         root,
+		    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -344,11 +340,11 @@ bool js_t::get_value( int&               value,
   return true;
 }
 
-// js_t::get_value ==========================================================
+// js::get_value ============================================================
 
-bool js_t::get_value( double&            value,
-                      js_node_t*         root,
-                      const std::string& path )
+bool js::get_value( double&            value,
+		    js_node_t*         root,
+		    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -357,11 +353,11 @@ bool js_t::get_value( double&            value,
   return true;
 }
 
-// js_t::get_value ==========================================================
+// js::get_value ============================================================
 
-int js_t::get_value( std::vector<std::string>& value,
-                     js_node_t*               root,
-                     const std::string&       path )
+int js::get_value( std::vector<std::string>& value,
+		   js_node_t*               root,
+		   const std::string&       path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return 0;
@@ -375,9 +371,9 @@ int js_t::get_value( std::vector<std::string>& value,
   return static_cast<int>( size );
 }
 
-// js_t::get_name ===========================================================
+// js::get_name =============================================================
 
-const char* js_t::get_name( js_node_t* node )
+const char* js::get_name( js_node_t* node )
 {
   if ( node -> name_str.empty() )
     return 0;
@@ -385,11 +381,11 @@ const char* js_t::get_name( js_node_t* node )
   return node -> name();
 }
 
-// js_t::print ==============================================================
+// js::print ================================================================
 
-void js_t::print( js_node_t* root,
-                  FILE*      file,
-                  int        spacing )
+void js::print( js_node_t* root,
+		FILE*      file,
+		int        spacing )
 {
   if ( ! root ) return;
 

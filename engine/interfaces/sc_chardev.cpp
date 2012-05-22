@@ -5,8 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
 // download_profile =========================================================
 
 static js_node_t* download_profile( sim_t* sim,
@@ -16,10 +14,10 @@ static js_node_t* download_profile( sim_t* sim,
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
   std::string profile_str;
 
-  if ( ! http_t::get( profile_str, url, caching ) )
+  if ( ! http::get( profile_str, url, caching ) )
     return 0;
 
-  return js_t::create( sim, profile_str );
+  return js::create( sim, profile_str );
 }
 
 // translate_slot ===========================================================
@@ -51,34 +49,31 @@ static const char* translate_slot( int slot )
   return "unknown";
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
-
-namespace chardev {
 // chardev::download_player ===============================================
 
-player_t* download_player( sim_t* sim,
-                                      const std::string& id,
-                                      cache::behavior_e caching )
+player_t* chardev::download_player( sim_t* sim,
+				    const std::string& id,
+				    cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
 
   js_node_t* profile_js = download_profile( sim, id, caching );
-  if ( ! profile_js || ! ( profile_js = js_t::get_node( profile_js, "character" ) ) )
+  if ( ! profile_js || ! ( profile_js = js::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
     return 0;
   }
 
-  if ( sim -> debug ) js_t::print( profile_js, sim -> output_file );
+  if ( sim -> debug ) js::print( profile_js, sim -> output_file );
 
   std::string name_str, race_str, type_str;
 
-  if ( ! js_t::get_value( name_str, profile_js, "0/0" ) )
+  if ( ! js::get_value( name_str, profile_js, "0/0" ) )
     name_str = "chardev_" + id;
 
-  if ( ! js_t::get_value( race_str, profile_js, "0/2/1" ) ||
-       ! js_t::get_value( type_str, profile_js, "0/3/1" ) )
+  if ( ! js::get_value( race_str, profile_js, "0/2/1" ) ||
+       ! js::get_value( type_str, profile_js, "0/3/1" ) )
   {
     sim -> errorf( "Unable to extract player race/type from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
     return 0;
@@ -97,14 +92,14 @@ player_t* download_player( sim_t* sim,
   }
 
   p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
-  http_t::format( p -> origin_str );
+  http::format( p -> origin_str );
 
-  js_node_t*        gear_root = js_t::get_child( profile_js, "1" );
-  js_node_t*     talents_root = js_t::get_child( profile_js, "2" );
+  js_node_t*        gear_root = js::get_child( profile_js, "1" );
+  js_node_t*     talents_root = js::get_child( profile_js, "2" );
 /*
-  js_node_t*      glyphs_root = js_t::get_child( profile_js, "3" );
+  js_node_t*      glyphs_root = js::get_child( profile_js, "3" );
 */
-  js_node_t* professions_root = js_t::get_child( profile_js, "5" );
+  js_node_t* professions_root = js::get_child( profile_js, "5" );
 
   for ( int i=0; i < SLOT_MAX; i++ )
   {
@@ -112,36 +107,36 @@ player_t* download_player( sim_t* sim,
     sim -> current_slot = i;
     item_t& item = p -> items[ i ];
 
-    js_node_t* slot_node = js_t::get_child( gear_root, translate_slot( i ) );
+    js_node_t* slot_node = js::get_child( gear_root, translate_slot( i ) );
     if ( ! slot_node ) continue;
 
     std::string item_id;
-    js_t::get_value( item_id, slot_node, "0/0" );
+    js::get_value( item_id, slot_node, "0/0" );
     if ( item_id.empty() ) continue;
 
     std::string enchant_id, addon_id, gem_ids[ 3 ];
-    js_t::get_value( gem_ids[ 0 ], slot_node, "1/0" );
-    js_t::get_value( gem_ids[ 1 ], slot_node, "2/0" );
-    js_t::get_value( gem_ids[ 2 ], slot_node, "3/0" );
-    js_t::get_value( enchant_id,   slot_node, "4/0" );
-    js_t::get_value(   addon_id,   slot_node, "7/0/0" );
+    js::get_value( gem_ids[ 0 ], slot_node, "1/0" );
+    js::get_value( gem_ids[ 1 ], slot_node, "2/0" );
+    js::get_value( gem_ids[ 2 ], slot_node, "3/0" );
+    js::get_value( enchant_id,   slot_node, "4/0" );
+    js::get_value(   addon_id,   slot_node, "7/0/0" );
 
     std::string reforge_id;
     int reforge_from, reforge_to;
-    if ( js_t::get_value( reforge_from, slot_node, "5/0" ) &&
-         js_t::get_value( reforge_to,   slot_node, "5/1" ) )
+    if ( js::get_value( reforge_from, slot_node, "5/0" ) &&
+         js::get_value( reforge_to,   slot_node, "5/1" ) )
     {
       if ( ( reforge_from >= 0 ) && ( reforge_to >= 0 ) )
       {
         stat_type_e from = util::translate_item_mod( static_cast<item_mod_type>( reforge_from ) );
         stat_type_e to   = util::translate_item_mod( static_cast<item_mod_type>( reforge_to ) );
-        reforge_id = util::to_string( enchant_t::get_reforge_id( from, to ) );
+        reforge_id = util::to_string( enchant::get_reforge_id( from, to ) );
       }
     }
 
     std::string rsuffix_id;
     int random_suffix;
-    if ( js_t::get_value( random_suffix, slot_node, "6" ) )
+    if ( js::get_value( random_suffix, slot_node, "6" ) )
     {
       if ( random_suffix > 0 ) // random "property" ???
       {
@@ -176,11 +171,11 @@ player_t* download_player( sim_t* sim,
   v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
 
   std::vector<js_node_t*> talent_nodes;
-  int num_talents = js_t::get_children( talent_nodes, talents_root );
+  int num_talents = js::get_children( talent_nodes, talents_root );
   for ( int i=0; i < num_talents; i++ )
   {
     int ranks;
-    if ( js_t::get_value( ranks, talent_nodes[ i ] ) )
+    if ( js::get_value( ranks, talent_nodes[ i ] ) )
     {
       v[ ( 3 * i ) / num_talents ] += ranks;
     }
@@ -207,7 +202,7 @@ player_t* download_player( sim_t* sim,
   {
     int a;
 
-    js_t::get_value( a, talent_nodes[ 30 ] );
+    js::get_value( a, talent_nodes[ 30 ] );
 
     if ( a > 0 )
     {
@@ -228,11 +223,11 @@ player_t* download_player( sim_t* sim,
 /*
   std::string talents_encoding;
   std::vector<js_node_t*> talent_nodes;
-  int num_talents = js_t::get_children( talent_nodes, talents_root );
+  int num_talents = js::get_children( talent_nodes, talents_root );
   for ( int i=0; i < num_talents; i++ )
   {
     std::string ranks;
-    if ( js_t::get_value( ranks, talent_nodes[ i ] ) )
+    if ( js::get_value( ranks, talent_nodes[ i ] ) )
     {
       talents_encoding += ranks;
     }
@@ -249,11 +244,11 @@ player_t* download_player( sim_t* sim,
 
   p -> glyphs_str = "";
   std::vector<js_node_t*> glyph_nodes;
-  int num_glyphs = js_t::get_children( glyph_nodes, glyphs_root );
+  int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
   for ( int i=0; i < num_glyphs; i++ )
   {
     std::string glyph_name;
-    if ( js_t::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
+    if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
     {
       util::glyph_name( glyph_name );
       if ( ! p -> glyphs_str.empty() )
@@ -267,14 +262,14 @@ player_t* download_player( sim_t* sim,
   if ( professions_root )
   {
     std::vector<js_node_t*> skill_nodes;
-    int num_skills = js_t::get_children( skill_nodes, professions_root );
+    int num_skills = js::get_children( skill_nodes, professions_root );
     for ( int i=0; i < num_skills; i++ )
     {
       int skill_id;
       std::string skill_level;
 
-      if ( js_t::get_value( skill_id, skill_nodes[ i ], "0" ) &&
-           js_t::get_value( skill_level, skill_nodes[ i ], "1" ) )
+      if ( js::get_value( skill_id, skill_nodes[ i ], "0" ) &&
+           js::get_value( skill_level, skill_nodes[ i ], "1" ) )
       {
         std::string skill_name_str = util::profession_type_string( util::translate_profession_id( skill_id ) );
         if ( i ) p -> professions_str += "/";
@@ -285,5 +280,3 @@ player_t* download_player( sim_t* sim,
 
   return p;
 }
-
-} // END chardev NAMESPACE

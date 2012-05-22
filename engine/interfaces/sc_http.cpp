@@ -13,9 +13,9 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
-// http_t::proxy ============================================================
+// http::proxy ==============================================================
 
-http_t::proxy_t http_t::proxy;
+http::proxy_t proxy;
 
 cache::cache_control_t cache::cache_control_t::singleton;
 
@@ -210,10 +210,10 @@ int SocketWrapper::connect( const std::string& host, unsigned short port )
 
   a.sin_family = AF_INET;
 
-  if ( http_t::proxy.type == "http" || http_t::proxy.type == "https" )
+  if ( http::proxy.type == "http" || http::proxy.type == "https" )
   {
-    h = gethostbyname( http_t::proxy.host.c_str() );
-    a.sin_port = htons( http_t::proxy.port );
+    h = gethostbyname( http::proxy.host.c_str() );
+    a.sin_port = htons( http::proxy.port );
   }
   else
   {
@@ -326,7 +326,7 @@ static std::string build_request( const url_t&       url,
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
   std::stringstream request;
-  bool use_proxy = ( http_t::proxy.type == "http" || http_t::proxy.type == "https" );
+  bool use_proxy = ( http::proxy.type == "http" || http::proxy.type == "https" );
 
   request << "GET ";
 
@@ -381,8 +381,8 @@ static bool download( url_cache_entry_t& entry,
   std::string current_url = url;
   unsigned int redirect = 0;
   static const unsigned int redirect_max = 8;
-  bool ssl_proxy = ( http_t::proxy.type == "https" );
-  const bool use_proxy = ( ssl_proxy || http_t::proxy.type == "http" );
+  bool ssl_proxy = ( http::proxy.type == "https" );
+  const bool use_proxy = ( ssl_proxy || http::proxy.type == "http" );
 
   // get a page and if we find a redirect update current_url and loop
   while ( true )
@@ -495,20 +495,20 @@ static bool download( url_cache_entry_t& entry,
 
 } // ANONYMOUS NAMESPACE ====================================================
 
-// http_t::clear_cache ======================================================
+// http::clear_cache ========================================================
 
-bool http_t::clear_cache( sim_t* sim,
-                          const std::string& name,
-                          const std::string& value )
+bool http::clear_cache( sim_t* sim,
+			const std::string& name,
+			const std::string& value )
 {
   assert( name == "http_clear_cache" ); ( void )name;
   if ( value != "0" && ! sim -> parent ) cache_clear();
   return true;
 }
 
-// http_t::cache_load =======================================================
+// http::cache_load =========================================================
 
-void http_t::cache_load()
+void http::cache_load()
 {
   auto_lock_t lock( cache_mutex );
 
@@ -552,9 +552,9 @@ void http_t::cache_load()
   {}
 }
 
-// http_t::cache_save =======================================================
+// http::cache_save =========================================================
 
-void http_t::cache_save()
+void http::cache_save()
 {
   try
   {
@@ -587,12 +587,12 @@ void http_t::cache_save()
 }
 
 
-// http_t::get ==============================================================
+// http::get ================================================================
 
-bool http_t::get( std::string&       result,
-                  const std::string& url,
-                  cache::behavior_e  caching,
-                  const std::string& confirmation )
+bool http::get( std::string&       result,
+		const std::string& url,
+		cache::behavior_e  caching,
+		const std::string& confirmation )
 {
   result.clear();
 
@@ -660,10 +660,10 @@ bool http_t::get( std::string&       result,
   return true;
 }
 
-// http_t::format ===========================================================
+// http::format =============================================================
 
-void http_t::format_( std::string& encoded_url,
-                      const std::string& url )
+void http::format_( std::string& encoded_url,
+		    const std::string& url )
 {
   encoded_url = url;
   util::urlencode( util::str_to_utf8( encoded_url ) );
@@ -685,7 +685,7 @@ int main( int argc, char* argv[] )
       if ( !strcmp( argv[ i ], "--dump" ) )
       {
         url_db.clear();
-        http_t::cache_load();
+        http::cache_load();
 
         for ( auto& i : url_db )
         {
@@ -696,7 +696,7 @@ int main( int argc, char* argv[] )
       else
       {
         std::string result;
-        if ( http_t::get( result, argv[ i ], cache::CURRENT ) )
+        if ( http::get( result, argv[ i ], cache::CURRENT ) )
           std::cout << result << '\n';
         else
           std::cout << "Unable to download \"" << argv[ i ] << "\".\n";
@@ -707,12 +707,12 @@ int main( int argc, char* argv[] )
   {
     std::string result;
 
-    if ( http_t::get( result, "http://us.battle.net/wow/en/character/llane/pagezero/advanced", cache::CURRENT ) )
+    if ( http::get( result, "http://us.battle.net/wow/en/character/llane/pagezero/advanced", cache::CURRENT ) )
       std::cout << result << '\n';
     else
       std::cout << "Unable to download armory data.\n";
 
-    if ( http_t::get( result, "http://www.wowhead.com/item=40328&xml", cache::CURRENT ) )
+    if ( http::get( result, "http://www.wowhead.com/item=40328&xml", cache::CURRENT ) )
       std::cout << result << '\n';
     else
       std::cout << "Unable to download wowhead data.\n";

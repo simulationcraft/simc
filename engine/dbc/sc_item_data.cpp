@@ -566,7 +566,7 @@ bool item_database_t::parse_enchant( item_t&            item,
   // For now, if there's a spell in the enchant, defer back to old ways
   if ( has_spell )
   {
-    return enchant_t::download( item, enchant_id );
+    return enchant::download( item, enchant_id );
   }
   else
   {
@@ -599,19 +599,19 @@ bool item_database_t::download_slot( item_t&            item,
                         item.player -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
   }
 
-  if ( ! enchant_t::download_addon( item, addon_id ) )
+  if ( ! enchant::download_addon( item, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), addon_id.c_str(), item.name(), item.slot_name() );
   }
 
-  if ( ! enchant_t::download_reforge( item, reforge_id ) )
+  if ( ! enchant::download_reforge( item, reforge_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse reforge id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), reforge_id.c_str(), item.name(), item.slot_name() );
   }
 
-  if ( ! enchant_t::download_rsuffix( item, rsuffix_id ) )
+  if ( ! enchant::download_rsuffix( item, rsuffix_id ) )
   {
     item.sim -> errorf( "Player %s unable to determine random suffix '%s' for item '%s' at slot %s.\n",
                         item.player -> name(), rsuffix_id.c_str(), item.name(), item.slot_name() );

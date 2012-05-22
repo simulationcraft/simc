@@ -339,8 +339,8 @@ bool item_t::init()
 
   if ( ! decode_quality() ) return false;
 
-  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
-  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
@@ -740,7 +740,7 @@ bool item_t::decode_enchant()
   }
 
   std::string use_str;
-  if ( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     use.name_str = encoded_enchant_str;
@@ -748,7 +748,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     enchant.name_str = encoded_enchant_str;
@@ -790,7 +790,7 @@ bool item_t::decode_addon()
   }
 
   std::string use_str;
-  if ( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     use.name_str = encoded_addon_str;
@@ -798,7 +798,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     addon.name_str = encoded_addon_str;
@@ -1362,8 +1362,8 @@ bool item_t::download_slot( item_t& item,
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                             rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                 rsuffix_id, gem_ids, cache::ONLY );
+        success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+					       rsuffix_id, gem_ids, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cache::ONLY );
@@ -1387,8 +1387,8 @@ bool item_t::download_slot( item_t& item,
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                             rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                 rsuffix_id, gem_ids, cb );
+        success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+					       rsuffix_id, gem_ids, cb );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cb );
@@ -1425,7 +1425,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       else if ( source_list[ i ] == "ptrhead" )
         success = wowhead::download_item( item, item_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        success = mmo_champion_t::download_item( item, item_id, cache::ONLY );
+        success = mmo_champion::download_item( item, item_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id, cache::ONLY );
     }
@@ -1444,7 +1444,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       else if ( source_list[ i ] == "ptrhead" )
         success = wowhead::download_item( item, item_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        success = mmo_champion_t::download_item( item, item_id );
+        success = mmo_champion::download_item( item, item_id );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id );
     }
@@ -1474,7 +1474,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       else if ( src == "ptrhead" )
         success = wowhead::download_glyph( player, glyph_name, glyph_id, true, cache::ONLY );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
+        success = mmo_champion::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
     }
@@ -1494,7 +1494,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       else if ( src == "ptrhead" )
         success = wowhead::download_glyph( player, glyph_name, glyph_id, true );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id );
+        success = mmo_champion::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id );
     }
@@ -1537,7 +1537,7 @@ gem_type_e item_t::parse_gem( item_t&            item,
       else if ( source_list[ i ] == "ptrhead" )
         type = wowhead::parse_gem( item, gem_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        type = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
+        type = mmo_champion::parse_gem( item, gem_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
         type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
     }
@@ -1556,7 +1556,7 @@ gem_type_e item_t::parse_gem( item_t&            item,
       else if ( source_list[ i ] == "ptrhead" )
         type = wowhead::parse_gem( item, gem_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        type = mmo_champion_t::parse_gem( item, gem_id );
+        type = mmo_champion::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "bcpapi" )
         type = bcp_api::parse_gem( item, gem_id );
     }

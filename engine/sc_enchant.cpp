@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
 
 struct enchant_data_t
 {
@@ -661,11 +661,9 @@ struct weapon_discharge_proc_callback_t : public action_callback_t
 
 } // END ANONYMOUS NAMESPACE
 
-namespace special_enchants {
-
 // register_synapse_springs =================================================
 
-void register_synapse_springs( item_t* item )
+static void register_synapse_springs( item_t* item )
 {
   player_t* p = item -> player;
 
@@ -696,7 +694,7 @@ void register_synapse_springs( item_t* item )
   item -> use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
-void register_avalanche( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+static void register_avalanche( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
   {
@@ -716,7 +714,7 @@ void register_avalanche( player_t* p, const std::string& mh_enchant, const std::
   }
 }
 
-void register_executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+static void register_executioner( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "executioner" || oh_enchant == "executioner" )
   {
@@ -743,7 +741,7 @@ void register_executioner( player_t* p, const std::string& mh_enchant, const std
   }
 }
 
-void register_hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+static void register_hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
     {
@@ -818,7 +816,7 @@ void register_hurricane( player_t* p, const std::string& mh_enchant, const std::
     }
 }
 
-void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+static void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "landslide" )
   {
@@ -829,7 +827,7 @@ void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, c
   }
 }
 
-void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+static void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "mongoose" )
   {
@@ -840,7 +838,7 @@ void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, co
   }
 }
 
-void register_power_torrent( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
+static void register_power_torrent( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
 {
   if ( enchant == "power_torrent" )
   {
@@ -859,7 +857,7 @@ void register_power_torrent( player_t* p, const std::string& enchant, const std:
   }
 }
 
-void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+static void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "windwalk" )
   {
@@ -874,7 +872,7 @@ void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, co
   }
 }
 
-void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+static void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "berserking" )
   {
@@ -891,7 +889,7 @@ void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, 
   }
 }
 
-void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w )
+static void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w )
 {
   if ( enchant == "gnomish_xray" )
   {
@@ -908,15 +906,13 @@ void register_gnomish_xray( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
-} // END special_enchants NAMESPACE
-
 // ==========================================================================
 // Enchant
 // ==========================================================================
 
-// enchant_t::init ==========================================================
+// enchant::init ============================================================
 
-void enchant_t::init( player_t* p )
+void enchant::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
@@ -926,8 +922,6 @@ void enchant_t::init( player_t* p )
 
   weapon_t* mhw = &( p -> main_hand_weapon );
   weapon_t* ohw = &( p -> off_hand_weapon );
-
-  using namespace special_enchants;
 
   register_avalanche( p, mh_enchant, oh_enchant, mhw, ohw );
 
@@ -988,15 +982,15 @@ void enchant_t::init( player_t* p )
 
     if ( item.enchant.stat && item.enchant.school )
     {
-      unique_gear_t::register_stat_discharge_proc( item, item.enchant );
+      unique_gear::register_stat_discharge_proc( item, item.enchant );
     }
     else if ( item.enchant.stat )
     {
-      unique_gear_t::register_stat_proc( item, item.enchant );
+      unique_gear::register_stat_proc( item, item.enchant );
     }
     else if ( item.enchant.school )
     {
-      unique_gear_t::register_discharge_proc( item, item.enchant );
+      unique_gear::register_discharge_proc( item, item.enchant );
     }
     else if ( item.encoded_enchant_str == "synapse_springs" )
     {
@@ -1011,12 +1005,12 @@ void enchant_t::init( player_t* p )
   }
 }
 
-// enchant_t::get_encoding ==================================================
+// enchant::get_encoding ====================================================
 
-bool enchant_t::get_encoding( std::string& name,
-                              std::string& encoding,
-                              const std::string& enchant_id,
-                              bool ptr )
+bool enchant::get_encoding( std::string& name,
+			    std::string& encoding,
+			    const std::string& enchant_id,
+			    bool ptr )
 {
   for ( size_t i = 0; enchant_db[ i ].id; i++ )
   {
@@ -1040,12 +1034,12 @@ bool enchant_t::get_encoding( std::string& name,
   return false;
 }
 
-// enchant_t::get_addon_encoding ============================================
+// enchant::get_addon_encoding ==============================================
 
-bool enchant_t::get_addon_encoding( std::string& name,
-                                    std::string& encoding,
-                                    const std::string& addon_id,
-                                    bool ptr )
+bool enchant::get_addon_encoding( std::string& name,
+				  std::string& encoding,
+				  const std::string& addon_id,
+				  bool ptr )
 {
   for ( size_t i = 0; addon_db[ i ].id; i++ )
   {
@@ -1069,11 +1063,11 @@ bool enchant_t::get_addon_encoding( std::string& name,
   return false;
 }
 
-// enchant_t::get_reforge_encoding ==========================================
+// enchant::get_reforge_encoding ============================================
 
-bool enchant_t::get_reforge_encoding( std::string& name,
-                                      std::string& encoding,
-                                      const std::string& reforge_id )
+bool enchant::get_reforge_encoding( std::string& name,
+				    std::string& encoding,
+				    const std::string& reforge_id )
 {
   name.clear();
   encoding.clear();
@@ -1108,10 +1102,10 @@ bool enchant_t::get_reforge_encoding( std::string& name,
   return false;
 }
 
-// enchant_t::get_reforge_id ================================================
+// enchant::get_reforge_id ==================================================
 
-int enchant_t::get_reforge_id( stat_type_e stat_from,
-                               stat_type_e stat_to )
+int enchant::get_reforge_id( stat_type_e stat_from,
+			     stat_type_e stat_to )
 {
   int index_from;
   for ( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
@@ -1141,10 +1135,10 @@ int enchant_t::get_reforge_id( stat_type_e stat_from,
   return 0;
 }
 
-// enchant_t::download ======================================================
+// enchant::download ========================================================
 
-bool enchant_t::download( item_t&            item,
-                          const std::string& enchant_id )
+bool enchant::download( item_t&            item,
+			const std::string& enchant_id )
 {
   item.armory_enchant_str.clear();
 
@@ -1161,10 +1155,10 @@ bool enchant_t::download( item_t&            item,
   return false;
 }
 
-// enchant_t::download_addon ================================================
+// enchant::download_addon ==================================================
 
-bool enchant_t::download_addon( item_t&            item,
-                                const std::string& addon_id )
+bool enchant::download_addon( item_t&            item,
+			      const std::string& addon_id )
 {
   item.armory_addon_str.clear();
 
@@ -1181,10 +1175,10 @@ bool enchant_t::download_addon( item_t&            item,
   return false;
 }
 
-// enchant_t::download_reforge ==============================================
+// enchant::download_reforge ================================================
 
-bool enchant_t::download_reforge( item_t&            item,
-                                  const std::string& reforge_id )
+bool enchant::download_reforge( item_t&            item,
+				const std::string& reforge_id )
 {
   item.armory_reforge_str.clear();
 
@@ -1201,10 +1195,10 @@ bool enchant_t::download_reforge( item_t&            item,
   return false;
 }
 
-// enchant_t::download_rsuffix ==============================================
+// enchant::download_rsuffix ================================================
 
-bool enchant_t::download_rsuffix( item_t&            item,
-                                  const std::string& rsuffix_id )
+bool enchant::download_rsuffix( item_t&            item,
+				const std::string& rsuffix_id )
 {
   item.armory_random_suffix_str = rsuffix_id;
   return true;

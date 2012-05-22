@@ -4584,75 +4584,76 @@ struct regen_event_t : public event_t
 
 // Unique Gear ==============================================================
 
-struct unique_gear_t
+namespace unique_gear
 {
-  static void init( player_t* );
+  void init( player_t* );
 
-  static action_callback_t* register_stat_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-                                                stat_type_e, int max_stacks, double amount,
-                                                double proc_chance, timespan_t duration, timespan_t cooldown,
-                                                timespan_t tick=timespan_t::zero(), bool reverse=false );
+  action_callback_t* register_stat_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
+					 stat_type_e, int max_stacks, double amount,
+					 double proc_chance, timespan_t duration, timespan_t cooldown,
+					 timespan_t tick=timespan_t::zero(), bool reverse=false );
 
-  static action_callback_t* register_cost_reduction_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-                                                          school_type_e, int max_stacks, double amount,
-                                                          double proc_chance, timespan_t duration, timespan_t cooldown,
-                                                          bool refreshes=false, bool reverse=false );
+  action_callback_t* register_cost_reduction_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
+						   school_type_e, int max_stacks, double amount,
+						   double proc_chance, timespan_t duration, timespan_t cooldown,
+						   bool refreshes=false, bool reverse=false );
 
-  static action_callback_t* register_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-                                                     int max_stacks, school_type_e, double amount, double scaling,
-                                                     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-                                                     unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+  action_callback_t* register_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
+					      int max_stacks, school_type_e, double amount, double scaling,
+					      double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+					      unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  static action_callback_t* register_chance_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-                                                            int max_stacks, school_type_e, double amount, double scaling,
-                                                            double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-                                                            unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+  action_callback_t* register_chance_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
+						     int max_stacks, school_type_e, double amount, double scaling,
+						     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+						     unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  static action_callback_t* register_stat_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-                                                          int max_stacks, stat_type_e, double stat_amount,
-                                                          school_type_e, double discharge_amount, double discharge_scaling,
-                                                          double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-                                                          unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+  action_callback_t* register_stat_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
+						   int max_stacks, stat_type_e, double stat_amount,
+						   school_type_e, double discharge_amount, double discharge_scaling,
+						   double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+						   unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  static action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
-  static action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
-  static action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
-  static action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
-  static action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
+  action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
+  action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
+  action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
+  action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
+  action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
 
-  static bool get_equip_encoding( std::string& encoding,
-                                  const std::string& item_name,
-                                  bool heroic,
-                                  bool lfr,
-                                  bool ptr,
-                                  const std::string& item_id=std::string() );
+  bool get_equip_encoding( std::string& encoding,
+			   const std::string& item_name,
+			   bool heroic,
+			   bool lfr,
+			   bool ptr,
+			   const std::string& item_id=std::string() );
 
-  static bool get_use_encoding  ( std::string& encoding,
-                                  const std::string& item_name,
-                                  bool heroic,
-                                  bool lfr,
-                                  bool ptr,
-                                  const std::string& item_id=std::string() );
+  bool get_use_encoding( std::string& encoding,
+			 const std::string& item_name,
+			 bool heroic,
+			 bool lfr,
+			 bool ptr,
+			 const std::string& item_id=std::string() );
 };
 
 // Enchants =================================================================
 
-struct enchant_t
+namespace enchant
 {
-  static void init( player_t* );
-  static bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
-  static bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
-  static bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
-  static int  get_reforge_id      ( stat_type_e stat_from, stat_type_e stat_to );
-  static bool download        ( item_t&, const std::string& enchant_id );
-  static bool download_addon  ( item_t&, const std::string& addon_id   );
-  static bool download_reforge( item_t&, const std::string& reforge_id );
-  static bool download_rsuffix( item_t&, const std::string& rsuffix_id );
+  void init( player_t* );
+  bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
+  bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
+  bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
+  int  get_reforge_id      ( stat_type_e stat_from, stat_type_e stat_to );
+  bool download        ( item_t&, const std::string& enchant_id );
+  bool download_addon  ( item_t&, const std::string& addon_id   );
+  bool download_reforge( item_t&, const std::string& reforge_id );
+  bool download_rsuffix( item_t&, const std::string& rsuffix_id );
 };
 
 // Consumable ===============================================================
 
-namespace consumable {
+namespace consumable 
+{
   action_t* create_action( player_t*, const std::string& name, const std::string& options );
 }
 
@@ -4868,14 +4869,10 @@ public:
   static rng_t* create( const std::string& name, rng_type_e=RNG_STANDARD );
 };
 
-// String utils =============================================================
-
-std::string tolower( const std::string& src );
-std::string proper_option_name( const std::string& full_name );
-
 // Wowhead  =================================================================
 
-namespace wowhead {
+namespace wowhead 
+{
   player_t* download_player( sim_t* sim,
                                     const std::string& region,
                                     const std::string& server,
@@ -4901,85 +4898,92 @@ namespace wowhead {
 
 // CharDev  =================================================================
 
-namespace chardev {
-
+namespace chardev 
+{
   player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
 }
 
 // MMO Champion =============================================================
 
-struct mmo_champion_t
+namespace mmo_champion
 {
-  static bool download_slot( item_t&,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string gem_ids[ 3 ],
-                             cache::behavior_e b=cache::items() );
-  static bool download_item( item_t&, const std::string& item_id,
-                             cache::behavior_e b=cache::items() );
-  static bool download_glyph( player_t* player, std::string& glyph_name,
-                              const std::string& glyph_id, cache::behavior_e b=cache::items() );
-  static gem_type_e parse_gem( item_t& item, const std::string& gem_id,
-                               cache::behavior_e b=cache::items() );
+  bool download_slot( item_t&,
+		      const std::string& item_id,
+		      const std::string& enchant_id,
+		      const std::string& addon_id,
+		      const std::string& reforge_id,
+		      const std::string& rsuffix_id,
+		      const std::string gem_ids[ 3 ],
+		      cache::behavior_e b=cache::items() );
+
+  bool download_item( item_t&, const std::string& item_id,
+		      cache::behavior_e b=cache::items() );
+
+  bool download_glyph( player_t* player, std::string& glyph_name,
+		       const std::string& glyph_id, cache::behavior_e b=cache::items() );
+
+  gem_type_e parse_gem( item_t& item, const std::string& gem_id,
+			cache::behavior_e b=cache::items() );
 };
 
 // Rawr =====================================================================
 
-struct rawr_t
+namespace rawr
 {
-  static player_t* load_player( sim_t*, const std::string& character_filename );
-  static player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
+  player_t* load_player( sim_t*, const std::string& character_filename );
+  player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
 };
 
 // Blizzard Community Platform API ==========================================
 
 namespace bcp_api
 {
-bool download_guild( sim_t* sim,
-                     const std::string& region,
-                     const std::string& server,
-                     const std::string& name,
-                     const std::vector<int>& ranks,
-                     int player_type_e = PLAYER_NONE,
-                     int max_rank=0,
-                     cache::behavior_e b=cache::players() );
-player_t* download_player( sim_t*,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           const std::string& talents=std::string( "active" ),
-                           cache::behavior_e b=cache::players() );
-bool download_item( item_t&, const std::string& item_id, cache::behavior_e b=cache::items() );
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     cache::behavior_e b=cache::items() );
-bool download_slot( item_t& item,
-                    const std::string& item_id,
-                    const std::string& enchant_id,
-                    const std::string& addon_id,
-                    const std::string& reforge_id,
-                    const std::string& rsuffix_id,
-                    const std::string gem_ids[ 3 ],
-                    cache::behavior_e b=cache::items() );
-gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
+  bool download_guild( sim_t* sim,
+		       const std::string& region,
+		       const std::string& server,
+		       const std::string& name,
+		       const std::vector<int>& ranks,
+		       int player_type_e = PLAYER_NONE,
+		       int max_rank=0,
+		       cache::behavior_e b=cache::players() );
+
+  player_t* download_player( sim_t*,
+			     const std::string& region,
+			     const std::string& server,
+			     const std::string& name,
+			     const std::string& talents=std::string( "active" ),
+			     cache::behavior_e b=cache::players() );
+
+  bool download_item( item_t&, const std::string& item_id, cache::behavior_e b=cache::items() );
+
+  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+		       cache::behavior_e b=cache::items() );
+
+  bool download_slot( item_t& item,
+		      const std::string& item_id,
+		      const std::string& enchant_id,
+		      const std::string& addon_id,
+		      const std::string& reforge_id,
+		      const std::string& rsuffix_id,
+		      const std::string gem_ids[ 3 ],
+		      cache::behavior_e b=cache::items() );
+
+  gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
 }
 
 // Wowreforge ===============================================================
 
 namespace wowreforge
 {
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
+  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
 };
 
 // HTTP Download  ===========================================================
 
-struct http_t
+namespace http
 {
-private:
-  static void format_( std::string& encoded_url, const std::string& url );
-public:
+  void format_( std::string& encoded_url, const std::string& url );
+
   struct proxy_t
   {
     std::string type;
@@ -4988,55 +4992,59 @@ public:
   };
   static proxy_t proxy;
 
-  static void cache_load();
-  static void cache_save();
-  static bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+  void cache_load();
+  void cache_save();
+  bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
-  static bool get( std::string& result, const std::string& url, cache::behavior_e b,
-                   const std::string& confirmation=std::string() );
+  bool get( std::string& result, const std::string& url, cache::behavior_e b,
+	    const std::string& confirmation=std::string() );
 
-  static std::string& format( std::string& encoded_url, const std::string& url )
-  { format_( encoded_url, url ); return encoded_url; }
-  static std::string& format( std::string& url )
-  { format_( url, url ); return url; }
+  inline std::string& format( std::string& encoded_url, const std::string& url )
+  { 
+    format_( encoded_url, url ); return encoded_url;
+  }
+  inline std::string& format( std::string& url )
+  { 
+    format_( url, url ); return url;
+  }
 };
 
 // XML ======================================================================
 
-struct xml_t
+namespace xml
 {
-  static const char* get_name( xml_node_t* node );
-  static xml_node_t* get_child( xml_node_t* root, const std::string& name );
-  static xml_node_t* get_node ( xml_node_t* root, const std::string& path );
-  static xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-  static int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
-  static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
-  static int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-  static bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
-  static bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
-  static bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-  static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
-                          const std::string& confirmation=std::string() );
-  static xml_node_t* create( sim_t* sim, const std::string& input );
-  static xml_node_t* create( sim_t* sim, FILE* input );
-  static void print( xml_node_t* root, FILE* f=0, int spacing=0 );
+  const char* get_name( xml_node_t* node );
+  xml_node_t* get_child( xml_node_t* root, const std::string& name );
+  xml_node_t* get_node ( xml_node_t* root, const std::string& path );
+  xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+  int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
+  int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
+  int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+  bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
+  bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
+  bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
+  xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
+		   const std::string& confirmation=std::string() );
+  xml_node_t* create( sim_t* sim, const std::string& input );
+  xml_node_t* create( sim_t* sim, FILE* input );
+  void print( xml_node_t* root, FILE* f=0, int spacing=0 );
 };
 
 // Java Script ==============================================================
 
-struct js_t
+namespace js
 {
-  static js_node_t* get_child( js_node_t* root, const std::string& name );
-  static js_node_t* get_node ( js_node_t* root, const std::string& path );
-  static int  get_children( std::vector<js_node_t*>&, js_node_t* root );
-  static int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
-  static bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
-  static bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
-  static bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-  static js_node_t* create( sim_t* sim, const std::string& input );
-  static js_node_t* create( sim_t* sim, FILE* input );
-  static void print( js_node_t* root, FILE* f=0, int spacing=0 );
-  static const char* get_name( js_node_t* root );
+  js_node_t* get_child( js_node_t* root, const std::string& name );
+  js_node_t* get_node ( js_node_t* root, const std::string& path );
+  int  get_children( std::vector<js_node_t*>&, js_node_t* root );
+  int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
+  bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
+  bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
+  bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
+  js_node_t* create( sim_t* sim, const std::string& input );
+  js_node_t* create( sim_t* sim, FILE* input );
+  void print( js_node_t* root, FILE* f=0, int spacing=0 );
+  const char* get_name( js_node_t* root );
 };
 
 // Handy Actions ============================================================
@@ -5089,286 +5097,5 @@ inline double sim_t::averaged_range( double min, double max )
 
   return default_rng_ -> range( min, max );
 }
-
-#ifdef WHAT_IF
-
-#define AOE_CAP 10
-
-struct ticker_t // replacement for dot_t, handles any ticking buff/debuff
-{
-  dot_t stuff
-  double crit;
-  double haste;
-  double mastery;
-};
-
-struct sim_t
-{
-  ...
-  actor_t* actor_list;
-  std::vector<player_t*> player_list;
-  std::vector<mob_t*> mob_list;
-  ...
-  int get_aura_slot( const std::string& n, actor_t* source );
-  ...
-};
-
-struct actor_t
-{
-  items, stats, action list, resource management...
-  actor_t( const std::string& n, int type ) {}
-  virtual actor_t*  choose_target();
-  virtual void      execute_action() { choose_target(); execute_first_ready_action(); }
-  virtual debuff_t* get_debuff( int aura_slot );
-  virtual ticker_t* get_ticker( int aura_slot );
-  virtual bool      is_ally( actor_t* other );
-};
-
-struct player_t : public actor_t
-{
-  scaling, current_target ( actor ), pet_list ...
-  player_t( const std::string& n, int type ) : actor_t( n, type ) { sim.player_list.push_back( this ); }
-};
-
-struct pet_t : public actor_t
-{
-  owner, summon, dismiss...
-  pet_t( const std::string& n, int type ) : actor_t( n, type ) {}
-};
-
-struct enemy_t : public actor_t
-{
-  health_by_time, health_per_player, arrise_at_time, arise_at_percent, ...
-  enemy_t( const std::string& n ) : actor_t( n, ACTOR_ENEMY ) { sim.enemy_list.push_back( this ); }
-};
-
-struct action_t
-{
-  actor_t, ...
-  action_t( const std::string& n );
-  virtual int execute();
-  virtual void schedule_execute();
-  virtual double execute_time();
-  virtual double haste();
-  virtual double gcd();
-  virtual bool ready();
-  virtual void cancel();
-  virtual void reset();
-};
-
-struct result_t
-{
-  actor_t* target;
-  int type;
-  bool hit;  // convenience
-  bool crit; // convenience, two-roll (blocked crits, etc)
-  double amount;
-  ticker_t ticker;
-};
-
-struct ability_t : public action_t
-{
-  spell_data, resource, weapon, two_roll, self_cast, aoe, base_xyz (no player_xyz or target_xyz),
-  direct_sp_coeff, direct_ap_coeff, tick_sp_coeff, tick_ap_coeff,
-  harmful, healing, callbacks, std::vector<result_t> results,
-  NO binary, NO repeating, NO direct_dmg, NO tick_dmg
-  ability_t( spell_data_t* s ) : action_t( s -> name() ) {}
-  virtual void  execute()
-  {
-    actor_t* targets[ AOE_CAP ];
-    int num_targets = area_of_effect( targets );
-    results.resize( num_targets );
-    for ( int i=0; i < num_targets; i++ )
-    {
-      calculate_result( results[ i ], targets[ i ] );
-      // "result" callbacks
-    }
-    consume_resource();
-    for ( int i=0; i < num_targets; i++ )
-    {
-      schedule_travel( results[ i ] );
-    }
-    update_ready();
-    // "cast" callbacks
-  }
-  virtual void impact( result_t& result )
-  {
-    if ( result.hit )
-    {
-      if ( result.amount > 0 )
-      {
-        if ( harmful )
-        {
-          assess_damage( result );
-        }
-        else if ( healing )
-        {
-          assess_healing( result );
-        }
-      }
-      if ( num_ticks > 0 )
-      {
-        ticker_t* ticker = get_ticker( result.target );  // caches aura_slot
-        ticker -> trigger( this, result.ticker );
-        // ticker_t::trigger() handles dot work in existing action_t::impact()
-      }
-    }
-    else
-    {
-      // miss msg
-      stat -> add_result( result );
-    }
-  }
-  virtual void   tick         ( ticker_t* );
-  virtual void   last_tick    ( ticker_t* );
-  virtual void   schedule_tick( ticker_t* );
-  virtual int    calculate_num_ticks( double haste, double duration=0 );
-  virtual double cost();
-  virtual double haste();
-  virtual bool   ready();
-  virtual void   cancel();
-  virtual void   reset();
-  virtual void   consume_resource();
-  virtual result_type_e calculate_attack_roll( actor_t* target );
-  virtual result_type_e calculate_spell_roll( actor_t* target );
-  virtual result_type_e calculate_roll( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_roll( target );
-    else
-      return calculate_spell_roll( target );
-  }
-  virtual void calculate_result( result_t& result, actor_t* target )
-  {
-    result.type = calculate_roll( target );
-    result.hit  = ( roll == ? );
-    result.crit = ( roll == ? ) || ( two_roll );
-    result.amount = calculate_direct_amount( target );
-    if ( result.hit && num_ticks )
-    {
-      calculate_ticker( &( result.ticker ), target );
-    }
-    return result;
-  }
-  virtual void calculate_ticker( ticker_t* ticker, target )
-  {
-    if ( target ) ticker -> target = target;
-    ticker -> amount  = calculate_tick_amount( ticker -> target );
-    ticker -> crit    = calculate_crit_chance( ticker -> target );
-    ticker -> haste   = calculate_haste      ( ticker -> target );
-    ticker -> mastery = calculate_mastery    ( ticker -> target );
-  }
-  virtual void refresh_ticker( ticker_t* ticker )
-  {
-    calculate_ticker( ticker );
-    ticker -> current_tick = 0;
-    ticker -> added_ticks = 0;
-    ticker -> added_time = 0;
-    ticker -> num_ticks = calculate_num_ticks( ticker -> haste );
-    ticker -> recalculate_finish();
-  }
-  virtual void extend_ticker_by_time( ticker_t* ticker, double extra_time )
-  {
-    int    full_tick_count   = ticker -> ticks() - 1;
-    double full_tick_remains = ticker -> finish - ticker -> tick_event -> time;
-
-    ticker -> haste = calculate_haste( ticker -> target );
-    ticker -> num_ticks += calculate_num_ticks( ticker -> haste, full_tick_remains ) - full_tick_count;
-    ticker -> recalculate_finish();
-  }
-  virtual void extend_ticker_by_ticks( ticker_t* ticker, double extra_ticks )
-  {
-    calculate_ticker( ticker );
-    ticker -> added_ticks += extra_ticks;
-    ticker -> num_ticks   += extra_ticks;
-    ticker -> recalculate_finish();
-  }
-  virtual double calculate_weapon_amount( actor_t* target );
-  virtual double calculate_direct_amount( actor_t* target );
-  virtual double calculate_tick_amount  ( actor_t* target );
-  virtual double calculate_power( actor_t* target )
-  {
-    return AP_multiplier * AP() + SP_multiplier * SP();
-  }
-  virtual double calculate_haste( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_haste( target );
-    else
-      return calculate_spell_haste( target );
-  }
-  virtual double calculate_mastery( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_mastery( target );
-    else
-      return calculate_spell_mastery( target );
-  }
-  virtual double calculate_miss_chance( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_miss_chance( target );
-    else
-      return calculate_spell_miss_chance( target );
-  }
-  virtual double calculate_dodge_chance( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_dodge_chance( target );
-    else
-      return 0;
-  }
-  virtual double calculate_parry_chance( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_parry_chance( target );
-    else
-      return 0;
-  }
-  virtual double calculate_glance_chance( actor_t* target )
-  {
-    if ( weapon && auto_attack )
-      return calculate_attack_glance_chance( target );
-    else
-      return 0;
-  }
-  virtual double calculate_block_chance( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_block_chance( target );
-    else
-      return 0;
-  }
-  virtual double calculate_crit_chance( actor_t* target )
-  {
-    if ( weapon )
-      return calculate_attack_crit_chance( target );
-    else
-      return calculate_spell_crit_chance( target );
-  }
-  virtual double calculate_crit_chance( ticker_t* ticker );
-  virtual double calculate_source_multiplier();
-  virtual double calculate_direct_multiplier() { return calculate_source_multiplier(); } // include crit bonus here
-  virtual double calculate_tick_multiplier  () { return calculate_source_multiplier(); }
-  virtual double calculate_target_multiplier( actor_t* target );
-  virtual int       area_of_effect( actor_t* targets[] ) { targets[ 0 ] = self_cast ? actor : actor -> current_target; return 1; }
-  virtual result_t& result(); // returns 0th "result", asserts if aoe
-  virtual double    travel_time( actor_t* target );
-  virtual void      schedule_travel( result_t& result );
-  virtual void assess_damage( result_t& result )
-  {
-    result.amount *= calculate_target_multiplier( result.target ); // allows for action-specific target multipliers
-    result.target -> assess_damage( result ); // adjust result as needed for flexibility
-    stat -> add_result( result );
-  }
-  virtual void assess_healing( result_t& result )
-  {
-    result.amount *= calculate_target_multiplier( result.target ); // allows for action-specific target multipliers
-    result.target -> assess_healing( result ); // adjust result as needed for flexibility
-    stat -> add_result( result );
-  }
-};
-
-#endif
 
 #endif // SIMULATIONCRAFT_H

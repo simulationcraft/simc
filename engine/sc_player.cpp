@@ -922,15 +922,15 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
   */
   else if ( meta_gem == META_MYSTICAL_SKYFIRE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds( 4.0 ), timespan_t::from_seconds( 45.0 ) );
+    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "mystical_skyfire", this, STAT_HASTE_RATING, 1, 320, 0.15, timespan_t::from_seconds( 4.0 ), timespan_t::from_seconds( 45.0 ) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
+    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthstorm", this, STAT_MANA, 1, 300, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
   }
   else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
   {
-    unique_gear_t::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
+    unique_gear::register_stat_proc( PROC_SPELL, RESULT_HIT_MASK, "insightful_earthsiege", this, STAT_MANA, 1, 600, 0.05, timespan_t::zero(), timespan_t::from_seconds( 15.0 ) );
   }
 }
 
@@ -1124,7 +1124,7 @@ void player_t::init_unique_gear()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing unique gear for player (%s)", name() );
 
-  unique_gear_t::init( this );
+  unique_gear::init( this );
 }
 
 // player_t::init_enchant ===================================================
@@ -1133,7 +1133,7 @@ void player_t::init_enchant()
 {
   if ( sim -> debug ) log_t::output( sim, "Initializing enchants for player (%s)", name() );
 
-  enchant_t::init( this );
+  enchant::init( this );
 }
 
 // player_t::init_resources =================================================
@@ -4921,21 +4921,21 @@ struct use_item_t : public action_t
     {
       if ( e.cost_reduction && e.school && e.discharge_amount )
       {
-        trigger = unique_gear_t::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                               e.school, e.max_stacks, e.discharge_amount,
-                                                               e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, false, e.reverse );
+        trigger = unique_gear::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
+							     e.school, e.max_stacks, e.discharge_amount,
+							     e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, false, e.reverse );
       }
       else if ( e.stat )
       {
-        trigger = unique_gear_t::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                     e.stat, e.max_stacks, e.stat_amount,
-                                                     e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, e.tick, e.reverse );
+        trigger = unique_gear::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
+						   e.stat, e.max_stacks, e.stat_amount,
+						   e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, e.tick, e.reverse );
       }
       else if ( e.school )
       {
-        trigger = unique_gear_t::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-                                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                                          e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
+        trigger = unique_gear::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
+							e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
+							e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
       }
 
       if ( trigger ) trigger -> deactivate();

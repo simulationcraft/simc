@@ -5,8 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-namespace {  // ANONYMOUS NAMESPACE ==========================================
-
 // translate_glyph_name =====================================================
 
 static const char* translate_glyph_name( player_t* p,
@@ -470,12 +468,10 @@ static race_type_e translate_rawr_race_str( const std::string& name )
   return RACE_NONE;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+// rawr::load_player ========================================================
 
-// rawr_t::load_player ======================================================
-
-player_t* rawr_t::load_player( sim_t* sim,
-                               const std::string& character_file )
+player_t* rawr::load_player( sim_t* sim,
+			     const std::string& character_file )
 {
   FILE* f = fopen( character_file.c_str(), "r" );
   if ( ! f )
@@ -494,31 +490,31 @@ player_t* rawr_t::load_player( sim_t* sim,
   return p;
 }
 
-// rawr_t::load_player ======================================================
+// rawr::load_player ========================================================
 
-player_t* rawr_t::load_player( sim_t* sim,
-                               const std::string& character_file,
-                               const std::string& character_xml )
+player_t* rawr::load_player( sim_t* sim,
+			     const std::string& character_file,
+			     const std::string& character_xml )
 {
-  xml_node_t* root_node = xml_t::create( sim, character_xml );
+  xml_node_t* root_node = xml::create( sim, character_xml );
   if ( ! root_node )
   {
     sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
     return 0;
   }
 
-  if ( sim -> debug ) xml_t::print( root_node );
+  if ( sim -> debug ) xml::print( root_node );
 
   std::string class_str, race_str;
-  if ( ! xml_t::get_value( class_str, root_node, "Class/." ) ||
-       ! xml_t::get_value(  race_str, root_node, "Race/."  ) )
+  if ( ! xml::get_value( class_str, root_node, "Class/." ) ||
+       ! xml::get_value(  race_str, root_node, "Race/."  ) )
   {
     sim -> errorf( "Unable to determine character class and race in Rawr Character Save XML.\n" );
     return 0;
   }
 
   std::string name_str;
-  if ( ! xml_t::get_value(  name_str, root_node, "Name/."  ) )
+  if ( ! xml::get_value(  name_str, root_node, "Name/."  ) )
   {
     std::vector<std::string> tokens;
     int num_tokens = util::string_split( tokens, character_file, "\\/" );
@@ -546,11 +542,11 @@ player_t* rawr_t::load_player( sim_t* sim,
 
   p -> origin_str = character_file;
 
-  xml_t::get_value( p -> region_str, root_node, "Region/." );
-  xml_t::get_value( p -> server_str, root_node, "Realm/."  );
+  xml::get_value( p -> region_str, root_node, "Region/." );
+  xml::get_value( p -> server_str, root_node, "Realm/."  );
 
   std::string talents_str;
-  if ( ! xml_t::get_value( talents_str, root_node, talents_parm ) )
+  if ( ! xml::get_value( talents_str, root_node, talents_parm ) )
   {
     sim -> errorf( "Player %s unable to determine character talents in Rawr Character Save XML.\n", p -> name() );
     return 0;
@@ -588,11 +584,11 @@ player_t* rawr_t::load_player( sim_t* sim,
   }
 
   std::vector<xml_node_t*> glyph_nodes;
-  int num_glyphs = xml_t::get_nodes( glyph_nodes, root_node, "Glyph" );
+  int num_glyphs = xml::get_nodes( glyph_nodes, root_node, "Glyph" );
   for ( int i=0; i < num_glyphs; i++ )
   {
     int spell_id;
-    if ( xml_t::get_value( spell_id, glyph_nodes[ i ], "." ) )
+    if ( xml::get_value( spell_id, glyph_nodes[ i ], "." ) )
     {
       const spell_data_t* sd = spell_data_t::find( spell_id );
       if ( sd )
@@ -620,7 +616,7 @@ player_t* rawr_t::load_player( sim_t* sim,
     item_t& item = p -> items[ i ];
 
     std::string slot_encoding;
-    if ( xml_t::get_value( slot_encoding, root_node, slot_name ) )
+    if ( xml::get_value( slot_encoding, root_node, slot_name ) )
     {
       std::string item_id, gem_ids[ 3 ];
       std::string enchant_id, reforge_id, addon_id;
@@ -666,8 +662,8 @@ player_t* rawr_t::load_player( sim_t* sim,
   // Parse Professions
   p -> professions_str = "";
   std::string profession_value[2];
-  xml_t::get_value( profession_value[0], root_node, "PrimaryProfession/."   );
-  xml_t::get_value( profession_value[1], root_node, "SecondaryProfession/." );
+  xml::get_value( profession_value[0], root_node, "PrimaryProfession/."   );
+  xml::get_value( profession_value[1], root_node, "SecondaryProfession/." );
   if ( ! profession_value[0].empty() )
   {
     p -> professions_str = util::tolower( profession_value[0] );

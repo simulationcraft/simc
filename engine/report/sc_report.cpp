@@ -610,7 +610,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
   ri.scale_factors_chart  = chart::scale_factors( p );
 
   std::string encoded_name;
-  http_t::format( encoded_name, p -> name_str );
+  http::format( encoded_name, p -> name_str );
 
   {
     std::vector<double> timeline_dps;

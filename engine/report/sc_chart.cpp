@@ -478,7 +478,7 @@ size_t raid_aps( std::vector<std::string>& images,
     {
       player_t* p = player_list[ i ];
       std::string formatted_name;
-      http_t::format( formatted_name, p -> name_str );
+      http::format( formatted_name, p -> name_str );
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%u,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), i ); s += buffer;
     }
     s += "&amp;";
