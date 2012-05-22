@@ -43,10 +43,9 @@ struct warlock_td_t : public actor_pair_t
 
   void reset()
   {
-    // FIXME!
-    // ds_started_below_20 = false;
-    // shadowflame_stack = 0;
-    // soc_trigger = 0;
+    ds_started_below_20 = false;
+    shadowflame_stack = 0;
+    soc_trigger = 0;
   }
 };
 
