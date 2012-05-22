@@ -16,7 +16,7 @@ struct warlock_t;
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 30
 
-struct warlock_td_t : public target_data_t
+struct warlock_td_t : public actor_pair_t
 {
   dot_t*  dots_corruption;
   dot_t*  dots_unstable_affliction;
@@ -40,6 +40,14 @@ struct warlock_td_t : public target_data_t
   int active_dots();
 
   warlock_td_t( player_t* target, warlock_t* source );
+
+  void reset()
+  {
+    // FIXME!
+    // ds_started_below_20 = false;
+    // shadowflame_stack = 0;
+    // soc_trigger = 0;
+  }
 };
 
 struct wild_imp_pet_t;
@@ -238,6 +246,8 @@ struct warlock_t : public player_t
   int initial_burning_embers, initial_demonic_fury;
   timespan_t ember_react;
 
+  target_specific_t<warlock_td_t> target_data;
+
   warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
@@ -264,26 +274,28 @@ struct warlock_t : public player_t
   virtual void      create_pets();
   virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type_e primary_role() const     { return ROLE_SPELL; }
-  virtual double    composite_spell_power_multiplier() const;
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-  virtual double composite_spell_crit() const;
-  virtual double composite_spell_haste() const;
-  virtual double composite_mastery() const;
-  virtual double composite_mp5() const;
+  virtual int       decode_set( item_t& );
+  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_type_e primary_role()     { return ROLE_SPELL; }
+  virtual double    composite_spell_power_multiplier();
+  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double composite_player_multiplier( school_type_e school, action_t* a );
+  virtual double composite_spell_crit();
+  virtual double composite_spell_haste();
+  virtual double composite_mastery();
+  virtual double composite_mp5();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
 
-  virtual target_data_t* create_target_data( player_t* target )
+  virtual warlock_td_t* get_target_data( player_t* target )
   {
-    return new warlock_td_t( target, this );
+    warlock_td_t*& td = target_data[ target ];
+    if( ! td ) td = new warlock_td_t( target, this );
+    return td;
   }
 
   // Temporary
-  virtual std::string set_default_talents() const
+  virtual std::string set_default_talents()
   {
     switch ( primary_tree() )
     {
@@ -296,7 +308,7 @@ struct warlock_t : public player_t
     return player_t::set_default_talents();
   }
 
-  virtual std::string set_default_glyphs() const
+  virtual std::string set_default_glyphs()
   {
     switch ( primary_tree() )
     {
@@ -334,20 +346,20 @@ public:
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
-  virtual timespan_t available() const;
+  virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual double composite_spell_haste() const;
-  virtual double composite_attack_haste() const;
-  virtual double composite_spell_power( school_type_e school ) const;
-  virtual double composite_attack_power() const;
-  virtual double composite_attack_crit( const weapon_t* ) const;
-  virtual double composite_spell_crit() const;
-  virtual double composite_player_multiplier( school_type_e school, const action_t* a ) const;
-  virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
-  virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
-  virtual double energy_regen_per_second() const;
-  warlock_t* o() const
+  virtual double composite_spell_haste();
+  virtual double composite_attack_haste();
+  virtual double composite_spell_power( school_type_e school );
+  virtual double composite_attack_power();
+  virtual double composite_attack_crit( weapon_t* );
+  virtual double composite_spell_crit();
+  virtual double composite_player_multiplier( school_type_e school, action_t* a );
+  virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
+  virtual resource_type_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual double energy_regen_per_second();
+  warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
 };
 
@@ -358,7 +370,7 @@ public:
 struct warlock_main_pet_t : public warlock_pet_t
 {
   warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
-  virtual double composite_attack_expertise( const weapon_t* ) const;
+  virtual double composite_attack_expertise( weapon_t* );
 };
 
 // ==========================================================================
@@ -437,7 +449,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 struct infernal_pet_t : public warlock_guardian_pet_t
 {
   infernal_pet_t( sim_t* sim, warlock_t* owner );
-  virtual double composite_spell_power( school_type_e school ) const;
+  virtual double composite_spell_power( school_type_e school );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
@@ -465,7 +477,7 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner, wild_imp_pet_t* m = 0 );
   virtual void init_base();
-  virtual timespan_t available() const;
+  virtual timespan_t available();
   virtual void demise();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );

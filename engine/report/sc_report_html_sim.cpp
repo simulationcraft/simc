@@ -10,13 +10,13 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_contents ======================================================
 
-void print_html_contents( FILE*  file, const sim_t* sim )
+void print_html_contents( FILE*  file, sim_t* sim )
 {
   size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
     ++c;
 
-  const size_t num_players = sim -> players_by_name.size();
+  size_t num_players = sim -> players_by_name.size();
   c += num_players;
   if ( sim -> report_targets )
     c += sim -> targets_by_name.size();
@@ -175,7 +175,7 @@ void print_html_contents( FILE*  file, const sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_sim_summary( FILE*  file, sim_t* sim, sim_t::report_information_t& ri )
 {
   fprintf( file,
            "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n" );
@@ -349,7 +349,7 @@ void print_html_sim_summary( FILE*  file, const sim_t* sim, const sim_t::report_
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_raid_summary( FILE*  file, sim_t* sim, sim_t::report_information_t& ri )
 {
   fprintf( file,
            "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n" );
@@ -464,7 +464,7 @@ void print_html_raid_summary( FILE*  file, const sim_t* sim, const sim_t::report
 
 // print_html_raid_imagemaps ==================================================
 
-void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
+void print_html_raid_imagemap( FILE* file, sim_t* sim, int num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   size_t start = num * MAX_PLAYERS_PER_CHART;
@@ -509,7 +509,7 @@ void print_html_raid_imagemap( FILE* file, const sim_t* sim, int num, bool dps )
            imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( FILE*  file, const sim_t* sim, const sim_t::report_information_t& ri )
+void print_html_raid_imagemaps( FILE*  file, sim_t* sim, sim_t::report_information_t& ri )
 {
 
   fprintf( file,
@@ -545,7 +545,7 @@ void print_html_raid_imagemaps( FILE*  file, const sim_t* sim, const sim_t::repo
 
 // print_html_scale_factors =================================================
 
-void print_html_scale_factors( FILE*  file, const sim_t* sim )
+void print_html_scale_factors( FILE*  file, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
@@ -635,7 +635,7 @@ void print_html_scale_factors( FILE*  file, const sim_t* sim )
 
 // print_html_help_boxes ====================================================
 
-void print_html_help_boxes( FILE*  file, const sim_t* sim )
+void print_html_help_boxes( FILE*  file, sim_t* sim )
 {
   fprintf( file,
            "\t\t<!-- Help Boxes -->\n" );
@@ -939,7 +939,7 @@ void print_html_help_boxes( FILE*  file, const sim_t* sim )
 
 // print_html_styles ====================================================
 
-void print_html_styles( FILE*  file, const sim_t* sim )
+void print_html_styles( FILE*  file, sim_t* sim )
 {
   // Styles
   // If file is being hosted on simulationcraft.org, link to the local
@@ -1307,7 +1307,7 @@ void print_html_styles( FILE*  file, const sim_t* sim )
 
 // print_html_masthead ====================================================
 
-void print_html_masthead( FILE* file, const sim_t* sim )
+void print_html_masthead( FILE* file, sim_t* sim )
 {
   // Begin masthead section
   fprintf( file,
@@ -1356,7 +1356,7 @@ void print_html_masthead( FILE* file, const sim_t* sim )
   // End masthead section
 }
 
-void print_html_errors( FILE* file, const sim_t* sim )
+void print_html_errors( FILE* file, sim_t* sim )
 {
   if ( ! sim -> error_list.empty() )
   {
@@ -1386,7 +1386,7 @@ void print_html_beta_warning( FILE* file )
 #endif
 }
 
-void print_html_image_load_scripts( FILE* file, const sim_t* sim )
+void print_html_image_load_scripts( FILE* file, sim_t* sim )
 {
   // Toggles, image load-on-demand, etc. Load from simulationcraft.org if
   // hosted_html=1, otherwise embed
@@ -1526,7 +1526,7 @@ void print_html_image_load_scripts( FILE* file, const sim_t* sim )
 
 
 // print_html =====================================================
-void print_html_( FILE* file, const sim_t* sim )
+void print_html_( FILE* file, sim_t* sim )
 {
   fprintf( file,
            "<!DOCTYPE html>\n\n" );
@@ -1584,7 +1584,7 @@ void print_html_( FILE* file, const sim_t* sim )
     // Pets
     if ( sim -> report_pets_separately )
     {
-      const std::vector<pet_t*> pl = sim -> players_by_name[ i ] -> pet_list;
+      std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
       for ( size_t i = 0; i < pl.size(); ++i )
       {
         pet_t* pet = pl[ i ];
@@ -1607,7 +1607,7 @@ void print_html_( FILE* file, const sim_t* sim )
       // Pets
       if ( sim -> report_pets_separately )
       {
-        const std::vector<pet_t*> pl = sim -> targets_by_name[ i ] -> pet_list;
+        std::vector<pet_t*>& pl = sim -> targets_by_name[ i ] -> pet_list;
         for ( size_t i = 0; i < pl.size(); ++i )
         {
           pet_t* pet = pl[ i ];

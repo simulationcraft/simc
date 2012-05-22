@@ -32,7 +32,7 @@ struct melee_t : public attack_t
     aoe = -1;
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  virtual size_t available_targets( std::vector< player_t* >& tl )
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -143,7 +143,7 @@ struct spell_nuke_t : public spell_t
       aoe = -1;
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  virtual size_t available_targets( std::vector< player_t* >& tl )
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -198,7 +198,7 @@ struct spell_aoe_t : public spell_t
     aoe = -1;
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  virtual size_t available_targets( std::vector< player_t* >& tl )
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -303,13 +303,13 @@ struct class_t : public player_t
     create_options();
   }
 
-  virtual role_type_e primary_role() const
+  virtual role_type_e primary_role()
   { return ROLE_TANK; }
 
-  virtual resource_type_e primary_resource() const
+  virtual resource_type_e primary_resource()
   { return RESOURCE_NONE; }
 
-  virtual double base_armor() const
+  virtual double base_armor()
   { return current.armor; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -318,15 +318,15 @@ struct class_t : public player_t
   virtual void init_resources( bool force=false );
   virtual void init_target();
   virtual void init_actions();
-  virtual double composite_tank_block() const;
+  virtual double composite_tank_block();
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
-  virtual double health_percentage() const;
+  virtual double health_percentage();
   virtual void combat_end();
   virtual void recalculate_health();
   virtual expr_t* create_expression( action_t* action, const std::string& type );
-  virtual timespan_t available() const { return waiting_time; }
+  virtual timespan_t available() { return waiting_time; }
 };
 
 // ==========================================================================
@@ -351,11 +351,11 @@ struct add_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual resource_type_e primary_resource() const
+  virtual resource_type_e primary_resource()
   { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name,
-                                        const std::string& options_str )
+				   const std::string& options_str )
   {
     action_t* a = enemy_actions::create_action( this, name, options_str );
 
@@ -510,7 +510,7 @@ void class_t::init_actions()
 
 // class_t::composite_tank_block ============================================
 
-double class_t::composite_tank_block() const
+double class_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
@@ -562,7 +562,7 @@ void class_t::create_pets()
 
 // class_t::health_percentage() =============================================
 
-double class_t::health_percentage() const
+double class_t::health_percentage()
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 

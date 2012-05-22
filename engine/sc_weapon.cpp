@@ -11,7 +11,7 @@
 
 // weapon_t::group ==========================================================
 
-weapon_type_e weapon_t::group() const
+weapon_type_e weapon_t::group()
 {
   switch ( type )
   {
@@ -51,7 +51,7 @@ weapon_type_e weapon_t::group() const
 
 // weapon_t::normalized_weapon_speed ========================================
 
-timespan_t weapon_t::normalized_weapon_speed() const
+timespan_t weapon_t::normalized_weapon_speed()
 {
   int g = group();
 
@@ -67,7 +67,7 @@ timespan_t weapon_t::normalized_weapon_speed() const
 // weapon_t::proc_chance_on_swing ===========================================
 
 double weapon_t::proc_chance_on_swing( double PPM,
-                                       timespan_t adjusted_swing_time ) const
+                                       timespan_t adjusted_swing_time )
 {
   if ( adjusted_swing_time == timespan_t::zero() ) adjusted_swing_time = swing_time;
 

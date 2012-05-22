@@ -39,7 +39,7 @@ public:
   }
 };
 
-struct priest_td_t : public target_data_t
+struct priest_td_t : public actor_pair_t
 {
   dot_t*  dots_devouring_plague;
   dot_t*  dots_shadow_word_pain;
@@ -56,6 +56,11 @@ struct priest_td_t : public target_data_t
   remove_dots_event_t* remove_dots_event;
 
   priest_td_t( player_t* target, priest_t* p );
+
+  void reset() 
+  {
+    remove_dots_event = 0;
+  }
 };
 
 struct priest_t : public player_t
@@ -263,6 +268,8 @@ struct priest_t : public player_t
     double meditation_value;
   } constants;
 
+  target_specific_t<priest_td_t> target_data;
+  
   priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
@@ -279,7 +286,8 @@ struct priest_t : public player_t
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
     glyphs( glyphs_t() ),
-    constants( constants_t() )
+    constants( constants_t() ),
+    target_data( "target_data", this )
   {
     initial.distance                     = 40.0;
 
@@ -313,40 +321,44 @@ struct priest_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type_e primary_role() const;
+  virtual int       decode_set( item_t& );
+  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_type_e primary_role();
   virtual void      combat_begin();
-  virtual double    composite_armor() const;
-  virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_spell_hit() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_movement_speed() const;
+  virtual double    composite_armor();
+  virtual double    composite_spell_power_multiplier();
+  virtual double    composite_spell_hit();
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
+  virtual double    composite_movement_speed();
 
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr );
 
   virtual double    target_mitigation( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a=0 );
 
-  virtual double    shadowy_recall_chance() const;
+  virtual double    shadowy_recall_chance();
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
 
-  virtual target_data_t* create_target_data( player_t* target )
-  { return new priest_td_t( target, this ); }
+  virtual priest_td_t* get_target_data( player_t* target )
+  { 
+    priest_td_t*& td = target_data[ target ];
+    if( ! td ) td = new priest_td_t( target, this );
+    return td;
+  }
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
 
   // Temporary
-  virtual std::string set_default_talents() const;
-  virtual std::string set_default_glyphs() const;
+  virtual std::string set_default_talents();
+  virtual std::string set_default_glyphs();
 };
 
 class remove_dots_event_t : public event_t
 {
 private:
-  priest_td_t* const td;
+  priest_td_t* td;
   priest_t* pr;
 
   static void cancel_dot( dot_t* dot )
@@ -693,32 +705,31 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_spell_haste() const
+  virtual double composite_spell_haste()
   { return player_t::composite_spell_haste() * owner -> spell_haste; }
 
-  virtual double composite_attack_haste() const
+  virtual double composite_attack_haste()
   { return player_t::composite_attack_haste() * owner -> spell_haste; }
 
-  virtual double composite_spell_power( school_type_e school ) const
+  virtual double composite_spell_power( school_type_e school )
   { return owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier(); }
 
-  virtual double composite_spell_power_multiplier() const
+  virtual double composite_spell_power_multiplier()
   { return 1.0; }
 
-  virtual double composite_attack_power() const
+  virtual double composite_attack_power()
   { return owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp; }
 
-  virtual double composite_attack_crit( const weapon_t* ) const
+  virtual double composite_attack_crit( weapon_t* )
   { return owner -> composite_spell_crit(); } // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
-  virtual double composite_spell_crit() const
+  virtual double composite_spell_crit()
   { return owner -> composite_spell_crit(); } // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
-  virtual double composite_attack_expertise( const weapon_t* ) const { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
-  virtual double composite_attack_hit() const { return owner -> composite_spell_hit(); }
-  virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
-  priest_t* o() const
-  { return debug_cast<priest_t*>( owner ); }
+  virtual double composite_attack_expertise( weapon_t* ) { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
+  virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
+  virtual resource_type_e primary_resource() { return RESOURCE_ENERGY; }
+  priest_t* o() { return debug_cast<priest_t*>( owner ); }
 };
 
 // ==========================================================================
@@ -915,10 +926,10 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  priest_pet_t* p() const
+  priest_pet_t* p()
   { return static_cast<priest_pet_t*>( player ); }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( first_swing )
     {
@@ -948,7 +959,7 @@ struct priest_pet_spell_t : public spell_t
     may_crit = true;
   }
 
-  priest_pet_t* p() const
+  priest_pet_t* p()
   { return static_cast<priest_pet_t*>( player ); }
 };
 
@@ -967,7 +978,7 @@ struct shadowcrawl_t : public priest_pet_actions::priest_pet_spell_t
     stateless = true;
   }
 
-  base_fiend_pet_t* p() const
+  base_fiend_pet_t* p()
   { return static_cast<base_fiend_pet_t*>( player ); }
 
   virtual void execute()
@@ -991,7 +1002,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
     stateless = true;
   }
 
-  base_fiend_pet_t* p() const
+  base_fiend_pet_t* p()
   { return static_cast<base_fiend_pet_t*>( player ); }
 
   virtual void execute()
@@ -1000,7 +1011,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
   }
 
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_pet_actions::priest_pet_melee_t::action_multiplier();
 
@@ -1105,7 +1116,7 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 
 
 action_t* lightwell_pet_t::create_action( const std::string& name,
-                                 const std::string& options_str )
+					  const std::string& options_str )
 {
   if ( name == "lightwell_renew" ) return new lightwell_spells::lightwell_renew_t( this );
 
@@ -1142,11 +1153,9 @@ public:
     stateless         = true;
   }
 
-  priest_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_td_t*>( target_data( t ) ); }
+  priest_t* p() { return debug_cast<priest_t*>( player ); }
 
-  priest_t* p() const
-  { return debug_cast<priest_t*>( player ); }
+  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   inline bool check_shadowform()
   {
@@ -1162,12 +1171,12 @@ public:
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     return absorb_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = absorb_t::cost();
 
@@ -1345,13 +1354,11 @@ struct priest_heal_t : public heal_t
     stateless = true;
   }
 
-  priest_t* p() const
-  { return debug_cast<priest_t*>( player ); }
+  priest_t* p() { return debug_cast<priest_t*>( player ); }
 
-  priest_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_td_t*>( target_data( t ) ); }
+  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
-  virtual double composite_crit() const
+  virtual double composite_crit()
   {
     double cc = heal_t::composite_crit();
 
@@ -1364,12 +1371,12 @@ struct priest_heal_t : public heal_t
     return cc;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     return heal_t::action_multiplier() * ( 1.0 + p() -> buffs.holy_archangel -> value() );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double ctm = heal_t::composite_target_multiplier( t );
 
@@ -1385,7 +1392,7 @@ struct priest_heal_t : public heal_t
     heal_t::schedule_execute();
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = heal_t::cost();
 
@@ -1570,7 +1577,7 @@ struct atonement_heal_t : public priest_heal_t
     }
   }
 
-  virtual double total_crit_bonus() const
+  virtual double total_crit_bonus()
   { return 0; }
 
   virtual void execute()
@@ -1633,11 +1640,9 @@ struct priest_spell_t : public spell_t
     sform = p() -> buffs.shadowform;
   }
 
-  priest_t* p() const
-  { return debug_cast<priest_t*>( player ); }
+  priest_t* p() { return debug_cast<priest_t*>( player ); }
 
-  priest_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<priest_td_t*>( target_data( t ) ); }
+  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void schedule_execute()
   {
@@ -1664,7 +1669,7 @@ struct priest_spell_t : public spell_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = spell_t::cost();
 
@@ -1760,7 +1765,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     callbacks        = false;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
   }
@@ -1986,7 +1991,7 @@ struct fortitude_t : public priest_spell_t
     background = ( sim -> overrides.stamina != 0 );
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_spell_t::cost();
 
@@ -2371,7 +2376,7 @@ struct mind_blast_t : public priest_spell_t
     generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -2398,7 +2403,7 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
-  virtual double composite_target_crit( player_t* target ) const
+  virtual double composite_target_crit( player_t* target )
   {
     double c = priest_spell_t::composite_target_crit( target );
 
@@ -2407,7 +2412,7 @@ struct mind_blast_t : public priest_spell_t
     return c;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     if ( p() -> buffs.divine_insight_shadow -> check() )
       return 0.0;
@@ -2431,7 +2436,7 @@ struct mind_blast_t : public priest_spell_t
     priest_spell_t::update_ready();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t a = priest_spell_t::execute_time();
 
@@ -2480,7 +2485,7 @@ struct mind_flay_t : public priest_spell_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -2590,7 +2595,7 @@ struct mind_spike_t : public priest_spell_t
     priest_spell_t::snapshot_state( state, flags );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -2630,7 +2635,7 @@ struct mind_spike_t : public priest_spell_t
     priest_spell_t::schedule_execute();
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
       return 0.0;
@@ -2638,7 +2643,7 @@ struct mind_spike_t : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
     {
@@ -2765,7 +2770,7 @@ struct shadow_word_death_t : public priest_spell_t
     p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -2792,7 +2797,7 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
     // Treat this just as direct damage rather than DoT damage. It's not like it procs anything anyway.
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier()
   {
     double m = priest_spell_t::action_ta_multiplier();
 
@@ -2914,7 +2919,7 @@ struct devouring_plague_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_da_multiplier()
   {
     double m = priest_spell_t::action_da_multiplier();
 
@@ -2923,7 +2928,7 @@ struct devouring_plague_t : public priest_spell_t
     return m;
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier()
   {
     double m = priest_spell_t::action_ta_multiplier();
 
@@ -3129,7 +3134,7 @@ struct holy_fire_t : public priest_spell_t
     p() -> buffs.holy_evangelism  -> trigger();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
 
@@ -3138,7 +3143,7 @@ struct holy_fire_t : public priest_spell_t
     return m;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_spell_t::cost();
 
@@ -3147,7 +3152,7 @@ struct holy_fire_t : public priest_spell_t
     return c;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t a = priest_spell_t::execute_time();
 
@@ -3174,7 +3179,7 @@ struct penance_t : public priest_spell_t
       base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
     }
 
-    virtual double action_multiplier() const
+    virtual double action_multiplier()
     {
       double m = priest_spell_t::action_multiplier();
 
@@ -3221,7 +3226,7 @@ struct penance_t : public priest_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_spell_t::cost();
 
@@ -3273,7 +3278,7 @@ struct smite_t : public priest_spell_t
     }
   }
   
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target )
   {
     double m = priest_spell_t::composite_target_multiplier( target );
     
@@ -3283,7 +3288,7 @@ struct smite_t : public priest_spell_t
     return m;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_spell_t::action_multiplier();
 
@@ -3292,7 +3297,7 @@ struct smite_t : public priest_spell_t
     return am;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_spell_t::cost();
 
@@ -3339,7 +3344,7 @@ struct binding_heal_t : public priest_heal_t
     trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit()
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -3349,7 +3354,7 @@ struct binding_heal_t : public priest_heal_t
     return cc;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -3387,7 +3392,7 @@ struct circle_of_healing_t : public priest_heal_t
     priest_heal_t::execute();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -3410,7 +3415,7 @@ struct divine_hymn_tick_t : public priest_heal_t
     aoe = nr_targets - 1;
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -3473,7 +3478,7 @@ struct flash_heal_t : public priest_heal_t
     trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit()
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -3483,7 +3488,7 @@ struct flash_heal_t : public priest_heal_t
     return cc;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( p () -> buffs.surge_of_light -> up() )
       return timespan_t::zero();
@@ -3491,7 +3496,7 @@ struct flash_heal_t : public priest_heal_t
     return priest_heal_t::execute_time();
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -3567,7 +3572,7 @@ struct greater_heal_t : public priest_heal_t
     trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit()
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -3577,7 +3582,7 @@ struct greater_heal_t : public priest_heal_t
     return cc;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -3628,7 +3633,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
       direct_tick = true;
     }
 
-    virtual double action_multiplier() const
+    virtual double action_multiplier()
     {
       double am = priest_heal_t::action_multiplier();
 
@@ -3684,7 +3689,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
   // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -3915,7 +3920,7 @@ struct penance_heal_t : public priest_heal_t
     stats -> add_tick( d -> time_to_tick );
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -3973,7 +3978,7 @@ struct power_word_shield_t : public priest_absorb_t
     castable_in_shadowform = true;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_absorb_t::cost();
 
@@ -4047,7 +4052,7 @@ struct prayer_of_healing_t : public priest_heal_t
     }
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4057,7 +4062,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return am;
   }
 
-  virtual double composite_crit() const
+  virtual double composite_crit()
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -4067,7 +4072,7 @@ struct prayer_of_healing_t : public priest_heal_t
     return cc;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = priest_heal_t::cost();
 
@@ -4103,7 +4108,7 @@ struct prayer_of_mending_t : public priest_heal_t
     castable_in_shadowform = p -> glyphs.dark_binding -> ok();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4121,7 +4126,7 @@ struct prayer_of_mending_t : public priest_heal_t
     trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double ctm = priest_heal_t::composite_target_multiplier( t );
 
@@ -4163,7 +4168,7 @@ struct renew_t : public priest_heal_t
     castable_in_shadowform = p -> glyphs.dark_binding -> ok();
   }
 
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
 
@@ -4213,7 +4218,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 // ==========================================================================
 
 priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
-  target_data_t( target, p ), remove_dots_event( NULL )
+  actor_pair_t( target, p ), remove_dots_event( NULL )
 {
   if( target -> is_enemy() )
   {
@@ -4260,14 +4265,14 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
 
 // priest_t::shadowy_recall_chance ==============================================
 
-double priest_t::shadowy_recall_chance() const
+double priest_t::shadowy_recall_chance()
 {
   return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
 }
 
 // priest_t::primary_role ===================================================
 
-role_type_e priest_t::primary_role() const
+role_type_e priest_t::primary_role()
 {
   switch ( player_t::primary_role() )
   {
@@ -4295,7 +4300,7 @@ void priest_t::combat_begin()
 }
 // priest_t::composite_armor ================================================
 
-double priest_t::composite_armor() const
+double priest_t::composite_armor()
 {
   double a = player_t::composite_armor();
 
@@ -4307,7 +4312,7 @@ double priest_t::composite_armor() const
 
 // priest_t::composite_spell_power_multiplier ===============================
 
-double priest_t::composite_spell_power_multiplier() const
+double priest_t::composite_spell_power_multiplier()
 {
   double m = player_t::composite_spell_power_multiplier();
 
@@ -4318,7 +4323,7 @@ double priest_t::composite_spell_power_multiplier() const
 
 // priest_t::composite_spell_hit ============================================
 
-double priest_t::composite_spell_hit() const
+double priest_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
@@ -4329,7 +4334,7 @@ double priest_t::composite_spell_hit() const
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
+double priest_t::composite_player_multiplier( school_type_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4355,7 +4360,7 @@ double priest_t::composite_player_multiplier( const school_type_e school, const 
 
 // priest_t::composite_movement_speed =======================================
 
-double priest_t::composite_movement_speed() const
+double priest_t::composite_movement_speed()
 {
   double speed = player_t::composite_movement_speed();
 
@@ -4367,7 +4372,7 @@ double priest_t::composite_movement_speed() const
 
 // priest_t::matching_gear_multiplier =======================================
 
-double priest_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double priest_t::matching_gear_multiplier( attribute_type_e attr )
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -5042,6 +5047,12 @@ void priest_t::reset()
 {
   player_t::reset();
 
+  for( size_t i=0; i < sim -> actor_list.size(); i++ )
+  {
+    priest_td_t* td = target_data[ sim -> actor_list[ i ] ];
+    if( td ) td -> reset();
+  }
+
   if ( specs.shadowy_apparitions -> ok() )
   {
     while ( spells.apparitions_active.size() )
@@ -5159,7 +5170,7 @@ void priest_t::copy_from( player_t* source )
 
 // priest_t::decode_set =====================================================
 
-int priest_t::decode_set( const item_t& item ) const
+int priest_t::decode_set( item_t& item )
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
@@ -5208,7 +5219,7 @@ int priest_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
-std::string priest_t::set_default_talents() const
+std::string priest_t::set_default_talents()
 {
   switch ( primary_tree() )
   {
@@ -5219,7 +5230,7 @@ std::string priest_t::set_default_talents() const
   return player_t::set_default_talents();
 }
 
-std::string priest_t::set_default_glyphs() const
+std::string priest_t::set_default_glyphs()
 {
   switch ( primary_tree() )
   {

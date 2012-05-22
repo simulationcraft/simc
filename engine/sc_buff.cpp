@@ -245,7 +245,7 @@ void buff_t::combat_end()
 
 // buff_t::may_react ========================================================
 
-bool buff_t::may_react( int stack ) const
+bool buff_t::may_react( int stack )
 {
   if ( current_stack == 0    ) return false;
   if ( stack > current_stack ) return false;
@@ -262,7 +262,7 @@ bool buff_t::may_react( int stack ) const
 
 // buff_t::stack_react ======================================================
 
-int buff_t::stack_react() const
+int buff_t::stack_react()
 {
   int stack = 0;
 
@@ -277,7 +277,7 @@ int buff_t::stack_react() const
 
 // buff_t::remains ==========================================================
 
-timespan_t buff_t::remains() const
+timespan_t buff_t::remains()
 {
   if ( current_stack <= 0 )
   {
@@ -292,7 +292,7 @@ timespan_t buff_t::remains() const
 
 // buff_t::remains_gt =======================================================
 
-bool buff_t::remains_gt( timespan_t time ) const
+bool buff_t::remains_gt( timespan_t time )
 {
   timespan_t time_remaining = remains();
 
@@ -305,7 +305,7 @@ bool buff_t::remains_gt( timespan_t time ) const
 
 // buff_t::remains_lt =======================================================
 
-bool buff_t::remains_lt( timespan_t time ) const
+bool buff_t::remains_lt( timespan_t time )
 {
   timespan_t time_remaining = remains();
 

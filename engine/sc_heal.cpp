@@ -161,7 +161,7 @@ player_t* heal_t::find_lowest_player()
 
 // heal_t::available_targets ==============================================
 
-size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
+size_t heal_t::available_targets( std::vector< player_t* >& tl )
 {
   // TODO: This does not work for heals at all, as it presumes enemies in the
   // actor list.

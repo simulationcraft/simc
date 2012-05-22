@@ -108,7 +108,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 // item_t::active ===========================================================
 
-bool item_t::active() const
+bool item_t::active()
 {
   if ( slot == SLOT_INVALID ) return false;
   if ( ! encoded_name_str.empty() ) return true;
@@ -117,7 +117,7 @@ bool item_t::active() const
 
 // item_t::heroic ===========================================================
 
-bool item_t::heroic() const
+bool item_t::heroic()
 {
   if ( slot == SLOT_INVALID ) return false;
   return is_heroic;
@@ -125,7 +125,7 @@ bool item_t::heroic() const
 
 // item_t::lfr ==============================================================
 
-bool item_t::lfr() const
+bool item_t::lfr()
 {
   if ( slot == SLOT_INVALID ) return false;
   return is_lfr;
@@ -133,7 +133,7 @@ bool item_t::lfr() const
 
 // item_t::ptr ==============================================================
 
-bool item_t::ptr() const
+bool item_t::ptr()
 {
   return is_ptr;
 }
@@ -148,7 +148,7 @@ bool item_t::matching_type()
 
 // item_t::reforged =========================================================
 
-bool item_t::reforged() const
+bool item_t::reforged()
 {
   if ( slot == SLOT_INVALID ) return false;
   return is_reforged;
@@ -156,7 +156,7 @@ bool item_t::reforged() const
 
 // item_t::name =============================================================
 
-const char* item_t::name() const
+const char* item_t::name()
 {
   if ( ! encoded_name_str.empty() ) return encoded_name_str.c_str();
   if ( !  armory_name_str.empty() ) return  armory_name_str.c_str();
@@ -165,7 +165,7 @@ const char* item_t::name() const
 
 // item_t::slot_name ========================================================
 
-const char* item_t::slot_name() const
+const char* item_t::slot_name()
 {
   return util::slot_type_string( slot );
 }
@@ -179,7 +179,7 @@ const char* item_t::armor_type()
 
 // item_t::weapon ===========================================================
 
-weapon_t* item_t::weapon() const
+weapon_t* item_t::weapon()
 {
   if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
   if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );

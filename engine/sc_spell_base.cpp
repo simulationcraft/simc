@@ -27,14 +27,14 @@ spell_base_t::spell_base_t( action_type_e at,
 
 // spell_base_t::haste ===========================================================
 
-double spell_base_t::haste() const
+double spell_base_t::haste()
 {
   return player -> composite_spell_haste();
 }
 
 // spell_base_t::gcd =============================================================
 
-timespan_t spell_base_t::gcd() const
+timespan_t spell_base_t::gcd()
 {
   timespan_t t = action_t::gcd();
   if ( t == timespan_t::zero() ) return timespan_t::zero();
@@ -47,7 +47,7 @@ timespan_t spell_base_t::gcd() const
 
 // spell_base_t::execute_time ====================================================
 
-timespan_t spell_base_t::execute_time() const
+timespan_t spell_base_t::execute_time()
 {
   timespan_t t = base_execute_time;
 
@@ -76,7 +76,7 @@ void spell_base_t::player_buff()
 
 // spell_base_t::crit_chance =====================================================
 
-double spell_base_t::crit_chance( double crit, int /* delta_level */ ) const
+double spell_base_t::crit_chance( double crit, int /* delta_level */ )
 {
   return crit;
 }

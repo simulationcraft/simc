@@ -17,7 +17,7 @@ struct mage_t;
 
 enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
-struct mage_td_t : public target_data_t
+struct mage_td_t : public actor_pair_t
 {
   dot_t* dots_flamestrike;
   dot_t* dots_ignite;
@@ -213,6 +213,8 @@ struct mage_t : public player_t
 
   } talents;
 
+  target_specific_t<mage_td_t> target_data;
+
   int mana_gem_charges;
 
   mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
@@ -233,6 +235,7 @@ struct mage_t : public player_t
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
+    target_data( "target_data", this ),
     mana_gem_charges( 0 )
   {
     // Cooldowns
@@ -264,20 +267,22 @@ struct mage_t : public player_t
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
-  virtual int       decode_set( const item_t& item ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_type_e primary_role() const { return ROLE_SPELL; }
-  virtual double    composite_mastery() const;
-  virtual double    composite_mp5() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_haste() const;
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
+  virtual int       decode_set( item_t& item );
+  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_type_e primary_role() { return ROLE_SPELL; }
+  virtual double    composite_mastery();
+  virtual double    composite_mp5();
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
+  virtual double    composite_spell_crit();
+  virtual double    composite_spell_haste();
+  virtual double    matching_gear_multiplier( attribute_type_e attr );
   virtual void      stun();
 
-  virtual target_data_t* create_target_data( player_t* target )
+  virtual mage_td_t* get_target_data( player_t* target )
   {
-    return new mage_td_t( target, this );
+    mage_td_t*& td = target_data[ target ];
+    if( ! td ) td = new mage_td_t( target, this );
+    return td;
   }
 
   // Event Tracking
@@ -286,7 +291,7 @@ struct mage_t : public player_t
   virtual double resource_loss( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
 
   // Temporary
-  virtual std::string set_default_talents() const
+  virtual std::string set_default_talents()
   {
     switch ( primary_tree() )
     {
@@ -297,7 +302,7 @@ struct mage_t : public player_t
     return player_t::set_default_talents();
   }
 
-  virtual std::string set_default_glyphs() const
+  virtual std::string set_default_glyphs()
   {
     switch ( primary_tree() )
     {
@@ -332,20 +337,18 @@ struct mage_spell_t : public spell_t
     crit_multiplier *= 1.33;
   }
 
-  mage_t* p() const
-  { return debug_cast<mage_t*>( player ); }
+  mage_t* p() { return debug_cast<mage_t*>( player ); }
 
-  mage_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<mage_td_t*>( target_data( t ) ); }
+  mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void   parse_options( option_t*, const std::string& );
   virtual bool   ready();
-  virtual double cost() const;
-  virtual double haste() const;
+  virtual double cost();
+  virtual double haste();
   virtual void   execute();
   virtual void   player_buff();
-  virtual double total_crit() const;
-  virtual timespan_t execute_time() const;
+  virtual double total_crit();
+  virtual timespan_t execute_time();
   virtual double hot_streak_crit() { return player_crit; }
 };
 
@@ -422,7 +425,7 @@ struct water_elemental_pet_t : public pet_t
     create_options();
   }
 
-  mage_t* o() const
+  mage_t* o()
   { return debug_cast<mage_t*>( owner ); }
 
   virtual void init_base()
@@ -439,7 +442,7 @@ struct water_elemental_pet_t : public pet_t
     //mana_per_intellect = 5;
   }
 
-  virtual double composite_spell_haste() const
+  virtual double composite_spell_haste()
   {
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
@@ -475,7 +478,7 @@ struct mirror_image_pet_t : public pet_t
     num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
   {}
 
-  mage_t* o() const
+  mage_t* o()
   { return static_cast<mage_t*>( owner ); }
 
   struct arcane_blast_t : public spell_t
@@ -489,7 +492,7 @@ struct mirror_image_pet_t : public pet_t
       background        = true;
     }
 
-    mirror_image_pet_t* p() const
+    mirror_image_pet_t* p()
     { return static_cast<mirror_image_pet_t*>( player ); }
 
     virtual void player_buff()
@@ -660,7 +663,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_spell_power( school_type_e school ) const
+  virtual double composite_spell_power( school_type_e school )
   {
     if ( school == SCHOOL_ARCANE )
     {
@@ -678,19 +681,19 @@ struct mirror_image_pet_t : public pet_t
     return 0;
   }
 
-  virtual double composite_spell_power_multiplier() const
+  virtual double composite_spell_power_multiplier()
   {
     return 1.0;
   }
 
-  virtual double composite_spell_haste() const
+  virtual double composite_spell_haste()
   {
     double h = player_t::composite_spell_haste();
     h *= owner -> spell_haste;
     return h;
   }
 
-  virtual double composite_spell_crit() const
+  virtual double composite_spell_crit()
   {
     return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
   }
@@ -793,12 +796,12 @@ struct ignite_t : public mage_spell_t
 
     base_td = travel_dmg;
   }
-  virtual timespan_t travel_time() const
+  virtual timespan_t travel_time()
   {
     mage_t* p = static_cast<mage_t*>( player );
     return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
   }
-  virtual double total_td_multiplier() const { return 1.0; }
+  virtual double total_td_multiplier() { return 1.0; }
 };
 
 static void trigger_ignite( mage_spell_t* s, double dmg )
@@ -826,7 +829,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
       sim -> add_event( this, sim -> gauss( delay, 0.25 * delay ) );
     }
 
-    mage_t* p() const
+    mage_t* p()
     { return static_cast<mage_t*>( player ); }
 
     virtual void execute()
@@ -933,7 +936,7 @@ bool mage_spell_t::ready()
 
 // mage_spell_t::cost =======================================================
 
-double mage_spell_t::cost() const
+double mage_spell_t::cost()
 {
   double c = spell_t::cost();
 
@@ -949,7 +952,7 @@ double mage_spell_t::cost() const
 
 // mage_spell_t::haste ======================================================
 
-double mage_spell_t::haste() const
+double mage_spell_t::haste()
 {
   double h = spell_t::haste();
   if ( p() -> buffs.icy_veins -> up() )
@@ -987,7 +990,7 @@ void mage_spell_t::execute()
 
 // mage_spell_t::execute_time ===============================================
 
-timespan_t mage_spell_t::execute_time() const
+timespan_t mage_spell_t::execute_time()
 {
   timespan_t t = spell_t::execute_time();
 
@@ -1009,7 +1012,7 @@ void mage_spell_t::player_buff()
 
 // mage_spell_t::total_crit ================================================
 
-double mage_spell_t::total_crit() const
+double mage_spell_t::total_crit()
 {
   double c = spell_t::total_crit();
 
@@ -1079,7 +1082,7 @@ struct arcane_blast_t : public mage_spell_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = spell_t::cost();
 
@@ -1447,7 +1450,7 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 
-  virtual double total_td_multiplier() const
+  virtual double total_td_multiplier()
   { return 1.0; } // No double-dipping!
 };
 
@@ -1636,7 +1639,7 @@ struct fireball_t : public mage_spell_t
     trigger_ignite( this, travel_dmg );
   }
 
-  virtual double total_crit() const
+  virtual double total_crit()
   {
     double c = mage_spell_t::total_crit();
 
@@ -1707,7 +1710,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_e current_resource() const
+  virtual resource_type_e current_resource()
   { return RESOURCE_NONE; }
 };
 
@@ -1819,7 +1822,7 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     if ( p() -> buffs.brain_freeze -> check() )
       return 0;
@@ -1827,7 +1830,7 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( p() -> buffs.brain_freeze -> check() )
       return timespan_t::zero();
@@ -1868,7 +1871,7 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual double total_crit() const
+  virtual double total_crit()
   {
     double c = mage_spell_t::total_crit();
 
@@ -2037,7 +2040,7 @@ struct inferno_blast_t : public mage_spell_t
     trigger_ignite( this, travel_dmg );
   }
 
-  virtual double total_crit() const
+  virtual double total_crit()
   {
     return 1.0;
   }
@@ -2062,7 +2065,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_e current_resource() const
+  virtual resource_type_e current_resource()
   { return RESOURCE_NONE; }
 
   virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
@@ -2321,7 +2324,7 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t a = mage_spell_t::execute_time();
 
@@ -2333,7 +2336,7 @@ struct pyroblast_t : public mage_spell_t
     return a;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     if ( p() -> buffs.pyroblast -> check() )
       return 0.0;
@@ -2356,7 +2359,7 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
-  virtual double total_crit() const
+  virtual double total_crit()
   {
     double c = mage_spell_t::total_crit();
 
@@ -2422,7 +2425,7 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  virtual double total_crit() const
+  virtual double total_crit()
   {
     double c = mage_spell_t::total_crit();
 
@@ -3244,7 +3247,7 @@ void mage_t::init_actions()
 
 // mage_t::composite_mastery ================================================
 
-double mage_t::composite_mastery() const
+double mage_t::composite_mastery()
 {
   double m = player_t::composite_mastery();
 
@@ -3256,7 +3259,7 @@ double mage_t::composite_mastery() const
 
 // mage_t::composite_mp5 ====================================================
 
-double mage_t::composite_mp5() const
+double mage_t::composite_mp5()
 {
   double mp5 = player_t::composite_mp5();
 
@@ -3268,7 +3271,7 @@ double mage_t::composite_mp5() const
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
+double mage_t::composite_player_multiplier( school_type_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3289,7 +3292,7 @@ double mage_t::composite_player_multiplier( const school_type_e school, const ac
 
 // mage_t::composite_spell_crit =============================================
 
-double mage_t::composite_spell_crit() const
+double mage_t::composite_spell_crit()
 {
   double c = player_t::composite_spell_crit();
 
@@ -3305,7 +3308,7 @@ double mage_t::composite_spell_crit() const
 
 // mage_t::composite_spell_haste ============================================
 
-double mage_t::composite_spell_haste() const
+double mage_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
 
@@ -3319,7 +3322,7 @@ double mage_t::composite_spell_haste() const
 
 // mage_t::matching_gear_multiplier =========================================
 
-double mage_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double mage_t::matching_gear_multiplier( attribute_type_e attr )
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -3499,7 +3502,7 @@ void mage_t::copy_from( player_t* source )
 
 // mage_t::decode_set =======================================================
 
-int mage_t::decode_set( const item_t& item ) const
+int mage_t::decode_set( item_t& item )
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
@@ -3522,7 +3525,7 @@ int mage_t::decode_set( const item_t& item ) const
 // mage_td_t ================================================================
 
 mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
-  target_data_t( target, mage )
+  actor_pair_t( target, mage )
 {
   dots_flamestrike    = target -> get_dot( "flamestrike",    mage );
   dots_ignite         = target -> get_dot( "ignite",         mage );

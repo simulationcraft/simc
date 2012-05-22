@@ -143,7 +143,7 @@ void gear_stats_t::set_stat( stat_type_e stat,
 
 // gear_stats_t::get_stat ===================================================
 
-double gear_stats_t::get_stat( stat_type_e stat ) const
+double gear_stats_t::get_stat( stat_type_e stat )
 {
   switch ( stat )
   {

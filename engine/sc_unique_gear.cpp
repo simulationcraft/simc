@@ -152,7 +152,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 namespace discharge_actions {
 struct spell : public spell_t
 {
-  spell( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, int ae,
+  spell( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
                      unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
@@ -177,7 +177,7 @@ struct spell : public spell_t
 
 struct attack : public attack_t
 {
-  attack( const std::string& n, player_t* p, double amount, double scaling, const school_type_e s, bool nb, bool nd, int ae,
+  attack( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
                       unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
     attack_t( n, p, spell_data_t::nil() )
   {
@@ -218,7 +218,7 @@ struct discharge_proc_callback_base_t : public action_callback_t
   discharge_proc_callback_base_t( const std::string& n,
                                   player_t* p,
                                   int ms,
-                                  const school_type_e school,
+                                  school_type_e school,
                                   double amount,
                                   double scaling,
                                   double pc,
@@ -247,7 +247,7 @@ struct discharge_proc_callback_base_t : public action_callback_t
     rng  = p -> get_rng ( name_str );
   }
 
-  double proc_chance() const
+  double proc_chance()
   {
     return initial_proc_chance;
   }
@@ -302,7 +302,7 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
   discharge_proc_callback_t( const std::string& n,
                              player_t* p,
                              int ms,
-                             const school_type_e school,
+                             school_type_e school,
                              double amount,
                              double scaling,
                              double pc,
@@ -324,7 +324,7 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
   chance_discharge_proc_callback_t( const std::string& n,
                                     player_t* p,
                                     int ms,
-                                    const school_type_e school,
+                                    school_type_e school,
                                     double amount,
                                     double scaling,
                                     double pc,
@@ -337,7 +337,7 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
     discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_type_es_mask,result_type_es_mask )
   { }
 
-  virtual double proc_chance() const
+  virtual double proc_chance()
   {
     if ( stacks == max_stacks )
       return 1.0;
@@ -359,7 +359,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                                   stat_type_e stat,
                                   int ms,
                                   double stat_amount,
-                                  const school_type_e school,
+                                  school_type_e school,
                                   double discharge_amount,
                                   double discharge_scaling,
                                   double proc_chance,
@@ -552,7 +552,7 @@ static void register_darkmoon_card_greatness( item_t* item )
 
   item -> unique = true;
 
-  static const attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
+  static attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
 
   stat_type_e max_stat = stat_from_attr( attr[ 0 ] );
   double max_value = p -> current.attribute[ attr[ 0 ] ];
@@ -1608,7 +1608,7 @@ static void register_souldrinker( item_t* item )
 
     virtual void player_buff() { }
 
-    virtual double total_dd_multiplier() const { return 1.0; }
+    virtual double total_dd_multiplier() { return 1.0; }
   };
 
   struct souldrinker_callback_t : public action_callback_t
@@ -1958,7 +1958,7 @@ action_callback_t* unique_gear_t::register_chance_discharge_proc( proc_type_e   
                                                                   const std::string& name,
                                                                   player_t*          player,
                                                                   int                max_stacks,
-                                                                  const school_type_e  school,
+                                                                  school_type_e      school,
                                                                   double             amount,
                                                                   double             scaling,
                                                                   double             proc_chance,
@@ -2165,9 +2165,9 @@ action_callback_t* unique_gear_t::register_stat_discharge_proc( item_t& i,
 
 bool unique_gear_t::get_equip_encoding( std::string&       encoding,
                                         const std::string& name,
-                                        const bool         heroic,
-                                        const bool         lfr,
-                                        const bool         /* ptr */,
+                                        bool         heroic,
+                                        bool         lfr,
+                                        bool         /* ptr */,
                                         const std::string& /* id */ )
 {
   std::string e;
@@ -2323,9 +2323,9 @@ bool unique_gear_t::get_equip_encoding( std::string&       encoding,
 
 bool unique_gear_t::get_use_encoding( std::string&       encoding,
                                       const std::string& name,
-                                      const bool         heroic,
-                                      const bool         lfr,
-                                      const bool         /* ptr */,
+                                      bool         heroic,
+                                      bool         lfr,
+                                      bool         /* ptr */,
                                       const std::string& /* id */ )
 {
   std::string e;

@@ -252,7 +252,7 @@ void log_item( const item_t& item )
 
 // item_database_t::initialize_item_sources =================================
 
-bool item_database_t::initialize_item_sources( const item_t& item, std::vector<std::string>& source_list )
+bool item_database_t::initialize_item_sources( item_t& item, std::vector<std::string>& source_list )
 {
   source_list = item.sim -> item_db_sources;
 
@@ -347,7 +347,7 @@ int item_database_t::random_suffix_type( const item_data_t* item )
   return -1;
 }
 
-int item_database_t::random_suffix_type( const item_t& item )
+int item_database_t::random_suffix_type( item_t& item )
 {
   if ( weapon_t* w = item.weapon() )
   {
@@ -449,7 +449,7 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
 
 // item_database_t::armor_value =============================================
 
-uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_id )
+uint32_t item_database_t::armor_value( item_t& item_struct, unsigned item_id )
 {
   const dbc_t& dbc = item_struct.player -> dbc;
   return armor_value( dbc.item( item_id ), dbc );
@@ -457,7 +457,7 @@ uint32_t item_database_t::armor_value( const item_t& item_struct, unsigned item_
 
 // item_database_t::weapon_dmg_min/max ======================================
 
-uint32_t item_database_t::weapon_dmg_min( const item_t& item, unsigned item_id )
+uint32_t item_database_t::weapon_dmg_min( item_t& item, unsigned item_id )
 {
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
@@ -478,7 +478,7 @@ uint32_t item_database_t::weapon_dmg_max( const item_data_t* item, const dbc_t& 
                              ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
 }
 
-uint32_t item_database_t::weapon_dmg_max( const item_t& item, unsigned item_id )
+uint32_t item_database_t::weapon_dmg_max( item_t& item, unsigned item_id )
 {
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *

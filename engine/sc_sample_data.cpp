@@ -7,7 +7,7 @@
 
 // sample_data_t::sample_data_t =============================================
 
-sample_data_t::sample_data_t( const bool s, const bool mm ) :
+sample_data_t::sample_data_t( bool s, bool mm ) :
   sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
   min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
   variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
@@ -165,7 +165,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
 
 // sample_data_t::percentile ================================================
 
-double sample_data_t::percentile( double x ) const
+double sample_data_t::percentile( double x )
 {
   assert( x >= 0 && x <= 1.0 );
 
@@ -214,7 +214,7 @@ void sample_data_t::merge( const sample_data_t& other )
 // sample_data_t::merge =====================================================
 
 
-double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_data_t& y )
+double sample_data_t::pearson_correlation( sample_data_t& x, sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();

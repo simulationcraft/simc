@@ -85,20 +85,20 @@ struct combo_points_t
     count = 0;
   }
 
-  double rank( double* cp_list ) const
+  double rank( double* cp_list )
   {
     assert( count > 0 );
     return cp_list[ count - 1 ];
   }
 
-  double rank( double cp1, double cp2, double cp3, double cp4, double cp5 ) const
+  double rank( double cp1, double cp2, double cp3, double cp4, double cp5 )
   {
     double cp_list[] = { cp1, cp2, cp3, cp4, cp5 };
     return rank( cp_list );
   }
 };
 
-struct druid_td_t : public target_data_t
+struct druid_td_t : public actor_pair_t
 {
   dot_t* dots_lacerate;
   dot_t* dots_lifebloom;
@@ -124,9 +124,8 @@ struct druid_td_t : public target_data_t
   {
     return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
   }
-  virtual void reset()
+  void reset()
   {
-    target_data_t::reset();
     combo_points->clear();
   }
 };
@@ -373,6 +372,8 @@ struct druid_t : public player_t
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
   } talent;
+
+  target_specific_t<druid_td_t> target_data;
   
   druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
@@ -385,7 +386,8 @@ struct druid_t : public player_t
     rng( rngs_t() ),
     specialization( specializations_t() ),
     spell( spells_t() ),
-    talent( talents_t() )
+    talent( talents_t() ),
+    target_data( "target_data", this )
   {
     active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
@@ -429,33 +431,35 @@ struct druid_t : public player_t
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
-  virtual timespan_t available() const;
-  virtual double    composite_armor_multiplier() const;
-  virtual double    composite_attack_power() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    composite_player_heal_multiplier( school_type_e school ) const;
-  virtual double    composite_spell_hit() const;
-  virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-  virtual double    composite_block_value() const { return 0; }
-  virtual double    composite_tank_parry() const { return 0; }
-  virtual double    composite_tank_block() const { return 0; }
-  virtual double    composite_tank_crit( school_type_e school ) const;
+  virtual timespan_t available();
+  virtual double    composite_armor_multiplier();
+  virtual double    composite_attack_power();
+  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
+  virtual double    composite_player_heal_multiplier( school_type_e school );
+  virtual double    composite_spell_hit();
+  virtual double    composite_attribute_multiplier( attribute_type_e attr );
+  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    composite_block_value() { return 0; }
+  virtual double    composite_tank_parry() { return 0; }
+  virtual double    composite_tank_block() { return 0; }
+  virtual double    composite_tank_crit( school_type_e school );
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const;
-  virtual role_type_e primary_role() const;
+  virtual int       decode_set( item_t& );
+  virtual resource_type_e primary_resource();
+  virtual role_type_e primary_role();
   virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_type_e type=SAVE_ALL, bool save_html=false );
   
-  virtual target_data_t* create_target_data( player_t* target )
+  virtual druid_td_t* get_target_data( player_t* target )
   {
-    return new druid_td_t( target, this );
+    druid_td_t*& td = target_data[ target ];
+    if( ! td ) td = new druid_td_t( target, this );
+    return td;
   }
 
   void reset_gcd()
@@ -468,7 +472,7 @@ struct druid_t : public player_t
   }
 
   // Temporary
-  virtual std::string set_default_talents() const
+  virtual std::string set_default_talents()
   {
     switch ( primary_tree() )
     {
@@ -480,7 +484,7 @@ struct druid_t : public player_t
     return player_t::set_default_talents();
   }
 
-  virtual std::string set_default_glyphs() const
+  virtual std::string set_default_glyphs()
   {
     switch ( primary_tree() )
     {
@@ -506,7 +510,7 @@ struct druid_cat_attack_state_t : public action_state_t
     action_state_t( a, t ), combo_points( 0 )
   { }
   
-  virtual void debug() const 
+  virtual void debug() 
   {
     action_state_t::debug();
     log_t::output( action -> sim, "[NEW] %s %s %s: cp=%d", 
@@ -607,18 +611,19 @@ struct druid_cat_attack_t : public melee_attack_t
     }
   }
 
-  druid_t* p() const
-  { return debug_cast<druid_t*>( player ); }
+  druid_t* p() { return debug_cast<druid_t*>( player ); }
 
-  druid_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_td_t*>( target_data( t ) ); }
+  druid_td_t* td( player_t* t = 0 )
+  { 
+    return p() -> get_target_data( t ? t : target );
+  }
 
-  virtual double cost() const;
+  virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
   virtual bool   ready();
 
-  virtual bool   requires_stealth() const
+  virtual bool   requires_stealth()
   {
     if ( p() -> buff.king_of_the_jungle -> up() )
       return false;
@@ -626,7 +631,7 @@ struct druid_cat_attack_t : public melee_attack_t
     return requires_stealth_;
   }
 
-  virtual position_type_e requires_position() const
+  virtual position_type_e requires_position()
   { 
     return requires_position_; 
   }
@@ -696,13 +701,11 @@ struct druid_bear_attack_t : public melee_attack_t
     stateless     = true;
   }
 
-  druid_t* p() const
-  { return debug_cast<druid_t*>( player ); }
+  druid_t* p() { return debug_cast<druid_t*>( player ); }
 
-  druid_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_td_t*>( target_data( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target );} 
 
-  virtual void   impact_s( action_state_t* );
+  virtual void impact_s( action_state_t* );
 };
 
 // ==========================================================================
@@ -744,21 +747,19 @@ struct druid_heal_t : public heal_t
     weapon_multiplier = 0;
   }
 
-  druid_t* p() const
-  { return debug_cast<druid_t*>( player ); }
+  druid_t* p() { return debug_cast<druid_t*>( player ); }
 
-  druid_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_td_t*>( target_data( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void   consume_resource();
-  virtual double cost() const;
-  virtual double cost_reduction() const;
+  virtual double cost();
+  virtual double cost_reduction();
   virtual void   execute();
-  virtual timespan_t execute_time() const;
-  virtual double haste() const;
+  virtual timespan_t execute_time();
+  virtual double haste();
   //virtual void   player_buff();
-  virtual double action_da_multiplier() const;
-  virtual double action_ta_multiplier() const;
+  virtual double action_da_multiplier();
+  virtual double action_ta_multiplier();
 };
 
 // ==========================================================================
@@ -791,18 +792,16 @@ struct druid_spell_t : public spell_t
     tick_may_crit = true;
   }
 
-  druid_t* p() const
-  { return debug_cast<druid_t*>( player ); }
+  druid_t* p() { return debug_cast<druid_t*>( player ); }
 
-  druid_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<druid_td_t*>( target_data( t ) ); }
+  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void   consume_resource();
-  virtual double cost() const;
-  virtual double cost_reduction() const;
+  virtual double cost();
+  virtual double cost_reduction();
   virtual void   execute();
-  virtual timespan_t execute_time() const;
-  virtual double haste() const;
+  virtual timespan_t execute_time();
+  virtual double haste();
   virtual void   player_tick();
   virtual void   player_buff();
   virtual void   schedule_execute();
@@ -859,19 +858,19 @@ struct treants_pet_t : public pet_t
     main_hand_attack = new melee_t( this );
   }
 
-  virtual double composite_attack_power() const
+  virtual double composite_attack_power()
   {
     double ap = pet_t::composite_attack_power();
     ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
     return ap;
   }
 
-  virtual double composite_attack_hit() const
+  virtual double composite_attack_hit()
   {
     return owner -> composite_spell_hit();
   }
 
-  virtual double composite_attack_expertise( const weapon_t* ) const
+  virtual double composite_attack_expertise( weapon_t* )
   {
     // Hit scales that if they are hit capped, you're expertise capped.
     return owner -> composite_spell_hit() * 26.0 / 17.0;
@@ -1068,7 +1067,7 @@ static void trigger_swiftmend( druid_heal_t* a )
 
 static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_td_t* td = debug_cast<druid_td_t*>( s -> action -> player -> get_target_data( s -> target ) );
+  druid_td_t* td = ( (druid_t*) s -> action -> player ) -> get_target_data( s -> target );
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -1108,7 +1107,7 @@ static void trigger_living_seed( action_state_t* s )
       school     = SCHOOL_NATURE;
     }
 
-    double composite_da_multiplier() const
+    double composite_da_multiplier()
     {
       return data().effectN( 1 ).percent();
     }
@@ -1197,7 +1196,7 @@ static void trigger_revitalize( druid_heal_t* a )
 
 // druid_cat_attack_t::cost =================================================
 
-double druid_cat_attack_t::cost() const
+double druid_cat_attack_t::cost()
 {
   double c = melee_attack_t::cost();
 
@@ -1318,7 +1317,7 @@ struct cat_melee_t : public druid_cat_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -1326,7 +1325,7 @@ struct cat_melee_t : public druid_cat_attack_t
     return druid_cat_attack_t::execute_time();
   }
   
-  virtual double action_multiplier() const
+  virtual double action_multiplier()
   {
     double cm = druid_cat_attack_t::action_multiplier();
     
@@ -1453,7 +1452,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     }
   }
   
-  double action_multiplier() const
+  double action_multiplier()
   {
     double dm = druid_cat_attack_t::action_multiplier();
     
@@ -1462,7 +1461,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     return dm;
   }
   
-  double composite_target_crit( player_t* t ) const
+  double composite_target_crit( player_t* t )
   {
     double tc = druid_cat_attack_t::composite_target_crit( t );
     
@@ -1635,7 +1634,7 @@ struct ravage_t : public druid_cat_attack_t
     requires_stealth_  = true;
   }
   
-  virtual position_type_e requires_position() const
+  virtual position_type_e requires_position()
   {
     if ( p() -> buff.t13_4pc_melee -> check() )
       return POSITION_NONE;
@@ -1643,7 +1642,7 @@ struct ravage_t : public druid_cat_attack_t
     return druid_cat_attack_t::requires_position();
   }
   
-  virtual bool requires_stealth() const
+  virtual bool requires_stealth()
   {
     if ( p() -> buff.t13_4pc_melee -> check() )
       return false;
@@ -1673,7 +1672,7 @@ struct ravage_t : public druid_cat_attack_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     if ( p() -> buff.t13_4pc_melee -> up() )
       return 0.0;
@@ -1696,7 +1695,7 @@ struct ravage_t : public druid_cat_attack_t
     }
   }
   
-  double composite_target_crit( player_t* t ) const
+  double composite_target_crit( player_t* t )
   {
     double tc = druid_cat_attack_t::composite_target_crit( t );
     
@@ -1825,7 +1824,7 @@ struct shred_t : public druid_cat_attack_t
     }
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double tm = druid_cat_attack_t::composite_target_multiplier( t );
     
@@ -1877,7 +1876,7 @@ struct swipe_cat_t : public druid_cat_attack_t
     aoe = -1;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double tm = druid_cat_attack_t::composite_target_multiplier( t );
 
@@ -1949,7 +1948,7 @@ struct bear_melee_t : public druid_bear_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -2022,7 +2021,7 @@ struct lacerate_t : public druid_bear_attack_t
       p() -> buff.lacerate -> trigger();
   }
   
-  virtual double action_ta_multiplier() const
+  virtual double action_ta_multiplier()
   {
     double tm = druid_bear_attack_t::action_ta_multiplier();
     
@@ -2099,7 +2098,7 @@ struct maul_t : public druid_bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double tm = druid_bear_attack_t::composite_target_multiplier( t );
 
@@ -2144,7 +2143,7 @@ struct swipe_bear_t : public druid_bear_attack_t
     weapon_multiplier = 0;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double tm = druid_bear_attack_t::composite_target_multiplier( t );
 
@@ -2210,7 +2209,7 @@ void druid_heal_t::consume_resource()
 
 // druid_heal_t::cost =======================================================
 
-double druid_heal_t::cost() const
+double druid_heal_t::cost()
 {
   if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
     return 0;
@@ -2227,7 +2226,7 @@ double druid_heal_t::cost() const
 
 // druid_heal_t::cost_reduction =============================================
 
-double druid_heal_t::cost_reduction() const
+double druid_heal_t::cost_reduction()
 {
   double cr = 0.0;
 
@@ -2252,7 +2251,7 @@ void druid_heal_t::execute()
 
 // druid_heal_t::execute_time ===============================================
 
-timespan_t druid_heal_t::execute_time() const
+timespan_t druid_heal_t::execute_time()
 {
   if ( p() -> buff.natures_swiftness -> check() )
     return timespan_t::zero();
@@ -2262,7 +2261,7 @@ timespan_t druid_heal_t::execute_time() const
 
 // druid_heal_t::haste ======================================================
 
-double druid_heal_t::haste() const
+double druid_heal_t::haste()
 {
   double h = heal_t::haste();
 
@@ -2275,7 +2274,7 @@ double druid_heal_t::haste() const
 
 // druid_heal_t::action_da_multiplier =======================================
 
-double druid_heal_t::action_da_multiplier() const
+double druid_heal_t::action_da_multiplier()
 {
   double adm = heal_t::action_da_multiplier();
   
@@ -2292,7 +2291,7 @@ double druid_heal_t::action_da_multiplier() const
 
 // druid_heal_t::action_ta_multiplier =======================================
 
-double druid_heal_t::action_ta_multiplier() const
+double druid_heal_t::action_ta_multiplier()
 {
   double adm = heal_t::action_ta_multiplier();
 
@@ -2348,7 +2347,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     direct_power_mod = data().effectN( 2 ).coeff();
   }
   
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target )
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
@@ -2357,7 +2356,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     return ctm;
   }
   
-  virtual double composite_da_multiplier() const 
+  virtual double composite_da_multiplier() 
   {
     double cdm = druid_heal_t::composite_da_multiplier();
     
@@ -2382,7 +2381,7 @@ struct lifebloom_t : public druid_heal_t
     // TODO: this can be only cast on one target, unless Tree of Life is up
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target )
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
@@ -2435,7 +2434,7 @@ struct nourish_t : public druid_heal_t
       trigger_living_seed( state );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double composite_target_multiplier( player_t* t )
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
@@ -2486,7 +2485,7 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     if ( p() -> buff.tree_of_life -> check() )
       return timespan_t::zero();
@@ -2599,7 +2598,7 @@ struct wild_growth_t : public druid_heal_t
 
 // druid_spell_t::cost_reduction ============================================
 
-double druid_spell_t::cost_reduction() const
+double druid_spell_t::cost_reduction()
 {
   double   cr = 0.0;
 
@@ -2608,7 +2607,7 @@ double druid_spell_t::cost_reduction() const
 
 // druid_spell_t::cost ======================================================
 
-double druid_spell_t::cost() const
+double druid_spell_t::cost()
 {
   if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
@@ -2625,7 +2624,7 @@ double druid_spell_t::cost() const
 
 // druid_spell_t::haste =====================================================
 
-double druid_spell_t::haste() const
+double druid_spell_t::haste()
 {
   double h =  spell_t::haste();
 
@@ -2636,7 +2635,7 @@ double druid_spell_t::haste() const
 
 // druid_spell_t::execute_time ==============================================
 
-timespan_t druid_spell_t::execute_time() const
+timespan_t druid_spell_t::execute_time()
 {
   return spell_t::execute_time();
 }
@@ -3008,7 +3007,7 @@ struct faerie_fire_t : public druid_spell_t
     }
   }
   
-  virtual resource_type_e current_resource() const
+  virtual resource_type_e current_resource()
   {
     if ( p() -> buff.bear_form -> check() )
       return RESOURCE_RAGE;
@@ -3286,7 +3285,7 @@ struct moonfire_t : public druid_spell_t
     }
   }
 
-  virtual double cost_reduction() const
+  virtual double cost_reduction()
   {
     double cr = druid_spell_t::cost_reduction();
 
@@ -3628,7 +3627,7 @@ struct starsurge_t : public druid_spell_t
     p() -> buff.shooting_stars -> expire();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
 
     if ( p() -> buff.shooting_stars -> up() )
@@ -3742,7 +3741,7 @@ struct sunfire_t : public druid_spell_t
     }
   }
 
-  virtual double cost_reduction() const
+  virtual double cost_reduction()
   {
     double cr = druid_spell_t::cost_reduction();
 
@@ -4685,6 +4684,12 @@ void druid_t::reset()
   eclipse_bar_value     = 0;
   eclipse_bar_direction = 0;
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  for( size_t i=0; i < sim -> actor_list.size(); i++ )
+  {
+    druid_td_t* td = target_data[ sim -> actor_list[ i ] ];
+    if( td ) td -> reset();
+  }
 }
 
 // druid_t::regen ===========================================================
@@ -4709,7 +4714,7 @@ void druid_t::regen( timespan_t periodicity )
 
 // druid_t::available =======================================================
 
-timespan_t druid_t::available() const
+timespan_t druid_t::available()
 {
   if ( primary_resource() != RESOURCE_ENERGY )
     return timespan_t::from_seconds( 0.1 );
@@ -4762,7 +4767,7 @@ void druid_t::combat_begin()
 
 // druid_t::composite_armor_multiplier ======================================
 
-double druid_t::composite_armor_multiplier() const
+double druid_t::composite_armor_multiplier()
 {
   double a = player_t::composite_armor_multiplier();
 
@@ -4781,7 +4786,7 @@ double druid_t::composite_armor_multiplier() const
 
 // druid_t::composite_attack_power ==========================================
 
-double druid_t::composite_attack_power() const
+double druid_t::composite_attack_power()
 {
   double ap = player_t::composite_attack_power();
 
@@ -4793,7 +4798,7 @@ double druid_t::composite_attack_power() const
 
 // druid_t::composite_player_multiplier =====================================
 
-double druid_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
+double druid_t::composite_player_multiplier( school_type_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4841,7 +4846,7 @@ double druid_t::composite_player_multiplier( school_type_e school, const action_
 
 // druid_t::composite_player_heal_multiplier ================================
    
-double druid_t::composite_player_heal_multiplier( const school_type_e school ) const
+double druid_t::composite_player_heal_multiplier( school_type_e school )
 {
   double m = player_t::composite_player_heal_multiplier( school );
 
@@ -4855,7 +4860,7 @@ double druid_t::composite_player_heal_multiplier( const school_type_e school ) c
 
 // druid_t::composite_spell_hit =============================================
 
-double druid_t::composite_spell_hit() const
+double druid_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
@@ -4867,7 +4872,7 @@ double druid_t::composite_spell_hit() const
 
 // druid_t::composite_attribute_multiplier ==================================
 
-double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
+double druid_t::composite_attribute_multiplier( attribute_type_e attr )
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -4899,7 +4904,7 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
 // druid_t::matching_gear_multiplier ========================================
 
-double druid_t::matching_gear_multiplier( attribute_type_e attr ) const
+double druid_t::matching_gear_multiplier( attribute_type_e attr )
 {
   switch ( primary_tree() )
   {
@@ -4925,7 +4930,7 @@ double druid_t::matching_gear_multiplier( attribute_type_e attr ) const
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit( school_type_e school ) const
+double druid_t::composite_tank_crit( school_type_e school )
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -4949,7 +4954,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
-    druid_td_t* td = debug_cast<druid_td_t*>( get_target_data( a -> target ) );
+    druid_td_t* td = get_target_data( a -> target );
     return make_ref_expr( "combo_points", td -> combo_points -> count );
   }
 
@@ -4999,7 +5004,7 @@ bool druid_t::create_profile( std::string& profile_str, save_type_e type, bool s
 
 // druid_t::decode_set ======================================================
 
-int druid_t::decode_set( const item_t& item ) const
+int druid_t::decode_set( item_t& item )
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
@@ -5045,7 +5050,7 @@ int druid_t::decode_set( const item_t& item ) const
 
 // druid_t::primary_role ====================================================
 
-role_type_e druid_t::primary_role() const
+role_type_e druid_t::primary_role()
 {
   if ( primary_tree() == DRUID_BALANCE )
   {
@@ -5084,7 +5089,7 @@ role_type_e druid_t::primary_role() const
 
 // druid_t::primary_resource ================================================
 
-resource_type_e druid_t::primary_resource() const
+resource_type_e druid_t::primary_resource()
 {
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return RESOURCE_MANA;
@@ -5136,7 +5141,7 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
 } // END ANONYMOUS NAMESPACE
 
 druid_td_t::druid_td_t( player_t* target, druid_t* source )
-  : target_data_t( target, source )
+  : actor_pair_t( target, source )
 {
   combo_points = new combo_points_t( target );
 

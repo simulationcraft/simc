@@ -26,9 +26,9 @@ inline T parse_enum( const std::string& name )
 }
 
 void stat_search( std::string&              encoding_str,
-                         std::vector<std::string>& description_tokens,
-                         stat_type_e               type,
-                         const std::string&        stat_str )
+		  std::vector<std::string>& description_tokens,
+		  stat_type_e               type,
+		  const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
   size_t num_stats = util::string_split( stat_tokens, stat_str, " " );
@@ -276,9 +276,9 @@ void tolower_( std::string& str )
   range::transform_self( str, ( int( * )( int ) ) std::tolower );
 }
 void string_split_( std::vector<std::string>& results,
-                            const std::string&        str,
-                            const char*               delim,
-                            bool                      allow_quotes )
+		    const std::string&        str,
+		    const char*               delim,
+		    bool                      allow_quotes )
 {
   std::string buffer = str;
   std::string::size_type cut_pt, start = 0;
@@ -374,7 +374,7 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 // str_compare_ci ===================================================
 
 bool str_compare_ci( const std::string& l,
-                             const std::string& r )
+		     const std::string& r )
 {
   if ( l.size() != r.size() || l.size() == 0 )
     return false;
@@ -402,7 +402,7 @@ std::string& glyph_name( std::string& n )
 // str_prefix_ci ====================================================
 
 bool str_prefix_ci( const std::string& str,
-                            const std::string& prefix )
+		    const std::string& prefix )
 {
   if ( str.size() < prefix.size() )
     return false;
@@ -413,7 +413,7 @@ bool str_prefix_ci( const std::string& str,
 // str_in_str_ci ====================================================
 
 bool str_in_str_ci( const std::string& l,
-                            const std::string& r )
+		    const std::string& r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
@@ -2165,8 +2165,8 @@ int parse_item_quality( const std::string& quality )
 // string_split =====================================================
 
 int string_split( const std::string& str,
-                          const char*        delim,
-                          const char*        format, ... )
+		  const char*        delim,
+		  const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;

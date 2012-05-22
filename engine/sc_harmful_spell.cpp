@@ -70,7 +70,7 @@ void spell_t::target_debuff( player_t* t, dmg_type_e type )
 
 // spell_t::miss_chance =====================================================
 
-double spell_t::miss_chance( double hit, int delta_level ) const
+double spell_t::miss_chance( double hit, int delta_level )
 {
   double miss = 0;
 

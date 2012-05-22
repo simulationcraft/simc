@@ -166,7 +166,7 @@ struct warlock_pet_melee_t : public melee_attack_t
     repeating   = true;
   }
 
-  warlock_pet_t* p() const
+  warlock_pet_t* p()
   { return static_cast<warlock_pet_t*>( player ); }
 };
 
@@ -198,7 +198,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_t* p() const
+  warlock_pet_t* p()
   { return static_cast<warlock_pet_t*>( player ); }
 
   virtual bool ready()
@@ -242,7 +242,7 @@ struct warlock_pet_spell_t : public spell_t
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_t* p() const
+  warlock_pet_t* p()
   { return static_cast<warlock_pet_t*>( player ); }
 
   virtual bool ready()
@@ -280,7 +280,7 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t t = warlock_pet_actions::warlock_pet_spell_t::execute_time();
 
@@ -470,7 +470,7 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
     }
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* target )
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
     
@@ -735,13 +735,13 @@ void warlock_pet_t::init_base()
   //mp5_per_intellect  = 2.0 / 3.0; // untested!
 }
 
-double warlock_pet_t::energy_regen_per_second() const
+double warlock_pet_t::energy_regen_per_second()
 {
   // pet energy regen does not appear to scale with haste
   return base_energy_regen_per_second;
 }
 
-timespan_t warlock_pet_t::available() const
+timespan_t warlock_pet_t::available()
 {
   assert( primary_resource() == RESOURCE_ENERGY );
   double energy = resources.current[ RESOURCE_ENERGY ];
@@ -765,49 +765,49 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::composite_spell_haste() const
+double warlock_pet_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
   h *= owner -> spell_haste;
   return h;
 }
 
-double warlock_pet_t::composite_attack_haste() const
+double warlock_pet_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
   h *= owner -> spell_haste;
   return h;
 }
 
-double warlock_pet_t::composite_spell_power( const school_type_e school ) const
+double warlock_pet_t::composite_spell_power( school_type_e school )
 {
   double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets, especially at level 90.
   sp += owner -> composite_spell_power( school );
   return sp;
 }
 
-double warlock_pet_t::composite_attack_power() const
+double warlock_pet_t::composite_attack_power()
 {
   double ap = 0;
   ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
   return ap;
 }
 
-double warlock_pet_t::composite_attack_crit( const weapon_t* ) const
+double warlock_pet_t::composite_attack_crit( weapon_t* )
 {
   double ac = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
   return ac;
 }
 
-double warlock_pet_t::composite_spell_crit() const
+double warlock_pet_t::composite_spell_crit()
 {
   double sc = owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
   return sc;
 }
 
-double warlock_pet_t::composite_player_multiplier( school_type_e school, const action_t* a ) const
+double warlock_pet_t::composite_player_multiplier( school_type_e school, action_t* a )
 {
   double m = pet_t::composite_player_multiplier( school, a );
 
@@ -827,7 +827,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
   warlock_pet_t( sim, owner, pet_name, pt, guardian )
 {}
 
-double warlock_main_pet_t::composite_attack_expertise( const weapon_t* ) const
+double warlock_main_pet_t::composite_attack_expertise( weapon_t* )
 {
   return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); 
 }
@@ -984,7 +984,7 @@ infernal_pet_t::infernal_pet_t( sim_t* sim, warlock_t* owner ) :
   ap_per_owner_sp = 0.566;
 }
 
-double infernal_pet_t::composite_spell_power( const school_type_e school ) const
+double infernal_pet_t::composite_spell_power( school_type_e school )
 {
   // The infernal, for some reason, does not appear to get the "hidden" base 59 sp
   return owner -> composite_spell_power( school );
@@ -1049,13 +1049,13 @@ void wild_imp_pet_t::init_base()
   base_energy_regen_per_second = 0;
 }
 
-timespan_t wild_imp_pet_t::available() const
+timespan_t wild_imp_pet_t::available()
 {
   return timespan_t::from_seconds( 0.1 );
 }
 
 action_t* wild_imp_pet_t::create_action( const std::string& name,
-                                          const std::string& options_str )
+					 const std::string& options_str )
 {
   if ( name == "firebolt" ) return new wild_imp_spells::firebolt_t( this );
 

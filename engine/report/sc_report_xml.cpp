@@ -43,7 +43,7 @@ public:
     }
   }
 
-  bool ready() const { return file != NULL; }
+  bool ready() { return file != NULL; }
 
   void set_tabulation( const std::string & tabulation_ )
   {
@@ -186,7 +186,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
 void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
 void print_xml_performance( sim_t* sim, xml_writer_t & writer );
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_information_t& );
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& );
 void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p );
@@ -197,9 +197,9 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
 void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
 void print_xml_player_procs( xml_writer_t & writer, player_t * p );
 void print_xml_player_gains( xml_writer_t & writer, player_t * p );
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const player_t::report_information_t& );
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_t::report_information_t& );
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
-void print_xml_player_charts( xml_writer_t & writer, const player_t::report_information_t& );
+void print_xml_player_charts( xml_writer_t & writer, player_t::report_information_t& );
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -247,7 +247,7 @@ void print_xml_roster( sim_t* sim, xml_writer_t & writer )
   {
     player_t * current_player = sim -> players_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
-    const std::vector<pet_t*> pl = sim -> players_by_name[ i ] -> pet_list;
+    std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
     for ( size_t i = 0; i < pl.size(); ++i )
     {
       pet_t* pet = pl[ i ];
@@ -685,7 +685,7 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
   writer.end_tag( "gains" );
 }
 
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, const player_t::report_information_t& ri )
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_t::report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -818,7 +818,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.end_tag( "dps_plot_data" );
 }
 
-void print_xml_player_charts( xml_writer_t & writer, const player_t::report_information_t& ri )
+void print_xml_player_charts( xml_writer_t & writer, player_t::report_information_t& ri )
 {
   writer.begin_tag( "charts" );
 
@@ -992,7 +992,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.end_tag( "config" );
 }
 
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, const sim_t::report_information_t& ri )
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& ri )
 {
   writer.begin_tag( "summary" );
 

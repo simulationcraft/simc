@@ -9,7 +9,7 @@ namespace { // ANONYMOUS ====================================================
 
 class const_expr_t : public expr_t
 {
-  const double value;
+  double value;
 
 public:
   const_expr_t( const std::string& name, double value_ ) :
@@ -349,13 +349,13 @@ expression_t::parse_tokens( action_t* action,
 
 // print_tokens =============================================================
 
-void expression_t::print_tokens( const std::vector<expr_token_t>& tokens, sim_t* sim )
+void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
   log_t::output( sim, "tokens:\n" );
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
   {
-    const expr_token_t& t = tokens[ i ];
+    expr_token_t& t = tokens[ i ];
     log_t::output( sim,  "%2d  '%s'\n", t.type, t.label.c_str() );
   }
 }

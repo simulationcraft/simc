@@ -86,10 +86,10 @@ void stats_t::reset()
 
 // stats_t::add_result ======================================================
 
-void stats_t::add_result( const double act_amount,
-                          const double tot_amount,
-                          const dmg_type_e dmg_type,
-                          const result_type_e result )
+void stats_t::add_result( double act_amount,
+                          double tot_amount,
+                          dmg_type_e dmg_type,
+                          result_type_e result )
 {
   iteration_actual_amount += act_amount;
   iteration_total_amount += tot_amount;
@@ -112,7 +112,7 @@ void stats_t::add_result( const double act_amount,
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
 
-  const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
+  unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
   timeline_amount[ index ] += act_amount;
 }

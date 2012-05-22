@@ -18,8 +18,8 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
 {
   typedef typename std::iterator_traits<Fwd>::value_type value_t;
   typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
-  const diff_t n = std::distance( first, last );
-  const diff_t HALFWINDOW = static_cast<diff_t>( HW );
+  diff_t n = std::distance( first, last );
+  diff_t HALFWINDOW = static_cast<diff_t>( HW );
 
   if ( n >= 2 * HALFWINDOW )
   {
@@ -223,7 +223,7 @@ void print_spell_query( sim_t* sim, unsigned level )
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
 
-  for ( std::vector<uint32_t>::const_iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); i++ )
+  for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); i++ )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
@@ -260,7 +260,7 @@ void print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void print_html_rng_information( FILE* file, const rng_t* rng, double confidence_estimator )
+void print_html_rng_information( FILE* file, rng_t* rng, double confidence_estimator )
 {
   fprintf( file,
            "\t\t\t\t\t\t\t<table>\n"
@@ -288,7 +288,7 @@ void print_html_rng_information( FILE* file, const rng_t* rng, double confidence
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-void print_html_sample_data( FILE* file, const player_t* p, const sample_data_t& data, const std::string& name )
+void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -524,7 +524,7 @@ struct buff_comp
   }
 };
 
-void generate_player_buff_lists( const player_t*  p, player_t::report_information_t& ri )
+void generate_player_buff_lists( player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -565,7 +565,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
   // Make the pet graphs the same length as owner's
   if ( p -> is_pet() )
   {
-    const player_t* o = const_cast<player_t*>( p ) -> cast_pet() -> owner;
+    player_t* o = p -> cast_pet() -> owner;
     max_buckets = static_cast<size_t>( o -> fight_length.max );
   }
 
@@ -674,7 +674,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
   ri.charts_generated = true;
 }
 
-void generate_sim_report_information( const sim_t* s , sim_t::report_information_t& ri )
+void generate_sim_report_information( sim_t* s , sim_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;

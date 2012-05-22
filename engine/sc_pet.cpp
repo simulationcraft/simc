@@ -55,7 +55,7 @@ pet_t::pet_t( sim_t*             s,
 
 // player_t::pet_attribute =================================
 
-double pet_t::composite_attribute( attribute_type_e attr ) const
+double pet_t::composite_attribute( attribute_type_e attr )
 {
   double a = current.attribute[ attr ];
 
@@ -170,7 +170,7 @@ void pet_t::dismiss()
 // pet_t::assess_damage =====================================================
 
 double pet_t::assess_damage( double              amount,
-                             const school_type_e school,
+                             school_type_e       school,
                              dmg_type_e          type,
                              result_type_e       result,
                              action_t*           action )
@@ -193,7 +193,7 @@ void pet_t::combat_begin()
 
 // pet_t::composite_player_multiplier ======================================================
 
-double pet_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
+double pet_t::composite_player_multiplier( school_type_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 

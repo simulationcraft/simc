@@ -14,39 +14,39 @@ namespace chart {
   std::string chart_bg_color( int print_styles );
   std::string resource_color( int type );
 
-  std::string raid_downtime ( const std::vector<player_t*> &players_by_name, int print_styles );
-  size_t raid_aps ( std::vector<std::string>& images, const sim_t*, const std::vector<player_t*>&, bool dps );
-  size_t raid_dpet( std::vector<std::string>& images, const sim_t* );
-  size_t raid_gear( std::vector<std::string>& images, const sim_t* );
+  std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles );
+  size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, bool dps );
+  size_t raid_dpet( std::vector<std::string>& images, sim_t* );
+  size_t raid_gear( std::vector<std::string>& images, sim_t* );
 
-  std::string action_dpet        ( const player_t* );
-  std::string aps_portion        ( const player_t* );
-  std::string time_spent         ( const player_t* );
-  std::string gains              ( const player_t*, resource_type_e );
-  std::string timeline           ( const player_t*, const std::vector<double>&, const std::string&, double avg=0, std::string color="FDD017" );
-  std::string timeline_dps_error ( const player_t* );
-  std::string scale_factors      ( const player_t* );
-  std::string scaling_dps        ( const player_t* );
-  std::string reforge_dps        ( const player_t* );
-  std::string distribution       ( const sim_t*, const std::vector<int>&, const std::string&, double, double, double );
-  std::string dps_error          ( const player_t* );
+  std::string action_dpet        ( player_t* );
+  std::string aps_portion        ( player_t* );
+  std::string time_spent         ( player_t* );
+  std::string gains              ( player_t*, resource_type_e );
+  std::string timeline           ( player_t*, std::vector<double>&, const std::string&, double avg=0, std::string color="FDD017" );
+  std::string timeline_dps_error ( player_t* );
+  std::string scale_factors      ( player_t* );
+  std::string scaling_dps        ( player_t* );
+  std::string reforge_dps        ( player_t* );
+  std::string distribution       ( sim_t*, std::vector<int>&, const std::string&, double, double, double );
+  std::string dps_error          ( player_t* );
 
-  std::string gear_weights_lootrank  ( const player_t* );
-  std::string gear_weights_wowhead   ( const player_t* );
-  std::string gear_weights_wowreforge( const player_t* );
-  std::string gear_weights_pawn      ( const player_t*, bool hit_expertise=true );
+  std::string gear_weights_lootrank  ( player_t* );
+  std::string gear_weights_wowhead   ( player_t* );
+  std::string gear_weights_wowreforge( player_t* );
+  std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
 }
 
 namespace generate_report_information {
   void generate_player_charts  ( player_t*, player_t::report_information_t& );
-  void generate_player_buff_lists ( const player_t*, player_t::report_information_t& );
-  void generate_sim_report_information     ( const sim_t*,       sim_t::report_information_t& );
+  void generate_player_buff_lists ( player_t*, player_t::report_information_t& );
+  void generate_sim_report_information     ( sim_t*,       sim_t::report_information_t& );
 }
 
 namespace report {
 
-  void print_html_rng_information  ( FILE*, const rng_t*, double confidence_estimator );
-  void print_html_sample_data      ( FILE*, const player_t*, const sample_data_t&, const std::string& name );
+  void print_html_rng_information  ( FILE*, rng_t*, double confidence_estimator );
+  void print_html_sample_data      ( FILE*, player_t*, sample_data_t&, const std::string& name );
 
   void print_spell_query ( sim_t*, unsigned level = MAX_LEVEL );
   void print_profiles    ( sim_t* );

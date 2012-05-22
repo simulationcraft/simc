@@ -66,7 +66,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
 {
 }
 
-void action_state_t::debug() const
+void action_state_t::debug()
 {
   log_t::output( action -> sim,
                  "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s amount=%.2f "

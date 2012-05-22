@@ -471,7 +471,7 @@ bool parse_guild( sim_t*             sim,
 
     for ( size_t i = 0; i < stuff.names.size(); ++i )
     {
-      const std::string& guild_name = stuff.names[ i ];
+      std::string& guild_name = stuff.names[ i ];
       sim -> input_is_utf8 = range::is_valid_utf8( guild_name ) && range::is_valid_utf8( stuff.server );
       if ( ! bcp_api::download_guild( sim, stuff.region, stuff.server, guild_name,
                                       ranks_list, pt, max_rank, stuff.cache ) )
@@ -1382,8 +1382,8 @@ struct compare_stats_name
 
 namespace {
 
-void player_convergence( const int& iterations, const int& convergence_scale, const double& confidence_estimator,
-                         const sample_data_t& dps, std::vector<double>& dps_convergence_error, const double& dps_error, double& dps_convergence )
+void player_convergence( int iterations, int convergence_scale, double confidence_estimator,
+                         sample_data_t& dps, std::vector<double>& dps_convergence_error, double dps_error, double& dps_convergence )
 {
   // Error Convergence ======================================================
 
@@ -1763,7 +1763,7 @@ bool sim_t::execute()
 
 // sim_t::find_player =======================================================
 
-player_t* sim_t::find_player( const std::string& name ) const
+player_t* sim_t::find_player( const std::string& name )
 {
   for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
   {
@@ -1776,7 +1776,7 @@ player_t* sim_t::find_player( const std::string& name ) const
 
 // sim_t::find_player =======================================================
 
-player_t* sim_t::find_player( int index ) const
+player_t* sim_t::find_player( int index )
 {
   for ( size_t i = 0, actors = actor_list.size(); i < actors; ++i )
   {

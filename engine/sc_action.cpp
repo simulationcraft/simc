@@ -430,7 +430,7 @@ void action_t::parse_options( option_t*          options,
 
 // action_t::cost ===========================================================
 
-double action_t::cost() const
+double action_t::cost()
 {
   if ( ! harmful && ! player -> in_combat )
     return 0;
@@ -455,7 +455,7 @@ double action_t::cost() const
 
 // action_t::gcd ============================================================
 
-timespan_t action_t::gcd() const
+timespan_t action_t::gcd()
 {
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero();
@@ -465,7 +465,7 @@ timespan_t action_t::gcd() const
 
 // action_t::travel_time ====================================================
 
-timespan_t action_t::travel_time() const
+timespan_t action_t::travel_time()
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
@@ -558,7 +558,7 @@ void action_t::snapshot()
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit( result_type_e r ) const
+bool action_t::result_is_hit( result_type_e r )
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -572,7 +572,7 @@ bool action_t::result_is_hit( result_type_e r ) const
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss( result_type_e r ) const
+bool action_t::result_is_miss( result_type_e r )
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -583,21 +583,21 @@ bool action_t::result_is_miss( result_type_e r ) const
 
 // action_t::armor ==========================================================
 
-double action_t::armor() const
+double action_t::armor()
 {
   return target -> composite_armor();
 }
 
 // action_t::resistance =====================================================
 
-double action_t::resistance() const
+double action_t::resistance()
 {
   return 0;
 }
 
 // action_t::total_crit_bonus ===============================================
 
-double action_t::total_crit_bonus() const
+double action_t::total_crit_bonus()
 {
   double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier - 1.0 ) * crit_bonus_multiplier;
 
@@ -612,7 +612,7 @@ double action_t::total_crit_bonus() const
 
 // action_t::total_power ====================================================
 
-double action_t::total_power() const
+double action_t::total_power()
 {
   double power=0;
 
@@ -785,7 +785,7 @@ void action_t::consume_resource()
 
 // action_t::is_valid_target ==============================================
 
-bool action_t::is_valid_target( player_t* t ) const
+bool action_t::is_valid_target( player_t* t )
 {
   return ( ! t -> current.sleeping &&
          ( ( type == ACTION_HEAL && ! t -> is_enemy() )
@@ -794,7 +794,7 @@ bool action_t::is_valid_target( player_t* t ) const
 
 // action_t::available_targets ==============================================
 
-int action_t::num_targets() const
+int action_t::num_targets()
 {
   int count = 0;
   for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
@@ -807,7 +807,7 @@ int action_t::num_targets() const
 
 // action_t::available_targets ==============================================
 
-size_t action_t::available_targets( std::vector< player_t* >& tl ) const
+size_t action_t::available_targets( std::vector< player_t* >& tl )
 {
   // TODO: This does not work for heals at all, as it presumes enemies in the
   // actor list.
@@ -825,7 +825,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 
 // action_t::target_list ====================================================
 
-std::vector< player_t* > action_t::target_list() const
+std::vector< player_t* > action_t::target_list()
 {
   // A very simple target list for aoe spells, pick any and all targets, up to
   // aoe amount, or if aoe == -1, pick all (enemy) targets
@@ -1552,11 +1552,6 @@ void action_t::check_spell( const spell_data_t* sp )
 
 expr_t* action_t::create_expression( const std::string& name_str )
 {
-  // FIXME!  Hack Alert!  This is necessary to make sure buff_t::find works.
-  // Unlike DoTs, (De)Buffs have custom initialization.
-
-  target_data();
-
   class action_expr_t : public expr_t
   {
   public:
@@ -1866,7 +1861,7 @@ double action_t::ppm_proc_chance( double PPM )
 
 // action_t::tick_time ======================================================
 
-timespan_t action_t::tick_time( double haste ) const
+timespan_t action_t::tick_time( double haste )
 {
   timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
@@ -1878,7 +1873,7 @@ timespan_t action_t::tick_time( double haste ) const
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( double haste, timespan_t d ) const
+int action_t::hasted_num_ticks( double haste, timespan_t d )
 {
   if ( ! hasted_ticks ) return num_ticks;
 

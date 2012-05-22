@@ -53,21 +53,21 @@ void attack_t::execute()
 
 // attack_t::swing_haste ====================================================
 
-double attack_t::swing_haste() const
+double attack_t::swing_haste()
 {
   return player -> composite_attack_speed();
 }
 
 // attack_t::haste ==========================================================
 
-double attack_t::haste() const
+double attack_t::haste()
 {
   return player -> composite_attack_haste();
 }
 
 // attack_t::execute_time ===================================================
 
-timespan_t attack_t::execute_time() const
+timespan_t attack_t::execute_time()
 {
   if ( base_execute_time == timespan_t::zero() )
     return timespan_t::zero();
@@ -98,7 +98,7 @@ void attack_t::player_buff()
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( double hit, int delta_level ) const
+double attack_t::miss_chance( double hit, int delta_level )
 {
   double miss = 0.0;
 
@@ -122,7 +122,7 @@ double attack_t::miss_chance( double hit, int delta_level ) const
 
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( int /* delta_level */ ) const
+double attack_t::crit_block_chance( int /* delta_level */ )
 {
   // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
   // % is 5%, and not 5% + delta_level * 0.5%.
@@ -134,7 +134,7 @@ double attack_t::crit_block_chance( int /* delta_level */ ) const
 
 // attack_t::crit_chance ====================================================
 
-double attack_t::crit_chance( double crit, int delta_level ) const
+double attack_t::crit_chance( double crit, int delta_level )
 {
   double chance = crit;
 
@@ -377,28 +377,28 @@ void melee_attack_t::target_debuff( player_t* t, dmg_type_e dt )
 
 // melee_attack_t::total_expertise ================================================
 
-double melee_attack_t::total_expertise() const
+double melee_attack_t::total_expertise()
 {
   return base_expertise + player_expertise + target_expertise;
 }
 
 // melee_attack_t::dodge_chance ===================================================
 
-double melee_attack_t::dodge_chance( double expertise, int delta_level ) const
+double melee_attack_t::dodge_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
 // melee_attack_t::parry_chance ===================================================
 
-double melee_attack_t::parry_chance( double expertise, int delta_level ) const
+double melee_attack_t::parry_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) + std::min( 0.0, dodge_chance( expertise, delta_level ) );
 }
 
 // melee_attack_t::glance_chance ==================================================
 
-double melee_attack_t::glance_chance( int delta_level ) const
+double melee_attack_t::glance_chance( int delta_level )
 {
   return ( delta_level + 1 ) * 0.06;
 }
@@ -458,21 +458,21 @@ void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
 
 // ranged_attack_t::total_expertise ================================================
 
-double ranged_attack_t::total_expertise() const
+double ranged_attack_t::total_expertise()
 {
   return base_expertise + player_expertise + target_expertise;
 }
 
 // ranged_attack_t::dodge_chance ===================================================
 
-double ranged_attack_t::dodge_chance( double expertise, int delta_level ) const
+double ranged_attack_t::dodge_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
 // ranged_attack_t::parry_chance ===================================================
 
-double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ ) const
+double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ )
 {
   // Assumed impossible to parry ranged. Needs checking.
   return 0.0;
@@ -480,7 +480,7 @@ double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level
 
 // ranged_attack_t::glance_chance ==================================================
 
-double ranged_attack_t::glance_chance( int delta_level ) const
+double ranged_attack_t::glance_chance( int delta_level )
 {
   return (  delta_level  + 1 ) * 0.06;
 }

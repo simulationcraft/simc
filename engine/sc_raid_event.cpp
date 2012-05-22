@@ -331,7 +331,7 @@ struct damage_event_t : public raid_event_t
 
     struct raid_damage_t : public spell_t
     {
-      raid_damage_t( const char* n, player_t* player, const school_type_e s ) :
+      raid_damage_t( const char* n, player_t* player, school_type_e s ) :
         spell_t( n, player, spell_data_t::nil() )
       {
         school = s;
@@ -485,7 +485,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
 
 // raid_event_t::cooldown_time ==============================================
 
-timespan_t raid_event_t::cooldown_time() const
+timespan_t raid_event_t::cooldown_time()
 {
   timespan_t time;
 
@@ -515,7 +515,7 @@ timespan_t raid_event_t::cooldown_time() const
 
 // raid_event_t::duration_time ==============================================
 
-timespan_t raid_event_t::duration_time() const
+timespan_t raid_event_t::duration_time()
 {
   timespan_t time = rng -> gauss( duration, duration_stddev );
 

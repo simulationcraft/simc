@@ -302,7 +302,7 @@ std::string chart_bg_color( int print_styles )
 
 }
 
-std::string raid_downtime( const std::vector<player_t*>& players_by_name, int print_styles )
+std::string raid_downtime( std::vector<player_t*>& players_by_name, int print_styles )
 {
   // This chart should serve as a well documented example on how to do a chart in a clean and elegant way.
   // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
@@ -404,15 +404,15 @@ std::string raid_downtime( const std::vector<player_t*>& players_by_name, int pr
 // chart_t::raid_dps ========================================================
 struct filter_non_performing_players
 {
-  const bool dps;
+  bool dps;
   filter_non_performing_players( bool dps_ ) : dps( dps_ ) {}
-  bool operator()( const player_t* p ) const
+  bool operator()( player_t* p ) const
   { if ( dps ) { if ( p -> dps.mean<=0 ) return true;} else if ( p -> hps.mean<=0 ) return true; return false; }
 };
 
 size_t raid_aps( std::vector<std::string>& images,
-                        const sim_t* sim,
-                        const std::vector<player_t*>& players_by_aps,
+                        sim_t* sim,
+                        std::vector<player_t*>& players_by_aps,
                         bool dps )
 {
   size_t num_players = players_by_aps.size();
@@ -503,7 +503,7 @@ size_t raid_aps( std::vector<std::string>& images,
 // chart_t::raid_gear =======================================================
 
 size_t raid_gear( std::vector<std::string>& images,
-                         const sim_t* sim )
+                          sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -668,8 +668,8 @@ struct compare_dpet
 };
 struct filter_stats_dpet
 {
-  const player_t& p;
-  filter_stats_dpet( const player_t& q ) : p( q ) {}
+  player_t& p;
+  filter_stats_dpet( player_t& q ) : p( q ) {}
   bool operator()( const stats_t* st ) const
   {
     if ( st->quiet ) return true;
@@ -682,7 +682,7 @@ struct filter_stats_dpet
 };
 
 size_t raid_dpet( std::vector<std::string>& images,
-                         const sim_t* sim )
+                          sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -774,7 +774,7 @@ size_t raid_dpet( std::vector<std::string>& images,
 
 // chart_t::action_dpet =====================================================
 
-std::string action_dpet( const player_t* p )
+std::string action_dpet(  player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -865,7 +865,7 @@ struct compare_amount
   }
 };
 
-std::string aps_portion( const player_t* p )
+std::string aps_portion(  player_t* p )
 {
   std::vector<stats_t*> stats_list;
 
@@ -981,7 +981,7 @@ struct filter_waiting_stats
   }
 };
 
-std::string time_spent( const player_t* p )
+std::string time_spent( player_t* p )
 {
   std::vector<stats_t*> filtered_waiting_stats;
 
@@ -1073,7 +1073,7 @@ struct compare_gain
   }
 };
 
-std::string gains( const player_t* p, resource_type_e type )
+std::string gains( player_t* p, resource_type_e type )
 {
   std::vector<gain_t*> gains_list;
 
@@ -1143,7 +1143,7 @@ std::string gains( const player_t* p, resource_type_e type )
 
 // chart_t::scale_factors ===================================================
 
-std::string scale_factors( const player_t* p )
+std::string scale_factors( player_t* p )
 {
   std::vector<stat_type_e> scaling_stats;
 
@@ -1217,13 +1217,13 @@ std::string scale_factors( const player_t* p )
 
 // chart_t::scaling_dps =====================================================
 
-std::string scaling_dps( const player_t* p )
+std::string scaling_dps( player_t* p )
 {
   double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
   for ( size_t i = 0; i < p -> dps_plot_data.size(); ++i )
   {
-    const std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<double>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
     for ( size_t j = 0; j < size; j++ )
     {
@@ -1257,7 +1257,7 @@ std::string scaling_dps( const player_t* p )
   for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
-    const std::vector<double>& pd = p -> dps_plot_data[ i ];
+    std::vector<double>& pd = p -> dps_plot_data[ i ];
     size_t size = pd.size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
@@ -1355,14 +1355,14 @@ std::string color_temperature_gradient( double n, double min, double range )
 
 // chart_t::reforge_dps =====================================================
 
-std::string reforge_dps( const player_t* p )
+std::string reforge_dps( player_t* p )
 {
   double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
 
   if ( ! p )
     return std::string();
 
-  const std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
+  std::vector< std::vector<reforge_plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.size() == 0 )
     return std::string();
 
@@ -1390,7 +1390,7 @@ std::string reforge_dps( const player_t* p )
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
     std::vector<stat_type_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
-    const reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
+    reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
     double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
     double max_ydelta = std::max( min_delta, max_delta );
@@ -1626,11 +1626,11 @@ std::string reforge_dps( const player_t* p )
 
 // chart_t::timeline_dps ====================================================
 
-std::string timeline( const player_t* p,
-                             const std::vector<double>& timeline_data,
-                             const std::string& timeline_name,
-                             double avg,
-                             std::string color )
+std::string timeline(  player_t* p,
+                       std::vector<double>& timeline_data,
+                       const std::string& timeline_name,
+		       double avg,
+		       std::string color )
 {
   static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
@@ -1703,7 +1703,7 @@ std::string timeline( const player_t* p,
 
 // chart_t::timeline_dps_error ==============================================
 
-std::string timeline_dps_error( const player_t* p )
+std::string timeline_dps_error( player_t* p )
 {
   static const size_t min_data_number = 50;
   size_t max_buckets = p -> dps_convergence_error.size();
@@ -1780,10 +1780,10 @@ std::string timeline_dps_error( const player_t* p )
 
 // chart_t::distribution_dps ================================================
 
-std::string distribution( const sim_t* sim,
-                                 const std::vector<int>& dist_data,
-                                 const std::string& distribution_name,
-                                 double avg, double min, double max )
+std::string distribution(  sim_t* sim,
+                           std::vector<int>& dist_data,
+                           const std::string& distribution_name,
+			   double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
 
@@ -1838,7 +1838,7 @@ std::string distribution( const sim_t* sim,
 
 // chart_t::gear_weights_lootrank ===========================================
 
-std::string gear_weights_lootrank( const player_t*    p )
+std::string gear_weights_lootrank( player_t*    p )
 {
   char buffer[ 1024 ];
 
@@ -1923,7 +1923,7 @@ std::string gear_weights_lootrank( const player_t*    p )
 
 // chart_t::gear_weights_wowhead ============================================
 
-std::string gear_weights_wowhead( const player_t*    p )
+std::string gear_weights_wowhead( player_t*    p )
 {
   char buffer[ 1024 ];
   bool first=true;
@@ -2007,7 +2007,7 @@ std::string gear_weights_wowhead( const player_t*    p )
 
 // chart_t::gear_weights_wowreforge =========================================
 
-std::string gear_weights_wowreforge( const player_t*    p )
+std::string gear_weights_wowreforge( player_t*    p )
 {
   char buffer[ 1024 ];
 
@@ -2053,7 +2053,7 @@ std::string gear_weights_wowreforge( const player_t*    p )
 
 // chart_t::gear_weights_pawn ===============================================
 
-std::string gear_weights_pawn( const player_t*    p,
+std::string gear_weights_pawn(  player_t*    p,
                                       bool hit_expertise )
 {
   std::vector<stat_type_e> stats;
@@ -2120,7 +2120,7 @@ std::string gear_weights_pawn( const player_t*    p,
 
 // chart_t::timeline_dps_error ==============================================
 
-std::string dps_error( const player_t* p )
+std::string dps_error( player_t* p )
 {
   char buffer[ 1024 ];
   std::string s = std::string();

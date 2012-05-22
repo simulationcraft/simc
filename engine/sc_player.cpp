@@ -374,8 +374,6 @@ player_t::player_t( sim_t*             s,
   rngs( rngs_t() ),
   uptimes( uptimes_t() )
 {
-  target_data.init( "target_data", this );
-
   sim -> actor_list.push_back( this );
 
   initial.skill = s -> default_skill;
@@ -1966,7 +1964,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::energy_regen_per_second ========================================
 
-double player_t::energy_regen_per_second() const
+double player_t::energy_regen_per_second()
 {
   double r = base_energy_regen_per_second * ( 1.0 / composite_attack_haste() );
 
@@ -1975,7 +1973,7 @@ double player_t::energy_regen_per_second() const
 
 // player_t::focus_regen_per_second =========================================
 
-double player_t::focus_regen_per_second() const
+double player_t::focus_regen_per_second()
 {
   double r = base_focus_regen_per_second * ( 1.0 / composite_attack_haste() );
 
@@ -1984,7 +1982,7 @@ double player_t::focus_regen_per_second() const
 
 // player_t::chi_regen_per_second ========================================
 
-double player_t::chi_regen_per_second() const
+double player_t::chi_regen_per_second()
 {
   // FIXME: Just assuming it scale with haste right now.
   double r = base_chi_regen_per_second * ( 1.0 / composite_attack_haste() );
@@ -1994,7 +1992,7 @@ double player_t::chi_regen_per_second() const
 
 // player_t::composite_attack_haste =========================================
 
-double player_t::composite_attack_haste() const
+double player_t::composite_attack_haste()
 {
   double h = attack_haste;
 
@@ -2027,7 +2025,7 @@ double player_t::composite_attack_haste() const
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_attack_speed() const
+double player_t::composite_attack_speed()
 {
   double h = composite_attack_haste();
 
@@ -2044,7 +2042,7 @@ double player_t::composite_attack_speed() const
 
 // player_t::composite_attack_power =========================================
 
-double player_t::composite_attack_power() const
+double player_t::composite_attack_power()
 {
   double ap = current.attack_power;
 
@@ -2059,7 +2057,7 @@ double player_t::composite_attack_power() const
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit( const weapon_t* weapon ) const
+double player_t::composite_attack_crit( weapon_t* weapon )
 {
   double ac = current.attack_crit + ( agility() / current.attack_crit_per_agility / 100.0 );
 
@@ -2087,7 +2085,7 @@ double player_t::composite_attack_crit( const weapon_t* weapon ) const
 }
 
 // player_t::composite_attack_expertise =====================================
-double player_t::composite_attack_expertise( const weapon_t* weapon ) const
+double player_t::composite_attack_expertise( weapon_t* weapon )
 {
   double m = current.attack_expertise;
 
@@ -2160,7 +2158,7 @@ double player_t::composite_attack_expertise( const weapon_t* weapon ) const
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_attack_hit() const
+double player_t::composite_attack_hit()
 {
   double ah = current.attack_hit;
 
@@ -2174,7 +2172,7 @@ double player_t::composite_attack_hit() const
 
 // player_t::composite_armor ================================================
 
-double player_t::composite_armor() const
+double player_t::composite_armor()
 {
   double a = current.armor;
 
@@ -2190,7 +2188,7 @@ double player_t::composite_armor() const
 
 // player_t::composite_armor_multiplier =====================================
 
-double player_t::composite_armor_multiplier() const
+double player_t::composite_armor_multiplier()
 {
   double a = current.armor_multiplier;
 
@@ -2199,7 +2197,7 @@ double player_t::composite_armor_multiplier() const
 
 // player_t::composite_spell_resistance =====================================
 
-double player_t::composite_spell_resistance( const school_type_e school ) const
+double player_t::composite_spell_resistance( school_type_e school )
 {
   double a = spell_resistance[ school ];
 
@@ -2208,7 +2206,7 @@ double player_t::composite_spell_resistance( const school_type_e school ) const
 
 // player_t::composite_tank_miss ============================================
 
-double player_t::composite_tank_miss( const school_type_e school ) const
+double player_t::composite_tank_miss( school_type_e school )
 {
   double m = 0;
 
@@ -2225,7 +2223,7 @@ double player_t::composite_tank_miss( const school_type_e school ) const
 
 // player_t::composite_tank_dodge ===========================================
 
-double player_t::composite_tank_dodge() const
+double player_t::composite_tank_dodge()
 {
   double d = current.dodge;
 
@@ -2237,7 +2235,7 @@ double player_t::composite_tank_dodge() const
 
 // player_t::composite_tank_parry ===========================================
 
-double player_t::composite_tank_parry() const
+double player_t::composite_tank_parry()
 {
   double p = current.parry;
 
@@ -2248,7 +2246,7 @@ double player_t::composite_tank_parry() const
 
 // player_t::composite_tank_block ===========================================
 
-double player_t::composite_tank_block() const
+double player_t::composite_tank_block()
 {
   double b = current.block;
 
@@ -2257,7 +2255,7 @@ double player_t::composite_tank_block() const
 
 // player_t::composite_tank_block_reduction =================================
 
-double player_t::composite_tank_block_reduction() const
+double player_t::composite_tank_block_reduction()
 {
   double b = current.block_reduction;
 
@@ -2271,21 +2269,21 @@ double player_t::composite_tank_block_reduction() const
 
 // player_t::composite_tank_crit_block ======================================
 
-double player_t::composite_tank_crit_block() const
+double player_t::composite_tank_crit_block()
 {
   return 0;
 }
 
 // player_t::composite_tank_crit ============================================
 
-double player_t::composite_tank_crit( const school_type_e /* school */ ) const
+double player_t::composite_tank_crit( school_type_e /* school */ )
 {
   return 0;
 }
 
 // player_t::diminished_dodge ===============================================
 
-double player_t::diminished_dodge() const
+double player_t::diminished_dodge()
 {
   if ( diminished_kfactor == 0 || diminished_dodge_capi == 0 )
     return 0;
@@ -2307,7 +2305,7 @@ double player_t::diminished_dodge() const
 
 // player_t::diminished_parry ===============================================
 
-double player_t::diminished_parry() const
+double player_t::diminished_parry()
 {
   if ( diminished_kfactor == 0 || diminished_parry_capi == 0 ) return 0;
 
@@ -2328,7 +2326,7 @@ double player_t::diminished_parry() const
 
 // player_t::composite_spell_haste ==========================================
 
-double player_t::composite_spell_haste() const
+double player_t::composite_spell_haste()
 {
   double h = spell_haste;
 
@@ -2362,7 +2360,7 @@ double player_t::composite_spell_haste() const
 
 // player_t::composite_spell_power ==========================================
 
-double player_t::composite_spell_power( school_type_e school ) const
+double player_t::composite_spell_power( school_type_e school )
 {
   double sp = spell_power[ school ];
 
@@ -2398,7 +2396,7 @@ double player_t::composite_spell_power( school_type_e school ) const
 
 // player_t::composite_spell_power_multiplier ===============================
 
-double player_t::composite_spell_power_multiplier() const
+double player_t::composite_spell_power_multiplier()
 {
   double m = current.spell_power_multiplier;
 
@@ -2409,7 +2407,7 @@ double player_t::composite_spell_power_multiplier() const
 
 // player_t::composite_spell_crit ===========================================
 
-double player_t::composite_spell_crit() const
+double player_t::composite_spell_crit()
 {
   double sc = current.spell_crit + ( intellect() / current.spell_crit_per_intellect / 100.0 );
 
@@ -2427,7 +2425,7 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() const
+double player_t::composite_spell_hit()
 {
   double sh = current.spell_hit;
 
@@ -2442,12 +2440,12 @@ double player_t::composite_spell_hit() const
 
 // player_t::composite_mp5 ==================================================
 
-double player_t::composite_mp5() const
+double player_t::composite_mp5()
 {
   return current.mp5 + spirit() * current.mp5_per_spirit * current.mp5_from_spirit_multiplier;
 }
 
-double player_t::composite_mastery() const
+double player_t::composite_mastery()
 {
   double m = floor( ( current.mastery * 100.0 ) + 0.5 ) / 100.0;
 
@@ -2459,7 +2457,7 @@ double player_t::composite_mastery() const
 
 // player_t::composite_attack_power_multiplier ==============================
 
-double player_t::composite_attack_power_multiplier() const
+double player_t::composite_attack_power_multiplier()
 {
   double m = current.attack_power_multiplier;
 
@@ -2471,7 +2469,7 @@ double player_t::composite_attack_power_multiplier() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( const school_type_e school, const action_t* /* a */ ) const
+double player_t::composite_player_multiplier( school_type_e school, action_t* /* a */ )
 {
   double m = 1.0;
 
@@ -2497,35 +2495,35 @@ double player_t::composite_player_multiplier( const school_type_e school, const 
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( const school_type_e /* school */, const action_t* /* a */ ) const
+double player_t::composite_player_td_multiplier( school_type_e /* school */, action_t* /* a */ )
 {
   return 1.0;
 }
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( const school_type_e /* school */ ) const
+double player_t::composite_player_heal_multiplier( school_type_e /* school */ )
 {
   return 1.0;
 }
 
 // player_t::composite_player_th_multiplier =================================
 
-double player_t::composite_player_th_multiplier( const school_type_e /* school */ ) const
+double player_t::composite_player_th_multiplier( school_type_e /* school */ )
 {
   return 1.0;
 }
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( const school_type_e /* school */ ) const
+double player_t::composite_player_absorb_multiplier( school_type_e /* school */ )
 {
   return 1.0;
 }
 
 // player_t::composite_movement_speed =======================================
 
-double player_t::composite_movement_speed() const
+double player_t::composite_movement_speed()
 {
   double speed = base_movement_speed;
 
@@ -2561,7 +2559,7 @@ double player_t::composite_movement_speed() const
 
 // player_t::composite_attribute =================================
 
-double player_t::composite_attribute( attribute_type_e attr ) const
+double player_t::composite_attribute( attribute_type_e attr )
 {
   double a = current.attribute[ attr ];
   double m = ( ( level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
@@ -2583,7 +2581,7 @@ double player_t::composite_attribute( attribute_type_e attr ) const
 
 // player_t::composite_attribute_multiplier =================================
 
-double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
+double player_t::composite_attribute_multiplier( attribute_type_e attr )
 {
   double m = current.attribute_multiplier[ attr ];
 
@@ -2612,7 +2610,7 @@ double player_t::composite_attribute_multiplier( attribute_type_e attr ) const
 
 // player_t::get_attribute() ================================================
 
-double player_t::get_attribute( attribute_type_e a ) const
+double player_t::get_attribute( attribute_type_e a )
 {
   return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
@@ -2870,12 +2868,6 @@ void player_t::reset()
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> reset();
-
-  for ( size_t i =0; i < sim -> actor_list.size(); ++i )
-  {
-    target_data_t* td = (target_data_t*) target_data[ sim -> actor_list[ i ] ];
-    if( td ) td -> reset();
-  }
 
   potion_used = 0;
 
@@ -3142,7 +3134,7 @@ void player_t::clear_debuffs()
 
 // player_t::print_action_map ===============================================
 
-std::string player_t::print_action_map( const int iterations, int precision ) const
+std::string player_t::print_action_map( int iterations, int precision )
 {
   std::ostringstream ret;
   ret.precision( precision );
@@ -3203,9 +3195,9 @@ action_t* player_t::execute_action()
 
 // player_t::regen ==========================================================
 
-void player_t::regen( const timespan_t periodicity )
+void player_t::regen( timespan_t periodicity )
 {
-  const resource_type_e r = primary_resource();
+  resource_type_e r = primary_resource();
   double base = 0;
   gain_t* gain = NULL;
 
@@ -3241,7 +3233,7 @@ void player_t::regen( const timespan_t periodicity )
 }
 void player_t::collect_resource_timeline_information()
 {
-  const unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
+  unsigned index = static_cast<unsigned>( sim -> current_time.total_seconds() );
 
   for ( size_t j = 0; j < resource_timeline_count; ++j )
   {
@@ -3342,7 +3334,7 @@ double player_t::resource_gain( resource_type_e resource_type,
 // player_t::resource_available =============================================
 
 bool player_t::resource_available( resource_type_e resource_type,
-                                   double cost ) const
+                                   double cost )
 {
   if ( resource_type == RESOURCE_NONE || cost <= 0 || resources.is_infinite( resource_type ) )
   {
@@ -3381,19 +3373,21 @@ void player_t::recalculate_resource_max( resource_type_e resource_type )
 
 // player_t::primary_role ===================================================
 
-role_type_e player_t::primary_role() const
-{ return role; }
+role_type_e player_t::primary_role()
+{
+  return role;
+}
 
 // player_t::primary_tree_name ==============================================
 
-const char* player_t::primary_tree_name() const
+const char* player_t::primary_tree_name()
 {
   return util::specialization_string( primary_tree() ).c_str();
 }
 
 // player_t::normalize_by ===================================================
 
-stat_type_e player_t::normalize_by() const
+stat_type_e player_t::normalize_by()
 {
   if ( sim -> normalized_stat != STAT_NONE )
     return sim -> normalized_stat;
@@ -3413,14 +3407,14 @@ stat_type_e player_t::normalize_by() const
 
 // player_t::health_percentage() ============================================
 
-double player_t::health_percentage() const
+double player_t::health_percentage()
 {
   return resources.pct( RESOURCE_HEALTH ) * 100;
 }
 
 // target_t::time_to_die ====================================================
 
-timespan_t player_t::time_to_die() const
+timespan_t player_t::time_to_die()
 {
   // FIXME: Someone can figure out a better way to do this, for now, we NEED to
   // wait a minimum gcd before starting to estimate fight duration based on health,
@@ -3438,7 +3432,7 @@ timespan_t player_t::time_to_die() const
 
 // player_t::total_reaction_time ============================================
 
-timespan_t player_t::total_reaction_time() const
+timespan_t player_t::total_reaction_time()
 {
   return rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
@@ -4069,7 +4063,7 @@ void player_t::recalculate_haste()
 
 // player_t::recent_cast ====================================================
 
-bool player_t::recent_cast() const
+bool player_t::recent_cast()
 {
   return ( last_cast > timespan_t::zero() ) && ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim -> current_time );
 }
@@ -4090,7 +4084,7 @@ action_t* player_t::find_action( const std::string& str )
 
 // player_t::find_cooldown ==================================================
 
-cooldown_t* player_t::find_cooldown( const std::string& name ) const
+cooldown_t* player_t::find_cooldown( const std::string& name )
 {
   for ( cooldown_t* c = cooldown_list; c; c = c -> next )
   {
@@ -4104,7 +4098,7 @@ cooldown_t* player_t::find_cooldown( const std::string& name ) const
 // player_t::find_dot =======================================================
 
 dot_t* player_t::find_dot( const std::string& name,
-			   player_t* source ) const
+			   player_t* source )
 {
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
@@ -4118,7 +4112,7 @@ dot_t* player_t::find_dot( const std::string& name,
 
 // player_t::find_action_priority_list( const std::string& name ) ===========
 
-action_priority_list_t* player_t::find_action_priority_list( const std::string& name ) const
+action_priority_list_t* player_t::find_action_priority_list( const std::string& name )
 {
   for ( size_t i = 0; i < action_priority_list.size(); i++ )
   {
@@ -4357,7 +4351,7 @@ rng_t* player_t::get_rng( const std::string& n )
 
 // player_t::get_position_distance ==========================================
 
-double player_t::get_position_distance( double m, double v ) const
+double player_t::get_position_distance( double m, double v )
 {
   // Square of Euclidean distance since sqrt() is slow
   double delta_x = this -> x_position - m;
@@ -4367,8 +4361,10 @@ double player_t::get_position_distance( double m, double v ) const
 
 // player_t::get_player_distance ============================================
 
-double player_t::get_player_distance( const player_t* p ) const
-{ return get_position_distance( p -> x_position, p -> y_position ); }
+double player_t::get_player_distance( player_t* p )
+{ 
+  return get_position_distance( p -> x_position, p -> y_position );
+}
 
 // player_t::get_action_priority_list( const std::string& name ) ============
 
@@ -4392,7 +4388,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& c
   assert( a );
 }
 
-timespan_t wait_for_cooldown_t::execute_time() const
+timespan_t wait_for_cooldown_t::execute_time()
 { assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
 
 namespace special_actions {
@@ -4834,7 +4830,7 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = expr_t::parse( this, sec_str );
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t wait = timespan_t::from_seconds( time_expr -> eval() );
     if ( wait <= timespan_t::zero() ) wait = player -> available();
@@ -4850,7 +4846,7 @@ struct wait_until_ready_t : public wait_fixed_t
     wait_fixed_t( player, options_str )
   {}
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t wait = wait_fixed_t::execute_time();
     timespan_t remains = timespan_t::zero();
@@ -4948,7 +4944,7 @@ struct use_item_t : public action_t
     {
       struct discharge_spell_t : public spell_t
       {
-        discharge_spell_t( const char* n, player_t* p, double a, const school_type_e s, unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+        discharge_spell_t( const char* n, player_t* p, double a, school_type_e s, unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
           spell_t( n, p, spell_data_t::nil() )
         {
           school = s;
@@ -5331,7 +5327,7 @@ bool player_t::parse_talents_old_armory( const std::string& talent_string )
 
 bool player_t::parse_talents_numbers( const std::string& talent_string )
 {
-  std::array<int,MAX_TALENT_ROWS> encoding;
+  std::array<uint32_t,MAX_TALENT_ROWS> encoding;
 
   size_t i, j;
   size_t i_max = std::min( talent_string.size(),
@@ -6100,16 +6096,16 @@ expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_n
 
 struct player_expr_t : public expr_t
 {
-  const player_t& player;
+  player_t& player;
 
-  player_expr_t( const std::string& n, const player_t& p ) :
+  player_expr_t( const std::string& n, player_t& p ) :
     expr_t( n ), player( p ) {}
 };
 
 struct position_expr_t : public player_expr_t
 {
-  const int mask;
-  position_expr_t( const std::string& n, const player_t& p, int m ) :
+  int mask;
+  position_expr_t( const std::string& n, player_t& p, int m ) :
     player_expr_t( n, p ), mask( m ) {}
   virtual double evaluate() { return ( 1 << player.position ) & mask; }
 };
@@ -6127,7 +6123,7 @@ expr_t* player_t::create_expression( action_t* a,
     struct multiplier_expr_t : public player_expr_t
     {
       action_t& action;
-      multiplier_expr_t( const player_t& p, action_t* a ) :
+      multiplier_expr_t( player_t& p, action_t* a ) :
         player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
       virtual double evaluate() { return player.composite_player_multiplier( action.school, &action ); }
     };
@@ -6185,8 +6181,8 @@ expr_t* player_t::create_expression( action_t* a,
   {
     struct pet_expr_t : public expr_t
     {
-      const pet_t& pet;
-      pet_expr_t( const std::string& name, const pet_t& p ) :
+      pet_t& pet;
+      pet_expr_t( const std::string& name, pet_t& p ) :
         expr_t( name ), pet( p ) {}
     };
 
@@ -6201,7 +6197,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct pet_active_expr_t : public pet_expr_t
       {
-        pet_active_expr_t( const pet_t& p ) : pet_expr_t( "pet_active", p ) {}
+        pet_active_expr_t( pet_t& p ) : pet_expr_t( "pet_active", p ) {}
         virtual double evaluate() { return ! pet.current.sleeping; }
       };
       return new pet_active_expr_t( *pet );
@@ -6211,7 +6207,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct pet_remains_expr_t : public pet_expr_t
       {
-        pet_remains_expr_t( const pet_t& p ) : pet_expr_t( "pet_remains", p ) {}
+        pet_remains_expr_t( pet_t& p ) : pet_expr_t( "pet_remains", p ) {}
         virtual double evaluate()
         {
           if ( pet.expiration && pet.expiration-> remains() > timespan_t::zero() )
@@ -6249,8 +6245,8 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct temp_attr_expr_t : public player_expr_t
       {
-        const attribute_type_e attr;
-        temp_attr_expr_t( const std::string& name, const player_t& p, attribute_type_e a ) :
+        attribute_type_e attr;
+        temp_attr_expr_t( const std::string& name, player_t& p, attribute_type_e a ) :
           player_expr_t( name, p ), attr( a ) {}
         virtual double evaluate()
         { return player.temporary.attribute[ attr ] * player.composite_attribute_multiplier( attr ); }
@@ -6262,7 +6258,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct temp_sp_expr_t : player_expr_t
       {
-        temp_sp_expr_t( const std::string& name, const player_t& p ) :
+        temp_sp_expr_t( const std::string& name, player_t& p ) :
           player_expr_t( name, p ) {}
         virtual double evaluate()
         {
@@ -6280,7 +6276,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct temp_ap_expr_t : player_expr_t
       {
-        temp_ap_expr_t( const std::string& name, const player_t& p ) :
+        temp_ap_expr_t( const std::string& name, player_t& p ) :
           player_expr_t( name, p ) {}
         virtual double evaluate()
         {
@@ -6342,8 +6338,8 @@ expr_t* player_t::create_expression( action_t* a,
       {
         struct swing_remains_expr_t : public player_expr_t
         {
-          const slot_type_e slot;
-          swing_remains_expr_t( const player_t& p, slot_type_e s ) :
+          slot_type_e slot;
+          swing_remains_expr_t( player_t& p, slot_type_e s ) :
             player_expr_t( "swing_remains", p ), slot( s ) {}
           virtual double evaluate()
           {
@@ -6426,7 +6422,7 @@ expr_t* player_t::create_expression( action_t* a,
     {
       spell_data_t* s;
 
-      s_expr_t( const std::string& name, const player_t& p, spell_data_t* sp ) :
+      s_expr_t( const std::string& name, player_t& p, spell_data_t* sp ) :
         player_expr_t( name, p ), s( sp ) {}
       virtual double evaluate()
       { return ( s && s -> ok() ); }
@@ -6459,9 +6455,9 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
 {
   struct resource_expr_t : public player_expr_t
   {
-    const resource_type_e rt;
+    resource_type_e rt;
 
-    resource_expr_t( const std::string& n, const player_t& p, resource_type_e r ) :
+    resource_expr_t( const std::string& n, player_t& p, resource_type_e r ) :
       player_expr_t( n, p ), rt( r ) {}
   };
 
@@ -6483,7 +6479,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     {
       struct resource_deficit_expr_t : public resource_expr_t
       {
-        resource_deficit_expr_t( const std::string& n, const player_t& p, resource_type_e r ) :
+        resource_deficit_expr_t( const std::string& n, player_t& p, resource_type_e r ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
         { return player.resources.max[ rt ] - player.resources.current[ rt ]; }
@@ -6495,7 +6491,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     {
       struct resource_pct_expr_t : public resource_expr_t
       {
-        resource_pct_expr_t( const std::string& n, const player_t& p, resource_type_e r  ) :
+        resource_pct_expr_t( const std::string& n, player_t& p, resource_type_e r  ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
         { return player.resources.pct( rt ) * 100.0; }
@@ -6513,7 +6509,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     {
       struct resource_pct_nonproc_expr_t : public resource_expr_t
       {
-        resource_pct_nonproc_expr_t( const std::string& n, const player_t& p, resource_type_e r ) :
+        resource_pct_nonproc_expr_t( const std::string& n, player_t& p, resource_type_e r ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
         { return player.resources.current[ rt ] / player.buffed.resource[ rt ] * 100.0; }
@@ -6524,7 +6520,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     {
       struct resource_net_regen_expr_t : public resource_expr_t
       {
-        resource_net_regen_expr_t( const std::string& n, const player_t& p, resource_type_e r ) :
+        resource_net_regen_expr_t( const std::string& n, player_t& p, resource_type_e r ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
         {
@@ -6551,7 +6547,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       {
         struct time_to_max_energy_expr_t : public resource_expr_t
         {
-          time_to_max_energy_expr_t( const player_t& p, resource_type_e r ) :
+          time_to_max_energy_expr_t( player_t& p, resource_type_e r ) :
             resource_expr_t( "time_to_max_energy", p, r ) {}
           virtual double evaluate()
           {
@@ -6566,7 +6562,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       {
         struct time_to_max_focus_expr_t : public resource_expr_t
         {
-          time_to_max_focus_expr_t( const player_t& p, resource_type_e r ) :
+          time_to_max_focus_expr_t( player_t& p, resource_type_e r ) :
             resource_expr_t( "time_to_max_focus", p, r ) {}
           virtual double evaluate()
           {
@@ -6680,7 +6676,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
   {
     for ( int i = 0; i < SLOT_MAX; i++ )
     {
-      const item_t& item = items[ i ];
+      item_t& item = items[ i ];
 
       if ( item.active() )
       {
@@ -6758,7 +6754,7 @@ bool player_t::create_profile( std::string& profile_str, save_type_e stype, bool
 
     for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      const item_t& item = items[ i ];
+      item_t& item = items[ i ];
       if ( ! item.active() ) continue;
       if ( item.unique || item.unique_enchant || item.unique_addon || ! item.encoded_weapon_str.empty() )
       {
@@ -7025,17 +7021,17 @@ player_t* player_t::create( sim_t*,
 
 // player_t::composite_vulnerability ========================================
 
-double player_t::composite_spell_crit_vulnerability() const
+double player_t::composite_spell_crit_vulnerability()
 {
   return 0.0;
 }
 
-double player_t::composite_attack_crit_vulnerability() const
+double player_t::composite_attack_crit_vulnerability()
 {
   return 0.0;
 }
 
-double player_t::composite_player_vulnerability( school_type_e school ) const
+double player_t::composite_player_vulnerability( school_type_e school )
 {
   double m = 1.0;
 
@@ -7052,7 +7048,7 @@ double player_t::composite_player_vulnerability( school_type_e school ) const
   return m;
 }
 
-double player_t::composite_ranged_attack_player_vulnerability() const
+double player_t::composite_ranged_attack_player_vulnerability()
 {
   // MoP: Increase ranged damage taken by 5%. make sure
   if ( debuffs.ranged_vulnerability -> check() )

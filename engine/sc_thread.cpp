@@ -27,7 +27,7 @@ public:
 
   static void sleep( timespan_t t )
   {
-    const std::time_t finish = std::time() + t.total_seconds();
+    std::time_t finish = std::time() + t.total_seconds();
     while ( std::time() < finish )
       ;
   }

@@ -48,7 +48,7 @@ double rng_t::range( double min,
 
 double rng_t::gauss( double mean,
                      double stddev,
-                     const bool truncate_low_end )
+                     bool truncate_low_end )
 {
   // This code adapted from ftp://ftp.taygeta.com/pub/c/boxmuller.c
   // Implements the Polar form of the Box-Muller Transformation
@@ -119,7 +119,7 @@ double rng_t::exgauss( double mean, double stddev, double nu_divisor, double nu_
 
 // rng_t::report ============================================================
 
-std::string rng_t::report( double confidence_estimator ) const
+std::string rng_t::report( double confidence_estimator )
 {
   double gauss_confidence = 1.0 / sqrt( static_cast<double>( num_gauss ) ) * confidence_estimator;
   double range_confidence = 1.0 / sqrt( static_cast<double>( num_range ) ) * confidence_estimator;

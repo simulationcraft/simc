@@ -17,10 +17,10 @@ struct monk_t;
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
-struct monk_td_t : public target_data_t
+struct monk_td_t : public actor_pair_t
 {
   monk_td_t( player_t* target, player_t* monk ) :
-    target_data_t( target, monk )
+    actor_pair_t( target, monk )
   {
   }
 };
@@ -80,6 +80,8 @@ struct monk_t : public player_t
 
   } glyphs;
 
+  target_specific_t<monk_td_t> target_data;
+
   monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
     buffs( buffs_t() ),
@@ -87,7 +89,8 @@ struct monk_t : public player_t
     procs( procs_t() ),
     talents( talents_t() ),
     passives( passives_t() ),
-    glyphs( glyphs_t() )
+    glyphs( glyphs_t() ),
+    target_data( "target_data", this )
   {
 
     active_stance             = STANCE_FIERCE_TIGER;
@@ -106,18 +109,20 @@ struct monk_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const;
-  virtual role_type_e primary_role() const;
+  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual int       decode_set( item_t& );
+  virtual resource_type_e primary_resource();
+  virtual role_type_e primary_role();
 
-  virtual target_data_t* create_target_data( player_t* target )
+  virtual monk_td_t* get_target_data( player_t* target )
   {
-    return new monk_td_t( target, this );
+    monk_td_t*& td = target_data[ target ];
+    if( ! td ) td = new monk_td_t( target, this );
+    return td;
   }
 
   // Temporary
-  virtual std::string set_default_talents() const
+  virtual std::string set_default_talents()
   {
     switch ( primary_tree() )
     {
@@ -128,7 +133,7 @@ struct monk_t : public player_t
     return player_t::set_default_talents();
   }
 
-  virtual std::string set_default_glyphs() const
+  virtual std::string set_default_glyphs()
   {
     switch ( primary_tree() )
     {
@@ -159,11 +164,9 @@ struct monk_melee_attack_t : public melee_attack_t
     may_glance = false;
   }
 
-  monk_t* p() const
-  { return debug_cast<monk_t*>( player ); }
+  monk_t* p() { return debug_cast<monk_t*>( player ); }
 
-  monk_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_td_t*>( target_data( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual bool   ready();
 };
@@ -180,11 +183,9 @@ struct monk_spell_t : public spell_t
     may_crit   = true;
   }
 
-  monk_t* p() const
-  { return debug_cast<monk_t*>( player ); }
+  monk_t* p() { return debug_cast<monk_t*>( player ); }
 
-  monk_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_td_t*>( target_data( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual bool   ready();
 };
@@ -201,11 +202,9 @@ struct monk_heal_t : public heal_t
     may_crit   = true;
   }
 
-  monk_t* p() const
-  { return debug_cast<monk_t*>( player ); }
+  monk_t* p() { return debug_cast<monk_t*>( player ); }
 
-  monk_td_t* td( player_t* t = 0 ) const
-  { return debug_cast<monk_td_t*>( target_data( t ) ); }
+  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual bool   ready();
 };
@@ -568,7 +567,7 @@ void monk_t::init_resources( bool force )
 
 // monk_t::matching_gear_multiplier =========================================
 
-double monk_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double monk_t::matching_gear_multiplier( attribute_type_e attr )
 {
   if ( primary_tree() == MONK_MISTWEAVER )
   {
@@ -583,7 +582,7 @@ double monk_t::matching_gear_multiplier( const attribute_type_e attr ) const
 
 // monk_t::decode_set =======================================================
 
-int monk_t::decode_set( const item_t& item ) const
+int monk_t::decode_set( item_t& item )
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
@@ -605,7 +604,7 @@ int monk_t::decode_set( const item_t& item ) const
 
 // monk_t::primary_role ==================================================
 
-resource_type_e monk_t::primary_resource() const
+resource_type_e monk_t::primary_resource()
 {
   // FIXME: change to healing stance
   if ( primary_tree() == MONK_MISTWEAVER )
@@ -616,7 +615,7 @@ resource_type_e monk_t::primary_resource() const
 
 // monk_t::primary_role ==================================================
 
-role_type_e monk_t::primary_role() const
+role_type_e monk_t::primary_role()
 {
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;

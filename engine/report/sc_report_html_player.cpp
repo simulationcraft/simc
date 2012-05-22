@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // print_html_action_damage =================================================
 
-double mean_damage( const std::vector<stats_t::stats_results_t> result )
+double mean_damage( std::vector<stats_t::stats_results_t> result )
 {
   double mean = 0;
   int count = 0;
@@ -27,7 +27,7 @@ double mean_damage( const std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-static void print_html_action_damage( FILE* file, const stats_t* s, const player_t* p, int j )
+static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 {
   int id = 0;
 
@@ -539,7 +539,7 @@ static void print_html_action_damage( FILE* file, const stats_t* s, const player
 
 // print_html_action_resource ===============================================
 
-int print_html_action_resource( FILE* file, const stats_t* s, int j )
+int print_html_action_resource( FILE* file, stats_t* s, int j )
 {
   for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
   {
@@ -585,7 +585,7 @@ int print_html_action_resource( FILE* file, const stats_t* s, int j )
 
 // print_html_gear ==========================================================
 
-void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<item_t>& items )
+void print_html_gear ( FILE* file, double avg_ilvl, std::vector<item_t>& items )
 {
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
@@ -600,7 +600,7 @@ void print_html_gear ( FILE* file, const double& avg_ilvl, const std::vector<ite
 
   for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
-    const item_t& item = items[ i ];
+    item_t& item = items[ i ];
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -643,7 +643,7 @@ void print_html_profile ( FILE* file, player_t* a )
 
 // print_html_stats =========================================================
 
-void print_html_stats ( FILE* file, const player_t* a )
+void print_html_stats ( FILE* file, player_t* a )
 {
   std::string n = a -> name();
   util::format_text( n, true );
@@ -927,7 +927,7 @@ void print_html_stats ( FILE* file, const player_t* a )
 
 // print_html_talents_player ================================================
 
-void print_html_talents( FILE* file, const player_t* p )
+void print_html_talents( FILE* file, player_t* p )
 {
   std::string n = p -> name();
   util::format_text( n, true );
@@ -954,7 +954,7 @@ void print_html_talents( FILE* file, const player_t* p )
                ( row + 1 ) * 15 );
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
-        const talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
+        talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
         const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
         if ( p -> talent_list[ row * MAX_TALENT_COLS + col ] )
         {
@@ -983,7 +983,7 @@ void print_html_talents( FILE* file, const player_t* p )
 
 // print_html_player_scale_factors ==========================================
 
-void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, player_t::report_information_t& ri )
 {
 
   if ( !p -> is_pet() )
@@ -1136,7 +1136,7 @@ void print_html_player_scale_factors( FILE* file, const sim_t* sim, const player
 
 // print_html_player_action_priority_list ===================================
 
-void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const player_t* p )
+void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p )
 {
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"player-section action-priority-list\">\n"
@@ -1200,7 +1200,7 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
 
   if ( ! p -> report_information.action_sequence.empty() )
   {
-    const std::string& seq = p -> report_information.action_sequence;
+    std::string& seq = p -> report_information.action_sequence;
     if ( seq.size() > 0 )
     {
       fprintf( file,
@@ -1234,7 +1234,7 @@ void print_html_player_action_priority_list( FILE* file, const sim_t* sim, const
 
 // print_html_player_statistics =============================================
 
-void print_html_player_statistics( FILE* file, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_statistics( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
 
 // Statistics & Data Analysis
@@ -1297,7 +1297,7 @@ void print_html_player_statistics( FILE* file, const player_t* p, const player_t
            dps_error_str.c_str() );
 }
 
-void print_html_gain( FILE* file, report::tabs_t tabs, const gain_t* g, int& j, bool report_overflow = true )
+void print_html_gain( FILE* file, report::tabs_t tabs, gain_t* g, int& j, bool report_overflow = true )
 {
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -1337,7 +1337,7 @@ void print_html_gain( FILE* file, report::tabs_t tabs, const gain_t* g, int& j, 
 
 // print_html_player_resources ==============================================
 
-void print_html_player_resources( FILE* file, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_resources( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
   report::tabs_t tabs(4); // this should get passed in
 
@@ -1552,9 +1552,9 @@ void print_html_player_resources( FILE* file, const player_t* p, const player_t:
 
 // print_html_player_charts =================================================
 
-void print_html_player_charts( FILE* file, const sim_t* sim, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_charts( FILE* file, sim_t* sim, player_t* p, player_t::report_information_t& ri )
 {
-  const size_t num_players = sim -> players_by_name.size();
+  size_t num_players = sim -> players_by_name.size();
 
   fputs( "\t\t\t\t<div class=\"player-section\">\n"
          "\t\t\t\t\t<h3 class=\"toggle open\">Charts</h3>\n"
@@ -1666,7 +1666,7 @@ void print_html_player_charts( FILE* file, const sim_t* sim, const player_t* p, 
 }
 
 
-void print_html_player_buff( FILE* file, const buff_t* b, int report_details, const size_t i, bool constant_buffs = false )
+void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i, bool constant_buffs = false )
 {
   std::string buff_name;
   if ( b -> player && b -> player -> is_pet() )
@@ -1778,7 +1778,7 @@ void print_html_player_buff( FILE* file, const buff_t* b, int report_details, co
 }
 // print_html_player_buffs ==================================================
 
-void print_html_player_buffs( FILE* file, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_buffs( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
   // Buff Section
   fprintf( file,
@@ -1835,7 +1835,7 @@ void print_html_player_buffs( FILE* file, const player_t* p, const player_t::rep
 
 // print_html_player ========================================================
 
-void print_html_player_description( FILE* file, const sim_t* sim, const player_t* p, int j, std::string& n )
+void print_html_player_description( FILE* file, sim_t* sim, player_t* p, int j, std::string& n )
 {
 
   int num_players = ( int ) sim -> players_by_name.size();
@@ -1890,7 +1890,7 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
 
   const char* pt = util::player_type_string( p -> type );
   if ( p -> is_pet() )
-    pt = util::pet_type_string( const_cast<player_t*>( p ) -> cast_pet() -> pet_type );
+    pt = util::pet_type_string( p -> cast_pet() -> pet_type );
   fprintf( file,
            "\t\t\t\t<ul class=\"params\">\n"
            "\t\t\t\t\t<li><b>Race:</b> %s</li>\n"
@@ -1916,7 +1916,7 @@ void print_html_player_description( FILE* file, const sim_t* sim, const player_t
 
 // print_html_player_results_spec_gear ========================================================
 
-void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const player_t* p )
+void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
 {
 
   // Main player table
@@ -2070,7 +2070,7 @@ void print_html_player_results_spec_gear( FILE* file, const sim_t* sim, const pl
 
 // print_html_player_abilities ========================================================
 
-void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* p, const std::string& name )
+void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, std::string& name )
 {
 
   // Abilities Section
@@ -2157,7 +2157,7 @@ void print_html_player_abilities( FILE* file, const sim_t* sim, const player_t* 
 
 // print_html_player_benefits_uptimes ========================================================
 
-void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
+void print_html_player_benefits_uptimes( FILE* file, player_t* p )
 {
   fprintf( file,
            "\t\t\t\t\t<div class=\"player-section benefits\">\n"
@@ -2285,7 +2285,7 @@ void print_html_player_benefits_uptimes( FILE* file, const player_t* p )
 
 // print_html_player_procs ========================================================
 
-void print_html_player_procs( FILE* file, const proc_t* pr )
+void print_html_player_procs( FILE* file, proc_t* pr )
 {
   // Procs Section
   fprintf( file,
@@ -2300,7 +2300,7 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
            "\t\t\t\t\t\t\t\t</tr>\n" );
   {
     int i = 1;
-    for ( const proc_t* proc = pr; proc; proc = proc -> next )
+    for ( proc_t* proc = pr; proc; proc = proc -> next )
     {
       if ( proc -> count > 0 )
       {
@@ -2334,7 +2334,7 @@ void print_html_player_procs( FILE* file, const proc_t* pr )
 
 // print_html_player_deaths ========================================================
 
-void print_html_player_deaths( FILE* file, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_deaths( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
   // Death Analysis
 
@@ -2412,7 +2412,7 @@ void print_html_player_deaths( FILE* file, const player_t* p, const player_t::re
 
 // print_html_player_gear_weights ========================================================
 
-void print_html_player_gear_weights( FILE* file, const player_t* p, const player_t::report_information_t& ri )
+void print_html_player_gear_weights( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
   if ( p -> sim -> scaling -> has_scale_factors() && !p -> is_pet() )
   {
@@ -2460,12 +2460,12 @@ void print_html_player_gear_weights( FILE* file, const player_t* p, const player
 
 // print_html_player_ ========================================================
 
-void print_html_player_( FILE* file, const sim_t* sim, player_t* q, int j=0 )
+void print_html_player_( FILE* file, sim_t* sim, player_t* q, int j=0 )
 {
   generate_report_information::generate_player_charts( q, q -> report_information );
   generate_report_information::generate_player_buff_lists( q, q -> report_information );
 
-  const player_t* p = q;
+  player_t* p = q;
   std::string n = p -> name();
   util::format_text( n, true );
 

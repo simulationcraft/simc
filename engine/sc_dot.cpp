@@ -179,7 +179,7 @@ void dot_t::refresh_duration()
 
 // dot_t::remains ===========================================================
 
-timespan_t dot_t::remains() const
+timespan_t dot_t::remains()
 {
   if ( ! action ) return timespan_t::zero();
   if ( ! ticking ) return timespan_t::zero();
@@ -261,7 +261,7 @@ void dot_t::schedule_tick()
 
 // dot_t::ticks =============================================================
 
-int dot_t::ticks() const
+int dot_t::ticks()
 {
   if ( ! action ) return 0;
   if ( ! ticking ) return 0;
@@ -277,7 +277,7 @@ expr_t* dot_t::create_expression( action_t* action,
     dot_t* static_dot;
     action_t* action;
     bool dynamic;
-    target_specific_t specific_dot;
+    target_specific_t<dot_t> specific_dot;
 
     dot_expr_t( const std::string& n, dot_t* d, action_t* a, bool dy ) :
       expr_t( n ), static_dot( d ), action( a ), dynamic( dy ), specific_dot( d -> name(), a -> player ) {}
@@ -285,7 +285,7 @@ expr_t* dot_t::create_expression( action_t* action,
     dot_t* dot() 
     { 
       if( ! dynamic ) return static_dot;
-      dot_t*& dot = (dot_t*&) specific_dot[ action -> target ];
+      dot_t*& dot = specific_dot[ action -> target ];
       if( ! dot ) dot = action -> target -> get_dot( static_dot -> name(), action -> player );
       return dot;
     }
