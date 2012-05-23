@@ -5,8 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct token_t
 {

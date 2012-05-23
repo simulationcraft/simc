@@ -1380,10 +1380,13 @@ struct compare_stats_name
   }
 };
 
-namespace {
-
-void player_convergence( int iterations, int convergence_scale, double confidence_estimator,
-                         sample_data_t& dps, std::vector<double>& dps_convergence_error, double dps_error, double& dps_convergence )
+static void player_convergence( int iterations, 
+				int convergence_scale, 
+				double confidence_estimator,
+				sample_data_t& dps, 
+				std::vector<double>& dps_convergence_error, 
+				double dps_error, 
+				double& dps_convergence )
 {
   // Error Convergence ======================================================
 
@@ -1433,7 +1436,7 @@ void player_convergence( int iterations, int convergence_scale, double confidenc
   if ( convergence_error > 0 )
     dps_convergence = convergence_error / ( dps_error * convergence_scale );
 }
-}
+
 // sim_t::analyze_player ====================================================
 
 void sim_t::analyze_player( player_t* p )

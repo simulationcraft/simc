@@ -83,6 +83,8 @@ struct vengeance_event_t : public event_t
   }
 };
 
+} // ANONYMOUS NAMESPACE ===================================================
+
 // has_foreground_actions ===================================================
 
 static bool has_foreground_actions( player_t* p )
@@ -251,8 +253,6 @@ static bool parse_specialization( sim_t* sim,
 
   return true;
 }
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
 // Player
@@ -491,9 +491,7 @@ player_t::~player_t()
   delete sets;
 }
 
-namespace
-{
-bool check_actors( sim_t* sim )
+static bool check_actors( sim_t* sim )
 {
   bool too_quiet = true; // Check for at least 1 active player
   bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
@@ -517,7 +515,7 @@ bool check_actors( sim_t* sim )
 
   return true;
 }
-}
+
 // player_t::debuff_init ====================================================
 
 void player_t::debuff_init( sim_t* sim )
@@ -4391,7 +4389,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& c
 timespan_t wait_for_cooldown_t::execute_time()
 { assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
 
-namespace special_actions {
+namespace { // ANONYMOUS
 
 // Chosen Movement Actions ==================================================
 
@@ -5176,14 +5174,13 @@ struct run_action_list_t : public swap_action_list_t
 };
 
 
-} // END specil_actions NAMESPACE
+} // ANONYMOUS NAMESPACE
 
 // player_t::create_action ==================================================
 
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  using namespace special_actions;
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );

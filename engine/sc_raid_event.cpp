@@ -9,7 +9,7 @@
 // Raid Events
 // ==========================================================================
 
-namespace raid_events {
+namespace { // ANONYMOUS NAMESPACE
 
 struct adds_event_t : public raid_event_t
 {
@@ -460,7 +460,8 @@ struct position_event_t : public raid_event_t
   }
 };
 
-} // END raid_events NAMESPACE
+} // ANONYMOUS NAMESPACE
+
 // raid_event_t::raid_event_t ===============================================
 
 raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
@@ -681,8 +682,6 @@ raid_event_t* raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
-  using namespace raid_events;
-
   if ( name == "adds"         ) return new         adds_event_t( sim, options_str );
   if ( name == "casting"      ) return new      casting_event_t( sim, options_str );
   if ( name == "distraction"  ) return new  distraction_event_t( sim, options_str );
