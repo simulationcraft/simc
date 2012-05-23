@@ -581,7 +581,7 @@ bool item_t::decode_random_suffix()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "random_suffix: item=%s suffix_id=%ld ilevel=%d quality=%d random_point_pool=%d",
+    sim -> output( "random_suffix: item=%s suffix_id=%ld ilevel=%d quality=%d random_point_pool=%d",
                    name(), rsid, ilevel, quality, f );
   }
 
@@ -631,13 +631,13 @@ bool item_t::decode_random_suffix()
         stat_list.push_back( statbuf );
 
         if ( sim -> debug )
-          log_t::output( sim, "random_suffix: stat=%d (%s) stat_amount=%f", stat, stat_str.c_str(), stat_amount );
+          sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat, stat_str.c_str(), stat_amount );
       }
       else
       {
         if ( sim -> debug )
         {
-          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.",
+          sim -> output( "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.",
                          player -> name(), name(), j, stat, enchant_data.ench_type[ j ] );
         }
       }

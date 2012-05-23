@@ -70,7 +70,7 @@ void event_t::reschedule( timespan_t new_time )
 {
   reschedule_time = sim -> current_time + new_time;
 
-  if ( sim -> debug ) log_t::output( sim, "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time.total_seconds(), reschedule_time.total_seconds() );
+  if ( sim -> debug ) sim -> output( "Rescheduling event %s (%d) from %.2f to %.2f", name, id, time.total_seconds(), reschedule_time.total_seconds() );
 
 //  if ( ! strcmp( name, "Rabid Expiration" ) ) assert( false );
 }
@@ -126,7 +126,7 @@ player_ready_event_t::player_ready_event_t( sim_t*    sim,
                                             timespan_t delta_time ) :
   event_t( sim, p, "Player-Ready" )
 {
-  if ( sim -> debug ) log_t::output( sim, "New Player-Ready Event: %s", p -> name() );
+  if ( sim -> debug ) sim -> output( "New Player-Ready Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
 
@@ -148,7 +148,7 @@ void player_ready_event_t::execute()
 
       // Waiting Debug
       if ( sim -> debug )
-        log_t::output( sim, "%s is waiting for %.4f resource=%.2f",
+        sim -> output( "%s is waiting for %.4f resource=%.2f",
                        player -> name(), x.total_seconds(),
                        player -> resources.current[ player -> primary_resource() ] );
     }
@@ -167,7 +167,7 @@ player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
                                         timespan_t delta_time ) :
   event_t( sim, p, "Player-Ready-GCD" )
 {
-  if ( sim -> debug ) log_t::output( sim, "New Player-Ready-GCD Event: %s", p -> name() );
+  if ( sim -> debug ) sim -> output( "New Player-Ready-GCD Event: %s", p -> name() );
   sim -> add_event( this, delta_time );
 }
 
@@ -207,7 +207,7 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 timespan_t time_to_execute ) :
   event_t( sim, a -> player, "Action-Execute" ), action( a )
 {
-  if ( sim -> debug ) log_t::output( sim, "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
+  if ( sim -> debug ) sim -> output( "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
   sim -> add_event( this, time_to_execute );
 }
 
@@ -248,7 +248,7 @@ dot_tick_event_t::dot_tick_event_t( sim_t* sim,
   event_t( sim, d -> source, "DoT Tick" ), dot( d )
 {
   if ( sim -> debug )
-    log_t::output( sim, "New DoT Tick Event: %s %s %d-of-%d %.2f",
+    sim -> output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
                    player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
   sim -> add_event( this, time_to_tick );
@@ -339,7 +339,7 @@ action_travel_event_t::action_travel_event_t( sim_t*    sim,
   damage = a -> direct_dmg;
 
   if ( sim -> debug )
-    log_t::output( sim, "New Action Travel Event: %s %s %.2f",
+    sim -> output( "New Action Travel Event: %s %s %.2f",
                    player -> name(), a -> name(), time_to_travel.total_seconds() );
 
   sim -> add_event( this, time_to_travel );
@@ -362,7 +362,7 @@ void action_travel_event_t::execute()
 
 regen_event_t::regen_event_t( sim_t* sim ) : event_t( sim, 0, "Regen Event" )
 {
-  if ( sim -> debug ) log_t::output( sim, "New Regen Event" );
+  if ( sim -> debug ) sim -> output( "New Regen Event" );
   sim -> add_event( this, sim -> regen_periodicity );
 }
 

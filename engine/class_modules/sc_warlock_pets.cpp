@@ -7,7 +7,7 @@
 
 #if SC_WARLOCK == 1
 
-namespace pet_stats { // ====================================================
+namespace { // ANONYMOUS_NAMESPACE
 
 struct _stat_list_t
 {
@@ -140,9 +140,6 @@ static const _weapon_list_t wild_imp_weapon[]=
 {
   { 0, 0, 0, timespan_t::zero() }
 };
-}
-
-namespace warlock_pet_actions {
 
 static double get_fury_gain( const spell_data_t& data )
 {
@@ -262,15 +259,10 @@ struct warlock_pet_spell_t : public spell_t
   }
 };
 
-}
-
-
-namespace imp_spells {
-
-struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
+struct firebolt_t : public warlock_pet_spell_t
 {
   firebolt_t( imp_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Firebolt" )
+    warlock_pet_spell_t( p, "Firebolt" )
   {
     //FIXME: This stuff needs testing in MoP - commenting out for now
 
@@ -282,7 +274,7 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 
   virtual timespan_t execute_time()
   {
-    timespan_t t = warlock_pet_actions::warlock_pet_spell_t::execute_time();
+    timespan_t t = warlock_pet_spell_t::execute_time();
 
     if ( p() -> o() -> glyphs.demon_training -> ok() ) t *= 0.5;
 
@@ -290,15 +282,10 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 };
 
-}
-
-namespace felguard_spells
-{
-
-struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
+struct legion_strike_t : public warlock_pet_melee_attack_t
 {
   legion_strike_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( p, "Legion Strike" )
+    warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     aoe               = -1;
     weapon   = &( p -> main_hand_weapon );
@@ -306,10 +293,10 @@ struct legion_strike_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 
 };
 
-struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
+struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
+    warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
   {
     aoe         = -1;
     dual        = true;
@@ -319,12 +306,12 @@ struct felstorm_tick_t : public warlock_pet_actions::warlock_pet_melee_attack_t
 
 };
 
-struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
+struct felstorm_t : public warlock_pet_melee_attack_t
 {
   felstorm_tick_t* felstorm_tick;
 
   felstorm_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
+    warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
   {
     callbacks = false;
     harmful   = false;
@@ -352,62 +339,42 @@ struct felstorm_t : public warlock_pet_actions::warlock_pet_melee_attack_t
   }
 };
 
-struct melee_t : public warlock_pet_actions::warlock_pet_melee_t
+struct felguard_melee_t : public warlock_pet_melee_t
 {
-  melee_t( felguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_melee_t( p )
+  felguard_melee_t( felguard_pet_t* p ) :
+    warlock_pet_melee_t( p )
   { }
 };
 
-}
-
-namespace felhunter_spells
-{
-
-struct shadow_bite_t : public warlock_pet_actions::warlock_pet_spell_t
+struct shadow_bite_t : public warlock_pet_spell_t
 {
   shadow_bite_t( felhunter_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Shadow Bite" )
+    warlock_pet_spell_t( p, "Shadow Bite" )
   { }
 };
 
-}
-
-namespace succubus_spells
-{
-
-struct lash_of_pain_t : public warlock_pet_actions::warlock_pet_spell_t
+struct lash_of_pain_t : public warlock_pet_spell_t
 {
   lash_of_pain_t( succubus_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Lash of Pain" )
+    warlock_pet_spell_t( p, "Lash of Pain" )
   {
     if ( p -> owner -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 };
 
-}
-
-namespace voidwalker_spells
-{
-
-struct torment_t : public warlock_pet_actions::warlock_pet_spell_t
+struct torment_t : public warlock_pet_spell_t
 {
   torment_t( voidwalker_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Torment" )
+    warlock_pet_spell_t( p, "Torment" )
   { }
 };
 
-}
-
-namespace infernal_spells
-{
-
 // Immolation Damage Spell ================================================
 
-struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
+struct immolation_damage_t : public warlock_pet_spell_t
 {
   immolation_damage_t( infernal_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "immolation_dmg", p, p -> find_spell( 20153 ) )
+    warlock_pet_spell_t( "immolation_dmg", p, p -> find_spell( 20153 ) )
   {
     dual        = true;
     background  = true;
@@ -418,12 +385,12 @@ struct immolation_damage_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 };
 
-struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
+struct infernal_immolation_t : public warlock_pet_spell_t
 {
   immolation_damage_t* immolation_damage;
 
   infernal_immolation_t( infernal_pet_t* p, const std::string& options_str ) :
-    warlock_pet_actions::warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
+    warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -452,15 +419,10 @@ struct infernal_immolation_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 };
 
-}
-
-namespace doomguard_spells
-{
-
-struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
+struct doom_bolt_t : public warlock_pet_spell_t
 {
   doom_bolt_t( doomguard_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( p, "Doom Bolt" )
+    warlock_pet_spell_t( p, "Doom Bolt" )
   {
     // FIXME: Exact casting mechanics need re-testing in MoP
     if ( p -> owner -> bugs )
@@ -483,15 +445,10 @@ struct doom_bolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 };
 
-}
-
-namespace wild_imp_spells
+struct wild_firebolt_t : public warlock_pet_spell_t
 {
-
-struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
-{
-  firebolt_t( wild_imp_pet_t* p ) :
-    warlock_pet_actions::warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
+  wild_firebolt_t( wild_imp_pet_t* p ) :
+    warlock_pet_spell_t( "firebolt", p, p -> find_spell( 104318 ) )
   {
     if ( p -> main_imp ) stats = p -> main_imp -> get_stats( "firebolt" );
 
@@ -526,7 +483,7 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
   }
 };
 
-}
+} // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // Warlock Pet
@@ -535,20 +492,20 @@ struct firebolt_t : public warlock_pet_actions::warlock_pet_spell_t
 double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e pet_type )
 {
   double r = 0.0;
-  const pet_stats::_stat_list_t* base_list = 0;
-  const pet_stats::_stat_list_t*  pet_list = 0;
+  const _stat_list_t* base_list = 0;
+  const _stat_list_t*  pet_list = 0;
 
 
-  base_list = pet_stats::pet_base_stats;
+  base_list = pet_base_stats;
 
-  if      ( pet_type == PET_IMP        ) pet_list = pet_stats::imp_base_stats;
-  else if ( pet_type == PET_FELGUARD   ) pet_list = pet_stats::felguard_base_stats;
-  else if ( pet_type == PET_FELHUNTER  ) pet_list = pet_stats::felhunter_base_stats;
-  else if ( pet_type == PET_SUCCUBUS   ) pet_list = pet_stats::succubus_base_stats;
-  else if ( pet_type == PET_INFERNAL   ) pet_list = pet_stats::infernal_base_stats;
-  else if ( pet_type == PET_DOOMGUARD  ) pet_list = pet_stats::doomguard_base_stats;
-  else if ( pet_type == PET_VOIDWALKER ) pet_list = pet_stats::voidwalker_base_stats;
-  else if ( pet_type == PET_WILD_IMP   ) pet_list = pet_stats::wild_imp_base_stats;
+  if      ( pet_type == PET_IMP        ) pet_list = imp_base_stats;
+  else if ( pet_type == PET_FELGUARD   ) pet_list = felguard_base_stats;
+  else if ( pet_type == PET_FELHUNTER  ) pet_list = felhunter_base_stats;
+  else if ( pet_type == PET_SUCCUBUS   ) pet_list = succubus_base_stats;
+  else if ( pet_type == PET_INFERNAL   ) pet_list = infernal_base_stats;
+  else if ( pet_type == PET_DOOMGUARD  ) pet_list = doomguard_base_stats;
+  else if ( pet_type == PET_VOIDWALKER ) pet_list = voidwalker_base_stats;
+  else if ( pet_type == PET_WILD_IMP   ) pet_list = wild_imp_base_stats;
 
   if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
   {
@@ -594,25 +551,25 @@ double warlock_pet_t::get_attribute_base( int level, int stat_type_e, pet_type_e
   return r;
 }
 
-const pet_stats::_weapon_list_t* warlock_pet_t::get_weapon( pet_type_e pet_type )
+const _weapon_list_t* warlock_pet_t::get_weapon( pet_type_e pet_type )
 {
-  const pet_stats::_weapon_list_t*  weapon_list = 0;
+  const _weapon_list_t*  weapon_list = 0;
 
-  if      ( pet_type == PET_IMP          ) weapon_list = pet_stats::imp_weapon;
-  else if ( pet_type == PET_FELGUARD     ) weapon_list = pet_stats::felguard_weapon;
-  else if ( pet_type == PET_FELHUNTER    ) weapon_list = pet_stats::felhunter_weapon;
-  else if ( pet_type == PET_SUCCUBUS     ) weapon_list = pet_stats::succubus_weapon;
-  else if ( pet_type == PET_INFERNAL     ) weapon_list = pet_stats::infernal_weapon;
-  else if ( pet_type == PET_DOOMGUARD    ) weapon_list = pet_stats::doomguard_weapon;
-  else if ( pet_type == PET_VOIDWALKER   ) weapon_list = pet_stats::voidwalker_weapon;
-  else if ( pet_type == PET_WILD_IMP     ) weapon_list = pet_stats::wild_imp_weapon;
+  if      ( pet_type == PET_IMP          ) weapon_list = imp_weapon;
+  else if ( pet_type == PET_FELGUARD     ) weapon_list = felguard_weapon;
+  else if ( pet_type == PET_FELHUNTER    ) weapon_list = felhunter_weapon;
+  else if ( pet_type == PET_SUCCUBUS     ) weapon_list = succubus_weapon;
+  else if ( pet_type == PET_INFERNAL     ) weapon_list = infernal_weapon;
+  else if ( pet_type == PET_DOOMGUARD    ) weapon_list = doomguard_weapon;
+  else if ( pet_type == PET_VOIDWALKER   ) weapon_list = voidwalker_weapon;
+  else if ( pet_type == PET_WILD_IMP     ) weapon_list = wild_imp_weapon;
 
   return weapon_list;
 }
 
 double warlock_pet_t::get_weapon_min( int level, pet_type_e pet_type )
 {
-  const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   double r = 0.0;
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
@@ -633,7 +590,7 @@ double warlock_pet_t::get_weapon_min( int level, pet_type_e pet_type )
 
 double warlock_pet_t::get_weapon_max( int level, pet_type_e pet_type )
 {
-  const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   double r = 0.0;
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
@@ -654,7 +611,7 @@ double warlock_pet_t::get_weapon_max( int level, pet_type_e pet_type )
 
 timespan_t warlock_pet_t::get_weapon_swing_time( int level, pet_type_e pet_type )
 {
-  const pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   timespan_t r = timespan_t::zero();
   for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
@@ -860,7 +817,7 @@ imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
 action_t* imp_pet_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "firebolt" ) return new imp_spells::firebolt_t( this );
+  if ( name == "firebolt" ) return new firebolt_t( this );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
@@ -881,14 +838,14 @@ void felguard_pet_t::init_base()
 {
   warlock_main_pet_t::init_base();
 
-  main_hand_attack = new felguard_spells::melee_t( this );
+  main_hand_attack = new felguard_melee_t( this );
 }
 
 action_t* felguard_pet_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
-  if ( name == "legion_strike"   ) return new felguard_spells::legion_strike_t( this );
-  if ( name == "felstorm"        ) return new      felguard_spells::felstorm_t( this );
+  if ( name == "legion_strike"   ) return new legion_strike_t( this );
+  if ( name == "felstorm"        ) return new      felstorm_t( this );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
@@ -908,13 +865,13 @@ void felhunter_pet_t::init_base()
 {
   warlock_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
+  main_hand_attack = new warlock_pet_melee_t( this );
 }
 
 action_t* felhunter_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
-  if ( name == "shadow_bite" ) return new felhunter_spells::shadow_bite_t( this );
+  if ( name == "shadow_bite" ) return new shadow_bite_t( this );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
@@ -935,13 +892,13 @@ void succubus_pet_t::init_base()
 {
   warlock_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
+  main_hand_attack = new warlock_pet_melee_t( this );
 }
 
 action_t* succubus_pet_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
-  if ( name == "lash_of_pain" ) return new succubus_spells::lash_of_pain_t( this );
+  if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
@@ -961,13 +918,13 @@ void voidwalker_pet_t::init_base()
 {
   warlock_main_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
+  main_hand_attack = new warlock_pet_melee_t( this );
 }
 
 action_t* voidwalker_pet_t::create_action( const std::string& name,
                                            const std::string& options_str )
 {
-  if ( name == "torment" ) return new voidwalker_spells::torment_t( this );
+  if ( name == "torment" ) return new torment_t( this );
 
   return warlock_main_pet_t::create_action( name, options_str );
 }
@@ -994,13 +951,13 @@ void infernal_pet_t::init_base()
 {
   warlock_guardian_pet_t::init_base();
 
-  main_hand_attack = new warlock_pet_actions::warlock_pet_melee_t( this );
+  main_hand_attack = new warlock_pet_melee_t( this );
 }
 
 action_t* infernal_pet_t::create_action( const std::string& name,
                                          const std::string& options_str )
 {
-  if ( name == "immolation" ) return new infernal_spells::infernal_immolation_t( this, options_str );
+  if ( name == "immolation" ) return new infernal_immolation_t( this, options_str );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
 }
@@ -1024,7 +981,7 @@ void doomguard_pet_t::init_base()
 action_t* doomguard_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
-  if ( name == "doom_bolt" ) return new doomguard_spells::doom_bolt_t( this );
+  if ( name == "doom_bolt" ) return new doom_bolt_t( this );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
 }
@@ -1057,7 +1014,7 @@ timespan_t wild_imp_pet_t::available()
 action_t* wild_imp_pet_t::create_action( const std::string& name,
 					 const std::string& options_str )
 {
-  if ( name == "firebolt" ) return new wild_imp_spells::firebolt_t( this );
+  if ( name == "firebolt" ) return new wild_firebolt_t( this );
 
   return warlock_guardian_pet_t::create_action( name, options_str );
 }

@@ -395,7 +395,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown -> duration > timespan_t::zero() )
   {
     if ( sim -> debug )
-      log_t::output( sim, "%s starts buff %s cooldown (%s) with duration %.2f",
+      sim -> output( "%s starts buff %s cooldown (%s) with duration %.2f",
                      ( source ? source -> name() : "someone" ), name_str.c_str(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
@@ -449,7 +449,7 @@ void buff_t::decrement( int    stacks,
       stack_uptime[ current_stack ] -> update( true );
 
     if ( sim -> debug )
-      log_t::output( sim, "buff %s decremented by %d to %d stacks",
+      sim -> output( "buff %s decremented by %d to %d stacks",
                      name_str.c_str(), stacks, current_stack );
   }
 }
@@ -466,7 +466,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     expiration -> reschedule( expiration -> remains() + extra_seconds );
 
     if ( sim -> debug )
-      log_t::output( sim, "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
+      sim -> output( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero() )
@@ -490,7 +490,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     expiration = new ( sim ) expiration_t( sim, player, this, reschedule_time );
 
     if ( sim -> debug )
-      log_t::output( sim, "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
+      sim -> output( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
 }
@@ -663,12 +663,12 @@ void buff_t::aura_gain()
     {
       if ( sim -> log && ! player->current.sleeping )
       {
-        log_t::output( sim, "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
+        sim -> output( "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
       }
     }
     else
     {
-      if ( sim -> log ) log_t::output( sim, "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
+      if ( sim -> log ) sim -> output( "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
     }
   }
 }
@@ -680,11 +680,11 @@ void buff_t::aura_loss()
   if ( player )
   {
     if ( sim -> log && ! player -> current.sleeping )
-      log_t::output( sim, "%s loses %s", player -> name(), name_str.c_str() );
+      sim -> output( "%s loses %s", player -> name(), name_str.c_str() );
   }
   else
   {
-    if ( sim -> log ) log_t::output( sim, "Raid loses %s",  name_str.c_str() );
+    if ( sim -> log ) sim -> output( "Raid loses %s",  name_str.c_str() );
   }
 }
 

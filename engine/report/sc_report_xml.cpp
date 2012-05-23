@@ -281,7 +281,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
 
 void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_t * owner )
 {
-  generate_report_information::generate_player_charts( p, p->report_information );
+  report::generate_player_charts( p, p->report_information );
 
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
@@ -1285,7 +1285,7 @@ void print_xml( sim_t* sim )
     return;
   }
 
-  generate_report_information::generate_sim_report_information( sim, sim->report_information );
+  report::generate_sim_report_information( sim, sim->report_information );
 
   writer.init_document( sim -> xml_stylesheet_file_str );
   writer.begin_tag( "simulationcraft" );

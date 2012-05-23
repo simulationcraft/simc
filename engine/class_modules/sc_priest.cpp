@@ -6,12 +6,12 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
+namespace { // ANONYMOUS NAMESPACE
+
 #if SC_PRIEST == 1
 
-
-namespace {
-
 struct priest_t;
+
 class remove_dots_event_t;
 
 class spirit_shell_buff_t : public absorb_buff_t
@@ -386,10 +386,7 @@ public:
   }
 };
 
-namespace priest_pets {
-
-
-namespace priest_pet_stats { // ====================================================
+// PRIEST PETS ====================================================
 
 struct _stat_list_t
 {
@@ -454,18 +451,18 @@ static const _weapon_list_t none_weapon[]=
 };
 
 
-double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int& stats_available, int& stats2_available )
+static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int& stats_available, int& stats2_available )
 {
   double r = 0.0;
-  const priest_pet_stats::_stat_list_t* base_list = 0;
-  const priest_pet_stats::_stat_list_t*  pet_list = 0;
+  const _stat_list_t* base_list = 0;
+  const _stat_list_t*  pet_list = 0;
 
 
-  base_list = priest_pet_stats::pet_base_stats;
+  base_list = pet_base_stats;
 
-  if      ( pet_type == PET_SHADOWFIEND ) pet_list = priest_pet_stats::shadowfiend_base_stats;
-  else if ( pet_type == PET_MINDBENDER  ) pet_list = priest_pet_stats::mindbender_base_stats;
-  else if ( pet_type == PET_NONE        ) pet_list = priest_pet_stats::none_base_stats;
+  if      ( pet_type == PET_SHADOWFIEND ) pet_list = shadowfiend_base_stats;
+  else if ( pet_type == PET_MINDBENDER  ) pet_list = mindbender_base_stats;
+  else if ( pet_type == PET_NONE        ) pet_list = none_base_stats;
 
   if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
   {
@@ -511,18 +508,18 @@ double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int&
   return r;
 }
 
-const _weapon_list_t* get_weapon( pet_type_e pet_type )
+static const _weapon_list_t* get_weapon( pet_type_e pet_type )
 {
   const _weapon_list_t*  weapon_list = 0;
 
-  if      ( pet_type == PET_SHADOWFIEND ) weapon_list = priest_pet_stats::shadowfiend_weapon;
-  else if ( pet_type == PET_MINDBENDER  ) weapon_list = priest_pet_stats::mindbender_weapon;
-  else if ( pet_type == PET_NONE        ) weapon_list = priest_pet_stats::none_weapon;
+  if      ( pet_type == PET_SHADOWFIEND ) weapon_list = shadowfiend_weapon;
+  else if ( pet_type == PET_MINDBENDER  ) weapon_list = mindbender_weapon;
+  else if ( pet_type == PET_NONE        ) weapon_list = none_weapon;
 
   return weapon_list;
 }
 
-double get_weapon_min( int level, pet_type_e pet_type )
+static double get_weapon_min( int level, pet_type_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -547,7 +544,7 @@ double get_weapon_min( int level, pet_type_e pet_type )
   return r;
 }
 
-double get_weapon_max( int level, pet_type_e pet_type )
+static double get_weapon_max( int level, pet_type_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -572,7 +569,7 @@ double get_weapon_max( int level, pet_type_e pet_type )
   return r;
 }
 
-double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
+static double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -597,9 +594,9 @@ double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
   return r;
 }
 
-timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
+static timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
 {
-  const priest_pet_stats::_weapon_list_t*  weapon_list = get_weapon( pet_type );
+  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
   timespan_t r = timespan_t::zero();
 
@@ -624,8 +621,6 @@ timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
   return r;
 }
 
-} // END priest_pet_stats namespace
-
 // ==========================================================================
 // Priest Pet
 // ==========================================================================
@@ -638,15 +633,15 @@ struct priest_pet_t : public pet_t
   priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false ) :
     pet_t( sim, owner, pet_name, pt, guardian ),
     ap_per_owner_sp( 1.0 ),
-    direct_power_mod( priest_pet_stats::get_weapon_direct_power_mod( level, pt ) )
+    direct_power_mod( get_weapon_direct_power_mod( level, pt ) )
   {
     position                    = POSITION_BACK;
     initial.distance            = 3;
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = priest_pet_stats::get_weapon_min( level, pet_type );
-    main_hand_weapon.max_dmg    = priest_pet_stats::get_weapon_max( level, pet_type );
+    main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
+    main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = priest_pet_stats::get_weapon_swing_time( level, pet_type );
+    main_hand_weapon.swing_time = get_weapon_swing_time( level, pet_type );
     if ( main_hand_weapon.swing_time == timespan_t::zero() )
     {
       sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
@@ -654,13 +649,11 @@ struct priest_pet_t : public pet_t
     }
   }
 
-
   virtual void init_base()
   {
     pet_t::init_base();
 
     {
-      using namespace priest_pet_stats;
       int stats_available = 0, stats2_available = 0;
       base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type, stats_available, stats2_available );
       base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type, stats_available, stats2_available );
@@ -897,9 +890,6 @@ public:
   }
 };
 
-namespace priest_pet_actions {
-
-
 // ==========================================================================
 // Priest Pet Melee
 // ==========================================================================
@@ -963,15 +953,10 @@ struct priest_pet_spell_t : public spell_t
   { return static_cast<priest_pet_t*>( player ); }
 };
 
-}
-
-
-namespace fiend_spells {
-
-struct shadowcrawl_t : public priest_pet_actions::priest_pet_spell_t
+struct shadowcrawl_t : public priest_pet_spell_t
 {
   shadowcrawl_t( base_fiend_pet_t* p ) :
-    priest_pet_actions::priest_pet_spell_t( p, "Shadowcrawl" )
+    priest_pet_spell_t( p, "Shadowcrawl" )
   {
     may_miss  = false;
     harmful   = false;
@@ -989,10 +974,10 @@ struct shadowcrawl_t : public priest_pet_actions::priest_pet_spell_t
   }
 };
 
-struct melee_t : public priest_pet_actions::priest_pet_melee_t
+struct fiend_melee_t : public priest_pet_melee_t
 {
-  melee_t( base_fiend_pet_t* p ) :
-    priest_pet_actions::priest_pet_melee_t( p, "melee" )
+  fiend_melee_t( base_fiend_pet_t* p ) :
+    priest_pet_melee_t( p, "melee" )
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
@@ -1007,13 +992,13 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
 
   virtual void execute()
   {
-    priest_pet_actions::priest_pet_melee_t::execute();
+    priest_pet_melee_t::execute();
   }
 
 
   virtual double action_multiplier()
   {
-    double am = priest_pet_actions::priest_pet_melee_t::action_multiplier();
+    double am = priest_pet_melee_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.shadowcrawl -> up() * p() -> shadowcrawl -> effectN( 2 ).percent();
 
@@ -1022,7 +1007,7 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
 
   virtual void impact_s( action_state_t* s )
   {
-    priest_pet_actions::priest_pet_melee_t::impact_s( s );
+    priest_pet_melee_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1033,49 +1018,45 @@ struct melee_t : public priest_pet_actions::priest_pet_melee_t
   }
 };
 
-}
-
-namespace lightwell_spells {
 struct lightwell_renew_t : public heal_t
+{
+  lightwell_renew_t( lightwell_pet_t* player ) :
+    heal_t( "lightwell_renew", player, player -> find_spell( 7001 ) )
   {
-    lightwell_renew_t( lightwell_pet_t* player ) :
-      heal_t( "lightwell_renew", player, player -> find_spell( 7001 ) )
-    {
-      may_crit = false;
-      tick_may_crit = true;
-      stateless = true;
-
-      tick_power_mod = 0.308;
-    }
-
-    lightwell_pet_t* p()
-    { return static_cast<lightwell_pet_t*>( player ); }
-
-    virtual void execute()
-    {
-      p() -> charges--;
-
-      target = find_lowest_player();
-
-      heal_t::execute();
-    }
-
-    virtual void last_tick( dot_t* d )
-    {
-      heal_t::last_tick( d );
-
-      if ( p() -> charges <= 0 )
-        p() -> dismiss();
-    }
-
-    virtual bool ready()
-    {
-      if ( p() -> charges <= 0 )
-        return false;
-      return heal_t::ready();
-    }
-  };
-} // END lightwell_spells NAMESPACE
+    may_crit = false;
+    tick_may_crit = true;
+    stateless = true;
+    
+    tick_power_mod = 0.308;
+  }
+  
+  lightwell_pet_t* p()
+  { return static_cast<lightwell_pet_t*>( player ); }
+  
+  virtual void execute()
+  {
+    p() -> charges--;
+    
+    target = find_lowest_player();
+    
+    heal_t::execute();
+  }
+  
+  virtual void last_tick( dot_t* d )
+  {
+    heal_t::last_tick( d );
+    
+    if ( p() -> charges <= 0 )
+      p() -> dismiss();
+  }
+  
+  virtual bool ready()
+  {
+    if ( p() -> charges <= 0 )
+      return false;
+    return heal_t::ready();
+  }
+};
 
 // ==========================================================================
 // Pet Shadowfiend/Mindbender Base
@@ -1085,13 +1066,18 @@ void base_fiend_pet_t::init_base()
 {
   priest_guardian_pet_t::init_base();
 
-  main_hand_attack = new fiend_spells::melee_t( this );
+  main_hand_attack = new fiend_melee_t( this );
 }
 
 action_t* base_fiend_pet_t::create_action( const std::string& name,
                                            const std::string& options_str )
 {
-  if ( name == "shadowcrawl" )          { shadowcrawl_action = new fiend_spells::shadowcrawl_t( this ); return shadowcrawl_action; }
+  if ( name == "shadowcrawl" )
+  { 
+    shadowcrawl_action = new shadowcrawl_t( this ); 
+    return shadowcrawl_action; 
+  }
+
   if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
 
   return priest_guardian_pet_t::create_action( name, options_str );
@@ -1114,20 +1100,13 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 // ==========================================================================
 
 
-
 action_t* lightwell_pet_t::create_action( const std::string& name,
 					  const std::string& options_str )
 {
-  if ( name == "lightwell_renew" ) return new lightwell_spells::lightwell_renew_t( this );
+  if ( name == "lightwell_renew" ) return new lightwell_renew_t( this );
 
   return priest_pet_t::create_action( name, options_str );
 }
-
-
-
-} // END priest_pets NAMESPACE
-
-namespace actions { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Priest Absorb
@@ -1235,7 +1214,7 @@ public:
     {
       min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
-      if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
+      if ( sim -> debug ) sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
     }
   }
 };
@@ -1480,7 +1459,7 @@ struct priest_heal_t : public heal_t
     {
       min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
-      if ( sim -> debug ) log_t::output( sim, "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
+      if ( sim -> debug ) sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
     }
   }
 
@@ -1847,7 +1826,7 @@ void priest_spell_t::add_more_shadowy_apparitions( priest_t* p, size_t n )
   }
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
+    p -> sim -> output( "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
 }
 
 void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned number )
@@ -2912,7 +2891,7 @@ struct devouring_plague_t : public priest_spell_t
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
     if ( sim -> log )
-      log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ),
                      name(), player -> resources.current[ current_resource() ] );
 
@@ -3221,7 +3200,7 @@ struct penance_t : public priest_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
     stats -> add_tick( d -> time_to_tick );
   }
@@ -3445,7 +3424,7 @@ struct divine_hymn_t : public priest_heal_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     divine_hymn_tick -> execute();
     stats -> add_tick( d -> time_to_tick );
   }
@@ -3914,7 +3893,7 @@ struct penance_heal_t : public priest_heal_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     penance_tick -> target = target;
     penance_tick -> execute();
     stats -> add_tick( d -> time_to_tick );
@@ -4211,8 +4190,6 @@ struct spirit_shell_absorb_t : priest_absorb_t
   }
 };
 
-}
-
 // ==========================================================================
 // Priest
 // ==========================================================================
@@ -4385,7 +4362,6 @@ double priest_t::matching_gear_multiplier( attribute_type_e attr )
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  using namespace actions;
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
@@ -4449,9 +4425,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "shadowfiend" ) return new priest_pets::shadowfiend_pet_t( sim, this );
-  if ( pet_name == "mindbender"  ) return new priest_pets::mindbender_pet_t ( sim, this );
-  if ( pet_name == "lightwell"   ) return new priest_pets::lightwell_pet_t  ( sim, this );
+  if ( pet_name == "shadowfiend" ) return new shadowfiend_pet_t( sim, this );
+  if ( pet_name == "mindbender"  ) return new mindbender_pet_t ( sim, this );
+  if ( pet_name == "lightwell"   ) return new lightwell_pet_t  ( sim, this );
 
   return 0;
 }
@@ -4637,15 +4613,15 @@ void priest_t::init_spells()
   glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    spells.echo_of_light = new actions::echo_of_light_t( this );
+    spells.echo_of_light = new echo_of_light_t( this );
   else
     spells.echo_of_light = NULL;
 
-  spells.spirit_shell = new actions::spirit_shell_heal_t( this );
+  spells.spirit_shell = new spirit_shell_heal_t( this );
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    actions::priest_spell_t::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
+    priest_spell_t::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
   // Set Bonuses
@@ -5242,10 +5218,9 @@ std::string priest_t::set_default_glyphs()
   return player_t::set_default_glyphs();
 }
 
-} // END ANONYMOUS NAMESPACE
-
 #endif // SC_PRIEST
 
+} // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS

@@ -68,22 +68,21 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
 
 void action_state_t::debug()
 {
-  log_t::output( action -> sim,
-                 "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s amount=%.2f "
-                 "haste=%.2f crit=%.2f tgt_crit=%.2f "
-                 "ap=%.0f sp=%.0f "
-                 "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
-                 action -> player -> name(),
-                 action -> name(),
-                 target -> name(),
-                 this,
-                 action -> snapshot_flags,
-                 action -> update_flags,
-                 util::result_type_string( result ), result_amount,
-                 haste, crit, target_crit,
-                 attack_power, spell_power,
-                 da_multiplier, ta_multiplier,
-                 target_da_multiplier, target_ta_multiplier );
+  action -> sim -> output( "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s amount=%.2f "
+			   "haste=%.2f crit=%.2f tgt_crit=%.2f "
+			   "ap=%.0f sp=%.0f "
+			   "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
+			   action -> player -> name(),
+			   action -> name(),
+			   target -> name(),
+			   this,
+			   action -> snapshot_flags,
+			   action -> update_flags,
+			   util::result_type_string( result ), result_amount,
+			   haste, crit, target_crit,
+			   attack_power, spell_power,
+			   da_multiplier, ta_multiplier,
+			   target_da_multiplier, target_ta_multiplier );
 }
 
 stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
@@ -93,7 +92,7 @@ stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
   event_t( sim, a -> player, "Stateless Action Travel" ), action( a ), state( state )
 {
   if ( sim -> debug )
-    log_t::output( sim, "New Stateless Action Travel Event: %s %s %.2f",
+    sim -> output( "New Stateless Action Travel Event: %s %s %.2f",
                    player -> name(), a -> name(), time_to_travel.total_seconds() );
 
   sim -> add_event( this, time_to_travel );
@@ -125,7 +124,7 @@ void action_t::schedule_travel_s( action_state_t* s )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
+      sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
     travel_event = new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel );
@@ -178,7 +177,7 @@ void action_t::impact_s( action_state_t* s )
       dot -> recalculate_ready();
 
       if ( sim -> debug )
-        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
+        sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
   }
@@ -186,7 +185,7 @@ void action_t::impact_s( action_state_t* s )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
+      sim -> output( "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
     }
   }
 }

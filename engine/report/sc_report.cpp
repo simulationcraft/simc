@@ -9,9 +9,8 @@
 // ==========================================================================
 // Report
 // ==========================================================================
-namespace report {
 
-namespace { // ANONYMOUS ====================================================
+namespace { // ANONYMOUS NAMESPACE
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )
@@ -61,13 +60,61 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
 
 template <unsigned HW, typename Range, typename Out>
 inline Range& sliding_window_average( Range& r, Out out )
-{ sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); return r; }
+{ 
+  sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); 
+  return r;
+}
+
+struct buff_is_dynamic
+{
+  bool operator() ( const buff_t* b ) const
+  {
+    if ( ! b -> quiet && b -> start_count && ! b -> constant )
+      return false;
+
+    return true;
+  }
+};
+
+struct buff_is_constant
+{
+  bool operator() ( const buff_t* b ) const
+  {
+    if ( ! b -> quiet && b -> start_count && b -> constant )
+      return false;
+
+    return true;
+  }
+};
+
+struct buff_comp
+{
+  bool operator()( const buff_t* i, const buff_t* j )
+  {
+    // Aura&Buff / Pet
+    if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
+      return true;
+    // Pet / Aura&Buff
+    else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
+      return false;
+    // Pet / Pet
+    else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
+    {
+      if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
+        return ( i -> name_str.compare( j -> name_str ) < 0 );
+      else
+        return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
+    }
+
+    return ( i -> name_str.compare( j -> name_str ) < 0 );
+  }
+};
 
 } // ANONYMOUS NAMESPACE ====================================================
 
 // report::print_profiles ===================================================
 
-void print_profiles( sim_t* sim )
+void report::print_profiles( sim_t* sim )
 {
   int k = 0;
   for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
@@ -218,7 +265,7 @@ void print_profiles( sim_t* sim )
 
 // report::print_spell_query ==============================================
 
-void print_spell_query( sim_t* sim, unsigned level )
+void report::print_spell_query( sim_t* sim, unsigned level )
 {
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
@@ -252,7 +299,7 @@ void print_spell_query( sim_t* sim, unsigned level )
 
 // report::print_suite ====================================================
 
-void print_suite( sim_t* sim )
+void report::print_suite( sim_t* sim )
 {
   report::print_text( sim -> output_file, sim, sim -> report_details != 0 );
   report::print_html( sim );
@@ -260,7 +307,7 @@ void print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void print_html_rng_information( FILE* file, rng_t* rng, double confidence_estimator )
+void report::print_html_rng_information( FILE* file, rng_t* rng, double confidence_estimator )
 {
   fprintf( file,
            "\t\t\t\t\t\t\t<table>\n"
@@ -288,7 +335,8 @@ void print_html_rng_information( FILE* file, rng_t* rng, double confidence_estim
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
+
+void report::print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -475,56 +523,8 @@ void print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const
            "\t\t\t\t\t\t\t\t</table>\n" );
 
 }
-} // namespace report =======================================================
 
-namespace generate_report_information { // ==================================
-
-struct buff_is_dynamic
-{
-  bool operator() ( const buff_t* b ) const
-  {
-    if ( ! b -> quiet && b -> start_count && ! b -> constant )
-      return false;
-
-    return true;
-  }
-};
-
-struct buff_is_constant
-{
-  bool operator() ( const buff_t* b ) const
-  {
-    if ( ! b -> quiet && b -> start_count && b -> constant )
-      return false;
-
-    return true;
-  }
-};
-
-struct buff_comp
-{
-  bool operator()( const buff_t* i, const buff_t* j )
-  {
-    // Aura&Buff / Pet
-    if ( ( ! i -> player || ! i -> player -> is_pet() ) && j -> player && j -> player -> is_pet() )
-      return true;
-    // Pet / Aura&Buff
-    else if ( i -> player && i -> player -> is_pet() && ( ! j -> player || ! j -> player -> is_pet() ) )
-      return false;
-    // Pet / Pet
-    else if ( i -> player && i -> player -> is_pet() && j -> player && j -> player -> is_pet() )
-    {
-      if ( i -> player -> name_str.compare( j -> player -> name_str ) == 0 )
-        return ( i -> name_str.compare( j -> name_str ) < 0 );
-      else
-        return ( i -> player -> name_str.compare( j -> player -> name_str ) < 0 );
-    }
-
-    return ( i -> name_str.compare( j -> name_str ) < 0 );
-  }
-};
-
-void generate_player_buff_lists( player_t*  p, player_t::report_information_t& ri )
+void report::generate_player_buff_lists( player_t*  p, player_t::report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -554,7 +554,7 @@ void generate_player_buff_lists( player_t*  p, player_t::report_information_t& r
   ri.buff_lists_generated = true;
 }
 
-void generate_player_charts( player_t* p, player_t::report_information_t& ri )
+void report::generate_player_charts( player_t* p, player_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -593,7 +593,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
       s -> timeline_amount.resize( max_buckets );
       std::vector<double> timeline_aps;
       timeline_aps.reserve( s -> timeline_amount.size() );
-      report::sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
+      sliding_window_average<10>( s -> timeline_amount, std::back_inserter( timeline_aps ) );
       s -> timeline_aps_chart = chart::timeline( p, timeline_aps, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ), s -> portion_aps.mean );
       s -> aps_distribution_chart = chart::distribution( p -> sim, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                          s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
@@ -615,7 +615,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
   {
     std::vector<double> timeline_dps;
     timeline_dps.reserve( p -> timeline_dmg.size() );
-    report::sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
+    sliding_window_average<10>( p -> timeline_dmg, std::back_inserter( timeline_dps ) );
     ri.timeline_dps_chart = chart::timeline( p, timeline_dps, encoded_name + " DPS", p -> dps.mean );
   }
 
@@ -674,7 +674,7 @@ void generate_player_charts( player_t* p, player_t::report_information_t& ri )
   ri.charts_generated = true;
 }
 
-void generate_sim_report_information( sim_t* s , sim_t::report_information_t& ri )
+void report::generate_sim_report_information( sim_t* s , sim_t::report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
@@ -693,16 +693,5 @@ void generate_sim_report_information( sim_t* s , sim_t::report_information_t& ri
 
   ri.charts_generated = true;
 }
-} // END generate_report_information NAMESPACE
 
-void report_t::print_spell_query( sim_t* s , unsigned level )
-{ return report::print_spell_query( s, level ); }
 
-void report_t::print_profiles( sim_t* s )
-{ return report::print_profiles( s ); }
-
-void report_t::print_text( FILE* f, sim_t* s , bool detail )
-{ return report::print_text( f, s, detail ); }
-
-void report_t::print_suite( sim_t* s )
-{ return report::print_suite( s ); }

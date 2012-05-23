@@ -231,20 +231,20 @@ void log_item( const item_t& item )
 {
   if ( item.sim -> debug )
   {
-    log_t::output( item.sim, "item_db: n=[%s] q=[%s] l=[%s] h=[%s] rf=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
-                   item.armory_name_str.c_str(),
-                   item.armory_quality_str.c_str(),
-                   item.armory_ilevel_str.c_str(),
-                   item.armory_heroic_str.c_str(),
-                   item.armory_lfr_str.c_str(),
-                   item.armory_armor_type_str.c_str(),
-                   item.armory_stats_str.c_str(),
-                   item.armory_weapon_str.c_str(),
-                   item.armory_gems_str.c_str(),
-                   item.armory_enchant_str.c_str(),
-                   item.armory_reforge_str.c_str(),
-                   item.armory_random_suffix_str.c_str(),
-                   item.armory_addon_str.c_str() );
+    item.sim -> output( "item_db: n=[%s] q=[%s] l=[%s] h=[%s] rf=[%s] a=[%s] s=[%s] w=[%s] g=[%s] e=[%s] r=[%s] rs=[%s] a=[%s]",
+			item.armory_name_str.c_str(),
+			item.armory_quality_str.c_str(),
+			item.armory_ilevel_str.c_str(),
+			item.armory_heroic_str.c_str(),
+			item.armory_lfr_str.c_str(),
+			item.armory_armor_type_str.c_str(),
+			item.armory_stats_str.c_str(),
+			item.armory_weapon_str.c_str(),
+			item.armory_gems_str.c_str(),
+			item.armory_enchant_str.c_str(),
+			item.armory_reforge_str.c_str(),
+			item.armory_random_suffix_str.c_str(),
+			item.armory_addon_str.c_str() );
   }
 }
 

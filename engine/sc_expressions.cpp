@@ -351,12 +351,12 @@ expression_t::parse_tokens( action_t* action,
 
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
-  log_t::output( sim, "tokens:\n" );
+  sim_t::output( sim, "tokens:\n" );
   size_t num_tokens = tokens.size();
   for ( size_t i=0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
-    log_t::output( sim,  "%2d  '%s'\n", t.type, t.label.c_str() );
+    sim_t::output( sim, "%2d  '%s'\n", t.type, t.label.c_str() );
   }
 }
 
@@ -581,7 +581,7 @@ int sim_t::errorf( const char *format, ... )
   return result;
 }
 
-void log_t::output( sim_t*, const char *format, ... )
+void sim_t::output( sim_t*, const char *format, ... )
 {
   va_list ap;
   va_start( ap, format );

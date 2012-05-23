@@ -9,6 +9,7 @@
 // ==========================================================================
 // Monk
 // ==========================================================================
+
 namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
@@ -144,8 +145,6 @@ struct monk_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Monk Abilities
@@ -395,8 +394,6 @@ bool monk_heal_t::ready()
   return true;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
-
 // ==========================================================================
 // Monk Character Definition
 // ==========================================================================
@@ -634,6 +631,7 @@ role_type_e monk_t::primary_role()
 
   return ROLE_HYBRID;
 }
+
 #endif // SC_MONK
 
 } // END ANONYMOUS NAMESPACE

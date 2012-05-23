@@ -60,18 +60,18 @@
 // Shaman
 // ==========================================================================
 
+namespace { // ANONYMOUS NAMESPACE
+
 struct shaman_t;
 
 #if SC_SHAMAN == 1
 
-namespace {
 enum totem_type_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
 enum imbue_type_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
-}
 
 struct shaman_td_t : public actor_pair_t
 {
@@ -380,8 +380,6 @@ struct shaman_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Shaman Attack
@@ -1295,7 +1293,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     void impact_s( action_state_t* state )
     {
       if ( sim -> debug )
-        log_t::output( sim, "%s spreads Flame Shock (off of %s) on %s",
+        sim -> output( "%s spreads Flame Shock (off of %s) on %s",
                        player -> name(),
                        target -> name(),
                        state -> target -> name() );
@@ -1799,7 +1797,7 @@ struct melee_t : public shaman_melee_attack_t
   {
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
-      if ( sim -> debug ) log_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
       schedule_execute();
     }
     else
@@ -2071,7 +2069,7 @@ void shaman_spell_t::execute()
        p() -> talent.echo_of_the_elements -> ok() &&
        p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
   {
-    if ( sim -> debug ) log_t::output( sim, "Echo of the Elements procs for %s", name() );
+    if ( sim -> debug ) sim -> output( "Echo of the Elements procs for %s", name() );
     new ( sim ) eoe_execute_event_t( this );
   }
 
@@ -2084,7 +2082,7 @@ void shaman_spell_t::execute()
     {
       if ( sim -> debug )
       {
-        log_t::output( sim, "Resetting swing timers for '%s', maelstrom=%d, stacks=%d",
+        sim -> output( "Resetting swing timers for '%s', maelstrom=%d, stacks=%d",
                        name_str.c_str(), maelstrom, p() -> buff.maelstrom_weapon -> check() );
       }
 
@@ -2142,7 +2140,7 @@ void shaman_spell_t::schedule_execute()
 {
   if ( sim -> log )
   {
-    log_t::output( sim, "%s schedules execute for %s", p() -> name(), name() );
+    sim -> output( "%s schedules execute for %s", p() -> name(), name() );
   }
 
   time_to_execute = execute_time();
@@ -3013,7 +3011,7 @@ struct shaman_totem_t : public shaman_spell_t
     }
 
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p() -> name(), name() );
+      sim -> output( "%s performs %s", p() -> name(), name() );
 
     result = RESULT_HIT; tick_dmg = 0; direct_dmg = 0;
 
@@ -3031,14 +3029,14 @@ struct shaman_totem_t : public shaman_spell_t
     shaman_spell_t::last_tick( d );
 
     if ( sim -> log )
-      log_t::output( sim, "%s destroys %s", p() -> name(), p() -> totems[ totem ] -> name() );
+      sim -> output( "%s destroys %s", p() -> name(), p() -> totems[ totem ] -> name() );
     p() -> totems[ totem ] = 0;
   }
 
   virtual void tick( dot_t* d )
   {
     if ( sim -> debug )
-      log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+      sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
     player_buff(); // Totems recalculate stats on every "tick"
 
@@ -3066,7 +3064,7 @@ struct shaman_totem_t : public shaman_spell_t
         else
         {
           if ( sim -> log )
-            log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
+            sim -> output( "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
         }
 
       }
@@ -3092,7 +3090,7 @@ struct shaman_totem_t : public shaman_spell_t
       else
       {
         if ( sim -> log )
-          log_t::output( sim, "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
+          sim -> output( "%s avoids %s (%s)", target -> name(), name(), util::result_type_string( result ) );
       }
 
       stats -> add_tick( d -> time_to_tick );
@@ -3602,8 +3600,6 @@ struct unleash_flame_buff_t : public buff_t
     }
   }
 };
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
 // Shaman Character Definition
@@ -4188,7 +4184,7 @@ void shaman_t::moving()
              ( executing -> id == 421 ) )
         {
           if ( sim -> log )
-            log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
+            sim -> output( "spiritwalkers_grace during spell cast, next cast (%s) should finish",
                            executing -> name_str.c_str() );
           swg -> execute();
         }
@@ -4199,7 +4195,7 @@ void shaman_t::moving()
       {
         swg -> execute();
         if ( sim -> log )
-          log_t::output( sim, "spiritwalkers_grace during spell cast, next cast (%s) should finish",
+          sim -> output( "spiritwalkers_grace during spell cast, next cast (%s) should finish",
                          executing -> name_str.c_str() );
       }
     }
@@ -4409,11 +4405,13 @@ role_type_e shaman_t::primary_role()
   return player_t::primary_role();
 }
 
+#endif // SC_SHAMAN
+
+} // ANONYMOUS NAMESPACE
+
 // ==========================================================================
 // PLAYER_T EXTENSIONS
 // ==========================================================================
-
-#endif // SC_SHAMAN
 
 // class_modules::create::shaman  =================================================
 

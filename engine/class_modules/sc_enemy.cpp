@@ -9,9 +9,9 @@
 // ==========================================================================
 // Enemy
 // ==========================================================================
-namespace {
 
-namespace enemy_actions{ // ANONYMOUS NAMESPACE ==========================================
+namespace { // ANONYMOUS NAMESPACE
+
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
 
@@ -268,7 +268,7 @@ struct summon_add_t : public spell_t
   }
 };
 
-action_t* create_action( player_t* p, const std::string& name, const std::string& options_str )
+static action_t* create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
   if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
@@ -278,17 +278,13 @@ action_t* create_action( player_t* p, const std::string& name, const std::string
   return NULL;
 }
 
-} // END enemy_actions NAMESPACE
-
-namespace enemy {
-
-struct class_t : public player_t
+struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
   timespan_t waiting_time;
 
-  class_t( sim_t* s, const std::string& n, race_type_e r = RACE_HUMANOID ) :
+  enemy_t( sim_t* s, const std::string& n, race_type_e r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
@@ -335,7 +331,7 @@ struct class_t : public player_t
 
 struct add_t : public pet_t
 {
-  add_t( sim_t* s, class_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
+  add_t( sim_t* s, enemy_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
     create_options();
@@ -357,7 +353,7 @@ struct add_t : public pet_t
   virtual action_t* create_action( const std::string& name,
 				   const std::string& options_str )
   {
-    action_t* a = enemy_actions::create_action( this, name, options_str );
+    action_t* a = ::create_action( this, name, options_str );
 
     if ( !a )
       a = pet_t::create_action( name, options_str );
@@ -366,12 +362,12 @@ struct add_t : public pet_t
   }
 };
 
-// class_t::create_action ===================================================
+// enemy_t::create_action ===================================================
 
-action_t* class_t::create_action( const std::string& name,
+action_t* enemy_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  action_t* a = enemy_actions::create_action( this, name, options_str );
+  action_t* a = ::create_action( this, name, options_str );
 
   if ( !a )
     a = player_t::create_action( name, options_str );
@@ -379,18 +375,18 @@ action_t* class_t::create_action( const std::string& name,
   return a;
 }
 
-// class_t::init ============================================================
+// enemy_t::init ============================================================
 
-void class_t::init()
+void enemy_t::init()
 {
 
 
   player_t::init();
 }
 
-// class_t::init_base =======================================================
+// enemy_t::init_base =======================================================
 
-void class_t::init_base()
+void enemy_t::init_base()
 {
   level = sim -> max_player_level + 3;
 
@@ -435,9 +431,9 @@ void class_t::init_base()
   }
 }
 
-// class_t::init_resources ==================================================
+// enemy_t::init_resources ==================================================
 
-void class_t::init_resources( bool /* force */ )
+void enemy_t::init_resources( bool /* force */ )
 {
   double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
 
@@ -451,9 +447,9 @@ void class_t::init_resources( bool /* force */ )
   }
 }
 
-// class_t::init_target ====================================================
+// enemy_t::init_target ====================================================
 
-void class_t::init_target()
+void enemy_t::init_target()
 {
   if ( ! target_str.empty() )
   {
@@ -476,9 +472,9 @@ void class_t::init_target()
     target = sim -> target;
 }
 
-// class_t::init_actions ====================================================
+// enemy_t::init_actions ====================================================
 
-void class_t::init_actions()
+void enemy_t::init_actions()
 {
   if ( ! is_add() )
   {
@@ -508,9 +504,9 @@ void class_t::init_actions()
   }
 }
 
-// class_t::composite_tank_block ============================================
+// enemy_t::composite_tank_block ============================================
 
-double class_t::composite_tank_block()
+double enemy_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
@@ -519,9 +515,9 @@ double class_t::composite_tank_block()
   return b;
 }
 
-// class_t::create_options ==================================================
+// enemy_t::create_options ==================================================
 
-void class_t::create_options()
+void enemy_t::create_options()
 {
   option_t target_options[] =
   {
@@ -537,9 +533,9 @@ void class_t::create_options()
   player_t::create_options();
 }
 
-// class_t::create_add ======================================================
+// enemy_t::create_add ======================================================
 
-pet_t* class_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
+pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
 {
   pet_t* p = find_pet( add_name );
   if ( p ) return p;
@@ -549,9 +545,9 @@ pet_t* class_t::create_pet( const std::string& add_name, const std::string& /* p
   return 0;
 }
 
-// class_t::create_pets =====================================================
+// enemy_t::create_pets =====================================================
 
-void class_t::create_pets()
+void enemy_t::create_pets()
 {
   for ( int i=0; i < sim -> target_adds; i++ )
   {
@@ -560,9 +556,9 @@ void class_t::create_pets()
   }
 }
 
-// class_t::health_percentage() =============================================
+// enemy_t::health_percentage() =============================================
 
-double class_t::health_percentage()
+double enemy_t::health_percentage()
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 
@@ -576,9 +572,9 @@ double class_t::health_percentage()
   return resources.pct( RESOURCE_HEALTH ) * 100 ;
 }
 
-// class_t::recalculate_health ==============================================
+// enemy_t::recalculate_health ==============================================
 
-void class_t::recalculate_health()
+void enemy_t::recalculate_health()
 {
   if ( sim -> expected_time <= timespan_t::zero() || fixed_health > 0 ) return;
 
@@ -598,12 +594,12 @@ void class_t::recalculate_health()
     initial_health *= factor;
   }
 
-  if ( sim -> debug ) log_t::output( sim, "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
+  if ( sim -> debug ) sim -> output( "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
 }
 
-// class_t::create_expression ===============================================
+// enemy_t::create_expression ===============================================
 
-expr_t* class_t::create_expression( action_t* action,
+expr_t* enemy_t::create_expression( action_t* action,
                                     const std::string& name_str )
 {
   if ( name_str == "adds" )
@@ -611,21 +607,19 @@ expr_t* class_t::create_expression( action_t* action,
 
   // override enemy health.pct expression
   if ( name_str == "health.pct" )
-    return make_mem_fn_expr( name_str, *this, &class_t::health_percentage );
+    return make_mem_fn_expr( name_str, *this, &enemy_t::health_percentage );
 
   return player_t::create_expression( action, name_str );
 }
 
-// class_t::combat_end ======================================================
+// enemy_t::combat_end ======================================================
 
-void class_t::combat_end()
+void enemy_t::combat_end()
 {
   player_t::combat_end();
 
   recalculate_health();
 }
-
-} // END enemy NAMESPACE
 
 } // END ANONYMOUS NAMESPACE
 
@@ -633,13 +627,11 @@ void class_t::combat_end()
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-using enemy::class_t;
-
 // class_modules::create::enemy ===================================================
 
 player_t* class_modules::create::enemy( sim_t* sim, const std::string& name, race_type_e /* r */ )
 {
-  return new class_t( sim, name );
+  return new enemy_t( sim, name );
 }
 
 // player_t::enemy_init =====================================================

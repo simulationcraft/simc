@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPAE
 
 // ==========================================================================
 // Hunter
@@ -713,8 +713,6 @@ public:
   virtual void init_spells();
 };
 
-namespace {
-
 // Event Shedule Sniper Trainig
 
 struct hunter_sniper_training_event_t : public event_t
@@ -777,9 +775,6 @@ struct wild_quiver_trigger_t : public action_callback_t
     }
   }
 };
-
-}
-namespace actions{ // ANONYMOUS NAMESPACE =========================================
 
 // ==========================================================================
 // Hunter Attack
@@ -961,7 +956,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
 
   if ( timespan_t::from_seconds( 8.0 ) + sim -> aura_delay < dot -> remains() )
   {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
+    if ( sim -> log ) sim -> output( "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
     p -> procs.munched_piercing_shots -> occur();
     return;
   }
@@ -969,7 +964,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
   if ( p -> active_piercing_shots -> travel_event )
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Piercing Shots due to Aura Delay.", p -> name() );
+    if ( sim -> log ) sim -> output( "Player %s munches previous Piercing Shots due to Aura Delay.", p -> name() );
     p -> procs.munched_piercing_shots -> occur();
   }
 
@@ -985,7 +980,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
     {
       // Piercing Shots will tick before SPELL_AURA_APPLIED occurs, which means that the current Piercing Shots will
       // both tick -and- get rolled into the next Piercing Shots.
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Piercing Shots.", p -> name() );
+      if ( sim -> log ) sim -> output( "Player %s rolls Piercing Shots.", p -> name() );
       p -> procs.rolled_piercing_shots -> occur();
     }
   }
@@ -1419,7 +1414,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     if ( cooldown -> remains() == timespan_t::zero() && ! p -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
-      if ( sim -> log ) log_t::output( sim, "Player %s was focus starved when Black Arrow was ready.", p -> name() );
+      if ( sim -> log ) sim -> output( "Player %s was focus starved when Black Arrow was ready.", p -> name() );
       p -> procs.black_arrow_focus_starved -> occur();
     }
 
@@ -1688,7 +1683,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     base_td_min = player -> dbc.effect_min( data().effectN( 1 ).id(), player -> level );
     base_td_max = player -> dbc.effect_max( data().effectN( 1 ).id(), player -> level );
-    if ( sim -> debug ) log_t::output( sim, "Player %s setting Explosive Shot base_td_min=%.2f base_td_max=%.2f", p -> name(), base_td_min, base_td_max );
+    if ( sim -> debug ) sim -> output( "Player %s setting Explosive Shot base_td_min=%.2f base_td_max=%.2f", p -> name(), base_td_min, base_td_max );
   }
 
   virtual double cost()
@@ -1707,7 +1702,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     if ( cooldown -> remains() == timespan_t::zero() && ! p -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
-      if ( sim -> log ) log_t::output( sim, "Player %s was focus starved when Explosive Shot was ready.", p -> name() );
+      if ( sim -> log ) sim -> output( "Player %s was focus starved when Explosive Shot was ready.", p -> name() );
       p -> procs.explosive_shot_focus_starved -> occur();
     }
 
@@ -2609,11 +2604,6 @@ struct trueshot_aura_t : public hunter_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ====================================================
-
-namespace pet_actions {
-
-
 // ==========================================================================
 // Hunter Pet Attacks
 // ==========================================================================
@@ -3362,14 +3352,11 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   }
 };
 
-
-}
 // hunter_pet_t::create_action ==============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
-  using namespace pet_actions;
   if ( name == "auto_attack"           ) return new      pet_auto_attack_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new     call_of_the_wild_t( this, options_str );
   if ( name == "claw"                  ) return new                 claw_t( this, options_str );
@@ -3397,7 +3384,6 @@ action_t* hunter_pet_t::create_action( const std::string& name,
 action_t* hunter_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  using namespace actions;
   if ( name == "auto_shot"             ) return new              auto_shot_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
@@ -3562,17 +3548,17 @@ void hunter_t::init_spells()
   glyphs.kill_command   = find_glyph_spell( "Glyph of Kill Command"   );
 
   talents.piercing_shots = find_talent_spell( "Piercing Shots" );
-
+  
   if ( talents.piercing_shots -> ok() )
-    active_piercing_shots = new actions::piercing_shots_t( this );
+    active_piercing_shots = new piercing_shots_t( this );
 
-  flaming_arrow = new actions::flaming_arrow_t( this );
+  flaming_arrow = new flaming_arrow_t( this );
 
   if ( vishanka )
   {
     uint32_t id = dbc.spell( vishanka ) -> effectN( 1 ).trigger_spell_id();
 
-    active_vishanka = new actions::vishanka_t( this, id );
+    active_vishanka = new vishanka_t( this, id );
   }
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -3591,7 +3577,7 @@ void hunter_pet_t::init_spells()
 {
   pet_t::init_spells();
 
-  kill_command = new pet_actions::pet_kill_command_t( this );
+  kill_command = new pet_kill_command_t( this );
 }
 
 // hunter_t::init_base ======================================================
@@ -3941,7 +3927,7 @@ void hunter_t::register_callbacks()
 
   if ( passive_spells.wild_quiver -> ok() )
   {
-    callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new actions::wild_quiver_shot_t( this ) ) );
+    callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
   }
 }
 

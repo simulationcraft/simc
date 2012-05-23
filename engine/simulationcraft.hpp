@@ -2551,6 +2551,11 @@ public:
   }
 
   static option_t* get_class_option( void* );
+
+  // FIXME! I am not sure if I want these to live here.
+
+  virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+  static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
 };
 
 // Scaling ==================================================================
@@ -4789,24 +4794,13 @@ struct proc_t
 
 // Report ===================================================================
 
-struct report_t
+namespace report
 {
-  // In the end, the idea is to only have print_suite remaining, and completly separate the report from simulationcraft.hpp
-  static void print_spell_query( sim_t*, unsigned level = MAX_LEVEL );
-  static void print_profiles( sim_t* );
-  static void print_text( FILE*, sim_t*, bool detail=true );
-
-  static void print_suite( sim_t* );
-};
-
-// Log ======================================================================
-
-struct log_t
-{
-  // Generic Output
-  static void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
-
-  // Combat Log (unsupported)
+  // In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
+  void print_spell_query( sim_t*, unsigned level );
+  void print_profiles( sim_t* );
+  void print_text( FILE*, sim_t*, bool detail );
+  void print_suite( sim_t* );
 };
 
 // Pseudo Random Number Generation ==========================================

@@ -110,7 +110,7 @@ void pet_t::summon( timespan_t duration )
 {
   if ( sim -> log )
   {
-    log_t::output( sim, "%s summons %s. for %.2fs", owner -> name(), name(), duration.total_seconds() );
+    sim -> output( "%s summons %s. for %.2fs", owner -> name(), name(), duration.total_seconds() );
   }
 
   current.distance = owner -> current.distance;
@@ -154,7 +154,7 @@ void pet_t::summon( timespan_t duration )
 
 void pet_t::dismiss()
 {
-  if ( sim -> log ) log_t::output( sim, "%s dismisses %s", owner -> name(), name() );
+  if ( sim -> log ) sim -> output( "%s dismisses %s", owner -> name(), name() );
 
   owner -> active_pets--;
 

@@ -57,7 +57,7 @@ void heal_t::player_buff()
   player_td_multiplier = p -> composite_player_th_multiplier( school );
 
 
-  if ( sim -> debug ) log_t::output( sim, "heal_t::player_buff: %s mult=%.2f dd_mult=%.2f td_mult=%.2f",
+  if ( sim -> debug ) sim -> output( "heal_t::player_buff: %s mult=%.2f dd_mult=%.2f td_mult=%.2f",
                                      name(), player_multiplier, player_dd_multiplier, player_td_multiplier );
 }
 
@@ -93,7 +93,7 @@ void heal_t::assess_damage( player_t* t,
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
+      sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
                      t -> name(), heal.amount, heal.actual,
                      util::result_type_string( heal_result ) );
@@ -106,7 +106,7 @@ void heal_t::assess_damage( player_t* t,
     if ( sim -> log )
     {
       dot_t* dot = get_dot( t );
-      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
+      sim -> output( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), heal.amount, heal.actual,

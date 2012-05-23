@@ -556,7 +556,7 @@ static bool parse_fight_style( sim_t*             sim,
   }
   else
   {
-    log_t::output( sim, "Custom fight style specified: %s", value.c_str() );
+    sim -> output( "Custom fight style specified: %s", value.c_str() );
     sim -> fight_style = value;
   }
 
@@ -830,8 +830,8 @@ void sim_t::add_event( event_t* e,
 
   if ( debug )
   {
-    log_t::output( this, "Add Event: %s %.2f %d %s", e -> name, e -> time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
-    if ( e -> player ) log_t::output( this, "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
+    output( "Add Event: %s %.2f %d %s", e -> name, e -> time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
+    if ( e -> player ) output( "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
   }
 }
 
@@ -839,7 +839,7 @@ void sim_t::add_event( event_t* e,
 
 void sim_t::reschedule_event( event_t* e )
 {
-  if ( debug ) log_t::output( this, "Reschedule Event: %s %d", e -> name, e -> id );
+  if ( debug ) output( "Reschedule Event: %s %d", e -> name, e -> id );
 
   add_event( e, ( e -> reschedule_time - current_time ) );
 
@@ -869,7 +869,7 @@ event_t* sim_t::next_event()
     if ( timing_slice == wheel_size )
     {
       timing_slice = 0;
-      if ( debug ) log_t::output( this, "Time Wheel turns around." );
+      if ( debug ) output( "Time Wheel turns around." );
     }
   }
 
@@ -880,7 +880,7 @@ event_t* sim_t::next_event()
 
 void sim_t::flush_events()
 {
-  if ( debug ) log_t::output( this, "Flush Events" );
+  if ( debug ) output( "Flush Events" );
 
   for ( int i=0; i < wheel_size; i++ )
   {
@@ -915,7 +915,7 @@ void sim_t::cancel_events( player_t* p )
 {
   if ( p -> events <= 0 ) return;
 
-  if ( debug ) log_t::output( this, "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
+  if ( debug ) output( "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
 
   int end_slice = ( uint32_t ) ( last_event.total_seconds() * wheel_granularity ) & wheel_mask;
 
@@ -977,7 +977,7 @@ void sim_t::cancel_events( player_t* p )
 
 void sim_t::combat( int iteration )
 {
-  if ( debug ) log_t::output( this, "Starting Simulator" );
+  if ( debug ) output( "Starting Simulator" );
 
   current_iteration = iteration;
 
@@ -1000,7 +1000,7 @@ void sim_t::combat( int iteration )
 
     if ( unlikely( e -> canceled ) )
     {
-      if ( debug ) log_t::output( this, "Canceled event: %s", e -> name );
+      if ( debug ) output( "Canceled event: %s", e -> name );
     }
     else if ( unlikely( e -> reschedule_time > e -> time ) )
     {
@@ -1009,7 +1009,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( debug ) log_t::output( this, "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
+      if ( debug ) output( "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
       e -> execute();
     }
 
@@ -1031,7 +1031,7 @@ void sim_t::combat( int iteration )
 
 void sim_t::reset()
 {
-  if ( debug ) log_t::output( this, "Resetting Simulator" );
+  if ( debug ) output( "Resetting Simulator" );
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
   id = 0;
   current_time = timespan_t::zero();
@@ -1055,7 +1055,7 @@ void sim_t::reset()
 
 void sim_t::combat_begin()
 {
-  if ( debug ) log_t::output( this, "Combat Begin" );
+  if ( debug ) output( "Combat Begin" );
 
   reset();
 
@@ -1154,7 +1154,7 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  if ( debug ) log_t::output( this, "Combat End" );
+  if ( debug ) output( "Combat End" );
 
   iteration_timeline.push_back( current_time );
   simulation_length.add( current_time.total_seconds() );
@@ -1280,7 +1280,7 @@ bool sim_t::init()
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
-    log_t::output( this, "Creating Enemies." );
+    output( "Creating Enemies." );
 
   if ( target_list )
   {
@@ -2324,13 +2324,13 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( spell_query )
   {
     spell_query -> evaluate();
-    report_t::print_spell_query( this, spell_query_level );
+    report::print_spell_query( this, spell_query_level );
   }
   else if ( need_to_save_profiles( this ) )
   {
     init();
     util::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
-    report_t::print_profiles( this );
+    report::print_profiles( this );
   }
   else
   {
@@ -2363,7 +2363,7 @@ int sim_t::main( const std::vector<std::string>& args )
       plot         -> analyze();
       reforge_plot -> analyze();
       util::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
-      report_t::print_suite( this );
+      report::print_suite( this );
     }
   }
 
@@ -2400,3 +2400,36 @@ int sim_t::errorf( const char* format, ... )
   return retcode;
 }
 
+// FIXME! I am not sure if I want these here.
+
+// sim_t::output ============================================================
+
+void sim_t::output( const char* format, ... )
+{
+  va_list vap;
+  char buffer[2048];
+
+  va_start( vap, format );
+  vsnprintf( buffer, sizeof( buffer ),  format, vap );
+  va_end( vap );
+
+  util::fprintf( output_file, "%-3.3f %s\n", current_time.total_seconds(), buffer );
+
+  //fflush( sim -> output_file );
+}
+
+// sim_t::output ============================================================
+
+void sim_t::output( sim_t* sim, const char* format, ... )
+{
+  va_list vap;
+  char buffer[2048];
+
+  va_start( vap, format );
+  vsnprintf( buffer, sizeof( buffer ),  format, vap );
+  va_end( vap );
+
+  util::fprintf( sim -> output_file, "%-3.3f %s\n", sim -> current_time.total_seconds(), buffer );
+
+  //fflush( sim -> output_file );
+}

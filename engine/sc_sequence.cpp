@@ -59,7 +59,7 @@ void sequence_t::schedule_execute()
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
 
   if ( sim -> log )
-    log_t::output( sim, "Player %s executes Schedule %s action #%d \"%s\"",
+    sim -> output( "Player %s executes Schedule %s action #%d \"%s\"",
                    player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
 
   sub_actions[ current_action++ ] -> schedule_execute();

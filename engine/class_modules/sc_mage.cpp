@@ -6,7 +6,8 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
+
 // ==========================================================================
 // Mage
 // ==========================================================================
@@ -313,8 +314,6 @@ struct mage_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // ==========================================================================
 // Mage Spell
@@ -822,7 +821,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
       event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank )
     {
       if ( sim -> debug )
-        log_t::output( sim, "New Ignite Sampling Event: %s",
+        sim -> output( "New Ignite Sampling Event: %s",
                        player -> name() );
 
       timespan_t delay = sim -> aura_delay - p() -> ignite_sampling_delta;
@@ -855,7 +854,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
       // TODO: investigate if this can actually happen
       /*if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
       {
-        if ( sim -> log ) log_t::output( sim, "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
+        if ( sim -> log ) sim -> output( "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
         p -> procs.munched_ignite -> occur();
         return;
       }*/
@@ -863,7 +862,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
       if ( p -> active_ignite -> travel_event )
       {
         // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-        if ( sim -> log ) log_t::output( sim, "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
+        if ( sim -> log ) sim -> output( "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
         p -> procs.munched_ignite -> occur();
       }
 
@@ -879,7 +878,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
         {
           // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
           // both tick -and- get rolled into the next Ignite.
-          if ( sim -> log ) log_t::output( sim, "Player %s rolls Ignite.", p -> name() );
+          if ( sim -> log ) sim -> output( "Player %s rolls Ignite.", p -> name() );
           p -> procs.rolled_ignite -> occur();
         }
       }
@@ -1141,7 +1140,7 @@ struct arcane_brilliance_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.spell_power_multiplier )
       sim -> auras.spell_power_multiplier -> trigger();
@@ -1579,7 +1578,7 @@ struct evocation_t : public mage_spell_t
     p() -> rotation.last_time = sim -> current_time;
 
     if ( sim -> log )
-      log_t::output( sim, "%s switches to DPM spell rotation", player -> name() );
+      sim -> output( "%s switches to DPM spell rotation", player -> name() );
     p() -> rotation.current = ROTATION_DPM;
   }
 };
@@ -2167,7 +2166,7 @@ struct mana_gem_t : public action_t
   {
     mage_t* p = static_cast<mage_t*>( player );
 
-    if ( sim -> log ) log_t::output( sim, "%s uses Mana Gem", p -> name() );
+    if ( sim -> log ) sim -> output( "%s uses Mana Gem", p -> name() );
 
     p -> procs.mana_gem -> occur();
     p -> mana_gem_charges--;
@@ -2580,17 +2579,17 @@ struct choose_rotation_t : public action_t
 
       if ( sim -> log )
       {
-        log_t::output( sim, "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_die().total_seconds() );
+        sim -> output( "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_die().total_seconds() );
       }
 
       if ( force_dps )
       {
-        if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
+        if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
         p -> rotation.current = ROTATION_DPS;
       }
       if ( force_dpm )
       {
-        if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
+        if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
         p -> rotation.current = ROTATION_DPM;
       }
 
@@ -2599,7 +2598,7 @@ struct choose_rotation_t : public action_t
       return;
     }
 
-    if ( sim -> log ) log_t::output( sim, "%s Considers Spell Rotation", p -> name() );
+    if ( sim -> log ) sim -> output( "%s Considers Spell Rotation", p -> name() );
 
     // The purpose of this action is to automatically determine when to start dps rotation.
     // We aim to either reach 0 mana at end of fight or evocation_target_mana_percentage at next evocation.
@@ -2628,7 +2627,7 @@ struct choose_rotation_t : public action_t
         // We're going until target percentage
         if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
         {
-          if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
+          if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPM;
         }
@@ -2638,7 +2637,7 @@ struct choose_rotation_t : public action_t
         // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
         if ( p -> resources.current[ RESOURCE_MANA ] < 6200 )
         {
-          if ( sim -> log ) log_t::output( sim, "%s switches to DPM spell rotation", p -> name() );
+          if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPM;
         }
@@ -2695,7 +2694,7 @@ struct choose_rotation_t : public action_t
 
         if ( expected_time >= target_time )
         {
-          if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
+          if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPS;
         }
@@ -2704,7 +2703,7 @@ struct choose_rotation_t : public action_t
       {
         // If dps rotation is regen, then obviously use it all the time.
 
-        if ( sim -> log ) log_t::output( sim, "%s switches to DPS spell rotation", p -> name() );
+        if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
 
         p -> rotation.current = ROTATION_DPS;
       }
@@ -2728,8 +2727,6 @@ struct choose_rotation_t : public action_t
     return true;
   }
 };
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Mage Character Definition

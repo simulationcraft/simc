@@ -325,9 +325,9 @@ struct warlock_t : public player_t
 // Warlock Pet
 // ==========================================================================
 
-namespace pet_stats{
-struct _weapon_list_t;
-}
+// FIXME! Aaaarrrggghhh!  This module is getting merged back together SOON.
+namespace { struct _weapon_list_t; }
+
 struct warlock_pet_t : public pet_t
 {
   double ap_per_owner_sp;
@@ -337,7 +337,7 @@ struct warlock_pet_t : public pet_t
 
   double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
 private:
-  const pet_stats::_weapon_list_t* get_weapon( pet_type_e pet_type );
+  const _weapon_list_t* get_weapon( pet_type_e pet_type );
 public:
   double get_weapon_min( int level, pet_type_e pet_type );
   double get_weapon_max( int level, pet_type_e pet_type );

@@ -180,7 +180,7 @@ action_t::action_t( action_type_e       ty,
 
   target_specific_dot.init( std::string( "dot." ) + name_str, player );
 
-  if ( sim -> debug ) log_t::output( sim, "Player %s creates action %s", player -> name(), name() );
+  if ( sim -> debug ) sim -> output( "Player %s creates action %s", player -> name(), name() );
 
   if ( unlikely( ! player -> initialized ) )
   {
@@ -448,7 +448,7 @@ double action_t::cost()
   if ( is_dtr_action )
     c = 0;
 
-  if ( sim -> debug ) log_t::output( sim, "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util::resource_type_string( current_resource() ) );
+  if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util::resource_type_string( current_resource() ) );
 
   return floor( c );
 }
@@ -522,7 +522,7 @@ void action_t::player_buff()
   player_haste = total_haste();
 
   if ( sim -> debug )
-    log_t::output( sim, "action_t::player_buff: %s hit=%.2f crit=%.2f spell_power=%.2f attack_power=%.2f ",
+    sim -> output( "action_t::player_buff: %s hit=%.2f crit=%.2f spell_power=%.2f attack_power=%.2f ",
                    name(), player_hit, player_crit, player_spell_power, player_attack_power );
 }
 
@@ -543,7 +543,7 @@ void action_t::target_debuff( player_t* t, dmg_type_e )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f",
+    sim -> output( "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f",
                    name(), t -> name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power );
 }
 
@@ -603,7 +603,7 @@ double action_t::total_crit_bonus()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
+    sim -> output( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
                    player -> name(), name(), bonus, crit_bonus, crit_multiplier, crit_bonus_multiplier );
   }
 
@@ -642,7 +642,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
+    sim -> output( "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
                    player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, attack_power );
   }
 
@@ -674,7 +674,7 @@ double action_t::calculate_tick_damage( result_type_e r, double power, double mu
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
+    sim -> output( "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
                    player -> name(), name(), dmg, init_tick_dmg, base_td, tick_power_mod,
                    power, multiplier );
   }
@@ -757,7 +757,7 @@ double action_t::calculate_direct_damage( result_type_e r, int chain_target, uns
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
+    sim -> output( "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
                    player -> name(), name(), dmg, init_direct_dmg, weapon_dmg, base_direct_dmg, direct_power_mod,
                    ( ap + sp ), multiplier, weapon_multiplier );
   }
@@ -776,7 +776,7 @@ void action_t::consume_resource()
   player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
   if ( sim -> log )
-    log_t::output( sim, "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+    sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                    resource_consumed, util::resource_type_string( current_resource() ),
                    name(), player -> resources.current[ current_resource() ] );
 
@@ -857,14 +857,14 @@ void action_t::execute()
 
   if ( sim -> log && ! dual )
   {
-    log_t::output( sim, "%s performs %s (%.0f)", player -> name(), name(),
+    sim -> output( "%s performs %s (%.0f)", player -> name(), name(),
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
   if ( harmful )
   {
     if ( player -> in_combat == false && sim -> debug )
-      log_t::output( sim, "%s enters combat.", player -> name() );
+      sim -> output( "%s enters combat.", player -> name() );
 
     player -> in_combat = true;
   }
@@ -953,7 +953,7 @@ void action_t::execute()
 
 void action_t::tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+  if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
   if ( ! stateless )
   {
@@ -1012,7 +1012,7 @@ void action_t::tick( dot_t* d )
 
 void action_t::last_tick( dot_t* d )
 {
-  if ( sim -> debug ) log_t::output( sim, "%s fades from %s", d -> name(), target -> name() );
+  if ( sim -> debug ) sim -> output( "%s fades from %s", d -> name(), target -> name() );
 
   d -> ticking = false;
   if ( d -> state )
@@ -1067,7 +1067,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
       dot -> recalculate_ready();
 
       if ( sim -> debug )
-        log_t::output( sim, "%s extends dot-ready to %.2f for %s (%s)",
+        sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
     }
   }
@@ -1075,7 +1075,7 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( impact_result ) );
+      sim -> output( "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( impact_result ) );
     }
   }
 
@@ -1097,7 +1097,7 @@ void action_t::assess_damage( player_t*     t,
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s %s hits %s for %.0f %s damage (%s)",
+      sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      t -> name(), dmg_adjusted,
                      util::school_type_string( school ),
@@ -1113,7 +1113,7 @@ void action_t::assess_damage( player_t*     t,
     if ( sim -> log )
     {
       dot_t* dot = get_dot( t );
-      log_t::output( sim, "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+      sim -> output( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      t -> name(), dmg_adjusted,
@@ -1148,7 +1148,7 @@ void action_t::schedule_execute()
 {
   if ( sim -> log )
   {
-    log_t::output( sim, "%s schedules execute for %s", player -> name(), name() );
+    sim -> output( "%s schedules execute for %s", player -> name(), name() );
   }
 
   time_to_execute = execute_time();
@@ -1205,7 +1205,7 @@ void action_t::schedule_travel( player_t* t )
   {
     if ( sim -> log )
     {
-      log_t::output( sim, "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
+      sim -> output( "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
     travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel );
@@ -1218,7 +1218,7 @@ void action_t::reschedule_execute( timespan_t time )
 {
   if ( sim -> log )
   {
-    log_t::output( sim, "%s reschedules execute for %s", player -> name(), name() );
+    sim -> output( "%s reschedules execute for %s", player -> name(), name() );
   }
 
   timespan_t delta_time = sim -> current_time + time - execute_event -> occurs();
@@ -1251,12 +1251,12 @@ void action_t::update_ready()
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
       delay = player -> rngs.lag_world -> gauss( lag, dev );
-      if ( sim -> debug ) log_t::output( sim, "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
+      if ( sim -> debug ) sim -> output( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
     cooldown -> start( timespan_t::min(), delay );
 
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
+    if ( sim -> debug ) sim -> output( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }
   if ( num_ticks )
   {
@@ -1265,7 +1265,7 @@ void action_t::update_ready()
       dot_t* dot = get_dot();
       last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
-        log_t::output( sim, "%s pushes out re-cast (%.2f) on miss for %s (%s)",
+        sim -> output( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time;
@@ -1441,7 +1441,7 @@ void action_t::reset()
 
 void action_t::cancel()
 {
-  if ( sim -> debug ) log_t::output( sim, "action %s of %s is canceled", name(), player -> name() );
+  if ( sim -> debug ) sim -> output( "action %s of %s is canceled", name(), player -> name() );
 
   if ( channeled )
   {
@@ -1466,11 +1466,11 @@ void action_t::cancel()
 
 void action_t::interrupt_action()
 {
-  if ( sim -> debug ) log_t::output( sim, "action %s of %s is interrupted", name(), player -> name() );
+  if ( sim -> debug ) sim -> output( "action %s of %s is interrupted", name(), player -> name() );
 
   if ( cooldown -> duration > timespan_t::zero() && ! dual )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
+    if ( sim -> debug ) sim -> output( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
     cooldown -> start();
   }
@@ -1706,11 +1706,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         if ( action.sim -> debug )
         {
-          log_t::output( action.sim, "%s %s cast_delay(): can_react_at=%f cur_time=%f",
-                         action.player -> name_str.c_str(),
-                         action.name_str.c_str(),
-                         ( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
-                         action.sim -> current_time.total_seconds() );
+          action.sim -> output( "%s %s cast_delay(): can_react_at=%f cur_time=%f",
+				action.player -> name_str.c_str(),
+				action.name_str.c_str(),
+				( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
+				action.sim -> current_time.total_seconds() );
         }
 
         if ( action.player -> cast_delay_occurred == timespan_t::zero() ||

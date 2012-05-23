@@ -6,7 +6,8 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
+
 // ==========================================================================
 // Druid
 // ==========================================================================
@@ -62,10 +63,10 @@ struct combo_points_t
     if ( sim -> log )
     {
       if ( action )
-        log_t::output( sim, "%s gains %d (%d) combo_points from %s (%d)",
+        sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
                        player -> name(), actual_num, num, action, count );
       else
-        log_t::output( sim, "%s gains %d (%d) combo_points (%d)",
+        sim -> output( "%s gains %d (%d) combo_points (%d)",
                        player -> name(), actual_num, num, count );
     }
   }
@@ -75,10 +76,10 @@ struct combo_points_t
     if ( sim -> log )
     {
       if ( action )
-        log_t::output( sim, "%s spends %d combo_points on %s",
+        sim -> output( "%s spends %d combo_points on %s",
                        player -> name(), count, action );
       else
-        log_t::output( sim, "%s loses %d combo_points",
+        sim -> output( "%s loses %d combo_points",
                        player -> name(), count );
     }
 
@@ -496,8 +497,6 @@ struct druid_t : public player_t
   }
 };
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
-
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
@@ -513,7 +512,7 @@ struct druid_cat_attack_state_t : public action_state_t
   virtual void debug() 
   {
     action_state_t::debug();
-    log_t::output( action -> sim, "[NEW] %s %s %s: cp=%d", 
+    action -> sim -> output( "[NEW] %s %s %s: cp=%d", 
       action -> player -> name(),
       action -> name(),
       target -> name(),
@@ -909,10 +908,10 @@ static void trigger_soul_of_the_forest( druid_t* p )
 
   if ( p -> sim -> log )
   {
-    log_t::output( p -> sim, "%s gains %d (%d) %s from %s (%d)",
-                   p -> name(), gain, gain,
-                   "Eclipse", p -> talent.soul_of_the_forest -> name_cstr(),
-                   p -> eclipse_bar_value );
+    p -> sim -> output( "%s gains %d (%d) %s from %s (%d)",
+			p -> name(), gain, gain,
+			"Eclipse", p -> talent.soul_of_the_forest -> name_cstr(),
+			p -> eclipse_bar_value );
   }
 }
 
@@ -972,10 +971,10 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
   if ( s -> sim -> log )
   {
-    log_t::output( s -> sim, "%s gains %d (%d) %s from %s (%d)",
-                   p -> name(), actual_gain, gain,
-                   "Eclipse", s -> name(),
-                   p -> eclipse_bar_value );
+    s -> sim -> output( "%s gains %d (%d) %s from %s (%d)",
+			p -> name(), actual_gain, gain,
+			"Eclipse", s -> name(),
+			p -> eclipse_bar_value );
   }
 
   // Eclipse proc:
@@ -1444,7 +1443,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
     {
       // Let the additional energy consumption create it's own debug log entries.
       if ( sim -> debug )
-        log_t::output( sim, "%s consumes an additional %.1f %s for %s", player -> name(),
+        sim -> output( "%s consumes an additional %.1f %s for %s", player -> name(),
                        excess_energy, util::resource_type_string( current_resource() ), name() );
 
       player -> resource_loss( current_resource(), excess_energy );
@@ -2924,7 +2923,7 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     // http://elitistjerks.com/f73/t126893-mists_pandaria_all_specs/p11/#post2136096      
@@ -3046,7 +3045,7 @@ struct incarnation_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -3122,7 +3121,7 @@ struct innervate_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
 
@@ -3172,7 +3171,7 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.str_agi_int )
       sim -> auras.str_agi_int -> trigger( 1, -1.0, -1.0, player -> dbc.spell( 79060 ) -> duration() );
@@ -3405,7 +3404,7 @@ struct natures_vigil_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
     p() -> buff.natures_vigil -> trigger();
@@ -3545,7 +3544,7 @@ struct starfall_t : public druid_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     starfall_star -> execute();
 
     // If there is at least one additional target around Starfall will
@@ -3663,7 +3662,7 @@ struct stealth_t : public druid_spell_t
   virtual void execute()
   {
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
+      sim -> output( "%s performs %s", player -> name(), name() );
 
     p() -> buff.stealthed -> trigger();
   }
@@ -3984,8 +3983,6 @@ struct wrath_t : public druid_spell_t
       p() -> proc.wrong_eclipse_wrath -> occur();
   }
 };
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Druid Character Definition
@@ -5136,10 +5133,6 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
-#endif // SC_DRUID
-
-} // END ANONYMOUS NAMESPACE
-
 druid_td_t::druid_td_t( player_t* target, druid_t* source )
   : actor_pair_t( target, source )
 {
@@ -5157,6 +5150,10 @@ druid_td_t::druid_td_t( player_t* target, druid_t* source )
 
   buffs_lifebloom = buff_creator_t( *this, "lifebloom", source -> find_class_spell( "Lifebloom" ) ).duration( timespan_t::from_seconds( 11.0 ) );
 }
+
+#endif
+
+} // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // PLAYER_T EXTENSIONS
@@ -5196,4 +5193,3 @@ void class_modules::combat_begin::druid( sim_t* )
 void class_modules::combat_end::druid( sim_t* )
 {
 }
-

@@ -70,7 +70,7 @@ void spell_base_t::player_buff()
 
   player_crit = p -> composite_spell_crit();
 
-  if ( sim -> debug ) log_t::output( sim, "spell_base_t::player_buff: %s crit=%.2f",
+  if ( sim -> debug ) sim -> output( "spell_base_t::player_buff: %s crit=%.2f",
                                      name(), player_crit );
 }
 
@@ -111,7 +111,7 @@ result_type_e spell_base_t::calculate_result( double crit, unsigned target_level
     }
   }
 
-  if ( sim -> debug ) log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+  if ( sim -> debug ) sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
   return result;
 }

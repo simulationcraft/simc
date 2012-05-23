@@ -286,7 +286,8 @@ struct discharge_proc_callback_base_t : public action_callback_t
     if ( ++stacks >= max_stacks )
     {
       stacks = 0;
-      if ( listener -> sim -> debug ) log_t::output( listener -> sim, "%s procs %s", a -> name(), discharge_action -> name() );
+      if ( listener -> sim -> debug ) 
+	listener -> sim -> output( "%s procs %s", a -> name(), discharge_action -> name() );
       discharge_action -> execute();
       proc -> occur();
     }
@@ -896,7 +897,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
       {
         if ( listener -> sim -> log )
         {
-          log_t::output(  listener -> sim, "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
+          listener -> sim -> output( "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
         }
         new (  listener -> sim ) action_execute_event_t(  listener -> sim, a -> dtr_action, timespan_t::zero() /* Add DTR Proc Delay here */ );
       }

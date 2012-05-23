@@ -10,8 +10,8 @@
 
 #define MAX_PLAYERS_PER_CHART 20
 
-namespace chart {
-  std::string chart_bg_color( int print_styles );
+namespace chart 
+{
   std::string resource_color( int type );
 
   std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles );
@@ -37,20 +37,18 @@ namespace chart {
   std::string gear_weights_pawn      ( player_t*, bool hit_expertise=true );
 }
 
-namespace generate_report_information {
-  void generate_player_charts  ( player_t*, player_t::report_information_t& );
-  void generate_player_buff_lists ( player_t*, player_t::report_information_t& );
-  void generate_sim_report_information     ( sim_t*,       sim_t::report_information_t& );
-}
-
-namespace report {
+namespace report 
+{
+  void generate_player_charts         ( player_t*, player_t::report_information_t& );
+  void generate_player_buff_lists     ( player_t*, player_t::report_information_t& );
+  void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
 
   void print_html_rng_information  ( FILE*, rng_t*, double confidence_estimator );
   void print_html_sample_data      ( FILE*, player_t*, sample_data_t&, const std::string& name );
 
-  void print_spell_query ( sim_t*, unsigned level = MAX_LEVEL );
+  void print_spell_query ( sim_t*, unsigned level );
   void print_profiles    ( sim_t* );
-  void print_text        ( FILE*, sim_t*, bool detail=true );
+  void print_text        ( FILE*, sim_t*, bool detail );
   void print_html        ( sim_t* );
   void print_html_player ( FILE*, player_t*, int );
   void print_xml         ( sim_t* );
@@ -64,11 +62,10 @@ namespace report {
     }
   };
 
-  class tabs_t
+  struct tabs_t
   {
     int level;
 
-  public:
     tabs_t( int l = 0 ) : level( l ) {}
 
     tabs_t& operator+=( int c ) { assert( level + c >= 0 ); level += c; return *this; }

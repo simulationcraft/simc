@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // Paladin
@@ -296,8 +296,6 @@ struct paladin_t : public player_t
     return player_t::set_default_glyphs();
   }
 };
-
-namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // Guardian of Ancient Kings Pet ============================================
 
@@ -1182,7 +1180,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
     consume_resource();
     p() -> active_seal = seal_type;
   }
@@ -1637,7 +1635,7 @@ struct consecration_t : public paladin_spell_t
   {
     if ( t -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) log_t::output( sim, "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
+      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
     }
     else
     {
@@ -1647,7 +1645,7 @@ struct consecration_t : public paladin_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
     tick_spell -> execute();
     stats -> add_tick( d -> time_to_tick );
   }
@@ -2201,8 +2199,6 @@ struct word_of_glory_t : public paladin_heal_t
     player_multiplier *= p() -> holy_power_stacks();
   }
 };
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Paladin Character Definition
@@ -3202,6 +3198,7 @@ expr_t* paladin_t::create_expression( action_t* a,
 
   return player_t::create_expression( a, name_str );
 }
+
 #endif // SC_PALADIN
 
 } // END ANONYMOUS NAMESPACE

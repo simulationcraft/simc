@@ -120,7 +120,7 @@ struct flask_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) log_t::output( sim, "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
+    if ( sim -> log ) sim -> output( "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
     p -> flask = type;
 
     for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
@@ -187,7 +187,7 @@ struct food_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) log_t::output( sim, "%s uses Food %s", p -> name(), util::food_type_string( type ) );
+    if ( sim -> log ) sim -> output( "%s uses Food %s", p -> name(), util::food_type_string( type ) );
     p -> food = type;
 
     double food_stat_multiplier = 1.0;
@@ -353,7 +353,7 @@ struct mana_potion_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s uses Mana potion", player -> name() );
+    if ( sim -> log ) sim -> output( "%s uses Mana potion", player -> name() );
     double gain = sim -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> potion_used = true;
@@ -405,7 +405,7 @@ struct health_stone_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s uses Health Stone", player -> name() );
+    if ( sim -> log ) sim -> output( "%s uses Health Stone", player -> name() );
     player -> resource_gain( RESOURCE_HEALTH, health );
     update_ready();
   }
@@ -455,7 +455,7 @@ struct dark_rune_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s uses Dark Rune", player -> name() );
+    if ( sim -> log ) sim -> output( "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
     update_ready();
@@ -527,7 +527,7 @@ struct potion_base_t : public action_t
                               potion_buff ->  buff_duration - pre_pot_time );
     }
 
-    if ( sim -> log ) log_t::output( sim, "%s uses %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s uses %s", player -> name(), name() );
     update_ready();
     cooldown -> duration = potion_buff -> buff_cooldown;
   }

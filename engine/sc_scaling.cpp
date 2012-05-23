@@ -345,10 +345,10 @@ void scaling_t::analyze_stats()
 
     if ( debug_scale_factors )
     {
-      log_t::output( ref_sim, "\nref_sim report for %s...\n", util::stat_type_string( i ) );
-      report_t::print_text( sim -> output_file,   ref_sim, true );
-      log_t::output( delta_sim, "\ndelta_sim report for %s...\n", util::stat_type_string( i ) );
-      report_t::print_text( sim -> output_file, delta_sim, true );
+      ref_sim -> output( "\nref_sim report for %s...\n", util::stat_type_string( i ) );
+      report::print_text( sim -> output_file,   ref_sim, true );
+      delta_sim -> output( "\ndelta_sim report for %s...\n", util::stat_type_string( i ) );
+      report::print_text( sim -> output_file, delta_sim, true );
     }
 
     if ( ref_sim != baseline_sim && ref_sim != sim )

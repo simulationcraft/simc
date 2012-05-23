@@ -39,7 +39,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
   assert( tick_event );
 
   if ( sim -> log )
-    log_t::output( sim, "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks",
+    sim -> output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks",
                    source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks );
 
   if ( cap )
@@ -115,7 +115,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
+    sim -> output( "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
                    source -> name(), name(), target -> name(), extra_seconds.total_seconds(),
                    old_haste_factor, ( ! state ) ? ( 1.0 / action -> player_haste ) : ( 1.0 / state -> haste ),
                    old_num_ticks, num_ticks,
@@ -123,7 +123,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
   }
   else if ( sim -> log )
   {
-    log_t::output( sim, "%s extends duration of %s on %s by %.1f second(s).",
+    sim -> output( "%s extends duration of %s on %s by %.1f second(s).",
                    source -> name(), name(), target -> name(), extra_seconds.total_seconds() );
   }
 
@@ -155,7 +155,7 @@ void dot_t::refresh_duration()
   assert( tick_event );
 
   if ( sim -> log )
-    log_t::output( sim, "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
+    sim -> output( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
 
   if ( ! state )
     action -> player_buff();
@@ -211,7 +211,7 @@ void dot_t::reset()
 void dot_t::schedule_tick()
 {
   if ( sim -> debug )
-    log_t::output( sim, "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
+    sim -> output( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
   if ( current_tick == 0 )
   {

@@ -139,7 +139,7 @@ void plot_t::analyze_stats()
         if ( dps_plot_debug )
         {
           util::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
-          report_t::print_text( sim -> output_file, delta_sim, true );
+          report::print_text( sim -> output_file, delta_sim, true );
         }
       }
 

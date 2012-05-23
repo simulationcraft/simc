@@ -75,7 +75,7 @@ timespan_t attack_t::execute_time()
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero();
 
-  //log_t::output( sim, "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
+  //sim -> output( "%s execute_time=%f base_execute_time=%f execute_time=%f", name(), base_execute_time * swing_haste(), base_execute_time, swing_haste() );
   return base_execute_time * swing_haste();
 }
 
@@ -92,7 +92,7 @@ void attack_t::player_buff()
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "attack_t::player_buff: %s hit=%.2f crit=%.2f",
+    sim -> output( "attack_t::player_buff: %s hit=%.2f crit=%.2f",
                    name(), player_hit, player_crit );
 }
 
@@ -187,7 +187,7 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
     crit = crit_chance( attack_crit, delta_level ) + target -> composite_tank_crit( school );
 
   if ( sim -> debug )
-    log_t::output( sim, "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
+    sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f block=%.3f crit_block=%.3f crit=%.3f",
                    name(), miss, dodge, parry, glance, block, crit_block, crit );
 
   double limit = 1.0;
@@ -305,7 +305,7 @@ result_type_e attack_t::calculate_result( double crit, unsigned target_level )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+    sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
   return result;
 }
@@ -362,7 +362,7 @@ void melee_attack_t::player_buff()
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "melee_attack_t::player_buff: %s expertise=%.2f",
+    sim -> output( "melee_attack_t::player_buff: %s expertise=%.2f",
                    name(), player_expertise );
 }
 
@@ -436,7 +436,7 @@ void ranged_attack_t::player_buff()
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "ranged_attack_t::player_buff: %s expertise=%.2f",
+    sim -> output( "ranged_attack_t::player_buff: %s expertise=%.2f",
                    name(), player_expertise );
 }
 
@@ -452,7 +452,7 @@ void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "ranged_attack_t::target_debuff: %s mult=%.2f",
+    sim -> output( "ranged_attack_t::target_debuff: %s mult=%.2f",
                    name(), target_multiplier );
 }
 

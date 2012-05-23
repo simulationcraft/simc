@@ -40,7 +40,7 @@ void absorb_t::player_buff()
 
   player_multiplier    = player -> composite_player_absorb_multiplier   ( school );
 
-  if ( sim -> debug ) log_t::output( sim, "absorb_t::player_buff: %s mult=%.2f",
+  if ( sim -> debug ) sim -> output( "absorb_t::player_buff: %s mult=%.2f",
                                      name(), player_multiplier );
 }
 
@@ -86,7 +86,7 @@ void absorb_t::assess_damage( player_t*     t,
   direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 
   if ( sim -> log )
-    log_t::output( sim, "%s %s heals %s for %.0f (%.0f) (%s)",
+    sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
                    t -> name(), direct_dmg, heal_amount,
                    util::result_type_string( result ) );

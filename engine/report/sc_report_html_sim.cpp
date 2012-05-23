@@ -1652,7 +1652,7 @@ void print_html( sim_t* sim )
     return;
   }
 
-  generate_report_information::generate_sim_report_information( sim, sim -> report_information );
+  report::generate_sim_report_information( sim, sim -> report_information );
 
   print_html_( file, sim );
 }

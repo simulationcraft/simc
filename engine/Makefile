@@ -86,7 +86,6 @@ SRC = \
 	sc_gear_stats.cpp \
 	sc_heal.cpp \
 	sc_item.cpp \
-	sc_log.cpp \
 	sc_main.cpp \
 	sc_option.cpp \
 	sc_pet.cpp \
@@ -181,7 +180,7 @@ $(MODULE): $(SRC_OBJ)
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-	
+
 sc_rng$(MODULE_EXT): sc_rng.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@	

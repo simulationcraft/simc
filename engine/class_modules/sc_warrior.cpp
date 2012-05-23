@@ -67,7 +67,7 @@
 //
 // ==========================================================================
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // Warrior
@@ -372,9 +372,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
 }
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
-
 // ==========================================================================
 // Warrior Attack
 // ==========================================================================
@@ -498,7 +495,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
 
   if ( timespan_t::from_seconds( 6.0 ) + sim -> aura_delay < dot -> remains() )
   {
-    if ( sim -> log ) log_t::output( sim, "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
+    if ( sim -> log ) sim -> output( "Player %s munches Deep_Wounds due to Max Deep Wounds Duration.", p -> name() );
     p -> procs_munched_deep_wounds -> occur();
     return;
   }
@@ -506,7 +503,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
   if ( p -> active_deep_wounds -> travel_event )
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) log_t::output( sim, "Player %s munches previous Deep Wounds due to Aura Delay.", p -> name() );
+    if ( sim -> log ) sim -> output( "Player %s munches previous Deep Wounds due to Aura Delay.", p -> name() );
     p -> procs_munched_deep_wounds -> occur();
   }
 
@@ -522,7 +519,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
     {
       // Deep_Wounds will tick before SPELL_AURA_APPLIED occurs, which means that the current Deep_Wounds will
       // both tick -and- get rolled into the next Deep_Wounds.
-      if ( sim -> log ) log_t::output( sim, "Player %s rolls Deep_Wounds.", p -> name() );
+      if ( sim -> log ) sim -> output( "Player %s rolls Deep_Wounds.", p -> name() );
       p -> procs_rolled_deep_wounds -> occur();
     }
   }
@@ -623,7 +620,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   assert( p -> active_opportunity_strike );
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "Opportunity Strike procced from %s", a -> name() );
+    p -> sim -> output( "Opportunity Strike procced from %s", a -> name() );
 
 
   p -> procs_strikes_of_opportunity -> occur();
@@ -931,7 +928,7 @@ void warrior_attack_t::player_buff()
     player_crit += 0.10;
 
   if ( sim -> debug )
-    log_t::output( sim, "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
+    sim -> output( "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
                    name(), player_hit, player_expertise, player_crit );
 }
 
@@ -1495,7 +1492,7 @@ struct execute_t : public warrior_attack_t
     resource_consumed = std::min( p -> resources.current[ current_resource() ], 20.0 + cost() );
 
     if ( sim -> debug )
-      log_t::output( sim, "%s consumes %.1f %s for %s", p -> name(),
+      sim -> output( "%s consumes %.1f %s for %s", p -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ), name() );
 
     player -> resource_loss( current_resource(), resource_consumed );
@@ -2924,8 +2921,6 @@ struct buff_last_stand_t : public buff_t
     buff_t::expire();
   }
 };
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Warrior Character Definition

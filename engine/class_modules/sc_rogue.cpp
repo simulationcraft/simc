@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // Custom Combo Point Impl.
@@ -63,10 +63,10 @@ struct combo_points_t
     if ( sim -> log )
     {
       if ( action )
-        log_t::output( sim, "%s gains %d (%d) combo_points from %s (%d)",
+        sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
                        player -> name(), actual_num, num, action, count );
       else
-        log_t::output( sim, "%s gains %d (%d) combo_points (%d)",
+        sim -> output( "%s gains %d (%d) combo_points (%d)",
                        player -> name(), actual_num, num, count );
     }
   }
@@ -76,10 +76,10 @@ struct combo_points_t
     if ( sim -> log )
     {
       if ( action )
-        log_t::output( sim, "%s spends %d combo_points on %s",
+        sim -> output( "%s spends %d combo_points on %s",
                        player -> name(), count, action );
       else
-        log_t::output( sim, "%s loses %d combo_points",
+        sim -> output( "%s loses %d combo_points",
                        player -> name(), count );
     }
 
@@ -410,9 +410,6 @@ rogue_targetdata_t::rogue_targetdata_t( rogue_t* source, player_t* target ) :
                                .duration( vd -> duration() ) );
 }
 
-namespace // ANONYMOUS NAMESPACE ============================================
-{
-
 // ==========================================================================
 // Rogue Attack
 // ==========================================================================
@@ -428,7 +425,7 @@ struct rogue_attack_state_t : public action_state_t
   virtual void debug() const 
   {
     action_state_t::debug();
-    log_t::output( action -> sim, "[NEW] %s %s %s: cp=%d", 
+    action -> sim -> output( "[NEW] %s %s %s: cp=%d", 
       action -> player -> name(),
       action -> name(),
       target -> name(),
@@ -1028,7 +1025,7 @@ void rogue_melee_attack_t::execute()
     consume_resource();
 
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+      sim -> output( "%s performs %s", p -> name(), name() );
 
     add_combo_points();
 
@@ -1743,7 +1740,7 @@ struct feint_t : public rogue_melee_attack_t
     rogue_t* p = cast();
 
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+      sim -> output( "%s performs %s", p -> name(), name() );
 
     consume_resource();
     update_ready();
@@ -1935,7 +1932,7 @@ struct killing_spree_t : public rogue_melee_attack_t
 
   virtual void tick( dot_t* d )
   {
-    if ( sim -> debug ) log_t::output( sim, "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
     attack_mh -> execute();
 
@@ -2338,7 +2335,7 @@ struct pool_energy_t : public action_t
   virtual void execute()
   {
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
+      sim -> output( "%s performs %s", player -> name(), name() );
   }
 
   virtual timespan_t gcd() const
@@ -2603,7 +2600,7 @@ struct deadly_poison_t : public rogue_poison_t
         td -> debuffs_poison_doses -> trigger();
 
         if ( sim -> log )
-          log_t::output( sim, "%s performs %s (%d)", player -> name(), name(), td -> debuffs_poison_doses -> current_stack );
+          sim -> output( "%s performs %s (%d)", player -> name(), name(), td -> debuffs_poison_doses -> current_stack );
 
         if ( dot() -> ticking )
         {
@@ -2805,7 +2802,7 @@ struct apply_poison_t : public action_t
     rogue_t* p = cast();
 
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
+      sim -> output( "%s performs %s", player -> name(), name() );
 
     if ( main_hand_poison ) p -> main_hand_weapon.buff_type = main_hand_poison;
     if (  off_hand_poison ) p ->  off_hand_weapon.buff_type =  off_hand_poison;
@@ -2854,7 +2851,7 @@ struct stealth_t : public spell_t
     rogue_t* p = cast();
 
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", p -> name(), name() );
+      sim -> output( "%s performs %s", p -> name(), name() );
 
     p -> buffs.stealthed -> trigger();
     used = true;
@@ -3057,8 +3054,6 @@ struct vendetta_buff_t : public buff_t
     return buff_t::trigger( 1, base_value( E_APPLY_AURA, A_MOD_DAMAGE_FROM_CASTER ) );
   }
 };
-
-} // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================
 // Rogue Character Definition
@@ -3701,7 +3696,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
     }
 
 //    if ( sim -> debug )
-//      log_t::output( sim, "Eligible For Honor Among Thieves" );
+//      sim -> output( "Eligible For Honor Among Thieves" );
 
     if ( rogue -> cooldowns_honor_among_thieves -> remains() > timespan_t::zero() )
       return;
@@ -3942,6 +3937,7 @@ int rogue_t::decode_set( const item_t& item ) const
 
   return SET_NONE;
 }
+
 #endif // SC_ROGUE
 
 } // END ANONYMOUS NAMESPACE

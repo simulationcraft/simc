@@ -71,7 +71,7 @@ struct vengeance_event_t : public event_t
 
     if ( sim -> debug )
     {
-      log_t::output( sim, "%s updated vengeance. New vengeance.value=%.2f and vengeance.max=%.2f. vengeance.damage=%.2f.\n",
+      sim -> output( "%s updated vengeance. New vengeance.value=%.2f and vengeance.max=%.2f. vengeance.damage=%.2f.\n",
                      player -> name(), v.value,
                      v.max, v.damage );
     }
@@ -381,7 +381,7 @@ player_t::player_t( sim_t*             s,
 
   if ( type != ENEMY && type != ENEMY_ADD )
   {
-    if ( sim -> debug ) log_t::output( sim, "Creating Player %s", name() );
+    if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
     player_t** last = &( sim -> player_list );
     while ( *last ) last = &( ( *last ) -> next );
     *last = this;
@@ -552,7 +552,7 @@ void player_t::debuff_init( sim_t* sim )
 bool player_t::init( sim_t* sim )
 {
   if ( sim -> debug )
-    log_t::output( sim, "Creating Pets." );
+    sim -> output( "Creating Pets." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -561,14 +561,14 @@ bool player_t::init( sim_t* sim )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "Initializing Auras, Buffs, and De-Buffs." );
+    sim -> output( "Initializing Auras, Buffs, and De-Buffs." );
 
   player_t::debuff_init( sim );
 
   player_t::init_class_modules( sim );
 
   if ( sim -> debug )
-    log_t::output( sim, "Initializing Players." );
+    sim -> output( "Initializing Players." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -586,7 +586,7 @@ bool player_t::init( sim_t* sim )
 
   // Parties
   if ( sim -> debug )
-    log_t::output( sim, "Building Parties." );
+    sim -> output( "Building Parties." );
 
   int party_index=0;
   for ( size_t i = 0; i < sim -> party_encoding.size(); i++ )
@@ -637,7 +637,7 @@ bool player_t::init( sim_t* sim )
 
   // Callbacks
   if ( sim -> debug )
-    log_t::output( sim, "Registering Callbacks." );
+    sim -> output( "Registering Callbacks." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -652,7 +652,7 @@ bool player_t::init( sim_t* sim )
 
 void player_t::init()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing player %s", name() );
+  if ( sim -> debug ) sim -> output( "Initializing player %s", name() );
 
   // Ensure the precombat and default lists are the first listed
   get_action_priority_list( "precombat" ) -> used = true;
@@ -704,7 +704,7 @@ void player_t::init()
 
 void player_t::init_base()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing base for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing base for player (%s)", name() );
 
 
   base.attribute[ ATTR_STRENGTH  ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STRENGTH );
@@ -750,7 +750,7 @@ void player_t::init_items()
 {
   if ( is_pet() ) return;
 
-  if ( sim -> debug ) log_t::output( sim, "Initializing items for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing items for player (%s)", name() );
 
   std::vector<std::string> splits;
   util::string_split( splits, items_str, "/" );
@@ -832,7 +832,7 @@ void player_t::init_items()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "%s gear:", name() );
+    sim -> output( "%s gear:", name() );
     gear.print( sim -> output_file );
   }
 
@@ -849,7 +849,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 
-  if ( sim -> debug ) log_t::output( sim, "Initializing meta-gem for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing meta-gem for player (%s)", name() );
 
   if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
   else if ( meta_gem == META_AUSTERE_EARTHSIEGE         ) item_stats.attribute[ ATTR_STAMINA ] += 32;
@@ -936,7 +936,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 
 void player_t::init_core()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing core for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing core for player (%s)", name() );
 
   initial_stats.  hit_rating = gear.  hit_rating + enchant.  hit_rating + ( is_pet() ? 0 : sim -> enchant.  hit_rating );
   initial_stats. crit_rating = gear. crit_rating + enchant. crit_rating + ( is_pet() ? 0 : sim -> enchant. crit_rating );
@@ -959,7 +959,7 @@ void player_t::init_core()
 
 void player_t::init_position()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing position for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing position for player (%s)", name() );
 
   if ( position_str.empty() )
   {
@@ -983,7 +983,7 @@ void player_t::init_position()
 
 void player_t::init_race()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing race for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing race for player (%s)", name() );
 
   if ( race_str.empty() )
   {
@@ -999,7 +999,7 @@ void player_t::init_race()
 
 void player_t::init_racials()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing racials for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing racials for player (%s)", name() );
 
 }
 
@@ -1007,7 +1007,7 @@ void player_t::init_racials()
 
 void player_t::init_spell()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing spells for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing spells for player (%s)", name() );
 
   initial_stats.spell_power = gear.spell_power + enchant.spell_power + ( is_pet() ? 0 : sim -> enchant.spell_power );
   initial_stats.mp5         = gear.mp5         + enchant.mp5         + ( is_pet() ? 0 : sim -> enchant.mp5 );
@@ -1043,7 +1043,7 @@ void player_t::init_spell()
 
 void player_t::init_attack()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing attack for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing attack for player (%s)", name() );
 
   initial_stats.attack_power     = gear.attack_power     + enchant.attack_power     + ( is_pet() ? 0 : sim -> enchant.attack_power );
   initial_stats.expertise_rating = gear.expertise_rating + enchant.expertise_rating + ( is_pet() ? 0 : sim -> enchant.expertise_rating );
@@ -1078,7 +1078,7 @@ void player_t::init_attack()
 
 void player_t::init_defense()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing defense for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing defense for player (%s)", name() );
 
   if ( type != ENEMY && type != ENEMY_ADD )
     base.dodge = dbc.dodge_base( type );
@@ -1120,7 +1120,7 @@ void player_t::init_weapon( weapon_t* w )
 
 void player_t::init_unique_gear()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing unique gear for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing unique gear for player (%s)", name() );
 
   unique_gear::init( this );
 }
@@ -1129,7 +1129,7 @@ void player_t::init_unique_gear()
 
 void player_t::init_enchant()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing enchants for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing enchants for player (%s)", name() );
 
   enchant::init( this );
 }
@@ -1138,7 +1138,7 @@ void player_t::init_enchant()
 
 void player_t::init_resources( bool force )
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing resources for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing resources for player (%s)", name() );
 
   for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -1187,7 +1187,7 @@ void player_t::init_professions()
 {
   if ( professions_str.empty() ) return;
 
-  if ( sim -> debug ) log_t::output( sim, "Initializing professions for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing professions for player (%s)", name() );
 
   std::vector<std::string> splits;
   int size = util::string_split( splits, professions_str, ",/" );
@@ -1218,7 +1218,7 @@ void player_t::init_professions()
 
 void player_t::init_professions_bonus()
 {
-  if ( sim -> debug ) log_t::output( sim, "Initializing professions bonuses for player (%s)", name() );
+  if ( sim -> debug ) sim -> output( "Initializing professions bonuses for player (%s)", name() );
 
   // This has to be called after init_attack() and init_core()
 
@@ -1426,7 +1426,7 @@ void player_t::init_actions()
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
     if ( sim -> debug )
-      log_t::output( sim, "Player %s: actions.%s=%s", name(),
+      sim -> output( "Player %s: actions.%s=%s", name(),
                                                       action_priority_list[ alist ] -> name_str.c_str(), 
                                                       action_priority_list[ alist ] -> action_list_str.c_str() );
 
@@ -1470,7 +1470,7 @@ void player_t::init_actions()
         if ( action_name == modify_action )
         {
           if ( sim -> debug )
-            log_t::output( sim, "Player %s: modify_action=%s", name(), modify_action.c_str() );
+            sim -> output( "Player %s: modify_action=%s", name(), modify_action.c_str() );
 
           action_options = modify_action_options;
           splits[ i ] = modify_action + "," + modify_action_options;
@@ -1510,7 +1510,7 @@ void player_t::init_actions()
   if ( ! action_list_skip.empty() )
   {
     if ( sim -> debug )
-      log_t::output( sim, "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
 
     std::vector<std::string> splits;
     size_t num_splits = util::string_split( splits, action_list_skip, "/" );
@@ -1565,7 +1565,7 @@ void player_t::activate_action_list( action_priority_list_t* a )
 void player_t::init_rating()
 {
   if ( sim -> debug )
-    log_t::output( sim, "player_t::init_rating(): level=%d type=%s",
+    sim -> output( "player_t::init_rating(): level=%d type=%s",
                    level, util::player_type_string( type ) );
 
   rating.init( sim, dbc, level, type );
@@ -2617,7 +2617,7 @@ double player_t::get_attribute( attribute_type_e a )
 
 void player_t::combat_begin()
 {
-  if ( sim -> debug ) log_t::output( sim, "Combat begins for player %s", name() );
+  if ( sim -> debug ) sim -> output( "Combat begins for player %s", name() );
 
   if ( ! is_pet() && ! is_add() )
   {
@@ -2690,7 +2690,7 @@ void player_t::combat_end()
   dps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
   dpse.add( sim -> current_time != timespan_t::zero() ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
-  if ( sim -> debug ) log_t::output( sim, "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+  if ( sim -> debug ) sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   // Heal
   heal.add( iteration_heal );
@@ -2803,7 +2803,7 @@ void player_t::merge( player_t& other )
 
 void player_t::reset()
 {
-  if ( sim -> debug ) log_t::output( sim, "Resetting player %s", name() );
+  if ( sim -> debug ) sim -> output( "Resetting player %s", name() );
 
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
@@ -2886,7 +2886,7 @@ void player_t::trigger_ready()
 
   if ( buffs.stunned -> check() ) return;
 
-  if ( sim -> debug ) log_t::output( sim, "%s is triggering ready", name() );
+  if ( sim -> debug ) sim -> output( "%s is triggering ready", name() );
 
   assert( started_waiting != timespan_t::zero() );
 
@@ -2990,7 +2990,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
     if ( sim -> debug )
     {
-      log_t::output( sim, "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
+      sim -> output( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
                      name_str.c_str(),
                      was_executing -> name_str.c_str(),
                      readying -> occurs().total_seconds(),
@@ -3004,7 +3004,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 void player_t::arise()
 {
   if ( sim -> log )
-    log_t::output( sim, "%s arises.", name() );
+    sim -> output( "%s arises.", name() );
 
   if ( ! initial.sleeping )
     current.sleeping = false;
@@ -3033,7 +3033,7 @@ void player_t::demise()
     return;
 
   if ( sim -> log )
-    log_t::output( sim, "%s demises.", name() );
+    sim -> output( "%s demises.", name() );
 
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;
@@ -3071,7 +3071,7 @@ void player_t::interrupt()
 {
   // FIXME! Players will need to override this to handle background repeating actions.
 
-  if ( sim -> log ) log_t::output( sim, "%s is interrupted", name() );
+  if ( sim -> log ) sim -> output( "%s is interrupted", name() );
 
   if ( executing  ) executing  -> interrupt_action();
   if ( channeling ) channeling -> interrupt_action();
@@ -3091,7 +3091,7 @@ void player_t::interrupt()
 
 void player_t::halt()
 {
-  if ( sim -> log ) log_t::output( sim, "%s is halted", name() );
+  if ( sim -> log ) sim -> output( "%s is halted", name() );
 
   interrupt();
 
@@ -3121,7 +3121,7 @@ void player_t::clear_debuffs()
 {
   // FIXME! At the moment we are just clearing DoTs
 
-  if ( sim -> log ) log_t::output( sim, "%s clears debuffs", name() );
+  if ( sim -> log ) sim -> output( "%s clears debuffs", name() );
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
@@ -3283,7 +3283,7 @@ double player_t::resource_loss( resource_type_e resource_type,
   action_callback_t::trigger( callbacks.resource_loss[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
-    log_t::output( sim, "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
+    sim -> output( "Player %s loses %.2f (%.2f) %s. health pct: %.2f",
                    name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage()  );
 
   return actual_amount;
@@ -3319,7 +3319,7 @@ double player_t::resource_gain( resource_type_e resource_type,
 
   if ( sim -> log )
   {
-    log_t::output( sim, "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
+    sim -> output( "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
                    name(), actual_amount, amount,
                    util::resource_type_string( resource_type ),
                    source ? source -> name() : action ? action -> name() : "unknown",
@@ -3445,7 +3445,7 @@ void player_t::stat_gain( stat_type_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s gains %.0f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> output( "%s gains %.0f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
@@ -3533,7 +3533,7 @@ void player_t::stat_loss( stat_type_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) log_t::output( sim, "%s loses %.0f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> output( "%s loses %.0f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
@@ -3632,7 +3632,7 @@ void player_t::cost_reduction_gain( school_type_e school,
   if ( amount <= 0 ) return;
 
   if ( sim -> log )
-    log_t::output( sim, "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
+    sim -> output( "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
                    util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
@@ -3660,7 +3660,7 @@ void player_t::cost_reduction_loss( school_type_e school,
   if ( amount <= 0 ) return;
 
   if ( sim -> log )
-    log_t::output( sim, "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
+    sim -> output( "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
                    util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
@@ -3706,14 +3706,14 @@ double player_t::assess_damage( double        amount,
     if ( ab -> absorb_source )
       ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
     absorbed_amount += value;
-    if ( sim -> debug ) log_t::output( sim, "%s %s absorbs %.2f",
+    if ( sim -> debug ) sim -> output( "%s %s absorbs %.2f",
                                        name(), ab -> name_str.c_str(), value );
     if ( value == buff_value )
       ab -> expire();
     else
     {
       ab -> current_value -= value;
-      if ( sim -> debug ) log_t::output( sim, "%s %s absorb remaining %.2f",
+      if ( sim -> debug ) sim -> output( "%s %s absorb remaining %.2f",
                                          name(), ab -> name_str.c_str(), ab -> current_value );
     }
   }
@@ -3748,7 +3748,7 @@ double player_t::assess_damage( double        amount,
       {
         deaths.add( sim -> current_time.total_seconds() );
       }
-      if ( sim -> log ) log_t::output( sim, "%s has died.", name() );
+      if ( sim -> log ) sim -> output( "%s has died.", name() );
       demise();
     }
   }
@@ -3790,7 +3790,7 @@ double player_t::target_mitigation( double        amount,
   if ( school == SCHOOL_PHYSICAL )
   {
     if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-      log_t::output( sim, "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
+      sim -> output( "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
 
     // Armor
     if ( action )
@@ -3805,7 +3805,7 @@ double player_t::target_mitigation( double        amount,
     }
 
     if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-      log_t::output( sim, "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
+      sim -> output( "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
   }
 
   return mitigated_amount;
@@ -4409,7 +4409,7 @@ struct start_moving_t : public action_t
     player -> buffs.self_movement -> trigger();
 
     if ( sim -> log )
-      log_t::output( sim, "%s starts moving.", player -> name() );
+      sim -> output( "%s starts moving.", player -> name() );
 
     update_ready();
   }
@@ -4438,7 +4438,7 @@ struct stop_moving_t : public action_t
   {
     player -> buffs.self_movement -> expire();
 
-    if ( sim -> log ) log_t::output( sim, "%s stops moving.", player -> name() );
+    if ( sim -> log ) sim -> output( "%s stops moving.", player -> name() );
     update_ready();
   }
 
@@ -4505,7 +4505,7 @@ struct berserking_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -4525,7 +4525,7 @@ struct blood_fury_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -4569,7 +4569,7 @@ struct stoneform_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -4599,7 +4599,7 @@ struct lifeblood_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -4730,7 +4730,7 @@ struct snapshot_stats_t : public action_t
 
     if ( sim -> current_iteration > 0 ) return;
 
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", p -> name(), name() );
 
     for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
       p -> buffed.attribute[ i ] = floor( p -> get_attribute( i ) );
@@ -5010,7 +5010,7 @@ struct use_item_t : public action_t
     }
     else if ( trigger )
     {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
+      if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), use_name.c_str() );
 
       trigger -> activate();
 
@@ -5038,7 +5038,7 @@ struct use_item_t : public action_t
     }
     else if ( buff )
     {
-      if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(), use_name.c_str() );
+      if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), use_name.c_str() );
       buff -> trigger();
       lockout( buff -> buff_duration );
     }
@@ -5098,7 +5098,7 @@ struct cancel_buff_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s cancels buff %s", player -> name(), buff -> name_str.c_str() );
+    if ( sim -> log ) sim -> output( "%s cancels buff %s", player -> name(), buff -> name_str.c_str() );
     buff -> expire();
   }
 
@@ -5144,7 +5144,7 @@ struct swap_action_list_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
+    if ( sim -> log ) sim -> output( "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
     player -> activate_action_list( alist );
   }
 
@@ -5166,7 +5166,7 @@ struct run_action_list_t : public swap_action_list_t
 
   virtual void execute()
   {
-    if ( sim -> log ) log_t::output( sim, "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
+    if ( sim -> log ) sim -> output( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
     
     player -> restore_action_list = player -> active_action_list;
     player -> activate_action_list( alist );

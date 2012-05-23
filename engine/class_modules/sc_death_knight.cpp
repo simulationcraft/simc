@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_class_modules.hpp"
 
-namespace {
+namespace { // ANONYMOUS NAMESPACE
 
 struct death_knight_t;
 
@@ -418,7 +418,7 @@ static void log_rune_status( death_knight_t* p )
       rune_letter = toupper( rune_letter );
     rune_str += rune_letter;
   }
-  log_t::output( p -> sim, "%s runes: %s", p -> name(), rune_str.c_str() );
+  p -> sim -> output( "%s runes: %s", p -> name(), rune_str.c_str() );
 }
 
 void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
@@ -492,8 +492,8 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
   gains_rune      -> add( RESOURCE_NONE, regen_amount - overflow, overflow );
 
   if ( p -> sim -> debug )
-    log_t::output( p -> sim, "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
-                   slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
+    p -> sim -> output( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
+			slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
   {
@@ -501,7 +501,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
       log_rune_status( o );
 
     if ( p -> sim -> debug )
-      log_t::output( p -> sim, "rune %d regens to full", slot_number );
+      p -> sim -> output( "rune %d regens to full", slot_number );
   }
 }
 
@@ -783,8 +783,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   }
 };
 
-namespace  // ANONYMOUS NAMESPACE ===========================================
-{
 struct death_knight_pet_t : public pet_t
 {
   death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian ) :
@@ -1081,7 +1079,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   virtual void arise()
   {
     if ( sim -> log )
-      log_t::output( sim, "%s arises.", name() );
+      sim -> output( "%s arises.", name() );
 
     if ( ! initial.sleeping )
       current.sleeping = 0;
@@ -1537,7 +1535,7 @@ static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX]
       p -> _runes.slot[i].consume( convert_runes );
 
       if ( p -> sim -> log )
-        log_t::output( p -> sim, "%s consumes rune #%d, type %d", p -> name(), i, consumed_type );
+        p -> sim -> output( "%s consumes rune #%d, type %d", p -> name(), i, consumed_type );
     }
   }
 
@@ -1784,7 +1782,7 @@ void death_knight_spell_t::player_buff()
     player_multiplier *= 1.0 + p -> buffs.rune_of_cinderglacier -> value();
 
   if ( sim -> debug )
-    log_t::output( sim, "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f p_mult=%.0f",
+    sim -> output( "death_knight_spell_t::player_buff: %s hit=%.2f crit=%.2f power=%.2f p_mult=%.0f",
                    name(), player_hit, player_crit, player_spell_power, player_multiplier );
 }
 
@@ -2315,7 +2313,7 @@ struct death_and_decay_t : public death_knight_spell_t
   {
     if ( t -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) log_t::output( sim, "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
+      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
     }
     else
     {
@@ -2620,7 +2618,7 @@ struct horn_of_winter_t : public death_knight_spell_t
   virtual void execute()
   {
     if ( sim -> log )
-      log_t::output( sim, "%s performs %s", player -> name(), name() );
+      sim -> output( "%s performs %s", player -> name(), name() );
 
     update_ready();
 
@@ -3194,7 +3192,7 @@ struct presence_t : public death_knight_spell_t
 
     consume_resource();
     update_ready();
-    if ( sim -> log ) log_t::output( sim, "%s performs %s", player -> name(),name() );
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(),name() );
   }
 
   virtual bool ready()
@@ -3439,8 +3437,6 @@ struct unholy_frenzy_t : public spell_t
     target -> buffs.unholy_frenzy -> trigger( 1 );
   }
 };
-
-} // ANONYMOUS NAMESPACE ====================================================
 
 // ==========================================================================
 // Death Knight Character Definition
@@ -4516,7 +4512,7 @@ void death_knight_t::trigger_runic_empowerment()
     else if ( regen_rune -> is_frost()  ) gains.runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1,0 );
 
     gains.runic_empowerment -> add ( RESOURCE_RUNE, 1,0 );
-    if ( sim -> log ) log_t::output( sim, "runic empowerment regen'd rune %d", rune_to_regen );
+    if ( sim -> log ) sim -> output( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
     if ( set_bonus.tier13_4pc_melee() )
@@ -4679,7 +4675,7 @@ void death_knight_t::arise()
 
 #endif // SC_DEATH_KNIGHT
 
-} // END ANONYMOUS NAMESPACE
+} // ANONYMOUS NAMESPACE
 
 // ==========================================================================
 // player_t implementations

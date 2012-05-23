@@ -48,7 +48,7 @@ void spell_t::player_buff()
     player_hit  = player -> composite_spell_hit();
   }
 
-  if ( sim -> debug ) log_t::output( sim, "spell_t::player_buff: %s hit=%.2f",
+  if ( sim -> debug ) sim -> output( "spell_t::player_buff: %s hit=%.2f",
                                      name(), player_hit );
 }
 
@@ -64,7 +64,7 @@ void spell_t::target_debuff( player_t* t, dmg_type_e type )
   }
 
   if ( sim -> debug )
-    log_t::output( sim, "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f",
+    sim -> output( "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f",
                    name(), target_multiplier, target_hit, target_crit );
 }
 
