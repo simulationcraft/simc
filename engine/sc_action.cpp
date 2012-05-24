@@ -137,6 +137,7 @@ action_t::action_t( action_e       ty,
   interrupt                      = 0;
   chain                          = 0;
   cycle_targets                  = 0;
+  max_cycle_targets              = 0;
   round_base_dmg                 = true;
   class_flag1                    = false;
   if_expr_str.clear();
@@ -388,6 +389,7 @@ void action_t::parse_options( option_t*          options,
     { "interrupt",              OPT_BOOL,   &interrupt             },
     { "chain",                  OPT_BOOL,   &chain                 },
     { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
+    { "max_cycle_targets",      OPT_INT,    &max_cycle_targets     },
     { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
     { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
     { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
@@ -1317,6 +1319,8 @@ bool action_t::ready()
     std::vector< player_t* > tl;
 
     size_t total_targets = available_targets( tl );
+    if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < total_targets ) )
+      total_targets = max_cycle_targets;
 
     for ( size_t i = 0; i < total_targets; i++ )
     {

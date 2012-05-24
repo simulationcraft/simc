@@ -1700,10 +1700,14 @@ struct priest_spell_t : public spell_t
     {
       double a = amount * ( p() -> buffs.vampiric_embrace -> data().effectN( 1 ).percent() + p() -> glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
 
+      // Split amongst number of people in raid.
+      a /= 1.0 + p() -> party_list.size();
+
       // Priest Heal
       p() -> resource_gain( RESOURCE_HEALTH, a, player -> gains.vampiric_embrace );
 
       // Pet Heal
+      // Pet's get a full share without counting against the number in the raid.
       for ( size_t i = 0; i < player -> pet_list.size(); ++i )
       {
         pet_t* r = player -> pet_list[ i ];
@@ -2713,9 +2717,13 @@ struct mind_sear_tick_t : public priest_spell_t
   {
     background  = true;
     dual        = true;
-    direct_tick = true;
     aoe         = -1;
     callbacks   = false;
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
   }
 };
 
@@ -2730,8 +2738,9 @@ struct mind_sear_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    channeled = true;
-    may_crit  = false;
+    channeled    = true;
+    may_crit     = false;
+    hasted_ticks = false;
 
     mind_sear_tick = new mind_sear_tick_t( p );
 
@@ -2739,6 +2748,11 @@ struct mind_sear_t : public priest_spell_t
     {
       proc_spell = new mind_sear_mastery_t( p );
     }
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
   }
 
   virtual void init()
@@ -4867,39 +4881,31 @@ void priest_t::init_actions()
 
       add_action( "Power Infusion" );
 
-      add_action( "Vampiric Touch", "if=(!ticking|remains<cast_time+tick_time)&miss_react" );
+      add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=(!ticking|remains<tick_time)&miss_react" );
 
       if ( ! set_bonus.tier13_2pc_caster() )
       {
         add_action( "Shadow Word: Death", "if=target.health.pct<20" );
       }
 
-      add_action( "Shadow Word: Pain", "if=(!ticking|remains<tick_time)&miss_react" );
+      add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=5,if=(!ticking|remains<cast_time+tick_time)&miss_react" );
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         action_list_str += "/mindbender,if=cooldown_react";
       else if ( find_class_spell( "Shadowfiend" ) -> ok() )
         action_list_str += "/shadowfiend,if=cooldown_react";
 
+      add_action( "Mind Sear", "chain=1,interrupt=1,if=num_targets>=5" );
+
       add_action( "Mind Flay", "chain=1,interrupt=1" );
 
-      action_list_str += "/run_action_list,name=2dot,if=num_targets=2";
       add_action( "Shadow Word: Death", "moving=1" );
+
+      add_action( "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
 
       add_action( "Shadow Word: Pain", "moving=1" );
 
       add_action( "Dispersion" );
-
-      add_action( "Vampiric Touch", "if=(!ticking|remains<cast_time+tick_time)&miss_react", "2dot" );
-
-      if ( ! set_bonus.tier13_2pc_caster() )
-      {
-        add_action( "Shadow Word: Death", "if=target.health.pct<20", "2dot" );
-      }
-
-      add_action( "Shadow Word: Pain", "if=(!ticking|remains<tick_time)&miss_react", "2dot" );
-
-      add_action( "Mind Flay", "chain=1,interrupt=1", "2dot" );
 
       break;
       // SHADOW END =========================================================
@@ -5053,7 +5059,7 @@ void priest_t::init_party()
 
   for ( player_t* p = sim -> player_list; p; p = p -> next )
   {
-    if ( ( p != this ) && ( p -> party == party ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
+    if ( ( p != this ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
     {
       party_list.push_back( p );
     }
