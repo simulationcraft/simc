@@ -798,6 +798,8 @@ struct immolate_t : public warlock_spell_t
 
     if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+
     return m;
   }
 };
@@ -841,6 +843,8 @@ struct conflagrate_t : public warlock_spell_t
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
+
     return m;
   }
 
@@ -874,7 +878,10 @@ struct incinerate_t : public warlock_spell_t
 
     if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
+    //FIXME: Check if either of these apply to the fire and brimstone version
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
@@ -1103,7 +1110,7 @@ struct life_tap_t : public warlock_spell_t
 
     // FIXME: Implement reduced healing debuff
     if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
-    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p() -> gains.life_tap );
+    player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(), p() -> gains.life_tap );
   }
 };
 
@@ -1473,6 +1480,8 @@ struct fel_flame_t : public warlock_spell_t
     
     if ( p() -> primary_tree() == WARLOCK_DESTRUCTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
     return m;
   }
