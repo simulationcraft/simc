@@ -674,7 +674,7 @@ void http::format_( std::string& encoded_url,
 #include <iostream>
 
 std::string& armory_t::format( std::string& name, int ) { return name; }
-uint32_t spell_id_t::get_school_mask( school_type_e x ) { return 0; }
+uint32_t spell_id_t::get_school_mask( school_e x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {

@@ -465,7 +465,7 @@ bool parse_guild( sim_t*             sim,
       }
     }
 
-    player_type_e pt = PLAYER_NONE;
+    player_e pt = PLAYER_NONE;
     if ( ! type_str.empty() )
       pt = util::parse_player_type( type_str );
 
@@ -1553,7 +1553,7 @@ void sim_t::analyze_player( player_t* p )
     }
   }
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
     p -> resource_lost  [ i ] /= iterations;
     p -> resource_gained[ i ] /= iterations;
@@ -1889,7 +1889,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
       return r;
   }
 
-  r = rng_t::create( n, static_cast<rng_type_e> ( type ) );
+  r = rng_t::create( n, static_cast<rng_e> ( type ) );
   r -> next = rng_list;
   rng_list = r;
 

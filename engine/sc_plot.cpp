@@ -10,7 +10,7 @@ namespace { // ANONYMOUS NAMESPACE ==========================================
 // is_plot_stat =============================================================
 
 static bool is_plot_stat( sim_t* sim,
-                          stat_type_e stat )
+                          stat_e stat )
 {
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )
   {
@@ -90,12 +90,12 @@ void plot_t::analyze_stats()
   if ( num_players == 0 ) return;
 
   remaining_plot_stats = 0;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )
       remaining_plot_stats++;
   num_plot_stats = remaining_plot_stats;
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( sim -> canceled ) break;
 

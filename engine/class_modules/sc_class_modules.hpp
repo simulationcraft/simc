@@ -27,18 +27,18 @@ namespace class_modules {
 
 namespace create {
 
-player_t* death_knight( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* druid       ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* hunter      ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* mage        ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* monk        ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* paladin     ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* priest      ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* rogue       ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* shaman      ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* warlock     ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* warrior     ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
-player_t* enemy       ( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE );
+player_t* death_knight( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* druid       ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* hunter      ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* mage        ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* monk        ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* paladin     ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* priest      ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* rogue       ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* shaman      ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* warlock     ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* warrior     ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
+player_t* enemy       ( sim_t* sim, const std::string& name, race_e r = RACE_NONE );
 }
 
 namespace combat_begin {
@@ -99,7 +99,7 @@ void enemy        ( sim_t* );
 template <typename Class, bool X>
 struct sc_create_class
 {
-  player_t* operator() ( std::string /* class_name */, sim_t* s, std::string name, race_type_e rt )
+  player_t* operator() ( std::string /* class_name */, sim_t* s, std::string name, race_e rt )
   {
     return new Class( s, name, rt );
   }
@@ -109,7 +109,7 @@ struct sc_create_class
 template <typename Class>
 struct sc_create_class<Class,false>
 {
-  player_t* operator() ( std::string class_name, sim_t* s, std::string name, race_type_e )
+  player_t* operator() ( std::string class_name, sim_t* s, std::string name, race_e )
   {
     s -> errorf( "\n%s module for player %s is currently not available.\n", class_name.c_str(), name.c_str() );
     return 0;

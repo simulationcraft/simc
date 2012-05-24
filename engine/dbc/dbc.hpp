@@ -13,9 +13,12 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "data_definitions.hh"
 #include "data_enums.hh"
 
+// FIXME! This is a generated header.  Be nice if it was not seperate.
+#include "specialization.hpp"
+
 // Spell ID class
 
-enum s_type_e
+enum s_e
 {
   T_SPELL = 0,
   T_TALENT,
@@ -37,16 +40,16 @@ struct spellpower_data_t
   unsigned _id;
   unsigned _spell_id;
   unsigned _aura_id;            // Spell id for the aura during which this power type is active
-  int      _power_type_e;
+  int      _power_e;
   int      _cost;
   double   _cost_2;
   int      _cost_per_second;    // Unsure
 
-  resource_type_e resource() const;
+  resource_e resource() const;
   unsigned id() const { return _id; }
   unsigned spell_id() const { return _spell_id; }
   unsigned aura_id() const { return _aura_id; }
-  power_type_e type() const { return static_cast< power_type_e >( _power_type_e ); }
+  power_e type() const { return static_cast< power_e >( _power_e ); }
   double cost() const;
 
   static spellpower_data_t* nil();
@@ -114,8 +117,8 @@ public:
   int                        base_value() const { return _base_value; }
   double                     percent() const { return _base_value * ( 1 / 100.0 ); }
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
-  resource_type_e            resource_gain_type() const;
-  double resource( resource_type_e resource_type ) const;
+  resource_e            resource_gain_type() const;
+  double resource( resource_e resource_type ) const;
   double                     mastery_value() const { return _coeff * ( 1 / 100.0 ); }
 
   int                        misc_value1() const { return _misc_value; }
@@ -240,7 +243,7 @@ public:
   const spelleffect_data_t& effect2() const { return effectN( 2 ); }
   const spelleffect_data_t& effect3() const { return effectN( 3 ); }
 
-  const spellpower_data_t& powerN( power_type_e pt ) const
+  const spellpower_data_t& powerN( power_e pt ) const
   {
     assert( pt >= POWER_HEALTH && pt < POWER_MAX );
     if ( _power == 0)
@@ -248,7 +251,7 @@ public:
 
     for ( size_t i = 0; i < _power -> size(); i++ )
     {
-      if ( _power -> at( i ) -> _power_type_e == pt )
+      if ( _power -> at( i ) -> _power_e == pt )
         return *_power -> at( i );
     }
 
@@ -260,21 +263,21 @@ public:
 
   unsigned             id() const { return _id; }
   uint32_t             school_mask() const { return _school; }
-  static uint32_t      get_school_mask( school_type_e s );
-  school_type_e        get_school_type() const;
-  static bool          is_school( school_type_e s, school_type_e s2 );
+  static uint32_t      get_school_mask( school_e s );
+  school_e        get_school_type() const;
+  static bool          is_school( school_e s, school_e s2 );
 
-  bool                 is_class( player_type_e c ) const;
+  bool                 is_class( player_e c ) const;
   uint32_t             class_mask() const { return _class_mask; }
 
-  bool                 is_race( race_type_e r ) const;
+  bool                 is_race( race_e r ) const;
   uint32_t             race_mask() const { return _race_mask; }
 
   bool                 is_level( uint32_t level ) const { return level >= _spell_level; }
   uint32_t             level() const { return _spell_level; }
   uint32_t             max_level() const { return _max_level; }
 
-  player_type_e        scaling_class() const;
+  player_e        scaling_class() const;
 
   double               missile_speed() const { return _prj_speed; }
   double               min_range() const { return _min_range; }
@@ -285,7 +288,7 @@ public:
   timespan_t           duration() const { return timespan_t::from_millis( _duration ); }
   timespan_t           gcd() const { return timespan_t::from_millis( _gcd ); }
   timespan_t           cast_time( uint32_t level ) const;
-  double               cost( power_type_e ) const;
+  double               cost( power_e ) const;
 
   uint32_t             category() const { return _category; }
 
@@ -371,8 +374,8 @@ public:
 
   inline unsigned       id() const { return _id; }
   const char*           name_cstr() const { return _name; }
-  bool                  is_class( player_type_e c ) const;
-  bool                  is_pet( pet_type_e p ) const;
+  bool                  is_class( player_e c ) const;
+  bool                  is_pet( pet_e p ) const;
   unsigned              col() const { return _col; }
   unsigned              row() const { return _row; }
   unsigned              spell_id() const { return _spell_id; }
@@ -389,7 +392,7 @@ public:
   static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
   static talent_data_t* find( const char* name, bool ptr = false );
-  static talent_data_t* find( player_type_e c, unsigned int row, unsigned int col, bool ptr = false );
+  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
 };
@@ -430,36 +433,36 @@ public:
   static std::size_t        n_items( bool ptr = false );
 
   // Game data table access
-  double melee_crit_base( player_type_e t ) const;
-  double melee_crit_base( pet_type_e t ) const;
-  double spell_crit_base( player_type_e t ) const;
-  double spell_crit_base( pet_type_e t ) const;
-  double dodge_base( player_type_e t ) const;
-  double dodge_base( pet_type_e t ) const;
-  double regen_base( player_type_e t, unsigned level ) const;
-  double regen_base( pet_type_e t, unsigned level ) const;
-  double resource_base( player_type_e t, unsigned level ) const;
-  double health_base( player_type_e t, unsigned level ) const;
-  stat_data_t& attribute_base( player_type_e t, unsigned level ) const;
-  stat_data_t& attribute_base( pet_type_e t, unsigned level ) const;
-  stat_data_t& race_base( race_type_e r ) const;
-  stat_data_t& race_base( pet_type_e t ) const;
+  double melee_crit_base( player_e t ) const;
+  double melee_crit_base( pet_e t ) const;
+  double spell_crit_base( player_e t ) const;
+  double spell_crit_base( pet_e t ) const;
+  double dodge_base( player_e t ) const;
+  double dodge_base( pet_e t ) const;
+  double regen_base( player_e t, unsigned level ) const;
+  double regen_base( pet_e t, unsigned level ) const;
+  double resource_base( player_e t, unsigned level ) const;
+  double health_base( player_e t, unsigned level ) const;
+  stat_data_t& attribute_base( player_e t, unsigned level ) const;
+  stat_data_t& attribute_base( pet_e t, unsigned level ) const;
+  stat_data_t& race_base( race_e r ) const;
+  stat_data_t& race_base( pet_e t ) const;
 
-  double spell_scaling( player_type_e t, unsigned level ) const;
-  double melee_crit_scaling( player_type_e t, unsigned level ) const;
-  double melee_crit_scaling( pet_type_e t, unsigned level ) const;
-  double spell_crit_scaling( player_type_e t, unsigned level ) const;
-  double spell_crit_scaling( pet_type_e t, unsigned level ) const;
-  double dodge_scaling( player_type_e t, unsigned level ) const;
-  double dodge_scaling( pet_type_e t, unsigned level ) const;
-  double regen_spirit( player_type_e t, unsigned level ) const;
-  double regen_spirit( pet_type_e t, unsigned level ) const;
-  double mp5_per_spirit( player_type_e t, unsigned level ) const;
-  double mp5_per_spirit( pet_type_e t, unsigned level ) const;
+  double spell_scaling( player_e t, unsigned level ) const;
+  double melee_crit_scaling( player_e t, unsigned level ) const;
+  double melee_crit_scaling( pet_e t, unsigned level ) const;
+  double spell_crit_scaling( player_e t, unsigned level ) const;
+  double spell_crit_scaling( pet_e t, unsigned level ) const;
+  double dodge_scaling( player_e t, unsigned level ) const;
+  double dodge_scaling( pet_e t, unsigned level ) const;
+  double regen_spirit( player_e t, unsigned level ) const;
+  double regen_spirit( pet_e t, unsigned level ) const;
+  double mp5_per_spirit( player_e t, unsigned level ) const;
+  double mp5_per_spirit( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
-  double oct_combat_rating( unsigned combat_rating_id, player_type_e t ) const;
+  double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
 
   const spell_data_t*            spell( unsigned spell_id ) const { return spell_data_t::find( spell_id, ptr ); }
   const spelleffect_data_t*      effect( unsigned effect_id ) const { return spelleffect_data_t::find( effect_id, ptr ); }
@@ -506,9 +509,9 @@ public:
 
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;
-  int      mastery_ability_tree( player_type_e c, uint32_t spell_id ) const;
+  int      mastery_ability_tree( player_e c, uint32_t spell_id ) const;
 
-  unsigned glyph_spell( unsigned class_id, unsigned glyph_type_e, unsigned n ) const;
+  unsigned glyph_spell( unsigned class_id, unsigned glyph_e, unsigned n ) const;
   unsigned glyph_spell_size() const;
 
   unsigned set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const;
@@ -524,20 +527,20 @@ public:
   double   effect_max( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
 
-  unsigned talent_ability_id( player_type_e c, const char* spell_name ) const;
-  unsigned class_ability_id( player_type_e c, specialization_e spec_id, const char* spell_name ) const;
-  unsigned pet_ability_id( player_type_e c, const char* spell_name ) const;
-  unsigned race_ability_id( player_type_e c, race_type_e r, const char* spell_name ) const;
+  unsigned talent_ability_id( player_e c, const char* spell_name ) const;
+  unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;
+  unsigned pet_ability_id( player_e c, const char* spell_name ) const;
+  unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;
   unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
-  specialization_e mastery_specialization( const player_type_e c, uint32_t spell_id ) const;
+  specialization_e mastery_specialization( const player_e c, uint32_t spell_id ) const;
 
-  unsigned glyph_spell_id( player_type_e c, const char* spell_name ) const;
-  unsigned set_bonus_spell_id( player_type_e c, const char* spell_name, int tier = -1 ) const;
+  unsigned glyph_spell_id( player_e c, const char* spell_name ) const;
+  unsigned set_bonus_spell_id( player_e c, const char* spell_name, int tier = -1 ) const;
 
-  int      class_ability_tree( player_type_e c, uint32_t spell_id ) const;
-  specialization_e class_ability_specialization( const player_type_e c, uint32_t spell_id ) const;
+  int      class_ability_tree( player_e c, uint32_t spell_id ) const;
+  specialization_e class_ability_specialization( const player_e c, uint32_t spell_id ) const;
 
   bool     is_class_ability( uint32_t spell_id ) const;
   bool     is_race_ability( uint32_t spell_id ) const;
@@ -547,7 +550,7 @@ public:
   bool     is_set_bonus_spell( uint32_t spell_id ) const;
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
-  specialization_e spec_by_idx( const player_type_e c, uint32_t& idx ) const;
+  specialization_e spec_by_idx( const player_e c, uint32_t& idx ) const;
 
   // Static helper methods
   static double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );

@@ -280,7 +280,7 @@ struct warrior_t : public player_t
   // Up-Times
   benefit_t* uptimes_rage_cap;
 
-  warrior_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
@@ -327,19 +327,19 @@ struct warrior_t : public player_t
   virtual double    composite_attack_crit( const weapon_t* ) const;
   virtual double    composite_mastery() const;
   virtual double    composite_attack_haste() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
+  virtual double    composite_player_multiplier( school_e school, const action_t* a = NULL ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_tank_block() const;
   virtual double    composite_tank_crit_block() const;
-  virtual double    composite_tank_crit( school_type_e school ) const;
+  virtual double    composite_tank_crit( school_e school ) const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_type_e primary_role() const;
-  virtual double    assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a );
+  virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
+  virtual role_e primary_role() const;
+  virtual double    assess_damage( double amount, school_e, dmg_e, result_e, action_t* a );
   virtual void      copy_from( player_t* source );
 
   // Temporary
@@ -410,7 +410,7 @@ struct warrior_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
+  virtual void   assess_damage( player_t* t, double, dmg_e, result_e );
 };
 
 
@@ -448,7 +448,7 @@ struct deep_wounds_t : public warrior_attack_t
   }
   virtual double total_td_multiplier() const { return target_multiplier; }
   virtual timespan_t travel_time() const { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
     if ( result_is_hit( impact_result ) )
@@ -645,7 +645,7 @@ static void trigger_sudden_death( warrior_attack_t* a )
 
 // trigger_sword_and_board ==================================================
 
-static void trigger_sword_and_board( warrior_attack_t* a, result_type_e result )
+static void trigger_sword_and_board( warrior_attack_t* a, result_e result )
 {
   warrior_t* p = a -> cast();
 
@@ -763,7 +763,7 @@ double warrior_attack_t::armor() const
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_type_e dmg_type, const result_type_e impact_result )
+void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_e dmg_type, const result_e impact_result )
 {
   attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
@@ -775,7 +775,7 @@ void warrior_attack_t::assess_damage( player_t* t, const double amount, const dm
 
     if ( p -> buffs_sweeping_strikes -> up() && q -> adds_nearby )
     {
-      attack_t::additional_damage( q, amount, dmg_type_e, impact_result );
+      attack_t::additional_damage( q, amount, dmg_e, impact_result );
     }
   }*/
 }
@@ -1175,7 +1175,7 @@ struct bloodthirst_heal_t : public heal_t
     init();
   }
 
-  virtual resource_type_e current_resource() const { return RESOURCE_NONE; }
+  virtual resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 struct bloodthirst_buff_callback_t : public action_callback_t
@@ -1455,7 +1455,7 @@ struct devastate_t : public warrior_attack_t
     }*/
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -1704,7 +1704,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -1910,7 +1910,7 @@ struct rend_dot_t : public warrior_attack_t
 
   }
 
-  virtual double calculate_direct_damage( result_type_e, int, unsigned, double, double, double )
+  virtual double calculate_direct_damage( result_e, int, unsigned, double, double, double )
   {
     // Rend doesn't actually hit with the weapon, but ticks on application
     return 0.0;
@@ -2004,7 +2004,7 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( this, result );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
     warrior_t* p = cast();
@@ -2311,7 +2311,7 @@ struct sunder_armor_t : public warrior_attack_t
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -2793,7 +2793,7 @@ struct stance_t : public warrior_spell_t
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
 
-  virtual resource_type_e current_resource() const { return RESOURCE_RAGE; }
+  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual void execute()
   {
@@ -3537,7 +3537,7 @@ double warrior_t::composite_attack_haste() const
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
+double warrior_t::composite_player_multiplier( const school_e school, const action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3556,7 +3556,7 @@ double warrior_t::composite_player_multiplier( const school_type_e school, const
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( const attribute_type_e attr ) const
+double warrior_t::matching_gear_multiplier( const attribute_e attr ) const
 {
   if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == WARRIOR_ARMS || primary_tree() == WARRIOR_FURY ) )
     return 0.05;
@@ -3597,7 +3597,7 @@ double warrior_t::composite_tank_crit_block() const
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit( const school_type_e school ) const
+double warrior_t::composite_tank_crit( const school_e school ) const
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -3623,7 +3623,7 @@ void warrior_t::regen( timespan_t periodicity )
 
 // warrior_t::primary_role() ================================================
 
-role_type_e warrior_t::primary_role() const
+role_e warrior_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
@@ -3640,9 +3640,9 @@ role_type_e warrior_t::primary_role() const
 // warrior_t::assess_damage =================================================
 
 double warrior_t::assess_damage( double        amount,
-                                 school_type_e school,
-                                 dmg_type_e    dtype,
-                                 result_type_e result,
+                                 school_e school,
+                                 dmg_e    dtype,
+                                 result_e result,
                                  action_t*     action )
 {
   if ( result == RESULT_HIT    ||
@@ -3780,7 +3780,7 @@ int warrior_t::decode_set( const item_t& item ) const
 
 // class_modules::create::warrior =================================================
 
-player_t* class_modules::create::warrior( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::warrior( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<warrior_t,SC_WARRIOR>()( "Warrior", sim, name, r );
 }

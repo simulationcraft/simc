@@ -46,7 +46,7 @@ inline double floor( double val ) { return std::floor( val ); }
 inline double ceil ( double val ) { return std::ceil( val ); }
 }
 
-expr_t* select_unary( const std::string& name, token_type_e op, expr_t* input )
+expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
   {
@@ -114,7 +114,7 @@ public:
   { return F<double>()( left -> eval(), right -> eval() ); }
 };
 
-expr_t* select_binary( const std::string& name, token_type_e op, expr_t* left, expr_t* right )
+expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t* right )
 {
   switch ( op )
   {
@@ -141,7 +141,7 @@ expr_t* select_binary( const std::string& name, token_type_e op, expr_t* left, e
 
 // precedence ===============================================================
 
-int expression_t::precedence( token_type_e expr_token_type )
+int expression_t::precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -185,7 +185,7 @@ int expression_t::precedence( token_type_e expr_token_type )
 
 // is_unary =================================================================
 
-bool expression_t::is_unary( token_type_e expr_token_type )
+bool expression_t::is_unary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -203,7 +203,7 @@ bool expression_t::is_unary( token_type_e expr_token_type )
 
 // is_binary ================================================================
 
-bool expression_t::is_binary( token_type_e expr_token_type )
+bool expression_t::is_binary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -229,8 +229,8 @@ bool expression_t::is_binary( token_type_e expr_token_type )
 
 // next_token ===============================================================
 
-token_type_e expression_t::next_token( action_t* action, const std::string& expr_str,
-                                       int& current_index, std::string& token_str, token_type_e prev_token )
+token_e expression_t::next_token( action_t* action, const std::string& expr_str,
+                                       int& current_index, std::string& token_str, token_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 
@@ -336,7 +336,7 @@ expression_t::parse_tokens( action_t* action,
 
   expr_token_t token;
   int current_index=0;
-  token_type_e t = TOK_UNKNOWN;
+  token_e t = TOK_UNKNOWN;
 
   while ( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
   {
@@ -568,7 +568,7 @@ void time_test( expr_t* expr, uint64_t n )
 }
 }
 
-unsigned spell_data_t::get_school_mask( school_type_e ) { return 0; }
+unsigned spell_data_t::get_school_mask( school_e ) { return 0; }
 
 void sim_t::cancel() {}
 

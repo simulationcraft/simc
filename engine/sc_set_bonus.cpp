@@ -143,7 +143,7 @@ bool set_bonus_t::init( player_t* p )
 expr_t* set_bonus_t::create_expression( player_t* player,
                                         const std::string& type )
 {
-  set_type_e bonus_type = util::parse_set_bonus( type );
+  set_e bonus_type = util::parse_set_bonus( type );
 
   if ( bonus_type == SET_NONE )
     return 0;
@@ -151,8 +151,8 @@ expr_t* set_bonus_t::create_expression( player_t* player,
   struct set_bonus_expr_t : public expr_t
   {
     player_t& player;
-    set_type_e set_bonus_type;
-    set_bonus_expr_t( player_t& p, set_type_e t ) :
+    set_e set_bonus_type;
+    set_bonus_expr_t( player_t& p, set_e t ) :
       expr_t( util::set_bonus_string( t ) ), player( p ), set_bonus_type( t ) {}
     virtual double evaluate()
     { return player.sets -> has_set_bonus( set_bonus_type ); }
@@ -183,7 +183,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
   default_value( spell_data_t::nil() ), p( p )
 {
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses
-  // array, based on set_type_e enum
+  // array, based on set_e enum
   for ( int tier = 0; tier < N_TIER; ++tier )
   {
     for ( int j = 0; j < N_TIER_BONUS; j++ )
@@ -194,7 +194,7 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
   }
 }
 
-bool set_bonus_array_t::has_set_bonus( set_type_e s )
+bool set_bonus_array_t::has_set_bonus( set_e s )
 {
   if ( p -> set_bonus.count[ s ] > 0 )
     return true;
@@ -214,7 +214,7 @@ bool set_bonus_array_t::has_set_bonus( set_type_e s )
   return false;
 }
 
-const spell_data_t* set_bonus_array_t::set( set_type_e s )
+const spell_data_t* set_bonus_array_t::set( set_e s )
 {
   if ( has_set_bonus( s ) && set_bonuses[ s ] )
     return set_bonuses[ s ];

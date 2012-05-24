@@ -11,7 +11,7 @@
 
 // spell_base_t::spell_base_t =========================================================
 
-spell_base_t::spell_base_t( action_type_e at,
+spell_base_t::spell_base_t( action_e at,
                             const std::string& token,
                             player_t* p,
                             const spell_data_t* s ) :
@@ -83,12 +83,12 @@ double spell_base_t::crit_chance( double crit, int /* delta_level */ )
 
 // spell_base_t::calculate_result ================================================
 
-result_type_e spell_base_t::calculate_result( double crit, unsigned target_level )
+result_e spell_base_t::calculate_result( double crit, unsigned target_level )
 {
   int delta_level = target_level - player -> level;
 
   direct_dmg = 0;
-  result_type_e result = RESULT_NONE;
+  result_e result = RESULT_NONE;
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 

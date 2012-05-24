@@ -140,7 +140,7 @@ static bool parse_gems( item_t&           item,
 {
   item.armory_gems_str.clear();
 
-  gem_type_e sockets[ 3 ] = { GEM_NONE, GEM_NONE, GEM_NONE };
+  gem_e sockets[ 3 ] = { GEM_NONE, GEM_NONE, GEM_NONE };
 
   std::vector<std::string> socket_colors;
   int num_sockets = get_tti_value( socket_colors, node, "tti-socket" );
@@ -223,7 +223,7 @@ static bool parse_weapon( item_t&     item,
 
   if ( ( slot_str == "Main Hand" ) || ( slot_str == "Off-Hand" ) ) slot_str = "One-Hand";
 
-  weapon_type_e type = WEAPON_NONE;
+  weapon_e type = WEAPON_NONE;
   if      ( subclass_str == "Axe" && slot_str == "One-Hand"   ) type = WEAPON_AXE;
   else if ( subclass_str == "Axe" && slot_str == "Two-Hand"   ) type = WEAPON_AXE_2H;
   else if ( subclass_str == "Dagger"                          ) type = WEAPON_DAGGER;
@@ -444,7 +444,7 @@ static bool parse_quality( item_t&     item,
 
 // armory_t::parse_meta_gem =================================================
 
-static meta_gem_type_e parse_meta_gem( const std::string& description )
+static meta_gem_e parse_meta_gem( const std::string& description )
 {
   if ( description == "+54 Agility and 3% Increased Critical Damage"                      ) return META_AGILE_SHADOWSPIRIT;
   if ( description == "+32 Stamina and 2% Increased Armor Value from Items"               ) return META_AUSTERE_EARTHSIEGE;
@@ -505,7 +505,7 @@ static meta_gem_type_e parse_meta_gem( const std::string& description )
 
 // mmo_champion::parse_gem ==================================================
 
-gem_type_e mmo_champion::parse_gem( item_t&            item,
+gem_e mmo_champion::parse_gem( item_t&            item,
 				    const std::string& gem_id,
 				    cache::behavior_e  caching )
 {
@@ -527,7 +527,7 @@ gem_type_e mmo_champion::parse_gem( item_t&            item,
     if ( get_tti_value( color_str, node, "tti-subclass" ) )
     {
       util::tokenize( color_str );
-      gem_type_e type = util::parse_gem_type( color_str );
+      gem_e type = util::parse_gem_type( color_str );
 
       std::string property_str;
       xml_node_t* property_node = get_tti_node( node, "tti-gem_properties" );
@@ -540,7 +540,7 @@ gem_type_e mmo_champion::parse_gem( item_t&            item,
 
       if ( type == GEM_META )
       {
-        meta_gem_type_e mtype = parse_meta_gem( property_str );
+        meta_gem_e mtype = parse_meta_gem( property_str );
 
         if ( mtype != META_GEM_NONE )
         {

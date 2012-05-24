@@ -128,7 +128,7 @@ int util::ability_rank( int player_level,
 
 // dot_behavior_type_string =========================================
 
-const char* util::dot_behavior_type_string( dot_behavior_type_e t )
+const char* util::dot_behavior_type_string( dot_behavior_e t )
 {
   switch ( t )
   {
@@ -141,7 +141,7 @@ const char* util::dot_behavior_type_string( dot_behavior_type_e t )
 
 // role_type_string =================================================
 
-const char* util::role_type_string( role_type_e role )
+const char* util::role_type_string( role_e role )
 {
   switch ( role )
   {
@@ -158,14 +158,14 @@ const char* util::role_type_string( role_type_e role )
 
 // parse_role_type ==================================================
 
-role_type_e util::parse_role_type( const std::string& name )
+role_e util::parse_role_type( const std::string& name )
 { 
-  return parse_enum<role_type_e,ROLE_NONE,ROLE_MAX,role_type_string>( name ); 
+  return parse_enum<role_e,ROLE_NONE,ROLE_MAX,role_type_string>( name ); 
 }
 
 // race_type_string =================================================
 
-const char* util::race_type_string( race_type_e type )
+const char* util::race_type_string( race_e type )
 {
   switch ( type )
   {
@@ -193,14 +193,14 @@ const char* util::race_type_string( race_type_e type )
 
 // parse_race_type ==================================================
 
-race_type_e util::parse_race_type( const std::string &name )
+race_e util::parse_race_type( const std::string &name )
 { 
-  return parse_enum<race_type_e,RACE_NONE,RACE_MAX,race_type_string>( name );
+  return parse_enum<race_e,RACE_NONE,RACE_MAX,race_type_string>( name );
 }
 
 // position_type_string =============================================
 
-const char* util::position_type_string( position_type_e type )
+const char* util::position_type_string( position_e type )
 {
   switch ( type )
   {
@@ -215,14 +215,14 @@ const char* util::position_type_string( position_type_e type )
 
 // parse_position_type ==============================================
 
-position_type_e util::parse_position_type( const std::string &name )
+position_e util::parse_position_type( const std::string &name )
 { 
-  return parse_enum<position_type_e,POSITION_NONE,POSITION_MAX,position_type_string>( name );
+  return parse_enum<position_e,POSITION_NONE,POSITION_MAX,position_type_string>( name );
 }
 
 // profession_type_string ===========================================
 
-const char* util::profession_type_string( profession_type_e type )
+const char* util::profession_type_string( profession_e type )
 {
   switch ( type )
   {
@@ -244,14 +244,14 @@ const char* util::profession_type_string( profession_type_e type )
 
 // parse_profession_type ============================================
 
-profession_type_e util::parse_profession_type( const std::string& name )
+profession_e util::parse_profession_type( const std::string& name )
 {
-  return parse_enum<profession_type_e,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name );
+  return parse_enum<profession_e,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name );
 }
 
 // translate_profession_id ==========================================
 
-profession_type_e util::translate_profession_id( int skill_id )
+profession_e util::translate_profession_id( int skill_id )
 {
   switch ( skill_id )
   {
@@ -272,7 +272,7 @@ profession_type_e util::translate_profession_id( int skill_id )
 
 // player_type_string ===============================================
 
-const char* util::player_type_string( player_type_e type )
+const char* util::player_type_string( player_e type )
 {
   switch ( type )
   {
@@ -298,22 +298,22 @@ const char* util::player_type_string( player_type_e type )
 
 // parse_player_type ================================================
 
-player_type_e util::parse_player_type( const std::string& name )
+player_e util::parse_player_type( const std::string& name )
 { 
-  return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name );
+  return parse_enum<player_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name );
 }
 
 // translate_class_str ================================================
 
-player_type_e util::translate_class_str( std::string& s )
+player_e util::translate_class_str( std::string& s )
 {
-  return parse_enum<player_type_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s );
+  return parse_enum<player_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s );
 }
 
 
 // pet_type_string ==================================================
 
-const char* util::pet_type_string( pet_type_e type )
+const char* util::pet_type_string( pet_e type )
 {
   switch ( type )
   {
@@ -378,14 +378,14 @@ const char* util::pet_type_string( pet_type_e type )
 
 // parse_pet_type ===================================================
 
-pet_type_e util::parse_pet_type( const std::string& name )
+pet_e util::parse_pet_type( const std::string& name )
 {
-  return parse_enum<pet_type_e,PET_NONE,PET_MAX,pet_type_string>( name );
+  return parse_enum<pet_e,PET_NONE,PET_MAX,pet_type_string>( name );
 }
 
 // attribute_type_string ============================================
 
-const char* util::attribute_type_string( attribute_type_e type )
+const char* util::attribute_type_string( attribute_e type )
 {
   switch ( type )
   {
@@ -400,14 +400,14 @@ const char* util::attribute_type_string( attribute_type_e type )
 
 // parse_attribute_type =============================================
 
-attribute_type_e util::parse_attribute_type( const std::string& name )
+attribute_e util::parse_attribute_type( const std::string& name )
 {
-  return parse_enum<attribute_type_e,ATTRIBUTE_NONE,ATTRIBUTE_MAX,attribute_type_string>( name );
+  return parse_enum<attribute_e,ATTRIBUTE_NONE,ATTRIBUTE_MAX,attribute_type_string>( name );
 }
 
 // dmg_type_string ==================================================
 
-const char* util::dmg_type_string( dmg_type_e type )
+const char* util::dmg_type_string( dmg_e type )
 {
   switch ( type )
   {
@@ -422,7 +422,7 @@ const char* util::dmg_type_string( dmg_type_e type )
 
 // gem_type_string ==================================================
 
-const char* util::gem_type_string( gem_type_e type )
+const char* util::gem_type_string( gem_e type )
 {
   switch ( type )
   {
@@ -441,14 +441,14 @@ const char* util::gem_type_string( gem_type_e type )
 
 // parse_gem_type ===================================================
 
-gem_type_e util::parse_gem_type( const std::string& name )
+gem_e util::parse_gem_type( const std::string& name )
 {
-  return parse_enum<gem_type_e,GEM_NONE,GEM_MAX,gem_type_string>( name );
+  return parse_enum<gem_e,GEM_NONE,GEM_MAX,gem_type_string>( name );
 }
 
 // meta_gem_type_string =============================================
 
-const char* util::meta_gem_type_string( meta_gem_type_e type )
+const char* util::meta_gem_type_string( meta_gem_e type )
 {
   switch ( type )
   {
@@ -515,14 +515,14 @@ const char* util::meta_gem_type_string( meta_gem_type_e type )
 
 // parse_meta_gem_type ==============================================
 
-meta_gem_type_e util::parse_meta_gem_type( const std::string& name )
+meta_gem_e util::parse_meta_gem_type( const std::string& name )
 {
-  return parse_enum<meta_gem_type_e,META_GEM_NONE,META_GEM_MAX,meta_gem_type_string>( name );
+  return parse_enum<meta_gem_e,META_GEM_NONE,META_GEM_MAX,meta_gem_type_string>( name );
 }
 
 // result_type_string ===============================================
 
-const char* util::result_type_string( result_type_e type )
+const char* util::result_type_string( result_e type )
 {
   switch ( type )
   {
@@ -541,14 +541,14 @@ const char* util::result_type_string( result_type_e type )
 
 // parse_result_type ================================================
 
-result_type_e util::parse_result_type( const std::string& name )
+result_e util::parse_result_type( const std::string& name )
 {
-  return parse_enum<result_type_e,RESULT_NONE,RESULT_MAX,result_type_string>( name );
+  return parse_enum<result_e,RESULT_NONE,RESULT_MAX,result_type_string>( name );
 }
 
 // resource_type_string =============================================
 
-const char* util::resource_type_string( resource_type_e resource_type )
+const char* util::resource_type_string( resource_e resource_type )
 {
   switch ( resource_type )
   {
@@ -576,14 +576,14 @@ const char* util::resource_type_string( resource_type_e resource_type )
 
 // parse_resource_type ==============================================
 
-resource_type_e util::parse_resource_type( const std::string& name )
+resource_e util::parse_resource_type( const std::string& name )
 { 
-  return parse_enum<resource_type_e,RESOURCE_NONE,RESOURCE_MAX,resource_type_string>( name );
+  return parse_enum<resource_e,RESOURCE_NONE,RESOURCE_MAX,resource_type_string>( name );
 }
 
 // school_type_component ============================================
 
-uint32_t util::school_type_component( school_type_e s_type, school_type_e c_type )
+uint32_t util::school_type_component( school_e s_type, school_e c_type )
 {
   return( spell_data_t::get_school_mask( s_type ) &
 	  spell_data_t::get_school_mask( c_type ) );
@@ -591,7 +591,7 @@ uint32_t util::school_type_component( school_type_e s_type, school_type_e c_type
 
 // school_type_string ===============================================
 
-const char* util::school_type_string( school_type_e school )
+const char* util::school_type_string( school_e school )
 {
   switch ( school )
   {
@@ -635,14 +635,14 @@ const char* util::school_type_string( school_type_e school )
 
 // parse_school_type ================================================
 
-school_type_e util::parse_school_type( const std::string& name )
+school_e util::parse_school_type( const std::string& name )
 {
-  return parse_enum<school_type_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name );
+  return parse_enum<school_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name );
 }
 
 // translate_spec_str ===============================================
 
-specialization_e util::translate_spec_str( player_type_e ptype, const std::string& spec_str )
+specialization_e util::translate_spec_str( player_e ptype, const std::string& spec_str )
 {
   switch ( ptype )
   {
@@ -889,7 +889,7 @@ std::string util::specialization_string( specialization_e spec )
   }
 }
 
-resource_type_e util::translate_power_type( power_type_e pt )
+resource_e util::translate_power_type( power_e pt )
 {
   switch ( pt )
   {
@@ -912,7 +912,7 @@ resource_type_e util::translate_power_type( power_type_e pt )
 
 // weapon_type_string ===============================================
 
-const char* util::weapon_type_string( weapon_type_e weapon )
+const char* util::weapon_type_string( weapon_e weapon )
 {
   switch ( weapon )
   {
@@ -1026,14 +1026,14 @@ const char* util::set_item_type_string( int item_set )
 
 // parse_weapon_type ================================================
 
-weapon_type_e util::parse_weapon_type( const std::string& name )
+weapon_e util::parse_weapon_type( const std::string& name )
 {
-  return parse_enum<weapon_type_e,WEAPON_NONE,WEAPON_MAX,weapon_type_string>( name );
+  return parse_enum<weapon_e,WEAPON_NONE,WEAPON_MAX,weapon_type_string>( name );
 }
 
 // flask_type_string ================================================
 
-const char* util::flask_type_string( flask_type_e flask )
+const char* util::flask_type_string( flask_e flask )
 {
   switch ( flask )
   {
@@ -1056,14 +1056,14 @@ const char* util::flask_type_string( flask_type_e flask )
 
 // parse_flask_type =================================================
 
-flask_type_e util::parse_flask_type( const std::string& name )
+flask_e util::parse_flask_type( const std::string& name )
 {
-  return parse_enum<flask_type_e,FLASK_NONE,FLASK_MAX,flask_type_string>( name );
+  return parse_enum<flask_e,FLASK_NONE,FLASK_MAX,flask_type_string>( name );
 }
 
 // food_type_string =================================================
 
-const char* util::food_type_string( food_type_e food )
+const char* util::food_type_string( food_e food )
 {
   switch ( food )
   {
@@ -1094,14 +1094,14 @@ const char* util::food_type_string( food_type_e food )
 
 // parse_food_type ==================================================
 
-food_type_e util::parse_food_type( const std::string& name )
+food_e util::parse_food_type( const std::string& name )
 { 
-  return parse_enum<food_type_e,FOOD_NONE,FOOD_MAX,food_type_string>( name );
+  return parse_enum<food_e,FOOD_NONE,FOOD_MAX,food_type_string>( name );
 }
 
 // set_bonus_string =================================================
 
-const char* util::set_bonus_string( set_type_e type )
+const char* util::set_bonus_string( set_e type )
 {
   switch ( type )
   {
@@ -1151,14 +1151,14 @@ const char* util::set_bonus_string( set_type_e type )
 
 // parse_set_bonus ==================================================
 
-set_type_e util::parse_set_bonus( const std::string& name )
+set_e util::parse_set_bonus( const std::string& name )
 {
-  return parse_enum<set_type_e,SET_NONE,SET_MAX,set_bonus_string>( name );
+  return parse_enum<set_e,SET_NONE,SET_MAX,set_bonus_string>( name );
 }
 
 // slot_type_string =================================================
 
-const char* util::slot_type_string( slot_type_e slot )
+const char* util::slot_type_string( slot_e slot )
 {
   switch ( slot )
   {
@@ -1186,7 +1186,7 @@ const char* util::slot_type_string( slot_type_e slot )
 
 // armor_type_string ================================================
 
-const char* util::armor_type_string( player_type_e ptype, slot_type_e s )
+const char* util::armor_type_string( player_e ptype, slot_e s )
 {
   switch ( s )
   {
@@ -1227,14 +1227,14 @@ const char* util::armor_type_string( player_type_e ptype, slot_type_e s )
 
 // parse_slot_type ==================================================
 
-slot_type_e util::parse_slot_type( const std::string& name )
+slot_e util::parse_slot_type( const std::string& name )
 { 
-  return parse_enum<slot_type_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name );
+  return parse_enum<slot_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name );
 }
 
 // stat_type_string =================================================
 
-const char* util::stat_type_string( stat_type_e stat )
+const char* util::stat_type_string( stat_e stat )
 {
   switch ( stat )
   {
@@ -1293,7 +1293,7 @@ const char* util::stat_type_string( stat_type_e stat )
 
 // stat_type_abbrev =================================================
 
-const char* util::stat_type_abbrev( stat_type_e stat )
+const char* util::stat_type_abbrev( stat_e stat )
 {
   switch ( stat )
   {
@@ -1352,7 +1352,7 @@ const char* util::stat_type_abbrev( stat_type_e stat )
 
 // stat_type_wowhead ================================================
 
-const char* util::stat_type_wowhead( stat_type_e stat )
+const char* util::stat_type_wowhead( stat_e stat )
 {
   switch ( stat )
   {
@@ -1396,15 +1396,15 @@ const char* util::stat_type_wowhead( stat_type_e stat )
 
 // parse_stat_type ==================================================
 
-stat_type_e util::parse_stat_type( const std::string& name )
+stat_e util::parse_stat_type( const std::string& name )
 {
-  stat_type_e s = parse_enum<stat_type_e,STAT_NONE,STAT_MAX,stat_type_string>( name );
+  stat_e s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_string>( name );
   if ( s != STAT_NONE ) return s;
 
-  s = parse_enum<stat_type_e,STAT_NONE,STAT_MAX,stat_type_abbrev>( name );
+  s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_abbrev>( name );
   if ( s != STAT_NONE ) return s;
 
-  s = parse_enum<stat_type_e,STAT_NONE,STAT_MAX,stat_type_wowhead>( name );
+  s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_wowhead>( name );
   if ( s != STAT_NONE ) return s;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
@@ -1429,9 +1429,9 @@ stat_type_e util::parse_stat_type( const std::string& name )
 
 // parse_reforge_type ===============================================
 
-stat_type_e util::parse_reforge_type( const std::string& name )
+stat_e util::parse_reforge_type( const std::string& name )
 {
-  stat_type_e s = parse_stat_type( name );
+  stat_e s = parse_stat_type( name );
 
   switch ( s )
   {
@@ -1499,7 +1499,7 @@ bool util::parse_origin( std::string& region_str,
 
 // class_id_mask ====================================================
 
-int util::class_id_mask( player_type_e type )
+int util::class_id_mask( player_e type )
 {
   int cid = class_id( type );
   if ( cid <= 0 ) return 0;
@@ -1508,7 +1508,7 @@ int util::class_id_mask( player_type_e type )
 
 // class_id =========================================================
 
-int util::class_id( player_type_e type )
+int util::class_id( player_e type )
 {
   switch ( type )
   {
@@ -1530,7 +1530,7 @@ int util::class_id( player_type_e type )
 
 // race_id ==========================================================
 
-unsigned util::race_id( race_type_e r )
+unsigned util::race_id( race_e r )
 {
   switch ( r )
   {
@@ -1555,7 +1555,7 @@ unsigned util::race_id( race_type_e r )
 
 // race_mask ========================================================
 
-unsigned util::race_mask( race_type_e r )
+unsigned util::race_mask( race_e r )
 {
   uint32_t id = race_id( r );
 
@@ -1567,9 +1567,9 @@ unsigned util::race_mask( race_type_e r )
 
 // pet_class_type ===================================================
 
-player_type_e util::pet_class_type( pet_type_e c )
+player_e util::pet_class_type( pet_e c )
 {
-  player_type_e p = WARRIOR;
+  player_e p = WARRIOR;
 
   if ( c <= PET_HUNTER )
   {
@@ -1593,7 +1593,7 @@ player_type_e util::pet_class_type( pet_type_e c )
 
 // pet_mask =========================================================
 
-unsigned util::pet_mask( pet_type_e p )
+unsigned util::pet_mask( pet_e p )
 {
   if ( p <= PET_FEROCITY_TYPE )
     return 0x1;
@@ -1607,7 +1607,7 @@ unsigned util::pet_mask( pet_type_e p )
 
 // pet_id ===========================================================
 
-unsigned util::pet_id( pet_type_e p )
+unsigned util::pet_id( pet_e p )
 {
   uint32_t mask = pet_mask( p );
 
@@ -1623,7 +1623,7 @@ unsigned util::pet_id( pet_type_e p )
 
 // class_id_string ==================================================
 
-const char* util::class_id_string( player_type_e type )
+const char* util::class_id_string( player_e type )
 {
   switch ( type )
   {
@@ -1644,7 +1644,7 @@ const char* util::class_id_string( player_type_e type )
 
 // translate_class_id ===============================================
 
-player_type_e util::translate_class_id( int cid )
+player_e util::translate_class_id( int cid )
 {
   switch ( cid )
   {
@@ -1665,7 +1665,7 @@ player_type_e util::translate_class_id( int cid )
 
 // translate_race_id ================================================
 
-race_type_e util::translate_race_id( int rid )
+race_e util::translate_race_id( int rid )
 {
   switch ( rid )
   {
@@ -1691,7 +1691,7 @@ race_type_e util::translate_race_id( int rid )
 
 // translate_item_mod ===============================================
 
-stat_type_e util::translate_item_mod( item_mod_type item_mod )
+stat_e util::translate_item_mod( item_mod_type item_mod )
 {
   switch ( item_mod )
   {
@@ -1719,7 +1719,7 @@ stat_type_e util::translate_item_mod( item_mod_type item_mod )
 
 // translate_weapon_subclass ========================================
 
-weapon_type_e util::translate_weapon_subclass( item_subclass_weapon id )
+weapon_e util::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
   {
@@ -1746,7 +1746,7 @@ weapon_type_e util::translate_weapon_subclass( item_subclass_weapon id )
 
 // translate_invtype ================================================
 
-slot_type_e util::translate_invtype( inventory_type inv_type )
+slot_e util::translate_invtype( inventory_type inv_type )
 {
   switch ( inv_type )
   {
@@ -1794,7 +1794,7 @@ slot_type_e util::translate_invtype( inventory_type inv_type )
 
 // socket_gem_match =================================================
 
-bool util::socket_gem_match( gem_type_e socket, gem_type_e gem )
+bool util::socket_gem_match( gem_e socket, gem_e gem )
 {
   if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
 
@@ -1900,7 +1900,7 @@ std::string& util::replace_all( std::string& s, char from, const char* to )
 
 // translate_gem_color ==============================================
 
-gem_type_e util::translate_socket_color( item_socket_color c )
+gem_e util::translate_socket_color( item_socket_color c )
 {
   switch ( c )
   {
@@ -2362,7 +2362,7 @@ std::string& util::tolower( std::string& str )
 
 // tokenize =================================================================
 
-void util::tokenize( std::string& name, format_type_e f )
+void util::tokenize( std::string& name, format_e f )
 {
   std::string::size_type l = name.length();
   if ( ! l ) return;
@@ -2457,7 +2457,7 @@ bool util::is_number( const std::string& s )
 
 static void stat_search( std::string&              encoding_str,
 			 std::vector<std::string>& description_tokens,
-			 stat_type_e               type,
+			 stat_e               type,
 			 const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;

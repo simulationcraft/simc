@@ -247,7 +247,7 @@ struct warlock_t : public player_t
 
   target_specific_t<warlock_td_t> target_data;
 
-  warlock_t( sim_t* sim, const std::string& name, race_type_e r = RACE_UNDEAD );
+  warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
@@ -271,14 +271,14 @@ struct warlock_t : public player_t
   buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_type_e primary_role()     { return ROLE_SPELL; }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_e primary_role()     { return ROLE_SPELL; }
   virtual double    composite_spell_power_multiplier();
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
-  virtual double composite_player_multiplier( school_type_e school, action_t* a );
+  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_spell_crit();
   virtual double composite_spell_haste();
   virtual double composite_mastery();
@@ -335,14 +335,14 @@ struct warlock_pet_t : public pet_t
   int stats2_avaiable;
   gain_t* owner_fury_gain;
 
-  double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type );
+  double get_attribute_base( int level, int stat_e, pet_e pet_type );
 private:
-  const _weapon_list_t* get_weapon( pet_type_e pet_type );
+  const _weapon_list_t* get_weapon( pet_e pet_type );
 public:
-  double get_weapon_min( int level, pet_type_e pet_type );
-  double get_weapon_max( int level, pet_type_e pet_type );
-  timespan_t get_weapon_swing_time( int level, pet_type_e pet_type );
-  warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
+  double get_weapon_min( int level, pet_e pet_type );
+  double get_weapon_max( int level, pet_e pet_type );
+  timespan_t get_weapon_swing_time( int level, pet_e pet_type );
+  warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
   virtual timespan_t available();
@@ -350,13 +350,13 @@ public:
                                bool   waiting=false );
   virtual double composite_spell_haste();
   virtual double composite_attack_haste();
-  virtual double composite_spell_power( school_type_e school );
+  virtual double composite_spell_power( school_e school );
   virtual double composite_attack_power();
   virtual double composite_attack_crit( weapon_t* );
   virtual double composite_spell_crit();
-  virtual double composite_player_multiplier( school_type_e school, action_t* a );
+  virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
-  virtual resource_type_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   virtual double energy_regen_per_second();
   warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
@@ -368,7 +368,7 @@ public:
 
 struct warlock_main_pet_t : public warlock_pet_t
 {
-  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false );
+  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual double composite_attack_expertise( weapon_t* );
 };
 
@@ -378,7 +378,7 @@ struct warlock_main_pet_t : public warlock_pet_t
 
 struct warlock_guardian_pet_t : public warlock_pet_t
 {
-  warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_type_e pt );
+  warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt );
   virtual void summon( timespan_t duration=timespan_t::zero() );
 };
 
@@ -448,7 +448,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 struct infernal_pet_t : public warlock_guardian_pet_t
 {
   infernal_pet_t( sim_t* sim, warlock_t* owner );
-  virtual double composite_spell_power( school_type_e school );
+  virtual double composite_spell_power( school_e school );
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );

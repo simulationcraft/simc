@@ -10,11 +10,11 @@ static const std::string amp = "&amp;";
 
 // chart option overview: http://code.google.com/intl/de-DE/apis/chart/image/docs/chart_params.html
 
-enum chart_type_e { HORIZONTAL_BAR, PIE };
+enum chart_e { HORIZONTAL_BAR, PIE };
 enum fill_area_e { FILL_BACKGROUND };
-enum fill_type_e { FILL_SOLID };
+enum fill_e { FILL_SOLID };
 
-static std::string chart_type( chart_type_e t )
+static std::string chart_type( chart_e t )
 {
   std::ostringstream s;
   s << "cht=";
@@ -44,7 +44,7 @@ static std::string chart_size( unsigned width, unsigned height )
   return s.str();
 }
 
-static std::string fill_chart( fill_area_e fa, fill_type_e ft, const std::string& color )
+static std::string fill_chart( fill_area_e fa, fill_e ft, const std::string& color )
 {
   std::ostringstream s;
 
@@ -120,7 +120,7 @@ const std::string darker_silver = "8A8A8A";
 const std::string darker_yellow = "C0B84F";
 }
 
-static std::string class_color( player_type_e type )
+static std::string class_color( player_e type )
 {
   switch ( type )
   {
@@ -144,7 +144,7 @@ static std::string class_color( player_type_e type )
 
 // The above colors don't all work for text rendered on a light (white) background.  These colors work better by reducing the brightness HSV component of the above colors
 
-static std::string class_text_color( player_type_e type )
+static std::string class_text_color( player_e type )
 {
   switch ( type )
   {
@@ -180,9 +180,9 @@ static const std::string& get_chart_base_url()
   return base_urls[ round_robin ];
 }
 
-static player_type_e get_player_or_owner_type( player_t* p )
+static player_e get_player_or_owner_type( player_t* p )
 {
-  player_type_e pt = PLAYER_NONE;
+  player_e pt = PLAYER_NONE;
 
   if ( p -> is_pet() )
     pt = p -> cast_pet() -> owner -> type;
@@ -193,7 +193,7 @@ static player_type_e get_player_or_owner_type( player_t* p )
 }
 
 // These colors are picked to sort of line up with classes, but match the "feel" of the spell class' color
-static std::string school_color( school_type_e type )
+static std::string school_color( school_e type )
 {
   switch ( type )
   {
@@ -217,7 +217,7 @@ static std::string school_color( school_type_e type )
   }
 }
 
-static std::string stat_color( stat_type_e type )
+static std::string stat_color( stat_e type )
 {
   switch ( type )
   {
@@ -239,7 +239,7 @@ static std::string stat_color( stat_type_e type )
 
 static std::string get_color( player_t* p )
 {
-  player_type_e type;
+  player_e type;
   if ( p -> is_pet() )
     type = p -> cast_pet() -> owner -> type;
   else
@@ -249,7 +249,7 @@ static std::string get_color( player_t* p )
 
 static std::string get_text_color( player_t* p )
 {
-  player_type_e type;
+  player_e type;
   if ( p -> is_pet() )
     type = p -> cast_pet() -> owner -> type;
   else
@@ -591,7 +591,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
   std::vector<double> data_points[ STAT_MAX ];
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     data_points[ i ].reserve( num_players );
     for ( size_t j=0; j < num_players; j++ )
@@ -607,7 +607,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
   for ( size_t i=0; i < num_players; i++ )
   {
     double total=0;
-    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( stat_color( j ).empty() )
         continue;
@@ -645,7 +645,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chd=t:";
     first = true;
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( stat_color( i ).empty() )
         continue;
@@ -662,7 +662,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chco=";
     first = true;
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( stat_color( i ).empty() )
         continue;
@@ -695,7 +695,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += "&amp;";
     s += "chdl=";
     first = true;
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( stat_color( i ).empty() )
         continue;
@@ -720,7 +720,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
     images.push_back( s );
 
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       std::vector<double>& c = data_points[ i ];
       c.erase( c.begin(), c.begin() + num_players );
@@ -1092,7 +1092,7 @@ std::string chart::time_spent( player_t* p )
 
 // chart::gains =============================================================
 
-std::string chart::gains( player_t* p, resource_type_e type )
+std::string chart::gains( player_t* p, resource_e type )
 {
   std::vector<gain_t*> gains_list;
 
@@ -1164,9 +1164,9 @@ std::string chart::gains( player_t* p, resource_type_e type )
 
 std::string chart::scale_factors( player_t* p )
 {
-  std::vector<stat_type_e> scaling_stats;
+  std::vector<stat_e> scaling_stats;
 
-  for ( std::vector<stat_type_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
+  for ( std::vector<stat_e>::const_iterator it = p -> scaling_stats.begin(), end = p -> scaling_stats.end(); it != end; ++it )
   {
     if ( p -> scales_with[ *it ] && p -> scaling.get_stat( *it ) > 0 )
       scaling_stats.push_back( *it );
@@ -1273,7 +1273,7 @@ std::string chart::scaling_dps( player_t* p )
   }
   s += "chd=t:";
   bool first=true;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
     std::vector<double>& pd = p -> dps_plot_data[ i ];
@@ -1304,7 +1304,7 @@ std::string chart::scaling_dps( player_t* p )
   s += "&amp;";
   s += "chdl=";
   first = true;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
@@ -1321,7 +1321,7 @@ std::string chart::scaling_dps( player_t* p )
   }
   s += "chco=";
   first = true;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
     size_t size = p -> dps_plot_data[ i ].size();
@@ -1378,7 +1378,7 @@ std::string chart::reforge_dps( player_t* p )
   {
     int range = p -> sim -> reforge_plot -> reforge_plot_amount;
     int num_points = ( int ) pd.size();
-    std::vector<stat_type_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     reforge_plot_data_t& baseline = pd[ num_points / 2 ][ 2 ];
     double min_delta = baseline.value - ( min_dps - baseline.error / 2 );
     double max_delta = ( max_dps + baseline.error / 2 ) - baseline.value;
@@ -1590,7 +1590,7 @@ std::string chart::reforge_dps( player_t* p )
     }
     s += "\n";
     s += "<input type='hidden' name='chem' value='";
-    std::vector<stat_type_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
+    std::vector<stat_e> stat_indices = p -> sim -> reforge_plot -> reforge_plot_stat_indices;
     s += "y;s=text_outline;d=FF9473,18,l,000000,_,";
     snprintf( buffer, sizeof( buffer ), "%s", util::stat_type_string( stat_indices[ 0 ] ) );
     s += buffer;
@@ -1867,7 +1867,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
   default: break;
   }
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
@@ -1945,7 +1945,7 @@ std::string chart::gear_weights_wowhead( player_t* p )
   std::string    id_string = "";
   std::string value_string = "";
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
@@ -2026,7 +2026,7 @@ std::string chart::gear_weights_wowreforge( player_t* p )
   s += "-";
   s += util::specialization_string( p -> primary_tree() );
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
@@ -2045,8 +2045,8 @@ std::string chart::gear_weights_wowreforge( player_t* p )
 std::string chart::gear_weights_pawn( player_t* p,
 				      bool hit_expertise )
 {
-  std::vector<stat_type_e> stats;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  std::vector<stat_e> stats;
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     stats.push_back( i );
 
   std::string s = std::string();
@@ -2061,9 +2061,9 @@ std::string chart::gear_weights_pawn( player_t* p,
   double maxB = 0;
   double maxY = 0;
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    stat_type_e stat = stats[ i ];
+    stat_e stat = stats[ i ];
 
     double value = p -> scaling.get_stat( stat );
     if ( value == 0 ) continue;

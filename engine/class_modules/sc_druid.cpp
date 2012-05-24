@@ -376,7 +376,7 @@ struct druid_t : public player_t
 
   target_specific_t<druid_td_t> target_data;
   
-  druid_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -435,26 +435,26 @@ struct druid_t : public player_t
   virtual timespan_t available();
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_power();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
-  virtual double    composite_player_heal_multiplier( school_type_e school );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_spell_hit();
-  virtual double    composite_attribute_multiplier( attribute_type_e attr );
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    composite_attribute_multiplier( attribute_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_block_value() { return 0; }
   virtual double    composite_tank_parry() { return 0; }
   virtual double    composite_tank_block() { return 0; }
-  virtual double    composite_tank_crit( school_type_e school );
+  virtual double    composite_tank_crit( school_e school );
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource();
-  virtual role_type_e primary_role();
-  virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
-  virtual heal_info_t assess_heal( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual resource_e primary_resource();
+  virtual role_e primary_role();
+  virtual double    assess_damage( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual heal_info_t assess_heal( double amount, school_e school, dmg_e, result_e, action_t* a );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
   
   virtual druid_td_t* get_target_data( player_t* target )
   {
@@ -535,7 +535,7 @@ struct druid_cat_attack_state_t : public action_state_t
 struct druid_cat_attack_t : public melee_attack_t
 {
   bool             requires_stealth_;
-  position_type_e  requires_position_;
+  position_e  requires_position_;
   bool             requires_combo_points;
   int              adds_combo_points;
   double           base_da_bonus;
@@ -630,7 +630,7 @@ struct druid_cat_attack_t : public melee_attack_t
     return requires_stealth_;
   }
 
-  virtual position_type_e requires_position()
+  virtual position_e requires_position()
   { 
     return requires_position_; 
   }
@@ -1633,7 +1633,7 @@ struct ravage_t : public druid_cat_attack_t
     requires_stealth_  = true;
   }
   
-  virtual position_type_e requires_position()
+  virtual position_e requires_position()
   {
     if ( p() -> buff.t13_4pc_melee -> check() )
       return POSITION_NONE;
@@ -3006,7 +3006,7 @@ struct faerie_fire_t : public druid_spell_t
     }
   }
   
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   {
     if ( p() -> buff.bear_form -> check() )
       return RESOURCE_RAGE;
@@ -3434,7 +3434,7 @@ struct starfire_t : public druid_spell_t
       player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3585,7 +3585,7 @@ struct starsurge_t : public druid_spell_t
       player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3931,7 +3931,7 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -4693,7 +4693,7 @@ void druid_t::reset()
 
 void druid_t::regen( timespan_t periodicity )
 {
-  resource_type_e resource_type = primary_resource();
+  resource_e resource_type = primary_resource();
 
   if ( resource_type == RESOURCE_MANA )
   {
@@ -4795,7 +4795,7 @@ double druid_t::composite_attack_power()
 
 // druid_t::composite_player_multiplier =====================================
 
-double druid_t::composite_player_multiplier( school_type_e school, action_t* a )
+double druid_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4843,7 +4843,7 @@ double druid_t::composite_player_multiplier( school_type_e school, action_t* a )
 
 // druid_t::composite_player_heal_multiplier ================================
    
-double druid_t::composite_player_heal_multiplier( school_type_e school )
+double druid_t::composite_player_heal_multiplier( school_e school )
 {
   double m = player_t::composite_player_heal_multiplier( school );
 
@@ -4869,7 +4869,7 @@ double druid_t::composite_spell_hit()
 
 // druid_t::composite_attribute_multiplier ==================================
 
-double druid_t::composite_attribute_multiplier( attribute_type_e attr )
+double druid_t::composite_attribute_multiplier( attribute_e attr )
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -4901,7 +4901,7 @@ double druid_t::composite_attribute_multiplier( attribute_type_e attr )
 
 // druid_t::matching_gear_multiplier ========================================
 
-double druid_t::matching_gear_multiplier( attribute_type_e attr )
+double druid_t::matching_gear_multiplier( attribute_e attr )
 {
   switch ( primary_tree() )
   {
@@ -4927,7 +4927,7 @@ double druid_t::matching_gear_multiplier( attribute_type_e attr )
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit( school_type_e school )
+double druid_t::composite_tank_crit( school_e school )
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -4976,7 +4976,7 @@ void druid_t::create_options()
 
 // druid_t::create_profile =================================================
 
-bool druid_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
+bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
   player_t::create_profile( profile_str, type, save_html );
 
@@ -5047,7 +5047,7 @@ int druid_t::decode_set( item_t& item )
 
 // druid_t::primary_role ====================================================
 
-role_type_e druid_t::primary_role()
+role_e druid_t::primary_role()
 {
   if ( primary_tree() == DRUID_BALANCE )
   {
@@ -5086,7 +5086,7 @@ role_type_e druid_t::primary_role()
 
 // druid_t::primary_resource ================================================
 
-resource_type_e druid_t::primary_resource()
+resource_e druid_t::primary_resource()
 {
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return RESOURCE_MANA;
@@ -5100,9 +5100,9 @@ resource_type_e druid_t::primary_resource()
 // druid_t::assess_damage ===================================================
 
 double druid_t::assess_damage( double        amount,
-                               school_type_e school,
-                               dmg_type_e    dtype,
-                               result_type_e result,
+                               school_e school,
+                               dmg_e    dtype,
+                               result_e result,
                                action_t*     action )
 {
   // This needs to use unmitigated damage, which amount currently is
@@ -5123,9 +5123,9 @@ double druid_t::assess_damage( double        amount,
 }
 
 player_t::heal_info_t druid_t::assess_heal( double        amount,
-                                            school_type_e school,
-                                            dmg_type_e    dmg_type,
-                                            result_type_e result,
+                                            school_e school,
+                                            dmg_e    dmg_type,
+                                            result_e result,
                                             action_t*     action )
 {
   amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
@@ -5161,7 +5161,7 @@ druid_td_t::druid_td_t( player_t* target, druid_t* source )
 
 player_t* class_modules::create::druid( sim_t*             sim,
 					const std::string& name,
-					race_type_e r )
+					race_e r )
 {
   return sc_create_class<druid_t,SC_DRUID>()( "Druid", sim, name, r );
 }

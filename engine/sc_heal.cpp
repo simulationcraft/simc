@@ -84,8 +84,8 @@ void heal_t::execute()
 
 void heal_t::assess_damage( player_t* t,
                             double heal_amount,
-                            dmg_type_e heal_type,
-                            result_type_e heal_result )
+                            dmg_e heal_type,
+                            result_e heal_result )
 {
   player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
 

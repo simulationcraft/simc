@@ -11,7 +11,7 @@
 
 // gear_stats_t::add_stat ===================================================
 
-void gear_stats_t::add_stat( stat_type_e stat,
+void gear_stats_t::add_stat( stat_e stat,
                              double      value )
 {
   switch ( stat )
@@ -67,7 +67,7 @@ void gear_stats_t::add_stat( stat_type_e stat,
   case STAT_MASTERY_RATING: mastery_rating += value; break;
 
   case STAT_ALL:
-    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     { attribute[ i ] += value; }
     break;
 
@@ -77,7 +77,7 @@ void gear_stats_t::add_stat( stat_type_e stat,
 
 // gear_stats_t::set_stat ===================================================
 
-void gear_stats_t::set_stat( stat_type_e stat,
+void gear_stats_t::set_stat( stat_e stat,
                              double      value )
 {
   switch ( stat )
@@ -133,7 +133,7 @@ void gear_stats_t::set_stat( stat_type_e stat,
   case STAT_MASTERY_RATING: mastery_rating = value; break;
 
   case STAT_ALL:
-    for ( attribute_type_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
     { attribute[ i ] = value; }
     break;
 
@@ -143,7 +143,7 @@ void gear_stats_t::set_stat( stat_type_e stat,
 
 // gear_stats_t::get_stat ===================================================
 
-double gear_stats_t::get_stat( stat_type_e stat )
+double gear_stats_t::get_stat( stat_e stat )
 {
   switch ( stat )
   {
@@ -208,7 +208,7 @@ double gear_stats_t::get_stat( stat_type_e stat )
 
 void gear_stats_t::print( FILE* file )
 {
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = get_stat( i );
 
@@ -223,7 +223,7 @@ void gear_stats_t::print( FILE* file )
 
 // gear_stats_t::stat_mod ===================================================
 
-double gear_stats_t::stat_mod( stat_type_e stat )
+double gear_stats_t::stat_mod( stat_e stat )
 {
   switch ( stat )
   {

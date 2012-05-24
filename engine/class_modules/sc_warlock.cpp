@@ -31,7 +31,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
 }
 
-warlock_t::warlock_t( sim_t* sim, const std::string& name, race_type_e r ) :
+warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
   pets( pets_t() ),
   buffs( buffs_t() ),
@@ -163,7 +163,7 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   {
     if ( p() -> buffs.metamorphosis -> data().ok() && data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879 )
     {
@@ -323,7 +323,7 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  virtual double calculate_tick_damage( result_type_e r, double p, double m )
+  virtual double calculate_tick_damage( result_e r, double p, double m )
   {
     return warlock_spell_t::calculate_tick_damage( r, p, m ) * ( 70 + 5 * damage_level ) / 12;
   }
@@ -969,7 +969,7 @@ struct soul_fire_t : public warlock_spell_t
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   {
     if ( p() -> buffs.metamorphosis -> check() )
       return RESOURCE_DEMONIC_FURY;
@@ -987,9 +987,9 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual result_type_e calculate_result( double crit, unsigned int level )
+  virtual result_e calculate_result( double crit, unsigned int level )
   {
-    result_type_e r = warlock_spell_t::calculate_result( crit, level );
+    result_e r = warlock_spell_t::calculate_result( crit, level );
 
     // Soul fire always crits
     if ( result_is_hit( r ) ) return RESULT_CRIT;
@@ -1030,9 +1030,9 @@ struct chaos_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual result_type_e calculate_result( double crit, unsigned int level )
+  virtual result_e calculate_result( double crit, unsigned int level )
   {
-    result_type_e r = warlock_spell_t::calculate_result( crit, level );
+    result_e r = warlock_spell_t::calculate_result( crit, level );
 
     // Chaos Bolt always crits
     if ( result_is_hit( r ) ) return RESULT_CRIT;
@@ -2370,7 +2370,7 @@ double warlock_t::composite_spell_power_multiplier()
 }
 
 
-double warlock_t::composite_player_multiplier( school_type_e school, action_t* a )
+double warlock_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -2447,7 +2447,7 @@ double warlock_t::composite_mp5()
 }
 
 
-double warlock_t::matching_gear_multiplier( attribute_type_e attr )
+double warlock_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -3014,7 +3014,7 @@ void warlock_t::create_options()
 }
 
 
-bool warlock_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
+bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
 
@@ -3102,7 +3102,7 @@ bool warlock_t::verify_nightfall()
 // PLAYER_T EXTENSIONS
 // ==========================================================================
 
-player_t* class_modules::create::warlock( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::warlock( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<warlock_t,SC_WARLOCK>()( "Warlock", sim, name, r );
 }

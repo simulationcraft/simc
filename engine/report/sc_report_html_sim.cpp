@@ -558,7 +558,7 @@ void print_html_scale_factors( FILE*  file, sim_t* sim )
            "\t\t\t\t<table class=\"sc\">\n" );
 
   std::string buffer;
-  player_type_e prev_type = PLAYER_NONE;
+  player_e prev_type = PLAYER_NONE;
 
   for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
   {
@@ -571,7 +571,7 @@ void print_html_scale_factors( FILE*  file, sim_t* sim )
       fprintf( file,
                "\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n" );
-      for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+      for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
         if ( sim -> scaling -> stats.get_stat( j ) != 0 )
         {
@@ -596,7 +596,7 @@ void print_html_scale_factors( FILE*  file, sim_t* sim )
     fprintf( file,
              "\t\t\t\t\t\t<td class=\"left small\">%s</td>\n",
              p -> name() );
-    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( sim -> scaling -> stats.get_stat( j ) != 0 )
       {

@@ -76,7 +76,7 @@ struct compare_scale_factors
 
   compare_scale_factors( player_t* p ) : player( p ) {}
 
-  bool operator()( const stat_type_e& l, const stat_type_e& r ) const
+  bool operator()( const stat_e& l, const stat_e& r ) const
   {
     return player -> scaling.get_stat( l ) >
            player -> scaling.get_stat( r );
@@ -223,7 +223,7 @@ void scaling_t::analyze_stats()
   if ( num_players == 0 ) return;
 
   remaining_scaling_stats = 0;
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
       remaining_scaling_stats++;
 
@@ -245,7 +245,7 @@ void scaling_t::analyze_stats()
     baseline_sim -> execute();
   }
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( sim -> canceled ) break;
 
@@ -367,7 +367,7 @@ void scaling_t::analyze_stats()
 
 // scaling_t::analyze_ability_stats ===================================================
 
-void scaling_t::analyze_ability_stats( stat_type_e stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
+void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, player_t* ref_p, player_t* delta_p )
 {
   if ( p -> sim -> statistics_level < 3 )
     return;
@@ -471,7 +471,7 @@ void scaling_t::normalize()
 
     if ( divisor == 0 ) continue;
 
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( ! p -> scales_with[ i ] ) continue;
 
@@ -500,7 +500,7 @@ void scaling_t::analyze()
     if ( p -> quiet ) continue;
 
     // Sort scaling results
-    for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( p -> scales_with[ i ] )
       {
@@ -565,7 +565,7 @@ bool scaling_t::has_scale_factors()
 {
   if ( ! calculate_scale_factors ) return false;
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stats.get_stat( i ) != 0 )
     {

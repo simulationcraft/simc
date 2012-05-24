@@ -190,7 +190,7 @@ struct iterator_type<const T>
 
 /*
  * Enumeration types in C++ implicitly convert to int but not from int (e.g.,
- * "for ( attribute_type_e i = ATTR_STRENGTH; i < ATTR_MAX; ++i )" won't compile).
+ * "for ( attribute_e i = ATTR_STRENGTH; i < ATTR_MAX; ++i )" won't compile).
  * This is why so much of the code uses int when it really means an enum type.
  * Providing the kind of operations we want to use for enums lets us tighten up
  * our use of the type system and avoid accidentally passing some other thing
@@ -248,7 +248,7 @@ enum talent_format_e
   TALENT_FORMAT_MAX
 };
 
-enum race_type_e
+enum race_e
 {
   RACE_NONE=0,
   // Target Races
@@ -260,7 +260,7 @@ enum race_type_e
   RACE_MAX
 };
 
-enum player_type_e
+enum player_e
 {
   PLAYER_SPECIAL_SCALE=-1,
   PLAYER_NONE=0,
@@ -270,7 +270,7 @@ enum player_type_e
   PLAYER_MAX
 };
 
-enum pet_type_e
+enum pet_e
 {
   PET_NONE=0,
 
@@ -360,22 +360,22 @@ enum pet_type_e
   PET_MAX
 };
 
-enum dmg_type_e { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
+enum dmg_e { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
 
-enum stats_type_e { STATS_DMG, STATS_HEAL, STATS_ABSORB };
+enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB };
 
-enum dot_behavior_type_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
+enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
-enum attribute_type_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
+enum attribute_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum base_stat_type_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
+enum base_stat_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
                           BASE_STAT_HEALTH, BASE_STAT_MANA,
                           BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                           BASE_STAT_DODGE_PER_AGI,
                           BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
                         };
 
-enum resource_type_e
+enum resource_e
 {
   RESOURCE_NONE = 0,
   RESOURCE_HEALTH,
@@ -402,7 +402,7 @@ enum resource_type_e
   RESOURCE_MAX
 };
 
-enum result_type_e
+enum result_e
 {
   RESULT_UNKNOWN=-1,
   RESULT_NONE=0,
@@ -420,7 +420,7 @@ enum result_type_e
 #define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
 #define RESULT_ALL_MASK  -1
 
-enum proc_type_e
+enum proc_e
 {
   PROC_NONE=0,
   PROC_DAMAGE,
@@ -439,9 +439,9 @@ enum proc_type_e
   PROC_MAX
 };
 
-enum action_type_e { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
+enum action_e { ACTION_USE=0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
-enum school_type_e
+enum school_e
 {
   SCHOOL_NONE=0,
   SCHOOL_ARCANE,      SCHOOL_FIRE,        SCHOOL_FROST,       SCHOOL_HOLY,        SCHOOL_NATURE,
@@ -484,9 +484,7 @@ const int64_t SCHOOL_MAGIC_MASK  ( ( int64_t( 1 ) << SCHOOL_ARCANE )         |
                                    ( int64_t( 1 ) << SCHOOL_NATURE )         | ( int64_t( 1 ) << SCHOOL_SHADOW ) );
 #define SCHOOL_ALL_MASK    ( int64_t( -1 ) )
 
-#include "dbc/specialization.hpp"
-
-enum weapon_type_e
+enum weapon_e
 {
   WEAPON_NONE=0,
   WEAPON_DAGGER,                                                                                   WEAPON_SMALL,
@@ -496,7 +494,7 @@ enum weapon_type_e
   WEAPON_MAX
 };
 
-enum glyph_type_e
+enum glyph_e
 {
   GLYPH_MAJOR=0,
   GLYPH_MINOR,
@@ -504,7 +502,7 @@ enum glyph_type_e
   GLYPH_MAX
 };
 
-enum slot_type_e   // these enum values match armory settings
+enum slot_e   // these enum values match armory settings
 {
   SLOT_INVALID   = -1,
   SLOT_HEAD      = 0,
@@ -539,7 +537,7 @@ enum slot_type_e   // these enum values match armory settings
 
 typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
 
-enum set_type_e
+enum set_e
 {
   SET_NONE = 0,
   SET_T13_CASTER, SET_T13_2PC_CASTER, SET_T13_4PC_CASTER,
@@ -564,9 +562,9 @@ enum set_type_e
   SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
-//static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_type_e must be structured correctly." );
+//static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
 
-enum gem_type_e
+enum gem_e
 {
   GEM_NONE=0,
   GEM_META, GEM_PRISMATIC,
@@ -576,7 +574,7 @@ enum gem_type_e
   GEM_MAX
 };
 
-enum meta_gem_type_e
+enum meta_gem_e
 {
   META_GEM_NONE=0,
   META_AGILE_SHADOWSPIRIT,
@@ -639,7 +637,7 @@ enum meta_gem_type_e
   META_GEM_MAX
 };
 
-enum stat_type_e
+enum stat_e
 {
   STAT_NONE=0,
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
@@ -656,7 +654,7 @@ enum stat_type_e
   STAT_MAX
 };
 #define check(x) static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \
-                                "stat_type_e and attribute_type_e must be kept in sync" )
+                                "stat_e and attribute_e must be kept in sync" )
 check( STRENGTH );
 check( AGILITY );
 check( STAMINA );
@@ -664,13 +662,13 @@ check( INTELLECT );
 check( SPIRIT );
 #undef check
 
-inline stat_type_e stat_from_attr( attribute_type_e a )
+inline stat_e stat_from_attr( attribute_e a )
 {
   // Assumes that ATTR_X == STAT_X
-  return static_cast<stat_type_e>( a );
+  return static_cast<stat_e>( a );
 }
 
-enum elixir_type_e
+enum elixir_e
 {
   ELIXIR_NONE=0,
   ELIXIR_ADEPT,
@@ -692,7 +690,7 @@ enum elixir_type_e
   ELIXIR_MAX
 };
 
-enum flask_type_e
+enum flask_e
 {
   FLASK_NONE=0,
   // cataclysm
@@ -710,7 +708,7 @@ enum flask_type_e
   FLASK_MAX
 };
 
-enum food_type_e
+enum food_e
 {
   FOOD_NONE=0,
   FOOD_BAKED_ROCKFISH,
@@ -736,9 +734,9 @@ enum food_type_e
   FOOD_MAX
 };
 
-enum position_type_e { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED_FRONT, POSITION_RANGED_BACK, POSITION_MAX };
+enum position_e { POSITION_NONE=0, POSITION_FRONT, POSITION_BACK, POSITION_RANGED_FRONT, POSITION_RANGED_BACK, POSITION_MAX };
 
-enum profession_type_e
+enum profession_e
 {
   PROFESSION_NONE=0,
   PROF_ALCHEMY,
@@ -755,9 +753,9 @@ enum profession_type_e
   PROFESSION_MAX
 };
 
-enum role_type_e { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DPS, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
+enum role_e { ROLE_NONE=0, ROLE_ATTACK, ROLE_SPELL, ROLE_HYBRID, ROLE_DPS, ROLE_TANK, ROLE_HEAL, ROLE_MAX };
 
-enum rng_type_e
+enum rng_e
 {
   // Specifies the general class of RNG desired
   RNG_DEFAULT=0,     // Do not care/know where it will be used
@@ -770,7 +768,7 @@ enum rng_type_e
   RNG_MAX
 };
 
-enum save_type_e
+enum save_e
 {
   // Specifies the type of profile data to be saved
   SAVE_ALL=0,
@@ -780,7 +778,7 @@ enum save_type_e
   SAVE_MAX
 };
 
-enum format_type_e
+enum format_e
 {
   FORMAT_NONE=0,
   FORMAT_CHAR_NAME,
@@ -796,7 +794,7 @@ enum format_type_e
 #define NUM_SPELL_FLAGS (10)
 #endif
 
-enum power_type_e
+enum power_e
 {
   POWER_HEALTH        = -2,
   POWER_MANA          = 0,
@@ -821,7 +819,7 @@ enum power_type_e
   POWER_OFFSET        = 2,
 };
 
-enum rating_type_e
+enum rating_e
 {
   RATING_DODGE = 0,
   RATING_PARRY,
@@ -860,7 +858,7 @@ enum snapshot_state_e
   STATE_USER_4        = 0x004000,
 };
 
-enum ready_type_e
+enum ready_e
 { READY_POLL=0, READY_TRIGGER=1 };
 
 // Generic programming tools ================================================
@@ -1354,7 +1352,7 @@ struct stat_data_t
 
 // Options ==================================================================
 
-enum option_type_e
+enum option_e
 {
   OPT_NONE=0,
   OPT_STRING,     // std::string*
@@ -1377,14 +1375,14 @@ typedef bool ( *option_function_t )( sim_t* sim, const std::string& name, const 
 struct option_t
 {
   const char* name;
-  option_type_e type;
+  option_e type;
   void* address;
 
   void print( FILE* );
   void save ( FILE* );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
-  static void add( std::vector<option_t>&, const char* name, option_type_e type, void* address );
+  static void add( std::vector<option_t>&, const char* name, option_e type, void* address );
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
   static bool parse( sim_t*, std::vector<option_t>&, const std::string& name, const std::string& value );
   static bool parse( sim_t*, const char* context, std::vector<option_t>&, const std::string& options_str );
@@ -1437,87 +1435,87 @@ namespace util {
   double ability_rank( int player_level, double ability_value, int ability_level, ... );
   int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
 
-  const char* attribute_type_string     ( attribute_type_e type );
-  const char* dmg_type_string           ( dmg_type_e type );
-  const char* dot_behavior_type_string  ( dot_behavior_type_e t );
-  const char* elixir_type_string        ( elixir_type_e type );
-  const char* flask_type_string         ( flask_type_e type );
-  const char* food_type_string          ( food_type_e type );
-  const char* gem_type_string           ( gem_type_e type );
-  const char* meta_gem_type_string      ( meta_gem_type_e type );
-  const char* player_type_string        ( player_type_e );
-  const char* pet_type_string           ( pet_type_e type );
-  const char* position_type_string      ( position_type_e );
-  const char* profession_type_string    ( profession_type_e );
-  const char* race_type_string          ( race_type_e );
-  const char* role_type_string          ( role_type_e );
-  const char* resource_type_string      ( resource_type_e );
-  const char* result_type_string        ( result_type_e type );
-  uint32_t    school_type_component     ( school_type_e s_type, school_type_e c_type );
-  const char* school_type_string        ( school_type_e type );
-  const char* armor_type_string         ( player_type_e ptype, slot_type_e );
-  const char* set_bonus_string          ( set_type_e type );
+  const char* attribute_type_string     ( attribute_e type );
+  const char* dmg_type_string           ( dmg_e type );
+  const char* dot_behavior_type_string  ( dot_behavior_e t );
+  const char* elixir_type_string        ( elixir_e type );
+  const char* flask_type_string         ( flask_e type );
+  const char* food_type_string          ( food_e type );
+  const char* gem_type_string           ( gem_e type );
+  const char* meta_gem_type_string      ( meta_gem_e type );
+  const char* player_type_string        ( player_e );
+  const char* pet_type_string           ( pet_e type );
+  const char* position_type_string      ( position_e );
+  const char* profession_type_string    ( profession_e );
+  const char* race_type_string          ( race_e );
+  const char* role_type_string          ( role_e );
+  const char* resource_type_string      ( resource_e );
+  const char* result_type_string        ( result_e type );
+  uint32_t    school_type_component     ( school_e s_type, school_e c_type );
+  const char* school_type_string        ( school_e type );
+  const char* armor_type_string         ( player_e ptype, slot_e );
+  const char* set_bonus_string          ( set_e type );
 
-  const char* slot_type_string          ( slot_type_e type );
-  const char* stat_type_string          ( stat_type_e type );
-  const char* stat_type_abbrev          ( stat_type_e type );
-  const char* stat_type_wowhead         ( stat_type_e type );
-  specialization_e translate_spec_str   ( player_type_e ptype, const std::string& spec_str );
+  const char* slot_type_string          ( slot_e type );
+  const char* stat_type_string          ( stat_e type );
+  const char* stat_type_abbrev          ( stat_e type );
+  const char* stat_type_wowhead         ( stat_e type );
+  specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
   std::string specialization_string     ( specialization_e spec );
-  resource_type_e translate_power_type  ( power_type_e );
-  const char* weapon_type_string        ( weapon_type_e type );
+  resource_e translate_power_type  ( power_e );
+  const char* weapon_type_string        ( weapon_e type );
   const char* weapon_class_string       ( inventory_type class_ );
   const char* weapon_subclass_string    ( item_subclass_weapon subclass );
 
   const char* set_item_type_string      ( int item_set );
   const char* item_quality_string       ( int item_quality );
 
-  attribute_type_e parse_attribute_type ( const std::string& name );
-  dmg_type_e parse_dmg_type             ( const std::string& name );
-  elixir_type_e parse_elixir_type       ( const std::string& name );
-  flask_type_e parse_flask_type         ( const std::string& name );
-  food_type_e parse_food_type           ( const std::string& name );
-  gem_type_e parse_gem_type             ( const std::string& name );
-  meta_gem_type_e parse_meta_gem_type   ( const std::string& name );
-  player_type_e parse_player_type       ( const std::string& name );
-  pet_type_e parse_pet_type             ( const std::string& name );
-  profession_type_e parse_profession_type( const std::string& name );
-  position_type_e parse_position_type   ( const std::string& name );
-  race_type_e parse_race_type           ( const std::string& name );
-  role_type_e parse_role_type           ( const std::string& name );
-  resource_type_e parse_resource_type   ( const std::string& name );
-  result_type_e parse_result_type       ( const std::string& name );
-  school_type_e parse_school_type       ( const std::string& name );
-  set_type_e parse_set_bonus            ( const std::string& name );
-  slot_type_e parse_slot_type           ( const std::string& name );
-  stat_type_e parse_stat_type           ( const std::string& name );
-  stat_type_e parse_reforge_type        ( const std::string& name );
+  attribute_e parse_attribute_type ( const std::string& name );
+  dmg_e parse_dmg_type             ( const std::string& name );
+  elixir_e parse_elixir_type       ( const std::string& name );
+  flask_e parse_flask_type         ( const std::string& name );
+  food_e parse_food_type           ( const std::string& name );
+  gem_e parse_gem_type             ( const std::string& name );
+  meta_gem_e parse_meta_gem_type   ( const std::string& name );
+  player_e parse_player_type       ( const std::string& name );
+  pet_e parse_pet_type             ( const std::string& name );
+  profession_e parse_profession_type( const std::string& name );
+  position_e parse_position_type   ( const std::string& name );
+  race_e parse_race_type           ( const std::string& name );
+  role_e parse_role_type           ( const std::string& name );
+  resource_e parse_resource_type   ( const std::string& name );
+  result_e parse_result_type       ( const std::string& name );
+  school_e parse_school_type       ( const std::string& name );
+  set_e parse_set_bonus            ( const std::string& name );
+  slot_e parse_slot_type           ( const std::string& name );
+  stat_e parse_stat_type           ( const std::string& name );
+  stat_e parse_reforge_type        ( const std::string& name );
 
-  weapon_type_e parse_weapon_type       ( const std::string& name );
+  weapon_e parse_weapon_type       ( const std::string& name );
 
   int parse_item_quality                ( const std::string& quality );
 
   bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
 
-  int class_id_mask( player_type_e type );
-  int class_id( player_type_e type );
-  unsigned race_mask( race_type_e type );
-  unsigned race_id( race_type_e type );
-  unsigned pet_mask( pet_type_e type );
-  unsigned pet_id( pet_type_e type );
-  player_type_e pet_class_type( pet_type_e type );
+  int class_id_mask( player_e type );
+  int class_id( player_e type );
+  unsigned race_mask( race_e type );
+  unsigned race_id( race_e type );
+  unsigned pet_mask( pet_e type );
+  unsigned pet_id( pet_e type );
+  player_e pet_class_type( pet_e type );
 
-  const char* class_id_string( player_type_e type );
-  player_type_e translate_class_id( int cid );
-  player_type_e translate_class_str( std::string& s );
-  race_type_e translate_race_id( int rid );
-  stat_type_e translate_item_mod( item_mod_type stat_mod );
-  slot_type_e translate_invtype( inventory_type inv_type );
-  weapon_type_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
-  profession_type_e translate_profession_id( int skill_id );
-  gem_type_e translate_socket_color( item_socket_color );
+  const char* class_id_string( player_e type );
+  player_e translate_class_id( int cid );
+  player_e translate_class_str( std::string& s );
+  race_e translate_race_id( int rid );
+  stat_e translate_item_mod( item_mod_type stat_mod );
+  slot_e translate_invtype( inventory_type inv_type );
+  weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
+  profession_e translate_profession_id( int skill_id );
+  gem_e translate_socket_color( item_socket_color );
 
-  bool socket_gem_match( gem_type_e socket, gem_type_e gem );
+  bool socket_gem_match( gem_e socket, gem_e gem );
 
   size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
   int string_split( const std::string& str, const char* delim, const char* format, ... );
@@ -1561,7 +1559,7 @@ namespace util {
   std::string& tolower( std::string& str );
   std::string encode_html( const std::string& );
 
-  void tokenize( std::string& name, format_type_e = FORMAT_NONE );
+  void tokenize( std::string& name, format_e = FORMAT_NONE );
   std::string inverse_tokenize( const std::string& name );
 
   bool is_number( const std::string& s );
@@ -1660,11 +1658,11 @@ struct gear_stats_t : public internal::gear_stats_t
   typedef internal::gear_stats_t base_t;
   gear_stats_t() : base_t( base_t() ) {}
 
-  void   add_stat( stat_type_e stat, double value );
-  void   set_stat( stat_type_e stat, double value );
-  double get_stat( stat_type_e stat );
+  void   add_stat( stat_e stat, double value );
+  void   set_stat( stat_e stat, double value );
+  double get_stat( stat_e stat );
   void   print( FILE* );
-  static double stat_mod( stat_type_e stat );
+  static double stat_mod( stat_e stat );
 };
 
 // Statistical Sample Data
@@ -1791,7 +1789,7 @@ struct stat_buff_creator_t
 private:
   buff_creator_t bc;
   double _amount;
-  stat_type_e _stat;
+  stat_e _stat;
   friend struct stat_buff_t;
 public:
   stat_buff_creator_t( buff_creator_t a ) :
@@ -1799,7 +1797,7 @@ public:
 
   stat_buff_creator_t& amount( double a )
   { _amount=a; return *this; }
-  stat_buff_creator_t& stat( stat_type_e s )
+  stat_buff_creator_t& stat( stat_e s )
   { _stat=s; return *this; }
 
   operator stat_buff_t* () const;
@@ -1826,7 +1824,7 @@ struct cost_reduction_buff_creator_t
 private:
   buff_creator_t bc;
   double _amount;
-  school_type_e _school;
+  school_e _school;
   bool _refreshes;
   friend struct cost_reduction_buff_t;
 public:
@@ -1836,7 +1834,7 @@ public:
 
   cost_reduction_buff_creator_t& amount( double a )
   { _amount=a; return *this; }
-  cost_reduction_buff_creator_t& school( school_type_e s )
+  cost_reduction_buff_creator_t& school( school_e s )
   { _school=s; return *this; }
   cost_reduction_buff_creator_t& refreshes( bool r )
   { _refreshes=r; return *this; }
@@ -1939,7 +1937,7 @@ inline buff_creator_t::operator buff_t* () const
 struct stat_buff_t : public buff_t
 {
   double amount;
-  stat_type_e stat;
+  stat_e stat;
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -1970,7 +1968,7 @@ inline absorb_buff_creator_t::operator absorb_buff_t* () const
 struct cost_reduction_buff_t : public buff_t
 {
   double amount;
-  school_type_e school;
+  school_e school;
   bool refreshes;
 
 private:
@@ -2000,7 +1998,7 @@ typedef struct buff_t aura_t;
 
 // Expressions ==============================================================
 
-enum token_type_e
+enum token_e
 {
   TOK_UNKNOWN=0,
   TOK_PLUS,
@@ -2032,17 +2030,17 @@ enum token_type_e
 
 struct expr_token_t
 {
-  token_type_e type;
+  token_e type;
   std::string label;
 };
 
 struct expression_t
 {
-  static int precedence( token_type_e );
-  static bool is_unary( token_type_e );
-  static bool is_binary( token_type_e );
-  static token_type_e next_token( action_t* action, const std::string& expr_str, int& current_index,
-                                  std::string& token_str, token_type_e prev_token );
+  static int precedence( token_e );
+  static bool is_unary( token_e );
+  static bool is_binary( token_e );
+  static token_e next_token( action_t* action, const std::string& expr_str, int& current_index,
+                                  std::string& token_str, token_e prev_token );
   static std::vector<expr_token_t> parse_tokens( action_t* action, const std::string& expr_str );
   static void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
   static void convert_to_unary( std::vector<expr_token_t>& tokens );
@@ -2118,7 +2116,7 @@ inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
 
 // Spell query expression types =============================================
 
-enum expr_data_type_e
+enum expr_data_e
 {
   DATA_SPELL = 0,
   DATA_TALENT,
@@ -2136,20 +2134,20 @@ struct spell_data_expr_t
 {
   std::string name_str;
   sim_t* sim;
-  expr_data_type_e data_type;
+  expr_data_e data_type;
   bool effect_query;
 
-  int result_type_e;
+  int result_e;
   double result_num;
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_type_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN ) : name_str( n ), sim( sim ), data_type( dt ), effect_query( eq ), result_type_e( t ), result_num( 0 ), result_spell_list() {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type_e = TOK_NUM; result_num = constant_value; }
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type_e = TOK_STR; result_str = constant_value; }
-  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_type_e = TOK_SPELL_LIST; result_spell_list = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, int t=TOK_UNKNOWN ) : name_str( n ), sim( sim ), data_type( dt ), effect_query( eq ), result_e( t ), result_num( 0 ), result_spell_list() {}
+  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_NUM; result_num = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::string& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_STR; result_str = constant_value; }
+  spell_data_expr_t( sim_t* sim, const std::string& n, std::vector<uint32_t>& constant_value ) : name_str( n ), sim( sim ), data_type( DATA_SPELL ) { result_e = TOK_SPELL_LIST; result_spell_list = constant_value; }
   virtual ~spell_data_expr_t() {}
-  virtual int evaluate() { return result_type_e; }
+  virtual int evaluate() { return result_e; }
   const char* name() { return name_str.c_str(); }
 
   virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
@@ -2333,7 +2331,7 @@ struct sim_t : private thread_t
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug;
   int         save_profiles, default_actions;
-  stat_type_e normalized_stat;
+  stat_e normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str,save_suffix_str;
   int         save_talent_str;
   talent_format_e talent_format;
@@ -2568,7 +2566,7 @@ struct scaling_t
   sim_t* delta_sim;
   sim_t* ref_sim2;
   sim_t* delta_sim2;
-  stat_type_e scale_stat;
+  stat_e scale_stat;
   double scale_value;
   double scale_delta_multiplier;
   int    calculate_scale_factors;
@@ -2580,7 +2578,7 @@ struct scaling_t
   int    smooth_scale_factors;
   int    debug_scale_factors;
   std::string scale_only_str;
-  stat_type_e current_scaling_stat;
+  stat_e current_scaling_stat;
   int num_scaling_stats, remaining_scaling_stats;
   double    scale_haste_iterations, scale_expertise_iterations, scale_crit_iterations, scale_hit_iterations, scale_mastery_iterations;
   std::string scale_over;
@@ -2594,7 +2592,7 @@ struct scaling_t
   void init_deltas();
   void analyze();
   void analyze_stats();
-  void analyze_ability_stats( stat_type_e, double, player_t*, player_t*, player_t* );
+  void analyze_ability_stats( stat_e, double, player_t*, player_t*, player_t* );
   void analyze_lag();
   void normalize();
   void derive();
@@ -2615,7 +2613,7 @@ struct plot_t
   int    dps_plot_points;
   int    dps_plot_iterations;
   int    dps_plot_debug;
-  stat_type_e current_plot_stat;
+  stat_e current_plot_stat;
   int    num_plot_stats, remaining_plot_stats, remaining_plot_points;
   bool   dps_plot_positive;
 
@@ -2636,7 +2634,7 @@ struct reforge_plot_t
   std::string reforge_plot_stat_str;
   std::string reforge_plot_output_file_str;
   FILE* reforge_plot_output_file;
-  std::vector<stat_type_e> reforge_plot_stat_indices;
+  std::vector<stat_e> reforge_plot_stat_indices;
   int    reforge_plot_step;
   int    reforge_plot_amount;
   int    reforge_plot_iterations;
@@ -2647,7 +2645,7 @@ struct reforge_plot_t
   reforge_plot_t( sim_t* s );
 
   void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
-                           const std::vector<stat_type_e> &stat_indices,
+                           const std::vector<stat_e> &stat_indices,
                            int cur_mod_stat,
                            std::vector<int> cur_stat_mods );
   void analyze();
@@ -2730,33 +2728,33 @@ struct rating_t : public internal::rating_t
   typedef internal::rating_t base_t;
   rating_t() : base_t( base_t() ) {}
 
-  void init( sim_t*, dbc_t& pData, int level, player_type_e type );
+  void init( sim_t*, dbc_t& pData, int level, player_e type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
-  static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_type_e class_type, race_type_e race, base_stat_type_e_e stat_type_e );
+  static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_e class_type, race_e race, base_stat_e_e stat_e );
 };
 
 // Weapon ===================================================================
 
 struct weapon_t
 {
-  weapon_type_e type;
-  school_type_e school;
+  weapon_e type;
+  school_e school;
   double damage, dps;
   double min_dmg, max_dmg;
   timespan_t swing_time;
-  slot_type_e slot;
+  slot_e slot;
   int    buff_type;
   double buff_value;
   double bonus_dmg;
 
-  weapon_type_e group();
+  weapon_e group();
   timespan_t normalized_weapon_speed();
   double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero() );
 
-  weapon_t( weapon_type_e t=WEAPON_NONE,
+  weapon_t( weapon_e t=WEAPON_NONE,
             double d=0,
             timespan_t st=timespan_t::from_seconds( 2.0 ),
-            school_type_e s=SCHOOL_PHYSICAL ) :
+            school_e s=SCHOOL_PHYSICAL ) :
     type( t ), school( s ), damage( d ), min_dmg( d ), max_dmg( d ),
     swing_time( st ), slot( SLOT_INVALID ), buff_type( 0 ), buff_value( 0 ),
     bonus_dmg( 0 ) {}
@@ -2768,11 +2766,11 @@ struct item_t
 {
   sim_t* sim;
   player_t* player;
-  slot_type_e slot;
+  slot_e slot;
   int quality, ilevel;
   bool unique, unique_enchant, unique_addon, is_heroic, is_lfr, is_ptr, is_matching_type, is_reforged;
-  stat_type_e reforged_from;
-  stat_type_e reforged_to;
+  stat_e reforged_from;
+  stat_e reforged_to;
 
   // Option Data
   std::string option_name_str;
@@ -2833,10 +2831,10 @@ struct item_t
   struct special_effect_t
   {
     std::string name_str, trigger_str;
-    proc_type_e trigger_type;
+    proc_e trigger_type;
     int64_t trigger_mask;
-    stat_type_e stat;
-    school_type_e school;
+    stat_e stat;
+    school_e school;
     int max_stacks;
     double stat_amount, discharge_amount, discharge_scaling;
     double proc_chance;
@@ -2846,8 +2844,8 @@ struct item_t
     bool no_debuffs;
     bool no_refresh;
     bool chance_to_discharge;
-    unsigned int override_result_type_es_mask;
-    unsigned result_type_es_mask;
+    unsigned int override_result_es_mask;
+    unsigned result_es_mask;
     bool reverse;
     int aoe;
     special_effect_t() :
@@ -2855,7 +2853,7 @@ struct item_t
       max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
       proc_chance( 0 ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
       tick( timespan_t::zero() ), cost_reduction( false ), no_player_benefits( false ), no_debuffs( false ),
-      no_refresh( false ), chance_to_discharge( false ), override_result_type_es_mask( 0 ), result_type_es_mask( 0 ), reverse( false ), aoe( 0 ) {}
+      no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ), result_es_mask( 0 ), reverse( false ), aoe( 0 ) {}
     bool active() { return stat || school; }
   } use, equip, enchant, addon;
 
@@ -2898,7 +2896,7 @@ struct item_t
                              const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static gem_type_e parse_gem( item_t&            item,
+  static gem_e parse_gem( item_t&            item,
                                const std::string& gem_id );
 };
 
@@ -2915,7 +2913,7 @@ struct item_database_t
                                       const std::string gem_ids[ 3 ] );
   static bool     download_item(      item_t& item, const std::string& item_id );
   static bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static gem_type_e parse_gem(        item_t& item, const std::string& gem_id );
+  static gem_e parse_gem(        item_t& item, const std::string& gem_id );
   static bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
   static int      random_suffix_type( item_t& item );
@@ -2969,8 +2967,8 @@ private:
 public:
   set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
 
-  bool              has_set_bonus( set_type_e s );
-  const spell_data_t* set( set_type_e s );
+  bool              has_set_bonus( set_e s );
+  const spell_data_t* set( set_e s );
 };
 
 // Player ===================================================================
@@ -2979,24 +2977,24 @@ struct player_t : public noncopyable
 {
   // static values
   sim_t* sim;
-  player_type_e type;
+  player_e type;
   std::string name_str;
 
   player_t*   next;
   int         index;
   // (static) attributes - things which should not change during combat
-  race_type_e       race;
-  role_type_e       role;
+  race_e       race;
+  role_e       role;
   int               level;
   int               party, member;
-  ready_type_e      ready_type;
+  ready_e      ready_type;
   specialization_e  spec;
   bool              bugs, scale_player, has_dtr;
   double      dtr_proc_chance;
 
   // dynamic attributes - things which change during combat
   player_t*   target;
-  position_type_e position;
+  position_e position;
   int         active_pets;
   int         initialized;
   bool        potion_used;
@@ -3122,10 +3120,10 @@ struct player_t : public noncopyable
       range::fill( infinite_resource, 0 );
     }
 
-    double pct( resource_type_e rt )
+    double pct( resource_e rt )
     { return current[ rt ] / max[ rt ]; }
 
-    bool is_infinite( resource_type_e rt )
+    bool is_infinite( resource_e rt )
     { return infinite_resource[ rt ] != 0; }
   } resources;
 
@@ -3173,8 +3171,8 @@ struct player_t : public noncopyable
 
     void reset();
 
-    void register_resource_gain_callback( resource_type_e,     action_callback_t* );
-    void register_resource_loss_callback( resource_type_e,     action_callback_t* );
+    void register_resource_gain_callback( resource_e,     action_callback_t* );
+    void register_resource_loss_callback( resource_e,     action_callback_t* );
     void register_attack_callback       ( int64_t result_mask, action_callback_t* );
     void register_spell_callback        ( int64_t result_mask, action_callback_t* );
     void register_tick_callback         ( int64_t result_mask, action_callback_t* );
@@ -3241,10 +3239,10 @@ struct player_t : public noncopyable
 
   struct resource_timeline_t
   {
-    resource_type_e type;
+    resource_e type;
     std::vector<double> timeline;
 
-    resource_timeline_t( resource_type_e t = RESOURCE_NONE ) : type( t ) {}
+    resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
   };
 
   // Health/primary/secondary makes 3 resources, does any class/spec need more?
@@ -3304,7 +3302,7 @@ struct player_t : public noncopyable
   gear_stats_t stats, initial_stats, gear, enchant, temporary;
   set_bonus_t set_bonus;
   set_bonus_array_t* sets;
-  meta_gem_type_e meta_gem;
+  meta_gem_e meta_gem;
   bool matching_gear;
 
   // Scale Factors
@@ -3316,7 +3314,7 @@ struct player_t : public noncopyable
   double       scaling_lag, scaling_lag_error;
   std::array<bool,STAT_MAX> scales_with;
   std::array<double,STAT_MAX> over_cap;
-  std::vector<stat_type_e> scaling_stats; // sorting vector
+  std::vector<stat_e> scaling_stats; // sorting vector
 
   // Movement & Position
   double base_movement_speed;
@@ -3437,7 +3435,7 @@ struct player_t : public noncopyable
 
   std::vector<void*> target_specifics;
 
-  player_t( sim_t* sim, player_type_e type, const std::string& name, race_type_e race_type_e = RACE_NONE );
+  player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
 
   virtual ~player_t();
 
@@ -3495,7 +3493,7 @@ struct player_t : public noncopyable
   virtual double composite_attack_hit();
 
   virtual double composite_spell_haste();
-  virtual double composite_spell_power( school_type_e school );
+  virtual double composite_spell_power( school_e school );
   virtual double composite_spell_crit();
   virtual double composite_spell_hit();
   virtual double composite_mp5();
@@ -3503,14 +3501,14 @@ struct player_t : public noncopyable
 
   virtual double composite_armor()                ;
   virtual double composite_armor_multiplier()     ;
-  virtual double composite_spell_resistance( school_type_e school );
-  virtual double composite_tank_miss( school_type_e school );
+  virtual double composite_spell_resistance( school_e school );
+  virtual double composite_tank_miss( school_e school );
   virtual double composite_tank_dodge()           ;
   virtual double composite_tank_parry()           ;
   virtual double composite_tank_block()           ;
   virtual double composite_tank_block_reduction() ;
   virtual double composite_tank_crit_block()           ;
-  virtual double composite_tank_crit( school_type_e school );
+  virtual double composite_tank_crit( school_e school );
 
   virtual double diminished_dodge()            ;
   virtual double diminished_parry()            ;
@@ -3518,24 +3516,24 @@ struct player_t : public noncopyable
   virtual double composite_attack_power_multiplier();
   virtual double composite_spell_power_multiplier();
 
-  virtual double matching_gear_multiplier( attribute_type_e /* attr */ ) { return 0; }
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) { return 0; }
 
-  virtual double composite_player_multiplier   ( school_type_e, action_t* a = NULL );
-  virtual double composite_player_dd_multiplier( school_type_e, action_t* /* a */ = NULL ) { return 1; }
-  virtual double composite_player_td_multiplier( school_type_e, action_t* a = NULL );
+  virtual double composite_player_multiplier   ( school_e, action_t* a = NULL );
+  virtual double composite_player_dd_multiplier( school_e, action_t* /* a */ = NULL ) { return 1; }
+  virtual double composite_player_td_multiplier( school_e, action_t* a = NULL );
 
-  virtual double composite_player_heal_multiplier( school_type_e school );
-  virtual double composite_player_dh_multiplier( school_type_e /* school */ ) { return 1; }
-  virtual double composite_player_th_multiplier( school_type_e school );
+  virtual double composite_player_heal_multiplier( school_e school );
+  virtual double composite_player_dh_multiplier( school_e /* school */ ) { return 1; }
+  virtual double composite_player_th_multiplier( school_e school );
 
-  virtual double composite_player_absorb_multiplier( school_type_e school );
+  virtual double composite_player_absorb_multiplier( school_e school );
 
   virtual double composite_movement_speed();
 
-  virtual double composite_attribute( attribute_type_e attr );
-  virtual double composite_attribute_multiplier( attribute_type_e attr );
+  virtual double composite_attribute( attribute_e attr );
+  virtual double composite_attribute_multiplier( attribute_e attr );
 
-  double get_attribute( attribute_type_e a );
+  double get_attribute( attribute_e a );
   double strength() { return get_attribute( ATTR_STRENGTH ); }
   double agility() { return get_attribute( ATTR_AGILITY ); }
   double stamina() { return get_attribute( ATTR_STAMINA ); }
@@ -3557,32 +3555,32 @@ struct player_t : public noncopyable
   virtual std::string print_action_map( int iterations, int precision );
 
   virtual void   regen( timespan_t periodicity=timespan_t::from_seconds( 0.25 ) );
-  virtual double resource_gain( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
-  virtual double resource_loss( resource_type_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
-  virtual void   recalculate_resource_max( resource_type_e resource_type );
-  virtual bool   resource_available( resource_type_e resource_type, double cost );
+  virtual double resource_gain( resource_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
+  virtual double resource_loss( resource_e resource_type, double amount, gain_t* g=0, action_t* a=0 );
+  virtual void   recalculate_resource_max( resource_e resource_type );
+  virtual bool   resource_available( resource_e resource_type, double cost );
   void collect_resource_timeline_information();
-  virtual resource_type_e primary_resource() { return RESOURCE_NONE; }
-  virtual role_type_e   primary_role();
+  virtual resource_e primary_resource() { return RESOURCE_NONE; }
+  virtual role_e   primary_role();
   specialization_e primary_tree() { return spec; }
   virtual const char* primary_tree_name();
-  virtual stat_type_e normalize_by();
+  virtual stat_e normalize_by();
 
   virtual double health_percentage();
   virtual timespan_t time_to_die();
   timespan_t total_reaction_time();
 
-  virtual void stat_gain( stat_type_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
-  virtual void stat_loss( stat_type_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
+  virtual void stat_gain( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
+  virtual void stat_loss( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
 
-  virtual void cost_reduction_gain( school_type_e school, double amount, gain_t* g=0, action_t* a=0 );
-  virtual void cost_reduction_loss( school_type_e school, double amount, action_t* a=0 );
+  virtual void cost_reduction_gain( school_e school, double amount, gain_t* g=0, action_t* a=0 );
+  virtual void cost_reduction_loss( school_e school, double amount, action_t* a=0 );
 
-  virtual double assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a=0 );
-  virtual double target_mitigation( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a=0 );
+  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual double target_mitigation( double amount, school_e, dmg_e, result_e, action_t* a=0 );
 
   struct heal_info_t { double actual, amount; };
-  virtual heal_info_t assess_heal( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a=0 );
+  virtual heal_info_t assess_heal( double amount, school_e, dmg_e, result_e, action_t* a=0 );
 
   virtual void  summon_pet( const std::string& name, timespan_t duration=timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
@@ -3603,7 +3601,7 @@ struct player_t : public noncopyable
   void replace_spells();
 
   const spell_data_t* find_glyph( const std::string& name );
-  const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_type_e s = RACE_NONE );
+  const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE );
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE );
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
   const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string() );
@@ -3618,7 +3616,7 @@ struct player_t : public noncopyable
 
   virtual void create_options();
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
-  virtual bool create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
 
 
   // FIXME: Temporary "default" talent choices. (Overridden by each class/spec)
@@ -3643,7 +3641,7 @@ struct player_t : public noncopyable
 
   // Class-Specific Methods
 
-  static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_type_e r = RACE_NONE );
+  static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_e r = RACE_NONE );
   static player_t* create( sim_t* sim, const player_description_t& );
 
   // Raid-wide aura/buff/debuff maintenance
@@ -3689,7 +3687,7 @@ struct player_t : public noncopyable
   virtual void pre_analyze_hook() {}
 
   /* New stuff */
-  virtual double composite_player_vulnerability( school_type_e );
+  virtual double composite_player_vulnerability( school_e );
   virtual double composite_spell_crit_vulnerability();
   virtual double composite_attack_crit_vulnerability();
   virtual double composite_ranged_attack_player_vulnerability();
@@ -3735,14 +3733,14 @@ struct pet_t : public player_t
   double stamina_per_owner;
   double intellect_per_owner;
   bool summoned;
-  pet_type_e pet_type;
+  pet_e pet_type;
   event_t* expiration;
 
 private:
   void init_pet_t_();
 public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_type_e pt, bool guardian=false );
+  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian=false );
 
   // Pets gain their owners' hit rating,
   // Also, heroic presence does not contribute to pet
@@ -3750,9 +3748,9 @@ public:
   virtual double composite_attack_expertise( weapon_t* ) { return owner -> current.attack_hit + owner -> composite_attack_expertise(); }
   virtual double composite_attack_hit() { return owner -> composite_attack_hit(); }
   virtual double composite_spell_hit()  { return owner -> composite_spell_hit(); }
-  virtual double composite_player_multiplier( school_type_e school, action_t* a );
+  virtual double composite_player_multiplier( school_e school, action_t* a );
 
-  virtual double composite_attribute( attribute_type_e attr );
+  virtual double composite_attribute( attribute_e attr );
 
   virtual void init_base();
   virtual void init_talents();
@@ -3761,7 +3759,7 @@ public:
   virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
   virtual bool ooc_buffs() { return false; }
-  virtual double assess_damage( double amount, school_type_e, dmg_type_e, result_type_e, action_t* a=0 );
+  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
   virtual void combat_begin();
 
   virtual const char* name() { return full_name_str.c_str(); }
@@ -3785,7 +3783,7 @@ struct gain_t
     range::fill( overflow, 0.0 );
     range::fill( count, 0.0 );
   }
-  void add( resource_type_e rt, double amount, double overflow_=0 )
+  void add( resource_e rt, double amount, double overflow_=0 )
   { actual[ rt ] += amount; overflow[ rt ] += overflow_; count[ rt ]++; }
   void merge( const gain_t& other )
   {
@@ -3810,8 +3808,8 @@ struct stats_t
   stats_t* parent;
   // We should make school and type const or const-like, and either stricly define when, where and who defines the values,
   // or make sure that it is equal to the value of all it's actions.
-  school_type_e school;
-  stats_type_e type;
+  school_e school;
+  stats_e type;
 
   std::vector<action_t*> action_list;
   gain_t resource_gain;
@@ -3865,8 +3863,8 @@ struct stats_t
   stats_t( const std::string& name, player_t* );
 
   void add_child( stats_t* child );
-  void consume_resource( resource_type_e resource_type, double resource_amount );
-  void add_result( double act_amount, double tot_amount, dmg_type_e dmg_type, result_type_e result );
+  void consume_resource( resource_e resource_type, double resource_amount );
+  void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result );
   void add_tick   ( timespan_t time );
   void add_execute( timespan_t time );
   void combat_begin();
@@ -3882,15 +3880,15 @@ struct action_t
 {
   const spell_data_t* s_data;
   sim_t* sim;
-  action_type_e type;
+  action_e type;
   std::string name_str;
   player_t* player;
   player_t* target;
-  school_type_e school;
+  school_e school;
 
   uint32_t id;
-  result_type_e result;
-  resource_type_e resource_current;
+  result_e result;
+  resource_e resource_current;
   int aoe, pre_combat;
   bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot;
@@ -3899,7 +3897,7 @@ struct action_t
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
   bool stateless;
-  dot_behavior_type_e dot_behavior;
+  dot_behavior_e dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
@@ -3959,7 +3957,7 @@ struct action_t
   target_specific_t<dot_t> target_specific_dot;
   std::string action_list;
 
-  action_t( action_type_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
@@ -3978,26 +3976,26 @@ struct action_t
   virtual timespan_t travel_time();
   virtual void   player_buff();
   virtual void   player_tick() {}
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
   virtual void   snapshot();
-  virtual result_type_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual bool   result_is_hit ( result_type_e = RESULT_UNKNOWN );
-  virtual bool   result_is_miss( result_type_e = RESULT_UNKNOWN );
-  virtual double calculate_direct_damage( result_type_e, int chain_target, unsigned target_level,
+  virtual result_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
+  virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
+  virtual double calculate_direct_damage( result_e, int chain_target, unsigned target_level,
                                           double attack_power,  double spell_power, double multiplier );
-  virtual double calculate_tick_damage( result_type_e, double power, double multiplier );
+  virtual double calculate_tick_damage( result_e, double power, double multiplier );
   virtual double calculate_weapon_damage( double attack_power );
   virtual double armor();
   virtual double resistance();
   virtual void   consume_resource();
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   { return resource_current; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   impact( player_t*, result_type_e result, double dmg );
-  virtual void   assess_damage( player_t* t, double amount, dmg_type_e, result_type_e impact_result );
-  virtual void   additional_damage( player_t* t, double amount, dmg_type_e, result_type_e impact_result );
+  virtual void   impact( player_t*, result_e result, double dmg );
+  virtual void   assess_damage( player_t* t, double amount, dmg_e, result_e impact_result );
+  virtual void   additional_damage( player_t* t, double amount, dmg_e, result_e impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( timespan_t time );
@@ -4010,7 +4008,7 @@ struct action_t
   virtual void   interrupt_action();
   void   check_talent( int talent_rank );
   void   check_spec( specialization_e );
-  void   check_race( race_type_e );
+  void   check_race( race_e );
   void   check_spell( const spell_data_t* );
   const char* name() { return name_str.c_str(); }
 
@@ -4111,7 +4109,7 @@ struct action_state_t
   action_t*       action;
   player_t*       target;
   // Results
-  result_type_e   result;
+  result_e   result;
   double          result_amount;
   // Snapshotted stats during execution
   double          haste;
@@ -4169,10 +4167,10 @@ struct attack_t : public action_t
   virtual void execute();
   virtual void   player_buff();
   int build_table( std::array<double,RESULT_MAX>& chances,
-                   std::array<result_type_e,RESULT_MAX>& results,
+                   std::array<result_e,RESULT_MAX>& results,
                    unsigned level,
                    double /* attack_crit */ );
-  virtual result_type_e calculate_result( double, unsigned );
+  virtual result_e calculate_result( double, unsigned );
   virtual void   init();
 
   virtual double   miss_chance( double hit, int delta_level );
@@ -4199,7 +4197,7 @@ struct melee_attack_t : public attack_t
 
   // Melee Attack Overrides
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
   virtual double total_expertise();
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
@@ -4220,7 +4218,7 @@ struct ranged_attack_t : public attack_t
 
   // Ranged Attack Overrides
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
   virtual double total_expertise();
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
@@ -4236,13 +4234,13 @@ struct ranged_attack_t : public attack_t
 
 struct spell_base_t : public action_t
 {
-  spell_base_t( action_type_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+  spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   // Spell Overrides
   virtual double haste();
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
   virtual void   player_buff();
-  virtual result_type_e   calculate_result( double, unsigned );
+  virtual result_e   calculate_result( double, unsigned );
   virtual void   execute();
   virtual double crit_chance( double crit, int delta_level );
   virtual void   schedule_execute();
@@ -4263,7 +4261,7 @@ public:
 
   // Harmful Spell Overrides
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
 
@@ -4281,7 +4279,7 @@ struct heal_t : public spell_base_t
 
   virtual void player_buff();
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount, dmg_type_e, result_type_e );
+  virtual void assess_damage( player_t* t, double amount, dmg_e, result_e );
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& );
@@ -4296,7 +4294,7 @@ struct absorb_t : public spell_base_t
   virtual void player_buff();
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              dmg_type_e, result_type_e impact_result );
+                              dmg_e, result_e impact_result );
   virtual void impact_s( action_state_t* );
 };
 
@@ -4564,7 +4562,7 @@ struct action_travel_event_t : public event_t
 {
   action_t* action;
   player_t* target;
-  result_type_e result;
+  result_e result;
   double damage;
   action_travel_event_t( sim_t* sim, player_t* t, action_t* a, timespan_t time_to_travel );
   virtual void execute();
@@ -4593,31 +4591,31 @@ namespace unique_gear
 {
   void init( player_t* );
 
-  action_callback_t* register_stat_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-					 stat_type_e, int max_stacks, double amount,
+  action_callback_t* register_stat_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+					 stat_e, int max_stacks, double amount,
 					 double proc_chance, timespan_t duration, timespan_t cooldown,
 					 timespan_t tick=timespan_t::zero(), bool reverse=false );
 
-  action_callback_t* register_cost_reduction_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-						   school_type_e, int max_stacks, double amount,
+  action_callback_t* register_cost_reduction_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+						   school_e, int max_stacks, double amount,
 						   double proc_chance, timespan_t duration, timespan_t cooldown,
 						   bool refreshes=false, bool reverse=false );
 
-  action_callback_t* register_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-					      int max_stacks, school_type_e, double amount, double scaling,
+  action_callback_t* register_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+					      int max_stacks, school_e, double amount, double scaling,
 					      double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-					      unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+					      unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  action_callback_t* register_chance_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-						     int max_stacks, school_type_e, double amount, double scaling,
+  action_callback_t* register_chance_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+						     int max_stacks, school_e, double amount, double scaling,
 						     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-						     unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+						     unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  action_callback_t* register_stat_discharge_proc( proc_type_e, int64_t mask, const std::string& name, player_t*,
-						   int max_stacks, stat_type_e, double stat_amount,
-						   school_type_e, double discharge_amount, double discharge_scaling,
+  action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+						   int max_stacks, stat_e, double stat_amount,
+						   school_e, double discharge_amount, double discharge_scaling,
 						   double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-						   unsigned int override_result_type_es_mask = 0, unsigned int results_types_mask = 0 );
+						   unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
   action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
   action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
@@ -4648,7 +4646,7 @@ namespace enchant
   bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
   bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
   bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
-  int  get_reforge_id      ( stat_type_e stat_from, stat_type_e stat_to );
+  int  get_reforge_id      ( stat_e stat_from, stat_e stat_to );
   bool download        ( item_t&, const std::string& enchant_id );
   bool download_addon  ( item_t&, const std::string& addon_id   );
   bool download_reforge( item_t&, const std::string& reforge_id );
@@ -4809,7 +4807,7 @@ struct rng_t
 {
 private:
   std::string _name_str;
-  rng_type_e _type;
+  rng_e _type;
   double actual_roll, actual_range, actual_gauss;
   uint64_t num_roll, num_range, num_gauss;
   double gauss_pair_value;
@@ -4818,7 +4816,7 @@ public:
   rng_t* next;
   // FIXME: Change rng-creation so that average_range and average_gauss can be protected again.
 protected:
-  rng_t( const std::string& n, rng_type_e );
+  rng_t( const std::string& n, rng_e );
 
 public:
   virtual ~rng_t() {}
@@ -4832,7 +4830,7 @@ public:
   const char* name() { return _name_str.c_str(); }
   void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
   double real() { return _real(); }
-  rng_type_e type() { return _type; }
+  rng_e type() { return _type; }
   bool    roll( double chance );
   double range( double min, double max );
   double gauss( double mean, double stddev, bool truncate_low_end = false );
@@ -4860,7 +4858,7 @@ public:
   static double stdnormal_cdf( double u );
   static double stdnormal_inv( double p );
 
-  static rng_t* create( const std::string& name, rng_type_e=RNG_STANDARD );
+  static rng_t* create( const std::string& name, rng_e=RNG_STANDARD );
 };
 
 // Wowhead  =================================================================
@@ -4886,7 +4884,7 @@ namespace wowhead
                              bool ptr=false, cache::behavior_e b=cache::items() );
   bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                               bool ptr=false, cache::behavior_e b=cache::items() );
-  gem_type_e parse_gem( item_t& item, const std::string& gem_id,
+  gem_e parse_gem( item_t& item, const std::string& gem_id,
                                bool ptr=false, cache::behavior_e b=cache::items() );
 }
 
@@ -4916,7 +4914,7 @@ namespace mmo_champion
   bool download_glyph( player_t* player, std::string& glyph_name,
 		       const std::string& glyph_id, cache::behavior_e b=cache::items() );
 
-  gem_type_e parse_gem( item_t& item, const std::string& gem_id,
+  gem_e parse_gem( item_t& item, const std::string& gem_id,
 			cache::behavior_e b=cache::items() );
 };
 
@@ -4937,7 +4935,7 @@ namespace bcp_api
 		       const std::string& server,
 		       const std::string& name,
 		       const std::vector<int>& ranks,
-		       int player_type_e = PLAYER_NONE,
+		       int player_e = PLAYER_NONE,
 		       int max_rank=0,
 		       cache::behavior_e b=cache::players() );
 
@@ -4962,7 +4960,7 @@ namespace bcp_api
 		      const std::string gem_ids[ 3 ],
 		      cache::behavior_e b=cache::items() );
 
-  gem_type_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
+  gem_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
 }
 
 // Wowreforge ===============================================================

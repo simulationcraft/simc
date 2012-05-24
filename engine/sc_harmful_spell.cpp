@@ -54,7 +54,7 @@ void spell_t::player_buff()
 
 // spell_t::target_debuff ===================================================
 
-void spell_t::target_debuff( player_t* t, dmg_type_e type )
+void spell_t::target_debuff( player_t* t, dmg_e type )
 {
   spell_base_t::target_debuff( t, type );
 

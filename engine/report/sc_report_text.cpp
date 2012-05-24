@@ -311,7 +311,7 @@ void print_text_defense_stats( FILE* file, player_t* p )
 void print_text_gains( FILE* file, gain_t* g, int max_length )
 {
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
@@ -329,7 +329,7 @@ void print_text_player_gains( FILE* file, player_t* p )
   int max_length = 0;
   for ( gain_t* g = p -> gain_list; g; g = g -> next )
   {
-    for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
       if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
       {
@@ -360,7 +360,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
     int max_length = 0;
     for ( gain_t* g = pet -> gain_list; g; g = g -> next )
     {
-      for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
       {
         if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
         {
@@ -497,7 +497,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
     gear_stats_t& sf = ( sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
-    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( p -> scales_with[ j ] )
       {
@@ -532,7 +532,7 @@ void print_text_scale_factors( FILE* file, player_t* p, player_t::report_informa
   gear_stats_t& sf = ( p -> sim -> scaling -> normalize_scale_factors ) ? p -> scaling_normalized : p -> scaling;
 
   util::fprintf( file, "    Weights :" );
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( p -> scales_with[ i ] )
     {
@@ -582,7 +582,7 @@ void print_text_dps_plots( FILE* file, player_t* p )
 
   util::fprintf( file, "  DPS Plot Data ( min=%.1f max=%.1f points=%d )\n", min, max, points );
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
 
@@ -630,7 +630,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
   if ( sim -> scaling -> has_scale_factors() )
   {
-    for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( ref_p -> scales_with[ j ] )
       {
@@ -657,7 +657,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
       if ( sim -> scaling -> has_scale_factors() )
       {
-        for ( stat_type_e j = STAT_NONE; j < STAT_MAX; j++ )
+        for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
         {
           if ( ref_p -> scales_with[ j ] )
           {

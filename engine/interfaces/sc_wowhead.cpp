@@ -104,7 +104,7 @@ static void parse_stats( std::string& encoding,
 
     if ( 2 == util::string_split( splits[ i ], ":", "S S", &type_str, &value_str ) )
     {
-      stat_type_e type = util::parse_stat_type( type_str );
+      stat_e type = util::parse_stat_type( type_str );
       if ( type != STAT_NONE )
       {
         encoding += '_';
@@ -164,9 +164,9 @@ static bool parse_gems( item_t&           item,
   bool match = true;
   for ( int i=0; i < num_sockets; i++ )
   {
-    gem_type_e gem = item_t::parse_gem( item, gem_ids[ i ] );
+    gem_e gem = item_t::parse_gem( item, gem_ids[ i ] );
 
-    gem_type_e socket;
+    gem_e socket;
     switch ( sockets[ i ] )
     {
     case  1: socket = GEM_META;     break;
@@ -244,7 +244,7 @@ static bool parse_weapon( item_t&     item,
   if ( ! xml::get_value( subclass_str, node, "subclass/cdata" ) )
     return true;
 
-  weapon_type_e type = WEAPON_NONE;
+  weapon_e type = WEAPON_NONE;
   if      ( subclass_str == "One-Handed Axes"         ) type = WEAPON_AXE;
   else if ( subclass_str == "Two-Handed Axes"         ) type = WEAPON_AXE_2H;
   else if ( subclass_str == "Daggers"                 ) type = WEAPON_DAGGER;
@@ -594,7 +594,7 @@ static player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player class from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  player_type_e player_type = util::translate_class_id( atoi( cid_str.c_str() ) );
+  player_e player_type = util::translate_class_id( atoi( cid_str.c_str() ) );
   std::string type_str = util::player_type_string( player_type );
 
   std::string rid_str;
@@ -603,7 +603,7 @@ static player_t* download_player_profile( sim_t* sim,
     sim -> errorf( "Unable to extract player race from wowhead id '%s'.\n", id.c_str() );
     return 0;
   }
-  race_type_e r = util::translate_race_id( atoi( rid_str.c_str() ) );
+  race_e r = util::translate_race_id( atoi( rid_str.c_str() ) );
 
   player_t* p = player_t::create( sim, type_str, name_str, r );
   sim -> active_player = p;
@@ -638,7 +638,7 @@ static player_t* download_player_profile( sim_t* sim,
     p -> origin_str = "http://www.wowhead.com/profile=" + p -> region_str + "." + server_name + "." + character_name;
   }
 
-  for ( profession_type_e i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
+  for ( profession_e i = PROFESSION_NONE; i < PROFESSION_MAX; i++ )
   {
     std::vector<std::string> skill_levels;
     if ( 2 == js::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
@@ -855,7 +855,7 @@ static player_t* download_player_profile( sim_t* sim,
 
 // wowhead::parse_gem =====================================================
 
-gem_type_e wowhead::parse_gem( item_t&            item,
+gem_e wowhead::parse_gem( item_t&            item,
 			       const std::string& gem_id,
 			       bool               ptr,
 			       cache::behavior_e  caching )
@@ -871,7 +871,7 @@ gem_type_e wowhead::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  gem_type_e type = GEM_NONE;
+  gem_e type = GEM_NONE;
 
   std::string color_str;
   if ( xml::get_value( color_str, node, "subclass/cdata" ) )

@@ -73,7 +73,7 @@ void stats_t::add_child( stats_t* child )
   children.push_back( child );
 }
 
-void stats_t::consume_resource( resource_type_e resource_type, double resource_amount )
+void stats_t::consume_resource( resource_e resource_type, double resource_amount )
 {
   resource_gain.add( resource_type, resource_amount );
 }
@@ -88,8 +88,8 @@ void stats_t::reset()
 
 void stats_t::add_result( double act_amount,
                           double tot_amount,
-                          dmg_type_e dmg_type,
-                          result_type_e result )
+                          dmg_e dmg_type,
+                          result_e result )
 {
   iteration_actual_amount += act_amount;
   iteration_total_amount += tot_amount;
@@ -167,7 +167,7 @@ void stats_t::combat_end()
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
   portion_apse.add( sim -> current_time != timespan_t::zero() ? iteration_actual_amount / sim -> current_time.total_seconds() : 0 );
 
-  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].combat_end();
     tick_results[ i ].combat_end();
@@ -206,7 +206,7 @@ void stats_t::analyze()
   num_direct_results /= num_iterations;
   num_tick_results   /= num_iterations;
 
-  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
     direct_results[ i ].analyze( num_direct_results );
     tick_results[ i ].analyze( num_tick_results );
@@ -220,7 +220,7 @@ void stats_t::analyze()
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     rpe[ i ] = num_executes ? resource_gain.actual[ i ] / num_executes : -1;
     rpe_sum += rpe[ i ];
@@ -343,7 +343,7 @@ void stats_t::merge( const stats_t* other )
   portion_aps.merge( other -> portion_aps );
   portion_apse.merge( other -> portion_apse );
 
-  for ( result_type_e i = RESULT_NONE; i < RESULT_MAX; ++i )
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
   {
     direct_results[ i ].merge( other -> direct_results[ i ] );
     tick_results[ i ].merge( other -> tick_results[ i ] );

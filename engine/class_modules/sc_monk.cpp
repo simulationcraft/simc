@@ -83,7 +83,7 @@ struct monk_t : public player_t
 
   target_specific_t<monk_td_t> target_data;
 
-  monk_t( sim_t* sim, const std::string& name, race_type_e r = RACE_PANDAREN ) :
+  monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
     buffs( buffs_t() ),
     gains( gains_t() ),
@@ -110,10 +110,10 @@ struct monk_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource();
-  virtual role_type_e primary_role();
+  virtual resource_e primary_resource();
+  virtual role_e primary_role();
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -248,7 +248,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dt )
+  virtual void target_debuff( player_t* t, dmg_e dt )
   {
     monk_melee_attack_t::target_debuff( t, dt );
 
@@ -564,7 +564,7 @@ void monk_t::init_resources( bool force )
 
 // monk_t::matching_gear_multiplier =========================================
 
-double monk_t::matching_gear_multiplier( attribute_type_e attr )
+double monk_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( primary_tree() == MONK_MISTWEAVER )
   {
@@ -601,7 +601,7 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::primary_role ==================================================
 
-resource_type_e monk_t::primary_resource()
+resource_e monk_t::primary_resource()
 {
   // FIXME: change to healing stance
   if ( primary_tree() == MONK_MISTWEAVER )
@@ -612,7 +612,7 @@ resource_type_e monk_t::primary_resource()
 
 // monk_t::primary_role ==================================================
 
-role_type_e monk_t::primary_role()
+role_e monk_t::primary_role()
 {
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_HYBRID )
     return ROLE_HYBRID;
@@ -642,7 +642,7 @@ role_type_e monk_t::primary_role()
 
 // class_modules::create::monk  ===================================================
 
-player_t* class_modules::create::monk( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::monk( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<monk_t,SC_MONK>()( "Monk", sim, name, r );
 }

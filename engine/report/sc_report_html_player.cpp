@@ -186,7 +186,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         fprintf( file,
                  "\t\t\t\t\t\t\t<tr>\n"
                  "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
-        for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+        for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
           {
             fprintf( file,
@@ -205,7 +205,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         fprintf( file,
                  "\t\t\t\t\t\t\t<tr>\n"
                  "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n" );
-        for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+        for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
             fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -216,7 +216,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         fprintf( file,
                  "\t\t\t\t\t\t\t<tr>\n"
                  "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n" );
-        for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+        for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
             fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -227,7 +227,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
         fprintf( file,
                  "\t\t\t\t\t\t\t<tr>\n"
                  "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
-        for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+        for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
             fprintf( file,
                      "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -263,7 +263,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
-      for ( result_type_e i = RESULT_MAX; --i >= RESULT_NONE; )
+      for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( s -> direct_results[ i ].count.mean )
         {
@@ -323,7 +323,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %%</th>\n"
                 "\t\t\t\t\t\t\t\t\t\t</tr>\n" );
-      for ( result_type_e i = RESULT_MAX; --i >= RESULT_NONE; )
+      for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( s -> tick_results[ i ].count.mean )
         {
@@ -548,7 +548,7 @@ int print_html_action_resource( FILE* file, stats_t* s, int j )
     if ( ! a -> background ) break;
   }
 
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( s -> resource_gain.actual[ i ] > 0 )
     {
@@ -598,7 +598,7 @@ void print_html_gear ( FILE* file, double avg_ilvl, std::vector<item_t>& items )
            "\t\t\t\t\t\t\t\t\t</tr>\n",
            avg_ilvl );
 
-  for ( slot_type_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
     item_t& item = items[ i ];
 
@@ -664,7 +664,7 @@ void print_html_stats ( FILE* file, player_t* a )
              "\t\t\t\t\t\t\t\t\t\t<th>Gear Amount</th>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n" );
 
-    for ( attribute_type_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
+    for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
     {
       fprintf( file,
                "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -680,7 +680,7 @@ void print_html_stats ( FILE* file, player_t* a )
                a -> stats.attribute[ i ] );
       j++;
     }
-    for ( resource_type_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
+    for ( resource_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
     {
       if ( a -> resources.max[ i ] > 0 )
         fprintf( file,
@@ -996,7 +996,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, playe
       fprintf( file,
                "\t\t\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factors\" class=\"help\">?</a></th>\n" );
-      for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
         {
           fprintf( file,
@@ -1015,7 +1015,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, playe
       fprintf( file,
                "\t\t\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n" );
-      for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
           fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1031,7 +1031,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, playe
       fprintf( file,
                "\t\t\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t\t\t<th class=\"left\">Normalized</th>\n" );
-      for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
           fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1042,7 +1042,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, playe
       fprintf( file,
                "\t\t\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n" );
-      for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
           fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1056,7 +1056,7 @@ void print_html_player_scale_factors( FILE* file, sim_t* sim, player_t* p, playe
       fprintf( file,
                "\t\t\t\t\t\t\t<tr>\n"
                "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n" );
-      for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
           fprintf( file,
                    "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1299,7 +1299,7 @@ void print_html_player_statistics( FILE* file, player_t* p, player_t::report_inf
 
 void print_html_gain( FILE* file, report::tabs_t tabs, gain_t* g, int& j, bool report_overflow = true )
 {
-  for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
     {
@@ -1438,7 +1438,7 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
         if ( first )
         {
           bool found = false;
-          for ( resource_type_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+          for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
           {
             if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
             {
@@ -1475,7 +1475,7 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
            "\t\t\t\t\t\t\t\t<th>RPS-Loss</th>\n"
            "\t\t\t\t\t\t\t</tr>\n" );
   int j = 0;
-  for ( resource_type_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
+  for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
     double rps_gain = p -> resource_gained[ rt ] / p -> fight_length.mean;
     double rps_loss = p -> resource_lost[ rt ] / p -> fight_length.mean;
@@ -1505,7 +1505,7 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
 
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"charts charts-left\">\n" );
-  for ( resource_type_e j = RESOURCE_NONE; j < RESOURCE_MAX; ++j )
+  for ( resource_e j = RESOURCE_NONE; j < RESOURCE_MAX; ++j )
   {
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
     if ( j == RESOURCE_RUNE_BLOOD || j == RESOURCE_RUNE_UNHOLY || j == RESOURCE_RUNE_FROST ) continue;

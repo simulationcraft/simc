@@ -9,8 +9,8 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct flask_data_t
 {
-  flask_type_e ft;
-  stat_type_e st;
+  flask_e ft;
+  stat_e st;
   double stat_amount;
   double mixology_stat_amount;
 };
@@ -34,8 +34,8 @@ static const flask_data_t flask_data[] =
 
 struct food_data_t
 {
-  food_type_e ft;
-  stat_type_e st;
+  food_e ft;
+  stat_e st;
   double stat_amount;
 };
 
@@ -91,7 +91,7 @@ static const food_data_t food_data[] =
 struct flask_t : public action_t
 {
   gain_t* gain;
-  flask_type_e type;
+  flask_e type;
 
   flask_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "flask", p ),
@@ -159,7 +159,7 @@ struct flask_t : public action_t
 struct food_t : public action_t
 {
   gain_t* gain;
-  food_type_e type;
+  food_e type;
 
   food_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "food", p ), gain( p -> get_gain( "food" ) )

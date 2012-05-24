@@ -297,7 +297,7 @@ struct death_knight_t : public player_t
 
   target_specific_t<death_knight_td_t> target_data;
 
-  death_knight_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
     buffs( buffs_t() ),
@@ -339,16 +339,16 @@ struct death_knight_t : public player_t
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
-  virtual double    composite_attribute_multiplier( attribute_type_e attr );
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    composite_attribute_multiplier( attribute_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_spell_hit();
   virtual double    composite_tank_parry();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
-  virtual double    composite_tank_crit( school_type_e school );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    composite_tank_crit( school_e school );
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
-  virtual double    assess_damage( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a );
+  virtual double    assess_damage( double amount, school_e school, dmg_e, result_e, action_t* a );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -356,8 +356,8 @@ struct death_knight_t : public player_t
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource() { return RESOURCE_RUNIC_POWER; }
-  virtual role_type_e primary_role();
+  virtual resource_e primary_resource() { return RESOURCE_RUNIC_POWER; }
+  virtual role_e primary_role();
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
   virtual double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -544,7 +544,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       direct_power_mod = 0.08;  // CHECK-ME
     }
 
-    void target_debuff( player_t* t, dmg_type_e dtype )
+    void target_debuff( player_t* t, dmg_e dtype )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
       drw_spell_t::target_debuff( t, dtype );
@@ -628,7 +628,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       trigger_gcd         = timespan_t::zero();
     }
 
-    void target_debuff( player_t* t, dmg_type_e dtype )
+    void target_debuff( player_t* t, dmg_e dtype )
     {
       dancing_rune_weapon_pet_t* p = ( dancing_rune_weapon_pet_t* ) player;
       drw_melee_attack_t::target_debuff( t, dtype );
@@ -931,7 +931,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
   virtual double composite_attack_hit() { return snapshot_hit; }
 
-  virtual resource_type_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1008,7 +1008,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
     melee -> schedule_execute();
   }
 
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -1237,7 +1237,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     return base_energy_regen_per_second;
   }
 
-  virtual double composite_attribute( attribute_type_e attr )
+  virtual double composite_attribute( attribute_e attr )
   {
     double a = current.attribute[ attr ];
     if ( attr == ATTR_STRENGTH )
@@ -1339,7 +1339,7 @@ struct ghoul_pet_t : public death_knight_pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_type_e primary_resource()
+  virtual resource_e primary_resource()
   {
     return RESOURCE_ENERGY;
   }
@@ -1416,7 +1416,7 @@ struct death_knight_melee_attack_t : public melee_attack_t
   virtual void   player_buff();
   virtual bool   ready();
   virtual double swing_haste();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
 };
 
 // ==========================================================================
@@ -1466,7 +1466,7 @@ struct death_knight_spell_t : public spell_t
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_type_e );
+  virtual void   target_debuff( player_t* t, dmg_e );
   virtual bool   ready();
 };
 
@@ -1704,7 +1704,7 @@ double death_knight_melee_attack_t::swing_haste()
 
 // death_knight_melee_attack_t::target_debuff =====================================
 
-void death_knight_melee_attack_t::target_debuff( player_t* t, dmg_type_e dtype )
+void death_knight_melee_attack_t::target_debuff( player_t* t, dmg_e dtype )
 {
   melee_attack_t::target_debuff( t, dtype );
   death_knight_t* p = cast();
@@ -1803,7 +1803,7 @@ bool death_knight_spell_t::ready()
 
 // death_knight_spell_t::target_debuff ======================================
 
-void death_knight_spell_t::target_debuff( player_t* t, dmg_type_e dtype )
+void death_knight_spell_t::target_debuff( player_t* t, dmg_e dtype )
 {
   spell_t::target_debuff( t, dtype );
   death_knight_t* p = cast();
@@ -2010,7 +2010,7 @@ struct blood_boil_t : public death_knight_spell_t
       p -> buffs.crimson_scourge -> expire();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_spell_t::target_debuff( t, dtype );
 
@@ -2056,7 +2056,7 @@ struct blood_plague_t : public death_knight_spell_t
     hasted_ticks     = false;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -2084,7 +2084,7 @@ struct blood_strike_offhand_t : public death_knight_melee_attack_t
     cost_blood       = 0;
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2115,7 +2115,7 @@ struct blood_strike_t : public death_knight_melee_attack_t
       oh_attack = new blood_strike_offhand_t( p );
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2309,7 +2309,7 @@ struct death_and_decay_t : public death_knight_spell_t
     hasted_ticks     = false;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     if ( t -> debuffs.flying -> check() )
     {
@@ -2489,7 +2489,7 @@ struct frost_fever_t : public death_knight_spell_t
     tick_power_mod   = 0.055 * 1.15;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -2595,7 +2595,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  void target_debuff( player_t* t, dmg_type_e dtype )
+  void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2679,7 +2679,7 @@ struct howling_blast_t : public death_knight_spell_t
     p -> buffs.rime -> decrement();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -2804,7 +2804,7 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     death_knight_melee_attack_t::impact( t, impact_result, impact_dmg );
 
@@ -2837,7 +2837,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     player_crit += p -> buffs.killing_machine -> value();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2898,7 +2898,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     player_crit += p -> buffs.killing_machine -> value();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     death_knight_melee_attack_t::target_debuff( t, dtype );
 
@@ -2977,7 +2977,7 @@ struct pestilence_t : public death_knight_spell_t
       p -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg=0 )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
@@ -3145,7 +3145,7 @@ struct presence_t : public death_knight_spell_t
     harmful     = false;
   }
 
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   {
     return RESOURCE_RUNIC_POWER;
   }
@@ -3320,10 +3320,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       weapon_multiplier = 0;
     }
 
-    virtual void target_debuff( player_t* t, dmg_type_e )
+    virtual void target_debuff( player_t* t, dmg_e )
     {
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
-      // death_knight_spell_t::target_debuff( t, dmg_type_e );
+      // death_knight_spell_t::target_debuff( t, dmg_e );
 
       target_multiplier = cast_td() -> diseases() * 0.18;
 
@@ -3400,7 +3400,7 @@ struct unholy_blight_t : public death_knight_spell_t
     hasted_ticks   = false;
   }
 
-  void target_debuff( player_t*, dmg_type_e )
+  void target_debuff( player_t*, dmg_e )
   {
     // no debuff effect
   }
@@ -4053,7 +4053,7 @@ void death_knight_t::init_enchant()
       proc        = true;
     }
 
-    void target_debuff( player_t* t, dmg_type_e dtype )
+    void target_debuff( player_t* t, dmg_e dtype )
     {
       death_knight_spell_t::target_debuff( t, dtype );
       death_knight_t* p = cast();
@@ -4235,7 +4235,7 @@ void death_knight_t::init_gains()
   gains.empower_rune_weapon              = get_gain( "empower_rune_weapon"        );
   gains.blood_tap                        = get_gain( "blood_tap"                  );
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
-  //gains.blood_tap_blood          -> type = ( resource_type_e ) RESOURCE_RUNE_BLOOD   ;
+  //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
 }
 
 // death_knight_t::init_procs ===============================================
@@ -4290,9 +4290,9 @@ void death_knight_t::combat_begin()
 // death_knight_t::assess_damage ============================================
 
 double death_knight_t::assess_damage( double            amount,
-                                      school_type_e     school,
-                                      dmg_type_e        dtype,
-                                      result_type_e     result,
+                                      school_e     school,
+                                      dmg_e        dtype,
+                                      result_e     result,
                                       action_t*         action )
 {
   if ( buffs.blood_presence -> check() )
@@ -4321,7 +4321,7 @@ double death_knight_t::composite_armor_multiplier()
 
 // death_knight_t::composite_attribute_multiplier ===========================
 
-double death_knight_t::composite_attribute_multiplier( attribute_type_e attr )
+double death_knight_t::composite_attribute_multiplier( attribute_e attr )
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -4340,7 +4340,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_type_e attr )
 
 // death_knight_t::matching_gear_multiplier =================================
 
-double death_knight_t::matching_gear_multiplier( attribute_type_e attr )
+double death_knight_t::matching_gear_multiplier( attribute_e attr )
 {
   int tree = primary_tree();
 
@@ -4380,7 +4380,7 @@ double death_knight_t::composite_tank_parry()
 
 // death_knight_t::composite_player_multiplier ==============================
 
-double death_knight_t::composite_player_multiplier( school_type_e school, action_t* a )
+double death_knight_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4399,7 +4399,7 @@ double death_knight_t::composite_player_multiplier( school_type_e school, action
 
 // death_knight_t::composite_tank_crit ======================================
 
-double death_knight_t::composite_tank_crit( school_type_e school )
+double death_knight_t::composite_tank_crit( school_e school )
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -4408,7 +4408,7 @@ double death_knight_t::composite_tank_crit( school_type_e school )
 
 // death_knight_t::primary_role =============================================
 
-role_type_e death_knight_t::primary_role()
+role_e death_knight_t::primary_role()
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
@@ -4683,7 +4683,7 @@ void death_knight_t::arise()
 
 // class_modules::create::death_knight ============================================
 
-player_t* class_modules::create::death_knight( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::death_knight( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<death_knight_t,SC_DEATH_KNIGHT>()( "Death Knight", sim, name, r );
 }

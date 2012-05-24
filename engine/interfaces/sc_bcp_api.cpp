@@ -147,7 +147,7 @@ static bool parse_talents( player_t* p,
 static bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
 {
 /*
-  static const char* const glyph_type_e_names[] =
+  static const char* const glyph_e_names[] =
   {
     "glyphs/prime", "glyphs/major", "glyphs/minor"
   };
@@ -157,9 +157,9 @@ static bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
   p -> glyphs_str = p -> set_default_glyphs();
   
 /*
-  for ( std::size_t i = 0; i < sizeof_array( glyph_type_e_names ); ++i )
+  for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
-    if ( js_node_t* glyphs = js::get_node( build, glyph_type_e_names[ i ] ) )
+    if ( js_node_t* glyphs = js::get_node( build, glyph_e_names[ i ] ) )
     {
       std::vector<js_node_t*> children;
       if ( js::get_children( children, glyphs ) > 0 )
@@ -496,8 +496,8 @@ static bool download_item_data( item_t& item,
       js::get_children( nodes, stats );
       for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item_data.stat_type_e ) ); i < n; ++i )
       {
-        if ( ! js::get_value( item_data.stat_type_e[ i ], nodes[ i ], "stat" ) ) throw( "bonus stat" );
-        if ( ! js::get_value( item_data.stat_val[ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+        if ( ! js::get_value( item_data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
+        if ( ! js::get_value( item_data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
       }
     }
 
@@ -590,7 +590,7 @@ static std::string parse_gem_stats( const std::string& bonus )
   in >> amount;
   in >> stat;
 
-  stat_type_e st = util::parse_stat_type( stat );
+  stat_e st = util::parse_stat_type( stat );
   if ( st != STAT_NONE )
     out << amount << util::stat_type_abbrev( st );
 
@@ -790,7 +790,7 @@ bool bcp_api::download_glyph( player_t*          player,
 
 // bcp_api::parse_gem =======================================================
 
-gem_type_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
+gem_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e caching )
 {
   const std::string& region =
     item.player -> region_str.empty()
@@ -806,7 +806,7 @@ gem_type_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::b
     return GEM_NONE;
   util::tokenize( type_str );
 
-  gem_type_e type = util::parse_gem_type( type_str );
+  gem_e type = util::parse_gem_type( type_str );
 
   std::string result;
   if ( type == GEM_META )

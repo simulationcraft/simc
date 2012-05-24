@@ -125,7 +125,7 @@ void option_t::save( FILE* file )
 
 void option_t::add( std::vector<option_t>& options,
                     const                  char* name,
-                    option_type_e          type,
+                    option_e          type,
                     void*                  address )
 {
   size_t size = options.size();

@@ -648,7 +648,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   // Resource Charts
   for ( size_t i = 0; i < p -> resource_timeline_count; ++i )
   {
-    resource_type_e rt = p -> resource_timelines[ i ].type;
+    resource_e rt = p -> resource_timelines[ i ].type;
     ri.timeline_resource_chart[ rt ] =
       chart::timeline( p,
                        p -> resource_timelines[ i ].timeline,

@@ -52,7 +52,7 @@ static int parse_tokens( std::vector<token_t>& tokens,
 
 static bool is_meta_prefix( const std::string& option_name )
 {
-  for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
+  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
     const char* meta_gem_name = util::meta_gem_type_string( i );
 
@@ -68,7 +68,7 @@ static bool is_meta_prefix( const std::string& option_name )
 
 static bool is_meta_suffix( const std::string& option_name )
 {
-  for ( meta_gem_type_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
+  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
     const char* meta_gem_name = util::meta_gem_type_string( i );
 
@@ -86,7 +86,7 @@ static bool is_meta_suffix( const std::string& option_name )
 
 // parse_meta_gem ===========================================================
 
-meta_gem_type_e parse_meta_gem( const std::string& prefix,
+meta_gem_e parse_meta_gem( const std::string& prefix,
                                 const std::string& suffix )
 {
   if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
@@ -464,7 +464,7 @@ bool item_t::decode_stats()
   {
     token_t& t = tokens[ i ];
 
-    stat_type_e s = util::parse_stat_type( t.name );
+    stat_e s = util::parse_stat_type( t.name );
 
     if ( s != STAT_NONE )
     {
@@ -517,8 +517,8 @@ bool item_t::decode_reforge()
     return false;
   }
 
-  stat_type_e s1 = util::parse_reforge_type( tokens[ 0 ].name );
-  stat_type_e s2 = util::parse_reforge_type( tokens[ 1 ].name );
+  stat_e s1 = util::parse_reforge_type( tokens[ 0 ].name );
+  stat_e s2 = util::parse_reforge_type( tokens[ 1 ].name );
   if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
     sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n",
@@ -614,7 +614,7 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type_e stat = util::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
+      stat_e stat = util::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -684,7 +684,7 @@ bool item_t::decode_gems()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    stat_type_e s;
+    stat_e s;
 
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -705,7 +705,7 @@ bool item_t::decode_gems()
     }
   }
 
-  meta_gem_type_e meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
+  meta_gem_e meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
 
   if ( meta_gem != META_GEM_NONE )
   {
@@ -760,7 +760,7 @@ bool item_t::decode_enchant()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    stat_type_e s;
+    stat_e s;
 
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -810,7 +810,7 @@ bool item_t::decode_addon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    stat_type_e s;
+    stat_e s;
 
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -839,8 +839,8 @@ bool item_t::decode_special( special_effect_t& effect,
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    stat_type_e s;
-    school_type_e sc;
+    stat_e s;
+    school_e sc;
 
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
@@ -898,53 +898,53 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "nocrit" )
     {
-      effect.override_result_type_es_mask |= RESULT_CRIT_MASK;
-      effect.result_type_es_mask &= ~RESULT_CRIT_MASK;
+      effect.override_result_es_mask |= RESULT_CRIT_MASK;
+      effect.result_es_mask &= ~RESULT_CRIT_MASK;
     }
     else if ( t.name == "maycrit" )
     {
-      effect.override_result_type_es_mask |= RESULT_CRIT_MASK;
-      effect.result_type_es_mask |= RESULT_CRIT_MASK;
+      effect.override_result_es_mask |= RESULT_CRIT_MASK;
+      effect.result_es_mask |= RESULT_CRIT_MASK;
     }
     else if ( t.name == "nomiss" )
     {
-      effect.override_result_type_es_mask |= RESULT_MISS_MASK;
-      effect.result_type_es_mask &= ~RESULT_MISS_MASK;
+      effect.override_result_es_mask |= RESULT_MISS_MASK;
+      effect.result_es_mask &= ~RESULT_MISS_MASK;
     }
     else if ( t.name == "maymiss" )
     {
-      effect.override_result_type_es_mask |= RESULT_MISS_MASK;
-      effect.result_type_es_mask |= RESULT_MISS_MASK;
+      effect.override_result_es_mask |= RESULT_MISS_MASK;
+      effect.result_es_mask |= RESULT_MISS_MASK;
     }
     else if ( t.name == "nododge" )
     {
-      effect.override_result_type_es_mask |= RESULT_DODGE_MASK;
-      effect.result_type_es_mask &= ~RESULT_DODGE_MASK;
+      effect.override_result_es_mask |= RESULT_DODGE_MASK;
+      effect.result_es_mask &= ~RESULT_DODGE_MASK;
     }
     else if ( t.name == "maydodge" )
     {
-      effect.override_result_type_es_mask |= RESULT_DODGE_MASK;
-      effect.result_type_es_mask |= RESULT_DODGE_MASK;
+      effect.override_result_es_mask |= RESULT_DODGE_MASK;
+      effect.result_es_mask |= RESULT_DODGE_MASK;
     }
     else if ( t.name == "noparry" )
     {
-      effect.override_result_type_es_mask |= RESULT_PARRY_MASK;
-      effect.result_type_es_mask &= ~RESULT_PARRY_MASK;
+      effect.override_result_es_mask |= RESULT_PARRY_MASK;
+      effect.result_es_mask &= ~RESULT_PARRY_MASK;
     }
     else if ( t.name == "mayparry" )
     {
-      effect.override_result_type_es_mask |= RESULT_PARRY_MASK;
-      effect.result_type_es_mask |= RESULT_PARRY_MASK;
+      effect.override_result_es_mask |= RESULT_PARRY_MASK;
+      effect.result_es_mask |= RESULT_PARRY_MASK;
     }
     else if ( t.name == "noblock" )
     {
-      effect.override_result_type_es_mask |= RESULT_BLOCK_MASK;
-      effect.result_type_es_mask &= ~RESULT_BLOCK_MASK;
+      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_es_mask &= ~RESULT_BLOCK_MASK;
     }
     else if ( t.name == "mayblock" )
     {
-      effect.override_result_type_es_mask |= RESULT_BLOCK_MASK;
-      effect.result_type_es_mask |= RESULT_BLOCK_MASK;
+      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_es_mask |= RESULT_BLOCK_MASK;
     }
     else if ( t.name == "nobuffs" )
     {
@@ -1251,8 +1251,8 @@ bool item_t::decode_weapon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    weapon_type_e type;
-    school_type_e school;
+    weapon_e type;
+    school_e school;
 
     if ( ( type = util::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
@@ -1506,7 +1506,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 
 // item_t::parse_gem ========================================================
 
-gem_type_e item_t::parse_gem( item_t&            item,
+gem_e item_t::parse_gem( item_t&            item,
                               const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
@@ -1520,7 +1520,7 @@ gem_type_e item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  gem_type_e type = GEM_NONE;
+  gem_e type = GEM_NONE;
 
   if ( cache::items() != cache::CURRENT )
   {

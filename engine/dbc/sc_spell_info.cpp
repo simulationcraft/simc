@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-static const struct { const char* name; player_type_e pt; } _class_map[] =
+static const struct { const char* name; player_e pt; } _class_map[] =
 {
   { 0, PLAYER_NONE },
   { "Warrior", WARRIOR },
@@ -354,7 +354,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
          e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
-      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_type_e>( e -> misc_value1() ) ) ) );
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
     else
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer;
@@ -379,7 +379,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
 std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
-  player_type_e pt = PLAYER_NONE;
+  player_e pt = PLAYER_NONE;
 
   if ( spell -> level() > static_cast< unsigned >( level ) )
   {

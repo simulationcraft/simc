@@ -7,7 +7,7 @@
 
 // rng_t::rng_t =============================================================
 
-rng_t::rng_t( const std::string& n, rng_type_e t ) :
+rng_t::rng_t( const std::string& n, rng_e t ) :
   _name_str( n ), _type( t ),
   actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
   num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
@@ -638,7 +638,7 @@ public:
 // ==========================================================================
 
 rng_t* rng_t::create( const std::string& name,
-                      rng_type_e           type )
+                      rng_e           type )
 {
   if ( type == RNG_DEFAULT     ) type = RNG_MERSENNE_TWISTER;
 
@@ -652,7 +652,7 @@ rng_t* rng_t::create( const std::string& name,
 
 #ifdef UNIT_TEST
 
-uint32_t spell_data_t::get_school_mask( school_type_e ) { return 0; }
+uint32_t spell_data_t::get_school_mask( school_e ) { return 0; }
 
 int main( int /*argc*/, char** /*argv*/ )
 {

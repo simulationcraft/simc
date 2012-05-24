@@ -346,7 +346,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p )
 {
-  for ( attribute_type_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
+  for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
   {
     print_xml_player_attribute( writer, util::attribute_type_string( i ),
                                 p -> get_attribute( i ), p -> stats.attribute[ i ],
@@ -488,7 +488,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.begin_tag( "direct_results" );
         writer.print_attribute( "count", util::to_string( s -> num_direct_results ) );
 
-        for ( result_type_e i=RESULT_MAX; --i >= RESULT_NONE; )
+        for ( result_e i=RESULT_MAX; --i >= RESULT_NONE; )
         {
           if ( s -> direct_results[ i ].count.mean )
           {
@@ -517,7 +517,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.print_attribute( "count", util::to_string( s -> num_tick_results ) );
         writer.print_attribute( "ticks", util::to_string( s -> num_ticks ) );
 
-        for ( result_type_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
         {
           if ( s -> tick_results[ i ].count.mean )
           {
@@ -701,7 +701,7 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
 
   writer.begin_tag( "weights" );
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( p -> scales_with[ i ] )
     {
@@ -798,7 +798,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.print_attribute( "max", util::to_string( max, 1 ) );
   writer.print_attribute( "points", util::to_string( points ) );
 
-  for ( stat_type_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     std::vector<double>& pd = p -> dps_plot_data[ i ];
 

@@ -12,14 +12,14 @@ namespace { // ANONYMOUS NAMESPACE
 struct stat_proc_callback_t : public action_callback_t
 {
   std::string name_str;
-  stat_type_e stat;
+  stat_e stat;
   double amount;
   timespan_t tick;
   stat_buff_t* buff;
 
   stat_proc_callback_t( const std::string& n,
                         player_t* p,
-                        stat_type_e s,
+                        stat_e s,
                         int max_stack,
                         double a,
                         double proc_chance,
@@ -96,13 +96,13 @@ struct stat_proc_callback_t : public action_callback_t
 struct cost_reduction_proc_callback_t : public action_callback_t
 {
   std::string name_str;
-  school_type_e school;
+  school_e school;
   double amount;
   cost_reduction_buff_t* buff;
 
   cost_reduction_proc_callback_t( const std::string& n,
                                   player_t* p,
-                                  school_type_e s,
+                                  school_e s,
                                   int max_stacks,
                                   double a,
                                   double proc_chance,
@@ -152,8 +152,8 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 
 struct discharge_spell_t : public spell_t
 {
-  discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
-		     unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+  discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+		     unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
     school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
@@ -164,8 +164,8 @@ struct discharge_spell_t : public spell_t
     base_dd_max = amount;
     may_trigger_dtr = false;
     direct_power_mod = scaling;
-    may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_type_es_mask & RESULT_CRIT_MASK ) ? ( result_type_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-    may_miss = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
+    may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
+    may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     background  = true;
     no_buffs = nb;
     no_debuffs = nd;
@@ -177,8 +177,8 @@ struct discharge_spell_t : public spell_t
 
 struct discharge_attack_t : public attack_t
 {
-  discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
-                      unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+  discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+                      unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
     attack_t( n, p, spell_data_t::nil() )
   {
     school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
@@ -189,12 +189,12 @@ struct discharge_attack_t : public attack_t
     base_dd_max = amount;
     may_trigger_dtr = false;
     direct_power_mod = scaling;
-    may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_type_es_mask & RESULT_CRIT_MASK ) ? ( result_type_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-    may_miss = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-    may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_DODGE_MASK ) ? ( result_type_es_mask & RESULT_DODGE_MASK ) : may_dodge );
-    may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_PARRY_MASK ) ? ( result_type_es_mask & RESULT_PARRY_MASK ) : may_parry )
+    may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
+    may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
+    may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_DODGE_MASK ) ? ( result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
+    may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_PARRY_MASK ) ? ( result_es_mask & RESULT_PARRY_MASK ) : may_parry )
                 && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
-    may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_BLOCK_MASK ) ? ( result_type_es_mask & RESULT_BLOCK_MASK ) : may_block )
+    may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_BLOCK_MASK ) ? ( result_es_mask & RESULT_BLOCK_MASK ) : may_block )
                 && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
     may_glance = false;
     background  = true;
@@ -217,7 +217,7 @@ struct discharge_proc_callback_base_t : public action_callback_t
   discharge_proc_callback_base_t( const std::string& n,
                                   player_t* p,
                                   int ms,
-                                  school_type_e school,
+                                  school_e school,
                                   double amount,
                                   double scaling,
                                   double pc,
@@ -225,8 +225,8 @@ struct discharge_proc_callback_base_t : public action_callback_t
                                   bool no_buffs,
                                   bool no_debuffs,
                                   int aoe,
-                                  unsigned int override_result_type_es_mask = 0,
-                                  unsigned int result_type_es_mask = 0 ) :
+                                  unsigned int override_result_es_mask = 0,
+                                  unsigned int result_es_mask = 0 ) :
     action_callback_t( p ),
     name_str( n ), stacks( 0 ), max_stacks( ms ), initial_proc_chance( pc ), cooldown( 0 ), discharge_action( 0 ), proc( 0 ), rng( 0 )
   {
@@ -235,11 +235,11 @@ struct discharge_proc_callback_base_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
     }
 
     proc = p -> get_proc( name_str );
@@ -302,7 +302,7 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
   discharge_proc_callback_t( const std::string& n,
                              player_t* p,
                              int ms,
-                             school_type_e school,
+                             school_e school,
                              double amount,
                              double scaling,
                              double pc,
@@ -310,9 +310,9 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
                              bool no_buffs,
                              bool no_debuffs,
                              int aoe,
-                             unsigned int override_result_type_es_mask = 0,
-                             unsigned int result_type_es_mask = 0 ) :
-    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_type_es_mask,result_type_es_mask )
+                             unsigned int override_result_es_mask = 0,
+                             unsigned int result_es_mask = 0 ) :
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_es_mask,result_es_mask )
   { }
 };
 
@@ -324,7 +324,7 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
   chance_discharge_proc_callback_t( const std::string& n,
                                     player_t* p,
                                     int ms,
-                                    school_type_e school,
+                                    school_e school,
                                     double amount,
                                     double scaling,
                                     double pc,
@@ -332,9 +332,9 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
                                     bool no_buffs,
                                     bool no_debuffs,
                                     int aoe,
-                                    unsigned int override_result_type_es_mask = 0,
-                                    unsigned int result_type_es_mask = 0 ) :
-    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_type_es_mask,result_type_es_mask )
+                                    unsigned int override_result_es_mask = 0,
+                                    unsigned int result_es_mask = 0 ) :
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_es_mask,result_es_mask )
   { }
 
   virtual double proc_chance()
@@ -356,10 +356,10 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
   stat_discharge_proc_callback_t( const std::string& n,
                                   player_t* p,
-                                  stat_type_e stat,
+                                  stat_e stat,
                                   int ms,
                                   double stat_amount,
-                                  school_type_e school,
+                                  school_e school,
                                   double discharge_amount,
                                   double discharge_scaling,
                                   double proc_chance,
@@ -369,8 +369,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                                   bool no_debuffs,
                                   int aoe,
                                   bool activated = true,
-                                  unsigned int override_result_type_es_mask = 0,
-                                  unsigned int result_type_es_mask = 0 ) :
+                                  unsigned int override_result_es_mask = 0,
+                                  unsigned int result_es_mask = 0 ) :
     action_callback_t( p ), name_str( n )
   {
     if ( ms == 0 ) ms = 1;
@@ -388,8 +388,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
-                         unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+                         unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil() )
       {
         school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
@@ -400,8 +400,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
         may_trigger_dtr = false;
         direct_power_mod = scaling;
-        may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_type_es_mask & RESULT_CRIT_MASK ) ? ( result_type_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
-        may_miss = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
+        may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
+        may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         background  = true;
         no_buffs = nb;
         no_debuffs = nd;
@@ -413,8 +413,8 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     {
       bool no_buffs;
 
-      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_type_e s, bool nb, bool nd, int ae,
-                          unsigned int override_result_type_es_mask = 0, unsigned int result_type_es_mask = 0 ) :
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+                          unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil() )
       {
         school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
@@ -425,12 +425,12 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         base_dd_max = amount;
         may_trigger_dtr = false;
         direct_power_mod = scaling;
-        may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_type_es_mask & RESULT_CRIT_MASK ) ? ( result_type_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
-        may_miss = ( override_result_type_es_mask & RESULT_MISS_MASK ) ? ( result_type_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-        may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_DODGE_MASK ) ? ( result_type_es_mask & RESULT_DODGE_MASK ) : may_dodge );
-        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_PARRY_MASK ) ? ( result_type_es_mask & RESULT_PARRY_MASK ) : may_parry )
+        may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
+        may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
+        may_dodge = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_DODGE_MASK ) ? ( result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
+        may_parry = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_PARRY_MASK ) ? ( result_es_mask & RESULT_PARRY_MASK ) : may_parry )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
-        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_type_es_mask & RESULT_BLOCK_MASK ) ? ( result_type_es_mask & RESULT_BLOCK_MASK ) : may_block )
+        may_block = ( s == SCHOOL_PHYSICAL ) && ( ( override_result_es_mask & RESULT_BLOCK_MASK ) ? ( result_es_mask & RESULT_BLOCK_MASK ) : may_block )
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;
@@ -442,11 +442,11 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
     }
   }
 
@@ -550,9 +550,9 @@ static void register_darkmoon_card_greatness( item_t* item )
 
   item -> unique = true;
 
-  static attribute_type_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
+  static attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
 
-  stat_type_e max_stat = stat_from_attr( attr[ 0 ] );
+  stat_e max_stat = stat_from_attr( attr[ 0 ] );
   double max_value = p -> current.attribute[ attr[ 0 ] ];
 
   for ( unsigned i = 1; i < sizeof_array( attr ); i++ )
@@ -742,7 +742,7 @@ static void register_shard_of_woe( item_t* item )
 
   item -> unique = true;
 
-  for ( school_type_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
   {
     p -> initial.resource_reduction[ i ] += 205;
   }
@@ -1756,11 +1756,11 @@ void unique_gear::init( player_t* p )
 // unique_gear::register_stat_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_stat_proc( proc_type_e        type,
+action_callback_t* unique_gear::register_stat_proc( proc_e        type,
 						    int64_t            mask,
 						    const std::string& name,
 						    player_t*          player,
-						    stat_type_e        stat,
+						    stat_e        stat,
 						    int                max_stacks,
 						    double             amount,
 						    double             proc_chance,
@@ -1817,11 +1817,11 @@ action_callback_t* unique_gear::register_stat_proc( proc_type_e        type,
 // unique_gear::register_cost_reduction_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_cost_reduction_proc( proc_type_e        type,
+action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type,
 							      int64_t            mask,
 							      const std::string& name,
 							      player_t*          player,
-							      school_type_e      school,
+							      school_e      school,
 							      int                max_stacks,
 							      double             amount,
 							      double             proc_chance,
@@ -1878,12 +1878,12 @@ action_callback_t* unique_gear::register_cost_reduction_proc( proc_type_e       
 // unique_gear::register_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_discharge_proc( proc_type_e        type,
+action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
 							 int64_t            mask,
 							 const std::string& name,
 							 player_t*          player,
 							 int                max_stacks,
-							 school_type_e      school,
+							 school_e      school,
 							 double             amount,
 							 double             scaling,
 							 double             proc_chance,
@@ -1891,11 +1891,11 @@ action_callback_t* unique_gear::register_discharge_proc( proc_type_e        type
 							 bool               no_buffs,
 							 bool               no_debuffs,
 							 int                aoe,
-							 unsigned int       override_result_type_es_mask,
-							 unsigned int       result_type_es_mask )
+							 unsigned int       override_result_es_mask,
+							 unsigned int       result_es_mask )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                         no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+                                                         no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -1948,12 +1948,12 @@ action_callback_t* unique_gear::register_discharge_proc( proc_type_e        type
 // unique_gear::register_chance_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_chance_discharge_proc( proc_type_e        type,
+action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        type,
 								int64_t            mask,
 								const std::string& name,
 								player_t*          player,
 								int                max_stacks,
-								school_type_e      school,
+								school_e      school,
 								double             amount,
 								double             scaling,
 								double             proc_chance,
@@ -1961,11 +1961,11 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_type_e     
 								bool               no_buffs,
 								bool               no_debuffs,
 								int                aoe,
-								unsigned int       override_result_type_es_mask,
-								unsigned int       result_type_es_mask )
+								unsigned int       override_result_es_mask,
+								unsigned int       result_es_mask )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                                no_buffs, no_debuffs, aoe, override_result_type_es_mask, result_type_es_mask );
+                                                                no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2018,14 +2018,14 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_type_e     
 // unique_gear::register_stat_discharge_proc
 // ==========================================================================
 
-action_callback_t* unique_gear::register_stat_discharge_proc( proc_type_e        type,
+action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type,
 							      int64_t            mask,
 							      const std::string& name,
 							      player_t*          player,
 							      int                max_stacks,
-							      stat_type_e        stat,
+							      stat_e        stat,
 							      double             stat_amount,
-							      school_type_e      school,
+							      school_e      school,
 							      double             min_dmg,
 							      double             max_dmg,
 							      double             proc_chance,
@@ -2034,11 +2034,11 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_type_e       
 							      bool               no_buffs,
 							      bool               no_debuffs,
 							      int                aoe,
-							      unsigned int       override_result_type_es_mask,
-							      unsigned int       result_type_es_mask )
+							      unsigned int       override_result_es_mask,
+							      unsigned int       result_es_mask )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
-                                                              duration, cooldown, no_buffs, no_debuffs, aoe, type == PROC_NONE, override_result_type_es_mask, result_type_es_mask );
+                                                              duration, cooldown, no_buffs, no_debuffs, aoe, type == PROC_NONE, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2122,7 +2122,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                  e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
+                                  e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================
@@ -2136,7 +2136,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 
   return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                         e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
+                                         e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================
@@ -2151,7 +2151,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.max_stacks, e.stat, e.stat_amount,
                                        e.school, e.discharge_amount, e.discharge_scaling,
-                                       e.proc_chance, e.duration, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_type_es_mask, e.result_type_es_mask );
+                                       e.proc_chance, e.duration, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================

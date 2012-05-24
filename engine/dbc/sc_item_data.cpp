@@ -14,7 +14,7 @@ std::string stat_to_str( item_mod_type stat, int stat_amount )
 
   if ( stat_amount )
   {
-    stat_type_e s = util::translate_item_mod( stat );
+    stat_e s = util::translate_item_mod( stat );
     if ( s != STAT_NONE )
     {
       char stat_buf[64];
@@ -199,7 +199,7 @@ bool parse_weapon_type( item_t&            item,
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
 
-  weapon_type_e w = util::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
+  weapon_e w = util::translate_weapon_subclass( ( item_subclass_weapon ) item_data -> item_subclass );
   if ( w == WEAPON_NONE || w == WEAPON_WAND )
     return true;
 
@@ -666,7 +666,7 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 
 // item_database_t::parse_gem ===============================================
 
-gem_type_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
+gem_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
 {
   long gid = strtol( gem_id.c_str(), 0, 10 );
   if ( gid <= 0 )

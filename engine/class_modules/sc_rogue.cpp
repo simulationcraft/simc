@@ -109,7 +109,7 @@ struct combo_points_t
 //  Review: Energy Regen (how Adrenaline rush stacks with Blade Flurry / haste)
 // ==========================================================================
 
-enum poison_type_e { POISON_NONE=0, DEADLY_POISON, WOUND_POISON, CRIPPLING_POISON, MINDNUMBING_POISON, LEECHING_POISON, PARALYTIC_POISON };
+enum poison_e { POISON_NONE=0, DEADLY_POISON, WOUND_POISON, CRIPPLING_POISON, MINDNUMBING_POISON, LEECHING_POISON, PARALYTIC_POISON };
 
 struct rogue_targetdata_t : public targetdata_t
 {
@@ -291,7 +291,7 @@ struct rogue_t : public player_t
 
   uint32_t fof_p1, fof_p2, fof_p3;
 
-  rogue_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     active_main_gauche( 0 ), active_venomous_wound( 0 ),
     benefits( benefits_t() ),
@@ -350,16 +350,16 @@ struct rogue_t : public player_t
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( const item_t& ) const;
-  virtual resource_type_e primary_resource() const { return RESOURCE_ENERGY; }
-  virtual role_type_e primary_role() const     { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false ) const;
+  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
+  virtual role_e primary_role() const     { return ROLE_ATTACK; }
+  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false ) const;
   virtual void      copy_from( player_t* source );
 
-  virtual double    composite_attribute_multiplier( attribute_type_e attr ) const;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_speed() const;
-  virtual double    matching_gear_multiplier( attribute_type_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_player_multiplier( school_type_e school, const action_t* a = NULL ) const;
+  virtual double    composite_player_multiplier( school_e school, const action_t* a = NULL ) const;
 
   // Temporary
   virtual std::string set_default_talents() const
@@ -448,12 +448,12 @@ struct rogue_attack_state_t : public action_state_t
 struct rogue_melee_attack_t : public melee_attack_t
 {
   bool             requires_stealth_;
-  position_type_e  requires_position_;
+  position_e  requires_position_;
   bool             requires_combo_points;
   int              adds_combo_points;
   double           base_da_bonus;
   double           base_ta_bonus;
-  weapon_type_e    requires_weapon;
+  weapon_e    requires_weapon;
   bool             affected_by_killing_spree;
 
   // we now track how much combo points we spent on an action
@@ -513,7 +513,7 @@ struct rogue_melee_attack_t : public melee_attack_t
   virtual bool   ready();
 
   virtual double calculate_weapon_damage( double /* attack_power */ );
-  virtual void   assess_damage( player_t* t, double, dmg_type_e, result_type_e );
+  virtual void   assess_damage( player_t* t, double, dmg_e, result_e );
   virtual double armor() const;
 
   virtual bool   requires_stealth() const
@@ -528,7 +528,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     return requires_stealth_;
   }
 
-  virtual position_type_e requires_position() const
+  virtual position_e requires_position() const
   { 
     return requires_position_; 
   }
@@ -1165,8 +1165,8 @@ bool rogue_melee_attack_t::ready()
 
 void rogue_melee_attack_t::assess_damage( player_t* t,
                                           const double amount,
-                                          const dmg_type_e dmg_type,
-                                          const result_type_e impact_result )
+                                          const dmg_e dmg_type,
+                                          const result_e impact_result )
 {
   melee_attack_t::assess_damage( t, amount, dmg_type, impact_result );
 
@@ -1179,7 +1179,7 @@ void rogue_melee_attack_t::assess_damage( player_t* t,
     target_t* q = t -> cast_target();
 
     if ( p -> buffs.blade_flurry -> up() && q -> adds_nearby )
-      melee_attack_t::additional_damage( q, amount, dmg_type_e, impact_result );
+      melee_attack_t::additional_damage( q, amount, dmg_e, impact_result );
   }*/
 }
 
@@ -2144,7 +2144,7 @@ struct rupture_t : public rogue_melee_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     rogue_t* p = cast();
     if ( result_is_hit( impact_result ) )
@@ -2618,7 +2618,7 @@ struct deadly_poison_t : public rogue_poison_t
     }
   }
 
-  virtual double calculate_tick_damage( result_type_e r, double power, double multiplier )
+  virtual double calculate_tick_damage( result_e r, double power, double multiplier )
   {
     rogue_targetdata_t* td = cast_td();
     return rogue_poison_t::calculate_tick_damage( r, power, multiplier ) * td -> debuffs_poison_doses -> stack();
@@ -3061,7 +3061,7 @@ struct vendetta_buff_t : public buff_t
 
 // rogue_t::composite_attribute_multiplier ==================================
 
-double rogue_t::composite_attribute_multiplier( attribute_type_e attr ) const
+double rogue_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -3091,7 +3091,7 @@ double rogue_t::composite_attack_speed() const
 
 // rogue_t::matching_gear_multiplier ========================================
 
-double rogue_t::matching_gear_multiplier( attribute_type_e attr ) const
+double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -3114,7 +3114,7 @@ double rogue_t::composite_attack_power_multiplier() const
 
 // rogue_t::composite_player_multiplier =====================================
 
-double rogue_t::composite_player_multiplier( const school_type_e school, const action_t* a ) const
+double rogue_t::composite_player_multiplier( const school_e school, const action_t* a ) const
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3886,7 +3886,7 @@ void rogue_t::create_options()
 
 // rogue_t::create_profile ==================================================
 
-bool rogue_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html ) const
+bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_html ) const
 {
   player_t::create_profile( profile_str, stype, save_html );
 
@@ -3949,7 +3949,7 @@ int rogue_t::decode_set( const item_t& item ) const
 #if SC_ROGUE == 1
 void class_modules::register_targetdata::rogue( sim_t* sim )
 {
-  player_type_e t = ROGUE;
+  player_e t = ROGUE;
   typedef rogue_targetdata_t type;
 
   REGISTER_DOT( crimson_tempest );
@@ -3966,7 +3966,7 @@ void class_modules::register_targetdata::rogue( sim_t* sim )
 #endif // SC_ROGUE
 // class_modules::create::rogue  ==================================================
 
-player_t* class_modules::create::rogue( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::rogue( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<rogue_t,SC_ROGUE>()( "Rogue", sim, name, r );
 }

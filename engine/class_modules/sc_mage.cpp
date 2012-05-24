@@ -218,7 +218,7 @@ struct mage_t : public player_t
 
   int mana_gem_charges;
 
-  mage_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
     benefits( benefits_t() ),
@@ -269,14 +269,14 @@ struct mage_t : public player_t
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_type_e primary_role() { return ROLE_SPELL; }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_e primary_role() { return ROLE_SPELL; }
   virtual double    composite_mastery();
   virtual double    composite_mp5();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_crit();
   virtual double    composite_spell_haste();
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      stun();
 
   virtual mage_td_t* get_target_data( player_t* target )
@@ -288,8 +288,8 @@ struct mage_t : public player_t
 
   // Event Tracking
   virtual void   regen( timespan_t periodicity );
-  virtual double resource_gain( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
-  virtual double resource_loss( resource_type_e, double amount, gain_t* = 0, action_t* = 0 );
+  virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
+  virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
 
   // Temporary
   virtual std::string set_default_talents()
@@ -369,7 +369,7 @@ struct water_elemental_pet_t : public pet_t
       base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
-    virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+    virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
     {
       spell_t::impact( t, impact_result, travel_dmg );
 
@@ -662,7 +662,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_spell_power( school_type_e school )
+  virtual double composite_spell_power( school_e school )
   {
     if ( school == SCHOOL_ARCANE )
     {
@@ -789,7 +789,7 @@ struct ignite_t : public mage_spell_t
     hasted_ticks  = false;
     dot_behavior  = DOT_REFRESH;
   }
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, 0 );
 
@@ -889,7 +889,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 
   if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
   {
-    result_type_e result = s -> result;
+    result_e result = s -> result;
     s -> result = RESULT_HIT;
     s -> assess_damage( s -> target, ignite_dmg * p -> merge_ignite, DMG_OVER_TIME, s -> result );
     s -> result = result;
@@ -1327,7 +1327,7 @@ struct blizzard_shard_t : public mage_spell_t
     background = true;
   }
   
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1631,7 +1631,7 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1709,7 +1709,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   { return RESOURCE_NONE; }
 };
 
@@ -1730,7 +1730,7 @@ struct frost_bomb_t : public mage_spell_t
     // FIXME: How does haste affect the CD/Tick Time?
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1787,7 +1787,7 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e travel_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e travel_result, double travel_dmg )
   {
     mage_spell_t::impact( t, travel_result, travel_dmg );
 
@@ -1854,7 +1854,7 @@ struct frostfire_bolt_t : public mage_spell_t
     p() -> buffs.brain_freeze -> expire();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -1912,7 +1912,7 @@ struct frozen_orb_t : public mage_spell_t
     add_child( bolt );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2032,7 +2032,7 @@ struct inferno_blast_t : public mage_spell_t
     cooldown = p -> cooldowns.inferno_blast;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2064,10 +2064,10 @@ struct living_bomb_explosion_t : public mage_spell_t
     }
   }
 
-  virtual resource_type_e current_resource()
+  virtual resource_e current_resource()
   { return RESOURCE_NONE; }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     // FIXME: Is this still true?
     // Explosion doesn't trigger ignite
@@ -2093,7 +2093,7 @@ struct living_bomb_t : public mage_spell_t
     add_child( explosion_spell );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2263,7 +2263,7 @@ struct nether_tempest_t : public mage_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2343,7 +2343,7 @@ struct pyroblast_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2412,7 +2412,7 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3268,7 +3268,7 @@ double mage_t::composite_mp5()
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( school_type_e school, action_t* a )
+double mage_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3319,7 +3319,7 @@ double mage_t::composite_spell_haste()
 
 // mage_t::matching_gear_multiplier =========================================
 
-double mage_t::matching_gear_multiplier( attribute_type_e attr )
+double mage_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -3352,7 +3352,7 @@ void mage_t::regen( timespan_t periodicity )
 
 // mage_t::resource_gain ====================================================
 
-double mage_t::resource_gain( resource_type_e resource,
+double mage_t::resource_gain( resource_e resource,
                               double    amount,
                               gain_t*   source,
                               action_t* action )
@@ -3373,7 +3373,7 @@ double mage_t::resource_gain( resource_type_e resource,
 
 // mage_t::resource_loss ====================================================
 
-double mage_t::resource_loss( resource_type_e resource,
+double mage_t::resource_loss( resource_e resource,
                               double    amount,
                               gain_t*   source,
                               action_t* action )
@@ -3543,7 +3543,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 // class_modules::create::mage  ===================================================
 
-player_t* class_modules::create::mage( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::mage( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<mage_t,SC_MAGE>()( "Mage", sim, name, r );
 }

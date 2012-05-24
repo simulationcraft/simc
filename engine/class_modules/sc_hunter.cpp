@@ -217,7 +217,7 @@ public:
   double tier13_4pc_cooldown;
   uint32_t vishanka;
 
-  hunter_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NONE ) :
+  hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -270,16 +270,16 @@ public:
   virtual double    composite_attack_power();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_attack_haste();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource() { return RESOURCE_FOCUS; }
-  virtual role_type_e primary_role() { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
+  virtual role_e primary_role() { return ROLE_ATTACK; }
+  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
@@ -373,7 +373,7 @@ public:
   // Benefits
   benefit_t* benefits_wild_hunt;
 
-  hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_type_e pt ) :
+  hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
     talents( talents_t() ),
     buffs( buffs_t() ),
@@ -398,7 +398,7 @@ public:
   hunter_t* cast_owner()
   { return debug_cast<hunter_t*>( owner ); }
 
-  virtual pet_type_e group()
+  virtual pet_e group()
   {
     //assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
     if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCITY_TYPE;
@@ -692,7 +692,7 @@ public:
     cast_owner() -> active_pet = 0;
   }
 
-  virtual double composite_player_multiplier( school_type_e school, action_t* a )
+  virtual double composite_player_multiplier( school_e school, action_t* a )
   {
     double m = pet_t::composite_player_multiplier( school, a );
 
@@ -706,7 +706,7 @@ public:
     return m;
   }
 
-  virtual resource_type_e primary_resource() { return RESOURCE_FOCUS; }
+  virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 
@@ -903,12 +903,12 @@ struct piercing_shots_t : public attack_t
 
   void player_buff() {}
 
-  void target_debuff( player_t*, dmg_type_e )
+  void target_debuff( player_t*, dmg_e )
   {
     target_multiplier = 1.30;
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double impact_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double impact_dmg )
   {
     attack_t::impact( t, impact_result, 0 );
 
@@ -940,7 +940,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
 
   if ( p -> merge_piercing_shots > 0 ) // Does not report Piercing Shots seperately.
   {
-    result_type_e result = a -> result;
+    result_e result = a -> result;
     a -> result = RESULT_HIT;
     a -> assess_damage( a -> target, piercing_shots_dmg * p -> merge_piercing_shots, DMG_OVER_TIME, a -> result );
     a -> result = result;
@@ -1172,7 +1172,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       normalize_weapon_speed = true;
     }
 
-    virtual void target_debuff( player_t* t, dmg_type_e dt )
+    virtual void target_debuff( player_t* t, dmg_e dt )
     {
       hunter_ranged_attack_t::target_debuff( t, dt );
 
@@ -1201,7 +1201,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p -> buffs.master_marksman_fire -> expire();
     }
 
-    virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+    virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
     {
       hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -1258,7 +1258,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     return hunter_ranged_attack_t::execute_time();
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dt )
+  virtual void target_debuff( player_t* t, dmg_e dt )
   {
     hunter_t* p = cast();
 
@@ -1307,7 +1307,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -1560,7 +1560,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
@@ -1622,7 +1622,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
   }
@@ -1925,7 +1925,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
  //     spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_t* p = cast();
     //target_t* q = t -> cast_target();
@@ -2015,7 +2015,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
     p -> buffs.pre_improved_steady_shot -> trigger( 1 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_t* p = cast();
 
@@ -2365,7 +2365,7 @@ struct hunters_mark_t : public hunter_spell_t
     background = ( sim -> overrides.ranged_vulnerability != 0 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -2680,7 +2680,7 @@ struct hunter_pet_attack_t : public attack_t
 
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     attack_t::target_debuff( t, dtype );
 
@@ -2978,7 +2978,7 @@ struct hunter_pet_spell_t : public spell_t
 
   }
 
-  virtual void target_debuff( player_t* t, dmg_type_e dtype )
+  virtual void target_debuff( player_t* t, dmg_e dtype )
   {
     spell_t::target_debuff( t, dtype );
 
@@ -3182,7 +3182,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
     background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3208,7 +3208,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3234,7 +3234,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_blows != 0 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3280,7 +3280,7 @@ struct tear_armor_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( player_t* t, result_type_e impact_result, double travel_dmg )
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
 
@@ -3423,7 +3423,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   if ( p )
     return p;
 
-  pet_type_e type = util::parse_pet_type( pet_type );
+  pet_e type = util::parse_pet_type( pet_type );
 
   if ( type > PET_NONE && type < PET_HUNTER )
   {
@@ -3997,7 +3997,7 @@ double hunter_t::composite_attack_haste()
 
 // hunter_t::composite_player_multiplier ====================================
 
-double hunter_t::composite_player_multiplier( school_type_e school, action_t* a )
+double hunter_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4010,7 +4010,7 @@ double hunter_t::composite_player_multiplier( school_type_e school, action_t* a 
 
 // hunter_t::matching_gear_multiplier =======================================
 
-double hunter_t::matching_gear_multiplier( attribute_type_e attr )
+double hunter_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -4052,7 +4052,7 @@ void hunter_t::create_options()
 
 // hunter_t::create_profile =================================================
 
-bool hunter_t::create_profile( std::string& profile_str, save_type_e stype, bool save_html )
+bool hunter_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
 
@@ -4122,7 +4122,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
 {
 #if 0
   // Pet support
-  static pet_type_e pet_types[] =
+  static pet_e pet_types[] =
   {
     /* 0*/ PET_NONE,         PET_WOLF,         PET_CAT,          PET_SPIDER,   PET_BEAR,
     /* 5*/ PET_BOAR,         PET_CROCOLISK,    PET_CARRION_BIRD, PET_CRAB,     PET_GORILLA,
@@ -4139,7 +4139,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
     /*60*/ PET_NONE,         PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
     /*65*/ PET_NONE,         PET_WASP,         PET_NONE,         PET_NONE,     PET_NONE
   };
-  int num_families = sizeof( pet_types ) / sizeof( pet_type_e );
+  int num_families = sizeof( pet_types ) / sizeof( pet_e );
 
   std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + '/' + character + "/pet";
   xml_node_t* pet_xml = xml_t::get( sim, url, caching );
@@ -4315,7 +4315,7 @@ void hunter_t::moving()
 
 // class_modules::create::hunter  =================================================
 
-player_t* class_modules::create::hunter( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::hunter( sim_t* sim, const std::string& name, race_e r )
 {
 
   return sc_create_class<hunter_t,SC_HUNTER>()( "Hunter", sim, name, r );

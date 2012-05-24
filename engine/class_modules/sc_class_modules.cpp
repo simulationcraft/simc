@@ -13,7 +13,7 @@
 player_t* player_t::create( sim_t*             sim,
                             const std::string& type,
                             const std::string& name,
-                            race_type_e r )
+                            race_e r )
 {
   using namespace class_modules;
 

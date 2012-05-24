@@ -450,7 +450,7 @@ static const char* translate_inventory_id( int slot )
   return "unknown";
 }
 
-static race_type_e translate_rawr_race_str( const std::string& name )
+static race_e translate_rawr_race_str( const std::string& name )
 {
   if ( ! name.compare( "Human"    ) ) return RACE_HUMAN;
   if ( ! name.compare( "Orc"      ) ) return RACE_ORC;
@@ -530,7 +530,7 @@ player_t* rawr::load_player( sim_t* sim,
   util::tokenize(  name_str );
   util::tokenize( class_str );
 
-  race_type_e r = translate_rawr_race_str( race_str );
+  race_e r = translate_rawr_race_str( race_str );
 
   player_t* p = player_t::create( sim, class_str, name_str, r );
   sim -> active_player = p;

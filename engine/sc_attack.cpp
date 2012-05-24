@@ -161,7 +161,7 @@ double attack_t::crit_chance( double crit, int delta_level )
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
-                           std::array<result_type_e,RESULT_MAX>& results,
+                           std::array<result_e,RESULT_MAX>& results,
                            unsigned target_level,
                            double   attack_crit )
 {
@@ -262,15 +262,15 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
 // attack_t::calculate_result ===============================================
 
-result_type_e attack_t::calculate_result( double crit, unsigned target_level )
+result_e attack_t::calculate_result( double crit, unsigned target_level )
 {
   direct_dmg = 0;
-  result_type_e result = RESULT_NONE;
+  result_e result = RESULT_NONE;
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
   std::array<double,RESULT_MAX> chances;
-  std::array<result_type_e,RESULT_MAX> results;
+  std::array<result_e,RESULT_MAX> results;
 
   int num_results = build_table( chances, results, target_level, crit );
 
@@ -368,7 +368,7 @@ void melee_attack_t::player_buff()
 
 // melee_attack_t::target_debuff ==================================================
 
-void melee_attack_t::target_debuff( player_t* t, dmg_type_e dt )
+void melee_attack_t::target_debuff( player_t* t, dmg_e dt )
 {
   attack_t::target_debuff( t, dt );
 
@@ -440,7 +440,7 @@ void ranged_attack_t::player_buff()
                    name(), player_expertise );
 }
 
-void ranged_attack_t::target_debuff( player_t* t, dmg_type_e dt )
+void ranged_attack_t::target_debuff( player_t* t, dmg_e dt )
 {
   attack_t::target_debuff( t, dt );
 

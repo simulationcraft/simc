@@ -13,7 +13,7 @@
 // Created by philoptik@gmail.com
 //
 // heal_target is set to player for now.
-// dmg_type_e = ABSORB, all crits killed
+// dmg_e = ABSORB, all crits killed
 // ==========================================================================
 
 // absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
@@ -80,8 +80,8 @@ void absorb_t::impact_s( action_state_t* s )
 
 void absorb_t::assess_damage( player_t*     t,
                               double        heal_amount,
-                              dmg_type_e    heal_type,
-                              result_type_e heal_result )
+                              dmg_e    heal_type,
+                              result_e heal_result )
 {
   direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 

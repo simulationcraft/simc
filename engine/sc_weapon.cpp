@@ -11,7 +11,7 @@
 
 // weapon_t::group ==========================================================
 
-weapon_type_e weapon_t::group()
+weapon_e weapon_t::group()
 {
   switch ( type )
   {

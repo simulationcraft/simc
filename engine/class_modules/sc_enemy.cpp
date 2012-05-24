@@ -284,7 +284,7 @@ struct enemy_t : public player_t
   double fixed_health_percentage, initial_health_percentage;
   timespan_t waiting_time;
 
-  enemy_t( sim_t* s, const std::string& n, race_type_e r = RACE_HUMANOID ) :
+  enemy_t( sim_t* s, const std::string& n, race_e r = RACE_HUMANOID ) :
     player_t( s, ENEMY, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
@@ -299,10 +299,10 @@ struct enemy_t : public player_t
     create_options();
   }
 
-  virtual role_type_e primary_role()
+  virtual role_e primary_role()
   { return ROLE_TANK; }
 
-  virtual resource_type_e primary_resource()
+  virtual resource_e primary_resource()
   { return RESOURCE_NONE; }
 
   virtual double base_armor()
@@ -331,7 +331,7 @@ struct enemy_t : public player_t
 
 struct add_t : public pet_t
 {
-  add_t( sim_t* s, enemy_t* o, const std::string& n, pet_type_e pt = PET_ENEMY ) :
+  add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
     create_options();
@@ -347,7 +347,7 @@ struct add_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual resource_type_e primary_resource()
+  virtual resource_e primary_resource()
   { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name,
@@ -629,7 +629,7 @@ void enemy_t::combat_end()
 
 // class_modules::create::enemy ===================================================
 
-player_t* class_modules::create::enemy( sim_t* sim, const std::string& name, race_type_e /* r */ )
+player_t* class_modules::create::enemy( sim_t* sim, const std::string& name, race_e /* r */ )
 {
   return new enemy_t( sim, name );
 }

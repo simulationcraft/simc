@@ -207,7 +207,7 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
   return false;
 }
 
-double dbc_t::melee_crit_base( player_type_e t ) const
+double dbc_t::melee_crit_base( player_e t ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -220,12 +220,12 @@ double dbc_t::melee_crit_base( player_type_e t ) const
 #endif
 }
 
-double dbc_t::melee_crit_base( pet_type_e t ) const
+double dbc_t::melee_crit_base( pet_e t ) const
 {
   return melee_crit_base( util::pet_class_type( t ) );
 }
 
-double dbc_t::spell_crit_base( player_type_e t ) const
+double dbc_t::spell_crit_base( player_e t ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -238,12 +238,12 @@ double dbc_t::spell_crit_base( player_type_e t ) const
 #endif
 }
 
-double dbc_t::spell_crit_base( pet_type_e t ) const
+double dbc_t::spell_crit_base( pet_e t ) const
 {
   return spell_crit_base( util::pet_class_type( t ) );
 }
 
-double dbc_t::dodge_base( player_type_e t ) const
+double dbc_t::dodge_base( player_e t ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -256,12 +256,12 @@ double dbc_t::dodge_base( player_type_e t ) const
 #endif
 }
 
-double dbc_t::dodge_base( pet_type_e t ) const
+double dbc_t::dodge_base( pet_e t ) const
 {
   return dodge_base( util::pet_class_type( t ) );
 }
 
-stat_data_t& dbc_t::race_base( race_type_e r ) const
+stat_data_t& dbc_t::race_base( race_e r ) const
 {
   uint32_t race_id = util::race_id( r );
 
@@ -274,12 +274,12 @@ stat_data_t& dbc_t::race_base( race_type_e r ) const
 #endif
 }
 
-stat_data_t& dbc_t::race_base( pet_type_e /* r */ ) const
+stat_data_t& dbc_t::race_base( pet_e /* r */ ) const
 {
   return race_base( RACE_NONE );
 }
 
-double dbc_t::spell_scaling( player_type_e t, unsigned level ) const
+double dbc_t::spell_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -293,7 +293,7 @@ double dbc_t::spell_scaling( player_type_e t, unsigned level ) const
 }
 
 // FIXME: apparently melee crit per agility is gone. This should probably be removed.
-double dbc_t::melee_crit_scaling( player_type_e t, unsigned level ) const
+double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -306,12 +306,12 @@ double dbc_t::melee_crit_scaling( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::melee_crit_scaling( pet_type_e t, unsigned level ) const
+double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
 {
   return melee_crit_scaling( util::pet_class_type( t ), level );
 }
 
-double dbc_t::spell_crit_scaling( player_type_e t, unsigned level ) const
+double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -324,12 +324,12 @@ double dbc_t::spell_crit_scaling( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::spell_crit_scaling( pet_type_e t, unsigned level ) const
+double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
 {
   return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
-double dbc_t::dodge_scaling( player_type_e t, unsigned level ) const
+double dbc_t::dodge_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -342,12 +342,12 @@ double dbc_t::dodge_scaling( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::dodge_scaling( pet_type_e t, unsigned level ) const
+double dbc_t::dodge_scaling( pet_e t, unsigned level ) const
 {
   return dodge_scaling( util::pet_class_type( t ), level );
 }
 
-double dbc_t::regen_base( player_type_e t, unsigned level ) const
+double dbc_t::regen_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -360,12 +360,12 @@ double dbc_t::regen_base( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::regen_base( pet_type_e t, unsigned level ) const
+double dbc_t::regen_base( pet_e t, unsigned level ) const
 {
   return regen_base( util::pet_class_type( t ), level );
 }
 
-double dbc_t::health_base( player_type_e t, unsigned level ) const
+double dbc_t::health_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -378,7 +378,7 @@ double dbc_t::health_base( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::resource_base( player_type_e t, unsigned level ) const
+double dbc_t::resource_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -391,7 +391,7 @@ double dbc_t::resource_base( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::regen_spirit( player_type_e t, unsigned level ) const
+double dbc_t::regen_spirit( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -404,12 +404,12 @@ double dbc_t::regen_spirit( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::regen_spirit( pet_type_e t, unsigned level ) const
+double dbc_t::regen_spirit( pet_e t, unsigned level ) const
 {
   return regen_spirit( util::pet_class_type( t ), level );
 }
 
-double dbc_t::mp5_per_spirit( player_type_e t, unsigned level ) const
+double dbc_t::mp5_per_spirit( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -422,7 +422,7 @@ double dbc_t::mp5_per_spirit( player_type_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::mp5_per_spirit( pet_type_e t, unsigned level ) const
+double dbc_t::mp5_per_spirit( pet_e t, unsigned level ) const
 {
   return mp5_per_spirit( util::pet_class_type( t ), level );
 }
@@ -439,7 +439,7 @@ double dbc_t::health_per_stamina( unsigned level ) const
 }
 
 
-stat_data_t& dbc_t::attribute_base( player_type_e t, unsigned level ) const
+stat_data_t& dbc_t::attribute_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -452,7 +452,7 @@ stat_data_t& dbc_t::attribute_base( player_type_e t, unsigned level ) const
 #endif
 }
 
-stat_data_t& dbc_t::attribute_base( pet_type_e t, unsigned level ) const
+stat_data_t& dbc_t::attribute_base( pet_e t, unsigned level ) const
 {
   return attribute_base( util::pet_class_type( t ), level );
 }
@@ -468,7 +468,7 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_type_e t ) const
+double dbc_t::oct_combat_rating( unsigned combat_rating_id, player_e t ) const
 {
   uint32_t class_id = util::class_id( t );
 
@@ -541,14 +541,14 @@ unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, uns
 #endif
 }
 
-unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_type_e, unsigned n ) const
+unsigned dbc_t::glyph_spell( unsigned class_id, unsigned glyph_e, unsigned n ) const
 {
-  assert( class_id < dbc_t::class_max_size() && glyph_type_e < GLYPH_MAX && n < glyph_spell_size() );
+  assert( class_id < dbc_t::class_max_size() && glyph_e < GLYPH_MAX && n < glyph_spell_size() );
 #if SC_USE_PTR
-  return ptr ? __ptr_glyph_abilities_data[ class_id ][ glyph_type_e ][ n ]
-             : __glyph_abilities_data[ class_id ][ glyph_type_e ][ n ];
+  return ptr ? __ptr_glyph_abilities_data[ class_id ][ glyph_e ][ n ]
+             : __glyph_abilities_data[ class_id ][ glyph_e ][ n ];
 #else
-  return __glyph_abilities_data[ class_id ][ glyph_type_e ][ n ];
+  return __glyph_abilities_data[ class_id ][ glyph_e ][ n ];
 #endif
 }
 
@@ -1011,7 +1011,7 @@ spell_data_t* spell_data_t::find( const char* name, bool ptr )
   return 0;
 }
 
-uint32_t spell_data_t::get_school_mask( school_type_e s )
+uint32_t spell_data_t::get_school_mask( school_e s )
 {
   switch ( s )
   {
@@ -1053,12 +1053,12 @@ uint32_t spell_data_t::get_school_mask( school_type_e s )
   return 0x00;
 }
 
-bool spell_data_t::is_school( school_type_e s, school_type_e s2 )
+bool spell_data_t::is_school( school_e s, school_e s2 )
 {
   return ( get_school_mask( s ) & get_school_mask( s2 ) ) != 0;
 }
 
-school_type_e spell_data_t::get_school_type() const
+school_e spell_data_t::get_school_type() const
 {
   switch ( _school )
   {
@@ -1103,7 +1103,7 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 { return idx_sed.get( ptr, id ); }
 
 
-talent_data_t* talent_data_t::find( player_type_e c, unsigned int row, unsigned int col, bool ptr )
+talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, bool ptr )
 {
   talent_data_t* talent_data = talent_data_t::list( ptr );
 
@@ -1373,7 +1373,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_type_e c, const char* spell_name ) const
+unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -1392,7 +1392,7 @@ unsigned dbc_t::talent_ability_id( player_type_e c, const char* spell_name ) con
   return 0;
 }
 
-unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, const char* spell_name ) const
+unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const
 {
   uint32_t cid = util::class_id( c );
   unsigned class_idx = -1;
@@ -1497,7 +1497,7 @@ unsigned dbc_t::class_ability_id( player_type_e c, specialization_e spec_id, con
 }
 
 
-unsigned dbc_t::pet_ability_id( player_type_e c, const char* spell_name ) const
+unsigned dbc_t::pet_ability_id( player_e c, const char* spell_name ) const
 {
   uint32_t cid = util::class_id( c );
   unsigned spell_id;
@@ -1532,7 +1532,7 @@ unsigned dbc_t::pet_ability_id( player_type_e c, const char* spell_name ) const
   return 0;
 }
 
-unsigned dbc_t::race_ability_id( player_type_e c, race_type_e r, const char* spell_name ) const
+unsigned dbc_t::race_ability_id( player_e c, race_e r, const char* spell_name ) const
 {
   unsigned rid = util::race_id( r );
   unsigned cid = util::class_id( c );
@@ -1650,7 +1650,7 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return ! spec_list.empty();
 }
 
-specialization_e dbc_t::class_ability_specialization( const player_type_e c, uint32_t spell_id ) const
+specialization_e dbc_t::class_ability_specialization( const player_e c, uint32_t spell_id ) const
 {
   unsigned cid = util::class_id( c );
   unsigned t = class_ability_tree( c, spell_id );
@@ -1666,7 +1666,7 @@ specialization_e dbc_t::class_ability_specialization( const player_type_e c, uin
   return __class_spec_id[ cid ][ t ];
 }
 
-specialization_e dbc_t::mastery_specialization( const player_type_e c, uint32_t spell_id ) const
+specialization_e dbc_t::mastery_specialization( const player_e c, uint32_t spell_id ) const
 {
   unsigned cid = util::class_id( c );
   int t = mastery_ability_tree( c, spell_id );
@@ -1677,7 +1677,7 @@ specialization_e dbc_t::mastery_specialization( const player_type_e c, uint32_t 
   return __class_spec_id[ cid ][ t ];
 }
 
-int dbc_t::class_ability_tree( player_type_e c, uint32_t spell_id ) const
+int dbc_t::class_ability_tree( player_e c, uint32_t spell_id ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -1693,7 +1693,7 @@ int dbc_t::class_ability_tree( player_type_e c, uint32_t spell_id ) const
   return -1;
 }
 
-unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
+unsigned dbc_t::glyph_spell_id( player_e c, const char* spell_name ) const
 {
   unsigned cid = util::class_id( c );
   unsigned spell_id;
@@ -1737,7 +1737,7 @@ unsigned dbc_t::glyph_spell_id( player_type_e c, const char* spell_name ) const
   return 0;
 }
 
-unsigned dbc_t::set_bonus_spell_id( player_type_e c, const char* name, int tier ) const
+unsigned dbc_t::set_bonus_spell_id( player_e c, const char* name, int tier ) const
 {
   unsigned cid = util::class_id( c );
   unsigned spell_id;
@@ -1838,7 +1838,7 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, uint32_t idx ) const
 }
 
 
-int dbc_t::mastery_ability_tree( player_type_e c, uint32_t spell_id ) const
+int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -2096,7 +2096,7 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
   return 0;
 }
 
-specialization_e dbc_t::spec_by_idx( const player_type_e c, uint32_t& idx ) const
+specialization_e dbc_t::spec_by_idx( const player_e c, uint32_t& idx ) const
 {
   uint32_t cid = util::class_id( c );
 

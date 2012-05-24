@@ -11,7 +11,7 @@
 
 // action_t::action_t =======================================================
 
-action_t::action_t( action_type_e       ty,
+action_t::action_t( action_e       ty,
                     const std::string&  token,
                     player_t*           p,
                     const spell_data_t* s ) :
@@ -528,7 +528,7 @@ void action_t::player_buff()
 
 // action_t::target_debuff ==================================================
 
-void action_t::target_debuff( player_t* t, dmg_type_e )
+void action_t::target_debuff( player_t* t, dmg_e )
 {
   target_multiplier            = 1.0;
   target_hit                   = 0;
@@ -558,7 +558,7 @@ void action_t::snapshot()
 
 // action_t::result_is_hit ==================================================
 
-bool action_t::result_is_hit( result_type_e r )
+bool action_t::result_is_hit( result_e r )
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -572,7 +572,7 @@ bool action_t::result_is_hit( result_type_e r )
 
 // action_t::result_is_miss =================================================
 
-bool action_t::result_is_miss( result_type_e r )
+bool action_t::result_is_miss( result_e r )
 {
   if ( r == RESULT_UNKNOWN ) r = result;
 
@@ -651,7 +651,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
 // action_t::calculate_tick_damage ==========================================
 
-double action_t::calculate_tick_damage( result_type_e r, double power, double multiplier )
+double action_t::calculate_tick_damage( result_e r, double power, double multiplier )
 {
   double dmg = 0;
 
@@ -684,7 +684,7 @@ double action_t::calculate_tick_damage( result_type_e r, double power, double mu
 
 // action_t::calculate_direct_damage ========================================
 
-double action_t::calculate_direct_damage( result_type_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
+double action_t::calculate_direct_damage( result_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
 {
   double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
@@ -1026,7 +1026,7 @@ void action_t::last_tick( dot_t* d )
 
 // action_t::impact =========================================================
 
-void action_t::impact( player_t* t, result_type_e impact_result, double impact_dmg )
+void action_t::impact( player_t* t, result_e impact_result, double impact_dmg )
 {
   assess_damage( t, impact_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
 
@@ -1087,8 +1087,8 @@ void action_t::impact( player_t* t, result_type_e impact_result, double impact_d
 
 void action_t::assess_damage( player_t*     t,
                               double        amount,
-                              dmg_type_e    type,
-                              result_type_e result )
+                              dmg_e    type,
+                              result_e result )
 {
   double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
   double actual_amount = t -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
@@ -1133,8 +1133,8 @@ void action_t::assess_damage( player_t*     t,
 
 void action_t::additional_damage( player_t*     t,
                                   double        amount,
-                                  dmg_type_e    type,
-                                  result_type_e result )
+                                  dmg_e    type,
+                                  result_e result )
 {
   amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
@@ -1512,7 +1512,7 @@ void action_t::check_talent( int talent_rank )
 
 // action_t::check_race =====================================================
 
-void action_t::check_race( race_type_e race )
+void action_t::check_race( race_e race )
 {
   if ( player -> race != race )
   {

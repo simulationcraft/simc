@@ -270,7 +270,7 @@ struct priest_t : public player_t
 
   target_specific_t<priest_td_t> target_data;
   
-  priest_t( sim_t* sim, const std::string& name, race_type_e r = RACE_NIGHT_ELF ) :
+  priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
     buffs( buffs_t() ),
@@ -316,24 +316,24 @@ struct priest_t : public player_t
   virtual void      reset();
   virtual void      init_party();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_type_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_type_e primary_role();
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_e primary_role();
   virtual void      combat_begin();
   virtual double    composite_armor();
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_movement_speed();
 
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr );
 
-  virtual double    target_mitigation( double amount, school_type_e school, dmg_type_e, result_type_e, action_t* a=0 );
+  virtual double    target_mitigation( double amount, school_e school, dmg_e, result_e, action_t* a=0 );
 
   virtual double    shadowy_recall_chance();
 
@@ -451,7 +451,7 @@ static const _weapon_list_t none_weapon[]=
 };
 
 
-static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_type, int& stats_available, int& stats2_available )
+static double get_attribute_base( int level, int stat_e, pet_e pet_type, int& stats_available, int& stats2_available )
 {
   double r = 0.0;
   const _stat_list_t* base_list = 0;
@@ -464,7 +464,7 @@ static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_typ
   else if ( pet_type == PET_MINDBENDER  ) pet_list = mindbender_base_stats;
   else if ( pet_type == PET_NONE        ) pet_list = none_base_stats;
 
-  if ( stat_type_e < 0 || stat_type_e >= BASE_STAT_MAX )
+  if ( stat_e < 0 || stat_e >= BASE_STAT_MAX )
   {
     return 0.0;
   }
@@ -475,13 +475,13 @@ static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_typ
     {
       if ( level == base_list[ i ].id )
       {
-        r += base_list[ i ].stats[ stat_type_e ];
+        r += base_list[ i ].stats[ stat_e ];
         stats_available++;
         break;
       }
       if ( level > base_list[ i ].id )
       {
-        r += base_list[ i ].stats[ stat_type_e ];
+        r += base_list[ i ].stats[ stat_e ];
         break;
       }
     }
@@ -493,13 +493,13 @@ static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_typ
     {
       if ( level == pet_list[ i ].id )
       {
-        r += pet_list[ i ].stats[ stat_type_e ];
+        r += pet_list[ i ].stats[ stat_e ];
         stats2_available++;
         break;
       }
       if ( level > pet_list[ i ].id )
       {
-        r += pet_list[ i ].stats[ stat_type_e ];
+        r += pet_list[ i ].stats[ stat_e ];
         break;
       }
     }
@@ -508,7 +508,7 @@ static double get_attribute_base( int level, int stat_type_e, pet_type_e pet_typ
   return r;
 }
 
-static const _weapon_list_t* get_weapon( pet_type_e pet_type )
+static const _weapon_list_t* get_weapon( pet_e pet_type )
 {
   const _weapon_list_t*  weapon_list = 0;
 
@@ -519,7 +519,7 @@ static const _weapon_list_t* get_weapon( pet_type_e pet_type )
   return weapon_list;
 }
 
-static double get_weapon_min( int level, pet_type_e pet_type )
+static double get_weapon_min( int level, pet_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -544,7 +544,7 @@ static double get_weapon_min( int level, pet_type_e pet_type )
   return r;
 }
 
-static double get_weapon_max( int level, pet_type_e pet_type )
+static double get_weapon_max( int level, pet_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -569,7 +569,7 @@ static double get_weapon_max( int level, pet_type_e pet_type )
   return r;
 }
 
-static double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
+static double get_weapon_direct_power_mod( int level, pet_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -594,7 +594,7 @@ static double get_weapon_direct_power_mod( int level, pet_type_e pet_type )
   return r;
 }
 
-static timespan_t get_weapon_swing_time( int level, pet_type_e pet_type )
+static timespan_t get_weapon_swing_time( int level, pet_e pet_type )
 {
   const _weapon_list_t*  weapon_list = get_weapon( pet_type );
 
@@ -630,7 +630,7 @@ struct priest_pet_t : public pet_t
   double ap_per_owner_sp;
   double direct_power_mod;
 
-  priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_type_e pt, bool guardian = false ) :
+  priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
     pet_t( sim, owner, pet_name, pt, guardian ),
     ap_per_owner_sp( 1.0 ),
     direct_power_mod( get_weapon_direct_power_mod( level, pt ) )
@@ -704,7 +704,7 @@ struct priest_pet_t : public pet_t
   virtual double composite_attack_haste()
   { return player_t::composite_attack_haste() * owner -> spell_haste; }
 
-  virtual double composite_spell_power( school_type_e school )
+  virtual double composite_spell_power( school_e school )
   { return owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier(); }
 
   virtual double composite_spell_power_multiplier()
@@ -721,7 +721,7 @@ struct priest_pet_t : public pet_t
 
   virtual double composite_attack_expertise( weapon_t* ) { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
-  virtual resource_type_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   priest_t* o() { return debug_cast<priest_t*>( owner ); }
 };
 
@@ -731,7 +731,7 @@ struct priest_pet_t : public pet_t
 
 struct priest_guardian_pet_t : public priest_pet_t
 {
-  priest_guardian_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_type_e pt ) :
+  priest_guardian_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_e pt ) :
     priest_pet_t( sim, owner, pet_name, pt, true )
   {}
 
@@ -760,7 +760,7 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   const spell_data_t* mana_leech;
   action_t* shadowcrawl_action;
 
-  base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_type_e pt, const std::string& name = "basefiend" ) :
+  base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
     priest_guardian_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
     shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() ),
@@ -1524,7 +1524,7 @@ struct atonement_heal_t : public priest_heal_t
       target = sim -> find_player( p -> atonement_target_str.c_str() );
   }
 
-  void trigger( double atonement_dmg, int dmg_type_e, int result )
+  void trigger( double atonement_dmg, int dmg_e, int result )
   {
     atonement_dmg *= p() -> glyphs.atonement -> effectN( 1 ).percent();
     double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
@@ -1538,7 +1538,7 @@ struct atonement_heal_t : public priest_heal_t
     if ( atonement_dmg > cap )
       atonement_dmg = cap;
 
-    if ( dmg_type_e == DMG_OVER_TIME )
+    if ( dmg_e == DMG_OVER_TIME )
     {
       // num_ticks = 1;
       base_td = atonement_dmg;
@@ -1547,7 +1547,7 @@ struct atonement_heal_t : public priest_heal_t
     }
     else
     {
-      assert( dmg_type_e == DMG_DIRECT );
+      assert( dmg_e == DMG_DIRECT );
       // num_ticks = 0;
       base_dd_min = base_dd_max = atonement_dmg;
       may_crit = ( result == RESULT_CRIT );
@@ -1687,8 +1687,8 @@ struct priest_spell_t : public spell_t
 
   virtual void assess_damage( player_t* t,
                               double amount,
-                              dmg_type_e type,
-                              result_type_e impact_result )
+                              dmg_e type,
+                              result_e impact_result )
   {
     spell_t::assess_damage( t, amount, type, impact_result );
 
@@ -2787,8 +2787,8 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
 
   virtual void assess_damage( player_t* t,
                               double amount,
-                              dmg_type_e type,
-                              result_type_e impact_result )
+                              dmg_e type,
+                              result_e impact_result )
   {
     priest_procced_mastery_spell_t::assess_damage( t, amount, type, impact_result );
 
@@ -2918,8 +2918,8 @@ struct devouring_plague_t : public priest_spell_t
 
   virtual void assess_damage( player_t* t,
                               double amount,
-                              dmg_type_e type,
-                              result_type_e impact_result )
+                              dmg_e type,
+                              result_e impact_result )
   {
     priest_spell_t::assess_damage( t, amount, type, impact_result );
 
@@ -4249,7 +4249,7 @@ double priest_t::shadowy_recall_chance()
 
 // priest_t::primary_role ===================================================
 
-role_type_e priest_t::primary_role()
+role_e priest_t::primary_role()
 {
   switch ( player_t::primary_role() )
   {
@@ -4311,7 +4311,7 @@ double priest_t::composite_spell_hit()
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( school_type_e school, action_t* a )
+double priest_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4349,7 +4349,7 @@ double priest_t::composite_movement_speed()
 
 // priest_t::matching_gear_multiplier =======================================
 
-double priest_t::matching_gear_multiplier( attribute_type_e attr )
+double priest_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;
@@ -5078,9 +5078,9 @@ void priest_t::pre_analyze_hook()
 // priest_t::target_mitigation ==============================================
 
 double priest_t::target_mitigation( double        amount,
-                                    school_type_e school,
-                                    dmg_type_e    dt,
-                                    result_type_e result,
+                                    school_e school,
+                                    dmg_e    dt,
+                                    result_e result,
                                     action_t*     action )
 {
   amount = player_t::target_mitigation( amount, school, dt, result, action );
@@ -5113,7 +5113,7 @@ void priest_t::create_options()
 
 // priest_t::create_profile =================================================
 
-bool priest_t::create_profile( std::string& profile_str, save_type_e type, bool save_html )
+bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
   player_t::create_profile( profile_str, type, save_html );
 
@@ -5228,7 +5228,7 @@ std::string priest_t::set_default_glyphs()
 
 // class_modules::create::priest  =================================================
 
-player_t* class_modules::create::priest( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::priest( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<priest_t,SC_PRIEST>()( "Priest", sim, name, r );
 }

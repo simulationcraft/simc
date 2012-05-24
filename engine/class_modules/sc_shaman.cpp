@@ -66,9 +66,9 @@ struct shaman_t;
 
 #if SC_SHAMAN == 1
 
-enum totem_type_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
+enum totem_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
-enum imbue_type_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
+enum imbue_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
@@ -279,7 +279,7 @@ struct shaman_t : public player_t
 
   target_specific_t<shaman_td_t> target_data;
 
-  shaman_t( sim_t* sim, const std::string& name, race_type_e r = RACE_TAUREN ) :
+  shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
@@ -331,17 +331,17 @@ struct shaman_t : public player_t
   virtual void      moving();
   virtual double    composite_attack_speed();
   virtual double    composite_spell_hit();
-  virtual double    composite_spell_power( school_type_e school );
+  virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
-  virtual double    composite_player_multiplier( school_type_e school, action_t* a = NULL );
-  virtual double    matching_gear_multiplier( attribute_type_e attr );
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_type_e primary_role();
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual role_e primary_role();
   virtual void      combat_begin();
   virtual void      arise();
 
@@ -687,7 +687,7 @@ struct feral_spirit_pet_t : public pet_t
     melee -> execute(); // Kick-off repeating attack
   }
 
-  virtual double composite_attribute_multiplier( attribute_type_e attr )
+  virtual double composite_attribute_multiplier( attribute_e attr )
   {
     if ( attr == ATTR_STRENGTH || attr == ATTR_AGILITY )
       return 1.0;
@@ -700,7 +700,7 @@ struct feral_spirit_pet_t : public pet_t
     return current.attack_power_multiplier;
   }
 
-  virtual double composite_player_multiplier( school_type_e, action_t* )
+  virtual double composite_player_multiplier( school_e, action_t* )
   {
     return 1.0;
   }
@@ -807,7 +807,7 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
   }
 
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t /* periodicity */ ) { }
 
@@ -817,7 +817,7 @@ struct earth_elemental_pet_t : public pet_t
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
   }
 
-  virtual double composite_spell_power( school_type_e )
+  virtual double composite_spell_power( school_e )
   {
     return owner_sp;
   }
@@ -1046,7 +1046,7 @@ struct fire_elemental_t : public pet_t
     action_list_str                  = "travel/fire_blast/auto_attack";
   }
 
-  virtual resource_type_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
 
   virtual void regen( timespan_t periodicity )
   {
@@ -1056,12 +1056,12 @@ struct fire_elemental_t : public pet_t
     }
   }
   
-  virtual double composite_player_multiplier( school_type_e school, action_t* a = 0 )
+  virtual double composite_player_multiplier( school_e school, action_t* a = 0 )
   {
     return pet_t::composite_player_multiplier( school, a ) * ( ( type == PLAYER_PET ) ? 1.5 : 1.0 );
   }
 
-  virtual double composite_spell_power( school_type_e school )
+  virtual double composite_spell_power( school_e school )
   {
     return owner -> composite_spell_power( school ) * 0.55;
   }
@@ -2985,9 +2985,9 @@ struct shaman_totem_t : public shaman_spell_t
 {
   timespan_t totem_duration;
   double totem_bonus;
-  totem_type_e totem;
+  totem_e totem;
 
-  shaman_totem_t( const std::string& token, const std::string& totem_name, shaman_t* player, const std::string& options_str, totem_type_e t ) :
+  shaman_totem_t( const std::string& token, const std::string& totem_name, shaman_t* player, const std::string& options_str, totem_e t ) :
     shaman_spell_t( token, player, player -> find_class_spell( totem_name ), options_str ), totem_duration( timespan_t::zero() ), totem_bonus( 0 ), totem( t )
   {
     is_totem             = true;
@@ -4215,7 +4215,7 @@ void shaman_t::moving()
 
 // shaman_t::matching_gear_multiplier =======================================
 
-double shaman_t::matching_gear_multiplier( attribute_type_e attr )
+double shaman_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
     return specialization.mail_specialization -> effectN( 1 ).percent();
@@ -4252,7 +4252,7 @@ double shaman_t::composite_attack_speed()
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( school_type_e school )
+double shaman_t::composite_spell_power( school_e school )
 {
   double sp = 0;
 
@@ -4276,7 +4276,7 @@ double shaman_t::composite_spell_power_multiplier()
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( school_type_e school, action_t* a )
+double shaman_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -4383,7 +4383,7 @@ int shaman_t::decode_set( item_t& item )
 
 // shaman_t::primary_role ===================================================
 
-role_type_e shaman_t::primary_role()
+role_e shaman_t::primary_role()
 {
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
@@ -4415,7 +4415,7 @@ role_type_e shaman_t::primary_role()
 
 // class_modules::create::shaman  =================================================
 
-player_t* class_modules::create::shaman( sim_t* sim, const std::string& name, race_type_e r )
+player_t* class_modules::create::shaman( sim_t* sim, const std::string& name, race_e r )
 {
   return sc_create_class<shaman_t,SC_SHAMAN>()( "Shaman", sim, name, r );
 }
