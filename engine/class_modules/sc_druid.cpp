@@ -250,6 +250,7 @@ struct druid_t : public player_t
     const spell_data_t* starsurge;
     const spell_data_t* swiftmend;
     const spell_data_t* wrath;
+    const spell_data_t* savagery;
   } glyph;
 
   // Masteries
@@ -1581,7 +1582,6 @@ struct pounce_t : public druid_cat_attack_t
     druid_cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str ),
     pounce_bleed( 0 )
   {
-    requires_stealth_ = true;
     pounce_bleed     = new pounce_bleed_t( p );
   }
 
@@ -1639,6 +1639,9 @@ struct ravage_t : public druid_cat_attack_t
     if ( p() -> buff.t13_4pc_melee -> check() )
       return POSITION_NONE;
     
+    if ( p() -> buff.king_of_the_jungle -> check() )
+      return POSITION_NONE;
+
     return druid_cat_attack_t::requires_position();
   }
   
@@ -1770,12 +1773,20 @@ struct rip_t : public druid_cat_attack_t
 
 struct savage_roar_t : public druid_cat_attack_t
 {
+  timespan_t base_buff_duration;
+
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str )
+    druid_cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
+    base_buff_duration( timespan_t::zero() )
   {
     may_miss              = false;
     harmful               = false;
-    requires_combo_points = true;
+    requires_combo_points = p -> glyph.savagery -> ok() ? false : true;
+
+    if ( p -> glyph.savagery -> ok() )
+      base_buff_duration = p -> find_spell( p -> glyph.savagery -> effectN( 1 ).base_value() ) -> duration();
+    else
+      base_buff_duration = data().duration();
   }
 
   virtual void impact_s( action_state_t* state )
@@ -1783,7 +1794,11 @@ struct savage_roar_t : public druid_cat_attack_t
     druid_cat_attack_t::impact_s( state );
     druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
     
-    timespan_t duration = data().duration() + timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
+    timespan_t duration = base_buff_duration;
+
+    if ( ! p() -> glyph.savagery -> ok() )
+      duration += timespan_t::from_seconds( 6.0 ) * ds -> combo_points;
+
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
   }
 };
@@ -4183,6 +4198,7 @@ void druid_t::init_spells()
   glyph.swiftmend             = find_glyph_spell( "Glyph of Swiftmend" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
   glyph.wrath                 = find_glyph_spell( "Glyph of Wrath" );
+  glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
