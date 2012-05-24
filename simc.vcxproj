@@ -203,7 +203,6 @@
     <ClCompile Include="engine\sc_item.cpp" />
     <ClCompile Include="engine\dbc\sc_item_data.cpp" />
     <ClCompile Include="engine\interfaces\sc_js.cpp" />
-    <ClCompile Include="engine\sc_log.cpp" />
     <ClCompile Include="engine\sc_main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

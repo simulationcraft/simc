@@ -2637,7 +2637,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         double mana_gain = p() -> glyph.telluric_currents -> effectN( 2 ).percent();
         if ( p() -> spec == SHAMAN_ELEMENTAL || p() -> spec == SHAMAN_RESTORATION )
-          mana_gain *= 1.2;
+          mana_gain *= 0.2;
         p() -> resource_gain( RESOURCE_MANA,
                               state -> result_amount * mana_gain,
                               p() -> gain.telluric_currents );
@@ -3790,8 +3790,8 @@ void shaman_t::init_base()
   initial.attack_power_per_agility  = 2.0;
   initial.spell_power_per_intellect = 1.0;
 
-  if ( primary_tree() == SHAMAN_ELEMENTAL )
-    resources.initial_multiplier[ RESOURCE_MANA ] = specialization.spiritual_insight -> effectN( 1 ).percent();
+  resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + specialization.spiritual_insight -> effectN( 1 ).percent();
+  base.mp5 *= 1.0 + specialization.spiritual_insight -> effectN( 1 ).percent();
 
   current.distance = ( primary_tree() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   initial.distance = current.distance;

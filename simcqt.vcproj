@@ -437,10 +437,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_log.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\engine\class_modules\sc_mage.cpp"
 				>
 			</File>

@@ -95,6 +95,9 @@ struct priest_t : public player_t
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
+
+    buff_t* consume_surge_of_darkness;
+    buff_t* consume_divine_insight_shadow;
   } buffs;
 
   // Talents
@@ -2349,13 +2352,6 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-
-    generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
-  }
-
   virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
@@ -2368,12 +2364,20 @@ struct mind_blast_t : public priest_spell_t
     return m;
   }
 
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    p() -> buffs.consume_divine_insight_shadow -> expire();
+  }
+
   virtual void impact_s( action_state_t* s )
   {
     priest_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
     {
+      generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
       for ( int i=0; i < 4; i++ )
       {
         p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> check() );
@@ -2392,16 +2396,41 @@ struct mind_blast_t : public priest_spell_t
     return c;
   }
 
+  void consume_resource()
+  {
+/* BUG: Still costs mana as of 15726 
+    if ( p() -> buffs.consume_divine_insight_shadow -> check() )
+      resource_consumed = 0.0;
+    else
+*/
+      resource_consumed = cost();
+
+    player -> resource_loss( current_resource(), resource_consumed, 0, this );
+
+    if ( sim -> log )
+      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( current_resource() ),
+                     name(), player -> resources.current[ current_resource() ] );
+
+    stats -> consume_resource( current_resource(), resource_consumed );
+  }
+
   virtual double cost()
   {
+/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.divine_insight_shadow -> check() )
       return 0.0;
-
+*/
     return priest_spell_t::cost();
   }
 
   virtual void schedule_execute()
   {
+    if ( p() -> buffs.divine_insight_shadow -> up() )
+    {
+      p() -> buffs.consume_divine_insight_shadow -> trigger();
+    }
+
     priest_spell_t::schedule_execute();
 
     p() -> buffs.divine_insight_shadow -> expire();
@@ -2420,7 +2449,7 @@ struct mind_blast_t : public priest_spell_t
   {
     timespan_t a = priest_spell_t::execute_time();
 
-    if ( p() -> buffs.divine_insight_shadow -> up() )
+    if ( p() -> buffs.divine_insight_shadow -> check() )
     {
       return timespan_t::zero();
     }
@@ -2505,14 +2534,12 @@ struct mind_flay_t : public priest_spell_t
 
 struct mind_spike_t : public priest_spell_t
 {
-  bool consume_surge_of_darkness;
-
   struct mind_spike_state_t : public action_state_t
   {
-    bool consume_surge_of_darkness;
+    bool surge_of_darkness;
 
     mind_spike_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      consume_surge_of_darkness( false )
+      surge_of_darkness ( false )
     {
 
     }
@@ -2523,14 +2550,14 @@ struct mind_spike_t : public priest_spell_t
 
       action_state_t::copy_state( o );
 
-      const mind_spike_state_t* mss_t = static_cast< const mind_spike_state_t* >( o );
-      consume_surge_of_darkness = mss_t -> consume_surge_of_darkness;
+      const mind_spike_state_t* dps_t = static_cast< const mind_spike_state_t* >( o );
+      surge_of_darkness = dps_t -> surge_of_darkness;
     }
   };
 
+
   mind_spike_t( priest_t* player, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) ),
-    consume_surge_of_darkness( false )
+    priest_spell_t( "mind_spike", player, player -> find_class_spell( "Mind Spike" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2559,8 +2586,8 @@ struct mind_spike_t : public priest_spell_t
 
     if ( s == 0 )
     {
-      mind_spike_state_t* ms_ = static_cast< mind_spike_state_t* >( s_ );
-      ms_ -> consume_surge_of_darkness = false;
+      mind_spike_state_t* ds_ = static_cast< mind_spike_state_t* >( s_ );
+      ds_ -> surge_of_darkness = false;
     }
 
     return s_;
@@ -2568,12 +2595,13 @@ struct mind_spike_t : public priest_spell_t
 
   virtual void snapshot_state( action_state_t* state, uint32_t flags )
   {
-    mind_spike_state_t* mss_t = static_cast< mind_spike_state_t* >( state );
+    mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( state );
 
-    mss_t -> consume_surge_of_darkness = consume_surge_of_darkness;
+    dps_t -> surge_of_darkness = p() -> buffs.consume_surge_of_darkness -> check() != 0;
 
     priest_spell_t::snapshot_state( state, flags );
   }
+
 
   virtual double action_multiplier()
   {
@@ -2587,6 +2615,13 @@ struct mind_spike_t : public priest_spell_t
     return m;
   }
 
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    p() -> buffs.consume_surge_of_darkness -> expire();
+  }
+
   virtual void impact_s( action_state_t* s )
   {
     priest_spell_t::impact_s( s );
@@ -2597,8 +2632,8 @@ struct mind_spike_t : public priest_spell_t
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
-      mind_spike_state_t* mss = static_cast< mind_spike_state_t* >( s );
-      if ( ! mss -> consume_surge_of_darkness && ! td( s -> target ) -> remove_dots_event )
+      mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
+      if ( ! dps_t -> surge_of_darkness && ! td( s -> target ) -> remove_dots_event )
       {
         td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
       }
@@ -2607,25 +2642,49 @@ struct mind_spike_t : public priest_spell_t
 
   virtual void schedule_execute()
   {
-    if ( ( consume_surge_of_darkness = p() -> buffs.surge_of_darkness -> up() != 0 ) == true )
+    if ( p() -> buffs.surge_of_darkness -> up() )
     {
-      p() -> buffs.surge_of_darkness -> expire();
+      p() -> buffs.consume_surge_of_darkness -> trigger();
     }
 
     priest_spell_t::schedule_execute();
+
+    p() -> buffs.surge_of_darkness -> expire();
+  }
+
+  void consume_resource()
+  {
+/* BUG: Still costs mana as of 15726
+    if ( p() -> buffs.consume_surge_of_darkness -> check() )
+      resource_consumed = 0.0;
+    else
+*/
+      resource_consumed = cost();
+
+    player -> resource_loss( current_resource(), resource_consumed, 0, this );
+
+    if ( sim -> log )
+      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( current_resource() ),
+                     name(), player -> resources.current[ current_resource() ] );
+
+    stats -> consume_resource( current_resource(), resource_consumed );
   }
 
   virtual double cost()
   {
-    if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
+/* BUG: Still costs mana as of 15726
+    if ( p() -> buffs.surge_of_darkness -> check() )
       return 0.0;
+*/
 
     return priest_spell_t::cost();
   }
 
+
   virtual timespan_t execute_time()
   {
-    if ( consume_surge_of_darkness || p() -> buffs.surge_of_darkness -> check() )
+    if ( p() -> buffs.surge_of_darkness -> check() )
     {
       return timespan_t::zero();
     }
@@ -2723,9 +2782,11 @@ struct shadow_word_death_t : public priest_spell_t
 
   virtual void execute()
   {
+    bool below_20 = ( target -> health_percentage() < 20.0 );
+
     priest_spell_t::execute();
 
-    if ( ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
+    if ( below_20 && ! is_dtr_action && ! p() -> buffs.shadow_word_death_reset_cooldown -> up() )
     {
       cooldown -> reset();
       p() -> buffs.shadow_word_death_reset_cooldown -> trigger();
@@ -2781,7 +2842,7 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
   {
     double m = priest_spell_t::action_ta_multiplier();
 
-    // m *= orbs_used;  // BUG: Not actually being used as of 15677
+    m *= orbs_used;
 
     return m;
   }
@@ -2793,11 +2854,14 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
   {
     priest_procced_mastery_spell_t::assess_damage( t, amount, type, impact_result );
 
+// BUG: No longer does any healing in-game as of 15726
+/*
     if ( result_is_hit( impact_result ) )
     {
       double a = amount * ( 0.15 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ; // Procced DP still only heals for 15% base, not 30%
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
     }
+*/
   }
 };
 
@@ -2924,7 +2988,7 @@ struct devouring_plague_t : public priest_spell_t
   {
     priest_spell_t::assess_damage( t, amount, type, impact_result );
 
-    if ( result_is_hit( impact_result ) && type == DMG_DIRECT ) // BUG 15677: No longer heals off (non-Mastery) procs
+    if ( result_is_hit( impact_result ) && type == DMG_DIRECT ) // BUG 15677: No longer heals off dot ticks
     {
       double a = amount * ( 0.30 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ;
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
@@ -4579,7 +4643,7 @@ void priest_t::init_spells()
   specs.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
 
   // Shadow
-  specs.mind_surge                     = find_specialization_spell( "Shadow Passive" );
+  specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
   specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
@@ -4690,6 +4754,9 @@ void priest_t::init_buffs()
   const spell_data_t* surge_of_darkness  = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", surge_of_darkness )
                                            .chance( 0.15 );
+
+  buffs.consume_surge_of_darkness        = buff_creator_t( this, "consume_surge_of_darkness" ).quiet( true );
+  buffs.consume_divine_insight_shadow    = buff_creator_t( this, "consume_divine_insight_shadow" ).quiet( true );
 
   // Set Bonus
 }

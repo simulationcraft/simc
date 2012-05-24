@@ -1248,10 +1248,10 @@ bool sim_t::init()
                                   .max_stack( 100 )
                                   .default_value( dbc.spell( 19506 ) -> effectN( 1 ).percent() );
 
-  // Critical Strike, value from Trueshot Aura (id=19506) (Hunter)
+  // Critical Strike, value from Arcane Brilliance (id=1459) (Mage)
   auras.critical_strike = buff_creator_t( this, "critical_strike" )
                           .max_stack( 100 )
-                          .default_value( dbc.spell( 19506 ) -> effectN( 3 ).percent() );
+                          .default_value( dbc.spell( 1459 ) -> effectN( 2 ).percent() );
 
   // Mastery, value from Grace of Air (id=116956) (Shaman)
   auras.mastery = buff_creator_t( this, "mastery" )
@@ -1268,15 +1268,15 @@ bool sim_t::init()
                                  .max_stack( 100 )
                                  .default_value( dbc.spell( 77747 ) -> effectN( 1 ).percent() );
 
-  // Stamina, value from fortitude (id=79104) (Priest)
+  // Stamina, value from fortitude (id=21562) (Priest)
   auras.stamina = buff_creator_t( this, "stamina" )
                   .max_stack( 100 )
-                  .default_value( dbc.spell( 79104 ) -> effectN( 1 ).percent() );
+                  .default_value( dbc.spell( 21562 ) -> effectN( 1 ).percent() );
 
-  // Strength, Agility, and Intellect, value from Blessing of Kings (id=79062) (Paladin)
+  // Strength, Agility, and Intellect, value from Blessing of Kings (id=20217) (Paladin)
   auras.str_agi_int = buff_creator_t( this, "str_agi_int" )
                       .max_stack( 100 )
-                      .default_value( dbc.spell( 79062 ) -> effectN( 1 ).percent() );
+                      .default_value( dbc.spell( 20217 ) -> effectN( 1 ).percent() );
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
