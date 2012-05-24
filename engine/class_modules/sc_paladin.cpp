@@ -198,9 +198,10 @@ struct paladin_t : public player_t
     procs( procs_t() ),
     spells( spells_t() ),
     talents( talents_t() ),
-    glyphs( glyphs_t() ),
-    target_data( "target_data", this )
+    glyphs( glyphs_t() )
   {
+    target_data.init( "target_data", this );
+
     active_beacon_of_light             = 0;
     active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;

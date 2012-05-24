@@ -286,9 +286,10 @@ struct priest_t : public player_t
     pets( pets_t() ),
     initial_shadow_orbs( 0 ),
     glyphs( glyphs_t() ),
-    constants( constants_t() ),
-    target_data( "target_data", this )
+    constants( constants_t() )
   {
+    target_data.init( "target_data", this );
+
     initial.distance                     = 40.0;
 
     cooldowns.mind_blast                 = get_cooldown( "mind_blast" );

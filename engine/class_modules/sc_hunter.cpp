@@ -226,9 +226,10 @@ public:
     rngs( rngs_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
-    passive_spells( passive_spells_t() ),
-    target_data( "target_data", this )
+    passive_spells( passive_spells_t() )
   {
+    target_data.init( "target_data", this );
+
     // Active
     active_pet             = 0;
     active_aspect          = ASPECT_NONE;

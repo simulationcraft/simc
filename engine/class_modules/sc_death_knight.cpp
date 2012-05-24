@@ -311,9 +311,10 @@ struct death_knight_t : public player_t
     rngs( rngs_t() ),
     _runes( runes_t() ),
     talents( talents_t() ),
-    benefits( benefits_t() ),
-    target_data( "target_data", this )
+    benefits( benefits_t() )
   {
+    target_data.init( "target_data", this );
+
     cooldowns.howling_blast = get_cooldown( "howling_blast" );
 
     create_options();

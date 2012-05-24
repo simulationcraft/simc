@@ -283,8 +283,10 @@ struct shaman_t : public player_t
     player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ), target_data( "target_data", this )
+    eoe_proc_chance( 0 ) 
   {
+    target_data.init( "target_data", this );
+
     // Active
     active_lightning_charge   = 0;
     active_searing_flames_dot = 0;

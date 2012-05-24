@@ -90,9 +90,9 @@ struct monk_t : public player_t
     procs( procs_t() ),
     talents( talents_t() ),
     passives( passives_t() ),
-    glyphs( glyphs_t() ),
-    target_data( "target_data", this )
+    glyphs( glyphs_t() )
   {
+    target_data.init( "target_data", this );
 
     active_stance             = STANCE_FIERCE_TIGER;
 

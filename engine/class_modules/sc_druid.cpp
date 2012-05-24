@@ -387,9 +387,10 @@ struct druid_t : public player_t
     rng( rngs_t() ),
     specialization( specializations_t() ),
     spell( spells_t() ),
-    talent( talents_t() ),
-    target_data( "target_data", this )
+    talent( talents_t() )
   {
+    target_data.init( "target_data", this );
+
     active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
 

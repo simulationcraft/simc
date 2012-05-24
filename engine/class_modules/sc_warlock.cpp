@@ -47,9 +47,10 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),
-  ember_react( timespan_t::max() ),
-  target_data( "target_data", this )
+  ember_react( timespan_t::max() )
 {
+  target_data.init( "target_data", this );
+
   current.distance = 40;
   initial.distance = 40;
 

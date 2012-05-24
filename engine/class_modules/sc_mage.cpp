@@ -236,9 +236,10 @@ struct mage_t : public player_t
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
-    target_data( "target_data", this ),
     mana_gem_charges( 0 )
   {
+    target_data.init( "target_data", this );
+
     // Cooldowns
     cooldowns.evocation     = get_cooldown( "evocation"     );
     cooldowns.inferno_blast = get_cooldown( "inferno_blast" );
