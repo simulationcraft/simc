@@ -770,17 +770,26 @@ struct immolate_t : public warlock_spell_t
     }
   }
 
+  virtual double cost()
+  {
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      return 0;
+
+    return warlock_spell_t::cost();
+  }
+
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
-    }
 
     warlock_spell_t::execute();
 
-    aoe = 0;
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = 0;
+    }
   }
 
   virtual double action_da_multiplier()
@@ -822,17 +831,26 @@ struct conflagrate_t : public warlock_spell_t
     }
   }
 
+  virtual double cost()
+  {
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      return 0;
+
+    return warlock_spell_t::cost();
+  }
+
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
-    }
 
     warlock_spell_t::execute();
 
-    aoe = 0;
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = 0;
+    }
   }
 
   virtual double action_multiplier()
@@ -878,7 +896,6 @@ struct incinerate_t : public warlock_spell_t
 
     if ( aoe == -1 ) m *= ( 1.0 + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 1 ).mastery_value() ) * 0.4;
 
-    //FIXME: Check if either of these apply to the fire and brimstone version
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
@@ -888,15 +905,16 @@ struct incinerate_t : public warlock_spell_t
 
   virtual void execute()
   {
-    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> check() )
       aoe = -1;
-    }
 
     warlock_spell_t::execute();
 
-    aoe = 0;
+    if ( ! is_dtr_action && p() -> buffs.fire_and_brimstone -> up() )
+    {
+      p() -> buffs.fire_and_brimstone -> expire();
+      aoe = 0;
+    }
 
     if ( p() -> buffs.backdraft -> check() && ! is_dtr_action )
     {
@@ -930,6 +948,9 @@ struct incinerate_t : public warlock_spell_t
 
   virtual double cost()
   {
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      return 0;
+
     double c = warlock_spell_t::cost();
 
     if ( p() -> buffs.backdraft -> check() )
@@ -1727,7 +1748,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> background = true;
     corruption -> dual = true;
     corruption -> proc = true;
-    corruption -> may_miss = false; // FIXME: Assumed, needs testing
+    corruption -> may_miss = false;
 
     if ( ! dtr && player -> has_dtr )
     {
