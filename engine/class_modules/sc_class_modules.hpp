@@ -9,11 +9,11 @@
 #define SC_CLASS_MODULES
 
 // Enabled classes
-#define SC_DEATH_KNIGHT 0
+#define SC_DEATH_KNIGHT 1
 #define SC_DRUID        1
-#define SC_HUNTER       0
-#define SC_MAGE         0
-#define SC_MONK         0
+#define SC_HUNTER       1
+#define SC_MAGE         1
+#define SC_MONK         1
 #define SC_PALADIN      1
 #define SC_PRIEST       1
 #define SC_ROGUE        0
