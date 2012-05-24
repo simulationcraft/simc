@@ -2740,6 +2740,36 @@ struct auto_attack_t : public melee_attack_t
   }
 };
 
+// Astral Communion =========================================================
+
+struct astral_communion_t : public druid_spell_t
+{
+  int starting_direction;
+  astral_communion_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "astral_communion", player, player -> find_class_spell( "Astral Communion" ), options_str ),
+    starting_direction( 0 )
+  {
+    harmful      = false;
+    hasted_ticks = false;
+    channeled    = true;
+    may_miss     = false;
+  }
+  virtual void execute()
+  {
+    if ( p() -> eclipse_bar_direction == 0 )
+      starting_direction = 1;
+    else
+      starting_direction = p() -> eclipse_bar_direction;
+
+    druid_spell_t::execute();
+  }
+  
+  virtual void tick( dot_t* d )
+  {
+    trigger_eclipse_energy_gain( this, data().effectN( 1 ).base_value() * starting_direction );
+  }
+};
+
 // Barkskin =================================================================
 
 struct barkskin_t : public druid_spell_t
@@ -4009,6 +4039,7 @@ struct wrath_t : public druid_spell_t
 action_t* druid_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
+  if ( name == "astral_communion"       ) return new       astral_communion_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
