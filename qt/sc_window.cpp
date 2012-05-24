@@ -395,7 +395,7 @@ void SimulationCraftWindow::updateSimProgress()
 
 void SimulationCraftWindow::loadHistory()
 {
-  http_t::cache_load();
+  http::cache_load();
   QFile file( "simc_history.dat" );
   if ( file.open( QIODevice::ReadOnly ) )
   {
@@ -433,7 +433,7 @@ void SimulationCraftWindow::loadHistory()
 void SimulationCraftWindow::saveHistory()
 {
   charDevCookies->save();
-  http_t::cache_save();
+  http::cache_save();
   QFile file( "simc_history.dat" );
   if ( file.open( QIODevice::WriteOnly ) )
   {
@@ -811,7 +811,7 @@ void SimulationCraftWindow::createBestInSlotTab()
   const int TIER_MAX=1;
   const char* tierNames[] = { "T13" };
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
-  for ( player_type_e i=DEATH_KNIGHT; i <= WARRIOR; i++ )
+  for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
     range::fill( rootItems[ i ], 0 );
   }
@@ -868,14 +868,14 @@ void SimulationCraftWindow::createBestInSlotTab()
       profile = QDir::toNativeSeparators( profile );
       profile += profileList[ i ];
 
-      player_type_e player = PLAYER_MAX;
+      player_e player = PLAYER_MAX;
 
       // Hack! For now...  Need to decide sim-wide just how the heck we want to refer to DKs.
       if ( profile.contains( "Death_Knight" ) )
         player = DEATH_KNIGHT;
       else
       {
-        for ( player_type_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
+        for ( player_e j = PLAYER_NONE; j < PLAYER_MAX; j++ )
         {
           if ( profile.contains( util::player_type_string( j ), Qt::CaseInsensitive ) )
           {
@@ -1300,7 +1300,7 @@ void ImportThread::importRawr()
 {
   // Win7/x86_64 workaround
   std::string xml = mainWindow->rawrText->toPlainText().toUtf8().constData();
-  player = rawr_t::load_player( sim, "rawr.xml", xml );
+  player = rawr::load_player( sim, "rawr.xml", xml );
 }
 
 void ImportThread::run()
@@ -1424,7 +1424,7 @@ void SimulateThread::run()
     sim -> scaling -> analyze();
     sim -> plot -> analyze();
     sim -> reforge_plot -> analyze();
-    report_t::print_suite( sim );
+    report::print_suite( sim );
   }
 }
 
