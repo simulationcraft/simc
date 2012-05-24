@@ -275,7 +275,7 @@ static action_t* enemy_create_action( player_t* p, const std::string& name, cons
   if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, options_str );
   if ( name == "summon_add"  ) return new  summon_add_t( p, options_str );
 
-  return NULL; 
+  return NULL;
 }
 
 struct enemy_t : public player_t
@@ -351,7 +351,7 @@ struct add_t : public pet_t
   { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name,
-				   const std::string& options_str )
+                                   const std::string& options_str )
   {
     action_t* a = enemy_create_action( this, name, options_str );
 

@@ -205,13 +205,13 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
     return melee_attack_t::ready();
   }
-  
+
   virtual void execute()
   {
     melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
+      p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
@@ -249,13 +249,13 @@ struct warlock_pet_spell_t : public spell_t
 
     return spell_t::ready();
   }
-  
+
   virtual void execute()
   {
     spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
+      p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
 
@@ -327,7 +327,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   virtual void init()
   {
     warlock_pet_melee_attack_t::init();
-    
+
     felstorm_tick -> stats = stats;
   }
 
@@ -414,7 +414,7 @@ struct infernal_immolation_t : public warlock_pet_spell_t
   virtual void cancel()
   {
     dot_t* dot = find_dot();
-    if( dot ) dot -> reset();
+    if ( dot ) dot -> reset();
     action_t::cancel();
   }
 };
@@ -435,7 +435,7 @@ struct doom_bolt_t : public warlock_pet_spell_t
   virtual double composite_target_multiplier( player_t* target )
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
-    
+
     if ( target -> health_percentage() < 20 )
     {
       m *= 1.0 + data().effectN( 2 ).percent();
@@ -464,9 +464,9 @@ struct wild_firebolt_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) 
-      && p() -> o() -> spec.molten_core -> ok() 
-      && p() -> o() -> rngs.molten_core -> roll( 0.08 ) )
+    if ( result_is_hit( s -> result )
+         && p() -> o() -> spec.molten_core -> ok()
+         && p() -> o() -> rngs.molten_core -> roll( 0.08 ) )
       p() -> o() -> buffs.molten_core -> trigger();
 
 
@@ -786,7 +786,7 @@ warlock_main_pet_t::warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std:
 
 double warlock_main_pet_t::composite_attack_expertise( weapon_t* )
 {
-  return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); 
+  return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 );
 }
 
 // ==========================================================================
@@ -992,7 +992,7 @@ action_t* doomguard_pet_t::create_action( const std::string& name,
 
 wild_imp_pet_t::wild_imp_pet_t( sim_t* sim, warlock_t* owner, wild_imp_pet_t* m ) :
   warlock_guardian_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), main_imp( m )
-{ 
+{
 }
 
 void wild_imp_pet_t::init_base()
@@ -1012,7 +1012,7 @@ timespan_t wild_imp_pet_t::available()
 }
 
 action_t* wild_imp_pet_t::create_action( const std::string& name,
-					 const std::string& options_str )
+                                         const std::string& options_str )
 {
   if ( name == "firebolt" ) return new wild_firebolt_t( this );
 

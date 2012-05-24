@@ -28,10 +28,10 @@ const bool BCP_DEBUG_ITEMS = false;
 
 // download_id ==============================================================
 
-static js_node_t* download_id( sim_t* sim, 
-			       const std::string& region, 
-			       const std::string& item_id, 
-			       cache::behavior_e caching )
+static js_node_t* download_id( sim_t* sim,
+                               const std::string& region,
+                               const std::string& item_id,
+                               cache::behavior_e caching )
 {
   if ( item_id.empty() || item_id == "0" ) return 0;
 
@@ -46,9 +46,9 @@ static js_node_t* download_id( sim_t* sim,
 
 // parse_profession =========================================================
 
-static void parse_profession( std::string& professions_str, 
-			      js_node_t* profile, 
-			      int index )
+static void parse_profession( std::string& professions_str,
+                              js_node_t* profile,
+                              int index )
 {
   std::string key = "professions/primary/" + util::to_string( index );
   if ( js_node_t* profession = js::get_node( profile, key ) )
@@ -67,8 +67,8 @@ static void parse_profession( std::string& professions_str,
 
 // pick_talents =============================================================
 
-static js_node_t* pick_talents( js_node_t* talents, 
-				const std::string& specifier )
+static js_node_t* pick_talents( js_node_t* talents,
+                                const std::string& specifier )
 {
   js_node_t* spec1 = js::get_child( talents, "0" );
   js_node_t* spec2 = js::get_child( talents, "1" );
@@ -106,8 +106,8 @@ static js_node_t* pick_talents( js_node_t* talents,
 
 // parse_talents ============================================================
 
-static bool parse_talents( player_t* p, 
-			   js_node_t* talents )
+static bool parse_talents( player_t* p,
+                           js_node_t* talents )
 {
   std::string talent_encoding;
   if ( ! js::get_value( talent_encoding, talents, "build" ) )
@@ -191,8 +191,8 @@ static bool parse_glyphs( player_t* p, js_node_t* /*build*/ )
 
 // parse_items ==============================================================
 
-static bool parse_items( player_t* p, 
-			 js_node_t* items )
+static bool parse_items( player_t* p,
+                         js_node_t* items )
 {
   if ( !items ) return true;
 
@@ -276,8 +276,8 @@ static bool parse_items( player_t* p,
 // parse_player =============================================================
 
 static player_t* parse_player( sim_t*             sim,
-			       player_spec_t&     player,
-			       cache::behavior_e  caching )
+                               player_spec_t&     player,
+                               cache::behavior_e  caching )
 {
   sim -> current_slot = 0;
 
@@ -363,7 +363,7 @@ static player_t* parse_player( sim_t*             sim,
   if ( js::get_value( p -> report_information.thumbnail_url, profile, "thumbnail" ) )
   {
     p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
-                         p -> region_str + '/' + p -> report_information.thumbnail_url;
+                                            p -> region_str + '/' + p -> report_information.thumbnail_url;
     http::format( p -> report_information.thumbnail_url );
   }
 
@@ -403,10 +403,10 @@ static player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-static bool download_item_data( item_t& item, 
-				item_info_t& item_data,
-				const std::string& item_id, 
-				cache::behavior_e caching )
+static bool download_item_data( item_t& item,
+                                item_info_t& item_data,
+                                const std::string& item_id,
+                                cache::behavior_e caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -553,10 +553,10 @@ static bool download_item_data( item_t& item,
 // download_roster ==========================================================
 
 static js_node_t* download_roster( sim_t* sim,
-				   const std::string& region,
-				   const std::string& server,
-				   const std::string& name,
-				   cache::behavior_e  caching )
+                                   const std::string& region,
+                                   const std::string& server,
+                                   const std::string& name,
+                                   cache::behavior_e  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
                     name + "?fields=members";
@@ -620,11 +620,11 @@ static std::string parse_gem_stats( const std::string& bonus )
 // bcp_api::download_player =================================================
 
 player_t* bcp_api::download_player( sim_t*             sim,
-				    const std::string& region,
-				    const std::string& server,
-				    const std::string& name,
-				    const std::string& talents,
-				    cache::behavior_e  caching )
+                                    const std::string& region,
+                                    const std::string& server,
+                                    const std::string& name,
+                                    const std::string& talents,
+                                    cache::behavior_e  caching )
 {
   sim -> current_name = name;
 
@@ -660,13 +660,13 @@ bool bcp_api::download_item( item_t& item, const std::string& item_id, cache::be
 // bcp_api::download_slot() =================================================
 
 bool bcp_api::download_slot( item_t& item,
-			     const std::string& item_id,
-			     const std::string& enchant_id,
-			     const std::string& addon_id,
-			     const std::string& reforge_id,
-			     const std::string& rsuffix_id,
-			     const std::string gem_ids[ 3 ],
-			     cache::behavior_e caching )
+                             const std::string& item_id,
+                             const std::string& enchant_id,
+                             const std::string& addon_id,
+                             const std::string& reforge_id,
+                             const std::string& rsuffix_id,
+                             const std::string gem_ids[ 3 ],
+                             cache::behavior_e caching )
 {
   // BCP API doesn't currently provide enough information to describe items completely.
   if ( ! BCP_DEBUG_ITEMS )
@@ -707,14 +707,14 @@ bool bcp_api::download_slot( item_t& item,
 
 // bcp_api::download_guild ==================================================
 
-bool bcp_api::download_guild( sim_t* sim, 
-			      const std::string& region, 
-			      const std::string& server, 
-			      const std::string& name,
-			      const std::vector<int>& ranks, 
-			      int player_filter, 
-			      int max_rank, 
-			      cache::behavior_e caching )
+bool bcp_api::download_guild( sim_t* sim,
+                              const std::string& region,
+                              const std::string& server,
+                              const std::string& name,
+                              const std::vector<int>& ranks,
+                              int player_filter,
+                              int max_rank,
+                              cache::behavior_e caching )
 {
   js_node_t* js = download_roster( sim, region, server, name, caching );
   if ( !js ) return false;
@@ -770,9 +770,9 @@ bool bcp_api::download_guild( sim_t* sim,
 // bcp_api::download_glyph ==================================================
 
 bool bcp_api::download_glyph( player_t*          player,
-			      std::string&       glyph_name,
-			      const std::string& glyph_id,
-			      cache::behavior_e  caching )
+                              std::string&       glyph_name,
+                              const std::string& glyph_id,
+                              cache::behavior_e  caching )
 {
   const std::string& region =
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
@@ -837,8 +837,8 @@ gem_e bcp_api::parse_gem( item_t& item, const std::string& gem_id, cache::behavi
 }
 
 player_t* wowreforge::download_player( sim_t*             sim,
-				       const std::string& profile_id,
-				       cache::behavior_e  caching )
+                                       const std::string& profile_id,
+                                       cache::behavior_e  caching )
 {
   sim -> current_name = profile_id;
 

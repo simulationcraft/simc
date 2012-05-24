@@ -282,7 +282,7 @@ js_node_t* js::create( sim_t* sim, FILE* input )
 // js::get_child ============================================================
 
 js_node_t* js::get_child( js_node_t*         root,
-			  const std::string& name_str )
+                          const std::string& name_str )
 {
   int num_children = ( int ) root -> children.size();
   for ( int i=0; i < num_children; i++ )
@@ -297,7 +297,7 @@ js_node_t* js::get_child( js_node_t*         root,
 // js::get_children =========================================================
 
 int js::get_children( std::vector<js_node_t*>& nodes,
-		      js_node_t*               root )
+                      js_node_t*               root )
 {
   nodes = root -> children;
   return ( int ) nodes.size();
@@ -306,7 +306,7 @@ int js::get_children( std::vector<js_node_t*>& nodes,
 // js::get_node =============================================================
 
 js_node_t* js::get_node( js_node_t*         root,
-			 const std::string& path )
+                         const std::string& path )
 {
   if ( path.empty() || path == root -> name() )
     return root;
@@ -317,8 +317,8 @@ js_node_t* js::get_node( js_node_t*         root,
 // js::get_value ============================================================
 
 bool js::get_value( std::string&       value,
-		    js_node_t*         root,
-		    const std::string& path )
+                    js_node_t*         root,
+                    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -330,8 +330,8 @@ bool js::get_value( std::string&       value,
 // js::get_value ============================================================
 
 bool js::get_value( int&               value,
-		    js_node_t*         root,
-		    const std::string& path )
+                    js_node_t*         root,
+                    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -343,8 +343,8 @@ bool js::get_value( int&               value,
 // js::get_value ============================================================
 
 bool js::get_value( double&            value,
-		    js_node_t*         root,
-		    const std::string& path )
+                    js_node_t*         root,
+                    const std::string& path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return false;
@@ -356,8 +356,8 @@ bool js::get_value( double&            value,
 // js::get_value ============================================================
 
 int js::get_value( std::vector<std::string>& value,
-		   js_node_t*               root,
-		   const std::string&       path )
+                   js_node_t*               root,
+                   const std::string&       path )
 {
   js_node_t* node = split_path( root, path );
   if ( ! node ) return 0;
@@ -384,8 +384,8 @@ const char* js::get_name( js_node_t* node )
 // js::print ================================================================
 
 void js::print( js_node_t* root,
-		FILE*      file,
-		int        spacing )
+                FILE*      file,
+                int        spacing )
 {
   if ( ! root ) return;
 

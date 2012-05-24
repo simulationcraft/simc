@@ -60,8 +60,8 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
 
 template <unsigned HW, typename Range, typename Out>
 inline Range& sliding_window_average( Range& r, Out out )
-{ 
-  sliding_window_average<HW>( range::begin( r ), range::end( r ), out ); 
+{
+  sliding_window_average<HW>( range::begin( r ), range::end( r ), out );
   return r;
 }
 

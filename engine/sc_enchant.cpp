@@ -744,76 +744,76 @@ static void register_executioner( player_t* p, const std::string& mh_enchant, co
 static void register_hurricane( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
+  {
+    stat_buff_t *mh_buff=0, *oh_buff=0;
+    if ( mh_enchant == "hurricane" )
     {
-      stat_buff_t *mh_buff=0, *oh_buff=0;
-      if ( mh_enchant == "hurricane" )
-      {
-        mh_buff = stat_buff_creator_t(
-                    buff_creator_t( p, "hurricane_mh" )
-                    .max_stack( 1 )
-                    .duration( timespan_t::from_seconds( 12 ) )
-                    .cd( timespan_t::zero() )
-                    .chance( 0 )
-                    .activated( false ) )
-                  .stat( STAT_HASTE_RATING )
-                  .amount( 450.0 );
-        p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
-        p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
-      }
-      if ( oh_enchant == "hurricane" )
-      {
-        oh_buff = stat_buff_creator_t(
-                    buff_creator_t( p, "hurricane_oh" )
-                    .max_stack( 1 )
-                    .duration( timespan_t::from_seconds( 12 ) )
-                    .cd( timespan_t::zero() )
-                    .chance( 0 )
-                    .activated( false ) )
-                  .stat( STAT_HASTE_RATING )
-                  .amount( 450.0 );
-        p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
-        p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
-      }
-      // Custom proc is required for spell damage procs.
-      // If MH buff is up, then refresh it, else
-      // IF OH buff is up, then refresh it, else
-      // Trigger a new buff not associated with either MH or OH
-      // This means that it is possible to have three stacks
-      struct hurricane_spell_proc_callback_t : public action_callback_t
-      {
-        buff_t *mh_buff, *oh_buff, *s_buff;
-        hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
-          action_callback_t( p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
-        {
-        }
-        virtual void trigger( action_t* /* a */, void* /* call_data */ )
-        {
-          if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
-          if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
-          if ( mh_buff && mh_buff -> check() )
-          {
-            mh_buff -> trigger();
-            s_buff -> cooldown -> start();
-          }
-          else if ( oh_buff && oh_buff -> check() )
-          {
-            oh_buff -> trigger();
-            s_buff -> cooldown -> start();
-          }
-          else s_buff -> trigger();
-        }
-      };
-      stat_buff_t* s_buff = stat_buff_creator_t(
-                              buff_creator_t( p, "hurricane_s" )
-                              .duration( timespan_t::from_seconds( 12 ) )
-                              .cd( timespan_t::from_seconds( 45.0 ) )
-                              .activated( false ) )
-                            .stat( STAT_HASTE_RATING ).amount( 450 );
-      p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-      p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-      p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
-      p -> callbacks.register_tick_heal_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+      mh_buff = stat_buff_creator_t(
+                  buff_creator_t( p, "hurricane_mh" )
+                  .max_stack( 1 )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .cd( timespan_t::zero() )
+                  .chance( 0 )
+                  .activated( false ) )
+                .stat( STAT_HASTE_RATING )
+                .amount( 450.0 );
+      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
+      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
+    if ( oh_enchant == "hurricane" )
+    {
+      oh_buff = stat_buff_creator_t(
+                  buff_creator_t( p, "hurricane_oh" )
+                  .max_stack( 1 )
+                  .duration( timespan_t::from_seconds( 12 ) )
+                  .cd( timespan_t::zero() )
+                  .chance( 0 )
+                  .activated( false ) )
+                .stat( STAT_HASTE_RATING )
+                .amount( 450.0 );
+      p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
+      p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
+    }
+    // Custom proc is required for spell damage procs.
+    // If MH buff is up, then refresh it, else
+    // IF OH buff is up, then refresh it, else
+    // Trigger a new buff not associated with either MH or OH
+    // This means that it is possible to have three stacks
+    struct hurricane_spell_proc_callback_t : public action_callback_t
+    {
+      buff_t *mh_buff, *oh_buff, *s_buff;
+      hurricane_spell_proc_callback_t( player_t* p, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
+        action_callback_t( p ), mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
+      {
+      }
+      virtual void trigger( action_t* /* a */, void* /* call_data */ )
+      {
+        if ( s_buff -> cooldown -> remains() > timespan_t::zero() ) return;
+        if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
+        if ( mh_buff && mh_buff -> check() )
+        {
+          mh_buff -> trigger();
+          s_buff -> cooldown -> start();
+        }
+        else if ( oh_buff && oh_buff -> check() )
+        {
+          oh_buff -> trigger();
+          s_buff -> cooldown -> start();
+        }
+        else s_buff -> trigger();
+      }
+    };
+    stat_buff_t* s_buff = stat_buff_creator_t(
+                            buff_creator_t( p, "hurricane_s" )
+                            .duration( timespan_t::from_seconds( 12 ) )
+                            .cd( timespan_t::from_seconds( 45.0 ) )
+                            .activated( false ) )
+                          .stat( STAT_HASTE_RATING ).amount( 450 );
+    p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+    p -> callbacks.register_tick_heal_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
+  }
 }
 
 static void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
@@ -1008,9 +1008,9 @@ void enchant::init( player_t* p )
 // enchant::get_encoding ====================================================
 
 bool enchant::get_encoding( std::string& name,
-			    std::string& encoding,
-			    const std::string& enchant_id,
-			    bool ptr )
+                            std::string& encoding,
+                            const std::string& enchant_id,
+                            bool ptr )
 {
   for ( size_t i = 0; enchant_db[ i ].id; i++ )
   {
@@ -1037,9 +1037,9 @@ bool enchant::get_encoding( std::string& name,
 // enchant::get_addon_encoding ==============================================
 
 bool enchant::get_addon_encoding( std::string& name,
-				  std::string& encoding,
-				  const std::string& addon_id,
-				  bool ptr )
+                                  std::string& encoding,
+                                  const std::string& addon_id,
+                                  bool ptr )
 {
   for ( size_t i = 0; addon_db[ i ].id; i++ )
   {
@@ -1066,8 +1066,8 @@ bool enchant::get_addon_encoding( std::string& name,
 // enchant::get_reforge_encoding ============================================
 
 bool enchant::get_reforge_encoding( std::string& name,
-				    std::string& encoding,
-				    const std::string& reforge_id )
+                                    std::string& encoding,
+                                    const std::string& reforge_id )
 {
   name.clear();
   encoding.clear();
@@ -1105,7 +1105,7 @@ bool enchant::get_reforge_encoding( std::string& name,
 // enchant::get_reforge_id ==================================================
 
 int enchant::get_reforge_id( stat_e stat_from,
-			     stat_e stat_to )
+                             stat_e stat_to )
 {
   int index_from;
   for ( index_from=0; reforge_stats[ index_from ] != STAT_NONE; index_from++ )
@@ -1138,7 +1138,7 @@ int enchant::get_reforge_id( stat_e stat_from,
 // enchant::download ========================================================
 
 bool enchant::download( item_t&            item,
-			const std::string& enchant_id )
+                        const std::string& enchant_id )
 {
   item.armory_enchant_str.clear();
 
@@ -1158,7 +1158,7 @@ bool enchant::download( item_t&            item,
 // enchant::download_addon ==================================================
 
 bool enchant::download_addon( item_t&            item,
-			      const std::string& addon_id )
+                              const std::string& addon_id )
 {
   item.armory_addon_str.clear();
 
@@ -1178,7 +1178,7 @@ bool enchant::download_addon( item_t&            item,
 // enchant::download_reforge ================================================
 
 bool enchant::download_reforge( item_t&            item,
-				const std::string& reforge_id )
+                                const std::string& reforge_id )
 {
   item.armory_reforge_str.clear();
 
@@ -1198,7 +1198,7 @@ bool enchant::download_reforge( item_t&            item,
 // enchant::download_rsuffix ================================================
 
 bool enchant::download_rsuffix( item_t&            item,
-				const std::string& rsuffix_id )
+                                const std::string& rsuffix_id )
 {
   item.armory_random_suffix_str = rsuffix_id;
   return true;

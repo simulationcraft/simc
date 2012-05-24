@@ -367,7 +367,7 @@ struct rogue_t : public player_t
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -389,9 +389,9 @@ rogue_targetdata_t::rogue_targetdata_t( rogue_t* source, player_t* target ) :
   targetdata_t( source, target )
 {
   combo_points = new combo_points_t( target );
-  
+
   debuffs_anticipation_charges = add_aura( buff_creator_t( this, "anticipation_charges", source -> find_talent_spell( "Anticipation" ) ).max_stack( 5 ) );
-  
+
   const spell_data_t* fw = source -> find_specialization_spell( "Find Weakness" );
   const spell_data_t* fwt = fw -> effectN( 1 ).trigger();
   debuffs_find_weakness = add_aura( buff_creator_t( this, "find_weakness", fw )
@@ -421,24 +421,24 @@ struct rogue_attack_state_t : public action_state_t
   rogue_attack_state_t( action_t* a, player_t* t ) :
     action_state_t( a, t ), combo_points( 0 )
   { }
-  
-  virtual void debug() const 
+
+  virtual void debug() const
   {
     action_state_t::debug();
-    action -> sim -> output( "[NEW] %s %s %s: cp=%d", 
-      action -> player -> name(),
-      action -> name(),
-      target -> name(),
-      combo_points );
+    action -> sim -> output( "[NEW] %s %s %s: cp=%d",
+                             action -> player -> name(),
+                             action -> name(),
+                             target -> name(),
+                             combo_points );
   }
-  
+
   virtual void copy_state( const action_state_t* o )
   {
     if ( o == 0 || this == o )
       return;
 
     action_state_t::copy_state( o );
-    
+
     const rogue_attack_state_t* ds_ = static_cast< const rogue_attack_state_t* >( o );
 
     combo_points = ds_ -> combo_points;
@@ -463,10 +463,10 @@ struct rogue_melee_attack_t : public melee_attack_t
                         const spell_data_t* s = spell_data_t::nil(),
                         const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
-    requires_stealth_( false ), requires_position_( POSITION_NONE ), 
+    requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0.0 ), base_ta_bonus( 0.0 ),
-    requires_weapon( WEAPON_NONE ),  
+    requires_weapon( WEAPON_NONE ),
     affected_by_killing_spree( true ),
     combo_points_spent( 0 )
   {
@@ -483,14 +483,14 @@ struct rogue_melee_attack_t : public melee_attack_t
     {
       switch ( data().effectN( i ).type() )
       {
-        case E_ADD_COMBO_POINTS:
-          adds_combo_points = data().effectN( i ).base_value();
-          break;
-        default:
-          break;
+      case E_ADD_COMBO_POINTS:
+        adds_combo_points = data().effectN( i ).base_value();
+        break;
+      default:
+        break;
       }
-      
-      if ( data().effectN( i ).type() == E_APPLY_AURA && 
+
+      if ( data().effectN( i ).type() == E_APPLY_AURA &&
            data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
         base_ta_bonus = data().effectN( i ).bonus( p );
       else if ( data().effectN( i ).type() == E_SCHOOL_DAMAGE )
@@ -529,8 +529,8 @@ struct rogue_melee_attack_t : public melee_attack_t
   }
 
   virtual position_e requires_position() const
-  { 
-    return requires_position_; 
+  {
+    return requires_position_;
   }
 
   action_state_t* get_state( const action_state_t* s )
@@ -551,7 +551,7 @@ struct rogue_melee_attack_t : public melee_attack_t
     return new rogue_attack_state_t( this, target );
   }
 
-  // Combo points need to be snapshot before we travel, they should also not 
+  // Combo points need to be snapshot before we travel, they should also not
   // be snapshot during any other event in the stateless system.
   void schedule_travel_s( action_state_t* travel_state )
   {
@@ -560,7 +560,7 @@ struct rogue_melee_attack_t : public melee_attack_t
       rogue_attack_state_t* ds_ = static_cast< rogue_attack_state_t* >( travel_state );
       ds_ -> combo_points = td( travel_state -> target ) -> combo_points -> count;
     }
-    
+
     melee_attack_t::schedule_travel_s( travel_state );
   }
 };
@@ -592,10 +592,10 @@ struct rogue_poison_t : public rogue_melee_attack_t
   virtual double action_multiplier() const
   {
     double cm = rogue_melee_attack_t::action_multiplier();
-    
+
     if ( p() -> mastery.potent_poisons -> ok() )
       cm *= 1.0 + p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
-    
+
     return cm;
   }
 };
@@ -3157,10 +3157,10 @@ void rogue_t::init_actions()
     action_list_str += "/apply_poison,main_hand=instant,off_hand=deadly";
     action_list_str += "/snapshot_stats,precombat=1";
 
-    // Prepotion 
+    // Prepotion
     action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
     action_list_str += ",precombat=1";
-  
+
     // Potion use
     action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
     action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
@@ -3388,7 +3388,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     {
       const action_t& action;
       combo_points_expr_t( action_t* a ) : expr_t( "combo_points" ),
-          action( a ) {}
+        action( a ) {}
       virtual int evaluate()
       {
         rogue_targetdata_t* td = action -> cast_td();
@@ -3847,7 +3847,7 @@ void rogue_t::regen( timespan_t periodicity )
   }
 
   benefits.energy_cap -> update( resources.current[ RESOURCE_ENERGY ] ==
-                                resources.max    [ RESOURCE_ENERGY ] );
+                                 resources.max    [ RESOURCE_ENERGY ] );
 
   for ( int i = 0; i < 3; i++ )
     benefits.bandits_guile[ i ] -> update( ( buffs.bandits_guile -> current_stack / 4 - 1 ) == i );

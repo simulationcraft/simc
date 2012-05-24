@@ -232,9 +232,9 @@ void dot_t::schedule_tick()
 
   ticking = 1;
 
-  if ( action -> channeled ) 
+  if ( action -> channeled )
   {
-    // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early 
+    // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early
     if ( action -> chain && current_tick + 1 == num_ticks && action -> ready() )
     {
       // FIXME: We can probably use "source" instead of "action->player"
@@ -268,9 +268,9 @@ int dot_t::ticks()
   return ( num_ticks - current_tick );
 }
 
-expr_t* dot_t::create_expression( action_t* action, 
-				  const std::string& name_str, 
-				  bool dynamic )
+expr_t* dot_t::create_expression( action_t* action,
+                                  const std::string& name_str,
+                                  bool dynamic )
 {
   struct dot_expr_t : public expr_t
   {
@@ -282,11 +282,11 @@ expr_t* dot_t::create_expression( action_t* action,
     dot_expr_t( const std::string& n, dot_t* d, action_t* a, bool dy ) :
       expr_t( n ), static_dot( d ), action( a ), dynamic( dy ), specific_dot( d -> name(), a -> player ) {}
 
-    dot_t* dot() 
-    { 
-      if( ! dynamic ) return static_dot;
+    dot_t* dot()
+    {
+      if ( ! dynamic ) return static_dot;
       dot_t*& dot = specific_dot[ action -> target ];
-      if( ! dot ) dot = action -> target -> get_dot( static_dot -> name(), action -> player );
+      if ( ! dot ) dot = action -> target -> get_dot( static_dot -> name(), action -> player );
       return dot;
     }
   };
@@ -296,7 +296,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct ticks_expr_t : public dot_expr_t
     {
       ticks_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_ticks", d, a, dynamic ) {}
+        dot_expr_t( "dot_ticks", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> current_tick; }
     };
     return new ticks_expr_t( this, action, dynamic );
@@ -306,11 +306,11 @@ expr_t* dot_t::create_expression( action_t* action,
     struct duration_expr_t : public dot_expr_t
     {
       duration_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_duration", d, a, dynamic ) {}
+        dot_expr_t( "dot_duration", d, a, dynamic ) {}
       virtual double evaluate()
       {
         // FIXME: What exactly is this supposed to be calculating?
-	dot_t* dot = this->dot();
+        dot_t* dot = this->dot();
         double haste = dot -> state ? dot -> state -> haste : dot -> action -> player_haste;
         return ( dot -> action -> num_ticks * dot -> action -> tick_time( haste ) ).total_seconds();
       }
@@ -322,7 +322,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct remains_expr_t : public dot_expr_t
     {
       remains_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_remains", d, a, dynamic ) {}
+        dot_expr_t( "dot_remains", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> remains().total_seconds(); }
     };
     return new remains_expr_t( this, action, dynamic );
@@ -332,7 +332,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct tick_dmg_expr_t : public dot_expr_t
     {
       tick_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
+        dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> prev_tick_amount; }
     };
     return new tick_dmg_expr_t( this, action, dynamic );
@@ -342,7 +342,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct ticks_remain_expr_t : public dot_expr_t
     {
       ticks_remain_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_ticks_remain", d, a, dynamic ) {}
+        dot_expr_t( "dot_ticks_remain", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> ticks(); }
     };
     return new ticks_remain_expr_t( this, action, dynamic );
@@ -352,7 +352,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct ticking_expr_t : public dot_expr_t
     {
       ticking_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_ticking", d, a, dynamic ) {}
+        dot_expr_t( "dot_ticking", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> ticking; }
     };
     return new ticking_expr_t( this, action, dynamic );
@@ -362,7 +362,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct dot_spell_power_expr_t : public dot_expr_t
     {
       dot_spell_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_spell_power", d, a, dynamic ) {}
+        dot_expr_t( "dot_spell_power", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> spell_power : 0; }
     };
     return new dot_spell_power_expr_t( this, action, dynamic );
@@ -372,7 +372,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct dot_attack_power_expr_t : public dot_expr_t
     {
       dot_attack_power_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_attack_power", d, a, dynamic ) {}
+        dot_expr_t( "dot_attack_power", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> attack_power : 0; }
     };
     return new dot_attack_power_expr_t( this, action, dynamic );
@@ -382,7 +382,7 @@ expr_t* dot_t::create_expression( action_t* action,
     struct dot_multiplier_expr_t : public dot_expr_t
     {
       dot_multiplier_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-	dot_expr_t( "dot_multiplier", d, a, dynamic ) {}
+        dot_expr_t( "dot_multiplier", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> ta_multiplier : 0; }
     };
     return new dot_multiplier_expr_t( this, action, dynamic );
@@ -393,8 +393,8 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct dot_mastery_expr_t : public dot_expr_t
     {
-      dot_mastery_expr_t( dot_t* d, action_t* a, bool dynamic ) : 
-	dot_expr_t( "dot_mastery", d, a, dynamic ) {}
+      dot_mastery_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_mastery", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> total_mastery() : 0; }
     };
     return new dot_mastery_expr_t( this, action, dynamic );
@@ -405,8 +405,8 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct dot_haste_pct_expr_t : public dot_expr_t
     {
-      dot_haste_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) : 
-	dot_expr_t( "dot_haste_pct", d, a, dynamic ) {}
+      dot_haste_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_haste_pct", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> haste : 0; }
     };
     return new dot_haste_pct_expr_t( this, action, dynamic );
@@ -415,8 +415,8 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct current_ticks_expr_t : public dot_expr_t
     {
-      current_ticks_expr_t( dot_t* d, action_t* a, bool dynamic ) : 
-	dot_expr_t( "dot_current_ticks", d, a, dynamic ) {}
+      current_ticks_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_current_ticks", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> num_ticks; }
     };
     return new current_ticks_expr_t( this, action, dynamic );

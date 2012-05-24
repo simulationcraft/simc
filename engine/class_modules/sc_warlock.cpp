@@ -113,7 +113,7 @@ public:
   {
     spell_t::init();
 
-    if ( harmful) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
+    if ( harmful ) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
   }
 
   virtual void execute()
@@ -140,7 +140,7 @@ public:
     spell_t::tick( d );
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
@@ -172,7 +172,7 @@ public:
         return RESOURCE_DEMONIC_FURY;
       else
         return RESOURCE_MANA;
-    } 
+    }
     else
       return spell_t::current_resource();
   }
@@ -186,7 +186,7 @@ public:
     warlock_td_t* td = this->td( target );
 
     if ( td -> dots_malefic_grasp -> ticking ||
-       ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
+         ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
       t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
 
     return t;
@@ -332,7 +332,7 @@ struct agony_t : public warlock_spell_t
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
-    
+
     m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
@@ -545,7 +545,7 @@ struct corruption_t : public warlock_spell_t
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
-    
+
     m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
@@ -717,7 +717,7 @@ struct unstable_affliction_t : public warlock_spell_t
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
-    
+
     m *= 1.0 + p() -> composite_mastery() * p() -> mastery_spells.potent_afflictions -> effectN( 1 ).mastery_value();
 
     return m;
@@ -795,7 +795,7 @@ struct immolate_t : public warlock_spell_t
   virtual double action_da_multiplier()
   {
     double m = warlock_spell_t::action_da_multiplier();
-    
+
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -925,7 +925,7 @@ struct incinerate_t : public warlock_spell_t
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
-    
+
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 2 : 1, p() -> gains.incinerate  );
 
     if ( result_is_hit( s -> result ) )
@@ -1258,7 +1258,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_shadowflame -> ticking ) 
+      if ( td( s -> target ) -> dots_shadowflame -> ticking )
         td( s -> target ) -> shadowflame_stack++;
       else
         td( s -> target ) -> shadowflame_stack = 1;
@@ -1314,7 +1314,7 @@ struct hand_of_guldan_t : public warlock_spell_t
   virtual void init()
   {
     warlock_spell_t::init();
-    
+
     hog_damage  -> stats = stats;
   }
 
@@ -1387,7 +1387,7 @@ struct chaos_wave_t : public warlock_spell_t
   virtual void init()
   {
     warlock_spell_t::init();
-    
+
     cw_damage  -> stats = stats;
   }
 
@@ -1498,7 +1498,7 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( p() -> primary_tree() == WARLOCK_AFFLICTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-    
+
     if ( p() -> primary_tree() == WARLOCK_DESTRUCTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -1572,7 +1572,7 @@ struct malefic_grasp_t : public warlock_spell_t
   }
 
   virtual void last_tick( dot_t* d )
-  {    
+  {
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
     stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
@@ -1844,7 +1844,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> soc_trigger = data().effectN( 3 ).base_value() + s -> composite_power() * data().effectN( 3 ).coeff(); 
+      td( s -> target ) -> soc_trigger = data().effectN( 3 ).base_value() + s -> composite_power() * data().effectN( 3 ).coeff();
   }
 
   virtual void snapshot_state( action_state_t* state, uint32_t flags )
@@ -1882,7 +1882,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     background  = true;
     aoe         = -1;
     direct_tick = true;
-    
+
     if ( ! dtr )
       dual = true;
 
@@ -1976,7 +1976,7 @@ struct immolation_aura_tick_t : public warlock_spell_t
     background  = true;
     aoe         = -1;
     direct_tick = true;
-    
+
     if ( ! dtr )
       dual = true;
 
@@ -2636,7 +2636,7 @@ void warlock_t::init_spells()
   spec.demonic_fury  = find_specialization_spell( "Demonic Fury" );
   spec.metamorphosis = find_specialization_spell( "Metamorphosis" );
   spec.molten_core   = find_specialization_spell( "Molten Core" );
-  
+
   spec.doom          = ( find_specialization_spell( "Metamorphosis: Doom"          ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
   spec.demonic_slash = ( find_specialization_spell( "Metamorphosis: Demonic Slash" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
   spec.chaos_wave    = ( find_specialization_spell( "Metamorphosis: Chaos Wave"    ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
@@ -2779,7 +2779,7 @@ void warlock_t::init_procs()
 void warlock_t::init_rng()
 {
   player_t::init_rng();
-  
+
   rngs.demonic_calling = get_rng( "demonic_calling" );
   rngs.molten_core     = get_rng( "molten_core" );
   rngs.nightfall       = get_rng( "nightfall" );
@@ -2803,12 +2803,12 @@ void warlock_t::add_action( const spell_data_t* s, std::string options, std::str
 
 void warlock_t::init_actions()
 {
-  // FIXME!!! This is required because target_data creates debuffs that may be referenced by expressions 
+  // FIXME!!! This is required because target_data creates debuffs that may be referenced by expressions
 
-  for( size_t i=0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
     player_t* target = sim -> actor_list[ i ];
-    if( ! target -> is_enemy() ) continue;
+    if ( ! target -> is_enemy() ) continue;
     get_target_data( target );
   }
 
@@ -2825,8 +2825,8 @@ void warlock_t::init_actions()
       precombat_list = "flask,type=draconic_mind";
 
     // Food
-    if ( level >= 80 ) 
-    { 
+    if ( level >= 80 )
+    {
       precombat_list += "/food,type=";
       precombat_list += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
     }
@@ -2853,7 +2853,7 @@ void warlock_t::init_actions()
       precombat_list += "/jinyu_potion";
     else if ( level >= 80 )
       precombat_list += "/volcanic_potion";
- 
+
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 
@@ -2939,9 +2939,9 @@ void warlock_t::init_actions()
     case WARLOCK_DEMONOLOGY:
       add_action( "Metamorphosis",         "if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8" );
 
-      if ( find_class_spell( "Metamorphosis" ) -> ok() ) 
+      if ( find_class_spell( "Metamorphosis" ) -> ok() )
         action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=2";
-      if ( glyphs.imp_swarm -> ok() ) 
+      if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
@@ -2960,7 +2960,7 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
       add_action( "Immolation Aura",       "if=demonic_fury>60*num_targets",                         "aoe" );
       add_action( find_spell( 603 ),       "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
-      if ( glyphs.imp_swarm -> ok() ) 
+      if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
       add_action( "Hand of Gul'dan",       "if=!in_flight",                                          "aoe" );
       add_action( "Rain of Fire",          "",                                                       "aoe" );
@@ -3001,7 +3001,7 @@ void warlock_t::combat_begin()
   resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
 
   buffs.demonic_calling -> trigger();
-  demonic_calling_event = new (sim) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( 20 ) ) );
+  demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( 20 ) ) );
 }
 
 
@@ -3009,10 +3009,10 @@ void warlock_t::reset()
 {
   player_t::reset();
 
-  for( size_t i=0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
     warlock_td_t* td = target_data[ sim -> actor_list[ i ] ];
-    if( td ) td -> reset();
+    if ( td ) td -> reset();
   }
 
   // Active

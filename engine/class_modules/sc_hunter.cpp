@@ -288,7 +288,7 @@ public:
   virtual hunter_td_t* get_target_data( player_t* target )
   {
     hunter_td_t*& td = target_data[ target ];
-    if( ! td ) td = new hunter_td_t( target, this );
+    if ( ! td ) td = new hunter_td_t( target, this );
     return td;
   }
 
@@ -301,7 +301,7 @@ public:
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -1216,7 +1216,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_class_spell( "Aimed Shot" ) ),
-      as_mm( 0 )
+    as_mm( 0 )
   {
     check_spec ( HUNTER_MARKSMANSHIP );
     parse_options( NULL, options_str );
@@ -1923,7 +1923,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
     normalize_weapon_speed = true;
 //    if ( p -> talents.serpent_spread -> ok() )
- //     spread_sting = new serpent_sting_spread_t( player, options_str );
+//     spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
@@ -3549,7 +3549,7 @@ void hunter_t::init_spells()
   glyphs.kill_command   = find_glyph_spell( "Glyph of Kill Command"   );
 
   talents.piercing_shots = find_talent_spell( "Piercing Shots" );
-  
+
   if ( talents.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
 

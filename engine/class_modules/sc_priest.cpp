@@ -20,7 +20,7 @@ public:
   heal_t* spirit_shell_heal;
   spirit_shell_buff_t( actor_pair_t p ) :
     absorb_buff_t(
-        absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ).source( p.source -> get_stats( "spirit_shell" ) ) ),
+      absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ).source( p.source -> get_stats( "spirit_shell" ) ) ),
     spirit_shell_heal( NULL )
   { }
 
@@ -57,7 +57,7 @@ struct priest_td_t : public actor_pair_t
 
   priest_td_t( player_t* target, priest_t* p );
 
-  void reset() 
+  void reset()
   {
     remove_dots_event = 0;
   }
@@ -272,7 +272,7 @@ struct priest_t : public player_t
   } constants;
 
   target_specific_t<priest_td_t> target_data;
-  
+
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
@@ -345,9 +345,9 @@ struct priest_t : public player_t
   virtual void pre_analyze_hook();
 
   virtual priest_td_t* get_target_data( player_t* target )
-  { 
+  {
     priest_td_t*& td = target_data[ target ];
-    if( ! td ) td = new priest_td_t( target, this );
+    if ( ! td ) td = new priest_td_t( target, this );
     return td;
   }
 
@@ -825,7 +825,7 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
 
   virtual void init_base();
   virtual action_t* create_action( const std::string& name,
-                                             const std::string& options_str );
+                                   const std::string& options_str );
 };
 
 // ==========================================================================
@@ -1030,30 +1030,30 @@ struct lightwell_renew_t : public heal_t
     may_crit = false;
     tick_may_crit = true;
     stateless = true;
-    
+
     tick_power_mod = 0.308;
   }
-  
+
   lightwell_pet_t* p()
   { return static_cast<lightwell_pet_t*>( player ); }
-  
+
   virtual void execute()
   {
     p() -> charges--;
-    
+
     target = find_lowest_player();
-    
+
     heal_t::execute();
   }
-  
+
   virtual void last_tick( dot_t* d )
   {
     heal_t::last_tick( d );
-    
+
     if ( p() -> charges <= 0 )
       p() -> dismiss();
   }
-  
+
   virtual bool ready()
   {
     if ( p() -> charges <= 0 )
@@ -1077,9 +1077,9 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
                                            const std::string& options_str )
 {
   if ( name == "shadowcrawl" )
-  { 
-    shadowcrawl_action = new shadowcrawl_t( this ); 
-    return shadowcrawl_action; 
+  {
+    shadowcrawl_action = new shadowcrawl_t( this );
+    return shadowcrawl_action;
   }
 
   if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
@@ -1105,7 +1105,7 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 
 
 action_t* lightwell_pet_t::create_action( const std::string& name,
-					  const std::string& options_str )
+                                          const std::string& options_str )
 {
   if ( name == "lightwell_renew" ) return new lightwell_renew_t( this );
 
@@ -2465,8 +2465,8 @@ struct mind_blast_t : public priest_spell_t
 struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 {
   mind_flay_mastery_t( priest_t* p ) :
-    priest_procced_mastery_spell_t( "mind_flay_mastery", p, 
-      p -> find_class_spell( "Mind Flay" ) -> ok() ? p -> find_spell( 124468 ) : spell_data_t::not_found() )
+    priest_procced_mastery_spell_t( "mind_flay_mastery", p,
+                                    p -> find_class_spell( "Mind Flay" ) -> ok() ? p -> find_spell( 124468 ) : spell_data_t::not_found() )
   {
   }
 };
@@ -2698,8 +2698,8 @@ struct mind_spike_t : public priest_spell_t
 struct mind_sear_mastery_t : public priest_procced_mastery_spell_t
 {
   mind_sear_mastery_t( priest_t* p ) :
-    priest_procced_mastery_spell_t( "mind_sear_mastery", p, 
-      p -> find_class_spell( "Mind Sear" ) -> ok() ? p -> find_spell( 124469 ) : spell_data_t::not_found() )
+    priest_procced_mastery_spell_t( "mind_sear_mastery", p,
+                                    p -> find_class_spell( "Mind Sear" ) -> ok() ? p -> find_spell( 124469 ) : spell_data_t::not_found() )
   {
   }
 };
@@ -2831,9 +2831,9 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
   int orbs_used;
 
   devouring_plague_mastery_t( priest_t* p ) :
-    priest_procced_mastery_spell_t( "devouring_plague_mastery", p, 
-      p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() ),
-      orbs_used( 0 )
+    priest_procced_mastery_spell_t( "devouring_plague_mastery", p,
+                                    p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() ),
+    orbs_used( 0 )
   {
     // Treat this just as direct damage rather than DoT damage. It's not like it procs anything anyway.
   }
@@ -3013,8 +3013,8 @@ struct devouring_plague_t : public priest_spell_t
 struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
 {
   shadow_word_pain_mastery_t( priest_t* p ) :
-    priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p, 
-      p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
+    priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p,
+                                    p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
   {
   }
 };
@@ -3098,8 +3098,8 @@ struct vampiric_embrace_t : public priest_spell_t
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
   vampiric_touch_mastery_t( priest_t* p ) :
-    priest_procced_mastery_spell_t( "vampiric_touch_mastery", p, 
-      p -> find_class_spell( "Vampiric Touch" ) -> ok() ? p -> find_spell( 124465 ) : spell_data_t::not_found() )
+    priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
+                                    p -> find_class_spell( "Vampiric Touch" ) -> ok() ? p -> find_spell( 124465 ) : spell_data_t::not_found() )
   {
   }
 
@@ -3321,14 +3321,14 @@ struct smite_t : public priest_spell_t
         p() -> cooldowns.penance -> reset();
     }
   }
-  
+
   virtual double composite_target_multiplier( player_t* target )
   {
     double m = priest_spell_t::composite_target_multiplier( target );
-    
+
     if ( td( target ) -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
       m *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
-    
+
     return m;
   }
 
@@ -4262,7 +4262,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
   actor_pair_t( target, p ), remove_dots_event( NULL )
 {
-  if( target -> is_enemy() )
+  if ( target -> is_enemy() )
   {
     dots_holy_fire        = target -> get_dot( "holy_fire",        p );
     dots_devouring_plague = target -> get_dot( "devouring_plague", p );
@@ -4294,7 +4294,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
                               .source( source -> get_stats( "power_word_shield" ) );
 
     buffs_divine_aegis = absorb_buff_creator_t( buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) ) )
-                          .source( source -> get_stats( "divine_aegis" ) );
+                         .source( source -> get_stats( "divine_aegis" ) );
 
     buffs_spirit_shell = new spirit_shell_buff_t( *this );
 
@@ -5091,10 +5091,10 @@ void priest_t::reset()
 {
   player_t::reset();
 
-  for( size_t i=0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
     priest_td_t* td = target_data[ sim -> actor_list[ i ] ];
-    if( td ) td -> reset();
+    if ( td ) td -> reset();
   }
 
   if ( specs.shadowy_apparitions -> ok() )

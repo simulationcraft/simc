@@ -24,16 +24,16 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length = 0 )
   if ( max_name_length == 0 ) max_name_length = 20;
 
   util::fprintf( file,
-                   "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
-                   max_name_length,
-                   s -> name_str.c_str(),
-                   s -> num_executes,
-                   s -> total_intervals.mean,
-                   s -> ape,
-                   s -> portion_amount * 100.0,
-                   s -> apet,
-                   s -> apr[ s->player->primary_resource() ],
-                   s -> portion_aps.mean );
+                 "    %-*s  Count=%5.1f|%5.2fsec  DPE=%6.0f|%2.0f%%  DPET=%6.0f  DPR=%6.1f  pDPS=%4.0f",
+                 max_name_length,
+                 s -> name_str.c_str(),
+                 s -> num_executes,
+                 s -> total_intervals.mean,
+                 s -> ape,
+                 s -> portion_amount * 100.0,
+                 s -> apet,
+                 s -> apr[ s->player->primary_resource() ],
+                 s -> portion_aps.mean );
 
   if ( s -> num_direct_results > 0 )
   {
@@ -43,37 +43,37 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length = 0 )
   if ( s -> direct_results[ RESULT_HIT ].actual_amount.mean > 0 )
   {
     util::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f",
-                     s -> direct_results[ RESULT_HIT ].actual_amount.mean,
-                     s -> direct_results[ RESULT_HIT ].actual_amount.min,
-                     s -> direct_results[ RESULT_HIT ].actual_amount.max );
+                   s -> direct_results[ RESULT_HIT ].actual_amount.mean,
+                   s -> direct_results[ RESULT_HIT ].actual_amount.min,
+                   s -> direct_results[ RESULT_HIT ].actual_amount.max );
   }
   if ( s -> direct_results[ RESULT_CRIT ].actual_amount.mean > 0 )
   {
     util::fprintf( file,
-                     "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                     s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
-                     s -> direct_results[ RESULT_CRIT ].actual_amount.min,
-                     s -> direct_results[ RESULT_CRIT ].actual_amount.max,
-                     s -> direct_results[ RESULT_CRIT ].pct );
+                   "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.min,
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.max,
+                   s -> direct_results[ RESULT_CRIT ].pct );
   }
   if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.mean > 0 )
   {
     util::fprintf( file,
-                     "  Glance=%4.0f|%.1f%%",
-                     s -> direct_results[ RESULT_GLANCE ].actual_amount.mean,
-                     s -> direct_results[ RESULT_GLANCE ].pct );
+                   "  Glance=%4.0f|%.1f%%",
+                   s -> direct_results[ RESULT_GLANCE ].actual_amount.mean,
+                   s -> direct_results[ RESULT_GLANCE ].pct );
   }
   if ( s -> direct_results[ RESULT_DODGE ].count.mean > 0 )
   {
     util::fprintf( file,
-                     "  Dodge=%.1f%%",
-                     s -> direct_results[ RESULT_DODGE ].pct );
+                   "  Dodge=%.1f%%",
+                   s -> direct_results[ RESULT_DODGE ].pct );
   }
   if ( s -> direct_results[ RESULT_PARRY ].count.mean > 0 )
   {
     util::fprintf( file,
-                     "  Parry=%.1f%%",
-                     s -> direct_results[ RESULT_PARRY ].pct );
+                   "  Parry=%.1f%%",
+                   s -> direct_results[ RESULT_PARRY ].pct );
   }
 
   if ( s -> num_ticks > 0 ) util::fprintf( file, "  TickCount=%.0f", s -> num_ticks );
@@ -86,19 +86,19 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length = 0 )
   if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
   {
     util::fprintf( file,
-                     "  Tick=%.0f|%.0f|%.0f",
-                     s -> tick_results[ RESULT_HIT ].actual_amount.mean,
-                     s -> tick_results[ RESULT_HIT ].actual_amount.min,
-                     s -> tick_results[ RESULT_HIT ].actual_amount.max );
+                   "  Tick=%.0f|%.0f|%.0f",
+                   s -> tick_results[ RESULT_HIT ].actual_amount.mean,
+                   s -> tick_results[ RESULT_HIT ].actual_amount.min,
+                   s -> tick_results[ RESULT_HIT ].actual_amount.max );
   }
   if ( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
   {
     util::fprintf( file,
-                     "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
-                     s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
-                     s -> tick_results[ RESULT_CRIT ].actual_amount.min,
-                     s -> tick_results[ RESULT_CRIT ].actual_amount.max,
-                     s -> tick_results[ RESULT_CRIT ].pct );
+                   "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.min,
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.max,
+                   s -> tick_results[ RESULT_CRIT ].pct );
   }
 
   if ( s -> total_tick_time > timespan_t::zero() )
@@ -239,8 +239,8 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
       full_name = b -> name_str;
 
     util::fprintf( file, "    %-*s : start=%-4.1f refresh=%-5.1f interval=%5.1f trigger=%-5.1f uptime=%2.0f%%",
-                     max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
-                     b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
+                   max_length, full_name.c_str(), b -> avg_start, b -> avg_refresh,
+                   b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
 
     if ( b -> benefit_pct > 0 && b -> benefit_pct < 100 )
       util::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct );
@@ -254,15 +254,15 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
 void print_text_core_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                   "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
-                   p -> buffed.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
-                   p -> buffed.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
-                   p -> buffed.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
-                   p -> buffed.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
-                   p -> buffed.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
-                   p -> buffed.mastery , p -> composite_mastery(), p -> stats.mastery_rating,
-                   p -> buffed.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
-                   p -> buffed.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
+                 "  Core Stats:  strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f|%.2f(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
+                 p -> buffed.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> stats.attribute[ ATTR_STRENGTH  ],
+                 p -> buffed.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> stats.attribute[ ATTR_AGILITY   ],
+                 p -> buffed.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> stats.attribute[ ATTR_STAMINA   ],
+                 p -> buffed.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> stats.attribute[ ATTR_INTELLECT ],
+                 p -> buffed.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> stats.attribute[ ATTR_SPIRIT    ],
+                 p -> buffed.mastery , p -> composite_mastery(), p -> stats.mastery_rating,
+                 p -> buffed.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
+                 p -> buffed.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
 
 // print_text_spell_stats ===================================================
@@ -270,12 +270,12 @@ void print_text_core_stats( FILE* file, player_t* p )
 void print_text_spell_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                   "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
-                   p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
-                   100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
-                   100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
-                   100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
-                   p -> buffed.mp5, p -> composite_mp5(), p -> stats.mp5 );
+                 "  Spell Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  mp5=%.0f|%.0f(%.0f)\n",
+                 p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
+                 100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
+                 100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
+                 100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
+                 p -> buffed.mp5, p -> composite_mp5(), p -> stats.mp5 );
 }
 
 // print_text_attack_stats ==================================================
@@ -283,15 +283,15 @@ void print_text_spell_stats( FILE* file, player_t* p )
 void print_text_attack_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                   "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
-                   p -> buffed.attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
-                   100 * p -> buffed.attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
-                   100 * p -> buffed.attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
-                   100 * p -> buffed.mh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ),
-                   100 * p -> buffed.oh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ),
-                   p -> stats.expertise_rating,
-                   100 * ( 1 / p -> buffed.attack_haste - 1 ), 100 * ( 1 / p -> composite_attack_haste() - 1 ), p -> stats.haste_rating,
-                   100 * ( 1 / p -> buffed.attack_speed - 1 ), 100 * ( 1 / p -> composite_attack_speed() - 1 ), p -> stats.haste_rating );
+                 "  Attack Stats  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
+                 p -> buffed.attack_power, p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> stats.attack_power,
+                 100 * p -> buffed.attack_hit,         100 * p -> composite_attack_hit(),         p -> stats.hit_rating,
+                 100 * p -> buffed.attack_crit,        100 * p -> composite_attack_crit(),        p -> stats.crit_rating,
+                 100 * p -> buffed.mh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ),
+                 100 * p -> buffed.oh_attack_expertise,   100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ),
+                 p -> stats.expertise_rating,
+                 100 * ( 1 / p -> buffed.attack_haste - 1 ), 100 * ( 1 / p -> composite_attack_haste() - 1 ), p -> stats.haste_rating,
+                 100 * ( 1 / p -> buffed.attack_speed - 1 ), 100 * ( 1 / p -> composite_attack_speed() - 1 ), p -> stats.haste_rating );
 }
 
 // print_text_defense_stats =================================================
@@ -299,13 +299,13 @@ void print_text_attack_stats( FILE* file, player_t* p )
 void print_text_defense_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                   "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
-                   p -> buffed.armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
-                   100 * p -> buffed.miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
-                   100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
-                   100 * p -> buffed.parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
-                   100 * p -> buffed.block, 100 * p -> composite_tank_block(), p -> stats.block_rating,
-                   100 * p -> buffed.crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
+                 "  Defense Stats:  armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
+                 p -> buffed.armor,       p -> composite_armor(), ( p -> stats.armor + p -> stats.bonus_armor ),
+                 100 * p -> buffed.miss,  100 * ( p -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
+                 100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge() - p -> diminished_dodge() ), p -> stats.dodge_rating,
+                 100 * p -> buffed.parry, 100 * ( p -> composite_tank_parry() - p -> diminished_parry() ), p -> stats.parry_rating,
+                 100 * p -> buffed.block, 100 * p -> composite_tank_block(), p -> stats.block_rating,
+                 100 * p -> buffed.crit,  100 * p -> composite_tank_crit( SCHOOL_PHYSICAL ) );
 }
 
 void print_text_gains( FILE* file, gain_t* g, int max_length )
@@ -393,7 +393,7 @@ void print_text_procs( FILE* file, player_t* p )
     {
       if ( first ) util::fprintf( file, "  Procs:\n" ); first = false;
       util::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
-                       proc -> count, proc -> interval_sum.mean, proc -> name() );
+                     proc -> count, proc -> interval_sum.mean, proc -> name() );
     }
   }
 }
@@ -452,23 +452,23 @@ void print_text_waiting( FILE* file, sim_t* sim )
 void print_text_performance( FILE* file, sim_t* sim )
 {
   util::fprintf( file,
-                   "\nBaseline Performance:\n"
-                   "  TotalEvents   = %ld\n"
-                   "  MaxEventQueue = %ld\n"
-                   "  TargetHealth  = %.0f\n"
-                   "  SimSeconds    = %.0f\n"
-                   "  CpuSeconds    = %.3f\n"
-                   "  SpeedUp       = %.0f\n\n",
-                   ( long ) sim -> total_events_processed,
-                   ( long ) sim -> max_events_remaining,
-                   sim -> target -> resources.base[ RESOURCE_HEALTH ],
-                   sim -> iterations * sim -> simulation_length.mean,
-                   sim -> elapsed_cpu.total_seconds(),
-                   sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
+                 "\nBaseline Performance:\n"
+                 "  TotalEvents   = %ld\n"
+                 "  MaxEventQueue = %ld\n"
+                 "  TargetHealth  = %.0f\n"
+                 "  SimSeconds    = %.0f\n"
+                 "  CpuSeconds    = %.3f\n"
+                 "  SpeedUp       = %.0f\n\n",
+                 ( long ) sim -> total_events_processed,
+                 ( long ) sim -> max_events_remaining,
+                 sim -> target -> resources.base[ RESOURCE_HEALTH ],
+                 sim -> iterations * sim -> simulation_length.mean,
+                 sim -> elapsed_cpu.total_seconds(),
+                 sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
 
   util::fprintf( file,
-                   "%s",
-                   sim -> default_rng() -> report( sim -> confidence_estimator ).c_str() );
+                 "%s",
+                 sim -> default_rng() -> report( sim -> confidence_estimator ).c_str() );
 }
 
 // print_text_scale_factors =================================================
@@ -502,8 +502,8 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
       if ( p -> scales_with[ j ] )
       {
         util::fprintf( file, "  %s=%.*f(%.*f)", util::stat_type_abbrev( j ),
-                         sim -> report_precision, sf.get_stat( j ),
-                         sim -> report_precision, p -> scaling_error.get_stat( j ) );
+                       sim -> report_precision, sf.get_stat( j ),
+                       sim -> report_precision, p -> scaling_error.get_stat( j ) );
       }
     }
 
@@ -537,8 +537,8 @@ void print_text_scale_factors( FILE* file, player_t* p, player_t::report_informa
     if ( p -> scales_with[ i ] )
     {
       util::fprintf( file, "  %s=%.*f(%.*f)", util::stat_type_abbrev( i ),
-                       p -> sim -> report_precision, sf.get_stat( i ),
-                       p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );
+                     p -> sim -> report_precision, sf.get_stat( i ),
+                     p -> sim -> report_precision, p -> scaling_error.get_stat( i ) );
     }
   }
   if ( p -> sim -> scaling -> normalize_scale_factors )
@@ -713,24 +713,24 @@ void print_text_player( FILE* file, player_t* p )
   report::generate_player_buff_lists( p, p->report_information );
 
   util::fprintf( file, "\n%s: %s %s %s %s %d\n",
-                   p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
-                   p -> name(), p -> race_str.c_str(),
-                   util::player_type_string( p -> type ),
-                   util::specialization_string( p -> primary_tree() ).c_str(), p -> level );
+                 p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
+                 p -> name(), p -> race_str.c_str(),
+                 util::player_type_string( p -> type ),
+                 util::specialization_string( p -> primary_tree() ).c_str(), p -> level );
 
   util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
-                   p -> dps.mean,
-                   p -> dps_error, p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
-                   p -> hps.mean,
-                   p -> hps_error, p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
-                   ( p -> dps.max - p -> dps.min ) / 2.0 , p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0,
-                   p -> dps_convergence * 100 );
+                 p -> dps.mean,
+                 p -> dps_error, p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                 p -> hps.mean,
+                 p -> hps_error, p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
+                 ( p -> dps.max - p -> dps.min ) / 2.0 , p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0,
+                 p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
   {
     util::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
-                     p -> dpr, p -> rps_loss, p -> rps_gain,
-                     util::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
+                   p -> dpr, p -> rps_loss, p -> rps_gain,
+                   util::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
   }
 
   util::fprintf( file, "\n" );

@@ -283,7 +283,7 @@ struct mage_t : public player_t
   virtual mage_td_t* get_target_data( player_t* target )
   {
     mage_td_t*& td = target_data[ target ];
-    if( ! td ) td = new mage_td_t( target, this );
+    if ( ! td ) td = new mage_td_t( target, this );
     return td;
   }
 
@@ -298,7 +298,7 @@ struct mage_t : public player_t
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -1327,7 +1327,7 @@ struct blizzard_shard_t : public mage_spell_t
     aoe = -1;
     background = true;
   }
-  
+
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );

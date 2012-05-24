@@ -471,7 +471,7 @@ static race_e translate_rawr_race_str( const std::string& name )
 // rawr::load_player ========================================================
 
 player_t* rawr::load_player( sim_t* sim,
-			     const std::string& character_file )
+                             const std::string& character_file )
 {
   FILE* f = fopen( character_file.c_str(), "r" );
   if ( ! f )
@@ -493,8 +493,8 @@ player_t* rawr::load_player( sim_t* sim,
 // rawr::load_player ========================================================
 
 player_t* rawr::load_player( sim_t* sim,
-			     const std::string& character_file,
-			     const std::string& character_xml )
+                             const std::string& character_file,
+                             const std::string& character_xml )
 {
   xml_node_t* root_node = xml::create( sim, character_xml );
   if ( ! root_node )

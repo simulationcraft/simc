@@ -1178,24 +1178,24 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
     if ( ! alist -> used ) continue;
 
     fprintf( file,
-              "\t\t\t\t\t\t\t\t<tr" );
+             "\t\t\t\t\t\t\t\t<tr" );
     if ( ( i & 1 ) )
     {
       fprintf( file, " class=\"odd\"" );
     }
     fprintf( file, ">\n" );
     fprintf( file,
-              "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
-              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-              "\t\t\t\t\t\t\t\t\t</tr>\n",
-              a -> marker,
-              util::encode_html( a -> signature_str ).c_str() );
+             "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">%c</th>\n"
+             "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
+             "\t\t\t\t\t\t\t\t\t</tr>\n",
+             a -> marker,
+             util::encode_html( a -> signature_str ).c_str() );
   }
 
   if ( alist )
   {
     fprintf( file,
-              "\t\t\t\t\t\t\t\t</table>\n" );
+             "\t\t\t\t\t\t\t\t</table>\n" );
   }
 
   if ( ! p -> report_information.action_sequence.empty() )
@@ -1325,10 +1325,10 @@ void print_html_gain( FILE* file, report::tabs_t tabs, gain_t* g, int& j, bool r
                *tabs, g -> actual[ i ] / g -> count[ i ] );
       if ( report_overflow )
         fprintf( file,
-               "%s<td class=\"right\">%.1f</td>\n"
-               "%s<td class=\"right\">%.1f%%</td>\n",
-               *tabs, g -> overflow[ i ],
-               *tabs, overflow_pct );
+                 "%s<td class=\"right\">%.1f</td>\n"
+                 "%s<td class=\"right\">%.1f%%</td>\n",
+                 *tabs, g -> overflow[ i ],
+                 *tabs, overflow_pct );
       --tabs;
       fprintf( file, "%s</tr>\n", *tabs );
     }
@@ -1339,14 +1339,14 @@ void print_html_gain( FILE* file, report::tabs_t tabs, gain_t* g, int& j, bool r
 
 void print_html_player_resources( FILE* file, player_t* p, player_t::report_information_t& ri )
 {
-  report::tabs_t tabs(4); // this should get passed in
+  report::tabs_t tabs( 4 ); // this should get passed in
 
   // Resources Section
 
-  fprintf( file, "%s<div class=\"player-section gains\">\n", *tabs ); 
+  fprintf( file, "%s<div class=\"player-section gains\">\n", *tabs );
   ++tabs;
   fprintf( file, "%s<h3 class=\"toggle\">Resources</h3>\n", *tabs );
-  fprintf( file, "%s<div class=\"toggle-content hide\">\n", *tabs ); 
+  fprintf( file, "%s<div class=\"toggle-content hide\">\n", *tabs );
   ++tabs;
   fprintf( file, "%s<table class=\"sc mt\">\n", *tabs );
   ++tabs;
@@ -1393,11 +1393,11 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
         {
           first = false;
           fprintf( file, "%s<tr>\n", *tabs );
-	  ++tabs;
-	  fprintf( file, "%s<th class=\"left small\">pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
-	  fprintf( file, "%s<td colspan=\"4\" class=\"filler\"></td>\n", *tabs );
-	  --tabs;
-	  fprintf( file, "%s</tr>\n", *tabs );
+          ++tabs;
+          fprintf( file, "%s<th class=\"left small\">pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
+          fprintf( file, "%s<td colspan=\"4\" class=\"filler\"></td>\n", *tabs );
+          --tabs;
+          fprintf( file, "%s</tr>\n", *tabs );
         }
         k = print_html_action_resource( file, s, k );
       }
@@ -1408,18 +1408,18 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
   fprintf( file, "%s</table>\n", *tabs );
 
   // Resource Gains Section
-  fprintf( file, "%s<table class=\"sc\">\n", *tabs ); 
+  fprintf( file, "%s<table class=\"sc\">\n", *tabs );
   ++tabs;
-  fprintf( file, "%s<tr>\n", *tabs ); 
+  fprintf( file, "%s<tr>\n", *tabs );
   ++tabs;
   fprintf( file, "%s<th>Resource Gains</th>\n", *tabs );
   fprintf( file, "%s<th>Type</th>\n", *tabs );
   fprintf( file, "%s<th>Count</th>\n", *tabs );
   fprintf( file, "%s<th>Total</th>\n", *tabs );
   fprintf( file, "%s<th>Average</th>\n", *tabs );
-  fprintf( file, "%s<th colspan=\"2\">Overflow</th>\n", *tabs ); 
+  fprintf( file, "%s<th colspan=\"2\">Overflow</th>\n", *tabs );
   --tabs;
-  fprintf( file, "%s</tr>\n", *tabs ); 
+  fprintf( file, "%s</tr>\n", *tabs );
   --tabs;
 
   {
@@ -1449,14 +1449,14 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
           if ( found )
           {
             first = false;
-	          ++tabs;
+            ++tabs;
             fprintf( file, "%s<tr>\n", *tabs );
-	          ++tabs;
-	          fprintf( file, "%s<th>pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
-	          fprintf( file, "%s<td colspan=\"6\" class=\"filler\"></td>\n", *tabs );
-	          --tabs;
-	          fprintf( file, "%s</tr>\n", *tabs );
-	          --tabs;
+            ++tabs;
+            fprintf( file, "%s<th>pet - %s</th>\n", *tabs, pet -> name_str.c_str() );
+            fprintf( file, "%s<td colspan=\"6\" class=\"filler\"></td>\n", *tabs );
+            --tabs;
+            fprintf( file, "%s</tr>\n", *tabs );
+            --tabs;
           }
         }
         print_html_gain( file, tabs, g, j );
@@ -1939,79 +1939,79 @@ void print_html_player_results_spec_gear( FILE* file, sim_t* sim, player_t* p )
   // Damage
   if ( p -> dps.mean > 0 )
     util::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n" );
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n" );
   // Heal
   if ( p -> hps.mean > 0 )
     util::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
-                     "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n" );
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
+                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n" );
   util::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
-                   "\t\t\t\t\t\t\t\t<th>Active</th>\n"
-                   "\t\t\t\t\t\t\t</tr>\n"
-                   "\t\t\t\t\t\t\t<tr>\n" );
+                 "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
+                 "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
+                 "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
+                 "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
+                 "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
+                 "\t\t\t\t\t\t\t\t<th>Active</th>\n"
+                 "\t\t\t\t\t\t\t</tr>\n"
+                 "\t\t\t\t\t\t\t<tr>\n" );
   // Damage
   if ( p -> dps.mean > 0 )
   {
     double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2;
     util::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-                     p -> dps.mean,
-                     p -> dpse.mean,
-                     p -> dps_error,
-                     p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
-                     range,
-                     p -> dps.mean ? range / p -> dps.mean * 100.0 : 0,
-                     p -> dpr );
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+                   p -> dps.mean,
+                   p -> dpse.mean,
+                   p -> dps_error,
+                   p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
+                   range,
+                   p -> dps.mean ? range / p -> dps.mean * 100.0 : 0,
+                   p -> dpr );
   }
   // Heal
   if ( p -> hps.mean > 0 )
   {
     double range = ( p -> hps.percentile( 0.95 ) - p -> hps.percentile( 0.05 ) ) / 2;
     util::fprintf( file,
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-                     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-                     p -> hps.mean,
-                     p -> hpse.mean,
-                     p -> hps_error,
-                     p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
-                     range,
-                     p -> hps.mean ? range / p -> hps.mean * 100.0 : 0,
-                     p -> hpr );
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
+                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+                   p -> hps.mean,
+                   p -> hpse.mean,
+                   p -> hps_error,
+                   p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
+                   range,
+                   p -> hps.mean ? range / p -> hps.mean * 100.0 : 0,
+                   p -> hpr );
   }
   util::fprintf( file,
-                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                   "\t\t\t\t\t\t\t\t<td>%s</td>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                   "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
-                   "\t\t\t\t\t\t\t</tr>\n"
-                   "\t\t\t\t\t\t</table>\n",
-                   p -> rps_loss,
-                   p -> rps_gain,
-                   util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
-                   p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
-                   p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
-                   sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );
+                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%s</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
+                 "\t\t\t\t\t\t\t</tr>\n"
+                 "\t\t\t\t\t\t</table>\n",
+                 p -> rps_loss,
+                 p -> rps_gain,
+                 util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
+                 p -> fight_length.mean ? 100.0 * p -> waiting_time.mean / p -> fight_length.mean : 0,
+                 p -> fight_length.mean ? 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean : 0,
+                 sim -> simulation_length.mean ? p -> fight_length.mean / sim -> simulation_length.mean * 100.0 : 0 );
 
   // Spec and gear
   if ( ! p -> is_pet() )

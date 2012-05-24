@@ -1319,7 +1319,7 @@ bool action_t::ready()
     size_t total_targets = available_targets( tl );
 
     for ( size_t i = 0; i < total_targets; i++ )
-    { 
+    {
       target = tl[ i ];
       if ( ready() )
       {
@@ -1431,7 +1431,7 @@ void action_t::reset()
   cooldown -> reset();
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
   dot_t* dot = find_dot();
-  if( dot ) dot -> reset();
+  if ( dot ) dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
   travel_event = 0;
@@ -1577,7 +1577,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       n_ticks_expr_t( action_t& a ) : action_expr_t( "n_ticks", a ) {}
       virtual double evaluate()
       {
-	dot_t* dot = action.get_dot();
+        dot_t* dot = action.get_dot();
         int n_ticks = action.hasted_num_ticks( action.player -> composite_spell_haste() );
         if ( action.dot_behavior == DOT_EXTEND && dot -> ticking )
           n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> num_ticks - dot -> current_tick );
@@ -1639,14 +1639,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate() { return action.travel_event != NULL; }
     };
     return new in_flight_expr_t( *this );
-  }  
+  }
   else if ( name_str == "in_flight_to_target" )
   {
     struct in_flight_expr_t : public action_expr_t
     {
       in_flight_expr_t( action_t& a ) : action_expr_t( "in_flight_to_target", a ) {}
       virtual double evaluate()
-      { 
+      {
         if ( action.travel_event == NULL ) return false;
         stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action.travel_event );
         return te -> state -> target == action.target;
@@ -1689,7 +1689,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         {
           if ( action.cooldown -> remains() == timespan_t::zero() &&
                action.cooldown -> reset_react > action.sim -> current_time )
-               return false;
+            return false;
           else
             return true;
         }
@@ -1707,10 +1707,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
         if ( action.sim -> debug )
         {
           action.sim -> output( "%s %s cast_delay(): can_react_at=%f cur_time=%f",
-				action.player -> name_str.c_str(),
-				action.name_str.c_str(),
-				( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
-				action.sim -> current_time.total_seconds() );
+                                action.player -> name_str.c_str(),
+                                action.name_str.c_str(),
+                                ( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
+                                action.sim -> current_time.total_seconds() );
         }
 
         if ( action.player -> cast_delay_occurred == timespan_t::zero() ||
@@ -1774,13 +1774,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
     if ( buff )
       return buff -> create_expression( splits[ 2 ] );
   }
-  
+
   if ( num_splits == 3 && splits[ 0 ] == "dot" )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "debuff")
+  if ( num_splits >= 2 && splits[ 0 ] == "debuff" )
   {
     return target -> create_expression( this, name_str );
   }

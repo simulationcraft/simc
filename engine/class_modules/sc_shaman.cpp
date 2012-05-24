@@ -11,22 +11,22 @@
 // - Melee swing every 1.4 seconds
 // - Seems to inherit owner crit/haste
 // - Inherits owner's crit damage bonus
-// - Separate SP/INT scaling seems to be gone, seems to inherit ~0.55 of 
+// - Separate SP/INT scaling seems to be gone, seems to inherit ~0.55 of
 //   owner spell power (at 85), needs validation at 90
 // - Stats update dynamically
 // - Even with flame shock on target and meleeing, elemental suffers from an
-//   idle time, around 3.5 seconds. Idle time here is defined as the interval 
-//   between the summon event from Fire Elemental Totem, to the first action 
+//   idle time, around 3.5 seconds. Idle time here is defined as the interval
+//   between the summon event from Fire Elemental Totem, to the first action
 //   performed by the elemental
 // - Receives 10.5 hit points per stamina
-// 
+//
 // Code:
 // - Ascendancy
 // - Redo Totem system
 // - Talents Totemic Restoration, Ancestral Swiftness Instacast
 //
 // General:
-// - Echo of the Elements proc rates nearer to release, currently (~late April 2k12) 
+// - Echo of the Elements proc rates nearer to release, currently (~late April 2k12)
 //   tested to 30% for Enhancement, 6% for Elemental / Restoration (1k LB casts both)
 // - Class base stats for 87..90
 // - Unleashed fury
@@ -89,9 +89,9 @@ struct shaman_td_t : public actor_pair_t
     dots_searing_flames = target -> get_dot( "searing_flames", p );
 
     debuffs_searing_flames = ( buff_creator_t( *this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
-			       .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
-			       .duration( p -> dbc.spell( 77661 ) -> duration() )
-			       .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
+                               .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
+                               .duration( p -> dbc.spell( 77661 ) -> duration() )
+                               .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
 
     debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
 
@@ -283,7 +283,7 @@ struct shaman_t : public player_t
     player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ) 
+    eoe_proc_chance( 0 )
   {
     target_data.init( "target_data", this );
 
@@ -350,7 +350,7 @@ struct shaman_t : public player_t
   virtual shaman_td_t* get_target_data( player_t* target )
   {
     shaman_td_t*& td = target_data[ target ];
-    if( ! td ) td = new shaman_td_t( target, this );
+    if ( ! td ) td = new shaman_td_t( target, this );
     return td;
   }
 
@@ -364,7 +364,7 @@ struct shaman_t : public player_t
     {
     case SHAMAN_ELEMENTAL:   return "131330"; break;
     case SHAMAN_ENHANCEMENT: return "131330"; break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -538,7 +538,7 @@ struct shaman_spell_t : public spell_t
     static_cast< shaman_spell_state_t* >( s ) -> eoe_proc = false;
     return s;
   }
-  
+
   void init()
   {
     spell_t::init();
@@ -865,7 +865,7 @@ struct fire_elemental_t : public pet_t
   struct fire_elemental_spell_t : public spell_t
   {
     fire_elemental_t* p;
-    
+
     fire_elemental_spell_t( const std::string& t, fire_elemental_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       spell_t( t, p, s ), p( p )
     {
@@ -938,7 +938,7 @@ struct fire_elemental_t : public pet_t
       base_dd_min        = 1 + ( p -> o() -> level - 10 );
       base_dd_max        = 1 + ( p -> o() -> level - 10 ) + 1;
     }
-    
+
     virtual void execute()
     {
       fire_elemental_spell_t::execute();
@@ -980,11 +980,11 @@ struct fire_elemental_t : public pet_t
       else
         melee_attack_t::execute();
     }
-    
+
     virtual void impact_s( action_state_t* state )
     {
       melee_attack_t::impact_s( state );
-      
+
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> spec == SHAMAN_ENHANCEMENT )
       {
@@ -1030,7 +1030,7 @@ struct fire_elemental_t : public pet_t
   virtual void init_base()
   {
     pet_t::init_base();
-    
+
     resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
 
@@ -1057,7 +1057,7 @@ struct fire_elemental_t : public pet_t
       resource_gain( RESOURCE_MANA, 10.66 * periodicity.total_seconds() ); // FIXME! Does regen scale with gear???
     }
   }
-  
+
   virtual double composite_player_multiplier( school_e school, action_t* a = 0 )
   {
     return pet_t::composite_player_multiplier( school, a ) * ( ( type == PLAYER_PET ) ? 1.5 : 1.0 );
@@ -1067,7 +1067,7 @@ struct fire_elemental_t : public pet_t
   {
     return owner -> composite_spell_power( school ) * 0.55;
   }
-  
+
   virtual double composite_attack_power()
   {
     return 0.0;
@@ -1077,17 +1077,17 @@ struct fire_elemental_t : public pet_t
   {
     return owner -> composite_spell_crit();
   }
-  
+
   virtual double composite_attack_crit( weapon_t* w = 0 )
   {
     return owner -> composite_attack_crit( w );
   }
-  
+
   virtual double composite_spell_haste()
   {
     return owner -> composite_spell_haste();
   }
-  
+
   virtual double composite_attack_haste()
   {
     return owner -> composite_attack_haste();
@@ -1721,7 +1721,7 @@ void shaman_melee_attack_t::impact_s( action_state_t* state )
     // TODO: Chance is based on Rank 3, i.e., 10 PPM?
     double chance = weapon -> proc_chance_on_swing( 10.0 );
 
-    if ( p() -> spec == SHAMAN_ENHANCEMENT && 
+    if ( p() -> spec == SHAMAN_ENHANCEMENT &&
          p() -> buff.maelstrom_weapon -> trigger( 1, -1, chance ) )
     {
       if ( mwstack == p() -> buff.maelstrom_weapon -> max_stack() )
@@ -3988,7 +3988,7 @@ void shaman_t::init_actions()
     quiet = true;
     return;
   }
-  
+
   if ( ! action_list_str.empty() )
   {
     player_t::init_actions();
@@ -3997,7 +3997,7 @@ void shaman_t::init_actions()
 
   clear_action_priority_lists();
 
-  
+
   std::string use_items_str;
   int num_items = ( int ) items.size();
   for ( int i=0; i < num_items; i++ )
@@ -4055,7 +4055,7 @@ void shaman_t::init_actions()
   else
     s << ( ( level > 85 ) ? "/jinyu_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
   if ( level >= 80 ) s << ",precombat=1";
-  
+
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) s << "/wind_shear";
   if ( level >= 70 ) s << "/bloodlust,if=target.health.pct<=25|target.time_to_die<=60";
@@ -4232,7 +4232,7 @@ double shaman_t::composite_spell_hit()
   double hit = player_t::composite_spell_hit();
 
   hit += ( specialization.elemental_precision -> ok() *
-    ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
+           ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
 }

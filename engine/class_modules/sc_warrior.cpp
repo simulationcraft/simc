@@ -348,7 +348,7 @@ struct warrior_t : public player_t
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -1378,7 +1378,7 @@ struct colossus_smash_t : public warrior_attack_t
 
   colossus_smash_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "colossus_smash",  p, p -> find_class_spell( "Colossus Smash" ) )
-  , armor_pen_value( 0.0 )
+    , armor_pen_value( 0.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1824,7 +1824,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     warrior_t* p = cast();
 
     player_multiplier *= 1.0 + p -> composite_mastery() *
-                               p -> mastery.unshackled_fury -> effectN( 3 ).base_value() / 10000.0;
+                         p -> mastery.unshackled_fury -> effectN( 3 ).base_value() / 10000.0;
   }
 };
 
@@ -1974,7 +1974,7 @@ struct revenge_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     base_multiplier  *= 1.0 + p -> talents.improved_revenge -> effectN( 2 ).percent()
-                            + p -> glyphs.revenge -> effectN( 1 ).percent();
+                        + p -> glyphs.revenge -> effectN( 1 ).percent();
 
     direct_power_mod = data().extra_coeff();
     stancemask = STANCE_DEFENSE;
@@ -2181,7 +2181,7 @@ struct shockwave_t : public warrior_attack_t
     warrior_t* p = cast();
 
     player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() *
-                               p -> talents.thunderstruck -> effectN( 2 ).percent();
+                         p -> talents.thunderstruck -> effectN( 2 ).percent();
   }
 };
 

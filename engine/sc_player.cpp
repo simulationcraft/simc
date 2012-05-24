@@ -573,9 +573,9 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    if ( sim -> default_actions && ! p -> is_pet() ) 
-    { 
-      p -> clear_action_priority_lists(); 
+    if ( sim -> default_actions && ! p -> is_pet() )
+    {
+      p -> clear_action_priority_lists();
       p -> action_list_str.clear();
     };
     p -> init();
@@ -1419,7 +1419,7 @@ void player_t::init_actions()
     }
   }
 
-  if ( ! action_list_str.empty() ) get_action_priority_list( "default") -> action_list_str = action_list_str;
+  if ( ! action_list_str.empty() ) get_action_priority_list( "default" ) -> action_list_str = action_list_str;
 
   int j = 0;
 
@@ -1427,8 +1427,8 @@ void player_t::init_actions()
   {
     if ( sim -> debug )
       sim -> output( "Player %s: actions.%s=%s", name(),
-                                                      action_priority_list[ alist ] -> name_str.c_str(), 
-                                                      action_priority_list[ alist ] -> action_list_str.c_str() );
+                     action_priority_list[ alist ] -> name_str.c_str(),
+                     action_priority_list[ alist ] -> action_list_str.c_str() );
 
     std::vector<std::string> splits;
     size_t num_splits = util::string_split( splits, action_priority_list[ alist ] -> action_list_str, "/" );
@@ -1530,7 +1530,7 @@ void player_t::init_actions()
   }
 
   if ( choose_action_list.empty() ) choose_action_list = "default";
-  
+
   action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
 
   if ( ! chosen_action_list && choose_action_list != "default" )
@@ -2647,10 +2647,10 @@ void player_t::combat_begin()
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> combat_begin();
-  
+
   for ( size_t i = 0; i < precombat_action_list.size(); i++ )
     precombat_action_list[ i ] -> execute();
-  
+
   if ( precombat_action_list.size() > 0 )
     in_combat = true;
 }
@@ -3227,7 +3227,7 @@ void player_t::regen( timespan_t periodicity )
 
   if ( gain && base )
     resource_gain( r, base * periodicity.total_seconds(), gain );
-  
+
 }
 void player_t::collect_resource_timeline_information()
 {
@@ -3568,10 +3568,10 @@ void player_t::stat_loss( stat_e stat,
   case STAT_MAX_RUNIC:
   {
     resource_e r = ( ( stat == STAT_MAX_HEALTH ) ? RESOURCE_HEALTH :
-                          ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
-                          ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
-                          ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
-                          ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
+                     ( stat == STAT_MAX_MANA   ) ? RESOURCE_MANA   :
+                     ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
+                     ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
+                     ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
     recalculate_resource_max( r );
     double delta = resources.current[ r ] - resources.max[ r ];
     if ( delta > 0 ) resource_loss( r, delta, gain, action );
@@ -4096,13 +4096,13 @@ cooldown_t* player_t::find_cooldown( const std::string& name )
 // player_t::find_dot =======================================================
 
 dot_t* player_t::find_dot( const std::string& name,
-			   player_t* source )
+                           player_t* source )
 {
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
     dot_t* d = dot_list[ i ];
     if ( d -> source == source &&
-	 d -> name_str == name )
+         d -> name_str == name )
       return d;
   }
   return 0;
@@ -4178,7 +4178,7 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 // player_t::get_dot ========================================================
 
 dot_t* player_t::get_dot( const std::string& name,
-			  player_t* source )
+                          player_t* source )
 {
   dot_t* d = find_dot( name, source );
 
@@ -4360,7 +4360,7 @@ double player_t::get_position_distance( double m, double v )
 // player_t::get_player_distance ============================================
 
 double player_t::get_player_distance( player_t* p )
-{ 
+{
   return get_position_distance( p -> x_position, p -> y_position );
 }
 
@@ -4920,20 +4920,20 @@ struct use_item_t : public action_t
       if ( e.cost_reduction && e.school && e.discharge_amount )
       {
         trigger = unique_gear::register_cost_reduction_proc( e.trigger_type, e.trigger_mask, use_name, player,
-							     e.school, e.max_stacks, e.discharge_amount,
-							     e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, false, e.reverse );
+                                                             e.school, e.max_stacks, e.discharge_amount,
+                                                             e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, false, e.reverse );
       }
       else if ( e.stat )
       {
         trigger = unique_gear::register_stat_proc( e.trigger_type, e.trigger_mask, use_name, player,
-						   e.stat, e.max_stacks, e.stat_amount,
-						   e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, e.tick, e.reverse );
+                                                   e.stat, e.max_stacks, e.stat_amount,
+                                                   e.proc_chance, timespan_t::zero()/*dur*/, timespan_t::zero()/*cd*/, e.tick, e.reverse );
       }
       else if ( e.school )
       {
         trigger = unique_gear::register_discharge_proc( e.trigger_type, e.trigger_mask, use_name, player,
-							e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-							e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
+                                                        e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
+                                                        e.proc_chance, timespan_t::zero()/*cd*/, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
       }
 
       if ( trigger ) trigger -> deactivate();
@@ -5167,7 +5167,7 @@ struct run_action_list_t : public swap_action_list_t
   virtual void execute()
   {
     if ( sim -> log ) sim -> output( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
-    
+
     player -> restore_action_list = player -> active_action_list;
     player -> activate_action_list( alist );
   }
@@ -5252,11 +5252,11 @@ bool player_t::parse_talents_old_armory( const std::string& talent_string )
   case 'W' : w_class = SHAMAN; break;
   case 'V' : w_class = WARLOCK; break;
   case 'Z' : w_class = WARRIOR; break;
-  default: 
-    {
-      sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string. Invalid class character.\n", name() );
-      return false;
-    }
+  default:
+  {
+    sim -> errorf( "Player %s has malformed Cataclysm battle.net talent string. Invalid class character.\n", name() );
+    return false;
+  }
   }
 
   if ( talent_string[ 4 ] < '0' || talent_string[ 4 ] > '2' )
@@ -5391,11 +5391,11 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
   case 'W' : w_class = SHAMAN; break;
   case 'V' : w_class = WARLOCK; break;
   case 'Z' : w_class = WARRIOR; break;
-  default: 
-    {
-      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid class character.\n", name() );
-      return false;
-    }
+  default:
+  {
+    sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid class character.\n", name() );
+    return false;
+  }
   }
 
   if ( w_class != type )
@@ -5419,7 +5419,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
   if ( ( cut_pt = talent_string.find_first_of( '!' ) ) == talent_string.npos )
   {
-    sim -> errorf( "Player %s has malformed MoP battle.net talent string.\n", name() );                   
+    sim -> errorf( "Player %s has malformed MoP battle.net talent string.\n", name() );
     return false;
   }
 
@@ -5434,10 +5434,10 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     case 'b' : specidx = 2; break;
     case 'Y' : specidx = 3; break;
     default:
-      {
-        sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid spec character\n", name() );
-        return false;
-      }
+    {
+      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Invalid spec character\n", name() );
+      return false;
+    }
     }
 
     w_spec = dbc.spec_by_idx( type, specidx );
@@ -5468,10 +5468,10 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     case '1' : talent_list[ j * MAX_TALENT_COLS + 1 ] = 1; break;
     case '2' : talent_list[ j * MAX_TALENT_COLS + 2 ] = 1; break;
     default:
-      {
-        sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent list has invalid characters.\n", name() );
-        return false;
-      }
+    {
+      sim -> errorf( "Player %s has malformed MoP battle.net talent string. Talent list has invalid characters.\n", name() );
+      return false;
+    }
     }
   }
 
@@ -5533,7 +5533,7 @@ void player_t::create_talents_wowhead()
 
     found_this_char = false;
     found_tier = false;
-    
+
     for ( int j = 2; j >= 0; j-- )
     {
       unsigned int i = 0;
@@ -5547,16 +5547,16 @@ void player_t::create_talents_wowhead()
           break;
         }
       }
-      if ( i >= MAX_TALENT_COLS ) // Wowhead can't actually handle this case properly if it's not a trailing tier. 
+      if ( i >= MAX_TALENT_COLS ) // Wowhead can't actually handle this case properly if it's not a trailing tier.
       {
         if ( found_tier ) // There's a later row that has talents. Set the talent on this tier to the first until Wowhead supports it right.
         {
-          c += key[ 8 - ( j * 3 ) ]; 
+          c += key[ 8 - ( j * 3 ) ];
         }
       }
       else
       {
-        c += key[ 8 - ( ( j * 3 ) + i ) ]; 
+        c += key[ 8 - ( ( j * 3 ) + i ) ];
       }
     }
 
@@ -5565,7 +5565,7 @@ void player_t::create_talents_wowhead()
 
     v[ k ] = c;
   }
-  
+
   if ( v[ 0 ] == 0 )
   {
     if ( v[ 1 ] > 0 )

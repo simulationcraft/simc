@@ -51,7 +51,7 @@ public:
     auto_lock_t lock( mutex );
 
     std::pair<token_map_t::iterator, bool> pr =
-        map.insert( std::make_pair( id_spell, token_name ) );
+      map.insert( std::make_pair( id_spell, token_name ) );
 
     // New entry
     if ( pr.second )
@@ -196,7 +196,7 @@ uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
 {
   std::pair< id_map_t::iterator, bool > pr =
-      replaced_ids.insert( std::make_pair( id_spell, replaced_by_id ) );
+    replaced_ids.insert( std::make_pair( id_spell, replaced_by_id ) );
   // New entry
   if ( pr.second )
     return true;
@@ -1746,7 +1746,7 @@ unsigned dbc_t::set_bonus_spell_id( player_e c, const char* name, int tier ) con
 
   tier -= MIN_TIER;
 
-  if ( tier >= (int)dbc_t::num_tiers() )
+  if ( tier >= ( int )dbc_t::num_tiers() )
     return 0;
 
   for ( int t = 0; t < tier; t++ )

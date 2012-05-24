@@ -40,7 +40,7 @@ static int vfprintf_helper( FILE *stream, const char *format, va_list args )
 // str_compare_ci ===================================================
 
 bool util::str_compare_ci( const std::string& l,
-			   const std::string& r )
+                           const std::string& r )
 {
   if ( l.size() != r.size() || l.size() == 0 )
     return false;
@@ -70,7 +70,7 @@ std::string& util::glyph_name( std::string& n )
 // str_prefix_ci ====================================================
 
 bool util::str_prefix_ci( const std::string& str,
-			  const std::string& prefix )
+                          const std::string& prefix )
 {
   if ( str.size() < prefix.size() )
     return false;
@@ -81,7 +81,7 @@ bool util::str_prefix_ci( const std::string& str,
 // str_in_str_ci ====================================================
 
 bool util::str_in_str_ci( const std::string& l,
-			  const std::string& r )
+                          const std::string& r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
@@ -89,8 +89,8 @@ bool util::str_in_str_ci( const std::string& l,
 // ability_rank =====================================================
 
 double util::ability_rank( int    player_level,
-			   double ability_value,
-			   int    ability_level, ... )
+                           double ability_value,
+                           int    ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -109,8 +109,8 @@ double util::ability_rank( int    player_level,
 // ability_rank =====================================================
 
 int util::ability_rank( int player_level,
-			int ability_value,
-			int ability_level, ... )
+                        int ability_value,
+                        int ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -159,8 +159,8 @@ const char* util::role_type_string( role_e role )
 // parse_role_type ==================================================
 
 role_e util::parse_role_type( const std::string& name )
-{ 
-  return parse_enum<role_e,ROLE_NONE,ROLE_MAX,role_type_string>( name ); 
+{
+  return parse_enum<role_e,ROLE_NONE,ROLE_MAX,role_type_string>( name );
 }
 
 // race_type_string =================================================
@@ -194,7 +194,7 @@ const char* util::race_type_string( race_e type )
 // parse_race_type ==================================================
 
 race_e util::parse_race_type( const std::string &name )
-{ 
+{
   return parse_enum<race_e,RACE_NONE,RACE_MAX,race_type_string>( name );
 }
 
@@ -216,7 +216,7 @@ const char* util::position_type_string( position_e type )
 // parse_position_type ==============================================
 
 position_e util::parse_position_type( const std::string &name )
-{ 
+{
   return parse_enum<position_e,POSITION_NONE,POSITION_MAX,position_type_string>( name );
 }
 
@@ -299,7 +299,7 @@ const char* util::player_type_string( player_e type )
 // parse_player_type ================================================
 
 player_e util::parse_player_type( const std::string& name )
-{ 
+{
   return parse_enum<player_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name );
 }
 
@@ -577,7 +577,7 @@ const char* util::resource_type_string( resource_e resource_type )
 // parse_resource_type ==============================================
 
 resource_e util::parse_resource_type( const std::string& name )
-{ 
+{
   return parse_enum<resource_e,RESOURCE_NONE,RESOURCE_MAX,resource_type_string>( name );
 }
 
@@ -586,7 +586,7 @@ resource_e util::parse_resource_type( const std::string& name )
 uint32_t util::school_type_component( school_e s_type, school_e c_type )
 {
   return( spell_data_t::get_school_mask( s_type ) &
-	  spell_data_t::get_school_mask( c_type ) );
+          spell_data_t::get_school_mask( c_type ) );
 }
 
 // school_type_string ===============================================
@@ -977,8 +977,8 @@ const char* util::weapon_class_string( inventory_type it )
     return "Main Hand";
   case INVTYPE_WEAPONOFFHAND:
     return "Off Hand";
-  //case INVTYPE_RANGED:
-  //case INVTYPE_THROWN:
+    //case INVTYPE_RANGED:
+    //case INVTYPE_THROWN:
   default:
     return 0;
   }
@@ -1095,7 +1095,7 @@ const char* util::food_type_string( food_e food )
 // parse_food_type ==================================================
 
 food_e util::parse_food_type( const std::string& name )
-{ 
+{
   return parse_enum<food_e,FOOD_NONE,FOOD_MAX,food_type_string>( name );
 }
 
@@ -1228,7 +1228,7 @@ const char* util::armor_type_string( player_e ptype, slot_e s )
 // parse_slot_type ==================================================
 
 slot_e util::parse_slot_type( const std::string& name )
-{ 
+{
   return parse_enum<slot_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name );
 }
 
@@ -1452,9 +1452,9 @@ stat_e util::parse_reforge_type( const std::string& name )
 // parse_origin =====================================================
 
 bool util::parse_origin( std::string& region_str,
-			 std::string& server_str,
-			 std::string& name_str,
-			 const std::string& origin_str )
+                         std::string& server_str,
+                         std::string& name_str,
+                         const std::string& origin_str )
 {
   if ( ( origin_str.find( ".battle."    ) == std::string::npos ) &&
        ( origin_str.find( ".wowarmory." ) == std::string::npos ) )
@@ -1811,7 +1811,7 @@ bool util::socket_gem_match( gem_e socket, gem_e gem )
 // string_split =====================================================
 
 size_t util::string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes )
-{ 
+{
   std::string buffer = str;
   std::string::size_type cut_pt, start = 0;
 
@@ -1866,7 +1866,7 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
 // replace_all ======================================================
 
 std::string& util::replace_all( std::string& s, const char* from, char to )
-{ 
+{
   std::string::size_type pos = s.find( from );
   if ( pos != s.npos )
   {
@@ -1876,13 +1876,13 @@ std::string& util::replace_all( std::string& s, const char* from, char to )
     while ( ( pos = s.find( from, pos ) ) != s.npos );
   }
 
-  return s; 
+  return s;
 }
 
 // replace_all ======================================================
 
 std::string& util::replace_all( std::string& s, char from, const char* to )
-{ 
+{
   std::string::size_type pos;
   if ( ( pos = s.find( from ) ) != s.npos )
   {
@@ -1946,8 +1946,8 @@ int util::parse_item_quality( const std::string& quality )
 // string_split =====================================================
 
 int util::string_split( const std::string& str,
-			const char*        delim,
-			const char*        format, ... )
+                        const char*        delim,
+                        const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;
@@ -2105,21 +2105,21 @@ int util::snprintf( char* buf, size_t size, const char* fmt, ... )
 // vfprintf =========================================================
 
 int util::vfprintf( FILE *stream, const char *format, va_list fmtargs )
-{ 
-  return vfprintf_helper( stream, format, fmtargs ); 
+{
+  return vfprintf_helper( stream, format, fmtargs );
 }
 
 // vprintf ==========================================================
 
 int util::vprintf( const char *format, va_list fmtargs )
-{ 
+{
   return util::vfprintf( stdout, format, fmtargs );
 }
 
 // str_to_utf8 ======================================================
 
 std::string& util::str_to_utf8( std::string& str )
-{ 
+{
   std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
   if ( p == str.end() ) return str;
 
@@ -2128,13 +2128,13 @@ std::string& util::str_to_utf8( std::string& str )
     utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 
   str.swap( temp );
-  return str; 
+  return str;
 }
 
 // str_to_latin1 ====================================================
 
 std::string& util::str_to_latin1( std::string& str )
-{ 
+{
   if ( str.empty() ) return str;
   if ( ! range::is_valid_utf8( str ) ) return str;
 
@@ -2153,7 +2153,7 @@ std::string& util::str_to_latin1( std::string& str )
 // urlencode ========================================================
 
 std::string& util::urlencode( std::string& str )
-{ 
+{
   std::string::size_type l = str.length();
   if ( ! l ) return str;
 
@@ -2179,13 +2179,13 @@ std::string& util::urlencode( std::string& str )
 
   str.swap( temp );
 
-  return str; 
+  return str;
 }
 
 // urldecode ========================================================
 
 std::string& util::urldecode( std::string& str )
-{ 
+{
   std::string::size_type l = str.length();
   if ( ! l ) return str;
 
@@ -2215,7 +2215,7 @@ std::string& util::urldecode( std::string& str )
 // format_text ======================================================
 
 std::string& util::format_text( std::string& name, bool input_is_utf8 )
-{ 
+{
   if ( name.empty() ) return name;
   bool is_utf8 = range::is_valid_utf8( name );
 
@@ -2224,13 +2224,13 @@ std::string& util::format_text( std::string& name, bool input_is_utf8 )
   else if ( ! is_utf8 && input_is_utf8 )
     str_to_utf8( name );
 
-  return name; 
+  return name;
 }
 
 // html_special_char_decode =========================================
 
 std::string& util::html_special_char_decode( std::string& str )
-{ 
+{
   std::string::size_type pos = 0;
 
   while ( ( pos = str.find( "&", pos ) ) != std::string::npos )
@@ -2264,7 +2264,7 @@ std::string& util::html_special_char_decode( std::string& str )
     }
   }
 
-  return str; 
+  return str;
 }
 
 // encode_html ==============================================================
@@ -2354,10 +2354,10 @@ double util::round( double X, unsigned int decplaces )
 // tolower ==================================================================
 
 std::string& util::tolower( std::string& str )
-{ 
+{
   // Transform all chars to lower case
   range::transform_self( str, ( int( * )( int ) ) std::tolower );
-  return str; 
+  return str;
 }
 
 // tokenize =================================================================
@@ -2456,9 +2456,9 @@ bool util::is_number( const std::string& s )
 // stat_search ==============================================================
 
 static void stat_search( std::string&              encoding_str,
-			 std::vector<std::string>& description_tokens,
-			 stat_e               type,
-			 const std::string&        stat_str )
+                         std::vector<std::string>& description_tokens,
+                         stat_e               type,
+                         const std::string&        stat_str )
 {
   std::vector<std::string> stat_tokens;
   size_t num_stats = util::string_split( stat_tokens, stat_str, " " );
@@ -2536,7 +2536,7 @@ static bool is_proc_description( const std::string& description_str )
 // fuzzy_stats ==============================================================
 
 void util::fuzzy_stats( std::string&       encoding_str,
-			const std::string& description_str )
+                        const std::string& description_str )
 {
   if ( description_str.empty() ) return;
 

@@ -118,7 +118,7 @@ struct monk_t : public player_t
   virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
-    if( ! td ) td = new monk_td_t( target, this );
+    if ( ! td ) td = new monk_td_t( target, this );
     return td;
   }
 
@@ -128,7 +128,7 @@ struct monk_t : public player_t
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -546,7 +546,7 @@ void monk_t::init_actions()
       action_list_str += "/tiger_palm";
       action_list_str += "/blackout_kick";
       action_list_str += "/jab";
-    break;
+      break;
     }
   }
 

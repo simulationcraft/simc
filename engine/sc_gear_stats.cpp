@@ -215,7 +215,7 @@ void gear_stats_t::print( FILE* file )
     if ( value != 0 )
     {
       util::fprintf( file, " %s=%.*f", util::stat_type_abbrev( i ),
-                       ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
+                     ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
     }
   }
   util::fprintf( file, "\n" );

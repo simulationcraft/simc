@@ -270,7 +270,7 @@ struct paladin_t : public player_t
   virtual paladin_td_t* get_target_data( player_t* target )
   {
     paladin_td_t*& td = target_data[ target ];
-    if( ! td ) td = new paladin_td_t( target, this );
+    if ( ! td ) td = new paladin_td_t( target, this );
     return td;
   }
 
@@ -280,7 +280,7 @@ struct paladin_t : public player_t
     switch ( primary_tree() )
     {
     case PALADIN_RETRIBUTION: return "000020"; break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -2516,7 +2516,7 @@ void paladin_t::init_actions()
         action_list_str += "/flask,precombat=1,type=titanic_strength/food,precombat=1,type=beer_basted_crocolisk";
       }
 
-      if ( find_class_spell( "Blessing of Kings" ) -> ok() ) 
+      if ( find_class_spell( "Blessing of Kings" ) -> ok() )
         action_list_str += "/blessing_of_kings,precombat=1,if=!aura.str_agi_int.up";
       if ( find_class_spell( "Blessing of Might" ) -> ok() )
       {
@@ -2551,7 +2551,7 @@ void paladin_t::init_actions()
           action_list_str += ",if=mana.pct>=90|seal.none";
       }
       if ( find_class_spell( "Seal of Insight" ) -> ok() )
-      {       
+      {
         action_list_str += "/seal_of_insight";
         if ( find_class_spell( "Seal of Truth" ) -> ok() )
           action_list_str += ",if=mana.pct<=30";
@@ -2568,7 +2568,7 @@ void paladin_t::init_actions()
 
       // This should<tm> get Censure up before the auto attack lands
       action_list_str += "/auto_attack";
-      
+
       if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
       {
         action_list_str += "/judgment,if=!debuff.physical_vulnerability.up|debuff.physical_vulnerability.remains<8";
@@ -2781,7 +2781,7 @@ void paladin_t::init_spells()
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
 
-    // Glyphs
+  // Glyphs
   glyphs.ascetic_crusader         = find_glyph_spell( "Glyph of the Ascetic Crusader" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );

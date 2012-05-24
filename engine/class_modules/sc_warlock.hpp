@@ -289,7 +289,7 @@ struct warlock_t : public player_t
   virtual warlock_td_t* get_target_data( player_t* target )
   {
     warlock_td_t*& td = target_data[ target ];
-    if( ! td ) td = new warlock_td_t( target, this );
+    if ( ! td ) td = new warlock_td_t( target, this );
     return td;
   }
 
@@ -301,7 +301,7 @@ struct warlock_t : public player_t
     case WARLOCK_AFFLICTION:  return "000020"; break;
     case WARLOCK_DEMONOLOGY:  return "000020"; break;
     case WARLOCK_DESTRUCTION: return "000020"; break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();

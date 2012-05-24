@@ -367,9 +367,9 @@ struct death_knight_t : public player_t
   virtual bool      runes_depleted( rune_type rt, int position );
 
   death_knight_td_t* get_target_data( player_t* target )
-  { 
+  {
     death_knight_td_t*& td = target_data[ target ];
-    if( ! td ) td = new death_knight_td_t( target, this );
+    if ( ! td ) td = new death_knight_td_t( target, this );
     return td;
   }
 
@@ -388,7 +388,7 @@ struct death_knight_t : public player_t
     switch ( primary_tree() )
     {
     case SPEC_NONE: break;
-    default: break;    
+    default: break;
     }
 
     return player_t::set_default_talents();
@@ -494,7 +494,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
 
   if ( p -> sim -> debug )
     p -> sim -> output( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
-			slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
+                        slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> composite_attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
   {
@@ -556,7 +556,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   };
 
   struct drw_blood_plague_t : public drw_spell_t
-  { 
+  {
     drw_blood_plague_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "blood_plague", p, p -> find_spell( 59879 ) )  // Also check spell id 55078
     {
@@ -1397,7 +1397,7 @@ struct death_knight_melee_attack_t : public melee_attack_t
   death_knight_t* cast() { return debug_cast<death_knight_t*>( player ); }
 
   death_knight_td_t* cast_td( player_t* t = 0 )
-  { 
+  {
     return cast() -> get_target_data( t ? t : target );
   }
 
@@ -1444,7 +1444,7 @@ struct death_knight_spell_t : public spell_t
   death_knight_t* cast() { return debug_cast<death_knight_t*>( player ); }
 
   death_knight_td_t* cast_td( player_t* t = 0 )
-  { 
+  {
     return cast() -> get_target_data( t ? t : target );
   }
 
@@ -4182,7 +4182,7 @@ void death_knight_t::init_buffs()
     death_knight_t* dk;
     bloodworms_buff_t( death_knight_t* p ) :
       buff_t( buff_creator_t( p, "bloodworms" ).max_stack( 1 ).duration( timespan_t::from_seconds( 19.99 ) ).cd( timespan_t::zero() ).chance( 0.0 ) ),
-    dk( p ) {}
+      dk( p ) {}
     virtual void start( int stacks, double value, timespan_t duration = timespan_t::min() )
     {
       buff_t::start( stacks, value, duration );
@@ -4191,7 +4191,7 @@ void death_knight_t::init_buffs()
     virtual void expire()
     {
       buff_t::expire();
-      if (dk -> pets.bloodworms ) dk -> pets.bloodworms -> dismiss();
+      if ( dk -> pets.bloodworms ) dk -> pets.bloodworms -> dismiss();
     }
   };
   buffs.bloodworms = new bloodworms_buff_t( this );

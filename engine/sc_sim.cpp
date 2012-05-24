@@ -359,7 +359,7 @@ public:
       else
       {
         server = sim -> default_server_str;
-      }     
+      }
     }
 
     cache = use_cache ? cache::ANY : cache::players();
@@ -409,7 +409,7 @@ bool parse_armory( sim_t*             sim,
       player_t* p;
       if ( name == "wowhead" )
         p = wowhead::download_player( sim, stuff.region, stuff.server,
-                                        player_name, description, stuff.cache );
+                                      player_name, description, stuff.cache );
       else if ( name == "chardev" )
         p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "wowreforge" )
@@ -1380,13 +1380,13 @@ struct compare_stats_name
   }
 };
 
-static void player_convergence( int iterations, 
-				int convergence_scale, 
-				double confidence_estimator,
-				sample_data_t& dps, 
-				std::vector<double>& dps_convergence_error, 
-				double dps_error, 
-				double& dps_convergence )
+static void player_convergence( int iterations,
+                                int convergence_scale,
+                                double confidence_estimator,
+                                sample_data_t& dps,
+                                std::vector<double>& dps_convergence_error,
+                                double dps_error,
+                                double& dps_convergence )
 {
   // Error Convergence ======================================================
 
@@ -2318,7 +2318,7 @@ int sim_t::main( const std::vector<std::string>& args )
   if ( canceled ) return 0;
 
   util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                   SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( dbc.ptr ) );
+                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc_t::wow_version( dbc.ptr ), ( dbc.ptr ? "PTR" : "Live" ), dbc_t::build_level( dbc.ptr ) );
   fflush( output_file );
 
   if ( spell_query )
@@ -2351,8 +2351,8 @@ int sim_t::main( const std::vector<std::string>& args )
     }
 
     util::fprintf( output_file,
-                     "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
-                     iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
+                   "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
+                   iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
     fflush( output_file );
 
     util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );

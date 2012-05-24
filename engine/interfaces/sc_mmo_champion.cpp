@@ -157,7 +157,7 @@ static bool parse_gems( item_t&           item,
   for ( int i=0; i < 3; i++ )
   {
     if ( ! util::socket_gem_match( sockets[ i ],
-                                     item_t::parse_gem( item, gem_ids[ i ] ) ) )
+                                   item_t::parse_gem( item, gem_ids[ i ] ) ) )
       match = false;
   }
 
@@ -506,8 +506,8 @@ static meta_gem_e parse_meta_gem( const std::string& description )
 // mmo_champion::parse_gem ==================================================
 
 gem_e mmo_champion::parse_gem( item_t&            item,
-				    const std::string& gem_id,
-				    cache::behavior_e  caching )
+                               const std::string& gem_id,
+                               cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -567,9 +567,9 @@ gem_e mmo_champion::parse_gem( item_t&            item,
 // mmo_champion::download_glyph =============================================
 
 bool mmo_champion::download_glyph( player_t*          player,
-				   std::string&       glyph_name,
-				   const std::string& glyph_id,
-				   cache::behavior_e  caching )
+                                   std::string&       glyph_name,
+                                   const std::string& glyph_id,
+                                   cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching );
   if ( ! node || ! xml::get_value( glyph_name, node, "title/." ) )
@@ -585,8 +585,8 @@ bool mmo_champion::download_glyph( player_t*          player,
 // mmo_champion::download_item ==============================================
 
 bool mmo_champion::download_item( item_t&            item,
-				  const std::string& item_id,
-				  cache::behavior_e  caching )
+                                  const std::string& item_id,
+                                  cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -652,13 +652,13 @@ bool mmo_champion::download_item( item_t&            item,
 // mmo_champion::download_slot ==============================================
 
 bool mmo_champion::download_slot( item_t&            item,
-				  const std::string& item_id,
-				  const std::string& enchant_id,
-				  const std::string& addon_id,
-				  const std::string& reforge_id,
-				  const std::string& rsuffix_id,
-				  const std::string  gem_ids[ 3 ],
-				  cache::behavior_e  caching )
+                                  const std::string& item_id,
+                                  const std::string& enchant_id,
+                                  const std::string& addon_id,
+                                  const std::string& reforge_id,
+                                  const std::string& rsuffix_id,
+                                  const std::string  gem_ids[ 3 ],
+                                  cache::behavior_e  caching )
 {
   player_t* p = item.player;
 

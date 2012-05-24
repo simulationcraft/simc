@@ -52,8 +52,8 @@ static const char* translate_slot( int slot )
 // chardev::download_player ===============================================
 
 player_t* chardev::download_player( sim_t* sim,
-				    const std::string& id,
-				    cache::behavior_e caching )
+                                    const std::string& id,
+                                    cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;

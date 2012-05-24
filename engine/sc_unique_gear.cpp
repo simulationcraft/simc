@@ -153,7 +153,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 struct discharge_spell_t : public spell_t
 {
   discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
-		     unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
+                     unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
     school = ( s == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s;
@@ -286,8 +286,8 @@ struct discharge_proc_callback_base_t : public action_callback_t
     if ( ++stacks >= max_stacks )
     {
       stacks = 0;
-      if ( listener -> sim -> debug ) 
-	listener -> sim -> output( "%s procs %s", a -> name(), discharge_action -> name() );
+      if ( listener -> sim -> debug )
+        listener -> sim -> output( "%s procs %s", a -> name(), discharge_action -> name() );
       discharge_action -> execute();
       proc -> occur();
     }
@@ -464,7 +464,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
       discharge_action -> execute();
     }
   }
-}; 
+};
 
 } // ANONYMOUS NAMESPACE
 
@@ -1757,17 +1757,17 @@ void unique_gear::init( player_t* p )
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_proc( proc_e        type,
-						    int64_t            mask,
-						    const std::string& name,
-						    player_t*          player,
-						    stat_e        stat,
-						    int                max_stacks,
-						    double             amount,
-						    double             proc_chance,
-						    timespan_t         duration,
-						    timespan_t         cooldown,
-						    timespan_t         tick,
-						    bool               reverse )
+                                                    int64_t            mask,
+                                                    const std::string& name,
+                                                    player_t*          player,
+                                                    stat_e        stat,
+                                                    int                max_stacks,
+                                                    double             amount,
+                                                    double             proc_chance,
+                                                    timespan_t         duration,
+                                                    timespan_t         cooldown,
+                                                    timespan_t         tick,
+                                                    bool               reverse )
 {
   action_callback_t* cb = new stat_proc_callback_t( name, player, stat, max_stacks, amount, proc_chance, duration, cooldown, tick, reverse, type == PROC_NONE );
 
@@ -1879,20 +1879,20 @@ action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type
 // ==========================================================================
 
 action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
-							 int64_t            mask,
-							 const std::string& name,
-							 player_t*          player,
-							 int                max_stacks,
-							 school_e      school,
-							 double             amount,
-							 double             scaling,
-							 double             proc_chance,
-							 timespan_t         cooldown,
-							 bool               no_buffs,
-							 bool               no_debuffs,
-							 int                aoe,
-							 unsigned int       override_result_es_mask,
-							 unsigned int       result_es_mask )
+                                                         int64_t            mask,
+                                                         const std::string& name,
+                                                         player_t*          player,
+                                                         int                max_stacks,
+                                                         school_e      school,
+                                                         double             amount,
+                                                         double             scaling,
+                                                         double             proc_chance,
+                                                         timespan_t         cooldown,
+                                                         bool               no_buffs,
+                                                         bool               no_debuffs,
+                                                         int                aoe,
+                                                         unsigned int       override_result_es_mask,
+                                                         unsigned int       result_es_mask )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                          no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
@@ -1949,20 +1949,20 @@ action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        type,
-								int64_t            mask,
-								const std::string& name,
-								player_t*          player,
-								int                max_stacks,
-								school_e      school,
-								double             amount,
-								double             scaling,
-								double             proc_chance,
-								timespan_t         cooldown,
-								bool               no_buffs,
-								bool               no_debuffs,
-								int                aoe,
-								unsigned int       override_result_es_mask,
-								unsigned int       result_es_mask )
+                                                         int64_t            mask,
+                                                         const std::string& name,
+                                                         player_t*          player,
+                                                         int                max_stacks,
+                                                         school_e      school,
+                                                         double             amount,
+                                                         double             scaling,
+                                                         double             proc_chance,
+                                                         timespan_t         cooldown,
+                                                         bool               no_buffs,
+                                                         bool               no_debuffs,
+                                                         int                aoe,
+                                                         unsigned int       override_result_es_mask,
+                                                         unsigned int       result_es_mask )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
                                                                 no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
@@ -2019,23 +2019,23 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        ty
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type,
-							      int64_t            mask,
-							      const std::string& name,
-							      player_t*          player,
-							      int                max_stacks,
-							      stat_e        stat,
-							      double             stat_amount,
-							      school_e      school,
-							      double             min_dmg,
-							      double             max_dmg,
-							      double             proc_chance,
-							      timespan_t         duration,
-							      timespan_t         cooldown,
-							      bool               no_buffs,
-							      bool               no_debuffs,
-							      int                aoe,
-							      unsigned int       override_result_es_mask,
-							      unsigned int       result_es_mask )
+                                                              int64_t            mask,
+                                                              const std::string& name,
+                                                              player_t*          player,
+                                                              int                max_stacks,
+                                                              stat_e        stat,
+                                                              double             stat_amount,
+                                                              school_e      school,
+                                                              double             min_dmg,
+                                                              double             max_dmg,
+                                                              double             proc_chance,
+                                                              timespan_t         duration,
+                                                              timespan_t         cooldown,
+                                                              bool               no_buffs,
+                                                              bool               no_debuffs,
+                                                              int                aoe,
+                                                              unsigned int       override_result_es_mask,
+                                                              unsigned int       result_es_mask )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
                                                               duration, cooldown, no_buffs, no_debuffs, aoe, type == PROC_NONE, override_result_es_mask, result_es_mask );
@@ -2087,7 +2087,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_proc( item_t& i,
-						    item_t::special_effect_t& e )
+                                                    item_t::special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2102,7 +2102,7 @@ action_callback_t* unique_gear::register_stat_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_cost_reduction_proc( item_t& i,
-							      item_t::special_effect_t& e )
+                                                              item_t::special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2116,7 +2116,7 @@ action_callback_t* unique_gear::register_cost_reduction_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_discharge_proc( item_t& i,
-							 item_t::special_effect_t& e )
+                                                         item_t::special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2130,7 +2130,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
-								item_t::special_effect_t& e )
+                                                                item_t::special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2144,7 +2144,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 // ==========================================================================
 
 action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
-							      item_t::special_effect_t& e )
+                                                              item_t::special_effect_t& e )
 {
   const std::string& name = e.name_str.empty() ? i.name() : e.name_str;
 
@@ -2159,11 +2159,11 @@ action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
 // ==========================================================================
 
 bool unique_gear::get_equip_encoding( std::string&       encoding,
-				      const std::string& name,
-				      bool         heroic,
-				      bool         lfr,
-				      bool         /* ptr */,
-				      const std::string& /* id */ )
+                                      const std::string& name,
+                                      bool         heroic,
+                                      bool         lfr,
+                                      bool         /* ptr */,
+                                      const std::string& /* id */ )
 {
   std::string e;
 
@@ -2317,11 +2317,11 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 // ==========================================================================
 
 bool unique_gear::get_use_encoding( std::string&       encoding,
-				    const std::string& name,
-				    bool         heroic,
-				    bool         lfr,
-				    bool         /* ptr */,
-				    const std::string& /* id */ )
+                                    const std::string& name,
+                                    bool         heroic,
+                                    bool         lfr,
+                                    bool         /* ptr */,
+                                    const std::string& /* id */ )
 {
   std::string e;
 

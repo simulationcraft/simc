@@ -582,7 +582,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 // chart::raid_gear =========================================================
 
 size_t chart::raid_gear( std::vector<std::string>& images,
-			 sim_t* sim )
+                         sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -739,7 +739,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 // chart::raid_dpet =========================================================
 
 size_t chart::raid_dpet( std::vector<std::string>& images,
-                          sim_t* sim )
+                         sim_t* sim )
 {
   size_t num_players = sim -> players_by_dps.size();
 
@@ -896,7 +896,7 @@ std::string chart::action_dpet(  player_t* p )
     stats_t* st = stats_list[ i ];
     std::string petname = "";
     if ( st -> player -> type == PLAYER_PET
-      || st -> player -> type == PLAYER_GUARDIAN )
+         || st -> player -> type == PLAYER_GUARDIAN )
       petname = std::string( st -> player -> name_str.c_str() ) + ": ";
     snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, petname.c_str(), st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
@@ -1616,10 +1616,10 @@ std::string chart::reforge_dps( player_t* p )
 // chart::timeline ==========================================================
 
 std::string chart::timeline(  player_t* p,
-			      std::vector<double>& timeline_data,
-			      const std::string& timeline_name,
-			      double avg,
-			      std::string color )
+                              std::vector<double>& timeline_data,
+                              const std::string& timeline_name,
+                              double avg,
+                              std::string color )
 {
   static const size_t max_points = 600;
   static const double timeline_range  = 60.0;
@@ -1770,9 +1770,9 @@ std::string chart::timeline_dps_error( player_t* p )
 // chart::distribution_dps ==================================================
 
 std::string chart::distribution(  sim_t* sim,
-				  std::vector<int>& dist_data,
-				  const std::string& distribution_name,
-				  double avg, double min, double max )
+                                  std::vector<int>& dist_data,
+                                  const std::string& distribution_name,
+                                  double avg, double min, double max )
 {
   int max_buckets = ( int ) dist_data.size();
 
@@ -2043,7 +2043,7 @@ std::string chart::gear_weights_wowreforge( player_t* p )
 // chart::gear_weights_pawn =================================================
 
 std::string chart::gear_weights_pawn( player_t* p,
-				      bool hit_expertise )
+                                      bool hit_expertise )
 {
   std::vector<stat_e> stats;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )

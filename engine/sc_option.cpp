@@ -188,23 +188,23 @@ bool option_t::parse( sim_t*             sim,
     }
     return true;
   }
-  else if( type == OPT_MAP )
+  else if ( type == OPT_MAP )
   {
     std::string::size_type last = n.size() - 1;
     bool append=false;
-    if( n[ last ] == '+' ) 
-    { 
-      append=true; 
-      --last; 
+    if ( n[ last ] == '+' )
+    {
+      append=true;
+      --last;
     }
     std::string::size_type dot = n.rfind( ".", last );
-    if( dot != std::string::npos )
+    if ( dot != std::string::npos )
     {
-      if( name == n.substr( 0, dot+1 ) )
+      if ( name == n.substr( 0, dot+1 ) )
       {
-	std::map<std::string,std::string>* m = (std::map<std::string,std::string>*) address;
-	std::string& value = (*m)[ n.substr( dot+1, last-dot ) ];
-	value = append ? ( value + v ) : v;
+        std::map<std::string,std::string>* m = ( std::map<std::string,std::string>* ) address;
+        std::string& value = ( *m )[ n.substr( dot+1, last-dot ) ];
+        value = append ? ( value + v ) : v;
       }
     }
   }

@@ -498,8 +498,8 @@ static bool download( url_cache_entry_t& entry,
 // http::clear_cache ========================================================
 
 bool http::clear_cache( sim_t* sim,
-			const std::string& name,
-			const std::string& value )
+                        const std::string& name,
+                        const std::string& value )
 {
   assert( name == "http_clear_cache" ); ( void )name;
   if ( value != "0" && ! sim -> parent ) cache_clear();
@@ -590,9 +590,9 @@ void http::cache_save()
 // http::get ================================================================
 
 bool http::get( std::string&       result,
-		const std::string& url,
-		cache::behavior_e  caching,
-		const std::string& confirmation )
+                const std::string& url,
+                cache::behavior_e  caching,
+                const std::string& confirmation )
 {
   result.clear();
 
@@ -663,7 +663,7 @@ bool http::get( std::string&       result,
 // http::format =============================================================
 
 void http::format_( std::string& encoded_url,
-		    const std::string& url )
+                    const std::string& url )
 {
   encoded_url = url;
   util::urlencode( util::str_to_utf8( encoded_url ) );

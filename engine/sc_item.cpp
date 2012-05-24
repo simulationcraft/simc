@@ -87,7 +87,7 @@ static bool is_meta_suffix( const std::string& option_name )
 // parse_meta_gem ===========================================================
 
 meta_gem_e parse_meta_gem( const std::string& prefix,
-                                const std::string& suffix )
+                           const std::string& suffix )
 {
   if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
   return util::parse_meta_gem_type( prefix + '_' + suffix );
@@ -1356,13 +1356,13 @@ bool item_t::download_slot( item_t& item,
         has_local = true;
       else if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
+                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "ptrhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
+                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "mmoc" )
         success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-					       rsuffix_id, gem_ids, cache::ONLY );
+                                               rsuffix_id, gem_ids, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cache::ONLY );
@@ -1381,13 +1381,13 @@ bool item_t::download_slot( item_t& item,
       const std::string& src = item.sim -> item_db_sources[ i ];
       if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, item.player -> dbc.ptr, cb );
+                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cb );
       else if ( src == "ptrhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
+                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
       else if ( src == "mmoc" )
         success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-					       rsuffix_id, gem_ids, cb );
+                                               rsuffix_id, gem_ids, cb );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cb );
@@ -1507,7 +1507,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 // item_t::parse_gem ========================================================
 
 gem_e item_t::parse_gem( item_t&            item,
-                              const std::string& gem_id )
+                         const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;

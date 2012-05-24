@@ -548,8 +548,8 @@ struct potion_base_t : public action_t
 // ==========================================================================
 
 action_t* consumable::create_action( player_t*          p,
-				     const std::string& name,
-				     const std::string& options_str )
+                                     const std::string& name,
+                                     const std::string& options_str )
 {
   if ( name == "dark_rune"            ) return new    dark_rune_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );

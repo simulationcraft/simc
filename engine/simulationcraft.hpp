@@ -369,11 +369,11 @@ enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 enum attribute_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
 enum base_stat_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
-                          BASE_STAT_HEALTH, BASE_STAT_MANA,
-                          BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
-                          BASE_STAT_DODGE_PER_AGI,
-                          BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
-                        };
+                     BASE_STAT_HEALTH, BASE_STAT_MANA,
+                     BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
+                     BASE_STAT_DODGE_PER_AGI,
+                     BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
+                   };
 
 enum resource_e
 {
@@ -1280,7 +1280,7 @@ namespace cache {
 typedef int era_t;
 static const era_t INVALID_ERA = -1;
 static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
-                                          // used to mark persistent caches at load.
+// used to mark persistent caches at load.
 
 enum behavior_e
 {
@@ -1432,140 +1432,140 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 
 namespace util {
 
-  double ability_rank( int player_level, double ability_value, int ability_level, ... );
-  int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
+double ability_rank( int player_level, double ability_value, int ability_level, ... );
+int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
 
-  const char* attribute_type_string     ( attribute_e type );
-  const char* dmg_type_string           ( dmg_e type );
-  const char* dot_behavior_type_string  ( dot_behavior_e t );
-  const char* elixir_type_string        ( elixir_e type );
-  const char* flask_type_string         ( flask_e type );
-  const char* food_type_string          ( food_e type );
-  const char* gem_type_string           ( gem_e type );
-  const char* meta_gem_type_string      ( meta_gem_e type );
-  const char* player_type_string        ( player_e );
-  const char* pet_type_string           ( pet_e type );
-  const char* position_type_string      ( position_e );
-  const char* profession_type_string    ( profession_e );
-  const char* race_type_string          ( race_e );
-  const char* role_type_string          ( role_e );
-  const char* resource_type_string      ( resource_e );
-  const char* result_type_string        ( result_e type );
-  uint32_t    school_type_component     ( school_e s_type, school_e c_type );
-  const char* school_type_string        ( school_e type );
-  const char* armor_type_string         ( player_e ptype, slot_e );
-  const char* set_bonus_string          ( set_e type );
+const char* attribute_type_string     ( attribute_e type );
+const char* dmg_type_string           ( dmg_e type );
+const char* dot_behavior_type_string  ( dot_behavior_e t );
+const char* elixir_type_string        ( elixir_e type );
+const char* flask_type_string         ( flask_e type );
+const char* food_type_string          ( food_e type );
+const char* gem_type_string           ( gem_e type );
+const char* meta_gem_type_string      ( meta_gem_e type );
+const char* player_type_string        ( player_e );
+const char* pet_type_string           ( pet_e type );
+const char* position_type_string      ( position_e );
+const char* profession_type_string    ( profession_e );
+const char* race_type_string          ( race_e );
+const char* role_type_string          ( role_e );
+const char* resource_type_string      ( resource_e );
+const char* result_type_string        ( result_e type );
+uint32_t    school_type_component     ( school_e s_type, school_e c_type );
+const char* school_type_string        ( school_e type );
+const char* armor_type_string         ( player_e ptype, slot_e );
+const char* set_bonus_string          ( set_e type );
 
-  const char* slot_type_string          ( slot_e type );
-  const char* stat_type_string          ( stat_e type );
-  const char* stat_type_abbrev          ( stat_e type );
-  const char* stat_type_wowhead         ( stat_e type );
-  specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
-  std::string specialization_string     ( specialization_e spec );
-  resource_e translate_power_type  ( power_e );
-  const char* weapon_type_string        ( weapon_e type );
-  const char* weapon_class_string       ( inventory_type class_ );
-  const char* weapon_subclass_string    ( item_subclass_weapon subclass );
+const char* slot_type_string          ( slot_e type );
+const char* stat_type_string          ( stat_e type );
+const char* stat_type_abbrev          ( stat_e type );
+const char* stat_type_wowhead         ( stat_e type );
+specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
+std::string specialization_string     ( specialization_e spec );
+resource_e translate_power_type  ( power_e );
+const char* weapon_type_string        ( weapon_e type );
+const char* weapon_class_string       ( inventory_type class_ );
+const char* weapon_subclass_string    ( item_subclass_weapon subclass );
 
-  const char* set_item_type_string      ( int item_set );
-  const char* item_quality_string       ( int item_quality );
+const char* set_item_type_string      ( int item_set );
+const char* item_quality_string       ( int item_quality );
 
-  attribute_e parse_attribute_type ( const std::string& name );
-  dmg_e parse_dmg_type             ( const std::string& name );
-  elixir_e parse_elixir_type       ( const std::string& name );
-  flask_e parse_flask_type         ( const std::string& name );
-  food_e parse_food_type           ( const std::string& name );
-  gem_e parse_gem_type             ( const std::string& name );
-  meta_gem_e parse_meta_gem_type   ( const std::string& name );
-  player_e parse_player_type       ( const std::string& name );
-  pet_e parse_pet_type             ( const std::string& name );
-  profession_e parse_profession_type( const std::string& name );
-  position_e parse_position_type   ( const std::string& name );
-  race_e parse_race_type           ( const std::string& name );
-  role_e parse_role_type           ( const std::string& name );
-  resource_e parse_resource_type   ( const std::string& name );
-  result_e parse_result_type       ( const std::string& name );
-  school_e parse_school_type       ( const std::string& name );
-  set_e parse_set_bonus            ( const std::string& name );
-  slot_e parse_slot_type           ( const std::string& name );
-  stat_e parse_stat_type           ( const std::string& name );
-  stat_e parse_reforge_type        ( const std::string& name );
+attribute_e parse_attribute_type ( const std::string& name );
+dmg_e parse_dmg_type             ( const std::string& name );
+elixir_e parse_elixir_type       ( const std::string& name );
+flask_e parse_flask_type         ( const std::string& name );
+food_e parse_food_type           ( const std::string& name );
+gem_e parse_gem_type             ( const std::string& name );
+meta_gem_e parse_meta_gem_type   ( const std::string& name );
+player_e parse_player_type       ( const std::string& name );
+pet_e parse_pet_type             ( const std::string& name );
+profession_e parse_profession_type( const std::string& name );
+position_e parse_position_type   ( const std::string& name );
+race_e parse_race_type           ( const std::string& name );
+role_e parse_role_type           ( const std::string& name );
+resource_e parse_resource_type   ( const std::string& name );
+result_e parse_result_type       ( const std::string& name );
+school_e parse_school_type       ( const std::string& name );
+set_e parse_set_bonus            ( const std::string& name );
+slot_e parse_slot_type           ( const std::string& name );
+stat_e parse_stat_type           ( const std::string& name );
+stat_e parse_reforge_type        ( const std::string& name );
 
-  weapon_e parse_weapon_type       ( const std::string& name );
+weapon_e parse_weapon_type       ( const std::string& name );
 
-  int parse_item_quality                ( const std::string& quality );
+int parse_item_quality                ( const std::string& quality );
 
-  bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
+bool parse_origin( std::string& region, std::string& server, std::string& name, const std::string& origin );
 
-  int class_id_mask( player_e type );
-  int class_id( player_e type );
-  unsigned race_mask( race_e type );
-  unsigned race_id( race_e type );
-  unsigned pet_mask( pet_e type );
-  unsigned pet_id( pet_e type );
-  player_e pet_class_type( pet_e type );
+int class_id_mask( player_e type );
+int class_id( player_e type );
+unsigned race_mask( race_e type );
+unsigned race_id( race_e type );
+unsigned pet_mask( pet_e type );
+unsigned pet_id( pet_e type );
+player_e pet_class_type( pet_e type );
 
-  const char* class_id_string( player_e type );
-  player_e translate_class_id( int cid );
-  player_e translate_class_str( std::string& s );
-  race_e translate_race_id( int rid );
-  stat_e translate_item_mod( item_mod_type stat_mod );
-  slot_e translate_invtype( inventory_type inv_type );
-  weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
-  profession_e translate_profession_id( int skill_id );
-  gem_e translate_socket_color( item_socket_color );
+const char* class_id_string( player_e type );
+player_e translate_class_id( int cid );
+player_e translate_class_str( std::string& s );
+race_e translate_race_id( int rid );
+stat_e translate_item_mod( item_mod_type stat_mod );
+slot_e translate_invtype( inventory_type inv_type );
+weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
+profession_e translate_profession_id( int skill_id );
+gem_e translate_socket_color( item_socket_color );
 
-  bool socket_gem_match( gem_e socket, gem_e gem );
+bool socket_gem_match( gem_e socket, gem_e gem );
 
-  size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
-  int string_split( const std::string& str, const char* delim, const char* format, ... );
-  void string_strip_quotes( std::string& str );
-  std::string& replace_all( std::string& s, const char* from, char to );
-  std::string& replace_all( std::string& s, char from, const char* to );
+size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
+int string_split( const std::string& str, const char* delim, const char* format, ... );
+void string_strip_quotes( std::string& str );
+std::string& replace_all( std::string& s, const char* from, char to );
+std::string& replace_all( std::string& s, char from, const char* to );
 
-  template <typename T>
-  std::string to_string( const T& t )
-  { std::ostringstream s; s << t; return s.str(); }
+template <typename T>
+std::string to_string( const T& t )
+{ std::ostringstream s; s << t; return s.str(); }
 
-  std::string to_string( double f );
-  std::string to_string( double f, int precision );
+std::string to_string( double f );
+std::string to_string( double f, int precision );
 
-  int64_t milliseconds();
-  int64_t parse_date( const std::string& month_day_year );
+int64_t milliseconds();
+int64_t parse_date( const std::string& month_day_year );
 
-  int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1,2 );
-  int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2,3 );
-  int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2,0 );
-  int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
+int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1,2 );
+int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2,0 );
+int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1,0 );
 
-  std::string& str_to_utf8( std::string& str );
-  std::string& str_to_latin1( std::string& str );
-  std::string& urlencode( std::string& str );
-  std::string& urldecode( std::string& str );
+std::string& str_to_utf8( std::string& str );
+std::string& str_to_latin1( std::string& str );
+std::string& urlencode( std::string& str );
+std::string& urldecode( std::string& str );
 
-  std::string& format_text( std::string& name, bool input_is_utf8 );
+std::string& format_text( std::string& name, bool input_is_utf8 );
 
-  std::string& html_special_char_decode( std::string& str );
+std::string& html_special_char_decode( std::string& str );
 
-  bool str_compare_ci( const std::string& l, const std::string& r );
-  std::string& glyph_name( std::string& n );
-  bool str_in_str_ci ( const std::string& l, const std::string& r );
-  bool str_prefix_ci ( const std::string& str, const std::string& prefix );
+bool str_compare_ci( const std::string& l, const std::string& r );
+std::string& glyph_name( std::string& n );
+bool str_in_str_ci ( const std::string& l, const std::string& r );
+bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
-  double floor( double X, unsigned int decplaces = 0 );
-  double ceil( double X, unsigned int decplaces = 0 );
-  double round( double X, unsigned int decplaces = 0 );
+double floor( double X, unsigned int decplaces = 0 );
+double ceil( double X, unsigned int decplaces = 0 );
+double round( double X, unsigned int decplaces = 0 );
 
-  std::string& tolower( std::string& str );
-  std::string encode_html( const std::string& );
+std::string& tolower( std::string& str );
+std::string encode_html( const std::string& );
 
-  void tokenize( std::string& name, format_e = FORMAT_NONE );
-  std::string inverse_tokenize( const std::string& name );
+void tokenize( std::string& name, format_e = FORMAT_NONE );
+std::string inverse_tokenize( const std::string& name );
 
-  bool is_number( const std::string& s );
+bool is_number( const std::string& s );
 
-  int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
-  void fuzzy_stats( std::string& encoding, const std::string& description );
+int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
+void fuzzy_stats( std::string& encoding, const std::string& description );
 };
 
 // Spell information struct, holding static functions to output spell data in a human readable form
@@ -2040,7 +2040,7 @@ struct expression_t
   static bool is_unary( token_e );
   static bool is_binary( token_e );
   static token_e next_token( action_t* action, const std::string& expr_str, int& current_index,
-                                  std::string& token_str, token_e prev_token );
+                             std::string& token_str, token_e prev_token );
   static std::vector<expr_token_t> parse_tokens( action_t* action, const std::string& expr_str );
   static void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
   static void convert_to_unary( std::vector<expr_token_t>& tokens );
@@ -2290,7 +2290,7 @@ struct target_specific_entry_t
   size_t index;
   std::string name;
   player_t* source;
-  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) : index(i), name(n), source(s) {}
+  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) : index( i ), name( n ), source( s ) {}
 };
 
 // Simulation Engine ========================================================
@@ -2540,9 +2540,9 @@ public:
   size_t target_specific_index( const std::string& name, player_t* source )
   {
     size_t size = target_specifics.size();
-    for( size_t i=0; i < size; i++ )
-      if( target_specifics[ i ].name == name &&
-          target_specifics[ i ].source == source )
+    for ( size_t i=0; i < size; i++ )
+      if ( target_specifics[ i ].name == name &&
+           target_specifics[ i ].source == source )
         return i;
     target_specifics.push_back( target_specific_entry_t( size, name, source ) );
     return size;
@@ -2897,7 +2897,7 @@ struct item_t
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
   static gem_e parse_gem( item_t&            item,
-                               const std::string& gem_id );
+                          const std::string& gem_id );
 };
 
 // Item database ============================================================
@@ -3701,7 +3701,7 @@ template < class T >
 struct target_specific_t
 {
   size_t index;
-  target_specific_t() : index(-1) {}
+  target_specific_t() : index( -1 ) {}
   target_specific_t( const std::string& name, player_t* source )
   {
     init( name, source );
@@ -3714,13 +3714,13 @@ struct target_specific_t
   {
     std::vector<void*>& v = target -> target_specifics;
     size_t size = v.size();
-    if( index >= size ) 
+    if ( index >= size )
     {
       v.resize( index+1 );
-      for( size_t i=size; i < index; i++ ) 
-	v[i] = NULL;
+      for ( size_t i=size; i < index; i++ )
+        v[i] = NULL;
     }
-    return (T*&) v[ index ];
+    return ( T*& ) v[ index ];
   }
 };
 
@@ -4040,15 +4040,15 @@ struct action_t
 
   dot_t* find_dot( player_t* t = 0 )
   {
-    if( ! t ) t = target;
+    if ( ! t ) t = target;
     return target_specific_dot[ t ];
   }
 
   dot_t* get_dot( player_t* t = 0 )
   {
-    if( ! t ) t = target;
+    if ( ! t ) t = target;
     dot_t*& dot = target_specific_dot[ t ];
-    if( ! dot ) dot = t -> get_dot( name_str, player );
+    if ( ! dot ) dot = t -> get_dot( name_str, player );
     return dot;
   }
 
@@ -4589,75 +4589,75 @@ struct regen_event_t : public event_t
 
 namespace unique_gear
 {
-  void init( player_t* );
+void init( player_t* );
 
-  action_callback_t* register_stat_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-					 stat_e, int max_stacks, double amount,
-					 double proc_chance, timespan_t duration, timespan_t cooldown,
-					 timespan_t tick=timespan_t::zero(), bool reverse=false );
+action_callback_t* register_stat_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+                                       stat_e, int max_stacks, double amount,
+                                       double proc_chance, timespan_t duration, timespan_t cooldown,
+                                       timespan_t tick=timespan_t::zero(), bool reverse=false );
 
-  action_callback_t* register_cost_reduction_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-						   school_e, int max_stacks, double amount,
-						   double proc_chance, timespan_t duration, timespan_t cooldown,
-						   bool refreshes=false, bool reverse=false );
+action_callback_t* register_cost_reduction_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+                                                 school_e, int max_stacks, double amount,
+                                                 double proc_chance, timespan_t duration, timespan_t cooldown,
+                                                 bool refreshes=false, bool reverse=false );
 
-  action_callback_t* register_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-					      int max_stacks, school_e, double amount, double scaling,
-					      double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-					      unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+                                            int max_stacks, school_e, double amount, double scaling,
+                                            double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+                                            unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  action_callback_t* register_chance_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-						     int max_stacks, school_e, double amount, double scaling,
-						     double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-						     unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_chance_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+                                                  int max_stacks, school_e, double amount, double scaling,
+                                                  double proc_chance, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+                                                  unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
-						   int max_stacks, stat_e, double stat_amount,
-						   school_e, double discharge_amount, double discharge_scaling,
-						   double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
-						   unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
+action_callback_t* register_stat_discharge_proc( proc_e, int64_t mask, const std::string& name, player_t*,
+                                                 int max_stacks, stat_e, double stat_amount,
+                                                 school_e, double discharge_amount, double discharge_scaling,
+                                                 double proc_chance, timespan_t duration, timespan_t cooldown, bool no_buffs, bool no_debuffs, int aoe,
+                                                 unsigned int override_result_es_mask = 0, unsigned int results_types_mask = 0 );
 
-  action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
-  action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
-  action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
-  action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
-  action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_stat_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_cost_reduction_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_discharge_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_chance_discharge_proc( item_t&, item_t::special_effect_t& );
+action_callback_t* register_stat_discharge_proc( item_t&, item_t::special_effect_t& );
 
-  bool get_equip_encoding( std::string& encoding,
-			   const std::string& item_name,
-			   bool heroic,
-			   bool lfr,
-			   bool ptr,
-			   const std::string& item_id=std::string() );
+bool get_equip_encoding( std::string& encoding,
+                         const std::string& item_name,
+                         bool heroic,
+                         bool lfr,
+                         bool ptr,
+                         const std::string& item_id=std::string() );
 
-  bool get_use_encoding( std::string& encoding,
-			 const std::string& item_name,
-			 bool heroic,
-			 bool lfr,
-			 bool ptr,
-			 const std::string& item_id=std::string() );
+bool get_use_encoding( std::string& encoding,
+                       const std::string& item_name,
+                       bool heroic,
+                       bool lfr,
+                       bool ptr,
+                       const std::string& item_id=std::string() );
 };
 
 // Enchants =================================================================
 
 namespace enchant
 {
-  void init( player_t* );
-  bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
-  bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
-  bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
-  int  get_reforge_id      ( stat_e stat_from, stat_e stat_to );
-  bool download        ( item_t&, const std::string& enchant_id );
-  bool download_addon  ( item_t&, const std::string& addon_id   );
-  bool download_reforge( item_t&, const std::string& reforge_id );
-  bool download_rsuffix( item_t&, const std::string& rsuffix_id );
+void init( player_t* );
+bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
+bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
+bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
+int  get_reforge_id      ( stat_e stat_from, stat_e stat_to );
+bool download        ( item_t&, const std::string& enchant_id );
+bool download_addon  ( item_t&, const std::string& addon_id   );
+bool download_reforge( item_t&, const std::string& reforge_id );
+bool download_rsuffix( item_t&, const std::string& rsuffix_id );
 };
 
 // Consumable ===============================================================
 
-namespace consumable 
+namespace consumable
 {
-  action_t* create_action( player_t*, const std::string& name, const std::string& options );
+action_t* create_action( player_t*, const std::string& name, const std::string& options );
 }
 
 // Benefit ==================================================================
@@ -4794,11 +4794,11 @@ struct proc_t
 
 namespace report
 {
-  // In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
-  void print_spell_query( sim_t*, unsigned level );
-  void print_profiles( sim_t* );
-  void print_text( FILE*, sim_t*, bool detail );
-  void print_suite( sim_t* );
+// In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
+void print_spell_query( sim_t*, unsigned level );
+void print_profiles( sim_t* );
+void print_text( FILE*, sim_t*, bool detail );
+void print_suite( sim_t* );
 };
 
 // Pseudo Random Number Generation ==========================================
@@ -4863,180 +4863,180 @@ public:
 
 // Wowhead  =================================================================
 
-namespace wowhead 
+namespace wowhead
 {
-  player_t* download_player( sim_t* sim,
-                                    const std::string& region,
-                                    const std::string& server,
-                                    const std::string& name,
-                                    const std::string& spec,
-                                    cache::behavior_e b=cache::players() );
-  bool download_slot( item_t&,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string gem_ids[ 3 ],
-                             bool ptr=false,
-                             cache::behavior_e b=cache::items() );
-  bool download_item( item_t&, const std::string& item_id,
-                             bool ptr=false, cache::behavior_e b=cache::items() );
-  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                              bool ptr=false, cache::behavior_e b=cache::items() );
-  gem_e parse_gem( item_t& item, const std::string& gem_id,
-                               bool ptr=false, cache::behavior_e b=cache::items() );
+player_t* download_player( sim_t* sim,
+                           const std::string& region,
+                           const std::string& server,
+                           const std::string& name,
+                           const std::string& spec,
+                           cache::behavior_e b=cache::players() );
+bool download_slot( item_t&,
+                    const std::string& item_id,
+                    const std::string& enchant_id,
+                    const std::string& addon_id,
+                    const std::string& reforge_id,
+                    const std::string& rsuffix_id,
+                    const std::string gem_ids[ 3 ],
+                    bool ptr=false,
+                    cache::behavior_e b=cache::items() );
+bool download_item( item_t&, const std::string& item_id,
+                    bool ptr=false, cache::behavior_e b=cache::items() );
+bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                     bool ptr=false, cache::behavior_e b=cache::items() );
+gem_e parse_gem( item_t& item, const std::string& gem_id,
+                 bool ptr=false, cache::behavior_e b=cache::items() );
 }
 
 // CharDev  =================================================================
 
-namespace chardev 
+namespace chardev
 {
-  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
 }
 
 // MMO Champion =============================================================
 
 namespace mmo_champion
 {
-  bool download_slot( item_t&,
-		      const std::string& item_id,
-		      const std::string& enchant_id,
-		      const std::string& addon_id,
-		      const std::string& reforge_id,
-		      const std::string& rsuffix_id,
-		      const std::string gem_ids[ 3 ],
-		      cache::behavior_e b=cache::items() );
+bool download_slot( item_t&,
+                    const std::string& item_id,
+                    const std::string& enchant_id,
+                    const std::string& addon_id,
+                    const std::string& reforge_id,
+                    const std::string& rsuffix_id,
+                    const std::string gem_ids[ 3 ],
+                    cache::behavior_e b=cache::items() );
 
-  bool download_item( item_t&, const std::string& item_id,
-		      cache::behavior_e b=cache::items() );
+bool download_item( item_t&, const std::string& item_id,
+                    cache::behavior_e b=cache::items() );
 
-  bool download_glyph( player_t* player, std::string& glyph_name,
-		       const std::string& glyph_id, cache::behavior_e b=cache::items() );
+bool download_glyph( player_t* player, std::string& glyph_name,
+                     const std::string& glyph_id, cache::behavior_e b=cache::items() );
 
-  gem_e parse_gem( item_t& item, const std::string& gem_id,
-			cache::behavior_e b=cache::items() );
+gem_e parse_gem( item_t& item, const std::string& gem_id,
+                 cache::behavior_e b=cache::items() );
 };
 
 // Rawr =====================================================================
 
 namespace rawr
 {
-  player_t* load_player( sim_t*, const std::string& character_filename );
-  player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
+player_t* load_player( sim_t*, const std::string& character_filename );
+player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
 };
 
 // Blizzard Community Platform API ==========================================
 
 namespace bcp_api
 {
-  bool download_guild( sim_t* sim,
-		       const std::string& region,
-		       const std::string& server,
-		       const std::string& name,
-		       const std::vector<int>& ranks,
-		       int player_e = PLAYER_NONE,
-		       int max_rank=0,
-		       cache::behavior_e b=cache::players() );
+bool download_guild( sim_t* sim,
+                     const std::string& region,
+                     const std::string& server,
+                     const std::string& name,
+                     const std::vector<int>& ranks,
+                     int player_e = PLAYER_NONE,
+                     int max_rank=0,
+                     cache::behavior_e b=cache::players() );
 
-  player_t* download_player( sim_t*,
-			     const std::string& region,
-			     const std::string& server,
-			     const std::string& name,
-			     const std::string& talents=std::string( "active" ),
-			     cache::behavior_e b=cache::players() );
+player_t* download_player( sim_t*,
+                           const std::string& region,
+                           const std::string& server,
+                           const std::string& name,
+                           const std::string& talents=std::string( "active" ),
+                           cache::behavior_e b=cache::players() );
 
-  bool download_item( item_t&, const std::string& item_id, cache::behavior_e b=cache::items() );
+bool download_item( item_t&, const std::string& item_id, cache::behavior_e b=cache::items() );
 
-  bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-		       cache::behavior_e b=cache::items() );
+bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                     cache::behavior_e b=cache::items() );
 
-  bool download_slot( item_t& item,
-		      const std::string& item_id,
-		      const std::string& enchant_id,
-		      const std::string& addon_id,
-		      const std::string& reforge_id,
-		      const std::string& rsuffix_id,
-		      const std::string gem_ids[ 3 ],
-		      cache::behavior_e b=cache::items() );
+bool download_slot( item_t& item,
+                    const std::string& item_id,
+                    const std::string& enchant_id,
+                    const std::string& addon_id,
+                    const std::string& reforge_id,
+                    const std::string& rsuffix_id,
+                    const std::string gem_ids[ 3 ],
+                    cache::behavior_e b=cache::items() );
 
-  gem_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
+gem_e parse_gem( item_t& item, const std::string& gem_id, cache::behavior_e b=cache::items() );
 }
 
 // Wowreforge ===============================================================
 
 namespace wowreforge
 {
-  player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
 };
 
 // HTTP Download  ===========================================================
 
 namespace http
 {
-  void format_( std::string& encoded_url, const std::string& url );
+void format_( std::string& encoded_url, const std::string& url );
 
-  struct proxy_t
-  {
-    std::string type;
-    std::string host;
-    int port;
-  };
-  static proxy_t proxy;
+struct proxy_t
+{
+  std::string type;
+  std::string host;
+  int port;
+};
+static proxy_t proxy;
 
-  void cache_load();
-  void cache_save();
-  bool clear_cache( sim_t*, const std::string& name, const std::string& value );
+void cache_load();
+void cache_save();
+bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
-  bool get( std::string& result, const std::string& url, cache::behavior_e b,
-	    const std::string& confirmation=std::string() );
+bool get( std::string& result, const std::string& url, cache::behavior_e b,
+          const std::string& confirmation=std::string() );
 
-  inline std::string& format( std::string& encoded_url, const std::string& url )
-  { 
-    format_( encoded_url, url ); return encoded_url;
-  }
-  inline std::string& format( std::string& url )
-  { 
-    format_( url, url ); return url;
-  }
+inline std::string& format( std::string& encoded_url, const std::string& url )
+{
+  format_( encoded_url, url ); return encoded_url;
+}
+inline std::string& format( std::string& url )
+{
+  format_( url, url ); return url;
+}
 };
 
 // XML ======================================================================
 
 namespace xml
 {
-  const char* get_name( xml_node_t* node );
-  xml_node_t* get_child( xml_node_t* root, const std::string& name );
-  xml_node_t* get_node ( xml_node_t* root, const std::string& path );
-  xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-  int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
-  int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
-  int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
-  bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
-  bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
-  bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
-  xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
-		   const std::string& confirmation=std::string() );
-  xml_node_t* create( sim_t* sim, const std::string& input );
-  xml_node_t* create( sim_t* sim, FILE* input );
-  void print( xml_node_t* root, FILE* f=0, int spacing=0 );
+const char* get_name( xml_node_t* node );
+xml_node_t* get_child( xml_node_t* root, const std::string& name );
+xml_node_t* get_node ( xml_node_t* root, const std::string& path );
+xml_node_t* get_node ( xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+int  get_children( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& name = std::string() );
+int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path );
+int  get_nodes   ( std::vector<xml_node_t*>&, xml_node_t* root, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+bool get_value( std::string& value, xml_node_t* root, const std::string& path = std::string() );
+bool get_value( int&         value, xml_node_t* root, const std::string& path = std::string() );
+bool get_value( double&      value, xml_node_t* root, const std::string& path = std::string() );
+xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
+                 const std::string& confirmation=std::string() );
+xml_node_t* create( sim_t* sim, const std::string& input );
+xml_node_t* create( sim_t* sim, FILE* input );
+void print( xml_node_t* root, FILE* f=0, int spacing=0 );
 };
 
 // Java Script ==============================================================
 
 namespace js
 {
-  js_node_t* get_child( js_node_t* root, const std::string& name );
-  js_node_t* get_node ( js_node_t* root, const std::string& path );
-  int  get_children( std::vector<js_node_t*>&, js_node_t* root );
-  int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
-  bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
-  bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
-  bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-  js_node_t* create( sim_t* sim, const std::string& input );
-  js_node_t* create( sim_t* sim, FILE* input );
-  void print( js_node_t* root, FILE* f=0, int spacing=0 );
-  const char* get_name( js_node_t* root );
+js_node_t* get_child( js_node_t* root, const std::string& name );
+js_node_t* get_node ( js_node_t* root, const std::string& path );
+int  get_children( std::vector<js_node_t*>&, js_node_t* root );
+int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
+bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
+bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
+bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
+js_node_t* create( sim_t* sim, const std::string& input );
+js_node_t* create( sim_t* sim, FILE* input );
+void print( js_node_t* root, FILE* f=0, int spacing=0 );
+const char* get_name( js_node_t* root );
 };
 
 // Handy Actions ============================================================
@@ -5066,12 +5066,12 @@ struct wait_for_cooldown_t : public wait_action_base_t
 
 // buff_t inlines
 
-inline buff_t* buff_t::find( sim_t* s, const std::string& name ) 
-{ 
+inline buff_t* buff_t::find( sim_t* s, const std::string& name )
+{
   return find( s -> buff_list, name );
 }
-inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source ) 
-{ 
+inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
+{
   return find( p -> buff_list, name, source );
 }
 
@@ -5080,7 +5080,7 @@ inline buff_t* buff_t::find( player_t* p, const std::string& name, player_t* sou
 inline double sim_t::real()                { return default_rng_ -> real(); }
 inline bool   sim_t::roll( double chance ) { return default_rng_ -> roll( chance ); }
 inline double sim_t::range( double min, double max )
-{ 
+{
   return default_rng_ -> range( min, max );
 }
 inline double sim_t::averaged_range( double min, double max )

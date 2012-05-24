@@ -543,7 +543,7 @@ static const char* translate_inventory_id( int slot )
 static bool is_valid_profile_id( const std::string& id )
 {
   // IIRC, Can't test right now.
-  for( size_t i = 0, s = id.size(); i < s; ++i )
+  for ( size_t i = 0, s = id.size(); i < s; ++i )
     if ( ! std::isdigit( id[ i ] ) )
       return false;
   return true;
@@ -552,9 +552,9 @@ static bool is_valid_profile_id( const std::string& id )
 // download_player_profile ==================================================
 
 static player_t* download_player_profile( sim_t* sim,
-					  const std::string& id,
-					  const std::string& spec,
-					  cache::behavior_e caching )
+                                          const std::string& id,
+                                          const std::string& spec,
+                                          cache::behavior_e caching )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
@@ -643,7 +643,7 @@ static player_t* download_player_profile( sim_t* sim,
     std::vector<std::string> skill_levels;
     if ( 2 == js::get_value( skill_levels, profile_js, translate_profession_id( i ) ) )
     {
-      if ( ! p -> professions_str.empty()) p -> professions_str += '/';
+      if ( ! p -> professions_str.empty() ) p -> professions_str += '/';
       p -> professions_str += util::profession_type_string( i );
       p -> professions_str += "=";
       p -> professions_str += skill_levels[ 0 ];
@@ -856,9 +856,9 @@ static player_t* download_player_profile( sim_t* sim,
 // wowhead::parse_gem =====================================================
 
 gem_e wowhead::parse_gem( item_t&            item,
-			       const std::string& gem_id,
-			       bool               ptr,
-			       cache::behavior_e  caching )
+                          const std::string& gem_id,
+                          bool               ptr,
+                          cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -909,10 +909,10 @@ gem_e wowhead::parse_gem( item_t&            item,
 // wowhead::download_glyph ================================================
 
 bool wowhead::download_glyph( player_t*          player,
-			      std::string&       glyph_name,
-			      const std::string& glyph_id,
-			      bool               ptr,
-			      cache::behavior_e  caching )
+                              std::string&       glyph_name,
+                              const std::string& glyph_id,
+                              bool               ptr,
+                              cache::behavior_e  caching )
 {
   xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
   if ( ! node || ! xml::get_value( glyph_name, node, "name/cdata" ) )
@@ -928,9 +928,9 @@ bool wowhead::download_glyph( player_t*          player,
 // wowhead::download_item =================================================
 
 bool wowhead::download_item( item_t&            item,
-			     const std::string& item_id,
-			     bool               ptr,
-			     cache::behavior_e  caching )
+                             const std::string& item_id,
+                             bool               ptr,
+                             cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -996,14 +996,14 @@ bool wowhead::download_item( item_t&            item,
 // wowhead::download_slot =================================================
 
 bool wowhead::download_slot( item_t&            item,
-			     const std::string& item_id,
-			     const std::string& enchant_id,
-			     const std::string& addon_id,
-			     const std::string& reforge_id,
-			     const std::string& rsuffix_id,
-			     const std::string  gem_ids[ 3 ],
-			     bool               ptr,
-			     cache::behavior_e  caching )
+                             const std::string& item_id,
+                             const std::string& enchant_id,
+                             const std::string& addon_id,
+                             const std::string& reforge_id,
+                             const std::string& rsuffix_id,
+                             const std::string  gem_ids[ 3 ],
+                             bool               ptr,
+                             cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
@@ -1105,11 +1105,11 @@ bool wowhead::download_slot( item_t&            item,
 // wowhead::download_player ===============================================
 
 player_t* wowhead::download_player( sim_t* sim,
-				    const std::string& region,
-				    const std::string& server,
-				    const std::string& name,
-				    const std::string& spec,
-				    cache::behavior_e  caching )
+                                    const std::string& region,
+                                    const std::string& server,
+                                    const std::string& name,
+                                    const std::string& spec,
+                                    cache::behavior_e  caching )
 {
   std::string id = name;
 

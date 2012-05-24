@@ -230,7 +230,7 @@ bool expression_t::is_binary( token_e expr_token_type )
 // next_token ===============================================================
 
 token_e expression_t::next_token( action_t* action, const std::string& expr_str,
-                                       int& current_index, std::string& token_str, token_e prev_token )
+                                  int& current_index, std::string& token_str, token_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 

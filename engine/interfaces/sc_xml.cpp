@@ -344,9 +344,9 @@ const char* xml::get_name( xml_node_t* node )
 // xml::get =================================================================
 
 xml_node_t* xml::get( sim_t*             sim,
-		      const std::string& url,
-		      cache::behavior_e  caching,
-		      const std::string& confirmation )
+                      const std::string& url,
+                      cache::behavior_e  caching,
+                      const std::string& confirmation )
 {
   auto_lock_t lock( xml_mutex );
 
@@ -373,8 +373,8 @@ xml_node_t* xml::get( sim_t*             sim,
 
 // xml::create ==============================================================
 
-xml_node_t* xml::create( sim_t* sim, 
-			 const std::string& input )
+xml_node_t* xml::create( sim_t* sim,
+                         const std::string& input )
 {
   xml_node_t* root = new xml_node_t( "root" );
 
@@ -401,7 +401,7 @@ xml_node_t* xml::create( sim_t* sim, FILE* input )
 // xml::get_child ===========================================================
 
 xml_node_t* xml::get_child( xml_node_t*        root,
-			    const std::string& name_str )
+                            const std::string& name_str )
 {
   if ( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
@@ -417,8 +417,8 @@ xml_node_t* xml::get_child( xml_node_t*        root,
 // xml::get_children ========================================================
 
 int xml::get_children( std::vector<xml_node_t*>& nodes,
-		       xml_node_t*               root,
-		       const std::string&        name_str )
+                       xml_node_t*               root,
+                       const std::string&        name_str )
 {
   if ( ! root ) return 0;
   int num_children = ( int ) root -> children.size();
@@ -437,7 +437,7 @@ int xml::get_children( std::vector<xml_node_t*>& nodes,
 // xml::get_node ============================================================
 
 xml_node_t* xml::get_node( xml_node_t*        root,
-			   const std::string& path )
+                           const std::string& path )
 {
   if ( ! root ) return 0;
 
@@ -455,9 +455,9 @@ xml_node_t* xml::get_node( xml_node_t*        root,
 // xml::get_node ============================================================
 
 xml_node_t* xml::get_node( xml_node_t*        root,
-			   const std::string& path,
-			   const std::string& parm_name,
-			   const std::string& parm_value )
+                           const std::string& path,
+                           const std::string& parm_name,
+                           const std::string& parm_value )
 {
   if ( ! root ) return 0;
 
@@ -472,8 +472,8 @@ xml_node_t* xml::get_node( xml_node_t*        root,
 // xml::get_nodes ===========================================================
 
 int xml::get_nodes( std::vector<xml_node_t*>& nodes,
-		    xml_node_t*               root,
-		    const std::string&        path )
+                    xml_node_t*               root,
+                    const std::string&        path )
 {
   if ( ! root ) return 0;
 
@@ -499,10 +499,10 @@ int xml::get_nodes( std::vector<xml_node_t*>& nodes,
 // xml::get_nodes ===========================================================
 
 int xml::get_nodes( std::vector<xml_node_t*>& nodes,
-		    xml_node_t*               root,
-		    const std::string&        path,
-		    const std::string& parm_name,
-		    const std::string& parm_value )
+                    xml_node_t*               root,
+                    const std::string&        path,
+                    const std::string& parm_name,
+                    const std::string& parm_value )
 {
   if ( ! root ) return 0;
 
@@ -532,8 +532,8 @@ int xml::get_nodes( std::vector<xml_node_t*>& nodes,
 // xml::get_value ===========================================================
 
 bool xml::get_value( std::string&       value,
-		     xml_node_t*        root,
-		     const std::string& path )
+                     xml_node_t*        root,
+                     const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -550,8 +550,8 @@ bool xml::get_value( std::string&       value,
 // xml::get_value ===========================================================
 
 bool xml::get_value( int&               value,
-		     xml_node_t*        root,
-		     const std::string& path )
+                     xml_node_t*        root,
+                     const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -568,8 +568,8 @@ bool xml::get_value( int&               value,
 // xml::get_value ===========================================================
 
 bool xml::get_value( double&            value,
-		     xml_node_t*        root,
-		     const std::string& path )
+                     xml_node_t*        root,
+                     const std::string& path )
 {
   std::string key;
   xml_node_t* node = split_path( root, key, path );
@@ -586,8 +586,8 @@ bool xml::get_value( double&            value,
 // xml::print ===============================================================
 
 void xml::print( xml_node_t* root,
-		 FILE*       file,
-		 int         spacing )
+                 FILE*       file,
+                 int         spacing )
 {
   if ( ! root ) return;
 

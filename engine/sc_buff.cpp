@@ -747,9 +747,9 @@ void buff_t::analyze()
 
 // buff_t::find =============================================================
 
-buff_t* buff_t::find( const std::vector<buff_t*>& buffs, 
-		      const std::string& name_str,
-		      player_t* source )
+buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
+                      const std::string& name_str,
+                      player_t* source )
 {
   for ( size_t i = 0; i < buffs.size(); i++ )
   {
@@ -760,7 +760,7 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
 
     if ( name_str == b -> name_str )
       if ( ! source || ( source == b -> initial_source ) )
-	return b;
+        return b;
   }
 
   return NULL;

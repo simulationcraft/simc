@@ -42,7 +42,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
   action = o -> action; target = o -> target;
   result = o -> result; result_amount = o -> result_amount;
-  haste = o -> haste; 
+  haste = o -> haste;
   crit = o -> crit;
   target_crit = o -> target_crit;
   attack_power = o -> attack_power;
@@ -69,20 +69,20 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
 void action_state_t::debug()
 {
   action -> sim -> output( "[NEW] %s %s %s: obj=%p snapshot_flags=%#.4x update_flags=%#.4x result=%s amount=%.2f "
-			   "haste=%.2f crit=%.2f tgt_crit=%.2f "
-			   "ap=%.0f sp=%.0f "
-			   "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
-			   action -> player -> name(),
-			   action -> name(),
-			   target -> name(),
-			   this,
-			   action -> snapshot_flags,
-			   action -> update_flags,
-			   util::result_type_string( result ), result_amount,
-			   haste, crit, target_crit,
-			   attack_power, spell_power,
-			   da_multiplier, ta_multiplier,
-			   target_da_multiplier, target_ta_multiplier );
+                           "haste=%.2f crit=%.2f tgt_crit=%.2f "
+                           "ap=%.0f sp=%.0f "
+                           "da_mul=%.4f ta_mul=%.4f tgt_da_mul=%.4f tgt_ta_mul=%.4f",
+                           action -> player -> name(),
+                           action -> name(),
+                           target -> name(),
+                           this,
+                           action -> snapshot_flags,
+                           action -> update_flags,
+                           util::result_type_string( result ), result_amount,
+                           haste, crit, target_crit,
+                           attack_power, spell_power,
+                           da_multiplier, ta_multiplier,
+                           target_da_multiplier, target_ta_multiplier );
 }
 
 stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
@@ -156,7 +156,7 @@ void action_t::impact_s( action_state_t* s )
       if ( dot -> ticking )
       {
         assert( dot -> tick_event );
-        
+
         if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
 
         // Recasting a dot while it's still ticking gives it an extra tick in total

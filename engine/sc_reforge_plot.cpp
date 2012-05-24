@@ -153,8 +153,8 @@ void reforge_plot_t::analyze_stats()
     {
       for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
         util::fprintf( sim -> output_file, "%s: %d ",
-                         util::stat_type_string( reforge_plot_stat_indices[ j ] ),
-                         stat_mods[ i ][ j ] );
+                       util::stat_type_string( reforge_plot_stat_indices[ j ] ),
+                       stat_mods[ i ][ j ] );
       util::fprintf( sim -> output_file, "\n" );
     }
   }
@@ -180,8 +180,8 @@ void reforge_plot_t::analyze_stats()
 
       if ( sim -> report_progress )
         util::fprintf( stdout, "%s: %d ",
-                         util::stat_type_string( reforge_plot_stat_indices[ j ] ),
-                         stat_mods[ i ][ j ] );
+                       util::stat_type_string( reforge_plot_stat_indices[ j ] ),
+                       stat_mods[ i ][ j ] );
     }
 
     if ( sim -> report_progress )
@@ -254,7 +254,7 @@ void reforge_plot_t::analyze()
     for ( int i=0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
     {
       util::fprintf( reforge_plot_output_file, "%s, ",
-                       util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+                     util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
     util::fprintf( reforge_plot_output_file, " DPS\n" );
 
@@ -262,7 +262,7 @@ void reforge_plot_t::analyze()
     {
       for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
         util::fprintf( reforge_plot_output_file, "%f, ",
-                         p -> reforge_plot_data[ i ][ j ].value );
+                       p -> reforge_plot_data[ i ][ j ].value );
       util::fprintf( reforge_plot_output_file, "\n" );
     }
   }

@@ -127,21 +127,21 @@ option_t* sim_t::get_class_option( void* parse_player_func )
 {
   static option_t opt[] =
   {
-      // Character Creation
-      { "death_knight", OPT_FUNC,   parse_player_func },
-      { "deathknight",  OPT_FUNC,   parse_player_func },
-      { "druid",        OPT_FUNC,   parse_player_func },
-      { "hunter",       OPT_FUNC,   parse_player_func },
-      { "mage",         OPT_FUNC,   parse_player_func },
-      { "monk",         OPT_FUNC,   parse_player_func },
-      { "priest",       OPT_FUNC,   parse_player_func },
-      { "paladin",      OPT_FUNC,   parse_player_func },
-      { "rogue",        OPT_FUNC,   parse_player_func },
-      { "shaman",       OPT_FUNC,   parse_player_func },
-      { "warlock",      OPT_FUNC,   parse_player_func },
-      { "warrior",      OPT_FUNC,   parse_player_func },
-      { "enemy",        OPT_FUNC,   parse_player_func },
-      { NULL, OPT_UNKNOWN, NULL }
+    // Character Creation
+    { "death_knight", OPT_FUNC,   parse_player_func },
+    { "deathknight",  OPT_FUNC,   parse_player_func },
+    { "druid",        OPT_FUNC,   parse_player_func },
+    { "hunter",       OPT_FUNC,   parse_player_func },
+    { "mage",         OPT_FUNC,   parse_player_func },
+    { "monk",         OPT_FUNC,   parse_player_func },
+    { "priest",       OPT_FUNC,   parse_player_func },
+    { "paladin",      OPT_FUNC,   parse_player_func },
+    { "rogue",        OPT_FUNC,   parse_player_func },
+    { "shaman",       OPT_FUNC,   parse_player_func },
+    { "warlock",      OPT_FUNC,   parse_player_func },
+    { "warrior",      OPT_FUNC,   parse_player_func },
+    { "enemy",        OPT_FUNC,   parse_player_func },
+    { NULL, OPT_UNKNOWN, NULL }
   };
 
   return opt;
