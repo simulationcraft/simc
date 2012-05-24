@@ -5168,7 +5168,7 @@ struct run_action_list_t : public swap_action_list_t
   {
     if ( sim -> log ) sim -> output( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
 
-    player -> restore_action_list = player -> active_action_list;
+    if ( player -> restore_action_list == 0 ) player -> restore_action_list = player -> active_action_list;
     player -> activate_action_list( alist );
   }
 };
