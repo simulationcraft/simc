@@ -268,7 +268,7 @@ struct summon_add_t : public spell_t
   }
 };
 
-static action_t* create_action( player_t* p, const std::string& name, const std::string& options_str )
+static action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
   if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
@@ -353,7 +353,7 @@ struct add_t : public pet_t
   virtual action_t* create_action( const std::string& name,
 				   const std::string& options_str )
   {
-    action_t* a = ::create_action( this, name, options_str );
+    action_t* a = enemy_create_action( this, name, options_str );
 
     if ( !a )
       a = pet_t::create_action( name, options_str );
@@ -367,7 +367,7 @@ struct add_t : public pet_t
 action_t* enemy_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
-  action_t* a = ::create_action( this, name, options_str );
+  action_t* a = enemy_create_action( this, name, options_str );
 
   if ( !a )
     a = player_t::create_action( name, options_str );
