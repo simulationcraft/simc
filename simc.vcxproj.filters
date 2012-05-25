@@ -15,7 +15,6 @@
     <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_item.cpp" />
     <ClCompile Include="engine\interfaces\sc_js.cpp" />
-    <ClCompile Include="engine\sc_log.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
     <ClCompile Include="engine\interfaces\sc_mmo_champion.cpp" />
     <ClCompile Include="engine\sc_option.cpp" />
@@ -54,7 +53,6 @@
     <ClCompile Include="engine\report\sc_report_text.cpp" />
     <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
     <ClCompile Include="engine\sc_action_state.cpp" />
-    <ClCompile Include="engine\class_modules\sc_class_modules.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
     <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
@@ -67,12 +65,10 @@
     <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
-    <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
     <ClCompile Include="engine\dbc\sc_data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
-    <ClInclude Include="engine\class_modules\sc_warlock.hpp" />
     <ClInclude Include="engine\report\sc_report.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -93,7 +89,6 @@
     <None Include="engine\dbc\sc_extra_data_ptr.inc" />
     <None Include="engine\dbc\sc_item_data.inc" />
     <None Include="engine\dbc\sc_item_data_ptr.inc" />
-    <None Include="engine\dbc\c_scale_data.inc" />
     <None Include="engine\dbc\sc_scale_data_ptr.inc" />
     <None Include="engine\dbc\sc_spec_list.inc" />
     <None Include="engine\dbc\sc_spell_data.inc" />
@@ -102,6 +97,7 @@
     <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
     <None Include="engine\dbc\sc_talent_data.inc" />
     <None Include="engine\dbc\sc_talent_data_ptr.inc" />
+    <None Include="engine\dbc\sc_scale_data.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Data Files">
