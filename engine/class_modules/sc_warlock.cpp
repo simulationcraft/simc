@@ -2325,7 +2325,6 @@ struct hand_of_guldan_t : public warlock_spell_t
     hog_damage  = new hand_of_guldan_dmg_t( p );
 
     add_child( shadowflame );
-    add_child( hog_damage );
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2397,8 +2396,6 @@ struct chaos_wave_t : public warlock_spell_t
     cooldown = p -> cooldowns.hand_of_guldan;
 
     cw_damage  = new chaos_wave_dmg_t( p );
-
-    add_child( cw_damage );
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2851,7 +2848,6 @@ struct seed_of_corruption_t : public warlock_spell_t
     p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
     add_child( p -> seed_of_corruption_aoe );
     p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
-    add_child( p -> soulburn_seed_of_corruption_aoe );
   }
 
   virtual void init()
@@ -2962,8 +2958,6 @@ struct rain_of_fire_t : public warlock_spell_t
 
     // RoF currently costs mana per tick for affliction
     if ( channeled ) rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
-
-    add_child( rain_of_fire_tick );
   }
 
   virtual timespan_t travel_time()
@@ -3029,8 +3023,6 @@ struct immolation_aura_t : public warlock_spell_t
     tick_zero    = true;
 
     immolation_aura_tick = new immolation_aura_tick_t( p );
-
-    add_child( immolation_aura_tick );
   }
 
   virtual void init()
