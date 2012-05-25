@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
 
@@ -13,6 +12,8 @@ namespace { // ANONYMOUS NAMESPACE
 // ==========================================================================
 
 struct rogue_t;
+
+#define SC_ROGUE 0
 
 #if SC_ROGUE == 1
 
@@ -2309,7 +2310,7 @@ struct pool_energy_t : public action_t
     {
       { "wait",     OPT_TIMESPAN, &wait     },
       { "for_next", OPT_BOOL,     &for_next },
-      { 0,   		OPT_UNKNOWN,  0 }
+      { 0,              OPT_UNKNOWN,  0 }
     };
     parse_options( options, options_str );
   }
@@ -3940,57 +3941,41 @@ int rogue_t::decode_set( const item_t& item ) const
 
 #endif // SC_ROGUE
 
-} // END ANONYMOUS NAMESPACE
+// ROGUE MODULE INTERFACE ================================================
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-#if SC_ROGUE == 1
-void class_modules::register_targetdata::rogue( sim_t* sim )
+struct rogue_module_t : public module_t 
 {
-  player_e t = ROGUE;
-  typedef rogue_targetdata_t type;
+  rogue_module_t() : module_t( ROGUE ) {}
 
-  REGISTER_DOT( crimson_tempest );
-  REGISTER_DOT( deadly_poison   );
-  REGISTER_DOT( garrote         );
-  REGISTER_DOT( hemorrhage      );
-  REGISTER_DOT( rupture         );
-
-  REGISTER_DEBUFF( anticipation_charges );
-  REGISTER_DEBUFF( find_weakness        );
-  REGISTER_DEBUFF( leeching_poison      );
-  REGISTER_DEBUFF( vendetta             );
-}
-#endif // SC_ROGUE
-// class_modules::create::rogue  ==================================================
-
-player_t* class_modules::create::rogue( sim_t* sim, const std::string& name, race_e r )
-{
-  return sc_create_class<rogue_t,SC_ROGUE>()( "Rogue", sim, name, r );
-}
-
-// player_t::rogue_init =====================================================
-
-void class_modules::init::rogue( sim_t* sim )
-{
-  sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
-
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  virtual player_t* create_player( sim_t* /*sim*/, const std::string& /*name*/, race_e /*r = RACE_NONE*/ )
   {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" ).max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+    return NULL; // new rogue_t( sim, name, r );
   }
-}
+  virtual void init( sim_t* sim ) 
+  {
+    sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
 
-// player_t::rogue_combat_begin =============================================
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[i];
+      p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" ).max_stack( 1 ).duration( timespan_t::from_seconds( 6.0 ) );
+    }
+  }
+  virtual void combat_begin( sim_t* sim )
+  {
+    if ( sim -> overrides.honor_among_thieves )
+    {
+      sim -> auras.honor_among_thieves -> override();
+    }
+  }
+  virtual void combat_end( sim_t* ) {}
+};
 
-void class_modules::combat_begin::rogue( sim_t* sim )
+} // ANONYMOUS NAMESPACE
+
+module_t* module_t::rogue()
 {
-  if ( sim -> overrides.honor_among_thieves )
-    sim -> auras.honor_among_thieves -> override();
+  static module_t* m = 0;
+  if( ! m ) m = new rogue_module_t();
+  return m;
 }
-
-void class_modules::combat_end::rogue( sim_t* )
-{}

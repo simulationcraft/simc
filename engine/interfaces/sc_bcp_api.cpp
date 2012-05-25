@@ -338,9 +338,12 @@ static player_t* parse_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
     return 0;
   }
+  race_e race = util::translate_race_id( rid );
 
-  player_t* p = player_t::create( sim, class_name, name, util::translate_race_id( rid ) );
+  module_t* module = module_t::get( class_name );
+  player_t* p = module ? module -> create_player( sim, name, race ) : 0;
   sim -> active_player = p;
+
   if ( ! p )
   {
     sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",

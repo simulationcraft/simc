@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Monk
@@ -13,8 +12,6 @@
 namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
-
-#if SC_MONK == 1
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
@@ -632,38 +629,26 @@ role_e monk_t::primary_role()
   return ROLE_HYBRID;
 }
 
-#endif // SC_MONK
+// MONK MODULE INTERFACE ================================================
 
-} // END ANONYMOUS NAMESPACE
-
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::monk  ===================================================
-
-player_t* class_modules::create::monk( sim_t* sim, const std::string& name, race_e r )
+struct monk_module_t : public module_t 
 {
-  return sc_create_class<monk_t,SC_MONK>()( "Monk", sim, name, r );
-}
+  monk_module_t() : module_t( MONK ) {}
 
-// player_t::monk_init ======================================================
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new monk_t( sim, name, r );
+  }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
 
-void class_modules::init::monk( sim_t* /* sim */ )
+} // ANONYMOUS NAMESPACE
+
+module_t* module_t::monk()
 {
-
-}
-
-// player_t::monk_combat_begin ==============================================
-
-void class_modules::combat_begin::monk( sim_t* /* sim */ )
-{
-
-}
-
-// class_modules::combat_end::monk ==============================================
-
-void class_modules::combat_end::monk( sim_t* /* sim */ )
-{
-
+  static module_t* m = 0;
+  if( ! m ) m = new monk_module_t();
+  return m;
 }

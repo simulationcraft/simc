@@ -180,12 +180,22 @@ static bool parse_player( sim_t*             sim,
       return false;
     }
 
-    sim -> active_player = player_t::create( sim, util::player_type_string( source -> type ), player_name );
+    sim -> active_player = module_t::get( source -> type ) -> create_player( sim, player_name );
     if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
   }
 
   else
-    sim -> active_player = player_t::create( sim, name, value );
+  {
+    module_t* module = module_t::get( name );
+
+    sim -> active_player = module ? module -> create_player( sim, value ) : 0;
+
+    if( ! sim -> active_player )
+    {
+      sim -> errorf( "\n%s module for player %s is currently not available.\n", 
+                     name.c_str(), value.c_str() );
+    }
+  }
 
   return sim -> active_player != 0;
 }
@@ -1088,7 +1098,11 @@ void sim_t::combat_begin()
     if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
   }
 
-  player_t::combat_begin( this );
+  for( int i=0; i < PLAYER_MAX; i++ )
+  {
+    module_t* m = module_t::get( (player_e) i );
+    if( m ) m -> combat_begin( this );
+  }
 
   raid_event_t::combat_begin( this );
 
@@ -1166,7 +1180,12 @@ void sim_t::combat_end()
     if ( t -> is_add() ) continue;
     t -> combat_end();
   }
-  player_t::combat_end( this );
+
+  for( int i=0; i < PLAYER_MAX; i++ )
+  {
+    module_t* m = module_t::get( (player_e) i );
+    if( m ) m -> combat_end( this );
+  }
 
   raid_event_t::combat_end( this );
 
@@ -1293,7 +1312,7 @@ bool sim_t::init()
       target = p;
   }
   else
-    target = player_t::create( this, "enemy", "Fluffy_Pillow" );
+    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
 
   if ( max_player_level < 0 )
@@ -2068,6 +2087,20 @@ void sim_t::create_options()
     { "target_death_pct",                 OPT_FLT,    &( target_death_pct                         ) },
     { "target_level",                     OPT_INT,    &( target_level                             ) },
     { "target_race",                      OPT_STRING, &( target_race                              ) },
+    // Character Creation
+    { "death_knight",                     OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "deathknight",                      OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "druid",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "hunter",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "mage",                             OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "monk",                             OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "priest",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "paladin",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "rogue",                            OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "shaman",                           OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "warlock",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "enemy",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
     { "copy",                             OPT_FUNC,   ( void* ) ::parse_player                      },
     { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
@@ -2123,7 +2156,6 @@ void sim_t::create_options()
   };
 
   option_t::copy( options, global_options );
-  option_t::copy( options, sim_t::get_class_option( ( void* ) ::parse_player ) );
 }
 
 // sim_t::parse_option ======================================================

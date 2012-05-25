@@ -4,11 +4,8 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
-
-#if SC_PRIEST == 1
 
 struct priest_t;
 
@@ -5292,39 +5289,36 @@ std::string priest_t::set_default_glyphs()
   return player_t::set_default_glyphs();
 }
 
-#endif // SC_PRIEST
+// PRIEST MODULE INTERFACE ================================================
+
+struct priest_module_t : public module_t 
+{
+  priest_module_t() : module_t( PRIEST ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new priest_t( sim, name, r );
+  }
+  virtual void init( sim_t* sim )
+  {
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
+      p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
+      p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion",  p -> find_spell( 10060 ) ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
+      p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul",   p -> find_spell(  6788 ) );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end( sim_t* ) {}
+};
 
 } // ANONYMOUS NAMESPACE
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::priest  =================================================
-
-player_t* class_modules::create::priest( sim_t* sim, const std::string& name, race_e r )
+module_t* module_t::priest()
 {
-  return sc_create_class<priest_t,SC_PRIEST>()( "Priest", sim, name, r );
+  static module_t* m = 0;
+  if( ! m ) m = new priest_module_t();
+  return m;
 }
-
-// player_t::priest_init ====================================================
-
-void class_modules::init::priest( sim_t* sim )
-{
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
-    p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
-    p -> buffs.power_infusion   = buff_creator_t( p, "power_infusion", p  -> find_spell( 10060 ) ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
-    p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul", p -> find_spell( 6788 ) );
-  }
-}
-
-// player_t::priest_combat_begin ============================================
-
-void class_modules::combat_begin::priest( sim_t* )
-{}
-
-void class_modules::combat_end::priest( sim_t* )
-{}

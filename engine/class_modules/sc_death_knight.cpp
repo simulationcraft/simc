@@ -4,13 +4,10 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
 
 struct death_knight_t;
-
-#if SC_DEATH_KNIGHT == 1
 
 struct death_knight_td_t : public actor_pair_t
 {
@@ -4674,39 +4671,33 @@ void death_knight_t::arise()
   if ( primary_tree() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
 }
 
-#endif // SC_DEATH_KNIGHT
+// DEATH_KNIGHT MODULE INTERFACE ================================================
+
+struct death_knight_module_t : public module_t 
+{
+  death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new death_knight_t( sim, name, r );
+  }
+  virtual void init( sim_t* sim )
+  {
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[i];
+      p -> buffs.unholy_frenzy = buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end( sim_t* ) {}
+};
 
 } // ANONYMOUS NAMESPACE
 
-// ==========================================================================
-// player_t implementations
-// ==========================================================================
-
-// class_modules::create::death_knight ============================================
-
-player_t* class_modules::create::death_knight( sim_t* sim, const std::string& name, race_e r )
+module_t* module_t::death_knight()
 {
-  return sc_create_class<death_knight_t,SC_DEATH_KNIGHT>()( "Death Knight", sim, name, r );
-}
-
-// class_modules::init::death_knight ======================================
-
-void class_modules::init::death_knight( sim_t* sim )
-{
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.unholy_frenzy = buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) );
-  }
-}
-// class_modules::combat_begin::death_knight ==============================================
-
-void class_modules::combat_begin::death_knight( sim_t* )
-{
-}
-
-// class_modules::combat_end::death_knight ======================================
-
-void class_modules::combat_end::death_knight( sim_t* )
-{
+  static module_t* m = 0;
+  if( ! m ) m = new death_knight_module_t();
+  return m;
 }

@@ -54,7 +54,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Shaman
@@ -63,8 +62,6 @@
 namespace { // ANONYMOUS NAMESPACE
 
 struct shaman_t;
-
-#if SC_SHAMAN == 1
 
 enum totem_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 
@@ -4407,47 +4404,41 @@ role_e shaman_t::primary_role()
   return player_t::primary_role();
 }
 
-#endif // SC_SHAMAN
+// SHAMAN MODULE INTERFACE ================================================
+
+struct shaman_module_t : public module_t 
+{
+  shaman_module_t() : module_t( SHAMAN ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new shaman_t( sim, name, r );
+  }
+  virtual void init( sim_t* sim )
+  {
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[i];
+      p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
+                              .max_stack( 1 );
+
+      p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
+                              .max_stack( 1 )
+                              .quiet( true );
+
+      p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( 16191 ) )
+                              .duration( p -> find_spell( 16190 )-> duration() );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end( sim_t* ) {}
+};
 
 } // ANONYMOUS NAMESPACE
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::shaman  =================================================
-
-player_t* class_modules::create::shaman( sim_t* sim, const std::string& name, race_e r )
+module_t* module_t::shaman()
 {
-  return sc_create_class<shaman_t,SC_SHAMAN>()( "Shaman", sim, name, r );
+  static module_t* m = 0;
+  if( ! m ) m = new shaman_module_t();
+  return m;
 }
-
-// player_t::shaman_init ====================================================
-
-void class_modules::init::shaman( sim_t* sim )
-{
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.bloodlust  = buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
-                            .max_stack( 1 );
-
-    p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
-                            .max_stack( 1 )
-                            .quiet( true );
-
-    p -> buffs.mana_tide  = buff_creator_t( p, "mana_tide", p -> find_spell( 16191 ) )
-                            .duration( p -> find_spell( 16190 )-> duration() );
-  }
-}
-
-// player_t::shaman_combat_begin ============================================
-
-void class_modules::combat_begin::shaman( sim_t* )
-{
-}
-
-void class_modules::combat_end::shaman( sim_t* )
-{
-}
-

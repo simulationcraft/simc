@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 // ==========================================================================
 //
@@ -74,6 +73,8 @@ namespace { // ANONYMOUS NAMESPACE
 // ==========================================================================
 
 struct warrior_t;
+
+#define SC_WARRIOR 0
 
 #if SC_WARRIOR == 1
 
@@ -3772,34 +3773,33 @@ int warrior_t::decode_set( const item_t& item ) const
 
 #endif // SC_WARRIOR
 
-} // END ANONYMOUS NAMESPACE
+// WARRIOR MODULE INTERFACE ================================================
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::warrior =================================================
-
-player_t* class_modules::create::warrior( sim_t* sim, const std::string& name, race_e r )
+struct warrior_module_t : public module_t 
 {
-  return sc_create_class<warrior_t,SC_WARRIOR>()( "Warrior", sim, name, r );
-}
+  warrior_module_t() : module_t( WARRIOR ) {}
 
-// warrior_init =============================================================
-
-void class_modules::init::warrior( sim_t* sim )
-{
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  virtual player_t* create_player( sim_t* /*sim*/, const std::string& /*name*/, race_e /*r = RACE_NONE*/ )
   {
-    player_t* p = sim -> actor_list[ i ];
-    p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) );
+    return NULL; // new warrior_t( sim, name, r );
   }
+  virtual void init( sim_t* sim ) 
+  {
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      p -> debuffs.shattering_throw      = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
+
+} // ANONYMOUS NAMESPACE
+
+module_t* module_t::warrior()
+{
+  static module_t* m = 0;
+  if( ! m ) m = new warrior_module_t();
+  return m;
 }
-
-// player_t::warrior_combat_begin ===========================================
-
-void class_modules::combat_begin::warrior( sim_t* )
-{ }
-
-void class_modules::combat_end::warrior( sim_t* )
-{ }

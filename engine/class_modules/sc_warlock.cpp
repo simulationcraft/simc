@@ -11,8 +11,6 @@
  */
 // ==========================================================================
 
-#if SC_WARLOCK == 1
-
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
 {
@@ -3127,26 +3125,24 @@ bool warlock_t::verify_nightfall()
   }
 }
 
-#endif // SC_WARLOCK
+// WARLOCK MODULE INTERFACE ================================================
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-player_t* class_modules::create::warlock( sim_t* sim, const std::string& name, race_e r )
+struct warlock_module_t : public module_t 
 {
-  return sc_create_class<warlock_t,SC_WARLOCK>()( "Warlock", sim, name, r );
-}
+  warlock_module_t() : module_t( WARLOCK ) {}
 
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new warlock_t( sim, name, r );
+  }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
 
-void class_modules::init::warlock( sim_t* )
+module_t* module_t::warlock()
 {
-}
-
-void class_modules::combat_begin::warlock( sim_t* )
-{
-}
-
-void class_modules::combat_end::warlock( sim_t* )
-{
+  static module_t* m = 0;
+  if( ! m ) m = new warlock_module_t();
+  return m;
 }

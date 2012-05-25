@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
 
@@ -13,8 +12,6 @@ namespace { // ANONYMOUS NAMESPACE
 // ==========================================================================
 
 struct mage_t;
-
-#if SC_MAGE == 1
 
 enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
@@ -3534,34 +3531,26 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs_slow = buff_creator_t( *this, "slow", mage -> spec.slow );
 }
 
-#endif // SC_MAGE
+// MAGE MODULE INTERFACE ================================================
 
-} // END ANONYMOUS NAMESPACE
-
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::mage  ===================================================
-
-player_t* class_modules::create::mage( sim_t* sim, const std::string& name, race_e r )
+struct mage_module_t : public module_t 
 {
-  return sc_create_class<mage_t,SC_MAGE>()( "Mage", sim, name, r );
+  mage_module_t() : module_t( MAGE ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new mage_t( sim, name, r );
+  }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
+
+} // ANONYMOUS NAMESPACE
+
+module_t* module_t::mage()
+{
+  static module_t* m = 0;
+  if( ! m ) m = new mage_module_t();
+  return m;
 }
-
-// class_modules::init::mage ======================================================
-
-void class_modules::init::mage( sim_t* )
-{ }
-
-// class_modules::combat_begin::mage ==============================================
-
-void class_modules::combat_begin::mage( sim_t* )
-{ }
-
-
-// class_modules::combat_end::mage ==============================================
-
-void class_modules::combat_end::mage( sim_t* )
-{ }
-

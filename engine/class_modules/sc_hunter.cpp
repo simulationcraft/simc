@@ -4,17 +4,14 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
-namespace { // ANONYMOUS NAMESPAE
+namespace { // ANONYMOUS NAMESPACE
 
 class hunter_t;
 
 // ==========================================================================
 // Hunter
 // ==========================================================================
-
-#if SC_HUNTER == 1
 
 class hunter_pet_t;
 
@@ -4308,36 +4305,26 @@ void hunter_t::moving()
   if (  off_hand_attack )  off_hand_attack -> cancel();
 }
 
-#endif // SC_HUNTER
+// DRUID MODULE INTERFACE ================================================
 
-} // END ANONYMOUS NAMESPACE
-
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::hunter  =================================================
-
-player_t* class_modules::create::hunter( sim_t* sim, const std::string& name, race_e r )
+struct hunter_module_t : public module_t 
 {
+  hunter_module_t() : module_t( HUNTER ) {}
 
-  return sc_create_class<hunter_t,SC_HUNTER>()( "Hunter", sim, name, r );
-}
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new hunter_t( sim, name, r );
+  }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
 
-// class_modules::init::hunter ====================================================
+} // ANONYMOUS NAMESPACE
 
-void class_modules::init::hunter( sim_t* )
+module_t* module_t::hunter()
 {
-}
-
-// class_modules::combat_begin::hunter ============================================
-
-void class_modules::combat_begin::hunter( sim_t* )
-{
-}
-
-// class_modules::combat_end::hunter ============================================
-
-void class_modules::combat_end::hunter( sim_t* )
-{
+  static module_t* m = 0;
+  if( ! m ) m = new hunter_module_t();
+  return m;
 }

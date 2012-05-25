@@ -516,10 +516,13 @@ static bool check_actors( sim_t* sim )
   return true;
 }
 
-// player_t::debuff_init ====================================================
+// init_debuffs =============================================================
 
-void player_t::debuff_init( sim_t* sim )
+static bool init_debuffs( sim_t* sim )
 {
+  if ( sim -> debug )
+    sim -> output( "Initializing Auras, Buffs, and De-Buffs." );
+
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[i];
@@ -545,45 +548,14 @@ void player_t::debuff_init( sim_t* sim )
     p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
                                            .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) );
   }
+
+  return true;
 }
 
-// player_t::init ===========================================================
+// init_parties =============================================================
 
-bool player_t::init( sim_t* sim )
+static bool init_parties( sim_t* sim )
 {
-  if ( sim -> debug )
-    sim -> output( "Creating Pets." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> create_pets();
-  }
-
-  if ( sim -> debug )
-    sim -> output( "Initializing Auras, Buffs, and De-Buffs." );
-
-  player_t::debuff_init( sim );
-
-  player_t::init_class_modules( sim );
-
-  if ( sim -> debug )
-    sim -> output( "Initializing Players." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    if ( sim -> default_actions && ! p -> is_pet() )
-    {
-      p -> clear_action_priority_lists();
-      p -> action_list_str.clear();
-    };
-    p -> init();
-  }
-
-  if ( ! check_actors( sim ) )
-    return false;
-
   // Parties
   if ( sim -> debug )
     sim -> output( "Building Parties." );
@@ -634,6 +606,54 @@ bool player_t::init( sim_t* sim )
       }
     }
   }
+
+  return true;
+}
+
+// player_t::init ===========================================================
+
+bool player_t::init( sim_t* sim )
+{
+  // FIXME! This should probably move to sc_sim.cpp
+  // Having two versions of player_t::init is confusing.
+
+  if ( sim -> debug )
+    sim -> output( "Creating Pets." );
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[i];
+    p -> create_pets();
+  }
+
+  if ( ! init_debuffs( sim ) )
+    return false;
+
+  for( int i=0; i < PLAYER_MAX; i++ )
+  {
+    module_t* m = module_t::get( (player_e) i );
+    if( m ) m -> init( sim );
+  }
+
+  if ( sim -> debug )
+    sim -> output( "Initializing Players." );
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[ i ];
+    if ( sim -> default_actions && ! p -> is_pet() )
+    {
+      p -> clear_action_priority_lists();
+      p -> action_list_str.clear();
+    };
+    p -> init();
+  }
+
+  if ( ! check_actors( sim ) )
+    return false;
+
+  if ( ! init_parties( sim ) )
+    return false;
 
   // Callbacks
   if ( sim -> debug )

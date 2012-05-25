@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
 
@@ -13,8 +12,6 @@ namespace { // ANONYMOUS NAMESPACE
 // ==========================================================================
 
 struct paladin_t;
-
-#if SC_PALADIN == 1
 
 enum seal_e
 {
@@ -3200,40 +3197,35 @@ expr_t* paladin_t::create_expression( action_t* a,
   return player_t::create_expression( a, name_str );
 }
 
-#endif // SC_PALADIN
+// PALADIN MODULE INTERFACE ================================================
 
-} // END ANONYMOUS NAMESPACE
-
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-player_t* class_modules::create::paladin( sim_t* sim, const std::string& name, race_e r )
+struct paladin_module_t : public module_t 
 {
-  return sc_create_class<paladin_t,SC_PALADIN>()( "Paladin", sim, name, r );
-}
+  paladin_module_t() : module_t( PALADIN ) {}
 
-// class_modules::init::paladin ===================================================
-
-void class_modules::init::paladin( sim_t* sim )
-{
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
   {
-    player_t* p = sim -> actor_list[i];
-    p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
-    p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
-    p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
+    return new paladin_t( sim, name, r );
   }
-}
+  virtual void init( sim_t* sim )
+  {
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[i];
+      p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
+      p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
+      p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
 
-// class_modules::combat_begin::paladin ===========================================
+} // ANONYMOUS NAMESPACE
 
-void class_modules::combat_begin::paladin( sim_t* )
+module_t* module_t::paladin()
 {
-}
-
-// class_modules::combat_end::paladin ===========================================
-
-void class_modules::combat_end::paladin( sim_t* )
-{
+  static module_t* m = 0;
+  if( ! m ) m = new paladin_module_t();
+  return m;
 }

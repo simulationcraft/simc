@@ -82,8 +82,11 @@ player_t* chardev::download_player( sim_t* sim,
   util::tokenize( type_str );
   util::tokenize( race_str );
 
-  player_t* p = player_t::create( sim, type_str, name_str, util::parse_race_type( race_str ) );
+  race_e race = util::parse_race_type( race_str );
+  module_t* module = module_t::get( type_str );
+  player_t* p = module ? module -> create_player( sim, name_str, race ) : 0;
   sim -> active_player = p;
+
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from CharDev id %s.\n",

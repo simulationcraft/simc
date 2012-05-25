@@ -5,8 +5,6 @@
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
 
-#if SC_WARLOCK == 1
-
 namespace { // ANONYMOUS_NAMESPACE
 
 struct _stat_list_t
@@ -1025,5 +1023,3 @@ void wild_imp_pet_t::demise()
   // FIXME: This should not be necessary, but it asserts later due to negative event count if we don't do this
   sim -> cancel_events( this );
 }
-
-#endif // SC_WARLOCK

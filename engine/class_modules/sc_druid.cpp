@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 namespace { // ANONYMOUS NAMESPACE
 
@@ -13,8 +12,6 @@ namespace { // ANONYMOUS NAMESPACE
 // ==========================================================================
 
 struct druid_t;
-
-#if SC_DRUID == 1
 
 #define COMBO_POINTS_MAX 5
 
@@ -4311,12 +4308,12 @@ void druid_t::init_buffs()
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ? ( primary_tree() == DRUID_FERAL ) : 0.0 );
 
-  // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc	Passive
+  // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc      Passive
   buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation -> ok() ? find_spell( 113711 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( primary_tree() == DRUID_GUARDIAN ) : 0.0 );
 
-  // http://mop.wowhead.com/spell=5420 Incarnation: Tree of Life	Passive
+  // http://mop.wowhead.com/spell=5420 Incarnation: Tree of Life        Passive
   buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , talent.incarnation -> ok() ? find_spell( 5420 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( primary_tree() == DRUID_RESTORATION ) : 0.0 );
@@ -5201,45 +5198,33 @@ druid_td_t::druid_td_t( player_t* target, druid_t* source )
   buffs_lifebloom = buff_creator_t( *this, "lifebloom", source -> find_class_spell( "Lifebloom" ) ).duration( timespan_t::from_seconds( 11.0 ) );
 }
 
-#endif
+// DRUID MODULE INTERFACE ================================================
+
+struct druid_module_t : public module_t 
+{
+  druid_module_t() : module_t( DRUID ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE )
+  {
+    return new druid_t( sim, name, r );
+  }
+  virtual void init( sim_t* sim )
+  {
+    for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      p -> buffs.innervate = new innervate_buff_t( p );
+    }
+  }
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end( sim_t* ) {}
+};
 
 } // ANONYMOUS NAMESPACE
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-player_t* class_modules::create::druid( sim_t*             sim,
-                                        const std::string& name,
-                                        race_e r )
+module_t* module_t::druid()
 {
-  return sc_create_class<druid_t,SC_DRUID>()( "Druid", sim, name, r );
-}
-
-// class_modules::init::druid =====================================================
-
-void class_modules::init::druid( sim_t* sim )
-{
-  for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-#if SC_DRUID == 1
-    // TODO: Figure this out
-    p -> buffs.innervate              = new innervate_buff_t( p );
-#else
-    p -> buffs.innervate = buff_creator_t( p, "innervate_dummy_buff" );
-#endif // SC_DRUID
-  }
-}
-
-// class_modules::combat_begin::druid =============================================
-
-void class_modules::combat_begin::druid( sim_t* )
-{
-}
-
-// class_modules::combat_end::druid =============================================
-
-void class_modules::combat_end::druid( sim_t* )
-{
+  static module_t* m = 0;
+  if( ! m ) m = new druid_module_t();
+  return m;
 }

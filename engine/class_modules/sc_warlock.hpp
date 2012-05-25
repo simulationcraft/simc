@@ -4,14 +4,11 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 #ifndef SC_WARLOCK_HPP
 #define SC_WARLOCK_HPP
 
 struct warlock_t;
-
-#if SC_WARLOCK == 1
 
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 30
@@ -481,7 +478,5 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };
-
-#endif
 
 #endif

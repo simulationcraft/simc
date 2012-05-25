@@ -102,11 +102,11 @@ double rating_t::interpolate( int    level,
 
 // rating_t::get_attribute_base =============================================
 
-double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_e class_type, race_e race, base_stat_e_e stat_e )
+double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_e class_type, race_e race, base_stat_e stat )
 {
   double res                       = 0.0;
 
-  switch ( stat_e )
+  switch ( stat )
   {
   case BASE_STAT_STRENGTH:           res = dbc.race_base( race ).strength + dbc.attribute_base( class_type, level ).strength; break;
   case BASE_STAT_AGILITY:            res = dbc.race_base( race ).agility + dbc.attribute_base( class_type, level ).agility; break;

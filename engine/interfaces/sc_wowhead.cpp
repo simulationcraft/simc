@@ -605,8 +605,10 @@ static player_t* download_player_profile( sim_t* sim,
   }
   race_e r = util::translate_race_id( atoi( rid_str.c_str() ) );
 
-  player_t* p = player_t::create( sim, type_str, name_str, r );
+  module_t* module = module_t::get( type_str );
+  player_t* p = module ? module -> create_player( sim, name_str, r ) : 0;
   sim -> active_player = p;
+
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n",

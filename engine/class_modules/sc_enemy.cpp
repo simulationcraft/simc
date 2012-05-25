@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "sc_class_modules.hpp"
 
 // ==========================================================================
 // Enemy
@@ -621,36 +620,26 @@ void enemy_t::combat_end()
   recalculate_health();
 }
 
+// ENEMY MODULE INTERFACE ================================================
+
+struct enemy_module_t : public module_t 
+{
+  enemy_module_t() : module_t( ENEMY ) {}
+
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ )
+  {
+    return new enemy_t( sim, name );
+  }
+  virtual void init        ( sim_t* ) {}
+  virtual void combat_begin( sim_t* ) {}
+  virtual void combat_end  ( sim_t* ) {}
+};
+
 } // END ANONYMOUS NAMESPACE
 
-// ==========================================================================
-// PLAYER_T EXTENSIONS
-// ==========================================================================
-
-// class_modules::create::enemy ===================================================
-
-player_t* class_modules::create::enemy( sim_t* sim, const std::string& name, race_e /* r */ )
+module_t* module_t::enemy()
 {
-  return new enemy_t( sim, name );
-}
-
-// player_t::enemy_init =====================================================
-
-void class_modules::init::enemy( sim_t* /* sim */ )
-{
-
-}
-
-// player_t::enemy_combat_begin =============================================
-
-void class_modules::combat_begin::enemy( sim_t* /* sim */ )
-{
-
-}
-
-// player_t::enemy_combat_end =============================================
-
-void class_modules::combat_end::enemy( sim_t* /* sim */ )
-{
-
+  static module_t* m = 0;
+  if( ! m ) m = new enemy_module_t();
+  return m;
 }

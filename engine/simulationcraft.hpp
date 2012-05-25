@@ -139,13 +139,13 @@ class  dbc_t;
 struct debuff_t;
 struct dot_t;
 struct effect_t;
-struct enchant_t;
 struct event_t;
 class  expr_t;
 struct gain_t;
 struct heal_t;
 struct item_t;
 struct js_node_t;
+struct module_t;
 struct option_t;
 struct pet_t;
 struct player_t;
@@ -155,7 +155,6 @@ struct raid_event_t;
 struct rating_t;
 struct reforge_plot_data_t;
 struct reforge_plot_t;
-struct report_t;
 struct rng_t;
 struct sample_data_t;
 struct scaling_t;
@@ -166,7 +165,6 @@ struct spell_t;
 struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
-struct unique_gear_t;
 struct uptime_t;
 struct weapon_t;
 struct xml_node_t;
@@ -368,12 +366,11 @@ enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
 enum attribute_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum base_stat_e_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
-                     BASE_STAT_HEALTH, BASE_STAT_MANA,
-                     BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
-                     BASE_STAT_DODGE_PER_AGI,
-                     BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
-                   };
+enum base_stat_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
+                   BASE_STAT_HEALTH, BASE_STAT_MANA,
+                   BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
+                   BASE_STAT_DODGE_PER_AGI,
+                   BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX };
 
 enum resource_e
 {
@@ -2443,7 +2440,6 @@ public:
   cooldown_t* cooldown_list;
 
   // Reporting
-  report_t*  report;
   scaling_t* scaling;
   plot_t*    plot;
   reforge_plot_t* reforge_plot;
@@ -2548,12 +2544,55 @@ public:
     return size;
   }
 
-  static option_t* get_class_option( void* );
-
-  // FIXME! I am not sure if I want these to live here.
-
   virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+};
+
+// Module ===================================================================
+
+struct module_t
+{
+  player_e type;
+  module_t( player_e t ) : type(t) {}
+  virtual ~module_t() {}
+  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) = 0;
+  virtual void init( sim_t* ) = 0;
+  virtual void combat_begin( sim_t* ) = 0;
+  virtual void combat_end( sim_t* ) = 0;
+  static module_t* death_knight();
+  static module_t* druid();
+  static module_t* hunter();
+  static module_t* mage();
+  static module_t* monk();
+  static module_t* paladin();
+  static module_t* priest();
+  static module_t* rogue();
+  static module_t* shaman();
+  static module_t* warlock();
+  static module_t* warrior();
+  static module_t* enemy();
+  static module_t* get( player_e t )
+  {
+    switch( t )
+    {
+    case DEATH_KNIGHT: return death_knight();
+    case DRUID: return druid();
+    case HUNTER: return hunter();
+    case MAGE: return mage();
+    case MONK: return monk();
+    case PALADIN: return paladin();
+    case PRIEST: return priest();
+    case ROGUE: return rogue();
+    case SHAMAN: return shaman();
+    case WARLOCK: return warlock();
+    case WARRIOR: return warrior();
+    case ENEMY: return enemy();
+    default:;
+    }
+    return NULL;
+  }
+  static module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
+  static void init() { for( int i=0; i < PLAYER_MAX; i++ ) get( (player_e) i ); }
 };
 
 // Scaling ==================================================================
@@ -2730,7 +2769,7 @@ struct rating_t : public internal::rating_t
 
   void init( sim_t*, dbc_t& pData, int level, player_e type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
-  static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_e class_type, race_e race, base_stat_e_e stat_e );
+  static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_e class_type, race_e race, base_stat_e stat_e );
 };
 
 // Weapon ===================================================================
@@ -3640,16 +3679,10 @@ struct player_t : public noncopyable
   {}
 
   // Class-Specific Methods
-
-  static player_t* create( sim_t* sim, const std::string& type, const std::string& name, race_e r = RACE_NONE );
   static player_t* create( sim_t* sim, const player_description_t& );
 
   // Raid-wide aura/buff/debuff maintenance
   static bool init        ( sim_t* sim );
-  static void debuff_init ( sim_t* sim );
-  static void combat_begin( sim_t* sim );
-  static void combat_end  ( sim_t* sim );
-  static void init_class_modules ( sim_t* sim );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
   bool is_enemy() { return type == ENEMY || type == ENEMY_ADD; }
