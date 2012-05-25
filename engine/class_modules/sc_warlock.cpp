@@ -131,7 +131,7 @@ public:
     return spell_t::ready();
   }
 
-  static void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount );
+  static void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount, bool force = false );
 
   virtual void tick( dot_t* d )
   {
@@ -1789,9 +1789,9 @@ struct soc_state_t : public action_state_t
 };
 
 
-void warlock_spell_t::trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
+void warlock_spell_t::trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount, bool force )
 {
-  if ( td -> dots_seed_of_corruption -> ticking && td -> soc_trigger > 0 )
+  if ( ( force || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
   {
     td -> soc_trigger -= amount;
     if ( td -> soc_trigger <= 0 )
@@ -1833,8 +1833,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    p() -> seed_of_corruption_aoe -> stats = stats;
-    p() -> soulburn_seed_of_corruption_aoe -> stats = stats;
+    p() -> soulburn_seed_of_corruption_aoe -> stats = p() -> seed_of_corruption_aoe -> stats;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1860,6 +1859,13 @@ struct seed_of_corruption_t : public warlock_spell_t
       p() -> buffs.soulburn -> expire();
       soulburn_cooldown -> start();
     }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    spell_t::tick( d );
+
+    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount, true );
   }
 
   virtual bool ready()
