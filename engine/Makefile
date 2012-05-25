@@ -144,8 +144,6 @@ SRC = \
 	dbc$(PATHSEP)sc_spell_lists_ptr.inc \
 	dbc$(PATHSEP)sc_talent_data.inc \
 	dbc$(PATHSEP)sc_talent_data_ptr.inc \
-	class_modules$(PATHSEP)sc_class_modules.hpp \
-	class_modules$(PATHSEP)sc_class_modules.cpp \
 	class_modules$(PATHSEP)sc_death_knight.cpp \
 	class_modules$(PATHSEP)sc_druid.cpp \
 	class_modules$(PATHSEP)sc_enemy.cpp \

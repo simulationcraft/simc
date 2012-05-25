@@ -364,10 +364,6 @@
 				>
 			</File>
 			
-		<File
-			RelativePath=".\engine\class_modules\sc_class_modules.cpp"
-			>
-		</File>
 			<File
 				RelativePath=".\engine\class_modules\sc_hunter.cpp"
 				>

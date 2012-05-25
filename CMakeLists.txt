@@ -81,7 +81,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/interfaces/sc_xml.cpp"
   "engine/interfaces/sc_rawr.cpp"
   "engine/sc_weapon.cpp"
-  "engine/class_modules/sc_class_modules.cpp"
   "engine/class_modules/sc_death_knight.cpp"
   "engine/class_modules/sc_druid.cpp"
   "engine/class_modules/sc_enemy.cpp"

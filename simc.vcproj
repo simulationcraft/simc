@@ -234,14 +234,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\class_modules\sc_class_modules.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_class_modules.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\dbc\sc_const_data.cpp"
 			>
 		</File>

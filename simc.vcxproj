@@ -241,7 +241,6 @@
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
-    <ClCompile Include="engine\class_modules\sc_class_modules.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\class_modules\sc_druid.cpp" />
     <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
