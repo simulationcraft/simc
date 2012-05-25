@@ -518,14 +518,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\class_modules\sc_warlock.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\class_modules\sc_warlock_pets.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\class_modules\sc_warrior.cpp"
 			>
 		</File>

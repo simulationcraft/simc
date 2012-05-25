@@ -207,9 +207,6 @@
     <ClCompile Include="engine\class_modules\sc_warlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="engine\class_modules\sc_warrior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -304,9 +301,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="engine\class_modules\sc_priest.hpp">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="engine\class_modules\sc_warlock.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="engine\simulationcraft.hpp">

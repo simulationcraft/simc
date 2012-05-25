@@ -92,7 +92,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/class_modules/sc_rogue.cpp"
   "engine/class_modules/sc_shaman.cpp"
   "engine/class_modules/sc_warlock.cpp"
-  "engine/class_modules/sc_warlock_pets.cpp"
   "engine/class_modules/sc_warrior.cpp"
 )
 

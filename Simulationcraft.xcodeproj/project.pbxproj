@@ -186,8 +186,6 @@
 		6EB6552C1562E7DB00583BF3 /* sc_rogue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655231562E7DB00583BF3 /* sc_rogue.cpp */; };
 		6EB6552D1562E7DB00583BF3 /* sc_shaman.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655241562E7DB00583BF3 /* sc_shaman.cpp */; };
 		6EB6552E1562E7DB00583BF3 /* sc_shaman.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655241562E7DB00583BF3 /* sc_shaman.cpp */; };
-		6EB6552F1562E7DB00583BF3 /* sc_warlock_pets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655251562E7DB00583BF3 /* sc_warlock_pets.cpp */; };
-		6EB655301562E7DB00583BF3 /* sc_warlock_pets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655251562E7DB00583BF3 /* sc_warlock_pets.cpp */; };
 		6EB655311562E7DB00583BF3 /* sc_warlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655261562E7DB00583BF3 /* sc_warlock.cpp */; };
 		6EB655321562E7DB00583BF3 /* sc_warlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655261562E7DB00583BF3 /* sc_warlock.cpp */; };
 		6EB655331562E7DB00583BF3 /* sc_warrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655281562E7DB00583BF3 /* sc_warrior.cpp */; };
@@ -455,9 +453,7 @@
 		6EB655221562E7DB00583BF3 /* sc_priest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_priest.hpp; path = engine/class_modules/sc_priest.hpp; sourceTree = "<group>"; };
 		6EB655231562E7DB00583BF3 /* sc_rogue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_rogue.cpp; path = engine/class_modules/sc_rogue.cpp; sourceTree = "<group>"; };
 		6EB655241562E7DB00583BF3 /* sc_shaman.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_shaman.cpp; path = engine/class_modules/sc_shaman.cpp; sourceTree = "<group>"; };
-		6EB655251562E7DB00583BF3 /* sc_warlock_pets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_warlock_pets.cpp; path = engine/class_modules/sc_warlock_pets.cpp; sourceTree = "<group>"; };
 		6EB655261562E7DB00583BF3 /* sc_warlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_warlock.cpp; path = engine/class_modules/sc_warlock.cpp; sourceTree = "<group>"; };
-		6EB655271562E7DB00583BF3 /* sc_warlock.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_warlock.hpp; path = engine/class_modules/sc_warlock.hpp; sourceTree = "<group>"; };
 		6EB655281562E7DB00583BF3 /* sc_warrior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_warrior.cpp; path = engine/class_modules/sc_warrior.cpp; sourceTree = "<group>"; };
 		6EB655351562E8F600583BF3 /* QtCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtCore.framework; path = SDKs/MacOSX10.6.sdk/Library/Frameworks/QtCore.framework; sourceTree = DEVELOPER_DIR; };
 		6EB655361562E8F600583BF3 /* QtGui.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtGui.framework; path = SDKs/MacOSX10.6.sdk/Library/Frameworks/QtGui.framework; sourceTree = DEVELOPER_DIR; };
@@ -784,7 +780,6 @@
 			children = (
 				6EB655201562E7DB00583BF3 /* sc_class_modules.hpp */,
 				6EB655221562E7DB00583BF3 /* sc_priest.hpp */,
-				6EB655271562E7DB00583BF3 /* sc_warlock.hpp */,
 				6EB654C91562E47600583BF3 /* sc_class_modules.cpp */,
 				6EB654CA1562E47600583BF3 /* sc_death_knight.cpp */,
 				6EB654CB1562E47600583BF3 /* sc_druid.cpp */,
@@ -798,7 +793,6 @@
 				6EB655231562E7DB00583BF3 /* sc_rogue.cpp */,
 				6EB655241562E7DB00583BF3 /* sc_shaman.cpp */,
 				6EB655261562E7DB00583BF3 /* sc_warlock.cpp */,
-				6EB655251562E7DB00583BF3 /* sc_warlock_pets.cpp */,
 				6EB655281562E7DB00583BF3 /* sc_warrior.cpp */,
 			);
 			name = "Class Modules";
@@ -1106,7 +1100,6 @@
 				6EB6552A1562E7DB00583BF3 /* sc_priest.cpp in Sources */,
 				6EB6552C1562E7DB00583BF3 /* sc_rogue.cpp in Sources */,
 				6EB6552E1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
-				6EB655301562E7DB00583BF3 /* sc_warlock_pets.cpp in Sources */,
 				6EB655321562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
 				6EB655341562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
 			);
@@ -1182,7 +1175,6 @@
 				6EB655291562E7DB00583BF3 /* sc_priest.cpp in Sources */,
 				6EB6552B1562E7DB00583BF3 /* sc_rogue.cpp in Sources */,
 				6EB6552D1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
-				6EB6552F1562E7DB00583BF3 /* sc_warlock_pets.cpp in Sources */,
 				6EB655311562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
 				6EB655331562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
 			);

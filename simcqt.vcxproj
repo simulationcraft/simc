@@ -216,7 +216,6 @@
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
-    <ClCompile Include="engine\class_modules\sc_warlock_pets.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
     <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="qt\sc_window.cpp" />
@@ -414,18 +413,6 @@
     </CustomBuild>
     <ClInclude Include="engine\report\sc_report.hpp" />
     <ClInclude Include="engine\dbc\specialization.hpp" />
-    <CustomBuild Include="engine\class_modules\sc_warlock.hpp">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Custom Build Step</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(Outputs)</Outputs>
-    </CustomBuild>
     <CustomBuild Include="engine\simulationcraft.hpp">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Custom Build Step</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
