@@ -1098,9 +1098,9 @@ void sim_t::combat_begin()
     if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
   }
 
-  for( int i=0; i < PLAYER_MAX; i++ )
+  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( (player_e) i );
+    module_t* m = module_t::get( i );
     if( m ) m -> combat_begin( this );
   }
 
@@ -1181,9 +1181,9 @@ void sim_t::combat_end()
     t -> combat_end();
   }
 
-  for( int i=0; i < PLAYER_MAX; i++ )
+  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( (player_e) i );
+    module_t* m = module_t::get( i );
     if( m ) m -> combat_end( this );
   }
 

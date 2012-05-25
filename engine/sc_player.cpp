@@ -629,9 +629,9 @@ bool player_t::init( sim_t* sim )
   if ( ! init_debuffs( sim ) )
     return false;
 
-  for( int i=0; i < PLAYER_MAX; i++ )
+  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
-    module_t* m = module_t::get( (player_e) i );
+    module_t* m = module_t::get( i );
     if( m ) m -> init( sim );
   }
 

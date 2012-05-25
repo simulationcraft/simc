@@ -2587,12 +2587,12 @@ struct module_t
     case WARLOCK: return warlock();
     case WARRIOR: return warrior();
     case ENEMY: return enemy();
-    default:;
+    default: break;
     }
     return NULL;
   }
   static module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
-  static void init() { for( int i=0; i < PLAYER_MAX; i++ ) get( (player_e) i ); }
+  static void init() { for( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ ) get( i ); }
 };
 
 // Scaling ==================================================================
