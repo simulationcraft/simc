@@ -2751,6 +2751,10 @@ struct astral_communion_t : public druid_spell_t
     channeled    = true;
     may_miss     = false;
   }
+  
+  virtual double composite_haste()
+  { return 1.0; }
+    
   virtual void execute()
   {
     if ( p() -> eclipse_bar_direction == 0 )
