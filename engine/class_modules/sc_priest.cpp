@@ -2904,7 +2904,7 @@ struct devouring_plague_t : public priest_spell_t
 
   devouring_plague_mastery_t* proc_spell;
 
-  devouring_plague_t( priest_t* p, const std::string& options_str ) :
+  devouring_plague_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
     priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
     proc_spell( 0 )
   {
@@ -2912,6 +2912,12 @@ struct devouring_plague_t : public priest_spell_t
 
     may_crit      = false;
     tick_may_crit = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new devouring_plague_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
