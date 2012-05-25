@@ -160,14 +160,12 @@ void stats_t::combat_end()
   else
     player -> iteration_heal += iteration_actual_amount;
 
-  // NOTE: We do NOT include children in portion_apse, because it's used in the DPS sources chart
-  portion_apse.add( sim -> current_time != timespan_t::zero() ? iteration_actual_amount / sim -> current_time.total_seconds() : 0 );
-
   for ( size_t i = 0, num_children = children.size(); i < num_children; i++ )
   {
     iteration_actual_amount += children[ i ] -> iteration_actual_amount;
   }
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iteration_actual_amount / player -> iteration_fight_length.total_seconds() : 0 );
+  portion_apse.add( sim -> current_time != timespan_t::zero() ? iteration_actual_amount / sim -> current_time.total_seconds() : 0 );
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {

@@ -922,7 +922,7 @@ std::string chart::aps_portion(  player_t* p )
   {
     stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
-    if ( st -> portion_aps.mean <= 0 ) continue;
+    if ( st -> actual_amount.mean <= 0 ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
@@ -934,7 +934,7 @@ std::string chart::aps_portion(  player_t* p )
     {
       stats_t* st = pet -> stats_list[ i ];
       if ( st -> quiet ) continue;
-      if ( st -> portion_aps.mean <= 0 ) continue;
+      if ( st -> actual_amount.mean <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
@@ -962,7 +962,7 @@ std::string chart::aps_portion(  player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> portion_apse.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> hps.mean : p -> dps.mean ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
   }
   s += "&amp;";
   s += "chds=0,100";
@@ -999,7 +999,7 @@ std::string chart::aps_portion(  player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name();
   util::urlencode( util::str_to_utf8( formatted_name ) );
-  s += chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " HPS" : " DPS" ) + " Sources" ); // Set chart title
+  s += chart_title( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " HEAL" : " DMG" ) + " Sources" ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
