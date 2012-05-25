@@ -2752,7 +2752,7 @@ struct astral_communion_t : public druid_spell_t
     may_miss     = false;
   }
   
-  virtual double composite_haste()
+  virtual double haste()
   { return 1.0; }
     
   virtual void execute()
