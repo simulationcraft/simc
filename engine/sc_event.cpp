@@ -207,7 +207,9 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 timespan_t time_to_execute ) :
   event_t( sim, a -> player, "Action-Execute" ), action( a )
 {
-  if ( sim -> debug ) sim -> output( "New Action Execute Event: %s %s %.1f", player -> name(), a -> name(), time_to_execute.total_seconds() );
+  if ( sim -> debug ) 
+    sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)", 
+                   player -> name(), a -> name(), time_to_execute.total_seconds(), a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
   sim -> add_event( this, time_to_execute );
 }
 
