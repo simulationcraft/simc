@@ -333,6 +333,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
+  seed_of_corruption_aoe( 0 ),
+  soulburn_seed_of_corruption_aoe( 0 ),
+  touch_of_chaos( 0 ),
   pets( pets_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -2777,6 +2780,13 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     }
   }
 
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    stats = p() -> seed_of_corruption_aoe -> stats;
+  }
+
   virtual void execute()
   {
     warlock_spell_t::execute();
@@ -2836,25 +2846,16 @@ struct seed_of_corruption_t : public warlock_spell_t
 {
   action_state_t* new_state() { return new soc_state_t( this, target ); }
 
-  cooldown_t* soulburn_cooldown;
-
   seed_of_corruption_t( warlock_t* p ) :
-    warlock_spell_t( p, "Seed of Corruption" ), soulburn_cooldown( p -> get_cooldown( "soulburn_seed_of_corruption" ) )
+    warlock_spell_t( p, "Seed of Corruption" )
   {
     may_crit = false;
     tick_power_mod = 0.3;
-    soulburn_cooldown -> duration = timespan_t::from_seconds( 30 ); // FIXME: Needs testing
 
-    p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    if ( ! p -> seed_of_corruption_aoe )          p -> seed_of_corruption_aoe          = new seed_of_corruption_aoe_t( p );
+    if ( ! p -> soulburn_seed_of_corruption_aoe ) p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
+
     add_child( p -> seed_of_corruption_aoe );
-    p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    p() -> soulburn_seed_of_corruption_aoe -> stats = p() -> seed_of_corruption_aoe -> stats;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2868,7 +2869,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   virtual void snapshot_state( action_state_t* state, uint32_t flags )
   {
     warlock_spell_t::snapshot_state( state, flags );
-    debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> up() ) ? true : false;
+    if ( flags != update_flags ) debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> up() ) ? true : false;
   }
 
   virtual void execute()
@@ -2876,10 +2877,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     if ( p() -> buffs.soulburn -> check() )
-    {
       p() -> buffs.soulburn -> expire();
-      soulburn_cooldown -> start();
-    }
   }
 
   virtual void tick( dot_t* d )
@@ -2887,14 +2885,6 @@ struct seed_of_corruption_t : public warlock_spell_t
     spell_t::tick( d );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount, true );
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.soulburn -> check() )
-      if ( soulburn_cooldown -> remains() > timespan_t::zero() ) return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -3928,10 +3918,11 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Soulburn",              "if=buff.soulburn.down&cooldown.soulburn_seed_of_corruption.remains=0", "aoe" );
-      add_action( "Seed of Corruption",    "cycle_targets=1,if=!in_flight_to_target&!ticking",                     "aoe" );
-      add_action( "Life Tap",              "if=mana.pct<70",                                                       "aoe" );
-      add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                              "aoe" );
+      add_action( "Soulburn",              "if=buff.soulburn.down&!action.seed_of_corruption.in_flight_to_target&!dot.seed_of_corruption.ticking&!dot.corruption.ticking", "aoe" );
+      add_action( "Seed of Corruption",    "if=buff.soulburn.up",                                                                                                          "aoe" );
+      add_action( "Seed of Corruption",    "cycle_targets=1,if=!in_flight_to_target&!ticking",                                                                             "aoe" );
+      add_action( "Life Tap",              "if=mana.pct<70",                                                                                                               "aoe" );
+      add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                                                                                      "aoe" );
       break;
 
     case WARLOCK_DESTRUCTION:
@@ -3946,13 +3937,13 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                               "aoe" );
-      add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",                          "aoe" );
-      add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                               "aoe" );
-      add_action( "Conflagrate",           "if=ember_react&buff.fire_and_brimstone.up",                            "aoe" );
-      add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                                        "aoe" );
-      add_action( "Immolate",              "cycle_targets=1,if=!ticking",                                          "aoe" );
-      add_action( "Conflagrate",           "",                                                                     "aoe" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                 "aoe" );
+      add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",            "aoe" );
+      add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                 "aoe" );
+      add_action( "Conflagrate",           "if=ember_react&buff.fire_and_brimstone.up",              "aoe" );
+      add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                          "aoe" );
+      add_action( "Immolate",              "cycle_targets=1,if=!ticking",                            "aoe" );
+      add_action( "Conflagrate",           "",                                                       "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:
@@ -3991,8 +3982,8 @@ void warlock_t::init_actions()
       add_action( "Shadow Bolt" );
 
       // AoE action list
-      add_action( "Corruption",            "cycle_targets=1,if=!ticking",                                                               "aoe" );
-      add_action( "Shadow Bolt",           "",                                                                                          "aoe" );
+      add_action( "Corruption",            "cycle_targets=1,if=!ticking",                            "aoe" );
+      add_action( "Shadow Bolt",           "",                                                       "aoe" );
       break;
     }
 
