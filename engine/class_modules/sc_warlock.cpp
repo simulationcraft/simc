@@ -2742,18 +2742,12 @@ struct fire_and_brimstone_t : public warlock_spell_t
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
 {
-  seed_of_corruption_aoe_t( warlock_t* p, bool dtr = false ) :
+  seed_of_corruption_aoe_t( warlock_t* p ) :
     warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
   {
     dual       = true;
     background = true;
     aoe        = -1;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new seed_of_corruption_aoe_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 };
 
@@ -2762,7 +2756,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
 {
   corruption_t* corruption;
 
-  soulburn_seed_of_corruption_aoe_t( warlock_t* p, bool dtr = false ) :
+  soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
     warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
   {
     dual       = true;
@@ -2772,12 +2766,6 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> dual = true;
     corruption -> proc = true;
     corruption -> may_miss = false;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new soulburn_seed_of_corruption_aoe_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void init()
