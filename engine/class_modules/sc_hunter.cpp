@@ -961,7 +961,7 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
     return;
   }
 
-  if ( p -> active_piercing_shots -> travel_event )
+  if ( p -> active_piercing_shots -> travel_events.size() > 0 )
   {
     // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
     if ( sim -> log ) sim -> output( "Player %s munches previous Piercing Shots due to Aura Delay.", p -> name() );
@@ -974,9 +974,9 @@ void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
 
   dot -> prev_tick_amount = piercing_shots_dmg;
 
-  if ( p -> active_piercing_shots -> travel_event && dot -> ticking )
+  if ( p -> active_piercing_shots -> travel_events.size() > 0 && dot -> ticking )
   {
-    if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_event -> occurs() )
+    if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_events[ 0 ] -> occurs() )
     {
       // Piercing Shots will tick before SPELL_AURA_APPLIED occurs, which means that the current Piercing Shots will
       // both tick -and- get rolled into the next Piercing Shots.

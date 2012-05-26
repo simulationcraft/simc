@@ -102,8 +102,7 @@ void stateless_travel_event_t::execute()
 {
   action -> impact_s( state );
   action -> release_state( state );
-  if ( action -> travel_event == this )
-    action -> travel_event = NULL;
+  action -> remove_travel_event( this );
 }
 
 void action_t::schedule_travel_s( action_state_t* s )
@@ -127,7 +126,7 @@ void action_t::schedule_travel_s( action_state_t* s )
       sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    travel_event = new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel );
+    add_travel_event( new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel ) );
   }
 }
 

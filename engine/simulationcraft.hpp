@@ -3967,7 +3967,7 @@ struct action_t
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
-  event_t* travel_event;
+  std::vector<event_t*> travel_events;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets;
@@ -4133,6 +4133,12 @@ struct action_t
     return action_multiplier() * action_ta_multiplier() *
            player -> composite_player_multiplier( school, this ) *
            player -> composite_player_td_multiplier( school, this );
+  }
+  void add_travel_event( event_t* e ) { travel_events.push_back( e ); }
+  void remove_travel_event( event_t* e )
+  {
+    for ( std::vector<event_t*>::iterator i = travel_events.begin(); i != travel_events.end(); ++i )
+      if ( (*i) == e ) { travel_events.erase( i ); break; }
   }
 };
 

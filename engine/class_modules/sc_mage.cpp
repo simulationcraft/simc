@@ -857,7 +857,7 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
         return;
       }*/
 
-      if ( p -> active_ignite -> travel_event )
+      if ( p -> active_ignite -> travel_events.size() > 0 )
       {
         // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
         if ( sim -> log ) sim -> output( "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
@@ -870,9 +870,9 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 
       dot -> prev_tick_amount = ignite_dmg;
 
-      if ( p -> active_ignite -> travel_event && dot -> ticking )
+      if ( p -> active_ignite -> travel_events.size() > 0 && dot -> ticking )
       {
-        if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_event -> occurs() )
+        if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_events[ 0 ] -> occurs() )
         {
           // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
           // both tick -and- get rolled into the next Ignite.

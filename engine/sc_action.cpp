@@ -126,8 +126,7 @@ action_t::action_t( action_e       ty,
   rng_result                     = NULL;
   rng_travel                     = NULL;
   stats                          = NULL;
-  execute_event                  = NULL;
-  travel_event                   = NULL;
+  execute_event                  = 0;
   time_to_execute                = timespan_t::zero();
   time_to_travel                 = timespan_t::zero();
   travel_speed                   = 0.0;
@@ -1210,7 +1209,7 @@ void action_t::schedule_travel( player_t* t )
       sim -> output( "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    travel_event = new ( sim ) action_travel_event_t( sim, t, this, time_to_travel );
+    add_travel_event( new ( sim ) action_travel_event_t( sim, t, this, time_to_travel ) );
   }
 }
 
@@ -1438,7 +1437,7 @@ void action_t::reset()
   if ( dot ) dot -> reset();
   result = RESULT_NONE;
   execute_event = 0;
-  travel_event = 0;
+  travel_events.clear();
 }
 
 // action_t::cancel =========================================================

@@ -3686,7 +3686,7 @@ struct starsurge_t : public druid_spell_t
   virtual bool ready()
   {
     // Druids can only have 1 Starsurge in the air at a time
-    if ( travel_event != NULL )
+    if ( travel_events.size() > 0 )
       return false;
     else
       return druid_spell_t::ready();

@@ -6458,7 +6458,7 @@ expr_t* player_t::create_expression( action_t* a,
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
-              if ( action_list[ i ] -> travel_event != NULL )
+              if ( action_list[ i ] -> travel_events.size() > 0 )
                 return true;
             }
             return false;
@@ -6479,9 +6479,11 @@ expr_t* player_t::create_expression( action_t* a,
           {
             for ( size_t i = 0; i < action_list.size(); i++ )
             {
-              if ( action_list[ i ] -> travel_event == NULL ) continue;
-              stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action_list[ i ] -> travel_event );
-              if ( te -> state -> target == action.target ) return true;
+              for ( size_t j = 0; j < action_list[ i ] -> travel_events.size(); j++ )
+              {
+                stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action_list[ i ] -> travel_events[ j ] );
+                if ( te -> state -> target == action.target ) return true;
+              }
             }
             return false;
           }
