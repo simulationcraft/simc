@@ -1635,29 +1635,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "travel_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
-  else if ( name_str == "in_flight" )
-  {
-    struct in_flight_expr_t : public action_expr_t
-    {
-      in_flight_expr_t( action_t& a ) : action_expr_t( "in_flight", a ) {}
-      virtual double evaluate() { return action.travel_event != NULL; }
-    };
-    return new in_flight_expr_t( *this );
-  }
-  else if ( name_str == "in_flight_to_target" )
-  {
-    struct in_flight_expr_t : public action_expr_t
-    {
-      in_flight_expr_t( action_t& a ) : action_expr_t( "in_flight_to_target", a ) {}
-      virtual double evaluate()
-      {
-        if ( action.travel_event == NULL ) return false;
-        stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action.travel_event );
-        return te -> state -> target == action.target;
-      }
-    };
-    return new in_flight_expr_t( *this );
-  }
 
   // FIXME! DoT Expressions should not need to get the dot itself.
   else if ( expr_t* q = get_dot() -> create_expression( this, name_str, true ) )

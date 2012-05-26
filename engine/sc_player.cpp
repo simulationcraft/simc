@@ -6368,44 +6368,6 @@ expr_t* player_t::create_expression( action_t* a,
         return new swing_remains_expr_t( *this, hand );
       }
     }
-    else if ( splits[ 0 ] == "action" )
-    {
-      std::vector<action_t*> in_flight_list;
-      for ( size_t i = 0; i < action_list.size(); ++i )
-      {
-        action_t* action = action_list[ i ];
-        if ( action -> name_str == splits[ 1 ] )
-        {
-          if ( splits[ 2 ] == "in_flight" )
-          {
-            in_flight_list.push_back( action );
-          }
-          else
-          {
-            return action -> create_expression( splits[ 2 ] );
-          }
-        }
-      }
-      if ( in_flight_list.size() > 0 )
-      {
-        struct in_flight_multi_expr_t : public expr_t
-        {
-          const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*>& al ) :
-            expr_t( "in_flight" ), action_list( al ) {}
-          virtual double evaluate()
-          {
-            for ( size_t i = 0; i < action_list.size(); i++ )
-            {
-              if ( action_list[ i ] -> travel_event != NULL )
-                return true;
-            }
-            return false;
-          }
-        };
-        return new in_flight_multi_expr_t( in_flight_list );
-      }
-    }
 
     if ( splits[ 0 ] == "spell" && splits[ 2 ] == "exists" )
     {
@@ -6462,8 +6424,72 @@ expr_t* player_t::create_expression( action_t* a,
     }
 
     return new s_expr_t( name_str, *this, s );
+  }  
+  else if ( ( num_splits == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
+  {
+    std::vector<action_t*> in_flight_list;
+    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
+    std::string action_name = ( in_flight_singleton ) ? a -> name_str : splits[ 1 ];
+    for ( size_t i = 0; i < action_list.size(); ++i )
+    {
+      action_t* action = action_list[ i ];
+      if ( action -> name_str == action_name )
+      {
+        if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
+        {
+          in_flight_list.push_back( action );
+        }
+        else
+        {
+          return action -> create_expression( splits[ 2 ] );
+        }
+      }
+    }
+    if ( in_flight_list.size() > 0 )
+    {
+      if ( splits[ 0 ] == "in_flight" || ( ! in_flight_singleton && splits[ 2 ] == "in_flight" ) )
+      {
+        struct in_flight_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          in_flight_multi_expr_t( const std::vector<action_t*>& al ) :
+            expr_t( "in_flight" ), action_list( al ) {}
+          virtual double evaluate()
+          {
+            for ( size_t i = 0; i < action_list.size(); i++ )
+            {
+              if ( action_list[ i ] -> travel_event != NULL )
+                return true;
+            }
+            return false;
+          }
+        };
+        return new in_flight_multi_expr_t( in_flight_list );
+      }
+      else if ( splits[ 0 ] == "in_flight_to_target" || ( ! in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
+      {
+        struct in_flight_to_target_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          action_t& action;
+            
+          in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
+            expr_t( "in_flight_to_target" ), action_list( al ), action( a ) {}
+          virtual double evaluate()
+          {
+            for ( size_t i = 0; i < action_list.size(); i++ )
+            {
+              if ( action_list[ i ] -> travel_event == NULL ) continue;
+              stateless_travel_event_t* te = debug_cast<stateless_travel_event_t*>( action_list[ i ] -> travel_event );
+              if ( te -> state -> target == action.target ) return true;
+            }
+            return false;
+          }
+        };
+        return new in_flight_to_target_multi_expr_t( in_flight_list, *a );
+      }
+    }
   }
-
 
   return sim -> create_expression( a, name_str );
 }
