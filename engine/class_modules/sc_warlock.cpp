@@ -2764,7 +2764,6 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     aoe        = -1;
     corruption -> background = true;
     corruption -> dual = true;
-    corruption -> proc = true;
     corruption -> may_miss = false;
   }
 
