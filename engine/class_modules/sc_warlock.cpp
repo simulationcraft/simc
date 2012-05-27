@@ -48,6 +48,8 @@ struct warlock_t : public player_t
   spell_t* soulburn_seed_of_corruption_aoe;
   spell_t* touch_of_chaos;
 
+  player_t* havoc_target;
+
   // Active Pet
   struct pets_t
   {
@@ -63,7 +65,7 @@ struct warlock_t : public player_t
     buff_t* metamorphosis;
     buff_t* molten_core;
     buff_t* soulburn;
-    buff_t* bane_of_havoc;
+    buff_t* havoc;
     buff_t* tier13_4pc_caster;
     buff_t* grimoire_of_sacrifice;
     buff_t* demonic_calling;
@@ -345,6 +347,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   seed_of_corruption_aoe( 0 ),
   soulburn_seed_of_corruption_aoe( 0 ),
   touch_of_chaos( 0 ),
+  havoc_target( 0 ),
   pets( pets_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -1196,6 +1199,13 @@ public:
     spell_t::impact_s( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
+
+    if ( aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != s -> target )
+    {
+      s -> target = p() -> havoc_target;
+      p() -> buffs.havoc -> decrement();
+      impact_s( s );
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1412,9 +1422,12 @@ struct doom_t : public warlock_spell_t
 };
 
 
-struct bane_of_havoc_t : public warlock_spell_t
+struct havoc_t : public warlock_spell_t
 {
-  bane_of_havoc_t( warlock_t* p ) : warlock_spell_t( p, "Bane of Havoc" ) { }
+  havoc_t( warlock_t* p ) : warlock_spell_t( p, "Havoc" )
+  {
+    may_crit = false;
+  }
 
   virtual void execute()
   {
@@ -1422,17 +1435,10 @@ struct bane_of_havoc_t : public warlock_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> buffs.bane_of_havoc -> trigger();
+      p() -> buffs.havoc -> trigger( 3 );
+      p() -> havoc_target = target;
     }
 
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.bane_of_havoc -> check() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 };
 
@@ -3678,7 +3684,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "dark_intent"           ) a = new           dark_intent_t( this );
   else if ( name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( name == "soulburn"              ) a = new              soulburn_t( this );
-  else if ( name == "bane_of_havoc"         ) a = new         bane_of_havoc_t( this );
+  else if ( name == "havoc"                 ) a = new                 havoc_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( name == "immolation_aura"       ) a = new       immolation_aura_t( this );
@@ -3878,6 +3884,7 @@ void warlock_t::init_buffs()
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
+  buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 
