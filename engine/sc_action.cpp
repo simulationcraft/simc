@@ -652,7 +652,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
 // action_t::calculate_tick_damage ==========================================
 
-double action_t::calculate_tick_damage( result_e r, double power, double multiplier )
+double action_t::calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
 {
   double dmg = 0;
 
@@ -675,8 +675,8 @@ double action_t::calculate_tick_damage( result_e r, double power, double multipl
 
   if ( sim -> debug )
   {
-    sim -> output( "%s dmg for %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
-                   player -> name(), name(), dmg, init_tick_dmg, base_td, tick_power_mod,
+    sim -> output( "%s dmg for %s on %s: td=%.0f i_td=%.0f b_td=%.0f mod=%.2f power=%.0f mult=%.2f",
+                   player -> name(), name(), t -> name(), dmg, init_tick_dmg, base_td, tick_power_mod,
                    power, multiplier );
   }
 
@@ -685,7 +685,7 @@ double action_t::calculate_tick_damage( result_e r, double power, double multipl
 
 // action_t::calculate_direct_damage ========================================
 
-double action_t::calculate_direct_damage( result_e r, int chain_target, unsigned target_level, double ap, double sp, double multiplier )
+double action_t::calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
 {
   double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
@@ -713,7 +713,7 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, unsigned
 
   if ( r == RESULT_GLANCE )
   {
-    double delta_skill = ( target_level - player -> level ) * 5.0;
+    double delta_skill = ( t -> level - player -> level ) * 5.0;
 
     if ( delta_skill < 0.0 )
       delta_skill = 0.0;
@@ -885,7 +885,7 @@ void action_t::execute()
         result = calculate_result( total_crit(), tl[ t ] -> level );
 
         if ( result_is_hit() )
-          direct_dmg = calculate_direct_damage( result, t + 1, tl[ t ] -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
+          direct_dmg = calculate_direct_damage( result, t + 1, total_attack_power(), total_spell_power(), total_dd_multiplier(), tl[ t ] );
 
         schedule_travel( tl[ t ] );
       }
@@ -897,7 +897,7 @@ void action_t::execute()
       result = calculate_result( total_crit(), target -> level );
 
       if ( result_is_hit() )
-        direct_dmg = calculate_direct_damage( result, 0, target -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
+        direct_dmg = calculate_direct_damage( result, 0, total_attack_power(), total_spell_power(), total_dd_multiplier(), target );
 
       schedule_travel( target );
     }
@@ -916,7 +916,7 @@ void action_t::execute()
         s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
         if ( result_is_hit( s -> result ) )
-          s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
+          s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
         if ( sim -> debug )
           s -> debug();
@@ -932,7 +932,7 @@ void action_t::execute()
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_damage( s -> result, 0, s -> target -> level, s -> attack_power, s -> spell_power, s -> composite_da_multiplier() );
+        s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
       if ( sim -> debug )
         s -> debug();
@@ -974,7 +974,7 @@ void action_t::tick( dot_t* d )
       }
     }
 
-    tick_dmg = calculate_tick_damage( result, total_power(), total_td_multiplier() );
+    tick_dmg = calculate_tick_damage( result, total_power(), total_td_multiplier(), target );
 
     d -> prev_tick_amount = tick_dmg;
 
@@ -993,7 +993,7 @@ void action_t::tick( dot_t* d )
         d -> state -> result = RESULT_CRIT;
     }
 
-    d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier() );
+    d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
 
     assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
 

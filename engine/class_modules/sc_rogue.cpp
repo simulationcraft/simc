@@ -1849,7 +1849,7 @@ struct hemorrhage_t : public rogue_melee_attack_t
         // Dot can crit and double dips in player multipliers
         // Damage is based off actual damage, not normalized to hits like FFB
         // http://elitistjerks.com/f78/t105429-cataclysm_mechanics_testing/p6/#post1796877
-        double dot_dmg = calculate_direct_damage( result, 0, target -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() ) * p -> glyphs.hemorrhage -> base_value() / 100.0;
+        double dot_dmg = calculate_direct_damage( result, 0, total_attack_power(), total_spell_power(), total_dd_multiplier(), target ) * p -> glyphs.hemorrhage -> base_value() / 100.0;
         base_td = dot_dmg / num_ticks;
       }
     }
@@ -2619,10 +2619,10 @@ struct deadly_poison_t : public rogue_poison_t
     }
   }
 
-  virtual double calculate_tick_damage( result_e r, double power, double multiplier )
+  virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* target )
   {
-    rogue_targetdata_t* td = cast_td();
-    return rogue_poison_t::calculate_tick_damage( r, power, multiplier ) * td -> debuffs_poison_doses -> stack();
+    rogue_targetdata_t* td = cast_td( target );
+    return rogue_poison_t::calculate_tick_damage( r, power, multiplier, target ) * td -> debuffs_poison_doses -> stack();
   }
 
   virtual void last_tick( dot_t* d )

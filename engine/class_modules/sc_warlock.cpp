@@ -28,10 +28,8 @@ struct warlock_td_t : public actor_pair_t
 
   bool ds_started_below_20;
   int shadowflame_stack;
+  int agony_stack;
   double soc_trigger;
-
-  int affliction_effects();
-  int active_dots();
 
   warlock_td_t( player_t* target, warlock_t* source );
 
@@ -39,6 +37,7 @@ struct warlock_td_t : public actor_pair_t
   {
     ds_started_below_20 = false;
     shadowflame_stack = 0;
+    agony_stack = 0;
     soc_trigger = 0;
   }
 };
@@ -69,6 +68,7 @@ struct warlock_t : public player_t
     buff_t* grimoire_of_sacrifice;
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
+    buff_t* soul_swap;
   } buffs;
 
   // Cooldowns
@@ -187,8 +187,15 @@ struct warlock_t : public player_t
     const spell_data_t* everlasting_affliction;
     const spell_data_t* soul_shards;
     const spell_data_t* burning_embers;
-  };
-  glyphs_t glyphs;
+  } glyphs;
+
+  struct soul_swap_state_t
+  {
+    player_t* target;
+    int agony;
+    bool corruption;
+    bool unstable_affliction;
+  } soul_swap_state;
 
   struct meta_cost_event_t : event_t
   {
@@ -314,7 +321,7 @@ struct warlock_t : public player_t
 };
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
-  : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 0 ), soc_trigger( 0 )
+  : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 0 ), agony_stack( 0 ), soc_trigger( 0 )
 {
   dots_corruption          = target -> get_dot( "corruption", p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );
@@ -1325,13 +1332,11 @@ struct curse_of_elements_t : public warlock_spell_t
   }
 };
 
-
+  
 struct agony_t : public warlock_spell_t
 {
-  int damage_level;
-
   agony_t( warlock_t* p ) :
-    warlock_spell_t( p, "Agony" ), damage_level( 0 )
+    warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
     tick_power_mod = 0.02; // from tooltip
@@ -1340,19 +1345,19 @@ struct agony_t : public warlock_spell_t
 
   virtual void last_tick( dot_t* d )
   {
+    td( d -> state -> target ) -> agony_stack = 0;
     warlock_spell_t::last_tick( d );
-    damage_level = 0;
   }
 
   virtual void tick( dot_t* d )
   {
-    if ( damage_level < 10 ) damage_level++;
+    if ( td( d -> state -> target ) -> agony_stack < 10 ) td( d -> state -> target ) -> agony_stack++;
     warlock_spell_t::tick( d );
   }
 
-  virtual double calculate_tick_damage( result_e r, double p, double m )
+  virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
   {
-    return warlock_spell_t::calculate_tick_damage( r, p, m ) * ( 70 + 5 * damage_level ) / 12;
+    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * ( 70 + 5 * td( t ) -> agony_stack ) / 12;
   }
 
   virtual double action_multiplier()
@@ -2237,26 +2242,9 @@ struct cancel_metamorphosis_t : public warlock_spell_t
   }
 };
 
-struct shadowflame_state_t : public action_state_t
-{
-  shadowflame_state_t( action_t* spell, player_t* target ) :
-    action_state_t( spell, target )
-  { }
-
-  virtual double composite_power()
-  {
-    warlock_td_t* td = debug_cast<warlock_t*>( action -> player ) -> get_target_data( target );
-
-    assert( td -> shadowflame_stack >= 1 );
-
-    return action_state_t::composite_power() * td -> shadowflame_stack;
-  }
-};
 
 struct shadowflame_t : public warlock_spell_t
 {
-  action_state_t* new_state() { return new shadowflame_state_t( this, target ); }
-
   shadowflame_t( warlock_t* p ) :
     warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
@@ -2278,6 +2266,11 @@ struct shadowflame_t : public warlock_spell_t
 
     if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.08 ) )
       p() -> buffs.molten_core -> trigger();
+  }
+
+  virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
+  {
+    return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * td( t ) -> shadowflame_stack;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2734,6 +2727,101 @@ struct fire_and_brimstone_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.fire_and_brimstone -> trigger();
+  }
+};
+
+
+struct soul_swap_t : public warlock_spell_t
+{
+  agony_t* agony;
+  corruption_t* corruption;
+  unstable_affliction_t* unstable_affliction;
+
+  soul_swap_t( warlock_t* p ) :
+    warlock_spell_t( p, "Soul Swap" ), 
+      agony( new agony_t( p ) ), 
+      corruption( new corruption_t( p ) ), 
+      unstable_affliction( new unstable_affliction_t( p ) )
+  {
+    agony               -> background = true;
+    agony               -> dual       = true;
+    agony               -> may_miss   = false;
+    corruption          -> background = true;
+    corruption          -> dual       = true;
+    corruption          -> may_miss   = false;
+    unstable_affliction -> background = true;
+    unstable_affliction -> dual       = true;
+    unstable_affliction -> may_miss   = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> buffs.soul_swap -> up() )
+    {
+      if ( target == p() -> soul_swap_state.target ) return;
+
+      p() -> buffs.soul_swap -> expire();
+
+      if ( p() -> soul_swap_state.agony > 0 )
+      {
+        agony -> target = target;
+        agony -> execute();
+        td( target ) -> agony_stack = p() -> soul_swap_state.agony;
+      }
+
+      if ( p() -> soul_swap_state.corruption )
+      {
+        corruption -> target = target;
+        corruption -> execute();
+      }
+      
+      if ( p() -> soul_swap_state.unstable_affliction )
+      {
+        unstable_affliction -> target = target;
+        unstable_affliction -> execute();
+      }
+    }
+    else if ( p() -> buffs.soulburn -> up() )
+    {
+      p() -> buffs.soulburn -> expire();
+
+      agony -> target = target;
+      agony -> execute();
+
+      corruption -> target = target;
+      corruption -> execute();
+
+      unstable_affliction -> target = target;
+      unstable_affliction -> execute();
+    }
+    else 
+    {
+      p() -> buffs.soul_swap -> trigger();
+
+      p() -> soul_swap_state.target              = target;
+      p() -> soul_swap_state.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
+      p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking > 0;
+      p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking > 0;
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.soul_swap -> check() )
+    {
+      if ( target == p() -> soul_swap_state.target ) return false;
+    }
+    else
+    {
+      if ( ! td( target ) -> dots_agony               -> ticking
+        && ! td( target ) -> dots_corruption          -> ticking
+        && ! td( target ) -> dots_unstable_affliction -> ticking )
+        return false;
+    }
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3724,6 +3812,7 @@ void warlock_t::init_buffs()
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
+  buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
 }
 

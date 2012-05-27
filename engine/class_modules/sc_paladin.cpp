@@ -1333,9 +1333,9 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     player_multiplier *= td() -> debuffs_censure -> stack();
   }
 
-  virtual double calculate_tick_damage( result_e r, double power, double multiplier )
+  virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
   {
-    double amt = paladin_melee_attack_t::calculate_tick_damage( r, power, multiplier );
+    double amt = paladin_melee_attack_t::calculate_tick_damage( r, power, multiplier, t );
     return amt;
   }
 

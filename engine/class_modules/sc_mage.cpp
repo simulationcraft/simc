@@ -730,7 +730,9 @@ static double calculate_dot_dps( dot_t* dot )
 
   a -> result = RESULT_HIT;
 
-  return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier() ) / a -> base_tick_time.total_seconds() );
+  player_t* target = ( a -> stateless ) ? dot -> state -> target : dot -> target;
+
+  return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier(), target ) / a -> base_tick_time.total_seconds() );
 }
 
 // trigger_hot_streak =======================================================

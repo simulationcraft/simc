@@ -1501,11 +1501,10 @@ void player_t::init_actions()
       if ( a )
       {
         a -> action_list = action_priority_list[ alist ] -> name_str;
-        // FIXME: This is hacky - should probably have a way to mark an action as "quiet"
-        if ( a -> name_str != "run_action_list" )
-          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
-                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
-                                   ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
+
+        a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                                 ( j < 36 ) ? ( 'A' + j - 10 ) :
+                                 ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
 
         a -> signature_str = splits[ i ];
 
@@ -3203,7 +3202,7 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     iteration_executed_foreground_actions++;
-    if ( action -> marker && sim -> current_iteration == 0 ) report_information.action_sequence += action -> marker;
+    if ( action -> marker && sim -> current_iteration == 0 && restore_action_list == 0 ) report_information.action_sequence += action -> marker;
     if ( ! action -> label_str.empty() )
       action_map[ action -> label_str ] += 1;
   }

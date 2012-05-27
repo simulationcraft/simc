@@ -4014,9 +4014,9 @@ struct action_t
   virtual result_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
   virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
-  virtual double calculate_direct_damage( result_e, int chain_target, unsigned target_level,
-                                          double attack_power,  double spell_power, double multiplier );
-  virtual double calculate_tick_damage( result_e, double power, double multiplier );
+  virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
+                                            double spell_power, double multiplier, player_t* target );
+  virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
   virtual double calculate_weapon_damage( double attack_power );
   virtual double armor();
   virtual double resistance();

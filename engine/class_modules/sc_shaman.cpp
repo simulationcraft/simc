@@ -568,10 +568,10 @@ struct eoe_execute_event_t : public event_t
                                               ss -> target -> level );
     if ( spell -> result_is_hit( ss -> result ) )
       ss -> result_amount = spell -> calculate_direct_damage( ss -> result, 0,
-                                                              ss -> target -> level,
                                                               ss -> attack_power,
                                                               ss -> spell_power,
-                                                              ss -> composite_da_multiplier() );
+                                                              ss -> composite_da_multiplier(),
+                                                              ss -> target );
 
     spell -> eoe_stats -> add_execute( timespan_t::zero() );
     spell -> schedule_travel_s( ss );
@@ -3051,7 +3051,7 @@ struct shaman_totem_t : public shaman_spell_t
 
         if ( result_is_hit() )
         {
-          direct_dmg = calculate_direct_damage( result, t + 1, tl[ t ] -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
+          direct_dmg = calculate_direct_damage( result, t + 1, total_attack_power(), total_spell_power(), total_dd_multiplier(), tl[ t ] );
 
           if ( direct_dmg > 0 )
           {
@@ -3077,7 +3077,7 @@ struct shaman_totem_t : public shaman_spell_t
 
       if ( result_is_hit() )
       {
-        direct_dmg = calculate_direct_damage( result, 0, target -> level, total_attack_power(), total_spell_power(), total_dd_multiplier() );
+        direct_dmg = calculate_direct_damage( result, 0, total_attack_power(), total_spell_power(), total_dd_multiplier(), target );
 
         if ( direct_dmg > 0 )
         {
