@@ -4307,6 +4307,17 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
     };
     return new ember_react_expr_t( *this );
   }
+  else if ( name_str == "target_haunt_remains" )
+  {
+    struct target_haunt_remains_expr_t : public expr_t
+    {
+      warlock_spell_t& action;
+      target_haunt_remains_expr_t( warlock_spell_t& a ) :
+        expr_t( "target_haunt_remains" ), action( a ) { }
+      virtual double evaluate() { return action.td( action.target ) -> debuffs_haunt -> remains().total_seconds(); }
+    };
+    return new target_haunt_remains_expr_t( *(debug_cast<warlock_spell_t*>( a )) );
+  }
   else
   {
     return player_t::create_expression( a, name_str );
