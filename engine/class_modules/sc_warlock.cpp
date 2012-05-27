@@ -3189,7 +3189,7 @@ struct soul_swap_t : public warlock_spell_t
     {
       if ( target == p() -> soul_swap_state.target ) return false;
     }
-    else
+    else if ( ! p() -> buffs.soulburn -> check() )
     {
       if ( ! td( target ) -> dots_agony               -> ticking
         && ! td( target ) -> dots_corruption          -> ticking
