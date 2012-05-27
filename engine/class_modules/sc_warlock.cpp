@@ -3644,6 +3644,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
+  else if ( name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
@@ -4000,6 +4001,8 @@ void warlock_t::init_actions()
     case WARLOCK_AFFLICTION:
       add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
       add_action( "Haunt",                 "if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time" );
+      add_action( "Soulburn",              "if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
+      add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Agony",                 "if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Unstable Affliction",   "if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );

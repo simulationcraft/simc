@@ -24,6 +24,8 @@ actions+=/run_action_list,name=aoe,if=num_targets>1
 actions+=/summon_doomguard
 actions+=/drain_soul,if=soul_shard=0,interrupt_if=soul_shard!=0
 actions+=/haunt,if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time
+actions+=/soulburn,if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking
+actions+=/soul_swap,if=buff.soulburn.up
 actions+=/agony,if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react
 actions+=/corruption,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/unstable_affliction,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
