@@ -621,6 +621,16 @@ struct lash_of_pain_t : public warlock_pet_spell_t
 };
 
 
+struct whiplash_t : public warlock_pet_spell_t
+{
+  whiplash_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( p, "Whiplash" )
+  {
+    aoe = -1;
+  }
+};
+
+
 struct torment_t : public warlock_pet_spell_t
 {
   torment_t( warlock_pet_t* p ) :
@@ -969,6 +979,7 @@ struct succubus_pet_t : public warlock_main_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
+    if ( name == "whiplash" )     return new     whiplash_t( this );
 
     return warlock_main_pet_t::create_action( name, options_str );
   }
@@ -1628,10 +1639,11 @@ struct drain_life_t : public warlock_spell_t
   drain_life_t( warlock_t* p ) :
     warlock_spell_t( p, "Drain Life" ), heal( 0 )
   {
-    channeled    = true;
-    hasted_ticks = false;
-    may_crit     = false;
-    generate_fury = 10;
+    channeled      = true;
+    hasted_ticks   = false;
+    may_crit       = false;
+    tick_power_mod = 0.334; // from tooltip
+    generate_fury  = 10;
 
     heal = new drain_life_heal_t( p );
   }
@@ -3193,9 +3205,13 @@ public:
 
 struct summon_main_pet_t : public summon_pet_t
 {
+  cooldown_t* soulburn_cooldown;
+
   summon_main_pet_t( const char* n, warlock_t* p, const char* sname ) :
-    summon_pet_t( n, p, sname )
-  { }
+    summon_pet_t( n, p, sname ), soulburn_cooldown( p -> get_cooldown( "soulburn_summon_pet" ) )
+  {
+    soulburn_cooldown -> duration = timespan_t::from_seconds( 60 );
+  }
 
   virtual void schedule_execute()
   {
@@ -3213,12 +3229,15 @@ struct summon_main_pet_t : public summon_pet_t
     if ( p() -> pets.active == pet )
       return false;
 
+    if ( p() -> buffs.soulburn -> check() && soulburn_cooldown -> remains() > timespan_t::zero() )
+      return false;
+
     return summon_pet_t::ready();
   }
 
   virtual timespan_t execute_time()
   {
-    if ( p() -> buffs.soulburn -> up() )
+    if ( p() -> buffs.soulburn -> check() )
       return timespan_t::zero();
 
     return warlock_spell_t::execute_time();
@@ -3230,8 +3249,11 @@ struct summon_main_pet_t : public summon_pet_t
 
     p() -> pets.active = pet;
 
-    if ( p() -> buffs.soulburn -> check() )
+    if ( p() -> buffs.soulburn -> up() )
+    {
+      soulburn_cooldown -> start();
       p() -> buffs.soulburn -> expire();
+    }
 
     if ( p() -> buffs.grimoire_of_sacrifice -> check() )
       p() -> buffs.grimoire_of_sacrifice -> expire();
