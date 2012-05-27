@@ -187,6 +187,7 @@ struct warlock_t : public player_t
     const spell_data_t* everlasting_affliction;
     const spell_data_t* soul_shards;
     const spell_data_t* burning_embers;
+    const spell_data_t* soul_swap;
   } glyphs;
 
   struct soul_swap_state_t
@@ -195,6 +196,7 @@ struct warlock_t : public player_t
     int agony;
     bool corruption;
     bool unstable_affliction;
+    bool seed_of_corruption;
   } soul_swap_state;
 
   struct meta_cost_event_t : event_t
@@ -2743,101 +2745,6 @@ struct fire_and_brimstone_t : public warlock_spell_t
 };
 
 
-struct soul_swap_t : public warlock_spell_t
-{
-  agony_t* agony;
-  corruption_t* corruption;
-  unstable_affliction_t* unstable_affliction;
-
-  soul_swap_t( warlock_t* p ) :
-    warlock_spell_t( p, "Soul Swap" ), 
-      agony( new agony_t( p ) ), 
-      corruption( new corruption_t( p ) ), 
-      unstable_affliction( new unstable_affliction_t( p ) )
-  {
-    agony               -> background = true;
-    agony               -> dual       = true;
-    agony               -> may_miss   = false;
-    corruption          -> background = true;
-    corruption          -> dual       = true;
-    corruption          -> may_miss   = false;
-    unstable_affliction -> background = true;
-    unstable_affliction -> dual       = true;
-    unstable_affliction -> may_miss   = false;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    if ( p() -> buffs.soul_swap -> up() )
-    {
-      if ( target == p() -> soul_swap_state.target ) return;
-
-      p() -> buffs.soul_swap -> expire();
-
-      if ( p() -> soul_swap_state.agony > 0 )
-      {
-        agony -> target = target;
-        agony -> execute();
-        td( target ) -> agony_stack = p() -> soul_swap_state.agony;
-      }
-
-      if ( p() -> soul_swap_state.corruption )
-      {
-        corruption -> target = target;
-        corruption -> execute();
-      }
-      
-      if ( p() -> soul_swap_state.unstable_affliction )
-      {
-        unstable_affliction -> target = target;
-        unstable_affliction -> execute();
-      }
-    }
-    else if ( p() -> buffs.soulburn -> up() )
-    {
-      p() -> buffs.soulburn -> expire();
-
-      agony -> target = target;
-      agony -> execute();
-
-      corruption -> target = target;
-      corruption -> execute();
-
-      unstable_affliction -> target = target;
-      unstable_affliction -> execute();
-    }
-    else 
-    {
-      p() -> buffs.soul_swap -> trigger();
-
-      p() -> soul_swap_state.target              = target;
-      p() -> soul_swap_state.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
-      p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking > 0;
-      p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking > 0;
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.soul_swap -> check() )
-    {
-      if ( target == p() -> soul_swap_state.target ) return false;
-    }
-    else
-    {
-      if ( ! td( target ) -> dots_agony               -> ticking
-        && ! td( target ) -> dots_corruption          -> ticking
-        && ! td( target ) -> dots_unstable_affliction -> ticking )
-        return false;
-    }
-
-    return warlock_spell_t::ready();
-  }
-};
-
-
 // AOE SPELLS
 
 struct seed_of_corruption_aoe_t : public warlock_spell_t
@@ -3152,6 +3059,140 @@ struct carrion_swarm_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
+  }
+};
+
+
+// SOUL SWAP
+
+struct soul_swap_t : public warlock_spell_t
+{
+  agony_t* agony;
+  corruption_t* corruption;
+  unstable_affliction_t* unstable_affliction;
+  seed_of_corruption_t* seed_of_corruption;
+
+  cooldown_t* glyph_cooldown;
+
+  soul_swap_t( warlock_t* p ) :
+    warlock_spell_t( p, "Soul Swap" ), 
+      agony( new agony_t( p ) ), 
+      corruption( new corruption_t( p ) ), 
+      unstable_affliction( new unstable_affliction_t( p ) ),
+      seed_of_corruption( new seed_of_corruption_t( p ) ),
+      glyph_cooldown( p -> get_cooldown( "glyphed_soul_swap" ) )
+  {
+    agony               -> background = true;
+    agony               -> dual       = true;
+    corruption          -> background = true;
+    corruption          -> dual       = true;
+    unstable_affliction -> background = true;
+    unstable_affliction -> dual       = true;
+    seed_of_corruption  -> background = true;
+    seed_of_corruption  -> dual       = true;
+    
+    if ( p -> glyphs.soul_swap -> ok() )
+      glyph_cooldown -> duration = p -> glyphs.soul_swap -> effectN( 2 ).time_value();
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> buffs.soul_swap -> up() )
+    {
+      if ( target == p() -> soul_swap_state.target ) return;
+
+      p() -> buffs.soul_swap -> expire();
+
+      if ( p() -> soul_swap_state.agony > 0 )
+      {
+        agony -> target = target;
+        agony -> execute();
+        td( target ) -> agony_stack = p() -> soul_swap_state.agony;
+      }
+      if ( p() -> soul_swap_state.corruption )
+      {
+        corruption -> target = target;
+        corruption -> execute();
+      }
+      if ( p() -> soul_swap_state.unstable_affliction )
+      {
+        unstable_affliction -> target = target;
+        unstable_affliction -> execute();
+      }
+      if ( p() -> soul_swap_state.seed_of_corruption )
+      {
+        seed_of_corruption -> target = target;
+        seed_of_corruption -> execute();
+      }
+    }
+    else if ( p() -> buffs.soulburn -> up() )
+    {
+      p() -> buffs.soulburn -> expire();
+
+      agony -> target = target;
+      agony -> execute();
+
+      corruption -> target = target;
+      corruption -> execute();
+
+      unstable_affliction -> target = target;
+      unstable_affliction -> execute();
+    }
+    else 
+    {
+      p() -> buffs.soul_swap -> trigger();
+
+      p() -> soul_swap_state.target              = target;
+
+      p() -> soul_swap_state.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
+      p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking > 0;
+      p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking > 0;
+
+      // Seed of Corruption is only soul swapped if it's not soulburned
+      if ( td( target ) -> dots_seed_of_corruption -> ticking
+        && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
+        p() -> soul_swap_state.seed_of_corruption = true;
+      else
+        p() -> soul_swap_state.seed_of_corruption = false;
+
+      if ( p() -> glyphs.soul_swap -> ok() )
+      {
+        glyph_cooldown -> start();
+      }
+      else
+      {
+        td( target ) -> dots_agony -> cancel();
+        td( target ) -> dots_corruption -> cancel();
+        td( target ) -> dots_unstable_affliction -> cancel();
+
+        // Seed of Corruption is only soul swapped if it's not soulburned
+        if ( td( target ) -> dots_seed_of_corruption -> ticking
+          && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
+          td( target ) -> dots_seed_of_corruption -> cancel();
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buffs.soul_swap -> check() )
+    {
+      if ( target == p() -> soul_swap_state.target ) return false;
+    }
+    else
+    {
+      if ( ! td( target ) -> dots_agony               -> ticking
+        && ! td( target ) -> dots_corruption          -> ticking
+        && ! td( target ) -> dots_unstable_affliction -> ticking
+        && ! td( target ) -> dots_seed_of_corruption  -> ticking )
+        return false;
+      if ( glyph_cooldown -> remains() > timespan_t::zero() )
+        return false;
+    }
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -3792,6 +3833,7 @@ void warlock_t::init_spells()
   glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
   glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
+  glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
 }
 
 
