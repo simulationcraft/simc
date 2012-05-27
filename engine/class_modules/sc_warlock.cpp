@@ -1172,6 +1172,18 @@ public:
     if ( result_is_hit( execute_state -> result ) && p() -> primary_tree() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
+
+    if ( harmful && ! background && aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != target )
+    {
+      p() -> buffs.havoc -> decrement();
+      player_t* saved_target = target;
+      target = p() -> havoc_target;
+      bool saved_dual = dual;
+      dual = true;
+      spell_t::execute();
+      dual = saved_dual;
+      target = saved_target;
+    }
   }
 
   virtual bool ready()
@@ -1199,13 +1211,6 @@ public:
     spell_t::impact_s( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
-
-    if ( aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != s -> target )
-    {
-      s -> target = p() -> havoc_target;
-      p() -> buffs.havoc -> decrement();
-      impact_s( s );
-    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1433,12 +1438,8 @@ struct havoc_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.havoc -> trigger( 3 );
-      p() -> havoc_target = target;
-    }
-
+    p() -> buffs.havoc -> trigger( 3 );
+    p() -> havoc_target = target;
   }
 };
 
