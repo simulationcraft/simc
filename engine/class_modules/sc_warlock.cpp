@@ -54,6 +54,7 @@ struct warlock_t : public player_t
   struct pets_t
   {
     pet_t* active;
+    pet_t* last;
     pet_t* wild_imps[ WILD_IMP_LIMIT ];
   } pets;
 
@@ -3295,7 +3296,7 @@ struct summon_main_pet_t : public summon_pet_t
   {
     summon_pet_t::execute();
 
-    p() -> pets.active = pet;
+    p() -> pets.active = p() -> pets.last = pet;
 
     if ( p() -> buffs.soulburn -> up() )
     {
@@ -3307,6 +3308,44 @@ struct summon_main_pet_t : public summon_pet_t
       p() -> buffs.grimoire_of_sacrifice -> expire();
   }
 };
+
+
+struct flames_of_xoroth_t : public warlock_spell_t
+{
+  gain_t* ember_gain;
+
+  flames_of_xoroth_t( warlock_t* p ) :
+    warlock_spell_t( p, "Flames of Xoroth" ), ember_gain( p -> get_gain( "flames_of_xoroth" ) )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    bool gain_ember = false;
+    if ( p() -> buffs.grimoire_of_sacrifice -> check() )
+    {
+      p() -> buffs.grimoire_of_sacrifice -> expire();
+      gain_ember = true;
+    }
+    else if ( p() -> pets.active )
+    {
+      p() -> pets.active -> dismiss();
+      p() -> pets.active = 0; 
+      gain_ember = true;
+    }
+    else if ( p() -> pets.last )
+    {
+      p() -> pets.last -> summon();
+      p() -> pets.active = p() -> pets.last;
+    }
+
+    warlock_spell_t::execute();
+
+    if ( gain_ember ) p() -> resource_gain( RESOURCE_BURNING_EMBER, 10, ember_gain );
+  }
+};
+
 
 struct summon_felhunter_t : public summon_main_pet_t
 {
@@ -3525,6 +3564,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       warlock_spell_t::execute();
 
       p() -> pets.active -> dismiss();
+      p() -> pets.active = 0;
       p() -> buffs.grimoire_of_sacrifice -> trigger( 2 );
       decrement_event = new ( sim ) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
     }
@@ -3693,6 +3733,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( name == "soul_swap"             ) a = new             soul_swap_t( this );
+  else if ( name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
