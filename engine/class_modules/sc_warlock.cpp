@@ -4084,8 +4084,13 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-    // FIXME: Make this spec-dependent once demo and destro lists are more flexible
     int multidot_max = 3;
+
+    switch ( primary_tree() ) {
+    case WARLOCK_AFFLICTION:  multidot_max = 3; break;
+    case WARLOCK_DESTRUCTION: multidot_max = 2; break;
+    case WARLOCK_DEMONOLOGY:  multidot_max = 5; break;
+    }
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 
@@ -4127,15 +4132,16 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
+      add_action( "Havoc",                 "target_number=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
       add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
-      add_action( "Immolate",              "if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight&mana.pct>=70" );
+      add_action( "Immolate",              "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
+      add_action( "Rain of Fire",          "if=!ticking&!in_flight&(mana.pct>=70|num_targets>1)" );
       if ( glyphs.everlasting_affliction -> ok() )
-        add_action( "Immolate",            "if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
-      add_action( "Incinerate" );
-      add_action( "Fel Flame",             "moving=1" );
+        add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
+      add_action( "Incinerate"             "if=buff.backdraft.up" );
+      add_action( "Fel Flame" );
 
       // AoE action list
       add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                 "aoe" );
@@ -4145,6 +4151,8 @@ void warlock_t::init_actions()
       add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                          "aoe" );
       add_action( "Immolate",              "cycle_targets=1,if=!ticking",                            "aoe" );
       add_action( "Conflagrate",           "",                                                       "aoe" );
+      add_action( "Incinerate",            "if=mana.pct>=50&buff.backdraft.up",                      "aoe" );
+      add_action( "Fel Flame",             "cycle_targets=1,if=mana.pct>=50&!in_flight_to_target",   "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:
@@ -4155,12 +4163,12 @@ void warlock_t::init_actions()
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
-      add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( spec.doom,               "if=(!ticking|remains<tick_time)&target.time_to_die>=12&miss_react" );
+      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=12&miss_react" );
       add_action( "Hand of Gul'dan",       "if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       if ( glyphs.everlasting_affliction -> ok() )
-        add_action( spec.doom,             "if=demonic_fury<100&remains<40&miss_react" );
+        add_action( spec.doom,             "cycle_targets=1,if=demonic_fury<100&remains<40&miss_react" );
       add_action( spec.demonic_slash );
       add_action( "Life Tap",              "if=mana.pct<80" );
       add_action( "Shadow Bolt" );
