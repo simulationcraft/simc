@@ -36,8 +36,8 @@ struct warlock_td_t : public actor_pair_t
   void reset()
   {
     ds_started_below_20 = false;
-    shadowflame_stack = 0;
-    agony_stack = 0;
+    shadowflame_stack = 1;
+    agony_stack = 1;
     soc_trigger = 0;
   }
 };
@@ -315,7 +315,7 @@ struct warlock_t : public player_t
   {
     switch ( primary_tree() )
     {
-    case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards";
+    case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards/soul_swap";
     case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm";
     case WARLOCK_DESTRUCTION: return "everlasting_affliction/conflagrate/burning_embers";
     default: break;
@@ -326,7 +326,7 @@ struct warlock_t : public player_t
 };
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
-  : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 0 ), agony_stack( 0 ), soc_trigger( 0 )
+  : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 1 ), agony_stack( 1 ), soc_trigger( 0 )
 {
   dots_corruption          = target -> get_dot( "corruption", p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", p );
@@ -1380,8 +1380,8 @@ struct agony_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( td( d -> state -> target ) -> agony_stack < 10 ) td( d -> state -> target ) -> agony_stack++;
     warlock_spell_t::tick( d );
+    if ( td( d -> state -> target ) -> agony_stack < 10 ) td( d -> state -> target ) -> agony_stack++;
   }
 
   virtual double calculate_tick_damage( result_e r, double p, double m, player_t* t )
@@ -1556,8 +1556,9 @@ struct shadowburn_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    if ( target -> health_percentage() >= 20 )
-      return false;
+    bool r = warlock_spell_t::ready();
+
+    if ( target -> health_percentage() >= 20 ) r = false;
 
     return warlock_spell_t::ready();
   }
@@ -3185,9 +3186,11 @@ struct soul_swap_t : public warlock_spell_t
 
   virtual bool ready()
   {
+    bool r = warlock_spell_t::ready();
+
     if ( p() -> buffs.soul_swap -> check() )
     {
-      if ( target == p() -> soul_swap_state.target ) return false;
+      if ( target == p() -> soul_swap_state.target ) r = false;
     }
     else if ( ! p() -> buffs.soulburn -> check() )
     {
@@ -3195,12 +3198,12 @@ struct soul_swap_t : public warlock_spell_t
         && ! td( target ) -> dots_corruption          -> ticking
         && ! td( target ) -> dots_unstable_affliction -> ticking
         && ! td( target ) -> dots_seed_of_corruption  -> ticking )
-        return false;
+        r = false;
       if ( glyph_cooldown -> remains() > timespan_t::zero() )
-        return false;
+        r = false;
     }
 
-    return warlock_spell_t::ready();
+    return r;
   }
 };
 
@@ -4081,27 +4084,33 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-    action_list_str += "/run_action_list,name=aoe,if=num_targets>1";
+    // FIXME: Make this spec-dependent once demo and destro lists are more flexible
+    int multidot_max = 3;
+
+    action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 
     add_action( "Summon Doomguard" );
-    add_action( "Summon Infernal", "", "aoe" );
+    add_action( "Summon Doomguard", "if=num_targets<7", "aoe" );
+    add_action( "Summon Infernal", "if=num_targets>=7", "aoe" );
 
     switch ( primary_tree() )
     {
 
     case WARLOCK_AFFLICTION:
       add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
-      add_action( "Haunt",                 "if=!in_flight&target.debuff.haunt.remains<cast_time+travel_time" );
+      add_action( "Haunt",                 "if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time" );
       add_action( "Soulburn",              "if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
-      add_action( "Agony",                 "if=(!ticking|remains<=action.drain_soul.new_tick_time)&target.time_to_die>=8&miss_react" );
-      add_action( "Corruption",            "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( "Unstable Affliction",   "if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
+      add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time&soul_shard>1" );
+      add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
+      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
       if ( glyphs.everlasting_affliction -> ok() )
       {
-        add_action( "Agony",               "if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react" );
-        add_action( "Corruption",          "if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
-        add_action( "Unstable Affliction", "if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
+        add_action( "Agony",               "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react" );
+        add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
+        add_action( "Unstable Affliction", "cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
       }
       add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
       add_action( "Life Tap",              "if=mana.pct<=35" );
