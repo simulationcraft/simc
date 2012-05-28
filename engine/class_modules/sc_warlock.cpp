@@ -1560,7 +1560,7 @@ struct shadowburn_t : public warlock_spell_t
 
     if ( target -> health_percentage() >= 20 ) r = false;
 
-    return warlock_spell_t::ready();
+    return r;
   }
 };
 
