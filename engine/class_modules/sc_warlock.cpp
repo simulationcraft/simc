@@ -4140,7 +4140,7 @@ void warlock_t::init_actions()
       add_action( "Rain of Fire",          "if=!ticking&!in_flight&(mana.pct>=70|num_targets>1)" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
-      add_action( "Incinerate",             "if=buff.backdraft.up" );
+      add_action( "Incinerate",            "if=buff.backdraft.up" );
       add_action( "Fel Flame" );
 
       // AoE action list
