@@ -137,6 +137,7 @@ action_t::action_t( action_e       ty,
   chain                          = 0;
   cycle_targets                  = 0;
   max_cycle_targets              = 0;
+  target_number                  = 0;
   round_base_dmg                 = true;
   class_flag1                    = false;
   if_expr_str.clear();
@@ -389,6 +390,7 @@ void action_t::parse_options( option_t*          options,
     { "chain",                  OPT_BOOL,   &chain                 },
     { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
     { "max_cycle_targets",      OPT_INT,    &max_cycle_targets     },
+    { "target_number",          OPT_INT,    &target_number         },
     { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
     { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
     { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
@@ -1310,10 +1312,14 @@ bool action_t::ready()
   if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
-  if ( cycle_targets )
+  if ( cycle_targets || target_number )
   {
-    player_t* orig_target = target;
+    player_t* saved_target  = target;
+    int saved_cycle_targets = cycle_targets;
+    int saved_target_number = target_number;
     cycle_targets = 0;
+    target_number = 0;
+    bool found_ready = false;
 
     std::vector< player_t* > tl;
 
@@ -1321,18 +1327,28 @@ bool action_t::ready()
     if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < total_targets ) )
       total_targets = max_cycle_targets;
 
+    int j = 1;
+
     for ( size_t i = 0; i < total_targets; i++ )
     {
-      target = tl[ i ];
-      if ( ready() )
+      int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
+      if ( saved_target_number == 0 || saved_target_number == this_target_number )
       {
-        cycle_targets = 1;
-        return true;
+        target = tl[ i ];
+        if ( ready() )
+        {
+          found_ready = true;
+          break;
+        }
       }
     }
 
-    target = orig_target;
-    cycle_targets = 1;
+    cycle_targets = saved_cycle_targets;
+    target_number = saved_target_number;
+
+    if ( found_ready) return true;
+
+    target = saved_target;
   }
 
   if ( if_expr && ! if_expr -> success() )
@@ -1373,6 +1389,12 @@ void action_t::init()
       sim -> errorf( "Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
       sim -> cancel();
     }
+  }
+
+  if ( cycle_targets && target_number )
+  {
+    target_number = 0;
+    sim -> errorf( "Player %s trying to use both cycle_targets and target_number for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
   if ( ! if_expr_str.empty() && ! is_dtr_action )

@@ -3970,7 +3970,7 @@ struct action_t
   std::vector<event_t*> travel_events;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
-  int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets;
+  int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
   bool round_base_dmg;
   bool class_flag1;
   std::string if_expr_str;
