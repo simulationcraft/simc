@@ -4481,7 +4481,7 @@ struct arcane_torrent_t : public action_t
   double gain;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_spell( "Arcane Torrent" ) ),
+    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
     parse_options( NULL, options_str );
@@ -4519,7 +4519,7 @@ struct berserking_t : public action_t
   berserking_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "berserking", p, p -> find_racial_spell( "Berserking" ) )
   {
-    check_race( RACE_TROLL );
+    harmful = false;
     parse_options( NULL, options_str );
   }
 
@@ -4538,8 +4538,9 @@ struct berserking_t : public action_t
 struct blood_fury_t : public action_t
 {
   blood_fury_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "blood_fury", p, p -> find_spell( "Blood Fury" ) )
+    action_t( ACTION_OTHER, "blood_fury", p, p -> find_racial_spell( "Blood Fury" ) )
   {
+    harmful = false;
     parse_options( NULL, options_str );
   }
 
@@ -4584,6 +4585,7 @@ struct stoneform_t : public action_t
   stoneform_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
   {
+    harmful = false;
     parse_options( NULL, options_str );
   }
 
