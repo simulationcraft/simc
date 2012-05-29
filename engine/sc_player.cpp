@@ -3202,7 +3202,8 @@ action_t* player_t::execute_action()
   {
     action -> schedule_execute();
     iteration_executed_foreground_actions++;
-    if ( action -> marker && sim -> current_iteration == 0 && restore_action_list == 0 ) report_information.action_sequence += action -> marker;
+    if ( action -> marker && sim -> current_iteration == 0 )
+      report_information.action_sequence.push_back( new action_sequence_data_t( action, action -> target, sim -> current_time ) );
     if ( ! action -> label_str.empty() )
       action_map[ action -> label_str ] += 1;
   }

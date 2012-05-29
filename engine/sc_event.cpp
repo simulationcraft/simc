@@ -187,7 +187,8 @@ void player_gcd_event_t::execute()
 
       a -> execute();
       player -> iteration_executed_foreground_actions++;
-      if ( a -> marker ) player -> report_information.action_sequence += a -> marker;
+      if ( a -> marker && sim -> current_iteration == 0 )
+        player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time ) );
       if ( ! a -> label_str.empty() )
         player -> action_map[ a -> label_str ] += 1;
     }
