@@ -4090,6 +4090,7 @@ void warlock_t::init_actions()
     case WARLOCK_AFFLICTION:  multidot_max = 3; break;
     case WARLOCK_DESTRUCTION: multidot_max = 2; break;
     case WARLOCK_DEMONOLOGY:  multidot_max = 5; break;
+    default: break;
     }
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
