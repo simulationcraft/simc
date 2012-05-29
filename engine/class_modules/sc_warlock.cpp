@@ -3923,7 +3923,7 @@ void warlock_t::init_buffs()
   buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 ); // FIXME: May be a bug, not sure
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
-  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).max_stack( 99 ); // FIXME: May be a bug, not sure
+  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 ); // FIXME: May be a bug, not sure
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
@@ -4156,21 +4156,19 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DEMONOLOGY:
-      add_action( "Metamorphosis",         "if=(demonic_fury>=500&action.hand_of_guldan.charges=0)|demonic_fury>=target.time_to_die*8" );
+      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<tick_time|(remains<=60&buff.dark_soul.up&buff.metamorphosis.up))&target.time_to_die>=30&miss_react" );
+      add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/cancel_metamorphosis,if=action.hand_of_guldan.charges=2";
+        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
-      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=12&miss_react" );
       add_action( "Hand of Gul'dan",       "if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
-      if ( glyphs.everlasting_affliction -> ok() )
-        add_action( spec.doom,             "cycle_targets=1,if=demonic_fury<100&remains<40&miss_react" );
       add_action( spec.demonic_slash );
-      add_action( "Life Tap",              "if=mana.pct<80" );
+      add_action( "Life Tap",              "if=mana.pct<50" );
       add_action( "Shadow Bolt" );
       add_action( "Void Ray",              "moving=1" );
       add_action( "Fel Flame",             "moving=1" );
