@@ -2910,7 +2910,6 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_crit      = false;
     tick_may_crit = true;
 
     if ( ! dtr && player -> has_dtr )
