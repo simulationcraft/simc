@@ -198,7 +198,10 @@ double pet_t::composite_player_multiplier( school_e school, action_t* a )
   double m = player_t::composite_player_multiplier( school, a );
 
   // FIXME: check if Guardian Pets benefit from it or not.
-  // FIXME: Commenting this out for now, testing for warlocks suggests it doesn't currently work in MoP
+  // FIXME: This is no longer a universal mechanic for all pets; it works differently for each class
+  //        Testing on beta as of 2012/05/30 reveals it is implemented as a spell/attack
+  //        power multiplier for warlock pets and a player multiplier for hunter pets
+  // FIXME: This will need reimplementation individually in each class module, after testing
   /*
   if ( owner -> race == RACE_ORC )
   {

@@ -391,6 +391,8 @@ struct warlock_pet_t : public pet_t
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
+  virtual void init_spell();
+  virtual void init_attack();
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
@@ -772,17 +774,30 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
 
   main_hand_weapon.type = WEAPON_BEAST;
   // FIXME: This is only the level 85 weapon damage - needs testing to find out how it scales
-  main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = 986.0; 
+  main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = 962.0; 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
 }
 
 void warlock_pet_t::init_base()
 {
+  pet_t::init_base();
+
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
 
   stamina_per_owner = 0.6496; // level invariant, not tested for MoP
+}
+
+void warlock_pet_t::init_spell()
+{
+  pet_t::init_spell();
+  if ( owner -> race == RACE_ORC) initial.spell_power_multiplier *= 1.05;
+}
+
+void warlock_pet_t::init_attack()
+{
+  pet_t::init_attack();
+  if ( owner -> race == RACE_ORC) initial.attack_power_multiplier *= 1.05;
 }
 
 double warlock_pet_t::energy_regen_per_second()
