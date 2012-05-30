@@ -3116,6 +3116,9 @@ struct soul_swap_t : public warlock_spell_t
 
       p() -> buffs.soul_swap -> expire();
 
+      if ( p() -> glyphs.soul_swap -> ok() )
+        glyph_cooldown -> start();
+
       if ( p() -> soul_swap_state.agony > 0 )
       {
         agony -> target = target;
@@ -3168,11 +3171,7 @@ struct soul_swap_t : public warlock_spell_t
       else
         p() -> soul_swap_state.seed_of_corruption = false;
 
-      if ( p() -> glyphs.soul_swap -> ok() )
-      {
-        glyph_cooldown -> start();
-      }
-      else
+      if ( ! p() -> glyphs.soul_swap -> ok() )
       {
         td( target ) -> dots_agony -> cancel();
         td( target ) -> dots_corruption -> cancel();
@@ -3194,14 +3193,16 @@ struct soul_swap_t : public warlock_spell_t
     {
       if ( target == p() -> soul_swap_state.target ) r = false;
     }
+    else if ( glyph_cooldown -> remains() > timespan_t::zero() )
+    {
+        r = false;
+    }
     else if ( ! p() -> buffs.soulburn -> check() )
     {
       if ( ! td( target ) -> dots_agony               -> ticking
         && ! td( target ) -> dots_corruption          -> ticking
         && ! td( target ) -> dots_unstable_affliction -> ticking
         && ! td( target ) -> dots_seed_of_corruption  -> ticking )
-        r = false;
-      if ( glyph_cooldown -> remains() > timespan_t::zero() )
         r = false;
     }
 
