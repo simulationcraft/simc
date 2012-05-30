@@ -771,11 +771,6 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
 {
   ap_per_owner_sp = 3.5;
   owner_fury_gain = owner -> get_gain( pet_name );
-
-  main_hand_weapon.type = WEAPON_BEAST;
-  // FIXME: This is only the level 85 weapon damage - needs testing to find out how it scales
-  main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = 962.0; 
-  main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 }
 
 void warlock_pet_t::init_base()
@@ -786,6 +781,15 @@ void warlock_pet_t::init_base()
   base_energy_regen_per_second = 10;
 
   stamina_per_owner = 0.6496; // level invariant, not tested for MoP
+
+  main_hand_weapon.type = WEAPON_BEAST;
+
+  // FIXME: This is only the level 85 weapon damage - needs testing to find out how it scales
+  double dmg = 962.5;
+  if ( owner -> race == RACE_ORC ) dmg *= 1.05;
+  main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
+
+  main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 }
 
 void warlock_pet_t::init_spell()
@@ -847,6 +851,7 @@ double warlock_pet_t::composite_attack_haste()
 double warlock_pet_t::composite_spell_power( school_e school )
 {
   double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets, especially at level 90.
+  if ( owner -> race == RACE_ORC ) sp /= 1.05; // The hidden base spell power is not affected by the orc racial
   sp += owner -> composite_spell_power( school );
   return sp;
 }
