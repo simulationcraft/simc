@@ -119,6 +119,7 @@ struct warlock_t : public player_t
     // General
     const spell_data_t* dark_soul;
     const spell_data_t* nethermancy;
+    const spell_data_t* fel_armor;
 
     // Affliction
     const spell_data_t* nightfall;
@@ -287,6 +288,7 @@ struct warlock_t : public player_t
   virtual double composite_spell_haste();
   virtual double composite_mastery();
   virtual double composite_mp5();
+  virtual double composite_armor();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
 
@@ -3677,10 +3679,16 @@ double warlock_t::composite_mp5()
 }
 
 
-double warlock_t::matching_gear_multiplier( attribute_e attr )
+double warlock_t::composite_armor()
 {
+  return player_t::composite_armor() + spec.fel_armor -> effectN( 2 ).base_value();
+}
+
+
+double warlock_t::matching_gear_multiplier( attribute_e attr )
+{ 
   if ( attr == ATTR_INTELLECT )
-    return 0.05;
+    return spec.nethermancy -> effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -3820,7 +3828,8 @@ void warlock_t::init_spells()
   // Spec spells =========================================================
 
   // General
-  spec.nethermancy = find_specialization_spell( "Nethermancy" );
+  spec.nethermancy = find_spell( 86091 );
+  spec.fel_armor   = find_spell( 104938 );
 
   spec.dark_soul = find_specialization_spell( "Dark Soul: Instability", "dark_soul" );
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge", "dark_soul" );
@@ -3895,6 +3904,8 @@ void warlock_t::init_base()
   base.attack_power = -10;
   initial.attack_power_per_strength = 2.0;
   initial.spell_power_per_intellect = 1.0;
+
+  initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
