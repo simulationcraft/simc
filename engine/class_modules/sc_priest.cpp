@@ -547,8 +547,8 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
 
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 360;
-    main_hand_weapon.max_dmg    = 433;
+    main_hand_weapon.min_dmg    = util::ability_rank( owner -> level, 360, 85, 0, 1 );
+    main_hand_weapon.max_dmg    = util::ability_rank( owner -> level, 433, 85, 0, 1 );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
