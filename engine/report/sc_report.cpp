@@ -516,6 +516,15 @@ void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data
   }
   fprintf( file,
            "\t\t\t\t\t\t\t\t</table>\n" );
+
+  if ( data.distribution_created() )
+  {
+    std::string dist_chart = chart::distribution( sim, data.distribution, name, data.mean, data.min, data.max );
+
+    fprintf( file,
+             "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
+             dist_chart.c_str() );
+  }
   fprintf( file,
            "\t\t\t\t\t\t\t\t</td>\n"
            "\t\t\t\t\t\t\t</tr>\n" );

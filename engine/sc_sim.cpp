@@ -1662,7 +1662,7 @@ void sim_t::analyze()
   if ( simulation_length.mean == 0 ) return;
 
 #ifdef TEST_TIMEWHEEL
-  tw_addevent_loop.analyze();
+  tw_addevent_loop.analyze( true, true, true, 50 );
 #endif
 
   // divisor_timeline is necessary because not all iterations go the same length of time
