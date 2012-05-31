@@ -813,9 +813,9 @@ void sim_t::add_event( event_t* e,
   if ( delta_time < timespan_t::zero() )
     delta_time = timespan_t::zero();
 
-  if ( unlikely( delta_time.total_seconds() > wheel_seconds ) )
+  if ( unlikely( delta_time > wheel_time ) )
   {
-    e -> time = current_time + timespan_t::from_seconds( wheel_seconds-1 );
+    e -> time = current_time + wheel_time - timespan_t::from_seconds(1);
     e -> reschedule_time = current_time + delta_time;
   }
   else
@@ -825,7 +825,12 @@ void sim_t::add_event( event_t* e,
 
   if ( e -> time > last_event ) last_event = e -> time;
 
+#ifdef SC_USE_INTEGER_TIME
+  // Hack! Granularity is ignored!
+  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> 5 ) & wheel_mask;
+#else
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
+#endif
 
   event_t** prev = &( timing_wheel[ slice ] );
 
@@ -1234,10 +1239,16 @@ bool sim_t::init()
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
-  if ( wheel_seconds     <  600 ) wheel_seconds     = 1024; // 2^10  Min of 600 to ensure no wrap-around bugs with Water Shield
-  if ( wheel_granularity <=   0 ) wheel_granularity = 32; // 2^5
+  if ( wheel_seconds     < 1024 ) wheel_seconds     = 1024; // 2^10 Min to ensure limited wrap-around
+  if ( wheel_granularity <=   0 ) wheel_granularity = 32;   // 2^5 Time slices per second
 
+  wheel_time = timespan_t::from_seconds( wheel_seconds );
   wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
+
+#ifdef SC_USE_INTEGER_TIME
+  // Hack! Granularity is ignored!
+  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> 5 );
+#endif
 
   // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
   for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 ) { continue; }

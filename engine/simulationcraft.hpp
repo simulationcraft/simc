@@ -118,6 +118,7 @@ namespace std {using namespace tr1; }
 
 // TODO: Integer time is only partially working.
 #define SC_USE_INTEGER_TIME
+// #undef SC_USE_INTEGER_TIME
 
 // Forward Declarations =====================================================
 
@@ -1149,7 +1150,6 @@ class timespan_t
 #else // !SC_USE_INTEGER_TIME
 
   typedef double time_t;
-
   static time_t native_to_milli ( time_t t ) { return t * 1000.0; }
   static double native_to_second( time_t t ) { return t; }
   static double native_to_minute( time_t t ) { return t * ( 1.0 / 60 ); }
@@ -2379,6 +2379,7 @@ public:
   event_t** timing_wheel;
   int    wheel_seconds, wheel_size, wheel_mask, timing_slice;
   double wheel_granularity;
+  timespan_t wheel_time;
 
   // Raid Events
   std::vector<raid_event_t*> raid_events;
