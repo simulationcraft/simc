@@ -118,7 +118,7 @@ namespace std {using namespace tr1; }
 
 // TODO: Integer time is only partially working.
 #define SC_USE_INTEGER_TIME
-// #undef SC_USE_INTEGER_TIME
+#define SC_USE_INTEGER_WHEEL_SHIFT 5
 
 // Forward Declarations =====================================================
 

@@ -825,9 +825,8 @@ void sim_t::add_event( event_t* e,
 
   if ( e -> time > last_event ) last_event = e -> time;
 
-#ifdef SC_USE_INTEGER_TIME
-  // Hack! Granularity is ignored!
-  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> 5 ) & wheel_mask;
+#ifdef SC_USE_INTEGER_WHEEL_SHIFT
+  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT ) & wheel_mask;
 #else
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 #endif
@@ -932,7 +931,11 @@ void sim_t::cancel_events( player_t* p )
 
   if ( debug ) output( "Canceling events for player %s, events to cancel %d", p -> name(), p -> events );
 
+#ifdef SC_USE_INTEGER_WHEEL_SHIFT
+  int end_slice = ( uint32_t ) ( last_event.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT ) & wheel_mask;
+#else
   int end_slice = ( uint32_t ) ( last_event.total_seconds() * wheel_granularity ) & wheel_mask;
+#endif
 
   // Loop only partial wheel, [current_time..last_event], as that's the range where there
   // are events for actors in the sim
@@ -1243,11 +1246,11 @@ bool sim_t::init()
   if ( wheel_granularity <=   0 ) wheel_granularity = 32;   // 2^5 Time slices per second
 
   wheel_time = timespan_t::from_seconds( wheel_seconds );
-  wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 
-#ifdef SC_USE_INTEGER_TIME
-  // Hack! Granularity is ignored!
-  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> 5 );
+#ifdef SC_USE_INTEGER_WHEEL_SHIFT
+  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> SC_USE_INTEGER_WHEEL_SHIFT );
+#else
+  wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
 #endif
 
   // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
