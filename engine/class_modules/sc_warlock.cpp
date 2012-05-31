@@ -2309,6 +2309,7 @@ struct shadowflame_t : public warlock_spell_t
     aoe        = -1;
     background = true;
     generate_fury = 2;
+    may_miss   = false;
   }
 
   virtual timespan_t travel_time()
@@ -2353,6 +2354,7 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
     proc       = true;
     background = true;
     dual       = true;
+    may_miss   = false;
     aoe        = -1;
   }
 
@@ -4213,7 +4215,7 @@ void warlock_t::init_actions()
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
-      add_action( "Hand of Gul'dan",       "if=!in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
+      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.demonic_slash );
       add_action( "Life Tap",              "if=mana.pct<50" );
@@ -4223,11 +4225,15 @@ void warlock_t::init_actions()
 
       // AoE action list
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
-      add_action( "Immolation Aura",       "if=demonic_fury>60*num_targets",                         "aoe" );
+      add_action( "Immolation Aura",       "if=!ticking&demonic_fury>60*num_targets",                "aoe" );
       add_action( find_spell( 603 ),       "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
-      add_action( "Hand of Gul'dan",       "if=!in_flight",                                          "aoe" );
+      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                       "aoe" );
+
+      if ( find_class_spell( "Metamorphosis" ) -> ok() )
+        get_action_priority_list( "aoe" ) -> action_list_str += "/cancel_metamorphosis";
+
       add_action( "Rain of Fire",          "",                                                       "aoe" );
       add_action( "Life Tap",              "",                                                       "aoe" );
       break;
