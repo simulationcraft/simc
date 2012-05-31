@@ -387,10 +387,12 @@ struct warlock_pet_t : public pet_t
 {
   double ap_per_owner_sp;
   gain_t* owner_fury_gain;
+  action_t* special_action;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
   virtual void init_base();
+  virtual void init_actions();
   virtual void init_spell();
   virtual void init_attack();
   virtual timespan_t available();
@@ -466,7 +468,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
   virtual bool ready()
   {
-    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
+    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
       return false;
 
     return melee_attack_t::ready();
@@ -507,7 +509,7 @@ struct warlock_pet_spell_t : public spell_t
 
   virtual bool ready()
   {
-    if ( current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
+    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
       return false;
 
     return spell_t::ready();
@@ -555,6 +557,13 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     aoe               = -1;
     weapon   = &( p -> main_hand_weapon );
   }
+
+  virtual bool ready()
+  {
+    if ( p() -> special_action -> get_dot() -> ticking ) return false;
+
+    return warlock_pet_melee_attack_t::ready();
+  }
 };
 
 
@@ -581,7 +590,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     callbacks = false;
     harmful   = false;
     tick_zero = true;
-    channeled = true;
     hasted_ticks = false;
     weapon_multiplier = 0;
 
@@ -767,7 +775,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 }
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-  pet_t( sim, owner, pet_name, pt, guardian )
+  pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 )
 {
   ap_per_owner_sp = 3.5;
   owner_fury_gain = owner -> get_gain( pet_name );
@@ -790,6 +798,18 @@ void warlock_pet_t::init_base()
   main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+}
+
+void warlock_pet_t::init_actions()
+{    
+  if ( special_action ) {
+    if ( type == PLAYER_PET )
+      special_action -> background = true;
+    else
+      special_action -> action_list = "default";
+  }
+
+  pet_t::init_actions();
 }
 
 void warlock_pet_t::init_spell()
@@ -922,7 +942,7 @@ struct imp_pet_t : public warlock_main_pet_t
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" ) :
     warlock_main_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/firebolt";
   }
 
@@ -940,8 +960,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" ) :
     warlock_main_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
-    action_list_str += "/snapshot_stats";
-    action_list_str += "/felstorm";
+    action_list_str = "snapshot_stats";
     action_list_str += "/legion_strike";
   }
 
@@ -950,12 +969,12 @@ struct felguard_pet_t : public warlock_main_pet_t
     warlock_main_pet_t::init_base();
 
     main_hand_attack = new felguard_melee_t( this );
+    special_action = new felstorm_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "legion_strike"   ) return new legion_strike_t( this );
-    if ( name == "felstorm"        ) return new      felstorm_t( this );
 
     return warlock_main_pet_t::create_action( name, options_str );
   }
@@ -967,13 +986,13 @@ struct felhunter_pet_t : public warlock_main_pet_t
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ) :
     warlock_main_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/shadow_bite";
   }
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_main_pet_t::init_base();
 
     main_hand_attack = new warlock_pet_melee_t( this );
   }
@@ -992,22 +1011,22 @@ struct succubus_pet_t : public warlock_main_pet_t
   succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" ) :
     warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
   {
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/lash_of_pain";
     ap_per_owner_sp = 1.667;
   }
 
   virtual void init_base()
   {
-    warlock_pet_t::init_base();
+    warlock_main_pet_t::init_base();
 
     main_hand_attack = new warlock_pet_melee_t( this );
+    special_action = new whiplash_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
     if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
-    if ( name == "whiplash" )     return new     whiplash_t( this );
 
     return warlock_main_pet_t::create_action( name, options_str );
   }
@@ -1019,7 +1038,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" ) :
     warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/torment";
   }
 
@@ -1044,7 +1063,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   infernal_pet_t( sim_t* sim, warlock_t* owner ) :
     warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
     ap_per_owner_sp = 0.5;
   }
@@ -1075,7 +1094,7 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   {
     warlock_guardian_pet_t::init_base();
 
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/doom_bolt";
   }
 
@@ -1098,7 +1117,7 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
   {
     warlock_guardian_pet_t::init_base();
 
-    action_list_str += "/snapshot_stats";
+    action_list_str = "snapshot_stats";
     action_list_str += "/firebolt";
 
     resources.base[ RESOURCE_ENERGY ] = 10;
@@ -4118,6 +4137,8 @@ void warlock_t::init_actions()
     case WARLOCK_DEMONOLOGY:  multidot_max = 5; break;
     default: break;
     }
+    
+    if ( primary_tree() == WARLOCK_DEMONOLOGY ) action_list_str += "/felguard:felstorm";
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 
