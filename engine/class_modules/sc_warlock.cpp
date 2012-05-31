@@ -2307,7 +2307,6 @@ struct shadowflame_t : public warlock_spell_t
     warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
   {
     aoe        = -1;
-    proc       = true;
     background = true;
     generate_fury = 2;
   }
@@ -2354,6 +2353,7 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
     proc       = true;
     background = true;
     dual       = true;
+    aoe        = -1;
   }
 
   virtual timespan_t travel_time()
