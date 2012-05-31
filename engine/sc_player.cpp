@@ -1298,22 +1298,34 @@ struct execute_pet_action_t : public action_t
   std::string action_str;
 
   execute_pet_action_t( player_t* player, pet_t* p, const std::string& as, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_pet_action", player ),
+    action_t( ACTION_OTHER, "execute_" + p -> name_str + "_" + as, player ),
     pet_action( 0 ), pet( p ), action_str( as )
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
+
+    use_off_gcd = true;
   }
 
   virtual void reset()
   {
-    for ( size_t i = 0; i < pet -> action_list.size(); ++i )
+    action_t::reset();
+
+    if ( sim -> current_iteration == 0 )
     {
-      action_t* a = pet -> action_list[ i ];
-      if ( a -> name_str == action_str )
+      for ( size_t i = 0; i < pet -> action_list.size(); ++i )
       {
-        a -> background = true;
-        pet_action = a;
+        action_t* a = pet -> action_list[ i ];
+        if ( a -> name_str == action_str )
+        {
+          a -> background = true;
+          pet_action = a;
+        }
+      }
+
+      if ( ! pet_action ) {
+        sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
+                           player -> name(), action_str.c_str(), pet -> name() );
       }
     }
   }
@@ -1325,6 +1337,9 @@ struct execute_pet_action_t : public action_t
 
   virtual bool ready()
   {
+    if ( ! pet_action )
+      return false;
+
     if ( ! action_t::ready() )
       return false;
 
