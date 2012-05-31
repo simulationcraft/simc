@@ -336,7 +336,7 @@ void report::print_html_rng_information( FILE* file, rng_t* rng, double confiden
 
 }
 
-void report::print_html_sample_data( FILE* file, player_t* p, sample_data_t& data, const std::string& name )
+void report::print_html_sample_data( FILE* file, sim_t* sim, sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -449,13 +449,13 @@ void report::print_html_sample_data( FILE* file, player_t* p, sample_data_t& dat
                  "\t\t\t\t\t\t\t\t</tr>\n",
                  data.mean_std_dev );
 
-        double mean_error = data.mean_std_dev * p -> sim -> confidence_estimator;
+        double mean_error = data.mean_std_dev * sim -> confidence_estimator;
         fprintf( file,
                  "\t\t\t\t\t\t\t\t<tr>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 p -> sim -> confidence * 100.0,
+                 sim -> confidence * 100.0,
                  data.mean - mean_error,
                  data.mean + mean_error );
 
@@ -464,7 +464,7 @@ void report::print_html_sample_data( FILE* file, player_t* p, sample_data_t& dat
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 p -> sim -> confidence * 100.0,
+                 sim -> confidence * 100.0,
                  data.mean ? 100 - mean_error * 100 / data.mean : 0,
                  data.mean ? 100 + mean_error * 100 / data.mean : 0 );
 
@@ -488,7 +488,7 @@ void report::print_html_sample_data( FILE* file, player_t* p, sample_data_t& dat
                  "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
                  "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
                  "\t\t\t\t\t\t\t\t</tr>\n",
-                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * p -> dps.mean ) ) ) : 0 ) );
+                 ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * data.mean ) ) ) : 0 ) );
 
         fprintf( file,
                  "\t\t\t\t\t\t\t\t<tr>\n"

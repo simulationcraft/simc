@@ -702,6 +702,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ),
+#ifdef TEST_TIMEWHEEL
+  tw_addevent_loop( false ),
+#endif
   target_death( 0 ), target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
   default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
@@ -833,7 +836,21 @@ void sim_t::add_event( event_t* e,
 
   event_t** prev = &( timing_wheel[ slice ] );
 
-  while ( ( *prev ) && ( *prev ) -> time <= e -> time ) prev = &( ( *prev ) -> next );
+#ifdef TEST_TIMEWHEEL
+  int i = 0;
+#endif
+
+  while ( ( *prev ) && ( *prev ) -> time <= e -> time )
+  {
+    prev = &( ( *prev ) -> next );
+#ifdef TEST_TIMEWHEEL
+  ++i;
+#endif
+  }
+
+#ifdef TEST_TIMEWHEEL
+  tw_addevent_loop.add( static_cast<double>( i ) );
+#endif
 
   e -> next = *prev;
   *prev = e;
@@ -1643,6 +1660,10 @@ void sim_t::analyze()
 {
   simulation_length.analyze( true, true, true, 50 );
   if ( simulation_length.mean == 0 ) return;
+
+#ifdef TEST_TIMEWHEEL
+  tw_addevent_loop.analyze();
+#endif
 
   // divisor_timeline is necessary because not all iterations go the same length of time
   int max_buckets = ( int ) simulation_length.max + 1;

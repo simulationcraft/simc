@@ -172,11 +172,11 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t</table>\n" );
     if ( ! s -> portion_aps.simple || ! s -> portion_apse.simple || ! s -> actual_amount.simple )
     {
-      report::print_html_sample_data( file, p, s -> actual_amount, "Actual Amount" );
+      report::print_html_sample_data( file, p -> sim, s -> actual_amount, "Actual Amount" );
 
-      report::print_html_sample_data( file, p, s -> portion_aps, "portion Amount per Second ( pAPS )" );
+      report::print_html_sample_data( file, p -> sim, s -> portion_aps, "portion Amount per Second ( pAPS )" );
 
-      report::print_html_sample_data( file, p, s -> portion_apse, "portion Effective Amount per Second ( pAPSe )" );
+      report::print_html_sample_data( file, p -> sim, s -> portion_apse, "portion Effective Amount per Second ( pAPSe )" );
 
       if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
       {
@@ -1300,25 +1300,25 @@ void print_html_player_statistics( FILE* file, player_t* p, player_t::report_inf
            "\t\t\t\t\t\t\t\t<tr>\n"
            "\t\t\t\t\t\t\t\t<td>\n" );
 
-  report::print_html_sample_data( file, p, p -> fight_length, "Fight Length" );
+  report::print_html_sample_data( file, p -> sim, p -> fight_length, "Fight Length" );
 
-  report::print_html_sample_data( file, p, p -> dps, "DPS" );
+  report::print_html_sample_data( file, p -> sim, p -> dps, "DPS" );
 
-  report::print_html_sample_data( file, p, p -> dpse, "DPS(e)" );
+  report::print_html_sample_data( file, p -> sim, p -> dpse, "DPS(e)" );
 
-  report::print_html_sample_data( file, p, p -> dmg, "Damage" );
+  report::print_html_sample_data( file, p -> sim, p -> dmg, "Damage" );
 
-  report::print_html_sample_data( file, p, p -> dtps, "DTPS" );
+  report::print_html_sample_data( file, p -> sim, p -> dtps, "DTPS" );
 
-  report::print_html_sample_data( file, p, p -> hps, "HPS" );
+  report::print_html_sample_data( file, p -> sim, p -> hps, "HPS" );
 
-  report::print_html_sample_data( file, p, p -> hpse, "HPS(e)" );
+  report::print_html_sample_data( file, p -> sim, p -> hpse, "HPS(e)" );
 
-  report::print_html_sample_data( file, p, p -> heal, "Heal" );
+  report::print_html_sample_data( file, p -> sim, p -> heal, "Heal" );
 
-  report::print_html_sample_data( file, p, p -> htps, "HTPS" );
+  report::print_html_sample_data( file, p -> sim, p -> htps, "HTPS" );
 
-  report::print_html_sample_data( file, p, p -> executed_foreground_actions, "#Executed Foreground Actions" );
+  report::print_html_sample_data( file, p -> sim, p -> executed_foreground_actions, "#Executed Foreground Actions" );
 
   std::string timeline_dps_error_str           = "";
   std::string dps_error_str                    = "";

@@ -302,7 +302,6 @@ struct priest_t : public player_t
     create_options();
   }
 
-
   // Character Definition
   virtual void      init_base();
   virtual void      init_gains();
