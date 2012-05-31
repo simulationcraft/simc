@@ -387,100 +387,6 @@ public:
   }
 };
 
-// PRIEST PETS ====================================================
-
-struct _stat_list_t
-{
-  int id;
-  double stats[ BASE_STAT_MAX ];
-};
-
-// Base Stats, same for all pets. Depend on level
-static const _stat_list_t pet_base_stats[]=
-{
-  //       str, agi,  sta, int, spi,   hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {  453, 883,  353, 159, 225,    0,     0,         0,     0,     0,     0,   0,       0 } },
-  { 0, { 0 } }
-};
-
-static const _stat_list_t shadowfiend_base_stats[]=
-{
-  //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
-  { 0, { 0 } }
-};
-
-static const _stat_list_t mindbender_base_stats[]=
-{
-  //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
-  { 0, { 0 } }
-};
-
-static const _stat_list_t none_base_stats[]=
-{
-  //        str, agi,  sta, int, spi,     hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
-  { 85, {    0,   0,    0,   0,    0,      0,     0,         0,     0,     0,     0,   0,       0 } },
-  { 0, { 0 } }
-};
-
-static double get_attribute_base( int level, int stat_e, pet_e pet_type, int& stats_available, int& stats2_available )
-{
-  double r = 0.0;
-  const _stat_list_t* base_list = 0;
-  const _stat_list_t*  pet_list = 0;
-
-
-  base_list = pet_base_stats;
-
-  if      ( pet_type == PET_SHADOWFIEND ) pet_list = shadowfiend_base_stats;
-  else if ( pet_type == PET_MINDBENDER  ) pet_list = mindbender_base_stats;
-  else if ( pet_type == PET_NONE        ) pet_list = none_base_stats;
-
-  if ( stat_e < 0 || stat_e >= BASE_STAT_MAX )
-  {
-    return 0.0;
-  }
-
-  if ( base_list )
-  {
-    for ( int i = 0; base_list[ i ].id != 0 ; i++ )
-    {
-      if ( level == base_list[ i ].id )
-      {
-        r += base_list[ i ].stats[ stat_e ];
-        stats_available++;
-        break;
-      }
-      if ( level > base_list[ i ].id )
-      {
-        r += base_list[ i ].stats[ stat_e ];
-        break;
-      }
-    }
-  }
-
-  if ( pet_list )
-  {
-    for ( int i = 0; pet_list[ i ].id != 0 ; i++ )
-    {
-      if ( level == pet_list[ i ].id )
-      {
-        r += pet_list[ i ].stats[ stat_e ];
-        stats2_available++;
-        break;
-      }
-      if ( level > pet_list[ i ].id )
-      {
-        r += pet_list[ i ].stats[ stat_e ];
-        break;
-      }
-    }
-  }
-
-  return r;
-}
-
 // ==========================================================================
 // Priest Pet
 // ==========================================================================
@@ -499,30 +405,49 @@ struct priest_pet_t : public pet_t
     initial.distance            = 3;
   }
 
+  struct _stat_list_t
+  {
+    int id;
+    double stats[ BASE_STAT_MAX ];
+  };
+
   virtual void init_base()
   {
     pet_t::init_base();
 
     {
-      int stats_available = 0, stats2_available = 0;
-      base.attribute[ ATTR_STRENGTH  ]  = get_attribute_base( level, BASE_STAT_STRENGTH, pet_type, stats_available, stats2_available );
-      base.attribute[ ATTR_AGILITY   ]  = get_attribute_base( level, BASE_STAT_AGILITY, pet_type, stats_available, stats2_available );
-      base.attribute[ ATTR_STAMINA   ]  = get_attribute_base( level, BASE_STAT_STAMINA, pet_type, stats_available, stats2_available );
-      base.attribute[ ATTR_INTELLECT ]  = get_attribute_base( level, BASE_STAT_INTELLECT, pet_type, stats_available, stats2_available );
-      base.attribute[ ATTR_SPIRIT    ]  = get_attribute_base( level, BASE_STAT_SPIRIT, pet_type, stats_available, stats2_available );
-      resources.base[ RESOURCE_HEALTH ] = get_attribute_base( level, BASE_STAT_HEALTH, pet_type, stats_available, stats2_available );
-      resources.base[ RESOURCE_MANA ]   = get_attribute_base( level, BASE_STAT_MANA, pet_type, stats_available, stats2_available );
-      initial.attack_crit_per_agility   = get_attribute_base( level, BASE_STAT_MELEE_CRIT_PER_AGI, pet_type, stats_available, stats2_available );
-      initial.spell_crit_per_intellect  = get_attribute_base( level, BASE_STAT_SPELL_CRIT_PER_INT, pet_type, stats_available, stats2_available );
-      initial.dodge_per_agility         = get_attribute_base( level, BASE_STAT_DODGE_PER_AGI, pet_type, stats_available, stats2_available );
-      base.spell_crit                   = get_attribute_base( level, BASE_STAT_SPELL_CRIT, pet_type, stats_available, stats2_available );
-      base.attack_crit                  = get_attribute_base( level, BASE_STAT_MELEE_CRIT, pet_type, stats_available, stats2_available );
-      base.mp5                          = get_attribute_base( level, BASE_STAT_MP5, pet_type, stats_available, stats2_available );
+      // Base Stats, same for all pets. Depend on level
+      static const _stat_list_t pet_base_stats[]=
+      {
+        //       str, agi,  sta, int, spi,   hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+        {  0, { 0 } },
+        { 85, {  453, 883,  353, 159, 225,    0,     0,         0,     0,     0,     0,   0,       0 } }
+      };
 
-      if ( stats_available != 13 )
-        sim -> errorf( "Pet %s has no general base stats avaiable on level=%.i.\n", name(), level );
-      if ( stats2_available != 13 )
-        sim -> errorf( "Pet %s has no base stats avaiable on level=%.i.\n", name(), level );
+      assert( sizeof_array( pet_base_stats ) > 0 );
+      _stat_list_t ps = pet_base_stats[ 0 ];
+      // Loop from end to beginning to get the data for the highest available level equal or lower than the player level
+      for ( int i = sizeof_array( pet_base_stats ) - 1; i >= 0 ; --i )
+      {
+        if ( pet_base_stats[ i ].id >= level )
+        {
+          ps = pet_base_stats[ i ];
+          break;
+        }
+      }
+      base.attribute[ ATTR_STRENGTH  ]  = ps.stats[ BASE_STAT_STRENGTH ];
+      base.attribute[ ATTR_AGILITY   ]  = ps.stats[ BASE_STAT_AGILITY ];
+      base.attribute[ ATTR_STAMINA   ]  = ps.stats[ BASE_STAT_STAMINA ];
+      base.attribute[ ATTR_INTELLECT ]  = ps.stats[ BASE_STAT_INTELLECT ];
+      base.attribute[ ATTR_SPIRIT    ]  = ps.stats[ BASE_STAT_SPIRIT ];
+      resources.base[ RESOURCE_HEALTH ] = ps.stats[ BASE_STAT_HEALTH ];
+      resources.base[ RESOURCE_MANA ]   = ps.stats[ BASE_STAT_MANA ];
+      initial.attack_crit_per_agility   = ps.stats[ BASE_STAT_MELEE_CRIT_PER_AGI ];
+      initial.spell_crit_per_intellect  = ps.stats[ BASE_STAT_SPELL_CRIT_PER_INT ];
+      initial.dodge_per_agility         = ps.stats[ BASE_STAT_DODGE_PER_AGI ];
+      base.spell_crit                   = ps.stats[ BASE_STAT_SPELL_CRIT ];
+      base.attack_crit                  = ps.stats[ BASE_STAT_MELEE_CRIT ];
+      base.mp5                          = ps.stats[ BASE_STAT_MP5 ];
     }
 
     resources.base[ RESOURCE_MANA ]   = o() -> resources.max[ RESOURCE_MANA ];
