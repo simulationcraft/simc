@@ -424,34 +424,6 @@ static const _stat_list_t none_base_stats[]=
   { 0, { 0 } }
 };
 
-
-struct _weapon_list_t
-{
-  int id;
-  double min_dmg, max_dmg;
-  double direct_power_mod;
-  timespan_t swing_time;
-};
-
-static const _weapon_list_t shadowfiend_weapon[]=
-{
-  { 85, 360, 433,  0.5114705, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.0060173 * level
-  {  0,   0,   0,        0.0, timespan_t::zero() }
-};
-
-static const _weapon_list_t mindbender_weapon[]=
-{
-  { 85, 360, 433, 1.16349445, timespan_t::from_seconds( 1.5 ) },        // direct_power_mod = 0.01368817 * level
-  {  0,   0,   0,        0.0, timespan_t::zero() }
-};
-
-static const _weapon_list_t none_weapon[]=
-{
-  { 85,   0,   0,        0.0, timespan_t::from_seconds( 1.5 ) },
-  {  0,   0,   0,        0.0, timespan_t::zero() }
-};
-
-
 static double get_attribute_base( int level, int stat_e, pet_e pet_type, int& stats_available, int& stats2_available )
 {
   double r = 0.0;
@@ -509,119 +481,6 @@ static double get_attribute_base( int level, int stat_e, pet_e pet_type, int& st
   return r;
 }
 
-static const _weapon_list_t* get_weapon( pet_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = 0;
-
-  if      ( pet_type == PET_SHADOWFIEND ) weapon_list = shadowfiend_weapon;
-  else if ( pet_type == PET_MINDBENDER  ) weapon_list = mindbender_weapon;
-  else if ( pet_type == PET_NONE        ) weapon_list = none_weapon;
-
-  return weapon_list;
-}
-
-static double get_weapon_min( int level, pet_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-
-  if ( ! weapon_list )
-    return 0.0;
-
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].min_dmg;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].min_dmg;
-      break;
-    }
-  }
-  return r;
-}
-
-static double get_weapon_max( int level, pet_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-
-  if ( ! weapon_list )
-    return 0.0;
-
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].max_dmg;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].max_dmg;
-      break;
-    }
-  }
-  return r;
-}
-
-static double get_weapon_direct_power_mod( int level, pet_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  double r = 0.0;
-
-  if ( ! weapon_list )
-    return 0.0;
-
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].direct_power_mod;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].direct_power_mod;
-      break;
-    }
-  }
-  return r;
-}
-
-static timespan_t get_weapon_swing_time( int level, pet_e pet_type )
-{
-  const _weapon_list_t*  weapon_list = get_weapon( pet_type );
-
-  timespan_t r = timespan_t::zero();
-
-  if ( ! weapon_list )
-    return timespan_t::from_seconds( 1.5 );
-
-  for ( int i = 0; weapon_list[ i ].id != 0 ; i++ )
-  {
-    if ( level == weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].swing_time;
-      break;
-    }
-    if ( level > weapon_list[ i ].id )
-    {
-      r += weapon_list[ i ].swing_time;
-      break;
-    }
-  }
-  if ( r == timespan_t::zero() )
-    r = timespan_t::from_seconds( 1.0 ); // set swing-time to 1.00 if there is no weapon
-  return r;
-}
-
 // ==========================================================================
 // Priest Pet
 // ==========================================================================
@@ -634,20 +493,10 @@ struct priest_pet_t : public pet_t
   priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
     pet_t( sim, owner, pet_name, pt, guardian ),
     ap_per_owner_sp( 1.0 ),
-    direct_power_mod( get_weapon_direct_power_mod( level, pt ) )
+    direct_power_mod( 0.0 )
   {
     position                    = POSITION_BACK;
     initial.distance            = 3;
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = get_weapon_min( level, pet_type );
-    main_hand_weapon.max_dmg    = get_weapon_max( level, pet_type );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = get_weapon_swing_time( level, pet_type );
-    if ( main_hand_weapon.swing_time == timespan_t::zero() )
-    {
-      sim -> errorf( "Pet %s has swingtime == 0.\n", name() );
-      assert( 0 );
-    }
   }
 
   virtual void init_base()
@@ -770,6 +619,13 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
     action_list_str += "/snapshot_stats";
     action_list_str += "/shadowcrawl";
     action_list_str += "/wait_for_shadowcrawl";
+
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 360;
+    main_hand_weapon.max_dmg    = 433;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
 
   virtual void init_spells()
@@ -834,6 +690,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
+     direct_power_mod = 0.0060173 * level;
   }
 
   virtual void init_spells()
@@ -853,6 +710,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "mindbender" ) :
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
   {
+    direct_power_mod = 0.01368817 * level;
   }
 
   virtual void init_spells()
