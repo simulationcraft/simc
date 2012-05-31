@@ -1046,13 +1046,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   {
     action_list_str += "/snapshot_stats";
     if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
-    ap_per_owner_sp = 0.566;
-  }
-
-  virtual double composite_spell_power( school_e school )
-  {
-    // The infernal, for some reason, does not appear to get the "hidden" base 59 sp
-    return owner -> composite_spell_power( school );
+    ap_per_owner_sp = 0.5;
   }
 
   virtual void init_base()
