@@ -2165,12 +2165,14 @@ void print_html_player_abilities( FILE* file, sim_t* sim, player_t* p, std::stri
            name.c_str(),
            p -> dps.mean );
 
+  int j = 0;
+
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
     if ( s -> num_executes > 1 || s -> compound_amount > 0 || sim -> debug )
     {
-      print_html_action_damage( file, s, p, i );
+      print_html_action_damage( file, s, p, j++ );
     }
   }
 
