@@ -1,6 +1,6 @@
 #define TALENT_SIZE (224)
 
-// 224 talents, wow build 15726
+// 224 talents, wow build 15739
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -185,7 +185,7 @@ static struct talent_data_t __talent_data[] = {
   { "Silencing Shot"                    , 19347, 0x00, 0x0004, 0x00,     0,   0,   1,   34490,         0,  0 },
   { "Wyvern Sting"                      , 19348, 0x00, 0x0004, 0x00,     0,   1,   1,   19386,         0,  0 },
   { "Barrage"                           , 19349, 0x00, 0x0004, 0x00,     0,   2,   5,  120360,         0,  0 },
-  { "Crouching Tiger, Hidden Chimera"   , 19350, 0x00, 0x0004, 0x00,     0,   0,   2,  118675,         0,  0 },
+  { "Exhilaration"                      , 19350, 0x00, 0x0004, 0x00,     0,   0,   2,  109304,         0,  0 },
   { "Spirit Bond"                       , 19351, 0x00, 0x0004, 0x00,     0,   2,   2,  109212,         0,  0 },
   { "Fervor"                            , 19352, 0x00, 0x0004, 0x00,     0,   0,   3,   82726,         0,  0 },
   { "Readiness"                         , 19353, 0x00, 0x0004, 0x00,     0,   1,   3,   23989,         0,  0 },
@@ -199,7 +199,7 @@ static struct talent_data_t __talent_data[] = {
   { "Dire Beast"                        , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  120679,         0,  0 },
   { "Lynx Rush"                         , 19362, 0x00, 0x0004, 0x00,     0,   2,   4,  120697,         0,  0 },
   { "Narrow Escape"                     , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
-  { "Exhilaration"                      , 19364, 0x00, 0x0004, 0x00,     0,   2,   0,  109304,         0,  0 },
+  { "Crouching Tiger, Hidden Chimera"   , 19364, 0x00, 0x0004, 0x00,     0,   2,   0,  118675,         0,  0 },
   { "Thrill of the Hunt"                , 19365, 0x00, 0x0004, 0x00,     0,   2,   3,  109306,         0,  0 },
   { "Vigilance"                         , 19676, 0x00, 0x0001, 0x00,     0,   2,   4,  114030,         0,  0 },
   { "Soul of the Forest"                , 19677, 0x00, 0x0400, 0x00,     0,   0,   3,  114107,         0,  0 },
