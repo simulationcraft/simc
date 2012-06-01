@@ -3695,6 +3695,8 @@ struct grimoire_of_service_t : public summon_pet_t
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ) :
     summon_pet_t( pet_name, p, p -> talents.grimoire_of_service )
   {
+    cooldown = p -> get_cooldown( "grimoire_of_service" );
+    cooldown -> duration = data().cooldown();
     summoning_duration = timespan_t::from_seconds( 30 );
   }
 };
