@@ -3006,7 +3006,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
     rain_of_fire_tick -> execute();
 
-    consume_tick_resource( d );
+    if ( channeled ) consume_tick_resource( d );
   }
 
   virtual bool ready()
