@@ -2037,81 +2037,30 @@ public:
 };
 
 
-struct summon_shadowfiend2_t : public summon_pet_t
+struct summon_shadowfiend_t : public summon_pet_t
 {
-  summon_shadowfiend2_t( priest_t* p ) :
+  summon_shadowfiend_t( priest_t* p, const std::string& options_str ) :
     summon_pet_t( "shadowfiend", p, p -> find_class_spell( "Shadowfiend" ) )
   {
-    harmful    = false;
-    background = true;
-    summoning_duration = data().duration();
-  }
-};
-
-struct summon_shadowfiend_t : public priest_spell_t
-{
-  summon_shadowfiend2_t* summon_shadowfiend2;
-
-  summon_shadowfiend_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "Summon Shadowfiend", p, p -> find_class_spell( "Shadowfiend" ) ),
-    summon_shadowfiend2( 0 )
-  {
     parse_options( NULL, options_str );
-
-    harmful = false;
+    harmful    = false;
+    summoning_duration = data().duration();
     cooldown = p -> cooldowns.shadowfiend;
     cooldown -> duration = data().cooldown();
-
-    summon_shadowfiend2 = new summon_shadowfiend2_t( p );
-  }
-
-  virtual void execute()
-  {
-    consume_resource();
-    update_ready();
-
-    p() -> cooldowns.shadowfiend -> start();
-
-    summon_shadowfiend2 -> execute();
   }
 };
 
-struct summon_mindbender2_t : public summon_pet_t
+
+struct summon_mindbender_t : public summon_pet_t
 {
-  summon_mindbender2_t( priest_t* p ) :
+  summon_mindbender_t( priest_t* p, const std::string& options_str ) :
     summon_pet_t( "mindbender", p, p -> find_talent_spell( "Mindbender" ) )
   {
-    harmful    = false;
-    background = true;
-    summoning_duration = data().duration();
-  }
-};
-
-struct summon_mindbender_t : public priest_spell_t
-{
-  summon_mindbender2_t* summon_mindbender2;
-
-  summon_mindbender_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "Summon Mindbender", p, p -> find_talent_spell( "Mindbender" ) ),
-    summon_mindbender2( 0 )
-  {
     parse_options( NULL, options_str );
-
-    harmful = false;
+    harmful    = false;
+    summoning_duration = data().duration();
     cooldown = p -> cooldowns.mindbender;
     cooldown -> duration = data().cooldown();
-
-    summon_mindbender2 = new summon_mindbender2_t( p );
-  }
-
-  virtual void execute()
-  {
-    consume_resource();
-    update_ready();
-
-    p() -> cooldowns.mindbender -> start();
-
-    summon_mindbender2 -> execute();
   }
 };
 
