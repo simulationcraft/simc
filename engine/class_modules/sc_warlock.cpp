@@ -305,7 +305,7 @@ struct warlock_t : public player_t
     switch ( primary_tree() )
     {
     case WARLOCK_AFFLICTION:  return "000020"; break;
-    case WARLOCK_DEMONOLOGY:  return "000020"; break;
+    case WARLOCK_DEMONOLOGY:  return "300020"; break;
     case WARLOCK_DESTRUCTION: return "000020"; break;
     default: break;
     }
@@ -1299,6 +1299,13 @@ public:
     return m;
   }
 
+  void consume_tick_resource( dot_t* d )
+  {
+    consume_resource();
+    resource_e r = current_resource();
+    if ( p() -> resources.current[ r ] < base_costs[ r ] ) d -> action -> cancel();
+  }
+
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
     if ( ! p -> rngs.ember_gain -> roll( chance ) ) return;
@@ -1624,7 +1631,7 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) && p() -> verify_nightfall() )
+    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
@@ -1704,14 +1711,11 @@ struct drain_life_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    // costs mana per tick
-    consume_resource();
-    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
-      d -> current_tick = d -> num_ticks;
-
     warlock_spell_t::tick( d );
 
     heal -> execute();
+
+    consume_tick_resource( d );
   }
 };
 
@@ -1743,15 +1747,12 @@ struct drain_soul_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    // costs mana per tick
-    consume_resource();
-    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
-      d -> current_tick = d -> num_ticks;
-
     warlock_spell_t::tick( d );
 
     if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
     generate_shard = ! generate_shard;
+
+    consume_tick_resource( d );
   }
 
 
@@ -1837,6 +1838,8 @@ struct haunt_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_haunt -> trigger();
+
+      trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
   }
 };
@@ -2672,14 +2675,11 @@ struct malefic_grasp_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    // costs mana per tick
-    consume_resource();
-    if ( p() -> resources.current[ RESOURCE_MANA ] < base_costs[ RESOURCE_MANA ] )
-      d -> current_tick = d -> num_ticks;
-
     warlock_spell_t::tick( d );
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
+
+    consume_tick_resource( d );
   }
 };
 
@@ -2985,9 +2985,6 @@ struct rain_of_fire_t : public warlock_spell_t
     if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 8.5;
 
     rain_of_fire_tick = new rain_of_fire_tick_t( p );
-
-    // RoF currently costs mana per tick for affliction
-    if ( channeled ) rain_of_fire_tick -> base_costs[ RESOURCE_MANA ] = base_costs[ RESOURCE_MANA ];
   }
 
   virtual timespan_t travel_time()
@@ -3005,9 +3002,11 @@ struct rain_of_fire_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    warlock_spell_t::tick( d );
+
     rain_of_fire_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick );
+    consume_tick_resource( d );
   }
 
   virtual bool ready()
@@ -3519,11 +3518,88 @@ struct summon_doomguard_t : public warlock_spell_t
 
 // TALENT SPELLS
 
-struct shadowfury_t : public warlock_spell_t
+struct harvest_life_heal_t : public warlock_heal_t
 {
-  shadowfury_t( warlock_t* p ) :
-    warlock_spell_t( "shadowfury", p, p -> talents.shadowfury )
-  {  }
+  harvest_life_heal_t( warlock_t* p ) :
+    warlock_heal_t( "harvest_life_heal", p, 89653 )
+  {
+    background = true;
+    may_miss = false;
+  }
+
+  void perform( bool main_target )
+  {
+    double heal_pct = ( main_target ) ? 0.033 : 0.0025; // FIXME: Does not match tooltip at all, retest later
+    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
+
+    execute();
+  }
+};
+
+struct harvest_life_tick_t : public warlock_spell_t
+{
+  harvest_life_heal_t* heal;
+  player_t* main_target;
+
+  harvest_life_tick_t( warlock_t* p ) :
+    warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) )
+  {
+    may_miss = false;
+    background = true;
+    dual = true;
+    direct_tick = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = base_td;
+    direct_power_mod = tick_power_mod;
+    num_ticks = 0;
+
+    heal = new harvest_life_heal_t( p );
+  }
+
+  virtual void execute()
+  {
+    main_target = target;
+
+    warlock_spell_t::execute();
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    heal -> perform( main_target == target );
+
+    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain_fury ); // FIXME: This may be a bug, retest later
+  }
+};
+
+struct harvest_life_t : public warlock_spell_t
+{
+  harvest_life_tick_t* tick_spell;
+
+  harvest_life_t( warlock_t* p ) :
+    warlock_spell_t( "harvest_life", p, p -> talents.harvest_life )
+  {
+    channeled    = true;
+    hasted_ticks = false;
+    may_crit     = false;
+    
+    tick_power_mod = base_td = 0;
+
+    tick_spell = new harvest_life_tick_t( p );
+
+    tick_spell -> stats = stats;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    tick_spell -> execute();
+
+    consume_tick_resource( d );
+  }
 };
 
 
@@ -3552,6 +3628,7 @@ struct mortal_coil_t : public warlock_spell_t
   mortal_coil_t( warlock_t* p ) :
     warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
   {
+    base_dd_min = base_dd_max = 0;
     heal = new mortal_coil_heal_t( p );
   }
 
@@ -3756,7 +3833,6 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
-  else if ( name == "shadowfury"            ) a = new            shadowfury_t( this );
   else if ( name == "soul_fire"             ) a = new             soul_fire_t( this );
   else if ( name == "summon_felhunter"      ) a = new      summon_felhunter_t( this );
   else if ( name == "summon_felguard"       ) a = new       summon_felguard_t( this );
@@ -3781,6 +3857,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
+  else if ( name == "harvest_life"          ) a = new          harvest_life_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
@@ -4234,6 +4311,7 @@ void warlock_t::init_actions()
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         get_action_priority_list( "aoe" ) -> action_list_str += "/cancel_metamorphosis";
 
+      add_action( talents.harvest_life,    "chain=1",                                                "aoe" );
       add_action( "Rain of Fire",          "",                                                       "aoe" );
       add_action( "Life Tap",              "",                                                       "aoe" );
       break;

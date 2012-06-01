@@ -8,7 +8,7 @@ spec=demonology
 role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#VZ!....1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#VZ!2...1.
 glyphs=everlasting_affliction/imp_swarm
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
@@ -44,6 +44,7 @@ actions.aoe+=/doom,cycle_targets=1,if=!ticking|remains<40
 actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
 actions.aoe+=/hand_of_guldan,if=!action.shadowflame.in_flight
 actions.aoe+=/cancel_metamorphosis
+actions.aoe+=/harvest_life,chain=1
 actions.aoe+=/rain_of_fire
 actions.aoe+=/life_tap
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
