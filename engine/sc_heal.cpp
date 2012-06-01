@@ -67,7 +67,7 @@ void heal_t::execute()
 {
   spell_base_t::execute();
 
-  if ( harmful && callbacks )
+  if ( callbacks )
   {
     if ( result != RESULT_NONE )
     {
