@@ -134,10 +134,12 @@ public:
   QComboBox* reportpetsChoice;
   QComboBox* printstyleChoice;
   QComboBox* statisticslevel_Choice;
+  QComboBox* deterministic_rng_Choice;
   QListWidget* itemDbOrder;
   QButtonGroup* buffsButtonGroup;
   QButtonGroup* debuffsButtonGroup;
   QButtonGroup* scalingButtonGroup;
+  QComboBox* center_scale_delta_Choice;
   QComboBox* plotsPointsChoice;
   QComboBox* plotsStepChoice;
   QButtonGroup* plotsButtonGroup;

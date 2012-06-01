@@ -108,6 +108,7 @@ static OptionEntry* getScalingOptions()
     { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
     { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
     { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+    { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
     { NULL, NULL, NULL }
   };
   return options;
@@ -318,6 +319,8 @@ QString SimulationCraftWindow::encodeOptions()
   ss << ' ' << reportpetsChoice->currentIndex();
   ss << ' ' << printstyleChoice->currentIndex();
   ss << ' ' << statisticslevel_Choice->currentIndex();
+  ss << ' ' << deterministic_rng_Choice->currentIndex();
+  ss << ' ' << center_scale_delta_Choice->currentIndex();
 
   QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
   OptionEntry* buffs = getBuffOptions();
@@ -604,15 +607,19 @@ void SimulationCraftWindow::createGlobalsTab()
   globalsLayout->addRow(  "Armory Region",  armoryRegionChoice = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout->addRow(    "Armory Spec",    armorySpecChoice = createChoice( 2, "active", "inactive" ) );
   globalsLayout->addRow(   "Default Role",   defaultRoleChoice = createChoice( 4, "auto", "dps", "heal", "tank" ) );
+  QLabel* messageText = new QLabel( "\n\nAdvanced Options:" );
+  globalsLayout -> addRow( messageText );
   globalsLayout->addRow( "Generate Debug",         debugChoice = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout->addRow( "Report Pets Separately", reportpetsChoice = createChoice( 2, "Yes", "No" ) );
   globalsLayout->addRow( "Report Print Style", printstyleChoice = createChoice( 2, "Classic", "White" ) );
   globalsLayout->addRow( "Statistics Level", statisticslevel_Choice = createChoice( 5, "0", "1", "2", "3", "8" ) );
+  globalsLayout->addRow( "Deterministic RNG", deterministic_rng_Choice = createChoice( 2, "Yes", "No" ) );
   iterationsChoice->setCurrentIndex( 1 );
   fightLengthChoice->setCurrentIndex( 7 );
   fightVarianceChoice->setCurrentIndex( 2 );
   reportpetsChoice->setCurrentIndex( 1 );
   statisticslevel_Choice->setCurrentIndex( 1 );
+  deterministic_rng_Choice->setCurrentIndex( 1 );
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox->setLayout( globalsLayout );
 
@@ -676,9 +683,17 @@ void SimulationCraftWindow::createScalingTab()
     scalingButtonGroup->addButton( checkBox );
     scalingLayout->addWidget( checkBox );
   }
-  scalingLayout->addStretch( 1 );
+  //scalingLayout->addStretch( 1 );
   QGroupBox* scalingGroupBox = new QGroupBox();
   scalingGroupBox->setLayout( scalingLayout );
+
+  QFormLayout* scalingLayout2 = new QFormLayout();
+  scalingLayout2->setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  scalingLayout2->addRow( "Center Scale Delta",  center_scale_delta_Choice = createChoice( 2, "Yes", "No" ) );
+
+  center_scale_delta_Choice->setCurrentIndex( 1 );
+
+  scalingLayout->addLayout( scalingLayout2 );
 
   optionsTab->addTab( scalingGroupBox, "Scaling" );
 }
@@ -1527,6 +1542,7 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
+  if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
   if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
   options += "scale_only=none";
   for ( int i=2; scaling[ i ].label; i++ )
@@ -1538,6 +1554,10 @@ QString SimulationCraftWindow::mergeOptions()
     }
   }
   options += "\n";
+  if ( center_scale_delta_Choice->currentIndex() == 0 )
+  {
+    options += "center_scale_delta=1\n";
+  }
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
   OptionEntry* plots = getPlotOptions();
@@ -1570,6 +1590,10 @@ QString SimulationCraftWindow::mergeOptions()
   if ( statisticslevel_Choice->currentIndex() >= 0 )
   {
     options += "statistics_level=" + statisticslevel_Choice->currentText() + "\n";
+  }
+  if ( deterministic_rng_Choice->currentIndex() >= 0 )
+  {
+    options += "deterministic_rng=1\n";
   }
   options += "\n";
   options += simulateText->toPlainText();
@@ -1984,7 +2008,7 @@ void SimulationCraftWindow::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
-  for ( int i=2; i < count; i++ )
+  for ( int i=2; i < count - 1; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
