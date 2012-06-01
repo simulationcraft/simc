@@ -1479,12 +1479,24 @@ void action_t::cancel()
     }
   }
 
-  if ( player -> executing  == this ) player -> executing  = 0;
-  if ( player -> channeling == this ) player -> channeling = 0;
+  bool was_busy = false;
+
+  if ( player -> executing  == this )
+  {
+     was_busy = true;
+     player -> executing  = 0;
+  }
+  if ( player -> channeling == this )
+  {
+     was_busy = true;
+     player -> channeling  = 0;
+  }
 
   event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
+
+  if ( was_busy ) player -> schedule_ready();
 }
 
 // action_t::interrupt ======================================================
