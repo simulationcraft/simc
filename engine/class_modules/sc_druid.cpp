@@ -433,10 +433,14 @@ struct druid_t : public player_t
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
   virtual double    composite_armor_multiplier();
+  virtual double    composite_attack_haste();
+  virtual double    composite_attack_crit( weapon_t* );
   virtual double    composite_attack_power();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_player_heal_multiplier( school_e school );
+  virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
+  virtual double    composite_spell_crit();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_block_value() { return 0; }
@@ -4844,6 +4848,32 @@ double druid_t::composite_attack_power()
   return floor( ap );
 }
 
+// druid_t::composite_attack_haste ==========================================
+
+double druid_t::composite_attack_haste()
+{
+  double h = player_t::composite_attack_haste();
+  
+  // TODO: Is the additional haste multiplicative?
+  if ( buff.bear_form -> up() )
+    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_haste );
+  
+  return h;
+}
+
+// druid_t::composite_attack_crit ===========================================
+
+double druid_t::composite_attack_crit( weapon_t* w )
+{
+  double c = player_t::composite_attack_crit( w );
+  
+  // TODO: Is the additional crit multiplicative?
+  if ( buff.bear_form -> up() )
+    c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_crit;
+    
+  return c;
+}
+
 // druid_t::composite_player_multiplier =====================================
 
 double druid_t::composite_player_multiplier( school_e school, action_t* a )
@@ -4916,6 +4946,32 @@ double druid_t::composite_spell_hit()
   hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
+}
+
+// druid_t::composite_spell_haste ===========================================
+
+double druid_t::composite_spell_haste()
+{
+  double h = player_t::composite_spell_haste();
+  
+  // TODO: Is the additional haste multiplicative?
+  if ( buff.bear_form -> up() )
+    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_haste );
+  
+  return h;
+}
+
+// druid_t::composite_spell_crit ============================================
+
+double druid_t::composite_spell_crit()
+{
+  double c = player_t::composite_spell_crit();
+  
+  // TODO: Is the additional crit multiplicative?
+  if ( buff.bear_form -> up() )
+    c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_crit;
+  
+  return c;
 }
 
 // druid_t::composite_attribute_multiplier ==================================

@@ -328,7 +328,9 @@ struct shaman_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
+  virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
+  virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
@@ -4222,6 +4224,19 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
   return 0.0;
 }
 
+// shaman_t::composite_spell_haste ==========================================
+
+double shaman_t::composite_spell_haste()
+{
+  double h = player_t::composite_spell_haste();
+  
+  // TODO: Is the additional haste multiplicative?
+  if ( buff.flurry -> up() )
+    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.flurry -> data().effectN( 2 ).percent() / rating.spell_haste );
+
+  return h;
+}
+
 // shaman_t::composite_spell_hit ============================================
 
 double shaman_t::composite_spell_hit()
@@ -4232,6 +4247,19 @@ double shaman_t::composite_spell_hit()
            ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
+}
+
+// shaman_t::composite_attack_haste =========================================
+
+double shaman_t::composite_attack_haste()
+{
+  double h = player_t::composite_attack_haste();
+  
+  // TODO: Is the additional haste multiplicative?
+  if ( buff.flurry -> up() )
+    h *= 1.0 / ( 1.0 + gear.haste_rating * buff.flurry -> data().effectN( 2 ).percent() / rating.attack_haste );
+  
+  return h;
 }
 
 // shaman_t::composite_attack_speed =========================================
