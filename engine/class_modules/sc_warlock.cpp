@@ -160,6 +160,7 @@ struct warlock_t : public player_t
     gain_t* drain_soul;
     gain_t* incinerate;
     gain_t* rain_of_fire;
+    gain_t* immolate;
     gain_t* fel_flame;
     gain_t* seed_of_corruption;
     gain_t* shadowburn;
@@ -1903,6 +1904,20 @@ struct immolate_t : public warlock_spell_t
 
     return m;
   }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 1, p() -> gains.immolate, 1.0 );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 1, p() -> gains.immolate, 1.0 );
+  }
 };
 
 
@@ -2962,7 +2977,8 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking ) trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, 0.50 );
+    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking )
+      trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, 0.25 );
   }
 };
 
@@ -4083,6 +4099,7 @@ void warlock_t::init_gains()
   gains.drain_soul         = get_gain( "drain_soul"   );
   gains.incinerate         = get_gain( "incinerate"   );
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
+  gains.immolate           = get_gain( "immolate"     );
   gains.fel_flame          = get_gain( "fel_flame"    );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
   gains.shadowburn         = get_gain( "shadowburn" );
@@ -4269,8 +4286,7 @@ void warlock_t::init_actions()
       add_action( "Rain of Fire",          "if=!ticking&!in_flight&(mana.pct>=50|num_targets>1)" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
-      add_action( "Incinerate",            "if=buff.backdraft.up" );
-      add_action( "Fel Flame" );
+      add_action( "Incinerate" );
 
       // AoE action list
       add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                 "aoe" );
@@ -4280,8 +4296,7 @@ void warlock_t::init_actions()
       add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                          "aoe" );
       add_action( "Immolate",              "cycle_targets=1,if=!ticking",                            "aoe" );
       add_action( "Conflagrate",           "",                                                       "aoe" );
-      add_action( "Incinerate",            "if=mana.pct>=50&buff.backdraft.up",                      "aoe" );
-      add_action( "Fel Flame",             "cycle_targets=1,if=mana.pct>=50&!in_flight_to_target",   "aoe" );
+      add_action( "Incinerate",            "if=mana.pct>=50",                                        "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:
