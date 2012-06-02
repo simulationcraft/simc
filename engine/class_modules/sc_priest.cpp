@@ -259,7 +259,7 @@ struct priest_t : public player_t
     const spell_data_t* mind_blast;
     const spell_data_t* devouring_plague;
     const spell_data_t* vampiric_embrace;
-    const spell_data_t* fortitude;
+    const spell_data_t* borrowed_time;
   } glyphs;
 
   // Constants
@@ -1755,15 +1755,6 @@ struct fortitude_t : public priest_spell_t
     harmful = false;
 
     background = ( sim -> overrides.stamina != 0 );
-  }
-
-  virtual double cost()
-  {
-    double c = priest_spell_t::cost();
-
-    c *= 1.0 + p() -> glyphs.fortitude -> effectN( 1 ).percent();
-
-    return c;
   }
 
   virtual void execute()
@@ -4422,7 +4413,7 @@ void priest_t::init_spells()
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
   glyphs.devouring_plague             = find_glyph_spell( "Glyph of Devouring Plague" );
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
-  glyphs.fortitude                    = find_glyph_spell( "Glyph of Fortitude" );
+  glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     spells.echo_of_light = new echo_of_light_t( this );
