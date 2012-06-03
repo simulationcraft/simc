@@ -3892,7 +3892,7 @@ double warlock_t::composite_movement_speed()
 {
   double s = player_t::composite_movement_speed();
   
-  if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+  if ( ( executing || channeling ) && ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
     s *= ( 1.0 - kc_movement_reduction );
 
   return s;
