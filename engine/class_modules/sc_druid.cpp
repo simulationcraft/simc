@@ -1261,7 +1261,7 @@ void druid_cat_attack_t::execute()
     {
       td( target ) -> combo_points -> add( adds_combo_points, name() );
 
-      if ( ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) &&
+      if ( aoe == 0 && ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) &&
            execute_state -> result == RESULT_CRIT )
       {
         td( target ) -> combo_points -> add( adds_combo_points, name() );

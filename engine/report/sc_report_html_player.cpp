@@ -1773,12 +1773,14 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n"
              "\t\t\t\t\t\t\t\t\t</ul>\n",
              b -> cooldown -> name_str.c_str(),
              b -> max_stack(),
              b -> buff_duration.total_seconds(),
              b -> cooldown -> duration.total_seconds(),
-             b -> default_chance * 100 );
+             b -> default_chance * 100,
+             b -> default_value );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
