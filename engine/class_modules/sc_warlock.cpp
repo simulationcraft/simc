@@ -802,8 +802,8 @@ void warlock_pet_t::init_base()
 
   main_hand_weapon.type = WEAPON_BEAST;
 
-  // FIXME: This is only the level 85 weapon damage - needs testing to find out how it scales
-  double dmg = 962.5;
+  // FIXME: Extrapolating from 962.33 @ level 85 and 1046.59 @ level 89
+  double dmg = 857.0 + 21.066 * ( owner -> level - 80 );
   if ( owner -> race == RACE_ORC ) dmg *= 1.05;
   main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
@@ -880,7 +880,7 @@ double warlock_pet_t::composite_attack_haste()
 
 double warlock_pet_t::composite_spell_power( school_e school )
 {
-  double sp = 59; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs more testing/confirmation for all pets, especially at level 90.
+  double sp = owner -> level - 26; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs testing/confirmation at level 90.
   if ( owner -> race == RACE_ORC ) sp /= 1.05; // The hidden base spell power is not affected by the orc racial
   sp += owner -> composite_spell_power( school );
   return sp;
