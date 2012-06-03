@@ -51,6 +51,8 @@ struct warlock_t : public player_t
 
   player_t* havoc_target;
 
+  double kc_movement_reduction, kc_cast_speed_reduction;
+
   // Active Pet
   struct pets_t
   {
@@ -74,6 +76,7 @@ struct warlock_t : public player_t
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
     buff_t* archimondes_vengeance;
+    buff_t* kiljaedens_cunning;
   } buffs;
 
   // Cooldowns
@@ -292,6 +295,8 @@ struct warlock_t : public player_t
   virtual double composite_mastery();
   virtual double composite_mp5();
   virtual double composite_armor();
+  virtual double composite_movement_speed();
+  virtual void moving();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual double assess_damage( double        amount,
@@ -1286,7 +1291,14 @@ public:
   {
     timespan_t t = spell_t::tick_time( haste );
 
-    if ( channeled ) return t;
+    if ( channeled ) 
+    {
+      // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
+      if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
+         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+        t *= ( 1.0 + p() -> kc_cast_speed_reduction );
+      return t;
+    }
 
     warlock_td_t* td = this->td( target );
 
@@ -1295,6 +1307,29 @@ public:
       t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
 
     return t;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t t = spell_t::execute_time();
+
+    // FIXME: Find out if this adjusts mid-cast as well, if so we'll have to check the duration on the movement buff
+    if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
+       ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+      t *= ( 1.0 + p() -> kc_cast_speed_reduction );
+
+    return t;
+  }
+
+  virtual bool usable_moving()
+  {
+    bool um = spell_t::usable_moving();
+
+    if ( p() -> talents.kiljaedens_cunning -> ok() && 
+       ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() ) )
+       um = true;
+
+    return um;
   }
 
   virtual double action_da_multiplier()
@@ -3853,6 +3888,26 @@ double warlock_t::composite_armor()
 }
 
 
+double warlock_t::composite_movement_speed()
+{
+  double s = player_t::composite_movement_speed();
+  
+  if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+    s *= ( 1.0 - kc_movement_reduction );
+
+  return s;
+}
+
+
+void warlock_t::moving()
+{
+  // FIXME: Handle the situation where the buff is up but the movement duration is longer than the duration of the buff
+  if ( ! talents.kiljaedens_cunning -> ok() || 
+     ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() > timespan_t::zero() ) )
+     player_t::moving();
+}
+
+
 double warlock_t::assess_damage( double        amount,
                                 school_e school,
                                 dmg_e    type,
@@ -4096,6 +4151,9 @@ void warlock_t::init_spells()
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
 
   archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
+  
+  kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;
+  kc_cast_speed_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 1 ).percent() : 0;
 }
 
 
@@ -4145,6 +4203,7 @@ void warlock_t::init_buffs()
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
   buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
+  buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
 }
 
 
