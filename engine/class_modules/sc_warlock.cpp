@@ -227,8 +227,8 @@ struct warlock_t : public player_t
 
   meta_cost_event_t* meta_cost_event;
 
-  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); touch_of_chaos -> schedule_execute(); };
-  void cancel_metamorphosis()  { touch_of_chaos -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
+  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
+  void cancel_metamorphosis()  { if ( touch_of_chaos ) touch_of_chaos -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
 
   struct demonic_calling_event_t : event_t
   {
@@ -297,6 +297,7 @@ struct warlock_t : public player_t
   virtual double composite_armor();
   virtual double composite_movement_speed();
   virtual void moving();
+  virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual double assess_damage( double        amount,
@@ -543,10 +544,6 @@ struct firebolt_t : public warlock_pet_spell_t
   firebolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( p, "Firebolt" )
   {
-    //FIXME: This stuff needs testing in MoP - commenting out for now
-
-    // direct_power_mod = 0.618; // tested in-game as of 2011/05/10
-
     if ( p -> owner -> bugs )
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
@@ -2306,6 +2303,29 @@ struct touch_of_chaos_t : public warlock_spell_t
   }
 };
 
+struct activate_touch_of_chaos_t : public warlock_spell_t
+{
+  activate_touch_of_chaos_t( warlock_t* p ) :
+    warlock_spell_t( "activate_touch_of_chaos", p, spell_data_t::nil() )
+  {
+    trigger_gcd = timespan_t::zero();
+    
+    p -> touch_of_chaos = new touch_of_chaos_t( p );
+  }
+
+  virtual void execute()
+  {
+    p() -> touch_of_chaos -> schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
+    if ( p() -> is_moving() ) return false;
+    return ( p() -> touch_of_chaos -> execute_event == 0 ); // not swinging
+  }
+};
+
 
 struct metamorphosis_t : public warlock_spell_t
 {
@@ -2314,7 +2334,6 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
-    p -> touch_of_chaos = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
@@ -3892,6 +3911,7 @@ double warlock_t::composite_movement_speed()
 {
   double s = player_t::composite_movement_speed();
   
+  // FIXME: This won't really work as it should, since movement speed is just checked once when the movement event starts
   if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
     s *= ( 1.0 - kc_movement_reduction );
 
@@ -3905,6 +3925,14 @@ void warlock_t::moving()
   if ( ! talents.kiljaedens_cunning -> ok() || 
      ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() > timespan_t::zero() ) )
      player_t::moving();
+}
+
+
+void warlock_t::halt()
+{
+  player_t::halt();
+
+  if ( touch_of_chaos ) touch_of_chaos -> cancel();
 }
 
 
@@ -4005,6 +4033,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, name );
+  else if ( name == "touch_of_chaos"        ) a = new activate_touch_of_chaos_t( this );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
@@ -4191,10 +4220,10 @@ void warlock_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 ); // FIXME: May be a bug, not sure
+  buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
-  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 ); // FIXME: May be a bug, not sure
+  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
@@ -4367,7 +4396,12 @@ void warlock_t::init_actions()
     default: break;
     }
     
-    if ( primary_tree() == WARLOCK_DEMONOLOGY ) action_list_str += "/felguard:felstorm";
+    if ( primary_tree() == WARLOCK_DEMONOLOGY )
+    {
+      if ( find_class_spell( "Metamorphosis" ) -> ok() )
+        action_list_str += "/touch_of_chaos";
+      action_list_str += "/felguard:felstorm";
+    }
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 

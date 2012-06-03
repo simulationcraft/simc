@@ -20,6 +20,7 @@ actions=service_felguard
 actions+=/blood_fury
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/dark_soul
+actions+=/touch_of_chaos
 actions+=/felguard:felstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/summon_doomguard
