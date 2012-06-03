@@ -47,6 +47,7 @@ struct warlock_t : public player_t
   spell_t* seed_of_corruption_aoe;
   spell_t* soulburn_seed_of_corruption_aoe;
   spell_t* touch_of_chaos;
+  spell_t* archimondes_vengeance_dmg;
 
   player_t* havoc_target;
 
@@ -72,6 +73,7 @@ struct warlock_t : public player_t
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
+    buff_t* archimondes_vengeance;
   } buffs;
 
   // Cooldowns
@@ -292,6 +294,11 @@ struct warlock_t : public player_t
   virtual double composite_armor();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
+  virtual double assess_damage( double        amount,
+                                school_e school,
+                                dmg_e    type,
+                                result_e result,
+                                action_t*     action );
 
   virtual warlock_td_t* get_target_data( player_t* target )
   {
@@ -3717,6 +3724,36 @@ struct grimoire_of_service_t : public summon_pet_t
   }
 };
 
+
+struct archimondes_vengeance_dmg_t : public warlock_spell_t
+{
+  archimondes_vengeance_dmg_t( warlock_t* p ) :
+    warlock_spell_t( "archimondes_vengeance_dmg", p )
+  {
+    // FIXME: Should this have proc=true and/or callbacks=false?
+    trigger_gcd = timespan_t::zero();
+    may_crit = false;
+    may_miss = false;
+    background = true;
+  }
+};
+
+struct archimondes_vengeance_t : public warlock_spell_t
+{
+  archimondes_vengeance_t( warlock_t* p ) :
+    warlock_spell_t( "archimondes_vengeance", p, p -> talents.archimondes_vengeance )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.archimondes_vengeance -> trigger();
+  }
+};
+
 } // ANONYMOUS NAMESPACE ====================================================
 
 
@@ -3816,6 +3853,37 @@ double warlock_t::composite_armor()
 }
 
 
+double warlock_t::assess_damage( double        amount,
+                                school_e school,
+                                dmg_e    type,
+                                result_e result,
+                                action_t*     action )
+{
+  double damage = player_t::assess_damage( amount, school, type, result, action );
+
+  double m = talents.archimondes_vengeance -> effectN( 1 ).percent();
+
+  if ( ! buffs.archimondes_vengeance -> up() )
+  {
+    if ( buffs.archimondes_vengeance -> cooldown -> remains() == timespan_t::zero() )
+      m /= 6.0;
+    else
+      m = 0;
+  }
+
+  if ( m > 0 )
+  {
+    // FIXME: Needs testing! Should it include absorbed damage? Should it be unaffected by damage buffs?
+    archimondes_vengeance_dmg -> base_dd_min = archimondes_vengeance_dmg -> base_dd_max = damage * m;
+    archimondes_vengeance_dmg -> target = action -> player;
+    archimondes_vengeance_dmg -> school = school; // FIXME: Assuming school is the school of the incoming damage for now
+    archimondes_vengeance_dmg -> execute();
+  }
+
+  return damage;
+}
+
+
 double warlock_t::matching_gear_multiplier( attribute_e attr )
 { 
   if ( attr == ATTR_INTELLECT )
@@ -3876,6 +3944,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
   else if ( name == "harvest_life"          ) a = new          harvest_life_t( this );
+  else if ( name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
@@ -4025,6 +4094,8 @@ void warlock_t::init_spells()
   glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
+
+  archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 }
 
 
@@ -4073,6 +4144,7 @@ void warlock_t::init_buffs()
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
+  buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
 }
 
 
