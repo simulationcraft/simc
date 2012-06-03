@@ -109,7 +109,7 @@ namespace std {using namespace tr1; }
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
 #define SC_MAJOR_VERSION "501"
-#define SC_MINOR_VERSION "4"
+#define SC_MINOR_VERSION "5"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
 #ifndef M_PI
@@ -786,7 +786,7 @@ enum format_e
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
-#define MAX_LEVEL (85)
+#define MAX_LEVEL (90)
 #endif
 
 #ifndef NUM_SPELL_FLAGS
