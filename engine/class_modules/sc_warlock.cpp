@@ -798,6 +798,14 @@ void warlock_pet_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
 
+  // We only care about intellect - no other primary attribute affects anything interesting
+  base.attribute[ ATTR_INTELLECT ] = util::ability_rank( owner -> level, 74, 90, 72, 89, 71, 88, 70, 87, 69, 85, 0, 1 );
+  // We don't have the data below level 85, so let's make a rough estimate
+  if ( base.attribute[ ATTR_INTELLECT ] == 0 ) base.attribute[ ATTR_INTELLECT ] = floor( 0.81 * owner -> level );
+
+  initial.spell_power_per_intellect = 1;
+
+  intellect_per_owner = 0;
   stamina_per_owner = 0.6496; // level invariant, not tested for MoP
 
   main_hand_weapon.type = WEAPON_BEAST;
@@ -879,15 +887,15 @@ double warlock_pet_t::composite_attack_haste()
 
 double warlock_pet_t::composite_spell_power( school_e school )
 {
-  double sp = owner -> level - 26; // FIXME: Mysterious base spell power which is not reflected in the pet pane. Needs testing/confirmation at level 90.
-  if ( owner -> race == RACE_ORC ) sp /= 1.05; // The hidden base spell power is not affected by the orc racial
+  double sp = pet_t::composite_spell_power( school );
+  if ( owner -> race == RACE_ORC ) sp /= 1.05; // Base spell power from the pet's own intellect is not affected by the orc racial
   sp += owner -> composite_spell_power( school );
   return sp;
 }
 
 double warlock_pet_t::composite_attack_power()
 {
-  double ap = 0;
+  double ap = 0; // Pets don't appear to get attack power from strength at all
   ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
   return ap;
 }
