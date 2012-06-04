@@ -802,8 +802,7 @@ void warlock_pet_t::init_base()
 
   main_hand_weapon.type = WEAPON_BEAST;
 
-  // FIXME: Extrapolating from 962.33 @ level 85 and 1046.59 @ level 89
-  double dmg = 857.0 + 21.066 * ( owner -> level - 80 );
+  double dmg = dbc.spell_scaling( owner -> type, owner -> level );
   if ( owner -> race == RACE_ORC ) dmg *= 1.05;
   main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
