@@ -236,7 +236,8 @@ void action_execute_event_t::execute()
   if ( player -> off_gcd )
     event_t::cancel( player -> off_gcd );
 
-  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );
+  if ( ! player -> channeling )
+    player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );
 }
 
 // ==========================================================================

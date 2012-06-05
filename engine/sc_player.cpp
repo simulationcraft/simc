@@ -1303,9 +1303,6 @@ struct execute_pet_action_t : public action_t
   {
     parse_options( NULL, options_str );
     trigger_gcd = timespan_t::zero();
-
-    // FIXME: This should be off gcd, but we need to make off gcd actions play nice with run_action_list first
-    //use_off_gcd = true;
   }
 
   virtual void reset()
