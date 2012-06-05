@@ -4542,19 +4542,12 @@ void warlock_t::init_actions()
 
       // AoE action list
       get_action_priority_list( "aoe" ) -> action_list_str += "/felguard:felstorm";
-
-      if ( glyphs.imp_swarm -> ok() )
-        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
-      
-      add_action( "Hand of Gul'dan",       "",                                                       "aoe" );
-
-      add_action( talents.grimoire_of_sacrifice, "if=!felstorm_is_ticking", "aoe" );
-      if ( talents.grimoire_of_sacrifice -> ok() )       
-        get_action_priority_list( "aoe" ) -> action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
-
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
       add_action( "Immolation Aura",       "if=!ticking&demonic_fury>60*num_targets",                "aoe" );
-      add_action( spec.doom,               "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
+      add_action( find_spell( 603 ),       "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
+      if ( glyphs.imp_swarm -> ok() )
+        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
+      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                       "aoe" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         get_action_priority_list( "aoe" ) -> action_list_str += "/cancel_metamorphosis";

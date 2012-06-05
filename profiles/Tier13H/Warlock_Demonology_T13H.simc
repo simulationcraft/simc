@@ -42,13 +42,11 @@ actions+=/life_tap
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
 actions.aoe+=/felguard:felstorm
-actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
-actions.aoe+=/hand_of_guldan
-actions.aoe+=/grimoire_of_sacrifice,if=!felstorm_is_ticking
-actions.aoe+=/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=350+60*num_targets
 actions.aoe+=/immolation_aura,if=!ticking&demonic_fury>60*num_targets
 actions.aoe+=/doom,cycle_targets=1,if=!ticking|remains<40
+actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
+actions.aoe+=/hand_of_guldan,if=!action.shadowflame.in_flight
 actions.aoe+=/cancel_metamorphosis
 actions.aoe+=/harvest_life,chain=1
 actions.aoe+=/rain_of_fire
