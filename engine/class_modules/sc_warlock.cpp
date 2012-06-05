@@ -484,7 +484,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
   virtual bool ready()
   {
-    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
+    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 130 )
       return false;
 
     return melee_attack_t::ready();
@@ -525,7 +525,7 @@ struct warlock_pet_spell_t : public spell_t
 
   virtual bool ready()
   {
-    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 100 )
+    if ( background == false && current_resource() == RESOURCE_ENERGY && player -> resources.current[ RESOURCE_ENERGY ] < 130 )
       return false;
 
     return spell_t::ready();
@@ -621,6 +621,13 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     felstorm_tick -> execute();
 
     stats -> add_tick( d -> time_to_tick );
+  }
+
+  virtual void cancel()
+  {
+    warlock_pet_melee_attack_t::cancel();
+
+    get_dot() -> cancel();
   }
 };
 
@@ -854,11 +861,11 @@ timespan_t warlock_pet_t::available()
   assert( primary_resource() == RESOURCE_ENERGY );
   double energy = resources.current[ RESOURCE_ENERGY ];
 
-  if ( energy >= 100 )
+  if ( energy >= 130 )
     return timespan_t::from_seconds( 0.1 );
 
   return std::max(
-    timespan_t::from_seconds( ( 100 - energy ) / energy_regen_per_second() ),
+    timespan_t::from_seconds( ( 130 - energy ) / energy_regen_per_second() ),
     timespan_t::from_seconds( 0.1 )
   );
 }
@@ -4423,7 +4430,6 @@ void warlock_t::init_actions()
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         action_list_str += "/touch_of_chaos";
-      action_list_str += "/felguard:felstorm";
     }
     else if ( talents.grimoire_of_sacrifice -> ok() )
     {
@@ -4442,10 +4448,12 @@ void warlock_t::init_actions()
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 
-    if ( primary_tree() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
+    if ( primary_tree() == WARLOCK_DEMONOLOGY )
     {
       add_action( talents.grimoire_of_sacrifice );
-      action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
+      action_list_str += "/felguard:felstorm";
+      if ( talents.grimoire_of_sacrifice -> ok() )
+        action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
     }
 
     add_action( "Summon Doomguard" );
@@ -4530,12 +4538,20 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
-      add_action( "Immolation Aura",       "if=!ticking&demonic_fury>60*num_targets",                "aoe" );
-      add_action( find_spell( 603 ),       "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
+      get_action_priority_list( "aoe" ) -> action_list_str += "/felguard:felstorm";
+
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                             "aoe" );
-      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                       "aoe" );
+      
+      add_action( "Hand of Gul'dan",       "",                                                       "aoe" );
+
+      add_action( talents.grimoire_of_sacrifice, "if=!felstorm_is_ticking", "aoe" );
+      if ( talents.grimoire_of_sacrifice -> ok() )       
+        get_action_priority_list( "aoe" ) -> action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
+
+      add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=350+60*num_targets", "aoe" );
+      add_action( "Immolation Aura",       "if=!ticking&demonic_fury>60*num_targets",                "aoe" );
+      add_action( spec.doom,               "cycle_targets=1,if=!ticking|remains<40",                 "aoe" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         get_action_priority_list( "aoe" ) -> action_list_str += "/cancel_metamorphosis";
@@ -4693,6 +4709,17 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       virtual double evaluate() { return action.td( action.target ) -> debuffs_haunt -> remains().total_seconds(); }
     };
     return new target_haunt_remains_expr_t( *(debug_cast<warlock_spell_t*>( a )) );
+  }
+  else if ( name_str == "felstorm_is_ticking" )
+  {
+    struct felstorm_is_ticking_expr_t : public expr_t
+    {
+      warlock_pet_t* felguard;
+      felstorm_is_ticking_expr_t( warlock_pet_t* f ) :
+        expr_t( "felstorm_is_ticking" ), felguard( f ) { }
+      virtual double evaluate() { return ( felguard ) ? felguard -> special_action -> get_dot() -> ticking : false; }
+    };
+    return new felstorm_is_ticking_expr_t( debug_cast<warlock_pet_t*>( find_pet( "felguard" ) ) );
   }
   else
   {
