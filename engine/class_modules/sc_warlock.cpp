@@ -321,7 +321,7 @@ struct warlock_t : public player_t
     switch ( primary_tree() )
     {
     case WARLOCK_AFFLICTION:  return "000020"; break;
-    case WARLOCK_DEMONOLOGY:  return "300020"; break;
+    case WARLOCK_DEMONOLOGY:  return "300030"; break;
     case WARLOCK_DESTRUCTION: return "000020"; break;
     default: break;
     }
@@ -1338,9 +1338,9 @@ public:
     return um;
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_multiplier()
   {
-    double m = spell_t::action_da_multiplier();
+    double m = spell_t::action_multiplier();
 
     if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && aoe == 0 )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -2658,7 +2658,7 @@ struct fel_flame_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    // Exclude demonology because it's already covered by warlock_spell_t::action_dd_multiplier()
+    // Exclude demonology because it's already covered by warlock_spell_t::action_multiplier()
 
     if ( p() -> primary_tree() == WARLOCK_AFFLICTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -3023,6 +3023,14 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     aoe         = -1;
     direct_tick = true;
 
+    // FIXME: Damage was cut in half for destruction, but this isn't reflected in spell data yet
+    if ( p -> primary_tree() == WARLOCK_DESTRUCTION )
+    {
+      base_dd_min /= 2;
+      base_dd_max /= 2;
+      direct_power_mod /= 2;
+    }
+
     if ( ! dtr )
       dual = true;
 
@@ -3380,12 +3388,15 @@ public:
 
 struct summon_main_pet_t : public summon_pet_t
 {
-  cooldown_t* soulburn_cooldown;
+  cooldown_t* instant_cooldown;
 
   summon_main_pet_t( const char* n, warlock_t* p, const char* sname ) :
-    summon_pet_t( n, p, sname ), soulburn_cooldown( p -> get_cooldown( "soulburn_summon_pet" ) )
+    summon_pet_t( n, p, sname ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
-    soulburn_cooldown -> duration = timespan_t::from_seconds( 60 );
+    instant_cooldown -> duration = timespan_t::from_seconds( 60 );
+    
+    // Costs ten times as much fury as the spell data claims
+    base_costs[ RESOURCE_DEMONIC_FURY ] *= 10;
   }
 
   virtual void schedule_execute()
@@ -3404,7 +3415,9 @@ struct summon_main_pet_t : public summon_pet_t
     if ( p() -> pets.active == pet )
       return false;
 
-    if ( p() -> buffs.soulburn -> check() && soulburn_cooldown -> remains() > timespan_t::zero() )
+    // FIXME: Currently on beta (2012/05/06) summoning a pet during metamorphosis makes you unable
+    //        to summon another one for a full minute, regardless of meta. This may not be intended.
+    if ( ( p() -> buffs.soulburn -> check() || p() -> primary_tree() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> remains() > timespan_t::zero() )
       return false;
 
     return summon_pet_t::ready();
@@ -3412,7 +3425,7 @@ struct summon_main_pet_t : public summon_pet_t
 
   virtual timespan_t execute_time()
   {
-    if ( p() -> buffs.soulburn -> check() || p() -> buffs.demonic_rebirth -> check() )
+    if ( p() -> buffs.soulburn -> check() || p() -> buffs.demonic_rebirth -> check() || p() -> buffs.metamorphosis -> check() )
       return timespan_t::zero();
 
     return warlock_spell_t::execute_time();
@@ -3426,9 +3439,12 @@ struct summon_main_pet_t : public summon_pet_t
 
     if ( p() -> buffs.soulburn -> up() )
     {
-      soulburn_cooldown -> start();
+      instant_cooldown -> start();
       p() -> buffs.soulburn -> expire();
     }
+
+    if ( p() -> buffs.metamorphosis -> check() )
+      instant_cooldown -> start();
 
     if ( p() -> buffs.demonic_rebirth -> up() )
       p() -> buffs.demonic_rebirth -> expire();
@@ -3740,12 +3756,13 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     decrement_event_t( warlock_t* p, buff_t* b ) :
       event_t( p -> sim, p, "grimoire_of_sacrifice_decrement" ), buff( b )
     {
-      sim -> add_event( this, timespan_t::from_seconds( 15 ) );
+      // FIXME: It takes at least 20 seconds to decrement currently, contrary to what the tooltip says.
+      sim -> add_event( this, timespan_t::from_seconds( 20 ) );
     }
 
     virtual void execute()
     {
-      if ( buff -> stack() == 2 ) buff -> decrement();
+      if ( buff -> check() == 2 ) buff -> decrement();
     }
   };
 
@@ -4378,13 +4395,6 @@ void warlock_t::init_actions()
     else if ( level >= 80 )
       precombat_list += "/volcanic_potion";
 
-    if ( talents.grimoire_of_service -> ok() )
-      action_list_str += "/service_" + pet;
-
-    add_action( talents.grimoire_of_sacrifice );
-    if ( talents.grimoire_of_sacrifice -> ok() )
-      action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
-
     // Usable Item
     for ( int i = items.size() - 1; i >= 0; i-- )
     {
@@ -4395,16 +4405,31 @@ void warlock_t::init_actions()
       }
     }
 
+    // Potion
+    if ( level > 85 )
+      action_list_str += "jinyu_potion,if=buff.bloodlust.react|target.health.pct<=20";
+    else if ( level > 80 )
+      action_list_str += "volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
+
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();
 
-    // Potion
-    if ( level > 85 )
-      action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.health.pct<=20";
-    else if ( level > 80 )
-      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
-
     add_action( spec.dark_soul );
+
+    if ( talents.grimoire_of_service -> ok() )
+      action_list_str += "/service_" + pet;
+    
+    if ( primary_tree() == WARLOCK_DEMONOLOGY )
+    {
+      if ( find_class_spell( "Metamorphosis" ) -> ok() )
+        action_list_str += "/touch_of_chaos";
+      action_list_str += "/felguard:felstorm";
+    }
+    else if ( talents.grimoire_of_sacrifice -> ok() )
+    {
+      add_action( talents.grimoire_of_sacrifice );
+      action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
+    }
 
     int multidot_max = 3;
 
@@ -4414,15 +4439,14 @@ void warlock_t::init_actions()
     case WARLOCK_DEMONOLOGY:  multidot_max = 5; break;
     default: break;
     }
-    
-    if ( primary_tree() == WARLOCK_DEMONOLOGY )
-    {
-      if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/touch_of_chaos";
-      action_list_str += "/felguard:felstorm";
-    }
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
+
+    if ( primary_tree() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
+    {
+      add_action( talents.grimoire_of_sacrifice );
+      action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
+    }
 
     add_action( "Summon Doomguard" );
     add_action( "Summon Doomguard", "if=num_targets<7", "aoe" );
@@ -4466,10 +4490,10 @@ void warlock_t::init_actions()
       add_action( "Shadowburn",            "if=ember_react" );
       add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
-      add_action( "Immolate",              "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Rain of Fire",          "if=!ticking&!in_flight&(mana.pct>=50|num_targets>1)" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=10&miss_react" );
+      else
+        add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
       add_action( "Incinerate" );
 
       // AoE action list
@@ -4496,6 +4520,10 @@ void warlock_t::init_actions()
       add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.demonic_slash );
+
+      if ( talents.grimoire_of_sacrifice -> ok() )
+        action_list_str += "/summon_felguard,if=buff.grimoire_of_sacrifice.stack<2";
+
       add_action( "Life Tap",              "if=mana.pct<50" );
       add_action( "Shadow Bolt" );
       add_action( "Void Ray",              "moving=1" );
