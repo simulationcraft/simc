@@ -4238,6 +4238,9 @@ void warlock_t::init_base()
 
   initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
+  // If we don't have base mp5 defined for this level in extra_data.inc, approximate:
+  if ( base.mp5 == 0 ) base.mp5 = resources.base[ RESOURCE_MANA ] * 0.05;
+
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
   if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
