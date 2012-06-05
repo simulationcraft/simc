@@ -2562,6 +2562,7 @@ struct module_t
   module_t( player_e t ) : type(t) {}
   virtual ~module_t() {}
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) = 0;
+  virtual bool valid() = 0;
   virtual void init( sim_t* ) = 0;
   virtual void combat_begin( sim_t* ) = 0;
   virtual void combat_end( sim_t* ) = 0;

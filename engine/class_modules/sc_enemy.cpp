@@ -630,6 +630,7 @@ struct enemy_module_t : public module_t
   {
     return new enemy_t( sim, name );
   }
+  virtual bool valid() { return true; }
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}

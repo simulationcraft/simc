@@ -4681,6 +4681,7 @@ struct death_knight_module_t : public module_t
   {
     return new death_knight_t( sim, name, r );
   }
+  virtual bool valid() { return true; }
   virtual void init( sim_t* sim )
   {
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )

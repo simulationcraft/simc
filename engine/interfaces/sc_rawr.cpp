@@ -533,9 +533,14 @@ player_t* rawr::load_player( sim_t* sim,
   race_e r = translate_rawr_race_str( race_str );
 
   module_t* module = module_t::get( class_str );
-  player_t* p = module ? module -> create_player( sim, name_str, r ) : 0;
-  sim -> active_player = p;
 
+  if( ! module || ! module -> valid() )
+  {
+    sim -> errorf( "\nModule for class %s is currently not available.\n", class_str.c_str() );
+  }
+
+  player_t* p = sim -> active_player = module -> create_player( sim, name_str, r );
+  
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s'.\n", class_str.c_str(), name_str.c_str() );

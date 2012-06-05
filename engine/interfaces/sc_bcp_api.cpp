@@ -341,8 +341,13 @@ static player_t* parse_player( sim_t*             sim,
   race_e race = util::translate_race_id( rid );
 
   module_t* module = module_t::get( class_name );
-  player_t* p = module ? module -> create_player( sim, name, race ) : 0;
-  sim -> active_player = p;
+
+  if( ! module || ! module -> valid() )
+  {
+    sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
+    return 0;
+  }
+  player_t* p = sim -> active_player = module -> create_player( sim, name, race );
 
   if ( ! p )
   {

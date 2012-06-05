@@ -5026,6 +5026,7 @@ struct priest_module_t : public module_t
   {
     return new priest_t( sim, name, r );
   }
+  virtual bool valid() { return true; }
   virtual void init( sim_t* sim )
   {
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )

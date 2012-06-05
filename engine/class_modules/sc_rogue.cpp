@@ -3951,6 +3951,7 @@ struct rogue_module_t : public module_t
   {
     return NULL; // new rogue_t( sim, name, r );
   }
+  virtual bool valid() { return false; }
   virtual void init( sim_t* sim ) 
   {
     sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );

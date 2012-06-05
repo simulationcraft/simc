@@ -149,6 +149,8 @@ static bool parse_player( sim_t*             sim,
                           const std::string& name,
                           const std::string& value )
 {
+  sim -> active_player = 0;
+
   if ( name == "pet" )
   {
     std::string::size_type cut_pt = value.find( ',' );
@@ -183,17 +185,23 @@ static bool parse_player( sim_t*             sim,
     sim -> active_player = module_t::get( source -> type ) -> create_player( sim, player_name );
     if ( sim -> active_player != 0 ) sim -> active_player -> copy_from ( source );
   }
-
   else
   {
     module_t* module = module_t::get( name );
 
-    sim -> active_player = module ? module -> create_player( sim, value ) : 0;
-
-    if( ! sim -> active_player )
+    if( ! module || ! module -> valid() )
     {
-      sim -> errorf( "\n%s module for player %s is currently not available.\n", 
-                     name.c_str(), value.c_str() );
+      sim -> errorf( "\nModule for class %s is currently not available.\n", name.c_str() );
+    }
+    else
+    {
+      sim -> active_player = module -> create_player( sim, value );
+
+      if( ! sim -> active_player )
+      {
+	sim -> errorf( "\nUnable to create player %s with class %s.\n", 
+		       value.c_str(), name.c_str() );
+      }
     }
   }
 

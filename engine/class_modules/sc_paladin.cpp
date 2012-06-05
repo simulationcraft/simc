@@ -3207,6 +3207,7 @@ struct paladin_module_t : public module_t
   {
     return new paladin_t( sim, name, r );
   }
+  virtual bool valid() { return true; }
   virtual void init( sim_t* sim )
   {
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
