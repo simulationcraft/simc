@@ -77,6 +77,7 @@ struct warlock_t : public player_t
     buff_t* soul_swap;
     buff_t* archimondes_vengeance;
     buff_t* kiljaedens_cunning;
+    buff_t* demonic_rebirth;
   } buffs;
 
   // Cooldowns
@@ -138,6 +139,7 @@ struct warlock_t : public player_t
     const spell_data_t* doom;
     const spell_data_t* demonic_slash;
     const spell_data_t* chaos_wave;
+    const spell_data_t* demonic_rebirth;
 
     // Destruction
     const spell_data_t* backdraft;
@@ -3410,7 +3412,7 @@ struct summon_main_pet_t : public summon_pet_t
 
   virtual timespan_t execute_time()
   {
-    if ( p() -> buffs.soulburn -> check() )
+    if ( p() -> buffs.soulburn -> check() || p() -> buffs.demonic_rebirth -> check() )
       return timespan_t::zero();
 
     return warlock_spell_t::execute_time();
@@ -3427,6 +3429,9 @@ struct summon_main_pet_t : public summon_pet_t
       soulburn_cooldown -> start();
       p() -> buffs.soulburn -> expire();
     }
+
+    if ( p() -> buffs.demonic_rebirth -> up() )
+      p() -> buffs.demonic_rebirth -> expire();
 
     if ( p() -> buffs.grimoire_of_sacrifice -> check() )
       p() -> buffs.grimoire_of_sacrifice -> expire();
@@ -3768,6 +3773,11 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       p() -> pets.active -> dismiss();
       p() -> pets.active = 0;
       p() -> buffs.grimoire_of_sacrifice -> trigger( 2 );
+
+      // FIXME: Demonic rebirth should really trigger on any pet death, but this is the only pet death we care about for now
+      if ( p() -> spec.demonic_rebirth -> ok() )
+        p() -> buffs.demonic_rebirth -> trigger();
+
       decrement_event = new ( sim ) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
     }
   }
@@ -3902,7 +3912,7 @@ double warlock_t::composite_mp5()
 {
   double mp5 = player_t::composite_mp5();
 
-  if ( spec.chaotic_energy -> ok() ) mp5 /= composite_spell_haste();
+  mp5 /= composite_spell_haste();
 
   return mp5;
 }
@@ -4131,10 +4141,11 @@ void warlock_t::init_spells()
   spec.malefic_grasp = find_specialization_spell( "Malefic Grasp" );
 
   // Demonology
-  spec.decimation    = find_specialization_spell( "Decimation" );
-  spec.demonic_fury  = find_specialization_spell( "Demonic Fury" );
-  spec.metamorphosis = find_specialization_spell( "Metamorphosis" );
-  spec.molten_core   = find_specialization_spell( "Molten Core" );
+  spec.decimation      = find_specialization_spell( "Decimation" );
+  spec.demonic_fury    = find_specialization_spell( "Demonic Fury" );
+  spec.metamorphosis   = find_specialization_spell( "Metamorphosis" );
+  spec.molten_core     = find_specialization_spell( "Molten Core" );
+  spec.demonic_rebirth = find_specialization_spell( "Demonic Rebirth" );
 
   spec.doom          = ( find_specialization_spell( "Metamorphosis: Doom"          ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
   spec.demonic_slash = ( find_specialization_spell( "Metamorphosis: Demonic Slash" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
@@ -4230,7 +4241,7 @@ void warlock_t::init_buffs()
   buffs.backdraft             = buff_creator_t( this, "backdraft", find_spell( 117828 ) ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul );
   buffs.metamorphosis         = buff_creator_t( this, "metamorphosis", spec.metamorphosis );
-  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 );
+  buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 99 ); // Appears to have no max at all
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", find_spell( 114925 ) ).duration( timespan_t::zero() );
@@ -4240,6 +4251,7 @@ void warlock_t::init_buffs()
   buffs.tier13_4pc_caster     = buff_creator_t( this, "tier13_4pc_caster", find_spell( 105786 ) );
   buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
+  buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
 }
 
 
