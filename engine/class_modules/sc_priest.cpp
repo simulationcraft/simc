@@ -146,7 +146,6 @@ struct priest_t : public player_t
     const spell_data_t* spiritual_precision;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
-    const spell_data_t* shadowfiend_cooldown_reduction;
   } specs;
 
   // Mastery Spells
@@ -197,7 +196,6 @@ struct priest_t : public player_t
     proc_t* shadowy_apparition;
     proc_t* surge_of_darkness;
     proc_t* divine_insight_shadow;
-    proc_t* shadowfiend_cooldown_reduction;
     proc_t* mind_spike_dot_removal;
   } procs;
 
@@ -2233,19 +2231,6 @@ struct mind_flay_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT )
-    {
-      p() -> procs.shadowfiend_cooldown_reduction -> occur();
-      if ( p() -> talents.mindbender -> ok() )
-      {
-        p() -> cooldowns.mindbender  -> adjust( timespan_t::from_seconds( -1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value() );
-      }
-      else
-      {
-        p() -> cooldowns.shadowfiend -> adjust( timespan_t::from_seconds( -1.0 ) * p() -> specs.shadowfiend_cooldown_reduction -> effectN( 1 ).base_value() );
-      }
-    }
-
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
@@ -2632,6 +2617,9 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
+    parse_effect_data( data().effectN( 2 ) );
+    tick_power_mod = 0.166;
+
     tick_may_crit = true;
 
     if ( ! dtr && player -> has_dtr )
@@ -2719,23 +2707,23 @@ struct devouring_plague_t : public priest_spell_t
     return m;
   }
 
-  virtual void assess_damage( player_t* t,
-                              double amount,
-                              dmg_e type,
-                              result_e impact_result )
+  virtual void impact_s( action_state_t* s )
   {
-    priest_spell_t::assess_damage( t, amount, type, impact_result );
+    priest_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) && type == DMG_DIRECT ) // BUG 15677: No longer heals off dot ticks
-    {
-      double a = amount * ( 0.30 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ;
-      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
-    }
+    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( s );
+    double a = data().effectN( 3 ).percent() * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+    p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
   }
 
   virtual void tick( dot_t* d )
   {
     priest_spell_t::tick( d );
+
+    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
+    double a = data().effectN( 4 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+
+    p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
@@ -4287,7 +4275,6 @@ void priest_t::init_procs()
   player_t::init_procs();
 
   procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"          );
-  procs.shadowfiend_cooldown_reduction = get_proc( "Shadowfiend cooldown reduction"     );
   procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"         );
   procs.divine_insight_shadow          = get_proc( "Divine Insight Mind Blast CD Reset" );
   procs.surge_of_darkness              = get_proc( "FDCL Mind Spike proc"               );
@@ -4385,7 +4372,6 @@ void priest_t::init_spells()
   specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
-  specs.shadowfiend_cooldown_reduction = find_spell( find_class_spell( "Mind Flay" ) -> ok() ? 87100 : 0 );
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
