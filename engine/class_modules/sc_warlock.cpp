@@ -1856,7 +1856,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    tick_power_mod = 0.2; // from tooltip, also tested on beta 2012/04/28
+    tick_power_mod = 0.4; // tested on beta 2012/06/05
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
