@@ -5174,7 +5174,9 @@ struct swap_action_list_t : public action_t
       sim -> errorf( "Player %s uses %s with unknown action list %s\n", player -> name(), name.c_str(), alist_name.c_str() );
       sim -> cancel();
     }
-    trigger_gcd = timespan_t::zero();
+
+    trigger_gcd = timespan_t::zero(); 
+    use_off_gcd = true;
   }
 
   virtual void execute()

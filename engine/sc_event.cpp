@@ -176,14 +176,22 @@ player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
 void player_gcd_event_t::execute()
 {
   action_t* a = 0;
+  timespan_t delta_time = timespan_t::from_seconds( 0.1 );
 
-  for ( std::vector<action_t*>::const_iterator i = player -> active_action_list -> off_gcd_actions.begin();
-        i < player -> active_action_list -> off_gcd_actions.end(); i++ )
+  for ( std::vector<action_t*>::const_iterator i = player -> active_action_list -> foreground_action_list.begin();
+         i < player -> active_action_list -> foreground_action_list.end(); i++ )
   {
     a = *i;
-    if ( a -> ready() )
+    if ( a -> use_off_gcd && a -> ready() )
     {
       player -> last_foreground_action = a;
+
+      action_priority_list_t* alist = player -> active_action_list;
+      if ( player -> restore_action_list != 0 )
+      {
+        player -> activate_action_list( player -> restore_action_list );
+        player -> restore_action_list = 0;
+      }
 
       a -> execute();
       player -> iteration_executed_foreground_actions++;
@@ -191,10 +199,17 @@ void player_gcd_event_t::execute()
         player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time ) );
       if ( ! a -> label_str.empty() )
         player -> action_map[ a -> label_str ] += 1;
+
+      // Need to break because the active action list changed
+      if ( alist != player -> active_action_list ) 
+      {
+        delta_time = timespan_t::zero();
+        break;
+      }
     }
   }
 
-  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds( 0.1 ) );
+  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, delta_time );
 }
 
 // ==========================================================================
