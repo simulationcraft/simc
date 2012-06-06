@@ -2617,8 +2617,8 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    parse_effect_data( data().effectN( 2 ) );
-    tick_power_mod = 0.166;
+    parse_effect_data( data().effectN( 2 ) ); // necessary because effect4 overrides base_tick_time with 0
+    tick_power_mod = 0.166; // hardcoded into tooltip in MoP build 15752
 
     tick_may_crit = true;
 
