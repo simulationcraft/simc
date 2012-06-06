@@ -336,7 +336,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case A_PERIODIC_DUMMY:
     case A_PERIODIC_TRIGGER_SPELL:
       base_tick_time   = spelleffect_data.period();
-      num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
+      num_ticks        = ( base_tick_time > timespan_t::zero() ) ? ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time ) : 0;
       break;
     case A_SCHOOL_ABSORB:
       direct_power_mod = spelleffect_data.coeff();
