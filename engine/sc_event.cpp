@@ -176,7 +176,6 @@ player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
 void player_gcd_event_t::execute()
 {
   action_t* a = 0;
-  action_priority_list_t* olist = player -> active_off_gcd_list;
 
   for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
          i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
