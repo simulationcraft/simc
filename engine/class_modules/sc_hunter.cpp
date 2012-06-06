@@ -4315,7 +4315,7 @@ struct hunter_module_t : public module_t
   {
     return new hunter_t( sim, name, r );
   }
-  virtual bool valid() { return true; }
+  virtual bool valid() { return false; }
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}
