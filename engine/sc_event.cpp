@@ -176,22 +176,17 @@ player_gcd_event_t::player_gcd_event_t( sim_t*    sim,
 void player_gcd_event_t::execute()
 {
   action_t* a = 0;
-  timespan_t delta_time = timespan_t::from_seconds( 0.1 );
+  action_priority_list_t* olist = player -> active_off_gcd_list;
 
-  for ( std::vector<action_t*>::const_iterator i = player -> active_action_list -> foreground_action_list.begin();
-         i < player -> active_action_list -> foreground_action_list.end(); i++ )
+  for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
+         i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
   {
     a = *i;
-    if ( a -> use_off_gcd && a -> ready() )
+    if ( a -> ready() )
     {
       player -> last_foreground_action = a;
 
       action_priority_list_t* alist = player -> active_action_list;
-      if ( player -> restore_action_list != 0 )
-      {
-        player -> activate_action_list( player -> restore_action_list );
-        player -> restore_action_list = 0;
-      }
 
       a -> execute();
       player -> iteration_executed_foreground_actions++;
@@ -200,16 +195,24 @@ void player_gcd_event_t::execute()
       if ( ! a -> label_str.empty() )
         player -> action_map[ a -> label_str ] += 1;
 
-      // Need to break because the active action list changed
+      // Need to restart because the active action list changed
       if ( alist != player -> active_action_list ) 
       {
-        delta_time = timespan_t::zero();
-        break;
+        player -> activate_action_list( player -> active_action_list, true );
+        execute();
+        player -> activate_action_list( alist, true );
+        return;
       }
     }
   }
 
-  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, delta_time );
+  if ( player -> restore_action_list != 0 )
+  {
+    player -> activate_action_list( player -> restore_action_list );
+    player -> restore_action_list = 0;
+  }
+
+  player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds( 0.1 ) );
 }
 
 // ==========================================================================
@@ -244,12 +247,11 @@ void action_execute_event_t::execute()
     player -> schedule_ready( timespan_t::zero() );
   }
 
-  if ( player -> active_action_list -> off_gcd_actions.size() == 0 )
+  if ( player -> active_off_gcd_list == 0 )
     return;
 
   // Kick off the during-gcd checker, first run is immediately after
-  if ( player -> off_gcd )
-    event_t::cancel( player -> off_gcd );
+  event_t::cancel( player -> off_gcd );
 
   if ( ! player -> channeling )
     player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );

@@ -3255,6 +3255,7 @@ struct player_t : public noncopyable
   std::vector<action_priority_list_t*> action_priority_list;
   std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
+  action_priority_list_t* active_off_gcd_list;
   action_priority_list_t* restore_action_list;
   std::map<std::string,std::string> alist_map;
 
@@ -3741,7 +3742,7 @@ struct player_t : public noncopyable
   virtual double composite_attack_crit_vulnerability();
   virtual double composite_ranged_attack_player_vulnerability();
 
-  virtual void activate_action_list( action_priority_list_t* a );
+  virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
 };
 
 // Target Specific ==========================================================

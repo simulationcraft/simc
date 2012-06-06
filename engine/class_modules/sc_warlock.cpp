@@ -3543,6 +3543,7 @@ struct infernal_awakening_t : public warlock_spell_t
     aoe        = -1;
     background = true;
     proc       = true;
+    dual       = true;
     trigger_gcd= timespan_t::zero();
   }
 };
@@ -3587,6 +3588,8 @@ struct summon_doomguard2_t : public summon_pet_t
   {
     harmful = false;
     background = true;
+    dual       = true;
+    proc       = true;
     summoning_duration = timespan_t::from_seconds( 60 );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> primary_tree() == WARLOCK_DEMONOLOGY ?

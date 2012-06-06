@@ -333,7 +333,7 @@ player_t::player_t( sim_t*             s,
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
   action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
-  precombat_action_list( 0 ), active_action_list( 0 ), restore_action_list( 0 ),
+  precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
@@ -1553,12 +1553,16 @@ void player_t::init_actions()
     }
   }
 
+  bool have_off_gcd_actions = false;
   for ( size_t i = 0; i < action_list.size(); ++i )
   {
     action_t* action = action_list[ i ];
     action -> init();
     if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
+    {
       find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
+      have_off_gcd_actions = true;
+    }
   }
 
   if ( choose_action_list.empty() ) choose_action_list = "default";
@@ -1574,6 +1578,7 @@ void player_t::init_actions()
   if ( chosen_action_list )
   {
     activate_action_list( chosen_action_list );
+    if ( have_off_gcd_actions ) activate_action_list( chosen_action_list, true );
   }
   else
   {
@@ -1586,9 +1591,12 @@ void player_t::init_actions()
   report_information.action_sequence.clear();
 }
 
-void player_t::activate_action_list( action_priority_list_t* a )
+void player_t::activate_action_list( action_priority_list_t* a, bool off_gcd )
 {
-  active_action_list = a;
+  if ( off_gcd )
+    active_off_gcd_list = a;
+  else
+    active_action_list = a;
   a -> used = true;
 }
 
