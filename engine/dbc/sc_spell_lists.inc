@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15739
+// Class based active abilities, wow build 15752
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -254,9 +254,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        50433, // Ankle Crack (Special Ability)
        17253, // Bite (Basic Attack)
        93433, // Burrow Attack (Exotic Ability)
+      128432, // Cackling Howl (Special Ability)
        16827, // Claw (Basic Attack)
        50541, // Clench (Special Ability)
-       35387, // Corrosive Spit (Special Ability)
         1742, // Cower
        50256, // Demoralizing Roar (Special Ability)
        24423, // Demoralizing Screech
@@ -283,6 +283,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        94019, // Rest (Bonus Ability)
        93435, // Roar of Courage (Special Ability)
        50318, // Serenity Dust (Special Ability)
+      128433, // Serpent's Swiftness (Special Ability)
        49966, // Smack (Basic Attack)
        91644, // Snatch (Special Ability)
        50519, // Sonic Blast (Special Ability)
@@ -294,7 +295,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        56626, // Sting (Special Ability)
        90314, // Tailspin (Special Ability)
        50498, // Tear Armor
-       50271, // Tendon Rip (Special Ability)
        90309, // Terrifying Roar (Special Ability)
        35346, // Time Warp (Special Ability)
        94022, // Trick (Bonus Ability)
@@ -375,7 +375,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 26 abilities
+    // General tree, 25 abilities
     {
        32546, // Binding Heal
       126123, // Confession
@@ -383,7 +383,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          586, // Fade
         6346, // Fear Ward
         2061, // Flash Heal
-       14914, // Holy Fire
        15237, // Holy Nova
        64901, // Hymn of Hope
          588, // Inner Fire
@@ -405,10 +404,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       108968, // Void Shift
            0,
     },
-    // Discipline tree, 9 abilities
+    // Discipline tree, 10 abilities
     {
         2060, // Greater Heal
         2050, // Heal
+       14914, // Holy Fire
        89485, // Inner Focus
        33206, // Pain Suppression
        47540, // Penance
@@ -418,7 +418,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109964, // Spirit Shell
            0,
     },
-    // Holy tree, 12 abilities
+    // Holy tree, 13 abilities
     {
        81209, // Chakra: Chastise
        81206, // Chakra: Sanctuary
@@ -428,6 +428,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2060, // Greater Heal
        47788, // Guardian Spirit
         2050, // Heal
+       14914, // Holy Fire
        88625, // Holy Word: Chastise
          724, // Lightwell
          596, // Prayer of Healing
@@ -534,7 +535,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 35 abilities
+    // General tree, 34 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -553,7 +554,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8033, // Frostbrand Weapon
         2645, // Ghost Wolf
         8177, // Grounding Totem
-       73921, // Healing Rain
         5394, // Healing Stream Totem
         8004, // Healing Surge
        32182, // Heroism
@@ -817,7 +817,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109132, // Roll
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
-      103985, // Stance of the Fierce Tiger (Windwalker Stance)
+      103985, // Stance of the Fierce Tiger (Stance)
       100787, // Tiger Palm
       115080, // Touch of Death
       101643, // Transcendence
@@ -984,7 +984,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (22)
 
-// Talent tree specialization abilities, wow build 15739
+// Talent tree specialization abilities, wow build 15752
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1239,6 +1239,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        47517, // Grace
         2060, // Greater Heal
         2050, // Heal
+       14914, // Holy Fire
        89485, // Inner Focus
        77484, // Mastery: Shield Discipline
        95860, // Meditation
@@ -1265,6 +1266,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         2060, // Greater Heal
        47788, // Guardian Spirit
         2050, // Heal
+       14914, // Holy Fire
        88625, // Holy Word: Chastise
          724, // Lightwell
        77485, // Mastery: Echo of Light
@@ -1722,7 +1724,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15739
+// Class mastery abilities, wow build 15752
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -1948,7 +1950,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15739
+// Racial abilities, wow build 15752
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2660,7 +2662,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15739
+// Glyph spells for classes, wow build 15752
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3235,7 +3237,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15739
+// Tier item set bonuses for class, wow build 15752
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
