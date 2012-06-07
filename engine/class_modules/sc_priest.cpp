@@ -612,7 +612,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-     direct_power_mod = 0.0060173 * level;
+    direct_power_mod = 0.0060173 * level;
   }
 
   virtual void init_spells()
@@ -5068,7 +5068,7 @@ std::string priest_t::set_default_glyphs()
 
 // PRIEST MODULE INTERFACE ================================================
 
-struct priest_module_t : public module_t 
+struct priest_module_t : public module_t
 {
   priest_module_t() : module_t( PRIEST ) {}
 
@@ -5097,6 +5097,6 @@ struct priest_module_t : public module_t
 module_t* module_t::priest()
 {
   static module_t* m = 0;
-  if( ! m ) m = new priest_module_t();
+  if ( ! m ) m = new priest_module_t();
   return m;
 }

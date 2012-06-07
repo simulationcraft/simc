@@ -85,7 +85,7 @@ player_t* chardev::download_player( sim_t* sim,
   race_e race = util::parse_race_type( race_str );
   module_t* module = module_t::get( type_str );
 
-  if( ! module || ! module -> valid() )
+  if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", type_str.c_str() );
     return 0;

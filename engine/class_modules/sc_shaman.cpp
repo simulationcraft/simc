@@ -4229,7 +4229,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
 double shaman_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
-  
+
   // TODO: Is the additional haste multiplicative?
   if ( buff.flurry -> up() )
     h *= 1.0 / ( 1.0 + gear.haste_rating * buff.flurry -> data().effectN( 2 ).percent() / rating.spell_haste );
@@ -4254,11 +4254,11 @@ double shaman_t::composite_spell_hit()
 double shaman_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
-  
+
   // TODO: Is the additional haste multiplicative?
   if ( buff.flurry -> up() )
     h *= 1.0 / ( 1.0 + gear.haste_rating * buff.flurry -> data().effectN( 2 ).percent() / rating.attack_haste );
-  
+
   return h;
 }
 
@@ -4434,7 +4434,7 @@ role_e shaman_t::primary_role()
 
 // SHAMAN MODULE INTERFACE ================================================
 
-struct shaman_module_t : public module_t 
+struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
 
@@ -4468,6 +4468,6 @@ struct shaman_module_t : public module_t
 module_t* module_t::shaman()
 {
   static module_t* m = 0;
-  if( ! m ) m = new shaman_module_t();
+  if ( ! m ) m = new shaman_module_t();
   return m;
 }

@@ -1207,7 +1207,7 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
              "\t\t\t\t\t\t\t\t<div class=\"subsection subsection-small\">\n"
              "\t\t\t\t\t\t\t\t\t<h4>Sample Sequence</h4>\n"
              "\t\t\t\t\t\t\t\t\t<div class=\"force-wrap mono\">\n" );
-    
+
     std::vector<std::string> targets;
 
     targets.push_back( "none" );
@@ -1220,7 +1220,7 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
       {
-        if ( targets[ j ] == data -> target -> name() ) 
+        if ( targets[ j ] == data -> target -> name() )
         {
           found = true;
           break;
@@ -1228,11 +1228,11 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
       }
       if ( ! found ) targets.push_back( data -> target -> name() );
     }
-    
+
     fprintf( file, "\t\t\t\t\t\t\t\t\t\t<style type=\"text/css\" media=\"all\">\n" );
-    
+
     char colors[12][7] = { "eeeeee", "ffffff", "ff5555", "55ff55", "5555ff", "ffff55", "55ffff", "ff9999", "99ff99", "9999ff", "ffff99", "99ffff" };
-    
+
     int j = 0;
 
     for ( size_t i = 0; i < targets.size(); ++i )
@@ -1247,22 +1247,22 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
     }
 
     fprintf( file, "\t\t\t\t\t\t\t\t\t\t</style>\n" );
-    
+
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
       action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
       if ( data -> action -> name_str == "run_action_list" ) continue;
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
-      fprintf( file, 
+      fprintf( file,
                "<span class=\"%s_seq_target_%s\" title=\"[%d:%02d] %s%s\">%c</span>",
                p -> name(),
                targetname.c_str(),
-               (int) data -> time.total_minutes(),
-               (int) data -> time.total_seconds() % 60,
+               ( int ) data -> time.total_minutes(),
+               ( int ) data -> time.total_seconds() % 60,
                data -> action -> name(),
                ( targetname == "none" ? "" : " @ " + targetname ).c_str(),
-               data -> action -> marker );               
+               data -> action -> marker );
     }
 
     fprintf( file,

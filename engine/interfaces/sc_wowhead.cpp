@@ -607,14 +607,14 @@ static player_t* download_player_profile( sim_t* sim,
 
   module_t* module = module_t::get( type_str );
 
-  if( ! module || ! module -> valid() )
+  if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", type_str.c_str() );
     return 0;
   }
 
   player_t* p = sim -> active_player = module -> create_player( sim, name_str, r );
-  
+
   if ( ! p )
   {
     sim -> errorf( "Unable to build player with class '%s' and name '%s' from wowhead id '%s'.\n",

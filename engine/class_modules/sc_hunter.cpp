@@ -3801,29 +3801,29 @@ void hunter_t::init_actions()
     // BEAST MASTERY
     case HUNTER_BEAST_MASTERY:
 //      if ( talents.focus_fire -> ok() )
-      {
-        action_list_str += "/focus_fire,five_stacks=1";
-      }
-      action_list_str += "/serpent_sting,if=!ticking";
+    {
+      action_list_str += "/focus_fire,five_stacks=1";
+    }
+    action_list_str += "/serpent_sting,if=!ticking";
 
-      action_list_str += init_use_racial_actions();
+    action_list_str += init_use_racial_actions();
 //      if ( talents.bestial_wrath -> ok() )
-        action_list_str += "/bestial_wrath,if=focus>60";
-      action_list_str += "/multi_shot,if=target.adds>5";
-      action_list_str += "/cobra_shot,if=target.adds>5";
-      action_list_str += "/kill_shot";
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
-      action_list_str += "/kill_command";
+    action_list_str += "/bestial_wrath,if=focus>60";
+    action_list_str += "/multi_shot,if=target.adds>5";
+    action_list_str += "/cobra_shot,if=target.adds>5";
+    action_list_str += "/kill_shot";
+    action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
+    action_list_str += "/kill_command";
 
 //      if ( talents.fervor -> ok() )
-        action_list_str += "/fervor,if=focus<=37";
+    action_list_str += "/fervor,if=focus<=37";
 
-      action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
-      if ( level >= 81 )
-        action_list_str += "/cobra_shot";
-      else
-        action_list_str += "/steady_shot";
-      break;
+    action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
+    if ( level >= 81 )
+      action_list_str += "/cobra_shot";
+    else
+      action_list_str += "/steady_shot";
+    break;
 
     // MAKRMANSHIP
     case HUNTER_MARKSMANSHIP:
@@ -3832,7 +3832,7 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=90";
 //      if ( talents.chimera_shot -> ok() )
-        action_list_str += "/chimera_shot,if=target.health_pct<=90";
+      action_list_str += "/chimera_shot,if=target.health_pct<=90";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot,if=buff.pre_improved_steady_shot.up&buff.improved_steady_shot.remains<3";
@@ -3862,7 +3862,7 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot";
       break;
 
-    // SURVIVAL
+      // SURVIVAL
     case HUNTER_SURVIVAL:
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
@@ -3870,12 +3870,12 @@ void hunter_t::init_actions()
       action_list_str += "/explosive_shot,if=(remains<2.0)";
 
 //      if ( ! talents.black_arrow -> ok() )
-        action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
+      action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
 
       action_list_str += "/kill_shot";
 
 //      if ( talents.black_arrow -> ok() )
-        action_list_str += "/black_arrow,if=target.time_to_die>=8";
+      action_list_str += "/black_arrow,if=target.time_to_die>=8";
 
       action_list_str += "/rapid_fire";
 
@@ -3890,7 +3890,7 @@ void hunter_t::init_actions()
         summon_pet_str = "cat";
       break;
 
-    // DEFAULT
+      // DEFAULT
     default: break;
     }
 
@@ -4307,7 +4307,7 @@ void hunter_t::moving()
 
 // DRUID MODULE INTERFACE ================================================
 
-struct hunter_module_t : public module_t 
+struct hunter_module_t : public module_t
 {
   hunter_module_t() : module_t( HUNTER ) {}
 
@@ -4326,6 +4326,6 @@ struct hunter_module_t : public module_t
 module_t* module_t::hunter()
 {
   static module_t* m = 0;
-  if( ! m ) m = new hunter_module_t();
+  if ( ! m ) m = new hunter_module_t();
   return m;
 }

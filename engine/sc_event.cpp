@@ -178,7 +178,7 @@ void player_gcd_event_t::execute()
   action_t* a = 0;
 
   for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
-         i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
+        i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
   {
     a = *i;
     if ( a -> ready() )
@@ -193,7 +193,7 @@ void player_gcd_event_t::execute()
         player -> action_map[ a -> label_str ] += 1;
 
       // Need to restart because the active action list changed
-      if ( alist != player -> active_action_list ) 
+      if ( alist != player -> active_action_list )
       {
         player -> activate_action_list( player -> active_action_list, true );
         execute();
@@ -223,8 +223,8 @@ action_execute_event_t::action_execute_event_t( sim_t*    sim,
                                                 timespan_t time_to_execute ) :
   event_t( sim, a -> player, "Action-Execute" ), action( a )
 {
-  if ( sim -> debug ) 
-    sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)", 
+  if ( sim -> debug )
+    sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
                    player -> name(), a -> name(), time_to_execute.total_seconds(), a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
   sim -> add_event( this, time_to_execute );
 }

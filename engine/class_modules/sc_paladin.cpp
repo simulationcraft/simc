@@ -3199,7 +3199,7 @@ expr_t* paladin_t::create_expression( action_t* a,
 
 // PALADIN MODULE INTERFACE ================================================
 
-struct paladin_module_t : public module_t 
+struct paladin_module_t : public module_t
 {
   paladin_module_t() : module_t( PALADIN ) {}
 
@@ -3227,6 +3227,6 @@ struct paladin_module_t : public module_t
 module_t* module_t::paladin()
 {
   static module_t* m = 0;
-  if( ! m ) m = new paladin_module_t();
+  if ( ! m ) m = new paladin_module_t();
   return m;
 }

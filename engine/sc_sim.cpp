@@ -189,7 +189,7 @@ static bool parse_player( sim_t*             sim,
   {
     module_t* module = module_t::get( name );
 
-    if( ! module || ! module -> valid() )
+    if ( ! module || ! module -> valid() )
     {
       sim -> errorf( "\nModule for class %s is currently not available.\n", name.c_str() );
     }
@@ -197,10 +197,10 @@ static bool parse_player( sim_t*             sim,
     {
       sim -> active_player = module -> create_player( sim, value );
 
-      if( ! sim -> active_player )
+      if ( ! sim -> active_player )
       {
-	sim -> errorf( "\nUnable to create player %s with class %s.\n", 
-		       value.c_str(), name.c_str() );
+        sim -> errorf( "\nUnable to create player %s with class %s.\n",
+                       value.c_str(), name.c_str() );
       }
     }
   }
@@ -826,7 +826,7 @@ void sim_t::add_event( event_t* e,
 
   if ( unlikely( delta_time > wheel_time ) )
   {
-    e -> time = current_time + wheel_time - timespan_t::from_seconds(1);
+    e -> time = current_time + wheel_time - timespan_t::from_seconds( 1 );
     e -> reschedule_time = current_time + delta_time;
   }
   else
@@ -852,7 +852,7 @@ void sim_t::add_event( event_t* e,
   {
     prev = &( ( *prev ) -> next );
 #ifdef TEST_TIMEWHEEL
-  ++i;
+    ++i;
 #endif
   }
 
@@ -1131,7 +1131,7 @@ void sim_t::combat_begin()
     if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
   }
 
-  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
     if( m ) m -> combat_begin( this );
@@ -1214,7 +1214,7 @@ void sim_t::combat_end()
     t -> combat_end();
   }
 
-  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
     if( m ) m -> combat_end( this );

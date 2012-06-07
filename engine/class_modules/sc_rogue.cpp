@@ -3943,7 +3943,7 @@ int rogue_t::decode_set( const item_t& item ) const
 
 // ROGUE MODULE INTERFACE ================================================
 
-struct rogue_module_t : public module_t 
+struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
 
@@ -3952,7 +3952,7 @@ struct rogue_module_t : public module_t
     return NULL; // new rogue_t( sim, name, r );
   }
   virtual bool valid() { return false; }
-  virtual void init( sim_t* sim ) 
+  virtual void init( sim_t* sim )
   {
     sim -> auras.honor_among_thieves = buff_creator_t( sim, "honor_among_thieves" );
 
@@ -3977,6 +3977,6 @@ struct rogue_module_t : public module_t
 module_t* module_t::rogue()
 {
   static module_t* m = 0;
-  if( ! m ) m = new rogue_module_t();
+  if ( ! m ) m = new rogue_module_t();
   return m;
 }

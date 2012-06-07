@@ -4673,7 +4673,7 @@ void death_knight_t::arise()
 
 // DEATH_KNIGHT MODULE INTERFACE ================================================
 
-struct death_knight_module_t : public module_t 
+struct death_knight_module_t : public module_t
 {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -4699,6 +4699,6 @@ struct death_knight_module_t : public module_t
 module_t* module_t::death_knight()
 {
   static module_t* m = 0;
-  if( ! m ) m = new death_knight_module_t();
+  if ( ! m ) m = new death_knight_module_t();
   return m;
 }

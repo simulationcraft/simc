@@ -622,7 +622,7 @@ void enemy_t::combat_end()
 
 // ENEMY MODULE INTERFACE ================================================
 
-struct enemy_module_t : public module_t 
+struct enemy_module_t : public module_t
 {
   enemy_module_t() : module_t( ENEMY ) {}
 
@@ -641,6 +641,6 @@ struct enemy_module_t : public module_t
 module_t* module_t::enemy()
 {
   static module_t* m = 0;
-  if( ! m ) m = new enemy_module_t();
+  if ( ! m ) m = new enemy_module_t();
   return m;
 }

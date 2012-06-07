@@ -371,7 +371,8 @@ enum base_stat_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, B
                    BASE_STAT_HEALTH, BASE_STAT_MANA,
                    BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                    BASE_STAT_DODGE_PER_AGI,
-                   BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX };
+                   BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
+                 };
 
 enum resource_e
 {
@@ -2560,7 +2561,7 @@ public:
 struct module_t
 {
   player_e type;
-  module_t( player_e t ) : type(t) {}
+  module_t( player_e t ) : type( t ) {}
   virtual ~module_t() {}
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) = 0;
   virtual bool valid() = 0;
@@ -2581,7 +2582,7 @@ struct module_t
   static module_t* enemy();
   static module_t* get( player_e t )
   {
-    switch( t )
+    switch ( t )
     {
     case DEATH_KNIGHT: return death_knight();
     case DRUID: return druid();
@@ -2595,12 +2596,12 @@ struct module_t
     case WARLOCK: return warlock();
     case WARRIOR: return warrior();
     case ENEMY: return enemy();
-    default: break;
+    default:;
     }
     return NULL;
   }
   static module_t* get( const std::string& n ) { return get( util::parse_player_type( n ) ); }
-  static void init() { for( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ ) get( i ); }
+  static void init() { for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ ) get( i ); }
 };
 
 // Scaling ==================================================================
@@ -3024,7 +3025,7 @@ struct action_sequence_data_t
   player_t* target;
   timespan_t time;
 
-  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts) : action( a ), target( t ), time( ts ) {}
+  action_sequence_data_t( action_t* a, player_t* t, timespan_t ts ) : action( a ), target( t ), time( ts ) {}
 };
 
 // Player ===================================================================
@@ -4033,7 +4034,7 @@ struct action_t
   virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
   virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
   virtual double calculate_direct_damage( result_e, int chain_target, double attack_power,
-                                            double spell_power, double multiplier, player_t* target );
+                                          double spell_power, double multiplier, player_t* target );
   virtual double calculate_tick_damage( result_e, double power, double multiplier, player_t* target );
   virtual double calculate_weapon_damage( double attack_power );
   virtual double armor();
@@ -4156,7 +4157,7 @@ struct action_t
   void remove_travel_event( event_t* e )
   {
     for ( std::vector<event_t*>::iterator i = travel_events.begin(); i != travel_events.end(); ++i )
-      if ( (*i) == e ) { travel_events.erase( i ); break; }
+      if ( ( *i ) == e ) { travel_events.erase( i ); break; }
   }
 };
 

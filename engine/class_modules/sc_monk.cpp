@@ -631,7 +631,7 @@ role_e monk_t::primary_role()
 
 // MONK MODULE INTERFACE ================================================
 
-struct monk_module_t : public module_t 
+struct monk_module_t : public module_t
 {
   monk_module_t() : module_t( MONK ) {}
 
@@ -650,6 +650,6 @@ struct monk_module_t : public module_t
 module_t* module_t::monk()
 {
   static module_t* m = 0;
-  if( ! m ) m = new monk_module_t();
+  if ( ! m ) m = new monk_module_t();
   return m;
 }

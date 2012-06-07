@@ -342,7 +342,7 @@ static player_t* parse_player( sim_t*             sim,
 
   module_t* module = module_t::get( class_name );
 
-  if( ! module || ! module -> valid() )
+  if ( ! module || ! module -> valid() )
   {
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
     return 0;

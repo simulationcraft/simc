@@ -3775,7 +3775,7 @@ int warrior_t::decode_set( const item_t& item ) const
 
 // WARRIOR MODULE INTERFACE ================================================
 
-struct warrior_module_t : public module_t 
+struct warrior_module_t : public module_t
 {
   warrior_module_t() : module_t( WARRIOR ) {}
 
@@ -3784,7 +3784,7 @@ struct warrior_module_t : public module_t
     return NULL; // new warrior_t( sim, name, r );
   }
   virtual bool valid() { return false; }
-  virtual void init( sim_t* sim ) 
+  virtual void init( sim_t* sim )
   {
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
@@ -3801,6 +3801,6 @@ struct warrior_module_t : public module_t
 module_t* module_t::warrior()
 {
   static module_t* m = 0;
-  if( ! m ) m = new warrior_module_t();
+  if ( ! m ) m = new warrior_module_t();
   return m;
 }

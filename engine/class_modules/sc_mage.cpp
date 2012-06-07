@@ -3535,7 +3535,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 // MAGE MODULE INTERFACE ================================================
 
-struct mage_module_t : public module_t 
+struct mage_module_t : public module_t
 {
   mage_module_t() : module_t( MAGE ) {}
 
@@ -3554,6 +3554,6 @@ struct mage_module_t : public module_t
 module_t* module_t::mage()
 {
   static module_t* m = 0;
-  if( ! m ) m = new mage_module_t();
+  if ( ! m ) m = new mage_module_t();
   return m;
 }

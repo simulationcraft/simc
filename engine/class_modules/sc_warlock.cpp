@@ -827,8 +827,9 @@ void warlock_pet_t::init_base()
 }
 
 void warlock_pet_t::init_actions()
-{    
-  if ( special_action ) {
+{
+  if ( special_action )
+  {
     if ( type == PLAYER_PET )
       special_action -> background = true;
     else
@@ -841,13 +842,13 @@ void warlock_pet_t::init_actions()
 void warlock_pet_t::init_spell()
 {
   pet_t::init_spell();
-  if ( owner -> race == RACE_ORC) initial.spell_power_multiplier *= 1.05;
+  if ( owner -> race == RACE_ORC ) initial.spell_power_multiplier *= 1.05;
 }
 
 void warlock_pet_t::init_attack()
 {
   pet_t::init_attack();
-  if ( owner -> race == RACE_ORC) initial.attack_power_multiplier *= 1.05;
+  if ( owner -> race == RACE_ORC ) initial.attack_power_multiplier *= 1.05;
 }
 
 double warlock_pet_t::energy_regen_per_second()
@@ -1156,7 +1157,7 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
   }
 
   virtual action_t* create_action( const std::string& name,
-                                           const std::string& options_str )
+                                   const std::string& options_str )
   {
     if ( name == "firebolt" ) return new wild_firebolt_t( this );
 
@@ -1304,11 +1305,11 @@ public:
   {
     timespan_t t = spell_t::tick_time( haste );
 
-    if ( channeled ) 
+    if ( channeled )
     {
       // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
       if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+           ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
         t *= ( 1.0 + p() -> kc_cast_speed_reduction );
       return t;
     }
@@ -1328,7 +1329,7 @@ public:
 
     // FIXME: Find out if this adjusts mid-cast as well, if so we'll have to check the duration on the movement buff
     if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-       ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
       t *= ( 1.0 + p() -> kc_cast_speed_reduction );
 
     return t;
@@ -1338,9 +1339,9 @@ public:
   {
     bool um = spell_t::usable_moving();
 
-    if ( p() -> talents.kiljaedens_cunning -> ok() && 
-       ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() ) )
-       um = true;
+    if ( p() -> talents.kiljaedens_cunning -> ok() &&
+         ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() ) )
+      um = true;
 
     return um;
   }
@@ -1459,7 +1460,7 @@ struct curse_of_elements_t : public warlock_spell_t
   }
 };
 
-  
+
 struct agony_t : public warlock_spell_t
 {
   agony_t( warlock_t* p ) :
@@ -2325,7 +2326,7 @@ struct activate_touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "activate_touch_of_chaos", p, spell_data_t::nil() )
   {
     trigger_gcd = timespan_t::zero();
-    
+
     p -> touch_of_chaos = new touch_of_chaos_t( p );
   }
 
@@ -3221,12 +3222,12 @@ struct soul_swap_t : public warlock_spell_t
   cooldown_t* glyph_cooldown;
 
   soul_swap_t( warlock_t* p ) :
-    warlock_spell_t( p, "Soul Swap" ), 
-      agony( new agony_t( p ) ), 
-      corruption( new corruption_t( p ) ), 
-      unstable_affliction( new unstable_affliction_t( p ) ),
-      seed_of_corruption( new seed_of_corruption_t( p ) ),
-      glyph_cooldown( p -> get_cooldown( "glyphed_soul_swap" ) )
+    warlock_spell_t( p, "Soul Swap" ),
+    agony( new agony_t( p ) ),
+    corruption( new corruption_t( p ) ),
+    unstable_affliction( new unstable_affliction_t( p ) ),
+    seed_of_corruption( new seed_of_corruption_t( p ) ),
+    glyph_cooldown( p -> get_cooldown( "glyphed_soul_swap" ) )
   {
     agony               -> background = true;
     agony               -> dual       = true;
@@ -3236,7 +3237,7 @@ struct soul_swap_t : public warlock_spell_t
     unstable_affliction -> dual       = true;
     seed_of_corruption  -> background = true;
     seed_of_corruption  -> dual       = true;
-    
+
     if ( p -> glyphs.soul_swap -> ok() )
       glyph_cooldown -> duration = p -> glyphs.soul_swap -> effectN( 2 ).time_value();
   }
@@ -3289,7 +3290,7 @@ struct soul_swap_t : public warlock_spell_t
       unstable_affliction -> target = target;
       unstable_affliction -> execute();
     }
-    else 
+    else
     {
       p() -> buffs.soul_swap -> trigger();
 
@@ -3301,7 +3302,7 @@ struct soul_swap_t : public warlock_spell_t
 
       // Seed of Corruption is only soul swapped if it's not soulburned
       if ( td( target ) -> dots_seed_of_corruption -> ticking
-        && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
+           && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
         p() -> soul_swap_state.seed_of_corruption = true;
       else
         p() -> soul_swap_state.seed_of_corruption = false;
@@ -3314,7 +3315,7 @@ struct soul_swap_t : public warlock_spell_t
 
         // Seed of Corruption is only soul swapped if it's not soulburned
         if ( td( target ) -> dots_seed_of_corruption -> ticking
-          && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
+             && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
           td( target ) -> dots_seed_of_corruption -> cancel();
       }
     }
@@ -3330,14 +3331,14 @@ struct soul_swap_t : public warlock_spell_t
     }
     else if ( glyph_cooldown -> remains() > timespan_t::zero() )
     {
-        r = false;
+      r = false;
     }
     else if ( ! p() -> buffs.soulburn -> check() )
     {
       if ( ! td( target ) -> dots_agony               -> ticking
-        && ! td( target ) -> dots_corruption          -> ticking
-        && ! td( target ) -> dots_unstable_affliction -> ticking
-        && ! td( target ) -> dots_seed_of_corruption  -> ticking )
+           && ! td( target ) -> dots_corruption          -> ticking
+           && ! td( target ) -> dots_unstable_affliction -> ticking
+           && ! td( target ) -> dots_seed_of_corruption  -> ticking )
         r = false;
     }
 
@@ -3401,7 +3402,7 @@ struct summon_main_pet_t : public summon_pet_t
     summon_pet_t( n, p, sname ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
-    
+
     // Costs ten times as much fury as the spell data claims
     base_costs[ RESOURCE_DEMONIC_FURY ] *= 10;
   }
@@ -3483,7 +3484,7 @@ struct flames_of_xoroth_t : public warlock_spell_t
     else if ( p() -> pets.active )
     {
       p() -> pets.active -> dismiss();
-      p() -> pets.active = 0; 
+      p() -> pets.active = 0;
       gain_ember = true;
     }
     else if ( p() -> pets.last )
@@ -3699,7 +3700,7 @@ struct harvest_life_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
-    
+
     tick_power_mod = base_td = 0;
 
     tick_spell = new harvest_life_tick_t( p );
@@ -3954,7 +3955,7 @@ double warlock_t::composite_armor()
 double warlock_t::composite_movement_speed()
 {
   double s = player_t::composite_movement_speed();
-  
+
   // FIXME: This won't really work as it should, since movement speed is just checked once when the movement event starts
   if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
     s *= ( 1.0 - kc_movement_reduction );
@@ -3966,9 +3967,9 @@ double warlock_t::composite_movement_speed()
 void warlock_t::moving()
 {
   // FIXME: Handle the situation where the buff is up but the movement duration is longer than the duration of the buff
-  if ( ! talents.kiljaedens_cunning -> ok() || 
-     ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() > timespan_t::zero() ) )
-     player_t::moving();
+  if ( ! talents.kiljaedens_cunning -> ok() ||
+       ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> remains() > timespan_t::zero() ) )
+    player_t::moving();
 }
 
 
@@ -3981,10 +3982,10 @@ void warlock_t::halt()
 
 
 double warlock_t::assess_damage( double        amount,
-                                school_e school,
-                                dmg_e    type,
-                                result_e result,
-                                action_t*     action )
+                                 school_e school,
+                                 dmg_e    type,
+                                 result_e result,
+                                 action_t*     action )
 {
   double damage = player_t::assess_damage( amount, school, type, result, action );
 
@@ -4012,7 +4013,7 @@ double warlock_t::assess_damage( double        amount,
 
 
 double warlock_t::matching_gear_multiplier( attribute_e attr )
-{ 
+{
   if ( attr == ATTR_INTELLECT )
     return spec.nethermancy -> effectN( 1 ).percent();
 
@@ -4225,7 +4226,7 @@ void warlock_t::init_spells()
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
 
   archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
-  
+
   kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;
   kc_cast_speed_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 1 ).percent() : 0;
 }
@@ -4431,7 +4432,7 @@ void warlock_t::init_actions()
 
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
-    
+
     if ( primary_tree() == WARLOCK_DEMONOLOGY )
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
@@ -4445,7 +4446,8 @@ void warlock_t::init_actions()
 
     int multidot_max = 3;
 
-    switch ( primary_tree() ) {
+    switch ( primary_tree() )
+    {
     case WARLOCK_AFFLICTION:  multidot_max = 3; break;
     case WARLOCK_DESTRUCTION: multidot_max = 2; break;
     case WARLOCK_DEMONOLOGY:  multidot_max = 5; break;
@@ -4707,7 +4709,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
         expr_t( "target_haunt_remains" ), action( a ) { }
       virtual double evaluate() { return action.td( action.target ) -> debuffs_haunt -> remains().total_seconds(); }
     };
-    return new target_haunt_remains_expr_t( *(debug_cast<warlock_spell_t*>( a )) );
+    return new target_haunt_remains_expr_t( *( debug_cast<warlock_spell_t*>( a ) ) );
   }
   else if ( name_str == "felstorm_is_ticking" )
   {
@@ -4745,7 +4747,7 @@ bool warlock_t::verify_nightfall()
 
 // WARLOCK MODULE INTERFACE ================================================
 
-struct warlock_module_t : public module_t 
+struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK ) {}
 
@@ -4762,6 +4764,6 @@ struct warlock_module_t : public module_t
 module_t* module_t::warlock()
 {
   static module_t* m = 0;
-  if( ! m ) m = new warlock_module_t();
+  if ( ! m ) m = new warlock_module_t();
   return m;
 }

@@ -794,8 +794,8 @@ void action_t::consume_resource()
 bool action_t::is_valid_target( player_t* t )
 {
   return ( ! t -> current.sleeping &&
-         ( ( type == ACTION_HEAL && ! t -> is_enemy() )
-        || ( type != ACTION_HEAL && t -> is_enemy() ) ) );
+           ( ( type == ACTION_HEAL && ! t -> is_enemy() )
+             || ( type != ACTION_HEAL && t -> is_enemy() ) ) );
 }
 
 // action_t::available_targets ==============================================
@@ -1349,7 +1349,7 @@ bool action_t::ready()
     cycle_targets = saved_cycle_targets;
     target_number = saved_target_number;
 
-    if ( found_ready) return true;
+    if ( found_ready ) return true;
 
     target = saved_target;
   }
@@ -1478,13 +1478,13 @@ void action_t::cancel()
 
   if ( player -> executing  == this )
   {
-     was_busy = true;
-     player -> executing  = 0;
+    was_busy = true;
+    player -> executing  = 0;
   }
   if ( player -> channeling == this )
   {
-     was_busy = true;
-     player -> channeling  = 0;
+    was_busy = true;
+    player -> channeling  = 0;
   }
 
   event_t::cancel( execute_event );

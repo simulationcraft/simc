@@ -629,7 +629,7 @@ bool player_t::init( sim_t* sim )
   if ( ! init_debuffs( sim ) )
     return false;
 
-  for( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
     if( m ) m -> init( sim );
@@ -1165,9 +1165,9 @@ void player_t::init_resources( bool force )
     if ( force || resources.initial[ i ] == 0 )
     {
       resources.initial[ i ] = (   resources.base[ i ] * resources.base_multiplier[ i ]
-                                 + gear.resource[ i ] + enchant.resource[ i ]
-                                 + ( is_pet() ? 0 : sim -> enchant.resource[ i ] )
-                                ) * resources.initial_multiplier[ i ];
+                                   + gear.resource[ i ] + enchant.resource[ i ]
+                                   + ( is_pet() ? 0 : sim -> enchant.resource[ i ] )
+                               ) * resources.initial_multiplier[ i ];
       if ( i == RESOURCE_HEALTH )
       {
         // The first 20pts of stamina only provide 1pt of health.
@@ -1321,9 +1321,10 @@ struct execute_pet_action_t : public action_t
         }
       }
 
-      if ( ! pet_action ) {
+      if ( ! pet_action )
+      {
         sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
-                           player -> name(), action_str.c_str(), pet -> name() );
+                       player -> name(), action_str.c_str(), pet -> name() );
       }
     }
   }
@@ -5185,7 +5186,7 @@ struct swap_action_list_t : public action_t
       sim -> cancel();
     }
 
-    trigger_gcd = timespan_t::zero(); 
+    trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
   }
 
@@ -6451,7 +6452,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
 
     return new s_expr_t( name_str, *this, s );
-  }  
+  }
   else if ( ( num_splits == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
   {
     std::vector<action_t*> in_flight_list;
@@ -6499,7 +6500,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
           const std::vector<action_t*> action_list;
           action_t& action;
-            
+
           in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
             expr_t( "in_flight_to_target" ), action_list( al ), action( a ) {}
           virtual double evaluate()

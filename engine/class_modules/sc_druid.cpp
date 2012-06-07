@@ -2189,7 +2189,7 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t::impact_s( state );
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
-        state -> target -> debuffs.weakened_blows -> trigger();
+      state -> target -> debuffs.weakened_blows -> trigger();
   }
 
   virtual void tick( dot_t* d )
@@ -2755,10 +2755,10 @@ struct astral_communion_t : public druid_spell_t
     channeled    = true;
     may_miss     = false;
   }
-  
+
   virtual double haste()
   { return 1.0; }
-    
+
   virtual void execute()
   {
     if ( p() -> eclipse_bar_direction == 0 )
@@ -4853,11 +4853,11 @@ double druid_t::composite_attack_power()
 double druid_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
-  
+
   // TODO: Is the additional haste multiplicative?
   if ( buff.bear_form -> up() )
     h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_haste );
-  
+
   return h;
 }
 
@@ -4866,11 +4866,11 @@ double druid_t::composite_attack_haste()
 double druid_t::composite_attack_crit( weapon_t* w )
 {
   double c = player_t::composite_attack_crit( w );
-  
+
   // TODO: Is the additional crit multiplicative?
   if ( buff.bear_form -> up() )
     c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.attack_crit;
-    
+
   return c;
 }
 
@@ -4953,11 +4953,11 @@ double druid_t::composite_spell_hit()
 double druid_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
-  
+
   // TODO: Is the additional haste multiplicative?
   if ( buff.bear_form -> up() )
     h *= 1.0 / ( 1.0 + gear.haste_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_haste );
-  
+
   return h;
 }
 
@@ -4966,11 +4966,11 @@ double druid_t::composite_spell_haste()
 double druid_t::composite_spell_crit()
 {
   double c = player_t::composite_spell_crit();
-  
+
   // TODO: Is the additional crit multiplicative?
   if ( buff.bear_form -> up() )
     c *= 1.0 + gear.crit_rating * buff.bear_form -> data().effectN( 4 ).percent() / rating.spell_crit;
-  
+
   return c;
 }
 
@@ -5260,7 +5260,7 @@ druid_td_t::druid_td_t( player_t* target, druid_t* source )
 
 // DRUID MODULE INTERFACE ================================================
 
-struct druid_module_t : public module_t 
+struct druid_module_t : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
 
@@ -5286,6 +5286,6 @@ struct druid_module_t : public module_t
 module_t* module_t::druid()
 {
   static module_t* m = 0;
-  if( ! m ) m = new druid_module_t();
+  if ( ! m ) m = new druid_module_t();
   return m;
 }
