@@ -1561,7 +1561,9 @@ void player_t::init_actions()
     if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
     {
       find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
-      have_off_gcd_actions = true;
+      // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
+      if ( action -> name_str != "run_action_list" && action -> name_str != "swap_action_list" )
+        have_off_gcd_actions = true;
     }
   }
 
