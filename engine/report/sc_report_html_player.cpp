@@ -1354,7 +1354,7 @@ void print_html_gain( FILE* file, report::tabs_t tabs, gain_t* g, int& j, bool r
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+    if ( g -> actual[ i ] != 0 || g -> overflow[ i ] != 0 )
     {
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       fprintf( file, "%s<tr", *tabs );
@@ -1493,7 +1493,7 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
           bool found = false;
           for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
           {
-            if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+            if ( g -> actual[ i ] != 0 || g -> overflow[ i ] != 0 )
             {
               found = true;
               break;
