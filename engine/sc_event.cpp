@@ -183,8 +183,6 @@ void player_gcd_event_t::execute()
     a = *i;
     if ( a -> ready() )
     {
-      player -> last_foreground_action = a;
-
       action_priority_list_t* alist = player -> active_action_list;
 
       a -> execute();
