@@ -2484,12 +2484,83 @@ struct mind_sear_t : public priest_spell_t
 
 struct shadow_word_death_t : public priest_spell_t
 {
+  struct shadow_word_death_backlash_t : public priest_spell_t
+  {
+    double spellpower;
+    double multiplier;
+
+    shadow_word_death_backlash_t( priest_t* p ) :
+      priest_spell_t( "shadow_word_death_backlash", p, p -> find_class_spell( "Shadow Word: Death" ) ),
+      spellpower( 0.0 ), multiplier( 1.0 )
+    {
+      background = true;
+      harmful    = false;
+      proc       = true;
+      may_crit   = false;
+      callbacks  = false;
+      
+      // Hard-coded values as nothing in DBC
+      base_dd_min = base_dd_max = 0.533 * p -> dbc.spell_scaling( data().scaling_class(), p -> level );
+      direct_power_mod = 0.599;
+
+      target = p;
+    }
+
+    virtual timespan_t execute_time()
+    {
+      return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    }
+
+    virtual double composite_spell_power()
+    {
+      return spellpower;
+    }
+
+    virtual double composite_spell_power_multiplier()
+    {
+      return 1.0;
+    }
+
+    virtual double composite_da_multiplier()
+    {
+      double d = multiplier;
+      if ( p() -> set_bonus.tier13_2pc_caster() )
+        d *= 0.663587;
+
+      return d;
+    }
+
+    virtual void assess_damage( player_t*     t,
+                                double        amount,
+                                dmg_e         type,
+                                result_e      result )
+    {
+      double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
+
+      if ( sim -> log )
+      {
+        sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       t -> name(), dmg_adjusted,
+                       util::school_type_string( school ),
+                       util::result_type_string( result ) );
+      }
+
+      direct_dmg = dmg_adjusted;
+    }
+  };
+
+  shadow_word_death_backlash_t* backlash;
+
   shadow_word_death_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) )
+    priest_spell_t( "shadow_word_death", p, p -> find_class_spell( "Shadow Word: Death" ) ),
+    backlash( 0 )
   {
     parse_options( NULL, options_str );
 
     base_multiplier *= 1.0 + p -> set_bonus.tier13_2pc_caster() * p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    backlash = new shadow_word_death_backlash_t( p );
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -2515,18 +2586,24 @@ struct shadow_word_death_t : public priest_spell_t
   {
     s -> result_amount = floor( s -> result_amount );
 
-    double health_loss = s -> result_amount;
-
-    if ( target -> health_percentage() < 20.0 )
+    if ( backlash )
     {
-      s -> result_amount *= 4.0;
+      backlash -> spellpower = s -> spell_power;
+      backlash -> multiplier = s -> da_multiplier;
+      backlash -> schedule_execute();
+    }
 
-      generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
+    if ( result_is_hit() )
+    {
+      if ( target -> health_percentage() < 20.0 )
+      {
+        s -> result_amount *= 4.0;
+
+        generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
+      }
     }
 
     priest_spell_t::impact_s( s );
-
-    p() -> assess_damage( health_loss, school, DMG_DIRECT, RESULT_HIT, this );
   }
 
   virtual double action_multiplier()
