@@ -361,7 +361,7 @@ enum pet_e
 
 enum dmg_e { DMG_DIRECT=0, DMG_OVER_TIME=1, HEAL_DIRECT, HEAL_OVER_TIME, ABSORB };
 
-enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB };
+enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB, STATS_NEUTRAL };
 
 enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
@@ -1446,6 +1446,7 @@ const char* pet_type_string           ( pet_e type );
 const char* position_type_string      ( position_e );
 const char* profession_type_string    ( profession_e );
 const char* race_type_string          ( race_e );
+const char* stats_type_string         ( stats_e );
 const char* role_type_string          ( role_e );
 const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );

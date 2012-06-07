@@ -130,6 +130,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t<table class=\"details\">\n"
               "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
     fprintf ( file,
+              "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Type</th>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Executes</th>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Direct Results</th>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Ticks</th>\n"
@@ -145,6 +146,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t\t</tr>\n"
               "\t\t\t\t\t\t\t\t\t\t<tr>\n" );
     fprintf ( file,
+              "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%s</td>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
@@ -156,6 +158,7 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
               "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n",
+              util::stats_type_string( s -> type ),
               s -> num_executes,
               s -> num_direct_results,
               s -> num_ticks,

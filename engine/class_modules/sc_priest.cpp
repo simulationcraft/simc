@@ -2498,12 +2498,19 @@ struct shadow_word_death_t : public priest_spell_t
       proc       = true;
       may_crit   = false;
       callbacks  = false;
-      
+
       // Hard-coded values as nothing in DBC
       base_dd_min = base_dd_max = 0.533 * p -> dbc.spell_scaling( data().scaling_class(), p -> level );
       direct_power_mod = 0.599;
 
       target = p;
+    }
+
+    virtual void init()
+    {
+      priest_spell_t::init();
+
+      stats -> type = STATS_NEUTRAL;
     }
 
     virtual timespan_t execute_time()
@@ -2528,25 +2535,6 @@ struct shadow_word_death_t : public priest_spell_t
         d *= 0.663587;
 
       return d;
-    }
-
-    virtual void assess_damage( player_t*     t,
-                                double        amount,
-                                dmg_e         type,
-                                result_e      result )
-    {
-      double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
-
-      if ( sim -> log )
-      {
-        sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       t -> name(), dmg_adjusted,
-                       util::school_type_string( school ),
-                       util::result_type_string( result ) );
-      }
-
-      direct_dmg = dmg_adjusted;
     }
   };
 

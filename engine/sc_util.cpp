@@ -191,6 +191,20 @@ const char* util::race_type_string( race_e type )
   }
 }
 
+// race_type_string =================================================
+
+const char* util::stats_type_string( stats_e type )
+{
+  switch ( type )
+  {
+  case STATS_NEUTRAL:  return "neutral";
+  case STATS_DMG:      return "damage";
+  case STATS_HEAL:     return "heal";
+  case STATS_ABSORB:   return "absorb";
+  default:             return "unknown";
+  }
+}
+
 // parse_race_type ==================================================
 
 race_e util::parse_race_type( const std::string &name )

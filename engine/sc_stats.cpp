@@ -157,7 +157,7 @@ void stats_t::combat_end()
 
   if ( type == STATS_DMG )
     player -> iteration_dmg += iteration_actual_amount;
-  else
+  else if ( type == STATS_HEAL || type == STATS_ABSORB )
     player -> iteration_heal += iteration_actual_amount;
 
   for ( size_t i = 0, num_children = children.size(); i < num_children; i++ )
