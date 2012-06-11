@@ -2410,7 +2410,6 @@ struct shadowflame_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    // FIXME: Needs testing
     return timespan_t::from_seconds( 1.5 );
   }
 
@@ -2456,7 +2455,6 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    // FIXME: Needs testing
     return timespan_t::from_seconds( 1.5 );
   }
 };
@@ -2532,7 +2530,6 @@ struct chaos_wave_dmg_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    // FIXME: Needs testing.
     return timespan_t::from_seconds( 1.5 );
   }
 };
@@ -3091,7 +3088,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    // FIXME: Estimate, needs testing
+    // FIXME: This is probably not actually how it works - as destro it seems to have num_ticks = 4 and tick_zero = false
     return ( channeled ) ? timespan_t::zero() : timespan_t::from_seconds( 1.5 );
   }
 
