@@ -29,9 +29,7 @@ struct monk_td_t : public actor_pair_t
 
 struct monk_t : public player_t
 {
-`
-
-
+	monk_stance_e active_stance;
   // Buffs
   struct buffs_t
   {
@@ -136,7 +134,7 @@ struct monk_t : public player_t
   {
     target_data.init( "target_data", this );
 
-    monk_stance_e = "STANCE_FIERCE_TIGER";
+   active_stance = STANCE_FIERCE_TIGER;
 
     create_options();
   }
