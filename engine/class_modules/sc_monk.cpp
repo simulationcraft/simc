@@ -45,25 +45,25 @@ struct monk_t : public player_t
 	//  buff_t* tiger_strikes;
 	//  buff_t* combo_breaker_tp;
 	//  buff_t* combo_breaker_bok;
-  } buffs;
+  } buff;
 
   // Gains
   struct gains_t
   {
     gain_t* chi;
-  } gains;
+  } gain;
 
   // Procs
   struct procs_t
   {
     //proc_t* procs_<procname>;
-  } procs;
+  } proc;
   
   // Random Number Generation
    struct rngs_t
    {
      rng_t* tiger_stikes;
-   } rngs;
+   } rng;
    
   // Talents
   struct talents_t
@@ -92,7 +92,7 @@ struct monk_t : public player_t
 	//   const spell_data_t* rushing_jade_wind;
 	//   const spell_data_t* invoke_zuen;
 	//   const spell_data_t* chi_torpedo;
-  } talents;
+  } talent;
 
   // Passives
   struct passives_t
@@ -106,7 +106,7 @@ struct monk_t : public player_t
     // TREE_MONK_DAMAGE
 
     // TREE_MONK_HEAL
-  } passives;
+  } passive;
 
   // Glyphs
   struct glyphs_t
@@ -116,7 +116,7 @@ struct monk_t : public player_t
 
     // Major
 
-  } glyphs;
+  } glyph;
 
   target_specific_t<monk_td_t> target_data;
 
