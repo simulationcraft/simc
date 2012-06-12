@@ -558,7 +558,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name;
       http::format( formatted_name, p -> name_str );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%u,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), (int)i ); s += buffer;
     }
     s += "&amp;";
     if ( first )
@@ -808,8 +808,8 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       std::string formatted_name = st -> player -> name_str;
       util::urlencode( util::str_to_utf8( formatted_name ) );
 
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%u,0,10", ( i?"|":"" ),
-                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ).c_str(), i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
+                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ).c_str(), (int)i ); s += buffer;
     }
     s += "&amp;";
     if ( chart==0 )
@@ -1220,8 +1220,8 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%u,15,0.1", ( i?"|":"" ),
-              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
+              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(), (int)i ); s += buffer;
   }
 
   s += "&amp;";
@@ -1751,11 +1751,11 @@ std::string chart::timeline_dps_error( player_t* p )
     if ( !j ) continue;
     if ( j >= max_buckets ) j = max_buckets - 1;
     if ( i > 1 ) s += "|";
-    snprintf( buffer, sizeof( buffer ), "t%.1f,FFFFFF,0,%u,10", p -> dps_convergence_error[ j ], j / increment ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "t%.1f,FFFFFF,0,%d,10", p -> dps_convergence_error[ j ], int( j / increment ) ); s += buffer;
 
   }
   s += "&amp;";
-  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%u|1:|0|max dps error=%.0f", max_buckets + 1, dps_max_error ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxl=0:|0|iterations=%d|1:|0|max dps error=%.0f", int( max_buckets + 1 ), dps_max_error ); s += buffer;
   s += "&amp;";
   s += "chdl=DPS Error";
   s += "&amp;";

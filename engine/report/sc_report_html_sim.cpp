@@ -385,10 +385,10 @@ void print_html_raid_summary( FILE*  file, sim_t* sim, sim_t::report_information
            "\t\t\t\t<div class=\"charts charts-left\">\n" );
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
-    fprintf( file, "\t\t\t\t\t<map id='DPSMAP%u' name='DPSMAP%u'></map>\n", i, i );
+    fprintf( file, "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", (int)i, (int)i );
     fprintf( file,
-             "\t\t\t\t\t<img id='DPSIMG%u' src=\"%s\" alt=\"DPS Chart\" />\n",
-             i, ri.dps_charts[ i ].c_str() );
+             "\t\t\t\t\t<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
+             (int)i, ri.dps_charts[ i ].c_str() );
   }
 
   if ( ! sim -> raid_events_str.empty() )
@@ -411,10 +411,10 @@ void print_html_raid_summary( FILE*  file, sim_t* sim, sim_t::report_information
       }
       fprintf( file, ">\n" );
       fprintf( file,
-               "\t\t\t\t\t\t\t<th class=\"right\">%u</th>\n"
+               "\t\t\t\t\t\t\t<th class=\"right\">%d</th>\n"
                "\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
                "\t\t\t\t\t\t</tr>\n",
-               i,
+               (int)i,
                raid_event_names[ i ].c_str() );
     }
     fprintf( file,
@@ -429,10 +429,10 @@ void print_html_raid_summary( FILE*  file, sim_t* sim, sim_t::report_information
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    fprintf( file, "\t\t\t\t\t<map id='HPSMAP%u' name='HPSMAP%u'></map>\n", i, i );
+    fprintf( file, "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", (int)i, (int)i );
     fprintf( file,
-             "\t\t\t\t\t<img id='HPSIMG%u' src=\"%s\" alt=\"HPS Chart\" />\n",
-             i, ri.hps_charts[ i ].c_str() );
+             "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
+             (int)i, ri.hps_charts[ i ].c_str() );
   }
 
   // RNG chart
