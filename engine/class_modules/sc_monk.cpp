@@ -269,17 +269,20 @@ struct jab_t : public monk_melee_attack_t
   virtual void execute()
   {
     monk_melee_attack_t::execute();
-    // Gotta figure this out...
-    //if (monk_stance_e == "STANCE_FIERCE_TIGER"){
+
+    if (p() -> active_stance  == STANCE_FIERCE_TIGER){
+    	//not sure how to double effect without doubling resource gain. Maybe redundant.
     	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
-    //	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
-    //}else{
-    //	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
-   // }
+    	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+    }else{
+    	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+    }
 
   }
 };
-
+//=============================
+//====Tiger Palm===============
+//=============================
 struct tiger_palm_t : public monk_melee_attack_t
 {
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
@@ -300,7 +303,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   }
 };
-
+//=============================
+//====Blackout Kick============
+//=============================
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
@@ -309,7 +314,29 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( 0, options_str );
   }
 };
+//=============================
+//====RISING SUN KICK========== NOT WORKING??
+//=============================
+struct rising_sun_kick_t : public monk_melee_attack_t
+{
+  rising_sun_kick_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) )
+  {
+    parse_options( 0, options_str );
+  }
 
+//TEST: Mortal Wounds
+virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  {
+    monk_melee_attack_t::impact( t, impact_result, travel_dmg );
+
+    if ( sim -> overrides.mortal_wounds && result_is_hit( impact_result ) )
+      t -> debuffs.mortal_wounds -> trigger();
+  }
+};
+//=============================
+//====Spinning Crane Kick======
+//=============================
 struct spinning_crane_kick_tick_t : public monk_melee_attack_t
 {
   spinning_crane_kick_tick_t( monk_t* p ) :
@@ -422,6 +449,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
   if ( name == "blackout_kick"       ) return new       blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
+  if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
 
 
@@ -568,11 +596,12 @@ void monk_t::init_actions()
       }
 
       action_list_str += "/snapshot_stats,precombat=1";
-
+      action_list_str += "/rising_sun_kick";
       action_list_str += "/blackout_kick";
+      action_list_str += "/tiger_palm";
       action_list_str += "/jab";
 
-    //  action_list_str += "/tiger_palm";
+
 
       break;
     }
