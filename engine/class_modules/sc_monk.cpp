@@ -544,7 +544,7 @@ void monk_t::init_rng()
 
 void monk_t::init_actions()
 {
-  if ( true )
+  if ( false )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's class isn't supported yet.", name() );
@@ -679,7 +679,7 @@ struct monk_module_t : public module_t
   {
     return new monk_t( sim, name, r );
   }
-  virtual bool valid() { return false; }
+  virtual bool valid() { return true; }
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}
