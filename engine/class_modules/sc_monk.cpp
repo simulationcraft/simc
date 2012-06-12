@@ -9,6 +9,8 @@
 // Monk
 // ==========================================================================
 
+//testing EC++ commit
+
 namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
@@ -69,7 +71,7 @@ struct monk_t : public player_t
   struct talents_t
   {
 //  TODO: Implement
-        //   const spell_data_t* celerity;
+          const spell_data_t* celerity;
         //   const spell_data_t* tigers_lust;
         //   const spell_data_t* momentum;
 
