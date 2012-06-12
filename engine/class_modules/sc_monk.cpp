@@ -13,6 +13,8 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
 
+// max chi = base chi + ascension talent ==== add chi formula here
+
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_td_t : public actor_pair_t
@@ -30,7 +32,19 @@ struct monk_t : public player_t
   // Buffs
   struct buffs_t
   {
-    //buff_t* buffs_<buffname>;
+  // TODO: Finish Adding Buffs - will uncomment as implemented
+	  //buff_t* buffs_<buffname>;
+	//  buff_t* tiger_power;
+	//  buff_t* energizing_brew;
+	//  buff_t* zen_sphere;
+	//  buff_t* fortifying_brew;
+	//  buff_t* zen_meditation;
+	//  buff_t* path_of_blossoms;
+	//  buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
+	//  buff_t* tigereye_brew_use; // will need to check if needed.
+	//  buff_t* tiger_strikes;
+	//  buff_t* combo_breaker_tp;
+	//  buff_t* combo_breaker_bok;
   } buffs;
 
   // Gains
@@ -44,22 +58,48 @@ struct monk_t : public player_t
   {
     //proc_t* procs_<procname>;
   } procs;
-
+  
+  // Random Number Generation
+   struct rngs_t
+   {
+     rng_t* tiger_stikes;
+   } rngs;
+   
   // Talents
   struct talents_t
   {
-    // TREE_MONK_TANK
-    //talent_t* <talentname>;
+//  TODO: Implement
+	//   const spell_data_t* celerity;
+	//   const spell_data_t* tigers_lust;
+	//   const spell_data_t* momentum;
+	   
+	//   const spell_data_t* chi_wave;
+	//   const spell_data_t* zen_sphere;
+	//   const spell_data_t* chi_burst;
+	   
+	//   const spell_data_t* power_strikes;
+	//   const spell_data_t* ascension;
+	//   const spell_data_t* chi_brew;
+	   
+	//   const spell_data_t* deadly_reach;
+	//   const spell_data_t* charging_ox_wave;
+	//   const spell_data_t* leg_sweep;
+	   
+	//   const spell_data_t* healing_elixers;
+	//   const spell_data_t* dampen_harm;
+	//   const spell_data_t* diffuse_magic;
 
-    // TREE_MONK_DAMAGE
-
-    // TREE_MONK_HEAL
-
+	//   const spell_data_t* rushing_jade_wind;
+	//   const spell_data_t* invoke_zuen;
+	//   const spell_data_t* chi_torpedo;
   } talents;
 
   // Passives
   struct passives_t
   {
+      
+	  const spell_data_t* leather_specialization;
+	  const spell_data_t* way_of_the_monk; //split for DW / 2H
     // TREE_MONK_TANK
     // spell_id_t* mastery/passive spells
 
@@ -437,11 +477,11 @@ void monk_t::init_base()
 
   initial.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
 
-  base_gcd = timespan_t::from_seconds( 1.0 ); // FIXME: assumption
+  base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[  RESOURCE_CHI  ] = 3; // FIXME: placeholder
+  resources.base[  RESOURCE_CHI  ] = 4; // NOTE: 5 w/ ascension
 
-  base_chi_regen_per_second = 10; // FIXME: placeholder ( identical to rogue )
+  base_chi_regen_per_second = 8; //
 
   if ( tree == MONK_MISTWEAVER )
     active_stance = STANCE_HEAL;
