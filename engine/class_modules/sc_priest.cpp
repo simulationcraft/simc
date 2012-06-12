@@ -889,7 +889,11 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
   return priest_pet_t::create_action( name, options_str );
 }
 
-template <class Base>
+// This is a template for common code between priest_spell_t, priest_heal_t and priest_absorb_t.
+// The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
+// Make sure you keep the inheritance hierarchy and use base_t in the derived class,
+// don't skip it and call spell_t/heal_t or absorb_t directly.
+template <struct Base>
 struct priest_action_t : public Base
 {
   bool castable_in_shadowform;
@@ -898,6 +902,7 @@ struct priest_action_t : public Base
 
   typedef Base action_base_t; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
+
   priest_action_t( const std::string& n, priest_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s )
@@ -936,6 +941,7 @@ struct priest_action_t : public Base
   virtual void schedule_execute()
   {
     cancel_shadowform();
+
     action_base_t::schedule_execute();
   }
 

@@ -187,13 +187,15 @@ namespace {
 // ==========================================================================
 // Monk Abilities
 // ==========================================================================
-template <class Base>
+
+// Template for common monk action code. See priest_action_t.
+template <struct Base>
 struct monk_action_t : public Base
 {
   int stancemask;
 
-  typedef Base action_base_t; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  typedef monk_action_t base_t; // typedef for monk_action_t<action_base_t>
+  typedef Base action_base_t;
+  typedef monk_action_t base_t;
   monk_action_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s ),
