@@ -893,7 +893,7 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 // The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
 // Make sure you keep the inheritance hierarchy and use base_t in the derived class,
 // don't skip it and call spell_t/heal_t or absorb_t directly.
-template <struct Base>
+template <class Base>
 struct priest_action_t : public Base
 {
   bool castable_in_shadowform;

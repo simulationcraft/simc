@@ -189,7 +189,7 @@ namespace {
 // ==========================================================================
 
 // Template for common monk action code. See priest_action_t.
-template <struct Base>
+template <class Base>
 struct monk_action_t : public Base
 {
   int stancemask;
