@@ -29,7 +29,8 @@ struct monk_td_t : public actor_pair_t
 
 struct monk_t : public player_t
 {
-  monk_stance_e active_stance;
+`
+
 
   // Buffs
   struct buffs_t
@@ -54,6 +55,7 @@ struct monk_t : public player_t
   {
     gain_t* chi;
   } gain;
+  // Stances
 
   // Procs
   struct procs_t
@@ -134,7 +136,7 @@ struct monk_t : public player_t
   {
     target_data.init( "target_data", this );
 
-    active_stance             = STANCE_FIERCE_TIGER;
+    monk_stance_e = "STANCE_FIERCE_TIGER";
 
     create_options();
   }
@@ -151,6 +153,7 @@ struct monk_t : public player_t
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
   virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    composite_attack_power();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
   virtual role_e primary_role();
@@ -268,8 +271,14 @@ struct jab_t : public monk_melee_attack_t
   virtual void execute()
   {
     monk_melee_attack_t::execute();
+    // Gotta figure this out...
+    //if (monk_stance_e == "STANCE_FIERCE_TIGER"){
+    	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+    //	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+    //}else{
+    //	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+   // }
 
-    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
   }
 };
 
@@ -545,8 +554,10 @@ void monk_t::init_actions()
       // Flask
       if ( level > 85 )
         action_list_str += "/flask,type=warm_sun,precombat=1";
-      else if ( level >= 80 )
-        action_list_str += "/flask,type=draconic_mind,precombat=1";
+      	  else if ( level >= 80 && primary_tree() == MONK_MISTWEAVER)
+    		  action_list_str += "/flask,type=draconic_mind,precombat=1";
+    	  else
+    		  action_list_str += "/flask,type=winds,precombat=1";
 
       // Food
       if ( level > 85 )
@@ -560,8 +571,9 @@ void monk_t::init_actions()
 
       action_list_str += "/snapshot_stats,precombat=1";
 
+      action_list_str += "/blackout_kick";
       action_list_str += "/jab";
-    //  action_list_str += "/blackout_kick";
+
     //  action_list_str += "/tiger_palm";
 
       break;
@@ -593,6 +605,16 @@ double monk_t::matching_gear_multiplier( attribute_e attr )
     return 0.05;
 
   return 0.0;
+}
+
+// monk_t::composite_attack_power ==========================================
+
+double monk_t::composite_attack_power()
+{
+	double ap = player_t::composite_attack_power(); //pointless pull - determining if referencing matters
+	ap = (level * 2) + (agility() - 20) + (strength() - 10);
+
+  return floor( ap );
 }
 
 // monk_t::decode_set =======================================================
