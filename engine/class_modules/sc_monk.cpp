@@ -183,81 +183,70 @@ struct monk_t : public player_t
   }
 };
 
+namespace {
 // ==========================================================================
 // Monk Abilities
 // ==========================================================================
-
-struct monk_melee_attack_t : public melee_attack_t
+template <class Base>
+struct monk_action_t : public Base
 {
   int stancemask;
 
+  typedef Base action_base_t; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  typedef monk_action_t base_t; // typedef for monk_action_t<action_base_t>
+  monk_action_t( const std::string& n, monk_t* player,
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, player, s ),
+    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
+  {
+    action_base_t::may_crit   = true;
+    action_base_t::may_glance = false;
+  }
+
+  monk_t* p() { return debug_cast<monk_t*>( action_base_t::player ); }
+
+  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+
+  virtual bool ready()
+  {
+    if ( ! action_base_t::ready() )
+      return false;
+
+    // Attack available in current stance?
+    if ( ( stancemask & p() -> active_stance ) == 0 )
+      return false;
+
+    return true;
+  }
+};
+
+struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
+{
   monk_melee_attack_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    melee_attack_t( n, player, s ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
+    base_t( n, player, s )
   {
-    may_crit   = true;
     may_glance = false;
   }
-
-  monk_t* p() { return debug_cast<monk_t*>( player ); }
-
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual bool   ready();
 };
 
-struct monk_spell_t : public spell_t
+struct monk_spell_t : public monk_action_t<spell_t>
 {
-  int stancemask;
-
   monk_spell_t( const std::string& n, monk_t* player,
                 const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, player, s ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
+    base_t( n, player, s )
   {
-    may_crit   = true;
   }
-
-  monk_t* p() { return debug_cast<monk_t*>( player ); }
-
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual bool   ready();
 };
 
-struct monk_heal_t : public heal_t
+struct monk_heal_t : public monk_action_t<heal_t>
 {
-  int stancemask;
-
   monk_heal_t( const std::string& n, monk_t* player,
                const spell_data_t* s = spell_data_t::nil() ) :
-    heal_t( n, player, s ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
+    base_t( n, player, s )
   {
-    may_crit   = true;
   }
-
-  monk_t* p() { return debug_cast<monk_t*>( player ); }
-
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual bool   ready();
 };
-
-// monk_melee_attack_t::ready ================================================
-
-bool monk_melee_attack_t::ready()
-{
-  if ( ! melee_attack_t::ready() )
-    return false;
-
-  // Attack available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
-    return false;
-
-  return true;
-}
 
 struct jab_t : public monk_melee_attack_t
 {
@@ -354,20 +343,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   }
 };
 
-// monk_spell_t::ready ================================================
-
-bool monk_spell_t::ready()
-{
-  if ( ! spell_t::ready() )
-    return false;
-
-  // spell available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
-    return false;
-
-  return true;
-}
-
 // Stance ===================================================================
 
 struct stance_t : public monk_spell_t
@@ -417,19 +392,7 @@ struct stance_t : public monk_spell_t
   }
 };
 
-// monk_heal_t::ready ================================================
-
-bool monk_heal_t::ready()
-{
-  if ( ! heal_t::ready() )
-    return false;
-
-  // heal available in current stance?
-  if ( ( stancemask & p() -> active_stance ) == 0 )
-    return false;
-
-  return true;
-}
+} // END ANONYMOUS action NAMESPACE
 
 // ==========================================================================
 // Monk Character Definition
