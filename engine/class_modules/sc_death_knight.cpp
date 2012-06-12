@@ -1365,90 +1365,133 @@ struct ghoul_pet_t : public death_knight_pet_t
     );
   }
 };
-// ==========================================================================
-// Death Knight Attack
-// ==========================================================================
 
-struct death_knight_melee_attack_t : public melee_attack_t
+// Template for common death knight action code. See priest_action_t.
+template <class Base>
+struct death_knight_action_t : public Base
 {
-  bool   always_consume;
-  bool   requires_weapon;
   int    cost_blood;
   int    cost_frost;
   int    cost_unholy;
   double convert_runes;
-  double m_dd_additive; // Multipler for Direct Damage that are all additive with each other
   bool   use[RUNE_SLOT_MAX];
   gain_t* rp_gains;
 
+  typedef Base action_base_t;
+  typedef death_knight_action_t base_t;
+
+  death_knight_action_t( const std::string& n, death_knight_t* p,
+                               const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, p, s ),
+    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 )
+  {
+    _init_dk_action();
+  }
+
+  death_knight_t* cast() { return debug_cast<death_knight_t*>( action_base_t::player ); }
+
+  death_knight_td_t* cast_td( player_t* t = 0 )
+  { return cast() -> get_target_data( t ? t : action_base_t::target ); }
+
+  void _init_dk_action()
+  {
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+
+    action_base_t::may_crit   = true;
+    action_base_t::may_glance = false;
+
+    rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
+  }
+
+  virtual void reset()
+  {
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+      use[i] = false;
+
+    action_base_t::reset();
+  }
+
+  virtual void consume_resource()
+  {
+    death_knight_t* p = cast();
+    if ( action_base_t::rp_gain > 0 )
+    {
+      if ( action_base_t::result_is_hit() )
+      {
+        if ( p -> buffs.frost_presence -> check() )
+        {
+          p -> resource_gain( RESOURCE_RUNIC_POWER,
+              action_base_t::rp_gain * p -> dbc.spell( 48266 ) -> effect2().percent(),
+                              p -> gains.frost_presence );
+        }
+        p -> resource_gain( RESOURCE_RUNIC_POWER, action_base_t::rp_gain, rp_gains );
+      }
+    }
+    else
+    {
+      action_base_t::consume_resource();
+    }
+  }
+
+  virtual void target_debuff( player_t* t, dmg_e dtype )
+  {
+    action_base_t::target_debuff( t, dtype );
+    death_knight_t* p = cast();
+
+    if ( action_base_t::school == SCHOOL_FROST  )
+    {
+      action_base_t::target_multiplier *= 1.0 + p -> buffs.rune_of_razorice -> stack() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
+    }
+  }
+};
+
+// ==========================================================================
+// Death Knight Attack
+// ==========================================================================
+
+struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t>
+{
+  bool   always_consume;
+  bool   requires_weapon;
+  double m_dd_additive; // Multipler for Direct Damage that are all additive with each other
+
   death_knight_melee_attack_t( const std::string& n, death_knight_t* p,
                                const spell_data_t* s = spell_data_t::nil() ) :
-    melee_attack_t( n, p, s ),
+    base_t( n, p, s ),
     always_consume( false ), requires_weapon( true ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 ),
     m_dd_additive( 0 )
   {
     _init_dk_attack();
   }
 
-  death_knight_t* cast() { return debug_cast<death_knight_t*>( player ); }
-
-  death_knight_td_t* cast_td( player_t* t = 0 )
-  {
-    return cast() -> get_target_data( t ? t : target );
-  }
-
   void _init_dk_attack()
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-
     may_crit   = true;
     may_glance = false;
-
-    rp_gains = player -> get_gain( "rp_" + name_str );
   }
 
-  virtual void   reset();
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
   virtual bool   ready();
   virtual double swing_haste();
-  virtual void   target_debuff( player_t* t, dmg_e );
 };
 
 // ==========================================================================
 // Death Knight Spell
 // ==========================================================================
 
-struct death_knight_spell_t : public spell_t
+struct death_knight_spell_t : public death_knight_action_t<spell_t>
 {
-  int    cost_blood;
-  int    cost_frost;
-  int    cost_unholy;
-  double convert_runes;
-  bool   use[RUNE_SLOT_MAX];
-  gain_t* rp_gains;
-
   death_knight_spell_t( const std::string& n, death_knight_t* p,
                         const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, p, s ),
-    cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), convert_runes( 0 )
+    base_t( n, p, s )
   {
     _init_dk_spell();
   }
 
-  death_knight_t* cast() { return debug_cast<death_knight_t*>( player ); }
-
-  death_knight_td_t* cast_td( player_t* t = 0 )
-  {
-    return cast() -> get_target_data( t ? t : target );
-  }
-
   void _init_dk_spell()
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-
     may_crit = true;
     // DKs have 2.09x spell crits with meta gem so they must use the "hybrid" formula of adjusting the crit-bonus multiplier
     // (As opposed to the native 1.33 crit multiplier used by Mages and Warlocks.)
@@ -1456,15 +1499,11 @@ struct death_knight_spell_t : public spell_t
 
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
-
-    rp_gains = player -> get_gain( "rp_" + name_str );
   }
 
-  virtual void   reset();
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   player_buff();
-  virtual void   target_debuff( player_t* t, dmg_e );
   virtual bool   ready();
 };
 
@@ -1600,41 +1639,14 @@ static void refund_power( death_knight_melee_attack_t* a )
 // Death Knight Attack Methods
 // ==========================================================================
 
-// death_knight_melee_attack_t::reset() ===========================================
-
-void death_knight_melee_attack_t::reset()
-{
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-
-  action_t::reset();
-}
-
 // death_knight_melee_attack_t::consume_resource() ================================
 
 void death_knight_melee_attack_t::consume_resource()
 {
-  death_knight_t* p = cast();
-
-  if ( rp_gain > 0 )
-  {
-    if ( result_is_hit() )
-    {
-      if ( p -> buffs.frost_presence -> check() )
-      {
-        p -> resource_gain( RESOURCE_RUNIC_POWER,
-                            rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
-                            p -> gains.frost_presence );
-      }
-      p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
-    }
-  }
-  else
-  {
-    melee_attack_t::consume_resource();
-  }
+  base_t::consume_resource();
 
   if ( result_is_hit() || always_consume )
-    consume_runes( p, use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
+    consume_runes( cast(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
   else
     refund_power( this );
 }
@@ -1645,7 +1657,7 @@ void death_knight_melee_attack_t::execute()
 {
   death_knight_t* p = cast();
 
-  melee_attack_t::execute();
+  base_t::execute();
 
   if ( result_is_hit() )
   {
@@ -1662,7 +1674,7 @@ void death_knight_melee_attack_t::player_buff()
 {
   death_knight_t* p = cast();
 
-  melee_attack_t::player_buff();
+  base_t::player_buff();
 
   if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
     if ( ! proc )
@@ -1678,7 +1690,7 @@ bool death_knight_melee_attack_t::ready()
 {
   death_knight_t* p = cast();
 
-  if ( ! melee_attack_t::ready() )
+  if ( ! base_t::ready() )
     return false;
 
   if ( requires_weapon )
@@ -1692,7 +1704,7 @@ bool death_knight_melee_attack_t::ready()
 
 double death_knight_melee_attack_t::swing_haste()
 {
-  double haste = melee_attack_t::swing_haste();
+  double haste = base_t::swing_haste();
   death_knight_t* p = cast();
 
   haste *= 1.0 / ( 1.0 + p -> spells.icy_talons -> effectN( 1 ).percent() );
@@ -1700,63 +1712,26 @@ double death_knight_melee_attack_t::swing_haste()
   return haste;
 }
 
-// death_knight_melee_attack_t::target_debuff =====================================
-
-void death_knight_melee_attack_t::target_debuff( player_t* t, dmg_e dtype )
-{
-  melee_attack_t::target_debuff( t, dtype );
-  death_knight_t* p = cast();
-
-  if ( school == SCHOOL_FROST  )
-  {
-    target_multiplier *= 1.0 + p -> buffs.rune_of_razorice -> stack() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
-  }
-}
-
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
 
-// death_knight_spell_t::reset() ============================================
-
-void death_knight_spell_t::reset()
-{
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
-  spell_t::reset();
-}
 
 // death_knight_spell_t::consume_resource() =================================
 
 void death_knight_spell_t::consume_resource()
 {
-  death_knight_t* p = cast();
-  if ( rp_gain > 0 )
-  {
-    if ( result_is_hit() )
-    {
-      if ( p -> buffs.frost_presence -> check() )
-      {
-        p -> resource_gain( RESOURCE_RUNIC_POWER,
-                            rp_gain * player -> dbc.spell( 48266 ) -> effect2().percent(),
-                            p -> gains.frost_presence );
-      }
-      p -> resource_gain( RESOURCE_RUNIC_POWER, rp_gain, rp_gains );
-    }
-  }
-  else
-  {
-    spell_t::consume_resource();
-  }
+  base_t::consume_resource();
 
   if ( result_is_hit() )
-    consume_runes( p, use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
+    consume_runes( cast(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
 }
 
 // death_knight_spell_t::execute() ==========================================
 
 void death_knight_spell_t::execute()
 {
-  spell_t::execute();
+  base_t::execute();
 
   if ( result_is_hit() )
   {
@@ -1774,7 +1749,7 @@ void death_knight_spell_t::player_buff()
 {
   death_knight_t* p = cast();
 
-  spell_t::player_buff();
+  base_t::player_buff();
 
   if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
     player_multiplier *= 1.0 + p -> buffs.rune_of_cinderglacier -> value();
@@ -1788,7 +1763,7 @@ void death_knight_spell_t::player_buff()
 
 bool death_knight_spell_t::ready()
 {
-  if ( ! spell_t::ready() )
+  if ( ! base_t::ready() )
     return false;
 
   death_knight_t* p = cast();
@@ -1797,19 +1772,6 @@ bool death_knight_spell_t::ready()
     return group_runes( p, 0, 0, 0, use );
   else
     return group_runes( p, cost_blood, cost_frost, cost_unholy, use );
-}
-
-// death_knight_spell_t::target_debuff ======================================
-
-void death_knight_spell_t::target_debuff( player_t* t, dmg_e dtype )
-{
-  spell_t::target_debuff( t, dtype );
-  death_knight_t* p = cast();
-
-  if ( school == SCHOOL_FROST  )
-  {
-    target_multiplier *= 1.0 + p -> buffs.rune_of_razorice -> stack() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
-  }
 }
 
 // ==========================================================================
