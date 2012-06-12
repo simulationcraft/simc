@@ -33,18 +33,18 @@ struct monk_t : public player_t
   struct buffs_t
   {
   // TODO: Finish Adding Buffs - will uncomment as implemented
-	  //buff_t* buffs_<buffname>;
-	//  buff_t* tiger_power;
-	//  buff_t* energizing_brew;
-	//  buff_t* zen_sphere;
-	//  buff_t* fortifying_brew;
-	//  buff_t* zen_meditation;
-	//  buff_t* path_of_blossoms;
-	//  buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
-	//  buff_t* tigereye_brew_use; // will need to check if needed.
-	//  buff_t* tiger_strikes;
-	//  buff_t* combo_breaker_tp;
-	//  buff_t* combo_breaker_bok;
+          //buff_t* buffs_<buffname>;
+        //  buff_t* tiger_power;
+        //  buff_t* energizing_brew;
+        //  buff_t* zen_sphere;
+        //  buff_t* fortifying_brew;
+        //  buff_t* zen_meditation;
+        //  buff_t* path_of_blossoms;
+        //  buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
+        //  buff_t* tigereye_brew_use; // will need to check if needed.
+        //  buff_t* tiger_strikes;
+        //  buff_t* combo_breaker_tp;
+        //  buff_t* combo_breaker_bok;
   } buff;
 
   // Gains
@@ -58,48 +58,48 @@ struct monk_t : public player_t
   {
     //proc_t* procs_<procname>;
   } proc;
-  
+
   // Random Number Generation
    struct rngs_t
    {
      rng_t* tiger_stikes;
    } rng;
-   
+
   // Talents
   struct talents_t
   {
 //  TODO: Implement
-	//   const spell_data_t* celerity;
-	//   const spell_data_t* tigers_lust;
-	//   const spell_data_t* momentum;
-	   
-	//   const spell_data_t* chi_wave;
-	//   const spell_data_t* zen_sphere;
-	//   const spell_data_t* chi_burst;
-	   
-	//   const spell_data_t* power_strikes;
-	//   const spell_data_t* ascension;
-	//   const spell_data_t* chi_brew;
-	   
-	//   const spell_data_t* deadly_reach;
-	//   const spell_data_t* charging_ox_wave;
-	//   const spell_data_t* leg_sweep;
-	   
-	//   const spell_data_t* healing_elixers;
-	//   const spell_data_t* dampen_harm;
-	//   const spell_data_t* diffuse_magic;
+        //   const spell_data_t* celerity;
+        //   const spell_data_t* tigers_lust;
+        //   const spell_data_t* momentum;
 
-	//   const spell_data_t* rushing_jade_wind;
-	//   const spell_data_t* invoke_zuen;
-	//   const spell_data_t* chi_torpedo;
+        //   const spell_data_t* chi_wave;
+        //   const spell_data_t* zen_sphere;
+        //   const spell_data_t* chi_burst;
+
+        //   const spell_data_t* power_strikes;
+        //   const spell_data_t* ascension;
+        //   const spell_data_t* chi_brew;
+
+        //   const spell_data_t* deadly_reach;
+        //   const spell_data_t* charging_ox_wave;
+        //   const spell_data_t* leg_sweep;
+
+        //   const spell_data_t* healing_elixers;
+        //   const spell_data_t* dampen_harm;
+        //   const spell_data_t* diffuse_magic;
+
+        //   const spell_data_t* rushing_jade_wind;
+        //   const spell_data_t* invoke_zuen;
+        //   const spell_data_t* chi_torpedo;
   } talent;
 
   // Passives
   struct passives_t
   {
-      
-	  const spell_data_t* leather_specialization;
-	  const spell_data_t* way_of_the_monk; //split for DW / 2H
+
+          const spell_data_t* leather_specialization;
+          const spell_data_t* way_of_the_monk; //split for DW / 2H
     // TREE_MONK_TANK
     // spell_id_t* mastery/passive spells
 
@@ -122,12 +122,12 @@ struct monk_t : public player_t
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
-    buffs( buffs_t() ),
-    gains( gains_t() ),
-    procs( procs_t() ),
-    talents( talents_t() ),
-    passives( passives_t() ),
-    glyphs( glyphs_t() )
+    buff( buffs_t() ),
+    gain( gains_t() ),
+    proc( procs_t() ),
+    talent( talents_t() ),
+    passive( passives_t() ),
+    glyph( glyphs_t() )
   {
     target_data.init( "target_data", this );
 
@@ -272,7 +272,7 @@ struct jab_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gains.chi );
+    player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
   }
 };
 
@@ -521,7 +521,7 @@ void monk_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.chi = get_gain( "chi" );
+  gain.chi = get_gain( "chi" );
 }
 
 // monk_t::init_procs =======================================================
