@@ -889,56 +889,93 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
   return priest_pet_t::create_action( name, options_str );
 }
 
+template <class Base>
+struct priest_action_t : public Base
+{
+  bool castable_in_shadowform;
+  bool can_cancel_shadowform;
+  buff_t* sform;
+
+  typedef Base action_base_t;
+  typedef priest_action_t base_t;
+  priest_action_t( const std::string& n, priest_t* player,
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, player, s )
+  {
+    action_base_t::may_crit          = true;
+    action_base_t::tick_may_crit     = true;
+    action_base_t::stateless         = true;
+
+    action_base_t::dot_behavior      = DOT_REFRESH;
+    action_base_t::weapon_multiplier = 0.0;
+
+
+    can_cancel_shadowform = player -> autoUnshift;
+    castable_in_shadowform = true;
+    sform = player -> buffs.shadowform;
+  }
+
+  bool check_shadowform()
+  {
+    return ( castable_in_shadowform || can_cancel_shadowform || ( sform -> current_stack == 0 ) );
+  }
+
+  void cancel_shadowform()
+  {
+    if ( ! castable_in_shadowform )
+    {
+      // FIX-ME: Needs to drop haste aura too.
+      sform  -> expire();
+    }
+  }
+
+  priest_t* p() { return debug_cast<priest_t*>( action_base_t::player ); }
+
+  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+
+  virtual void schedule_execute()
+  {
+    cancel_shadowform();
+    action_base_t::schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! action_base_t::ready() )
+      return false;
+
+    return check_shadowform();
+  }
+};
+
+
 // ==========================================================================
 // Priest Absorb
 // ==========================================================================
 
-struct priest_absorb_t : public absorb_t
+struct priest_absorb_t : public priest_action_t<absorb_t>
 {
   cooldown_t* min_interval;
-  bool can_cancel_shadowform;
-  bool castable_in_shadowform;
 
 public:
   priest_absorb_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    absorb_t( n, player, s )
+    base_t( n, player, s )
   {
     may_crit          = false;
     tick_may_crit     = false;
     may_miss          = false;
     min_interval      = player -> get_cooldown( "min_interval_" + name_str );
-    can_cancel_shadowform = p() -> autoUnshift;
-    castable_in_shadowform = false;
-    stateless         = true;
-  }
-
-  priest_t* p() { return debug_cast<priest_t*>( player ); }
-
-  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  inline bool check_shadowform()
-  {
-    return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
-  }
-
-  inline void cancel_shadowform()
-  {
-    if ( ! castable_in_shadowform )
-    {
-      p() -> buffs.shadowform -> expire();
-      if ( ! sim -> overrides.spell_haste ) sim -> auras.spell_haste -> decrement();
-    }
   }
 
   virtual double action_multiplier()
   {
-    return absorb_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
+    return base_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
   }
 
   virtual double cost()
   {
-    double c = absorb_t::cost();
+    double c = base_t::cost();
 
     if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
     {
@@ -949,15 +986,9 @@ public:
     return c;
   }
 
-  virtual void schedule_execute()
-  {
-    cancel_shadowform();
-    absorb_t::schedule_execute();
-  }
-
   virtual void consume_resource()
   {
-    absorb_t::consume_resource();
+    base_t::consume_resource();
 
     if ( base_execute_time <= timespan_t::zero() )
       p() -> buffs.inner_will -> up();
@@ -968,10 +999,7 @@ public:
     if ( min_interval -> remains() > timespan_t::zero() )
       return false;
 
-    if ( ! absorb_t::ready() )
-      return false;
-
-    return check_shadowform();
+    return base_t::ready();
   }
 
   void parse_options( option_t*          options,
@@ -984,12 +1012,12 @@ public:
     };
 
     std::vector<option_t> merged_options;
-    absorb_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+    base_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
 
   void update_ready()
   {
-    absorb_t::update_ready();
+    base_t::update_ready();
 
     if ( min_interval -> duration > timespan_t::zero() && ! dual )
     {
@@ -1004,25 +1032,8 @@ public:
 // Priest Heal
 // ==========================================================================
 
-struct priest_heal_t : public heal_t
+struct priest_heal_t : public priest_action_t<heal_t>
 {
-  bool can_cancel_shadowform;
-  bool castable_in_shadowform;
-
-  inline bool check_shadowform()
-  {
-    return ( castable_in_shadowform || can_cancel_shadowform || ! p() -> buffs.shadowform -> check() );
-  }
-
-  inline void cancel_shadowform()
-  {
-    if ( ! castable_in_shadowform )
-    {
-      // FIX-ME: Needs to drop haste aura too.
-      p() -> buffs.shadowform -> expire();
-    }
-  }
-
   struct divine_aegis_t : public priest_absorb_t
   {
     double shield_multiple;
@@ -1094,7 +1105,7 @@ struct priest_heal_t : public heal_t
 
   virtual void init()
   {
-    heal_t::init();
+    base_t::init();
 
     if ( can_trigger_DA && p() -> specs.divine_aegis -> ok() )
     {
@@ -1106,21 +1117,14 @@ struct priest_heal_t : public heal_t
 
   priest_heal_t( const std::string& n, priest_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    heal_t( n, player, s ), can_trigger_DA( true ), da()
+    base_t( n, player, s ), can_trigger_DA( true ), da()
   {
     min_interval = player -> get_cooldown( "min_interval_" + name_str );
-    can_cancel_shadowform = p() -> autoUnshift;
-    castable_in_shadowform = false;
-    stateless = true;
   }
-
-  priest_t* p() { return debug_cast<priest_t*>( player ); }
-
-  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual double composite_crit()
   {
-    double cc = heal_t::composite_crit();
+    double cc = base_t::composite_crit();
 
     if ( p() -> buffs.chakra_serenity -> up() )
       cc += p() -> buffs.chakra_serenity -> data().effectN( 1 ).percent();
@@ -1133,12 +1137,12 @@ struct priest_heal_t : public heal_t
 
   virtual double action_multiplier()
   {
-    return heal_t::action_multiplier() * ( 1.0 + p() -> buffs.holy_archangel -> value() );
+    return base_t::action_multiplier() * ( 1.0 + p() -> buffs.holy_archangel -> value() );
   }
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double ctm = heal_t::composite_target_multiplier( t );
+    double ctm = base_t::composite_target_multiplier( t );
 
     if ( p() -> specs.grace -> ok() )
       ctm *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
@@ -1146,15 +1150,9 @@ struct priest_heal_t : public heal_t
     return ctm;
   }
 
-  virtual void schedule_execute()
-  {
-    cancel_shadowform();
-    heal_t::schedule_execute();
-  }
-
   virtual double cost()
   {
-    double c = heal_t::cost();
+    double c = base_t::cost();
 
     if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
     {
@@ -1167,7 +1165,7 @@ struct priest_heal_t : public heal_t
 
   virtual void consume_resource()
   {
-    heal_t::consume_resource();
+    base_t::consume_resource();
 
     if ( base_execute_time <= timespan_t::zero() )
       p() -> buffs.inner_will -> up();
@@ -1187,7 +1185,7 @@ struct priest_heal_t : public heal_t
   {
     double save_health_percentage = s -> target -> health_percentage();
 
-    heal_t::impact_s( s );
+    base_t::impact_s( s );
 
     if ( s -> result_amount > 0 )
     {
@@ -1211,7 +1209,7 @@ struct priest_heal_t : public heal_t
 
   void tick( dot_t* d )
   {
-    heal_t::tick( d );
+    base_t::tick( d );
 
     // Divine Aegis
     if ( result == RESULT_CRIT )
@@ -1234,7 +1232,7 @@ struct priest_heal_t : public heal_t
 
   void update_ready()
   {
-    heal_t::update_ready();
+    base_t::update_ready();
 
     if ( min_interval -> duration > timespan_t::zero() && ! dual )
     {
@@ -1246,10 +1244,7 @@ struct priest_heal_t : public heal_t
 
   bool ready()
   {
-    if ( ! heal_t::ready() )
-      return false;
-
-    if ( ! check_shadowform() )
+    if ( ! base_t::ready() )
       return false;
 
     return ( min_interval -> remains() <= timespan_t::zero() );
@@ -1265,7 +1260,7 @@ struct priest_heal_t : public heal_t
     };
 
     std::vector<option_t> merged_options;
-    heal_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+    base_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
 
   void consume_inner_focus();
@@ -1359,68 +1354,25 @@ struct atonement_heal_t : public priest_heal_t
 // Priest Spell
 // ==========================================================================
 
-struct priest_spell_t : public spell_t
+struct priest_spell_t : public priest_action_t<spell_t>
 {
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
-  bool castable_in_shadowform;
-  bool can_cancel_shadowform;
-  buff_t* sform;
-
-  inline bool check_shadowform()
-  {
-    return ( castable_in_shadowform || can_cancel_shadowform || ( sform -> current_stack == 0 ) );
-  }
-
-  inline void cancel_shadowform()
-  {
-    if ( ! castable_in_shadowform )
-    {
-      // FIX-ME: Needs to drop haste aura too.
-      sform  -> expire();
-    }
-  }
 
   priest_spell_t( const std::string& n, priest_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, player, s ),
+    base_t( n, player, s ),
     atonement( 0 ), can_trigger_atonement( 0 )
   {
-    may_crit          = true;
-    tick_may_crit     = true;
-    stateless         = true;
-
     dot_behavior      = DOT_REFRESH;
     weapon_multiplier = 0.0;
 
     can_trigger_atonement = false;
-
-    can_cancel_shadowform = p() -> autoUnshift;
-    castable_in_shadowform = true;
-    sform = p() -> buffs.shadowform;
-  }
-
-  priest_t* p() { return debug_cast<priest_t*>( player ); }
-
-  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual void schedule_execute()
-  {
-    cancel_shadowform();
-    spell_t::schedule_execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! spell_t::ready() )
-      return false;
-
-    return check_shadowform();
   }
 
   virtual void init()
   {
-    spell_t::init();
+    base_t::init();
 
     if ( can_trigger_atonement && p() -> glyphs.atonement -> ok() )
     {
@@ -1431,7 +1383,7 @@ struct priest_spell_t : public spell_t
 
   virtual double cost()
   {
-    double c = spell_t::cost();
+    double c = base_t::cost();
 
     if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
     {
@@ -1446,7 +1398,7 @@ struct priest_spell_t : public spell_t
   {
     double save_health_percentage = s -> target -> health_percentage();
 
-    spell_t::impact_s( s );
+    base_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1460,7 +1412,7 @@ struct priest_spell_t : public spell_t
 
   virtual void consume_resource()
   {
-    spell_t::consume_resource();
+    base_t::consume_resource();
 
     if ( base_execute_time <= timespan_t::zero() )
       p() -> buffs.inner_will -> up();
@@ -1471,7 +1423,7 @@ struct priest_spell_t : public spell_t
                               dmg_e type,
                               result_e impact_result )
   {
-    spell_t::assess_damage( t, amount, type, impact_result );
+    base_t::assess_damage( t, amount, type, impact_result );
 
     if ( aoe == 0 && p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {
