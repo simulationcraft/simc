@@ -9,34 +9,7 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct priest_t;
 
-class remove_dots_event_t;
-
-class spirit_shell_buff_t : public absorb_buff_t
-{
-public:
-  heal_t* spirit_shell_heal;
-  spirit_shell_buff_t( actor_pair_t p ) :
-    absorb_buff_t( absorb_buff_creator_t( p, "spirit_shell" )
-                   .spell( p.source -> find_spell( 114908 ) )
-                   .source( p.source -> get_stats( "spirit_shell" ) )
-                 ),
-    spirit_shell_heal( NULL )
-  { }
-
-  virtual void expire()
-  {
-    if ( current_value > 0 )
-    {
-      if ( spirit_shell_heal )
-      {
-        spirit_shell_heal -> base_dd_min = spirit_shell_heal -> base_dd_max = current_value * data().effectN( 2 ).percent();
-        spirit_shell_heal->execute();
-      }
-    }
-
-    absorb_buff_t::expire();
-  }
-};
+struct remove_dots_event_t;
 
 struct priest_td_t : public actor_pair_t
 {
@@ -355,7 +328,7 @@ struct priest_t : public player_t
   virtual std::string set_default_glyphs();
 };
 
-class remove_dots_event_t : public event_t
+struct remove_dots_event_t : public event_t
 {
 private:
   priest_td_t* td;
@@ -386,6 +359,7 @@ public:
   }
 };
 
+namespace pets {
 // ==========================================================================
 // Priest Pet
 // ==========================================================================
@@ -645,7 +619,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
   }
 };
 
-class lightwell_pet_t : public priest_pet_t
+struct lightwell_pet_t : public priest_pet_t
 {
 public:
   int charges;
@@ -866,23 +840,6 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
   return priest_guardian_pet_t::create_action( name, options_str );
 }
 
-// ==========================================================================
-// Pet Shadowfiend
-// ==========================================================================
-
-
-
-// ==========================================================================
-// Pet Mindbender
-// ==========================================================================
-
-
-
-// ==========================================================================
-// Pet Lightwell
-// ==========================================================================
-
-
 action_t* lightwell_pet_t::create_action( const std::string& name,
                                           const std::string& options_str )
 {
@@ -891,6 +848,8 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
   return priest_pet_t::create_action( name, options_str );
 }
 
+} // END pets NAMESPACE
+
 // This is a template for common code between priest_spell_t, priest_heal_t and priest_absorb_t.
 // The template is instantiated with either spell_t, heal_t or absorb_t as the 'Base' class.
 // Make sure you keep the inheritance hierarchy and use base_t in the derived class,
@@ -898,9 +857,11 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 template <class Base>
 struct priest_action_t : public Base
 {
+private:
+  buff_t* sform;
+public:
   bool castable_in_shadowform;
   bool can_cancel_shadowform;
-  buff_t* sform;
 
   typedef Base action_base_t; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
@@ -1270,92 +1231,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
     std::vector<option_t> merged_options;
     base_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
-
-  void consume_inner_focus();
-};
-
-struct echo_of_light_t : public priest_heal_t
-{
-  echo_of_light_t( priest_t* p ) :
-    priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
-  {
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks      = static_cast<int>( data().duration() / base_tick_time );
-
-    background     = true;
-    tick_may_crit  = false;
-    hasted_ticks   = false;
-    may_crit       = false;
-
-  }
-};
-// Atonement heal ===========================================================
-
-struct atonement_heal_t : public priest_heal_t
-{
-  atonement_heal_t( const std::string& n, priest_t* p ) :
-    priest_heal_t( n, p, p -> find_spell( 81751 ) )
-  {
-    proc           = true;
-    background     = true;
-    round_base_dmg = false;
-
-    // HACK: Setting may_crit = true will force crits.
-    may_crit = false;
-    base_crit = 1.0;
-
-    if ( ! p -> atonement_target_str.empty() )
-      target = sim -> find_player( p -> atonement_target_str.c_str() );
-  }
-
-  void trigger( double atonement_dmg, int dmg_e, int result )
-  {
-    atonement_dmg *= p() -> glyphs.atonement -> effectN( 1 ).percent();
-    double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
-
-    if ( result == RESULT_CRIT )
-    {
-      // FIXME: Assume capped at 200% of the non-crit cap.
-      cap *= 2.0;
-    }
-
-    if ( atonement_dmg > cap )
-      atonement_dmg = cap;
-
-    if ( dmg_e == DMG_OVER_TIME )
-    {
-      // num_ticks = 1;
-      base_td = atonement_dmg;
-      tick_may_crit = ( result == RESULT_CRIT );
-      tick( get_dot() );
-    }
-    else
-    {
-      assert( dmg_e == DMG_DIRECT );
-      // num_ticks = 0;
-      base_dd_min = base_dd_max = atonement_dmg;
-      may_crit = ( result == RESULT_CRIT );
-
-      execute();
-    }
-  }
-
-  virtual double total_crit_bonus()
-  { return 0; }
-
-  virtual void execute()
-  {
-    target = find_lowest_player();
-
-    priest_heal_t::execute();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    target = find_lowest_player();
-
-    priest_heal_t::tick( d );
-  }
 };
 
 // ==========================================================================
@@ -1364,6 +1239,76 @@ struct atonement_heal_t : public priest_heal_t
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
+
+  // Atonement heal ===========================================================
+
+  struct atonement_heal_t : public priest_heal_t
+  {
+    atonement_heal_t( const std::string& n, priest_t* p ) :
+      priest_heal_t( n, p, p -> find_spell( 81751 ) )
+    {
+      proc           = true;
+      background     = true;
+      round_base_dmg = false;
+
+      // HACK: Setting may_crit = true will force crits.
+      may_crit = false;
+      base_crit = 1.0;
+
+      if ( ! p -> atonement_target_str.empty() )
+        target = sim -> find_player( p -> atonement_target_str.c_str() );
+    }
+
+    void trigger( double atonement_dmg, int dmg_e, int result )
+    {
+      atonement_dmg *= p() -> glyphs.atonement -> effectN( 1 ).percent();
+      double cap = p() -> resources.max[ RESOURCE_HEALTH ] * 0.3;
+
+      if ( result == RESULT_CRIT )
+      {
+        // FIXME: Assume capped at 200% of the non-crit cap.
+        cap *= 2.0;
+      }
+
+      if ( atonement_dmg > cap )
+        atonement_dmg = cap;
+
+      if ( dmg_e == DMG_OVER_TIME )
+      {
+        // num_ticks = 1;
+        base_td = atonement_dmg;
+        tick_may_crit = ( result == RESULT_CRIT );
+        tick( get_dot() );
+      }
+      else
+      {
+        assert( dmg_e == DMG_DIRECT );
+        // num_ticks = 0;
+        base_dd_min = base_dd_max = atonement_dmg;
+        may_crit = ( result == RESULT_CRIT );
+
+        execute();
+      }
+    }
+
+    virtual double total_crit_bonus()
+    { return 0; }
+
+    virtual void execute()
+    {
+      target = find_lowest_player();
+
+      priest_heal_t::execute();
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      target = find_lowest_player();
+
+      priest_heal_t::tick( d );
+    }
+  };
+
   atonement_heal_t* atonement;
   bool can_trigger_atonement;
 
@@ -1470,117 +1415,43 @@ struct priest_spell_t : public priest_action_t<spell_t>
       atonement -> trigger( amount, type, impact_result );
   }
 
-  static void trigger_shadowy_apparition( dot_t* d );
-private:
-  static void add_more_shadowy_apparitions( priest_t*, size_t );
-  friend void priest_t::init_spells();
-public:
-  static void generate_shadow_orb( action_t*, gain_t*, unsigned number=1 );
-};
-
-struct priest_procced_mastery_spell_t : public priest_spell_t
-{
-  priest_procced_mastery_spell_t( const std::string& n, priest_t* p,
-                                  const spell_data_t* s = spell_data_t::nil() ) :
-    priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
+  static void trigger_shadowy_apparition( dot_t* d )
   {
-    background       = true;
-    may_crit         = true;
-    callbacks        = false;
-  }
+    priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
 
-  virtual timespan_t execute_time()
-  {
-    return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
-  }
+    if ( ! pr -> specs.shadowy_apparitions -> ok() )
+      return;
 
-  virtual void execute()
-  {
-    priest_spell_t::execute();
+    if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> specs.shadowy_apparitions -> effectN( 1 ).percent() ) )
+      return;
 
-    p() -> procs.mastery_extra_tick -> occur();
-  }
-};
-
-// ==========================================================================
-// Priest Spell Increments
-// ==========================================================================
-
-// Shadowy Apparition Spell =================================================
-
-struct shadowy_apparition_spell_t : public priest_spell_t
-{
-  shadowy_apparition_spell_t( priest_t* player ) :
-    priest_spell_t( "shadowy_apparition", player, player -> specs.shadowy_apparitions -> ok() ? player -> find_spell( 87532 ) : spell_data_t::not_found() )
-  {
-    background        = true;
-    proc              = true;
-    callbacks         = false;
-
-    trigger_gcd       = timespan_t::zero();
-    travel_speed      = 3.5;
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    priest_spell_t::impact_s( s );
-
-    // Cleanup. Re-add to free list.
-    p() -> spells.apparitions_active.remove( this );
-    p() -> spells.apparitions_free.push( this );
-  }
-};
-
-void priest_spell_t::trigger_shadowy_apparition( dot_t* d )
-{
-  priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
-
-  if ( ! pr -> specs.shadowy_apparitions -> ok() )
-    return;
-
-  if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> specs.shadowy_apparitions -> effectN( 1 ).percent() ) )
-    return;
-
-  if ( ! pr -> spells.apparitions_free.empty() )
-  {
-    spell_t* s = pr -> spells.apparitions_free.front();
-
-    s -> target = d -> state -> target;
-
-    pr -> spells.apparitions_free.pop();
-
-    pr -> spells.apparitions_active.push_back( s );
-
-    pr -> procs.shadowy_apparition -> occur();
-
-    s -> execute();
-  }
-}
-
-void priest_spell_t::add_more_shadowy_apparitions( priest_t* p, size_t n )
-{
-  spell_t* s = NULL;
-
-  if ( ! p -> spells.apparitions_free.size() )
-  {
-    for ( size_t i = 0; i < n; i++ )
+    if ( ! pr -> spells.apparitions_free.empty() )
     {
-      s = new shadowy_apparition_spell_t( p );
-      p -> spells.apparitions_free.push( s );
+      spell_t* s = pr -> spells.apparitions_free.front();
+
+      s -> target = d -> state -> target;
+
+      pr -> spells.apparitions_free.pop();
+
+      pr -> spells.apparitions_active.push_back( s );
+
+      pr -> procs.shadowy_apparition -> occur();
+
+      s -> execute();
     }
   }
 
-  if ( p -> sim -> debug )
-    p -> sim -> output( "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
-}
+private:
+  friend void priest_t::init_spells();
+public:
+  static void generate_shadow_orb( action_t* s, gain_t* g, unsigned number = 1 )
+  {
+    if ( s -> player -> primary_tree() != PRIEST_SHADOW )
+      return;
 
-void priest_spell_t::generate_shadow_orb( action_t* s, gain_t* g, unsigned number )
-{
-  if ( s -> player -> primary_tree() != PRIEST_SHADOW )
-    return;
-
-  s -> player -> resource_gain( RESOURCE_SHADOW_ORB, number, g, s );
-}
+    s -> player -> resource_gain( RESOURCE_SHADOW_ORB, number, g, s );
+  }
+};
 
 void trigger_chakra( priest_t* p, buff_t* chakra_buff )
 {
@@ -1595,6 +1466,8 @@ void trigger_chakra( priest_t* p, buff_t* chakra_buff )
     p -> cooldowns.chakra -> start();
   }
 }
+
+namespace spells {
 
 // ==========================================================================
 // Priest Abilities
@@ -2017,6 +1890,72 @@ struct summon_mindbender_t : public summon_pet_t
 // Priest Damage Spells
 // ==========================================================================
 
+struct priest_procced_mastery_spell_t : public priest_spell_t
+{
+  priest_procced_mastery_spell_t( const std::string& n, priest_t* p,
+                                  const spell_data_t* s = spell_data_t::nil() ) :
+    priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
+  {
+    background       = true;
+    may_crit         = true;
+    callbacks        = false;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    p() -> procs.mastery_extra_tick -> occur();
+  }
+};
+
+// Shadowy Apparition Spell =================================================
+
+struct shadowy_apparition_spell_t : public priest_spell_t
+{
+  shadowy_apparition_spell_t( priest_t* player ) :
+    priest_spell_t( "shadowy_apparition", player, player -> specs.shadowy_apparitions -> ok() ? player -> find_spell( 87532 ) : spell_data_t::not_found() )
+  {
+    background        = true;
+    proc              = true;
+    callbacks         = false;
+
+    trigger_gcd       = timespan_t::zero();
+    travel_speed      = 3.5;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    priest_spell_t::impact_s( s );
+
+    // Cleanup. Re-add to free list.
+    p() -> spells.apparitions_active.remove( this );
+    p() -> spells.apparitions_free.push( this );
+  }
+};
+
+void add_more_shadowy_apparitions( priest_t* p, size_t n )
+{
+  spell_t* s = NULL;
+
+  if ( ! p -> spells.apparitions_free.size() )
+  {
+    for ( size_t i = 0; i < n; i++ )
+    {
+      s = new shadowy_apparition_spell_t( p );
+      p -> spells.apparitions_free.push( s );
+    }
+  }
+
+  if ( p -> sim -> debug )
+    p -> sim -> output( "%s created %d shadowy apparitions", p -> name(), static_cast<unsigned>( p -> spells.apparitions_free.size() ) );
+}
+
 // Mind Blast Spell =========================================================
 
 struct mind_blast_t : public priest_spell_t
@@ -2079,7 +2018,7 @@ struct mind_blast_t : public priest_spell_t
 
   void consume_resource()
   {
-/* BUG: Still costs mana as of 15726 
+/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.consume_divine_insight_shadow -> check() )
       resource_consumed = 0.0;
     else
@@ -3101,21 +3040,43 @@ struct smite_t : public priest_spell_t
   }
 };
 
+} // NAMESPACE spells
+
 // ==========================================================================
 // Priest Heal & Absorb Spells
 // ==========================================================================
 
-void priest_heal_t::consume_inner_focus()
+
+
+namespace heals {
+
+void consume_inner_focus( priest_t* p )
 {
-  if ( p() -> buffs.inner_focus -> up() )
+  if ( p -> buffs.inner_focus -> up() )
   {
     // Inner Focus cooldown starts when consumed.
-    p() -> cooldowns.inner_focus -> reset();
-    p() -> cooldowns.inner_focus -> duration = p() -> buffs.inner_focus -> data().cooldown();
-    p() -> cooldowns.inner_focus -> start();
-    p() -> buffs.inner_focus -> expire();
+    p -> cooldowns.inner_focus -> reset();
+    p -> cooldowns.inner_focus -> duration = p -> buffs.inner_focus -> data().cooldown();
+    p -> cooldowns.inner_focus -> start();
+    p -> buffs.inner_focus -> expire();
   }
 }
+
+struct echo_of_light_t : public priest_heal_t
+{
+  echo_of_light_t( priest_t* p ) :
+    priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
+  {
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    num_ticks      = static_cast<int>( data().duration() / base_tick_time );
+
+    background     = true;
+    tick_may_crit  = false;
+    hasted_ticks   = false;
+    may_crit       = false;
+
+  }
+};
 
 // Binding Heal Spell =======================================================
 
@@ -3133,7 +3094,7 @@ struct binding_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    priest_heal_t::consume_inner_focus();
+    consume_inner_focus( p() );
 
     trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
@@ -3259,7 +3220,7 @@ struct flash_heal_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    priest_heal_t::consume_inner_focus();
+    consume_inner_focus( p() );
 
     trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
@@ -3353,7 +3314,7 @@ struct greater_heal_t : public priest_heal_t
         p() -> cooldowns.inner_focus -> reset();
     }
 
-    priest_heal_t::consume_inner_focus();
+    consume_inner_focus( p() );
 
     trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
@@ -3830,7 +3791,7 @@ struct prayer_of_healing_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    priest_heal_t::consume_inner_focus();
+    consume_inner_focus( p() );
 
     trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
@@ -3983,6 +3944,33 @@ struct spirit_shell_heal_t : priest_heal_t
   }
 };
 
+struct spirit_shell_buff_t : public absorb_buff_t
+{
+public:
+  heal_t* spirit_shell_heal;
+  spirit_shell_buff_t( actor_pair_t p ) :
+    absorb_buff_t( absorb_buff_creator_t( p, "spirit_shell" )
+                   .spell( p.source -> find_spell( 114908 ) )
+                   .source( p.source -> get_stats( "spirit_shell" ) )
+                 ),
+    spirit_shell_heal( NULL )
+  { }
+
+  virtual void expire()
+  {
+    if ( current_value > 0 )
+    {
+      if ( spirit_shell_heal )
+      {
+        spirit_shell_heal -> base_dd_min = spirit_shell_heal -> base_dd_max = current_value * data().effectN( 2 ).percent();
+        spirit_shell_heal->execute();
+      }
+    }
+
+    absorb_buff_t::expire();
+  }
+};
+
 struct spirit_shell_absorb_t : priest_absorb_t
 {
   spirit_shell_absorb_t( priest_t* p, const std::string& options_str ) :
@@ -4004,6 +3992,8 @@ struct spirit_shell_absorb_t : priest_absorb_t
     stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 };
+
+} // NAMESPACE heals
 
 // ==========================================================================
 // Priest
@@ -4046,7 +4036,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     buffs_divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
 
-    buffs_spirit_shell = new spirit_shell_buff_t( *this );
+    buffs_spirit_shell = new heals::spirit_shell_buff_t( *this );
 
     target -> absorb_buffs.push_back( buffs_power_word_shield );
     target -> absorb_buffs.push_back( buffs_divine_aegis );
@@ -4177,6 +4167,9 @@ double priest_t::matching_gear_multiplier( attribute_e attr )
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  using namespace spells;
+  using namespace heals;
+
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
@@ -4240,9 +4233,9 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "shadowfiend" ) return new shadowfiend_pet_t( sim, this );
-  if ( pet_name == "mindbender"  ) return new mindbender_pet_t ( sim, this );
-  if ( pet_name == "lightwell"   ) return new lightwell_pet_t  ( sim, this );
+  if ( pet_name == "shadowfiend" ) return new pets::shadowfiend_pet_t( sim, this );
+  if ( pet_name == "mindbender"  ) return new pets::mindbender_pet_t ( sim, this );
+  if ( pet_name == "lightwell"   ) return new pets::lightwell_pet_t  ( sim, this );
 
   return 0;
 }
@@ -4426,15 +4419,15 @@ void priest_t::init_spells()
   glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    spells.echo_of_light = new echo_of_light_t( this );
+    spells.echo_of_light = new heals::echo_of_light_t( this );
   else
     spells.echo_of_light = NULL;
 
-  spells.spirit_shell = new spirit_shell_heal_t( this );
+  spells.spirit_shell = new heals::spirit_shell_heal_t( this );
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    priest_spell_t::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
+    spells::add_more_shadowy_apparitions( this, specs.shadowy_apparitions -> effectN( 2 ).base_value() );
   }
 
   // Set Bonuses
