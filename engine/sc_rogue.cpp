@@ -113,8 +113,9 @@ enum poison_type_t { POISON_NONE=0, DEADLY_POISON, INSTANT_POISON, WOUND_POISON 
 
 struct rogue_targetdata_t : public targetdata_t
 {
-  dot_t* dots_rupture;
+  dot_t* dots_deadly_poison;
   dot_t* dots_hemorrhage;
+  dot_t* dots_rupture;
 
   buff_t* debuffs_poison_doses;
 
@@ -146,8 +147,9 @@ void register_rogue_targetdata( sim_t* sim )
   player_type t = ROGUE;
   typedef rogue_targetdata_t type;
 
-  REGISTER_DOT( rupture );
+  REGISTER_DOT( deadly_poison );
   REGISTER_DOT( hemorrhage );
+  REGISTER_DOT( rupture );
 
   REGISTER_DEBUFF( poison_doses );
 }
