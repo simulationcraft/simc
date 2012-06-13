@@ -4990,6 +4990,8 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
       m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
+    if ( talent.heart_of_the_wild -> ok() )
+      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
     break;
   case ATTR_AGILITY:
     if ( talent.heart_of_the_wild -> ok() )
