@@ -12,9 +12,11 @@ namespace { // ANONYMOUS NAMESPACE
 
 namespace spells {}
 namespace attacks  {}
+namespace pet_actions  {}
 
 using namespace attacks;
 using namespace spells;
+using namespace pet_actions;
 
 struct hunter_t;
 
@@ -751,7 +753,6 @@ struct hunter_action_t : public Base
     return c;
   }
 };
-
 
 namespace attacks {
 
@@ -2548,34 +2549,50 @@ struct trueshot_aura_t : public hunter_spell_t
   }
 };
 
+} // spells
+
+namespace pet_actions {
+
+
+// Template for common hunter action code. See priest_action_t.
+template <class Base>
+struct hunter_pet_action_t : public Base
+{
+  typedef Base action_base_t;
+  typedef hunter_pet_action_t base_t;
+
+  hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, player, s )
+  {
+    action_base_t::base_crit += player -> talents.spiders_bite -> effectN( 1 ).percent();
+
+    // Assume happy pet
+    action_base_t::base_multiplier *= 1.25;
+
+    // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
+    action_base_t::base_multiplier *= 1.05;
+  }
+
+  hunter_pet_t* cast() { return debug_cast<hunter_pet_t*>( action_base_t::player ); }
+};
+
 // ==========================================================================
 // Hunter Pet Attacks
 // ==========================================================================
 
-struct hunter_pet_attack_t : public attack_t
+struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
 {
-
   hunter_pet_attack_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    attack_t( n, player, s )
+    base_t( n, player, s )
   {
     may_crit = true;
-
-//    base_crit += player -> talents.spiders_bite -> effectN( 1 ).percent();
-
-    // Assume happy pet
-    base_multiplier *= 1.25;
-
-    // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
-    base_multiplier *= 1.05;
   }
-
-  hunter_pet_t* cast()
-  { return debug_cast<hunter_pet_t*>( player ); }
 
   virtual double swing_haste()
   {
-    double h = attack_t::swing_haste();
+    double h = base_t::swing_haste();
 
     hunter_pet_t* p = cast();
 
@@ -2588,9 +2605,9 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void execute()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_pet_t* p = cast();
 
-    attack_t::execute();
+    base_t::execute();
 
     if ( result_is_hit() )
     {
@@ -2610,9 +2627,9 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_pet_t* p = cast();
 
-    attack_t::player_buff();
+    base_t::player_buff();
 
     if ( p -> buffs.bestial_wrath -> up() )
       player_multiplier *= 1.0 + p -> buffs.bestial_wrath -> data().effectN( 2 ).percent();
@@ -2626,9 +2643,9 @@ struct hunter_pet_attack_t : public attack_t
 
   virtual void target_debuff( player_t* t, dmg_e dtype )
   {
-    attack_t::target_debuff( t, dtype );
+    base_t::target_debuff( t, dtype );
 
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_pet_t* p = cast();
 
     if ( p -> talents.feeding_frenzy -> ok() && ( t -> health_percentage() < 35 ) )
     {
@@ -2880,35 +2897,20 @@ struct pet_kill_command_t : public hunter_pet_attack_t
 // Hunter Pet Spells
 // ==========================================================================
 
-struct hunter_pet_spell_t : public spell_t
+struct hunter_pet_spell_t : public hunter_pet_action_t<spell_t>
 {
-  void _init_hunter_pet_spell_t()
-  {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
-
-    base_crit += p -> talents.spiders_bite -> effectN( 1 ).percent();
-
-    base_multiplier *= 1.25; // Assume happy pet
-
-    // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
-    base_multiplier *= 1.05;
-  }
-
   hunter_pet_spell_t( const std::string& n, hunter_pet_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, player, s )
+     base_t( n, player, s )
   {
   }
-
-  hunter_pet_t* cast()
-  { return debug_cast<hunter_pet_t*>( player ); }
 
   virtual void player_buff()
   {
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_pet_t* p = cast();
     hunter_t*     o = p -> cast_owner();
 
-    spell_t::player_buff();
+    base_t::player_buff();
 
     player_spell_power += 0.125 * o -> composite_attack_power();
 
@@ -2924,9 +2926,9 @@ struct hunter_pet_spell_t : public spell_t
 
   virtual void target_debuff( player_t* t, dmg_e dtype )
   {
-    spell_t::target_debuff( t, dtype );
+    base_t::target_debuff( t, dtype );
 
-    hunter_pet_t* p = ( hunter_pet_t* ) player -> cast_pet();
+    hunter_pet_t* p = cast();
 
     if ( p -> talents.feeding_frenzy -> ok() && ( t -> health_percentage() < 35 ) )
     {
@@ -3296,7 +3298,7 @@ struct froststorm_breath_t : public hunter_pet_spell_t
   }
 };
 
-} // spells
+} // pet_actions
 
 // Event Shedule Sniper Trainig
 
