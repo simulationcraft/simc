@@ -17,8 +17,6 @@ struct monk_t;
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
-bool ascensiontrigger = true; //trigger ascension for testing until talents work
-
 struct monk_td_t : public actor_pair_t
 {
   monk_td_t( player_t* target, player_t* monk ) :
@@ -80,7 +78,7 @@ struct monk_t : public player_t
         //   const spell_data_t* chi_burst;
 
         //   const spell_data_t* power_strikes;
-        //   const spell_data_t* ascension;
+           const spell_data_t* ascension;
         //   const spell_data_t* chi_brew;
 
         //   const spell_data_t* deadly_reach;
@@ -460,7 +458,9 @@ action_t* monk_t::create_action( const std::string& name,
 void monk_t::init_spells()
 {
   player_t::init_spells();
+
   //TALENTS
+  talent.ascension = find_talent_spell( "Ascension" );
 
 
   // Add Spells & Glyphs
@@ -489,10 +489,7 @@ void monk_t::init_base()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-if ( ascensiontrigger == true )
-  resources.base[  RESOURCE_CHI  ] = 5; // NOTE: 5 w/ ascension
-else
-  resources.base[  RESOURCE_CHI  ] = 4; // NOTE: 5 w/ ascension
+  resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
 
 
   base_chi_regen_per_second = 0; //
