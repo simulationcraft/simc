@@ -7,6 +7,14 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
+  namespace spells {}
+  namespace heals  {}
+  namespace pets   {}
+
+  using namespace spells;
+  using namespace heals;
+  using namespace pets;
+
 struct priest_t;
 
 struct remove_dots_event_t;
@@ -4036,7 +4044,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     buffs_divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
 
-    buffs_spirit_shell = new heals::spirit_shell_buff_t( *this );
+    buffs_spirit_shell = new spirit_shell_buff_t( *this );
 
     target -> absorb_buffs.push_back( buffs_power_word_shield );
     target -> absorb_buffs.push_back( buffs_divine_aegis );
@@ -4167,9 +4175,6 @@ double priest_t::matching_gear_multiplier( attribute_e attr )
 action_t* priest_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
-  using namespace spells;
-  using namespace heals;
-
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
   if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
@@ -4419,11 +4424,11 @@ void priest_t::init_spells()
   glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
 
   if ( mastery_spells.echo_of_light -> ok() )
-    spells.echo_of_light = new heals::echo_of_light_t( this );
+    spells.echo_of_light = new echo_of_light_t( this );
   else
     spells.echo_of_light = NULL;
 
-  spells.spirit_shell = new heals::spirit_shell_heal_t( this );
+  spells.spirit_shell = new spirit_shell_heal_t( this );
 
   if ( specs.shadowy_apparitions -> ok() )
   {
