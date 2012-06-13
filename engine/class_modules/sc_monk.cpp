@@ -151,7 +151,6 @@ struct monk_t : public player_t
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_attack_power();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
   virtual role_e primary_role();
@@ -503,6 +502,10 @@ else
   else if ( tree == MONK_BREWMASTER )
     active_stance = STANCE_DRUNKEN_OX;
 
+  base.attack_power = level * 2.0;
+  initial.attack_power_per_strength = 1.0;
+  initial.attack_power_per_agility  = 2.0;
+
 
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;
@@ -632,16 +635,6 @@ double monk_t::matching_gear_multiplier( attribute_e attr )
     return 0.05;
 
   return 0.0;
-}
-
-// monk_t::composite_attack_power ==========================================
-
-double monk_t::composite_attack_power()
-{
-	double ap = player_t::composite_attack_power(); //pointless pull - determining if referencing matters
-	ap = (level * 2) + (agility() - 20) + (strength() - 10);
-
-  return floor( ap );
 }
 
 // monk_t::decode_set =======================================================
