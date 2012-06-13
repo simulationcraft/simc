@@ -2,6 +2,15 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+//
+//  TODO:
+//  Add all damaging abilities
+//  Ensure values are correct
+//  Add mortal wounds to RSK
+//  Add all buffs
+//
+//
+//
 
 #include "simulationcraft.hpp"
 
@@ -12,8 +21,6 @@
 namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
-
-// max chi = base chi + ascension talent ==== add chi formula here
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
@@ -32,7 +39,7 @@ struct monk_t : public player_t
   struct buffs_t
   {
   // TODO: Finish Adding Buffs - will uncomment as implemented
-          //buff_t* buffs_<buffname>;
+        //  buff_t* buffs_<buffname>;
         //  buff_t* tiger_power;
         //  buff_t* energizing_brew;
         //  buff_t* zen_sphere;
@@ -44,6 +51,9 @@ struct monk_t : public player_t
         //  buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
+
+		//Debuffs
+		buff_t* rising_sun_kick;
   } buff;
 
   // Gains
@@ -322,14 +332,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( 0, options_str );
   }
 
-//TEST: Mortal Wounds
-virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    monk_melee_attack_t::impact( t, impact_result, travel_dmg );
+//TEST: Mortal Wounds - ADD Later
 
-    if ( sim -> overrides.mortal_wounds && result_is_hit( impact_result ) )
-      t -> debuffs.mortal_wounds -> trigger();
-  }
+virtual void target_debuff( player_t* t, dmg_e dt  )
+{
+  monk_melee_attack_t::target_debuff( t, dt );
+
+  p() -> buff.rising_sun_kick -> trigger();
+}
 };
 //=============================
 //====Spinning Crane Kick======
@@ -527,6 +537,7 @@ void monk_t::init_buffs()
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
+  buff.rising_sun_kick                       = buff_creator_t( this, "rising_sun_kick", find_class_spell( "Rising Sun Kick" ) );
 
 }
 
