@@ -1947,7 +1947,7 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
   for ( r = rng_list; r; r = r -> next )
   {
-    if ( r -> name_str() == n )
+    if ( r -> name_str == n )
       return r;
   }
 

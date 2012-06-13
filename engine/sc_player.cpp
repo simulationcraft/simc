@@ -4104,33 +4104,6 @@ bool player_t::recent_cast()
   return ( last_cast > timespan_t::zero() ) && ( ( last_cast + timespan_t::from_seconds( 5.0 ) ) > sim -> current_time );
 }
 
-// player_t::find_action ====================================================
-
-action_t* player_t::find_action( const std::string& str )
-{
-  for ( size_t i = 0; i < action_list.size(); ++i )
-  {
-    action_t* a = action_list[ i ];
-    if ( str == a -> name_str )
-      return a;
-  }
-
-  return 0;
-}
-
-// player_t::find_cooldown ==================================================
-
-cooldown_t* player_t::find_cooldown( const std::string& name )
-{
-  for ( cooldown_t* c = cooldown_list; c; c = c -> next )
-  {
-    if ( c -> name_str == name )
-      return c;
-  }
-
-  return 0;
-}
-
 // player_t::find_dot =======================================================
 
 dot_t* player_t::find_dot( const std::string& name,
@@ -4171,44 +4144,76 @@ void player_t::clear_action_priority_lists() const
   }
 }
 
-// player_t::find_stats ======================================================
-
-stats_t* player_t::find_stats( const std::string& n )
+template <typename T>
+T* find_vector_member( std::vector<T*> list, const std::string& name )
 {
-  stats_t* stats = 0;
-
-  for ( size_t i = 0; i < stats_list.size(); ++i )
+  for ( size_t i = 0; i < list.size(); ++i )
   {
-    if ( stats_list[ i ] -> name_str == n )
-    { stats = stats_list[ i ]; break; }
+    T* t = list[ i ];
+    if ( t -> name_str == name )
+      return t;
+  }
+  return 0;
+}
+
+template <typename T>
+T* find_list_member( T* list, const std::string& name )
+{
+  for ( T* t = list; t; t = t -> next )
+  {
+    if ( t -> name_str == name )
+      return t;
   }
 
-  return stats;
+  return 0;
 }
+
+// player_t::find_stats ======================================================
+
+stats_t* player_t::find_stats( const std::string& name )
+{ return find_vector_member<stats_t>( stats_list, name ); }
+
+gain_t* player_t::find_gain    ( const std::string& name )
+{ return find_list_member<gain_t>( gain_list, name ); }
+
+proc_t* player_t::find_proc    ( const std::string& name )
+{ return find_list_member<proc_t>( proc_list, name ); }
+
+benefit_t* player_t::find_benefit ( const std::string& name )
+{ return find_list_member<benefit_t>( benefit_list, name ); }
+
+uptime_t* player_t::find_uptime  ( const std::string& name )
+{ return find_list_member<uptime_t>( uptime_list, name ); }
+
+rng_t* player_t::find_rng     ( const std::string& name )
+{ return find_list_member<rng_t>( rng_list, name ); }
+
+cooldown_t* player_t::find_cooldown( const std::string& name )
+{ return find_list_member<cooldown_t>( cooldown_list, name ); }
+
+action_t* player_t::find_action( const std::string& name )
+{ return find_vector_member<action_t>( action_list, name ); }
 
 // player_t::get_cooldown ===================================================
 
 cooldown_t* player_t::get_cooldown( const std::string& name )
 {
-  cooldown_t* c=0;
+  cooldown_t* c = find_cooldown( name );
 
-  for ( c = cooldown_list; c; c = c -> next )
+  if (!c )
   {
-    if ( c -> name_str == name )
-      return c;
+    c = new cooldown_t( name, this );
+
+    cooldown_t** tail = &cooldown_list;
+
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+    {
+      tail = &( ( *tail ) -> next );
+    }
+
+    c -> next = *tail;
+    *tail = c;
   }
-
-  c = new cooldown_t( name, this );
-
-  cooldown_t** tail = &cooldown_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  c -> next = *tail;
-  *tail = c;
 
   return c;
 }
@@ -4233,25 +4238,22 @@ dot_t* player_t::get_dot( const std::string& name,
 
 gain_t* player_t::get_gain( const std::string& name )
 {
-  gain_t* g = 0;
+  gain_t* g = find_gain( name );
 
-  for ( g = gain_list; g; g = g -> next )
+  if ( !g )
   {
-    if ( g -> name_str == name )
-      return g;
+    g = new gain_t( name );
+
+    gain_t** tail = &gain_list;
+
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+    {
+      tail = &( ( *tail ) -> next );
+    }
+
+    g -> next = *tail;
+    *tail = g;
   }
-
-  g = new gain_t( name );
-
-  gain_t** tail = &gain_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  g -> next = *tail;
-  *tail = g;
 
   return g;
 }
@@ -4260,25 +4262,22 @@ gain_t* player_t::get_gain( const std::string& name )
 
 proc_t* player_t::get_proc( const std::string& name )
 {
-  proc_t* p = 0;
+  proc_t* p = find_proc( name );
 
-  for ( p = proc_list; p; p = p -> next )
+  if( !p )
   {
-    if ( p -> name_str == name )
-      return p;
+    p = new proc_t( sim, this, name );
+
+    proc_t** tail = &proc_list;
+
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+    {
+      tail = &( ( *tail ) -> next );
+    }
+
+    p -> next = *tail;
+    *tail = p;
   }
-
-  p = new proc_t( sim, this, name );
-
-  proc_t** tail = &proc_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  p -> next = *tail;
-  *tail = p;
 
   return p;
 }
@@ -4308,25 +4307,22 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
 
 benefit_t* player_t::get_benefit( const std::string& name )
 {
-  benefit_t* u=0;
+  benefit_t* u = find_benefit( name );
 
-  for ( u = benefit_list; u; u = u -> next )
+  if ( !u )
   {
-    if ( u -> name_str == name )
-      return u;
+    u = new benefit_t( name );
+
+    benefit_t** tail = &benefit_list;
+
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+    {
+      tail = &( ( *tail ) -> next );
+    }
+
+    u -> next = *tail;
+    *tail = u;
   }
-
-  u = new benefit_t( name );
-
-  benefit_t** tail = &benefit_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  u -> next = *tail;
-  *tail = u;
 
   return u;
 }
@@ -4335,25 +4331,23 @@ benefit_t* player_t::get_benefit( const std::string& name )
 
 uptime_t* player_t::get_uptime( const std::string& name )
 {
-  uptime_t* u=0;
+  uptime_t* u = find_uptime( name );
 
-  for ( u = uptime_list; u; u = u -> next )
+
+  if ( !u )
   {
-    if ( u -> name_str == name )
-      return u;
+    u = new uptime_t( sim, name );
+
+    uptime_t** tail = &uptime_list;
+
+    while ( *tail && name > ( ( *tail ) -> name_str ) )
+    {
+      tail = &( ( *tail ) -> next );
+    }
+
+    u -> next = *tail;
+    *tail = u;
   }
-
-  u = new uptime_t( sim, name );
-
-  uptime_t** tail = &uptime_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  u -> next = *tail;
-  *tail = u;
 
   return u;
 }
@@ -4367,13 +4361,7 @@ rng_t* player_t::get_rng( const std::string& n )
   if ( ! sim -> separated_rng )
     return sim -> default_rng();
 
-  rng_t* rng=0;
-
-  for ( rng = rng_list; rng; rng = rng -> next )
-  {
-    if ( rng -> name_str() == n )
-      return rng;
-  }
+  rng_t* rng = find_rng( n );
 
   if ( ! rng )
   {

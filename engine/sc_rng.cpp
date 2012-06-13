@@ -8,7 +8,7 @@
 // rng_t::rng_t =============================================================
 
 rng_t::rng_t( const std::string& n, rng_e t ) :
-  _name_str( n ), _type( t ),
+  name_str( n ), _type( t ),
   actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
   num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
   gauss_pair_use( false ),
@@ -128,7 +128,7 @@ std::string rng_t::report( double confidence_estimator )
   int precision = 6;
 
   std::ostringstream s;
-  s << "RNG " << name_str() << ": Actual ( Confidence Interval ): ";
+  s << "RNG " << name_str << ": Actual ( Confidence Interval ): ";
 
   s << "Roll=";
   if ( num_roll > 0 )

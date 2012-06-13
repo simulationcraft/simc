@@ -3764,6 +3764,11 @@ struct player_t : public noncopyable
   dot_t*      find_dot     ( const std::string& name, player_t* source );
   buff_t*     find_buff    ( const std::string& name, player_t* source );
   stats_t*    find_stats   ( const std::string& name );
+  gain_t*     find_gain    ( const std::string& name );
+  proc_t*     find_proc    ( const std::string& name );
+  benefit_t*  find_benefit ( const std::string& name );
+  uptime_t*   find_uptime  ( const std::string& name );
+  rng_t*      find_rng     ( const std::string& name );
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name, player_t* source );
@@ -4905,8 +4910,9 @@ void print_suite( sim_t* );
 
 struct rng_t
 {
+public:
+  std::string name_str;
 private:
-  std::string _name_str;
   rng_e _type;
   double actual_roll, actual_range, actual_gauss;
   uint64_t num_roll, num_range, num_gauss;
@@ -4926,8 +4932,7 @@ private:
   virtual void    _seed( uint32_t start ) = 0;
 public:
 
-  const std::string& name_str() { return _name_str; }
-  const char* name() { return _name_str.c_str(); }
+  const char* name() { return name_str.c_str(); }
   void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
   double real() { return _real(); }
   rng_e type() { return _type; }
