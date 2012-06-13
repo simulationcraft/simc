@@ -218,6 +218,7 @@ struct monk_action_t : public Base
   {
     action_base_t::may_crit   = true;
     action_base_t::may_glance = false;
+    action_base_t::stateless  = true;
   }
 
   monk_t* p() { return debug_cast<monk_t*>( action_base_t::player ); }
@@ -302,17 +303,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
   }
-
-  virtual void target_debuff( player_t* t, dmg_e dt )
-  {
-    monk_melee_attack_t::target_debuff( t, dt );
-
-    if ( t -> health_percentage() > 50.0 )
-      target_dd_adder = 0;
-    else
-      target_dd_adder = 0;
-
-  }
 };
 //=============================
 //====Blackout Kick============
@@ -338,9 +328,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
 //TEST: Mortal Wounds - ADD Later
 
-virtual void target_debuff( player_t* t, dmg_e dt  )
+virtual void impact_s( action_state_t* s )
 {
-  monk_melee_attack_t::target_debuff( t, dt );
+  monk_melee_attack_t::impact_s( s );
 
   p() -> buff.rising_sun_kick -> trigger();
 }
@@ -541,7 +531,7 @@ void monk_t::init_buffs()
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  buff.rising_sun_kick                       = buff_creator_t( this, "rising_sun_kick", find_class_spell( "Rising Sun Kick" ) );
+  buff.rising_sun_kick = buff_creator_t( this, "rising_sun_kick" ).spell( find_class_spell( "Rising Sun Kick" ) );
 
 }
 
