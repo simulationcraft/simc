@@ -9,8 +9,8 @@
 //  Add mortal wounds to RSK
 //  Add all buffs
 //
-//
-//
+//  Note: RSK 10% buff works, just doesn't parse.
+// <@serge> And in the correct place you multiply the damage multiplier by ( 1.0 + buffs.rsk -> data().effectN( 1 ).percent() )
 
 #include "simulationcraft.hpp"
 
@@ -29,7 +29,10 @@ struct monk_td_t : public actor_pair_t
   monk_td_t( player_t* target, player_t* monk ) :
     actor_pair_t( target, monk )
   {
+
+
   }
+
 };
 
 struct monk_t : public player_t
@@ -192,8 +195,8 @@ struct monk_t : public player_t
 
     return player_t::set_default_glyphs();
   }
-};
 
+};
 namespace {
 // ==========================================================================
 // Monk Abilities
@@ -233,6 +236,7 @@ struct monk_action_t : public Base
     return true;
   }
 };
+
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
