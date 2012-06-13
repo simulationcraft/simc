@@ -45,7 +45,7 @@ struct buff_delay_t : public event_t
 };
 }
 
-buff_t::buff_t( const buff_creator_t& params ) :
+buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   sim( params._sim ),
   player( params._player.target ),
   name_str( params._name ),
@@ -857,7 +857,7 @@ expr_t* buff_t::create_expression( const std::string& type )
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
-  buff_t( params.bc ), amount( params._amount ), stat( params._stat )
+  buff_t( params ), amount( params._amount ), stat( params._stat )
 {
 }
 
@@ -913,7 +913,7 @@ void stat_buff_t::expire()
 // ==========================================================================
 
 cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params ) :
-  buff_t( params.bc ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
+  buff_t( params ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
 {
 }
 
@@ -984,7 +984,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 // DEBUFF
 // ==========================================================================
 
-debuff_t::debuff_t( const buff_creator_t& params ) :
+debuff_t::debuff_t( const buff_creator_basics_t& params ) :
   buff_t( params )
 {}
 
@@ -992,11 +992,11 @@ debuff_t::debuff_t( const buff_creator_t& params ) :
 
 
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
-  buff_t( params.bc ), absorb_source( params._absorb_source )
+  buff_t( params ), absorb_source( params._absorb_source )
 {
 }
 
-void buff_creator_t::init()
+void buff_creator_basics_t::init()
 {
   _chance = -1.0;
   _max_stack = -1;
@@ -1008,14 +1008,14 @@ void buff_creator_t::init()
   _default_value = -1.0;
 }
 
-buff_creator_t::buff_creator_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
+buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
   _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp )
 { init(); }
 
-buff_creator_t::buff_creator_t( actor_pair_t p , uint32_t id, const std::string& n ) :
+buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p , uint32_t id, const std::string& n ) :
   _player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() )
 { init(); }
 
-buff_creator_t::buff_creator_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :
+buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :
   _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp )
 { init(); }

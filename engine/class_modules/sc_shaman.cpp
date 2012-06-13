@@ -3866,10 +3866,10 @@ void shaman_t::init_buffs()
   buff.water_shield        = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
 
   // Tier13 set bonuses
-  buff.tier13_2pc_caster   = stat_buff_creator_t( buff_creator_t( this, "tier13_2pc_caster", dbc.spell( 105779 ) ) )
+  buff.tier13_2pc_caster   = stat_buff_creator_t( this, "tier13_2pc_caster", dbc.spell( 105779 ) )
                              .stat( STAT_MASTERY_RATING )
                              .amount( dbc.spell( 105779 ) -> effectN( 1 ).base_value() );
-  buff.tier13_4pc_caster   = stat_buff_creator_t( buff_creator_t( this, "tier13_4pc_caster", dbc.spell( 105821 ) ) )
+  buff.tier13_4pc_caster   = stat_buff_creator_t( this, "tier13_4pc_caster", dbc.spell( 105821 ) )
                              .stat( STAT_HASTE_RATING )
                              .amount( dbc.spell( 105821 ) -> effectN( 1 ).base_value() );
   buff.tier13_4pc_healer   = buff_creator_t( this, "tier13_4pc_healer", dbc.spell( 105877 ) );

@@ -1670,77 +1670,74 @@ void player_t::init_buffs()
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap = stat_buff_creator_t(
-                          buff_creator_t( this, "blood_fury_ap" )
+  buffs.blood_fury_ap = stat_buff_creator_t( this, "blood_fury_ap" )
                           .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15.0 ) ) )
+                          .duration( timespan_t::from_seconds( 15.0 ) )
                         .stat( STAT_ATTACK_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
 
-  buffs.blood_fury_sp = stat_buff_creator_t(
-                          buff_creator_t( this, "blood_fury_sp" )
+  buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp" )
                           .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15.0 ) ) )
+                          .duration( timespan_t::from_seconds( 15.0 ) )
                         .stat( STAT_SPELL_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
 
-  buffs.lifeblood = stat_buff_creator_t(
-                      buff_creator_t( this, "lifeblood" )
+  buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
                       .max_stack( 1 )
-                      .duration( timespan_t::from_seconds( 20.0 ) ) )
+                      .duration( timespan_t::from_seconds( 20.0 ) )
                     .stat( STAT_HASTE_RATING )
                     .amount( 480.0 );
 
   // Potions
   struct potions_common_buff_creator
   {
-    buff_creator_t operator()( player_t* p,
+    stat_buff_creator_t operator()( player_t* p,
                                const std::string& n,
                                timespan_t d = timespan_t::from_seconds( 25.0 ),
                                timespan_t cd = timespan_t::from_seconds( 60.0 ) )
     {
-      return ( buff_creator_t ( p,  n + "_potion" )
+      return ( stat_buff_creator_t ( p,  n + "_potion" )
                .max_stack( 1 )
                .duration( d )
                .cd( cd ) );
     }
   };
 
-  potion_buffs.speed      = stat_buff_creator_t( potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) ) )
+  potion_buffs.speed      = potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) )
                             .stat( STAT_HASTE_RATING )
                             .amount( 500.0 );
 
-  potion_buffs.volcanic   = stat_buff_creator_t( potions_common_buff_creator()( this, "volcanic" ) )
+  potion_buffs.volcanic   = potions_common_buff_creator()( this, "volcanic" )
                             .stat( STAT_INTELLECT )
                             .amount( 1200.0 );
 
-  potion_buffs.earthen    = stat_buff_creator_t( potions_common_buff_creator()( this, "earthen" ) )
+  potion_buffs.earthen    = potions_common_buff_creator()( this, "earthen" )
                             .stat( STAT_ARMOR )
                             .amount( 4800.0 );
 
-  potion_buffs.golemblood = stat_buff_creator_t( potions_common_buff_creator()( this, "golemblood" ) )
+  potion_buffs.golemblood = potions_common_buff_creator()( this, "golemblood" )
                             .stat( STAT_STRENGTH )
                             .amount( 1200.0 );
 
-  potion_buffs.tolvir     = stat_buff_creator_t( potions_common_buff_creator()( this, "tolvir" ) )
+  potion_buffs.tolvir     = potions_common_buff_creator()( this, "tolvir" )
                             .stat( STAT_AGILITY )
                             .amount( 1200.0 );
 
   // New Mop potions
 
-  potion_buffs.jinyu        = stat_buff_creator_t( potions_common_buff_creator()( this, "jinyu" ) )
+  potion_buffs.jinyu        = potions_common_buff_creator()( this, "jinyu" )
                               .stat( STAT_INTELLECT )
                               .amount( 4000.0 );
 
-  potion_buffs.mountains    = stat_buff_creator_t( potions_common_buff_creator()( this, "mountains" ) )
+  potion_buffs.mountains    = potions_common_buff_creator()( this, "mountains" )
                               .stat( STAT_ARMOR )
                               .amount( 12000.0 );
 
-  potion_buffs.mogu_power   = stat_buff_creator_t( potions_common_buff_creator()( this, "mogu_power" ) )
+  potion_buffs.mogu_power   = potions_common_buff_creator()( this, "mogu_power" )
                               .stat( STAT_STRENGTH )
                               .amount( 4000.0 );
 
-  potion_buffs.virmens_bite = stat_buff_creator_t( potions_common_buff_creator()( this, "virmens_bite" ) )
+  potion_buffs.virmens_bite = potions_common_buff_creator()( this, "virmens_bite" )
                               .stat( STAT_AGILITY )
                               .amount( 4000.0 );
 
@@ -5009,12 +5006,11 @@ struct use_item_t : public action_t
       if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
-      buff = stat_buff_creator_t(
-               buff_creator_t( player, use_name ).max_stack( e.max_stacks )
+      buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
                .duration( e.duration )
                .cd( timespan_t::zero() )
                .chance( e.proc_chance )
-               .reverse( e.reverse ) )
+               .reverse( e.reverse )
              .stat( e.stat )
              .amount( e.stat_amount );
     }

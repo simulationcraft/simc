@@ -131,7 +131,6 @@ struct alias_t;
 struct attack_t;
 struct benefit_t;
 struct buff_t;
-struct buff_creator_t;
 struct buff_uptime_t;
 struct callback_t;
 struct cooldown_t;
@@ -1738,11 +1737,13 @@ struct actor_pair_t
   virtual ~actor_pair_t() {}
 };
 
-// Buffs ====================================================================
+// Buff Creation ====================================================================
+namespace buff_creation {
 
-struct buff_creator_t
+// This is the base buff creator class containing data to create a buff_t
+struct buff_creator_basics_t
 {
-private:
+protected:
   actor_pair_t _player;
   sim_t* _sim;
   std::string _name;
@@ -1752,95 +1753,140 @@ private:
   int _max_stack;
   timespan_t _duration, _cooldown;
   int _quiet, _reverse, _activated;
-  friend struct buff_t;
-  friend struct debuff_t;
+  friend struct ::buff_t;
+  friend struct ::debuff_t;
 private:
   void init();
 public:
-  buff_creator_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-  buff_creator_t( actor_pair_t, uint32_t id, const std::string& name );
-  buff_creator_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-
-  buff_creator_t& duration( timespan_t d )
-  { _duration=d; return *this; }
-  buff_creator_t& default_value( double v )
-  { _default_value=v; return *this; }
-  buff_creator_t& chance( double c )
-  { _chance=c; return *this; }
-  buff_creator_t& max_stack( unsigned ms )
-  { _max_stack=ms; return *this; }
-  buff_creator_t& cd( timespan_t t )
-  { _cooldown=t; return *this; }
-  buff_creator_t& reverse( bool r )
-  { _reverse=r; return *this; }
-  buff_creator_t& quiet( bool q )
-  { _quiet=q; return *this; }
-  buff_creator_t& activated( bool a )
-  { _activated=a; return *this; }
-  buff_creator_t& spell( const spell_data_t* s )
-  { s_data=s; return *this; }
+  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name );
+  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 
   operator buff_t* () const;
   operator debuff_t* () const;
 };
 
-struct stat_buff_creator_t
+// This helper template is necessary so that reference functions of the classes inheriting from it return the type of the derived class.
+// eg. buff_creator_helper_t<stat_buff_creator_t>::chance() will return a reference of type stat_buff_creator_t
+template <typename T>
+struct buff_creator_helper_t : public buff_creator_basics_t
+{
+  typedef T bufftype;
+  typedef buff_creator_helper_t base_t;
+
+public:
+  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    buff_creator_basics_t( q, name, s ) {}
+  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name ) :
+    buff_creator_basics_t( q, id, name ) {}
+  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    buff_creator_basics_t( sim, name, s ) {}
+
+  bufftype& duration( timespan_t d )
+  { _duration=d; return *(static_cast<bufftype*>( this )); }
+  bufftype& default_value( double v )
+  { _default_value=v; return *(static_cast<bufftype*>( this )); }
+  bufftype& chance( double c )
+  { _chance=c; return *(static_cast<bufftype*>( this )); }
+  bufftype& max_stack( unsigned ms )
+  { _max_stack=ms; return *(static_cast<bufftype*>( this )); }
+  bufftype& cd( timespan_t t )
+  { _cooldown=t; return *(static_cast<bufftype*>( this )); }
+  bufftype& reverse( bool r )
+  { _reverse=r; return *(static_cast<bufftype*>( this )); }
+  bufftype& quiet( bool q )
+  { _quiet=q; return *(static_cast<bufftype*>( this )); }
+  bufftype& activated( bool a )
+  { _activated=a; return *(static_cast<bufftype*>( this )); }
+  bufftype& spell( const spell_data_t* s )
+  { s_data=s; return *(static_cast<bufftype*>( this )); }
+
+};
+
+struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
+{
+public:
+  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s ) {}
+  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name ) :
+    base_t( q, id, name ) {}
+  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( sim, name, s ) {}
+};
+
+struct stat_buff_creator_t : public buff_creator_helper_t<stat_buff_creator_t>
 {
 private:
-  buff_creator_t bc;
   double _amount;
   stat_e _stat;
-  friend struct stat_buff_t;
+  friend struct ::stat_buff_t;
 public:
-  stat_buff_creator_t( buff_creator_t a ) :
-    bc( a ), _amount( 0 ), _stat( STAT_NONE ) {}
+  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s ),
+    _amount( 0 ), _stat( STAT_NONE ) {}
+  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( sim, name, s ),
+    _amount( 0 ), _stat( STAT_NONE ) {}
 
-  stat_buff_creator_t& amount( double a )
+  bufftype& amount( double a )
   { _amount=a; return *this; }
-  stat_buff_creator_t& stat( stat_e s )
+  bufftype& stat( stat_e s )
   { _stat=s; return *this; }
 
   operator stat_buff_t* () const;
 };
 
-struct absorb_buff_creator_t
+struct absorb_buff_creator_t : public buff_creator_helper_t<absorb_buff_creator_t>
 {
 private:
-  buff_creator_t bc;
   stats_t* _absorb_source;
-  friend struct absorb_buff_t;
+  friend struct ::absorb_buff_t;
 public:
-  absorb_buff_creator_t( buff_creator_t a ) :
-    bc( a ),_absorb_source( 0 ) {}
+  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s ),
+    _absorb_source( 0 ) {}
+  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( sim, name, s ),
+    _absorb_source( 0 ) {}
 
-  absorb_buff_creator_t& source( stats_t* s )
+  bufftype& source( stats_t* s )
   { _absorb_source=s; return *this; }
 
   operator absorb_buff_t* () const;
 };
 
-struct cost_reduction_buff_creator_t
+struct cost_reduction_buff_creator_t : public buff_creator_helper_t<cost_reduction_buff_creator_t>
 {
 private:
-  buff_creator_t bc;
   double _amount;
   school_e _school;
   bool _refreshes;
-  friend struct cost_reduction_buff_t;
+  friend struct ::cost_reduction_buff_t;
 public:
-  cost_reduction_buff_creator_t( buff_creator_t a ) :
-    bc( a ), _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
+  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( q, name, s ),
+    _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
+  {}
+  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( sim, name, s ),
+    _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
   {}
 
-  cost_reduction_buff_creator_t& amount( double a )
+  bufftype& amount( double a )
   { _amount=a; return *this; }
-  cost_reduction_buff_creator_t& school( school_e s )
+  bufftype& school( school_e s )
   { _school=s; return *this; }
-  cost_reduction_buff_creator_t& refreshes( bool r )
+  bufftype& refreshes( bool r )
   { _refreshes=r; return *this; }
 
   operator cost_reduction_buff_t* () const;
 };
+
+} // END NAMESPACE buff_creation
+
+using namespace buff_creation;
+
+// Buffs ====================================================================
 
 struct buff_t
 {
@@ -1881,8 +1927,8 @@ public:
   virtual ~buff_t();
 
 protected:
-  buff_t( const buff_creator_t& params );
-  friend struct buff_creator_t;
+  buff_t( const buff_creator_basics_t& params );
+  friend struct buff_creation::buff_creator_basics_t;
 public:
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
@@ -1931,7 +1977,7 @@ public:
   int max_stack() { return _max_stack; }
 };
 
-inline buff_creator_t::operator buff_t* () const
+inline buff_creator_basics_t::operator buff_t* () const
 { return new buff_t( *this ); }
 
 struct stat_buff_t : public buff_t
@@ -1945,7 +1991,7 @@ struct stat_buff_t : public buff_t
 
 private:
   stat_buff_t( const stat_buff_creator_t& params );
-  friend struct stat_buff_creator_t;
+  friend struct buff_creation::stat_buff_creator_t;
 };
 
 inline stat_buff_creator_t::operator stat_buff_t* () const
@@ -1958,7 +2004,7 @@ struct absorb_buff_t : public buff_t
 
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
-  friend struct absorb_buff_creator_t;
+  friend struct buff_creation::absorb_buff_creator_t;
 };
 
 inline absorb_buff_creator_t::operator absorb_buff_t* () const
@@ -1973,7 +2019,7 @@ struct cost_reduction_buff_t : public buff_t
 
 private:
   cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
-  friend struct cost_reduction_buff_creator_t;
+  friend struct buff_creation::cost_reduction_buff_creator_t;
 public:
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -1987,11 +2033,11 @@ inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
 struct debuff_t : public buff_t
 {
 private:
-  debuff_t( const buff_creator_t& params );
-  friend struct buff_creator_t;
+  debuff_t( const buff_creator_basics_t& params );
+  friend struct buff_creation::buff_creator_basics_t;
 };
 
-inline buff_creator_t::operator debuff_t* () const
+inline buff_creator_basics_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
 
 typedef struct buff_t aura_t;

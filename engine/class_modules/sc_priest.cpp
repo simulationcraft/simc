@@ -16,8 +16,10 @@ class spirit_shell_buff_t : public absorb_buff_t
 public:
   heal_t* spirit_shell_heal;
   spirit_shell_buff_t( actor_pair_t p ) :
-    absorb_buff_t(
-      absorb_buff_creator_t( buff_creator_t( p, "spirit_shell", p.source -> find_spell( 114908 ) ) ).source( p.source -> get_stats( "spirit_shell" ) ) ),
+    absorb_buff_t( absorb_buff_creator_t( p, "spirit_shell" )
+                   .spell( p.source -> find_spell( 114908 ) )
+                   .source( p.source -> get_stats( "spirit_shell" ) )
+                 ),
     spirit_shell_heal( NULL )
   { }
 
@@ -4038,10 +4040,10 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
 
     dots_renew = target -> get_dot( "renew", p );
 
-    buffs_power_word_shield = absorb_buff_creator_t( buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) ) )
+    buffs_power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
                               .source( source -> get_stats( "power_word_shield" ) );
 
-    buffs_divine_aegis = absorb_buff_creator_t( buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) ) )
+    buffs_divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
 
     buffs_spirit_shell = new spirit_shell_buff_t( *this );

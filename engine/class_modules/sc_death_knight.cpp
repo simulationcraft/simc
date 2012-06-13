@@ -4051,7 +4051,7 @@ void death_knight_t::init_enchant()
   };
 
   buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier" ).max_stack( 2 ).duration( timespan_t::from_seconds( 30.0 ) );
-  buffs.rune_of_razorice            = buff_creator_t( this, 51714, "rune_of_razorice" );
+  buffs.rune_of_razorice            = buff_creator_t( this, "rune_of_razorice" ).spell( find_spell( 51714 ) );
   buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
@@ -4110,7 +4110,7 @@ void death_knight_t::init_buffs()
 
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
-  buffs.crimson_scourge     = buff_creator_t( this, 81141, "crimson_scourge" );
+  buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) );
@@ -4133,7 +4133,7 @@ void death_knight_t::init_buffs()
                               .duration( timespan_t::from_seconds( 10.0 ) )
                               .cd( timespan_t::zero() )
                               .chance( 1.0 );
-  buffs.tier13_4pc_melee    = stat_buff_creator_t( buff_creator_t( this, 105647, "tier13_4pc_melee" ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
+  buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" ).spell( find_spell( 105647 ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
 
   struct bloodworms_buff_t : public buff_t

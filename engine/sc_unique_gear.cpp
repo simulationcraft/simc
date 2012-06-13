@@ -33,14 +33,13 @@ struct stat_proc_callback_t : public action_callback_t
     if ( max_stack == 0 ) max_stack = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = stat_buff_creator_t(
-             buff_creator_t( p, name_str )
+    buff = stat_buff_creator_t( p, name_str )
              .max_stack( max_stack )
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
              .reverse( r )
-             .activated( activated ) )
+             .activated( activated )
            .stat( stat )
            .amount( amount );
   }
@@ -116,14 +115,13 @@ struct cost_reduction_proc_callback_t : public action_callback_t
     if ( max_stacks == 0 ) max_stacks = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = cost_reduction_buff_creator_t(
-             buff_creator_t( p, name_str )
+    buff = cost_reduction_buff_creator_t( p, name_str )
              .max_stack( max_stacks )
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
              .reverse( reverse )
-             .activated( activated ) )
+             .activated( activated )
            .amount( amount )
            .school( school )
            .refreshes( refreshes );
@@ -376,13 +374,12 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     if ( ms == 0 ) ms = 1;
     if ( proc_chance == 0 ) proc_chance = 1;
 
-    buff = stat_buff_creator_t(
-             buff_creator_t( p, n )
+    buff = stat_buff_creator_t( p, n )
              .max_stack( ms )
              .duration( duration )
              .cd( cooldown )
              .chance( proc_chance )
-             .activated( activated ) )
+             .activated( activated )
            .stat( stat )
            .amount( stat_amount );
 
@@ -491,9 +488,8 @@ static void register_apparatus_of_khazgoroth( item_t* item )
     {
       double amount = heroic ? 2875 : 2540;
 
-      apparatus_of_khazgoroth = buff_creator_t( p, 96923, "titanic_power" ).activated( false ); // TODO: Duration, cd, etc.?
-      blessing_of_khazgoroth  = stat_buff_creator_t(
-                                  buff_creator_t( p, "blessing_of_khazgoroth" ).duration( timespan_t::from_seconds( 15.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+      apparatus_of_khazgoroth = buff_creator_t( p, "titanic_power" ).spell( p -> find_spell( 96923 ) ).activated( false ); // TODO: Duration, cd, etc.?
+      blessing_of_khazgoroth  = stat_buff_creator_t( p, "blessing_of_khazgoroth" ).duration( timespan_t::from_seconds( 15.0 ) ).cd( timespan_t::from_seconds( 120.0 ) )
                                 .stat( STAT_CRIT_RATING ).amount( amount );
       proc_apparatus_of_khazgoroth_haste   = p -> get_proc( "apparatus_of_khazgoroth_haste"   );
       proc_apparatus_of_khazgoroth_crit    = p -> get_proc( "apparatus_of_khazgoroth_crit"    );
@@ -588,8 +584,10 @@ static void register_fury_of_angerforge( item_t* item )
     {
       raw_fury = buff_creator_t( p, "raw_fury" ).max_stack( 5 ).duration( timespan_t::from_seconds( 15.0 ) )
                  .cd( timespan_t::from_seconds( 5.0 ) ).chance( 0.5 ).quiet( true ).activated( false );
-      blackwing_dragonkin = stat_buff_creator_t( buff_creator_t( p, 91836, "blackwing_dragonkin" )
-                                                 .duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+      blackwing_dragonkin = stat_buff_creator_t( p, "blackwing_dragonkin" )
+                            .spell( p -> find_spell( 91836 ) )
+                            .duration( timespan_t::from_seconds( 20.0 ) )
+                            .cd( timespan_t::from_seconds( 120.0 ) )
                             .stat( STAT_STRENGTH ).amount( 1926 );
     }
 
@@ -631,8 +629,8 @@ static void register_heart_of_ignacious( item_t* item )
     heart_of_ignacious_callback_t( player_t* p, bool h ) :
       stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero(), false, false ), heroic( h )
     {
-      haste_buff = stat_buff_creator_t( buff_creator_t( p, "hearts_judgement" )
-                                        .max_stack( 5 ).duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) ) )
+      haste_buff = stat_buff_creator_t( p, "hearts_judgement" )
+                                        .max_stack( 5 ).duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) )
                    .stat( STAT_HASTE_RATING ).amount( heroic ? 363 : 321 );
     }
 
@@ -680,19 +678,19 @@ static void register_matrix_restabilizer( item_t* item )
 
       struct common_buff_creator
       {
-        buff_creator_t operator()( player_t* p, const std::string& n )
+        stat_buff_creator_t operator()( player_t* p, const std::string& n )
         {
-          return ( buff_creator_t ( p, "matrix_restabilizer_" + n )
+          return ( stat_buff_creator_t ( p, "matrix_restabilizer_" + n )
                    .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )
                    .chance( .15 ).activated( false ) );
         }
       };
 
-      buff_matrix_restabilizer_crit     = stat_buff_creator_t( common_buff_creator()( p, "crit" ) )
+      buff_matrix_restabilizer_crit     = common_buff_creator()( p, "crit" )
                                           .stat( STAT_CRIT_RATING ).amount( amount );
-      buff_matrix_restabilizer_haste    = stat_buff_creator_t( common_buff_creator()( p, "haste" ) )
+      buff_matrix_restabilizer_haste    = common_buff_creator()( p, "haste" )
                                           .stat( STAT_HASTE_RATING ).amount( amount );
-      buff_matrix_restabilizer_mastery  = stat_buff_creator_t( common_buff_creator()( p, "mastery" ) )
+      buff_matrix_restabilizer_mastery  = common_buff_creator()( p, "mastery" )
                                           .stat( STAT_MASTERY_RATING ).amount( amount );
     }
 
@@ -1102,7 +1100,7 @@ static void register_indomitable_pride( item_t* item )
       stats = listener -> get_stats( "indomitable_pride" );
       stats -> type = STATS_ABSORB;
       // Looks like there is no spell_id for the buff
-      buff = absorb_buff_creator_t( buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) ).activated( false ) )
+      buff = absorb_buff_creator_t( p, "indomitable_pride" ).duration( timespan_t::from_seconds( 6.0 ) ).activated( false )
              .source( stats );
       cd = listener -> get_cooldown( "indomitable_pride" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
@@ -1148,7 +1146,7 @@ static void register_spidersilk_spindle( item_t* item )
     {
       stats = listener -> get_stats( "loom_of_fate" );
       stats -> type = STATS_ABSORB;
-      buff = absorb_buff_creator_t( buff_creator_t( p, h ? 97129 : 96945, "loom_of_fate" ).activated( false ) )
+      buff = absorb_buff_creator_t( p, "loom_of_fate" ).spell( p -> find_spell( h ? 97129 : 96945 ) ).activated( false )
              .source( stats );
       cd = listener -> get_cooldown( "spidersilk_spindle" );
       cd -> duration = timespan_t::from_seconds( 60.0 );
@@ -1277,12 +1275,14 @@ static void register_fury_of_the_beast( item_t* item )
     {
       double amount = h ? 120 : lfr ? 95 : 107; // Amount saved in the stat buff
 
-      fury_of_the_beast = buff_creator_t( p, h ? 109864 : lfr ? 109861 : 108011, "fury_of_the_beast" )
+      fury_of_the_beast = buff_creator_t( p, "fury_of_the_beast" ).spell( p -> find_spell( h ? 109864 : lfr ? 109861 : 108011 ) )
                           .chance( 0.15 ).cd( timespan_t::from_seconds( 55.0 ) );// FIXME: Confirm ICD
 
-      fury_of_the_beast_stack  = stat_buff_creator_t(
-                                   buff_creator_t( p, h ? 109863 : lfr ? 109860 : 108016, "fury_of_the_beast_stack" ).activated( false ) )
-                                 .stat( STAT_AGILITY ).amount( amount );
+      fury_of_the_beast_stack  = stat_buff_creator_t( p, "fury_of_the_beast_stack" )
+                                 .spell( p -> find_spell( h ? 109863 : lfr ? 109860 : 108016 ) )
+                                 .activated( false )
+                                 .stat( STAT_AGILITY )
+                                 .amount( amount );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1670,14 +1670,12 @@ static void register_titahk( item_t* item )
       rng( p -> get_rng( "titahk" ) )
     {
       timespan_t duration = buff -> duration();
-      buff_self   = stat_buff_creator_t(
-                      buff_creator_t( p, "titahk_self" ).duration( duration )
-                      .cd( timespan_t::from_seconds( 45.0 ) ) ) // FIXME: Confirm ICD
+      buff_self   = stat_buff_creator_t( p, "titahk_self" ).duration( duration )
+                      .cd( timespan_t::from_seconds( 45.0 ) ) // FIXME: Confirm ICD
                     .stat( STAT_HASTE_RATING ).amount( buff -> effect1().base_value() );
 
-      buff_radius = stat_buff_creator_t(
-                      buff_creator_t( p, "titahk_aoe" ).duration( duration )
-                      .cd( timespan_t::from_seconds( 45.0 ) ) )// FIXME: Confirm ICD
+      buff_radius = stat_buff_creator_t( p, "titahk_aoe" ).duration( duration )
+                      .cd( timespan_t::from_seconds( 45.0 ) )// FIXME: Confirm ICD
                     .stat( STAT_HASTE_RATING ).amount( buff -> effect2().base_value() ); // FIXME: Apply aoe buff to other players
     }
 
