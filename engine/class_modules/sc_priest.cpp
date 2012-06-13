@@ -7,6 +7,9 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
+  // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
+  // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
+
   namespace spells {}
   namespace heals  {}
   namespace pets   {}
