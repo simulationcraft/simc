@@ -7,13 +7,22 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
-class hunter_t;
+// The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
+// Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
+
+namespace spells {}
+namespace attacks  {}
+
+using namespace attacks;
+using namespace spells;
+
+struct hunter_t;
 
 // ==========================================================================
 // Hunter
 // ==========================================================================
 
-class hunter_pet_t;
+struct hunter_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
@@ -21,14 +30,10 @@ struct hunter_td_t : public actor_pair_t
 {
   dot_t* dots_serpent_sting;
 
-  hunter_td_t( player_t* target, player_t* hunter ) :
-    actor_pair_t( target, hunter )
-  {
-    dots_serpent_sting = target -> get_dot( "serpent_sting", hunter );
-  }
+  hunter_td_t( player_t*, hunter_t* );
 };
 
-class hunter_t : public player_t
+struct hunter_t : public player_t
 {
 public:
   // Active
@@ -322,7 +327,7 @@ public:
 // Hunter Pet
 // ==========================================================================
 
-class hunter_pet_t : public pet_t
+struct hunter_pet_t : public pet_t
 {
 public:
   action_t* kill_command;
@@ -713,88 +718,58 @@ public:
   virtual void init_spells();
 };
 
-// Event Shedule Sniper Trainig
-
-struct hunter_sniper_training_event_t : public event_t
+// Template for common hunter action code. See priest_action_t.
+template <class Base>
+struct hunter_action_t : public Base
 {
-  hunter_sniper_training_event_t ( hunter_t* player ) :
-    event_t( player -> sim, player, "Sniper_Training_Check" )
+  typedef Base action_base_t;
+  typedef hunter_action_t base_t;
+
+  hunter_action_t( const std::string& n, hunter_t* player,
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, player, s )
   {
-    sim -> add_event( this, timespan_t::from_seconds( 5.0 ) );
+
   }
 
-  virtual void execute()
+  hunter_t* cast() { return debug_cast<hunter_t*>( action_base_t::player ); }
+
+  hunter_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : action_base_t::target ); }
+
+  virtual double cost()
   {
-    hunter_t* p = ::debug_cast<hunter_t*>( player );
+    double c = base_t::cost();
 
-    if ( ! p -> in_combat )
-      p -> buffs.sniper_training -> trigger();
+    if ( c == 0 )
+      return 0;
 
-    if ( ! player -> buffs.raid_movement -> up() )
-    {
-      timespan_t finished_moving = player -> buffs.raid_movement -> last_start + player -> buffs.raid_movement -> buff_duration;
+    hunter_t* p = cast();
 
-      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds( p -> talents.sniper_training -> effectN( 1 ).base_value() ) )
-      {
-        p -> buffs.sniper_training -> trigger();
-      }
-    }
+    if ( p -> buffs.beast_within -> check() )
+      c *= ( 1.0 + p -> buffs.beast_within -> data().effectN( 1 ).percent() );
 
-    new ( sim ) hunter_sniper_training_event_t( p );
+    return c;
   }
 };
 
-struct wild_quiver_trigger_t : public action_callback_t
-{
-  attack_t* attack;
-  rng_t* rng;
 
-  wild_quiver_trigger_t( player_t* p, attack_t* a ) :
-    action_callback_t( p ), attack( a )
-  {
-    rng = p -> get_rng( "wild_quiver" );
-  }
-
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    hunter_t* p = ::debug_cast<hunter_t*>( listener );
-
-    if ( ! a -> weapon )
-      return;
-
-    if ( a -> weapon -> slot != SLOT_MAIN_HAND )
-      return;
-
-    if ( a -> proc )
-      return;
-
-    if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effectN( 1 ).coeff() / 100.0 ) )
-    {
-      attack -> execute();
-      p -> procs.wild_quiver -> occur();
-    }
-  }
-};
+namespace attacks {
 
 // ==========================================================================
 // Hunter Attack
 // ==========================================================================
 
-struct hunter_ranged_attack_t : public ranged_attack_t
+struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ) :
-    ranged_attack_t( n, player, s )
+    base_t( n, player, s )
   {
     may_crit               = true;
     tick_may_crit          = true;
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
   }
-
-  hunter_t* cast() { return debug_cast<hunter_t*>( player ); }
-
-  hunter_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : target ); }
 
   virtual void trigger_improved_steady_shot()
   {
@@ -814,26 +789,11 @@ struct hunter_ranged_attack_t : public ranged_attack_t
     }
   }
 
-  virtual double cost()
-  {
-    hunter_t* p = cast();
-
-    double c = ranged_attack_t::cost();
-
-    if ( c == 0 )
-      return 0;
-
-    if ( p -> buffs.beast_within -> check() )
-      c *= ( 1.0 + p -> buffs.beast_within -> data().effectN( 1 ).percent() );
-
-    return c;
-  }
-
   virtual void execute();
 
   virtual timespan_t execute_time()
   {
-    timespan_t t = attack_t::execute_time();
+    timespan_t t = base_t::execute_time();
 
     if ( t == timespan_t::zero()  || base_execute_time < timespan_t::zero() )
       return timespan_t::zero();
@@ -844,7 +804,7 @@ struct hunter_ranged_attack_t : public ranged_attack_t
   {
     hunter_t* p = cast();
 
-    double h = ranged_attack_t::swing_haste();
+    double h = base_t::swing_haste();
 
     if ( p -> buffs.improved_steady_shot -> up() )
       h *= 1.0/ ( 1.0 + p -> talents.improved_steady_shot -> effectN( 1 ).percent() );
@@ -856,7 +816,7 @@ struct hunter_ranged_attack_t : public ranged_attack_t
   {
     hunter_t* p = cast();
 
-    ranged_attack_t::player_buff();
+    base_t::player_buff();
 
     if (  p -> buffs.beast_within -> up() )
       player_multiplier *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
@@ -2097,21 +2057,20 @@ struct wild_quiver_shot_t : public ranged_t
   }
 };
 
+} // end attacks
 // ==========================================================================
 // Hunter Spells
 // ==========================================================================
 
-class hunter_spell_t : public spell_t
+namespace spells {
+struct hunter_spell_t : public hunter_action_t<spell_t>
 {
 public:
   hunter_spell_t( const std::string& n, hunter_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, player, s )
+    base_t( n, player, s )
   {
   }
-
-  hunter_t* cast()
-  { return debug_cast<hunter_t*>( player ); }
 
   virtual timespan_t gcd()
   {
@@ -2120,21 +2079,6 @@ public:
 
     // Hunter gcd unaffected by haste
     return trigger_gcd;
-  }
-
-  virtual double cost()
-  {
-    hunter_t* p = cast();
-
-    double c = spell_t::cost();
-
-    if ( c == 0 )
-      return 0;
-
-    if ( p -> buffs.beast_within -> check() )
-      c *= ( 1.0 + p -> buffs.beast_within -> data().effectN( 1 ).percent() );
-
-    return c;
   }
 };
 
@@ -3351,6 +3295,77 @@ struct froststorm_breath_t : public hunter_pet_spell_t
     stats -> add_tick( d -> time_to_tick );
   }
 };
+
+} // spells
+
+// Event Shedule Sniper Trainig
+
+struct hunter_sniper_training_event_t : public event_t
+{
+  hunter_sniper_training_event_t ( hunter_t* player ) :
+    event_t( player -> sim, player, "Sniper_Training_Check" )
+  {
+    sim -> add_event( this, timespan_t::from_seconds( 5.0 ) );
+  }
+
+  virtual void execute()
+  {
+    hunter_t* p = ::debug_cast<hunter_t*>( player );
+
+    if ( ! p -> in_combat )
+      p -> buffs.sniper_training -> trigger();
+
+    if ( ! player -> buffs.raid_movement -> up() )
+    {
+      timespan_t finished_moving = player -> buffs.raid_movement -> last_start + player -> buffs.raid_movement -> buff_duration;
+
+      if ( ( sim -> current_time - finished_moving ) > timespan_t::from_seconds( p -> talents.sniper_training -> effectN( 1 ).base_value() ) )
+      {
+        p -> buffs.sniper_training -> trigger();
+      }
+    }
+
+    new ( sim ) hunter_sniper_training_event_t( p );
+  }
+};
+
+struct wild_quiver_trigger_t : public action_callback_t
+{
+  attack_t* attack;
+  rng_t* rng;
+
+  wild_quiver_trigger_t( player_t* p, attack_t* a ) :
+    action_callback_t( p ), attack( a )
+  {
+    rng = p -> get_rng( "wild_quiver" );
+  }
+
+  virtual void trigger( action_t* a, void* /* call_data */ )
+  {
+    hunter_t* p = ::debug_cast<hunter_t*>( listener );
+
+    if ( ! a -> weapon )
+      return;
+
+    if ( a -> weapon -> slot != SLOT_MAIN_HAND )
+      return;
+
+    if ( a -> proc )
+      return;
+
+    if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effectN( 1 ).coeff() / 100.0 ) )
+    {
+      attack -> execute();
+      p -> procs.wild_quiver -> occur();
+    }
+  }
+};
+
+hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
+  actor_pair_t( target, p )
+{
+  dots_serpent_sting = target -> get_dot( "serpent_sting", p );
+}
 
 // hunter_pet_t::create_action ==============================================
 

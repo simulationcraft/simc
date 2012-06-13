@@ -431,12 +431,9 @@ player_t::player_t( sim_t*             s,
     reaction_stddev = reaction_mean * 0.25;
 }
 
-player_t::initial_current_extended_t::initial_current_extended_t()
+player_t::initial_current_extended_t::initial_current_extended_t() :
+  base_initial_current_t(), initial_current_t()
 {
-  memset( this, 0, sizeof( initial_current_extended_t ) );
-
-  range::fill( resource_reduction, 0 );
-
   range::fill( attribute_multiplier, 1 );
   spell_power_multiplier = attack_power_multiplier = armor_multiplier = 1.0;
   mp5_from_spirit_multiplier = 0.0;

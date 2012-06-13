@@ -2642,7 +2642,7 @@ struct module_t
     case WARLOCK: return warlock();
     case WARRIOR: return warrior();
     case ENEMY: return enemy();
-    default:;
+    default: break;
     }
     return NULL;
   }
@@ -3150,31 +3150,27 @@ struct player_t : public noncopyable
   struct base_initial_current_t
   {
     std::array<double,ATTRIBUTE_MAX> attribute;
-
     double mastery, mastery_rating, haste_rating;
-
     double spell_hit, spell_crit, mp5;
-    // Attack Mechanics
     double attack_power, attack_hit, attack_expertise, attack_crit;
-    // Defense Mechanics
     double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
   };
 
-  struct initial_current_extended_t : base_initial_current_t
+  struct initial_current_t
   {
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
+    std::array<double,SCHOOL_MAX> resource_reduction;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
-
     double spell_power_per_intellect, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
     double dodge_per_agility, parry_rating_per_strength;
-
     double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
     double skill, distance;
     bool sleeping;
+  };
 
-    std::array<double,SCHOOL_MAX> resource_reduction;
-
+  struct initial_current_extended_t : public base_initial_current_t, public initial_current_t
+  {
     initial_current_extended_t();
   };
   base_initial_current_t base;
