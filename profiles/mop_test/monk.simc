@@ -3,6 +3,7 @@ level=85
 race=pandaren
 professions=tailoring=525/blacksmithing=525
 talents=
+spec=windwalker
 head=deep_earth_headpiece,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489agi_824sta_308haste_357hit,reforge=hit_mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
 neck=cameo_of_terrible_memories,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit,reforge=hit_mastery
 shoulders=underdwellers_spaulders,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368agi_611sta_262haste_241mastery,gems=50agi_50agi_20agi,enchant=50agi_25mastery

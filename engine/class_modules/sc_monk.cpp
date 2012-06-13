@@ -315,7 +315,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   }
 };
 //=============================
-//====RISING SUN KICK========== NOT WORKING??
+//====RISING SUN KICK==========
 //=============================
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
