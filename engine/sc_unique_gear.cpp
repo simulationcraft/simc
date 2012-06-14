@@ -508,7 +508,7 @@ static void register_touch_of_the_grave( player_t* p )
       base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
       may_trigger_dtr  = false;
       direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
-      may_crit         = false;
+      may_crit         = true;
       may_miss         = false;
       background       = true;
       no_buffs         = false;
@@ -539,8 +539,8 @@ static void register_touch_of_the_grave( player_t* p )
 
   action_callback_t* cb = new touch_of_the_grave_proc_callback_t( p, s );
 
-  p -> callbacks.register_attack_callback              ( RESULT_HIT_MASK, new touch_of_the_grave_proc_callback_t( p, s ) );
-  p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, new touch_of_the_grave_proc_callback_t( p, s ) );
+  p -> callbacks.register_attack_callback              ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, cb );
 }
 
 // register_apparatus_of_khazgoroth =========================================
