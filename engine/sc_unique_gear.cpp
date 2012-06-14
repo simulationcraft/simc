@@ -506,7 +506,7 @@ static void register_touch_of_the_grave( player_t* p )
       base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
       may_trigger_dtr  = false;
       direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
-      may_crit         = true;
+      may_crit         = false;
       may_miss         = false;
       background       = true;
       no_buffs         = false;
