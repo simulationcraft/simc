@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15752
+// Class based active abilities, wow build 15762
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -101,7 +101,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 28 abilities
+    // General tree, 27 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -128,12 +128,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       105361, // Seal of Command
        20165, // Seal of Insight
        20154, // Seal of Righteousness
-       31801, // Seal of Truth
        10326, // Turn Evil
        85673, // Word of Glory
            0,
     },
-    // Holy tree, 9 abilities
+    // Holy tree, 10 abilities
     {
        53563, // Beacon of Light
         2812, // Denounce
@@ -144,9 +143,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        82327, // Holy Radiance
        20473, // Holy Shock
        85222, // Light of Dawn
+       31801, // Seal of Truth
            0,
     },
-    // Protection tree, 7 abilities
+    // Protection tree, 8 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -154,10 +154,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        86659, // Guardian of Ancient Kings
        53595, // Hammer of the Righteous
       119072, // Holy Wrath
+       31801, // Seal of Truth
        53600, // Shield of the Righteous
            0,
     },
-    // Retribution tree, 8 abilities
+    // Retribution tree, 9 abilities
     {
        53385, // Divine Storm
       121783, // Emancipate
@@ -166,6 +167,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        53595, // Hammer of the Righteous
        84963, // Inquisition
        20164, // Seal of Justice
+       31801, // Seal of Truth
        85256, // Templar's Verdict
            0,
     },
@@ -250,23 +252,23 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Pet tree, 51 abilities
     {
        55749, // Acid Spit (Special Ability)
-       90355, // Ancient Hysteria
+       90355, // Ancient Hysteria (Exotic Ability)
        50433, // Ankle Crack (Special Ability)
        17253, // Bite (Basic Attack)
        93433, // Burrow Attack (Exotic Ability)
       128432, // Cackling Howl (Special Ability)
        16827, // Claw (Basic Attack)
        50541, // Clench (Special Ability)
-        1742, // Cower
+        1742, // Cower (Basic Ability)
        50256, // Demoralizing Roar (Special Ability)
-       24423, // Demoralizing Screech
+       24423, // Demoralizing Screech (Special Ability)
        50285, // Dust Cloud (Special Ability)
        34889, // Fire Breath (Special Ability)
        54644, // Frost Breath (Special Ability)
        92380, // Froststorm Breath (Exotic Ability)
        24604, // Furious Howl (Special Ability)
        35290, // Gore (Special Ability)
-        2649, // Growl
+        2649, // Growl (Basic Ability)
        93434, // Horn Toss (Exotic Ability)
        19577, // Intimidation
        58604, // Lava Breath (Special Ability)
@@ -294,7 +296,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        57386, // Stampede (Special Ability)
        56626, // Sting (Special Ability)
        90314, // Tailspin (Special Ability)
-       50498, // Tear Armor
+       50498, // Tear Armor (Special Ability)
        90309, // Terrifying Roar (Special Ability)
        35346, // Time Warp (Special Ability)
        94022, // Trick (Bonus Ability)
@@ -464,7 +466,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 24 abilities
+    // General tree, 25 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -473,6 +475,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        45902, // Blood Strike
        45524, // Chains of Ice
       111673, // Control Undead
+      127344, // Corpse Explosion
        77606, // Dark Simulacrum
        47541, // Death Coil
        49576, // Death Grip
@@ -789,7 +792,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
-      112042, // Threatening Presence
+      112042, // Threatening Presence (Special Ability)
         3716, // Torment (Basic Attack)
         6360, // Whiplash (Special Ability)
            0,
@@ -929,14 +932,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Balance tree, 11 abilities
     {
       127663, // Astral Communion
-      106996, // Astral Storm
+      106996, // Astral Storm (Balance)
       112071, // Celestial Alignment
        24858, // Moonkin Form
        78675, // Solar Beam
        48505, // Starfall
         2912, // Starfire
        78674, // Starsurge
-       93402, // Sunfire
+       93402, // Sunfire (Balance)
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
            0,
@@ -984,7 +987,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (22)
 
-// Talent tree specialization abilities, wow build 15752
+// Talent tree specialization abilities, wow build 15762
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1080,6 +1083,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        76669, // Mastery: Illuminated Healing
        86103, // Plate Specialization
        53551, // Sacred Cleansing
+       31801, // Seal of Truth
        85512, // Tower of Radiance
            0,
     },
@@ -1098,6 +1102,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        76671, // Mastery: Divine Bulwark
        86102, // Plate Specialization
       105805, // Sanctuary
+       31801, // Seal of Truth
        53600, // Shield of the Righteous
        84839, // Vengeance
            0,
@@ -1116,6 +1121,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        76672, // Mastery: Hand of Light
        86539, // Plate Specialization
        20164, // Seal of Justice
+       31801, // Seal of Truth
        53503, // Sword of Light
        20113, // Sword of Light part two (Do not display)
        85256, // Templar's Verdict
@@ -1285,7 +1291,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         8092, // Mind Blast
        15407, // Mind Flay
        73510, // Mind Spike
-      124431, // Mind Surge
        64044, // Psychic Horror
        95740, // Shadow Orbs
       121196, // Shadow Passive
@@ -1333,6 +1338,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        49143, // Frost Strike
        49184, // Howling Blast
        50887, // Icy Talons
+       50385, // Improved Frost Presence
        51128, // Killing Machine
        77514, // Mastery: Frozen Heart
        81333, // Might of the Frozen Wastes
@@ -1341,6 +1347,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86113, // Plate Specialization
        59057, // Rime
        66192, // Threat of Thassarian
+       55610, // Unholy Aura
            0,
     },
     // Specialization abilities for Unholy tree
@@ -1348,6 +1355,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        63560, // Dark Transformation
        51160, // Ebon Plaguebringer
        85948, // Festering Strike
+       50392, // Improved Unholy Presence
        52143, // Master of Ghouls
        77515, // Mastery: Dreadblade
        86536, // Plate Specialization
@@ -1356,6 +1364,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        49572, // Shadow Infusion
        49530, // Sudden Doom
        49206, // Summon Gargoyle
+       55610, // Unholy Aura
        49016, // Unholy Frenzy
        91107, // Unholy Might
            0,
@@ -1605,6 +1614,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       126046, // Adaptation
       116092, // Afterlife
       123980, // Brewing: Tigereye Brew
+      128595, // Combat Conditioning
       124146, // Dual Wield
       115288, // Energizing Brew
       113656, // Fists of Fury
@@ -1724,7 +1734,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15752
+// Class mastery abilities, wow build 15762
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -1950,7 +1960,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15752
+// Racial abilities, wow build 15762
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2662,7 +2672,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15752
+// Glyph spells for classes, wow build 15762
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2743,7 +2753,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63220, // Glyph of Divine Storm
        54939, // Glyph of Divinity
        54922, // Glyph of Double Jeopardy
-       54926, // Glyph of Exorcism
        54935, // Glyph of Final Wrath
        57955, // Glyph of Flash of Light
        54930, // Glyph of Focused Shield
@@ -2757,6 +2766,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       122028, // Glyph of Mass Exorcism
        93466, // Glyph of Protector of the Innocent
        54925, // Glyph of Rebuke
+       54926, // Glyph of Templar's Verdict
        54931, // Glyph of Turn Evil
        54936, // Glyph of Word of Glory
        63222, // Glyph of the Alabaster Shield
@@ -3237,7 +3247,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15752
+// Tier item set bonuses for class, wow build 15762
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
