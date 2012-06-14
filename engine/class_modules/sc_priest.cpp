@@ -24,17 +24,22 @@ struct remove_dots_event_t;
 
 struct priest_td_t : public actor_pair_t
 {
-  dot_t*  dots_devouring_plague;
-  dot_t*  dots_shadow_word_pain;
-  dot_t*  dots_vampiric_touch;
-  dot_t*  dots_holy_fire;
-  dot_t*  dots_renew;
+  struct dots_t
+  {
+    dot_t* devouring_plague;
+    dot_t* shadow_word_pain;
+    dot_t* vampiric_touch;
+    dot_t* holy_fire;
+    dot_t* renew;
+  } dots;
 
-  absorb_buff_t* buffs_power_word_shield;
-  absorb_buff_t* buffs_divine_aegis;
-  absorb_buff_t* buffs_spirit_shell;
-
-  debuff_t* debuffs_mind_spike;
+  struct buffs_t
+  {
+    absorb_buff_t* power_word_shield;
+    absorb_buff_t* divine_aegis;
+    absorb_buff_t* spirit_shell;
+    debuff_t* mind_spike;
+  } buffs;
 
   remove_dots_event_t* remove_dots_event;
 
@@ -365,8 +370,8 @@ public:
   {
     td -> remove_dots_event = 0;
     pr -> procs.mind_spike_dot_removal -> occur();
-    cancel_dot( td -> dots_shadow_word_pain );
-    cancel_dot( td -> dots_vampiric_touch );
+    cancel_dot( td -> dots.shadow_word_pain );
+    cancel_dot( td -> dots.vampiric_touch );
   }
 };
 
@@ -1032,9 +1037,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     virtual void impact_s( action_state_t* s )
     {
-      double old_amount = td( s -> target ) -> buffs_divine_aegis -> value();
+      double old_amount = td( s -> target ) -> buffs.divine_aegis -> value();
       double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
-      td( s -> target ) -> buffs_divine_aegis -> trigger( 1, old_amount + new_amount );
+      td( s -> target ) -> buffs.divine_aegis -> trigger( 1, old_amount + new_amount );
       stats -> add_result( 0, new_amount, ABSORB, s -> result );
     }
   };
@@ -1177,8 +1182,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
       trigger_echo_of_light( this, s -> target );
 
-      if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots_renew -> ticking )
-        td( s -> target ) -> dots_renew -> refresh_duration();
+      if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots.renew -> ticking )
+        td( s -> target ) -> dots.renew -> refresh_duration();
 
       if ( p() -> talents.twist_of_fate -> ok() && ( save_health_percentage < p() -> talents.twist_of_fate -> effectN( 1 ).base_value() ) )
       {
@@ -2011,9 +2016,9 @@ struct mind_blast_t : public priest_spell_t
       generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
       for ( int i=0; i < 4; i++ )
       {
-        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> debuffs_mind_spike -> check() );
+        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> buffs.mind_spike -> check() );
       }
-      td( s -> target ) -> debuffs_mind_spike -> expire();
+      td( s -> target ) -> buffs.mind_spike -> expire();
       p() -> buffs.glyph_mind_spike -> expire();
     }
   }
@@ -2022,7 +2027,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double c = priest_spell_t::composite_target_crit( target );
 
-    c += td( target ) -> debuffs_mind_spike -> value() * td( target ) -> debuffs_mind_spike -> check();
+    c += td( target ) -> buffs.mind_spike -> value() * td( target ) -> buffs.mind_spike -> check();
 
     return c;
   }
@@ -2246,7 +2251,7 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_mind_spike -> trigger();
+      td( s -> target ) -> buffs.mind_spike -> trigger();
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
@@ -3026,7 +3031,7 @@ struct smite_t : public priest_spell_t
   {
     double m = priest_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> dots_holy_fire -> ticking && p() -> glyphs.smite -> ok() )
+    if ( td( target ) -> dots.holy_fire -> ticking && p() -> glyphs.smite -> ok() )
       m *= 1.0 + p() -> glyphs.smite -> effectN( 1 ).percent();
 
     return m;
@@ -3764,7 +3769,7 @@ struct power_word_shield_t : public priest_absorb_t
       glyph_pws -> execute();
     }
 
-    td( s -> target ) -> buffs_power_word_shield -> trigger( 1, s -> result_amount );
+    td( s -> target ) -> buffs.power_word_shield -> trigger( 1, s -> result_amount );
     stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 
@@ -3991,7 +3996,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 
     stats->add_child( p->get_stats( "spirit_shell_heal" ) );
 
-    dynamic_cast<spirit_shell_buff_t*>( td( target )->buffs_spirit_shell ) ->spirit_shell_heal = p -> spells.spirit_shell;
+    dynamic_cast<spirit_shell_buff_t*>( td( target )->buffs.spirit_shell ) ->spirit_shell_heal = p -> spells.spirit_shell;
 
     // Parse values from buff spell effect
     action_t::parse_effect_data( p -> find_spell( 114908 ) -> effectN( 1 ) );
@@ -3999,7 +4004,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 
   virtual void impact_s( action_state_t* s )
   {
-    td( s -> target ) -> buffs_spirit_shell -> trigger( 1, s -> result_amount );
+    td( s -> target ) -> buffs.spirit_shell -> trigger( 1, s -> result_amount );
     stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
   }
 };
@@ -4011,47 +4016,40 @@ struct spirit_shell_absorb_t : priest_absorb_t
 // ==========================================================================
 
 priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
-  actor_pair_t( target, p ), remove_dots_event( NULL )
+  actor_pair_t( target, p ),
+  dots( dots_t() ),
+  buffs( buffs_t() ),
+  remove_dots_event( NULL )
 {
   if ( target -> is_enemy() )
   {
-    dots_holy_fire        = target -> get_dot( "holy_fire",        p );
-    dots_devouring_plague = target -> get_dot( "devouring_plague", p );
-    dots_shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
-    dots_vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
+    dots.holy_fire        = target -> get_dot( "holy_fire",        p );
+    dots.devouring_plague = target -> get_dot( "devouring_plague", p );
+    dots.shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
+    dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
     const spell_data_t* sd = p -> find_class_spell( "Mind Spike" );
 
-    debuffs_mind_spike = buff_creator_t( *this, "mind_spike", sd )
+    buffs.mind_spike = buff_creator_t( *this, "mind_spike", sd )
                          .max_stack( sd -> effectN( 3 ).base_value() )
                          .duration( sd -> effectN( 2 ).trigger() -> duration() )
                          .default_value( sd -> effectN( 2 ).percent() );
-    dots_renew = 0;
-    buffs_power_word_shield = 0;
-    buffs_divine_aegis = 0;
-    buffs_spirit_shell = 0;
   }
   else
   {
-    dots_holy_fire = 0;
-    dots_devouring_plague = 0;
-    dots_shadow_word_pain = 0;
-    dots_vampiric_touch = 0;
-    debuffs_mind_spike = 0;
+    dots.renew = target -> get_dot( "renew", p );
 
-    dots_renew = target -> get_dot( "renew", p );
-
-    buffs_power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
+    buffs.power_word_shield = absorb_buff_creator_t( *this, "power_word_shield", source -> find_spell( 17 ) )
                               .source( source -> get_stats( "power_word_shield" ) );
 
-    buffs_divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
+    buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
 
-    buffs_spirit_shell = new spirit_shell_buff_t( *this );
+    buffs.spirit_shell = new spirit_shell_buff_t( *this );
 
-    target -> absorb_buffs.push_back( buffs_power_word_shield );
-    target -> absorb_buffs.push_back( buffs_divine_aegis );
-    target -> absorb_buffs.push_back( buffs_spirit_shell );
+    target -> absorb_buffs.push_back( buffs.power_word_shield );
+    target -> absorb_buffs.push_back( buffs.divine_aegis );
+    target -> absorb_buffs.push_back( buffs.spirit_shell );
   }
 }
 
