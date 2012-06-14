@@ -38,7 +38,7 @@ actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 actions.aoe+=/conflagrate
 actions.aoe+=/incinerate,if=mana.pct>=50
-head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
+head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,gems=burning_shadowspirit_50int_30int
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_crit,gems=50int_10int
 shoulders=mantle_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_hit,gems=50int_50int_20int,enchant=50int_25haste
 chest=robes_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,reforge=haste_crit,gems=50int_50int_25int_25haste_30int,enchant=20all
@@ -57,11 +57,11 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7869
-# gear_intellect=7099
+# gear_intellect=7039
 # gear_spirit=75
 # gear_spell_power=2786
 # gear_hit_rating=1537
-# gear_crit_rating=1862
+# gear_crit_rating=1827
 # gear_haste_rating=2182
 # gear_mastery_rating=1001
 # gear_armor=10250
