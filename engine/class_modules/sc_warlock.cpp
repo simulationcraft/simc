@@ -1984,6 +1984,10 @@ struct conflagrate_t : public warlock_spell_t
   {
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
+    // FIXME: No longer in the spell data for some reason
+    cooldown -> duration = timespan_t::from_seconds( 12.0 );
+    cooldown -> charges = 2;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new conflagrate_t( p, true );
@@ -4498,13 +4502,12 @@ void warlock_t::init_actions()
     case WARLOCK_DESTRUCTION:
       add_action( "Havoc",                 "target_number=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Conflagrate",           "if=buff.backdraft.stack<3" );
-      add_action( "Chaos Bolt",            "if=ember_react" );
+      add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
+      add_action( "Conflagrate",           "if=buff.backdraft.down" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
-      add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Incinerate" );
 
       // AoE action list
