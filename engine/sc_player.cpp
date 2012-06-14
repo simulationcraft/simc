@@ -1449,6 +1449,15 @@ void player_t::init_actions()
       modify_action         = modify_action.substr( 0, cut_pt );
     }
   }
+  
+  std::vector<std::string> skip_actions;
+  if ( ! action_list_skip.empty() )
+  {
+    if ( sim -> debug )
+      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+
+    util::string_split( skip_actions, action_list_skip, "/" );
+  }
 
   if ( ! action_list_str.empty() ) get_action_priority_list( "default" ) -> action_list_str = action_list_str;
 
@@ -1509,24 +1518,43 @@ void player_t::init_actions()
         a = create_action( action_name, action_options );
       }
 
+
+
       if ( a )
       {
-        a -> action_list = action_priority_list[ alist ] -> name_str;
-
-        a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
-                                 ( j < 36 ) ? ( 'A' + j - 10 ) :
-                                 ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
-
-        a -> signature_str = splits[ i ];
-
-        if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
+        bool skip = false;
+        for ( size_t k = 0; k < skip_actions.size(); k++ )
         {
-          a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
-
-          if ( a -> dtr_action )
-            a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
+          if ( skip_actions[ k ] == a -> name_str )
+          {
+            skip = true;
+            break;
+          }
         }
-        j++;
+
+        if ( skip )
+        {
+          a -> background = true;
+        }
+        else
+        {
+          a -> action_list = action_priority_list[ alist ] -> name_str;
+
+          a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
+                                   ( j < 36 ) ? ( 'A' + j - 10 ) :
+                                   ( j < 58 ) ? ( 'a' + j - 36 ) : '.' );
+
+          a -> signature_str = splits[ i ];
+
+          if (  sim -> separate_stats_by_actions > 0 && !is_pet() )
+          {
+            a -> stats = get_stats( a -> name_str + "__" + a -> marker, a );
+
+            if ( a -> dtr_action )
+              a -> dtr_action -> stats = get_stats( a -> name_str + "__" + a -> marker + "_DTR", a );
+          }
+          j++;
+        }
       }
       else
       {
@@ -1534,20 +1562,6 @@ void player_t::init_actions()
         sim -> cancel();
         return;
       }
-    }
-  }
-
-  if ( ! action_list_skip.empty() )
-  {
-    if ( sim -> debug )
-      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
-
-    std::vector<std::string> splits;
-    size_t num_splits = util::string_split( splits, action_list_skip, "/" );
-    for ( size_t i = 0; i < num_splits; i++ )
-    {
-      action_t* action = find_action( splits[ i ] );
-      if ( action ) action -> background = true;
     }
   }
 
