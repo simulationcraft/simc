@@ -215,7 +215,6 @@ struct monk_action_t : public Base
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
   {
     action_base_t::may_crit   = true;
-    action_base_t::may_glance = false;
     action_base_t::stateless  = true;
   }
 
@@ -447,9 +446,8 @@ struct melee_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
     school      = SCHOOL_PHYSICAL;
-    if ( p() -> dual_wield() ) may_glance  = true;
-    else may_glance = false;
-    if ( p() -> dual_wield() ) base_hit -= 0.19;
+    if ( player -> dual_wield() ) may_glance  = true;
+    if ( player -> dual_wield() ) base_hit -= 0.19;
   }
 
   virtual timespan_t execute_time()
@@ -464,9 +462,9 @@ struct melee_t : public monk_melee_attack_t
 
   void execute()
   {
-    if ( time_to_execute > timespan_t::zero() && p() -> executing )
+    if ( time_to_execute > timespan_t::zero() && player -> executing )
     {
-      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
       schedule_execute();
     }
     else
@@ -492,17 +490,17 @@ struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
     };
     parse_options( options, options_str );
 
-    assert( p() -> main_hand_weapon.type != WEAPON_NONE );
+    assert( player -> main_hand_weapon.type != WEAPON_NONE );
     p() -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
-    p() -> main_hand_attack -> weapon = &( p() -> main_hand_weapon );
-    p() -> main_hand_attack -> base_execute_time = p() -> main_hand_weapon.swing_time;
+    p() -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
+    p() -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
 
-    if ( p() -> off_hand_weapon.type != WEAPON_NONE)
+    if ( player -> off_hand_weapon.type != WEAPON_NONE)
     {
-      if ( ! p() -> dual_wield() ) return;
-      p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
-      p() -> off_hand_attack -> weapon = &( p() -> off_hand_weapon );
-      p() -> off_hand_attack -> base_execute_time = p() -> off_hand_weapon.swing_time;
+      if ( ! player -> dual_wield() ) return;
+      player -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
+      player -> off_hand_attack -> weapon = &( player -> off_hand_weapon );
+      player -> off_hand_attack -> base_execute_time = player -> off_hand_weapon.swing_time;
     }
 
     trigger_gcd = timespan_t::zero();
@@ -510,15 +508,15 @@ struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
 
   virtual void execute()
   {
-    p() -> main_hand_attack -> schedule_execute();
-    if ( p() -> off_hand_attack )
-      p() -> off_hand_attack -> schedule_execute();
+    player -> main_hand_attack -> schedule_execute();
+    if ( player -> off_hand_attack )
+      player -> off_hand_attack -> schedule_execute();
   }
 
   virtual bool ready()
   {
-    if ( p() -> is_moving() ) return false;
-    return ( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+    if ( player -> is_moving() ) return false;
+    return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
