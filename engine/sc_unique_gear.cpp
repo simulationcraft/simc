@@ -214,6 +214,24 @@ struct discharge_proc_callback_base_t : public action_callback_t
 
   discharge_proc_callback_base_t( const std::string& n,
                                   player_t* p,
+                                  action_t* act,
+                                  int ms,
+                                  double pc,
+                                  timespan_t cd ) :
+    action_callback_t( p ),
+    name_str( n ), stacks( 0 ), max_stacks( ms ), initial_proc_chance( pc ), cooldown( 0 ), discharge_action( act ), proc( 0 ), rng( 0 )
+  {
+    assert( act );
+
+    cooldown = p -> get_cooldown( name_str );
+    cooldown -> duration = cd;
+
+    proc = p -> get_proc( name_str );
+    rng  = p -> get_rng ( name_str );
+  }
+
+  discharge_proc_callback_base_t( const std::string& n,
+                                  player_t* p,
                                   int ms,
                                   school_e school,
                                   double amount,
@@ -464,6 +482,66 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 };
 
 } // ANONYMOUS NAMESPACE
+
+// register_touch_of_the_grave ==============================================
+
+static void register_touch_of_the_grave( player_t* p )
+{
+  assert( p );
+
+  const spell_data_t* s = p -> find_racial_spell( "Touch of the Grave" );
+
+  if ( ! s -> ok() )
+  {
+    return;
+  }
+
+  struct touch_of_the_grave_discharge_spell_t : public spell_t
+  {
+    touch_of_the_grave_discharge_spell_t( player_t* p, const spell_data_t* s ) :
+      spell_t( "touch_of_the_grave", p, s )
+    {
+      school           = ( s -> effectN( 1 ).trigger() -> get_school_type() == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s -> effectN( 1 ).trigger() -> get_school_type();
+      discharge_proc   = true;
+      trigger_gcd      = timespan_t::zero();
+      base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
+      base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
+      may_trigger_dtr  = false;
+      direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
+      may_crit         = false;
+      may_miss         = false;
+      background       = true;
+      no_buffs         = false;
+      no_debuffs       = false;
+      aoe              = 0;
+      stateless        = true;
+    }
+
+    virtual void impact_s( action_state_t* s )
+    {
+      spell_t::impact_s( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        player -> resource_gain( RESOURCE_HEALTH, direct_dmg, player -> gains.touch_of_the_grave );
+      }
+    }
+  };
+
+
+  struct touch_of_the_grave_proc_callback_t : public discharge_proc_callback_base_t
+  {
+    touch_of_the_grave_proc_callback_t( player_t* p, const spell_data_t* s ) :
+      discharge_proc_callback_base_t( "touch_of_the_grave", p, new touch_of_the_grave_discharge_spell_t( p, s ),
+                                 0, s -> proc_chance(), timespan_t::from_seconds( 15.0 ) )
+    { }
+  };
+
+  action_callback_t* cb = new touch_of_the_grave_proc_callback_t( p, s );
+
+  p -> callbacks.register_attack_callback              ( RESULT_HIT_MASK, new touch_of_the_grave_proc_callback_t( p, s ) );
+  p -> callbacks.register_direct_harmful_spell_callback( RESULT_HIT_MASK, new touch_of_the_grave_proc_callback_t( p, s ) );
+}
 
 // register_apparatus_of_khazgoroth =========================================
 
@@ -1701,6 +1779,11 @@ void unique_gear::init( player_t* p )
 {
   if ( p -> is_pet() ) return;
 
+  if ( p -> race == RACE_UNDEAD )
+  {
+    register_touch_of_the_grave( p );
+  }
+
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
     item_t& item = p -> items[ i ];
@@ -1872,6 +1955,10 @@ action_callback_t* unique_gear::register_cost_reduction_proc( proc_e        type
   else if ( type == PROC_HEAL_SPELL )
   {
     player -> callbacks.register_heal_callback( mask, cb );
+  }
+  else if ( type == PROC_DIRECT_HARMFUL_SPELL )
+  {
+    player -> callbacks.register_direct_harmful_spell_callback( mask, cb );
   }
 
   return cb;

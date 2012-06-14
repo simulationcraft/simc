@@ -92,9 +92,15 @@ void spell_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( result != RESULT_NONE )
+    result_e r = execute_state ? execute_state -> result : result;
+
+    if ( r != RESULT_NONE  )
     {
-      action_callback_t::trigger( player -> callbacks.harmful_spell[ result ], this );
+      action_callback_t::trigger( player -> callbacks.harmful_spell[ r ], this );
+      if ( execute_state && execute_state -> result_amount > 0 )
+      {
+        action_callback_t::trigger( player -> callbacks.direct_harmful_spell[ r ], this );
+      }
     }
     if ( ! background ) // OnHarmfulSpellCast
     {

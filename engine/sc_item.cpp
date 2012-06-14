@@ -992,6 +992,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_DIRECT_DAMAGE;
       effect.trigger_mask = SCHOOL_ALL_MASK;
     }
+    else if ( t.full == "ondirectharmfulspellhit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DIRECT_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_HIT_MASK;
+    }
     else if ( t.full == "onspelldamage" )
     {
       effect.trigger_str  = t.full;

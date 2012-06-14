@@ -1017,7 +1017,6 @@ void player_t::init_race()
 void player_t::init_racials()
 {
   if ( sim -> debug ) sim -> output( "Initializing racials for player (%s)", name() );
-
 }
 
 // player_t::init_spell =====================================================
@@ -1784,6 +1783,7 @@ void player_t::init_gains()
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.restore_mana           = get_gain( "restore_mana" );
   gains.spellsurge             = get_gain( "spellsurge" );
+  gains.touch_of_the_grave     = get_gain( "touch_of_the_grave" );
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
@@ -4020,6 +4020,21 @@ void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
     if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
     {
       harmful_spell[ i ].push_back( cb );
+    }
+  }
+}
+
+
+// player_t::register_direct_harmful_spell_callback ================================
+
+void player_t::callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
+                                                             action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_harmful_spell[ i ].push_back( cb );
     }
   }
 }

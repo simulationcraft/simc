@@ -424,6 +424,7 @@ enum proc_e
   PROC_DAMAGE,
   PROC_HEAL,
   PROC_TICK_DAMAGE,
+  PROC_DIRECT_HARMFUL_SPELL,
   PROC_DIRECT_DAMAGE,
   PROC_DIRECT_HEAL,
   PROC_TICK_HEAL,
@@ -3253,6 +3254,7 @@ struct player_t : public noncopyable
     std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
     std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
     std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
+    std::array< std::vector<action_callback_t*>, RESULT_MAX > direct_harmful_spell;
     std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
     std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
     std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
@@ -3270,18 +3272,19 @@ struct player_t : public noncopyable
 
     void reset();
 
-    void register_resource_gain_callback( resource_e,     action_callback_t* );
-    void register_resource_loss_callback( resource_e,     action_callback_t* );
-    void register_attack_callback       ( int64_t result_mask, action_callback_t* );
-    void register_spell_callback        ( int64_t result_mask, action_callback_t* );
-    void register_tick_callback         ( int64_t result_mask, action_callback_t* );
-    void register_heal_callback         ( int64_t result_mask, action_callback_t* );
-    void register_absorb_callback       ( int64_t result_mask, action_callback_t* );
-    void register_harmful_spell_callback( int64_t result_mask, action_callback_t* );
-    void register_tick_damage_callback  ( int64_t result_mask, action_callback_t* );
-    void register_direct_damage_callback( int64_t result_mask, action_callback_t* );
-    void register_tick_heal_callback    ( int64_t result_mask, action_callback_t* );
-    void register_direct_heal_callback  ( int64_t result_mask, action_callback_t* );
+    void register_resource_gain_callback       ( resource_e,     action_callback_t*      );
+    void register_resource_loss_callback       ( resource_e,     action_callback_t*      );
+    void register_attack_callback              ( int64_t result_mask, action_callback_t* );
+    void register_spell_callback               ( int64_t result_mask, action_callback_t* );
+    void register_tick_callback                ( int64_t result_mask, action_callback_t* );
+    void register_heal_callback                ( int64_t result_mask, action_callback_t* );
+    void register_absorb_callback              ( int64_t result_mask, action_callback_t* );
+    void register_harmful_spell_callback       ( int64_t result_mask, action_callback_t* );
+    void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
+    void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
+    void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
+    void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
+    void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
   } callbacks;
 
   virtual void register_callbacks();
@@ -3505,6 +3508,7 @@ struct player_t : public noncopyable
     gain_t* mp5_regen;
     gain_t* restore_mana;
     gain_t* spellsurge;
+    gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
