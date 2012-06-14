@@ -165,6 +165,11 @@ void action_t::impact_s( action_state_t* s )
         if ( tick_zero )
         {
           tick( dot );
+          dot -> current_tick++;
+          if ( dot -> current_tick == dot -> num_ticks )
+          {
+            dot -> action -> last_tick( dot );
+          }
         }
       }
       else

@@ -1915,6 +1915,13 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     background       = true;
     may_crit         = true;
     callbacks        = false;
+    tick_zero        = true;
+    num_ticks        = 1;
+    hasted_ticks     = false;
+    base_td          = base_dd_min;
+    tick_power_mod   = direct_power_mod;
+    base_dd_min = base_dd_max = 0.0;
+    direct_power_mod = 0.0;
   }
 
   virtual timespan_t execute_time()
@@ -2533,10 +2540,9 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
                                     p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() ),
     orbs_used( 0 )
   {
-    // Treat this just as direct damage rather than DoT damage. It's not like it procs anything anyway.
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_ta_multiplier()
   {
     double m = priest_spell_t::action_ta_multiplier();
 
@@ -2545,22 +2551,7 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
     return m;
   }
 
-  virtual void assess_damage( player_t* t,
-                              double amount,
-                              dmg_e type,
-                              result_e impact_result )
-  {
-    priest_procced_mastery_spell_t::assess_damage( t, amount, type, impact_result );
-
-// BUG: No longer does any healing in-game as of 15726
-/*
-    if ( result_is_hit( impact_result ) )
-    {
-      double a = amount * ( 0.15 * ( 1.0 + p() -> glyphs.devouring_plague -> effectN( 1 ).percent() ) ) ; // Procced DP still only heals for 15% base, not 30%
-      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
-    }
-*/
-  }
+  // BUG: Doesn't heal from ticks as of 15762
 };
 
 
@@ -2704,7 +2695,7 @@ struct devouring_plague_t : public priest_spell_t
 
     p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
-    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
       proc_spell -> orbs_used = dps_t -> orbs_used;

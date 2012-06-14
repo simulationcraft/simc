@@ -138,10 +138,17 @@ void dot_t::recalculate_ready()
   // new finish time for the DoT, start from the time of the next tick and add the time
   // for the remaining ticks to that event.
   int remaining_ticks = num_ticks - current_tick;
-  if ( state )
-    ready = tick_event -> time + action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
+  if ( remaining_ticks > 0 && tick_event )
+  {
+    if ( state )
+      ready = tick_event -> time + action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
+    else
+      ready = tick_event -> time + action -> tick_time( action -> player_haste ) * ( remaining_ticks - 1 );
+  }
   else
-    ready = tick_event -> time + action -> tick_time( action -> player_haste ) * ( remaining_ticks - 1 );
+  {
+    ready = timespan_t::zero();
+  }
 }
 
 // dot_t::refresh_duration ==================================================
@@ -172,7 +179,15 @@ void dot_t::refresh_duration()
 
   // tick zero dots tick when refreshed
   if ( action -> tick_zero )
+  {
     action -> tick( this );
+
+    current_tick++;
+    if ( current_tick == num_ticks )
+    {
+      action -> last_tick( this );
+    }
+  }
 
   recalculate_ready();
 }
@@ -220,6 +235,12 @@ void dot_t::schedule_tick()
     {
       time_to_tick = timespan_t::zero();
       action -> tick( this );
+      current_tick++;
+      if ( current_tick == num_ticks )
+      {
+        action -> last_tick( this );
+        return;
+      }
     }
   }
 
