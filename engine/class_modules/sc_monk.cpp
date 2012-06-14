@@ -26,13 +26,12 @@ enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
 
 struct monk_td_t : public actor_pair_t
 {
-  monk_td_t( player_t* target, player_t* monk ) :
-    actor_pair_t( target, monk )
+  struct debuffs_t
   {
+    debuff_t* rising_sun_kick;
+  } debuff;
 
-
-  }
-
+  monk_td_t( player_t*, monk_t* );
 };
 
 struct monk_t : public player_t
@@ -56,7 +55,6 @@ struct monk_t : public player_t
         //  buff_t* combo_breaker_bok;
 
 		//Debuffs
-		buff_t* rising_sun_kick;
   } buff;
 
   // Gains
@@ -369,16 +367,17 @@ virtual void impact_s( action_state_t* s )
 {
   monk_melee_attack_t::impact_s( s );
 
-  p() -> buff.rising_sun_kick -> trigger();
+  td( s -> target ) -> debuff.rising_sun_kick -> trigger();
 }
 
 virtual double action_multiplier()
 {
   double m = monk_melee_attack_t::action_multiplier();
 
-  if ( p() -> buff.rising_sun_kick -> up() )
+  debuff_t* b = td() -> debuff.rising_sun_kick;
+  if ( b && b -> up() )
   {
-    m *=  1.0 + p() -> buff.rising_sun_kick -> data().effectN( 2 ).base_value(); //Todo: does base_value consider %, even though spell data doesnt?
+    m *=  1.0 + b -> data().effectN( 2 ).percent();
   }
 
   return m;
@@ -579,6 +578,15 @@ struct stance_t : public monk_spell_t
 // Monk Character Definition
 // ==========================================================================
 
+monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
+  actor_pair_t( target, p ),
+  debuff( debuffs_t() )
+{
+  if ( target -> is_enemy() )
+  {
+    debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+  }
+}
 // monk_t::create_action ====================================================
 
 action_t* monk_t::create_action( const std::string& name,
@@ -670,7 +678,6 @@ void monk_t::init_buffs()
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  buff.rising_sun_kick = buff_creator_t( this, "rising_sun_kick" ).spell( find_class_spell( "Rising Sun Kick" ) );
 
 }
 
