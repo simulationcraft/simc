@@ -24,9 +24,10 @@ actions+=/run_action_list,name=aoe,if=num_targets>2
 actions+=/summon_doomguard
 actions+=/havoc,target_number=2,if=num_targets>1
 actions+=/shadowburn,if=ember_react
-actions+=/chaos_bolt,if=ember_react&buff.backdraft.stack<3
-actions+=/conflagrate,if=buff.backdraft.down
+actions+=/conflagrate,if=buff.backdraft.stack<3
+actions+=/chaos_bolt,if=ember_react
 actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
+actions+=/conflagrate,if=buff.backdraft.down
 actions+=/incinerate
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7

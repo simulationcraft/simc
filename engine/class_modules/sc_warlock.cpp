@@ -1907,7 +1907,7 @@ struct immolate_t : public warlock_spell_t
   immolate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Immolate" )
   {
-    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     tick_power_mod = direct_power_mod; // No tick power mod in dbc for some reason
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
@@ -1982,10 +1982,7 @@ struct conflagrate_t : public warlock_spell_t
   conflagrate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Conflagrate" )
   {
-    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
-
-    if ( p -> glyphs.conflagrate -> ok() )
-      cooldown -> charges = 2;
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2044,7 +2041,7 @@ struct incinerate_t : public warlock_spell_t
   incinerate_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Incinerate" )
   {
-    base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2636,7 +2633,7 @@ struct fel_flame_t : public warlock_spell_t
     warlock_spell_t( p, "Fel Flame" )
   {
     if ( p -> primary_tree() == WARLOCK_DESTRUCTION )
-      base_costs[ RESOURCE_MANA ] *= 4; // Mysterious 4x mana increase on certain spells for destro
+      base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -4501,12 +4498,13 @@ void warlock_t::init_actions()
     case WARLOCK_DESTRUCTION:
       add_action( "Havoc",                 "target_number=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
-      add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
-      add_action( "Conflagrate",           "if=buff.backdraft.down" );
+      add_action( "Conflagrate",           "if=buff.backdraft.stack<3" );
+      add_action( "Chaos Bolt",            "if=ember_react" );
       if ( glyphs.everlasting_affliction -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
+      add_action( "Conflagrate",           "if=buff.backdraft.down" );
       add_action( "Incinerate" );
 
       // AoE action list
