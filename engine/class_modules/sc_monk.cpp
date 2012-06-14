@@ -236,7 +236,9 @@ struct monk_action_t : public Base
 
     return true;
   }
+
 };
+
 
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
@@ -334,6 +336,19 @@ virtual void impact_s( action_state_t* s )
 
   p() -> buff.rising_sun_kick -> trigger();
 }
+
+virtual double action_multiplier()
+{
+  double m = monk_melee_attack_t::action_multiplier();
+
+  if ( p() -> buff.rising_sun_kick -> up() )
+  {
+    m *=  1.0 + p() -> buff.rising_sun_kick -> data().effectN( 1 ).base_value(); //Todo: does base_value consider %, even though spell data doesnt?
+  }
+
+  return m;
+}
+
 };
 //=============================
 //====Spinning Crane Kick======
