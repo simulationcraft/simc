@@ -5,22 +5,20 @@
 
 # Arcane
 
-wowhead=33894835
+wowhead=34558672
 name=Mage_Arcane_T13H
 professions=blacksmithing=525/tailoring=525
 save=Mage_Arcane_T13H.simc
 
 
-
-
 # Fire
-wowhead=33895045
+wowhead=34630525
 name=Mage_Fire_T13H
 professions=blacksmithing=525/tailoring=525
 save=Mage_Fire_T13H.simc
 
 # Frost
-wowhead=33895137
+wowhead=34630526
 name=Mage_Frost_T13H
 professions=blacksmithing=525/tailoring=525
 save=Mage_Frost_T13H.simc

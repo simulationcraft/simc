@@ -36,7 +36,7 @@ actions+=/earth_elemental_totem
 actions+=/fire_nova,if=target.adds>1
 actions+=/spiritwalkers_grace,moving=1
 actions+=/lightning_bolt,if=buff.maelstrom_weapon.react>1
-head=spiritwalkers_helmet,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_252haste_391hit,reforge=hit_mastery,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
+head=spiritwalkers_helmet,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_252haste_391hit,reforge=hit_mastery,gems=agile_shadowspirit_50agi_30agi
 neck=choker_of_the_vanquished_lord,heroic=1,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176mastery,reforge=haste_crit
 shoulders=spiritwalkers_spaulders,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_265hit_236exp,reforge=hit_mastery,gems=50agi_25agi_25mastery_20agi,enchant=50agi_25mastery
 chest=spiritwalkers_cuirass,heroic=1,type=mail,ilevel=410,quality=epic,stats=2912armor_489agi_824sta_328hit_344mastery,reforge=hit_crit,gems=50agi_50agi_50agi_30agi,enchant=20all
@@ -54,7 +54,7 @@ main_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=2
 off_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=249agi_373sta,enchant=landslide,weapon=axe_2.60speed_2862min_5315max
 # Gear Summary
 # gear_strength=20
-# gear_agility=6720
+# gear_agility=6660
 # gear_stamina=7849
 # gear_intellect=20
 # gear_spirit=20
@@ -62,7 +62,7 @@ off_hand=nokaled_the_elements_of_death,heroic=1,ilevel=416,quality=epic,stats=24
 # gear_expertise_rating=702
 # gear_hit_rating=850
 # gear_crit_rating=1627
-# gear_haste_rating=770
+# gear_haste_rating=735
 # gear_mastery_rating=2045
 # gear_armor=17489
 # meta_gem=agile_shadowspirit

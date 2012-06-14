@@ -8,7 +8,7 @@ spec=balance
 role=spell
 position=back
 professions=blacksmithing=525/tailoring=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#Ua!...1..
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Ua!...1..
 actions=flask,type=draconic_mind,precombat=1
 actions+=/food,type=seafood_magnifique_feast,precombat=1
 actions+=/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up
@@ -43,7 +43,7 @@ actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3
 actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
-head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
+head=deep_earth_cover,heroic=1,type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi,reforge=spi_mastery,gems=burning_shadowspirit_50int_30int
 neck=petrified_fungal_heart,heroic=1,ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste,reforge=spi_mastery
 shoulders=deep_earth_shoulderwraps,heroic=1,type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit,reforge=spi_haste,gems=50int_50int_20int,enchant=50int_25haste
 chest=deep_earth_vestment,heroic=1,type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi,reforge=spi_haste,gems=50int_50int_25int_25haste_30int,enchant=20all
@@ -62,11 +62,11 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # gear_strength=20
 # gear_agility=20
 # gear_stamina=7908
-# gear_intellect=7051
+# gear_intellect=6991
 # gear_spirit=1363
 # gear_spell_power=2786
 # gear_hit_rating=189
-# gear_crit_rating=539
+# gear_crit_rating=504
 # gear_haste_rating=2634
 # gear_mastery_rating=1972
 # gear_armor=12803

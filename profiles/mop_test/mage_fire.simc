@@ -31,7 +31,7 @@ actions+=/flame_orb,if=target.time_to_die>=12
 actions+=/fireball
 actions+=/mage_armor,if=mana_pct<5&buff.mage_armor.down
 actions+=/scorch
-head=time_lords_hood,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=haste_hit,gems=burning_shadowspirit_50int_30int,enchant=60int_35crit
+head=time_lords_hood,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=haste_hit,gems=burning_shadowspirit_50int_30int
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_crit,gems=50int_10int
 shoulders=time_lords_mantle,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_haste,gems=50int_50int_20int,enchant=50int_25haste
 chest=time_lords_robes,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,reforge=haste_crit,gems=50int_50int_25int_25crit_30int,enchant=20all

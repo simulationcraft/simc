@@ -8,7 +8,7 @@ spec=retribution
 role=hybrid
 position=back
 professions=blacksmithing=525/enchanting=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#bb!....1.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#bb!....1.
 glyphs=ascetic_crusader
 actions=flask,precombat=1,type=titanic_strength
 actions+=/food,precombat=1,type=beer_basted_crocolisk
@@ -31,7 +31,7 @@ actions+=/exorcism
 actions+=/hammer_of_wrath
 actions+=/crusader_strike
 actions+=/judgment
-head=helmet_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_316hit_356exp,reforge=exp_crit,gems=reverberating_shadowspirit_50str_30str,enchant=60str_35mastery
+head=helmet_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3231armor_489str_824sta_316hit_356exp,reforge=exp_crit,gems=reverberating_shadowspirit_50str_30str
 neck=necklace_of_black_dragons_teeth,ilevel=397,quality=epic,stats=271str_406sta_189hit_167crit
 shoulders=backbreaker_spaulders,heroic=1,type=plate,ilevel=416,quality=epic,stats=3063armor_391str_647sta_257crit_257mastery,reforge=mastery_haste,gems=50str_50str_20str,enchant=50str_25crit
 chest=battleplate_of_radiant_glory,heroic=1,type=plate,ilevel=410,quality=epic,stats=3977armor_489str_824sta_329haste_343mastery,reforge=mastery_exp,gems=50str_50str_50str_30str,enchant=20all
@@ -47,7 +47,7 @@ trinket2=creche_of_the_final_dragon,heroic=1,ilevel=410,quality=epic,stats=517st
 back=dreamcrusher_drape,ilevel=397,quality=epic,stats=769armor_251str_406sta_196crit_127hit,gems=50str_10str,enchant=65crit
 main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=581str_871sta,enchant=landslide,weapon=sword2h_3.60speed_6106min_9160max
 # Gear Summary
-# gear_strength=7049
+# gear_strength=6989
 # gear_agility=20
 # gear_stamina=8032
 # gear_intellect=20
@@ -57,7 +57,7 @@ main_hand=gurthalak_voice_of_the_deeps,heroic=1,ilevel=416,quality=epic,stats=58
 # gear_hit_rating=775
 # gear_crit_rating=2004
 # gear_haste_rating=1308
-# gear_mastery_rating=1348
+# gear_mastery_rating=1313
 # gear_armor=23717
 # meta_gem=reverberating_shadowspirit
 # tier13_2pc_melee=1
