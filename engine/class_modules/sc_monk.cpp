@@ -278,18 +278,20 @@ struct jab_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
-    may_crit             = true;
   }
 
   virtual void execute()
   {
     monk_melee_attack_t::execute();
 
-    if (p() -> active_stance  == STANCE_FIERCE_TIGER){
+    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
+    {
     	//not sure how to double effect without doubling resource gain. Maybe redundant.
     	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
     	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
-    }else{
+    }
+    else
+    {
     	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
     }
 
@@ -305,7 +307,6 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
-    may_crit             = true;
   }
 };
 //=============================
@@ -313,11 +314,41 @@ struct tiger_palm_t : public monk_melee_attack_t
 //=============================
 struct blackout_kick_t : public monk_melee_attack_t
 {
+  weapon_t* oh;
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( 0, options_str );
-    weapon              = &( player -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
+    oh = &(player -> off_hand_weapon );
+  }
+
+  // Main Hand weapon damage, and damage from AP is done in monk_melee_attack_t::calculate_weapon_damage
+  // This Adds Offhand weapon damage
+  virtual double calculate_weapon_damage( double ap )
+  {
+    double total_dmg = monk_melee_attack_t::calculate_weapon_damage( ap );
+
+    if ( ! oh || weapon_multiplier <= 0 ) return 0;
+
+    double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+
+    timespan_t weapon_speed  = normalize_weapon_speed  ? oh -> normalized_weapon_speed() : oh -> swing_time;
+
+
+    // OH penalty
+    if ( oh -> slot == SLOT_OFF_HAND )
+      dmg *= 0.5;
+
+    total_dmg += dmg;
+
+    if ( sim -> debug )
+    {
+      sim -> output( "%s oh weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                     player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
+    }
+
+    return total_dmg;
   }
 
 };
@@ -330,7 +361,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) )
   {
     parse_options( 0, options_str );
-    may_crit             = true;
   }
 
 //TEST: Mortal Wounds - ADD Later
@@ -413,7 +443,6 @@ struct melee_t : public monk_melee_attack_t
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw )
   {
-    may_crit    = true;
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
