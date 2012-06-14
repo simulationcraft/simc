@@ -2133,7 +2133,7 @@ struct soul_fire_t : public warlock_spell_t
   soul_fire_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Soul Fire" )
   {
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 200;
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 160;
     generate_fury = data().effectN( 2 ).base_value();
 
     if ( ! dtr && p -> has_dtr )
