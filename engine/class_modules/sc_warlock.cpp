@@ -320,9 +320,9 @@ struct warlock_t : public player_t
   {
     switch ( primary_tree() )
     {
-    case WARLOCK_AFFLICTION:  return "000020"; break;
+    case WARLOCK_AFFLICTION:  return "000010"; break;
     case WARLOCK_DEMONOLOGY:  return "300030"; break;
-    case WARLOCK_DESTRUCTION: return "000020"; break;
+    case WARLOCK_DESTRUCTION: return "000010"; break;
     default: break;
     }
 

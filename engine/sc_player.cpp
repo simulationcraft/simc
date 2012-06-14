@@ -5626,7 +5626,7 @@ void player_t::create_talents_armory()
 {
   talents_str.clear();
 
-  talents_str = "http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-calculator#";
+  talents_str = "http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#";
 
   switch ( type )
   {
