@@ -168,8 +168,6 @@ struct discharge_spell_t : public spell_t
     no_buffs = nb;
     no_debuffs = nd;
     aoe = ae;
-    // Pure casters get their innate crit damage bonus applied to discharge procs, hybrids don't
-    if ( p -> type == WARLOCK || p -> type == MAGE ) crit_multiplier *= 1.33;
   }
 };
 
@@ -875,8 +873,6 @@ static void register_tyrandes_favorite_doll( item_t* item )
       background = true;
       base_spell_power_multiplier = 0;
       cooldown -> duration = timespan_t::from_seconds( 60.0 );
-      // Pure casters get their innate crit damage bonus applied to discharge procs, hybrids don't
-      if ( p -> type == WARLOCK || p -> type == MAGE ) crit_multiplier *= 1.33;
       init();
     }
   };
