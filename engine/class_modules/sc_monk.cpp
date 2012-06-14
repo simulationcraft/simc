@@ -343,7 +343,7 @@ virtual double action_multiplier()
 
   if ( p() -> buff.rising_sun_kick -> up() )
   {
-    m *=  1.0 + p() -> buff.rising_sun_kick -> data().effectN( 1 ).base_value(); //Todo: does base_value consider %, even though spell data doesnt?
+    m *=  1.0 + p() -> buff.rising_sun_kick -> data().effectN( 2 ).base_value(); //Todo: does base_value consider %, even though spell data doesnt?
   }
 
   return m;
