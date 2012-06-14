@@ -278,6 +278,7 @@ struct jab_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    may_crit             = true;
   }
 
   virtual void execute()
@@ -304,6 +305,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    may_crit             = true;
   }
 };
 //=============================
@@ -315,7 +317,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( 0, options_str );
+    weapon              = &( player -> main_hand_weapon );
   }
+
 };
 //=============================
 //====RISING SUN KICK==========
@@ -326,6 +330,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) )
   {
     parse_options( 0, options_str );
+    may_crit             = true;
   }
 
 //TEST: Mortal Wounds - ADD Later
@@ -401,6 +406,95 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   }
 };
 
+struct melee_t : public monk_melee_attack_t
+{
+  int sync_weapons;
+
+  melee_t( const std::string& name, monk_t* player, int sw ) :
+    monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw )
+  {
+    may_crit    = true;
+    background  = true;
+    repeating   = true;
+    trigger_gcd = timespan_t::zero();
+    special     = false;
+    school      = SCHOOL_PHYSICAL;
+    if ( p() -> dual_wield() ) may_glance  = true;
+    else may_glance = false;
+    if ( p() -> dual_wield() ) base_hit -= 0.19;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t t = monk_melee_attack_t::execute_time();
+    if ( ! player -> in_combat )
+    {
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+    }
+    return t;
+  }
+
+  void execute()
+  {
+    if ( time_to_execute > timespan_t::zero() && p() -> executing )
+    {
+      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      schedule_execute();
+    }
+    else
+    {
+      monk_melee_attack_t::execute();
+    }
+  }
+
+};
+
+struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
+{
+  int sync_weapons;
+
+  auto_attack_t( monk_t* player, const std::string& options_str ) :
+    monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
+    sync_weapons( 0 )
+  {
+    option_t options[] =
+    {
+      { "sync_weapons", OPT_BOOL, &sync_weapons },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    assert( p() -> main_hand_weapon.type != WEAPON_NONE );
+    p() -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
+    p() -> main_hand_attack -> weapon = &( p() -> main_hand_weapon );
+    p() -> main_hand_attack -> base_execute_time = p() -> main_hand_weapon.swing_time;
+
+    if ( p() -> off_hand_weapon.type != WEAPON_NONE)
+    {
+      if ( ! p() -> dual_wield() ) return;
+      p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
+      p() -> off_hand_attack -> weapon = &( p() -> off_hand_weapon );
+      p() -> off_hand_attack -> base_execute_time = p() -> off_hand_weapon.swing_time;
+    }
+
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    p() -> main_hand_attack -> schedule_execute();
+    if ( p() -> off_hand_attack )
+      p() -> off_hand_attack -> schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> is_moving() ) return false;
+    return ( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+
 // Stance ===================================================================
 
 struct stance_t : public monk_spell_t
@@ -461,6 +555,7 @@ struct stance_t : public monk_spell_t
 action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
+  if ( name == "auto_attack"         ) return new         auto_attack_t( this, options_str );
   if ( name == "jab"                 ) return new                 jab_t( this, options_str );
   if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
   if ( name == "blackout_kick"       ) return new       blackout_kick_t( this, options_str );
@@ -616,6 +711,7 @@ void monk_t::init_actions()
       }
 
       action_list_str += "/snapshot_stats,precombat=1";
+      action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/blackout_kick";
       action_list_str += "/tiger_palm";
