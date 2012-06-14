@@ -3813,7 +3813,7 @@ struct grimoire_of_service_t : public summon_pet_t
   {
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
-    summoning_duration = timespan_t::from_seconds( 30 );
+    summoning_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
   }
 };
 
