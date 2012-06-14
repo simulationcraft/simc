@@ -1467,13 +1467,13 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    tick_power_mod = 0.02; // from tooltip
+    tick_power_mod = 0.035; // from tooltip
     if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual void last_tick( dot_t* d )
   {
-    td( d -> state -> target ) -> agony_stack = 0;
+    td( d -> state -> target ) -> agony_stack = 1;
     warlock_spell_t::last_tick( d );
   }
 

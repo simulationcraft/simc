@@ -740,7 +740,7 @@ struct hunter_action_t : public Base
 
   virtual double cost()
   {
-    double c = base_t::cost();
+    double c = action_base_t::cost();
 
     if ( c == 0 )
       return 0;
