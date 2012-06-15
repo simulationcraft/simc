@@ -394,7 +394,9 @@ struct blackout_kick_t : public monk_melee_attack_t
       dot_behavior = DOT_REFRESH;
     }
 
-    virtual double total_multiplier()
+    // FIXME: Assuming that the dot damage is not further modified.
+    // Needs testing
+    virtual double total_td_multiplier()
     { return 1.0; }
   };
 	dot_blackout_kick_t* bokdot;
@@ -409,7 +411,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_multiplier = 12.0; // hardcoded into tooltip
 
     bokdot = new dot_blackout_kick_t( p );
-    bokdot -> target = target;
     add_child( bokdot );
   }
 
