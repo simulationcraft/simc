@@ -377,25 +377,27 @@ struct tiger_palm_t : public monk_melee_attack_t
 //=============================
 //====Blackout Kick============
 //=============================
-struct  dot_blackout_kick_t : public monk_melee_attack_t
-{
 
-	dot_blackout_kick_t( monk_t* p ) :
-		monk_melee_attack_t( "blackout_kick_dot", p, p-> find_spell ( 164151 ) )
-  {
-	may_crit = false;
-	background = true;
-    num_ticks = 4;
-    base_tick_time = timespan_t::from_seconds( 1 );
-    dot_behavior = DOT_REFRESH;
-
-
-  }
-};
 struct blackout_kick_t : public monk_melee_attack_t
 {
-	dot_blackout_kick_t* bokdot;
+  struct  dot_blackout_kick_t : public monk_melee_attack_t
+  {
+    dot_blackout_kick_t( monk_t* p ) :
+      monk_melee_attack_t( "blackout_kick_dot", p, p-> find_spell ( 128531 ) )
+    {
+      may_crit = false;
+      background = true;
+      proc = true;
+      may_miss = false;
+      //num_ticks = 4;
+      //base_tick_time = timespan_t::from_seconds( 1 );
+      dot_behavior = DOT_REFRESH;
+    }
 
+    virtual double total_multiplier()
+    { return 1.0; }
+  };
+	dot_blackout_kick_t* bokdot;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ), bokdot( 0 )
@@ -409,18 +411,18 @@ struct blackout_kick_t : public monk_melee_attack_t
     bokdot = new dot_blackout_kick_t( p );
     bokdot -> target = target;
     add_child( bokdot );
-
-
   }
 
-  virtual void impact_s( action_state_t* s ){
-	  bokdot -> base_dd_min = 0.0;
-	  bokdot -> base_dd_min = bokdot -> base_dd_max = ((.20 * (player -> main_hand_weapon.damage + player -> off_hand_weapon.damage) * 12) );
-	 // bokdot -> base_dd_min  = bokdot -> base_dd_max = (player -> calculate_weapon_damage() * .20) / 5
-	  bokdot -> target = s -> target;
+  virtual void impact_s( action_state_t* s )
+  {
+    monk_melee_attack_t::impact_s( s );
+
+    if ( bokdot )
+    {
+      bokdot -> base_td = s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks;
+      bokdot -> target = s -> target;
       bokdot -> execute();
-      monk_melee_attack_t::impact_s( s );
-//TODO: Damage needs to be adjusted to take 20% of actual damage done by ability to create the actual amount.
+    }
   }
 
 };
