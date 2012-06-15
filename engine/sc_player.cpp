@@ -1216,7 +1216,7 @@ void player_t::init_professions()
     if ( 2 != util::string_split( splits[ i ], "=", "S i", &prof_name, &prof_value ) )
     {
       prof_name  = splits[ i ];
-      prof_value = 525;
+      prof_value = level > 85 ? 600 : 525;
     }
 
     int prof_type = util::parse_profession_type( prof_name );
@@ -1239,7 +1239,8 @@ void player_t::init_professions_bonus()
   // This has to be called after init_attack() and init_core()
 
   // Miners gain additional stamina
-  if      ( profession[ PROF_MINING ] >= 525 ) initial.attribute[ ATTR_STAMINA ] += 120.0;
+  if      ( profession[ PROF_MINING ] >= 600 ) initial.attribute[ ATTR_STAMINA ] += 480.0;
+  else if ( profession[ PROF_MINING ] >= 525 ) initial.attribute[ ATTR_STAMINA ] += 120.0;
   else if ( profession[ PROF_MINING ] >= 450 ) initial.attribute[ ATTR_STAMINA ] +=  60.0;
   else if ( profession[ PROF_MINING ] >= 375 ) initial.attribute[ ATTR_STAMINA ] +=  30.0;
   else if ( profession[ PROF_MINING ] >= 300 ) initial.attribute[ ATTR_STAMINA ] +=  10.0;
@@ -1248,7 +1249,12 @@ void player_t::init_professions_bonus()
   else if ( profession[ PROF_MINING ] >=  75 ) initial.attribute[ ATTR_STAMINA ] +=   3.0;
 
   // Skinners gain additional crit rating
-  if      ( profession[ PROF_SKINNING ] >= 525 )
+  if      ( profession[ PROF_SKINNING ] >= 600 )
+  {
+    initial.attack_crit += 320.0 / rating.attack_crit;
+    initial.spell_crit += 320.0 / rating.spell_crit;
+  }
+  else if ( profession[ PROF_SKINNING ] >= 525 )
   {
     initial.attack_crit += 80.0 / rating.attack_crit;
     initial.spell_crit += 80.0 / rating.spell_crit;
