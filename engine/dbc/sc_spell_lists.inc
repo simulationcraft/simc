@@ -753,7 +753,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115422, // Void Ray
            0,
     },
-    // Destruction tree, 10 abilities
+    // Destruction tree, 11 abilities
     {
       116858, // Chaos Bolt
        17962, // Conflagrate
@@ -764,6 +764,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
+      104232, // Rain of Fire
        17877, // Shadowburn
            0,
     },

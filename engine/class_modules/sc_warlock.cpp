@@ -142,6 +142,7 @@ struct warlock_t : public player_t
     const spell_data_t* demonic_rebirth;
 
     // Destruction
+    const spell_data_t* aftermath;
     const spell_data_t* backdraft;
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
@@ -3022,29 +3023,15 @@ struct seed_of_corruption_t : public warlock_spell_t
 
 struct rain_of_fire_tick_t : public warlock_spell_t
 {
-  rain_of_fire_tick_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "rain_of_fire_tick", p, p -> find_spell( 42223 ) )
+  const spell_data_t& parent_data;
+
+  rain_of_fire_tick_t( warlock_t* p, const spell_data_t& pd ) :
+    warlock_spell_t( "rain_of_fire_tick", p, ( p -> primary_tree() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104233 ) : p -> find_spell( 42223 ) ), parent_data( pd )
   {
     background  = true;
     aoe         = -1;
     direct_tick = true;
-
-    // FIXME: Damage was cut in half for destruction, but this isn't reflected in spell data yet
-    if ( p -> primary_tree() == WARLOCK_DESTRUCTION )
-    {
-      base_dd_min /= 2;
-      base_dd_max /= 2;
-      direct_power_mod /= 2;
-    }
-
-    if ( ! dtr )
-      dual = true;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new rain_of_fire_tick_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
+    dual        = true;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -3062,7 +3049,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking )
-      trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, 0.25 );
+      trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, parent_data.effectN( 2 ).percent() );
   }
 };
 
@@ -3072,25 +3059,17 @@ struct rain_of_fire_t : public warlock_spell_t
   rain_of_fire_tick_t* rain_of_fire_tick;
 
   rain_of_fire_t( warlock_t* p ) :
-    warlock_spell_t( p, "Rain of Fire" ),
+    warlock_spell_t( "rain_of_fire", p, ( p -> primary_tree() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : p -> find_spell( 5740 ) ),
     rain_of_fire_tick( 0 )
   {
     dot_behavior = DOT_CLIP;
     harmful = false;
-    tick_zero = true;
-    hasted_ticks = false;
-    channeled = ( p -> find_specialization_spell( "Aftermath" ) -> ok() ) ? false : true;
+    channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
+    tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
 
-    // FIXME: Seems to cost 34k mana at 85 for destro - no idea how/why
-    if ( ! channeled ) base_costs[ RESOURCE_MANA ] *= 8.5;
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
-    rain_of_fire_tick = new rain_of_fire_tick_t( p );
-  }
-
-  virtual timespan_t travel_time()
-  {
-    // FIXME: This is probably not actually how it works - as destro it seems to have num_ticks = 4 and tick_zero = false
-    return ( channeled ) ? timespan_t::zero() : timespan_t::from_seconds( 1.5 );
+    rain_of_fire_tick = new rain_of_fire_tick_t( p, data() );
   }
 
   virtual void init()
@@ -3106,7 +3085,7 @@ struct rain_of_fire_t : public warlock_spell_t
 
     rain_of_fire_tick -> execute();
 
-    if ( channeled ) consume_tick_resource( d );
+    if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
   }
 
   virtual bool ready()
@@ -3116,6 +3095,11 @@ struct rain_of_fire_t : public warlock_spell_t
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
+  }
+
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  {
+    return num_ticks;
   }
 };
 
@@ -4178,6 +4162,7 @@ void warlock_t::init_spells()
   spec.chaos_wave    = ( find_specialization_spell( "Metamorphosis: Chaos Wave"    ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
 
   // Destruction
+  spec.aftermath      = find_specialization_spell( "Aftermath" );
   spec.backdraft      = find_specialization_spell( "Backdraft" );
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
