@@ -240,12 +240,74 @@ struct monk_action_t : public Base
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
+  weapon_t* mh;
+  weapon_t* oh;
   monk_melee_attack_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
+    base_t( n, player, s ),
+    mh( NULL ), oh( NULL )
   {
     may_glance = false;
   }
+
+  // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
+  // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
+  // Both MH and OH are directly weaved into one damage number
+  virtual double calculate_weapon_damage( double ap )
+  {
+    double total_dmg = 0;
+    // Main Hand
+    if ( mh && weapon_multiplier > 0 )
+    {
+      assert( mh -> slot != SLOT_OFF_HAND );
+
+      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
+
+      timespan_t weapon_speed  = normalize_weapon_speed  ? mh -> normalized_weapon_speed() : mh -> swing_time;
+
+      dmg /= weapon_speed.total_seconds();
+
+      double power_damage = weapon_power_mod * ap;
+
+      total_dmg = dmg + power_damage;
+
+      if ( sim -> debug )
+      {
+        sim -> output( "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
+                     player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, weapon_speed.total_seconds(), power_damage, ap );
+      }
+    }
+
+    // Off Hand
+    if ( oh && weapon_multiplier > 0 )
+    {
+      assert( oh -> slot == SLOT_OFF_HAND );
+
+      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
+
+      timespan_t weapon_speed  = normalize_weapon_speed  ? oh -> normalized_weapon_speed() : oh -> swing_time;
+
+      dmg /= weapon_speed.total_seconds();
+
+      // OH penalty
+      if ( oh -> slot == SLOT_OFF_HAND )
+        dmg *= 0.5;
+
+      total_dmg += dmg;
+
+      if ( sim -> debug )
+      {
+        sim -> output( "%s oh weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+                     player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
+      }
+    }
+
+    if ( !mh && !oh )
+      total_dmg += base_t::calculate_weapon_damage( ap );
+
+    return total_dmg;
+  }
+
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -275,6 +337,13 @@ struct jab_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+
+    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+
+    mh = &( player -> main_hand_weapon );
+    oh = &(player -> off_hand_weapon );
+
+    base_multiplier = 2.52; // hardcoded into tooltip
   }
 
   virtual void execute()
@@ -310,12 +379,16 @@ struct tiger_palm_t : public monk_melee_attack_t
 //=============================
 struct blackout_kick_t : public monk_melee_attack_t
 {
-
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( 0, options_str );
 
+    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+    mh = &( player -> main_hand_weapon );
+    oh = &(player -> off_hand_weapon );
+
+    base_multiplier = 12.0; // hardcoded into tooltip
   }
 
 };
