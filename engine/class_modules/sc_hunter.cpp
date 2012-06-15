@@ -204,16 +204,20 @@ public:
   } glyphs;
 
   // Spells
-  struct passive_spells_t
+  struct spec_spells_t
   {
     const spell_data_t* animal_handler;
     const spell_data_t* artisan_quiver;
     const spell_data_t* into_the_wildness;
 
+  } spec;
+
+  struct mastery_spells_t
+  {
     const spell_data_t* master_of_beasts;
     const spell_data_t* wild_quiver;
     const spell_data_t* essence_of_the_viper;
-  } passive_spells;
+  } mastery;
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -232,7 +236,8 @@ public:
     rngs( rngs_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
-    passive_spells( passive_spells_t() )
+    spec( spec_spells_t() ),
+    mastery( mastery_spells_t() )
   {
     target_data.init( "target_data", this );
 
@@ -703,9 +708,9 @@ public:
   {
     double m = pet_t::composite_player_multiplier( school, a );
 
-    if ( cast_owner() -> passive_spells.master_of_beasts -> ok() )
+    if ( cast_owner() -> mastery.master_of_beasts -> ok() )
     {
-      m *= 1.0 + cast_owner() -> passive_spells.master_of_beasts -> effectN( 1 ).coeff() / 100.0 * owner -> composite_mastery();
+      m *= 1.0 + cast_owner() -> mastery.master_of_beasts -> effectN( 1 ).coeff() / 100.0 * owner -> composite_mastery();
     }
 
     m *= 1.0 + talents.shark_attack -> effectN( 1 ).percent();
@@ -3355,7 +3360,7 @@ struct wild_quiver_trigger_t : public action_callback_t
     if ( a -> proc )
       return;
 
-    if ( rng -> roll( p -> composite_mastery() * p -> passive_spells.wild_quiver -> effectN( 1 ).coeff() / 100.0 ) )
+    if ( rng -> roll( p -> composite_mastery() * p -> mastery.wild_quiver -> effectN( 1 ).coeff() / 100.0 ) )
     {
       attack -> execute();
       p -> procs.wild_quiver -> occur();
@@ -3544,13 +3549,13 @@ void hunter_t::init_spells()
 {
   player_t::init_spells();
 
-  passive_spells.animal_handler    = find_class_spell( "Animal Handler" );
-  passive_spells.artisan_quiver    = find_class_spell( "Artisan Quiver" );
-  passive_spells.into_the_wildness = find_class_spell( "Into the Wilderness" );
+  spec.animal_handler    = find_class_spell( "Animal Handler" );
+  spec.artisan_quiver    = find_class_spell( "Artisan Quiver" );
+  spec.into_the_wildness = find_class_spell( "Into the Wilderness" );
 
-  passive_spells.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
-  passive_spells.wild_quiver          = find_mastery_spell( HUNTER_MARKSMANSHIP );
-  passive_spells.essence_of_the_viper = find_mastery_spell( HUNTER_SURVIVAL );
+  mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
+  mastery.wild_quiver          = find_mastery_spell( HUNTER_MARKSMANSHIP );
+  mastery.essence_of_the_viper = find_mastery_spell( HUNTER_SURVIVAL );
 
   glyphs.aimed_shot     = find_glyph_spell( "Glyph of Aimed Shot"     );
   glyphs.arcane_shot    = find_glyph_spell( "Glyph of Arcane Shot"    );
@@ -3942,7 +3947,7 @@ void hunter_t::register_callbacks()
 {
   player_t::register_callbacks();
 
-  if ( passive_spells.wild_quiver -> ok() )
+  if ( mastery.wild_quiver -> ok() )
   {
     callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
   }
@@ -3980,7 +3985,7 @@ double hunter_t::composite_attack_power()
 
   ap += buffs.aspect_of_the_hawk -> value();
 
-  ap *= 1.0 + passive_spells.animal_handler -> effectN( 1 ).percent();
+  ap *= 1.0 + spec.animal_handler -> effectN( 1 ).percent();
 
   return ap;
 }
@@ -4020,7 +4025,7 @@ double hunter_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( school == SCHOOL_NATURE || school == SCHOOL_ARCANE || school== SCHOOL_SHADOW || school == SCHOOL_FIRE )
   {
-    m *= 1.0 + passive_spells.essence_of_the_viper -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
+    m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).coeff() / 100.0 * composite_mastery();
   }
   return m;
 }
