@@ -1342,8 +1342,6 @@ struct stat_data_t
   double stamina;
   double intellect;
   double spirit;
-  double base_health;
-  double base_resource;
 };
 
 // Include DBC Module
