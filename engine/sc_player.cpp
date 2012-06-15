@@ -1393,7 +1393,7 @@ std::string player_t::init_use_profession_actions( const std::string& append )
 {
   std::string buffer;
   // Lifeblood
-  if ( profession[ PROF_HERBALISM ] >= 450 )
+  if ( profession[ PROF_HERBALISM ] >= 1 )
   {
     buffer += "/lifeblood";
 
@@ -1698,11 +1698,31 @@ void player_t::init_buffs()
                         .stat( STAT_SPELL_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
 
+  double lb_amount = 0.0;
+  if      ( profession[ PROF_HERBALISM ] >= 600 )
+    lb_amount = 1920;
+  else if ( profession[ PROF_HERBALISM ] >= 525 )
+    lb_amount = 480;
+  else if ( profession[ PROF_HERBALISM ] >= 450 )
+    lb_amount = 240;
+  else if ( profession[ PROF_HERBALISM ] >= 375 )
+    lb_amount = 120;
+  else if ( profession[ PROF_HERBALISM ] >= 300 )
+    lb_amount = 70;
+  else if ( profession[ PROF_HERBALISM ] >= 225 )
+    lb_amount = 55;
+  else if ( profession[ PROF_HERBALISM ] >= 150 )
+    lb_amount = 35;
+  else if ( profession[ PROF_HERBALISM ] >= 75 )
+    lb_amount = 15;
+  else if ( profession[ PROF_HERBALISM ] >= 1 )
+    lb_amount = 5;
+
   buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
                       .max_stack( 1 )
                       .duration( timespan_t::from_seconds( 20.0 ) )
                     .stat( STAT_HASTE_RATING )
-                    .amount( 480.0 );
+                    .amount( lb_amount );
 
   // Potions
   struct potions_common_buff_creator
@@ -4647,9 +4667,9 @@ struct lifeblood_t : public action_t
   lifeblood_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "lifeblood", player )
   {
-    if ( player -> profession[ PROF_HERBALISM ] < 450 )
+    if ( player -> profession[ PROF_HERBALISM ] < 1 )
     {
-      sim -> errorf( "Player %s attempting to execute action %s without 450 in Herbalism.\n",
+      sim -> errorf( "Player %s attempting to execute action %s without Herbalism.\n",
                      player -> name(), name() );
 
       background = true; // prevent action from being executed
