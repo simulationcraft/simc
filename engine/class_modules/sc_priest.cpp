@@ -1916,7 +1916,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     may_crit         = true;
     callbacks        = false;
     tick_zero        = true;
-    num_ticks        = 1;
+    num_ticks        = 0;
     hasted_ticks     = false;
     base_td          = base_dd_min;
     tick_power_mod   = direct_power_mod;

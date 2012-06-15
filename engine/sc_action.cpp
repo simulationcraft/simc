@@ -1042,7 +1042,7 @@ void action_t::impact( player_t* t, result_e impact_result, double impact_dmg )
 
   if ( result_is_hit( impact_result ) )
   {
-    if ( num_ticks > 0 )
+    if ( num_ticks > 0 || tick_zero )
     {
       dot_t* dot = get_dot( t );
       if ( dot_behavior == DOT_CLIP ) dot -> cancel();
@@ -1062,7 +1062,6 @@ void action_t::impact( player_t* t, result_e impact_result, double impact_dmg )
         if ( tick_zero )
         {
           tick( dot );
-          dot -> current_tick++;
           if ( dot -> current_tick == dot -> num_ticks )
           {
             dot -> action -> last_tick( dot );

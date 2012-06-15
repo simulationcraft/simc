@@ -181,12 +181,6 @@ void dot_t::refresh_duration()
   if ( action -> tick_zero )
   {
     action -> tick( this );
-
-    current_tick++;
-    if ( current_tick == num_ticks )
-    {
-      action -> last_tick( this );
-    }
   }
 
   recalculate_ready();
@@ -235,7 +229,6 @@ void dot_t::schedule_tick()
     {
       time_to_tick = timespan_t::zero();
       action -> tick( this );
-      current_tick++;
       if ( current_tick == num_ticks )
       {
         action -> last_tick( this );

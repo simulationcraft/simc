@@ -136,7 +136,7 @@ void action_t::impact_s( action_state_t* s )
 
   if ( result_is_hit( s -> result ) )
   {
-    if ( num_ticks > 0 )
+    if ( num_ticks > 0 || tick_zero )
     {
       dot_t* dot = get_dot( s -> target );
       int remaining_ticks = dot -> num_ticks - dot -> current_tick;
@@ -165,11 +165,6 @@ void action_t::impact_s( action_state_t* s )
         if ( tick_zero )
         {
           tick( dot );
-          dot -> current_tick++;
-          if ( dot -> current_tick == dot -> num_ticks )
-          {
-            dot -> action -> last_tick( dot );
-          }
         }
       }
       else
