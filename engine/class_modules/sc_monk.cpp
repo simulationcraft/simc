@@ -54,6 +54,7 @@ struct monk_t : public player_t
         //  buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
+		buff_t* tiger_stance;
 
 		//Debuffs
   } buff;
@@ -147,8 +148,6 @@ struct monk_t : public player_t
     initial_chi( 0 )
   {
     target_data.init( "target_data", this );
-
-    active_stance = STANCE_FIERCE_TIGER;
 
     create_options();
   }
@@ -311,13 +310,14 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( !mh && !oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
     // Check for tiger stance and add 20% damage if true
-    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
-      {
-    		total_dmg *= 1.2;
+  if ( p() -> active_stance == STANCE_FIERCE_TIGER  )
+     {
+     		total_dmg *= 1.0 + p() -> buff.tiger_stance -> data().effectN( 3 ).percent();
     		return total_dmg;
       }else{
     	  return total_dmg;
-      }
+     }
+
   }
 
 };
@@ -339,8 +339,28 @@ struct monk_heal_t : public monk_action_t<heal_t>
   {
   }
 };
+/* TODO: implement this from druid
+struct way_of_the_monk_t : public monk_spell_t
+{
+	  virtual void execute()
+	  {
+	    spell_t::execute();
+
+	    weapon_t* w = &( p() -> main_hand_weapon );
 
 
+
+	    if ( w -> type =  )
+	    {
+	      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
+	      w -> type = WEAPON_BEAST;
+	      w -> school = SCHOOL_PHYSICAL;
+	      w -> min_dmg /= w -> swing_time.total_seconds();
+	      w -> max_dmg /= w -> swing_time.total_seconds();
+	      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
+	      w -> swing_time = timespan_t::from_seconds( 1.0 );
+	    }
+};*/
 
 struct jab_t : public monk_melee_attack_t
 {
@@ -670,6 +690,11 @@ struct stance_t : public monk_spell_t
     monk_spell_t::execute();
 
     p() -> active_stance = switch_to_stance;
+
+    //TODO: Add stances once implemented
+    if ( stance_str == "fierce_tiger" )
+    p() -> buff.tiger_stance -> trigger();
+
   }
 
   virtual bool ready()
@@ -750,9 +775,11 @@ void monk_t::init_base()
   base_chi_regen_per_second = 0; //
 
   if ( tree == MONK_MISTWEAVER )
-    active_stance = STANCE_HEAL;
-  else if ( tree == MONK_BREWMASTER )
-    active_stance = STANCE_DRUNKEN_OX;
+        active_stance = STANCE_HEAL;
+    else if ( tree == MONK_BREWMASTER )
+        active_stance = STANCE_DRUNKEN_OX;
+
+
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -778,7 +805,7 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
-
+  buff.tiger_stance              = buff_creator_t( this, "tiger_stance", find_spell(103985) );
 }
 
 // monk_t::init_gains =======================================================
@@ -845,7 +872,7 @@ void monk_t::init_actions()
       {
         action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
       }
-
+      action_list_str += "/stance,precombat=1";
       action_list_str += "/snapshot_stats,precombat=1";
       action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
