@@ -310,8 +310,14 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( !mh && !oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
-
-    return total_dmg;
+    // Check for tiger stance and add 20% damage if true
+    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
+      {
+    		total_dmg *= 1.2;
+    		return total_dmg;
+      }else{
+    	  return total_dmg;
+      }
   }
 
 };
