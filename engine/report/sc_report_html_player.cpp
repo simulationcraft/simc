@@ -1175,7 +1175,7 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
                "\t\t\t\t\t\t\t\t\t\t<th class=\"right\">#</th>\n"
                "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">action,conditions</th>\n"
                "\t\t\t\t\t\t\t\t\t</tr>\n",
-               ( alist -> name_str == "default" ) ? "" : ( "actions." + alist -> name_str ).c_str() );
+               ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
     }
 
     if ( ! alist -> used ) continue;

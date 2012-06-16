@@ -958,8 +958,9 @@ class SpellDataGenerator(DataGenerator):
         ( ( 63619, 5 ), ( 94472, 0 ), ( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. Shadow Mastery "duplicate" ticks
         ( ( 70890, 0 ), ( 51963, 5 ), ), # DK: weird Scourge Strike secondary effect, gargoyle strike.
         (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
-#            ( 12470, 5 ), ( 13376, 5 ), ( 57984, 5 ),       # Shaman Greater Fire Elemental abilities
-        ),     
+            ( 115356, 0 ), ( 114093, 0 ),                   # Ascendance: Stormblast, offhand melee swing,
+            ( 114074, 0 ), ( 114738, 0 ),                   # Ascendance: Lava Beam, Lava Beam overload
+        ),
         ( 
             ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs
             ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
