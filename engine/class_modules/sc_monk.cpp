@@ -406,7 +406,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     dot_blackout_kick_t( monk_t* p ) :
       monk_melee_attack_t( "blackout_kick_dot", p, p-> find_spell ( 128531 ) )
     {
-      may_crit = false;
+      tick_may_crit = true;
       background = true;
       proc = true;
       may_miss = false;
@@ -908,13 +908,13 @@ void monk_t::create_options()
 {
   player_t::create_options();
 
-  option_t priest_options[] =
+  option_t monk_options[] =
   {
     { "initial_chi",     OPT_INT,               &( initial_chi      ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
-  option_t::copy( options, priest_options );
+  option_t::copy( options, monk_options );
 }
 
 // monk_t::primary_role ==================================================
