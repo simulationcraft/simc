@@ -692,8 +692,8 @@ struct stance_t : public monk_spell_t
     p() -> active_stance = switch_to_stance;
 
     //TODO: Add stances once implemented
-    if ( stance_str == "fierce_tiger" )
-    p() -> buff.tiger_stance -> trigger();
+    if ( switch_to_stance == STANCE_FIERCE_TIGER )
+      p() -> buff.tiger_stance -> trigger();
 
   }
 
@@ -805,7 +805,8 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
-  buff.tiger_stance              = buff_creator_t( this, "tiger_stance", find_spell(103985) );
+
+  buff.tiger_stance = buff_creator_t( this, "tiger_stance" ).spell( find_spell(103985) );
 }
 
 // monk_t::init_gains =======================================================
