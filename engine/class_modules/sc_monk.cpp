@@ -29,6 +29,7 @@ struct monk_td_t : public actor_pair_t
   struct debuffs_t
   {
     debuff_t* rising_sun_kick;
+    debuff_t* tiger_palm;
   } debuff;
 
   monk_td_t( player_t*, monk_t* );
@@ -69,11 +70,11 @@ struct monk_t : public player_t
   {
     //proc_t* procs_<procname>;
   } proc;
-
+    //   proc_t* tiger_strikes;
   // Random Number Generation
    struct rngs_t
    {
-     rng_t* tiger_stikes;
+
    } rng;
 
   // Talents
@@ -367,12 +368,27 @@ struct jab_t : public monk_melee_attack_t
 //=============================
 struct tiger_palm_t : public monk_melee_attack_t
 {
+
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
+
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
+    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    mh = &(player -> main_hand_weapon) ;
+    oh = &(player -> off_hand_weapon) ;
+    base_multiplier = 5.0; // hardcoded into tooltip
   }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    monk_melee_attack_t::impact_s( s );
+
+    td( s -> target ) -> debuff.tiger_palm -> trigger( );
+  }
+
+
 };
 //=============================
 //====Blackout Kick============
@@ -389,15 +405,13 @@ struct blackout_kick_t : public monk_melee_attack_t
       background = true;
       proc = true;
       may_miss = false;
-      //num_ticks = 4;
-      //base_tick_time = timespan_t::from_seconds( 1 );
       dot_behavior = DOT_REFRESH;
     }
 
     // FIXME: Assuming that the dot damage is not further modified.
     // Needs testing
     virtual double total_td_multiplier()
-    { return 1.0; }
+    { return 0.5; }
   };
 	dot_blackout_kick_t* bokdot;
 
@@ -420,7 +434,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( bokdot )
     {
-      bokdot -> base_td = s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks;
+      bokdot -> base_td = (s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks); //Dividing by two gives more realistic numbers. They are about twice as large as they should be.
       bokdot -> target = s -> target;
       bokdot -> execute();
     }
@@ -437,6 +451,10 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
+    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    mh = &(player -> main_hand_weapon) ;
+    oh = &(player -> off_hand_weapon) ;
+    base_multiplier = 14.4; // hardcoded into tooltip
   }
 
 //TEST: Mortal Wounds - ADD Later
@@ -661,6 +679,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   if ( target -> is_enemy() )
   {
     debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+    debuff.tiger_palm = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
   }
 }
 // monk_t::create_action ====================================================
@@ -675,6 +694,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
   if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
+
 
 
   return player_t::create_action( name, options_str );
@@ -825,8 +845,9 @@ void monk_t::init_actions()
       action_list_str += "/snapshot_stats,precombat=1";
       action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
-      action_list_str += "/blackout_kick";
+      //action_list_str += "/blackout_kick,if=debuff.tiger_power_3.up";
       action_list_str += "/tiger_palm";
+      action_list_str += "/blackout_kick";
       action_list_str += "/jab";
 
 
