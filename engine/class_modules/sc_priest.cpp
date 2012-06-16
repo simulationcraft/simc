@@ -3047,6 +3047,77 @@ struct smite_t : public priest_spell_t
   }
 };
 
+
+struct cascade_t : public priest_spell_t
+{
+  struct cascade_state_t : action_state_t
+  {
+    int jump_counter;
+    cascade_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+        jump_counter( 0 )
+    { }
+  };
+
+  std::list<player_t*> player_blacklist;
+  const spell_data_t* talent_data;
+
+  cascade_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "cascade", p, p -> find_spell( 120785 ) )
+  {
+    talent_data = p -> find_talent_spell( "Cascade" );
+
+    parse_options( NULL, options_str );
+
+    cooldown -> duration = timespan_t::from_seconds( 50.0 );
+  }
+
+  virtual action_state_t* new_state()
+  {
+    return new cascade_state_t( this, target );
+  }
+
+  player_t* find_next_player()
+  {
+    // TODO: track players in the blacklist, and implement find-mechanism.
+    return target;
+  }
+
+  virtual void impact_s( action_state_t* q )
+  {
+    priest_spell_t::impact_s( q );
+
+    cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
+
+    if ( cs -> jump_counter < 3 /*talent_data->effectN( 1 ).base_value() */)
+    {
+      for ( unsigned i = 0; i < 2; ++i )
+      {
+        player_t* t = find_next_player();
+
+        if ( t )
+        {
+          // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
+          cascade_state_t* s = debug_cast<cascade_state_t*>( get_state() );
+          s -> target = t;
+          s -> jump_counter = cs -> jump_counter + 1;
+          snapshot_state( s, snapshot_flags );
+          s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
+
+          if ( result_is_hit( s -> result ) )
+            s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+
+          if ( sim -> debug )
+            s -> debug();
+
+          schedule_travel_s( s );
+        }
+      }
+    }
+    else
+      cs -> jump_counter = 0;
+  }
+
+};
 } // NAMESPACE spells
 
 // ==========================================================================
@@ -4200,6 +4271,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t   ( this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
+  if ( name == "cascade"                ) return new cascade_t               ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
