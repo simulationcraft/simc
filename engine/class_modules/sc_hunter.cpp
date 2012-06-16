@@ -334,6 +334,11 @@ public:
 // Hunter Pet
 // ==========================================================================
 
+struct hunter_pet_td_t : public actor_pair_t
+{
+  hunter_pet_td_t( player_t*, hunter_pet_t* );
+};
+
 struct hunter_pet_t : public pet_t
 {
 public:
@@ -384,6 +389,8 @@ public:
 
   // Benefits
   benefit_t* benefits_wild_hunt;
+
+  target_specific_t<hunter_pet_td_t> target_data;
 
   hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
@@ -717,6 +724,12 @@ public:
 
     return m;
   }
+  virtual hunter_pet_td_t* get_target_data( player_t* target )
+  {
+    hunter_pet_td_t*& td = target_data[ target ];
+    if ( ! td ) td = new hunter_pet_td_t( target, this );
+    return td;
+  }
 
   virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
 
@@ -806,6 +819,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     return t;
   }
+
   virtual double swing_haste()
   {
     hunter_t* p = cast();
@@ -818,20 +832,22 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     return h;
   }
 
-  virtual void   player_buff()
+  virtual double action_multiplier()
   {
     hunter_t* p = cast();
 
-    base_t::player_buff();
+    double am = base_t::action_multiplier();
 
     if (  p -> buffs.beast_within -> up() )
-      player_multiplier *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
+     am *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
 
     if ( cast_td() -> dots_serpent_sting -> ticking )
-      player_multiplier *= 1.0 + p -> talents.noxious_stings -> effectN( 1 ).percent();
+      am *= 1.0 + p -> talents.noxious_stings -> effectN( 1 ).percent();
 
     if ( p -> buffs.culling_the_herd -> up() )
-      player_multiplier *= 1.0 + ( p -> buffs.culling_the_herd -> data().effectN( 1 ).percent() );
+      am *= 1.0 + ( p -> buffs.culling_the_herd -> data().effectN( 1 ).percent() );
+
+    return am;
   }
 };
 
@@ -867,19 +883,15 @@ struct piercing_shots_t : public attack_t
     base_tick_time  = timespan_t::from_seconds( 1.0 );
   }
 
-  void player_buff() {}
+  virtual double composite_target_ta_multiplier( player_t* )
+  { return 1.30; }
 
-  void target_debuff( player_t*, dmg_e )
+  virtual void impact_s( action_state_t* s )
   {
-    target_multiplier = 1.30;
-  }
-
-  virtual void impact( player_t* t, result_e impact_result, double impact_dmg )
-  {
-    attack_t::impact( t, impact_result, 0 );
+    attack_t::impact_s( s );
 
     // FIXME: Is a is_hit check necessary here?
-    base_td = impact_dmg / get_dot() -> num_ticks;
+    base_td = s -> result_amount / get_dot() -> num_ticks;
   }
 
   virtual timespan_t travel_time()
@@ -887,7 +899,8 @@ struct piercing_shots_t : public attack_t
     return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
   }
 
-  virtual double total_td_multiplier() { return target_multiplier; }
+  virtual double composite_ta_multiplier()
+  { return 1.0; }
 };
 
 // trigger_piercing_shots ===================================================
@@ -1030,13 +1043,11 @@ struct ranged_t : public hunter_ranged_attack_t
   ranged_t( hunter_t* player, const char* name="ranged" ) :
     hunter_ranged_attack_t( name, player, spell_data_t::nil() /*, special true */ )
   {
-    hunter_t* p = cast();
-
     school = SCHOOL_PHYSICAL;
-    weapon = &( p -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
 
-    normalize_weapon_speed=false;
+    normalize_weapon_speed = false;
     may_crit    = true;
     background  = true;
     repeating   = true;
@@ -1138,16 +1149,18 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       normalize_weapon_speed = true;
     }
 
-    virtual void target_debuff( player_t* t, dmg_e dt )
+    virtual double composite_target_crit( player_t* t )
     {
-      hunter_ranged_attack_t::target_debuff( t, dt );
+      double cc = hunter_ranged_attack_t::composite_target_crit( t );
 
       hunter_t* p = cast();
 
-      if ( p -> talents.careful_aim -> ok() && t-> health_percentage() > p -> talents.careful_aim -> effectN( 2 ).base_value() )
+      if ( p -> talents.careful_aim -> ok() && t -> health_percentage() > p -> talents.careful_aim -> effectN( 2 ).base_value() )
       {
-        target_crit += p -> talents.careful_aim -> effectN( 1 ).percent();
+        cc += p -> talents.careful_aim -> effectN( 1 ).percent();
       }
+
+      return cc;
     }
 
     virtual void execute()
@@ -2580,6 +2593,9 @@ struct hunter_pet_action_t : public Base
   }
 
   hunter_pet_t* cast() { return debug_cast<hunter_pet_t*>( action_base_t::player ); }
+
+  hunter_pet_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : action_base_t::target ); }
+
 };
 
 // ==========================================================================
@@ -3372,6 +3388,11 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
   actor_pair_t( target, p )
 {
   dots_serpent_sting = target -> get_dot( "serpent_sting", p );
+}
+
+hunter_pet_td_t::hunter_pet_td_t( player_t* target, hunter_pet_t* p ) :
+  actor_pair_t( target, p )
+{
 }
 
 // hunter_pet_t::create_action ==============================================
