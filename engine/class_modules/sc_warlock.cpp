@@ -4341,6 +4341,17 @@ void warlock_t::add_action( const spell_data_t* s, std::string options, std::str
 
 void warlock_t::init_actions()
 {
+  // FIXME!!! This is required in order to support target_haunt_remains in conjunction with cycle_targets
+  if ( primary_tree() == WARLOCK_AFFLICTION )
+  {
+    for ( size_t i=0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* target = sim -> actor_list[ i ];
+      if ( ! target -> is_enemy() ) continue;
+      get_target_data( target );
+    }
+  }
+
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
