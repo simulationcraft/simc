@@ -279,7 +279,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       if ( sim -> debug )
       {
-        sim -> output( "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
+        sim -> output( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
                      player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, weapon_speed.total_seconds(), power_damage, ap );
       }
     }
@@ -303,7 +303,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       if ( sim -> debug )
       {
-        sim -> output( "%s oh weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+        sim -> output( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
                      player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
       }
     }
@@ -410,6 +410,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       background = true;
       proc = true;
       may_miss = false;
+      school = SCHOOL_PHYSICAL;
       dot_behavior = DOT_REFRESH;
     }
 
@@ -417,6 +418,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     // Needs testing
     virtual double composite_ta_multiplier()
     { return 1.0; }
+
+    //virtual double composite_target_ta_multiplier( player_t* )
+    //{ return 1.0; }
   };
 	dot_blackout_kick_t* bokdot;
 
@@ -434,14 +438,14 @@ struct blackout_kick_t : public monk_melee_attack_t
     add_child( bokdot );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void assess_damage( player_t* t, double amount, dmg_e type, result_e result )
   {
-    monk_melee_attack_t::impact_s( s );
+    monk_melee_attack_t::assess_damage( t, amount, type, result );
 
     if ( bokdot )
     {
-      bokdot -> base_td = ( s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks );
-      bokdot -> target = s -> target;
+      bokdot -> base_td = ( direct_dmg * data().effectN( 2 ).percent() / bokdot -> num_ticks );
+      bokdot -> target = t;
       bokdot -> execute();
     }
   }
