@@ -1597,6 +1597,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
       expr_t( name ), action( a ) {}
   };
 
+  player -> get_target_data( target );
+
   if ( name_str == "num_targets" )
   {
     struct num_targets_expr_t : public action_expr_t
@@ -1787,7 +1789,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
     if ( buff )
       return buff -> create_expression( splits[ 2 ] );
   }
-
   if ( num_splits == 3 && splits[ 0 ] == "dot" )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
