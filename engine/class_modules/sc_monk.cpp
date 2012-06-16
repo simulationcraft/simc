@@ -110,8 +110,8 @@ struct monk_t : public player_t
   struct passives_t
   {
 
-          const spell_data_t* leather_specialization;
-          const spell_data_t* way_of_the_monk; //split for DW / 2H
+   const spell_data_t* leather_specialization;
+   const spell_data_t* way_of_the_monk; //split for DW / 2H
 
     // TREE_MONK_TANK
     // spell_id_t* mastery/passive spells
@@ -131,6 +131,9 @@ struct monk_t : public player_t
 
   } glyph;
 
+  // Options
+  int initial_chi;
+
   target_specific_t<monk_td_t> target_data;
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
@@ -140,11 +143,12 @@ struct monk_t : public player_t
     proc( procs_t() ),
     talent( talents_t() ),
     passive( passives_t() ),
-    glyph( glyphs_t() )
+    glyph( glyphs_t() ),
+    initial_chi( 0 )
   {
     target_data.init( "target_data", this );
 
-   active_stance = STANCE_FIERCE_TIGER;
+    active_stance = STANCE_FIERCE_TIGER;
 
     create_options();
   }
@@ -162,6 +166,7 @@ struct monk_t : public player_t
   virtual void      init_resources( bool force=false );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
+  virtual void      create_options();
   virtual resource_e primary_resource();
   virtual role_e primary_role();
 
@@ -353,7 +358,7 @@ struct jab_t : public monk_melee_attack_t
 
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
     {
-    	//not sure how to double effect without doubling resource gain. Maybe redundant.
+    	// Todo: Add stance buffs and use spell data for the +1 number from fierce_tiger.
     	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() + 1 , p() -> gain.chi );
     }
     else
@@ -385,7 +390,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact_s( s );
 
-    td( s -> target ) -> debuff.tiger_palm -> trigger( );
+    td( s -> target ) -> debuff.tiger_palm -> trigger();
   }
 
 
@@ -410,18 +415,19 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     // FIXME: Assuming that the dot damage is not further modified.
     // Needs testing
-    virtual double total_td_multiplier()
-    { return 0.5; }
+    virtual double composite_ta_multiplier()
+    { return 1.0; }
   };
 	dot_blackout_kick_t* bokdot;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ), bokdot( 0 )
+    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ),
+    bokdot( 0 )
   {
     parse_options( 0, options_str );
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-    mh = &(player -> main_hand_weapon) ;
-    oh = &(player -> off_hand_weapon) ;
+    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
     base_multiplier = 12.0; // hardcoded into tooltip
 
     bokdot = new dot_blackout_kick_t( p );
@@ -434,7 +440,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( bokdot )
     {
-      bokdot -> base_td = (s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks); //Dividing by two gives more realistic numbers. They are about twice as large as they should be.
+      bokdot -> base_td = ( s -> result_amount * data().effectN( 2 ).percent() / bokdot -> num_ticks );
       bokdot -> target = s -> target;
       bokdot -> execute();
     }
@@ -463,10 +469,9 @@ virtual double action_multiplier()
 {
   double m = monk_melee_attack_t::action_multiplier();
 
-  debuff_t* b = td() -> debuff.rising_sun_kick;
-  if ( b && b -> up() )
+  if ( td() -> debuff.rising_sun_kick -> up() )
   {
-    m *=  1.0 + b -> data().effectN( 2 ).percent();
+    m *=  1.0 + td() -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
   }
 
   return m;
@@ -676,11 +681,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
   debuff( debuffs_t() )
 {
-  if ( target -> is_enemy() )
-  {
-    debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
-    debuff.tiger_palm = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
-  }
+  debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+  debuff.tiger_palm = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
 }
 // monk_t::create_action ====================================================
 
@@ -694,8 +696,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
   if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
-
-
 
   return player_t::create_action( name, options_str );
 }
@@ -721,8 +721,6 @@ void monk_t::init_spells()
 
   sets = new set_bonus_array_t( this, set_bonuses );
 }
-
-
 
 // monk_t::init_base ========================================================
 
@@ -770,10 +768,6 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
-
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
 }
 
@@ -845,11 +839,10 @@ void monk_t::init_actions()
       action_list_str += "/snapshot_stats,precombat=1";
       action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
-      //action_list_str += "/blackout_kick,if=debuff.tiger_power_3.up";
+      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3";
       action_list_str += "/tiger_palm";
       action_list_str += "/blackout_kick";
       action_list_str += "/jab";
-
 
 
       break;
@@ -865,7 +858,7 @@ void monk_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_CHI ] = 0;
+  resources.current[ RESOURCE_CHI ] = initial_chi;
 }
 
 // monk_t::matching_gear_multiplier =========================================
@@ -903,6 +896,21 @@ int monk_t::decode_set( item_t& item )
   //if ( strstr( s, "<setname>"      ) ) return SET_T14_HEAL;
 
   return SET_NONE;
+}
+
+// monk_t::create_options =================================================
+
+void monk_t::create_options()
+{
+  player_t::create_options();
+
+  option_t priest_options[] =
+  {
+    { "initial_chi",     OPT_INT,               &( initial_chi      ) },
+    { NULL, OPT_UNKNOWN, NULL }
+  };
+
+  option_t::copy( options, priest_options );
 }
 
 // monk_t::primary_role ==================================================
