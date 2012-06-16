@@ -495,24 +495,24 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
 //TEST: Mortal Wounds - ADD Later
 
-virtual double action_multiplier()
-{
-  double m = monk_melee_attack_t::action_multiplier();
-
-  if ( td() -> debuff.rising_sun_kick -> up() )
+  virtual double action_multiplier()
   {
-    m *=  1.0 + td() -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
+    double m = monk_melee_attack_t::action_multiplier();
+
+    if ( td() -> debuff.rising_sun_kick -> up() )
+    {
+      m *=  1.0 + td() -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
-  return m;
-}
-virtual void impact_s( action_state_t* s )
-{
-  monk_melee_attack_t::impact_s( s );
+  virtual void impact_s( action_state_t* s )
+  {
+    monk_melee_attack_t::impact_s( s );
 
-  td( s -> target ) -> debuff.rising_sun_kick -> trigger();
-}
-
+    td( s -> target ) -> debuff.rising_sun_kick -> trigger();
+  }
 };
 //=============================
 //====Spinning Crane Kick======
@@ -850,6 +850,8 @@ void monk_t::init_actions()
   {
     clear_action_priority_lists();
 
+    std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+
     switch ( primary_tree() )
     {
     case MONK_BREWMASTER:
@@ -858,23 +860,25 @@ void monk_t::init_actions()
     default:
       // Flask
       if ( level > 85 )
-        action_list_str += "/flask,type=warm_sun,precombat=1";
-      	  else if ( level >= 80 && primary_tree() == MONK_MISTWEAVER)
-    		  action_list_str += "/flask,type=draconic_mind,precombat=1";
-    	  else
-    		  action_list_str += "/flask,type=winds,precombat=1";
+        precombat += "/flask,type=warm_sun";
+      else if ( level >= 80 && primary_tree() == MONK_MISTWEAVER)
+        precombat += "/flask,type=draconic_mind";
+    	else
+    	  precombat += "/flask,type=winds";
 
       // Food
       if ( level > 85 )
       {
-        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+        precombat += "/food,type=great_pandaren_banquet";
       }
       else if ( level > 80 )
       {
-        action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
+        precombat += "/food,type=seafood_magnifique_feast";
       }
-      action_list_str += "/stance,precombat=1";
-      action_list_str += "/snapshot_stats,precombat=1";
+      precombat += "/stance";
+      precombat += "/snapshot_stats";
+
+
       action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3";
