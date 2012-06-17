@@ -4,13 +4,15 @@
 // ==========================================================================
 //
 //  TODO:
+//
+//
+//
 //  Add all damaging abilities
 //  Ensure values are correct
 //  Add mortal wounds to RSK
 //  Add all buffs
 //
-//  Note: RSK 10% buff works, just doesn't parse.
-// <@serge> And in the correct place you multiply the damage multiplier by ( 1.0 + buffs.rsk -> data().effectN( 1 ).percent() )
+//
 
 #include "simulationcraft.hpp"
 
@@ -325,6 +327,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return total_dmg;
   }
 
+
+
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -361,8 +365,10 @@ struct jab_t : public monk_melee_attack_t
     base_multiplier = 2.52; // hardcoded into tooltip
   }
 
+
   virtual void execute()
   {
+
     monk_melee_attack_t::execute();
 
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
@@ -376,6 +382,8 @@ struct jab_t : public monk_melee_attack_t
     }
 
   }
+
+
 };
 //=============================
 //====Tiger Palm===============
@@ -758,13 +766,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-
-  if ( tree == MONK_MISTWEAVER )
-        active_stance = STANCE_HEAL;
-    else if ( tree == MONK_BREWMASTER )
-        active_stance = STANCE_DRUNKEN_OX;
-
-
+  base_energy_regen_per_second = 10; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -790,7 +792,7 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
-  buff.tiger_stance              = buff_creator_t( this, "tiger_stance", find_spell(103985) );
+  buff.tiger_stance = buff_creator_t( this, "tiger_stance" ).spell( find_spell(103985) );
 }
 
 // monk_t::init_gains =======================================================
@@ -833,7 +835,6 @@ void monk_t::init_actions()
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
-
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
 
@@ -941,8 +942,6 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
   return m;
 }
 
-
-
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
@@ -966,7 +965,7 @@ resource_e monk_t::primary_resource()
   if ( primary_tree() == MONK_MISTWEAVER )
     return RESOURCE_MANA;
 
-  return RESOURCE_CHI;
+  return RESOURCE_ENERGY;
 }
 // monk_t::primary_role ==================================================
 
