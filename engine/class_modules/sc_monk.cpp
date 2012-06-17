@@ -37,7 +37,7 @@ struct monk_td_t : public actor_pair_t
 
 struct monk_t : public player_t
 {
-	monk_stance_e active_stance;
+  monk_stance_e active_stance;
   // Buffs
   struct buffs_t
   {
@@ -54,9 +54,9 @@ struct monk_t : public player_t
         //  buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
-		buff_t* tiger_stance;
+    buff_t* tiger_stance;
 
-		//Debuffs
+    //Debuffs
   } buff;
 
   // Gains
@@ -107,12 +107,13 @@ struct monk_t : public player_t
         //   const spell_data_t* chi_torpedo;
   } talent;
 
-  // Passives
-  struct passives_t
+  // Specialization
+  struct specs_t
   {
-
+  // GENERAL
    const spell_data_t* leather_specialization;
-   const spell_data_t* way_of_the_monk; //split for DW / 2H
+   const spell_data_t* way_of_the_monk;
+
 
     // TREE_MONK_TANK
     // spell_id_t* mastery/passive spells
@@ -120,7 +121,7 @@ struct monk_t : public player_t
     // TREE_MONK_DAMAGE
 
     // TREE_MONK_HEAL
-  } passive;
+  } spec;
 
   // Glyphs
   struct glyphs_t
@@ -143,7 +144,7 @@ struct monk_t : public player_t
     gain( gains_t() ),
     proc( procs_t() ),
     talent( talents_t() ),
-    passive( passives_t() ),
+    spec( specs_t() ),
     glyph( glyphs_t() ),
     initial_chi( 0 )
   {
@@ -154,6 +155,7 @@ struct monk_t : public player_t
 
   // Character Definition
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual double    composite_player_multiplier( school_e school, action_t* a );
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -253,7 +255,17 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     mh( NULL ), oh( NULL )
   {
     may_glance = false;
+
   }
+
+  virtual double swing_haste()
+   {
+     double haste = base_t::swing_haste();
+     if (! player -> dual_wield() ){
+     haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
+     }
+     return haste;
+   }
 
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
   // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
@@ -309,15 +321,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     if ( !mh && !oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
-    // Check for tiger stance and add 20% damage if true
-  if ( p() -> active_stance == STANCE_FIERCE_TIGER  )
-     {
-     		total_dmg *= 1.0 + p() -> buff.tiger_stance -> data().effectN( 3 ).percent();
-    		return total_dmg;
-      }else{
-    	  return total_dmg;
-     }
 
+    return total_dmg;
   }
 
 };
@@ -339,28 +344,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
   {
   }
 };
-/* TODO: implement this from druid
-struct way_of_the_monk_t : public monk_spell_t
-{
-	  virtual void execute()
-	  {
-	    spell_t::execute();
-
-	    weapon_t* w = &( p() -> main_hand_weapon );
-
-
-
-	    if ( w -> type =  )
-	    {
-	      // FIXME: If we really want to model switching between forms, the old values need to be saved somewhere
-	      w -> type = WEAPON_BEAST;
-	      w -> school = SCHOOL_PHYSICAL;
-	      w -> min_dmg /= w -> swing_time.total_seconds();
-	      w -> max_dmg /= w -> swing_time.total_seconds();
-	      w -> damage = ( w -> min_dmg + w -> max_dmg ) / 2;
-	      w -> swing_time = timespan_t::from_seconds( 1.0 );
-	    }
-};*/
 
 struct jab_t : public monk_melee_attack_t
 {
@@ -384,12 +367,12 @@ struct jab_t : public monk_melee_attack_t
 
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
     {
-    	// Todo: Add stance buffs and use spell data for the +1 number from fierce_tiger.
-    	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() + 1 , p() -> gain.chi );
+      // Todo: Add stance buffs and use spell data for the +1 number from fierce_tiger.
+      player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() + 1 , p() -> gain.chi );
     }
     else
     {
-    	player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
+      player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
     }
 
   }
@@ -448,7 +431,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     //virtual double composite_target_ta_multiplier( player_t* )
     //{ return 1.0; }
   };
-	dot_blackout_kick_t* bokdot;
+  dot_blackout_kick_t* bokdot;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ),
@@ -571,14 +554,18 @@ struct melee_t : public monk_melee_attack_t
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw )
+
   {
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
     school      = SCHOOL_PHYSICAL;
-    if ( player -> dual_wield() ) may_glance  = true;
-    if ( player -> dual_wield() ) base_hit -= 0.19;
+    may_glance  = true;
+    if ( player -> dual_wield() )
+      base_hit -= 0.19;
+    //hardcode multiplier for Way of the Monk
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN(2).percent();
   }
 
   virtual timespan_t execute_time()
@@ -688,13 +675,7 @@ struct stance_t : public monk_spell_t
   virtual void execute()
   {
     monk_spell_t::execute();
-
     p() -> active_stance = switch_to_stance;
-
-    //TODO: Add stances once implemented
-    if ( switch_to_stance == STANCE_FIERCE_TIGER )
-      p() -> buff.tiger_stance -> trigger();
-
   }
 
   virtual bool ready()
@@ -745,6 +726,10 @@ void monk_t::init_spells()
   talent.ascension = find_talent_spell( "Ascension" );
 
 
+  //PASSIVE/SPECIALIZATION
+  spec.way_of_the_monk = find_spell( 108977 );
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+
   // Add Spells & Glyphs
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -770,7 +755,7 @@ void monk_t::init_base()
   base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
-
+  resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
 
@@ -805,8 +790,7 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
-
-  buff.tiger_stance = buff_creator_t( this, "tiger_stance" ).spell( find_spell(103985) );
+  buff.tiger_stance              = buff_creator_t( this, "tiger_stance", find_spell(103985) );
 }
 
 // monk_t::init_gains =======================================================
@@ -850,6 +834,7 @@ void monk_t::init_actions()
   {
     clear_action_priority_lists();
 
+
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
 
     switch ( primary_tree() )
@@ -863,8 +848,8 @@ void monk_t::init_actions()
         precombat += "/flask,type=warm_sun";
       else if ( level >= 80 && primary_tree() == MONK_MISTWEAVER)
         precombat += "/flask,type=draconic_mind";
-    	else
-    	  precombat += "/flask,type=winds";
+      else
+        precombat += "/flask,type=winds";
 
       // Food
       if ( level > 85 )
@@ -910,10 +895,10 @@ double monk_t::matching_gear_multiplier( attribute_e attr )
   if ( primary_tree() == MONK_MISTWEAVER )
   {
     if ( attr == ATTR_INTELLECT )
-      return 0.05;
+      return spec.leather_specialization -> effectN( 1 ).percent();
   }
   else if ( attr == ATTR_AGILITY )
-    return 0.05;
+    return spec.leather_specialization -> effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -940,6 +925,24 @@ int monk_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
+// monk_t::composite_player_multiplier
+
+
+double monk_t::composite_player_multiplier( school_e school, action_t* a )
+{
+  double m = player_t::composite_player_multiplier( school, a );
+
+  if ( active_stance == STANCE_FIERCE_TIGER )
+     {
+
+        m *= 1.0 + buff.tiger_stance -> data().effectN( 3 ).percent();
+     }
+
+  return m;
+}
+
+
+
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
@@ -965,7 +968,6 @@ resource_e monk_t::primary_resource()
 
   return RESOURCE_CHI;
 }
-
 // monk_t::primary_role ==================================================
 
 role_e monk_t::primary_role()
@@ -984,6 +986,9 @@ role_e monk_t::primary_role()
 
   if ( primary_tree() == MONK_MISTWEAVER )
     return ROLE_HEAL;
+
+  if ( primary_tree() == MONK_WINDWALKER )
+    return ROLE_DPS;
 
   return ROLE_HYBRID;
 }
