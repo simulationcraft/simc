@@ -183,7 +183,7 @@ struct monk_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -194,7 +194,7 @@ struct monk_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -770,7 +770,7 @@ void monk_t::init_base()
 {
   player_t::init_base();
 
-  int tree = primary_tree();
+  int tree = specialization();
 
   initial.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
 
@@ -853,7 +853,7 @@ void monk_t::init_actions()
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case MONK_BREWMASTER:
     case MONK_WINDWALKER:
@@ -862,7 +862,7 @@ void monk_t::init_actions()
       // Flask
       if ( level > 85 )
         precombat += "/flask,type=warm_sun";
-      else if ( level >= 80 && primary_tree() == MONK_MISTWEAVER)
+      else if ( level >= 80 && specialization() == MONK_MISTWEAVER)
         precombat += "/flask,type=draconic_mind";
       else
         precombat += "/flask,type=winds";
@@ -908,7 +908,7 @@ void monk_t::init_resources( bool force )
 
 double monk_t::matching_gear_multiplier( attribute_e attr )
 {
-  if ( primary_tree() == MONK_MISTWEAVER )
+  if ( specialization() == MONK_MISTWEAVER )
   {
     if ( attr == ATTR_INTELLECT )
       return spec.leather_specialization -> effectN( 1 ).percent();
@@ -976,7 +976,7 @@ void monk_t::create_options()
 resource_e monk_t::primary_resource()
 {
   // FIXME: change to healing stance
-  if ( primary_tree() == MONK_MISTWEAVER )
+  if ( specialization() == MONK_MISTWEAVER )
     return RESOURCE_MANA;
 
   return RESOURCE_ENERGY;
@@ -994,13 +994,13 @@ role_e monk_t::primary_role()
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;
 
-  if ( primary_tree() == MONK_BREWMASTER )
+  if ( specialization() == MONK_BREWMASTER )
     return ROLE_TANK;
 
-  if ( primary_tree() == MONK_MISTWEAVER )
+  if ( specialization() == MONK_MISTWEAVER )
     return ROLE_HEAL;
 
-  if ( primary_tree() == MONK_WINDWALKER )
+  if ( specialization() == MONK_WINDWALKER )
     return ROLE_DPS;
 
   return ROLE_HYBRID;

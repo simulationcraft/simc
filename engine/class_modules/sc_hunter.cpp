@@ -309,7 +309,7 @@ public:
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -320,7 +320,7 @@ public:
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -3830,7 +3830,7 @@ void hunter_t::init_actions()
     if ( glyphs.rapid_fire -> ok() )
       action_list_str += "|buff.rapid_fire.react";
 
-    if ( primary_tree() == HUNTER_SURVIVAL )
+    if ( specialization() == HUNTER_SURVIVAL )
       action_list_str += init_use_racial_actions();
     action_list_str += init_use_item_actions();
     action_list_str += init_use_profession_actions();
@@ -3839,7 +3839,7 @@ void hunter_t::init_actions()
     action_list_str += "/auto_shot";
     action_list_str += "/explosive_trap,if=target.adds>0";
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     // BEAST MASTERY
     case HUNTER_BEAST_MASTERY:

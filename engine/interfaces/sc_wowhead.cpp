@@ -717,7 +717,7 @@ static player_t* download_player_profile( sim_t* sim,
         if ( p -> type == DRUID && maxi == 2 )
           maxi = 3;
 
-        p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+        p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
       }
     }
     std::string talent_encoding;
@@ -728,9 +728,9 @@ static player_t* download_player_profile( sim_t* sim,
       return 0;
     }
 
-    if ( p -> spec == DRUID_FERAL && talent_encoding[ 30 ] > '0' )
+    if ( p -> _spec == DRUID_FERAL && talent_encoding[ 30 ] > '0' )
     {
-      p -> spec = DRUID_GUARDIAN;
+      p -> _spec = DRUID_GUARDIAN;
     }
 
     talent_encoding = p -> set_default_talents();

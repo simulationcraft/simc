@@ -215,7 +215,7 @@ action_t::action_t( action_e       ty,
   }
 
   std::vector<specialization_e> spec_list;
-  specialization_e _s = player -> primary_tree();
+  specialization_e _s = player -> specialization();
   if ( data().id() && player -> dbc.ability_specialization( data().id(), spec_list ) && range::find( spec_list, _s ) == spec_list.end() )
   {
     sim -> errorf( "Player %s attempting to execute action %s without the required spec.\n",
@@ -1562,7 +1562,7 @@ void action_t::check_race( race_e race )
 
 void action_t::check_spec( specialization_e necessary_spec )
 {
-  if ( player -> primary_tree() != necessary_spec )
+  if ( player -> specialization() != necessary_spec )
   {
     sim -> errorf( "Player %s attempting to execute action %s without %s spec.\n",
                    player -> name(), name(), util::specialization_string( necessary_spec ).c_str() );

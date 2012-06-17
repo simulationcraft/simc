@@ -2024,7 +2024,7 @@ std::string chart::gear_weights_wowreforge( player_t* p )
   s += "for:";
   s += util::player_type_string( p -> type );
   s += "-";
-  s += util::specialization_string( p -> primary_tree() );
+  s += util::specialization_string( p -> specialization() );
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {

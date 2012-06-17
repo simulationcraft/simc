@@ -246,9 +246,9 @@ static bool parse_specialization( sim_t* sim,
                                   const std::string&,
                                   const std::string& value )
 {
-  sim -> active_player -> spec = util::translate_spec_str( sim -> active_player -> type, value );
+  sim -> active_player -> _spec = util::translate_spec_str( sim -> active_player -> type, value );
 
-  if ( sim -> active_player -> spec == SPEC_NONE )
+  if ( sim -> active_player -> _spec == SPEC_NONE )
     sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
 
   return true;
@@ -277,7 +277,7 @@ player_t::player_t( sim_t*             s,
   level( is_enemy() ? 88 : 85 ),
   party( 0 ), member( 0 ),
   ready_type( READY_POLL ),
-  spec( SPEC_NONE ),
+  _spec( SPEC_NONE ),
   bugs( true ),
   scale_player( 1 ),
   has_dtr( false ),
@@ -3458,7 +3458,7 @@ role_e player_t::primary_role()
 
 const char* player_t::primary_tree_name()
 {
-  return util::specialization_string( primary_tree() ).c_str();
+  return util::specialization_string( specialization() ).c_str();
 }
 
 // player_t::normalize_by ===================================================
@@ -5391,7 +5391,7 @@ bool player_t::parse_talents_old_armory( const std::string& talent_string )
 
   w_spec = dbc.spec_by_idx( type, specidx );
 
-  spec = w_spec;
+  _spec = w_spec;
 
   if ( parse_talents_numbers( set_default_talents() ) )
   {
@@ -5526,7 +5526,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
     w_spec = dbc.spec_by_idx( type, specidx );
 
-    spec = w_spec;
+    _spec = w_spec;
   }
 
   std::string t_str = talent_string.substr( cut_pt + 1 );
@@ -5592,7 +5592,7 @@ void player_t::create_talents_wowhead()
   // Spec if specified
   uint32_t idx = 0;
   uint32_t cid = 0;
-  if ( dbc.spec_idx( spec, cid, idx ) && ( ( int ) cid == util::class_id( type ) ) )
+  if ( dbc.spec_idx( _spec, cid, idx ) && ( ( int ) cid == util::class_id( type ) ) )
   {
     switch ( idx )
     {
@@ -5687,11 +5687,11 @@ void player_t::create_talents_armory()
     return;
   }
 
-  if ( spec != SPEC_NONE )
+  if ( _spec != SPEC_NONE )
   {
     uint32_t cid, sid;
 
-    if ( ! dbc.spec_idx( spec, cid, sid ) )
+    if ( ! dbc.spec_idx( _spec, cid, sid ) )
     {
       talents_str.clear();
       return;
@@ -5817,7 +5817,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
     specialization_e w_spec = dbc.spec_by_idx( type, w_spec_idx );
 
-    spec = w_spec;
+    _spec = w_spec;
   }
 
   if ( ( talent_string.size() - idx ) > 2 )
@@ -5884,11 +5884,11 @@ void player_t::replace_spells()
   unsigned id;
   unsigned int class_idx, spec_index;
 
-  if ( ! dbc.spec_idx( spec, class_idx, spec_index ) )
+  if ( ! dbc.spec_idx( _spec, class_idx, spec_index ) )
     return;
 
   // Search spec spells for spells to replace.
-  if ( spec != SPEC_NONE )
+  if ( _spec != SPEC_NONE )
   {
     for ( unsigned int i = 0; i < dbc.specialization_ability_size(); i++ )
     {
@@ -5945,7 +5945,7 @@ void player_t::replace_spells()
   }
 
   // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn later)
-  if ( spec != SPEC_NONE )
+  if ( _spec != SPEC_NONE )
   {
     for ( unsigned int i = 0; i < dbc.class_ability_size(); i++ )
     {
@@ -6038,9 +6038,9 @@ const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std:
 
 const spell_data_t* player_t::find_specialization_spell( const std::string& name, const std::string& token, specialization_e s )
 {
-  unsigned spell_id = dbc.specialization_ability_id( spec, name.c_str() );
+  unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() );
 
-  if ( s != SPEC_NONE && s != spec )
+  if ( s != SPEC_NONE && s != _spec )
     return spell_data_t::not_found();
 
   if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
@@ -6057,7 +6057,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
 {
   unsigned spell_id = dbc.mastery_ability_id( s, idx );
 
-  if ( ( s == SPEC_NONE ) || ( s != spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
+  if ( ( s == SPEC_NONE ) || ( s != _spec ) || ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
     return ( spell_data_t::not_found() );
 
   dbc_t::add_token( spell_id, token, dbc.ptr );
@@ -6123,9 +6123,9 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
 
 const spell_data_t* player_t::find_class_spell( const std::string& name, const std::string& token, specialization_e s )
 {
-  unsigned spell_id = dbc.class_ability_id( type, spec, name.c_str() );
+  unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() );
 
-  if ( s != SPEC_NONE && s != spec )
+  if ( s != SPEC_NONE && s != _spec )
     return spell_data_t::not_found();
 
   if ( ! spell_id || ! dbc.spell( spell_id ) || ( ( int )dbc.spell( spell_id ) -> level() > level ) )
@@ -6728,7 +6728,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     profile_str += "level=" + util::to_string( level ) + term;
     profile_str += "race=" + race_str + term;
     profile_str += "spec=";
-    profile_str += util::specialization_string( primary_tree() ) + term;
+    profile_str += util::specialization_string( specialization() ) + term;
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;

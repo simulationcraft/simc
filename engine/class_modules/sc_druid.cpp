@@ -313,7 +313,7 @@ struct druid_t : public player_t
     const spell_data_t* natural_insight;
     const spell_data_t* natures_focus;
     const spell_data_t* revitalize;
-  } specialization;
+  } spec;
 
 
   struct spells_t
@@ -383,7 +383,7 @@ struct druid_t : public player_t
     mastery( masteries_t() ),
     proc( procs_t() ),
     rng( rngs_t() ),
-    specialization( specializations_t() ),
+    spec( specializations_t() ),
     spell( spells_t() ),
     talent( talents_t() )
   {
@@ -412,7 +412,7 @@ struct druid_t : public player_t
 
     equipped_weapon_dps = 0;
 
-    initial.distance = ( primary_tree() == DRUID_FERAL || primary_tree() == DRUID_GUARDIAN ) ? 3 : 30;
+    initial.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
 
     create_options();
   }
@@ -478,7 +478,7 @@ struct druid_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case DRUID_BALANCE: return "000200"; break;
     case DRUID_FERAL:   return "300100"; break;
@@ -490,7 +490,7 @@ struct druid_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -956,8 +956,8 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
       p -> buff.eclipse_solar -> expire();
       soul_of_the_forest = true;
     }
-    if ( p -> eclipse_bar_value < p -> specialization.eclipse -> effectN( 2 ).base_value() )
-      p -> eclipse_bar_value = p -> specialization.eclipse -> effectN( 2 ).base_value();
+    if ( p -> eclipse_bar_value < p -> spec.eclipse -> effectN( 2 ).base_value() )
+      p -> eclipse_bar_value = p -> spec.eclipse -> effectN( 2 ).base_value();
   }
 
   if ( p -> eclipse_bar_value >= 0 )
@@ -967,8 +967,8 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
       p -> buff.eclipse_lunar -> expire();
       soul_of_the_forest = true;
     }
-    if ( p -> eclipse_bar_value > p -> specialization.eclipse -> effectN( 1 ).base_value() )
-      p -> eclipse_bar_value = p -> specialization.eclipse -> effectN( 1 ).base_value();
+    if ( p -> eclipse_bar_value > p -> spec.eclipse -> effectN( 1 ).base_value() )
+      p -> eclipse_bar_value = p -> spec.eclipse -> effectN( 1 ).base_value();
   }
 
   int actual_gain = p -> eclipse_bar_value - old_eclipse_bar_value;
@@ -986,7 +986,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   if ( actual_gain != 0 )
   {
     if ( p -> eclipse_bar_value ==
-         p -> specialization.eclipse -> effectN( 1 ).base_value() )
+         p -> spec.eclipse -> effectN( 1 ).base_value() )
     {
       if ( p -> buff.eclipse_solar -> trigger() )
       {
@@ -996,7 +996,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
       }
     }
     else if ( p -> eclipse_bar_value ==
-              p -> specialization.eclipse -> effectN( 2 ).base_value() )
+              p -> spec.eclipse -> effectN( 2 ).base_value() )
     {
       if ( p -> buff.eclipse_lunar -> trigger() )
       {
@@ -1095,7 +1095,7 @@ static void trigger_living_seed( action_state_t* s )
 {
   druid_t* p = static_cast< druid_t* >( s -> action -> player );
 
-  if ( p -> spec != DRUID_RESTORATION )
+  if ( p -> _spec != DRUID_RESTORATION )
     return;
 
   struct living_seed_t : public druid_heal_t
@@ -1148,7 +1148,7 @@ static void trigger_lotp( action_state_t* s )
 
   p -> resource_gain( RESOURCE_MANA,
                       p -> resources.max[ RESOURCE_MANA ] *
-                      p -> specialization.leader_of_the_pack -> effectN( 1 ).percent(),
+                      p -> spec.leader_of_the_pack -> effectN( 1 ).percent(),
                       p -> gain.lotp_mana );
 
   p -> cooldown.lotp -> start( timespan_t::from_seconds( 6.0 ) );
@@ -1181,11 +1181,11 @@ static void trigger_revitalize( druid_heal_t* a )
 
   if ( p -> cooldown.revitalize -> remains() > timespan_t::zero() ) return;
 
-  if ( p -> rng.revitalize -> roll( p -> specialization.revitalize -> proc_chance() ) )
+  if ( p -> rng.revitalize -> roll( p -> spec.revitalize -> proc_chance() ) )
   {
     p -> proc.revitalize -> occur();
     p -> resource_gain( RESOURCE_MANA,
-                        p -> resources.max[ RESOURCE_MANA ] * p -> specialization.revitalize -> effectN( 1 ).percent(),
+                        p -> resources.max[ RESOURCE_MANA ] * p -> spec.revitalize -> effectN( 1 ).percent(),
                         p -> gain.revitalize );
 
     p -> cooldown.revitalize -> start( timespan_t::from_seconds( 12.0 ) );
@@ -1261,7 +1261,7 @@ void druid_cat_attack_t::execute()
     {
       td( target ) -> combo_points -> add( adds_combo_points, name() );
 
-      if ( aoe == 0 && ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) &&
+      if ( aoe == 0 && ( p() -> _spec == DRUID_FERAL || p() -> _spec == DRUID_GUARDIAN ) &&
            execute_state -> result == RESULT_CRIT )
       {
         td( target ) -> combo_points -> add( adds_combo_points, name() );
@@ -1703,8 +1703,8 @@ struct ravage_t : public druid_cat_attack_t
   {
     double tc = druid_cat_attack_t::composite_target_crit( t );
 
-    if ( t -> health_percentage() >= p() -> specialization.predatory_swiftness -> effectN( 2 ).base_value() )
-      tc += p() -> specialization.predatory_swiftness -> effectN( 1 ).percent();
+    if ( t -> health_percentage() >= p() -> spec.predatory_swiftness -> effectN( 2 ).base_value() )
+      tc += p() -> spec.predatory_swiftness -> effectN( 1 ).percent();
 
     return tc;
   }
@@ -1979,7 +1979,7 @@ struct bear_melee_t : public druid_bear_attack_t
     if ( state -> result != RESULT_MISS )
       trigger_rage_gain( this );
 
-    if ( ( p() -> spec == DRUID_FERAL || p() -> spec == DRUID_GUARDIAN ) &&
+    if ( ( p() -> _spec == DRUID_FERAL || p() -> _spec == DRUID_GUARDIAN ) &&
          state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
@@ -2811,7 +2811,7 @@ struct bear_form_t : public druid_spell_t
   {
     spell_t::execute();
 
-    if ( p() -> primary_tree() == DRUID_GUARDIAN )
+    if ( p() -> specialization() == DRUID_GUARDIAN )
       p() -> vengeance.enabled = true;
 
     weapon_t* w = &( p() -> main_hand_weapon );
@@ -3101,11 +3101,11 @@ struct incarnation_t : public druid_spell_t
 
     update_ready();
 
-    if ( p() -> spec == DRUID_BALANCE )
+    if ( p() -> _spec == DRUID_BALANCE )
       p() -> buff.chosen_of_elune -> trigger();
-    else if ( p() -> spec == DRUID_FERAL )
+    else if ( p() -> _spec == DRUID_FERAL )
       p() -> buff.king_of_the_jungle -> trigger();
-    else if ( p() -> spec == DRUID_GUARDIAN )
+    else if ( p() -> _spec == DRUID_GUARDIAN )
       p() -> buff.son_of_ursoc -> trigger();
     else
       p() -> buff.tree_of_life -> trigger();
@@ -3241,7 +3241,7 @@ struct moonfire_t : public druid_spell_t
   {
     sunfire_CA_t( druid_t* player ) :
       druid_spell_t( "sunfire", player,
-                     ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> primary_tree() == DRUID_BALANCE ) ) ? player -> find_spell( 93402 ) : spell_data_t::not_found() )
+                     ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> specialization() == DRUID_BALANCE ) ) ? player -> find_spell( 93402 ) : spell_data_t::not_found() )
     {
       dot_behavior = DOT_REFRESH;
 
@@ -3284,7 +3284,7 @@ struct moonfire_t : public druid_spell_t
       dtr_action = new moonfire_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-    if ( player -> primary_tree() == DRUID_BALANCE )
+    if ( player -> specialization() == DRUID_BALANCE )
       sunfire = new sunfire_CA_t( player );
   }
 
@@ -3320,7 +3320,7 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit() )
     {
-      if ( p() -> specialization.lunar_shower -> ok() )
+      if ( p() -> spec.lunar_shower -> ok() )
       {
         p() -> buff.lunar_shower -> trigger( 1 );
       }
@@ -3492,7 +3492,7 @@ struct starfire_t : public druid_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p() -> specialization.eclipse -> ok() )
+      if ( p() -> spec.eclipse -> ok() )
       {
         if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
         {
@@ -3508,7 +3508,7 @@ struct starfire_t : public druid_spell_t
 
           if ( ! p() -> buff.eclipse_lunar -> check() )
           {
-            if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
+            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
             {
               if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
               {
@@ -3643,7 +3643,7 @@ struct starsurge_t : public druid_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p() -> specialization.eclipse -> ok() )
+      if ( p() -> spec.eclipse -> ok() )
       {
         if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
           td( t ) -> dots_moonfire -> refresh_duration();
@@ -3658,7 +3658,7 @@ struct starsurge_t : public druid_spell_t
 
         if ( ! p() -> buff.eclipse_lunar -> check() && ! p() -> buff.eclipse_solar -> check() )
         {
-          if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
+          if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
           {
             if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
             {
@@ -3732,7 +3732,7 @@ struct sunfire_t : public druid_spell_t
   // Identical to moonfire, except damage type and usability
 
   sunfire_t( druid_t* player, const std::string& options_str, bool dtr=false ) :
-    druid_spell_t( "sunfire", player, ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> primary_tree() == DRUID_BALANCE ) )
+    druid_spell_t( "sunfire", player, ( player -> find_class_spell( "Moonfire" ) -> ok() && ( player -> specialization() == DRUID_BALANCE ) )
                    ? player -> find_spell( 93402 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
@@ -3785,7 +3785,7 @@ struct sunfire_t : public druid_spell_t
       if ( mf -> ticking )
         mf -> cancel();
 
-      if ( p() -> specialization.lunar_shower -> ok() )
+      if ( p() -> spec.lunar_shower -> ok() )
       {
         p() -> buff.lunar_shower -> trigger( 1 );
       }
@@ -3989,7 +3989,7 @@ struct wrath_t : public druid_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      if ( p() -> specialization.eclipse -> ok() )
+      if ( p() -> spec.eclipse -> ok() )
       {
         if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
         {
@@ -4005,7 +4005,7 @@ struct wrath_t : public druid_spell_t
           // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
           if ( ! p() -> buff.eclipse_solar -> check() )
           {
-            if ( p() -> rng.euphoria -> roll( p() -> specialization.euphoria -> effectN( 1 ).percent() ) )
+            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
             {
               if ( !( p() -> bugs && p() -> eclipse_bar_value < -35 ) )
               {
@@ -4133,36 +4133,36 @@ void druid_t::init_spells()
 
   // Specializations
   // Generic / Multiple specs
-  specialization.leather_specialization = find_specialization_spell( "Leather Specialization" );
-  specialization.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
 
   // Balance
   // Eclipse are 2 spells, the mana energize is not in the main spell!
   // http://mop.wowhead.com/spell=79577 => Specialization spell
   // http://mop.wowhead.com/spell=81070 => The mana gain energize spell
   // Moonkin is also split up into two spells
-  specialization.balance_of_power       = find_specialization_spell( "Balance of Power" );
-  specialization.celestial_focus        = find_specialization_spell( "Celestial Focus" );
-  specialization.eclipse                = find_specialization_spell( "Eclipse" );
-  specialization.euphoria               = find_specialization_spell( "Euphoria" );
-  specialization.lunar_shower           = find_specialization_spell( "Lunar Shower" );
-  specialization.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
-  specialization.shooting_stars         = find_specialization_spell( "Shooting Stars" );
+  spec.balance_of_power       = find_specialization_spell( "Balance of Power" );
+  spec.celestial_focus        = find_specialization_spell( "Celestial Focus" );
+  spec.eclipse                = find_specialization_spell( "Eclipse" );
+  spec.euphoria               = find_specialization_spell( "Euphoria" );
+  spec.lunar_shower           = find_specialization_spell( "Lunar Shower" );
+  spec.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
+  spec.shooting_stars         = find_specialization_spell( "Shooting Stars" );
 
   // Feral
-  specialization.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
-  specialization.primal_fury            = find_specialization_spell( "Primal Fury" );
+  spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
+  spec.primal_fury            = find_specialization_spell( "Primal Fury" );
 
   // Guardian
-  specialization.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
-  specialization.thick_hide             = find_specialization_spell( "Thick Hide" );
+  spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
+  spec.thick_hide             = find_specialization_spell( "Thick Hide" );
 
   // Restoration
-  specialization.living_seed            = find_specialization_spell( "Living Seed" );
-  specialization.meditation             = find_specialization_spell( "Meditation" );
-  specialization.natural_insight        = find_specialization_spell( "Natural Insight" );
-  specialization.natures_focus          = find_specialization_spell( "Nature's Focus" );
-  specialization.revitalize             = find_specialization_spell( "Revitalize" );
+  spec.living_seed            = find_specialization_spell( "Living Seed" );
+  spec.meditation             = find_specialization_spell( "Meditation" );
+  spec.natural_insight        = find_specialization_spell( "Natural Insight" );
+  spec.natures_focus          = find_specialization_spell( "Nature's Focus" );
+  spec.revitalize             = find_specialization_spell( "Revitalize" );
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
 
@@ -4271,8 +4271,8 @@ void druid_t::init_base()
   base_energy_regen_per_second = 10;
 
   // Natural Insight: +400% mana
-  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + specialization.natural_insight -> effectN( 1 ).percent();
-  base.mp5 *= 1.0 + specialization.natural_insight -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
+  base.mp5 *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
@@ -4292,14 +4292,14 @@ void druid_t::init_buffs()
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.moonkin_form          = buff_creator_t( this, "moonkin_form", find_class_spell( "Moonkin Form" ) );
-  buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", specialization.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .chance( specialization.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
+  buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
+                               .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", find_talent_spell( "Soul of the Forest" ) -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
-                               .max_stack( ( spec == DRUID_BALANCE || spec == DRUID_RESTORATION )
+                               .max_stack( ( _spec == DRUID_BALANCE || _spec == DRUID_RESTORATION )
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
                                            : 1 )
                                .quiet( true );
@@ -4309,22 +4309,22 @@ void druid_t::init_buffs()
   // http://mop.wowhead.com/spell=122114 Chosen of Elune
   buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation -> ok() ? find_spell( 122114 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ? ( primary_tree() == DRUID_BALANCE ) : 0.0 );
+                            .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_BALANCE ) : 0.0 );
 
   // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
   buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation -> ok() ? find_spell( 102548 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ? ( primary_tree() == DRUID_FERAL ) : 0.0 );
+                            .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_FERAL ) : 0.0 );
 
   // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc      Passive
   buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation -> ok() ? find_spell( 113711 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ?  ( primary_tree() == DRUID_GUARDIAN ) : 0.0 );
+                            .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_GUARDIAN ) : 0.0 );
 
   // http://mop.wowhead.com/spell=5420 Incarnation: Tree of Life        Passive
   buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , talent.incarnation -> ok() ? find_spell( 5420 ) : spell_data_t::not_found() )
                             .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ?  ( primary_tree() == DRUID_RESTORATION ) : 0.0 );
+                            .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_RESTORATION ) : 0.0 );
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", find_talent_spell( "Nature's Vigil" ) -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
                             .cd( timespan_t::zero() );
@@ -4335,9 +4335,9 @@ void druid_t::init_buffs()
   buff.celestial_alignment   = new celestial_alignment_buff_t( this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() );
   buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() );
-  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   specialization.lunar_shower -> effectN( 1 ).trigger() );
-  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", specialization.shooting_stars -> effectN( 1 ).trigger() )
-                               .chance( specialization.shooting_stars -> effectN( 1 ).percent() );
+  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
+  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
+                               .chance( spec.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
@@ -4403,11 +4403,11 @@ void druid_t::init_scaling()
 
   scales_with[ STAT_WEAPON_SPEED  ] = false;
 
-  if ( primary_tree() == DRUID_FERAL )
+  if ( specialization() == DRUID_FERAL )
     scales_with[ STAT_SPIRIT ] = false;
 
   // Balance of Power treats Spirit like Spell Hit Rating
-  if ( specialization.balance_of_power -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
+  if ( spec.balance_of_power -> ok() && sim -> scaling -> scale_stat == STAT_SPIRIT )
   {
     double v = sim -> scaling -> scale_value;
     if ( ! sim -> scaling -> positive_scale_delta )
@@ -4477,8 +4477,8 @@ void druid_t::init_rng()
 
 void druid_t::init_actions()
 {
-  if ( ! ( primary_role() == ROLE_SPELL  && primary_tree() == DRUID_BALANCE ) &&
-       ! ( primary_role() == ROLE_ATTACK && primary_tree() == DRUID_FERAL   ) )
+  if ( ! ( primary_role() == ROLE_SPELL  && specialization() == DRUID_BALANCE ) &&
+       ! ( primary_role() == ROLE_ATTACK && specialization() == DRUID_FERAL   ) )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
@@ -4513,9 +4513,9 @@ void druid_t::init_actions()
     {
       // Flask
       action_list_str += "flask,type=";
-      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
-      else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+      else if ( ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
         action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
       else
         action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
@@ -4531,11 +4531,11 @@ void druid_t::init_actions()
     action_list_str += "/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up";
 
     // Forms
-    if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       action_list_str += "/cat_form,precombat=1";
-    else if ( ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+    else if ( ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
       action_list_str += "/bear_form,precombat=1";
-    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+    else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       action_list_str += "/moonkin_form,precombat=1";
 
     // Snapshot stats
@@ -4544,19 +4544,19 @@ void druid_t::init_actions()
     if ( level >= 80 )
     {
       // Prepotion
-      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       else
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
       action_list_str += ",precombat=1";
 
       // Potion use
-      if ( ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       {
         action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
       }
-      else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+      else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       {
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
@@ -4572,7 +4572,7 @@ void druid_t::init_actions()
       }
     }
 
-    if ( spec == DRUID_FERAL && primary_role() == ROLE_ATTACK )
+    if ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
       //action_list_str += "/feral_charge_cat,if=!in_combat";
@@ -4611,7 +4611,7 @@ void druid_t::init_actions()
       action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
       action_list_str += "/mangle_cat,if=position_front&energy.time_to_max<=1.0";
     }
-    else if ( spec == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
+    else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += init_use_racial_actions();
@@ -4655,7 +4655,7 @@ void druid_t::init_actions()
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
     }
-    else if ( spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
+    else if ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
     {
       action_list_str += "/auto_attack";
       action_list_str += init_use_racial_actions();
@@ -4674,7 +4674,7 @@ void druid_t::init_actions()
       action_list_str += "/berserk";
       action_list_str += "/faerie_fire";
     }
-    else if ( spec == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
+    else if ( _spec == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
     {
       action_list_str += init_use_racial_actions();
       action_list_str += use_str;
@@ -4794,11 +4794,11 @@ void druid_t::combat_begin()
   if ( preplant_mushrooms )
     buff.wild_mushroom -> trigger( 3 );
 
-  if ( ( primary_tree() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
+  if ( ( specialization() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
   {
     if ( initial_eclipse > 0 )
     {
-      eclipse_bar_value = std::min( specialization.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
+      eclipse_bar_value = std::min( spec.eclipse -> effectN( 1 ).base_value(), initial_eclipse );
       if ( buff.eclipse_solar -> trigger() )
       {
         // Solar proc => bar direction changes to -1 (towards Lunar)
@@ -4807,7 +4807,7 @@ void druid_t::combat_begin()
     }
     else
     {
-      eclipse_bar_value = std::max( specialization.eclipse -> effectN( 2 ).base_value(), initial_eclipse );
+      eclipse_bar_value = std::max( spec.eclipse -> effectN( 2 ).base_value(), initial_eclipse );
       if ( buff.eclipse_lunar -> trigger() )
       {
         // Lunar proc => bar direction changes to 1 (towards Solar)
@@ -4828,8 +4828,8 @@ double druid_t::composite_armor_multiplier()
     // Increases the armor bonus of Bear Form to 330%
     // TODO: http://mop.wowhead.com/spell=5487 spell tooltip => +120% armor
     // But the actual spell data suggests +65% armor
-    if ( specialization.thick_hide -> ok() )
-      a += specialization.thick_hide -> effectN( 2 ).percent();
+    if ( spec.thick_hide -> ok() )
+      a += spec.thick_hide -> effectN( 2 ).percent();
     else
       a += buff.bear_form -> data().effectN( 3 ).percent();
   }
@@ -4894,7 +4894,7 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
   if ( school == SCHOOL_BLEED )
     m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
 
-  if ( primary_tree() == DRUID_BALANCE )
+  if ( specialization() == DRUID_BALANCE )
   {
 
     // Both eclipse buffs need their own checks
@@ -4943,7 +4943,7 @@ double druid_t::composite_spell_hit()
   double hit = player_t::composite_spell_hit();
 
   // BoP does not convert base spirit into hit!
-  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( specialization.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
 }
@@ -5012,20 +5012,20 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
 
 double druid_t::matching_gear_multiplier( attribute_e attr )
 {
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case DRUID_BALANCE:
   case DRUID_RESTORATION:
     if ( attr == ATTR_INTELLECT )
-      return specialization.leather_specialization -> effectN( 1 ).percent();
+      return spec.leather_specialization -> effectN( 1 ).percent();
     break;
   case DRUID_FERAL:
     if ( attr == ATTR_AGILITY )
-      return specialization.leather_specialization -> effectN( 1 ).percent();
+      return spec.leather_specialization -> effectN( 1 ).percent();
     break;
   case DRUID_GUARDIAN:
     if ( attr == ATTR_STAMINA )
-      return specialization.leather_specialization -> effectN( 1 ).percent();
+      return spec.leather_specialization -> effectN( 1 ).percent();
     break;
   default:
     break;
@@ -5041,7 +5041,7 @@ double druid_t::composite_tank_crit( school_e school )
   double c = player_t::composite_tank_crit( school );
 
   if ( school == SCHOOL_PHYSICAL )
-    c += specialization.thick_hide -> effectN( 1 ).percent();
+    c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
@@ -5158,7 +5158,7 @@ int druid_t::decode_set( item_t& item )
 
 role_e druid_t::primary_role()
 {
-  if ( primary_tree() == DRUID_BALANCE )
+  if ( specialization() == DRUID_BALANCE )
   {
     if ( player_t::primary_role() == ROLE_HEAL )
       return ROLE_HEAL;
@@ -5166,7 +5166,7 @@ role_e druid_t::primary_role()
     return ROLE_SPELL;
   }
 
-  else if ( primary_tree() == DRUID_FERAL )
+  else if ( specialization() == DRUID_FERAL )
   {
     if ( player_t::primary_role() == ROLE_TANK )
       return ROLE_TANK;
@@ -5174,7 +5174,7 @@ role_e druid_t::primary_role()
     return ROLE_ATTACK;
   }
 
-  else if ( spec == DRUID_GUARDIAN )
+  else if ( _spec == DRUID_GUARDIAN )
   {
     if ( player_t::primary_role() == ROLE_ATTACK )
       return ROLE_ATTACK;
@@ -5182,7 +5182,7 @@ role_e druid_t::primary_role()
     return ROLE_TANK;
   }
 
-  else if ( primary_tree() == DRUID_RESTORATION )
+  else if ( specialization() == DRUID_RESTORATION )
   {
     if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
       return ROLE_SPELL;

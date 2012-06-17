@@ -221,7 +221,7 @@ struct paladin_t : public player_t
     beacon_target = 0;
     ret_pvp_gloves = -1;
 
-    initial.distance = ( primary_tree() == PALADIN_HOLY ) ? 30 : 3;
+    initial.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
 
     create_options();
   }
@@ -274,7 +274,7 @@ struct paladin_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case PALADIN_RETRIBUTION: return "000020"; break;
     default: break;
@@ -285,7 +285,7 @@ struct paladin_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -1091,7 +1091,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
 
-    if ( ( p -> primary_tree() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       cooldown -> duration = timespan_t::zero();
     }
@@ -1413,7 +1413,7 @@ struct judgment_t : public paladin_melee_attack_t
     if ( p -> set_bonus.pvp_4pc_melee() )
       cooldown -> duration -= timespan_t::from_seconds( 1.0 );
 
-    if ( ( p -> primary_tree() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       cooldown -> duration = timespan_t::zero();
     }
@@ -1771,9 +1771,9 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( p() -> primary_tree() == PALADIN_RETRIBUTION )
+    if ( p() -> specialization() == PALADIN_RETRIBUTION )
       p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
-    else if ( p() -> primary_tree() == PALADIN_PROTECTION )
+    else if ( p() -> specialization() == PALADIN_PROTECTION )
       p() -> buffs.gotak_prot -> trigger();
   }
 };
@@ -1792,7 +1792,7 @@ struct holy_shock_t : public paladin_spell_t
     // to do damage is 25912
     parse_effect_data( ( *player -> dbc.effect( 25912 ) ) );
 
-    if ( ( p -> primary_tree() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       cooldown -> duration = timespan_t::zero();
     }
@@ -2290,7 +2290,7 @@ void paladin_t::init_base()
   diminished_dodge_capi = 0.01523660;
   diminished_parry_capi = 0.01523660;
 
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case PALADIN_HOLY:
     base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
@@ -2368,7 +2368,7 @@ void paladin_t::init_scaling()
 {
   player_t::init_scaling();
 
-  specialization_e tree = primary_tree();
+  specialization_e tree = specialization();
 
   // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
   scales_with[ STAT_INTELLECT   ] = tree == PALADIN_HOLY;
@@ -2477,7 +2477,7 @@ void paladin_t::init_buffs()
 
 void paladin_t::init_actions()
 {
-  if ( ! ( primary_role() == ROLE_HYBRID && primary_tree() == PALADIN_RETRIBUTION ) )
+  if ( ! ( primary_role() == ROLE_HYBRID && specialization() == PALADIN_RETRIBUTION ) )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
@@ -2500,7 +2500,7 @@ void paladin_t::init_actions()
   {
     clear_action_priority_lists();
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case PALADIN_RETRIBUTION:
     {
@@ -2842,13 +2842,13 @@ void paladin_t::init_items()
 
 role_e paladin_t::primary_role()
 {
-  if ( player_t::primary_role() == ROLE_DPS || primary_tree() == PALADIN_RETRIBUTION )
+  if ( player_t::primary_role() == ROLE_DPS || specialization() == PALADIN_RETRIBUTION )
     return ROLE_HYBRID;
 
-  if ( player_t::primary_role() == ROLE_TANK || primary_tree() == PALADIN_PROTECTION  )
+  if ( player_t::primary_role() == ROLE_TANK || specialization() == PALADIN_PROTECTION  )
     return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_HEAL || primary_tree() == PALADIN_HOLY )
+  if ( player_t::primary_role() == ROLE_HEAL || specialization() == PALADIN_HOLY )
     return ROLE_HEAL;
 
   return ROLE_HYBRID;
@@ -2906,7 +2906,7 @@ double paladin_t::composite_player_multiplier( school_e school, action_t* a )
 double paladin_t::composite_spell_power( school_e school )
 {
   double sp = player_t::composite_spell_power( school );
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case PALADIN_PROTECTION:
     break;
@@ -2952,7 +2952,7 @@ double paladin_t::matching_gear_multiplier( attribute_e attr )
 {
   double mult = 0.01 * passives.plate_specialization -> effectN( 1 ).base_value();
 
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case PALADIN_PROTECTION:
     if ( attr == ATTR_STAMINA )
@@ -3143,7 +3143,7 @@ int paladin_t::holy_power_stacks()
 
 double paladin_t::get_divine_bulwark()
 {
-  if ( primary_tree() != PALADIN_PROTECTION ) return 0.0;
+  if ( specialization() != PALADIN_PROTECTION ) return 0.0;
 
   // block rating, 2.25% per point of mastery
   return composite_mastery() * ( passives.divine_bulwark -> effectN( 1 ).coeff() / 100.0 );
@@ -3153,7 +3153,7 @@ double paladin_t::get_divine_bulwark()
 
 double paladin_t::get_hand_of_light()
 {
-  if ( primary_tree() != PALADIN_RETRIBUTION ) return 0.0;
+  if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
   return composite_mastery() * ( passives.hand_of_light -> effectN( 1 ).coeff() / 100.0 );
 }

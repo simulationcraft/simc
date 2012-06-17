@@ -126,7 +126,7 @@ static bool parse_talents( player_t* p,
     {
       s = DRUID_GUARDIAN;
     }
-    p -> spec = s;
+    p -> _spec = s;
   }
 
   talent_encoding = p -> set_default_talents();

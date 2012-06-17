@@ -204,10 +204,10 @@ player_t* chardev::download_player( sim_t* sim,
     if ( p -> type == DRUID && maxi == 2 )
       maxi = 3;
 
-    p -> spec = p -> dbc.spec_by_idx( p -> type, maxi );
+    p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
   }
 
-  if ( p -> spec == DRUID_FERAL )
+  if ( p -> _spec == DRUID_FERAL )
   {
     int a;
 
@@ -215,7 +215,7 @@ player_t* chardev::download_player( sim_t* sim,
 
     if ( a > 0 )
     {
-      p -> spec = DRUID_GUARDIAN;
+      p -> _spec = DRUID_GUARDIAN;
     }
   }
 

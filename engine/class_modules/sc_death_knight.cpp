@@ -382,7 +382,7 @@ struct death_knight_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -393,7 +393,7 @@ struct death_knight_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -1209,7 +1209,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 
   virtual void init_base()
   {
-    assert( owner -> primary_tree() != SPEC_NONE );
+    assert( owner -> specialization() != SPEC_NONE );
 
 
     // Value for the ghoul of a naked worgen as of 4.2
@@ -2020,11 +2020,11 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
-    if ( ! sim -> overrides.weakened_blows && player -> primary_tree() == DEATH_KNIGHT_BLOOD &&
+    if ( ! sim -> overrides.weakened_blows && player -> specialization() == DEATH_KNIGHT_BLOOD &&
          result_is_hit( impact_result ) )
       t -> debuffs.weakened_blows -> trigger();
 
-    if ( ! sim -> overrides.physical_vulnerability && player -> primary_tree() == DEATH_KNIGHT_UNHOLY &&
+    if ( ! sim -> overrides.physical_vulnerability && player -> specialization() == DEATH_KNIGHT_UNHOLY &&
          result_is_hit( impact_result ) )
       t -> debuffs.physical_vulnerability -> trigger();
   }
@@ -2067,8 +2067,8 @@ struct blood_strike_t : public death_knight_melee_attack_t
 
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
 
-    if ( p -> primary_tree() == DEATH_KNIGHT_FROST ||
-         p -> primary_tree() == DEATH_KNIGHT_UNHOLY )
+    if ( p -> specialization() == DEATH_KNIGHT_FROST ||
+         p -> specialization() == DEATH_KNIGHT_UNHOLY )
       convert_runes = 1.0;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -2352,7 +2352,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-    if ( p -> primary_tree() == DEATH_KNIGHT_BLOOD )
+    if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
       convert_runes = 1.0;
 
     weapon = &( p -> main_hand_weapon );
@@ -2411,7 +2411,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-    if ( p -> primary_tree() == DEATH_KNIGHT_UNHOLY )
+    if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       convert_runes = 1.0;
     }
@@ -2453,7 +2453,7 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( t, impact_result, impact_dmg );
 
-    if ( ! sim -> overrides.physical_vulnerability && player -> primary_tree() == DEATH_KNIGHT_FROST &&
+    if ( ! sim -> overrides.physical_vulnerability && player -> specialization() == DEATH_KNIGHT_FROST &&
          result_is_hit( impact_result ) )
       t -> debuffs.physical_vulnerability -> trigger();
   }
@@ -2819,7 +2819,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
 
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-    if ( p -> primary_tree() == DEATH_KNIGHT_BLOOD )
+    if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
       convert_runes = 1.0;
 
     // These both stack additive with MOTFW
@@ -2912,8 +2912,8 @@ struct pestilence_t : public death_knight_spell_t
 
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
 
-    if ( p -> primary_tree() == DEATH_KNIGHT_FROST ||
-         p -> primary_tree() == DEATH_KNIGHT_UNHOLY )
+    if ( p -> specialization() == DEATH_KNIGHT_FROST ||
+         p -> specialization() == DEATH_KNIGHT_UNHOLY )
       convert_runes = 1.0;
 
     aoe = -1;
@@ -3185,7 +3185,7 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = cast();
 
-    p -> pets.ghoul -> summon( ( p -> primary_tree() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effect1().base_value() ) -> duration() );
+    p -> pets.ghoul -> summon( ( p -> specialization() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effect1().base_value() ) -> duration() );
   }
 
   virtual bool ready()
@@ -3646,7 +3646,7 @@ void death_knight_t::init()
 {
   player_t::init();
 
-  if ( ( primary_tree() == DEATH_KNIGHT_FROST ) )
+  if ( ( specialization() == DEATH_KNIGHT_FROST ) )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
@@ -3697,7 +3697,7 @@ void death_knight_t::init_base()
 
   initial.attack_power_per_strength = 2.0;
 
-  if ( primary_tree() == DEATH_KNIGHT_BLOOD )
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
     vengeance.enabled = true;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
@@ -3775,7 +3775,7 @@ void death_knight_t::init_actions()
   {
     clear_action_priority_lists();
 
-    int tree = primary_tree();
+    int tree = specialization();
 
     if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY || ( tree == DEATH_KNIGHT_BLOOD && primary_role() != ROLE_TANK ) )
     {
@@ -4302,7 +4302,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
 
 double death_knight_t::matching_gear_multiplier( attribute_e attr )
 {
-  int tree = primary_tree();
+  int tree = specialization();
 
   if ( tree == DEATH_KNIGHT_UNHOLY || tree == DEATH_KNIGHT_FROST )
     if ( attr == ATTR_STRENGTH )
@@ -4376,7 +4376,7 @@ role_e death_knight_t::primary_role()
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
 
-  if ( primary_tree() == DEATH_KNIGHT_BLOOD )
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
     return ROLE_TANK;
 
   return ROLE_ATTACK;
@@ -4629,8 +4629,8 @@ void death_knight_t::arise()
 {
   player_t::arise();
 
-  if ( primary_tree() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
-  if ( primary_tree() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_haste ) sim -> auras.attack_haste -> trigger();
 }
 
 // DEATH_KNIGHT MODULE INTERFACE ================================================

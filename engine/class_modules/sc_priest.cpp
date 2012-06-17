@@ -1468,7 +1468,7 @@ private:
 public:
   static void generate_shadow_orb( action_t* s, gain_t* g, unsigned number = 1 )
   {
-    if ( s -> player -> primary_tree() != PRIEST_SHADOW )
+    if ( s -> player -> specialization() != PRIEST_SHADOW )
       return;
 
     s -> player -> resource_gain( RESOURCE_SHADOW_ORB, number, g, s );
@@ -1510,7 +1510,7 @@ struct archangel_t : public priest_spell_t
 
     harmful           = false;
 
-    if ( p() -> primary_tree() == PRIEST_SHADOW )
+    if ( p() -> specialization() == PRIEST_SHADOW )
     {
       cooldown -> duration = p() -> buffs.dark_archangel -> buff_cooldown;
     }
@@ -1524,7 +1524,7 @@ struct archangel_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( p() -> primary_tree() == PRIEST_SHADOW )
+    if ( p() -> specialization() == PRIEST_SHADOW )
     {
       p() -> buffs.dark_archangel -> trigger( 1, p() -> buffs.dark_archangel -> default_value );
     }
@@ -4214,7 +4214,7 @@ role_e priest_t::primary_role()
   case ROLE_SPELL:
     return ROLE_SPELL;
   default:
-    if ( primary_tree() == PRIEST_DISCIPLINE || primary_tree() == PRIEST_HOLY )
+    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
       return ROLE_HEAL;
     break;
   }
@@ -4645,7 +4645,7 @@ void priest_t::init_buffs()
                                            .activated( false );
 
   // Shadow
-  const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( primary_tree() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
+  const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
   buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
                                            .chance( talents.divine_insight -> proc_chance() );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
@@ -4685,7 +4685,7 @@ void priest_t::add_action( const spell_data_t* s, std::string options, std::stri
 
 void priest_t::init_actions()
 {
-  if ( primary_tree() != PRIEST_DISCIPLINE && primary_tree() != PRIEST_SHADOW )
+  if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
@@ -4740,7 +4740,7 @@ void priest_t::init_actions()
 
     // ======================================================================
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
       // SHADOW =============================================================
     case PRIEST_SHADOW:
@@ -5167,7 +5167,7 @@ int priest_t::decode_set( item_t& item )
 
 std::string priest_t::set_default_talents()
 {
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case PRIEST_SHADOW: return "002030";
   default: break;
@@ -5178,7 +5178,7 @@ std::string priest_t::set_default_talents()
 
 std::string priest_t::set_default_glyphs()
 {
-  switch ( primary_tree() )
+  switch ( specialization() )
   {
   case PRIEST_SHADOW: if ( talent_list[ 2 * MAX_TALENT_COLS + 0 ] ) return "mind_spike"; break;
   case SPEC_NONE: break;

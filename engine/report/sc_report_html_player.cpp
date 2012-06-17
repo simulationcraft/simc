@@ -1957,10 +1957,10 @@ void print_html_player_description( FILE* file, sim_t* sim, player_t* p, int j, 
            util::inverse_tokenize( pt ).c_str()
          );
 
-  if ( p -> primary_tree() != SPEC_NONE )
+  if ( p -> specialization() != SPEC_NONE )
     fprintf( file,
              "\t\t\t\t\t<li><b>Spec:</b> %s</li>\n",
-             util::inverse_tokenize( util::specialization_string( p -> primary_tree() ) ).c_str() );
+             util::inverse_tokenize( util::specialization_string( p -> specialization() ) ).c_str() );
 
   fprintf( file,
            "\t\t\t\t\t<li><b>Level:</b> %d</li>\n"

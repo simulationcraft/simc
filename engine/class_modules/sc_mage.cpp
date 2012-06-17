@@ -292,7 +292,7 @@ struct mage_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -303,7 +303,7 @@ struct mage_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -619,13 +619,13 @@ struct mirror_image_pet_t : public pet_t
     {
       action_t* front=0;
 
-      if ( o() -> glyphs.mirror_image -> ok() && o() -> primary_tree() != MAGE_FROST )
+      if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
       {
         // Fire/Arcane Mages cast 9 Fireballs/Arcane Blasts
         num_rotations = 9;
         for ( int j = 0; j < num_rotations; j++ )
         {
-          if ( o() -> primary_tree() == MAGE_FIRE )
+          if ( o() -> specialization() == MAGE_FIRE )
           {
             front = new fireball_t ( this, front );
           }
@@ -744,7 +744,7 @@ static void trigger_hot_streak( mage_spell_t* s )
   if ( ! s -> may_hot_streak )
     return;
 
-  if ( p -> primary_tree() != MAGE_FIRE )
+  if ( p -> specialization() != MAGE_FIRE )
     return;
 
   int result = s -> result;
@@ -981,7 +981,7 @@ void mage_spell_t::execute()
     trigger_hot_streak( this );
   }
 
-  if ( p() -> primary_tree() == MAGE_ARCANE )
+  if ( p() -> specialization() == MAGE_ARCANE )
   {
     p() -> buffs.arcane_missiles -> trigger();
   }
@@ -1793,7 +1793,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( travel_result ) )
     {
-      if ( p() -> primary_tree() == MAGE_FROST )
+      if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
   }
@@ -1865,7 +1865,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
       trigger_ignite( this, travel_dmg );
 
-      if ( p() -> primary_tree() == MAGE_FROST )
+      if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
   }
@@ -2419,7 +2419,7 @@ struct scorch_t : public mage_spell_t
     if ( result_is_hit( impact_result ) )
     {
       trigger_ignite( this, travel_dmg );
-      if ( p() -> primary_tree() == MAGE_FROST )
+      if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent() );
     }
   }
@@ -3034,11 +3034,11 @@ void mage_t::init_actions()
     if ( level >= 58 ) action_list_str += "/arcane_brilliance,precombat=1,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
 
     // Armor
-    if ( primary_tree() == MAGE_ARCANE )
+    if ( specialization() == MAGE_ARCANE )
     {
       action_list_str += "/mage_armor,precombat=1";
     }
-    else if ( primary_tree() == MAGE_FIRE )
+    else if ( specialization() == MAGE_FIRE )
     {
       action_list_str += "/molten_armor,precombat=1,if=buff.mage_armor.down&buff.molten_armor.down";
       action_list_str += "/molten_armor,precombat=1,if=mana_pct>45&buff.mage_armor.up";
@@ -3049,7 +3049,7 @@ void mage_t::init_actions()
     }
 
     // Water Elemental
-    if ( primary_tree() == MAGE_FROST ) action_list_str += "/water_elemental,precombat=1";
+    if ( specialization() == MAGE_FROST ) action_list_str += "/water_elemental,precombat=1";
 
     // Snapshot Stats
     action_list_str += "/snapshot_stats,precombat=1";
@@ -3066,7 +3066,7 @@ void mage_t::init_actions()
     // Refresh Gem during invuln phases
     if ( level >= 48 ) action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
     // Arcane Choose Rotation
-    if ( primary_tree() == MAGE_ARCANE )
+    if ( specialization() == MAGE_ARCANE )
     {
       action_list_str += "/choose_rotation,cooldown=1,evocation_pct=35,if=cooldown.evocation.remains+15>target.time_to_die,final_burn_offset=15";
     }
@@ -3079,19 +3079,19 @@ void mage_t::init_actions()
         action_list_str += "/use_item,name=";
         action_list_str += items[ i ].name();
         //Special trinket handling for Arcane, previously only used for Shard of Woe but seems to be good for all useable trinkets
-        if ( primary_tree() == MAGE_ARCANE )
+        if ( specialization() == MAGE_ARCANE )
           action_list_str += ",if=cooldown.evocation.remains>90|target.time_to_die<=50";
       }
     }
     action_list_str += init_use_profession_actions();
     if ( level >= 80 )
     {
-      if ( primary_tree() == MAGE_FROST )
+      if ( specialization() == MAGE_FROST )
       {
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
       }
-      else if ( primary_tree() == MAGE_ARCANE )
+      else if ( specialization() == MAGE_ARCANE )
       {
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
         action_list_str += ",if=target.time_to_die<=50";
@@ -3103,22 +3103,22 @@ void mage_t::init_actions()
       }
     }
     // Race Abilities
-    if ( race == RACE_TROLL && primary_tree() == MAGE_FIRE )
+    if ( race == RACE_TROLL && specialization() == MAGE_FIRE )
     {
       action_list_str += "/berserking";
     }
-    else if ( race == RACE_BLOOD_ELF && primary_tree() != MAGE_ARCANE )
+    else if ( race == RACE_BLOOD_ELF && specialization() != MAGE_ARCANE )
     {
       action_list_str += "/arcane_torrent,if=mana_pct<91";
     }
-    else if ( race == RACE_ORC && primary_tree() != MAGE_ARCANE )
+    else if ( race == RACE_ORC && specialization() != MAGE_ARCANE )
     {
       action_list_str += "/blood_fury";
     }
 
     // Talents by Spec
     // Arcane
-    if ( primary_tree() == MAGE_ARCANE )
+    if ( specialization() == MAGE_ARCANE )
     {
       action_list_str += "/evocation,if=((max_mana>max_mana_nonproc&mana_pct_nonproc<=40)|(max_mana=max_mana_nonproc&mana_pct<=35))&target.time_to_die>10";
       if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
@@ -3197,7 +3197,7 @@ void mage_t::init_actions()
       action_list_str += "/ice_lance,moving=1"; // when moving
     }
     // Fire
-    else if ( primary_tree() == MAGE_FIRE )
+    else if ( specialization() == MAGE_FIRE )
     {
       action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( level >= 77 )
@@ -3212,7 +3212,7 @@ void mage_t::init_actions()
       action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
-    else if ( primary_tree() == MAGE_FROST )
+    else if ( specialization() == MAGE_FROST )
     {
       action_list_str += "/evocation,if=mana_pct<40&(buff.icy_veins.react|buff.bloodlust.react)";
       action_list_str += "/mana_gem,if=mana_deficit>12500";

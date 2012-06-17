@@ -295,7 +295,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   if ( p -> is_pet() )
     writer.print_attribute( "subtype", util::pet_type_string( p -> cast_pet() -> pet_type ) );
   writer.end_tag( "class" );
-  writer.print_tag( "specialization", util::specialization_string( p -> primary_tree() ) );
+  writer.print_tag( "specialization", util::specialization_string( p -> specialization() ) );
   writer.print_tag( "primary_role", util::role_type_string( p -> primary_role() ) );
   writer.print_tag( "position", p -> position_str );
   writer.begin_tag( "dps" );

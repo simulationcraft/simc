@@ -1420,9 +1420,9 @@ struct compare_name
     {
       return l -> type < r -> type;
     }
-    if ( l -> primary_tree() != r -> primary_tree() )
+    if ( l -> specialization() != r -> specialization() )
     {
-      return l -> primary_tree() < r -> primary_tree();
+      return l -> specialization() < r -> specialization();
     }
     return l -> name_str < r -> name_str;
   }

@@ -319,7 +319,7 @@ struct warlock_t : public player_t
   // Temporary
   virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "000010"; break;
     case WARLOCK_DEMONOLOGY:  return "300030"; break;
@@ -332,7 +332,7 @@ struct warlock_t : public player_t
 
   virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards/soul_swap";
     case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm";
@@ -495,7 +495,7 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
   {
     melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit( execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
@@ -536,7 +536,7 @@ struct warlock_pet_spell_t : public spell_t
   {
     spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> o() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( result_is_hit( execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
   }
 };
@@ -1233,7 +1233,7 @@ public:
   {
     spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> primary_tree() == WARLOCK_DEMONOLOGY
+    if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
 
@@ -1264,7 +1264,7 @@ public:
   {
     spell_t::tick( d );
 
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
@@ -1351,7 +1351,7 @@ public:
   {
     double m = spell_t::action_multiplier();
 
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && aoe == 0 )
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && aoe == 0 )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
@@ -2637,7 +2637,7 @@ struct fel_flame_t : public warlock_spell_t
   fel_flame_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Fel Flame" )
   {
-    if ( p -> primary_tree() == WARLOCK_DESTRUCTION )
+    if ( p -> specialization() == WARLOCK_DESTRUCTION )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     if ( ! dtr && p -> has_dtr )
@@ -2651,7 +2651,7 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( p() -> primary_tree() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 1, p() -> gains.fel_flame );
+    if ( p() -> specialization() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 1, p() -> gains.fel_flame );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2667,10 +2667,10 @@ struct fel_flame_t : public warlock_spell_t
 
     // Exclude demonology because it's already covered by warlock_spell_t::action_multiplier()
 
-    if ( p() -> primary_tree() == WARLOCK_AFFLICTION )
+    if ( p() -> specialization() == WARLOCK_AFFLICTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    if ( p() -> primary_tree() == WARLOCK_DESTRUCTION )
+    if ( p() -> specialization() == WARLOCK_DESTRUCTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
@@ -2835,7 +2835,7 @@ struct imp_swarm_t : public warlock_spell_t
   timespan_t base_cooldown;
 
   imp_swarm_t( warlock_t* p ) :
-    warlock_spell_t( "imp_swarm", p, ( p -> primary_tree() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
+    warlock_spell_t( "imp_swarm", p, ( p -> specialization() == WARLOCK_DEMONOLOGY && p -> glyphs.imp_swarm -> ok() ) ? p -> find_spell( 104316 ) : spell_data_t::not_found() )
   {
     harmful = false;
 
@@ -3026,7 +3026,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   const spell_data_t& parent_data;
 
   rain_of_fire_tick_t( warlock_t* p, const spell_data_t& pd ) :
-    warlock_spell_t( "rain_of_fire_tick", p, ( p -> primary_tree() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104233 ) : p -> find_spell( 42223 ) ), parent_data( pd )
+    warlock_spell_t( "rain_of_fire_tick", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104233 ) : p -> find_spell( 42223 ) ), parent_data( pd )
   {
     background  = true;
     aoe         = -1;
@@ -3059,7 +3059,7 @@ struct rain_of_fire_t : public warlock_spell_t
   rain_of_fire_tick_t* rain_of_fire_tick;
 
   rain_of_fire_t( warlock_t* p ) :
-    warlock_spell_t( "rain_of_fire", p, ( p -> primary_tree() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : p -> find_spell( 5740 ) ),
+    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : p -> find_spell( 5740 ) ),
     rain_of_fire_tick( 0 )
   {
     dot_behavior = DOT_CLIP;
@@ -3407,7 +3407,7 @@ struct summon_main_pet_t : public summon_pet_t
 
     // FIXME: Currently on beta (2012/05/06) summoning a pet during metamorphosis makes you unable
     //        to summon another one for a full minute, regardless of meta. This may not be intended.
-    if ( ( p() -> buffs.soulburn -> check() || p() -> primary_tree() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> remains() > timespan_t::zero() )
+    if ( ( p() -> buffs.soulburn -> check() || p() -> specialization() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> remains() > timespan_t::zero() )
       return false;
 
     return summon_pet_t::ready();
@@ -3544,7 +3544,7 @@ struct summon_infernal_t : public summon_pet_t
 
     summoning_duration = timespan_t::from_seconds( 60 );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
-                          ( p -> primary_tree() == WARLOCK_DEMONOLOGY ?
+                          ( p -> specialization() == WARLOCK_DEMONOLOGY ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
 
@@ -3575,7 +3575,7 @@ struct summon_doomguard2_t : public summon_pet_t
     proc       = true;
     summoning_duration = timespan_t::from_seconds( 60 );
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
-                          ( p -> primary_tree() == WARLOCK_DEMONOLOGY ?
+                          ( p -> specialization() == WARLOCK_DEMONOLOGY ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
   }
@@ -3667,7 +3667,7 @@ struct harvest_life_tick_t : public warlock_spell_t
 
     heal -> perform( main_target == target );
 
-    if ( p() -> primary_tree() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain_fury ); // FIXME: This may be a bug, retest later
   }
 };
@@ -3874,7 +3874,7 @@ double warlock_t::composite_spell_crit()
 {
   double sc = player_t::composite_spell_crit();
 
-  if ( primary_tree() == WARLOCK_DESTRUCTION )
+  if ( specialization() == WARLOCK_DESTRUCTION )
   {
     if ( buffs.dark_soul -> up() )
       sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
@@ -3890,7 +3890,7 @@ double warlock_t::composite_spell_haste()
 {
   double h = player_t::composite_spell_haste();
 
-  if ( primary_tree() == WARLOCK_AFFLICTION )
+  if ( specialization() == WARLOCK_AFFLICTION )
   {
     if ( buffs.dark_soul -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) );
@@ -3906,7 +3906,7 @@ double warlock_t::composite_mastery()
 {
   double m = player_t::composite_mastery();
 
-  if ( primary_tree() == WARLOCK_DEMONOLOGY )
+  if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     if ( buffs.dark_soul -> up() )
       m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / rating.mastery;
@@ -4104,7 +4104,7 @@ void warlock_t::create_pets()
   create_pet( "infernal"  );
   create_pet( "doomguard" );
 
-  if ( primary_tree() == WARLOCK_DEMONOLOGY )
+  if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     create_pet( "felguard" );
 
@@ -4230,9 +4230,9 @@ void warlock_t::init_base()
 
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
-  if ( primary_tree() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
-  if ( primary_tree() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
-  if ( primary_tree() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30 + ( ( glyphs.burning_embers -> ok() ) ? 10 : 0 );
+  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
+  if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
+  if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30 + ( ( glyphs.burning_embers -> ok() ) ? 10 : 0 );
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -4342,7 +4342,7 @@ void warlock_t::add_action( const spell_data_t* s, std::string options, std::str
 void warlock_t::init_actions()
 {
   // FIXME!!! This is required in order to support target_haunt_remains in conjunction with cycle_targets
-  if ( primary_tree() == WARLOCK_AFFLICTION )
+  if ( specialization() == WARLOCK_AFFLICTION )
   {
     for ( size_t i=0; i < sim -> actor_list.size(); i++ )
     {
@@ -4375,7 +4375,7 @@ void warlock_t::init_actions()
 
     std::string pet;
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case WARLOCK_DEMONOLOGY:
       pet = "felguard";
@@ -4418,7 +4418,7 @@ void warlock_t::init_actions()
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 
-    if ( primary_tree() == WARLOCK_DEMONOLOGY )
+    if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
         action_list_str += "/touch_of_chaos";
@@ -4431,7 +4431,7 @@ void warlock_t::init_actions()
 
     int multidot_max = 3;
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  multidot_max = 3; break;
     case WARLOCK_DESTRUCTION: multidot_max = 2; break;
@@ -4441,7 +4441,7 @@ void warlock_t::init_actions()
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
 
-    if ( primary_tree() == WARLOCK_DEMONOLOGY )
+    if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       add_action( talents.grimoire_of_sacrifice );
       action_list_str += "/felguard:felstorm";
@@ -4453,7 +4453,7 @@ void warlock_t::init_actions()
     add_action( "Summon Doomguard", "if=num_targets<7", "aoe" );
     add_action( "Summon Infernal", "if=num_targets>=7", "aoe" );
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
 
     case WARLOCK_AFFLICTION:

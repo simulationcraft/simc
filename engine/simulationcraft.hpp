@@ -3089,7 +3089,7 @@ struct player_t : public noncopyable
   int               level;
   int               party, member;
   ready_e      ready_type;
-  specialization_e  spec;
+  specialization_e  _spec;
   bool              bugs, scale_player, has_dtr;
   double      dtr_proc_chance;
 
@@ -3663,7 +3663,7 @@ struct player_t : public noncopyable
   void collect_resource_timeline_information();
   virtual resource_e primary_resource() { return RESOURCE_NONE; }
   virtual role_e   primary_role();
-  specialization_e primary_tree() { return spec; }
+  specialization_e specialization() const { return _spec; }
   virtual const char* primary_tree_name();
   virtual stat_e normalize_by();
 
@@ -3855,7 +3855,6 @@ public:
   virtual double composite_attribute( attribute_e attr );
 
   virtual void init_base();
-  virtual void init_talents();
   virtual void init_target();
   virtual void reset();
   virtual void summon( timespan_t duration=timespan_t::zero() );

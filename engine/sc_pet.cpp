@@ -91,10 +91,6 @@ void pet_t::init_target()
     target = owner -> target;
 }
 
-void pet_t::init_talents()
-{
-  spec = primary_tree();
-}
 // pet_t::reset =============================================================
 
 void pet_t::reset()
