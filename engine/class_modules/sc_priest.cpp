@@ -3164,6 +3164,15 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 
   }
 };
+
+struct cascade_heal_t : public cascade_base_t<priest_heal_t>
+{
+  cascade_heal_t( priest_t* p, const std::string& options_str ) :
+    base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) )
+  {
+
+  }
+};
 } // NAMESPACE spells
 
 // ==========================================================================
@@ -4317,7 +4326,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t   ( this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
-  if ( name == "cascade"                ) return new cascade_damage_t        ( this, options_str );
+  if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -4335,6 +4344,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
   if ( name == "spirit_shell"           ) return new spirit_shell_absorb_t   ( this, options_str );
+  if ( name == "cascade_heal"           ) return new cascade_heal_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
