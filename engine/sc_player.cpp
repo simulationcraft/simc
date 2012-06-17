@@ -2517,7 +2517,7 @@ double player_t::composite_spell_hit()
 
 double player_t::composite_mp5()
 {
-  return current.mp5 + spirit() * current.mp5_per_spirit * current.mp5_from_spirit_multiplier;
+  return current.mp5 + spirit() * current.mp5_per_spirit * 5.0 * current.mp5_from_spirit_multiplier;
 }
 
 double player_t::composite_mastery()

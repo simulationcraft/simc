@@ -123,6 +123,8 @@ struct priest_t : public player_t
     const spell_data_t* evangelism;
     const spell_data_t* train_of_thought;
     const spell_data_t* divine_fury;
+    const spell_data_t* rapture;
+    const spell_data_t* mysticism;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -156,6 +158,7 @@ struct priest_t : public player_t
     cooldown_t* chakra;
     cooldown_t* inner_focus;
     cooldown_t* penance;
+    cooldown_t* rapture;
   } cooldowns;
 
   // Gains
@@ -171,6 +174,7 @@ struct priest_t : public player_t
     gain_t* devouring_plague_health;
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
+    gain_t* rapture;
   } gains;
 
   // Benefits
@@ -287,6 +291,7 @@ struct priest_t : public player_t
     cooldowns.chakra                     = get_cooldown( "chakra"   );
     cooldowns.inner_focus                = get_cooldown( "inner_focus" );
     cooldowns.penance                    = get_cooldown( "penance" );
+    cooldowns.rapture                    = get_cooldown( "rapture" );
 
     create_options();
   }
@@ -319,6 +324,7 @@ struct priest_t : public player_t
   virtual double    composite_spell_hit();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_movement_speed();
+  virtual double    composite_attribute_multiplier( attribute_e attr );
 
   virtual double    matching_gear_multiplier( attribute_e attr );
 
@@ -3852,6 +3858,9 @@ struct power_word_shield_t : public priest_absorb_t
     };
     parse_options( options, options_str );
 
+    if ( p -> specs.rapture -> ok() )
+      cooldown -> duration = timespan_t::zero();
+
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
     direct_power_mod = 1.8709; // matches in-game actual value
@@ -3877,6 +3886,13 @@ struct power_word_shield_t : public priest_absorb_t
   {
 
     s -> target -> buffs.weakened_soul -> trigger();
+
+    // Rapture
+    if ( p() -> cooldowns.rapture -> remains() == timespan_t::zero() && p() -> specs.rapture -> ok() )
+    {
+      player -> resource_gain( RESOURCE_MANA, player -> spirit() * p() -> specs.rapture -> effectN( 1 ).percent(), p() -> gains.rapture );
+      p() -> cooldowns.rapture -> start();
+    }
 
     // Glyph
     if ( glyph_pws )
@@ -4278,6 +4294,18 @@ double priest_t::composite_movement_speed()
   return speed;
 }
 
+// priest_t::composite_attribute_multiplier =================================
+
+double priest_t::composite_attribute_multiplier( attribute_e attr )
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_INTELLECT )
+    m *= 1.0 + specs.mysticism -> effectN( 1 ).percent();
+
+  return m;
+}
+
 // priest_t::matching_gear_multiplier =======================================
 
 double priest_t::matching_gear_multiplier( attribute_e attr )
@@ -4408,6 +4436,7 @@ void priest_t::init_gains()
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
+  gains.rapture                       = get_gain( "Rapture" );
 }
 
 // priest_t::init_procs. =====================================================
@@ -4501,6 +4530,8 @@ void priest_t::init_spells()
   specs.evangelism                     = find_specialization_spell( "Evangelism" );
   specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
   specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
+  specs.rapture                        = find_specialization_spell( "Rapture" );
+  specs.mysticism                      = find_specialization_spell( "Mysticism" );
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
@@ -4646,7 +4677,7 @@ void priest_t::add_action( const spell_data_t* s, std::string options, std::stri
 
 void priest_t::init_actions()
 {
-  if ( primary_role() != ROLE_SPELL || primary_tree() != PRIEST_SHADOW )
+  if ( primary_tree() != PRIEST_DISCIPLINE && primary_tree() != PRIEST_SHADOW )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
@@ -4778,13 +4809,15 @@ void priest_t::init_actions()
           action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
         if ( race == RACE_BLOOD_ELF )
-          action_list_str += "/arcane_torrent,if=mana_pct<=90";
-        if ( level >= 66 )
-          action_list_str += "/shadowfiend,if=mana_pct<=60";
+          action_list_str += "/arcane_torrent,if=mana.pct<=90";
+        if ( find_talent_spell( "Mindbender" ) -> ok() )
+          action_list_str += "/mindbender,if=cooldown_react";
+        else if ( find_class_spell( "Shadowfiend" ) -> ok() )
+          action_list_str += "/shadowfiend,if=cooldown_react";
         if ( level >= 64 )
           action_list_str += "/hymn_of_hope";
         if ( level >= 66 )
-          action_list_str += ",if=pet.shadowfiend.active&mana_pct<=20";
+          action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
         if ( race == RACE_TROLL )
           action_list_str += "/berserking";
         action_list_str += "/power_infusion";
@@ -4804,11 +4837,11 @@ void priest_t::init_actions()
       else
       {
         // DEFAULT
-        action_list_str += "/mana_potion,if=mana_pct<=75";
+        action_list_str += "/mana_potion,if=mana.pct<=75";
         if ( race == RACE_BLOOD_ELF )
-          action_list_str  += "/arcane_torrent,if=mana_pct<=90";
+          action_list_str  += "/arcane_torrent,if=mana.pct<=90";
         if ( level >= 66 )
-          action_list_str += "/shadowfiend,if=mana_pct<=20";
+          action_list_str += "/shadowfiend,if=mana.pct<=20";
         if ( level >= 64 )
           action_list_str += "/hymn_of_hope";
         if ( level >= 66 )
@@ -4829,7 +4862,8 @@ void priest_t::init_actions()
           action_list_str += "buff.holy_evangelism.stack<5&buff.holy_archangel.down";
         }
         action_list_str += "/penance_heal";
-        action_list_str += "/greater_heal";
+        //action_list_str += "/greater_heal";
+        action_list_str += "/heal";
         // DEFAULT END
 
 /*
@@ -4926,8 +4960,10 @@ void priest_t::init_values()
 
   // Discipline/Holy
   constants.meditation_value                = specs.meditation_disc -> ok() ?
-                                              specs.meditation_disc -> effectN( 1 ).base_value() :
-                                              specs.meditation_holy -> effectN( 1 ).base_value();
+                                              specs.meditation_disc -> effectN( 1 ).percent() :
+                                              specs.meditation_holy -> effectN( 1 ).percent();
+
+  initial.mp5_from_spirit_multiplier = constants.meditation_value;
 
   // Shadow
   if ( set_bonus.pvp_2pc_caster() )
