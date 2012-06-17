@@ -3050,8 +3050,13 @@ struct smite_t : public priest_spell_t
 // Cascade Spell
 
 // Assumptions: Target list is created on execute() and will not change dynamically during the jump process
-struct cascade_t : public priest_spell_t
+
+template <class Base>
+struct cascade_base_t : public Base
 {
+  typedef Base action_base_t; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+  typedef cascade_base_t base_t; // typedef for cascade_base_t<action_base_t>
+
   struct cascade_state_t : action_state_t
   {
     int jump_counter;
@@ -3063,19 +3068,19 @@ struct cascade_t : public priest_spell_t
   std::vector<player_t*> targets;
   const spell_data_t* talent_data;
 
-  cascade_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "cascade", p, p -> find_spell( 120785 ) )
+  cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s ) :
+    action_base_t( n, p, s )
   {
     talent_data = p -> find_talent_spell( "Cascade" );
 
-    parse_options( NULL, options_str );
+    action_base_t::parse_options( NULL, options_str );
 
-    cooldown -> duration = timespan_t::from_seconds( 50.0 );
+    action_base_t::cooldown -> duration = timespan_t::from_seconds( 50.0 );
   }
 
   virtual action_state_t* new_state()
   {
-    return new cascade_state_t( this, target );
+    return new cascade_state_t( this, action_base_t::target );
   }
 
   player_t* get_next_player()
@@ -3102,15 +3107,15 @@ struct cascade_t : public priest_spell_t
 
 
     // For now only use enemy targets
-    for ( player_t* t = sim -> target_list; t; t = t -> next )
-    { if ( t != target ) targets.push_back( t ); }
+    for ( player_t* t = action_base_t::sim -> target_list; t; t = t -> next )
+    { if ( t != action_base_t::target ) targets.push_back( t ); }
 
-    priest_spell_t::execute();
+    action_base_t::execute();
   }
 
   virtual void impact_s( action_state_t* q )
   {
-    priest_spell_t::impact_s( q );
+    action_base_t::impact_s( q );
 
     cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
 
@@ -3122,22 +3127,22 @@ struct cascade_t : public priest_spell_t
 
         if ( t )
         {
-          if ( sim -> debug )
-            sim -> output( "%s action %s jumps to player %s",
-                           player -> name(), name(), t -> name() );
+          if ( action_base_t::sim -> debug )
+            action_base_t::sim -> output( "%s action %s jumps to player %s",
+                action_base_t::player -> name(), action_base_t::name(), t -> name() );
 
 
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
-          cascade_state_t* s = debug_cast<cascade_state_t*>( get_state() );
+          cascade_state_t* s = debug_cast<cascade_state_t*>( action_base_t::get_state() );
           s -> target = t;
           s -> jump_counter = cs -> jump_counter + 1;
-          snapshot_state( s, snapshot_flags );
+          snapshot_state( s, action_base_t::snapshot_flags );
           s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
           if ( result_is_hit( s -> result ) )
             s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
-          if ( sim -> debug )
+          if ( action_base_t::sim -> debug )
             s -> debug();
 
           schedule_travel_s( s );
@@ -3149,7 +3154,15 @@ struct cascade_t : public priest_spell_t
       cs -> jump_counter = 0;
     }
   }
+};
 
+struct cascade_damage_t : public cascade_base_t<priest_spell_t>
+{
+  cascade_damage_t( priest_t* p, const std::string& options_str ) :
+    base_t( "cascade_damage", p, options_str, p -> find_spell( 120785 ) )
+  {
+
+  }
 };
 } // NAMESPACE spells
 
@@ -4304,7 +4317,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t   ( this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
-  if ( name == "cascade"                ) return new cascade_t               ( this, options_str );
+  if ( name == "cascade"                ) return new cascade_damage_t        ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
