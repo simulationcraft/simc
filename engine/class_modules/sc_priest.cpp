@@ -3071,17 +3071,17 @@ struct cascade_base_t : public Base
     { }
   };
 
-  std::vector<player_t*> targets;
-  const spell_data_t* talent_data;
+  std::vector<player_t*> targets; // List of available targets to jump to, create once at execute() and static during the jump process
+  const spell_data_t* scaling_data;
 
   cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s ) :
-    action_base_t( n, p, s )
+    action_base_t( n, p, p -> find_talent_spell( "Cascade" ) ),
+    scaling_data( s )
   {
-    talent_data = p -> find_talent_spell( "Cascade" );
-
     action_base_t::parse_options( NULL, options_str );
 
-    action_base_t::cooldown -> duration = timespan_t::from_seconds( 50.0 );
+    action_base_t::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    action_base_t::travel_speed = scaling_data -> missile_speed();
   }
 
   virtual action_state_t* new_state()
@@ -3125,9 +3125,12 @@ struct cascade_base_t : public Base
 
     cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
 
-    if ( cs -> jump_counter < 3 /* talent_data->effectN( 1 ).base_value() */ )
+    assert( action_base_t::data().effectN( 1 ).base_value() < 5 ); // Safety limit
+    assert( action_base_t::data().effectN( 2 ).base_value() < 5 ); // Safety limit
+
+    if ( cs -> jump_counter < action_base_t::data().effectN( 1 ).base_value() )
     {
-      for ( unsigned i = 0; i < 2; ++i )
+      for ( int i = 0; i < action_base_t::data().effectN( 2 ).base_value(); ++i )
       {
         player_t* t = get_next_player();
 
