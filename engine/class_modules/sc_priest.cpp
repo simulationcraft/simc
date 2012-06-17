@@ -3047,7 +3047,9 @@ struct smite_t : public priest_spell_t
   }
 };
 
+// Cascade Spell
 
+// Assumptions: Target list is created on execute() and will not change dynamically during the jump process
 struct cascade_t : public priest_spell_t
 {
   struct cascade_state_t : action_state_t
@@ -3058,7 +3060,7 @@ struct cascade_t : public priest_spell_t
     { }
   };
 
-  std::list<player_t*> player_blacklist;
+  std::vector<player_t*> targets;
   const spell_data_t* talent_data;
 
   cascade_t( priest_t* p, const std::string& options_str ) :
@@ -3076,10 +3078,34 @@ struct cascade_t : public priest_spell_t
     return new cascade_state_t( this, target );
   }
 
-  player_t* find_next_player()
+  player_t* get_next_player()
   {
-    // TODO: track players in the blacklist, and implement find-mechanism.
-    return target;
+    player_t* t = NULL;
+
+    // Get target at first position
+    if ( targets.size() >= 1 )
+    {
+      t = *targets.begin();
+      targets.erase( targets.begin() );
+    }
+
+    return t;
+  }
+
+  virtual void execute()
+  {
+    // Clear and create targets list
+    targets.clear();
+
+    //for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
+    //{ player_t* t = sim -> actor_list[ i ]; if ( t != target ) targets.push_back( t ); }
+
+
+    // For now only use enemy targets
+    for ( player_t* t = sim -> target_list; t; t = t -> next )
+    { if ( t != target ) targets.push_back( t ); }
+
+    priest_spell_t::execute();
   }
 
   virtual void impact_s( action_state_t* q )
@@ -3088,14 +3114,19 @@ struct cascade_t : public priest_spell_t
 
     cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
 
-    if ( cs -> jump_counter < 3 /*talent_data->effectN( 1 ).base_value() */)
+    if ( cs -> jump_counter < 3 /* talent_data->effectN( 1 ).base_value() */ )
     {
       for ( unsigned i = 0; i < 2; ++i )
       {
-        player_t* t = find_next_player();
+        player_t* t = get_next_player();
 
         if ( t )
         {
+          if ( sim -> debug )
+            sim -> output( "%s action %s jumps to player %s",
+                           player -> name(), name(), t -> name() );
+
+
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
           cascade_state_t* s = debug_cast<cascade_state_t*>( get_state() );
           s -> target = t;
@@ -3114,7 +3145,9 @@ struct cascade_t : public priest_spell_t
       }
     }
     else
+    {
       cs -> jump_counter = 0;
+    }
   }
 
 };
