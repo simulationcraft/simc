@@ -3055,8 +3055,6 @@ struct smite_t : public priest_spell_t
 
 // Cascade Spell
 
-// Assumptions: Target list is created on execute() and will not change dynamically during the jump process
-
 template <class Base>
 struct cascade_base_t : public Base
 {
@@ -3071,8 +3069,8 @@ struct cascade_base_t : public Base
     { }
   };
 
-  std::vector<player_t*> targets; // List of available targets to jump to, create once at execute() and static during the jump process
-  const spell_data_t* scaling_data;
+  std::vector<player_t*> targets; // List of available targets to jump to, created once at execute() and static during the jump process.
+  const spell_data_t* scaling_data; // Scaling Spell, contains damage or heal data and travel speed.
 
   cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s ) :
     action_base_t( n, p, p -> find_talent_spell( "Cascade" ) ),
@@ -3103,18 +3101,13 @@ struct cascade_base_t : public Base
     return t;
   }
 
+  virtual void populate_target_list() = 0;
+
   virtual void execute()
   {
-    // Clear and create targets list
+    // Clear and populate targets list
     targets.clear();
-
-    //for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
-    //{ player_t* t = sim -> actor_list[ i ]; if ( t != target ) targets.push_back( t ); }
-
-
-    // For now only use enemy targets
-    for ( player_t* t = action_base_t::sim -> target_list; t; t = t -> next )
-    { if ( t != action_base_t::target ) targets.push_back( t ); }
+    populate_target_list();
 
     action_base_t::execute();
   }
@@ -3172,6 +3165,12 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
   {
 
   }
+
+  virtual void populate_target_list()
+  {
+    for ( player_t* t = action_base_t::sim -> target_list; t; t = t -> next )
+    { if ( t != action_base_t::target ) targets.push_back( t ); }
+  }
 };
 
 struct cascade_heal_t : public cascade_base_t<priest_heal_t>
@@ -3180,6 +3179,12 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
     base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) )
   {
 
+  }
+
+  virtual void populate_target_list()
+  {
+    for ( player_t* t = action_base_t::sim -> player_list; t; t = t -> next )
+    { if ( t != action_base_t::target ) targets.push_back( t ); }
   }
 };
 } // NAMESPACE spells
