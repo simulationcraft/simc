@@ -24,7 +24,7 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct monk_t;
 
-enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_HEAL=4 };
+enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
 
 struct monk_td_t : public actor_pair_t
 {
@@ -221,7 +221,7 @@ struct monk_action_t : public Base
   monk_action_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s ),
-    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_HEAL )
+    stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
   {
     action_base_t::may_crit   = true;
     action_base_t::stateless  = true;
@@ -326,9 +326,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     return total_dmg;
   }
-
-
-
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -365,25 +362,27 @@ struct jab_t : public monk_melee_attack_t
     base_multiplier = 2.52; // hardcoded into tooltip
   }
 
+  virtual resource_e current_resource()
+  {
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+      return RESOURCE_ENERGY;
+    else if ( p() -> active_stance == STANCE_WISE_SERPENT )
+      return RESOURCE_MANA;
+
+    return resource_current;
+  }
 
   virtual void execute()
   {
-
     monk_melee_attack_t::execute();
 
+    double chi_gain = data().effectN( 2 ).base_value();
+
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
-    {
-      // Todo: Add stance buffs and use spell data for the +1 number from fierce_tiger.
-      player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() + 1 , p() -> gain.chi );
-    }
-    else
-    {
-      player -> resource_gain( RESOURCE_CHI,  data().effectN( 2 ).base_value() , p() -> gain.chi );
-    }
+      chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
 
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
-
-
 };
 //=============================
 //====Tiger Palm===============
@@ -672,7 +671,7 @@ struct stance_t : public monk_spell_t
       else if ( stance_str == "fierce_tiger" )
         switch_to_stance = STANCE_FIERCE_TIGER;
       else if ( stance_str == "heal" )
-        switch_to_stance = STANCE_HEAL;
+        switch_to_stance = STANCE_WISE_SERPENT;
     }
 
     harmful = false;
@@ -684,6 +683,21 @@ struct stance_t : public monk_spell_t
   {
     monk_spell_t::execute();
     p() -> active_stance = switch_to_stance;
+
+    //TODO: Add stances once implemented
+    if ( switch_to_stance == STANCE_FIERCE_TIGER )
+    {
+      p() -> buff.tiger_stance -> trigger();
+      // cancel other stances
+    }
+    else if ( switch_to_stance == STANCE_DRUNKEN_OX )
+    {
+      p() -> buff.tiger_stance -> expire();
+    }
+    else if ( switch_to_stance == STANCE_WISE_SERPENT )
+    {
+      p() -> buff.tiger_stance -> expire();
+    }
   }
 
   virtual bool ready()
@@ -706,7 +720,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   debuff( debuffs_t() )
 {
   debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
-  debuff.tiger_palm = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
+  debuff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
 }
 // monk_t::create_action ====================================================
 
@@ -792,6 +806,7 @@ void monk_t::init_scaling()
 void monk_t::init_buffs()
 {
   player_t::init_buffs();
+
   buff.tiger_stance = buff_creator_t( this, "tiger_stance" ).spell( find_spell(103985) );
 }
 
@@ -934,10 +949,9 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
   double m = player_t::composite_player_multiplier( school, a );
 
   if ( active_stance == STANCE_FIERCE_TIGER )
-     {
-
-        m *= 1.0 + buff.tiger_stance -> data().effectN( 3 ).percent();
-     }
+  {
+    m *= 1.0 + buff.tiger_stance -> data().effectN( 3 ).percent();
+  }
 
   return m;
 }

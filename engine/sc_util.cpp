@@ -571,7 +571,6 @@ const char* util::resource_type_string( resource_e resource_type )
   case RESOURCE_MANA:          return "mana";
   case RESOURCE_RAGE:          return "rage";
   case RESOURCE_ENERGY:        return "energy";
-  case RESOURCE_MONK_ENERGY:   return "energy";
   case RESOURCE_FOCUS:         return "focus";
   case RESOURCE_RUNIC_POWER:   return "runic_power";
   case RESOURCE_RUNE:          return "rune";
@@ -912,7 +911,7 @@ resource_e util::translate_power_type( power_e pt )
   case POWER_RAGE:          return RESOURCE_RAGE;
   case POWER_FOCUS:         return RESOURCE_FOCUS;
   case POWER_ENERGY:        return RESOURCE_ENERGY;
-  case POWER_MONK_ENERGY:   return RESOURCE_MONK_ENERGY;
+  case POWER_MONK_ENERGY:   return RESOURCE_ENERGY;
   case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
   case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
   case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;

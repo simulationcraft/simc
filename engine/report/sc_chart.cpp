@@ -2179,7 +2179,6 @@ std::string chart::resource_color( int type )
   case RESOURCE_MANA:          return class_color( SHAMAN );
 
   case RESOURCE_ENERGY:
-  case RESOURCE_MONK_ENERGY:
   case RESOURCE_FOCUS:         return class_text_color( ROGUE );
 
   case RESOURCE_RAGE:
