@@ -52,8 +52,8 @@ struct monk_t : public player_t
         //  buff_t* fortifying_brew;
         //  buff_t* zen_meditation;
         //  buff_t* path_of_blossoms;
-    buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
-        //  buff_t* tigereye_brew_use; // will need to check if needed.
+    buff_t* tigereye_brew;
+    buff_t* tigereye_brew_use;
         //  buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
@@ -357,6 +357,25 @@ struct monk_spell_t : public monk_action_t<spell_t>
   }
 };
 
+
+struct tigereye_brew_use_t : public monk_spell_t
+{
+  tigereye_brew_use_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "tigereye_brew_use", player, player -> find_spell( 116740 ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful           = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+    p() -> buff.tigereye_brew -> expire();
+    p() -> buff.tigereye_brew_use -> trigger();
+  }
+};
+
 struct monk_heal_t : public monk_action_t<heal_t>
 {
   monk_heal_t( const std::string& n, monk_t* player,
@@ -404,10 +423,6 @@ struct jab_t : public monk_melee_attack_t
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
-    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
-      sim -> output( "Player gains 2 chi" );// This could be a little more elegant, but serves it purpose.
-    else
-    sim -> output( "Player gains 1 chi" );
   }
 };
 //=============================
@@ -599,7 +614,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
     double chi_gain = data().effectN( 2 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
-    sim -> output( "Player gains 1 chi" ); // This could be a little more elegant, but serves it purpose.
   }
 };
 //=============================
@@ -838,6 +852,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "fists_of_fury"       ) return new       fists_of_fury_t( this, options_str );
   if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
+  if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -913,6 +928,7 @@ void monk_t::init_buffs()
 
   buff.tiger_stance  = buff_creator_t( this, "tiger_stance"  ).spell( find_spell( 103985 ) );
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew" ).spell( find_spell( 125195 ) );
+  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use" ).spell( find_spell( 116740 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -985,6 +1001,7 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.stack=10";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/fists_of_fury";
       action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3&cooldown.fists_of_fury.remains";
