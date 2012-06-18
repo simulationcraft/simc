@@ -5,7 +5,7 @@
 //
 //  TODO:
 //
-//
+//  Finish implementing tiger strikes
 //  !!! test spinning crane kick and fists of fury dots
 //  Add all damaging abilities
 //  Ensure values are correct
@@ -54,7 +54,7 @@ struct monk_t : public player_t
         //  buff_t* path_of_blossoms;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
-        //  buff_t* tiger_strikes;
+    buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
@@ -79,7 +79,7 @@ struct monk_t : public player_t
   // Random Number Generation
    struct rngs_t
    {
-
+     rng_t* tiger_strikes;
    } rng;
 
   // Talents
@@ -149,6 +149,7 @@ struct monk_t : public player_t
     buff( buffs_t() ),
     gain( gains_t() ),
     proc( procs_t() ),
+    rng( rngs_t() ),
     talent( talents_t() ),
     spec( specs_t() ),
     glyph( glyphs_t() ),
@@ -362,6 +363,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     return total_dmg;
   }
+
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -372,7 +374,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
   }
 };
-
 
 struct tigereye_brew_use_t : public monk_spell_t
 {
@@ -387,10 +388,11 @@ struct tigereye_brew_use_t : public monk_spell_t
   virtual void execute()
   {
     monk_spell_t::execute();
+    p() -> buff.tigereye_brew_use -> trigger( 1, p() -> buff.tigereye_brew_use -> default_value * p() -> buff.tigereye_brew -> stack() );
     p() -> buff.tigereye_brew -> expire();
-    p() -> buff.tigereye_brew_use -> trigger();
   }
 };
+
 
 struct monk_heal_t : public monk_action_t<heal_t>
 {
@@ -697,7 +699,6 @@ struct melee_t : public monk_melee_attack_t
     may_glance  = true;
     if ( player -> dual_wield() )
       base_hit -= 0.19;
-    //hardcode multiplier for Way of the Monk
       base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN(2).percent();
   }
 
@@ -722,11 +723,21 @@ struct melee_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::execute();
     }
-  }
 
+  }
+  virtual void impact_s( action_state_t* s )
+    {
+      monk_melee_attack_t::impact_s( s );
+      if ( result_is_hit( s -> result )
+           && p() -> rng.tiger_strikes -> roll( .1 ) )
+           p() -> buff.tiger_strikes -> trigger( 4 );
+    }
 };
 
-struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
+
+
+
+struct auto_attack_t : public monk_melee_attack_t
 {
   int sync_weapons;
 
@@ -749,9 +760,9 @@ struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
     if ( player -> off_hand_weapon.type != WEAPON_NONE)
     {
       if ( ! player -> dual_wield() ) return;
-      player -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
-      player -> off_hand_attack -> weapon = &( player -> off_hand_weapon );
-      player -> off_hand_attack -> base_execute_time = player -> off_hand_weapon.swing_time;
+      p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
+      p() -> off_hand_attack -> weapon = &( player -> off_hand_weapon );
+      p() -> off_hand_attack -> base_execute_time = player -> off_hand_weapon.swing_time;
     }
 
     trigger_gcd = timespan_t::zero();
@@ -759,17 +770,22 @@ struct auto_attack_t : public monk_melee_attack_t //used shaman as reference
 
   virtual void execute()
   {
-    player -> main_hand_attack -> schedule_execute();
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> schedule_execute();
+      p() -> main_hand_attack -> schedule_execute();
+    if ( player -> off_hand_attack ){
+      p() -> off_hand_attack -> schedule_execute();
+  }
   }
 
   virtual bool ready()
   {
-    if ( player -> is_moving() ) return false;
-    return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    if ( p() -> is_moving() ) return false;
+    return ( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
+
+
 };
+
+
 
 
 // Stance ===================================================================
@@ -875,12 +891,14 @@ void monk_t::init_spells()
   //TALENTS
   talent.ascension = find_talent_spell( "Ascension" );
 
-
   //PASSIVE/SPECIALIZATION
-  spec.way_of_the_monk = find_spell( 108977 );
-  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  spec.way_of_the_monk        = find_spell( 108977 );
+ // spec.leather_specialization = find_specialization_spell( "Leather Specialization" ); TODO: implement for hybrid and remove hardcoding
 
-  // Add Spells & Glyphs
+  //SPELLS
+
+  //GLYPHS
+
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -939,6 +957,7 @@ void monk_t::init_buffs()
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"    ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"     ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use" ).spell( find_spell( 116740 ) );
+  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -963,7 +982,7 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-
+  rng.tiger_strikes     = get_rng( "tiger_strikes" );
 }
 
 // monk_t::init_actions =====================================================
@@ -1011,7 +1030,7 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.stack=10";
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10"; //this can potentionally be used in line with CD's+FoF
       action_list_str += "/rising_sun_kick";
       action_list_str += "/fists_of_fury";
       action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3&cooldown.fists_of_fury.remains";
