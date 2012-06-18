@@ -40,6 +40,7 @@ struct monk_td_t : public actor_pair_t
 struct monk_t : public player_t
 {
   monk_stance_e active_stance;
+  double track_chi_consumption;
   // Buffs
   struct buffs_t
   {
@@ -51,7 +52,7 @@ struct monk_t : public player_t
         //  buff_t* fortifying_brew;
         //  buff_t* zen_meditation;
         //  buff_t* path_of_blossoms;
-        //  buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
+    buff_t* tigereye_brew; // Has a stacking component and on-use component using different spell ids.  Can be stacked while use-buff is up.
         //  buff_t* tigereye_brew_use; // will need to check if needed.
         //  buff_t* tiger_strikes;
         //  buff_t* combo_breaker_tp;
@@ -142,6 +143,8 @@ struct monk_t : public player_t
 
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
+    active_stance( STANCE_DRUNKEN_OX ),
+    track_chi_consumption( 0 ),
     buff( buffs_t() ),
     gain( gains_t() ),
     proc( procs_t() ),
@@ -167,6 +170,7 @@ struct monk_t : public player_t
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force=false );
+  virtual void      reset();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
   virtual void      create_options();
@@ -243,6 +247,22 @@ struct monk_action_t : public Base
     return true;
   }
 
+  virtual void consume_resource()
+  {
+    action_base_t::consume_resource();
+
+    // Track Chi Consumption
+    if ( action_base_t::current_resource() == RESOURCE_CHI )
+      p() -> track_chi_consumption += action_base_t::resource_consumed;
+
+    // If Accumulated Chi consumption is greater than 4, reduce it by 4 and trigger a Tigereye Brew stack.
+    if ( p() -> track_chi_consumption >= 4 )
+    {
+      p() -> track_chi_consumption -= 4;
+
+      p() -> buff.tigereye_brew -> trigger();
+    }
+  }
 };
 
 
@@ -807,7 +827,8 @@ void monk_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buff.tiger_stance = buff_creator_t( this, "tiger_stance" ).spell( find_spell(103985) );
+  buff.tiger_stance  = buff_creator_t( this, "tiger_stance"  ).spell( find_spell( 103985 ) );
+  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew" ).spell( find_spell( 125195 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -896,6 +917,15 @@ void monk_t::init_actions()
 }
 
 // monk_t::reset ==================================================
+
+void monk_t::reset()
+{
+  player_t::reset();
+
+  track_chi_consumption = 0;
+}
+
+// monk_t::init_resources ==================================================
 
 void monk_t::init_resources( bool force )
 {
