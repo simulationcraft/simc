@@ -6,12 +6,12 @@
 //  TODO:
 //
 //
-//
+//  !!! test spinning crane kick and fists of fury dots
 //  Add all damaging abilities
 //  Ensure values are correct
 //  Add mortal wounds to RSK
 //  Add all buffs
-//
+//  Remove overemphasized commenting once done with abilities
 //
 
 #include "simulationcraft.hpp"
@@ -365,7 +365,9 @@ struct monk_heal_t : public monk_action_t<heal_t>
   {
   }
 };
-
+//=============================
+//====Jab======================
+//=============================
 struct jab_t : public monk_melee_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
@@ -384,7 +386,7 @@ struct jab_t : public monk_melee_attack_t
 
   virtual resource_e current_resource()
   {
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER || STANCE_DRUNKEN_OX )
       return RESOURCE_ENERGY;
     else if ( p() -> active_stance == STANCE_WISE_SERPENT )
       return RESOURCE_MANA;
@@ -402,6 +404,10 @@ struct jab_t : public monk_melee_attack_t
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+    if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
+      sim -> output( "Player gains 2 chi" );// This could be a little more elegant, but serves it purpose.
+    else
+    sim -> output( "Player gains 1 chi" );
   }
 };
 //=============================
@@ -525,7 +531,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   }
 };
 //=============================
-//====Spinning Crane Kick======
+//====Spinning Crane Kick====== may need to modify this and fists of fury depending on how spell ticks
 //=============================
 struct spinning_crane_kick_tick_t : public monk_melee_attack_t
 {
@@ -536,6 +542,12 @@ struct spinning_crane_kick_tick_t : public monk_melee_attack_t
     dual        = true;
     direct_tick = true;
     aoe = -1;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    mh = &(player -> main_hand_weapon) ;
+    oh = &(player -> off_hand_weapon) ;
+    base_multiplier = 2.27; // hardcoded into tooltip
+    school = SCHOOL_PHYSICAL;
   }
 };
 
@@ -551,14 +563,23 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
 
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks = 3;
+ //   num_ticks = 3;
     tick_zero = true;
     channeled = true;
+    hasted_ticks = false;
+    school = SCHOOL_PHYSICAL;
 
     spinning_crane_kick_tick = new spinning_crane_kick_tick_t( p );
   }
+  virtual resource_e current_resource()
+  {
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER || STANCE_DRUNKEN_OX )
+      return RESOURCE_ENERGY;
+    else if ( p() -> active_stance == STANCE_WISE_SERPENT )
+      return RESOURCE_MANA;
 
+    return resource_current;
+  }
   virtual void init()
   {
     monk_melee_attack_t::init();
@@ -570,6 +591,68 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     if ( spinning_crane_kick_tick )
       spinning_crane_kick_tick -> execute();
+
+    stats -> add_tick( d -> time_to_tick );
+  }
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+    double chi_gain = data().effectN( 2 ).base_value();
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+    sim -> output( "Player gains 1 chi" ); // This could be a little more elegant, but serves it purpose.
+  }
+};
+//=============================
+//====Fists of Fury============ TODO: Double check tick_zero and channel duration.
+//=============================       4 ticks including DD or 3 including DD?
+struct fists_of_fury_tick_t : public monk_melee_attack_t
+{
+  fists_of_fury_tick_t( monk_t* p ) :
+    monk_melee_attack_t( "fists_of_fury_tick", p )
+  {
+    background  = true;
+    dual        = true;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    direct_tick = true;
+    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    mh = &(player -> main_hand_weapon) ;
+    oh = &(player -> off_hand_weapon) ;
+    base_multiplier = 7.56; // hardcoded into tooltip
+    school = SCHOOL_PHYSICAL;
+  }
+};
+
+struct fists_of_fury_t : public monk_melee_attack_t
+{
+fists_of_fury_tick_t* fists_of_fury_tick;
+
+  fists_of_fury_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) )//, fists_of_fury_tick( 0 )
+  {
+    parse_options( 0, options_str );
+    stancemask = STANCE_FIERCE_TIGER;
+    channeled = true;
+    may_crit = true;
+    hasted_ticks = false;
+//    num_ticks = 4;
+    aoe = -1;
+    school = SCHOOL_PHYSICAL;
+
+
+  fists_of_fury_tick = new fists_of_fury_tick_t( p );
+  }
+
+  virtual void init()
+  {
+    monk_melee_attack_t::init();
+
+  fists_of_fury_tick -> stats = stats;
+  }
+
+ virtual void tick( dot_t* d )
+  {
+    if ( fists_of_fury_tick )
+      fists_of_fury_tick -> execute();
 
     stats -> add_tick( d -> time_to_tick );
   }
@@ -752,6 +835,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
   if ( name == "blackout_kick"       ) return new       blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new spinning_crane_kick_t( this, options_str );
+  if ( name == "fists_of_fury"       ) return new       fists_of_fury_t( this, options_str );
   if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
 
@@ -900,12 +984,14 @@ void monk_t::init_actions()
       precombat += "/stance";
       precombat += "/snapshot_stats";
 
-
       action_list_str += "/auto_attack";
       action_list_str += "/rising_sun_kick";
-      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3";
-      action_list_str += "/tiger_palm";
-      action_list_str += "/blackout_kick";
+      action_list_str += "/fists_of_fury";
+      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3&cooldown.fists_of_fury.remains";
+      action_list_str += "/tiger_palm,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/blackout_kick,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
       action_list_str += "/jab";
 
 
