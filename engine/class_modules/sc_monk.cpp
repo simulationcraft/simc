@@ -58,6 +58,7 @@ struct monk_t : public player_t
         //  buff_t* combo_breaker_tp;
         //  buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
+    buff_t* serpent_stance;
 
     //Debuffs
   } buff;
@@ -247,6 +248,21 @@ struct monk_action_t : public Base
     return true;
   }
 
+  virtual resource_e current_resource()
+  {
+    if ( p() -> buff.tiger_stance -> data().ok() && action_base_t::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
+    {
+      if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+        return RESOURCE_ENERGY;
+    }
+    if ( p() -> buff.serpent_stance -> data().ok() && action_base_t::data().powerN( POWER_MANA ).aura_id() == 115070 )
+    {
+      if ( p() -> active_stance == STANCE_WISE_SERPENT )
+        return RESOURCE_MANA;
+    }
+    return action_base_t::current_resource();
+  }
+
   virtual void consume_resource()
   {
     action_base_t::consume_resource();
@@ -403,16 +419,6 @@ struct jab_t : public monk_melee_attack_t
     base_multiplier = 2.52; // hardcoded into tooltip
   }
 
-  virtual resource_e current_resource()
-  {
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER || STANCE_DRUNKEN_OX )
-      return RESOURCE_ENERGY;
-    else if ( p() -> active_stance == STANCE_WISE_SERPENT )
-      return RESOURCE_MANA;
-
-    return resource_current;
-  }
-
   virtual void execute()
   {
     monk_melee_attack_t::execute();
@@ -550,14 +556,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 //=============================
 struct spinning_crane_kick_tick_t : public monk_melee_attack_t
 {
-  spinning_crane_kick_tick_t( monk_t* p ) :
-    monk_melee_attack_t( "spinning_crane_kick_tick", p )
+  spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ) :
+    monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
   {
     background  = true;
     dual        = true;
     direct_tick = true;
     aoe = -1;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &(player -> main_hand_weapon) ;
     oh = &(player -> off_hand_weapon) ;
@@ -578,28 +583,29 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
 
- //   num_ticks = 3;
+    may_crit = false;
     tick_zero = true;
     channeled = true;
     hasted_ticks = false;
     school = SCHOOL_PHYSICAL;
 
-    spinning_crane_kick_tick = new spinning_crane_kick_tick_t( p );
+    spinning_crane_kick_tick = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
   }
-  virtual resource_e current_resource()
-  {
-    if ( p() -> active_stance == STANCE_FIERCE_TIGER || STANCE_DRUNKEN_OX )
-      return RESOURCE_ENERGY;
-    else if ( p() -> active_stance == STANCE_WISE_SERPENT )
-      return RESOURCE_MANA;
 
-    return resource_current;
-  }
   virtual void init()
   {
     monk_melee_attack_t::init();
 
     spinning_crane_kick_tick -> stats = stats;
+  }
+
+  virtual resource_e current_resource()
+  {
+    // Apparently energy requirement in Fierce Tiger stance is not in spell data
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+      return RESOURCE_ENERGY;
+
+    return monk_melee_attack_t::current_resource();
   }
 
   virtual void tick( dot_t* d )
@@ -609,9 +615,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     stats -> add_tick( d -> time_to_tick );
   }
+
   virtual void execute()
   {
     monk_melee_attack_t::execute();
+
     double chi_gain = data().effectN( 2 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
@@ -626,6 +634,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     background  = true;
     dual        = true;
+    aoe = -1;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     direct_tick = true;
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
@@ -641,15 +650,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
 fists_of_fury_tick_t* fists_of_fury_tick;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) )//, fists_of_fury_tick( 0 )
+    monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) ),
+    fists_of_fury_tick( 0 )
   {
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
     channeled = true;
-    may_crit = true;
+    may_crit = false;
     hasted_ticks = false;
-//    num_ticks = 4;
-    aoe = -1;
+    tick_zero = true;
     school = SCHOOL_PHYSICAL;
 
 
@@ -660,7 +669,7 @@ fists_of_fury_tick_t* fists_of_fury_tick;
   {
     monk_melee_attack_t::init();
 
-  fists_of_fury_tick -> stats = stats;
+    fists_of_fury_tick -> stats = stats;
   }
 
  virtual void tick( dot_t* d )
@@ -926,8 +935,9 @@ void monk_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buff.tiger_stance  = buff_creator_t( this, "tiger_stance"  ).spell( find_spell( 103985 ) );
-  buff.tigereye_brew = buff_creator_t( this, "tigereye_brew" ).spell( find_spell( 125195 ) );
+  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"      ).spell( find_spell( 103985 ) );
+  buff.serpent_stance    = buff_creator_t( this, "serpent_stance"    ).spell( find_spell( 115070 ) );
+  buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"     ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use" ).spell( find_spell( 116740 ) );
 }
 
