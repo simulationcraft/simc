@@ -55,8 +55,8 @@ struct monk_t : public player_t
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
     buff_t* tiger_strikes;
-        //  buff_t* combo_breaker_tp;
-        //  buff_t* combo_breaker_bok;
+    buff_t* combo_breaker_tp;
+    buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
     buff_t* serpent_stance;
 
@@ -67,6 +67,8 @@ struct monk_t : public player_t
   struct gains_t
   {
     gain_t* chi;
+    gain_t* combo_breaker_savings;
+
   } gain;
   // Stances
 
@@ -74,12 +76,15 @@ struct monk_t : public player_t
   struct procs_t
   {
     //proc_t* procs_<procname>;
+    proc_t* combo_breaker_bok;
+    proc_t* combo_breaker_tp;
   } proc;
     //   proc_t* tiger_strikes;
   // Random Number Generation
    struct rngs_t
    {
      rng_t* tiger_strikes;
+     rng_t* combo_breaker;
    } rng;
 
   // Talents
@@ -127,6 +132,12 @@ struct monk_t : public player_t
     // TREE_MONK_HEAL
   } spec;
 
+  struct mastery_spells_t
+  {
+    const spell_data_t* combo_breaker; //WINDWALKER
+
+  } mastery_spells;
+
   // Glyphs
   struct glyphs_t
   {
@@ -152,6 +163,7 @@ struct monk_t : public player_t
     rng( rngs_t() ),
     talent( talents_t() ),
     spec( specs_t() ),
+    mastery_spells( mastery_spells_t() ),
     glyph( glyphs_t() ),
     initial_chi( 0 )
   {
@@ -178,6 +190,8 @@ struct monk_t : public player_t
   virtual void      create_options();
   virtual resource_e primary_resource();
   virtual role_e primary_role();
+
+  virtual double    combo_breaker_chance();
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -424,6 +438,11 @@ struct jab_t : public monk_melee_attack_t
   virtual void execute()
   {
     monk_melee_attack_t::execute();
+// This could probably be more elegant.p() -> combo_breaker_chance()
+    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( .50 )){
+      p() -> buff.combo_breaker_bok -> trigger();}
+    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( .50 )){
+      p() -> buff.combo_breaker_tp -> trigger();}
 
     double chi_gain = data().effectN( 2 ).base_value();
 
@@ -456,6 +475,23 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact_s( s );
 
     td( s -> target ) -> debuff.tiger_palm -> trigger();
+    // will this top you from using the proc if you can't afford the ability?
+
+  }
+  virtual void consume_resource()
+  {
+    melee_attack_t::consume_resource();
+
+    if ( p() -> buff.combo_breaker_tp -> up() )
+    {
+      // Treat the savings like a energy gain.
+      double amount = melee_attack_t::cost();
+      if ( amount > 0 )
+      {
+        p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
+        p() -> buff.combo_breaker_tp -> expire();
+      }
+    }
   }
 
 
@@ -512,6 +548,21 @@ struct blackout_kick_t : public monk_melee_attack_t
       bokdot -> base_td = ( direct_dmg * data().effectN( 2 ).percent() / bokdot -> num_ticks );
       bokdot -> target = t;
       bokdot -> execute();
+    }
+  }
+  virtual void consume_resource()
+  {
+    melee_attack_t::consume_resource();
+
+    if ( p() -> buff.combo_breaker_bok -> up() )
+    {
+      // Treat the savings like a energy gain.
+      double amount = melee_attack_t::cost();
+      if ( amount > 0 )
+      {
+        p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
+        p() -> buff.combo_breaker_bok -> expire();
+      }
     }
   }
 
@@ -864,6 +915,11 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
   debuff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
 }
+
+double monk_t::combo_breaker_chance()
+  {
+    return mastery_spells.combo_breaker -> effectN( 1 ).mastery_value() * composite_mastery();
+  }
 // monk_t::create_action ====================================================
 
 action_t* monk_t::create_action( const std::string& name,
@@ -898,6 +954,9 @@ void monk_t::init_spells()
   //SPELLS
 
   //GLYPHS
+
+  //MASTERY
+  mastery_spells.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
 
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -953,11 +1012,13 @@ void monk_t::init_buffs()
 {
   player_t::init_buffs();
 
-  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"      ).spell( find_spell( 103985 ) );
-  buff.serpent_stance    = buff_creator_t( this, "serpent_stance"    ).spell( find_spell( 115070 ) );
-  buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"     ).spell( find_spell( 125195 ) );
-  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use" ).spell( find_spell( 116740 ) );
-  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) );
+  buff.tiger_stance      = buff_creator_t( this, "tiger_stance"        ).spell( find_spell( 103985 ) );
+  buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
+  buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
+  buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
+  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes"           ).spell( find_spell( 120273 ) );
+  buff.combo_breaker_bok  = buff_creator_t( this, "combo_breaker_bok"  ).spell( find_spell( 116768 ) );
+  buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 116768 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -967,6 +1028,7 @@ void monk_t::init_gains()
   player_t::init_gains();
 
   gain.chi = get_gain( "chi" );
+  gain.combo_breaker_savings = get_gain( "Combo Breaker Savings");
 }
 
 // monk_t::init_procs =======================================================
@@ -983,6 +1045,8 @@ void monk_t::init_rng()
 {
   player_t::init_rng();
   rng.tiger_strikes     = get_rng( "tiger_strikes" );
+  rng.combo_breaker     = get_rng( "combo_breaker" );
+
 }
 
 // monk_t::init_actions =====================================================
