@@ -2910,6 +2910,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> background = true;
     corruption -> dual = true;
     corruption -> may_miss = false;
+    corruption -> base_costs[ RESOURCE_MANA ] = 0;
   }
 
   virtual void init()
@@ -3213,12 +3214,16 @@ struct soul_swap_t : public warlock_spell_t
   {
     agony               -> background = true;
     agony               -> dual       = true;
+    agony               -> base_costs[ RESOURCE_MANA ] = 0;
     corruption          -> background = true;
     corruption          -> dual       = true;
+    corruption          -> base_costs[ RESOURCE_MANA ] = 0;
     unstable_affliction -> background = true;
     unstable_affliction -> dual       = true;
+    unstable_affliction -> base_costs[ RESOURCE_MANA ] = 0;
     seed_of_corruption  -> background = true;
     seed_of_corruption  -> dual       = true;
+    seed_of_corruption  -> base_costs[ RESOURCE_MANA ] = 0;
 
     if ( p -> glyphs.soul_swap -> ok() )
       glyph_cooldown -> duration = p -> glyphs.soul_swap -> effectN( 2 ).time_value();
