@@ -41,6 +41,7 @@ struct monk_t : public player_t
 {
   monk_stance_e active_stance;
   double track_chi_consumption;
+
   // Buffs
   struct buffs_t
   {
@@ -75,11 +76,11 @@ struct monk_t : public player_t
   // Procs
   struct procs_t
   {
-    //proc_t* procs_<procname>;
     proc_t* combo_breaker_bok;
     proc_t* combo_breaker_tp;
+    // proc_t* tiger_strikes;
   } proc;
-    //   proc_t* tiger_strikes;
+
   // Random Number Generation
    struct rngs_t
    {
@@ -98,7 +99,7 @@ struct monk_t : public player_t
         //   const spell_data_t* chi_burst;
 
         //   const spell_data_t* power_strikes;
-           const spell_data_t* ascension;
+    const spell_data_t* ascension;
         //   const spell_data_t* chi_brew;
 
         //   const spell_data_t* deadly_reach;
@@ -117,10 +118,9 @@ struct monk_t : public player_t
   // Specialization
   struct specs_t
   {
-  // GENERAL
-   const spell_data_t* leather_specialization;
-   const spell_data_t* way_of_the_monk;
-
+    // GENERAL
+    const spell_data_t* leather_specialization;
+    const spell_data_t* way_of_the_monk;
 
     // TREE_MONK_TANK
     // spell_id_t* mastery/passive spells
@@ -218,8 +218,8 @@ struct monk_t : public player_t
 
     return player_t::set_default_glyphs();
   }
-
 };
+
 namespace {
 // ==========================================================================
 // Monk Abilities
@@ -298,6 +298,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
   weapon_t* mh;
   weapon_t* oh;
+
   monk_melee_attack_t( const std::string& n, monk_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
@@ -376,46 +377,10 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 };
 
-struct monk_spell_t : public monk_action_t<spell_t>
-{
-  monk_spell_t( const std::string& n, monk_t* player,
-                const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-};
-
-struct tigereye_brew_use_t : public monk_spell_t
-{
-  tigereye_brew_use_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "tigereye_brew_use", player, player -> find_spell( 116740 ) )
-  {
-    parse_options( NULL, options_str );
-
-    harmful           = false;
-  }
-
-  virtual void execute()
-  {
-    monk_spell_t::execute();
-
-    p() -> buff.tigereye_brew_use -> trigger( 1, p() -> buff.tigereye_brew_use -> default_value * p() -> buff.tigereye_brew -> stack() );
-    p() -> buff.tigereye_brew -> expire();
-  }
-};
-
-
-struct monk_heal_t : public monk_action_t<heal_t>
-{
-  monk_heal_t( const std::string& n, monk_t* player,
-               const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-};
 //=============================
 //====Jab======================
 //=============================
+
 struct jab_t : public monk_melee_attack_t
 {
   jab_t( monk_t* p, const std::string& options_str ) :
@@ -427,10 +392,11 @@ struct jab_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
     mh = &( player -> main_hand_weapon );
-    oh = &(player -> off_hand_weapon );
+    oh = &( player -> off_hand_weapon );
 
     base_multiplier = 2.52; // hardcoded into tooltip
   }
+
   virtual resource_e current_resource()
   {
     // Apparently energy requirement in Fierce Tiger stance is not in spell data
@@ -439,11 +405,13 @@ struct jab_t : public monk_melee_attack_t
 
     return monk_melee_attack_t::current_resource();
   }
+
   virtual void execute()
   {
     monk_melee_attack_t::execute();
 
     // Windwalker Mastery
+    // Assumption: There is only one roll, and either both mastery effects proc, or none. Needs testing!
     double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
     if ( p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance ) )
       p() -> buff.combo_breaker_tp -> trigger();
@@ -455,16 +423,16 @@ struct jab_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
 };
+
 //=============================
 //====Tiger Palm===============
 //=============================
+
 struct tiger_palm_t : public monk_melee_attack_t
 {
-
   tiger_palm_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
-
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
@@ -479,7 +447,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     td( s -> target ) -> debuff.tiger_palm -> trigger();
     // will this top you from using the proc if you can't afford the ability?
-
   }
 
   virtual double cost()
@@ -501,6 +468,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
   }
 };
+
 //=============================
 //====Blackout Kick============
 //=============================
@@ -575,9 +543,11 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
   }
 };
+
 //=============================
 //====RISING SUN KICK==========
 //=============================
+
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
   rising_sun_kick_t( monk_t* p, const std::string& options_str ) :
@@ -611,30 +581,30 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     td( s -> target ) -> debuff.rising_sun_kick -> trigger();
   }
-
 };
+
 //=============================
 //====Spinning Crane Kick====== may need to modify this and fists of fury depending on how spell ticks
 //=============================
-struct spinning_crane_kick_tick_t : public monk_melee_attack_t
-{
-  spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ) :
-    monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
-  {
-    background  = true;
-    dual        = true;
-    direct_tick = true;
-    aoe = -1;
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-    mh = &(player -> main_hand_weapon) ;
-    oh = &(player -> off_hand_weapon) ;
-    base_multiplier = 2.27; // hardcoded into tooltip
-    school = SCHOOL_PHYSICAL;
-  }
-};
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
+  struct spinning_crane_kick_tick_t : public monk_melee_attack_t
+  {
+    spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ) :
+      monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
+    {
+      background  = true;
+      dual        = true;
+      direct_tick = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      mh = &(player -> main_hand_weapon) ;
+      oh = &(player -> off_hand_weapon) ;
+      base_multiplier = 2.27; // hardcoded into tooltip
+      school = SCHOOL_PHYSICAL;
+    }
+  };
   spinning_crane_kick_tick_t* spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ) :
@@ -685,32 +655,32 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     double chi_gain = data().effectN( 5 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
-
 };
+
 //=============================
 //====Fists of Fury============ TODO: Double check tick_zero and channel duration.
 //=============================       4 ticks including DD or 3 including DD?
-struct fists_of_fury_tick_t : public monk_melee_attack_t
-{
-  fists_of_fury_tick_t( monk_t* p ) :
-    monk_melee_attack_t( "fists_of_fury_tick", p )
-  {
-    background  = true;
-    dual        = true;
-    aoe = -1;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    direct_tick = true;
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-    mh = &(player -> main_hand_weapon) ;
-    oh = &(player -> off_hand_weapon) ;
-    base_multiplier = 7.56; // hardcoded into tooltip
-    school = SCHOOL_PHYSICAL;
-  }
-};
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-fists_of_fury_tick_t* fists_of_fury_tick;
+  struct fists_of_fury_tick_t : public monk_melee_attack_t
+  {
+    fists_of_fury_tick_t( monk_t* p ) :
+      monk_melee_attack_t( "fists_of_fury_tick", p )
+    {
+      background  = true;
+      dual        = true;
+      aoe = -1;
+      base_tick_time = timespan_t::from_seconds( 1.0 );
+      direct_tick = true;
+      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      mh = &(player -> main_hand_weapon) ;
+      oh = &(player -> off_hand_weapon) ;
+      base_multiplier = 7.56; // hardcoded into tooltip
+      school = SCHOOL_PHYSICAL;
+    }
+  };
+  fists_of_fury_tick_t* fists_of_fury_tick;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) ),
@@ -742,7 +712,6 @@ fists_of_fury_tick_t* fists_of_fury_tick;
 
     stats -> add_tick( d -> time_to_tick );
   }
-
 };
 
 struct melee_t : public monk_melee_attack_t
@@ -785,18 +754,16 @@ struct melee_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::execute();
     }
-
   }
+
   virtual void impact_s( action_state_t* s )
-    {
-      monk_melee_attack_t::impact_s( s );
-      if ( result_is_hit( s -> result ) )
-           p() -> buff.tiger_strikes -> trigger( 4 );
-    }
+  {
+    monk_melee_attack_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+     p() -> buff.tiger_strikes -> trigger( 4 );
+  }
 };
-
-
-
 
 struct auto_attack_t : public monk_melee_attack_t
 {
@@ -821,6 +788,7 @@ struct auto_attack_t : public monk_melee_attack_t
     if ( player -> off_hand_weapon.type != WEAPON_NONE)
     {
       if ( ! player -> dual_wield() ) return;
+
       p() -> off_hand_attack = new melee_t( "melee_off_hand", player, sync_weapons );
       p() -> off_hand_attack -> weapon = &( player -> off_hand_weapon );
       p() -> off_hand_attack -> base_execute_time = player -> off_hand_weapon.swing_time;
@@ -831,23 +799,48 @@ struct auto_attack_t : public monk_melee_attack_t
 
   virtual void execute()
   {
-      p() -> main_hand_attack -> schedule_execute();
-    if ( player -> off_hand_attack ){
+    p() -> main_hand_attack -> schedule_execute();
+
+    if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
-  }
   }
 
   virtual bool ready()
   {
     if ( p() -> is_moving() ) return false;
+
     return ( p() -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
-
-
 };
 
+struct monk_spell_t : public monk_action_t<spell_t>
+{
+  monk_spell_t( const std::string& n, monk_t* player,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+};
 
+struct tigereye_brew_use_t : public monk_spell_t
+{
+  tigereye_brew_use_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "tigereye_brew_use", player, player -> find_spell( 116740 ) )
+  {
+    parse_options( NULL, options_str );
 
+    harmful           = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    double use_value = p() -> buff.tigereye_brew_use -> default_value * p() -> buff.tigereye_brew -> stack();
+    p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
+    p() -> buff.tigereye_brew -> expire();
+  }
+};
 
 // Stance ===================================================================
 
@@ -885,6 +878,7 @@ struct stance_t : public monk_spell_t
   virtual void execute()
   {
     monk_spell_t::execute();
+
     p() -> active_stance = switch_to_stance;
 
     //TODO: Add stances once implemented
@@ -912,6 +906,14 @@ struct stance_t : public monk_spell_t
   }
 };
 
+struct monk_heal_t : public monk_action_t<heal_t>
+{
+  monk_heal_t( const std::string& n, monk_t* player,
+               const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+};
 } // END ANONYMOUS action NAMESPACE
 
 // ==========================================================================
