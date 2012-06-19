@@ -83,8 +83,6 @@ struct monk_t : public player_t
   // Random Number Generation
    struct rngs_t
    {
-     rng_t* tiger_strikes;
-     rng_t* combo_breaker;
    } rng;
 
   // Talents
@@ -136,7 +134,7 @@ struct monk_t : public player_t
   {
     const spell_data_t* combo_breaker; //WINDWALKER
 
-  } mastery_spells;
+  } mastery;
 
   // Glyphs
   struct glyphs_t
@@ -163,7 +161,7 @@ struct monk_t : public player_t
     rng( rngs_t() ),
     talent( talents_t() ),
     spec( specs_t() ),
-    mastery_spells( mastery_spells_t() ),
+    mastery( mastery_spells_t() ),
     glyph( glyphs_t() ),
     initial_chi( 0 )
   {
@@ -308,15 +306,15 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     mh( NULL ), oh( NULL )
   {
     may_glance = false;
-
   }
 
   virtual double swing_haste()
    {
      double haste = base_t::swing_haste();
-     if (! player -> dual_wield() ){
-     haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
-     }
+
+     if ( !player -> dual_wield() )
+       haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
+
      return haste;
    }
 
@@ -402,6 +400,7 @@ struct tigereye_brew_use_t : public monk_spell_t
   virtual void execute()
   {
     monk_spell_t::execute();
+
     p() -> buff.tigereye_brew_use -> trigger( 1, p() -> buff.tigereye_brew_use -> default_value * p() -> buff.tigereye_brew -> stack() );
     p() -> buff.tigereye_brew -> expire();
   }
@@ -445,18 +444,16 @@ struct jab_t : public monk_melee_attack_t
   virtual void execute()
   {
     monk_melee_attack_t::execute();
-// This could probably be more elegant.
-    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( p() -> combo_breaker_chance())){
-      p() -> buff.combo_breaker_bok -> trigger();}
 
-    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( p() -> combo_breaker_chance() )){
-      p() -> buff.combo_breaker_tp -> trigger();}
+    // Windwalker Mastery
+    double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).coeff() / 100.0;
+    if ( p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance ) )
+      p() -> buff.combo_breaker_tp -> trigger();
 
+    // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
-
     if ( p() -> active_stance  == STANCE_FIERCE_TIGER )
       chi_gain += p() -> buff.tiger_stance -> data().effectN( 4 ).base_value();
-
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
 };
@@ -499,7 +496,9 @@ struct tiger_palm_t : public monk_melee_attack_t
         p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
         p() -> buff.combo_breaker_tp -> expire();
       }
-    }else{
+    }
+    else
+    {
       monk_melee_attack_t::consume_resource();
     }
   }
@@ -795,8 +794,7 @@ struct melee_t : public monk_melee_attack_t
   virtual void impact_s( action_state_t* s )
     {
       monk_melee_attack_t::impact_s( s );
-      if ( result_is_hit( s -> result )
-           && p() -> rng.tiger_strikes -> roll( .1 ) )
+      if ( result_is_hit( s -> result ) )
            p() -> buff.tiger_strikes -> trigger( 4 );
     }
 };
@@ -934,7 +932,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
 
 double monk_t::combo_breaker_chance()
   {
-    return mastery_spells.combo_breaker -> effectN( 1 ).mastery_value() * composite_mastery();
+    return mastery.combo_breaker -> effectN( 1 ).mastery_value() * composite_mastery();
   }
 // monk_t::create_action ====================================================
 
@@ -972,7 +970,7 @@ void monk_t::init_spells()
   //GLYPHS
 
   //MASTERY
-  mastery_spells.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
+  mastery.combo_breaker = find_mastery_spell( MONK_WINDWALKER );
 
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -1032,7 +1030,8 @@ void monk_t::init_buffs()
   buff.serpent_stance    = buff_creator_t( this, "serpent_stance"      ).spell( find_spell( 115070 ) );
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
-  buff.tiger_strikes = buff_creator_t( this, "tiger_strikes"           ).spell( find_spell( 120273 ) );
+  buff.tiger_strikes     = buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
+                           .chance( find_spell( 120272 ) -> proc_chance() );
   buff.combo_breaker_bok  = buff_creator_t( this, "combo_breaker_bok"  ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 116768 ) );
 }
@@ -1060,8 +1059,6 @@ void monk_t::init_procs()
 void monk_t::init_rng()
 {
   player_t::init_rng();
-  rng.tiger_strikes     = get_rng( "tiger_strikes" );
-  rng.combo_breaker     = get_rng( "combo_breaker" );
 
 }
 
