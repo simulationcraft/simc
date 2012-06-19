@@ -484,26 +484,24 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   }
 
+  virtual double cost()
+  {
+    if ( p() -> buff.combo_breaker_tp -> check() )
+      return 0;
+
+    return monk_melee_attack_t::cost();
+  }
+
   virtual void consume_resource()
   {
+    monk_melee_attack_t::consume_resource();
 
     if ( p() -> buff.combo_breaker_tp -> up() )
     {
-      // Ignore Cost - Mastery
-      double amount = melee_attack_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
-        p() -> buff.combo_breaker_tp -> expire();
-      }
-    }
-    else
-    {
-      monk_melee_attack_t::consume_resource();
+      p() -> buff.combo_breaker_tp -> expire();
+      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
     }
   }
-
-
 };
 //=============================
 //====Blackout Kick============
@@ -560,24 +558,24 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
   }
 
+  virtual double cost()
+  {
+    if ( p() -> buff.combo_breaker_bok -> check() )
+      return 0;
+
+    return monk_melee_attack_t::cost();
+  }
+
   virtual void consume_resource()
   {
-
+    monk_melee_attack_t::consume_resource();
 
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
-      // Ignore Cost - Mastery
-      double amount = melee_attack_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
-        p() -> buff.combo_breaker_bok -> expire();
-      }
-    }else{
-      monk_melee_attack_t::consume_resource();
+      p() -> buff.combo_breaker_bok -> expire();
+      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
     }
   }
-
 };
 //=============================
 //====RISING SUN KICK==========
