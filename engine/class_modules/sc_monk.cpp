@@ -411,10 +411,10 @@ struct jab_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Windwalker Mastery
-    // Assumption: There is only one roll, and either both mastery effects proc, or none. Needs testing!
+    // Debuffs are independent of each other
     double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
-    if ( p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance ) )
-      p() -> buff.combo_breaker_tp -> trigger();
+    p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance );
+    p() -> buff.combo_breaker_tp  -> trigger( 1, -1, mastery_proc_chance );
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();

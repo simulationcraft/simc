@@ -3095,7 +3095,7 @@ struct cascade_base_t : public Base
     if ( targets.size() >= 1 )
     {
       t = *targets.begin();
-      targets.erase( targets.begin() );
+      targets.erase( targets.begin() ); // Remove chosen target from the list.
     }
 
     return t;
