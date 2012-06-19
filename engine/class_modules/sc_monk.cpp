@@ -434,14 +434,22 @@ struct jab_t : public monk_melee_attack_t
 
     base_multiplier = 2.52; // hardcoded into tooltip
   }
+  virtual resource_e current_resource()
+  {
+    // Apparently energy requirement in Fierce Tiger stance is not in spell data
+    if ( p() -> active_stance == STANCE_FIERCE_TIGER )
+      return RESOURCE_ENERGY;
 
+    return monk_melee_attack_t::current_resource();
+  }
   virtual void execute()
   {
     monk_melee_attack_t::execute();
-// This could probably be more elegant.p() -> combo_breaker_chance()
-    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( .50 )){
+// This could probably be more elegant.
+    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( p() -> combo_breaker_chance())){
       p() -> buff.combo_breaker_bok -> trigger();}
-    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( .50 )){
+
+    if (p() ->  specialization() == MONK_WINDWALKER  && p() -> rng.combo_breaker -> roll( p() -> combo_breaker_chance() )){
       p() -> buff.combo_breaker_tp -> trigger();}
 
     double chi_gain = data().effectN( 2 ).base_value();
@@ -478,19 +486,21 @@ struct tiger_palm_t : public monk_melee_attack_t
     // will this top you from using the proc if you can't afford the ability?
 
   }
+
   virtual void consume_resource()
   {
-    melee_attack_t::consume_resource();
 
     if ( p() -> buff.combo_breaker_tp -> up() )
     {
-      // Treat the savings like a energy gain.
+      // Ignore Cost - Mastery
       double amount = melee_attack_t::cost();
       if ( amount > 0 )
       {
         p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
         p() -> buff.combo_breaker_tp -> expire();
       }
+    }else{
+      monk_melee_attack_t::consume_resource();
     }
   }
 
@@ -550,19 +560,22 @@ struct blackout_kick_t : public monk_melee_attack_t
       bokdot -> execute();
     }
   }
+
   virtual void consume_resource()
   {
-    melee_attack_t::consume_resource();
+
 
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
-      // Treat the savings like a energy gain.
+      // Ignore Cost - Mastery
       double amount = melee_attack_t::cost();
       if ( amount > 0 )
       {
         p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, amount );
         p() -> buff.combo_breaker_bok -> expire();
       }
+    }else{
+      monk_melee_attack_t::consume_resource();
     }
   }
 
@@ -603,6 +616,12 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     td( s -> target ) -> debuff.rising_sun_kick -> trigger();
   }
+
+  virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+  }
+
 };
 //=============================
 //====Spinning Crane Kick====== may need to modify this and fists of fury depending on how spell ticks
@@ -673,8 +692,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    double chi_gain = data().effectN( 2 ).base_value();
+    double chi_gain = data().effectN( 5 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+  }
+  virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
   }
 };
 //=============================
@@ -732,6 +755,10 @@ fists_of_fury_tick_t* fists_of_fury_tick;
 
     stats -> add_tick( d -> time_to_tick );
   }
+ virtual void consume_resource()
+ {
+   monk_melee_attack_t::consume_resource();
+ }
 };
 
 struct melee_t : public monk_melee_attack_t
@@ -985,7 +1012,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-  base_energy_regen_per_second = 10; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 8; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -1094,13 +1121,14 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10"; //this can potentionally be used in line with CD's+FoF
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
+      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
       action_list_str += "/rising_sun_kick";
       action_list_str += "/fists_of_fury";
-      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack>=3&cooldown.fists_of_fury.remains";
-      action_list_str += "/tiger_palm,if=cooldown.fists_of_fury.remains";
-      action_list_str += "/blackout_kick,if=cooldown.fists_of_fury.remains";
-      action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
+      action_list_str += "/tiger_palm";
+   // action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
       action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
       action_list_str += "/jab";
 
