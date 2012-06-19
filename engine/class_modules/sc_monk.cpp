@@ -617,11 +617,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     td( s -> target ) -> debuff.rising_sun_kick -> trigger();
   }
 
-  virtual void consume_resource()
-  {
-    monk_melee_attack_t::consume_resource();
-  }
-
 };
 //=============================
 //====Spinning Crane Kick====== may need to modify this and fists of fury depending on how spell ticks
@@ -695,10 +690,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     double chi_gain = data().effectN( 5 ).base_value();
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
   }
-  virtual void consume_resource()
-  {
-    monk_melee_attack_t::consume_resource();
-  }
+
 };
 //=============================
 //====Fists of Fury============ TODO: Double check tick_zero and channel duration.
@@ -755,10 +747,7 @@ fists_of_fury_tick_t* fists_of_fury_tick;
 
     stats -> add_tick( d -> time_to_tick );
   }
- virtual void consume_resource()
- {
-   monk_melee_attack_t::consume_resource();
- }
+
 };
 
 struct melee_t : public monk_melee_attack_t
@@ -1121,16 +1110,18 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
-      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react";
-      action_list_str += "/rising_sun_kick";
-      action_list_str += "/fists_of_fury";
-      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
-      action_list_str += "/tiger_palm";
-   // action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
-      action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
-      action_list_str += "/jab";
+
+        action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
+        action_list_str += "/fists_of_fury";
+        action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
+        action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.up";
+        action_list_str += "/rising_sun_kick,if=cooldown.fists_of_fury.remains";
+
+        action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
+        action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
+   //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+        action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
+        action_list_str += "/jab";
 
 
       break;
