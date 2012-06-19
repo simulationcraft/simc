@@ -189,8 +189,6 @@ struct monk_t : public player_t
   virtual resource_e primary_resource();
   virtual role_e primary_role();
 
-  virtual double    combo_breaker_chance();
-
   virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
@@ -446,7 +444,7 @@ struct jab_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Windwalker Mastery
-    double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).coeff() / 100.0;
+    double mastery_proc_chance = p() -> mastery.combo_breaker -> effectN( 1 ).mastery_value() * player -> composite_mastery();
     if ( p() -> buff.combo_breaker_bok -> trigger( 1, -1, mastery_proc_chance ) )
       p() -> buff.combo_breaker_tp -> trigger();
 
@@ -928,10 +926,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   debuff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
 }
 
-double monk_t::combo_breaker_chance()
-  {
-    return mastery.combo_breaker -> effectN( 1 ).mastery_value() * composite_mastery();
-  }
 // monk_t::create_action ====================================================
 
 action_t* monk_t::create_action( const std::string& name,
