@@ -3176,7 +3176,7 @@ struct cascade_base_t : public Base
 struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_damage", p, options_str, p -> find_spell( 120785 ) )
+    base_t( "cascade_damage", p, options_str, p -> find_spell( 120785 ) )// shadow: 127628 holy: 120785
   { }
 
   virtual void populate_target_list()
@@ -3189,7 +3189,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 {
   cascade_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) )
+    base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) ) // shadow: 127629 holy= 121148
   { }
 
   virtual void populate_target_list()
@@ -3208,11 +3208,8 @@ struct halo_base_t : public Base
   typedef Base action_base_t; // typedef for the templated action type, priest_spell_t, or priest_heal_t
   typedef halo_base_t base_t; // typedef for halo_base_t<action_base_t>
 
-  const spell_data_t* heal_data; // Scaling Spell, contains damage or heal data and travel speed.
-
-  halo_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) ), // FIXME: change to correct find_talent or spec function
-    heal_data( s )
+  halo_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
+    action_base_t( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) )
   {
     action_base_t::parse_options( NULL, options_str );
     action_base_t::aoe = -1;
@@ -3221,11 +3218,6 @@ struct halo_base_t : public Base
     {
       action_base_t::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), action_base_t::name() );
       action_base_t::background = true; // prevent action from being executed
-    }
-
-    if ( heal_data != spell_data_t::nil() ) // Parse heal data if available
-    {
-      action_base_t::parse_effect_data( heal_data -> effectN( 1 ) );
     }
   }
 
@@ -3255,15 +3247,12 @@ struct halo_damage_t : public halo_base_t<priest_spell_t>
 struct halo_heal_t : public halo_base_t<priest_heal_t>
 {
   halo_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "halo_heal", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 ) )
-  { }
+    base_t( "halo_heal", p, options_str )
+  {
+    const spell_data_t* heal_data = ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 );
+    parse_effect_data( heal_data -> effectN( 1 ) );
+  }
 };
-
-// shadow base talent spell: 120644
-// shadow heal: 120696
-
-// holy base talent ( damage ) spell: 120517
-// holy heal: 120692
 
 } // NAMESPACE spells
 
