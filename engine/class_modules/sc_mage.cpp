@@ -13,17 +13,23 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct mage_t;
 
-enum mage_rotation_e { ROTATION_NONE=0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
+enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_td_t : public actor_pair_t
 {
-  dot_t* dots_flamestrike;
-  dot_t* dots_ignite;
-  dot_t* dots_living_bomb;
-  dot_t* dots_nether_tempest;
-  dot_t* dots_pyroblast;
+  struct dots_t
+  {
+    dot_t* flamestrike;
+    dot_t* ignite;
+    dot_t* living_bomb;
+    dot_t* nether_tempest;
+    dot_t* pyroblast;
+  } dots;
 
-  buff_t* debuffs_slow;
+  struct debuffs_t
+  {
+    buff_t* slow;
+  } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
 };
@@ -311,42 +317,6 @@ struct mage_t : public player_t
 
     return player_t::set_default_glyphs();
   }
-};
-
-// ==========================================================================
-// Mage Spell
-// ==========================================================================
-
-struct mage_spell_t : public spell_t
-{
-  bool frozen, may_hot_streak;
-  int dps_rotation;
-  int dpm_rotation;
-
-  mage_spell_t( const std::string& n, mage_t* p,
-                const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ),
-    dps_rotation( 0 ), dpm_rotation( 0 )
-  {
-    may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
-    tick_may_crit = true;
-    crit_multiplier *= 1.33;
-  }
-
-  mage_t* p() { return debug_cast<mage_t*>( player ); }
-
-  mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual void   parse_options( option_t*, const std::string& );
-  virtual bool   ready();
-  virtual double cost();
-  virtual double haste();
-  virtual void   execute();
-  virtual void   player_buff();
-  virtual double total_crit();
-  virtual timespan_t execute_time();
-  virtual double hot_streak_crit() { return player_crit; }
 };
 
 // ==========================================================================
@@ -720,6 +690,178 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
+namespace { // ANONYMOUS NAMESPACE
+
+// ==========================================================================
+// Mage Spell
+// ==========================================================================
+
+struct mage_spell_t : public spell_t
+{
+  bool frozen, may_hot_streak;
+  int dps_rotation;
+  int dpm_rotation;
+
+  mage_spell_t( const std::string& n, mage_t* p,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( n, p, s ),
+    frozen( false ), may_hot_streak( false ),
+    dps_rotation( 0 ), dpm_rotation( 0 )
+  {
+    may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
+    tick_may_crit = true;
+    crit_multiplier *= 1.33;
+  }
+
+  mage_t* p() { return debug_cast<mage_t*>( player ); }
+
+  mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
+
+  virtual void parse_options( option_t*          options,
+                                    const std::string& options_str )
+  {
+    option_t base_options[] =
+    {
+      { "dps", OPT_BOOL, &dps_rotation },
+      { "dpm", OPT_BOOL, &dpm_rotation },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    std::vector<option_t> merged_options;
+    spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+  }
+
+  virtual bool ready()
+  {
+    if ( dps_rotation )
+      if ( p() -> rotation.current != ROTATION_DPS )
+        return false;
+
+    if ( dpm_rotation )
+      if ( p() -> rotation.current != ROTATION_DPM )
+        return false;
+
+    return spell_t::ready();
+  }
+
+  virtual double cost()
+  {
+    double c = spell_t::cost();
+
+    if ( p() -> buffs.arcane_power -> check() )
+    {
+      double m = 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
+
+      c *= m;
+    }
+
+    return c;
+  }
+
+  virtual double haste()
+  {
+    double h = spell_t::haste();
+    if ( p() -> buffs.icy_veins -> up() )
+    {
+      h *= 1.0 / ( 1.0 + p() -> buffs.icy_veins -> data().effectN( 1 ).percent() );
+    }
+    return h;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t t = spell_t::execute_time();
+
+    if ( ! channeled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
+      return timespan_t::zero();
+
+    return t;
+  }
+
+  virtual void player_buff()
+  {
+    spell_t::player_buff();
+
+    if ( frozen )
+      player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+  }
+
+  virtual double total_crit()
+  {
+    double c = spell_t::total_crit();
+
+    if ( frozen && p() -> passives.shatter -> ok() )
+    {
+      c = c * 2.0 + 0.40;
+    }
+
+    return c;
+  }
+
+  virtual double hot_streak_crit()
+  { return player_crit; }
+
+  void trigger_hot_streak( mage_spell_t* s )
+  {
+    mage_t* p = s -> p();
+
+    if ( ! s -> may_hot_streak )
+      return;
+
+    if ( p -> specialization() != MAGE_FIRE )
+      return;
+
+    int result = s -> result;
+
+    p -> procs.test_for_crit_hotstreak -> occur();
+
+    if ( result == RESULT_CRIT )
+    {
+      p -> procs.crit_for_hotstreak -> occur();
+      // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
+
+      if ( ! p -> buffs.heating_up -> up() )
+      {
+        p -> buffs.heating_up -> trigger();
+      }
+      else
+      {
+        p -> procs.hotstreak  -> occur();
+        p -> buffs.heating_up -> expire();
+        p -> buffs.pyroblast  -> trigger();
+      }
+    }
+    else
+    {
+      p -> buffs.heating_up -> expire();
+    }
+  }
+  // mage_spell_t::execute ====================================================
+
+  virtual void execute()
+  {
+    p() -> benefits.dps_rotation -> update( p() -> rotation.current == ROTATION_DPS );
+    p() -> benefits.dpm_rotation -> update( p() -> rotation.current == ROTATION_DPM );
+
+    spell_t::execute();
+
+    if ( background )
+      return;
+
+    if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
+      p() -> buffs.presence_of_mind -> expire();
+
+    if ( result_is_hit() )
+    {
+      trigger_hot_streak( this );
+    }
+
+    if ( p() -> specialization() == MAGE_ARCANE )
+    {
+      p() -> buffs.arcane_missiles -> trigger();
+    }
+  }
+};
+
 // calculate_dot_dps ========================================================
 
 static double calculate_dot_dps( dot_t* dot )
@@ -733,44 +875,6 @@ static double calculate_dot_dps( dot_t* dot )
   player_t* target = ( a -> stateless ) ? dot -> state -> target : dot -> target;
 
   return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier(), target ) / a -> base_tick_time.total_seconds() );
-}
-
-// trigger_hot_streak =======================================================
-
-static void trigger_hot_streak( mage_spell_t* s )
-{
-  mage_t* p = s -> p();
-
-  if ( ! s -> may_hot_streak )
-    return;
-
-  if ( p -> specialization() != MAGE_FIRE )
-    return;
-
-  int result = s -> result;
-
-  p -> procs.test_for_crit_hotstreak -> occur();
-
-  if ( result == RESULT_CRIT )
-  {
-    p -> procs.crit_for_hotstreak -> occur();
-    // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
-
-    if ( ! p -> buffs.heating_up -> up() )
-    {
-      p -> buffs.heating_up -> trigger();
-    }
-    else
-    {
-      p -> procs.hotstreak  -> occur();
-      p -> buffs.heating_up -> expire();
-      p -> buffs.pyroblast  -> trigger();
-    }
-  }
-  else
-  {
-    p -> buffs.heating_up -> expire();
-  }
 }
 
 // trigger_ignite ===========================================================
@@ -902,126 +1006,6 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 // ==========================================================================
 // Mage Spell
 // ==========================================================================
-
-// mage_spell_t::parse_options ==============================================
-
-void mage_spell_t::parse_options( option_t*          options,
-                                  const std::string& options_str )
-{
-  option_t base_options[] =
-  {
-    { "dps", OPT_BOOL, &dps_rotation },
-    { "dpm", OPT_BOOL, &dpm_rotation },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  std::vector<option_t> merged_options;
-  spell_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
-}
-
-// mage_spell_t::ready ======================================================
-
-bool mage_spell_t::ready()
-{
-  if ( dps_rotation )
-    if ( p() -> rotation.current != ROTATION_DPS )
-      return false;
-
-  if ( dpm_rotation )
-    if ( p() -> rotation.current != ROTATION_DPM )
-      return false;
-
-  return spell_t::ready();
-}
-
-// mage_spell_t::cost =======================================================
-
-double mage_spell_t::cost()
-{
-  double c = spell_t::cost();
-
-  if ( p() -> buffs.arcane_power -> check() )
-  {
-    double m = 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
-
-    c *= m;
-  }
-
-  return c;
-}
-
-// mage_spell_t::haste ======================================================
-
-double mage_spell_t::haste()
-{
-  double h = spell_t::haste();
-  if ( p() -> buffs.icy_veins -> up() )
-  {
-    h *= 1.0 / ( 1.0 + p() -> buffs.icy_veins -> data().effectN( 1 ).percent() );
-  }
-  return h;
-}
-
-// mage_spell_t::execute ====================================================
-
-void mage_spell_t::execute()
-{
-  p() -> benefits.dps_rotation -> update( p() -> rotation.current == ROTATION_DPS );
-  p() -> benefits.dpm_rotation -> update( p() -> rotation.current == ROTATION_DPM );
-
-  spell_t::execute();
-
-  if ( background )
-    return;
-
-  if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
-    p() -> buffs.presence_of_mind -> expire();
-
-  if ( result_is_hit() )
-  {
-    trigger_hot_streak( this );
-  }
-
-  if ( p() -> specialization() == MAGE_ARCANE )
-  {
-    p() -> buffs.arcane_missiles -> trigger();
-  }
-}
-
-// mage_spell_t::execute_time ===============================================
-
-timespan_t mage_spell_t::execute_time()
-{
-  timespan_t t = spell_t::execute_time();
-
-  if ( ! channeled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> up() )
-    return timespan_t::zero();
-
-  return t;
-}
-
-// mage_spell_t::player_buff ================================================
-
-void mage_spell_t::player_buff()
-{
-  spell_t::player_buff();
-
-  if ( frozen )
-    player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
-}
-
-// mage_spell_t::total_crit ================================================
-
-double mage_spell_t::total_crit()
-{
-  double c = spell_t::total_crit();
-
-  if ( frozen && p() -> passives.shatter -> ok() )
-  {
-    c = c * 2.0 + 0.40;
-  }
-
-  return c;
-}
 
 // ==========================================================================
 // Mage Spells
@@ -1425,14 +1409,14 @@ struct combustion_t : public mage_spell_t
   {
     double ignite_dmg = 0;
 
-    if ( td() -> dots_ignite -> ticking )
+    if ( td() -> dots.ignite -> ticking )
     {
-      ignite_dmg += calculate_dot_dps( td() -> dots_ignite );
+      ignite_dmg += calculate_dot_dps( td() -> dots.ignite );
     }
 
     base_td = 0;
     base_td += ignite_dmg;
-    base_td += calculate_dot_dps( td() -> dots_pyroblast );
+    base_td += calculate_dot_dps( td() -> dots.pyroblast );
 
     if ( p() -> set_bonus.tier13_4pc_caster() )
       cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
@@ -2452,7 +2436,7 @@ struct slow_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    td() -> debuffs_slow -> trigger();
+    td() -> debuffs.slow -> trigger();
   }
 };
 
@@ -2492,9 +2476,9 @@ struct time_warp_t : public mage_spell_t
 
 // Water Elemental Spell ====================================================
 
-struct water_elemental_spell_t : public mage_spell_t
+struct summon_water_elemental_t : public mage_spell_t
 {
-  water_elemental_spell_t( mage_t* p, const std::string& options_str ) :
+  summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
   {
     check_spec( MAGE_FROST );
@@ -2728,9 +2712,27 @@ struct choose_rotation_t : public action_t
   }
 };
 
+} // ANONYMOUS NAMESPACE
+
 // ==========================================================================
 // Mage Character Definition
 // ==========================================================================
+
+// mage_td_t ================================================================
+
+mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
+  actor_pair_t( target, mage ),
+  dots( dots_t() ),
+  debuffs( debuffs_t() )
+{
+  dots.flamestrike    = target -> get_dot( "flamestrike",    mage );
+  dots.ignite         = target -> get_dot( "ignite",         mage );
+  dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
+  dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
+  dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
+
+  debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
+}
 
 // mage_t::create_action ====================================================
 
@@ -2776,7 +2778,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
-  if ( name == "water_elemental"   ) return new   water_elemental_spell_t( this, options_str );
+  if ( name == "water_elemental"   ) return new   summon_water_elemental_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3041,7 +3043,7 @@ void mage_t::init_actions()
     else if ( specialization() == MAGE_FIRE )
     {
       action_list_str += "/molten_armor,precombat=1,if=buff.mage_armor.down&buff.molten_armor.down";
-      action_list_str += "/molten_armor,precombat=1,if=mana_pct>45&buff.mage_armor.up";
+      action_list_str += "/molten_armor,precombat=1,if=mana.pct>45&buff.mage_armor.up";
     }
     else
     {
@@ -3064,7 +3066,7 @@ void mage_t::init_actions()
     // Counterspell
     action_list_str += "/counterspell";
     // Refresh Gem during invuln phases
-    if ( level >= 48 ) action_list_str += "/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3";
+    //if ( level >= 48 ) action_list_str += "/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react";
     // Arcane Choose Rotation
     if ( specialization() == MAGE_ARCANE )
     {
@@ -3109,7 +3111,7 @@ void mage_t::init_actions()
     }
     else if ( race == RACE_BLOOD_ELF && specialization() != MAGE_ARCANE )
     {
-      action_list_str += "/arcane_torrent,if=mana_pct<91";
+      action_list_str += "/arcane_torrent,if=mana.pct<91";
     }
     else if ( race == RACE_ORC && specialization() != MAGE_ARCANE )
     {
@@ -3120,8 +3122,9 @@ void mage_t::init_actions()
     // Arcane
     if ( specialization() == MAGE_ARCANE )
     {
-      action_list_str += "/evocation,if=((max_mana>max_mana_nonproc&mana_pct_nonproc<=40)|(max_mana=max_mana_nonproc&mana_pct<=35))&target.time_to_die>10";
-      if ( level >= 81 ) action_list_str += "/flame_orb,if=target.time_to_die>=10";
+      action_list_str += "/evocation,if=((max_mana>max_mana_nonproc&mana.pct_nonproc<=40)|(max_mana=mana.max_nonproc&mana.pct<=35))&target.time_to_die>10";
+      if ( find_specialization_spell( "Flame Orb" ) -> ok() )
+        action_list_str += "/flame_orb,if=target.time_to_die>=10";
       //Special handling for Race Abilities
       if ( race == RACE_ORC )
       {
@@ -3199,22 +3202,23 @@ void mage_t::init_actions()
     // Fire
     else if ( specialization() == MAGE_FIRE )
     {
-      action_list_str += "/mana_gem,if=mana_deficit>12500";
+      action_list_str += "/mana_gem,if=mana.deficit>12500";
       if ( level >= 77 )
       {
         action_list_str += "/combustion,if=dot.ignite.ticking&dot.pyroblast.ticking&dot.ignite.tick_dmg>10000";
       }
       action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,if=!ticking";
-      action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
+      //action_list_str += "/pyroblast_hs,if=buff.hot_streak.react";
       action_list_str += "/fireball";
-      action_list_str += "/mage_armor,if=mana_pct<5&buff.mage_armor.down";
-      action_list_str += "/scorch"; // This can be free, so cast it last
+      action_list_str += "/mage_armor,if=mana.pct<5&buff.mage_armor.down";
+      if ( talents.scorch -> ok() )
+        action_list_str += "/scorch"; // This can be free, so cast it last
     }
     // Frost
     else if ( specialization() == MAGE_FROST )
     {
-      action_list_str += "/evocation,if=mana_pct<40&(buff.icy_veins.react|buff.bloodlust.react)";
+      action_list_str += "/evocation,if=mana.pct<40&(buff.icy_veins.react|buff.bloodlust.react)";
       action_list_str += "/mana_gem,if=mana_deficit>12500";
       if ( level >= 50 ) action_list_str += "/mirror_image,if=target.time_to_die>=25";
       if ( race == RACE_TROLL )
@@ -3521,20 +3525,6 @@ int mage_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
-// mage_td_t ================================================================
-
-mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
-  actor_pair_t( target, mage )
-{
-  dots_flamestrike    = target -> get_dot( "flamestrike",    mage );
-  dots_ignite         = target -> get_dot( "ignite",         mage );
-  dots_living_bomb    = target -> get_dot( "living_bomb",    mage );
-  dots_nether_tempest = target -> get_dot( "nether_tempest", mage );
-  dots_pyroblast      = target -> get_dot( "pyroblast",      mage );
-
-  debuffs_slow = buff_creator_t( *this, "slow", mage -> spec.slow );
-}
-
 // MAGE MODULE INTERFACE ================================================
 
 struct mage_module_t : public module_t
@@ -3545,7 +3535,7 @@ struct mage_module_t : public module_t
   {
     return new mage_t( sim, name, r );
   }
-  virtual bool valid() { return false; }
+  virtual bool valid() { return true; }
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}

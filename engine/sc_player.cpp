@@ -6169,8 +6169,8 @@ const spell_data_t* player_t::find_spell( const unsigned int id, const std::stri
 namespace {
 expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )
 {
-  p -> sim -> errorf( "Use of \"%s\" in action expressions is deprecated: use \"%s\" instead.\n",
-                      old_name.c_str(), new_name.c_str() );
+  p -> sim -> errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
+                      old_name.c_str(), a -> name(), new_name.c_str() );
 
   return p -> create_expression( a, new_name );
 }

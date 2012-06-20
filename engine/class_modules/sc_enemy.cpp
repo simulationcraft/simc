@@ -308,7 +308,6 @@ struct enemy_t : public player_t
   { return current.armor; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual void init();
   virtual void init_base();
   virtual void init_resources( bool force=false );
   virtual void init_target();
@@ -372,15 +371,6 @@ action_t* enemy_t::create_action( const std::string& name,
     a = player_t::create_action( name, options_str );
 
   return a;
-}
-
-// enemy_t::init ============================================================
-
-void enemy_t::init()
-{
-
-
-  player_t::init();
 }
 
 // enemy_t::init_base =======================================================

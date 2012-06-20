@@ -3079,6 +3079,7 @@ struct cascade_base_t : public Base
     action_base_t::parse_options( NULL, options_str );
 
     action_base_t::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    action_base_t::school       = scaling_data -> get_school_type();
     action_base_t::travel_speed = scaling_data -> missile_speed();
   }
 
@@ -3176,7 +3177,7 @@ struct cascade_base_t : public Base
 struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_damage", p, options_str, p -> find_spell( 120785 ) )// shadow: 127628 holy: 120785
+    base_t( "cascade_damage", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127628 ) : p -> find_spell( 120785 ) )
   { }
 
   virtual void populate_target_list()
@@ -3189,7 +3190,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 {
   cascade_heal_t( priest_t* p, const std::string& options_str ) :
-    base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) ) // shadow: 127629 holy= 121148
+    base_t( "cascade_heal", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127629 ) : p -> find_spell( 121148 ) )
   { }
 
   virtual void populate_target_list()
