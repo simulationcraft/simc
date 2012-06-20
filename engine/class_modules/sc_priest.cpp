@@ -3161,6 +3161,9 @@ struct cascade_base_t : public Base
   {
     double ctdm = action_base_t::composite_target_da_multiplier( t );
 
+    // Source: Ghostcrawler 20/06/2012
+    // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+
     double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
     if ( distance >= 30.0 )
       return ctdm;
@@ -3174,9 +3177,7 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "cascade_damage", p, options_str, p -> find_spell( 120785 ) )
-  {
-
-  }
+  { }
 
   virtual void populate_target_list()
   {
@@ -3189,9 +3190,7 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 {
   cascade_heal_t( priest_t* p, const std::string& options_str ) :
     base_t( "cascade_heal", p, options_str, p -> find_spell( 121148 ) )
-  {
-
-  }
+  { }
 
   virtual void populate_target_list()
   {
@@ -3228,6 +3227,9 @@ struct halo_base_t : public Base
   {
     double ctdm = action_base_t::composite_target_da_multiplier( t );
 
+    // Source: Ghostcrawler 20/06/2012
+    // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+
     double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
 
     double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
@@ -3240,18 +3242,14 @@ struct halo_damage_t : public halo_base_t<priest_spell_t>
 {
   halo_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "halo_damage", p, options_str )
-  {
-
-  }
+  { }
 };
 
 struct halo_heal_t : public halo_base_t<priest_heal_t>
 {
   halo_heal_t( priest_t* p, const std::string& options_str ) :
     base_t( "halo_heal", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 ) )
-  {
-
-  }
+  { }
 };
 
 // shadow base talent spell: 120644
