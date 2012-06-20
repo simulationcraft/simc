@@ -721,11 +721,11 @@ static void register_executioner( player_t* p, const std::string& mh_enchant, co
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
     stat_buff_t* buff = stat_buff_creator_t( p, "executioner" )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15 ) )
-                          .cd( timespan_t::zero() )
-                          .chance( 0 )
-                          .activated( false )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 15 ) )
+                        .cd( timespan_t::zero() )
+                        .chance( 0 )
+                        .activated( false )
                         .stat( STAT_CRIT_RATING )
                         .amount( 120 );
 
@@ -748,11 +748,11 @@ static void register_hurricane( player_t* p, const std::string& mh_enchant, cons
     if ( mh_enchant == "hurricane" )
     {
       mh_buff = stat_buff_creator_t( p, "hurricane_mh" )
-                  .max_stack( 1 )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .cd( timespan_t::zero() )
-                  .chance( 0 )
-                  .activated( false )
+                .max_stack( 1 )
+                .duration( timespan_t::from_seconds( 12 ) )
+                .cd( timespan_t::zero() )
+                .chance( 0 )
+                .activated( false )
                 .stat( STAT_HASTE_RATING )
                 .amount( 450.0 );
       p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
@@ -761,11 +761,11 @@ static void register_hurricane( player_t* p, const std::string& mh_enchant, cons
     if ( oh_enchant == "hurricane" )
     {
       oh_buff = stat_buff_creator_t( p, "hurricane_oh" )
-                  .max_stack( 1 )
-                  .duration( timespan_t::from_seconds( 12 ) )
-                  .cd( timespan_t::zero() )
-                  .chance( 0 )
-                  .activated( false )
+                .max_stack( 1 )
+                .duration( timespan_t::from_seconds( 12 ) )
+                .cd( timespan_t::zero() )
+                .chance( 0 )
+                .activated( false )
                 .stat( STAT_HASTE_RATING )
                 .amount( 450.0 );
       p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
@@ -801,9 +801,9 @@ static void register_hurricane( player_t* p, const std::string& mh_enchant, cons
       }
     };
     stat_buff_t* s_buff = stat_buff_creator_t( p, "hurricane_s" )
-                            .duration( timespan_t::from_seconds( 12 ) )
-                            .cd( timespan_t::from_seconds( 45.0 ) )
-                            .activated( false )
+                          .duration( timespan_t::from_seconds( 12 ) )
+                          .cd( timespan_t::from_seconds( 45.0 ) )
+                          .activated( false )
                           .stat( STAT_HASTE_RATING ).amount( 450 );
     p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
     p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
@@ -837,10 +837,10 @@ static void register_power_torrent( player_t* p, const std::string& enchant, con
   if ( enchant == "power_torrent" )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "power_torrent" + weapon_appendix )
-                          .duration( timespan_t::from_seconds( 12 ) )
-                          .cd( timespan_t::from_seconds( 45 ) )
-                          .chance( 0.20 )
-                          .activated( false )
+                        .duration( timespan_t::from_seconds( 12 ) )
+                        .cd( timespan_t::from_seconds( 45 ) )
+                        .chance( 0.20 )
+                        .activated( false )
                         .stat( STAT_INTELLECT ).amount( 500 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
@@ -855,10 +855,10 @@ static void register_windwalk( player_t* p, const std::string& enchant, weapon_t
   if ( enchant == "windwalk" )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "windwalk_" + weapon_appendix )
-                          .duration( timespan_t::from_seconds( 10 ) )
-                          .cd( timespan_t::from_seconds( 45 ) )
-                          .chance( 0.15 )
-                          .activated( false )
+                        .duration( timespan_t::from_seconds( 10 ) )
+                        .cd( timespan_t::from_seconds( 45 ) )
+                        .chance( 0.15 )
+                        .activated( false )
                         .stat( STAT_DODGE_RATING ).amount( 600 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff ) );
   }
@@ -869,11 +869,11 @@ static void register_berserking( player_t* p, const std::string& enchant, weapon
   if ( enchant == "berserking" )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "berserking_" + weapon_appendix )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15 ) )
-                          .cd( timespan_t::zero() )
-                          .chance( 0 )
-                          .activated( false )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 15 ) )
+                        .cd( timespan_t::zero() )
+                        .chance( 0 )
+                        .activated( false )
                         .stat( STAT_ATTACK_POWER )
                         .amount( 400.0 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
@@ -886,9 +886,9 @@ static void register_gnomish_xray( player_t* p, const std::string& enchant, weap
   {
     //FIXME: 1.0 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     stat_buff_t* buff = stat_buff_creator_t( p, "xray_targeting" )
-                          .spell( p -> find_spell( 95712 ) )
-                          .cd( timespan_t::from_seconds( 40 ) )
-                          .activated( false )
+                        .spell( p -> find_spell( 95712 ) )
+                        .cd( timespan_t::from_seconds( 40 ) )
+                        .activated( false )
                         .stat( STAT_ATTACK_POWER )
                         .amount( p->find_spell( 95712 )->effectN( 1 ).base_value() );
 
@@ -942,9 +942,9 @@ void enchant::init( player_t* p )
   {
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     stat_buff_t* buff = stat_buff_creator_t( p, "skyfire_swiftness" )
-                          .spell( p -> find_spell( 39959 ) )
-                          .cd( timespan_t::from_seconds( 40 ) )
-                          .activated( false )
+                        .spell( p -> find_spell( 39959 ) )
+                        .cd( timespan_t::from_seconds( 40 ) )
+                        .activated( false )
                         .stat( STAT_HASTE_RATING )
                         .amount( p->find_spell( 39959 )->effectN( 1 ).base_value() );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
@@ -953,9 +953,9 @@ void enchant::init( player_t* p )
   if ( p -> meta_gem == META_THUNDERING_SKYFLARE )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "skyflare_swiftness" )
-                          .spell( p -> find_spell( 55379 ) )
-                          .cd( timespan_t::from_seconds( 40 ) )
-                          .activated( false )
+                        .spell( p -> find_spell( 55379 ) )
+                        .cd( timespan_t::from_seconds( 40 ) )
+                        .activated( false )
                         .stat( STAT_HASTE_RATING )
                         .amount( p->find_spell( 55379 )->effectN( 1 ).base_value() );
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics

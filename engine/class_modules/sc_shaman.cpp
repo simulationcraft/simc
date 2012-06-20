@@ -268,7 +268,7 @@ struct shaman_t : public player_t
     const spell_data_t* primal_wisdom;
     const spell_data_t* searing_flames;
   } spell;
-  
+
   // Cached pointer for ascendance / normal white melee
   shaman_melee_attack_t* melee_mh;
   shaman_melee_attack_t* melee_oh;
@@ -313,7 +313,7 @@ struct shaman_t : public player_t
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
-    
+
     melee_mh = 0;
     melee_oh = 0;
     ascendance_mh = 0;
@@ -1889,23 +1889,23 @@ struct auto_attack_t : public shaman_melee_attack_t
     parse_options( options, options_str );
 
     assert( p() -> main_hand_weapon.type != WEAPON_NONE );
-    
+
     p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons );
     p() -> melee_mh      -> school = SCHOOL_PHYSICAL;
     p() -> ascendance_mh = new melee_t( "windlash_main_hand", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), sync_weapons );
     p() -> ascendance_mh -> school = SCHOOL_NATURE;
-    
+
     p() -> main_hand_attack = p() -> melee_mh;
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE && p() -> specialization() == SHAMAN_ENHANCEMENT )
     {
       if ( ! p() -> dual_wield() ) return;
-      
+
       p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons );
       p() -> melee_oh -> school = SCHOOL_PHYSICAL;
       p() -> ascendance_oh = new melee_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), sync_weapons );
       p() -> ascendance_oh -> school = SCHOOL_NATURE;
-      
+
       p() -> off_hand_attack = p() -> melee_mh;
     }
 
@@ -2057,7 +2057,7 @@ struct stormstrike_t : public shaman_melee_attack_t
       if ( !shock && stormstrike_oh ) trigger_static_shock( this );
     }
   }
-  
+
   bool ready()
   {
     if ( p() -> buff.ascendance -> check() )
@@ -2120,7 +2120,7 @@ struct stormblast_t : public shaman_melee_attack_t
       if ( ! shock && stormblast_oh ) trigger_static_shock( this );
     }
   }
-  
+
   bool ready()
   {
     if ( ! p() -> buff.ascendance -> check() )
@@ -2347,7 +2347,7 @@ struct chain_lightning_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   void execute()
   {
     shaman_spell_t::execute();
@@ -2421,7 +2421,7 @@ struct lava_beam_t : public shaman_spell_t
       dtr_action -> is_dtr_action = true;
     }
   }
-  
+
   virtual double action_multiplier()
   {
     double m = shaman_spell_t::action_multiplier();
@@ -3184,11 +3184,11 @@ struct ascendance_t : public shaman_spell_t
     harmful = false;
     stateless = true;
   }
-  
+
   virtual void execute()
   {
     shaman_spell_t::execute();
-    
+
     p() -> buff.ascendance -> trigger();
   }
 };
@@ -3825,11 +3825,11 @@ struct ascendance_buff_t : public buff_t
     buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
     lava_burst( 0 )
   { }
-  
+
   void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
   {
-    // Presume that ascendance trigger and expiration will not reset the swing 
-    // timer, so we need to cancel and reschedule autoattack with the 
+    // Presume that ascendance trigger and expiration will not reset the swing
+    // timer, so we need to cancel and reschedule autoattack with the
     // remaining swing time of main/off hands
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -3843,11 +3843,11 @@ struct ascendance_buff_t : public buff_t
       player -> main_hand_attack = mh;
       if ( time_to_hit != timespan_t::zero() )
       {
-        // Kick off the new main hand attack, by instantly scheduling 
-        // and rescheduling it to the remaining time to hit. We cannot use 
-        // normal reschedule mechanism here (i.e., simply use 
-        // event_t::reschedule() and leave it be), because the rescheduled 
-        // event would be triggered before the full swing time (of the new 
+        // Kick off the new main hand attack, by instantly scheduling
+        // and rescheduling it to the remaining time to hit. We cannot use
+        // normal reschedule mechanism here (i.e., simply use
+        // event_t::reschedule() and leave it be), because the rescheduled
+        // event would be triggered before the full swing time (of the new
         // auto attack) in most cases.
         player -> main_hand_attack -> base_execute_time = timespan_t::zero();
         player -> main_hand_attack -> schedule_execute();
@@ -3867,11 +3867,11 @@ struct ascendance_buff_t : public buff_t
         player -> off_hand_attack = oh;
         if ( time_to_hit != timespan_t::zero() )
         {
-          // Kick off the new off hand attack, by instantly scheduling 
-          // and rescheduling it to the remaining time to hit. We cannot use 
-          // normal reschedule mechanism here (i.e., simply use 
-          // event_t::reschedule() and leave it be), because the rescheduled 
-          // event would be triggered before the full swing time (of the new 
+          // Kick off the new off hand attack, by instantly scheduling
+          // and rescheduling it to the remaining time to hit. We cannot use
+          // normal reschedule mechanism here (i.e., simply use
+          // event_t::reschedule() and leave it be), because the rescheduled
+          // event would be triggered before the full swing time (of the new
           // auto attack) in most cases.
           player -> off_hand_attack -> base_execute_time = timespan_t::zero();
           player -> off_hand_attack -> schedule_execute();
@@ -3881,7 +3881,7 @@ struct ascendance_buff_t : public buff_t
       }
     }
     // Elemental simply changes the Lava Burst cooldown, Lava Beam replacement
-    // will be handled by action list and ready() in Chain Lightning / Lava 
+    // will be handled by action list and ready() in Chain Lightning / Lava
     // Beam
     else if ( player -> specialization() == SHAMAN_ELEMENTAL )
     {
@@ -4423,7 +4423,7 @@ void shaman_t::init_actions()
     if ( level >= 58 ) single_s << "/earth_elemental_totem";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
-    
+
     // AoE
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>5";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=5";
@@ -4461,7 +4461,7 @@ void shaman_t::init_actions()
         single_s << ",if=cooldown.lava_burst.remains=0";
     }
     single_s << "/lightning_bolt";
-    
+
     // AoE
     if ( level >= 36 ) aoe_s << "/magma_totem,if=num_targets>2";
     if ( level >= 16 ) aoe_s << "/searing_totem,if=num_targets<=2";

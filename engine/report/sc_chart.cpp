@@ -558,7 +558,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name;
       http::format( formatted_name, p -> name_str );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), (int)i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_text_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += "&amp;";
     if ( first )
@@ -809,7 +809,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       util::urlencode( util::str_to_utf8( formatted_name ) );
 
       snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
-                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ).c_str(), (int)i ); s += buffer;
+                st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_text_color( st -> player ).c_str(), ( int )i ); s += buffer;
     }
     s += "&amp;";
     if ( chart==0 )
@@ -1221,7 +1221,7 @@ std::string chart::scale_factors( player_t* p )
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
     snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1", ( i?"|":"" ),
-              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(), (int)i ); s += buffer;
+              p -> sim -> report_precision, factor, name, class_text_color( p -> type ).c_str(), ( int )i ); s += buffer;
   }
 
   s += "&amp;";

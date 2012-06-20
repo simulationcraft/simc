@@ -718,7 +718,7 @@ struct mage_spell_t : public spell_t
   mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void parse_options( option_t*          options,
-                                    const std::string& options_str )
+                              const std::string& options_str )
   {
     option_t base_options[] =
     {

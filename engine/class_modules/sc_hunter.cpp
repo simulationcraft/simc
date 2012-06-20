@@ -746,7 +746,7 @@ struct hunter_action_t : public Base
   typedef hunter_action_t base_t;
 
   hunter_action_t( const std::string& n, hunter_t* player,
-                       const spell_data_t* s = spell_data_t::nil() ) :
+                   const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s )
   {
 
@@ -839,7 +839,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     double am = base_t::action_multiplier();
 
     if (  p -> buffs.beast_within -> up() )
-     am *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
+      am *= 1.0 + p -> buffs.beast_within -> data().effectN( 2 ).percent();
 
     if ( cast_td() -> dots_serpent_sting -> ticking )
       am *= 1.0 + p -> talents.noxious_stings -> effectN( 1 ).percent();
@@ -2922,7 +2922,7 @@ struct hunter_pet_spell_t : public hunter_pet_action_t<spell_t>
 {
   hunter_pet_spell_t( const std::string& n, hunter_pet_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
-     base_t( n, player, s )
+    base_t( n, player, s )
   {
   }
 

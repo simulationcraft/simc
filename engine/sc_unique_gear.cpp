@@ -34,12 +34,12 @@ struct stat_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
 
     buff = stat_buff_creator_t( p, name_str )
-             .max_stack( max_stack )
-             .duration( duration )
-             .cd( cooldown )
-             .chance( proc_chance )
-             .reverse( r )
-             .activated( activated )
+           .max_stack( max_stack )
+           .duration( duration )
+           .cd( cooldown )
+           .chance( proc_chance )
+           .reverse( r )
+           .activated( activated )
            .stat( stat )
            .amount( amount );
   }
@@ -116,12 +116,12 @@ struct cost_reduction_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
 
     buff = cost_reduction_buff_creator_t( p, name_str )
-             .max_stack( max_stacks )
-             .duration( duration )
-             .cd( cooldown )
-             .chance( proc_chance )
-             .reverse( reverse )
-             .activated( activated )
+           .max_stack( max_stacks )
+           .duration( duration )
+           .cd( cooldown )
+           .chance( proc_chance )
+           .reverse( reverse )
+           .activated( activated )
            .amount( amount )
            .school( school )
            .refreshes( refreshes );
@@ -391,11 +391,11 @@ struct stat_discharge_proc_callback_t : public action_callback_t
     if ( proc_chance == 0 ) proc_chance = 1;
 
     buff = stat_buff_creator_t( p, n )
-             .max_stack( ms )
-             .duration( duration )
-             .cd( cooldown )
-             .chance( proc_chance )
-             .activated( activated )
+           .max_stack( ms )
+           .duration( duration )
+           .cd( cooldown )
+           .chance( proc_chance )
+           .activated( activated )
            .stat( stat )
            .amount( stat_amount );
 
@@ -531,7 +531,7 @@ static void register_touch_of_the_grave( player_t* p )
   {
     touch_of_the_grave_proc_callback_t( player_t* p, const spell_data_t* s ) :
       discharge_proc_callback_base_t( "touch_of_the_grave", p, new touch_of_the_grave_discharge_spell_t( p, s ),
-                                 0, s -> proc_chance(), timespan_t::from_seconds( 15.0 ) )
+                                      0, s -> proc_chance(), timespan_t::from_seconds( 15.0 ) )
     { }
   };
 
@@ -706,7 +706,7 @@ static void register_heart_of_ignacious( item_t* item )
       stat_proc_callback_t( "heart_of_ignacious", p, STAT_SPELL_POWER, 5, h ? 87 : 77, 1.0, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 2.0 ), timespan_t::zero(), false, false ), heroic( h )
     {
       haste_buff = stat_buff_creator_t( p, "hearts_judgement" )
-                                        .max_stack( 5 ).duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) )
+                   .max_stack( 5 ).duration( timespan_t::from_seconds( 20.0 ) ).cd( timespan_t::from_seconds( 120.0 ) )
                    .stat( STAT_HASTE_RATING ).amount( heroic ? 363 : 321 );
     }
 
@@ -1745,11 +1745,11 @@ static void register_titahk( item_t* item )
     {
       timespan_t duration = buff -> duration();
       buff_self   = stat_buff_creator_t( p, "titahk_self" ).duration( duration )
-                      .cd( timespan_t::from_seconds( 45.0 ) ) // FIXME: Confirm ICD
+                    .cd( timespan_t::from_seconds( 45.0 ) ) // FIXME: Confirm ICD
                     .stat( STAT_HASTE_RATING ).amount( buff -> effect1().base_value() );
 
       buff_radius = stat_buff_creator_t( p, "titahk_aoe" ).duration( duration )
-                      .cd( timespan_t::from_seconds( 45.0 ) )// FIXME: Confirm ICD
+                    .cd( timespan_t::from_seconds( 45.0 ) )// FIXME: Confirm ICD
                     .stat( STAT_HASTE_RATING ).amount( buff -> effect2().base_value() ); // FIXME: Apply aoe buff to other players
     }
 

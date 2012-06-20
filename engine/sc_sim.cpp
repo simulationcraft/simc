@@ -1134,7 +1134,7 @@ void sim_t::combat_begin()
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
-    if( m ) m -> combat_begin( this );
+    if ( m ) m -> combat_begin( this );
   }
 
   raid_event_t::combat_begin( this );
@@ -1217,7 +1217,7 @@ void sim_t::combat_end()
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
-    if( m ) m -> combat_end( this );
+    if ( m ) m -> combat_end( this );
   }
 
   raid_event_t::combat_end( this );

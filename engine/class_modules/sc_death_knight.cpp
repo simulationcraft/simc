@@ -1381,7 +1381,7 @@ struct death_knight_action_t : public Base
   typedef death_knight_action_t base_t;
 
   death_knight_action_t( const std::string& n, death_knight_t* p,
-                               const spell_data_t* s = spell_data_t::nil() ) :
+                         const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ),
     cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 )
   {
@@ -1421,7 +1421,7 @@ struct death_knight_action_t : public Base
         if ( p -> buffs.frost_presence -> check() )
         {
           p -> resource_gain( RESOURCE_RUNIC_POWER,
-              action_base_t::rp_gain * p -> dbc.spell( 48266 ) -> effect2().percent(),
+                              action_base_t::rp_gain * p -> dbc.spell( 48266 ) -> effect2().percent(),
                               p -> gains.frost_presence );
         }
         p -> resource_gain( RESOURCE_RUNIC_POWER, action_base_t::rp_gain, rp_gains );

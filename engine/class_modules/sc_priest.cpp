@@ -7,16 +7,16 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
-  // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
-  // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
+// The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
+// Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
 
-  namespace spells {}
-  namespace heals  {}
-  namespace pets   {}
+namespace spells {}
+namespace heals  {}
+namespace pets   {}
 
-  using namespace spells;
-  using namespace heals;
-  using namespace pets;
+using namespace spells;
+using namespace heals;
+using namespace pets;
 
 struct priest_t;
 
@@ -889,7 +889,7 @@ public:
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
 
   priest_action_t( const std::string& n, priest_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ) :
+                   const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s )
   {
     action_base_t::may_crit          = true;
@@ -3065,7 +3065,7 @@ struct cascade_base_t : public Base
   {
     int jump_counter;
     cascade_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-        jump_counter( 0 )
+      jump_counter( 0 )
     { }
   };
 
@@ -3132,7 +3132,7 @@ struct cascade_base_t : public Base
         {
           if ( action_base_t::sim -> debug )
             action_base_t::sim -> output( "%s action %s jumps to player %s",
-                action_base_t::player -> name(), action_base_t::name(), t -> name() );
+                                          action_base_t::player -> name(), action_base_t::name(), t -> name() );
 
 
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
@@ -4240,9 +4240,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     const spell_data_t* sd = p -> find_class_spell( "Mind Spike" );
 
     buffs.mind_spike = buff_creator_t( *this, "mind_spike", sd )
-                         .max_stack( sd -> effectN( 3 ).base_value() )
-                         .duration( sd -> effectN( 2 ).trigger() -> duration() )
-                         .default_value( sd -> effectN( 2 ).percent() );
+                       .max_stack( sd -> effectN( 3 ).base_value() )
+                       .duration( sd -> effectN( 2 ).trigger() -> duration() )
+                       .default_value( sd -> effectN( 2 ).percent() );
   }
   else
   {

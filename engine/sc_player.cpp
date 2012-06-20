@@ -629,7 +629,7 @@ bool player_t::init( sim_t* sim )
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     module_t* m = module_t::get( i );
-    if( m ) m -> init( sim );
+    if ( m ) m -> init( sim );
   }
 
   if ( sim -> debug )
@@ -666,12 +666,12 @@ bool player_t::init( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> init_weapon ( &(p -> main_hand_weapon) );
+    p -> init_weapon ( &( p -> main_hand_weapon ) );
   }
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
-    p -> init_weapon( &(p -> off_hand_weapon) );
+    p -> init_weapon( &( p -> off_hand_weapon ) );
   }
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions_bonus ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
@@ -1495,7 +1495,7 @@ void player_t::init_actions()
       modify_action         = modify_action.substr( 0, cut_pt );
     }
   }
-  
+
   std::vector<std::string> skip_actions;
   if ( ! action_list_skip.empty() )
   {
@@ -1728,14 +1728,14 @@ void player_t::init_buffs()
 
   // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
   buffs.blood_fury_ap = stat_buff_creator_t( this, "blood_fury_ap" )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15.0 ) )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 15.0 ) )
                         .stat( STAT_ATTACK_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
 
   buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp" )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 15.0 ) )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 15.0 ) )
                         .stat( STAT_SPELL_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
 
@@ -1760,8 +1760,8 @@ void player_t::init_buffs()
     lb_amount = 5;
 
   buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
-                      .max_stack( 1 )
-                      .duration( timespan_t::from_seconds( 20.0 ) )
+                    .max_stack( 1 )
+                    .duration( timespan_t::from_seconds( 20.0 ) )
                     .stat( STAT_HASTE_RATING )
                     .amount( lb_amount );
 
@@ -1769,9 +1769,9 @@ void player_t::init_buffs()
   struct potions_common_buff_creator
   {
     stat_buff_creator_t operator()( player_t* p,
-                               const std::string& n,
-                               timespan_t d = timespan_t::from_seconds( 25.0 ),
-                               timespan_t cd = timespan_t::from_seconds( 60.0 ) )
+                                    const std::string& n,
+                                    timespan_t d = timespan_t::from_seconds( 25.0 ),
+                                    timespan_t cd = timespan_t::from_seconds( 60.0 ) )
     {
       return ( stat_buff_creator_t ( p,  n + "_potion" )
                .max_stack( 1 )
@@ -4095,7 +4095,7 @@ void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
 // player_t::register_direct_harmful_spell_callback ================================
 
 void player_t::callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
-                                                             action_callback_t* cb )
+                                                                    action_callback_t* cb )
 {
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -4296,7 +4296,7 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
 {
   cooldown_t* c = find_cooldown( name );
 
-  if (!c )
+  if ( !c )
   {
     c = new cooldown_t( name, this );
 
@@ -4360,7 +4360,7 @@ proc_t* player_t::get_proc( const std::string& name )
 {
   proc_t* p = find_proc( name );
 
-  if( !p )
+  if ( !p )
   {
     p = new proc_t( sim, this, name );
 
@@ -5088,10 +5088,10 @@ struct use_item_t : public action_t
       if ( e.proc_chance == 0 ) e.proc_chance = 1;
 
       buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
-               .duration( e.duration )
-               .cd( timespan_t::zero() )
-               .chance( e.proc_chance )
-               .reverse( e.reverse )
+             .duration( e.duration )
+             .cd( timespan_t::zero() )
+             .chance( e.proc_chance )
+             .reverse( e.reverse )
              .stat( e.stat )
              .amount( e.stat_amount );
     }

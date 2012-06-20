@@ -1781,23 +1781,23 @@ public:
     buff_creator_basics_t( sim, name, s ) {}
 
   bufftype& duration( timespan_t d )
-  { _duration=d; return *(static_cast<bufftype*>( this )); }
+  { _duration=d; return *( static_cast<bufftype*>( this ) ); }
   bufftype& default_value( double v )
-  { _default_value=v; return *(static_cast<bufftype*>( this )); }
+  { _default_value=v; return *( static_cast<bufftype*>( this ) ); }
   bufftype& chance( double c )
-  { _chance=c; return *(static_cast<bufftype*>( this )); }
+  { _chance=c; return *( static_cast<bufftype*>( this ) ); }
   bufftype& max_stack( unsigned ms )
-  { _max_stack=ms; return *(static_cast<bufftype*>( this )); }
+  { _max_stack=ms; return *( static_cast<bufftype*>( this ) ); }
   bufftype& cd( timespan_t t )
-  { _cooldown=t; return *(static_cast<bufftype*>( this )); }
+  { _cooldown=t; return *( static_cast<bufftype*>( this ) ); }
   bufftype& reverse( bool r )
-  { _reverse=r; return *(static_cast<bufftype*>( this )); }
+  { _reverse=r; return *( static_cast<bufftype*>( this ) ); }
   bufftype& quiet( bool q )
-  { _quiet=q; return *(static_cast<bufftype*>( this )); }
+  { _quiet=q; return *( static_cast<bufftype*>( this ) ); }
   bufftype& activated( bool a )
-  { _activated=a; return *(static_cast<bufftype*>( this )); }
+  { _activated=a; return *( static_cast<bufftype*>( this ) ); }
   bufftype& spell( const spell_data_t* s )
-  { s_data=s; return *(static_cast<bufftype*>( this )); }
+  { s_data=s; return *( static_cast<bufftype*>( this ) ); }
 
 };
 

@@ -45,14 +45,14 @@ struct monk_t : public player_t
   // Buffs
   struct buffs_t
   {
-  // TODO: Finish Adding Buffs - will uncomment as implemented
-        //  buff_t* buffs_<buffname>;
-        //  buff_t* tiger_power;
-        //  buff_t* energizing_brew;
-        //  buff_t* zen_sphere;
-        //  buff_t* fortifying_brew;
-        //  buff_t* zen_meditation;
-        //  buff_t* path_of_blossoms;
+    // TODO: Finish Adding Buffs - will uncomment as implemented
+    //  buff_t* buffs_<buffname>;
+    //  buff_t* tiger_power;
+    //  buff_t* energizing_brew;
+    //  buff_t* zen_sphere;
+    //  buff_t* fortifying_brew;
+    //  buff_t* zen_meditation;
+    //  buff_t* path_of_blossoms;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
     buff_t* tiger_strikes;
@@ -82,37 +82,37 @@ struct monk_t : public player_t
   } proc;
 
   // Random Number Generation
-   struct rngs_t
-   {
-   } rng;
+  struct rngs_t
+  {
+  } rng;
 
   // Talents
   struct talents_t
   {
 //  TODO: Implement
-        //   const spell_data_t* celerity;
-        //   const spell_data_t* tigers_lust;
-        //   const spell_data_t* momentum;
+    //   const spell_data_t* celerity;
+    //   const spell_data_t* tigers_lust;
+    //   const spell_data_t* momentum;
 
-        //   const spell_data_t* chi_wave;
-        //   const spell_data_t* zen_sphere;
-        //   const spell_data_t* chi_burst;
+    //   const spell_data_t* chi_wave;
+    //   const spell_data_t* zen_sphere;
+    //   const spell_data_t* chi_burst;
 
-        //   const spell_data_t* power_strikes;
+    //   const spell_data_t* power_strikes;
     const spell_data_t* ascension;
-        //   const spell_data_t* chi_brew;
+    //   const spell_data_t* chi_brew;
 
-        //   const spell_data_t* deadly_reach;
-        //   const spell_data_t* charging_ox_wave;
-        //   const spell_data_t* leg_sweep;
+    //   const spell_data_t* deadly_reach;
+    //   const spell_data_t* charging_ox_wave;
+    //   const spell_data_t* leg_sweep;
 
-        //   const spell_data_t* healing_elixers;
-        //   const spell_data_t* dampen_harm;
-        //   const spell_data_t* diffuse_magic;
+    //   const spell_data_t* healing_elixers;
+    //   const spell_data_t* dampen_harm;
+    //   const spell_data_t* diffuse_magic;
 
-        //   const spell_data_t* rushing_jade_wind;
-        //   const spell_data_t* invoke_zuen;
-        //   const spell_data_t* chi_torpedo;
+    //   const spell_data_t* rushing_jade_wind;
+    //   const spell_data_t* invoke_zuen;
+    //   const spell_data_t* chi_torpedo;
   } talent;
 
   // Specialization
@@ -235,7 +235,7 @@ struct monk_action_t : public Base
   typedef monk_action_t base_t;
 
   monk_action_t( const std::string& n, monk_t* player,
-                       const spell_data_t* s = spell_data_t::nil() ) :
+                 const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
   {
@@ -308,14 +308,14 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   }
 
   virtual double swing_haste()
-   {
-     double haste = base_t::swing_haste();
+  {
+    double haste = base_t::swing_haste();
 
-     if ( !player -> dual_wield() )
-       haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
+    if ( !player -> dual_wield() )
+      haste *= 1.0 / ( 1.0 + p() -> spec.way_of_the_monk -> effectN( 2 ).percent() );
 
-     return haste;
-   }
+    return haste;
+  }
 
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
   // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
@@ -341,7 +341,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( sim -> debug )
       {
         sim -> output( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                     player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, weapon_speed.total_seconds(), power_damage, ap );
+                       player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, weapon_speed.total_seconds(), power_damage, ap );
       }
     }
 
@@ -365,7 +365,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( sim -> debug )
       {
         sim -> output( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                     player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
+                       player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, weapon_speed.total_seconds(), ap );
       }
     }
 
@@ -436,8 +436,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_options( 0, options_str );
     stancemask = STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER;
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-    mh = &(player -> main_hand_weapon) ;
-    oh = &(player -> off_hand_weapon) ;
+    mh = &( player -> main_hand_weapon ) ;
+    oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 5.0; // hardcoded into tooltip
   }
 
@@ -556,8 +556,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( 0, options_str );
     stancemask = STANCE_FIERCE_TIGER;
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-    mh = &(player -> main_hand_weapon) ;
-    oh = &(player -> off_hand_weapon) ;
+    mh = &( player -> main_hand_weapon ) ;
+    oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 14.4; // hardcoded into tooltip
   }
 
@@ -599,8 +599,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       direct_tick = true;
       aoe = -1;
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-      mh = &(player -> main_hand_weapon) ;
-      oh = &(player -> off_hand_weapon) ;
+      mh = &( player -> main_hand_weapon ) ;
+      oh = &( player -> off_hand_weapon ) ;
       base_multiplier = 2.27; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
@@ -674,8 +674,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
       base_tick_time = timespan_t::from_seconds( 1.0 );
       direct_tick = true;
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
-      mh = &(player -> main_hand_weapon) ;
-      oh = &(player -> off_hand_weapon) ;
+      mh = &( player -> main_hand_weapon ) ;
+      oh = &( player -> off_hand_weapon ) ;
       base_multiplier = 7.56; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
@@ -695,7 +695,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     school = SCHOOL_PHYSICAL;
 
 
-  fists_of_fury_tick = new fists_of_fury_tick_t( p );
+    fists_of_fury_tick = new fists_of_fury_tick_t( p );
   }
 
   virtual void init()
@@ -705,7 +705,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     fists_of_fury_tick -> stats = stats;
   }
 
- virtual void tick( dot_t* d )
+  virtual void tick( dot_t* d )
   {
     if ( fists_of_fury_tick )
       fists_of_fury_tick -> execute();
@@ -730,7 +730,7 @@ struct melee_t : public monk_melee_attack_t
     may_glance  = true;
     if ( player -> dual_wield() )
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN(2).percent();
+    base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
 
   virtual timespan_t execute_time()
@@ -761,7 +761,7 @@ struct melee_t : public monk_melee_attack_t
     monk_melee_attack_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-     p() -> buff.tiger_strikes -> trigger( 4 );
+      p() -> buff.tiger_strikes -> trigger( 4 );
   }
 };
 
@@ -785,7 +785,7 @@ struct auto_attack_t : public monk_melee_attack_t
     p() -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
     p() -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
 
-    if ( player -> off_hand_weapon.type != WEAPON_NONE)
+    if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
       if ( ! player -> dual_wield() ) return;
 
@@ -957,7 +957,7 @@ void monk_t::init_spells()
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
- // spec.leather_specialization = find_specialization_spell( "Leather Specialization" ); TODO: implement for hybrid and remove hardcoding
+// spec.leather_specialization = find_specialization_spell( "Leather Specialization" ); TODO: implement for hybrid and remove hardcoding
 
   //SPELLS
 
@@ -1037,7 +1037,7 @@ void monk_t::init_gains()
   player_t::init_gains();
 
   gain.chi = get_gain( "chi" );
-  gain.combo_breaker_savings = get_gain( "Combo Breaker Savings");
+  gain.combo_breaker_savings = get_gain( "Combo Breaker Savings" );
 }
 
 // monk_t::init_procs =======================================================
@@ -1083,7 +1083,7 @@ void monk_t::init_actions()
       // Flask
       if ( level > 85 )
         precombat += "/flask,type=warm_sun";
-      else if ( level >= 80 && specialization() == MONK_MISTWEAVER)
+      else if ( level >= 80 && specialization() == MONK_MISTWEAVER )
         precombat += "/flask,type=draconic_mind";
       else
         precombat += "/flask,type=winds";
@@ -1102,17 +1102,17 @@ void monk_t::init_actions()
 
       action_list_str += "/auto_attack";
 
-        action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
-        action_list_str += "/fists_of_fury";
-        action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
-        action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.up";
-        action_list_str += "/rising_sun_kick,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
+      action_list_str += "/fists_of_fury";
+      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
+      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.up";
+      action_list_str += "/rising_sun_kick,if=cooldown.fists_of_fury.remains";
 
-        action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
-        action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
-   //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
-        action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
-        action_list_str += "/jab";
+      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
+      action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
+      //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
+      action_list_str += "/jab";
 
 
       break;

@@ -1179,7 +1179,7 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
 // SPELLS
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
-  
+
 struct warlock_heal_t : public heal_t
 {
   warlock_heal_t( const std::string& n, warlock_t* p, const uint32_t id ) :
@@ -1355,12 +1355,12 @@ public:
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
-  }  
-  
+  }
+
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
-      || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
+           || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
     {
       td -> soc_trigger -= amount;
       if ( td -> soc_trigger <= 0 )
@@ -1370,7 +1370,7 @@ public:
       }
     }
     if ( ( ( td -> dots_soulburn_seed_of_corruption -> action && id == td -> dots_soulburn_seed_of_corruption -> action -> id )
-      || td -> dots_soulburn_seed_of_corruption -> ticking ) && td -> soulburn_soc_trigger > 0 )
+           || td -> dots_soulburn_seed_of_corruption -> ticking ) && td -> soulburn_soc_trigger > 0 )
     {
       td -> soulburn_soc_trigger -= amount;
       if ( td -> soulburn_soc_trigger <= 0 )
