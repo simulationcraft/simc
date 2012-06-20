@@ -3066,7 +3066,7 @@ void mage_t::init_actions()
     // Counterspell
     action_list_str += "/counterspell";
     // Refresh Gem during invuln phases
-    //if ( level >= 48 ) action_list_str += "/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react";
+    if ( level >= 48 ) action_list_str += "/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react";
     // Arcane Choose Rotation
     if ( specialization() == MAGE_ARCANE )
     {

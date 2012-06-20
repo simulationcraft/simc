@@ -644,7 +644,48 @@ bool player_t::init( sim_t* sim )
       p -> action_list_str.clear();
     };
     p -> init();
+    p -> initialized = 1;
   }
+
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_target ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_race ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_talents ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_glyphs ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::replace_spells ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rating ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_racials ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_position ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_core ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spell ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_attack ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[ i ];
+    p -> init_weapon ( &(p -> main_hand_weapon) );
+  }
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    player_t* p = sim -> actor_list[ i ];
+    p -> init_weapon( &(p -> off_hand_weapon) );
+  }
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_professions_bonus ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_enchant ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_buffs ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_values ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_actions ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_uptimes ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_benefits ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rng ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_stats ) );
 
   if ( ! check_actors( sim ) )
     return false;
@@ -683,7 +724,7 @@ void player_t::init()
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
   }
 
-  initialized = 1;
+/*  initialized = 1;
   init_target();
   init_race();
   init_talents();
@@ -714,7 +755,7 @@ void player_t::init()
   init_uptimes();
   init_benefits();
   init_rng();
-  init_stats();
+  init_stats();*/
 }
 
 // player_t::init_base ======================================================
