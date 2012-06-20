@@ -3217,6 +3217,12 @@ struct halo_base_t : public Base
     action_base_t::parse_options( NULL, options_str );
     action_base_t::aoe = -1;
 
+    if ( p -> talents.halo == &spell_data_not_found_t::singleton )
+    {
+      action_base_t::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), action_base_t::name() );
+      action_base_t::background = true; // prevent action from being executed
+    }
+
     if ( heal_data != spell_data_t::nil() ) // Parse heal data if available
     {
       action_base_t::parse_effect_data( heal_data -> effectN( 1 ) );
