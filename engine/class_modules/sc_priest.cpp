@@ -3232,7 +3232,8 @@ struct halo_base_t : public Base
 
     double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
 
-    double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
+    //double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
+    double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 + 0.015 * distance;
 
     return ctdm * mult;
   }
