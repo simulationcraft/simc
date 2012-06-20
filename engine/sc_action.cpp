@@ -601,6 +601,28 @@ double action_t::resistance()
   return 0;
 }
 
+// action_t::crit_chance ====================================================
+
+double action_t::crit_chance( double crit, int delta_level )
+{
+  double chance = crit;
+
+  if ( target -> is_enemy() || target -> is_add() )
+  {
+    // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
+    // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+    if ( delta_level > 0 )
+    {
+      chance -= 0.01 * delta_level ;
+    }
+  }
+
+  if ( chance < 0.0 )
+    chance = 0.0;
+
+  return chance;
+}
+
 // action_t::total_crit_bonus ===============================================
 
 double action_t::total_crit_bonus()

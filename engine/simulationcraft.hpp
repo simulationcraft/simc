@@ -4118,7 +4118,7 @@ struct action_t
   virtual double  parry_chance( double /* expertise */, int /* delta_level */ ) { return 0; }
   virtual double glance_chance( int /* delta_level */ ) { return 0; }
   virtual double  block_chance( int /* delta_level */ ) { return 0; }
-  virtual double   crit_chance( double /* crit */, int /* delta_level */ ) { return 0; }
+  virtual double   crit_chance( double /* crit */, int /* delta_level */ );
 
   virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }
   virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
@@ -4283,7 +4283,6 @@ struct attack_t : public action_t
   virtual double   miss_chance( double hit, int delta_level );
   virtual double  block_chance( int /* delta_level */ ) { return 0.0; }
   virtual double  crit_block_chance( int delta_level );
-  virtual double   crit_chance( double crit, int delta_level );
 
   /* New stuffs */
   virtual double composite_hit()
@@ -4349,7 +4348,6 @@ struct spell_base_t : public action_t
   virtual void   player_buff();
   virtual result_e   calculate_result( double, unsigned );
   virtual void   execute();
-  virtual double crit_chance( double crit, int delta_level );
   virtual void   schedule_execute();
   virtual void   init();
 

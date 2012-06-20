@@ -74,13 +74,6 @@ void spell_base_t::player_buff()
                                      name(), player_crit );
 }
 
-// spell_base_t::crit_chance =====================================================
-
-double spell_base_t::crit_chance( double crit, int /* delta_level */ )
-{
-  return crit;
-}
-
 // spell_base_t::calculate_result ================================================
 
 result_e spell_base_t::calculate_result( double crit, unsigned target_level )

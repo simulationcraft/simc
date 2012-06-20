@@ -132,32 +132,6 @@ double attack_t::crit_block_chance( int /* delta_level */ )
   return 0;
 }
 
-// attack_t::crit_chance ====================================================
-
-double attack_t::crit_chance( double crit, int delta_level )
-{
-  double chance = crit;
-
-  if ( target -> is_enemy() || target -> is_add() )
-  {
-    if ( delta_level > 2 )
-    {
-      chance -= ( 0.03 + ( delta_level * 0.006 ) );
-    }
-    else
-    {
-      chance -= ( delta_level * 0.002 );
-    }
-  }
-  else
-  {
-    // FIXME: Assume 0.2% per level
-    chance -= delta_level * 0.002;
-  }
-
-  return chance;
-}
-
 // attack_t::build_table ====================================================
 
 int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
