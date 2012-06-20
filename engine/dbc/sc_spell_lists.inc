@@ -726,7 +726,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104773, // Unending Resolve
            0,
     },
-    // Affliction tree, 10 abilities
+    // Affliction tree, 11 abilities
     {
          980, // Agony
        18223, // Curse of Exhaustion
@@ -734,6 +734,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1120, // Drain Soul
        48181, // Haunt
       103103, // Malefic Grasp
+      114790, // Seed of Corruption (Soulburn)
        27243, // Seed of Corruption
        86121, // Soul Swap
        74434, // Soulburn

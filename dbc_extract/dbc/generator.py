@@ -967,7 +967,7 @@ class SpellDataGenerator(DataGenerator):
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        ( ( 85692, 5 ), ( 115422, 2, True ), ( 104025, 2, True ), ( 104232, 3, True ) ),     # Warlock: doomguard doom bolt, void ray, immolation aura, destruction rain of fire
+        ( ( 85692, 5 ), ( 115422, 2, True ), ( 104025, 2, True ), ( 104232, 3, True ), ( 114790, 1 ), ( 87385, 1 ) ), # Warlock: doomguard doom bolt, void ray, immolation aura, destruction rain of fire, soulburn seed of corruption
         ( ( 118864, 3 ), ( 116768, 3 ) ), # Monk:
         ( ( 93402, 1, True ), ( 106996, 1, True ), ( 112071, 1, True ), ), # Druid: Whitelist Sunfire
     ]

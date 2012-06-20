@@ -22,6 +22,7 @@ struct warlock_td_t : public actor_pair_t
   dot_t*  dots_shadowflame;
   dot_t*  dots_malefic_grasp;
   dot_t*  dots_seed_of_corruption;
+  dot_t*  dots_soulburn_seed_of_corruption;
   dot_t*  dots_rain_of_fire;
 
   buff_t* debuffs_haunt;
@@ -29,7 +30,7 @@ struct warlock_td_t : public actor_pair_t
   bool ds_started_below_20;
   int shadowflame_stack;
   int agony_stack;
-  double soc_trigger;
+  double soc_trigger, soulburn_soc_trigger;
 
   warlock_td_t( player_t* target, warlock_t* source );
 
@@ -39,6 +40,7 @@ struct warlock_td_t : public actor_pair_t
     shadowflame_stack = 1;
     agony_stack = 1;
     soc_trigger = 0;
+    soulburn_soc_trigger = 0;
   }
 };
 
@@ -170,7 +172,6 @@ struct warlock_t : public player_t
     gain_t* rain_of_fire;
     gain_t* immolate;
     gain_t* fel_flame;
-    gain_t* seed_of_corruption;
     gain_t* shadowburn;
     gain_t* miss_refund;
   } gains;
@@ -357,6 +358,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   dots_shadowflame         = target -> get_dot( "shadowflame", p );
   dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
   dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
+  dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
   dots_rain_of_fire        = target -> get_dot( "rain_of_fire", p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
@@ -1258,8 +1260,6 @@ public:
     return spell_t::ready();
   }
 
-  static void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount, bool force = false );
-
   virtual void tick( dot_t* d )
   {
     spell_t::tick( d );
@@ -1355,6 +1355,30 @@ public:
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
+  }  
+  
+  void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
+  {
+    if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
+      || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
+    {
+      td -> soc_trigger -= amount;
+      if ( td -> soc_trigger <= 0 )
+      {
+        p -> seed_of_corruption_aoe -> execute();
+        td -> dots_seed_of_corruption -> cancel();
+      }
+    }
+    if ( ( ( td -> dots_soulburn_seed_of_corruption -> action && id == td -> dots_soulburn_seed_of_corruption -> action -> id )
+      || td -> dots_soulburn_seed_of_corruption -> ticking ) && td -> soulburn_soc_trigger > 0 )
+    {
+      td -> soulburn_soc_trigger -= amount;
+      if ( td -> soulburn_soc_trigger <= 0 )
+      {
+        p -> soulburn_seed_of_corruption_aoe -> execute();
+        td -> dots_soulburn_seed_of_corruption -> cancel();
+      }
+    }
   }
 
   void consume_tick_resource( dot_t* d )
@@ -2894,15 +2918,21 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     background = true;
     aoe        = -1;
   }
-};
 
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    p() -> soulburn_seed_of_corruption_aoe -> stats = stats;
+  }
+};
 
 struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
 {
   corruption_t* corruption;
 
   soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ), corruption( new corruption_t( p, true ) )
+    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 87385 ) ), corruption( new corruption_t( p, true ) )
   {
     dual       = true;
     background = true;
@@ -2911,20 +2941,6 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> dual = true;
     corruption -> may_miss = false;
     corruption -> base_costs[ RESOURCE_MANA ] = 0;
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    stats = p() -> seed_of_corruption_aoe -> stats;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.seed_of_corruption );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2936,59 +2952,16 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
   }
 };
 
-
-struct soc_state_t : public action_state_t
+struct soulburn_seed_of_corruption_t : public warlock_spell_t
 {
-  bool soulburned;
+  double coefficient;
 
-  soc_state_t( action_t* spell, player_t* target ) :
-    action_state_t( spell, target ), soulburned( false )
-  {
-  }
-
-  virtual void copy_state( const action_state_t* s )
-  {
-    action_state_t::copy_state( s );
-    soulburned = ( s != 0 ) ? debug_cast< const soc_state_t* >( s ) -> soulburned : false;
-  }
-};
-
-
-void warlock_spell_t::trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount, bool force )
-{
-  if ( ( force || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
-  {
-    td -> soc_trigger -= amount;
-    if ( td -> soc_trigger <= 0 )
-    {
-      if ( debug_cast< soc_state_t* >( td -> dots_seed_of_corruption -> state ) -> soulburned )
-      {
-        p -> soulburn_seed_of_corruption_aoe -> execute();
-      }
-      else
-      {
-        p -> seed_of_corruption_aoe -> execute();
-      }
-      td -> dots_seed_of_corruption -> cancel();
-    }
-  }
-}
-
-
-struct seed_of_corruption_t : public warlock_spell_t
-{
-  action_state_t* new_state() { return new soc_state_t( this, target ); }
-
-  seed_of_corruption_t( warlock_t* p ) :
-    warlock_spell_t( p, "Seed of Corruption" )
+  soulburn_seed_of_corruption_t( warlock_t* p, double coeff ) :
+    warlock_spell_t( "soulburn_seed_of_corruption", p, p -> find_spell( 114790 ) ), coefficient( coeff )
   {
     may_crit = false;
+    background = true;
     tick_power_mod = 0.3;
-
-    if ( ! p -> seed_of_corruption_aoe )          p -> seed_of_corruption_aoe          = new seed_of_corruption_aoe_t( p );
-    if ( ! p -> soulburn_seed_of_corruption_aoe ) p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
-
-    add_child( p -> seed_of_corruption_aoe );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2996,28 +2969,53 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> soc_trigger = data().effectN( 3 ).base_value() + s -> composite_power() * data().effectN( 3 ).coeff();
+      td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * coefficient;
+  }
+};
+
+struct seed_of_corruption_t : public warlock_spell_t
+{
+  soulburn_seed_of_corruption_t* soulburn_spell;
+
+  seed_of_corruption_t( warlock_t* p ) :
+    warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ), soulburn_spell( new soulburn_seed_of_corruption_t( p, data().effectN( 3 ).coeff() ) )
+  {
+    may_crit = false;
+    tick_power_mod = 0.3;
+
+    if ( ! p -> seed_of_corruption_aoe ) p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    if ( ! p -> soulburn_seed_of_corruption_aoe ) p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
+
+    add_child( p -> seed_of_corruption_aoe );
   }
 
-  virtual void snapshot_state( action_state_t* state, uint32_t flags )
+  virtual void init()
   {
-    warlock_spell_t::snapshot_state( state, flags );
-    if ( flags != update_flags ) debug_cast< soc_state_t* >( state ) -> soulburned = ( p() -> buffs.soulburn -> up() ) ? true : false;
+    warlock_spell_t::init();
+
+    soulburn_spell -> stats = stats;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * data().effectN( 3 ).coeff();
   }
 
   virtual void execute()
   {
-    warlock_spell_t::execute();
-
-    if ( p() -> buffs.soulburn -> check() )
+    if ( p() -> buffs.soulburn -> up() )
+    {
       p() -> buffs.soulburn -> expire();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    spell_t::tick( d );
-
-    trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount, true );
+      soulburn_spell -> target = target;
+      soulburn_spell -> execute();
+    }
+    else
+    {
+      warlock_spell_t::execute();
+    }
   }
 };
 
@@ -3286,24 +3284,14 @@ struct soul_swap_t : public warlock_spell_t
       p() -> soul_swap_state.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
       p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking > 0;
       p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking > 0;
-
-      // Seed of Corruption is only soul swapped if it's not soulburned
-      if ( td( target ) -> dots_seed_of_corruption -> ticking
-           && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
-        p() -> soul_swap_state.seed_of_corruption = true;
-      else
-        p() -> soul_swap_state.seed_of_corruption = false;
+      p() -> soul_swap_state.seed_of_corruption  = td( target ) -> dots_seed_of_corruption -> ticking > 0;
 
       if ( ! p() -> glyphs.soul_swap -> ok() )
       {
         td( target ) -> dots_agony -> cancel();
         td( target ) -> dots_corruption -> cancel();
         td( target ) -> dots_unstable_affliction -> cancel();
-
-        // Seed of Corruption is only soul swapped if it's not soulburned
-        if ( td( target ) -> dots_seed_of_corruption -> ticking
-             && ! debug_cast< soc_state_t* >( td( target ) -> dots_seed_of_corruption -> state ) -> soulburned )
-          td( target ) -> dots_seed_of_corruption -> cancel();
+        td( target ) -> dots_seed_of_corruption -> cancel();
       }
     }
   }
@@ -4299,7 +4287,6 @@ void warlock_t::init_gains()
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
   gains.fel_flame          = get_gain( "fel_flame"    );
-  gains.seed_of_corruption = get_gain( "seed_of_corruption" );
   gains.shadowburn         = get_gain( "shadowburn" );
   gains.miss_refund        = get_gain( "miss_refund" );
 }
@@ -4484,11 +4471,11 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Soulburn",              "if=buff.soulburn.down&!action.seed_of_corruption.in_flight_to_target&!dot.seed_of_corruption.ticking&!dot.corruption.ticking", "aoe" );
-      add_action( "Seed of Corruption",    "if=buff.soulburn.up",                                                                                                          "aoe" );
-      add_action( "Seed of Corruption",    "cycle_targets=1,if=!in_flight_to_target&!ticking",                                                                             "aoe" );
-      add_action( "Life Tap",              "if=mana.pct<70",                                                                                                               "aoe" );
-      add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                                                                                      "aoe" );
+      add_action( "Soulburn",              "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&!action.corruption.in_flight", "aoe" );
+      add_action( "Seed of Corruption",    "cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&!action.corruption.in_flight)", "aoe" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time", "aoe" );
+      add_action( "Life Tap",              "if=mana.pct<70",                                                                     "aoe" );
+      add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                                            "aoe" );
       break;
 
     case WARLOCK_DESTRUCTION:
