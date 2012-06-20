@@ -283,7 +283,7 @@ struct priest_t : public player_t
   {
     target_data.init( "target_data", this );
 
-    initial.distance                     = 40.0;
+    initial.distance                     = 27.0;
 
     cooldowns.mind_blast                 = get_cooldown( "mind_blast" );
     cooldowns.shadowfiend                = get_cooldown( "shadowfiend" );
@@ -3156,6 +3156,18 @@ struct cascade_base_t : public Base
       cs -> jump_counter = 0;
     }
   }
+
+  virtual double composite_target_da_multiplier( player_t* t )
+  {
+    double ctdm = action_base_t::composite_target_da_multiplier( t );
+
+    double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
+    if ( distance >= 30.0 )
+      return ctdm;
+
+    // 40% damage at 0 yards, 100% at 30, scaling linearly
+    return ctdm * ( 0.4 + 0.6 * distance / 30.0 );
+  }
 };
 
 struct cascade_damage_t : public cascade_base_t<priest_spell_t>
@@ -3187,6 +3199,67 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
     { if ( t != action_base_t::target ) targets.push_back( t ); }
   }
 };
+
+
+// Halo Spell
+
+template <class Base>
+struct halo_base_t : public Base
+{
+  typedef Base action_base_t; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+  typedef halo_base_t base_t; // typedef for halo_base_t<action_base_t>
+
+  const spell_data_t* heal_data; // Scaling Spell, contains damage or heal data and travel speed.
+
+  halo_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s = spell_data_t::nil() ) :
+    action_base_t( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) ), // FIXME: change to correct find_talent or spec function
+    heal_data( s )
+  {
+    action_base_t::parse_options( NULL, options_str );
+    action_base_t::aoe = -1;
+
+    if ( heal_data != spell_data_t::nil() ) // Parse heal data if available
+    {
+      action_base_t::parse_effect_data( heal_data -> effectN( 1 ) );
+    }
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t )
+  {
+    double ctdm = action_base_t::composite_target_da_multiplier( t );
+
+    double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
+
+    double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
+
+    return ctdm * mult;
+  }
+};
+
+struct halo_damage_t : public halo_base_t<priest_spell_t>
+{
+  halo_damage_t( priest_t* p, const std::string& options_str ) :
+    base_t( "halo_damage", p, options_str )
+  {
+
+  }
+};
+
+struct halo_heal_t : public halo_base_t<priest_heal_t>
+{
+  halo_heal_t( priest_t* p, const std::string& options_str ) :
+    base_t( "halo_heal", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120696 ) : p -> find_spell( 120692 ) )
+  {
+
+  }
+};
+
+// shadow base talent spell: 120644
+// shadow heal: 120696
+
+// holy base talent ( damage ) spell: 120517
+// holy heal: 120692
+
 } // NAMESPACE spells
 
 // ==========================================================================
@@ -4363,6 +4436,7 @@ action_t* priest_t::create_action( const std::string& name,
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
+  if ( name == "halo_damage"            ) return new halo_damage_t           ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -4380,7 +4454,8 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
   if ( name == "spirit_shell"           ) return new spirit_shell_absorb_t   ( this, options_str );
-  if ( name == "cascade_heal"           ) return new cascade_heal_t        ( this, options_str );
+  if ( name == "cascade_heal"           ) return new cascade_heal_t          ( this, options_str );
+  if ( name == "halo_heal"              ) return new halo_heal_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
