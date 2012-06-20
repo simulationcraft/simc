@@ -41,8 +41,8 @@ actions+=/fel_flame,moving=1
 actions+=/life_tap
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
-actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&!action.corruption.in_flight
-actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&!action.corruption.in_flight)
+actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target
+actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
