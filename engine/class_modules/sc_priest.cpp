@@ -3058,7 +3058,7 @@ struct smite_t : public priest_spell_t
 template <class Base>
 struct cascade_base_t : public Base
 {
-  typedef Base action_base_t; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+  typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
   typedef cascade_base_t base_t; // typedef for cascade_base_t<action_base_t>
 
   struct cascade_state_t : action_state_t
@@ -3073,19 +3073,19 @@ struct cascade_base_t : public Base
   const spell_data_t* scaling_data; // Scaling Spell, contains damage or heal data and travel speed.
 
   cascade_base_t( const std::string& n, priest_t* p, const std::string& options_str, const spell_data_t* s ) :
-    action_base_t( n, p, p -> find_talent_spell( "Cascade" ) ),
+    ab( n, p, p -> find_talent_spell( "Cascade" ) ),
     scaling_data( s )
   {
-    action_base_t::parse_options( NULL, options_str );
+    ab::parse_options( NULL, options_str );
 
-    action_base_t::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
-    action_base_t::school       = scaling_data -> get_school_type();
-    action_base_t::travel_speed = scaling_data -> missile_speed();
+    ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
+    ab::school       = scaling_data -> get_school_type();
+    ab::travel_speed = scaling_data -> missile_speed();
   }
 
   virtual action_state_t* new_state()
   {
-    return new cascade_state_t( this, action_base_t::target );
+    return new cascade_state_t( this, ab::target );
   }
 
   player_t* get_next_player()
@@ -3110,45 +3110,45 @@ struct cascade_base_t : public Base
     targets.clear();
     populate_target_list();
 
-    action_base_t::execute();
+    ab::execute();
   }
 
   virtual void impact_s( action_state_t* q )
   {
-    action_base_t::impact_s( q );
+    ab::impact_s( q );
 
     cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
 
-    assert( action_base_t::data().effectN( 1 ).base_value() < 5 ); // Safety limit
-    assert( action_base_t::data().effectN( 2 ).base_value() < 5 ); // Safety limit
+    assert( ab::data().effectN( 1 ).base_value() < 5 ); // Safety limit
+    assert( ab::data().effectN( 2 ).base_value() < 5 ); // Safety limit
 
-    if ( cs -> jump_counter < action_base_t::data().effectN( 1 ).base_value() )
+    if ( cs -> jump_counter < ab::data().effectN( 1 ).base_value() )
     {
-      for ( int i = 0; i < action_base_t::data().effectN( 2 ).base_value(); ++i )
+      for ( int i = 0; i < ab::data().effectN( 2 ).base_value(); ++i )
       {
         player_t* t = get_next_player();
 
         if ( t )
         {
-          if ( action_base_t::sim -> debug )
-            action_base_t::sim -> output( "%s action %s jumps to player %s",
-                                          action_base_t::player -> name(), action_base_t::name(), t -> name() );
+          if ( ab::sim -> debug )
+            ab::sim -> output( "%s action %s jumps to player %s",
+                                ab::player -> name(), ab::name(), t -> name() );
 
 
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
-          cascade_state_t* s = debug_cast<cascade_state_t*>( action_base_t::get_state() );
+          cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
           s -> target = t;
           s -> jump_counter = cs -> jump_counter + 1;
-          snapshot_state( s, action_base_t::snapshot_flags );
-          s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
+          ab::snapshot_state( s, ab::snapshot_flags );
+          s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
 
-          if ( result_is_hit( s -> result ) )
-            s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+          if (ab:: result_is_hit( s -> result ) )
+            s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
-          if ( action_base_t::sim -> debug )
+          if ( ab::sim -> debug )
             s -> debug();
 
-          schedule_travel_s( s );
+          ab::schedule_travel_s( s );
         }
       }
     }
@@ -3160,12 +3160,12 @@ struct cascade_base_t : public Base
 
   virtual double composite_target_da_multiplier( player_t* t )
   {
-    double ctdm = action_base_t::composite_target_da_multiplier( t );
+    double ctdm = ab::composite_target_da_multiplier( t );
 
     // Source: Ghostcrawler 20/06/2012
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
-    double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
+    double distance = ab::player -> current.distance; // Replace with whatever we measure distance
     if ( distance >= 30.0 )
       return ctdm;
 
@@ -3206,30 +3206,30 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 template <class Base>
 struct halo_base_t : public Base
 {
-  typedef Base action_base_t; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+  typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
   typedef halo_base_t base_t; // typedef for halo_base_t<action_base_t>
 
   halo_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
-    action_base_t( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) )
+    ab( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) )
   {
-    action_base_t::parse_options( NULL, options_str );
-    action_base_t::aoe = -1;
+    ab::parse_options( NULL, options_str );
+    ab::aoe = -1;
 
     if ( p -> talents.halo == &spell_data_not_found_t::singleton )
     {
-      action_base_t::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), action_base_t::name() );
-      action_base_t::background = true; // prevent action from being executed
+      ab::sim -> errorf( "Player %s could not find halo talent data for action %s", p -> name(), ab::name() );
+      ab::background = true; // prevent action from being executed
     }
   }
 
   virtual double composite_target_da_multiplier( player_t* t )
   {
-    double ctdm = action_base_t::composite_target_da_multiplier( t );
+    double ctdm = ab::composite_target_da_multiplier( t );
 
     // Source: Ghostcrawler 20/06/2012
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
-    double distance = action_base_t::player -> current.distance; // Replace with whatever we measure distance
+    double distance = ab::player -> current.distance; // Replace with whatever we measure distance
 
     //double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) + 0.1 + 0.015 * distance;
     double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 + 0.015 * distance;
@@ -3254,6 +3254,137 @@ struct halo_heal_t : public halo_base_t<priest_heal_t>
     parse_effect_data( heal_data -> effectN( 1 ) );
   }
 };
+
+// Cascade Spell
+
+template <class Base>
+struct divine_star_base_t : public Base
+{
+  typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
+  typedef divine_star_base_t base_t; // typedef for cascade_base_t<ab>
+
+  struct divine_star_state_t : action_state_t
+  {
+    int jump_counter;
+    divine_star_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+        jump_counter( 0 )
+    { }
+  };
+
+  divine_star_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
+    ab( n, p, p -> find_talent_spell( "Divine Star" ) )
+  {
+    ab::parse_options( NULL, options_str );
+
+
+    ab::travel_speed = p -> find_spell( ab::data().effectN( 2 ).trigger_spell_id() ) -> missile_speed();
+  }
+
+  virtual action_state_t* new_state()
+  {
+    return new divine_star_state_t( this, ab::target );
+  }
+
+  virtual void impact_s( action_state_t* q )
+  {
+    ab::impact_s( q );
+
+    divine_star_state_t* cs = debug_cast<divine_star_state_t*>( q );
+
+    assert( ab::data().effectN( 1 ).base_value() < 5 ); // Safety limit
+    assert( ab::data().effectN( 2 ).base_value() < 5 ); // Safety limit
+
+    if ( cs -> jump_counter < 1 )
+    {
+
+          // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
+          divine_star_state_t* s = debug_cast<divine_star_state_t*>( ab::get_state() );
+          s -> target = cs -> target;
+          s -> jump_counter = cs -> jump_counter + 1;
+          ab::snapshot_state( s, ab::snapshot_flags );
+          s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
+
+          if ( ab::result_is_hit( s -> result ) )
+            s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+
+          if ( ab::sim -> debug )
+            s -> debug();
+
+          ab::schedule_travel_s( s );
+    }
+    else
+    {
+      cs -> jump_counter = 0;
+    }
+  }
+
+  virtual void schedule_travel_s( action_state_t* s )
+  {
+    if ( debug_cast<divine_star_state_t*>( s ) -> jump_counter == 1 )
+    {
+      double t = 0;
+      if ( ab::player -> current.distance != 0 )
+        t = 2 * ( ab::range - ab::player -> current.distance ) / ab::travel_speed;
+
+      double v = ab::sim -> travel_variance;
+
+      if ( v )
+      {
+        t = ab::rng_travel -> gauss( t, v );
+      }
+
+      ab::time_to_travel = timespan_t::from_seconds( t );
+    }
+    else
+      ab::time_to_travel = ab::travel_time();
+
+    if ( ! ab::execute_state )
+      ab::execute_state = ab::get_state();
+
+    ab::execute_state -> copy_state( s );
+
+    if ( ab::time_to_travel == timespan_t::zero() )
+    {
+      ab::impact_s( s );
+      ab::release_state( s );
+    }
+    else
+    {
+      if ( ab::sim -> log )
+      {
+        ab::sim -> output( "[NEW] %s schedules travel (%.3f) for %s", ab::player -> name(), ab::time_to_travel.total_seconds(), ab::name() );
+      }
+
+      ab::add_travel_event( new ( ab::sim ) stateless_travel_event_t( ab::sim, this, s, ab::time_to_travel ) );
+    }
+  }
+
+};
+
+struct divine_star_damage_t : public divine_star_base_t<priest_spell_t>
+{
+  divine_star_damage_t( priest_t* p, const std::string& options_str ) :
+    base_t( "divine_star_damage", p, options_str )
+  {
+    const spell_data_t* damage_data =  ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 122128 ) : p -> find_spell( 110745 );
+    parse_effect_data( damage_data -> effectN( 1 ) );
+    school       = damage_data -> get_school_type();
+  }
+
+};
+
+struct divine_star_heal_t : public divine_star_base_t<priest_heal_t>
+{
+  divine_star_heal_t( priest_t* p, const std::string& options_str ) :
+    base_t( "divine_star_heal", p, options_str )
+  {
+    const spell_data_t* heal_data =  ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 122128 ) : p -> find_spell( 110745 );
+    parse_effect_data(  heal_data -> effectN( 2 ) );
+    school       =  heal_data -> get_school_type();
+  }
+
+};
+
 
 } // NAMESPACE spells
 
@@ -4432,6 +4563,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
   if ( name == "halo_damage"            ) return new halo_damage_t           ( this, options_str );
+  if ( name == "divine_star_damage"     ) return new divine_star_damage_t    ( this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( this, options_str );
@@ -4451,6 +4583,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "spirit_shell"           ) return new spirit_shell_absorb_t   ( this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( this, options_str );
   if ( name == "halo_heal"              ) return new halo_heal_t             ( this, options_str );
+  if ( name == "divine_star_heal"       ) return new divine_star_heal_t      ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

@@ -22,6 +22,13 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
+// The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
+// Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
+
+namespace statues {}
+
+using namespace statues;
+
 struct monk_t;
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
@@ -915,6 +922,32 @@ struct monk_heal_t : public monk_action_t<heal_t>
   }
 };
 } // END ANONYMOUS action NAMESPACE
+
+namespace statues {
+
+struct statue_t : public pet_t
+{
+  statue_t( sim_t* sim, monk_t* owner, const std::string& n, pet_e pt, bool guardian = false ) :
+    pet_t( sim, owner, n, pt, guardian )
+  {
+
+  }
+
+  monk_t* o()
+  { return debug_cast<monk_t*>( owner ); }
+};
+
+struct jade_serpent_statue_t : public statue_t
+{
+  typedef statue_t base_t;
+
+  jade_serpent_statue_t (sim_t* sim, monk_t* owner, const std::string& n ) :
+    base_t( sim, owner, n, PET_NONE, true )
+  {
+
+  }
+};
+} // NAMESPACE STATUES
 
 // ==========================================================================
 // Monk Character Definition

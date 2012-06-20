@@ -212,6 +212,7 @@ static std::string school_color( school_e type )
   case SCHOOL_SHADOWFROST:  return "000066"; // Shadowfrost???
   case SCHOOL_SHADOWFLAME:  return "435133";
   case SCHOOL_SHADOWSTRIKE: return "0099CC";
+  case SCHOOL_SPELLSHADOW:  return color::purple_dark;
   case SCHOOL_NONE:         return "FFFFFF";
   default: return std::string();
   }
