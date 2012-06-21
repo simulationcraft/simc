@@ -729,6 +729,7 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "hurricane"        ||
        encoded_enchant_str == "landslide"        ||
        encoded_enchant_str == "power_torrent"    ||
+       encoded_enchant_str == "jade_spirit"      ||
        encoded_enchant_str == "windwalk"         ||
        encoded_enchant_str == "spellsurge"       ||
        encoded_enchant_str == "synapse_springs"  ||

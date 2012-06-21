@@ -20,6 +20,7 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "74724",  "Jade Spirit",                                             "jade_spirit",                  NULL,        NULL },
   { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
   { "4267",  "Flintlocke's Woodchucker",                                  "flintlockes_woodchucker",        NULL,        NULL },
   { "4266",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
@@ -850,6 +851,26 @@ static void register_power_torrent( player_t* p, const std::string& enchant, con
   }
 }
 
+// FIX ME: Guessing at proc chance, ICD; not sure how to implement
+// conditional spirit buff
+static void register_jade_spirit( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
+{
+  if ( enchant == "jade_spirit" )
+  {
+    stat_buff_t* buff = stat_buff_creator_t( p, "jade_spirit" + weapon_appendix )
+                        .duration( timespan_t::from_seconds( 12 ) )
+                        .cd( timespan_t::from_seconds( 45 ) )
+                        .chance( 0.20 )
+                        .activated( false )
+                        .stat( STAT_INTELLECT ).amount( 1650 );
+    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
+    p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_direct_heal_callback  ( RESULT_ALL_MASK, cb );
+  }
+}
+
 static void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
 {
   if ( enchant == "windwalk" )
@@ -931,6 +952,8 @@ void enchant::init( player_t* p )
   register_power_torrent( p, mh_enchant, "mh" );
   register_power_torrent( p, oh_enchant, "oh" );
 
+  register_jade_spirit( p, mh_enchant, "mh" );
+  register_jade_spirit( p, oh_enchant, "oh" );
 
   register_windwalk( p, mh_enchant, mhw, "mh" );
   register_windwalk( p, oh_enchant, ohw, "oh" );
