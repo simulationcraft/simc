@@ -1699,6 +1699,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
 struct frost_bomb_t : public mage_spell_t
 {
+  timespan_t original_cooldown;
   frost_bomb_explosion_t* explosion_spell;
 
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
@@ -1707,11 +1708,19 @@ struct frost_bomb_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
+    hasted_ticks = true; // Haste decreases the 'tick' time to explosion
 
     explosion_spell = new frost_bomb_explosion_t( p );
     add_child( explosion_spell );
 
-    // FIXME: How does haste affect the CD/Tick Time?
+    original_cooldown = cooldown -> duration;
+  }
+
+  virtual void execute()
+  {
+    // Cooldown is reduced by haste
+    cooldown -> duration = original_cooldown / ( 1.0 + mage_spell_t::composite_haste() );
+    mage_spell_t::execute();
   }
 
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
@@ -2943,7 +2952,7 @@ void mage_t::init_buffs()
   buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
-  buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) ); // FIXME: can this stack?
+  buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) );
 
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
