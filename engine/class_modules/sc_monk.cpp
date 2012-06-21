@@ -54,8 +54,7 @@ struct monk_t : public player_t
   {
     // TODO: Finish Adding Buffs - will uncomment as implemented
     //  buff_t* buffs_<buffname>;
-    //  buff_t* tiger_power;
-    //  buff_t* energizing_brew;
+    buff_t* energizing_brew;
     //  buff_t* zen_sphere;
     //  buff_t* fortifying_brew;
     //  buff_t* zen_meditation;
@@ -76,7 +75,7 @@ struct monk_t : public player_t
   {
     gain_t* chi;
     gain_t* combo_breaker_savings;
-
+    gain_t* energizing_brew;
   } gain;
   // Stances
 
@@ -188,6 +187,7 @@ struct monk_t : public player_t
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_actions();
+  virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
   virtual void      reset();
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -874,6 +874,24 @@ struct tigereye_brew_use_t : public monk_spell_t
   }
 };
 
+struct energizing_brew_t : public monk_spell_t
+{
+  energizing_brew_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "energizing_brew", player, player -> find_spell( 115288 ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful           = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.energizing_brew -> trigger();
+  }
+};
+
 // Stance ===================================================================
 
 struct stance_t : public monk_spell_t
@@ -1000,6 +1018,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "rising_sun_kick"     ) return new     rising_sun_kick_t( this, options_str );
   if ( name == "stance"              ) return new              stance_t( this, options_str );
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
+  if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1084,8 +1103,9 @@ void monk_t::init_buffs()
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
   buff.tiger_strikes     = buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
-  buff.combo_breaker_bok  = buff_creator_t( this, "combo_breaker_bok"  ).spell( find_spell( 116768 ) );
-  buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 116768 ) );
+  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"  ).spell( find_spell( 116768 ) );
+  buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
+  buff.energizing_brew   = buff_creator_t( this, "energizing_brew"    ).spell( find_spell( 115288 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -1094,8 +1114,9 @@ void monk_t::init_gains()
 {
   player_t::init_gains();
 
-  gain.chi = get_gain( "chi" );
-  gain.combo_breaker_savings = get_gain( "Combo Breaker Savings" );
+  gain.chi                   = get_gain( "chi" );
+  gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
+  gain.energizing_brew       = get_gain( "energizing_brew" );
 }
 
 // monk_t::init_procs =======================================================
@@ -1159,7 +1180,7 @@ void monk_t::init_actions()
       precombat += "/snapshot_stats";
 
       action_list_str += "/auto_attack";
-
+      action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
       action_list_str += "/fists_of_fury";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
@@ -1189,6 +1210,24 @@ void monk_t::reset()
   track_chi_consumption = 0;
 }
 
+// monk_t::regen (brews/teas)=======================================
+void monk_t::regen( timespan_t periodicity )
+{
+  resource_e resource_type = primary_resource();
+
+  if ( resource_type == RESOURCE_MANA )
+  {
+
+  //TODO: add mana tea here
+  }
+  else if ( resource_type == RESOURCE_ENERGY )
+  {
+    if ( buff.energizing_brew -> up())
+      resource_gain( RESOURCE_ENERGY, buff.energizing_brew -> data().effectN( 1 ).base_value() * periodicity.total_seconds(), gain.energizing_brew );
+  }
+
+  player_t::regen( periodicity );
+}
 // monk_t::init_resources ==================================================
 
 void monk_t::init_resources( bool force )
