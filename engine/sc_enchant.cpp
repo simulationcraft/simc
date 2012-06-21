@@ -20,8 +20,15 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
-  { "4892",  "Lightweave Embroidery (Rank 3)",                                     "lightweave_embroidery_3",      NULL,        NULL },
-  { "74724",  "Jade Spirit",                                             "jade_spirit",                  NULL,        NULL },
+  { "4894",  "Swordguard Embroidery (Rank 3)",                            "swordguard_embroidery_3",        NULL,        NULL },
+  { "4893",  "Darkglow Embroidery (Rank 3)",                              "darkglow_embroidery_3",          NULL,        NULL },
+  { "4892",  "Lightweave Embroidery (Rank 3)",                            "lightweave_embroidery_3",        NULL,        NULL },
+  { "4446",  "Flowing River",                                             "flowing_river",                  NULL,        NULL },
+  { "4445",  "Colossus",                                                  "colossus",                       NULL,        NULL },
+  { "4444",  "Dancing Steel",                                             "dancing_steel",                  NULL,        NULL },
+  { "4443",  "Elemental Force",                                           "elemental_force",                NULL,        NULL },
+  { "4442",  "Jade Spirit",                                               "jade_spirit",                    NULL,        NULL },
+  { "4441",  "Windsong",                                                  "windsong",                       NULL,        NULL },
   { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
   { "4267",  "Flintlocke's Woodchucker",                                  "flintlockes_woodchucker",        NULL,        NULL },
   { "4266",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
@@ -76,9 +83,9 @@ static enchant_data_t enchant_db[] =
   { "4122",  "+110 Attack Power and +45 Crit Rating",                     "110AP_45Crit",                   NULL,        NULL },
   { "4121",  "+44 Stamina",                                               "44sta",                          NULL,        NULL },
   { "4120",  "+36 Stamina",                                               "36sta",                          NULL,        NULL },
-  { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery",          NULL,        NULL },
-  { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery",            NULL,        NULL },
-  { "4115",  "Lightweave Embroidery (Rank 2)",                                     "lightweave_embroidery_2",          NULL,        NULL },
+  { "4118",  "Swordguard Embroidery (Rank 2)",                            "swordguard_embroidery_2",        NULL,        NULL },
+  { "4116",  "Darkglow Embroidery (Rank 2)",                              "darkglow_embroidery_2",          NULL,        NULL },
+  { "4115",  "Lightweave Embroidery (Rank 2)",                            "lightweave_embroidery_2",        NULL,        NULL },
   { "4114",  "+95 Intellect and +55 Spirit",                              "95int_55spi",                    NULL,        NULL },
   { "4113",  "+95 Intellect and +80 Stamina",                             "95int_80sta",                    NULL,        NULL },
   { "4112",  "+95 Intellect and +80 Stamina",                             "95int_80sta",                    NULL,        NULL },
@@ -206,9 +213,9 @@ static enchant_data_t enchant_db[] =
   { "3754",  "+24 Attack Power/+10 Stamina/+10 Hit Rating",               "24AP_10Sta_10Hit",               NULL,        NULL },
   { "3748",  "Titanium Spike (45-67)",                                    "",                               NULL,        NULL },
   { "3731",  "Titanium Weapon Chain",                                     "28hit",                          NULL,        NULL },
-  { "3730",  "Swordguard Embroidery",                                     "swordguard_embroidery_old",      NULL,        NULL },
-  { "3728",  "Darkglow Embroidery",                                       "darkglow_embroidery_old",        NULL,        NULL },
-  { "3722",  "Lightweave Embroidery (Rank 1)",                                     "lightweave_embroidery_1",      NULL,        NULL },
+  { "3730",  "Swordguard Embroidery (Rank 1 )",                           "swordguard_embroidery_1",        NULL,        NULL },
+  { "3728",  "Darkglow Embroidery (Rank 1)",                              "darkglow_embroidery_1",          NULL,        NULL },
+  { "3722",  "Lightweave Embroidery (Rank 1)",                            "lightweave_embroidery_1",        NULL,        NULL },
   { "3721",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta",                     NULL,        NULL },
   { "3720",  "+35 Spell Power and +20 Stamina",                           "35SP_20Sta",                     NULL,        NULL },
   { "3719",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi",                     NULL,        NULL },
@@ -861,7 +868,7 @@ static void register_jade_spirit( player_t* p, const std::string& enchant, const
     stat_buff_t* buff = stat_buff_creator_t( p, "jade_spirit" + weapon_appendix )
                         .duration( timespan_t::from_seconds( 12 ) )
                         .cd( timespan_t::from_seconds( 45 ) )
-                        .chance( 0.20 )
+                        .chance( 0.10 )
                         .activated( false )
                         .stat( STAT_INTELLECT ).amount( 1650 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );

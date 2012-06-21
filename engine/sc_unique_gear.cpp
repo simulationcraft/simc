@@ -2374,16 +2374,24 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );
 
   // Enchants
-  else if ( name == "lightweave_1"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave_embroidery_1"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  if      ( name == "lightweave_1"                        ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave_embroidery_1"             ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
   else if ( name == "lightweave_2" ||
-            name == "lightweave_embroidery_2"               ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
+            name == "lightweave_embroidery_2"             ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
   else if ( name == "lightweave_3" ||
-            name == "lightweave_embroidery_3"               ) e = "OnSpellDamageHeal_2500Int_25%_15Dur_64Cd";
-  else if ( name == "darkglow_embroidery_old"             ) e = "OnSpellCast_400Mana_35%_15Dur_60Cd";
-  else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_30%_15Dur_45Cd";       // TO-DO: Confirm ICD.
-  else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
-  else if ( name == "swordguard_embroidery"               ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
+            name == "lightweave_embroidery_3"             ) e = "OnSpellDamageHeal_2500Int_25%_15Dur_64Cd";
+  else if ( name == "darkglow_1"                          ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
+  else if ( name == "darkglow_embroidery_1"               ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
+  else if ( name == "darkglow_2"                          ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_2500Spi_30%_15Dur_45Cd";
+  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_2500Spi_30%_15Dur_45Cd";
+  else if ( name == "swordguard_1"                        ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
+  else if ( name == "swordguard_embroidery_1"             ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
+  else if ( name == "swordguard_2"                        ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
+  else if ( name == "swordguard_embroidery_2"             ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
+  else if ( name == "swordguard_3"                        ) e = "OnAttackHit_8000AP_15%_15Dur_55Cd";
+  else if ( name == "swordguard_embroidery_3"             ) e = "OnAttackHit_8000AP_15%_15Dur_55Cd";
   else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd_nocrit"; // TO-DO: Confirm ICD.
 
   // DK Runeforges
