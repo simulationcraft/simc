@@ -1,6 +1,6 @@
 #!./simc 
 
-mage=Mage_Frost_T13H
+mage=Mage_Frost_463
 origin="http://www.wowhead.com/profile=33895137"
 level=90
 race=troll
@@ -46,7 +46,7 @@ finger1=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_
 finger2=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
 trinket1=grakls_gleaming_talisman,heroic=0,ilevel=409,quality=rare,stats=512int,use=4232spellpower_20dur_120cd
 trinket2=grakls_gleaming_talisman,heroic=0,ilevel=409,quality=rare,stats=512int,use=4232spellpower_20dur_120cd
-back=scorched_earth_cloak,ilevel=463,quality=rare,stats=1018armor_501int_752sta_368mastery_277hit,enchant=lightweave_embroidery
+back=scorched_earth_cloak,ilevel=463,quality=rare,stats=1018armor_501int_752sta_368mastery_277hit,enchant=lightweave_embroidery_3
 main_hand=headmasters_will,ilevel=463,quality=rare,stats=899int_1349sta_541hit_635crit_5151sp,enchant=jade_spirit,weapon=staff_3.30speed_4336min_6506max
 # Gear Summary
 # gear_strength=20
@@ -63,5 +63,5 @@ main_hand=headmasters_will,ilevel=463,quality=rare,stats=899int_1349sta_541hit_6
 # meta_gem=burning_shadowspirit
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
-# back=nanoprecise_cape,enchant=lightweave_embroidery
+# back=nanoprecise_cape,enchant=lightweave_embroidery_2
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

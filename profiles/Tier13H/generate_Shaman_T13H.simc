@@ -46,6 +46,6 @@ finger1=ring_of_the_riven,id=78419,gems=50int_10int
 finger2=signet_of_suturing,id=78491,gems=50int_10int,reforge=spi_mastery
 trinket1=will_of_unbinding,id=77995
 trinket2=insignia_of_the_corrupted_mind,id=77991
-back=nanoprecise_cape,id=77098,reforge=hit_haste,enchant=lightweave_embroidery
+back=nanoprecise_cape,id=77098,reforge=hit_haste,enchant=lightweave_embroidery_2
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent,reforge=hit_mastery
 save=Shaman_Elemental_T13H.simc

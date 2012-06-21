@@ -20,6 +20,7 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4892",  "Lightweave Embroidery (Rank 3)",                                     "lightweave_embroidery_3",      NULL,        NULL },
   { "74724",  "Jade Spirit",                                             "jade_spirit",                  NULL,        NULL },
   { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
   { "4267",  "Flintlocke's Woodchucker",                                  "flintlockes_woodchucker",        NULL,        NULL },
@@ -77,7 +78,7 @@ static enchant_data_t enchant_db[] =
   { "4120",  "+36 Stamina",                                               "36sta",                          NULL,        NULL },
   { "4118",  "Swordguard Embroidery",                                     "swordguard_embroidery",          NULL,        NULL },
   { "4116",  "Darkglow Embroidery",                                       "darkglow_embroidery",            NULL,        NULL },
-  { "4115",  "Lightweave Embroidery",                                     "lightweave_embroidery",          NULL,        NULL },
+  { "4115",  "Lightweave Embroidery (Rank 2)",                                     "lightweave_embroidery_2",          NULL,        NULL },
   { "4114",  "+95 Intellect and +55 Spirit",                              "95int_55spi",                    NULL,        NULL },
   { "4113",  "+95 Intellect and +80 Stamina",                             "95int_80sta",                    NULL,        NULL },
   { "4112",  "+95 Intellect and +80 Stamina",                             "95int_80sta",                    NULL,        NULL },
@@ -207,7 +208,7 @@ static enchant_data_t enchant_db[] =
   { "3731",  "Titanium Weapon Chain",                                     "28hit",                          NULL,        NULL },
   { "3730",  "Swordguard Embroidery",                                     "swordguard_embroidery_old",      NULL,        NULL },
   { "3728",  "Darkglow Embroidery",                                       "darkglow_embroidery_old",        NULL,        NULL },
-  { "3722",  "Lightweave Embroidery",                                     "lightweave_embroidery_old",      NULL,        NULL },
+  { "3722",  "Lightweave Embroidery (Rank 1)",                                     "lightweave_embroidery_1",      NULL,        NULL },
   { "3721",  "+50 Spell Power and +30 Stamina",                           "50SP_30Sta",                     NULL,        NULL },
   { "3720",  "+35 Spell Power and +20 Stamina",                           "35SP_20Sta",                     NULL,        NULL },
   { "3719",  "+50 Spell Power and +20 Spirit",                            "50SP_20Spi",                     NULL,        NULL },

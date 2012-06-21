@@ -24,7 +24,7 @@ finger1=soothing_brimstone_circle,heroic=1,ilevel=391,quality=epic,stats=256int_
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int,enchant=40int
 trinket1=eye_of_blazing_power,heroic=1,ilevel=391,quality=epic,stats=433int
 trinket2=jaws_of_defeat,heroic=1,ilevel=391,quality=epic,stats=433int,use=onspellcast_125holystorm_costrd_10stack_20dur_120cd
-back=flowing_flamewrath_cape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_181spi_154mastery,reforge=mastery_haste,enchant=lightweave_embroidery
+back=flowing_flamewrath_cape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_181spi_154mastery,reforge=mastery_haste,enchant=lightweave_embroidery_2
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
 off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_154spi_181haste,enchant=40int
 ranged=scorchvine_wand,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_98spi_94mastery,reforge=mastery_haste
@@ -43,7 +43,7 @@ ranged=scorchvine_wand,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_98sp
 # tier12_2pc_heal=1
 # tier12_4pc_heal=1
 # trinket1=eye_of_blazing_power,heroic=1
-# back=flowing_flamewrath_cape,heroic=1,enchant=lightweave_embroidery
+# back=flowing_flamewrath_cape,heroic=1,enchant=lightweave_embroidery_2
 # main_hand=kogun_hammer_of_the_firelord,heroic=1,weapon=mace_2.10speed_484min_899max,enchant=power_torrent
 
 enemy=Overridden_Main_Target

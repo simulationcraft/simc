@@ -56,7 +56,7 @@ finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_1
 finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste,reforge=spi_mastery,gems=50int_10int
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
-back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=50int_10int,enchant=lightweave_embroidery
+back=woundlicker_cover,ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste,reforge=spi_mastery,gems=50int_10int,enchant=lightweave_embroidery_2
 main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
 # Gear Summary
 # gear_strength=20
@@ -73,5 +73,5 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # meta_gem=burning_shadowspirit
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
-# back=woundlicker_cover,enchant=lightweave_embroidery
+# back=woundlicker_cover,enchant=lightweave_embroidery_2
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1305max,enchant=power_torrent

@@ -2374,10 +2374,12 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );
 
   // Enchants
-  else if ( name == "lightweave_old"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave_embroidery_old"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
-  else if ( name == "lightweave" ||
-            name == "lightweave_embroidery"               ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
+  else if ( name == "lightweave_1"                      ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave_embroidery_1"           ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
+  else if ( name == "lightweave_2" ||
+            name == "lightweave_embroidery_2"               ) e = "OnSpellDamageHeal_580Int_25%_15Dur_64Cd";
+  else if ( name == "lightweave_3" ||
+            name == "lightweave_embroidery_3"               ) e = "OnSpellDamageHeal_2500Int_25%_15Dur_64Cd";
   else if ( name == "darkglow_embroidery_old"             ) e = "OnSpellCast_400Mana_35%_15Dur_60Cd";
   else if ( name == "darkglow_embroidery"                 ) e = "OnSpellCast_800Mana_30%_15Dur_45Cd";       // TO-DO: Confirm ICD.
   else if ( name == "swordguard_embroidery_old"           ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
