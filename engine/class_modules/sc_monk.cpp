@@ -721,10 +721,24 @@ struct fists_of_fury_t : public monk_melee_attack_t
   }
 };
 
+struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
+{
+  tiger_strikes_melee_attack_t( const std::string& n, monk_t* p, weapon_t* w ) :
+    monk_melee_attack_t( n, p, spell_data_t::nil()  )
+  {
+    weapon           = w;
+    school           = SCHOOL_PHYSICAL;
+    background       = true;
+    may_glance       = false;
+    if ( player -> dual_wield() )
+      base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent(); // It is affected by this.
+  }
+};
+
 struct melee_t : public monk_melee_attack_t
 {
   int sync_weapons;
-
+  tiger_strikes_melee_attack_t* tsproc;
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw )
 
@@ -737,7 +751,7 @@ struct melee_t : public monk_melee_attack_t
     may_glance  = true;
     if ( player -> dual_wield() )
       base_hit -= 0.19;
-    base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
 
   virtual timespan_t execute_time()
@@ -762,6 +776,15 @@ struct melee_t : public monk_melee_attack_t
       monk_melee_attack_t::execute();
     }
   }
+  // 1 )remove tiger_strikes_proc_t completly
+  // 2) Add a tiger_strikes_melee_attack_t* to melee_t, create ( = new ) it in melee_t::init(), at which point the melee_t::weapon is set.
+  //pass that weapon pointer to tiger_strikes_melee-attack_t.
+  // 3 ) directly execute tiger strikes from melee_t::impact_s.
+ void init()
+  {
+   monk_melee_attack_t::init();
+    tsproc = new tiger_strikes_melee_attack_t( "tiger_strikes_melee", p(), weapon );
+  }
 
   virtual void impact_s( action_state_t* s )
   {
@@ -769,6 +792,8 @@ struct melee_t : public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> buff.tiger_strikes -> trigger( 4 );
+    if(p() -> buff.tiger_strikes -> up())
+      tsproc -> execute();
   }
 };
 
