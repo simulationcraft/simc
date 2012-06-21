@@ -1,6 +1,6 @@
 #define TALENT_SIZE (221)
 
-// 221 talents, wow build 15762
+// 221 talents, wow build 15781
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -69,7 +69,7 @@ static struct talent_data_t __talent_data[] = {
   { "Sacred Shield"                     , 17585, 0x00, 0x0002, 0x00,     0,   2,   2,   20925,         0,  0 },
   { "Hand of Purity"                    , 17589, 0x00, 0x0002, 0x00,     0,   0,   3,  114039,         0,  0 },
   { "Unbreakable Spirit"                , 17591, 0x00, 0x0002, 0x00,     0,   1,   3,  114154,         0,  0 },
-  { "Clemency"                          , 17593, 0x00, 0x0002, 0x00,     0,   2,   3,  105622,         0,  0 },
+  { "Clemency (NYI)"                    , 17593, 0x00, 0x0002, 0x00,     0,   2,   3,  105622,         0,  0 },
   { "Holy Avenger"                      , 17597, 0x00, 0x0002, 0x00,     0,   0,   4,  105809,         0,  0 },
   { "Sanctified Wrath"                  , 17599, 0x00, 0x0002, 0x00,     0,   1,   4,   53376,         0,  0 },
   { "Divine Purpose"                    , 17601, 0x00, 0x0002, 0x00,     0,   2,   4,   86172,         0,  0 },
@@ -209,7 +209,7 @@ static struct talent_data_t __talent_data[] = {
   { "Phantasm"                          , 19758, 0x00, 0x0010, 0x00,     0,   2,   1,  108942,         0,  0 },
   { "From Darkness, Comes Light"        , 19759, 0x00, 0x0010, 0x00,     0,   0,   2,  109186,         0,  0 },
   { "Divine Star"                       , 19760, 0x00, 0x0010, 0x00,     0,   1,   5,  110744,         0,  0 },
-  { "Archangel"                         , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  109147,         0,  0 },
+  { "Power Word: Solace"                , 19761, 0x00, 0x0010, 0x00,     0,   2,   2,  129250,         0,  0 },
   { "Desperate Prayer"                  , 19762, 0x00, 0x0010, 0x00,     0,   0,   3,   19236,         0,  0 },
   { "Halo"                              , 19763, 0x00, 0x0010, 0x00,     0,   2,   5,  120517,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
