@@ -1897,7 +1897,6 @@ struct frozen_orb_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     channeled = true;
-    // FIX ME: how many bolts does it fire? Assuming 1 a second for 10 total
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
 
