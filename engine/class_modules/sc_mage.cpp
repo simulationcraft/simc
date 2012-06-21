@@ -2945,7 +2945,9 @@ void mage_t::init_buffs()
                                       ( talents.living_bomb    -> ok() ? 0.25 :
                                       ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
 
-  buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
+  buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
+                               .duration( timespan_t::from_seconds( 15.0 ) )
+                               .max_stack( 2 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
