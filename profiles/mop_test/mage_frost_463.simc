@@ -1,0 +1,67 @@
+#!./simc 
+
+mage=Mage_Frost_T13H
+origin="http://www.wowhead.com/profile=33895137"
+level=90
+race=troll
+position=back
+role=spell
+spec=frost
+professions=enchanting=600/tailoring=600
+talents=000030
+glyphs=evocation/ice_lance
+actions=flask,type=draconic_mind
+actions+=/food,type=seafood_magnifique_feast
+actions+=/arcane_brilliance
+actions+=/molten_armor
+actions+=/water_elemental
+actions+=/snapshot_stats
+#actions+=/counterspell
+#actions+=/conjure_mana_gem,invulnerable=1,if=mana_gem_charges<3
+#actions+=/volcanic_potion,if=!in_combat
+#actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/frostfire_bolt,if=buff.brain_freeze.react
+actions+=/frost_bomb
+#actions+=/evocation,if=mana_pct<40&(buff.icy_veins.react|buff.bloodlust.react)
+#actions+=/mana_gem,if=mana_deficit>12500
+actions+=/frozen_orb,if=target.time_to_die>=12&!ticking
+actions+=/mirror_image,if=target.time_to_die>=25
+#actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
+actions+=/icy_veins,if=buff.icy_veins.down&buff.bloodlust.down&(buff.tier13_2pc.stack>7|cooldown.cold_snap.remains<22)
+actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
+#actions+=/ice_lance,if=buff.fingers_of_frost.react&pet.water_elemental.cooldown.freeze.remains<gcd
+actions+=/frostbolt
+#actions+=/ice_lance,moving=1
+#actions+=/fire_blast,moving=1
+head=barovian_ritual_hood,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_643hit_526mastery
+neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
+shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit
+chest=robes_of_koegler,heroic=1,type=cloth,ilevel=463,quality=rare,stats=2037armor_899int_1349sta_643hit_526crit,enchant=80all
+waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int
+legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,enchant=285int_165crit
+feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=140mastery
+wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=170int
+hands=conflagrating_gloves,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1273armor_668int_1002sta_484hit_380haste,enchant=170mastery
+finger1=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int
+finger2=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,enchant=160int
+trinket1=grakls_gleaming_talisman,heroic=0,ilevel=409,quality=rare,stats=512int,use=4232spellpower_20dur_120cd
+trinket2=grakls_gleaming_talisman,heroic=0,ilevel=409,quality=rare,stats=512int,use=4232spellpower_20dur_120cd
+back=scorched_earth_cloak,ilevel=463,quality=rare,stats=1018armor_501int_752sta_368mastery_277hit,enchant=lightweave_embroidery
+main_hand=headmasters_will,ilevel=463,quality=rare,stats=899int_1349sta_541hit_635crit_5151sp,enchant=jade_spirit,weapon=staff_3.30speed_4336min_6506max
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=8208
+# gear_intellect=7271
+# gear_spirit=21
+# gear_spell_power=2786
+# gear_hit_rating=1745
+# gear_crit_rating=983
+# gear_haste_rating=2330
+# gear_mastery_rating=1765
+# gear_armor=10254
+# meta_gem=burning_shadowspirit
+# tier13_2pc_caster=1
+# tier13_4pc_caster=1
+# back=nanoprecise_cape,enchant=lightweave_embroidery
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

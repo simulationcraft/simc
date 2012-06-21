@@ -2941,9 +2941,9 @@ void mage_t::init_buffs()
                                .duration( find_spell( 57761 ) -> duration() )
                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
                                .chance( spec.brain_freeze      -> ok() ? 
-                                      ( talents.nether_tempest -> ok() ? 0.1 :
-                                      ( talents.living_bomb    -> ok() ? 0.2 :
-                                      ( talents.frost_bomb     -> ok() ? 1.0 : 0.0 ) ) ) : 0 );
+                                      ( talents.nether_tempest -> ok() ? 0.10 :
+                                      ( talents.living_bomb    -> ok() ? 0.25 :
+                                      ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
 
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
