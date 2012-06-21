@@ -597,7 +597,8 @@ void action_t::target_debuff( player_t* t, int /* dmg_type */ )
       target_multiplier *= 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                    std::max( t -> debuffs.earth_and_moon     -> value(),
                                    std::max( t -> debuffs.ebon_plaguebringer -> value(),
-                                             t -> debuffs.lightning_breath   -> value() ) ) ) * 0.01 );
+                                   std::max( t -> debuffs.lightning_breath   -> value(),
+                                             t -> debuffs.master_poisoner    -> value() ) ) ) ) * 0.01 );
 
       if ( t -> debuffs.curse_of_elements -> check() ) target_penetration += 88;
     }

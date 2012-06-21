@@ -4298,7 +4298,7 @@ void player_t::rogue_init( sim_t* sim )
     p -> buffs.tricks_of_the_trade  = new   buff_t( p, "tricks_of_the_trade", 1, timespan_t::from_seconds( 6.0 ) );
     p -> debuffs.expose_armor       = new debuff_t( p, "expose_armor",     1 );
     p -> debuffs.hemorrhage         = new debuff_t( p, "hemorrhage",       1, timespan_t::from_seconds( 60.0 ) );
-    p -> debuffs.master_poisoner    = new debuff_t( p, "master_poisoner", -1 );
+    p -> debuffs.master_poisoner    = new debuff_t( p, 58410, "master_poisoner" );
     p -> debuffs.poisoned           = new debuff_t( p, "poisoned",        -1 );
     p -> debuffs.savage_combat      = new debuff_t( p, "savage_combat",   -1 );
   }
@@ -4315,7 +4315,7 @@ void player_t::rogue_combat_begin( sim_t* sim )
   {
     if ( sim -> overrides.expose_armor    ) t -> debuffs.expose_armor    -> override( 1, 0.12 );
     if ( sim -> overrides.hemorrhage      ) t -> debuffs.hemorrhage      -> override();
-    if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override();
+    if ( sim -> overrides.master_poisoner ) t -> debuffs.master_poisoner -> override( 1, 8 );
     if ( sim -> overrides.poisoned        ) t -> debuffs.poisoned        -> override();
     if ( sim -> overrides.savage_combat   ) t -> debuffs.savage_combat   -> override();
   }

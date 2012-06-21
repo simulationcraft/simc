@@ -3835,7 +3835,11 @@ struct scourge_strike_t : public death_knight_attack_t
 
       target_multiplier = td -> diseases() * 0.18;
 
-      if ( t -> debuffs.earth_and_moon -> up() || t -> debuffs.ebon_plaguebringer -> up() || t -> debuffs.curse_of_elements -> up() )
+      if ( t -> debuffs.earth_and_moon -> up() ||
+           t -> debuffs.ebon_plaguebringer -> up() ||
+           t -> debuffs.curse_of_elements -> up() ||
+           t -> debuffs.master_poisoner -> up() ||
+           t -> debuffs.lightning_breath -> up() )
         target_multiplier *= 1.08;
     }
 

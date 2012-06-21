@@ -1489,7 +1489,9 @@ struct hand_of_light_proc_t : public attack_t
     // not *= since we don't want to double dip in other effects (like vunerability)
     target_multiplier = 1.0 + ( std::max( t -> debuffs.curse_of_elements  -> value(),
                                 std::max( t -> debuffs.earth_and_moon     -> value(),
-                                          t -> debuffs.ebon_plaguebringer -> value() ) ) * 0.01 );
+                                std::max( t -> debuffs.ebon_plaguebringer -> value(),
+                                std::max( t -> debuffs.lightning_breath   -> value(),
+                                          t -> debuffs.master_poisoner    -> value() ) ) ) ) * 0.01 );
   }
 };
 
