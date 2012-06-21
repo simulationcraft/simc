@@ -1704,7 +1704,7 @@ struct corruption_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    if ( soc_triggered ) return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    if ( soc_triggered ) return timespan_t::from_seconds( std::min( sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ).total_seconds() , 0.01 ) );
 
     return warlock_spell_t::travel_time();
   }
