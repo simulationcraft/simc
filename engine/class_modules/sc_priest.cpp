@@ -253,6 +253,7 @@ struct priest_t : public player_t
     const spell_data_t* devouring_plague;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* borrowed_time;
+    const spell_data_t* shadow_word_death;
   } glyphs;
 
   // Constants
@@ -2502,7 +2503,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     s -> result_amount = floor( s -> result_amount );
 
-    if ( backlash )
+    if ( backlash && s -> target -> health_percentage() >= 20.0 )
     {
       backlash -> spellpower = s -> spell_power;
       backlash -> multiplier = s -> da_multiplier;
@@ -2511,12 +2512,10 @@ struct shadow_word_death_t : public priest_spell_t
 
     if ( result_is_hit() )
     {
-      if ( target -> health_percentage() < 20.0 )
-      {
-        s -> result_amount *= 4.0;
-
+      if ( s -> target -> health_percentage() >= 20.0 )
+        s -> result_amount /= 4.0;
+      else
         generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
-      }
     }
 
     priest_spell_t::impact_s( s );
@@ -2532,6 +2531,18 @@ struct shadow_word_death_t : public priest_spell_t
     }
 
     return m;
+  }
+
+  virtual bool ready()
+  {
+    if ( !priest_spell_t::ready() )
+      return false;
+
+    if ( !p() -> glyphs.shadow_word_death -> ok() && target -> health_percentage() >= 20.0 )
+      return false;
+
+    return true;
+
   }
 };
 
@@ -4784,6 +4795,7 @@ void priest_t::init_spells()
   glyphs.devouring_plague             = find_glyph_spell( "Glyph of Devouring Plague" );
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
   glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
+  glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     spells.echo_of_light = new echo_of_light_t( this );
