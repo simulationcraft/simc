@@ -401,7 +401,7 @@ struct jab_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier = 2.52; // hardcoded into tooltip
+    base_multiplier = 1.5; // hardcoded into tooltip
   }
 
   virtual resource_e current_resource()
@@ -445,7 +445,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier = 5.0; // hardcoded into tooltip
+    base_multiplier = 3.0; // hardcoded into tooltip
   }
 
   virtual void impact_s( action_state_t* s )
@@ -513,7 +513,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 12.0; // hardcoded into tooltip
+    base_multiplier = 8.0; // hardcoded into tooltip
 
     bokdot = new dot_blackout_kick_t( p );
     add_child( bokdot );
@@ -608,7 +608,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
-      base_multiplier = 2.27; // hardcoded into tooltip
+      base_multiplier = 1.59; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
   };
@@ -683,7 +683,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
-      base_multiplier = 7.56; // hardcoded into tooltip
+      base_multiplier = 5; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
     }
   };
