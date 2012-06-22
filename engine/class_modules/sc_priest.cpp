@@ -2695,21 +2695,12 @@ struct devouring_plague_t : public priest_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
-  {
-    priest_spell_t::impact_s( s );
-
-    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( s );
-    double a = data().effectN( 3 ).percent() * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
-    p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
-  }
-
   virtual void tick( dot_t* d )
   {
     priest_spell_t::tick( d );
 
     devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-    double a = data().effectN( 4 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+    double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
 
     p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
