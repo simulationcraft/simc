@@ -426,7 +426,6 @@ struct warlock_pet_t : public pet_t
   virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
-  virtual double energy_regen_per_second();
   warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
 };
@@ -852,12 +851,6 @@ void warlock_pet_t::init_attack()
 {
   pet_t::init_attack();
   if ( owner -> race == RACE_ORC ) initial.attack_power_multiplier *= 1.05;
-}
-
-double warlock_pet_t::energy_regen_per_second()
-{
-  // pet energy regen does not appear to scale with haste
-  return base_energy_regen_per_second;
 }
 
 timespan_t warlock_pet_t::available()
