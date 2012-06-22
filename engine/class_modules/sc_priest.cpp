@@ -99,7 +99,7 @@ struct priest_t : public player_t
     const spell_data_t* phantasm;
     const spell_data_t* from_darkness_comes_light;
     const spell_data_t* mindbender;
-    const spell_data_t* archangel;
+    // archangel replacement
     const spell_data_t* desperate_prayer;
     const spell_data_t* void_shift;
     const spell_data_t* angelic_bulwark;
@@ -125,6 +125,7 @@ struct priest_t : public player_t
     const spell_data_t* divine_fury;
     const spell_data_t* rapture;
     const spell_data_t* mysticism;
+    const spell_data_t* archangel;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -4730,7 +4731,6 @@ void priest_t::init_spells()
   talents.phantasm                    = find_talent_spell( "Phantasm" );
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
-  talents.archangel                   = find_talent_spell( "Archangel" );
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.void_shift                  = find_talent_spell( "Void Shift" );
   talents.angelic_bulwark             = find_talent_spell( "Angelic Bulwark" );
@@ -4754,6 +4754,7 @@ void priest_t::init_spells()
   specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
   specs.rapture                        = find_specialization_spell( "Rapture" );
   specs.mysticism                      = find_specialization_spell( "Mysticism" );
+  specs.archangel                      = find_specialization_spell( "Archangel" );
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
@@ -4841,10 +4842,10 @@ void priest_t::init_buffs()
                                            .chance( specs.evangelism -> ok() )
                                            .activated( false );
   buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) )
-                                           .chance( talents.archangel -> ok() )
+                                           .chance( specs.archangel -> ok() )
                                            .default_value( find_spell( 87153 ) -> effect1().percent() );
   buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) )
-                                           .chance( talents.archangel -> ok() )
+                                           .chance( specs.archangel -> ok() )
                                            .default_value( find_spell( 81700 ) -> effect1().percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
