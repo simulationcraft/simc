@@ -3125,7 +3125,6 @@ struct immolation_aura_t : public warlock_spell_t
     warlock_spell_t( p, "Immolation Aura" ),
     immolation_aura_tick( 0 )
   {
-    dot_behavior = DOT_CLIP;
     tick_zero    = true;
 
     immolation_aura_tick = new immolation_aura_tick_t( p );
