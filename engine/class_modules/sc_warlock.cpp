@@ -3139,9 +3139,19 @@ struct immolation_aura_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    warlock_spell_t::tick( d );
+
     immolation_aura_tick -> execute();
 
-    stats -> add_tick( d -> time_to_tick );
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 25;
+    if ( d -> current_tick != 0 ) consume_tick_resource( d );
+  }
+
+  virtual void execute()
+  {
+    // FIXME: This is hacky, but it's the only way since we currently don't have a separate tick_cost()
+    base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
+    warlock_spell_t::execute();
   }
 
   virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )

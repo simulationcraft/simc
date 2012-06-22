@@ -441,12 +441,14 @@ double action_t::cost()
   if ( ! harmful && ! player -> in_combat )
     return 0;
 
-  double c = base_costs[ current_resource() ];
+  resource_e cr = current_resource();
+
+  double c = base_costs[ cr ];
 
   c -= player -> current.resource_reduction[ school ];
   if ( c < 0 ) c = 0;
 
-  if ( current_resource() == RESOURCE_MANA )
+  if ( cr == RESOURCE_MANA )
   {
     if ( player -> buffs.power_infusion -> check() ) c *= ( 1.0 + player -> buffs.power_infusion -> data().effectN( 2 ).percent() );
   }
@@ -454,7 +456,7 @@ double action_t::cost()
   if ( is_dtr_action )
     c = 0;
 
-  if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ current_resource() ], c, util::resource_type_string( current_resource() ) );
+  if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
 
   return floor( c );
 }
