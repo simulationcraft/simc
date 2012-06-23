@@ -3577,9 +3577,20 @@ struct flames_of_xoroth_t : public warlock_spell_t
     harmful = false;
   }
 
+  virtual double cost()
+  {
+    if ( p() -> pets.active || p() -> buffs.grimoire_of_sacrifice -> check() )
+      return 0;
+    else
+      return warlock_spell_t::cost();
+  }
+
   virtual void execute()
   {
+    warlock_spell_t::execute();
+
     bool gain_ember = false;
+
     if ( p() -> buffs.grimoire_of_sacrifice -> check() )
     {
       p() -> buffs.grimoire_of_sacrifice -> expire();
@@ -3596,8 +3607,6 @@ struct flames_of_xoroth_t : public warlock_spell_t
       p() -> pets.last -> summon();
       p() -> pets.active = p() -> pets.last;
     }
-
-    warlock_spell_t::execute();
 
     if ( gain_ember ) p() -> resource_gain( RESOURCE_BURNING_EMBER, 10, ember_gain );
   }
