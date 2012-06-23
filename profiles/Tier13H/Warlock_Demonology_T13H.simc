@@ -43,13 +43,11 @@ actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7
 actions.aoe+=/felguard:felstorm
 actions.aoe+=/metamorphosis,if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die
-actions.aoe+=/immolation_aura,if=!ticking
-actions.aoe+=/doom,cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30
 actions.aoe+=/immolation_aura
+actions.aoe+=/doom,cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30
 actions.aoe+=/imp_swarm,if=buff.metamorphosis.down
 actions.aoe+=/hand_of_guldan,if=!action.shadowflame.in_flight
 actions.aoe+=/harvest_life,chain=1
-actions.aoe+=/rain_of_fire
 actions.aoe+=/life_tap
 head=hood_of_the_faceless_shroud,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=crit_hit,gems=burning_shadowspirit_50int_30int
 neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,gems=50int_10int

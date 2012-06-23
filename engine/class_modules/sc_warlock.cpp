@@ -18,13 +18,11 @@ struct warlock_td_t : public actor_pair_t
   dot_t*  dots_agony;
   dot_t*  dots_doom;
   dot_t*  dots_immolate;
-  dot_t*  dots_drain_life;
   dot_t*  dots_drain_soul;
   dot_t*  dots_shadowflame;
   dot_t*  dots_malefic_grasp;
   dot_t*  dots_seed_of_corruption;
   dot_t*  dots_soulburn_seed_of_corruption;
-  dot_t*  dots_rain_of_fire;
 
   buff_t* debuffs_haunt;
 
@@ -335,13 +333,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   dots_agony               = target -> get_dot( "agony", p );
   dots_doom                = target -> get_dot( "doom", p );
   dots_immolate            = target -> get_dot( "immolate", p );
-  dots_drain_life          = target -> get_dot( "drain_life", p );
   dots_drain_soul          = target -> get_dot( "drain_soul", p );
   dots_shadowflame         = target -> get_dot( "shadowflame", p );
   dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
   dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
-  dots_rain_of_fire        = target -> get_dot( "rain_of_fire", p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
 }
@@ -1387,7 +1383,13 @@ public:
   {
     consume_resource();
     resource_e r = current_resource();
-    if ( p() -> resources.current[ r ] < base_costs[ r ] ) d -> action -> cancel();
+    if ( p() -> resources.current[ r ] < base_costs[ r ] ) 
+    {
+      if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
+        p() -> spells.metamorphosis -> cancel();
+      else
+        d -> action -> cancel();
+    }
   }
 
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
@@ -3178,9 +3180,11 @@ struct immolation_aura_t : public warlock_spell_t
     event_t::cancel( cost_event );
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::impact_s( s );
+
+    get_dot() -> num_ticks += ( int ) ( num_ticks * 0.8 );
 
     if ( ! cost_event ) cost_event = new ( sim ) cost_event_t( p(), this );
   }
@@ -3195,6 +3199,9 @@ struct immolation_aura_t : public warlock_spell_t
     bool r = warlock_spell_t::ready();
 
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    dot_t* d = get_dot();
+    if ( d -> ticking && d -> num_ticks - d -> current_tick > num_ticks * 1.2 )  r = false;
 
     return r;
   }
@@ -4559,15 +4566,14 @@ void warlock_t::init_actions()
       // AoE action list
       get_action_priority_list( "aoe" ) -> action_list_str += "/felguard:felstorm";
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",      "aoe" );
-      add_action( "Immolation Aura",       "if=!ticking",                                                    "aoe" );
-      add_action( find_spell( 603 ),       "cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30", "aoe" );
       add_action( "Immolation Aura",       "",                                                               "aoe" );
+      add_action( find_spell( 603 ),       "cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30", "aoe" );
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                                     "aoe" );
       add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                               "aoe" );
-
       add_action( talents.harvest_life,    "chain=1",                                                        "aoe" );
-      add_action( "Rain of Fire",          "",                                                               "aoe" );
+      if ( ! talents.harvest_life -> ok() )
+        add_action( "Rain of Fire",          "",                                                               "aoe" );
       add_action( "Life Tap",              "",                                                               "aoe" );
       break;
 
