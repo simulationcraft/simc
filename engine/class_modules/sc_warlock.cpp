@@ -47,11 +47,6 @@ struct warlock_td_t : public actor_pair_t
 
 struct warlock_t : public player_t
 {
-  spell_t* seed_of_corruption_aoe;
-  spell_t* soulburn_seed_of_corruption_aoe;
-  spell_t* touch_of_chaos;
-  spell_t* archimondes_vengeance_dmg;
-
   player_t* havoc_target;
 
   double kc_movement_reduction, kc_cast_speed_reduction;
@@ -159,8 +154,6 @@ struct warlock_t : public player_t
     const spell_data_t* emberstorm;
   } mastery_spells;
 
-  std::string dark_intent_target_str;
-
   // Gains
   struct gains_t
   {
@@ -205,6 +198,15 @@ struct warlock_t : public player_t
     const spell_data_t* soul_swap;
   } glyphs;
 
+  struct spells_t
+  {
+    spell_t* seed_of_corruption_aoe;
+    spell_t* soulburn_seed_of_corruption_aoe;
+    spell_t* touch_of_chaos;
+    spell_t* archimondes_vengeance_dmg;
+    spell_t* metamorphosis;
+  } spells;
+
   struct soul_swap_state_t
   {
     player_t* target;
@@ -213,29 +215,6 @@ struct warlock_t : public player_t
     bool unstable_affliction;
     bool seed_of_corruption;
   } soul_swap_state;
-
-  struct meta_cost_event_t : event_t
-  {
-    int cost;
-    meta_cost_event_t( warlock_t* p ) :
-      event_t( p -> sim, p, "metamorphosis_fury_cost" )
-    {
-      cost = p -> buffs.metamorphosis -> data().powerN( POWER_DEMONIC_FURY )._cost_per_second;
-      sim -> add_event( this, timespan_t::from_seconds( 1 ) );
-    }
-
-    virtual void execute()
-    {
-      warlock_t* p = ( warlock_t* ) player;
-      p -> meta_cost_event = new ( sim ) meta_cost_event_t( p );
-      p -> resource_loss( RESOURCE_DEMONIC_FURY, cost );
-    }
-  };
-
-  meta_cost_event_t* meta_cost_event;
-
-  void trigger_metamorphosis() { meta_cost_event = new ( sim ) meta_cost_event_t( this ); buffs.metamorphosis -> trigger(); };
-  void cancel_metamorphosis()  { if ( touch_of_chaos ) touch_of_chaos -> cancel(); event_t::cancel( meta_cost_event ); buffs.metamorphosis -> expire(); };
 
   struct demonic_calling_event_t : event_t
   {
@@ -369,9 +348,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
-  seed_of_corruption_aoe( 0 ),
-  soulburn_seed_of_corruption_aoe( 0 ),
-  touch_of_chaos( 0 ),
   havoc_target( 0 ),
   pets( pets_t() ),
   buffs( buffs_t() ),
@@ -382,7 +358,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   procs( procs_t() ),
   rngs( rngs_t() ),
   glyphs( glyphs_t() ),
-  meta_cost_event( 0 ),
+  spells( spells_t() ),
   demonic_calling_event( 0 ),
   use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
@@ -1197,32 +1173,30 @@ private:
     stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
-    gain_fury = p() -> get_gain( name_str );
+    gain = p() -> get_gain( name_str );
     generate_fury = 0;
     cost_event = 0;
   }
 
 public:
   double generate_fury;
-  gain_t* gain_fury;
+  gain_t* gain;
 
   struct cost_event_t : event_t
   {
     warlock_spell_t* spell;
     resource_e resource;
-    gain_t* gain;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r ) :
       event_t( p -> sim, p, ( s -> name_str + "_" + util::resource_type_string( r ) + "_cost" ).c_str() ), spell( s ), resource( r )
     {
-      gain = p -> get_gain( s -> name_str + "_per_second" );
       sim -> add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
     {
       spell -> cost_event = new ( sim ) cost_event_t( player, spell, resource );
-      player -> resource_loss( resource, spell -> costs_per_second[ resource ], gain );
+      player -> resource_loss( resource, spell -> costs_per_second[ resource ], spell -> gain );
     }
   };
 
@@ -1251,13 +1225,20 @@ public:
     if ( harmful ) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
   }
 
+  virtual void reset()
+  {
+    spell_t::reset();
+
+    event_t::cancel( cost_event );
+  }
+
   virtual void execute()
   {
     spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
     if ( harmful && ! background && aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != target )
     {
@@ -1275,7 +1256,7 @@ public:
   virtual bool ready()
   {
     if ( p() -> buffs.metamorphosis -> check() && p() -> resources.current[ RESOURCE_DEMONIC_FURY ] < META_FURY_MINIMUM )
-      p() -> cancel_metamorphosis();
+      p() -> spells.metamorphosis -> cancel();
 
     return spell_t::ready();
   }
@@ -1285,7 +1266,7 @@ public:
     spell_t::tick( d );
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain_fury );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
   }
@@ -1385,7 +1366,7 @@ public:
       td -> soc_trigger -= amount;
       if ( td -> soc_trigger <= 0 )
       {
-        p -> seed_of_corruption_aoe -> execute();
+        p -> spells.seed_of_corruption_aoe -> execute();
         td -> dots_seed_of_corruption -> cancel();
       }
     }
@@ -1395,7 +1376,7 @@ public:
       td -> soulburn_soc_trigger -= amount;
       if ( td -> soulburn_soc_trigger <= 0 )
       {
-        p -> soulburn_seed_of_corruption_aoe -> execute();
+        p -> spells.soulburn_seed_of_corruption_aoe -> execute();
         td -> dots_soulburn_seed_of_corruption -> cancel();
       }
     }
@@ -2373,19 +2354,19 @@ struct activate_touch_of_chaos_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
 
-    p -> touch_of_chaos = new touch_of_chaos_t( p );
+    p -> spells.touch_of_chaos = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
   {
-    p() -> touch_of_chaos -> schedule_execute();
+    p() -> spells.touch_of_chaos -> schedule_execute();
   }
 
   virtual bool ready()
   {
     if ( ! p() -> buffs.metamorphosis -> check() ) return false;
     if ( p() -> is_moving() ) return false;
-    return ( p() -> touch_of_chaos -> execute_event == 0 ); // not swinging
+    return ( p() -> spells.touch_of_chaos -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -2397,13 +2378,25 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
+
+    p -> spells.metamorphosis = this;
   }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
 
-    p() -> trigger_metamorphosis();
+    p() -> buffs.metamorphosis -> trigger();
+    cost_event = new ( sim ) cost_event_t( p(), this, RESOURCE_DEMONIC_FURY );
+  }
+
+  virtual void cancel()
+  {
+    warlock_spell_t::cancel();
+    
+    if ( p() -> spells.touch_of_chaos ) p() -> spells.touch_of_chaos -> cancel();
+    p() -> buffs.metamorphosis -> expire();
+    event_t::cancel( cost_event );
   }
 
   virtual bool ready()
@@ -2428,8 +2421,8 @@ struct cancel_metamorphosis_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-
-    p() -> cancel_metamorphosis();
+    
+    p() -> spells.metamorphosis -> cancel();
   }
 
   virtual bool ready()
@@ -2943,7 +2936,7 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    p() -> soulburn_seed_of_corruption_aoe -> stats = stats;
+    p() -> spells.soulburn_seed_of_corruption_aoe -> stats = stats;
   }
 };
 
@@ -3003,10 +2996,10 @@ struct seed_of_corruption_t : public warlock_spell_t
     may_crit = false;
     tick_power_mod = 0.3;
 
-    if ( ! p -> seed_of_corruption_aoe ) p -> seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
-    if ( ! p -> soulburn_seed_of_corruption_aoe ) p -> soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
+    if ( ! p -> spells.seed_of_corruption_aoe ) p -> spells.seed_of_corruption_aoe = new seed_of_corruption_aoe_t( p );
+    if ( ! p -> spells.soulburn_seed_of_corruption_aoe ) p -> spells.soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
 
-    add_child( p -> seed_of_corruption_aoe );
+    add_child( p -> spells.seed_of_corruption_aoe );
   }
 
   virtual void init()
@@ -3701,7 +3694,7 @@ struct harvest_life_tick_t : public warlock_spell_t
     heal -> perform( main_target == target );
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain_fury ); // FIXME: This may be a bug, retest later
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain ); // FIXME: This may be a bug, retest later
   }
 };
 
@@ -3992,7 +3985,7 @@ void warlock_t::halt()
 {
   player_t::halt();
 
-  if ( touch_of_chaos ) touch_of_chaos -> cancel();
+  if ( spells.touch_of_chaos ) spells.touch_of_chaos -> cancel();
 }
 
 
@@ -4017,10 +4010,10 @@ double warlock_t::assess_damage( double        amount,
   if ( m > 0 )
   {
     // FIXME: Needs testing! Should it include absorbed damage? Should it be unaffected by damage buffs?
-    archimondes_vengeance_dmg -> base_dd_min = archimondes_vengeance_dmg -> base_dd_max = damage * m;
-    archimondes_vengeance_dmg -> target = action -> player;
-    archimondes_vengeance_dmg -> school = school; // FIXME: Assuming school is the school of the incoming damage for now
-    archimondes_vengeance_dmg -> execute();
+    spells.archimondes_vengeance_dmg -> base_dd_min = spells.archimondes_vengeance_dmg -> base_dd_max = damage * m;
+    spells.archimondes_vengeance_dmg -> target = action -> player;
+    spells.archimondes_vengeance_dmg -> school = school; // FIXME: Assuming school is the school of the incoming damage for now
+    spells.archimondes_vengeance_dmg -> execute();
   }
 
   return damage;
@@ -4241,7 +4234,7 @@ void warlock_t::init_spells()
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
 
-  archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
+  spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 
   kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;
   kc_cast_speed_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 1 ).percent() : 0;
@@ -4630,7 +4623,6 @@ void warlock_t::reset()
   // Active
   pets.active = 0;
   ember_react = timespan_t::max();
-  event_t::cancel( meta_cost_event );
   event_t::cancel( demonic_calling_event );
 
   for ( int i = 0; i < NIGHTFALL_LIMIT; i++ )
