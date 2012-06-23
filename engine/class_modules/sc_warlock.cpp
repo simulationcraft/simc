@@ -1187,9 +1187,10 @@ public:
     warlock_spell_t* spell;
     resource_e resource;
 
-    cost_event_t( player_t* p, warlock_spell_t* s, resource_e r ) :
+    cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ) :
       event_t( p -> sim, p, ( s -> name_str + "_" + util::resource_type_string( r ) + "_cost" ).c_str() ), spell( s ), resource( r )
     {
+      if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
       sim -> add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
@@ -2387,7 +2388,7 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.metamorphosis -> trigger();
-    cost_event = new ( sim ) cost_event_t( p(), this, RESOURCE_DEMONIC_FURY );
+    cost_event = new ( sim ) cost_event_t( p(), this );
   }
 
   virtual void cancel()
@@ -3181,7 +3182,7 @@ struct immolation_aura_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    cost_event = new ( sim ) cost_event_t( p(), this, RESOURCE_DEMONIC_FURY );
+    cost_event = new ( sim ) cost_event_t( p(), this );
   }
 
   virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
