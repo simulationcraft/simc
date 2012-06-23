@@ -2356,6 +2356,7 @@ struct activate_touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "activate_touch_of_chaos", p, spell_data_t::nil() )
   {
     trigger_gcd = timespan_t::zero();
+    harmful = false;
 
     p -> spells.touch_of_chaos = new touch_of_chaos_t( p );
   }
@@ -2370,6 +2371,26 @@ struct activate_touch_of_chaos_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) return false;
     if ( p() -> is_moving() ) return false;
     return ( p() -> spells.touch_of_chaos -> execute_event == 0 ); // not swinging
+  }
+};
+
+struct cancel_touch_of_chaos_t : public warlock_spell_t
+{
+  cancel_touch_of_chaos_t( warlock_t* p ) :
+    warlock_spell_t( "cancel_touch_of_chaos", p, spell_data_t::nil() )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    p() -> spells.touch_of_chaos -> cancel();
+  }
+
+  virtual bool ready()
+  {
+    return ( p() -> spells.touch_of_chaos -> execute_event != 0 );
   }
 };
 
@@ -4100,6 +4121,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, name );
   else if ( name == "touch_of_chaos"        ) a = new activate_touch_of_chaos_t( this );
+  else if ( name == "cancel_touch_of_chaos" ) a = new   cancel_touch_of_chaos_t( this );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
