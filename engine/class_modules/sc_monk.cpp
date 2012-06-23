@@ -1248,22 +1248,20 @@ void monk_t::init_actions()
       precombat += "/stance";
       precombat += "/snapshot_stats";
 
+
       action_list_str += "/auto_attack";
       action_list_str += "/energizing_brew,if=energy<=40";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=10";
-      action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
+      action_list_str += "/rising_sun_kick";
       action_list_str += "/fists_of_fury";
-      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
-      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.up";
-      action_list_str += "/rising_sun_kick,if=cooldown.fists_of_fury.remains";
-
-      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3&cooldown.fists_of_fury.remains";
+      action_list_str += "/zen_sphere";
+      action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
+      action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
+      action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3";
       action_list_str += "/tiger_palm,if=debuff.tiger_power.stack<3";
-      //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
-      action_list_str += "/jab,if=cooldown.fists_of_fury.remains";
       action_list_str += "/jab";
 
-
+      //   action_list_str += "/spinning_crane_kick,if=cooldown.fists_of_fury.remains";
       break;
     }
   }
