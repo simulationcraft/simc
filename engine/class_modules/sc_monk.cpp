@@ -55,7 +55,7 @@ struct monk_t : public player_t
     // TODO: Finish Adding Buffs - will uncomment as implemented
     //  buff_t* buffs_<buffname>;
     buff_t* energizing_brew;
-    //  buff_t* zen_sphere;
+    buff_t* zen_sphere;
     //  buff_t* fortifying_brew;
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -101,7 +101,7 @@ struct monk_t : public player_t
     //   const spell_data_t* momentum;
 
     //   const spell_data_t* chi_wave;
-    //   const spell_data_t* zen_sphere;
+    const spell_data_t* zen_sphere;
     //   const spell_data_t* chi_burst;
 
     //   const spell_data_t* power_strikes;
@@ -665,8 +665,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 };
 
 //=============================
-//====Fists of Fury============ TODO: Double check tick_zero and channel duration.
-//=============================       4 ticks including DD or 3 including DD?
+//====Fists of Fury============
+//=============================
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
@@ -884,12 +884,63 @@ struct energizing_brew_t : public monk_spell_t
     harmful           = false;
   }
 
+
   virtual void execute()
   {
     monk_spell_t::execute();
 
     p() -> buff.energizing_brew -> trigger();
   }
+};
+//=============================
+//====Zen Sphere=============== TODO: Add healing Component
+//=============================
+
+
+struct zen_sphere_t : public monk_spell_t // find out if direct tick or tick zero applies
+{
+
+
+  zen_sphere_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "zen_sphere", player, player -> find_spell( 124081 ))
+  {
+    parse_options( NULL, options_str );
+
+  }
+
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+    p() -> buff.zen_sphere -> trigger();
+
+  }
+  virtual bool ready()
+  {
+    bool r = monk_spell_t::ready();
+
+    if ( p() -> buff.zen_sphere -> up() ) r = false; // temporary to hold off on action
+
+    return r;
+  }
+
+};
+
+//NYI
+struct zen_sphere_detonate_t : public monk_spell_t
+{
+  zen_sphere_detonate_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ))
+  {
+    parse_options( NULL, options_str );
+   aoe     = -1;
+  }
+  virtual void execute()
+  {
+
+    monk_spell_t::execute();
+  }
+
 };
 
 // Stance ===================================================================
@@ -1019,6 +1070,8 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "stance"              ) return new              stance_t( this, options_str );
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
   if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
+  if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
+  if ( name == "zen_sphere_detonate" ) return new zen_sphere_detonate_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1103,9 +1156,10 @@ void monk_t::init_buffs()
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) );
   buff.tiger_strikes     = buff_creator_t( this, "tiger_strikes"       ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
-  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"  ).spell( find_spell( 116768 ) );
+  buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
-  buff.energizing_brew   = buff_creator_t( this, "energizing_brew"    ).spell( find_spell( 115288 ) );
+  buff.energizing_brew   = buff_creator_t( this, "energizing_brew"     ).spell( find_spell( 115288 ) );
+  buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -1181,7 +1235,8 @@ void monk_t::init_actions()
 
       action_list_str += "/auto_attack";
       action_list_str += "/energizing_brew,if=energy<=40";
-      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=7";//this can potentionally be used in line with CD's+FoF
+      action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react>=10";
+      action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
       action_list_str += "/fists_of_fury";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.up";
       action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.up";
@@ -1276,7 +1331,6 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::composite_player_multiplier
 
-
 double monk_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
@@ -1288,6 +1342,7 @@ double monk_t::composite_player_multiplier( school_e school, action_t* a )
 
   return m;
 }
+
 
 // monk_t::create_options =================================================
 
