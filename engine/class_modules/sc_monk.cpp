@@ -915,8 +915,8 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
       direct_power_mod = data().extra_coeff();
     }
   };
-  
   monk_spell_t* zen_sphere_damage;
+  
   zen_sphere_t( monk_t* player, const std::string& options_str  ) :
     monk_heal_t( "zen_sphere", player, player -> find_talent_spell( "Zen Sphere" ) ),
     zen_sphere_damage( 0 )
@@ -929,23 +929,23 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
   virtual void execute()
   {
     monk_heal_t::execute();
-    p() -> buff.zen_sphere -> trigger();
 
+    p() -> buff.zen_sphere -> trigger();
   }
   
   virtual void tick( dot_t* d )
   {
     monk_heal_t::tick( d );
+
     zen_sphere_damage -> execute();
   }
 
   virtual bool ready()
   {
-    bool r = monk_heal_t::ready();
+    if ( p() -> buff.zen_sphere -> check() )
+      return false; // temporary to hold off on action
 
-    if ( p() -> buff.zen_sphere -> up() ) r = false; // temporary to hold off on action
-
-    return r;
+    return monk_heal_t::ready();
   }
 
 };
@@ -953,18 +953,18 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
 //NYI
 struct zen_sphere_detonate_t : public monk_spell_t
 {
-  zen_sphere_detonate_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ))
+  zen_sphere_detonate_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ) )
   {
     parse_options( NULL, options_str );
-   aoe     = -1;
+    aoe     = -1;
   }
+
   virtual void execute()
   {
-
     monk_spell_t::execute();
-  }
 
+  }
 };
 
 // Stance ===================================================================
