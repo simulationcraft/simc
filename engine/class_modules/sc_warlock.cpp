@@ -3182,9 +3182,14 @@ struct immolation_aura_t : public warlock_spell_t
 
   virtual void impact_s( action_state_t* s )
   {
+    dot_t* d = get_dot();
+    bool add_ticks = ( d -> ticking > 0 ) ? true : false;
+    int remaining_ticks = d -> num_ticks - d -> current_tick;
+
     warlock_spell_t::impact_s( s );
 
-    get_dot() -> num_ticks += ( int ) ( num_ticks * 0.8 );
+    if ( add_ticks )
+      d -> num_ticks = ( int ) std::min( remaining_ticks + 0.9 * num_ticks, 2.1 * num_ticks );
 
     if ( ! cost_event ) cost_event = new ( sim ) cost_event_t( p(), this );
   }
