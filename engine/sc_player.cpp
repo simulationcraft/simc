@@ -3391,7 +3391,7 @@ double player_t::resource_loss( resource_e resource_type,
 
   if ( source )
   {
-    source -> add( resource_type, actual_amount, amount - actual_amount );
+    source -> add( resource_type, actual_amount * -1, ( amount - actual_amount ) * -1 );
   }
 
   if ( resource_type == RESOURCE_MANA )
