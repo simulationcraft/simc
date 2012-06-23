@@ -1779,6 +1779,9 @@ void shaman_melee_attack_t::impact_s( action_state_t* state )
       double amount = p() -> spell.primal_wisdom -> effect1().percent() * p() -> resources.base[ RESOURCE_MANA ];
       p() -> resource_gain( RESOURCE_MANA, amount, p() -> gain.primal_wisdom );
     }
+
+    if ( state -> result == RESULT_CRIT )
+      p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
   }
 }
 
@@ -1856,9 +1859,6 @@ struct melee_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
       trigger_static_shock( this );
-
-    if ( state -> result == RESULT_CRIT )
-      p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
   }
 };
 
