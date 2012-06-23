@@ -21,7 +21,6 @@
 // - Receives 10.5 hit points per stamina
 //
 // Code:
-// - Ascendancy
 // - Redo Totem system
 // - Talents Totemic Restoration, Ancestral Swiftness Instacast
 //
@@ -1844,6 +1843,9 @@ struct melee_t : public shaman_melee_attack_t
     }
     else
     {
+      p() -> buff.unleash_wind -> decrement();
+      p() -> buff.flurry       -> decrement();
+
       shaman_melee_attack_t::execute();
     }
   }
@@ -1857,17 +1859,6 @@ struct melee_t : public shaman_melee_attack_t
 
     if ( state -> result == RESULT_CRIT )
       p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
-  }
-
-  void schedule_execute()
-  {
-    shaman_melee_attack_t::schedule_execute();
-    // Clipped swings do not eat unleash wind buffs
-    if ( time_to_execute > timespan_t::zero() && ! p() -> executing )
-    {
-      p() -> buff.unleash_wind -> decrement();
-      p() -> buff.flurry       -> decrement();
-    }
   }
 };
 
