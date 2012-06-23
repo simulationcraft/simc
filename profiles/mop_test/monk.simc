@@ -1,6 +1,4 @@
 monk=monk_test
-iterations=10000
-html=monk.html
 level=85
 race=pandaren
 professions=tailoring=525/blacksmithing=525
