@@ -4007,6 +4007,7 @@ struct action_t
   timespan_t base_execute_time;
   timespan_t base_tick_time;
   std::array< double, RESOURCE_MAX > base_costs;
+  std::array< int, RESOURCE_MAX > costs_per_second;
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double player_dd_multiplier, player_td_multiplier;

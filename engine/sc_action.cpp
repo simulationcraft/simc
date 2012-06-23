@@ -159,6 +159,7 @@ action_t::action_t( action_e       ty,
   action_list = "";
 
   range::fill( base_costs, 0.0 );
+  range::fill( costs_per_second, 0 );
 
   if ( name_str.empty() )
   {
@@ -275,6 +276,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = pd -> cost();
     else
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
+
+    costs_per_second[ pd -> resource() ] = pd -> _cost_per_second;
   }
 
   for ( size_t i = 1; i <= spell_data._effects -> size(); i++ )

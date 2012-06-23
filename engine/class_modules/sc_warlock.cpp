@@ -7,6 +7,7 @@
 
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 30
+#define META_FURY_MINIMUM 40
 
 struct warlock_t;
 
@@ -1197,20 +1198,44 @@ private:
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
     gain_fury = p() -> get_gain( name_str );
+    generate_fury = 0;
+    cost_event = 0;
   }
 
 public:
   double generate_fury;
   gain_t* gain_fury;
 
+  struct cost_event_t : event_t
+  {
+    warlock_spell_t* spell;
+    resource_e resource;
+    gain_t* gain;
+
+    cost_event_t( player_t* p, warlock_spell_t* s, resource_e r ) :
+      event_t( p -> sim, p, ( s -> name_str + "_" + util::resource_type_string( r ) + "_cost" ).c_str() ), spell( s ), resource( r )
+    {
+      gain = p -> get_gain( s -> name_str + "_per_second" );
+      sim -> add_event( this, timespan_t::from_seconds( 1 ) );
+    }
+
+    virtual void execute()
+    {
+      spell -> cost_event = new ( sim ) cost_event_t( player, spell, resource );
+      player -> resource_loss( resource, spell -> costs_per_second[ resource ], gain );
+    }
+  };
+
+  cost_event_t* cost_event;
+
   warlock_spell_t( warlock_t* p, const std::string& n ) :
-    spell_t( n, p, p -> find_class_spell( n ) ), generate_fury( 0 )
+    spell_t( n, p, p -> find_class_spell( n ) )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( token, p, s ), generate_fury( 0 )
+    spell_t( token, p, s )
   {
     _init_warlock_spell_t();
   }
@@ -1249,7 +1274,7 @@ public:
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() && p() -> resources.current[ RESOURCE_DEMONIC_FURY ] < 40 )
+    if ( p() -> buffs.metamorphosis -> check() && p() -> resources.current[ RESOURCE_DEMONIC_FURY ] < META_FURY_MINIMUM )
       p() -> cancel_metamorphosis();
 
     return spell_t::ready();
@@ -3141,19 +3166,29 @@ struct immolation_aura_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
+    if ( ! p() -> buffs.metamorphosis -> check() || p() -> resources.current[ RESOURCE_DEMONIC_FURY ] < META_FURY_MINIMUM )
+    {
+      d -> cancel();
+      return;
+    }
+
     warlock_spell_t::tick( d );
 
     immolation_aura_tick -> execute();
+  }
 
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 25;
-    if ( d -> current_tick != 0 ) consume_tick_resource( d );
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+
+    event_t::cancel( cost_event );
   }
 
   virtual void execute()
   {
-    // FIXME: This is hacky, but it's the only way since we currently don't have a separate tick_cost()
-    base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
     warlock_spell_t::execute();
+
+    cost_event = new ( sim ) cost_event_t( p(), this, RESOURCE_DEMONIC_FURY );
   }
 
   virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
