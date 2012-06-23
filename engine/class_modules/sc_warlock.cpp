@@ -2402,14 +2402,14 @@ struct metamorphosis_t : public warlock_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
-
-    p -> spells.metamorphosis = this;
+    background = true;
   }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
 
+    assert( cost_event == 0 );
     p() -> buffs.metamorphosis -> trigger();
     cost_event = new ( sim ) cost_event_t( p(), this );
   }
@@ -2422,16 +2422,35 @@ struct metamorphosis_t : public warlock_spell_t
     p() -> buffs.metamorphosis -> expire();
     event_t::cancel( cost_event );
   }
+};
+
+struct activate_metamorphosis_t : public warlock_spell_t
+{
+  activate_metamorphosis_t( warlock_t* p ) :
+    warlock_spell_t( "activate_metamorphosis", p )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+
+    if ( ! p -> spells.metamorphosis ) p -> spells.metamorphosis = new metamorphosis_t( p );
+  }
+
+  virtual void execute()
+  {
+    if ( ! p() -> buffs.metamorphosis -> check() ) p() -> spells.metamorphosis -> execute();
+  }
 
   virtual bool ready()
   {
-    if ( p() -> buffs.metamorphosis -> check() ) return false;
-    if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= 40 ) return false;
+    bool r = warlock_spell_t::ready();
 
-    return warlock_spell_t::ready();
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+    else if ( p() -> resources.current[ RESOURCE_DEMONIC_FURY ] <= META_FURY_MINIMUM ) r = false;
+    else if ( ! p() -> spells.metamorphosis -> ready() ) r = false;
+
+    return r;
   }
 };
-
 
 struct cancel_metamorphosis_t : public warlock_spell_t
 {
@@ -4084,7 +4103,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( name == "life_tap"              ) a = new              life_tap_t( this );
   else if ( name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
-  else if ( name == "metamorphosis"         ) a = new         metamorphosis_t( this );
+  else if ( name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
   else if ( name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
   else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
