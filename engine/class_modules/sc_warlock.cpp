@@ -215,17 +215,19 @@ struct warlock_t : public player_t
 
   struct meta_cost_event_t : event_t
   {
-    meta_cost_event_t( player_t* p ) :
+    int cost;
+    meta_cost_event_t( warlock_t* p ) :
       event_t( p -> sim, p, "metamorphosis_fury_cost" )
     {
+      cost = p -> buffs.metamorphosis -> data().powerN( POWER_DEMONIC_FURY )._cost_per_second;
       sim -> add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
     {
       warlock_t* p = ( warlock_t* ) player;
-      p -> meta_cost_event = new ( sim ) meta_cost_event_t( player );
-      p -> resource_loss( RESOURCE_DEMONIC_FURY, 6 );
+      p -> meta_cost_event = new ( sim ) meta_cost_event_t( p );
+      p -> resource_loss( RESOURCE_DEMONIC_FURY, cost );
     }
   };
 
