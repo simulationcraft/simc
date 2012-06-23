@@ -299,7 +299,23 @@ struct monk_action_t : public Base
   }
 };
 
+struct monk_spell_t : public monk_action_t<spell_t>
+{
+  monk_spell_t( const std::string& n, monk_t* player,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+};
 
+struct monk_heal_t : public monk_action_t<heal_t>
+{
+  monk_heal_t( const std::string& n, monk_t* player,
+               const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+};
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
@@ -845,15 +861,6 @@ struct auto_attack_t : public monk_melee_attack_t
   }
 };
 
-struct monk_spell_t : public monk_action_t<spell_t>
-{
-  monk_spell_t( const std::string& n, monk_t* player,
-                const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-};
-
 struct tigereye_brew_use_t : public monk_spell_t
 {
   tigereye_brew_use_t( monk_t* player, const std::string& options_str ) :
@@ -896,28 +903,45 @@ struct energizing_brew_t : public monk_spell_t
 //====Zen Sphere=============== TODO: Add healing Component
 //=============================
 
-
-struct zen_sphere_t : public monk_spell_t // find out if direct tick or tick zero applies
+struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero applies
 {
-
-
+  struct zen_sphere_damage_t : public monk_spell_t
+  {
+    zen_sphere_damage_t( monk_t* player ) :
+      monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
+    {
+      background  = true;
+      base_attack_power_multiplier = 1.0;
+      direct_power_mod = data().extra_coeff();
+    }
+  };
+  
+  monk_spell_t* zen_sphere_damage;
   zen_sphere_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "zen_sphere", player, player -> find_spell( 124081 ))
+    monk_heal_t( "zen_sphere", player, player -> find_talent_spell( "Zen Sphere" ) ),
+    zen_sphere_damage( 0 )
   {
     parse_options( NULL, options_str );
-
+    
+    zen_sphere_damage = new zen_sphere_damage_t( player );
   }
-
 
   virtual void execute()
   {
-    monk_spell_t::execute();
+    monk_heal_t::execute();
     p() -> buff.zen_sphere -> trigger();
 
   }
+  
+  virtual void tick( dot_t* d )
+  {
+    monk_heal_t::tick( d );
+    zen_sphere_damage -> execute();
+  }
+
   virtual bool ready()
   {
-    bool r = monk_spell_t::ready();
+    bool r = monk_heal_t::ready();
 
     if ( p() -> buff.zen_sphere -> up() ) r = false; // temporary to hold off on action
 
@@ -1004,15 +1028,6 @@ struct stance_t : public monk_spell_t
       return false;
 
     return monk_spell_t::ready();
-  }
-};
-
-struct monk_heal_t : public monk_action_t<heal_t>
-{
-  monk_heal_t( const std::string& n, monk_t* player,
-               const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
   }
 };
 } // END ANONYMOUS action NAMESPACE
