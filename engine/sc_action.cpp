@@ -1878,6 +1878,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new ok_expr_t( *this );
   }
+  else if ( name_str == "executing" )
+  {
+    struct executing_expr_t : public action_expr_t
+    {
+      executing_expr_t( action_t& a ) : action_expr_t( "executing", a ) {}
+      virtual double evaluate() { return action.execute_event != 0; }
+    };
+    return new executing_expr_t( *this );
+  }
 
   return player -> create_expression( this, name_str );
 }

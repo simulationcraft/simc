@@ -2331,12 +2331,28 @@ struct life_tap_t : public warlock_spell_t
 
 struct touch_of_chaos_t : public warlock_spell_t
 {
+  bool cancelled;
+
   touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103988 ) )
+    warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103988 ) ), cancelled( false )
   {
     background        = true;
     repeating         = true;
     base_execute_time = timespan_t::from_seconds( 1 );
+  }
+
+  virtual void reset()
+  {
+    warlock_spell_t::reset();
+
+    cancelled = false;
+  }
+
+  virtual void cancel()
+  {
+    warlock_spell_t::cancel();
+
+    cancelled = true;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2358,20 +2374,41 @@ struct activate_touch_of_chaos_t : public warlock_spell_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    p -> spells.touch_of_chaos = new touch_of_chaos_t( p );
+    if ( ! p -> spells.touch_of_chaos ) p -> spells.touch_of_chaos = new touch_of_chaos_t( p );
   }
 
   virtual void execute()
   {
-    p() -> spells.touch_of_chaos -> schedule_execute();
+    p() -> spells.touch_of_chaos -> execute();
+  }
+
+  virtual expr_t* create_expression( const std::string& name )
+  {
+    if ( name == "cancelled" )
+    {
+      struct cancelled_expr_t : public expr_t
+      {
+        touch_of_chaos_t& toc;
+
+        cancelled_expr_t( touch_of_chaos_t& t ) : expr_t( "cancelled" ), toc( t ) {}
+        virtual double evaluate() { return toc.cancelled; }
+      };
+      return new cancelled_expr_t( *( debug_cast<touch_of_chaos_t*>( p() -> spells.touch_of_chaos ) ) );
+    }
+    return warlock_spell_t::create_expression( name );
   }
 
   virtual bool ready()
   {
-    if ( ! p() -> buffs.metamorphosis -> check() ) return false;
-    if ( p() -> is_moving() ) return false;
-    return ( p() -> spells.touch_of_chaos -> execute_event == 0 ); // not swinging
+    bool r = warlock_spell_t::ready();
+    
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+    else if ( p() -> spells.touch_of_chaos -> execute_event != 0 ) r = false;
+    else if ( p() -> is_moving() ) r = false;
+
+    return r;
   }
+
 };
 
 struct cancel_touch_of_chaos_t : public warlock_spell_t
@@ -2390,7 +2427,11 @@ struct cancel_touch_of_chaos_t : public warlock_spell_t
 
   virtual bool ready()
   {
-    return ( p() -> spells.touch_of_chaos -> execute_event != 0 );
+    bool r = warlock_spell_t::ready();
+
+    if ( p() -> spells.touch_of_chaos -> execute_event == 0 ) r = false;
+
+    return r;
   }
 };
 
@@ -2410,7 +2451,9 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     assert( cost_event == 0 );
+    
     p() -> buffs.metamorphosis -> trigger();
+    p() -> spells.touch_of_chaos -> reset();
     cost_event = new ( sim ) cost_event_t( p(), this );
   }
 
@@ -4500,7 +4543,7 @@ void warlock_t::init_actions()
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/touch_of_chaos";
+        action_list_str += "/touch_of_chaos,if=!cancelled";
     }
     else if ( talents.grimoire_of_sacrifice -> ok() )
     {
@@ -4593,7 +4636,10 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
+      {
+        action_list_str += "/cancel_touch_of_chaos,if=((dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750)|demonic_fury<=120)&target.time_to_die>30";
+        action_list_str += "/cancel_metamorphosis,if=!action.touch_of_chaos.executing&!action.touch_of_chaos.in_flight";
+      }
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
