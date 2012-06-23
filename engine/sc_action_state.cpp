@@ -164,7 +164,11 @@ void action_t::impact_s( action_state_t* s )
         // tick_zero dots tick again when reapplied
         if ( tick_zero )
         {
+          // this is hacky, but otherwise uptime gets messed up
+          timespan_t saved_tick_time = dot -> time_to_tick;
+          dot -> time_to_tick = timespan_t::zero();
           tick( dot );
+          dot -> time_to_tick = saved_tick_time;
         }
       }
       else
