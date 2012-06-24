@@ -194,7 +194,8 @@ struct monk_t : public player_t
   virtual int       decode_set( item_t& );
   virtual void      create_options();
   virtual resource_e primary_resource();
-  virtual role_e primary_role();
+  virtual role_e    primary_role();
+  virtual void      pre_analyze_hook();
 
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -913,12 +914,13 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
       background  = true;
       base_attack_power_multiplier = 1.0;
       direct_power_mod = data().extra_coeff();
+      dual = true;
     }
   };
   monk_spell_t* zen_sphere_damage;
   
   zen_sphere_t( monk_t* player, const std::string& options_str  ) :
-    monk_heal_t( "zen_sphere", player, player -> find_talent_spell( "Zen Sphere" ) ),
+    monk_heal_t( "zen_sphere", player, player -> talent.zen_sphere ),
     zen_sphere_damage( 0 )
   {
     parse_options( NULL, options_str );
@@ -931,13 +933,19 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
     monk_heal_t::execute();
 
     p() -> buff.zen_sphere -> trigger();
+
+    if( zen_sphere_damage )
+    {
+      zen_sphere_damage -> stats -> add_execute( time_to_execute );
+    }
   }
   
   virtual void tick( dot_t* d )
   {
     monk_heal_t::tick( d );
 
-    zen_sphere_damage -> execute();
+    if( zen_sphere_damage )
+      zen_sphere_damage -> execute();
   }
 
   virtual bool ready()
@@ -958,6 +966,7 @@ struct zen_sphere_detonate_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe     = -1;
+    background = true;
   }
 
   virtual void execute()
@@ -1086,7 +1095,6 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
   if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
   if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
-  if ( name == "zen_sphere_detonate" ) return new zen_sphere_detonate_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1099,6 +1107,7 @@ void monk_t::init_spells()
 
   //TALENTS
   talent.ascension = find_talent_spell( "Ascension" );
+  talent.zen_sphere = find_talent_spell( "Zen Sphere" );
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
@@ -1253,6 +1262,8 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/rising_sun_kick";
+      if( talent.zen_sphere -> ok() )
+        action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
       action_list_str += "/fists_of_fury";
       action_list_str += "/zen_sphere";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
@@ -1405,6 +1416,19 @@ role_e monk_t::primary_role()
     return ROLE_DPS;
 
   return ROLE_HYBRID;
+}
+
+// monk_t::pre_analyze_hook  ==============================================
+
+void monk_t::pre_analyze_hook()
+{
+  if ( stats_t* zen_sphere = find_stats( "zen_sphere" ) )
+  {
+    if ( stats_t* zen_sphere_dmg = find_stats( "zen_sphere_damage" ) )
+    {
+      zen_sphere_dmg -> total_execute_time = zen_sphere -> total_execute_time;
+    }
+  }
 }
 
 // MONK MODULE INTERFACE ================================================
