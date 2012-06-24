@@ -2973,6 +2973,7 @@ struct imp_swarm_t : public warlock_spell_t
 
     p() -> buffs.demonic_calling -> expire();
 
+    int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
 
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
@@ -2980,11 +2981,11 @@ struct imp_swarm_t : public warlock_spell_t
       if ( p() -> pets.wild_imps[ i ] -> current.sleeping )
       {
         p() -> pets.wild_imps[ i ] -> summon();
-        if ( ++j == 5 ) break;
+        if ( ++j == imp_count ) break;
       }
     }
-    if ( j != 5 ) sim -> errorf( "Player %s ran out of wild imps.\n", p() -> name() );
-    assert( j == 5 );  // Assert fails if we didn't have enough available wild imps
+    if ( j != imp_count ) sim -> errorf( "Player %s ran out of wild imps.\n", p() -> name() );
+    assert( j == imp_count );  // Assert fails if we didn't have enough available wild imps
   }
 };
 
