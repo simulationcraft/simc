@@ -8,6 +8,7 @@
 #define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 30
 #define META_FURY_MINIMUM 40
+#define DEMONIC_CALLING_REFRESH 20
 
 struct warlock_t;
 
@@ -216,8 +217,10 @@ struct warlock_t : public player_t
 
   struct demonic_calling_event_t : event_t
   {
-    demonic_calling_event_t( player_t* p, timespan_t delay = timespan_t::from_seconds( 20 ) ) :
-      event_t( p -> sim, p, "demonic_calling" )
+    bool initiator;
+
+    demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ) :
+      event_t( p -> sim, p, "demonic_calling" ), initiator( init )
     {
       sim -> add_event( this, delay );
     }
@@ -225,8 +228,8 @@ struct warlock_t : public player_t
     virtual void execute()
     {
       warlock_t* p = ( warlock_t* ) player;
-      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player );
-      if ( p -> cooldowns.imp_swarm -> remains() == timespan_t::zero() ) p -> buffs.demonic_calling -> trigger();
+      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player, timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * p -> composite_spell_haste() ) );
+      if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
 
@@ -2971,7 +2974,8 @@ struct imp_swarm_t : public warlock_spell_t
 
     warlock_spell_t::execute();
 
-    p() -> buffs.demonic_calling -> expire();
+    event_t::cancel( p() -> demonic_calling_event );
+    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
 
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
@@ -4713,7 +4717,7 @@ void warlock_t::combat_begin()
   resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
 
   buffs.demonic_calling -> trigger();
-  demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( 20 ) ) );
+  demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * composite_spell_haste() ) ) );
 }
 
 
