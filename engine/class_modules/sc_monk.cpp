@@ -389,7 +389,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    double m = monk_melee_attack_t::composite_target_multiplier( t );
+    double m = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> buff.rising_sun_kick -> up() )
     {
@@ -858,6 +858,18 @@ struct monk_spell_t : public monk_action_t<spell_t>
                 const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
+  }
+
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = base_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> buff.rising_sun_kick -> up() )
+    {
+      m *=  1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 };
 
