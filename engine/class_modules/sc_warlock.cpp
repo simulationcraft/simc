@@ -437,26 +437,29 @@ struct warlock_pet_melee_t : public melee_attack_t
 
 struct warlock_pet_melee_attack_t : public melee_attack_t
 {
-  double generate_fury;
-
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) :
-    melee_attack_t( n, p, p -> find_pet_spell( n ) ), generate_fury( 0 )
+private:
+  void _init_warlock_pet_melee_attack_t()
   {
-    weapon = &( p -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
     may_crit   = true;
     special = true;
     stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    melee_attack_t( token, p, s ), generate_fury( 0 )
+public:
+  double generate_fury;
+
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) :
+    melee_attack_t( n, p, p -> find_pet_spell( n ) )
   {
-    weapon = &( p -> main_hand_weapon );
-    may_crit   = true;
-    special = true;
-    stateless = true;
-    generate_fury = get_fury_gain( data() );
+    _init_warlock_pet_melee_attack_t();
+  }
+
+  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    melee_attack_t( token, p, s )
+  {
+    _init_warlock_pet_melee_attack_t();
   }
 
   warlock_pet_t* p()
@@ -482,22 +485,27 @@ struct warlock_pet_melee_attack_t : public melee_attack_t
 
 struct warlock_pet_spell_t : public spell_t
 {
-  double generate_fury;
-
-  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) :
-    spell_t( n, p, p -> find_pet_spell( n ) ), generate_fury( 0 )
+private:
+  void _init_warlock_pet_spell_t()
   {
     may_crit = true;
     stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
-  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( token, p, s ), generate_fury( 0 )
+public:
+  double generate_fury;
+
+  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) :
+    spell_t( n, p, p -> find_pet_spell( n ) )
   {
-    may_crit = true;
-    stateless = true;
-    generate_fury = get_fury_gain( data() );
+    _init_warlock_pet_spell_t();
+  }
+
+  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    spell_t( token, p, s )
+  {
+    _init_warlock_pet_spell_t();
   }
 
   warlock_pet_t* p()
