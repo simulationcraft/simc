@@ -307,6 +307,19 @@ struct monk_spell_t : public monk_action_t<spell_t>
     base_t( n, player, s )
   {
   }
+
+
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = base_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> debuff.rising_sun_kick -> up() )
+    {
+      m *=  1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct monk_heal_t : public monk_action_t<heal_t>
@@ -399,6 +412,17 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return total_dmg;
   }
 
+  virtual double composite_target_multiplier( player_t* t )
+  {
+    double m = monk_melee_attack_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> debuff.rising_sun_kick -> up() )
+    {
+      m *=  1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 //=============================
@@ -502,7 +526,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   struct  dot_blackout_kick_t : public monk_melee_attack_t
   {
     dot_blackout_kick_t( monk_t* p ) :
-      monk_melee_attack_t( "blackout_kick_dot", p, p-> find_spell ( 128531 ) )
+      monk_melee_attack_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
     {
       tick_may_crit = true;
       background = true;
@@ -587,18 +611,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
 //TEST: Mortal Wounds - ADD Later
 
-  virtual double action_multiplier()
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    if ( td() -> debuff.rising_sun_kick -> up() )
-    {
-      m *=  1.0 + td() -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
   virtual void impact_s( action_state_t* s )
   {
     monk_melee_attack_t::impact_s( s );
@@ -646,6 +658,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     school = SCHOOL_PHYSICAL;
 
     spinning_crane_kick_tick = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
+    assert( spinning_crane_kick_tick );
   }
 
   virtual void init()
@@ -666,8 +679,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   virtual void tick( dot_t* d )
   {
-    if ( spinning_crane_kick_tick )
-      spinning_crane_kick_tick -> execute();
+    spinning_crane_kick_tick -> execute();
 
     stats -> add_tick( d -> time_to_tick );
   }
@@ -718,8 +730,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_zero = true;
     school = SCHOOL_PHYSICAL;
 
-
     fists_of_fury_tick = new fists_of_fury_tick_t( p );
+    assert( fists_of_fury_tick );
   }
 
   virtual void init()
@@ -768,7 +780,7 @@ struct melee_t : public monk_melee_attack_t
     may_glance  = true;
     if ( player -> dual_wield() )
       base_hit -= 0.19;
-      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 2 ).percent();
   }
 
   virtual timespan_t execute_time()
@@ -793,14 +805,13 @@ struct melee_t : public monk_melee_attack_t
       monk_melee_attack_t::execute();
     }
   }
-  // 1 )remove tiger_strikes_proc_t completly
-  // 2) Add a tiger_strikes_melee_attack_t* to melee_t, create ( = new ) it in melee_t::init(), at which point the melee_t::weapon is set.
-  //pass that weapon pointer to tiger_strikes_melee-attack_t.
-  // 3 ) directly execute tiger strikes from melee_t::impact_s.
+
  void init()
   {
-   monk_melee_attack_t::init();
+    monk_melee_attack_t::init();
+
     tsproc = new tiger_strikes_melee_attack_t( "tiger_strikes_melee", p(), weapon );
+    assert( tsproc );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -809,7 +820,8 @@ struct melee_t : public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> buff.tiger_strikes -> trigger( 4 );
-    if(p() -> buff.tiger_strikes -> up())
+
+    if ( p() -> buff.tiger_strikes -> up() )
       tsproc -> execute();
   }
 };
@@ -900,6 +912,7 @@ struct energizing_brew_t : public monk_spell_t
     p() -> buff.energizing_brew -> trigger();
   }
 };
+
 //=============================
 //====Zen Sphere=============== TODO: Add healing Component
 //=============================
