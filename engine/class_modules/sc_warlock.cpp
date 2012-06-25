@@ -5,7 +5,6 @@
 #include "simulationcraft.hpp"
 // ==========================================================================
 
-#define NIGHTFALL_LIMIT 5
 #define WILD_IMP_LIMIT 30
 #define META_FURY_MINIMUM 40
 #define DEMONIC_CALLING_REFRESH 20
@@ -235,10 +234,6 @@ struct warlock_t : public player_t
 
   demonic_calling_event_t* demonic_calling_event;
 
-  int nightfall_index;
-  timespan_t nightfall_times[ NIGHTFALL_LIMIT ];
-  bool verify_nightfall();
-
   int use_pre_soulburn;
   int initial_burning_embers, initial_demonic_fury;
   timespan_t ember_react;
@@ -265,8 +260,6 @@ struct warlock_t : public player_t
   virtual void      reset();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  buff_t*   create_buff( const spell_data_t* sd, const std::string& token );
-  buff_t*   create_buff( int id, const std::string& token );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
@@ -4768,12 +4761,6 @@ void warlock_t::reset()
   pets.active = 0;
   ember_react = timespan_t::max();
   event_t::cancel( demonic_calling_event );
-
-  for ( int i = 0; i < NIGHTFALL_LIMIT; i++ )
-  {
-    nightfall_times[ i ] = timespan_t::min();
-  }
-  nightfall_index = -1;
 }
 
 
@@ -4878,22 +4865,6 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   else
   {
     return player_t::create_expression( a, name_str );
-  }
-}
-
-bool warlock_t::verify_nightfall()
-{
-  int new_index = ( nightfall_index + 1 ) % NIGHTFALL_LIMIT;
-
-  if ( nightfall_times[ new_index ] < sim -> current_time - timespan_t::from_minutes( 1 ) )
-  {
-    nightfall_times[ new_index ] = sim -> current_time;
-    nightfall_index = new_index;
-    return true;
-  }
-  else
-  {
-    return false;
   }
 }
 
