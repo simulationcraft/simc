@@ -98,7 +98,7 @@ struct priest_t : public player_t
     const spell_data_t* phantasm;
     const spell_data_t* from_darkness_comes_light;
     const spell_data_t* mindbender;
-    // archangel replacement
+    const spell_data_t* power_word_solace;
     const spell_data_t* desperate_prayer;
     const spell_data_t* void_shift;
     const spell_data_t* angelic_bulwark;
@@ -2838,6 +2838,27 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
+// Power Word: Solace Spell ==========================================================
+
+struct power_word_solace_t : public priest_spell_t
+{
+  power_word_solace_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "power_word_solace", p, p -> talents.power_word_solace )
+  {
+    parse_options( NULL, options_str );
+
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    priest_spell_t::impact_s( s );
+
+    double amount = player -> find_spell( 129253 ) -> effectN( 1 ).resource( RESOURCE_MANA ) * player->resources.current[ RESOURCE_MANA ];
+    player->resource_gain( RESOURCE_MANA, amount );
+  }
+
+};
+
 // Shadow Word: Insanity Spell ==========================================================
 
 struct shadow_word_insanity_t : public priest_spell_t
@@ -4591,6 +4612,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new summon_shadowfiend_t   ( this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( this, options_str );
+  if ( name == "power_word_solace"      ) return new power_word_solace_t     ( this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( this, options_str );
   if ( name == "halo_damage"            ) return new halo_damage_t           ( this, options_str );
   if ( name == "divine_star_damage"     ) return new divine_star_damage_t    ( this, options_str );
@@ -4747,6 +4769,7 @@ void priest_t::init_spells()
   talents.phantasm                    = find_talent_spell( "Phantasm" );
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
+  talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.void_shift                  = find_talent_spell( "Void Shift" );
   talents.angelic_bulwark             = find_talent_spell( "Angelic Bulwark" );
