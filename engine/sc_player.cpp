@@ -485,6 +485,8 @@ player_t::~player_t()
 
   range::dispose( action_priority_list );
 
+  range::dispose( report_information.action_sequence );
+
   delete sets;
 }
 
