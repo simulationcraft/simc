@@ -25,8 +25,12 @@ namespace { // ANONYMOUS NAMESPACE
 // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
 // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
 
+namespace attacks {}
+namespace spells {}
 namespace statues {}
 
+using namespace attacks;
+using namespace spells;
 using namespace statues;
 
 struct monk_t;
@@ -35,11 +39,12 @@ enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPE
 
 struct monk_td_t : public actor_pair_t
 {
-  struct debuffs_t
+  struct buffs_t
   {
     debuff_t* rising_sun_kick;
     debuff_t* tiger_palm;
-  } debuff;
+      buff_t* enveloping_mist;
+  } buff;
 
   monk_td_t( player_t*, monk_t* );
 };
@@ -228,7 +233,6 @@ struct monk_t : public player_t
   }
 };
 
-namespace {
 // ==========================================================================
 // Monk Abilities
 // ==========================================================================
@@ -239,25 +243,25 @@ struct monk_action_t : public Base
 {
   int stancemask;
 
-  typedef Base action_base_t;
+  typedef Base ab; // action base, eg. spell_t
   typedef monk_action_t base_t;
 
   monk_action_t( const std::string& n, monk_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, player, s ),
+    ab( n, player, s ),
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
   {
-    action_base_t::may_crit   = true;
-    action_base_t::stateless  = true;
+    ab::may_crit   = true;
+    ab::stateless  = true;
   }
 
-  monk_t* p() { return debug_cast<monk_t*>( action_base_t::player ); }
+  monk_t* p() const { return debug_cast<monk_t*>( ab::player ); }
 
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual bool ready()
   {
-    if ( ! action_base_t::ready() )
+    if ( ! ab::ready() )
       return false;
 
     // Attack available in current stance?
@@ -269,26 +273,26 @@ struct monk_action_t : public Base
 
   virtual resource_e current_resource()
   {
-    if ( p() -> buff.tiger_stance -> data().ok() && action_base_t::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
+    if ( p() -> buff.tiger_stance -> data().ok() && ab::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
     {
       if ( p() -> active_stance == STANCE_FIERCE_TIGER )
         return RESOURCE_ENERGY;
     }
-    if ( p() -> buff.serpent_stance -> data().ok() && action_base_t::data().powerN( POWER_MANA ).aura_id() == 115070 )
+    if ( p() -> buff.serpent_stance -> data().ok() && ab::data().powerN( POWER_MANA ).aura_id() == 115070 )
     {
       if ( p() -> active_stance == STANCE_WISE_SERPENT )
         return RESOURCE_MANA;
     }
-    return action_base_t::current_resource();
+    return ab::current_resource();
   }
 
   virtual void consume_resource()
   {
-    action_base_t::consume_resource();
+    ab::consume_resource();
 
     // Track Chi Consumption
-    if ( action_base_t::current_resource() == RESOURCE_CHI )
-      p() -> track_chi_consumption += action_base_t::resource_consumed;
+    if ( ab::current_resource() == RESOURCE_CHI )
+      p() -> track_chi_consumption += ab::resource_consumed;
 
     // If Accumulated Chi consumption is greater than 4, reduce it by 4 and trigger a Tigereye Brew stack.
     if ( p() -> track_chi_consumption >= 4 )
@@ -300,36 +304,7 @@ struct monk_action_t : public Base
   }
 };
 
-struct monk_spell_t : public monk_action_t<spell_t>
-{
-  monk_spell_t( const std::string& n, monk_t* player,
-                const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-
-
-  virtual double composite_target_multiplier( player_t* t )
-  {
-    double m = base_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.rising_sun_kick -> up() )
-    {
-      m *=  1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-};
-
-struct monk_heal_t : public monk_action_t<heal_t>
-{
-  monk_heal_t( const std::string& n, monk_t* player,
-               const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-};
+namespace attacks {
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
@@ -416,9 +391,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = monk_melee_attack_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> debuff.rising_sun_kick -> up() )
+    if ( td( t ) -> buff.rising_sun_kick -> up() )
     {
-      m *=  1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 2 ).percent();
+      m *=  1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 2 ).percent();
     }
 
     return m;
@@ -493,7 +468,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact_s( s );
 
-    td( s -> target ) -> debuff.tiger_palm -> trigger();
+    td( s -> target ) -> buff.tiger_palm -> trigger();
     // will this top you from using the proc if you can't afford the ability?
   }
 
@@ -615,7 +590,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact_s( s );
 
-    td( s -> target ) -> debuff.rising_sun_kick -> trigger();
+    td( s -> target ) -> buff.rising_sun_kick -> trigger();
   }
 };
 
@@ -874,6 +849,81 @@ struct auto_attack_t : public monk_melee_attack_t
   }
 };
 
+} // END melee_attacks NAMESPACE
+
+namespace spells {
+struct monk_spell_t : public monk_action_t<spell_t>
+{
+  monk_spell_t( const std::string& n, monk_t* player,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+};
+
+// Stance ===================================================================
+
+struct stance_t : public monk_spell_t
+{
+  monk_stance_e switch_to_stance;
+  std::string stance_str;
+
+  stance_t( monk_t* p, const std::string& options_str ) :
+    monk_spell_t( "stance", p ),
+    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str( "" )
+  {
+    option_t options[] =
+    {
+      { "choose",  OPT_STRING, &stance_str     },
+      { NULL, OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, options_str );
+
+    if ( ! stance_str.empty() )
+    {
+      if ( stance_str == "drunken_ox" )
+        switch_to_stance = STANCE_DRUNKEN_OX;
+      else if ( stance_str == "fierce_tiger" )
+        switch_to_stance = STANCE_FIERCE_TIGER;
+      else if ( stance_str == "heal" )
+        switch_to_stance = STANCE_WISE_SERPENT;
+    }
+
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = timespan_t::from_seconds( 1.0 );
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> active_stance = switch_to_stance;
+
+    //TODO: Add stances once implemented
+    if ( switch_to_stance == STANCE_FIERCE_TIGER )
+    {
+      p() -> buff.tiger_stance -> trigger();
+      // cancel other stances
+    }
+    else if ( switch_to_stance == STANCE_DRUNKEN_OX )
+    {
+      p() -> buff.tiger_stance -> expire();
+    }
+    else if ( switch_to_stance == STANCE_WISE_SERPENT )
+    {
+      p() -> buff.tiger_stance -> expire();
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> active_stance == switch_to_stance )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+};
 struct tigereye_brew_use_t : public monk_spell_t
 {
   tigereye_brew_use_t( monk_t* player, const std::string& options_str ) :
@@ -910,6 +960,15 @@ struct energizing_brew_t : public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.energizing_brew -> trigger();
+  }
+};
+
+struct monk_heal_t : public monk_action_t<heal_t>
+{
+  monk_heal_t( const std::string& n, monk_t* player,
+               const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
   }
 };
 
@@ -989,70 +1048,27 @@ struct zen_sphere_detonate_t : public monk_spell_t
   }
 };
 
-// Stance ===================================================================
+// Enveloping Mist
 
-struct stance_t : public monk_spell_t
+struct enveloping_mist_t : public monk_heal_t
 {
-  monk_stance_e switch_to_stance;
-  std::string stance_str;
-
-  stance_t( monk_t* p, const std::string& options_str ) :
-    monk_spell_t( "stance", p ),
-    switch_to_stance( STANCE_FIERCE_TIGER ), stance_str( "" )
+  enveloping_mist_t( monk_t* player, const std::string& options_str ) :
+    monk_heal_t( "zen_sphere_detonate", player, player -> find_class_spell( "Enveloping Mist" ) )
   {
-    option_t options[] =
-    {
-      { "choose",  OPT_STRING, &stance_str     },
-      { NULL, OPT_UNKNOWN, NULL }
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
-    if ( ! stance_str.empty() )
-    {
-      if ( stance_str == "drunken_ox" )
-        switch_to_stance = STANCE_DRUNKEN_OX;
-      else if ( stance_str == "fierce_tiger" )
-        switch_to_stance = STANCE_FIERCE_TIGER;
-      else if ( stance_str == "heal" )
-        switch_to_stance = STANCE_WISE_SERPENT;
-    }
-
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 1.0 );
+    stancemask = STANCE_WISE_SERPENT;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    monk_spell_t::execute();
+    monk_heal_t::impact_s( s );
 
-    p() -> active_stance = switch_to_stance;
-
-    //TODO: Add stances once implemented
-    if ( switch_to_stance == STANCE_FIERCE_TIGER )
-    {
-      p() -> buff.tiger_stance -> trigger();
-      // cancel other stances
-    }
-    else if ( switch_to_stance == STANCE_DRUNKEN_OX )
-    {
-      p() -> buff.tiger_stance -> expire();
-    }
-    else if ( switch_to_stance == STANCE_WISE_SERPENT )
-    {
-      p() -> buff.tiger_stance -> expire();
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> active_stance == switch_to_stance )
-      return false;
-
-    return monk_spell_t::ready();
+    td( s -> target ) -> buff.enveloping_mist -> trigger();
   }
 };
-} // END ANONYMOUS action NAMESPACE
+
+} // END spells NAMESPACE
 
 namespace statues {
 
@@ -1064,7 +1080,7 @@ struct statue_t : public pet_t
 
   }
 
-  monk_t* o()
+  monk_t* o() const
   { return debug_cast<monk_t*>( owner ); }
 };
 
@@ -1086,10 +1102,12 @@ struct jade_serpent_statue_t : public statue_t
 
 monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
-  debuff( debuffs_t() )
+  buff( buffs_t() )
 {
-  debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
-  debuff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
+  buff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Rising Sun Kick" ) );
+  buff.tiger_palm      = buff_creator_t( *this, "tiger_power" ).spell( p -> find_spell( 125359 ) );
+  buff.enveloping_mist = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_class_spell( "Enveloping Mist" ) );
+
 }
 
 // monk_t::create_action ====================================================
@@ -1097,6 +1115,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
 action_t* monk_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
+  // Melee Attacks
   if ( name == "auto_attack"         ) return new         auto_attack_t( this, options_str );
   if ( name == "jab"                 ) return new                 jab_t( this, options_str );
   if ( name == "tiger_palm"          ) return new          tiger_palm_t( this, options_str );
@@ -1108,6 +1127,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
   if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
   if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
+
+  // Heals
+  if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
