@@ -3167,6 +3167,7 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     dot_behavior = DOT_CLIP;
     harmful = false;
+    may_miss = false;
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
 
@@ -3236,7 +3237,8 @@ struct immolation_aura_t : public warlock_spell_t
     warlock_spell_t( p, "Immolation Aura" ),
     immolation_aura_tick( 0 )
   {
-    tick_zero    = true;
+    may_miss = false;
+    tick_zero = true;
 
     immolation_aura_tick = new immolation_aura_tick_t( p );
   }
@@ -3276,10 +3278,13 @@ struct immolation_aura_t : public warlock_spell_t
 
     warlock_spell_t::impact_s( s );
 
-    if ( add_ticks )
-      d -> num_ticks = ( int ) std::min( remaining_ticks + 0.9 * num_ticks, 2.1 * num_ticks );
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( add_ticks )
+        d -> num_ticks = ( int ) std::min( remaining_ticks + 0.9 * num_ticks, 2.1 * num_ticks );
 
-    if ( ! cost_event ) cost_event = new ( sim ) cost_event_t( p(), this );
+      if ( ! cost_event ) cost_event = new ( sim ) cost_event_t( p(), this );
+    }
   }
 
   virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
