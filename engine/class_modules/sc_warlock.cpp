@@ -1175,11 +1175,13 @@ private:
     gain = p() -> get_gain( name_str );
     generate_fury = 0;
     cost_event = 0;
+    havoc_override = false;
   }
 
 public:
   double generate_fury;
   gain_t* gain;
+  bool havoc_override;
 
   struct cost_event_t : event_t
   {
@@ -1232,24 +1234,42 @@ public:
     event_t::cancel( cost_event );
   }
 
+  virtual std::vector< player_t* > target_list()
+  {
+    if ( aoe == 2 && p() -> buffs.havoc -> check() && target != p() -> havoc_target )
+    {
+      std::vector< player_t* > targets = spell_t::target_list();
+      std::vector< player_t* > new_targets;
+      for ( size_t i = 0; i < targets.size(); i++ )
+      {
+        if ( targets[ i ] == target || targets[ i ] == p() -> havoc_target )
+          new_targets.push_back( targets[ i ] );
+      }
+      return new_targets;
+    }
+    else
+      return spell_t::target_list();
+  }
+
   virtual void execute()
   {
+    bool havoc = false;
+    if ( harmful && ! background && aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != target ) 
+    {
+      aoe = 2;
+      havoc = true;
+    }
+
     spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
-    if ( harmful && ! background && aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != target )
+    if ( havoc )
     {
       p() -> buffs.havoc -> decrement();
-      player_t* saved_target = target;
-      target = p() -> havoc_target;
-      bool saved_dual = dual;
-      dual = true;
-      spell_t::execute();
-      dual = saved_dual;
-      target = saved_target;
+      aoe = 0;
     }
   }
 
