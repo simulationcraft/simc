@@ -2854,6 +2854,54 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
+// Shadow Word: Insanity Spell ==========================================================
+
+struct shadow_word_insanity_t : public priest_spell_t
+{
+  shadow_word_insanity_t( priest_t* p, const std::string& options_str ) :
+    priest_spell_t( "shadow_word_insanity", p, p -> find_class_spell( "Shadow Word: Insanity" ) )
+  {
+    parse_options( NULL, options_str );
+
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    priest_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( ! td( s -> target ) -> remove_dots_event )
+      {
+        td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
+      }
+    }
+  }
+
+  double dot_multiplier( dot_t* d ) const
+  {
+    double dm = 1.0;
+
+    if ( d -> ticking && d -> current_tick < d -> num_ticks )
+    {
+      dm *= 1.0 + d -> current_tick / ( d -> num_ticks - 1 );
+    }
+
+    return dm;
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t )
+  {
+    double am = priest_spell_t::composite_target_da_multiplier( t );
+
+    am *= dot_multiplier( td( t ) -> dots.shadow_word_pain );
+    am *= dot_multiplier( td( t ) -> dots.devouring_plague );
+    am *= dot_multiplier( td( t ) -> dots.vampiric_touch );
+
+    return am;
+  }
+};
+
 // Holy Fire Spell ==========================================================
 
 struct holy_fire_t : public priest_spell_t
@@ -4555,6 +4603,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "penance"                ) return new penance_t               ( this, options_str );
   if ( name == "shadow_word_death"      ) return new shadow_word_death_t     ( this, options_str );
   if ( name == "shadow_word_pain"       ) return new shadow_word_pain_t      ( this, options_str );
+  if ( name == "shadow_word_insanity"   ) return new shadow_word_insanity_t  ( this, options_str );
   if ( name == "smite"                  ) return new smite_t                 ( this, options_str );
   if ( ( name == "shadowfiend"          ) || ( name == "mindbender" ) )
   {
