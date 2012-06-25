@@ -3147,6 +3147,14 @@ struct player_t : public noncopyable
 
   struct base_initial_current_t
   {
+    base_initial_current_t() : attribute(),
+      mastery( 0 ), mastery_rating( 0 ), haste_rating( 0 ),
+      spell_hit( 0 ), spell_crit( 0 ), mp5( 0 ),
+      attack_power( 0 ), attack_hit( 0 ), attack_expertise( 0 ), attack_crit( 0 ),
+      armor( 0 ), bonus_armor( 0 ), miss( 0 ), dodge( 0 ), parry( 0 ), block( 0 ),
+      block_reduction( 0 )
+    { }
+
     std::array<double,ATTRIBUTE_MAX> attribute;
     double mastery, mastery_rating, haste_rating;
     double spell_hit, spell_crit, mp5;
@@ -3156,6 +3164,15 @@ struct player_t : public noncopyable
 
   struct initial_current_t
   {
+    initial_current_t() : attribute_multiplier(), resource_reduction(),
+     spell_power_multiplier( 0 ), attack_power_multiplier( 0 ), armor_multiplier( 0 ),
+     spell_power_per_intellect( 0 ), spell_crit_per_intellect( 0 ),
+     attack_power_per_strength( 0 ), attack_power_per_agility( 0 ), attack_crit_per_agility( 0 ),
+     dodge_per_agility( 0 ), parry_rating_per_strength( 0 ),
+     mp5_per_spirit( 0 ), mp5_from_spirit_multiplier( 0 ), health_per_stamina( 0 ),
+     skill( 0 ), distance( 0 ),
+     sleeping( false ) { }
+
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     std::array<double,SCHOOL_MAX> resource_reduction;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
