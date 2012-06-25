@@ -38,7 +38,6 @@ struct priest_td_t : public actor_pair_t
     absorb_buff_t* power_word_shield;
     absorb_buff_t* divine_aegis;
     absorb_buff_t* spirit_shell;
-    debuff_t* mind_spike;
   } buffs;
 
   remove_dots_event_t* remove_dots_event;
@@ -181,8 +180,7 @@ struct priest_t : public player_t
   // Benefits
   struct benefits_t
   {
-    std::array<benefit_t*, 4> mind_spike;
-    benefits_t() { range::fill( mind_spike, 0 ); }
+
   } benefits;
 
   // Procs
@@ -2029,22 +2027,9 @@ struct mind_blast_t : public priest_spell_t
     if ( result_is_hit( s -> result ) )
     {
       generate_shadow_orb( this, p() -> gains.shadow_orb_mb );
-      for ( int i=0; i < 4; i++ )
-      {
-        p() -> benefits.mind_spike[ i ] -> update( i == td( s -> target ) -> buffs.mind_spike -> check() );
-      }
-      td( s -> target ) -> buffs.mind_spike -> expire();
+
       p() -> buffs.glyph_mind_spike -> expire();
     }
-  }
-
-  virtual double composite_target_crit( player_t* target )
-  {
-    double c = priest_spell_t::composite_target_crit( target );
-
-    c += td( target ) -> buffs.mind_spike -> value() * td( target ) -> buffs.mind_spike -> check();
-
-    return c;
   }
 
   void consume_resource()
@@ -2266,7 +2251,6 @@ struct mind_spike_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> buffs.mind_spike -> trigger();
       if ( p() -> glyphs.mind_spike -> ok() )
         p() -> buffs.glyph_mind_spike -> trigger();
 
@@ -4419,12 +4403,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     dots.shadow_word_pain = target -> get_dot( "shadow_word_pain", p );
     dots.vampiric_touch   = target -> get_dot( "vampiric_touch",   p );
 
-    const spell_data_t* sd = p -> find_class_spell( "Mind Spike" );
-
-    buffs.mind_spike = buff_creator_t( *this, "mind_spike", sd )
-                       .max_stack( sd -> effectN( 3 ).base_value() )
-                       .duration( sd -> effectN( 2 ).trigger() -> duration() )
-                       .default_value( sd -> effectN( 2 ).percent() );
   }
   else
   {
@@ -4743,8 +4721,6 @@ void priest_t::init_benefits()
 {
   player_t::init_benefits();
 
-  for ( size_t i = 0; i < 4; ++i )
-    benefits.mind_spike[ i ]     = get_benefit( "Mind Spike " + util::to_string( i ) );
 }
 
 // priest_t::init_rng =======================================================
