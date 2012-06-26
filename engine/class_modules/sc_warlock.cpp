@@ -234,7 +234,6 @@ struct warlock_t : public player_t
 
   demonic_calling_event_t* demonic_calling_event;
 
-  int use_pre_soulburn;
   int initial_burning_embers, initial_demonic_fury;
   timespan_t ember_react;
 
@@ -352,7 +351,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   glyphs( glyphs_t() ),
   spells( spells_t() ),
   demonic_calling_event( 0 ),
-  use_pre_soulburn( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),
   ember_react( timespan_t::max() )
@@ -1173,16 +1171,18 @@ private:
     stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
-    gain = p() -> get_gain( name_str );
+    gain = player -> get_gain( name_str );
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
+    extra_tick_override = false;
+    extra_tick_event.init( name_str + "_extra_tick_event", player );
   }
 
 public:
   double generate_fury;
   gain_t* gain;
-  bool havoc_override;
+  bool havoc_override, extra_tick_override;
 
   struct cost_event_t : event_t
   {
@@ -1190,7 +1190,7 @@ public:
     resource_e resource;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ) :
-      event_t( p -> sim, p, ( s -> name_str + "_" + util::resource_type_string( r ) + "_cost" ).c_str() ), spell( s ), resource( r )
+      event_t( p -> sim, p, "cost_event" ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
       sim -> add_event( this, timespan_t::from_seconds( 1 ) );
@@ -1204,6 +1204,37 @@ public:
   };
 
   cost_event_t* cost_event;
+
+  struct extra_tick_event_t : event_t
+  {
+    warlock_spell_t* spell;
+    player_t* target;
+
+    extra_tick_event_t( player_t* p, warlock_spell_t* s, player_t* t, timespan_t delay ) :
+      event_t( p -> sim, p, "extra_tick_event" ), spell( s ), target(t )
+    {
+      sim -> add_event( this, delay );
+    }
+
+    virtual void execute()
+    {
+      warlock_td_t* td = spell -> td( target );
+      if ( td -> dots_malefic_grasp -> ticking || ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
+      {
+        dot_t* dot = spell -> get_dot( target );
+        assert( dot -> ticking && dot -> tick_event );
+        spell -> extra_tick_override = true;
+        timespan_t saved_tick_time = dot -> time_to_tick;
+        dot -> time_to_tick = timespan_t::zero();
+        spell -> tick( dot );
+        dot -> time_to_tick = saved_tick_time;
+        spell -> extra_tick_override = false;
+      }
+      spell -> extra_tick_event[ target ] = 0;
+    }
+  };
+
+  target_specific_t<extra_tick_event_t> extra_tick_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ) :
     spell_t( n, p, p -> find_class_spell( n ) )
@@ -1232,6 +1263,8 @@ public:
   {
     spell_t::reset();
 
+    havoc_override = false;
+    extra_tick_override = false;
     event_t::cancel( cost_event );
   }
 
@@ -1290,13 +1323,42 @@ public:
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
+
+    if ( ! extra_tick_override && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION && d -> current_tick < d -> num_ticks )
+    {
+      // Note that this will assert if this is ever used with a tick_zero dot - but there are no tick_zero dots in affliction, so we're good
+      assert( ! extra_tick_event[ d -> state -> target ] );
+      extra_tick_event[ d -> state -> target ] = new ( sim ) extra_tick_event_t( player, this, d -> state -> target, tick_time( d -> state -> haste ) / 2 );
+    }
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    if ( ! channeled && p() -> specialization() == WARLOCK_AFFLICTION )
+      event_t::cancel( extra_tick_event[ d -> state -> target ] );
+
+    spell_t::last_tick( d );
   }
 
   virtual void impact_s( action_state_t* s )
   {
+    dot_t* dot;
+    bool start_extra_ticks = false;
+    if ( num_ticks > 0 && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION ) 
+    {
+      dot = get_dot( s -> target );
+      if ( ! dot -> ticking ) start_extra_ticks = true;
+    }
+
     spell_t::impact_s( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
+
+    if ( start_extra_ticks && result_is_hit( s -> result ) )
+    {
+      assert( dot -> tick_event );
+      extra_tick_event[ s -> target ] = new ( sim ) extra_tick_event_t( player, this, s -> target, ( dot -> tick_event -> time - sim -> current_time ) / 2 );
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1328,20 +1390,10 @@ public:
   {
     timespan_t t = spell_t::tick_time( haste );
 
-    if ( channeled )
-    {
-      // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
-      if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-           ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
-        t *= ( 1.0 + p() -> kc_cast_speed_reduction );
-      return t;
-    }
-
-    warlock_td_t* td = this->td( target );
-
-    if ( td -> dots_malefic_grasp -> ticking ||
-         ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
-      t /= ( 1.0 + p() -> spec.malefic_grasp -> effectN( 2 ).percent() );
+    // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
+    if ( channeled && p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
+          ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+      t *= ( 1.0 + p() -> kc_cast_speed_reduction );
 
     return t;
   }
@@ -1459,24 +1511,6 @@ public:
     }
     p -> sim -> errorf( "Player %s ran out of wild imps.\n", p -> name() );
     assert( false ); // Will only get here if there are no available imps
-  }
-
-  static void start_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
-  {
-    if ( dot -> ticking )
-    {
-      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
-                                       / ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
-    }
-  }
-
-  static void stop_malefic_grasp( warlock_spell_t* mg, dot_t* dot )
-  {
-    if ( dot -> ticking )
-    {
-      dot -> tick_event -> reschedule( ( mg -> sim -> current_time - dot -> tick_event -> time )
-                                       * ( 1.0 + mg -> data().effectN( 2 ).percent() ) );
-    }
   }
 };
 
@@ -1841,6 +1875,10 @@ struct drain_soul_t : public warlock_spell_t
     hasted_ticks = true; // informative
     may_crit     = false;
     tick_power_mod = 1.5; // tested in beta 2012/05/13
+
+    // FIXME: Overrides as per Ghostcrawler post http://us.battle.net/wow/en/forum/topic/5889309137?page=35#691
+    tick_power_mod *= 0.867;
+    base_td *= 0.867;
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -1865,20 +1903,6 @@ struct drain_soul_t : public warlock_spell_t
     consume_tick_resource( d );
   }
 
-
-  virtual void last_tick( dot_t* d )
-  {
-    if ( td( d -> state -> target ) -> ds_started_below_20 )
-    {
-      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
-      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
-      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
-      stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
-    }
-
-    warlock_spell_t::last_tick( d );
-  }
-
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
@@ -1888,17 +1912,9 @@ struct drain_soul_t : public warlock_spell_t
       generate_shard = false;
 
       if ( s -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
-      {
         td( s -> target ) -> ds_started_below_20 = true;
-        start_malefic_grasp( this, td( s -> target ) -> dots_agony );
-        start_malefic_grasp( this, td( s -> target ) -> dots_corruption );
-        start_malefic_grasp( this, td( s -> target ) -> dots_doom );
-        start_malefic_grasp( this, td( s -> target ) -> dots_unstable_affliction );
-      }
       else
-      {
         td( s -> target ) -> ds_started_below_20 = false;
-      }
     }
   }
 };
@@ -2878,6 +2894,10 @@ struct malefic_grasp_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true;
     may_crit     = false;
+
+    // FIXME: Overrides as per Ghostcrawler post http://us.battle.net/wow/en/forum/topic/5889309137?page=35#691
+    tick_power_mod *= 0.6;
+    base_td *= 0.6;
   }
 
   virtual double action_multiplier()
@@ -2887,29 +2907,6 @@ struct malefic_grasp_t : public warlock_spell_t
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_agony );
-    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_corruption );
-    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_doom );
-    stop_malefic_grasp( this, td( d -> state -> target ) -> dots_unstable_affliction );
-
-    warlock_spell_t::last_tick( d );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      start_malefic_grasp( this, td( s -> target ) -> dots_agony );
-      start_malefic_grasp( this, td( s -> target ) -> dots_corruption );
-      start_malefic_grasp( this, td( s -> target ) -> dots_doom );
-      start_malefic_grasp( this, td( s -> target ) -> dots_unstable_affliction );
-    }
   }
 
   virtual void tick( dot_t* d )
@@ -4757,7 +4754,6 @@ void warlock_t::reset()
     if ( td ) td -> reset();
   }
 
-  // Active
   pets.active = 0;
   ember_react = timespan_t::max();
   event_t::cancel( demonic_calling_event );
@@ -4770,7 +4766,6 @@ void warlock_t::create_options()
 
   option_t warlock_options[] =
   {
-    { "use_pre_soulburn",  OPT_BOOL,   &( use_pre_soulburn       ) },
     { "burning_embers",     OPT_INT,   &( initial_burning_embers ) },
     { "demonic_fury",       OPT_INT,   &( initial_demonic_fury   ) },
     { NULL, OPT_UNKNOWN, NULL }
@@ -4786,9 +4781,8 @@ bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool sav
 
   if ( stype == SAVE_ALL )
   {
-    if ( use_pre_soulburn )            profile_str += "use_pre_soulburn=1\n";
     if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util::to_string( initial_burning_embers ) + "\n";
-    if ( initial_demonic_fury != 200 ) profile_str += "burning_embers=" + util::to_string( initial_demonic_fury ) + "\n";
+    if ( initial_demonic_fury != 200 ) profile_str += "demonic_fury="   + util::to_string( initial_demonic_fury ) + "\n";
   }
 
   return true;
@@ -4801,7 +4795,6 @@ void warlock_t::copy_from( player_t* source )
 
   warlock_t* p = debug_cast<warlock_t*>( source );
 
-  use_pre_soulburn       = p -> use_pre_soulburn;
   initial_burning_embers = p -> initial_burning_embers;
   initial_demonic_fury   = p -> initial_demonic_fury;
 }
