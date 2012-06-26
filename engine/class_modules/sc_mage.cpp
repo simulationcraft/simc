@@ -102,7 +102,6 @@ struct mage_t : public player_t
 
   // Options
   double merge_ignite;
-  timespan_t ignite_sampling_delta;
 
   // Passives
   struct passives_t
@@ -230,7 +229,6 @@ struct mage_t : public player_t
     gains( gains_t() ),
     glyphs( glyphs_t() ),
     merge_ignite( 0.0 ),
-    ignite_sampling_delta( timespan_t::zero() ),
     passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
@@ -250,7 +248,6 @@ struct mage_t : public player_t
     // Options
     initial.distance = 40;
     mana_gem_charges = 3;
-    ignite_sampling_delta = timespan_t::from_seconds( 0.2 );
 
     create_options();
   }
@@ -879,130 +876,17 @@ static double calculate_dot_dps( dot_t* dot )
 
 // trigger_ignite ===========================================================
 
-struct ignite_t : public mage_spell_t
+struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 {
   ignite_t( mage_t* player ) :
-    mage_spell_t( "ignite", player, player -> spec.ignite )
+    base_t( "ignite", player, spell_data_t::nil() /*player -> find_spell( 12654 ) */ )
   {
-    background = true;
-
-    // FIXME: Needs verification wheter it triggers trinket tick callbacks or not. It does trigger DTR arcane ticks.
-    // proc          = false;
-
-    tick_may_crit = false;
-    hasted_ticks  = false;
-    dot_behavior  = DOT_REFRESH;
+    // Scaling Spell is level 99 and nott getting parsed.
+    num_ticks = 2;
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    school = SCHOOL_FIRE;
   }
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    mage_spell_t::impact( t, impact_result, 0 );
-
-    base_td = travel_dmg;
-  }
-  virtual timespan_t travel_time()
-  {
-    mage_t* p = static_cast<mage_t*>( player );
-    return sim -> gauss( p -> ignite_sampling_delta, 0.125 * p -> ignite_sampling_delta );
-  }
-  virtual double total_td_multiplier() { return 1.0; }
 };
-#if 0
-static void trigger_ignite( mage_spell_t* s, double dmg )
-{
-  if ( s -> result != RESULT_CRIT ) return;
-
-  mage_t* p = s -> p();
-  sim_t* sim = s -> sim;
-
-  if ( ! p -> spec.ignite -> ok() ) return;
-
-  struct ignite_sampling_event_t : public event_t
-  {
-    player_t* target;
-    double crit_ignite_bank;
-    timespan_t application_delay;
-    ignite_sampling_event_t( sim_t* sim, player_t* t, mage_spell_t* a, double crit_ignite_bank ) :
-      event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank )
-    {
-      if ( sim -> debug )
-        sim -> output( "New Ignite Sampling Event: %s",
-                       player -> name() );
-
-      timespan_t delay = sim -> aura_delay - p() -> ignite_sampling_delta;
-      sim -> add_event( this, sim -> gauss( delay, 0.25 * delay ) );
-    }
-
-    mage_t* p()
-    { return static_cast<mage_t*>( player ); }
-
-    virtual void execute()
-    {
-      mage_t* p = ignite_sampling_event_t::p();
-
-      assert( p -> active_ignite );
-
-      dot_t* dot = p -> active_ignite -> get_dot();
-
-      double ignite_dmg = crit_ignite_bank;
-
-      if ( dot -> ticking )
-      {
-        ignite_dmg += p -> active_ignite -> base_td * dot -> ticks();
-        ignite_dmg /= 3.0;
-      }
-      else
-      {
-        ignite_dmg /= 2.0;
-      }
-
-      // TODO: investigate if this can actually happen
-      /*if ( timespan_t::from_seconds( 4.0 ) + sim -> aura_delay < dot -> remains() )
-      {
-        if ( sim -> log ) sim -> output( "Player %s munches Ignite due to Max Ignite Duration.", p -> name() );
-        p -> procs.munched_ignite -> occur();
-        return;
-      }*/
-
-      if ( p -> active_ignite -> travel_events.size() > 0 )
-      {
-        // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-        if ( sim -> log ) sim -> output( "Player %s munches previous Ignite due to Aura Delay.", p -> name() );
-        p -> procs.munched_ignite -> occur();
-      }
-
-      p -> active_ignite -> direct_dmg = ignite_dmg;
-      p -> active_ignite -> result = RESULT_HIT;
-      p -> active_ignite -> schedule_travel( target );
-
-      dot -> prev_tick_amount = ignite_dmg;
-
-      if ( p -> active_ignite -> travel_events.size() > 0 && dot -> ticking )
-      {
-        if ( dot -> tick_event -> occurs() < p -> active_ignite -> travel_events[ 0 ] -> occurs() )
-        {
-          // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
-          // both tick -and- get rolled into the next Ignite.
-          if ( sim -> log ) sim -> output( "Player %s rolls Ignite.", p -> name() );
-          p -> procs.rolled_ignite -> occur();
-        }
-      }
-    }
-  };
-
-  double ignite_dmg = dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery();
-
-  if ( p -> merge_ignite > 0 ) // Does not report Ignite seperately.
-  {
-    result_e result = s -> result;
-    s -> result = RESULT_HIT;
-    s -> assess_damage( s -> target, ignite_dmg * p -> merge_ignite, DMG_OVER_TIME, s -> result );
-    s -> result = result;
-    return;
-  }
-
-  new ( sim ) ignite_sampling_event_t( sim, s -> target, s, ignite_dmg );
-}
-#endif
 
 // Mage Ignite template specialization
 template <class TRIGGER_SPELL>
@@ -1015,8 +899,7 @@ void trigger_ignite( TRIGGER_SPELL* s, double dmg )
       p -> procs.munched_ignite,
       p -> procs.rolled_ignite,
       dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery(),
-      p -> merge_ignite,
-      p -> ignite_sampling_delta ); // ignite damage
+      p -> merge_ignite ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -3510,7 +3393,6 @@ void mage_t::create_options()
   option_t mage_options[] =
   {
     { "merge_ignite",          OPT_FLT,      &( merge_ignite           ) },
-    { "ignite_sampling_delta", OPT_TIMESPAN, &( ignite_sampling_delta  ) },
     { NULL, OPT_UNKNOWN, NULL }
   };
 

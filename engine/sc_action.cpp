@@ -988,7 +988,7 @@ void action_t::tick( dot_t* d )
 {
   if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
-  if ( ! stateless )
+  if ( ! stateless ) // non-stateless
   {
     result = RESULT_HIT;
 
@@ -1014,7 +1014,7 @@ void action_t::tick( dot_t* d )
 
     if ( harmful && callbacks ) action_callback_t::trigger( player -> callbacks.tick[ result ], this );
   }
-  else
+  else // stateless
   {
     d -> state -> result = RESULT_HIT;
     snapshot_state( d -> state, update_flags );

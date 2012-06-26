@@ -865,42 +865,17 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
 
   p -> active_pet -> resource_gain( RESOURCE_FOCUS, p -> talents.go_for_the_throat -> effectN( 1 ).base_value(), p -> active_pet -> gains.go_for_the_throat );
 }
-struct piercing_shots_t : public attack_t
+struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
 {
-  piercing_shots_t( player_t* p ) : attack_t( "piercing_shots", p, p -> find_spell( 63468 ) )
+  piercing_shots_t( hunter_t* p ) :
+    base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
   {
-    may_miss      = false;
-    may_crit      = true;
-    background    = true;
-    proc          = true;
-    hasted_ticks  = false;
-    tick_may_crit = false;
-    dot_behavior  = DOT_REFRESH;
-
     base_multiplier = 1.0;
     tick_power_mod  = 0;
     num_ticks       = 8;
     base_tick_time  = timespan_t::from_seconds( 1.0 );
   }
 
-  virtual double composite_target_ta_multiplier( player_t* )
-  { return 1.30; }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    attack_t::impact_s( s );
-
-    // FIXME: Is a is_hit check necessary here?
-    base_td = s -> result_amount / get_dot() -> num_ticks;
-  }
-
-  virtual timespan_t travel_time()
-  {
-    return sim -> gauss( timespan_t::from_seconds( 0.2 ), 0.125 * timespan_t::from_seconds( 0.2 ) );
-  }
-
-  virtual double composite_ta_multiplier()
-  { return 1.0; }
 };
 
 // Hunter Piercing Shots template specialization

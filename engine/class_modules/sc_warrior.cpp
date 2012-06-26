@@ -442,35 +442,11 @@ static void trigger_bloodsurge( warrior_attack_t* a )
 
 // Deep Wounds ==============================================================
 
-struct deep_wounds_t : public warrior_attack_t
+struct deep_wounds_t : public ignite_like_action_t< warrior_attack_t, warrior_t >
 {
   deep_wounds_t( warrior_t* p ) :
-    warrior_attack_t( "deep_wounds", 12721, p )
-  {
-    background = true;
-    // FIXME
-    //weapon_multiplier = p -> talents.deep_wounds -> rank() * 0.16; // hardcoded into tooltip, 02/11/2011
-    may_crit = false;
-    tick_may_crit = false;
-    hasted_ticks  = false;
-    tick_power_mod = 0;
-    dot_behavior  = DOT_REFRESH;
-  }
-  virtual double total_td_multiplier() { return target_multiplier; }
-
-  virtual timespan_t travel_time()
-  {
-    return sim -> gauss( timespan_t::from_seconds( 0.2 ), 0.125 * timespan_t::from_seconds( 0.2 ) );
-  }
-
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    warrior_attack_t::impact( t, impact_result, 0 );
-    if ( result_is_hit( impact_result ) )
-    {
-      base_td = travel_dmg / get_dot( t ) -> num_ticks;
-    }
-  }
+    base_t( "deep_wounds", p, p -> find_spell( 12721 ) )
+  { }
 };
 
 // Warrior Deep Wounds template specialization

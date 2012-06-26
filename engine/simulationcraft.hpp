@@ -2365,6 +2365,7 @@ struct sim_t : private thread_t
   timespan_t  world_lag, world_lag_stddev;
   double      travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
+  timespan_t  ignite_sampling_delta;
   timespan_t  current_time, max_time, expected_time;
   double      vary_combat_length;
   timespan_t  last_event;
@@ -5185,6 +5186,55 @@ struct wait_for_cooldown_t : public wait_action_base_t
   virtual timespan_t execute_time();
 };
 
+// Template for a ignite like action. Not mandatory, but encouraged to use it.
+
+// It makes sure that the travel time corresponds to our ignite model,
+// and sets various flags so as to not further modify the damage with which it gets executed
+
+template <class Base, class Player_Class>
+struct ignite_like_action_t : public Base
+{
+  typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
+  typedef ignite_like_action_t base_t;
+  typedef Player_Class player_class_t;
+
+  ignite_like_action_t( const std::string& n, player_class_t* p, const spell_data_t* s ) :
+    ab( n, p, s )
+  {
+    ab::background = true;
+
+    ab::tick_may_crit = false;
+    ab::hasted_ticks  = false;
+    ab::may_crit = false;
+    ab::tick_power_mod = 0;
+    ab::dot_behavior  = DOT_REFRESH;
+  }
+
+  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  {
+    ab::impact( t, impact_result, 0 );
+
+    ab::base_td = travel_dmg;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    double saved_impact_dmg = s -> result_amount;
+    s -> result_amount = 0;
+    ab::impact_s( s );
+
+    ab::base_td = saved_impact_dmg;
+  }
+
+  virtual timespan_t travel_time()
+  {
+    return ab::sim -> gauss( ab::sim -> ignite_sampling_delta, 0.125 * ab::sim -> ignite_sampling_delta );
+  }
+
+  virtual double total_td_multiplier() { return 1.0; } // non-stateless
+  virtual double composite_ta_multiplier() { return 1.0; } // stateless
+};
+
 // This is a template for Ignite like mechanics, like of course Ignite, Warrior Deep Wounds or Hunter Piercing Shots
 // It is a template function which should get specialized in the class module by specifying the player class, the ignite-spell,
 // and all the other parameters.
@@ -5202,8 +5252,7 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
                                    proc_t* munched_proc,
                                    proc_t* rolled_proc,
                                    double dmg,
-                                   int merge_ignite = 0,
-                                   timespan_t sampling_delta = timespan_t::from_seconds( 0.2 ) )
+                                   int merge_ignite = 0 )
 {
   struct sampling_event_t : public event_t
   {
@@ -5212,18 +5261,17 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
     timespan_t application_delay;
     IGNITE_SPELL_T* action;
     proc_t* munched; proc_t* rolled;
-    timespan_t sampling_delta;
 
-    sampling_event_t( sim_t* sim, player_t* t, IGNITE_SPELL_T* a, double crit_ignite_bank, proc_t* m, proc_t* r, timespan_t sd ) :
+    sampling_event_t( sim_t* sim, player_t* t, IGNITE_SPELL_T* a, double crit_ignite_bank, proc_t* m, proc_t* r ) :
       event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank ),
-      action( a ), munched( m ), rolled( r ), sampling_delta( sd )
+      action( a ), munched( m ), rolled( r )
     {
-      if ( sim -> debug )
-        sim -> output( "New %s Sampling Event: %s",
-                        action -> name(), player -> name() );
-
       // Cut gaussian distribution off at +- 2 * stddev
-      timespan_t munch_delta = std::min( std::max( sim -> gauss( sampling_delta, 0.125 * sampling_delta ), sampling_delta * 0.25 ), sampling_delta * 1.25 );
+      timespan_t munch_delta = std::min( std::max( sim -> gauss( sim -> ignite_sampling_delta, 0.125 * sim -> ignite_sampling_delta ), sim -> ignite_sampling_delta * 0.25 ), sim -> ignite_sampling_delta * 1.25 );
+
+      if ( sim -> debug )
+        sim -> output( "New %s Sampling Event: %s ( delta time: %.4f )",
+                        action -> name(), player -> name(), (sim -> aura_delay - munch_delta).total_seconds() );
 
       sim -> add_event( this, sim -> aura_delay - munch_delta );
     }
@@ -5238,6 +5286,7 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
 
       double ignite_dmg = crit_ignite_bank;
 
+      assert( action -> num_ticks > 0 );
       if ( dot -> ticking )
       {
         ignite_dmg += action -> base_td * dot -> ticks();
@@ -5264,9 +5313,22 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
         if ( munched ) munched -> occur();
       }
 
-      action -> direct_dmg = ignite_dmg;
-      action -> result = RESULT_HIT;
-      action -> schedule_travel( target );
+      if ( action -> stateless )
+      {
+        action_state_t* s = action -> get_state();
+        s -> target = target;
+        s -> result = RESULT_HIT;
+        s -> result_amount = ignite_dmg;
+        action -> schedule_travel_s( s );
+        action -> stats -> add_execute( timespan_t::zero() );
+      }
+      else
+      {
+        action -> direct_dmg = ignite_dmg;
+        action -> result = RESULT_HIT;
+        action -> schedule_travel( target );
+        action -> stats -> add_execute( timespan_t::zero() );
+      }
 
       dot -> prev_tick_amount = ignite_dmg;
 
@@ -5283,19 +5345,18 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
     }
   };
 
-  double ignite_dmg = dmg;
 
   if ( merge_ignite > 0 ) // Does not report Ignite seperately.
   {
     result_e result = s -> result;
     s -> result = RESULT_HIT;
-    s -> assess_damage( s -> target, ignite_dmg * merge_ignite, DMG_OVER_TIME, s -> result );
+    s -> assess_damage( s -> target, dmg * merge_ignite, DMG_OVER_TIME, s -> result );
     s -> result = result;
     return;
   }
 
   sim_t* sim = s -> sim;
-  new ( sim ) sampling_event_t( sim, s -> target, ignite_action, ignite_dmg, munched_proc, rolled_proc, sampling_delta );
+  new ( sim ) sampling_event_t( sim, s -> target, ignite_action, dmg, munched_proc, rolled_proc );
 }
 
 // Inlines ==================================================================

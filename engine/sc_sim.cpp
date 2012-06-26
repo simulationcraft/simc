@@ -697,6 +697,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ), regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
+  ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   current_time( timespan_t::zero() ), max_time( timespan_t::from_seconds( 450 ) ), expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
   last_event( timespan_t::zero() ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
@@ -2086,6 +2087,7 @@ void sim_t::create_options()
     { "default_skill",                    OPT_FLT,    &( default_skill                            ) },
     { "reaction_time",                    OPT_TIMESPAN, &( reaction_time                          ) },
     { "travel_variance",                  OPT_FLT,    &( travel_variance                          ) },
+    { "ignite_sampling_delta",            OPT_TIMESPAN, &( ignite_sampling_delta                  ) },
     // Output
     { "save_profiles",                    OPT_BOOL,   &( save_profiles                            ) },
     { "default_actions",                  OPT_BOOL,   &( default_actions                          ) },
