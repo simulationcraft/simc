@@ -5246,9 +5246,8 @@ struct ignite_like_action_t : public Base
 
 // Sampling Event based on http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p18/#post2087603
 
-template <class PLAYER_CLASS_T,class TRIGGER_SPELL_T, class IGNITE_SPELL_T>
-void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
-                                   IGNITE_SPELL_T* ignite_action,
+template <class PLAYER_CLASS_T, class IGNITE_SPELL_T>
+void trigger_ignite_like_mechanic( IGNITE_SPELL_T* ignite_action,
                                    player_t* t,
                                    proc_t* munched_proc,
                                    proc_t* rolled_proc,
@@ -5345,8 +5344,7 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
     }
   };
 
-  sim_t* sim = s -> sim;
-  new ( sim ) sampling_event_t( sim, t, ignite_action, dmg, munched_proc, rolled_proc );
+  new ( ignite_action -> sim ) sampling_event_t( ignite_action -> sim, t, ignite_action, dmg, munched_proc, rolled_proc );
 }
 
 // Inlines ==================================================================

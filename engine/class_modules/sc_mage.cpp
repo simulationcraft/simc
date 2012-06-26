@@ -879,13 +879,12 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
   }
 };
 
-// Mage Ignite template specialization
-template <class TRIGGER_SPELL>
-void trigger_ignite( TRIGGER_SPELL* s, player_t* t, double dmg )
+// Mage Ignite specialization
+void trigger_ignite( mage_spell_t* s, player_t* t, double dmg )
 {
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
-  trigger_ignite_like_mechanic<mage_t>( s, // trigger spell
+  trigger_ignite_like_mechanic<mage_t>(
       p -> active_ignite, // ignite spell
       t, // target
       p -> procs.munched_ignite,

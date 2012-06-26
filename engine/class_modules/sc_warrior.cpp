@@ -450,8 +450,8 @@ struct deep_wounds_t : public ignite_like_action_t< warrior_attack_t, warrior_t 
 };
 
 // Warrior Deep Wounds template specialization
-template <class TRIGGER_SPELL>
-void trigger_deep_wounds( TRIGGER_SPELL* s, player_t* t )
+template <class WARRIOR_ACTION>
+void trigger_deep_wounds( WARRIOR_ACTION* s, player_t* t )
 {
   warrior_t* p = s -> cast();
   if ( ! p -> talents.deep_wounds -> ok() ) return;
@@ -467,7 +467,7 @@ void trigger_deep_wounds( TRIGGER_SPELL* s, player_t* t )
 
   p -> active_deep_wounds -> player_buff();
 
-  trigger_ignite_like_mechanic<warrior_t>( s, // trigger spell
+  trigger_ignite_like_mechanic<warrior_t>(
       p -> active_deep_wounds, // ignite spell
       t, // target
       NULL,

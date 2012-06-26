@@ -874,13 +874,13 @@ struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
 };
 
 // Hunter Piercing Shots template specialization
-template <class TRIGGER_SPELL>
-void trigger_piercing_shots( TRIGGER_SPELL* s, player_t* t, double dmg )
+template <class HUNTER_ACTION>
+void trigger_piercing_shots( HUNTER_ACTION* s, player_t* t, double dmg )
 {
   hunter_t* p = s -> cast();
   if ( ! p -> talents.piercing_shots -> ok() ) return;
 
-  trigger_ignite_like_mechanic<hunter_t>( s, // trigger spell
+  trigger_ignite_like_mechanic<hunter_t>(
       p -> active_piercing_shots, // ignite spell
       t, // target
       p -> procs.munched_piercing_shots,
