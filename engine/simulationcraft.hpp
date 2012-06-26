@@ -5249,10 +5249,10 @@ struct ignite_like_action_t : public Base
 template <class PLAYER_CLASS_T,class TRIGGER_SPELL_T, class IGNITE_SPELL_T>
 void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
                                    IGNITE_SPELL_T* ignite_action,
+                                   player_t* t,
                                    proc_t* munched_proc,
                                    proc_t* rolled_proc,
-                                   double dmg,
-                                   int merge_ignite = 0 )
+                                   double dmg )
 {
   struct sampling_event_t : public event_t
   {
@@ -5345,18 +5345,8 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
     }
   };
 
-
-  if ( merge_ignite > 0 ) // Does not report Ignite seperately.
-  {
-    result_e result = s -> result;
-    s -> result = RESULT_HIT;
-    s -> assess_damage( s -> target, dmg * merge_ignite, DMG_OVER_TIME, s -> result );
-    s -> result = result;
-    return;
-  }
-
   sim_t* sim = s -> sim;
-  new ( sim ) sampling_event_t( sim, s -> target, ignite_action, dmg, munched_proc, rolled_proc );
+  new ( sim ) sampling_event_t( sim, t, ignite_action, dmg, munched_proc, rolled_proc );
 }
 
 // Inlines ==================================================================

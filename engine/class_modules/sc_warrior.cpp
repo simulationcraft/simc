@@ -451,7 +451,7 @@ struct deep_wounds_t : public ignite_like_action_t< warrior_attack_t, warrior_t 
 
 // Warrior Deep Wounds template specialization
 template <class TRIGGER_SPELL>
-void trigger_deep_wounds( TRIGGER_SPELL* s )
+void trigger_deep_wounds( TRIGGER_SPELL* s, player_t* t )
 {
   warrior_t* p = s -> cast();
   if ( ! p -> talents.deep_wounds -> ok() ) return;
@@ -469,6 +469,7 @@ void trigger_deep_wounds( TRIGGER_SPELL* s )
 
   trigger_ignite_like_mechanic<warrior_t>( s, // trigger spell
       p -> active_deep_wounds, // ignite spell
+      t, // target
       NULL,
       NULL,
       ( p -> active_deep_wounds -> calculate_weapon_damage( s -> total_attack_power() ) *
@@ -862,7 +863,7 @@ void warrior_attack_t::execute()
     trigger_enrage( this );
 
     if ( result == RESULT_CRIT )
-      trigger_deep_wounds( this );
+      trigger_deep_wounds( this, target );
   }
   else if ( result == RESULT_DODGE  )
   {

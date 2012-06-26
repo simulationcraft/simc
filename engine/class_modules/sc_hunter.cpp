@@ -875,13 +875,14 @@ struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
 
 // Hunter Piercing Shots template specialization
 template <class TRIGGER_SPELL>
-void trigger_piercing_shots( TRIGGER_SPELL* s, double dmg )
+void trigger_piercing_shots( TRIGGER_SPELL* s, player_t* t, double dmg )
 {
   hunter_t* p = s -> cast();
   if ( ! p -> talents.piercing_shots -> ok() ) return;
 
   trigger_ignite_like_mechanic<hunter_t>( s, // trigger spell
       p -> active_piercing_shots, // ignite spell
+      t, // target
       p -> procs.munched_piercing_shots,
       p -> procs.rolled_piercing_shots,
       p -> talents.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
@@ -1106,7 +1107,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
       if ( impact_result == RESULT_CRIT )
-        trigger_piercing_shots( this, travel_dmg );
+        trigger_piercing_shots( this, t, travel_dmg );
     }
   };
 
@@ -1212,7 +1213,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, travel_dmg );
+      trigger_piercing_shots( this, t, travel_dmg );
   }
 };
 
@@ -1465,7 +1466,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, travel_dmg );
+      trigger_piercing_shots( this, t, travel_dmg );
   }
 };
 
@@ -1934,7 +1935,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
     }
 
     if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, travel_dmg );
+      trigger_piercing_shots( this, t, travel_dmg );
   }
 
   virtual bool usable_moving()

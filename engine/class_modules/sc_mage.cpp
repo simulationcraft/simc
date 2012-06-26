@@ -100,8 +100,6 @@ struct mage_t : public player_t
     const spell_data_t* conjuring;
   } glyphs;
 
-  // Options
-  double merge_ignite;
 
   // Passives
   struct passives_t
@@ -228,7 +226,6 @@ struct mage_t : public player_t
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     glyphs( glyphs_t() ),
-    merge_ignite( 0.0 ),
     passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
@@ -264,11 +261,9 @@ struct mage_t : public player_t
   virtual void      init_actions();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
-  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& item );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() { return ROLE_SPELL; }
@@ -886,16 +881,16 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 
 // Mage Ignite template specialization
 template <class TRIGGER_SPELL>
-void trigger_ignite( TRIGGER_SPELL* s, double dmg )
+void trigger_ignite( TRIGGER_SPELL* s, player_t* t, double dmg )
 {
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
   trigger_ignite_like_mechanic<mage_t>( s, // trigger spell
       p -> active_ignite, // ignite spell
+      t, // target
       p -> procs.munched_ignite,
       p -> procs.rolled_ignite,
-      dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery(),
-      p -> merge_ignite ); // ignite damage
+      dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -1513,7 +1508,7 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    trigger_ignite( this, travel_dmg );
+    trigger_ignite( this, t, travel_dmg );
   }
 
   virtual double total_crit()
@@ -1750,7 +1745,7 @@ struct frostfire_bolt_t : public mage_spell_t
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
 
-      trigger_ignite( this, travel_dmg );
+      trigger_ignite( this, t, travel_dmg );
 
       if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
@@ -1922,7 +1917,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    trigger_ignite( this, travel_dmg );
+    trigger_ignite( this, t, travel_dmg );
   }
 
   virtual double total_crit()
@@ -2233,7 +2228,7 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    trigger_ignite( this, travel_dmg );
+    trigger_ignite( this, t, travel_dmg );
 
     p() -> buffs.pyroblast -> expire();
 
@@ -2304,7 +2299,7 @@ struct scorch_t : public mage_spell_t
 
     if ( result_is_hit( impact_result ) )
     {
-      trigger_ignite( this, travel_dmg );
+      trigger_ignite( this, t, travel_dmg );
       if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent() );
     }
@@ -3378,32 +3373,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   }
 
   return player_t::create_expression( a, name_str );
-}
-
-// mage_t::create_options ===================================================
-
-void mage_t::create_options()
-{
-  player_t::create_options();
-
-  option_t mage_options[] =
-  {
-    { "merge_ignite",          OPT_FLT,      &( merge_ignite           ) },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-
-  option_t::copy( options, mage_options );
-}
-
-// mage_t::copy_from ========================================================
-
-void mage_t::copy_from( player_t* source )
-{
-  player_t::copy_from( source );
-
-  mage_t* source_mage = debug_cast<mage_t*>( source );
-
-  merge_ignite = source_mage -> merge_ignite;
 }
 
 // mage_t::decode_set =======================================================
