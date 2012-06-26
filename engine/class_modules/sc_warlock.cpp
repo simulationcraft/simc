@@ -1324,7 +1324,7 @@ public:
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
 
-    if ( ! extra_tick_override && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION && d -> current_tick < d -> num_ticks )
+    if ( ! extra_tick_override && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION && d -> ticking && d -> current_tick < d -> num_ticks )
     {
       // Note that this will assert if this is ever used with a tick_zero dot - but there are no tick_zero dots in affliction, so we're good
       assert( ! extra_tick_event[ d -> state -> target ] );
