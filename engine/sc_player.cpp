@@ -434,7 +434,6 @@ player_t::player_t( sim_t*             s,
 player_t::initial_current_extended_t::initial_current_extended_t() :
   base_initial_current_t(), initial_current_t()
 {
-  assert( spell_power_multiplier == 0 );
   range::fill( attribute_multiplier, 1 );
   spell_power_multiplier = attack_power_multiplier = armor_multiplier = 1.0;
   mp5_from_spirit_multiplier = 0.0;
