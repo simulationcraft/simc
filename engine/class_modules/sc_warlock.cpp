@@ -3132,6 +3132,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     {
       p() -> buffs.soulburn -> expire();
       soulburn_spell -> target = target;
+      soulburn_spell -> time_to_execute = time_to_execute;
       soulburn_spell -> execute();
     }
     else
