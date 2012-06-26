@@ -157,6 +157,7 @@ struct druid_t : public player_t
     buff_t* frenzied_regeneration;
     buff_t* king_of_the_jungle;
     buff_t* lacerate;
+    buff_t* lunar_empowerment;
     buff_t* lunar_shower;
     buff_t* moonkin_form;
     buff_t* natures_grace;
@@ -164,6 +165,7 @@ struct druid_t : public player_t
     buff_t* omen_of_clarity;
     buff_t* savage_roar;
     buff_t* shooting_stars;
+    buff_t* solar_empowerment;
     buff_t* soul_of_the_forest;
     buff_t* starfall;
     buff_t* stealthed;
@@ -3043,6 +3045,12 @@ struct faerie_fire_t : public druid_spell_t
 
     if ( result_is_hit() && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
+    
+    if ( p() -> _spec == DRUID_BALANCE )
+    {
+      p() -> buff.lunar_empowerment -> trigger();
+      p() -> buff.solar_empowerment -> trigger();
+    }
   }
 
   virtual void impact_s( action_state_t* state )
@@ -3498,27 +3506,6 @@ struct starfire_t : public druid_spell_t
         {
           td( t ) -> dots_moonfire -> refresh_duration();
         }
-
-        if ( ! p() -> buff.eclipse_solar -> check() )
-        {
-          // BUG (FEATURE?) ON LIVE, TODO: Beta too?
-          // #1 Euphoria does not proc, if you are more than 35 into the side the
-          // Eclipse bar is moving towards, >35 for Starfire/towards Solar
-          int gain = data().effectN( 2 ).base_value();
-
-          if ( ! p() -> buff.eclipse_lunar -> check() )
-          {
-            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
-            {
-              if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
-              {
-                gain *= 2;
-              }
-            }
-          }
-
-          trigger_eclipse_gain_delay( this, gain );
-        }
       }
     }
   }
@@ -3526,7 +3513,32 @@ struct starfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
+    
+    if ( result_is_hit() )
+    {
+      if ( p() -> spec.eclipse -> ok() )
+      {
+        if ( ! p() -> buff.eclipse_solar -> check() )
+        {
+          int gain = data().effectN( 2 ).base_value();
 
+          if ( ! p() -> buff.eclipse_lunar -> check() )
+          {
+            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
+            {
+              // You can't get into eclipse with euphoria, so the last two
+              // spells are always normal gain
+              if ( p() -> eclipse_bar_value < 60 )
+              {
+                gain *= 2;
+              }
+            }
+          }
+          trigger_eclipse_energy_gain( this, gain );
+        }
+      }
+    }
+     
     // Cast starfire, but solar eclipse was up?
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_starfire -> occur();
@@ -3651,6 +3663,18 @@ struct starsurge_t : public druid_spell_t
         if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
           td( t ) -> dots_sunfire -> refresh_duration();
 
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( result_is_hit() )
+    {
+      if ( p() -> spec.eclipse -> ok() )
+      {
         // gain is positive for p -> eclipse_bar_direction==0
         // else it is towards p -> eclipse_bar_direction
         int gain = data().effectN( 2 ).base_value();
@@ -3660,13 +3684,16 @@ struct starsurge_t : public druid_spell_t
         {
           if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
           {
-            if ( ! ( p() -> bugs && p() -> eclipse_bar_value > 35 ) )
+            // You can't get into eclipse with euphoria, so the last two
+            // spells are always normal gain
+            if ( ( p() -> eclipse_bar_direction < 0 && p() -> eclipse_bar_value > -60 )
+              || ( p() -> eclipse_bar_direction >= 0 && p() -> eclipse_bar_value < 60 ) )
             {
               gain *= 2;
             }
           }
         }
-        trigger_eclipse_gain_delay( this, gain );
+        trigger_eclipse_energy_gain( this, gain );
       }
     }
   }
@@ -3995,26 +4022,6 @@ struct wrath_t : public druid_spell_t
         {
           td( t ) -> dots_sunfire -> refresh_duration();
         }
-
-        if ( p() -> eclipse_bar_direction <= 0 )
-        {
-          int gain = data().effectN( 2 ).base_value();
-
-          // BUG (FEATURE?) ON LIVE
-          // #1 Euphoria does not proc, if you are more than 35 into the side the
-          // Eclipse bar is moving towards, <-35 for Wrath/towards Lunar
-          if ( ! p() -> buff.eclipse_solar -> check() )
-          {
-            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
-            {
-              if ( !( p() -> bugs && p() -> eclipse_bar_value < -35 ) )
-              {
-                gain *= 2;
-              }
-            }
-          }
-          trigger_eclipse_gain_delay( this, -gain );
-        }
       }
     }
   }
@@ -4030,6 +4037,30 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    if ( result_is_hit() )
+    {
+      if ( p() -> spec.eclipse -> ok() )
+      {
+        if ( p() -> eclipse_bar_direction <= 0 )
+        {
+          int gain = data().effectN( 2 ).base_value();
+
+          if ( ! p() -> buff.eclipse_solar -> check() )
+          {
+            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
+            {
+              // You can't get into eclipse with euphoria, so the last two
+              // spells are always normal gain
+              if ( p() -> eclipse_bar_value > -70 )
+              {
+                gain *= 2;
+              }
+            }
+          }
+          trigger_eclipse_energy_gain( this, -gain );
+        }
+      }
+    }
     // Cast wrath, but lunar eclipse was up?
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
@@ -4340,6 +4371,16 @@ void druid_t::init_buffs()
                                .chance( spec.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
+  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", spell_data_t::nil() )
+                               .cd( timespan_t::zero() )
+                               .duration( timespan_t::from_seconds( 15 ) )
+                               .max_stack( 3 )
+                               .default_value( 0.20 );
+  buff.lunar_empowerment     = buff_creator_t( this, "solar_empowerment", spell_data_t::nil() )
+                               .cd( timespan_t::zero() )
+                               .duration( timespan_t::from_seconds( 15 ) )
+                               .max_stack( 3 )
+                               .default_value( 0.15 );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
