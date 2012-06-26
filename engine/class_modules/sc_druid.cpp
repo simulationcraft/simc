@@ -3321,8 +3321,6 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    dot_t* sf = td() -> dots_sunfire;
-
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
 
@@ -3336,10 +3334,6 @@ struct moonfire_t : public druid_spell_t
       if ( p() -> buff.celestial_alignment -> check() )
       {
         sunfire -> execute();
-      }
-      else
-      {
-        sf -> cancel();
       }
     }
   }
@@ -3357,8 +3351,8 @@ struct moonfire_t : public druid_spell_t
   {
     if ( ! druid_spell_t::ready() )
       return false;
-
-    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
+    
+    if ( p() -> eclipse_bar_direction < 0 && ! p() -> buff.celestial_alignment -> check() )
       return false;
 
     return true;
@@ -3802,16 +3796,12 @@ struct sunfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    dot_t* mf = td() -> dots_moonfire;
 
     // Recalculate all those multipliers w/o Lunar Shower/BotG
     player_buff_tick();
 
     if ( result_is_hit() )
     {
-      if ( mf -> ticking )
-        mf -> cancel();
-
       if ( p() -> spec.lunar_shower -> ok() )
       {
         p() -> buff.lunar_shower -> trigger( 1 );
@@ -3833,7 +3823,7 @@ struct sunfire_t : public druid_spell_t
     if ( ! druid_spell_t::ready() )
       return false;
 
-    if ( ! p() -> buff.eclipse_solar -> check() )
+    if ( p() -> eclipse_bar_direction >= 0 )
       return false;
 
     if ( p() -> buff.celestial_alignment -> check() )
