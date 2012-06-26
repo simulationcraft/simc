@@ -906,7 +906,7 @@ struct ignite_t : public mage_spell_t
   }
   virtual double total_td_multiplier() { return 1.0; }
 };
-
+#if 0
 static void trigger_ignite( mage_spell_t* s, double dmg )
 {
   if ( s -> result != RESULT_CRIT ) return;
@@ -1002,7 +1002,22 @@ static void trigger_ignite( mage_spell_t* s, double dmg )
 
   new ( sim ) ignite_sampling_event_t( sim, s -> target, s, ignite_dmg );
 }
+#endif
 
+// Mage Ignite template specialization
+template <class TRIGGER_SPELL>
+void trigger_ignite( TRIGGER_SPELL* s, double dmg )
+{
+  mage_t* p = s -> p();
+  if ( ! p -> spec.ignite -> ok() ) return;
+  trigger_ignite_like_mechanic<mage_t>( s, // trigger spell
+      p -> active_ignite, // ignite spell
+      p -> procs.munched_ignite,
+      p -> procs.rolled_ignite,
+      dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery(),
+      p -> merge_ignite,
+      p -> ignite_sampling_delta ); // ignite damage
+}
 // ==========================================================================
 // Mage Spell
 // ==========================================================================

@@ -74,13 +74,13 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct warrior_t;
 
-#define SC_WARRIOR 0
+#define SC_WARRIOR 1
 
 #if SC_WARRIOR == 1
 
 enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
-struct warrior_td_t : public target_data_t
+struct warrior_td_t : public actor_pair_t
 {
   dot_t* dots_deep_wounds;
   dot_t* dots_rend;
@@ -281,6 +281,9 @@ struct warrior_t : public player_t
   // Up-Times
   benefit_t* uptimes_rage_cap;
 
+
+  target_specific_t<warrior_td_t> target_data;
+
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     glyphs( glyphs_t() ),
@@ -288,6 +291,8 @@ struct warrior_t : public player_t
     spec( spec_t() ),
     talents( talents_t() )
   {
+
+    target_data.init( "target_data", this );
     // Active
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
@@ -307,10 +312,14 @@ struct warrior_t : public player_t
   }
 
   // Character Definition
-  virtual target_data_t* create_target_data( player_t* target )
+
+  virtual warrior_td_t* get_target_data( player_t* target )
   {
-    return new warrior_td_t( target, this );
+    warrior_td_t*& td = target_data[ target ];
+    if ( ! td ) td = new warrior_td_t( target, this );
+    return td;
   }
+
   virtual void      init_spells();
   virtual void      init_defense();
   virtual void      init_base();
@@ -324,29 +333,29 @@ struct warrior_t : public player_t
   virtual void      init_actions();
   virtual void      register_callbacks();
   virtual void      combat_begin();
-  virtual double    composite_attack_hit() const;
-  virtual double    composite_attack_crit( const weapon_t* ) const;
-  virtual double    composite_mastery() const;
-  virtual double    composite_attack_haste() const;
-  virtual double    composite_player_multiplier( school_e school, const action_t* a = NULL ) const;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double    composite_tank_block() const;
-  virtual double    composite_tank_crit_block() const;
-  virtual double    composite_tank_crit( school_e school ) const;
+  virtual double    composite_attack_hit();
+  virtual double    composite_attack_crit( weapon_t* );
+  virtual double    composite_mastery();
+  virtual double    composite_attack_haste();
+  virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
+  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    composite_tank_block();
+  virtual double    composite_tank_crit_block();
+  virtual double    composite_tank_crit( school_e school );
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       decode_set( const item_t& ) const;
-  virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
-  virtual role_e primary_role() const;
+  virtual int       decode_set( item_t& );
+  virtual resource_e primary_resource() { return RESOURCE_RAGE; }
+  virtual role_e primary_role();
   virtual double    assess_damage( double amount, school_e, dmg_e, result_e, action_t* a );
   virtual void      copy_from( player_t* source );
 
   // Temporary
-  virtual std::string set_default_talents() const
+  virtual std::string set_default_talents()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -355,9 +364,9 @@ struct warrior_t : public player_t
     return player_t::set_default_talents();
   }
 
-  virtual std::string set_default_glyphs() const
+  virtual std::string set_default_glyphs()
   {
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case SPEC_NONE: break;
     default: break;
@@ -368,7 +377,7 @@ struct warrior_t : public player_t
 };
 
 warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
-  target_data_t( target, p )
+    actor_pair_t( target, p )
 {
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
 }
@@ -402,11 +411,11 @@ struct warrior_attack_t : public melee_attack_t
   { return debug_cast<warrior_t*>( player ); }
 
   warrior_td_t* cast_td( player_t* t = 0 ) const
-  { return debug_cast<warrior_td_t*>( target_data( t ) ); }
+  { return cast() -> get_target_data( t ? t : target ); }
 
-  virtual double armor() const;
+  virtual double armor();
   virtual void   consume_resource();
-  virtual double cost() const;
+  virtual double cost();
   virtual void   execute();
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
@@ -447,8 +456,8 @@ struct deep_wounds_t : public warrior_attack_t
     tick_power_mod = 0;
     dot_behavior  = DOT_REFRESH;
   }
-  virtual double total_td_multiplier() const { return target_multiplier; }
-  virtual timespan_t travel_time() const { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+  virtual double total_td_multiplier() { return target_multiplier; }
+  virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );
@@ -459,8 +468,34 @@ struct deep_wounds_t : public warrior_attack_t
   }
 };
 
-// trigger_deep_wounds ======================================================
+// Warrior Deep Wounds template specialization
+template <class TRIGGER_SPELL>
+void trigger_deep_wounds( TRIGGER_SPELL* s)
+{
+  warrior_t* p = s -> cast();
+  if ( ! p -> talents.deep_wounds -> ok() ) return;
 
+  if ( s -> weapon )
+    p -> active_deep_wounds -> weapon = s -> weapon;
+  else
+    p -> active_deep_wounds -> weapon = &( p -> main_hand_weapon );
+  // Normally, we cache the base damage and then combine them with the multipliers at the point of damage.
+  // However, in this case we need to maintain remaining damage on refresh and the player-buff multipliers may change.
+  // So we neeed to push the player-buff multipliers into the damage bank and then make sure we only use
+  // the target-debuff multipliers at tick time.
+
+  p -> active_deep_wounds -> player_buff();
+
+  trigger_ignite_like_mechanic<warrior_t>( s, // trigger spell
+      p -> active_deep_wounds, // ignite spell
+      NULL,
+      NULL,
+      ( p -> active_deep_wounds -> calculate_weapon_damage( s -> total_attack_power() ) *
+                                   p -> active_deep_wounds -> weapon_multiplier *
+                                   p -> active_deep_wounds -> player_multiplier ) ); // dw damage
+}
+// trigger_deep_wounds ======================================================
+/*
 static void trigger_deep_wounds( warrior_attack_t* a )
 {
   warrior_t* p = a -> cast();
@@ -525,7 +560,7 @@ static void trigger_deep_wounds( warrior_attack_t* a )
     }
   }
 }
-
+*/
 // trigger_rage_gain ========================================================
 
 static void trigger_rage_gain( warrior_attack_t* a )
@@ -751,7 +786,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 // Warrior Attacks
 // ==========================================================================
 
-double warrior_attack_t::armor() const
+double warrior_attack_t::armor()
 {
   warrior_td_t* td = cast_td();
 
@@ -783,7 +818,7 @@ void warrior_attack_t::assess_damage( player_t* t, const double amount, const dm
 
 // warrior_attack_t::cost ===================================================
 
-double warrior_attack_t::cost() const
+double warrior_attack_t::cost()
 {
   double c = attack_t::cost();
 
@@ -967,7 +1002,7 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual double swing_haste() const
+  virtual double swing_haste()
   {
     double h = warrior_attack_t::swing_haste();
 
@@ -983,7 +1018,7 @@ struct melee_t : public warrior_attack_t
     return h;
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     timespan_t t = warrior_attack_t::execute_time();
 
@@ -1027,7 +1062,7 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::player_buff();
     warrior_t* p = cast();
 
-    if ( p -> primary_tree() == WARRIOR_FURY )
+    if ( p -> specialization() == WARRIOR_FURY )
       player_multiplier *= 1.0 + p -> spec.precision -> effectN( 3 ).percent();
   }
 };
@@ -1158,8 +1193,8 @@ struct bladestorm_t : public warrior_attack_t
   }
 
   // Bladestorm is not modified by haste effects
-  virtual double haste() const { return 1.0; }
-  virtual double swing_haste() const { return 1.0; }
+  virtual double haste() { return 1.0; }
+  virtual double swing_haste() { return 1.0; }
 };
 
 // Bloodthirst Heal ==============================================================
@@ -1176,7 +1211,7 @@ struct bloodthirst_heal_t : public heal_t
     init();
   }
 
-  virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  virtual resource_e current_resource() { return RESOURCE_NONE; }
 };
 
 struct bloodthirst_buff_callback_t : public action_callback_t
@@ -1568,7 +1603,7 @@ struct heroic_strike_t : public warrior_attack_t
     harmful           = true;
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
@@ -2138,7 +2173,7 @@ struct shield_slam_t : public warrior_attack_t
       p -> buffs_battle_trance -> trigger();
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     warrior_t* p = cast();
 
@@ -2254,7 +2289,7 @@ struct slam_t : public warrior_attack_t
     }
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     warrior_t* p = cast();
 
@@ -2264,7 +2299,7 @@ struct slam_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
-  virtual timespan_t execute_time() const
+  virtual timespan_t execute_time()
   {
     warrior_t* p = cast();
 
@@ -2463,13 +2498,13 @@ struct warrior_spell_t : public spell_t
   { return debug_cast<warrior_t*>( player ); }
 
   warrior_td_t* cast_td( player_t* t = 0 ) const
-  { return debug_cast<warrior_td_t*>( target_data( t ) ); }
+  { return cast() -> get_target_data( t ? t : target ); }
 
   void _init_warrior_spell_t()
   {
   }
 
-  virtual timespan_t gcd() const
+  virtual timespan_t gcd()
   {
     // Unaffected by haste
     return trigger_gcd;
@@ -2794,7 +2829,7 @@ struct stance_t : public warrior_spell_t
     cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
 
-  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
+  virtual resource_e current_resource() { return RESOURCE_RAGE; }
 
   virtual void execute()
   {
@@ -2820,7 +2855,7 @@ struct stance_t : public warrior_spell_t
     update_ready();
   }
 
-  virtual double cost() const
+  virtual double cost()
   {
     warrior_t* p = cast();
 
@@ -3059,7 +3094,7 @@ void warrior_t::init_base()
   base.parry   = 0.05;
   base.block   = 0.05;
 
-  if ( primary_tree() == WARRIOR_PROTECTION )
+  if ( specialization() == WARRIOR_PROTECTION )
     vengeance.enabled = true;
 
   if ( talents.toughness -> ok() )
@@ -3240,7 +3275,7 @@ void warrior_t::init_actions()
   {
     clear_action_priority_lists();
 
-    switch ( primary_tree() )
+    switch ( specialization() )
     {
     case WARRIOR_FURY:
     case WARRIOR_ARMS:
@@ -3277,14 +3312,14 @@ void warrior_t::init_actions()
     action_list_str += "/snapshot_stats,precombat=1";
 
     // Potion
-    if ( primary_tree() == WARRIOR_ARMS )
+    if ( specialization() == WARRIOR_ARMS )
     {
       if ( level > 85 )
         action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.recklessness.up|target.time_to_die<26";
       else if ( level >= 80 )
         action_list_str += "/golemblood_potion,precombat=1/golemblood_potion,if=buff.recklessness.up|target.time_to_die<26";
     }
-    else if ( primary_tree() == WARRIOR_FURY )
+    else if ( specialization() == WARRIOR_FURY )
     {
       if ( level > 85 )
         action_list_str += "/mogu_power_potion,precombat=1/mogu_power_potion,if=buff.bloodlust.react";
@@ -3320,7 +3355,7 @@ void warrior_t::init_actions()
       action_list_str += "/heroic_leap,use_off_gcd=1,if=buff.colossus_smash.up";
 
     // Arms
-    if ( primary_tree() == WARRIOR_ARMS )
+    if ( specialization() == WARRIOR_ARMS )
     {
       if ( glyphs.berserker_rage -> ok() ) action_list_str += "/berserker_rage,if=buff.deadly_calm.down&cooldown.deadly_calm.remains>1.5&rage<=95,use_off_gcd=1";
       if ( talents.deadly_calm -> ok() ) action_list_str += "/deadly_calm,use_off_gcd=1";
@@ -3353,7 +3388,7 @@ void warrior_t::init_actions()
     }
 
     // Fury
-    else if ( primary_tree() == WARRIOR_FURY )
+    else if ( specialization() == WARRIOR_FURY )
     {
       action_list_str += "/stance,choose=berserker";
       if ( talents.titans_grip -> ok() )
@@ -3423,7 +3458,7 @@ void warrior_t::init_actions()
     }
 
     // Protection
-    else if ( primary_tree() == WARRIOR_PROTECTION )
+    else if ( specialization() == WARRIOR_PROTECTION )
     {
       action_list_str += "/stance,choose=defensive";
       if ( talents.last_stand -> ok() ) action_list_str += "/last_stand,if=health<30000";
@@ -3487,7 +3522,7 @@ void warrior_t::reset()
 
 // warrior_t::composite_attack_hit ==========================================
 
-double warrior_t::composite_attack_hit() const
+double warrior_t::composite_attack_hit()
 {
   double ah = player_t::composite_attack_hit();
 
@@ -3498,7 +3533,7 @@ double warrior_t::composite_attack_hit() const
 
 // warrior_t::composite_attack_crit =========================================
 
-double warrior_t::composite_attack_crit( const weapon_t* w ) const
+double warrior_t::composite_attack_crit( weapon_t* w )
 {
   double c = player_t::composite_attack_crit( w );
 
@@ -3509,7 +3544,7 @@ double warrior_t::composite_attack_crit( const weapon_t* w ) const
 
 // warrior_t::composite_mastery =============================================
 
-double warrior_t::composite_mastery() const
+double warrior_t::composite_mastery()
 {
   double m = player_t::composite_mastery();
 
@@ -3520,7 +3555,7 @@ double warrior_t::composite_mastery() const
 
 // warrior_t::composite_attack_haste ========================================
 
-double warrior_t::composite_attack_haste() const
+double warrior_t::composite_attack_haste()
 {
   double h = player_t::composite_attack_haste();
 
@@ -3538,7 +3573,7 @@ double warrior_t::composite_attack_haste() const
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( const school_e school, const action_t* a ) const
+double warrior_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
@@ -3557,12 +3592,12 @@ double warrior_t::composite_player_multiplier( const school_e school, const acti
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( const attribute_e attr ) const
+double warrior_t::matching_gear_multiplier( attribute_e attr )
 {
-  if ( ( attr == ATTR_STRENGTH ) && ( primary_tree() == WARRIOR_ARMS || primary_tree() == WARRIOR_FURY ) )
+  if ( ( attr == ATTR_STRENGTH ) && ( specialization() == WARRIOR_ARMS || specialization() == WARRIOR_FURY ) )
     return 0.05;
 
-  if ( ( attr == ATTR_STAMINA ) && ( primary_tree() == WARRIOR_PROTECTION ) )
+  if ( ( attr == ATTR_STAMINA ) && ( specialization() == WARRIOR_PROTECTION ) )
     return 0.05;
 
   return 0.0;
@@ -3570,7 +3605,7 @@ double warrior_t::matching_gear_multiplier( const attribute_e attr ) const
 
 // warrior_t::composite_tank_block ==========================================
 
-double warrior_t::composite_tank_block() const
+double warrior_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
@@ -3584,7 +3619,7 @@ double warrior_t::composite_tank_block() const
 
 // warrior_t::composite_tank_crit_block =====================================
 
-double warrior_t::composite_tank_crit_block() const
+double warrior_t::composite_tank_crit_block()
 {
   double b = player_t::composite_tank_crit_block();
 
@@ -3598,7 +3633,7 @@ double warrior_t::composite_tank_crit_block() const
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit( const school_e school ) const
+double warrior_t::composite_tank_crit( const school_e school )
 {
   double c = player_t::composite_tank_crit( school );
 
@@ -3624,7 +3659,7 @@ void warrior_t::regen( timespan_t periodicity )
 
 // warrior_t::primary_role() ================================================
 
-role_e warrior_t::primary_role() const
+role_e warrior_t::primary_role()
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
@@ -3632,7 +3667,7 @@ role_e warrior_t::primary_role() const
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
 
-  if ( primary_tree() == WARRIOR_PROTECTION )
+  if ( specialization() == WARRIOR_PROTECTION )
     return ROLE_TANK;
 
   return ROLE_ATTACK;
@@ -3735,7 +3770,7 @@ void warrior_t::copy_from( player_t* source )
 
 // warrior_t::decode_set ====================================================
 
-int warrior_t::decode_set( const item_t& item ) const
+int warrior_t::decode_set( item_t& item )
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
