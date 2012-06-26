@@ -18,41 +18,72 @@ using namespace spells;
 using namespace heals;
 using namespace pets;
 
-struct priest_t;
-
-struct remove_dots_event_t;
-
-struct priest_td_t : public actor_pair_t
-{
-  struct dots_t
-  {
-    dot_t* devouring_plague;
-    dot_t* shadow_word_pain;
-    dot_t* vampiric_touch;
-    dot_t* holy_fire;
-    dot_t* renew;
-  } dots;
-
-  struct buffs_t
-  {
-    absorb_buff_t* power_word_shield;
-    absorb_buff_t* divine_aegis;
-    absorb_buff_t* spirit_shell;
-  } buffs;
-
-  remove_dots_event_t* remove_dots_event;
-
-  priest_td_t( player_t* target, priest_t* p );
-
-  void reset()
-  {
-    remove_dots_event = 0;
-  }
-};
-
 struct priest_t : public player_t
 {
-  // Buffs
+  typedef player_t base_t;
+  struct priest_td_t : public actor_pair_t
+  {
+  private:
+    struct remove_dots_event_t : public event_t
+    {
+    private:
+      priest_td_t* td;
+      priest_t* pr;
+
+      static void cancel_dot( dot_t* dot )
+      {
+        if ( dot -> ticking )
+        {
+          dot -> cancel();
+          dot -> reset();
+        }
+      }
+
+      virtual void execute()
+      {
+        td -> remove_dots_event = 0;
+        pr -> procs.mind_spike_dot_removal -> occur();
+        cancel_dot( td -> dots.shadow_word_pain );
+        cancel_dot( td -> dots.vampiric_touch );
+      }
+    public:
+      remove_dots_event_t( sim_t* sim, priest_t* pr, priest_td_t* td ) :
+        event_t( sim, pr, "mind_spike_remove_dots" ), td( td ), pr( pr )
+      {
+        sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
+      }
+
+    };
+  public:
+    struct dots_t
+    {
+      dot_t* devouring_plague;
+      dot_t* shadow_word_pain;
+      dot_t* vampiric_touch;
+      dot_t* holy_fire;
+      dot_t* renew;
+    } dots;
+
+    struct buffs_t
+    {
+      absorb_buff_t* power_word_shield;
+      absorb_buff_t* divine_aegis;
+      absorb_buff_t* spirit_shell;
+    } buffs;
+
+    remove_dots_event_t* remove_dots_event;
+
+    priest_td_t( player_t* target, priest_t* p );
+
+    void reset()
+    {
+      remove_dots_event = 0;
+    }
+
+    void remove_all_dots()
+    { remove_dots_event = new ( source -> sim ) remove_dots_event_t( source -> sim, debug_cast<priest_t*>( source ), this ); }
+
+  };
 
   struct buffs_t
   {
@@ -348,37 +379,6 @@ struct priest_t : public player_t
   // Temporary
   virtual std::string set_default_talents();
   virtual std::string set_default_glyphs();
-};
-
-struct remove_dots_event_t : public event_t
-{
-private:
-  priest_td_t* td;
-  priest_t* pr;
-
-  static void cancel_dot( dot_t* dot )
-  {
-    if ( dot -> ticking )
-    {
-      dot -> cancel();
-      dot -> reset();
-    }
-  }
-
-public:
-  remove_dots_event_t( sim_t* sim, priest_t* pr, priest_td_t* td ) :
-    event_t( sim, pr, "mind_spike_remove_dots" ), td( td ), pr( pr )
-  {
-    sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
-  }
-
-  virtual void execute()
-  {
-    td -> remove_dots_event = 0;
-    pr -> procs.mind_spike_dot_removal -> occur();
-    cancel_dot( td -> dots.shadow_word_pain );
-    cancel_dot( td -> dots.vampiric_touch );
-  }
 };
 
 namespace pets {
@@ -921,7 +921,7 @@ public:
 
   priest_t* p() { return debug_cast<priest_t*>( action_base_t::player ); }
 
-  priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  priest_t::priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
 
   virtual void schedule_execute()
   {
@@ -2257,7 +2257,7 @@ struct mind_spike_t : public priest_spell_t
       mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
       if ( ! dps_t -> surge_of_darkness && ! td( s -> target ) -> remove_dots_event )
       {
-        td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
+        td( s -> target ) -> remove_all_dots();
       }
     }
   }
@@ -2878,7 +2878,7 @@ struct shadow_word_insanity_t : public priest_spell_t
     {
       if ( ! td( s -> target ) -> remove_dots_event )
       {
-        td( s -> target ) -> remove_dots_event = new ( sim ) remove_dots_event_t( sim, p(), td( s -> target ) );
+        td( s -> target ) -> remove_all_dots();
       }
     }
   }
@@ -4411,7 +4411,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 // Priest
 // ==========================================================================
 
-priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
+priest_t::priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
   actor_pair_t( target, p ),
   dots( dots_t() ),
   buffs( buffs_t() ),
@@ -4455,7 +4455,7 @@ double priest_t::shadowy_recall_chance()
 
 role_e priest_t::primary_role()
 {
-  switch ( player_t::primary_role() )
+  switch ( base_t::primary_role() )
   {
   case ROLE_HEAL:
     return ROLE_HEAL;
@@ -4475,7 +4475,7 @@ role_e priest_t::primary_role()
 
 void priest_t::combat_begin()
 {
-  player_t::combat_begin();
+  base_t::combat_begin();
 
   resources.current[ RESOURCE_SHADOW_ORB ] = ( ( initial_shadow_orbs >= 0 ) && ( initial_shadow_orbs <= resources.base[ RESOURCE_SHADOW_ORB ] ) ) ? initial_shadow_orbs : 0;
 }
@@ -4483,7 +4483,7 @@ void priest_t::combat_begin()
 
 double priest_t::composite_armor()
 {
-  double a = player_t::composite_armor();
+  double a = base_t::composite_armor();
 
   if ( buffs.inner_fire -> up() )
     a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).base_value() / 100.0 * ( 1.0 + glyphs.inner_fire -> effectN( 1 ).percent() );
@@ -4495,7 +4495,7 @@ double priest_t::composite_armor()
 
 double priest_t::composite_spell_power_multiplier()
 {
-  double m = player_t::composite_spell_power_multiplier();
+  double m = base_t::composite_spell_power_multiplier();
 
   m *= 1.0 + buffs.inner_fire -> data().effectN( 2 ).percent();
 
@@ -4506,7 +4506,7 @@ double priest_t::composite_spell_power_multiplier()
 
 double priest_t::composite_spell_hit()
 {
-  double hit = player_t::composite_spell_hit();
+  double hit = base_t::composite_spell_hit();
 
   hit += ( ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
 
@@ -4517,7 +4517,7 @@ double priest_t::composite_spell_hit()
 
 double priest_t::composite_player_multiplier( school_e school, action_t* a )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = base_t::composite_player_multiplier( school, a );
 
   if ( spell_data_t::is_school( school, SCHOOL_SHADOW ) )
   {
@@ -4543,7 +4543,7 @@ double priest_t::composite_player_multiplier( school_e school, action_t* a )
 
 double priest_t::composite_movement_speed()
 {
-  double speed = player_t::composite_movement_speed();
+  double speed = base_t::composite_movement_speed();
 
   if ( buffs.inner_will -> up() )
     speed *= 1.0 + buffs.inner_will -> data().effectN( 2 ).percent() + glyphs.inner_sanctum -> effectN( 2 ).percent();
@@ -4555,7 +4555,7 @@ double priest_t::composite_movement_speed()
 
 double priest_t::composite_attribute_multiplier( attribute_e attr )
 {
-  double m = player_t::composite_attribute_multiplier( attr );
+  double m = base_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_INTELLECT )
     m *= 1.0 + specs.mysticism -> effectN( 1 ).percent();
@@ -4637,7 +4637,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "halo_heal"              ) return new halo_heal_t             ( this, options_str );
   if ( name == "divine_star_heal"       ) return new divine_star_heal_t      ( this, options_str );
 
-  return player_t::create_action( name, options_str );
+  return base_t::create_action( name, options_str );
 }
 
 // priest_t::create_pet =====================================================
@@ -4669,7 +4669,7 @@ void priest_t::create_pets()
 
 void priest_t::init_base()
 {
-  player_t::init_base();
+  base_t::init_base();
 
   base.attack_power = 0;
 
@@ -4687,7 +4687,7 @@ void priest_t::init_base()
 
 void priest_t::init_gains()
 {
-  player_t::init_gains();
+  base_t::init_gains();
 
   gains.dispersion                    = get_gain( "dispersion" );
   gains.shadowfiend                   = get_gain( "shadowfiend" );
@@ -4706,7 +4706,7 @@ void priest_t::init_gains()
 
 void priest_t::init_procs()
 {
-  player_t::init_procs();
+  base_t::init_procs();
 
   procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"          );
   procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"         );
@@ -4719,7 +4719,7 @@ void priest_t::init_procs()
 
 void priest_t::init_scaling()
 {
-  player_t::init_scaling();
+  base_t::init_scaling();
 
   // An Atonement Priest might be Health-capped
   scales_with[ STAT_STAMINA ] = glyphs.atonement -> ok();
@@ -4741,7 +4741,7 @@ void priest_t::init_scaling()
 
 void priest_t::init_benefits()
 {
-  player_t::init_benefits();
+  base_t::init_benefits();
 
 }
 
@@ -4749,7 +4749,7 @@ void priest_t::init_benefits()
 
 void priest_t::init_rng()
 {
-  player_t::init_rng();
+  base_t::init_rng();
 
   rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
   rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
@@ -4758,7 +4758,7 @@ void priest_t::init_rng()
 // priest_t::init_spells
 void priest_t::init_spells()
 {
-  player_t::init_spells();
+  base_t::init_spells();
 
   // Talents
   talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
@@ -4864,7 +4864,7 @@ void priest_t::init_spells()
 
 void priest_t::init_buffs()
 {
-  player_t::init_buffs();
+  base_t::init_buffs();
 
   // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, rngs.type=rngs.CYCLIC, activated=true )
@@ -5194,7 +5194,7 @@ void priest_t::init_actions()
     }
   }
 
-  player_t::init_actions();
+  base_t::init_actions();
 }
 
 // priest_t::init_party =====================================================
@@ -5219,7 +5219,7 @@ void priest_t::init_party()
 
 void priest_t::init_values()
 {
-  player_t::init_values();
+  base_t::init_values();
 
   // Discipline/Holy
   constants.meditation_value                = specs.meditation_disc -> ok() ?
@@ -5246,7 +5246,7 @@ void priest_t::init_values()
 
 void priest_t::reset()
 {
-  player_t::reset();
+  base_t::reset();
 
   for ( size_t i=0; i < sim -> actor_list.size(); i++ )
   {
@@ -5308,7 +5308,7 @@ double priest_t::target_mitigation( double        amount,
                                     result_e result,
                                     action_t*     action )
 {
-  amount = player_t::target_mitigation( amount, school, dt, result, action );
+  amount = base_t::target_mitigation( amount, school, dt, result, action );
 
   if ( buffs.shadowform -> check() )
   { amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
@@ -5323,7 +5323,7 @@ double priest_t::target_mitigation( double        amount,
 
 void priest_t::create_options()
 {
-  player_t::create_options();
+  base_t::create_options();
 
   option_t priest_options[] =
   {
@@ -5340,7 +5340,7 @@ void priest_t::create_options()
 
 bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
-  player_t::create_profile( profile_str, type, save_html );
+  base_t::create_profile( profile_str, type, save_html );
 
   if ( type == SAVE_ALL )
   {
@@ -5362,7 +5362,7 @@ bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_
 
 void priest_t::copy_from( player_t* source )
 {
-  player_t::copy_from( source );
+  base_t::copy_from( source );
 
   priest_t* source_p = debug_cast<priest_t*>( source );
 
@@ -5428,7 +5428,7 @@ std::string priest_t::set_default_talents()
   default: break;
   }
 
-  return player_t::set_default_talents();
+  return base_t::set_default_talents();
 }
 
 std::string priest_t::set_default_glyphs()
@@ -5440,7 +5440,7 @@ std::string priest_t::set_default_glyphs()
   default: break;
   }
 
-  return player_t::set_default_glyphs();
+  return base_t::set_default_glyphs();
 }
 
 // PRIEST MODULE INTERFACE ================================================
