@@ -457,7 +457,12 @@ struct deep_wounds_t : public warrior_attack_t
     dot_behavior  = DOT_REFRESH;
   }
   virtual double total_td_multiplier() { return target_multiplier; }
-  virtual timespan_t travel_time() { return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ); }
+
+  virtual timespan_t travel_time()
+  {
+    return sim -> gauss( timespan_t::from_seconds( 0.2 ), 0.125 * timespan_t::from_seconds( 0.2 ) );
+  }
+
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     warrior_attack_t::impact( t, impact_result, 0 );

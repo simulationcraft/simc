@@ -5190,6 +5190,12 @@ struct wait_for_cooldown_t : public wait_action_base_t
 // and all the other parameters.
 // TRIGGER_SPELL_T* s is the spell which will be triggering the ignite
 // IGNITE_SPELL_T* ignite_action is the ignite action on a player level, eg. p -> active_ignite
+
+// Detailed Ignite Mechanic description at
+// http://elitistjerks.com/f75/t129638-4_3_3_fire_mage_compendium/#Crit:_Ignite_Munching_and_Ignite_Stacking
+
+// Sampling Event based on http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p18/#post2087603
+
 template <class PLAYER_CLASS_T,class TRIGGER_SPELL_T, class IGNITE_SPELL_T>
 void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
                                    IGNITE_SPELL_T* ignite_action,
@@ -5216,8 +5222,10 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
         sim -> output( "New %s Sampling Event: %s",
                         action -> name(), player -> name() );
 
-      timespan_t delay = sim -> aura_delay - sampling_delta;
-      sim -> add_event( this, std::max( sim -> gauss( delay, 0.25 * delay ), timespan_t::zero() ) );
+      // Cut gaussian distribution off at +- 2 * stddev
+      timespan_t munch_delta = std::min( std::max( sim -> gauss( sampling_delta, 0.125 * sampling_delta ), sampling_delta * 0.25 ), sampling_delta * 1.25 );
+
+      sim -> add_event( this, sim -> aura_delay - munch_delta );
     }
 
     virtual void execute()
@@ -5233,7 +5241,7 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
       if ( dot -> ticking )
       {
         ignite_dmg += action -> base_td * dot -> ticks();
-        ignite_dmg /= action -> num_ticks + 1;
+        ignite_dmg /= action -> num_ticks + 1; // Divide by num_ticks+1 because dot will get refreshed
       }
       else
       {
@@ -5241,12 +5249,13 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
       }
 
       // TODO: investigate if this can actually happen
-      /*if ( timespan_t::from_seconds( action -> num_ticks * action -> tick_time() ) + sim -> aura_delay < dot -> remains() )
+      /*
+      if ( action -> num_ticks * action -> tick_time() + sim -> aura_delay < dot -> remains() )
       {
-        if ( sim -> log ) sim -> output( "Player %s munches %s due to Max Ignite Duration.", action -> name(), p -> name() );
+        if ( sim -> log ) sim -> output( "Player %s munches %s due to Max %s Duration.", action -> name(), p -> name(), dot -> name() );
         p -> procs.munched_ignite -> occur();
         return;
-      }*/
+      } */
 
       if ( action -> travel_events.size() > 0 )
       {

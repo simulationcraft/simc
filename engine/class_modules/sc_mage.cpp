@@ -902,7 +902,7 @@ struct ignite_t : public mage_spell_t
   virtual timespan_t travel_time()
   {
     mage_t* p = static_cast<mage_t*>( player );
-    return sim -> gauss( p -> ignite_sampling_delta, 0.25 * p -> ignite_sampling_delta );
+    return sim -> gauss( p -> ignite_sampling_delta, 0.125 * p -> ignite_sampling_delta );
   }
   virtual double total_td_multiplier() { return 1.0; }
 };

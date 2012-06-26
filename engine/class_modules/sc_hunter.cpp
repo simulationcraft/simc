@@ -896,7 +896,7 @@ struct piercing_shots_t : public attack_t
 
   virtual timespan_t travel_time()
   {
-    return sim -> gauss( sim -> aura_delay, 0.25 * sim -> aura_delay );
+    return sim -> gauss( timespan_t::from_seconds( 0.2 ), 0.125 * timespan_t::from_seconds( 0.2 ) );
   }
 
   virtual double composite_ta_multiplier()
