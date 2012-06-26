@@ -879,12 +879,8 @@ static double calculate_dot_dps( dot_t* dot )
 struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 {
   ignite_t( mage_t* player ) :
-    base_t( "ignite", player, spell_data_t::nil() /*player -> find_spell( 12654 ) */ )
+    base_t( "ignite", player, player -> dbc.spell( 12654 )  )
   {
-    // Scaling Spell is level 99 and nott getting parsed.
-    num_ticks = 2;
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    school = SCHOOL_FIRE;
   }
 };
 

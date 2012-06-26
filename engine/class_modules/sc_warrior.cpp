@@ -445,7 +445,7 @@ static void trigger_bloodsurge( warrior_attack_t* a )
 struct deep_wounds_t : public ignite_like_action_t< warrior_attack_t, warrior_t >
 {
   deep_wounds_t( warrior_t* p ) :
-    base_t( "deep_wounds", p, p -> find_spell( 12721 ) )
+    base_t( "deep_wounds", p, p -> find_spell( 115767 ) )
   { }
 };
 

@@ -869,12 +869,7 @@ struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
 {
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
-  {
-    base_multiplier = 1.0;
-    tick_power_mod  = 0;
-    num_ticks       = 8;
-    base_tick_time  = timespan_t::from_seconds( 1.0 );
-  }
+  { }
 
 };
 
