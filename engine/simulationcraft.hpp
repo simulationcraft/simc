@@ -5233,11 +5233,11 @@ void trigger_ignite_like_mechanic( TRIGGER_SPELL_T* s,
       if ( dot -> ticking )
       {
         ignite_dmg += action -> base_td * dot -> ticks();
-        ignite_dmg /= 3.0;
+        ignite_dmg /= action -> num_ticks + 1;
       }
       else
       {
-        ignite_dmg /= 2.0;
+        ignite_dmg /= action -> num_ticks;
       }
 
       // TODO: investigate if this can actually happen

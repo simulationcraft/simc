@@ -470,7 +470,7 @@ struct deep_wounds_t : public warrior_attack_t
 
 // Warrior Deep Wounds template specialization
 template <class TRIGGER_SPELL>
-void trigger_deep_wounds( TRIGGER_SPELL* s)
+void trigger_deep_wounds( TRIGGER_SPELL* s )
 {
   warrior_t* p = s -> cast();
   if ( ! p -> talents.deep_wounds -> ok() ) return;

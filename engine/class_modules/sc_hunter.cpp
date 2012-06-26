@@ -903,68 +903,19 @@ struct piercing_shots_t : public attack_t
   { return 1.0; }
 };
 
-// trigger_piercing_shots ===================================================
-
-void trigger_piercing_shots( hunter_ranged_attack_t* a, double dmg )
+// Hunter Piercing Shots template specialization
+template <class TRIGGER_SPELL>
+void trigger_piercing_shots( TRIGGER_SPELL* s, double dmg )
 {
-  hunter_t* p = a -> cast();
-  sim_t* sim = a -> sim;
+  hunter_t* p = s -> cast();
+  if ( ! p -> talents.piercing_shots -> ok() ) return;
 
-  if ( ! p -> talents.piercing_shots -> ok() )
-    return;
-
-  assert( p -> active_piercing_shots );
-
-  double piercing_shots_dmg = p -> talents.piercing_shots -> effectN( 1 ).percent() * dmg;
-
-  if ( p -> merge_piercing_shots > 0 ) // Does not report Piercing Shots seperately.
-  {
-    result_e result = a -> result;
-    a -> result = RESULT_HIT;
-    a -> assess_damage( a -> target, piercing_shots_dmg * p -> merge_piercing_shots, DMG_OVER_TIME, a -> result );
-    a -> result = result;
-    return;
-  }
-
-  dot_t* dot = p -> active_piercing_shots -> get_dot();
-
-  if ( dot -> ticking )
-  {
-    piercing_shots_dmg += p -> active_piercing_shots -> base_td * dot -> ticks();
-  }
-
-  if ( timespan_t::from_seconds( 8.0 ) + sim -> aura_delay < dot -> remains() )
-  {
-    if ( sim -> log ) sim -> output( "Player %s munches Piercing Shots due to Max Piercing Shots Duration.", p -> name() );
-    p -> procs.munched_piercing_shots -> occur();
-    return;
-  }
-
-  if ( p -> active_piercing_shots -> travel_events.size() > 0 )
-  {
-    // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-    if ( sim -> log ) sim -> output( "Player %s munches previous Piercing Shots due to Aura Delay.", p -> name() );
-    p -> procs.munched_piercing_shots -> occur();
-  }
-
-  p -> active_piercing_shots -> direct_dmg = piercing_shots_dmg;
-  p -> active_piercing_shots -> result = RESULT_HIT;
-  p -> active_piercing_shots -> schedule_travel( a -> target );
-
-  dot -> prev_tick_amount = piercing_shots_dmg;
-
-  if ( p -> active_piercing_shots -> travel_events.size() > 0 && dot -> ticking )
-  {
-    if ( dot -> tick_event -> occurs() < p -> active_piercing_shots -> travel_events[ 0 ] -> occurs() )
-    {
-      // Piercing Shots will tick before SPELL_AURA_APPLIED occurs, which means that the current Piercing Shots will
-      // both tick -and- get rolled into the next Piercing Shots.
-      if ( sim -> log ) sim -> output( "Player %s rolls Piercing Shots.", p -> name() );
-      p -> procs.rolled_piercing_shots -> occur();
-    }
-  }
+  trigger_ignite_like_mechanic<hunter_t>( s, // trigger spell
+      p -> active_piercing_shots, // ignite spell
+      p -> procs.munched_piercing_shots,
+      p -> procs.rolled_piercing_shots,
+      p -> talents.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
 }
-
 // trigger_thrill_of_the_hunt ===============================================
 
 static void trigger_thrill_of_the_hunt( hunter_ranged_attack_t* a )
