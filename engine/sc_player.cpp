@@ -6646,9 +6646,8 @@ expr_t* player_t::create_expression( action_t* a,
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
-      if ( ! buff ) buff = buff_t::find( sim, splits[ 1 ] );
-      if ( ! buff ) return 0;
-      return buff -> create_expression( splits[ 2 ] );
+      if ( buff ) 
+        return buff -> create_expression( splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "cooldown" )
     {

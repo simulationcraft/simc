@@ -1813,23 +1813,24 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
   }
 
-  if ( num_splits >= 3 && ( splits[0] == "buff" || splits[0] == "debuff" || splits[0] == "aura" ) )
+  if ( num_splits == 3 && splits[0] == "buff" )
   {
     buff_t* buff = buff_t::find( player, splits[ 1 ] );
     if ( buff )
       return buff -> create_expression( splits[ 2 ] );
   }
+
   if ( num_splits == 3 && splits[ 0 ] == "dot" )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "debuff" )
+  if ( num_splits == 3 && splits[ 0 ] == "debuff" )
   {
     return target -> create_expression( this, name_str );
   }
 
-  if ( num_splits >= 2 && splits[ 0 ] == "aura" )
+  if ( num_splits == 3 && splits[ 0 ] == "aura" )
   {
     return sim -> create_expression( this, name_str );
   }

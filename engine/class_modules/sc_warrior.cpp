@@ -707,7 +707,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
   // Default mult is the up -> down case
   // FIXME
   //double mult = 1 + util::talent_rank( p -> talents.flurry -> rank(), 3, 0.08, 0.16, 0.25 );
-  double mult = 0;
+  double mult = 1;
 
   // down -> up case
   if ( ! up_before && up_after )
