@@ -420,7 +420,7 @@ struct warrior_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double, dmg_e, result_e );
+  virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t*);
 };
 
 
@@ -760,9 +760,9 @@ double warrior_attack_t::armor()
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_e dmg_type, const result_e impact_result )
+void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_e dmg_type, const result_e impact_result, action_state_t* s )
 {
-  attack_t::assess_damage( t, amount, dmg_type, impact_result );
+  attack_t::assess_damage( t, amount, dmg_type, impact_result, s );
 
   /* warrior_t* p = cast();
 
