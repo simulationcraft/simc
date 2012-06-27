@@ -761,7 +761,6 @@ struct druid_heal_t : public heal_t
   virtual void   execute();
   virtual timespan_t execute_time();
   virtual double haste();
-  //virtual void   player_buff();
   virtual double action_da_multiplier();
   virtual double action_ta_multiplier();
 };
@@ -772,13 +771,10 @@ struct druid_heal_t : public heal_t
 
 struct druid_spell_t : public spell_t
 {
-  double additive_multiplier;
-
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    spell_t( token, p, s ),
-    additive_multiplier( 0.0 )
+    spell_t( token, p, s )
   {
     parse_options( 0, options );
 
@@ -788,7 +784,7 @@ struct druid_spell_t : public spell_t
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    spell_t( "", p, s ), additive_multiplier( 0.0 )
+    spell_t( "", p, s )
   {
     parse_options( 0, options );
 
@@ -807,7 +803,6 @@ struct druid_spell_t : public spell_t
   virtual timespan_t execute_time();
   virtual double haste();
   virtual void   player_tick();
-  virtual void   player_buff();
   virtual void   schedule_execute();
 };
 
@@ -2700,19 +2695,6 @@ void druid_spell_t::player_tick()
   player_crit = p() -> composite_spell_crit();
 }
 
-// druid_spell_t::player_buff ===============================================
-
-void druid_spell_t::player_buff()
-{
-  spell_t::player_buff();
-
-  // Add in Additive Multipliers
-  player_multiplier *= 1.0 + additive_multiplier;
-
-  // Reset Additive_Multiplier
-  additive_multiplier = 0.0;
-}
-
 // Auto Attack ==============================================================
 
 struct auto_attack_t : public melee_attack_t
@@ -3036,7 +3018,8 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t( player, player -> find_class_spell( "Faerie Fire" ) )
   {
     parse_options( NULL, options_str );
-    background = ( sim -> overrides.weakened_armor != 0 );
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
   }
 
   virtual void execute()
@@ -3048,11 +3031,20 @@ struct faerie_fire_t : public druid_spell_t
     
     if ( p() -> _spec == DRUID_BALANCE )
     {
-      p() -> buff.lunar_empowerment -> trigger();
-      p() -> buff.solar_empowerment -> trigger();
+      p() -> buff.lunar_empowerment -> trigger( 3 );
+      p() -> buff.solar_empowerment -> trigger( 3 );
     }
   }
-
+  
+  virtual double action_multiplier()
+  {
+    if ( p() -> buff.bear_form -> check() )
+      return druid_spell_t::action_multiplier();
+    else
+      return 0.0;
+  }
+  
+  
   virtual void impact_s( action_state_t* state )
   {
     druid_spell_t::impact_s( state );
@@ -3296,17 +3288,13 @@ struct moonfire_t : public druid_spell_t
       sunfire = new sunfire_CA_t( player );
   }
 
-  virtual void player_buff()
+  virtual double action_da_multiplier()
   {
-    // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
+    double m = druid_spell_t::action_da_multiplier();
 
-    druid_spell_t::player_buff();
-  }
+    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
-  void player_buff_tick()
-  {
-    druid_spell_t::player_buff();
+    return m;
   }
 
   virtual void tick( dot_t* d )
@@ -3320,9 +3308,6 @@ struct moonfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    // Recalculate all those multipliers w/o Lunar Shower/BotG
-    player_buff_tick();
 
     if ( result_is_hit() )
     {
@@ -3481,13 +3466,6 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual void player_buff()
-  {
-    druid_spell_t::player_buff();
-    if (  p() -> set_bonus.tier13_2pc_caster() )
-      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-  }
-
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
   {
     druid_spell_t::impact( t, impact_result, travel_dmg );
@@ -3503,11 +3481,30 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
+  
+  virtual double action_multiplier()
+  {
+    double m = druid_spell_t::action_multiplier();
+    
+    if ( p() -> buff.lunar_empowerment -> check() )
+      m *= 1.0 + p() -> buff.lunar_empowerment -> value();
 
+    if (  p() -> set_bonus.tier13_2pc_caster() )
+      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+  
   virtual void execute()
   {
     druid_spell_t::execute();
+      
+    p() -> buff.lunar_empowerment -> decrement();
     
+    // Cast starfire, but solar eclipse was up?
+    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
+      p() -> proc.wrong_eclipse_starfire -> occur();
+
     if ( result_is_hit() )
     {
       if ( p() -> spec.eclipse -> ok() )
@@ -3533,9 +3530,6 @@ struct starfire_t : public druid_spell_t
       }
     }
      
-    // Cast starfire, but solar eclipse was up?
-    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
-      p() -> proc.wrong_eclipse_starfire -> occur();
   }
 
 };
@@ -3636,11 +3630,14 @@ struct starsurge_t : public druid_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    druid_spell_t::player_buff();
+    double m = druid_spell_t::action_multiplier();
+    
     if (  p() -> set_bonus.tier13_2pc_caster() )
-      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
@@ -3772,17 +3769,13 @@ struct sunfire_t : public druid_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_da_multiplier()
   {
-    // TODO: LS + 10% MK Form additiv in beta?
-    additive_multiplier += ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
+    double m = druid_spell_t::action_da_multiplier();
 
-    druid_spell_t::player_buff();
-  }
+    m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> stack() );
 
-  void player_buff_tick()
-  {
-    druid_spell_t::player_buff();
+    return m;
   }
 
   virtual void tick( dot_t* d )
@@ -3796,9 +3789,6 @@ struct sunfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    // Recalculate all those multipliers w/o Lunar Shower/BotG
-    player_buff_tick();
 
     if ( result_is_hit() )
     {
@@ -3967,11 +3957,13 @@ struct wild_mushroom_detonate_t : public druid_spell_t
     p() -> buff.wild_mushroom -> expire();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    druid_spell_t::player_buff();
+    double m = druid_spell_t::action_multiplier();
+    
+    m *= p() -> buff.wild_mushroom -> stack();
 
-    player_multiplier *= p() -> buff.wild_mushroom -> stack();
+    return m;
   }
 
   virtual bool ready()
@@ -4016,16 +4008,28 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    druid_spell_t::player_buff();
+    double m = druid_spell_t::action_multiplier();
+    
+    if ( p() -> buff.solar_empowerment -> check() )
+      m *= 1.0 + p() -> buff.solar_empowerment -> value();
+
     if (  p() -> set_bonus.tier13_2pc_caster() )
-      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual void execute()
   {
     druid_spell_t::execute();
+    
+    p() -> buff.solar_empowerment -> decrement();
+
+    // Cast wrath, but lunar eclipse was up?
+    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
+      p() -> proc.wrong_eclipse_wrath -> occur();
 
     if ( result_is_hit() )
     {
@@ -4051,9 +4055,6 @@ struct wrath_t : public druid_spell_t
         }
       }
     }
-    // Cast wrath, but lunar eclipse was up?
-    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
-      p() -> proc.wrong_eclipse_wrath -> occur();
   }
 };
 
@@ -4366,7 +4367,7 @@ void druid_t::init_buffs()
                                .duration( timespan_t::from_seconds( 15 ) )
                                .max_stack( 3 )
                                .default_value( 0.20 );
-  buff.lunar_empowerment     = buff_creator_t( this, "solar_empowerment", spell_data_t::nil() )
+  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", spell_data_t::nil() )
                                .cd( timespan_t::zero() )
                                .duration( timespan_t::from_seconds( 15 ) )
                                .max_stack( 3 )
