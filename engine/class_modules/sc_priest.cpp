@@ -1054,44 +1054,17 @@ struct priest_heal_t : public priest_action_t<heal_t>
   divine_aegis_t* da;
   cooldown_t* min_interval;
 
-  void trigger_echo_of_light( priest_heal_t* a, player_t* t )
+  // Priest Echo of Light, Ignite-Mechanic specialization
+  void trigger_echo_of_light( priest_heal_t* s, player_t* t, double dmg )
   {
-    if ( ! p() -> mastery_spells.echo_of_light -> ok() )
+    priest_t* p = s -> p();
+    if ( ! p -> mastery_spells.echo_of_light -> ok() )
       return;
 
-    dot_t* d = p() -> spells.echo_of_light -> get_dot( t );
-    if ( d -> ticking )
-    {
-      if ( p() -> spells.echo_of_light_merged )
-      {
-        // The old tick_dmg is multiplied by the remaining ticks, added to the new complete heal, and then again divided by num_ticks
-        p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                 d -> ticks() +
-                                                 a -> direct_dmg * p() -> composite_mastery() *
-                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                 p() -> spells.echo_of_light -> num_ticks;
-        d -> refresh_duration();
-      }
-      else
-      {
-        // The old tick_dmg is multiplied by the remaining ticks minus one!, added to the new complete heal, and then again divided by num_ticks
-        p() -> spells.echo_of_light -> base_td = ( p() -> spells.echo_of_light -> base_td *
-                                                 ( d -> ticks() - 1 ) +
-                                                 a -> direct_dmg * p() -> composite_mastery() *
-                                                 p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 ) /
-                                                 p() -> spells.echo_of_light -> num_ticks;
-        d -> refresh_duration();
-        p() -> spells.echo_of_light_merged = true;
-      }
-    }
-    else
-    {
-      p() -> spells.echo_of_light -> base_td = a -> direct_dmg * p() -> composite_mastery() *
-                                               p() -> mastery_spells.echo_of_light -> effectN( 2 ).percent() / 100.0 /
-                                               p() -> spells.echo_of_light -> num_ticks;
-      p() -> spells.echo_of_light -> execute();
-      p() -> spells.echo_of_light_merged = false;
-    }
+    trigger_ignite_like_mechanic(
+        p -> spells.echo_of_light, // ignite spell
+        t, // target
+        dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
   }
 
   virtual void init()
@@ -1186,7 +1159,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
         trigger_divine_aegis( s -> target, s -> result_amount );
       }
 
-      trigger_echo_of_light( this, s -> target );
+      trigger_echo_of_light( this, s -> target, s -> result_amount );
 
       if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots.renew -> ticking )
         td( s -> target ) -> dots.renew -> refresh_duration();
@@ -3465,18 +3438,13 @@ void consume_inner_focus( priest_t* p )
   }
 }
 
-struct echo_of_light_t : public priest_heal_t
+struct echo_of_light_t : public ignite_like_action_t< priest_heal_t, priest_t >
 {
   echo_of_light_t( priest_t* p ) :
-    priest_heal_t( "echo_of_light", p, p -> find_spell( 77489 ) )
+    base_t( "echo_of_light", p, p -> find_spell( 77489 ) )
   {
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = static_cast<int>( data().duration() / base_tick_time );
-
-    background     = true;
-    tick_may_crit  = false;
-    hasted_ticks   = false;
-    may_crit       = false;
 
   }
 };
@@ -4941,13 +4909,13 @@ void priest_t::add_action( const spell_data_t* s, std::string options, std::stri
 
 void priest_t::init_actions()
 {
-  if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
+  /*if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
     quiet = true;
     return;
-  }
+  }*/
 
   if ( action_list_str.empty() )
   {

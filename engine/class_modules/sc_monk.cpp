@@ -515,11 +515,9 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_t* p = s -> p();
 
-    trigger_ignite_like_mechanic<monk_t>(
+    trigger_ignite_like_mechanic(
         p -> active_blackout_kick_dot,
         t,
-        NULL,
-        NULL,
         dmg );
   }
 

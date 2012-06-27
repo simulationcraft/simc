@@ -5215,7 +5215,8 @@ struct ignite_like_action_t : public Base
   {
     ab::impact( t, impact_result, 0 );
 
-    ab::base_td = travel_dmg;
+    dot_t* dot = ab::get_dot();
+    ab::base_td = travel_dmg / dot -> ticks();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -5224,19 +5225,21 @@ struct ignite_like_action_t : public Base
     s -> result_amount = 0;
     ab::impact_s( s );
 
-    ab::base_td = saved_impact_dmg;
+    dot_t* dot = ab::get_dot();
+    ab::base_td = saved_impact_dmg / dot -> ticks();
   }
 
   virtual timespan_t travel_time()
   {
-    return ab::sim -> gauss( ab::sim -> ignite_sampling_delta, 0.125 * ab::sim -> ignite_sampling_delta );
+    // Starts directly after ignite amount is calculated
+    return timespan_t::zero();
   }
 
   virtual double total_td_multiplier() { return 1.0; } // non-stateless
   virtual double composite_ta_multiplier() { return 1.0; } // stateless
 };
 
-// This is a template for Ignite like mechanics, like of course Ignite, Warrior Deep Wounds or Hunter Piercing Shots
+// This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
 // It is a template function which should get specialized in the class module by specifying the player class, the ignite-spell,
 // and all the other parameters.
 // TRIGGER_SPELL_T* s is the spell which will be triggering the ignite
@@ -5247,105 +5250,70 @@ struct ignite_like_action_t : public Base
 
 // Sampling Event based on http://elitistjerks.com/f75/t110187-cataclysm_mage_simulators_formulators/p18/#post2087603
 
-template <class PLAYER_CLASS_T, class IGNITE_SPELL_T>
+template <class IGNITE_SPELL_T>
 void trigger_ignite_like_mechanic( IGNITE_SPELL_T* ignite_action,
                                    player_t* t,
-                                   proc_t* munched_proc,
-                                   proc_t* rolled_proc,
                                    double dmg )
 {
-  struct sampling_event_t : public event_t
+  struct delay_event_t : public event_t
   {
     player_t* target;
-    double crit_ignite_bank;
+    double additional_ignite_dmg;
     timespan_t application_delay;
     IGNITE_SPELL_T* action;
-    proc_t* munched; proc_t* rolled;
 
-    sampling_event_t( sim_t* sim, player_t* t, IGNITE_SPELL_T* a, double crit_ignite_bank, proc_t* m, proc_t* r ) :
-      event_t( sim, a -> player, std::string( a -> name_str + "Sampling" ).c_str() ), target( t ), crit_ignite_bank( crit_ignite_bank ),
-      action( a ), munched( m ), rolled( r )
+    delay_event_t( sim_t* sim, player_t* t, IGNITE_SPELL_T* a, double dmg ) :
+      event_t( sim, a -> player, std::string( a -> name_str + "Sampling" ).c_str() ), target( t ), additional_ignite_dmg( dmg ),
+      action( a )
     {
-      // Cut gaussian distribution off at +- 2 * stddev
-      timespan_t munch_delta = std::min( std::max( sim -> gauss( sim -> ignite_sampling_delta, 0.125 * sim -> ignite_sampling_delta ), sim -> ignite_sampling_delta * 0.25 ), sim -> ignite_sampling_delta * 1.25 );
+      // Use same delay as in buff application
+      timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
 
       if ( sim -> debug )
         sim -> output( "New %s Sampling Event: %s ( delta time: %.4f )",
-                        action -> name(), player -> name(), (sim -> aura_delay - munch_delta).total_seconds() );
+                        action -> name(), player -> name(), delay_duration.total_seconds() );
 
-      sim -> add_event( this, sim -> aura_delay - munch_delta );
+      sim -> add_event( this, delay_duration );
     }
 
     virtual void execute()
     {
-      PLAYER_CLASS_T* p = debug_cast<PLAYER_CLASS_T*>( player );
-
       assert( action );
 
       dot_t* dot = action -> get_dot();
 
-      double ignite_dmg = crit_ignite_bank;
+      double new_total_ignite_dmg = additional_ignite_dmg;
 
       assert( action -> num_ticks > 0 );
+
       if ( dot -> ticking )
       {
-        ignite_dmg += action -> base_td * dot -> ticks();
-        ignite_dmg /= action -> num_ticks + 1; // Divide by num_ticks+1 because dot will get refreshed
-      }
-      else
-      {
-        ignite_dmg /= action -> num_ticks;
+        new_total_ignite_dmg += action -> base_td * dot -> ticks();
       }
 
-      // TODO: investigate if this can actually happen
-      /*
-      if ( action -> num_ticks * action -> tick_time() + sim -> aura_delay < dot -> remains() )
-      {
-        if ( sim -> log ) sim -> output( "Player %s munches %s due to Max %s Duration.", action -> name(), p -> name(), dot -> name() );
-        p -> procs.munched_ignite -> occur();
-        return;
-      } */
 
-      if ( action -> travel_events.size() > 0 )
-      {
-        // There is an SPELL_AURA_APPLIED already in the queue, which will get munched.
-        if ( sim -> log ) sim -> output( "Player %s munches previous %s due to Aura Delay.", action -> name(), p -> name() );
-        if ( munched ) munched -> occur();
-      }
+      // Pass total amount of damage to the ignite action, and let it divide it by the correct number of ticks!
 
       if ( action -> stateless )
       {
         action_state_t* s = action -> get_state();
         s -> target = target;
         s -> result = RESULT_HIT;
-        s -> result_amount = ignite_dmg;
+        s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel_s( s );
         action -> stats -> add_execute( timespan_t::zero() );
       }
       else
       {
-        action -> direct_dmg = ignite_dmg;
+        action -> direct_dmg = new_total_ignite_dmg;
         action -> result = RESULT_HIT;
         action -> schedule_travel( target );
         action -> stats -> add_execute( timespan_t::zero() );
       }
-
-      dot -> prev_tick_amount = ignite_dmg;
-
-      if ( action -> travel_events.size() > 0 && dot -> ticking )
-      {
-        if ( dot -> tick_event -> occurs() < action -> travel_events[ 0 ] -> occurs() )
-        {
-          // Ignite will tick before SPELL_AURA_APPLIED occurs, which means that the current Ignite will
-          // both tick -and- get rolled into the next Ignite.
-          if ( sim -> log ) sim -> output( "Player %s rolls %s.", p -> name(), action -> name() );
-          if ( rolled ) rolled -> occur();
-        }
-      }
     }
   };
 
-  new ( ignite_action -> sim ) sampling_event_t( ignite_action -> sim, t, ignite_action, dmg, munched_proc, rolled_proc );
+  new ( ignite_action -> sim ) delay_event_t( ignite_action -> sim, t, ignite_action, dmg );
 }
 
 // Inlines ==================================================================

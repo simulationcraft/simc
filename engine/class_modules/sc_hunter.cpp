@@ -100,8 +100,6 @@ public:
     proc_t* lock_and_load;
     proc_t* flaming_arrow;
     proc_t* deferred_piercing_shots;
-    proc_t* munched_piercing_shots;
-    proc_t* rolled_piercing_shots;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
   } procs;
@@ -880,11 +878,9 @@ void trigger_piercing_shots( HUNTER_ACTION* s, player_t* t, double dmg )
   hunter_t* p = s -> cast();
   if ( ! p -> talents.piercing_shots -> ok() ) return;
 
-  trigger_ignite_like_mechanic<hunter_t>(
+  trigger_ignite_like_mechanic(
       p -> active_piercing_shots, // ignite spell
       t, // target
-      p -> procs.munched_piercing_shots,
-      p -> procs.rolled_piercing_shots,
       p -> talents.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
 }
 // trigger_thrill_of_the_hunt ===============================================
@@ -3667,8 +3663,6 @@ void hunter_t::init_procs()
   procs.lock_and_load                = get_proc( "lock_and_load"                );
   procs.flaming_arrow                = get_proc( "flaming_arrow"                );
   procs.deferred_piercing_shots      = get_proc( "deferred_piercing_shots"      );
-  procs.munched_piercing_shots       = get_proc( "munched_piercing_shots"       );
-  procs.rolled_piercing_shots        = get_proc( "rolled_piercing_shots"        );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
 }

@@ -119,8 +119,6 @@ struct mage_t : public player_t
   struct procs_t
   {
     proc_t* deferred_ignite;
-    proc_t* munched_ignite;
-    proc_t* rolled_ignite;
     proc_t* mana_gem;
     proc_t* test_for_crit_hotstreak;
     proc_t* crit_for_hotstreak;
@@ -875,6 +873,7 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 {
   ignite_t( mage_t* player ) :
     base_t( "ignite", player, player -> dbc.spell( 12654 )  )
+  // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
   {
   }
 };
@@ -884,11 +883,9 @@ void trigger_ignite( mage_spell_t* s, player_t* t, double dmg )
 {
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
-  trigger_ignite_like_mechanic<mage_t>(
+  trigger_ignite_like_mechanic(
       p -> active_ignite, // ignite spell
       t, // target
-      p -> procs.munched_ignite,
-      p -> procs.rolled_ignite,
       dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
@@ -2871,8 +2868,6 @@ void mage_t::init_procs()
   player_t::init_procs();
 
   procs.deferred_ignite         = get_proc( "deferred_ignite"         );
-  procs.munched_ignite          = get_proc( "munched_ignite"          );
-  procs.rolled_ignite           = get_proc( "rolled_ignite"           );
   procs.mana_gem                = get_proc( "mana_gem"                );
   procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak" );
   procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"     );

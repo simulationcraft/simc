@@ -451,30 +451,9 @@ struct deep_wounds_t : public ignite_like_action_t< warrior_attack_t, warrior_t 
 
 // Warrior Deep Wounds template specialization
 template <class WARRIOR_ACTION>
-void trigger_deep_wounds( WARRIOR_ACTION* s, player_t* t )
+void trigger_deep_wounds( WARRIOR_ACTION* , player_t* )
 {
-  warrior_t* p = s -> cast();
-  if ( ! p -> talents.deep_wounds -> ok() ) return;
-
-  if ( s -> weapon )
-    p -> active_deep_wounds -> weapon = s -> weapon;
-  else
-    p -> active_deep_wounds -> weapon = &( p -> main_hand_weapon );
-  // Normally, we cache the base damage and then combine them with the multipliers at the point of damage.
-  // However, in this case we need to maintain remaining damage on refresh and the player-buff multipliers may change.
-  // So we neeed to push the player-buff multipliers into the damage bank and then make sure we only use
-  // the target-debuff multipliers at tick time.
-
-  p -> active_deep_wounds -> player_buff();
-
-  trigger_ignite_like_mechanic<warrior_t>(
-      p -> active_deep_wounds, // ignite spell
-      t, // target
-      NULL,
-      NULL,
-      ( p -> active_deep_wounds -> calculate_weapon_damage( s -> total_attack_power() ) *
-                                   p -> active_deep_wounds -> weapon_multiplier *
-                                   p -> active_deep_wounds -> player_multiplier ) ); // dw damage
+// Todo: Completely redo Deep Wounds, as it is no longer a Ignite-Like mechanic in MoP
 }
 // trigger_deep_wounds ======================================================
 /*
