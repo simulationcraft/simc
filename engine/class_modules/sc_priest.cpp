@@ -71,6 +71,7 @@ struct priest_t : public player_t
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
     buff_t* serenity;
+    buff_t* serendipity;
 
     // Shadow
     buff_t* divine_insight_shadow;
@@ -126,9 +127,7 @@ struct priest_t : public player_t
     // Holy
     const spell_data_t* meditation_holy;
     const spell_data_t* revelations;
-    const spell_data_t* chakra_chastise;
-    const spell_data_t* chakra_sanctuary;
-    const spell_data_t* chakra_serenity;
+    const spell_data_t* serendipity;
 
     // Shadow
     const spell_data_t* devouring_plague;
@@ -3471,6 +3470,8 @@ struct binding_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
+
+    p() -> buffs.serendipity -> trigger();
   }
 
   virtual double composite_crit()
@@ -3595,6 +3596,8 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
+
+    p() -> buffs.serendipity -> trigger();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3714,7 +3717,21 @@ struct greater_heal_t : public priest_heal_t
     if ( p() -> buffs.inner_focus -> check() )
       c = 0;
 
+    if( p() -> buffs.serendipity -> check() )
+     c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
+
     return c;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t et = priest_heal_t::execute_time();
+
+
+    if( p() -> buffs.serendipity -> check() )
+     et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
+
+    return et;
   }
 };
 
@@ -4205,7 +4222,21 @@ struct prayer_of_healing_t : public priest_heal_t
     if ( p() -> buffs.inner_focus -> check() )
       c = 0;
 
+    if( p() -> buffs.serendipity -> check() )
+     c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
+
     return c;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t et = priest_heal_t::execute_time();
+
+
+    if( p() -> buffs.serendipity -> check() )
+     et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
+
+    return et;
   }
 };
 
@@ -4751,9 +4782,7 @@ void priest_t::init_spells()
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
   specs.revelations                    = find_specialization_spell( "Revelations" );
-  specs.chakra_chastise                = find_class_spell( "Chakra: Chastise" );
-  specs.chakra_sanctuary               = find_class_spell( "Chakra: Sanctuary" );
-  specs.chakra_serenity                = find_class_spell( "Chakra: Serenity" );
+  specs.serendipity                    = find_specialization_spell( "Serendipity" );
 
   // Shadow
   specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
@@ -4850,6 +4879,8 @@ void priest_t::init_buffs()
   buffs.serenity                         = buff_creator_t( this, "serenity", find_spell( 88684 ) )
                                            .cd( timespan_t::zero() )
                                            .activated( false );
+  buffs.serendipity                      = buff_creator_t( this, "serendipity" )
+                                           .spell( find_spell( specs.serendipity->effectN( 1 ).trigger_spell_id( ) ) );
 
   // Shadow
   const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
