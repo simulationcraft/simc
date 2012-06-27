@@ -81,7 +81,8 @@ void absorb_t::impact_s( action_state_t* s )
 void absorb_t::assess_damage( player_t*     t,
                               double        heal_amount,
                               dmg_e    heal_type,
-                              result_e heal_result )
+                              result_e heal_result,
+                              action_state_t* )
 {
   direct_dmg = t -> resource_gain( RESOURCE_HEALTH, heal_amount, 0, this );
 

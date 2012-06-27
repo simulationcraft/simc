@@ -132,7 +132,7 @@ void action_t::schedule_travel_s( action_state_t* s )
 
 void action_t::impact_s( action_state_t* s )
 {
-  assess_damage( s -> target, s -> result_amount, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s -> result );
+  assess_damage( s -> target, s -> result_amount, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s -> result, s );
 
   if ( result_is_hit( s -> result ) )
   {

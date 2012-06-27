@@ -1396,9 +1396,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
   virtual void assess_damage( player_t* t,
                               double amount,
                               dmg_e type,
-                              result_e impact_result )
+                              result_e impact_result,
+                              action_state_t* assess_state )
   {
-    base_t::assess_damage( t, amount, type, impact_result );
+    base_t::assess_damage( t, amount, type, impact_result, assess_state );
 
     if ( aoe == 0 && p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
     {

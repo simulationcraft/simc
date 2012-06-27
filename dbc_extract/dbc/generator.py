@@ -960,6 +960,7 @@ class SpellDataGenerator(DataGenerator):
         (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
             ( 115356, 0 ), ( 114093, 0 ),                   # Ascendance: Stormblast, offhand melee swing,
             ( 114074, 0 ), ( 114738, 0 ),                   # Ascendance: Lava Beam, Lava Beam overload
+            ( 120687, 0 )                                   # Stormlash
         ),
         ( 
             ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs

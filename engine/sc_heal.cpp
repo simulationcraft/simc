@@ -85,7 +85,8 @@ void heal_t::execute()
 void heal_t::assess_damage( player_t* t,
                             double heal_amount,
                             dmg_e heal_type,
-                            result_e heal_result )
+                            result_e heal_result,
+                            action_state_t* assess_state )
 {
   player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
 
@@ -99,7 +100,7 @@ void heal_t::assess_damage( player_t* t,
                      util::result_type_string( heal_result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, assess_state );
   }
   else // HEAL_OVER_TIME
   {
@@ -113,7 +114,7 @@ void heal_t::assess_damage( player_t* t,
                      util::result_type_string( heal_result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, assess_state );
   }
 
   stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );

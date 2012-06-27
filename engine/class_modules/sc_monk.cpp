@@ -535,9 +535,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     add_child( bokdot );
   }
 
-  virtual void assess_damage( player_t* t, double amount, dmg_e type, result_e result )
+  virtual void assess_damage( player_t* t, double amount, dmg_e type, result_e result, action_state_t* assess_state )
   {
-    monk_melee_attack_t::assess_damage( t, amount, type, result );
+    monk_melee_attack_t::assess_damage( t, amount, type, result, assess_state );
 
     if ( bokdot )
     {

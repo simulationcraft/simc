@@ -33,6 +33,134 @@ struct hymn_of_hope_buff_t : public buff_t
   }
 };
 
+// Stormlash ================================================================
+
+// TODO:
+// - Does stormlash damage from attacks use attack table, spells use spell table
+// - Can stormlash miss? crit? get parried? dodged?
+// - Does stormlash damage use actor crit or static value (0% + critbuff?)
+// - Does stormlash damage benefit from CoE, or actor multipliers in general
+// - Stormlash damage formula for attacks, spells
+// - What exactly procs stormlash damage, item based procs? normal procs? totems?
+// - Do pets / guardians gain stormlash?
+// - Do we want a stormlash totem without a Shaman in raid for optimal_raid=1 ?
+
+struct stormlash_attack_t : public attack_t
+{
+  stormlash_attack_t( player_t* p ) :
+    attack_t( "stormlash_attack", p, p -> find_spell( 120687 ) )
+  {
+    stateless  = true;
+    may_glance = false;
+    may_crit   = true;
+    may_parry  = true;
+    may_dodge  = true;
+    special    = true;
+    background = true;
+    proc       = true;
+    callbacks  = false;
+    base_attack_power_multiplier = 0;
+    base_spell_power_multiplier  = 0;
+  }
+};
+
+struct stormlash_spell_t : public spell_t
+{
+  stormlash_spell_t( player_t* p ) : 
+    spell_t( "stormlash_spell", p, p -> find_spell( 120687 ) )
+  {
+    stateless  = true;
+    may_crit   = true;
+    special    = true;
+    background = true;
+    proc       = true;
+    callbacks  = false;
+    base_attack_power_multiplier = 0;
+    base_spell_power_multiplier  = 0;
+  }
+};
+
+struct stormlash_callback_t : public action_callback_t
+{
+  attack_t* stormlash_attack;
+  spell_t*  stormlash_spell;
+
+  stormlash_callback_t( player_t* p ) :
+    action_callback_t( p ),
+    stormlash_attack( new stormlash_attack_t( p ) ),
+    stormlash_spell( new stormlash_spell_t( p ) )
+  { }
+
+  void trigger( action_t* a, void* call_data )
+  {
+    double amount = 0;
+    double coeff  = 0;
+
+    if ( a -> stateless )
+    {
+      action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+      amount = s -> result_amount;
+    }
+    else
+      amount = a -> direct_dmg;
+
+    if ( a -> type == ACTION_ATTACK )
+      coeff = 0.09;
+    else if ( a -> type == ACTION_SPELL )
+      coeff = 0.45 + std::max( a -> base_execute_time.total_seconds(), 1.5 ) * 0.09;
+
+    if ( amount > 0 )
+    {
+      if ( a -> type == ACTION_ATTACK )
+      {
+        stormlash_attack -> base_dd_min = stormlash_attack -> base_dd_max = amount * coeff;
+        stormlash_attack -> execute();
+      }
+      else
+      {
+        stormlash_spell -> base_dd_min = stormlash_spell -> base_dd_max = amount * coeff;
+        stormlash_spell -> execute();
+      }
+
+      if ( listener -> sim -> debug )
+      {
+        sim_t::output( listener -> sim, "%s stormlash proc: amount=%f base_time=%f coefficient=%f", 
+          a -> name(), 
+          amount * coeff, 
+          std::max( a -> base_execute_time.total_seconds(), 1.5 ),
+          coeff );
+      }
+    }
+  }
+};
+
+struct stormlash_buff_t : public buff_t
+{
+  stormlash_callback_t* stormlash_cb;
+
+  stormlash_buff_t( player_t* p, const spell_data_t* s ) :
+    buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::zero() ) ),
+    stormlash_cb( new stormlash_callback_t( p ) )
+  {
+    p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
+    stormlash_cb -> deactivate();
+  }
+  
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    stormlash_cb -> activate();
+  }
+
+  void expire()
+  {
+    buff_t::expire();
+
+    stormlash_cb -> deactivate();
+  }
+};
+
 // Event Vengeance ==========================================================
 
 struct vengeance_event_t : public event_t
@@ -1740,6 +1868,8 @@ void player_t::init_buffs()
                         .duration( timespan_t::from_seconds( 15.0 ) )
                         .stat( STAT_SPELL_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
+
+  buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
 
   double lb_amount = 0.0;
   if      ( profession[ PROF_HERBALISM ] >= 600 )

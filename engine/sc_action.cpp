@@ -1125,10 +1125,13 @@ void action_t::impact( player_t* t, result_e impact_result, double impact_dmg )
 void action_t::assess_damage( player_t*     t,
                               double        amount,
                               dmg_e    type,
-                              result_e result )
+                              result_e result,
+                              action_state_t* assess_state )
 {
   double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
   double actual_amount = t -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
+  if ( assess_state )
+    assess_state -> result_amount = dmg_adjusted;
 
   if ( type == DMG_DIRECT )
   {
@@ -1143,7 +1146,7 @@ void action_t::assess_damage( player_t*     t,
 
     direct_dmg = dmg_adjusted;
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, assess_state );
   }
   else // DMG_OVER_TIME
   {
@@ -1160,7 +1163,7 @@ void action_t::assess_damage( player_t*     t,
 
     tick_dmg = dmg_adjusted;
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, assess_state );
   }
 
   stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );

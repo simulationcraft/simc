@@ -157,7 +157,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   // Set Activated flag
   if ( params._activated != -1 )
-    quiet = params._activated != 0;
+    activated = params._activated != 0;
 
   if ( initial_source ) // Player Buffs
   {

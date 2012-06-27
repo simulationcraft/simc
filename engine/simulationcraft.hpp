@@ -3462,6 +3462,7 @@ struct player_t : public noncopyable
     buff_t* raid_movement;
     buff_t* self_movement;
     buff_t* stoneform;
+    buff_t* stormlash;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* unholy_frenzy;
@@ -4114,7 +4115,7 @@ struct action_t
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   impact( player_t*, result_e result, double dmg );
-  virtual void   assess_damage( player_t* t, double amount, dmg_e, result_e impact_result );
+  virtual void   assess_damage( player_t* t, double amount, dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
   virtual void   additional_damage( player_t* t, double amount, dmg_e, result_e impact_result );
   virtual void   schedule_execute();
   virtual void   schedule_travel( player_t* t );
@@ -4403,7 +4404,7 @@ struct heal_t : public spell_base_t
 
   virtual void player_buff();
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount, dmg_e, result_e );
+  virtual void assess_damage( player_t* t, double amount, dmg_e, result_e, action_state_t* = 0 );
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& );
@@ -4418,7 +4419,7 @@ struct absorb_t : public spell_base_t
   virtual void player_buff();
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
-                              dmg_e, result_e impact_result );
+                              dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
   virtual void impact_s( action_state_t* );
 };
 

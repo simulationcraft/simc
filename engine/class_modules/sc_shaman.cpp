@@ -152,6 +152,7 @@ struct shaman_t : public player_t
     cooldown_t* fire_elemental;
     cooldown_t* lava_burst;
     cooldown_t* shock;
+    cooldown_t* stormlash;
     cooldown_t* strike;
     cooldown_t* windfury_weapon;
   } cooldown;
@@ -311,6 +312,7 @@ struct shaman_t : public player_t
     cooldown.fire_elemental       = get_cooldown( "fire_elemental_totem"  );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.shock                = get_cooldown( "shock"                 );
+    cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
@@ -2534,11 +2536,14 @@ struct call_of_the_elements_t : public shaman_spell_t
 
     // For now, reset earth / fire elemental totem cooldowns
 
-    if ( p() -> cooldown.earth_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
+    if ( p() -> cooldown.earth_elemental -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.earth_elemental -> reset();
 
-    if ( p() -> cooldown.fire_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
+    if ( p() -> cooldown.fire_elemental -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.fire_elemental -> reset();
+    
+    if ( p() -> cooldown.stormlash -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
+      p() -> cooldown.stormlash -> reset();
   }
 };
 
@@ -3560,6 +3565,34 @@ struct searing_totem_t : public shaman_totem_t
   }
 };
 
+// Storm Lash Totem =========================================================
+
+struct stormlash_totem_t : public shaman_totem_t
+{
+  stormlash_totem_t( shaman_t* player, const std::string& options_str ) : 
+    shaman_totem_t( "stormlash_totem", "Stormlash Totem", player, options_str, TOTEM_AIR )
+  {
+    harmful = false;
+    may_crit = false;
+    totem_duration = data().duration();
+  }
+  
+  void execute()
+  {
+    shaman_totem_t::execute();
+
+    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    {
+      if ( p -> current.sleeping )
+        continue;
+
+      p -> buffs.stormlash -> trigger();
+    }
+
+    update_ready();
+  }
+};
+
 // ==========================================================================
 // Shaman Weapon Imbues
 // ==========================================================================
@@ -3965,17 +3998,15 @@ struct flurry_buff_t : public buff_t
     flurry_haste = stat_buff_creator_t( p, "flurry_haste", s ).stat( STAT_HASTE_RATING ).quiet( true ).max_stack( 1 );
   }
   
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  void execute( int stacks, double value, timespan_t duration )
   {
-    buff_t::trigger( stacks, value, chance, duration );
+    buff_t::execute( stacks, value, duration );
 
     double haste_rating = player -> stats.haste_rating;
     if ( flurry_haste -> check() )
       haste_rating -= flurry_haste -> current_value;
 
     flurry_haste -> trigger( 1, haste_rating * data().effectN( 2 ).percent(), -1, timespan_t::zero() );
-
-    return true;
   }
   
   void expire()
@@ -4040,6 +4071,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "searing_totem"           ) return new            searing_totem_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "stormblast"              ) return new               stormblast_t( this, options_str );
+  if ( name == "stormlash_totem"         ) return new          stormlash_totem_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
@@ -4468,6 +4500,7 @@ void shaman_t::init_actions()
   if ( talent.elemental_mastery -> ok() )
     default_s << "/elemental_mastery";
 
+  if ( level >= 78 ) default_s << "/stormlash_totem";
   if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!ticking";
   if ( level >= 87 ) default_s << "/ascendance";
 
