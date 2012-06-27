@@ -780,6 +780,7 @@ struct druid_spell_t : public spell_t
 
     may_crit      = true;
     tick_may_crit = true;
+    stateless     = true;
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -790,6 +791,7 @@ struct druid_spell_t : public spell_t
 
     may_crit      = true;
     tick_may_crit = true;
+    stateless     = true;
   }
 
   druid_t* p() { return debug_cast<druid_t*>( player ); }
@@ -3466,17 +3468,17 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
+  virtual void impact_s( action_state_t* s )
   {
-    druid_spell_t::impact( t, impact_result, travel_dmg );
+    druid_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
+        if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
         {
-          td( t ) -> dots_moonfire -> refresh_duration();
+          td( s -> target ) -> dots_moonfire -> refresh_duration();
         }
       }
     }
@@ -3640,19 +3642,19 @@ struct starsurge_t : public druid_spell_t
     return m;
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
+  virtual void impact_s( action_state_t* s )
   {
-    druid_spell_t::impact( t, impact_result, travel_dmg );
+    druid_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_lunar -> check() && td( t ) -> dots_moonfire -> ticking )
-          td( t ) -> dots_moonfire -> refresh_duration();
+        if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
+          td( s -> target ) -> dots_moonfire -> refresh_duration();
 
-        if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
-          td( t ) -> dots_sunfire -> refresh_duration();
+        if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
+          td( s -> target ) -> dots_sunfire -> refresh_duration();
 
       }
     }
@@ -3992,17 +3994,17 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg=0 )
+  virtual void impact_s( action_state_t* s )
   {
-    druid_spell_t::impact( t, impact_result, travel_dmg );
+    druid_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
-        if ( p() -> buff.eclipse_solar -> check() && td( t ) -> dots_sunfire -> ticking )
+        if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
         {
-          td( t ) -> dots_sunfire -> refresh_duration();
+          td( s -> target ) -> dots_sunfire -> refresh_duration();
         }
       }
     }
