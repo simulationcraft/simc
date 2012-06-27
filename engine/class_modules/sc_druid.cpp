@@ -3012,6 +3012,11 @@ struct faerie_fire_t : public druid_spell_t
       p() -> buff.solar_empowerment -> trigger( 3 );
     }
   }
+
+  virtual bool ready()
+  {
+    return druid_spell_t::ready();
+  }
   
   virtual double action_multiplier()
   {
@@ -4712,7 +4717,7 @@ void druid_t::init_actions()
     // Specless (or speced non-main role) druid who has a primary role of a melee
     else if ( primary_role() == ROLE_ATTACK )
     {
-      action_list_str += "/faerie_fire,if=!debuff.weakened_armor.stack<3";
+      action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += init_use_racial_actions();
       action_list_str += use_str;
       action_list_str += init_use_profession_actions();
