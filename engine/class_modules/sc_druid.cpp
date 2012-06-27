@@ -1010,31 +1010,6 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
     trigger_soul_of_the_forest( p );
 }
 
-// trigger_eclipse_gain_delay ===============================================
-
-static void trigger_eclipse_gain_delay( druid_spell_t* s, int gain )
-{
-  struct eclipse_delay_t : public event_t
-  {
-    druid_spell_t* s;
-    int g;
-
-    eclipse_delay_t ( druid_spell_t* spell, int gain ) :
-      event_t( spell -> sim, spell -> player, "Eclipse gain delay" ),
-      s( spell ), g( gain )
-    {
-      sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
-    }
-
-    virtual void execute()
-    {
-      trigger_eclipse_energy_gain( s, g );
-    }
-  };
-
-  new ( s -> sim ) eclipse_delay_t( s, gain );
-}
-
 // trigger_swiftmend ========================================================
 
 static void trigger_swiftmend( druid_heal_t* a )
