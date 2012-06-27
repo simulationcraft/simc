@@ -1092,7 +1092,7 @@ static void trigger_living_seed( action_state_t* s )
 {
   druid_t* p = static_cast< druid_t* >( s -> action -> player );
 
-  if ( p -> _spec != DRUID_RESTORATION )
+  if ( p -> specialization() != DRUID_RESTORATION )
     return;
 
   struct living_seed_t : public druid_heal_t
@@ -1258,7 +1258,7 @@ void druid_cat_attack_t::execute()
     {
       td( target ) -> combo_points -> add( adds_combo_points, name() );
 
-      if ( aoe == 0 && ( p() -> _spec == DRUID_FERAL || p() -> _spec == DRUID_GUARDIAN ) &&
+      if ( aoe == 0 && ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_GUARDIAN ) &&
            execute_state -> result == RESULT_CRIT )
       {
         td( target ) -> combo_points -> add( adds_combo_points, name() );
@@ -1976,7 +1976,7 @@ struct bear_melee_t : public druid_bear_attack_t
     if ( state -> result != RESULT_MISS )
       trigger_rage_gain( this );
 
-    if ( ( p() -> _spec == DRUID_FERAL || p() -> _spec == DRUID_GUARDIAN ) &&
+    if ( ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_GUARDIAN ) &&
          state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
@@ -3029,7 +3029,7 @@ struct faerie_fire_t : public druid_spell_t
     if ( result_is_hit() && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
     
-    if ( p() -> _spec == DRUID_BALANCE )
+    if ( p() -> specialization() == DRUID_BALANCE )
     {
       p() -> buff.lunar_empowerment -> trigger( 3 );
       p() -> buff.solar_empowerment -> trigger( 3 );
@@ -3101,11 +3101,11 @@ struct incarnation_t : public druid_spell_t
 
     update_ready();
 
-    if ( p() -> _spec == DRUID_BALANCE )
+    if ( p() -> specialization() == DRUID_BALANCE )
       p() -> buff.chosen_of_elune -> trigger();
-    else if ( p() -> _spec == DRUID_FERAL )
+    else if ( p() -> specialization() == DRUID_FERAL )
       p() -> buff.king_of_the_jungle -> trigger();
-    else if ( p() -> _spec == DRUID_GUARDIAN )
+    else if ( p() -> specialization() == DRUID_GUARDIAN )
       p() -> buff.son_of_ursoc -> trigger();
     else
       p() -> buff.tree_of_life -> trigger();
@@ -4545,9 +4545,9 @@ void druid_t::init_actions()
     {
       // Flask
       action_list_str += "flask,type=";
-      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
-      else if ( ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+      else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
         action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
       else
         action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
@@ -4563,11 +4563,11 @@ void druid_t::init_actions()
     action_list_str += "/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up";
 
     // Forms
-    if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       action_list_str += "/cat_form,precombat=1";
-    else if ( ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+    else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
       action_list_str += "/bear_form,precombat=1";
-    else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+    else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       action_list_str += "/moonkin_form,precombat=1";
 
     // Snapshot stats
@@ -4576,19 +4576,19 @@ void druid_t::init_actions()
     if ( level >= 80 )
     {
       // Prepotion
-      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       else
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
       action_list_str += ",precombat=1";
 
       // Potion use
-      if ( ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       {
         action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
       }
-      else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
+      else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       {
         action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
@@ -4604,7 +4604,7 @@ void druid_t::init_actions()
       }
     }
 
-    if ( _spec == DRUID_FERAL && primary_role() == ROLE_ATTACK )
+    if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       std::string bitw_hp = ( set_bonus.tier13_2pc_melee() ) ? "60" : "25";
       //action_list_str += "/feral_charge_cat,if=!in_combat";
@@ -4643,7 +4643,7 @@ void druid_t::init_actions()
       action_list_str += "/mangle_cat,if=position_front&target.time_to_die<=8.5";
       action_list_str += "/mangle_cat,if=position_front&energy.time_to_max<=1.0";
     }
-    else if ( _spec == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
+    else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += init_use_racial_actions();
@@ -4687,7 +4687,7 @@ void druid_t::init_actions()
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
     }
-    else if ( _spec == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
+    else if ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
     {
       action_list_str += "/auto_attack";
       action_list_str += init_use_racial_actions();
@@ -4706,7 +4706,7 @@ void druid_t::init_actions()
       action_list_str += "/berserk";
       action_list_str += "/faerie_fire";
     }
-    else if ( _spec == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
+    else if ( specialization() == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
     {
       action_list_str += init_use_racial_actions();
       action_list_str += use_str;
@@ -5206,7 +5206,7 @@ role_e druid_t::primary_role()
     return ROLE_ATTACK;
   }
 
-  else if ( _spec == DRUID_GUARDIAN )
+  else if ( specialization() == DRUID_GUARDIAN )
   {
     if ( player_t::primary_role() == ROLE_ATTACK )
       return ROLE_ATTACK;
