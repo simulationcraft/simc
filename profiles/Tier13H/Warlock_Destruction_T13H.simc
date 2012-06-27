@@ -21,7 +21,7 @@ actions+=/blood_fury
 actions+=/dark_soul
 actions+=/run_action_list,name=aoe,if=num_targets>2
 actions+=/summon_doomguard
-actions+=/havoc,target_number=2,if=num_targets>1
+actions+=/havoc,target=2,if=num_targets>1
 actions+=/shadowburn,if=ember_react
 actions+=/chaos_bolt,if=ember_react&buff.backdraft.stack<3
 actions+=/conflagrate,if=buff.backdraft.down

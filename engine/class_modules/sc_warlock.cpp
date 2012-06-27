@@ -4647,7 +4647,7 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DESTRUCTION:
-      add_action( "Havoc",                 "target_number=2,if=num_targets>1" );
+      add_action( "Havoc",                 "target=2,if=num_targets>1" );
       add_action( "Shadowburn",            "if=ember_react" );
       add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );

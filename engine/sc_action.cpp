@@ -396,7 +396,6 @@ void action_t::parse_options( option_t*          options,
     { "chain",                  OPT_BOOL,   &chain                 },
     { "cycle_targets",          OPT_BOOL,   &cycle_targets         },
     { "max_cycle_targets",      OPT_INT,    &max_cycle_targets     },
-    { "target_number",          OPT_INT,    &target_number         },
     { "invulnerable",           OPT_DEPRECATED, ( void* ) "if=target.debuff.invulnerable.react" },
     { "not_flying",             OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.down" },
     { "flying",                 OPT_DEPRECATED, ( void* ) "if=target.debuff.flying.react" },
@@ -408,6 +407,7 @@ void action_t::parse_options( option_t*          options,
     { "vulnerable",             OPT_DEPRECATED, ( void* ) "if=target.debuff.vulnerable.react" },
     { "wait_on_ready",          OPT_BOOL,   &wait_on_ready         },
     { "target",                 OPT_STRING, &target_str            },
+    { "target_number",          OPT_STRING, &target_str            }, // Deprecate this later
     { "label",                  OPT_STRING, &label_str             },
     { "use_off_gcd",            OPT_BOOL,   &use_off_gcd           },
     { "precombat",              OPT_BOOL,   &pre_combat            },
@@ -426,13 +426,21 @@ void action_t::parse_options( option_t*          options,
   // FIXME: Move into constructor when parse_action is called from there.
   if ( ! target_str.empty() )
   {
-    player_t* p = sim -> find_player( target_str );
-
-    if ( p )
-      target = p;
+    if ( target_str[ 0 ] >= '0' && target_str[ 0 ] <= '9' )
+    {
+      target_number = atoi( target_str.c_str() );
+      player_t* p = find_target_by_number( target_number );
+      // Numerical targeting is intended to be dynamic, so don't give an error message if we can't find the target yet
+      if ( p ) target = p;
+    }
     else
     {
-      sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+      player_t* p = sim -> find_player( target_str );
+
+      if ( p )
+        target = p;
+      else
+        sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
     }
   }
 }
@@ -876,6 +884,25 @@ std::vector< player_t* > action_t::target_list()
 
     return t;
   }
+}
+
+player_t* action_t::find_target_by_number( int number )
+{
+    int j = 1;
+
+    std::vector< player_t* > tl;
+    size_t total_targets = available_targets( tl );
+
+    for ( size_t i = 0; i < total_targets; i++ )
+    {
+      int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
+      if ( this_target_number == number )
+      {
+        return tl[ i ];
+      }
+    }
+
+    return 0;
 }
 
 // action_t::execute ========================================================
@@ -1349,43 +1376,53 @@ bool action_t::ready()
   if ( ! player -> resource_available( current_resource(), cost() ) )
     return false;
 
-  if ( cycle_targets || target_number )
+  if ( cycle_targets )
   {
     player_t* saved_target  = target;
-    int saved_cycle_targets = cycle_targets;
-    int saved_target_number = target_number;
     cycle_targets = 0;
-    target_number = 0;
     bool found_ready = false;
 
     std::vector< player_t* > tl;
-
     size_t total_targets = available_targets( tl );
     if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < total_targets ) )
       total_targets = max_cycle_targets;
 
-    int j = 1;
-
     for ( size_t i = 0; i < total_targets; i++ )
     {
-      int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
-      if ( saved_target_number == 0 || saved_target_number == this_target_number )
+      target = tl[ i ];
+      if ( ready() )
       {
-        target = tl[ i ];
-        if ( ready() )
-        {
-          found_ready = true;
-          break;
-        }
+        found_ready = true;
+        break;
       }
     }
 
-    cycle_targets = saved_cycle_targets;
-    target_number = saved_target_number;
+    cycle_targets = 1;
 
     if ( found_ready ) return true;
 
     target = saved_target;
+
+    return false;
+  }
+
+  if ( target_number )
+  {
+    player_t* saved_target  = target;
+    int saved_target_number = target_number;
+    target_number = 0;
+
+    target = find_target_by_number( saved_target_number );
+
+    bool is_ready = false;
+
+    if ( target ) is_ready = ready();
+
+    if ( is_ready ) return true;
+
+    target = saved_target;
+
+    return false;
   }
 
   if ( if_expr && ! if_expr -> success() )
@@ -1431,7 +1468,7 @@ void action_t::init()
   if ( cycle_targets && target_number )
   {
     target_number = 0;
-    sim -> errorf( "Player %s trying to use both cycle_targets and target_number for action %s - defaulting to cycle_targets\n", player -> name(), name() );
+    sim -> errorf( "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
   if ( ! if_expr_str.empty() && ! is_dtr_action )

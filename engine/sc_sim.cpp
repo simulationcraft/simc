@@ -151,6 +151,12 @@ static bool parse_player( sim_t*             sim,
 {
   sim -> active_player = 0;
 
+  if ( name[ 0 ] >= '0' && name[ 0 ] <= '9' )
+  {
+    sim -> errorf( "Invalid actor name %s - name cannot start with a digit.", name.c_str() );
+    return false;
+  }
+
   if ( name == "pet" )
   {
     std::string::size_type cut_pt = value.find( ',' );

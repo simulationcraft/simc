@@ -4179,6 +4179,7 @@ struct action_t
   virtual int num_targets();
   virtual size_t available_targets( std::vector< player_t* >& );
   virtual std::vector< player_t* > target_list();
+  virtual player_t* find_target_by_number( int number );
 
   /* New stuff */
   action_state_t* state_cache;
