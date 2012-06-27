@@ -213,6 +213,79 @@ struct vengeance_event_t : public event_t
 
 } // ANONYMOUS NAMESPACE ===================================================
 
+
+// This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
+// It should get specialized in the class module
+
+// Detailed MoP Ignite Mechanic description at
+// http://us.battle.net/wow/en/forum/topic/5889309137?page=40#787
+
+// There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
+void trigger_ignite_like_mechanic( action_t* ignite_action,
+                                   player_t* t,
+                                   double dmg )
+{
+  struct delay_event_t : public event_t
+  {
+    player_t* target;
+    double additional_ignite_dmg;
+    timespan_t application_delay;
+    action_t* action;
+
+    delay_event_t( sim_t* sim, player_t* t, action_t* a, double dmg ) :
+      event_t( sim, a -> player, std::string( a -> name_str + "Sampling" ).c_str() ), target( t ), additional_ignite_dmg( dmg ),
+      action( a )
+    {
+      // Use same delay as in buff application
+      timespan_t delay_duration = sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+
+      if ( sim -> debug )
+        sim -> output( "New %s Sampling Event: %s ( delta time: %.4f )",
+                        action -> name(), player -> name(), delay_duration.total_seconds() );
+
+      sim -> add_event( this, delay_duration );
+    }
+
+    virtual void execute()
+    {
+      assert( action );
+
+      dot_t* dot = action -> get_dot();
+
+      double new_total_ignite_dmg = additional_ignite_dmg;
+
+      assert( action -> num_ticks > 0 );
+
+      if ( dot -> ticking )
+      {
+        new_total_ignite_dmg += action -> base_td * dot -> ticks();
+      }
+
+
+      // Pass total amount of damage to the ignite action, and let it divide it by the correct number of ticks!
+
+      if ( action -> stateless )
+      {
+        action_state_t* s = action -> get_state();
+        s -> target = target;
+        s -> result = RESULT_HIT;
+        s -> result_amount = new_total_ignite_dmg;
+        action -> schedule_travel_s( s );
+        action -> stats -> add_execute( timespan_t::zero() );
+      }
+      else
+      {
+        action -> direct_dmg = new_total_ignite_dmg;
+        action -> result = RESULT_HIT;
+        action -> schedule_travel( target );
+        action -> stats -> add_execute( timespan_t::zero() );
+      }
+    }
+  };
+
+  new ( ignite_action -> sim ) delay_event_t( ignite_action -> sim, t, ignite_action, dmg );
+}
+
 // has_foreground_actions ===================================================
 
 static bool has_foreground_actions( player_t* p )
