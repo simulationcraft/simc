@@ -3028,7 +3028,7 @@ struct faerie_fire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit() && ! sim -> overrides.weakened_armor )
+    if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
     
     if ( p() -> specialization() == DRUID_BALANCE )
@@ -3311,7 +3311,7 @@ struct moonfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.lunar_shower -> ok() )
       {
@@ -3507,7 +3507,7 @@ struct starfire_t : public druid_spell_t
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_starfire -> occur();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
@@ -3664,7 +3664,7 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
@@ -3792,7 +3792,7 @@ struct sunfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.lunar_shower -> ok() )
       {
@@ -4033,7 +4033,7 @@ struct wrath_t : public druid_spell_t
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.eclipse -> ok() )
       {
