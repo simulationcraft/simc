@@ -122,6 +122,7 @@ struct priest_t : public player_t
     const spell_data_t* rapture;
     const spell_data_t* mysticism;
     const spell_data_t* archangel;
+    const spell_data_t* strength_of_soul;
 
     // Holy
     const spell_data_t* meditation_holy;
@@ -239,7 +240,6 @@ struct priest_t : public player_t
     const spell_data_t* atonement;
     const spell_data_t* holy_fire;
     const spell_data_t* mind_spike;
-    const spell_data_t* strength_of_soul;
     const spell_data_t* inner_sanctum;
     const spell_data_t* dark_binding;
     const spell_data_t* mind_flay;
@@ -1154,8 +1154,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   void trigger_strength_of_soul( player_t* t )
   {
-    if ( p() -> glyphs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
-      t -> buffs.weakened_soul -> extend_duration( p(), timespan_t::from_seconds( -1 * p() -> glyphs.strength_of_soul -> effectN( 1 ).base_value() ) );
+    if ( p() -> specs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
+      t -> buffs.weakened_soul -> extend_duration( p(), timespan_t::from_seconds( -1 * p() -> specs.strength_of_soul -> effectN( 1 ).base_value() ) );
   }
 
   void update_ready()
@@ -4743,6 +4743,7 @@ void priest_t::init_spells()
   specs.rapture                        = find_specialization_spell( "Rapture" );
   specs.mysticism                      = find_specialization_spell( "Mysticism" );
   specs.archangel                      = find_specialization_spell( "Archangel" );
+  specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
@@ -4774,7 +4775,6 @@ void priest_t::init_spells()
   glyphs.atonement                    = find_glyph_spell( "Atonement" );
   glyphs.dark_binding                 = find_glyph_spell( "Glyph of Dark Binding" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
-  glyphs.strength_of_soul             = find_glyph_spell( "Glyph of Strength of Soul" );
   glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );
   glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
