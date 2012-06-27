@@ -67,7 +67,6 @@ struct priest_t : public player_t
     buff_t* inner_will;
 
     // Holy
-    buff_t* chakra_pre;
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
@@ -1417,20 +1416,6 @@ public:
   }
 };
 
-void trigger_chakra( priest_t* p, buff_t* chakra_buff )
-{
-  if ( p -> buffs.chakra_pre -> up() )
-  {
-    chakra_buff -> trigger();
-
-    p -> buffs.chakra_pre -> expire();
-
-    p -> cooldowns.chakra -> reset();
-    p -> cooldowns.chakra -> duration = p -> buffs.chakra_pre -> data().cooldown();
-    p -> cooldowns.chakra -> start();
-  }
-}
-
 namespace spells {
 
 // ==========================================================================
@@ -1480,32 +1465,68 @@ struct archangel_t : public priest_spell_t
 
 // Chakra_Pre Spell =========================================================
 
-struct chakra_t : public priest_spell_t
+struct chakra_base_t : public priest_spell_t
 {
-  chakra_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "chakra", p, p -> find_class_spell( "Chakra" ) )
+  chakra_base_t( priest_t* p, const spell_data_t* s, const std::string& options_str ) :
+    priest_spell_t( "chakra", p, s )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
+
+    p -> cooldowns.chakra -> duration = cooldown -> duration;
+    cooldown = p -> cooldowns.chakra;
   }
+};
+
+struct chakra_chastise_t : public chakra_base_t
+{
+  chakra_chastise_t( priest_t* p, const std::string& options_str ) :
+    chakra_base_t( p, p -> find_class_spell( "Chakra: Chastise" ), options_str )
+  { }
 
   virtual void execute()
   {
-    // FIXME: Doesn't the cooldown work like Inner Focus?
-    cooldown -> duration = timespan_t::from_seconds( sim -> wheel_seconds );
+    chakra_base_t::execute();
 
-    priest_spell_t::execute();
+    p() -> buffs.chakra_sanctuary -> expire();
+    p() -> buffs.chakra_serenity  -> expire();
 
-    p() -> buffs.chakra_pre -> start();
+    p() -> buffs.chakra_chastise -> trigger();
   }
+};
 
-  virtual bool ready()
+struct chakra_sanctuary_t : public chakra_base_t
+{
+  chakra_sanctuary_t( priest_t* p, const std::string& options_str ) :
+    chakra_base_t( p, p -> find_class_spell( "Chakra: Sanctuary" ), options_str )
+  { }
+
+  virtual void execute()
   {
-    if ( p() -> buffs.chakra_pre -> check() )
-      return false;
+    chakra_base_t::execute();
 
-    return priest_spell_t::ready();
+    p() -> buffs.chakra_chastise -> expire();
+    p() -> buffs.chakra_serenity -> expire();
+
+    p() -> buffs.chakra_sanctuary -> trigger();
+  }
+};
+
+struct chakra_serenity_t : public chakra_base_t
+{
+  chakra_serenity_t( priest_t* p, const std::string& options_str ) :
+    chakra_base_t( p, p -> find_class_spell( "Chakra: Serenity" ), options_str )
+  { }
+
+  virtual void execute()
+  {
+    chakra_base_t::execute();
+
+    p() -> buffs.chakra_chastise  -> expire();
+    p() -> buffs.chakra_sanctuary -> expire();
+
+    p() -> buffs.chakra_serenity -> trigger();
   }
 };
 
@@ -3028,8 +3049,6 @@ struct smite_t : public priest_spell_t
 
     p() -> buffs.holy_evangelism -> trigger();
 
-    trigger_chakra( p(), p() -> buffs.chakra_chastise );
-
     // Train of Thought
     if ( p() -> specs.train_of_thought -> ok() )
     {
@@ -3452,8 +3471,6 @@ struct binding_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
-
-    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual double composite_crit()
@@ -3578,8 +3595,6 @@ struct flash_heal_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
-
-    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3672,8 +3687,6 @@ struct greater_heal_t : public priest_heal_t
     }
 
     consume_inner_focus( p() );
-
-    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3713,13 +3726,6 @@ struct _heal_t : public priest_heal_t
     priest_heal_t( "heal", p, p -> find_class_spell( "Heal" ) )
   {
     parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    priest_heal_t::execute();
-
-    trigger_chakra( p(), p() -> buffs.chakra_serenity );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -4159,8 +4165,6 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::execute();
 
     consume_inner_focus( p() );
-
-    trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
   virtual void impact_s( action_state_t* s )
@@ -4238,14 +4242,6 @@ struct prayer_of_mending_t : public priest_heal_t
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
     return am;
-  }
-
-  virtual void execute()
-  {
-
-    priest_heal_t::execute();
-
-    trigger_chakra( p(), p() -> buffs.chakra_sanctuary );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -4534,7 +4530,9 @@ action_t* priest_t::create_action( const std::string& name,
 {
   // Misc
   if ( name == "archangel"              ) return new archangel_t             ( this, options_str );
-  if ( name == "chakra"                 ) return new chakra_t                ( this, options_str );
+  if ( name == "chakra_chastise"        ) return new chakra_chastise_t       ( this, options_str );
+  if ( name == "chakra_sanctuary"       ) return new chakra_sanctuary_t      ( this, options_str );
+  if ( name == "chakra_serenity"        ) return new chakra_serenity_t       ( this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( this, options_str );
   if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( this, options_str );
@@ -4846,7 +4844,6 @@ void priest_t::init_buffs()
                                            .cd( timespan_t::zero() );
   buffs.inner_will                       = buff_creator_t( this, "inner_will", find_class_spell( "Inner Will" ) );
   // Holy
-  buffs.chakra_pre                       = buff_creator_t( this, "chakra_pre", find_spell( 14751 ) );
   buffs.chakra_chastise                  = buff_creator_t( this, "chakra_chastise", find_spell( 81209 ) );
   buffs.chakra_sanctuary                 = buff_creator_t( this, "chakra_sanctuary", find_spell( 81206 ) );
   buffs.chakra_serenity                  = buff_creator_t( this, "chakra_serenity", find_spell( 81208 ) );
