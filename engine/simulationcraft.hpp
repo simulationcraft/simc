@@ -5235,6 +5235,9 @@ struct ignite_like_action_t : public Base
     return timespan_t::zero();
   }
 
+  virtual void execute()
+  { assert( 0 ); }
+
   virtual double total_td_multiplier() { return 1.0; } // non-stateless
   virtual double composite_ta_multiplier() { return 1.0; } // stateless
 };
