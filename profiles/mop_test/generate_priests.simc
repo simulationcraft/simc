@@ -8,10 +8,10 @@ save=priest_shadow.simc
 
 priest_shadow.simc talents=001030 name=priest_di_fdcl  actions= save=priest_di_fdcl.simc  glyphs=mind_spike
 priest_shadow.simc talents=002030 name=priest_di_mb    actions= save=priest_di_mb.simc
-priest_shadow.simc talents=003030 name=priest_di_aa    actions= save=priest_di_aa.simc
+priest_shadow.simc talents=003030 name=priest_di_swi    actions= save=priest_di_swi.simc
 priest_shadow.simc talents=001010 name=priest_tof_fdcl actions= save=priest_tof_fdcl.simc glyphs=mind_spike
 priest_shadow.simc talents=002010 name=priest_tof_mb   actions= save=priest_tof_mb.simc
-priest_shadow.simc talents=003010 name=priest_tof_aa   actions= save=priest_tof_aa.simc
+priest_shadow.simc talents=003010 name=priest_tof_swi   actions= save=priest_tof_swi.simc
 priest_shadow.simc talents=001020 name=priest_pi_fdcl  actions= save=priest_pi_fdcl.simc  glyphs=mind_spike
 priest_shadow.simc talents=002020 name=priest_pi_mb    actions= save=priest_pi_mb.simc
-priest_shadow.simc talents=003020 name=priest_pi_aa    actions= save=priest_pi_aa.simc
+priest_shadow.simc talents=003020 name=priest_pi_swi    actions= save=priest_pi_swi.simc

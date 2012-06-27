@@ -18,42 +18,20 @@ using namespace spells;
 using namespace heals;
 using namespace pets;
 
+static void cancel_dot( dot_t* dot )
+{
+  if ( dot -> ticking )
+  {
+    dot -> cancel();
+    dot -> reset();
+  }
+}
+
 struct priest_t : public player_t
 {
   typedef player_t base_t;
   struct priest_td_t : public actor_pair_t
   {
-  private:
-    struct remove_dots_event_t : public event_t
-    {
-    private:
-      priest_td_t* td;
-      priest_t* pr;
-
-      static void cancel_dot( dot_t* dot )
-      {
-        if ( dot -> ticking )
-        {
-          dot -> cancel();
-          dot -> reset();
-        }
-      }
-
-      virtual void execute()
-      {
-        td -> remove_dots_event = 0;
-        pr -> procs.mind_spike_dot_removal -> occur();
-        cancel_dot( td -> dots.shadow_word_pain );
-        cancel_dot( td -> dots.vampiric_touch );
-      }
-    public:
-      remove_dots_event_t( sim_t* sim, priest_t* pr, priest_td_t* td ) :
-        event_t( sim, pr, "mind_spike_remove_dots" ), td( td ), pr( pr )
-      {
-        sim -> add_event( this, sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ) );
-      }
-
-    };
   public:
     struct dots_t
     {
@@ -71,18 +49,7 @@ struct priest_t : public player_t
       absorb_buff_t* spirit_shell;
     } buffs;
 
-    remove_dots_event_t* remove_dots_event;
-
     priest_td_t( player_t* target, priest_t* p );
-
-    void reset()
-    {
-      remove_dots_event = 0;
-    }
-
-    void remove_all_dots()
-    { remove_dots_event = new ( source -> sim ) remove_dots_event_t( source -> sim, debug_cast<priest_t*>( source ), this ); }
-
   };
 
   struct buffs_t
@@ -222,6 +189,7 @@ struct priest_t : public player_t
     proc_t* surge_of_darkness;
     proc_t* divine_insight_shadow;
     proc_t* mind_spike_dot_removal;
+    proc_t* shadow_word_insanity_dot_removal;
   } procs;
 
   // Special
@@ -2165,13 +2133,6 @@ struct mind_spike_t : public priest_spell_t
     }
   }
 
-  virtual void reset()
-  {
-    priest_spell_t::reset();
-
-    td( target ) -> remove_dots_event = 0;
-  }
-
   virtual action_state_t* new_state()
   {
     return new mind_spike_state_t( this, target );
@@ -2229,9 +2190,12 @@ struct mind_spike_t : public priest_spell_t
         p() -> buffs.glyph_mind_spike -> trigger();
 
       mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
-      if ( ! dps_t -> surge_of_darkness && ! td( s -> target ) -> remove_dots_event )
+      if ( ! dps_t -> surge_of_darkness )
       {
-        td( s -> target ) -> remove_all_dots();
+        cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
+        cancel_dot( td( s -> target ) -> dots.vampiric_touch );
+        cancel_dot( td( s -> target ) -> dots.devouring_plague );
+        p() -> procs.mind_spike_dot_removal -> occur();
       }
     }
   }
@@ -2245,7 +2209,7 @@ struct mind_spike_t : public priest_spell_t
 
     priest_spell_t::schedule_execute();
 
-    p() -> buffs.surge_of_darkness -> expire();
+    p() -> buffs.surge_of_darkness -> decrement();
   }
 
   void consume_resource()
@@ -2816,11 +2780,19 @@ struct vampiric_touch_t : public priest_spell_t
 
 struct power_word_solace_t : public priest_spell_t
 {
-  power_word_solace_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "power_word_solace", p, p -> talents.power_word_solace )
+  power_word_solace_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
+    priest_spell_t( "power_word_solace", p, p -> talents.power_word_solace  )
   {
     parse_options( NULL, options_str );
 
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new power_word_solace_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
+
+    can_cancel_shadowform = false;
+    castable_in_shadowform = false;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2828,20 +2800,24 @@ struct power_word_solace_t : public priest_spell_t
     priest_spell_t::impact_s( s );
 
     double amount = player -> find_spell( 129253 ) -> effectN( 1 ).resource( RESOURCE_MANA ) * player->resources.current[ RESOURCE_MANA ];
-    player->resource_gain( RESOURCE_MANA, amount );
+    player -> resource_gain( RESOURCE_MANA, amount );
   }
-
 };
 
 // Shadow Word: Insanity Spell ==========================================================
 
 struct shadow_word_insanity_t : public priest_spell_t
 {
-  shadow_word_insanity_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "shadow_word_insanity", p, p -> find_class_spell( "Shadow Word: Insanity" ) )
+  shadow_word_insanity_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
+    priest_spell_t( "shadow_word_insanity", p, p -> talents.power_word_solace -> ok() ? p -> find_class_spell( "Shadow Word: Insanity" ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
 
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new shadow_word_insanity_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2850,20 +2826,20 @@ struct shadow_word_insanity_t : public priest_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( ! td( s -> target ) -> remove_dots_event )
-      {
-        td( s -> target ) -> remove_all_dots();
-      }
+      cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
+      cancel_dot( td( s -> target ) -> dots.vampiric_touch );
+      cancel_dot( td( s -> target ) -> dots.devouring_plague );
+      p() -> procs.shadow_word_insanity_dot_removal -> occur();
     }
   }
 
   double dot_multiplier( dot_t* d ) const
   {
-    double dm = 1.0;
+    double dm = 0.0;
 
     if ( d -> ticking && d -> current_tick < d -> num_ticks )
     {
-      dm *= 1.0 + d -> current_tick / ( d -> num_ticks - 1 );
+      dm = 1.0 * d -> current_tick / ( d -> num_ticks - 1 );
     }
 
     return dm;
@@ -2871,13 +2847,23 @@ struct shadow_word_insanity_t : public priest_spell_t
 
   virtual double composite_target_da_multiplier( player_t* t )
   {
-    double am = priest_spell_t::composite_target_da_multiplier( t );
+    double am = 1.0;
 
-    am *= dot_multiplier( td( t ) -> dots.shadow_word_pain );
-    am *= dot_multiplier( td( t ) -> dots.devouring_plague );
-    am *= dot_multiplier( td( t ) -> dots.vampiric_touch );
+    am += dot_multiplier( td( t ) -> dots.shadow_word_pain );
+    am += dot_multiplier( td( t ) -> dots.devouring_plague );
+    am += dot_multiplier( td( t ) -> dots.vampiric_touch );
 
-    return am;
+    return priest_spell_t::composite_target_da_multiplier( t ) * am;
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buffs.shadowform -> check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -4383,8 +4369,7 @@ struct spirit_shell_absorb_t : priest_absorb_t
 priest_t::priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
   actor_pair_t( target, p ),
   dots( dots_t() ),
-  buffs( buffs_t() ),
-  remove_dots_event( NULL )
+  buffs( buffs_t() )
 {
   if ( target -> is_enemy() )
   {
@@ -4677,11 +4662,12 @@ void priest_t::init_procs()
 {
   base_t::init_procs();
 
-  procs.mastery_extra_tick             = get_proc( "Shadowy Recall Extra Tick"          );
-  procs.shadowy_apparition             = get_proc( "Shadowy Apparition Procced"         );
-  procs.divine_insight_shadow          = get_proc( "Divine Insight Mind Blast CD Reset" );
-  procs.surge_of_darkness              = get_proc( "FDCL Mind Spike proc"               );
-  procs.mind_spike_dot_removal         = get_proc( "Mind Spike removed DoTs"            );
+  procs.mastery_extra_tick               = get_proc( "Shadowy Recall Extra Tick"          );
+  procs.shadowy_apparition               = get_proc( "Shadowy Apparition Procced"         );
+  procs.divine_insight_shadow            = get_proc( "Divine Insight Mind Blast CD Reset" );
+  procs.surge_of_darkness                = get_proc( "FDCL Mind Spike proc"               );
+  procs.mind_spike_dot_removal           = get_proc( "Mind Spike removed DoTs"            );
+  procs.shadow_word_insanity_dot_removal = get_proc( "Shadow Word: Insanity removed DoTs" );
 }
 
 // priest_t::init_scaling ===================================================
@@ -4994,6 +4980,9 @@ void priest_t::init_actions()
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         add_action( "Mind Spike", "if=buff.surge_of_darkness.react" );
 
+      if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
+        add_action( "Shadow Word: Insanity", "if=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&!dot.devouring_plague.ticking)&((dot.shadow_word_pain.ticks_remain+dot.vampiric_touch.ticks_remain)=2)" );
+
       add_action( "Power Infusion" );
 
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=(!ticking|remains<tick_time)&miss_react" );
@@ -5216,12 +5205,6 @@ void priest_t::init_values()
 void priest_t::reset()
 {
   base_t::reset();
-
-  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
-  {
-    priest_td_t* td = target_data[ sim -> actor_list[ i ] ];
-    if ( td ) td -> reset();
-  }
 
   if ( specs.shadowy_apparitions -> ok() )
   {

@@ -1915,118 +1915,121 @@ void player_t::init_spells()
 
 void player_t::init_buffs()
 {
-  buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
-  buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
-                                    .max_stack( 1 )
-                                    .duration( timespan_t::from_seconds( 4.0 ) );
-  buffs.grace                     = buff_creator_t( this,  "grace" )
-                                    .max_stack( 3 )
-                                    .duration( timespan_t::from_seconds( 15.0 ) );
-  buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
-  buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
-  buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+  if ( ! is_enemy() )
+  {
+    buffs.berserking                = buff_creator_t( this, "berserking", find_spell( 26297 ) );
+    buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
+                                      .max_stack( 1 )
+                                      .duration( timespan_t::from_seconds( 4.0 ) );
+    buffs.grace                     = buff_creator_t( this,  "grace" )
+                                      .max_stack( 3 )
+                                      .duration( timespan_t::from_seconds( 15.0 ) );
+    buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 );
+    buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
+    buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+
+    // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
+    buffs.blood_fury_ap = stat_buff_creator_t( this, "blood_fury_ap" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15.0 ) )
+                          .stat( STAT_ATTACK_POWER )
+                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
+
+    buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp" )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 15.0 ) )
+                          .stat( STAT_SPELL_POWER )
+                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
+
+      buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
+
+    double lb_amount = 0.0;
+    if      ( profession[ PROF_HERBALISM ] >= 600 )
+      lb_amount = 1920;
+    else if ( profession[ PROF_HERBALISM ] >= 525 )
+      lb_amount = 480;
+    else if ( profession[ PROF_HERBALISM ] >= 450 )
+      lb_amount = 240;
+    else if ( profession[ PROF_HERBALISM ] >= 375 )
+      lb_amount = 120;
+    else if ( profession[ PROF_HERBALISM ] >= 300 )
+      lb_amount = 70;
+    else if ( profession[ PROF_HERBALISM ] >= 225 )
+      lb_amount = 55;
+    else if ( profession[ PROF_HERBALISM ] >= 150 )
+      lb_amount = 35;
+    else if ( profession[ PROF_HERBALISM ] >= 75 )
+      lb_amount = 15;
+    else if ( profession[ PROF_HERBALISM ] >= 1 )
+      lb_amount = 5;
+
+    buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
+                      .max_stack( 1 )
+                      .duration( timespan_t::from_seconds( 20.0 ) )
+                      .stat( STAT_HASTE_RATING )
+                      .amount( lb_amount );
+
+    // Potions
+    struct potions_common_buff_creator
+    {
+      stat_buff_creator_t operator()( player_t* p,
+                                      const std::string& n,
+                                      timespan_t d = timespan_t::from_seconds( 25.0 ),
+                                      timespan_t cd = timespan_t::from_seconds( 60.0 ) )
+      {
+        return ( stat_buff_creator_t ( p,  n + "_potion" )
+                 .max_stack( 1 )
+                 .duration( d )
+                 .cd( cd ) );
+      }
+    };
+
+    potion_buffs.speed      = potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) )
+                              .stat( STAT_HASTE_RATING )
+                              .amount( 500.0 );
+
+    potion_buffs.volcanic   = potions_common_buff_creator()( this, "volcanic" )
+                              .stat( STAT_INTELLECT )
+                              .amount( 1200.0 );
+
+    potion_buffs.earthen    = potions_common_buff_creator()( this, "earthen" )
+                              .stat( STAT_ARMOR )
+                              .amount( 4800.0 );
+
+    potion_buffs.golemblood = potions_common_buff_creator()( this, "golemblood" )
+                              .stat( STAT_STRENGTH )
+                              .amount( 1200.0 );
+
+    potion_buffs.tolvir     = potions_common_buff_creator()( this, "tolvir" )
+                              .stat( STAT_AGILITY )
+                              .amount( 1200.0 );
+
+    // New Mop potions
+
+    potion_buffs.jinyu        = potions_common_buff_creator()( this, "jinyu" )
+                                .stat( STAT_INTELLECT )
+                                .amount( 4000.0 );
+
+    potion_buffs.mountains    = potions_common_buff_creator()( this, "mountains" )
+                                .stat( STAT_ARMOR )
+                                .amount( 12000.0 );
+
+    potion_buffs.mogu_power   = potions_common_buff_creator()( this, "mogu_power" )
+                                .stat( STAT_STRENGTH )
+                                .amount( 4000.0 );
+
+    potion_buffs.virmens_bite = potions_common_buff_creator()( this, "virmens_bite" )
+                                .stat( STAT_AGILITY )
+                                .amount( 4000.0 );
+
+
+    buffs.mongoose_mh = NULL;
+    buffs.mongoose_oh = NULL;
+  }
 
   buffs.raid_movement = buff_creator_t( this, "raid_movement" ).max_stack( 1 );
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
-  // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-  buffs.blood_fury_ap = stat_buff_creator_t( this, "blood_fury_ap" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 15.0 ) )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
-
-  buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 15.0 ) )
-                        .stat( STAT_SPELL_POWER )
-                        .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
-
-  if ( ! is_enemy() )
-    buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
-
-  double lb_amount = 0.0;
-  if      ( profession[ PROF_HERBALISM ] >= 600 )
-    lb_amount = 1920;
-  else if ( profession[ PROF_HERBALISM ] >= 525 )
-    lb_amount = 480;
-  else if ( profession[ PROF_HERBALISM ] >= 450 )
-    lb_amount = 240;
-  else if ( profession[ PROF_HERBALISM ] >= 375 )
-    lb_amount = 120;
-  else if ( profession[ PROF_HERBALISM ] >= 300 )
-    lb_amount = 70;
-  else if ( profession[ PROF_HERBALISM ] >= 225 )
-    lb_amount = 55;
-  else if ( profession[ PROF_HERBALISM ] >= 150 )
-    lb_amount = 35;
-  else if ( profession[ PROF_HERBALISM ] >= 75 )
-    lb_amount = 15;
-  else if ( profession[ PROF_HERBALISM ] >= 1 )
-    lb_amount = 5;
-
-  buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
-                    .max_stack( 1 )
-                    .duration( timespan_t::from_seconds( 20.0 ) )
-                    .stat( STAT_HASTE_RATING )
-                    .amount( lb_amount );
-
-  // Potions
-  struct potions_common_buff_creator
-  {
-    stat_buff_creator_t operator()( player_t* p,
-                                    const std::string& n,
-                                    timespan_t d = timespan_t::from_seconds( 25.0 ),
-                                    timespan_t cd = timespan_t::from_seconds( 60.0 ) )
-    {
-      return ( stat_buff_creator_t ( p,  n + "_potion" )
-               .max_stack( 1 )
-               .duration( d )
-               .cd( cd ) );
-    }
-  };
-
-  potion_buffs.speed      = potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) )
-                            .stat( STAT_HASTE_RATING )
-                            .amount( 500.0 );
-
-  potion_buffs.volcanic   = potions_common_buff_creator()( this, "volcanic" )
-                            .stat( STAT_INTELLECT )
-                            .amount( 1200.0 );
-
-  potion_buffs.earthen    = potions_common_buff_creator()( this, "earthen" )
-                            .stat( STAT_ARMOR )
-                            .amount( 4800.0 );
-
-  potion_buffs.golemblood = potions_common_buff_creator()( this, "golemblood" )
-                            .stat( STAT_STRENGTH )
-                            .amount( 1200.0 );
-
-  potion_buffs.tolvir     = potions_common_buff_creator()( this, "tolvir" )
-                            .stat( STAT_AGILITY )
-                            .amount( 1200.0 );
-
-  // New Mop potions
-
-  potion_buffs.jinyu        = potions_common_buff_creator()( this, "jinyu" )
-                              .stat( STAT_INTELLECT )
-                              .amount( 4000.0 );
-
-  potion_buffs.mountains    = potions_common_buff_creator()( this, "mountains" )
-                              .stat( STAT_ARMOR )
-                              .amount( 12000.0 );
-
-  potion_buffs.mogu_power   = potions_common_buff_creator()( this, "mogu_power" )
-                              .stat( STAT_STRENGTH )
-                              .amount( 4000.0 );
-
-  potion_buffs.virmens_bite = potions_common_buff_creator()( this, "virmens_bite" )
-                              .stat( STAT_AGILITY )
-                              .amount( 4000.0 );
-
-
-  buffs.mongoose_mh = NULL;
-  buffs.mongoose_oh = NULL;
 
   // Infinite-Stacking Buffs and De-Buffs
 
@@ -2318,7 +2321,7 @@ double player_t::composite_attack_haste()
 {
   double h = attack_haste;
 
-  if ( type != PLAYER_GUARDIAN )
+  if ( type != PLAYER_GUARDIAN && ! is_enemy() )
   {
     if ( buffs.bloodlust -> up() )
     {
@@ -2486,7 +2489,7 @@ double player_t::composite_attack_hit()
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.hpp
-  if ( buffs.heroic_presence -> up() )
+  if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     ah += 0.01;
 
   return ah;
@@ -2753,7 +2756,7 @@ double player_t::composite_spell_hit()
 
   // Changes here may need to be reflected in the corresponding pet_t
   // function in simulationcraft.hpp
-  if ( buffs.heroic_presence -> up() )
+  if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
   sh += composite_attack_expertise( 0 );
@@ -4014,11 +4017,14 @@ double player_t::assess_damage( double        amount,
 {
   if ( amount <= 0 ) return 0;
 
-  if ( buffs.pain_supression -> up() )
-    amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
+  if ( ! is_enemy() )
+  {
+    if ( buffs.pain_supression -> up() )
+      amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
-  if ( buffs.stoneform -> up() )
-    amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
+    if ( buffs.stoneform -> up() )
+      amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
+  }
 
   double mitigated_amount = target_mitigation( amount, school, type, result, action );
 

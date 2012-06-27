@@ -2,13 +2,13 @@
 
 priest="Priest_Shadow_T13H"
 origin="http://www.wowhead.com/profile=34565368"
-level=90
+level=85
 race=troll
 spec=shadow
 role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!..1.20
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!..1.2.
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
@@ -22,7 +22,6 @@ actions+=/devouring_plague,if=shadow_orb=3&(!ticking|remains<tick_time)
 actions+=/shadow_word_death,if=target.health.pct<20
 actions+=/berserking
 actions+=/mind_blast,if=cooldown_react
-actions+=/cascade_damage
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=(!ticking|remains<tick_time)&miss_react
 actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=(!ticking|remains<cast_time+tick_time)&miss_react
 actions+=/mindbender,if=cooldown_react
