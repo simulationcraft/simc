@@ -1664,8 +1664,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       expr_t( name ), action( a ) {}
   };
 
-  player -> get_target_data( target );
-
   if ( name_str == "num_targets" )
   {
     struct num_targets_expr_t : public action_expr_t
