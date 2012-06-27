@@ -805,17 +805,17 @@ expr_t* buff_t::create_expression(  std::string buff_name,
       buff_t*& buff = specific_buff[ action -> target ];
       if ( ! buff )
       {
-          action -> player -> get_target_data( action -> target );
-          buff = buff_t::find( action -> target, buff_name, action -> player );
-          if ( ! buff ) buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
-      }
-      if ( ! buff )
-      {
-        action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
-        assert( 0 );
-        action -> sim -> cancel();
-        // Prevent segfault
-        buff = buff_creator_t( action -> player, "dummy" );
+        action -> player -> get_target_data( action -> target );
+        buff = buff_t::find( action -> target, buff_name, action -> player );
+        if ( ! buff ) buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
+        if ( ! buff )
+        {
+          action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
+          assert( 0 );
+          action -> sim -> cancel();
+          // Prevent segfault
+          buff = buff_creator_t( action -> player, "dummy" );
+        }
       }
       return buff;
     }
