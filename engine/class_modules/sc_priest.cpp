@@ -4909,13 +4909,13 @@ void priest_t::add_action( const spell_data_t* s, std::string options, std::stri
 
 void priest_t::init_actions()
 {
-  /*if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
+  if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
   {
     if ( ! quiet )
       sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
     quiet = true;
     return;
-  }*/
+  }
 
   if ( action_list_str.empty() )
   {
