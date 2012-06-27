@@ -126,7 +126,6 @@ struct priest_t : public player_t
 
     // Holy
     const spell_data_t* meditation_holy;
-    const spell_data_t* revelations;
     const spell_data_t* serendipity;
 
     // Shadow
@@ -3048,6 +3047,8 @@ struct smite_t : public priest_spell_t
 
     p() -> buffs.holy_evangelism -> trigger();
 
+    p() -> buffs.surge_of_light -> trigger();
+
     // Train of Thought
     if ( p() -> specs.train_of_thought -> ok() )
     {
@@ -3472,6 +3473,8 @@ struct binding_heal_t : public priest_heal_t
     consume_inner_focus( p() );
 
     p() -> buffs.serendipity -> trigger();
+
+    p() -> buffs.surge_of_light -> trigger();
   }
 
   virtual double composite_crit()
@@ -3598,6 +3601,10 @@ struct flash_heal_t : public priest_heal_t
     consume_inner_focus( p() );
 
     p() -> buffs.serendipity -> trigger();
+
+    p() -> buffs.surge_of_light -> expire();
+
+    p() -> buffs.surge_of_light -> trigger();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3690,6 +3697,8 @@ struct greater_heal_t : public priest_heal_t
     }
 
     consume_inner_focus( p() );
+
+    p() -> buffs.surge_of_light -> trigger();
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3745,6 +3754,13 @@ struct _heal_t : public priest_heal_t
     parse_options( NULL, options_str );
   }
 
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    p() -> buffs.surge_of_light -> trigger();
+  }
+
   virtual void impact_s( action_state_t* s )
   {
     priest_heal_t::impact_s( s );
@@ -3785,8 +3801,6 @@ struct holy_word_sanctuary_t : public priest_heal_t
     priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) ),
     tick_spell( 0 )
   {
-    check_spell( p -> specs.revelations );
-
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
@@ -3865,14 +3879,11 @@ struct holy_word_chastise_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> specs.revelations -> ok() )
-    {
-      if ( p() -> buffs.chakra_sanctuary -> check() )
-        return false;
+    if ( p() -> buffs.chakra_sanctuary -> check() )
+      return false;
 
-      if ( p() -> buffs.chakra_serenity -> check() )
-        return false;
-    }
+    if ( p() -> buffs.chakra_serenity -> check() )
+      return false;
 
     return priest_spell_t::ready();
   }
@@ -3885,8 +3896,6 @@ struct holy_word_serenity_t : public priest_heal_t
   holy_word_serenity_t( priest_t* p, const std::string& options_str ) :
     priest_heal_t( "holy_word_serenity", p, p -> find_spell( 88684 ) )
   {
-    check_spell( p -> specs.revelations );
-
     parse_options( NULL, options_str );
 
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
@@ -3931,14 +3940,23 @@ struct holy_word_t : public priest_spell_t
     castable_in_shadowform = false;
   }
 
+  virtual void init()
+  {
+    priest_spell_t::init();
+
+    hw_sanctuary -> action_list = action_list;
+    hw_chastise -> action_list = action_list;
+    hw_serenity -> action_list = action_list;
+  }
+
   virtual void schedule_execute()
   {
-    if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_serenity -> up() )
+    if ( p() -> buffs.chakra_serenity -> up() )
     {
       player -> last_foreground_action = hw_serenity;
       hw_serenity -> schedule_execute();
     }
-    else if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_sanctuary -> up() )
+    else if ( p() -> buffs.chakra_sanctuary -> up() )
     {
       player -> last_foreground_action = hw_sanctuary;
       hw_sanctuary -> schedule_execute();
@@ -3957,10 +3975,10 @@ struct holy_word_t : public priest_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_serenity -> check() )
+    if ( p() -> buffs.chakra_serenity -> check() )
       return hw_serenity -> ready();
 
-    else if ( p() -> specs.revelations -> ok() && p() -> buffs.chakra_sanctuary -> check() )
+    else if ( p() -> buffs.chakra_sanctuary -> check() )
       return hw_sanctuary -> ready();
 
     else
@@ -4781,7 +4799,6 @@ void priest_t::init_spells()
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
-  specs.revelations                    = find_specialization_spell( "Revelations" );
   specs.serendipity                    = find_specialization_spell( "Serendipity" );
 
   // Shadow
@@ -4857,7 +4874,8 @@ void priest_t::init_buffs()
                                            .duration( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> duration() )
                                            .default_value( find_talent_spell( "Twist of Fate" ) -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
 
-  buffs.surge_of_light = buff_creator_t( this, "surge_of_light", find_spell( 114255 ) ).chance( find_talent_spell( "From Darkness, Comes Light" )->effectN( 1 ).percent() );
+  buffs.surge_of_light                   = buff_creator_t( this, "surge_of_light", find_spell( 114255) )
+                                           .chance( talents.from_darkness_comes_light->effectN( 1 ).percent() );
   // Discipline
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( specs.evangelism -> ok() )
@@ -4923,14 +4941,6 @@ void priest_t::add_action( const spell_data_t* s, std::string options, std::stri
 
 void priest_t::init_actions()
 {
-  if ( specialization() != PRIEST_DISCIPLINE && specialization() != PRIEST_SHADOW )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Player %s's role or spec isn't supported yet.", name() );
-    quiet = true;
-    return;
-  }
-
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
@@ -5143,13 +5153,13 @@ void priest_t::init_actions()
       // DAMAGE DEALER
       if ( primary_role() != ROLE_HEAL )
       {
-                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
-        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<=90";
-        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana_pct<=50";
+                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
+        if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana.pct<=90";
+        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=50";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active&time>200";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
-                                                         action_list_str += "/chakra";
+                                                         action_list_str += "/chakra_chastice";
                                                          action_list_str += "/holy_fire";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/mind_blast";
@@ -5158,21 +5168,21 @@ void priest_t::init_actions()
       // HEALER
       else
       {
-                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
+                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
         if ( race == RACE_BLOOD_ELF )                    action_list_str += "/arcane_torrent,if=mana_pct<80";
-        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana_pct<=20";
+        if ( level >= 66 )                               action_list_str += "/shadowfiend,if=mana.pct<=20";
         if ( level >= 64 )                               action_list_str += "/hymn_of_hope";
         if ( level >= 66 )                               action_list_str += ",if=pet.shadowfiend.active";
         if ( race == RACE_TROLL )                        action_list_str += "/berserking";
       }
       break;
     default:
-                                                         action_list_str += "/mana_potion,if=mana_pct<=75";
-      if ( level >= 66 )                                 action_list_str += "/shadowfiend,if=mana_pct<=50";
+                                                         action_list_str += "/mana_potion,if=mana.pct<=75";
+      if ( level >= 66 )                                 action_list_str += "/shadowfiend,if=mana.pct<=50";
       if ( level >= 64 )                                 action_list_str += "/hymn_of_hope";
       if ( level >= 66 )                                 action_list_str += ",if=pet.shadowfiend.active&time>200";
       if ( race == RACE_TROLL )                          action_list_str += "/berserking";
-      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana_pct<=90";
+      if ( race == RACE_BLOOD_ELF )                      action_list_str += "/arcane_torrent,if=mana.pct<=90";
                                                          action_list_str += "/holy_fire";
                                                          action_list_str += "/shadow_word_pain,if=remains<tick_time|!ticking";
                                                          action_list_str += "/smite";

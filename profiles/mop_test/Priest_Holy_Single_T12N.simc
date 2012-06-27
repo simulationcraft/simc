@@ -1,28 +1,32 @@
 #!./simc 
 
-priest=Priest_Atonement_T12N
-origin="http://chardev.org/?profile=174520"
+priest=Priest_Holy_Single_T12N
+origin=
 level=85
 race=troll
 position=back
 role=heal
+spec=holy
 use_pre_potion=1
 professions=enchanting=525/tailoring=525
-talents=http://www.wowhead.com/talent#priest-232210021213201312021033002000000000000000200000000000000000000
-glyphs=smite/divine_accuracy/power_word_shield/prayer_of_mending/penance/prayer_of_healing
+talents=001
+glyphs=prayer_of_healing/flash_heal/renew/circle_of_healing/prayer_of_mending/dispel_magic
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
-actions+=/fortitude
 actions+=/inner_fire
 actions+=/snapshot_stats
-actions+=/volcanic_potion,if=!in_combat|buff.bloodlust.react
 actions+=/use_item,name=jaws_of_defeat
-actions+=/shadow_fiend,if=mana_pct<=60
-actions+=/power_infusion
+actions+=/mana_potion,if=mana.pct<=50
+actions+=/shadowfiend,if=mana.pct<=65
+actions+=/hymn_of_hope,if=pet.shadowfiend.active&mana.pct<=40
 actions+=/berserking
-actions+=/archangel,if=buff.holy_evangelism.stack>=5
-actions+=/holy_fire
-actions+=/smite
+actions+=/chakra_serenity
+actions+=/renew,if=!ticking
+actions+=/holy_word,if=buff.chakra_serenity.up
+actions+=/greater_heal,if=buff.serendipity.react>=2&mana.pct>40
+actions+=/flash_heal,if=buff.surge_of_light.up
+#actions+=/greater_heal
+actions+=/heal
 head=cowl_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1130armor_348int_611sta_255spi_229mastery,reforge=mastery_haste,gems=ember_shadowspirit_40int_30int,enchant=60int_35crit
 neck=flowform_choker,ilevel=378,quality=epic,stats=227int_341sta_143haste_115mastery,reforge=mastery_spi,gems=40int_10int
 shoulders=mantle_of_the_cleansing_flame,type=cloth,ilevel=378,quality=epic,stats=1043armor_282int_454sta_201spi_183haste,gems=40int,enchant=50int_25haste
@@ -36,7 +40,7 @@ finger1=soothing_brimstone_circle,ilevel=378,quality=epic,stats=227int_341sta_15
 finger2=quicksilver_signet_of_the_avengers,ilevel=391,quality=epic,stats=236int_384sta_185spi_127mastery,reforge=mastery_haste,gems=40int_10int,enchant=40int
 trinket1=eye_of_blazing_power,ilevel=378,quality=epic,stats=383int
 trinket2=jaws_of_defeat,ilevel=378,quality=epic,stats=383int,use=onspellcast_110holystorm_costrd_10stack_20dur_120cd
-back=flowing_flamewrath_cape,ilevel=378,quality=epic,stats=695armor_227int_341sta_160spi_137mastery,reforge=mastery_haste,enchant=lightweave_embroidery
+back=flowing_flamewrath_cape,ilevel=378,quality=epic,stats=695armor_227int_341sta_160spi_137mastery,reforge=mastery_haste,enchant=lightweave_embroidery_2
 main_hand=kogun_hammer_of_the_firelord,ilevel=384,quality=epic,stats=185int_277sta_134spi_105haste_2467sp,enchant=power_torrent,weapon=mace_2.10speed_428min_797max
 off_hand=goblet_of_anger,ilevel=378,quality=epic,stats=227int_341sta_137spi_160haste,enchant=40int
 ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83mastery,reforge=mastery_haste
@@ -55,5 +59,3 @@ ranged=scorchvine_wand,ilevel=378,quality=epic,stats=128int_192sta_86spi_83maste
 # tier12_2pc_heal=1
 # tier12_4pc_heal=1
 # trinket1=eye_of_blazing_power
-# back=flowing_flamewrath_cape,enchant=lightweave_embroidery
-# main_hand=kogun_hammer_of_the_firelord,weapon=mace_2.10speed_428min_797max,enchant=power_torrent
