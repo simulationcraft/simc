@@ -5263,7 +5263,7 @@ void trigger_ignite_like_mechanic( IGNITE_SPELL_T* ignite_action,
     proc_t* munched; proc_t* rolled;
 
     sampling_event_t( sim_t* sim, player_t* t, IGNITE_SPELL_T* a, double crit_ignite_bank, proc_t* m, proc_t* r ) :
-      event_t( sim, a -> player, "Ignite Sampling" ), target( t ), crit_ignite_bank( crit_ignite_bank ),
+      event_t( sim, a -> player, std::string( a -> name() + "Sampling" ).c_str() ), target( t ), crit_ignite_bank( crit_ignite_bank ),
       action( a ), munched( m ), rolled( r )
     {
       // Cut gaussian distribution off at +- 2 * stddev

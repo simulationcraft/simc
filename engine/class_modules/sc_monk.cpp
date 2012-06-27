@@ -52,6 +52,7 @@ struct monk_td_t : public actor_pair_t
 struct monk_t : public player_t
 {
   monk_stance_e active_stance;
+  action_t* active_blackout_kick_dot;
   double track_chi_consumption;
 
   // Buffs
@@ -496,55 +497,48 @@ struct tiger_palm_t : public monk_melee_attack_t
 //====Blackout Kick============
 //=============================
 
+struct  dot_blackout_kick_t : public ignite_like_action_t< monk_melee_attack_t, monk_t >
+{
+  dot_blackout_kick_t( monk_t* p ) :
+    base_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
+  {
+    tick_may_crit = true;
+    may_miss = false;
+    school = SCHOOL_PHYSICAL;
+  }
+};
+
+
 struct blackout_kick_t : public monk_melee_attack_t
 {
-  struct  dot_blackout_kick_t : public monk_melee_attack_t
+  void trigger_blackout_kick_dot( blackout_kick_t* s, player_t* t, double dmg )
   {
-    dot_blackout_kick_t( monk_t* p ) :
-      monk_melee_attack_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
-    {
-      tick_may_crit = true;
-      background = true;
-      proc = true;
-      may_miss = false;
-      school = SCHOOL_PHYSICAL;
-      dot_behavior = DOT_REFRESH;
-    }
+    monk_t* p = s -> p();
 
-    // FIXME: Assuming that the dot damage is not further modified.
-    // Needs testing
-    virtual double composite_ta_multiplier()
-    { return 1.0; }
-
-    //virtual double composite_target_ta_multiplier( player_t* )
-    //{ return 1.0; }
-  };
-  dot_blackout_kick_t* bokdot;
+    trigger_ignite_like_mechanic<monk_t>(
+        p -> active_blackout_kick_dot,
+        t,
+        NULL,
+        NULL,
+        dmg );
+  }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) ),
-    bokdot( 0 )
+    monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( 0, options_str );
     base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 8.0; // hardcoded into tooltip
-
-    bokdot = new dot_blackout_kick_t( p );
-    add_child( bokdot );
   }
 
   virtual void assess_damage( player_t* t, double amount, dmg_e type, result_e result, action_state_t* assess_state )
   {
     monk_melee_attack_t::assess_damage( t, amount, type, result, assess_state );
 
-    if ( bokdot )
-    {
-      bokdot -> base_td = ( direct_dmg * data().effectN( 2 ).percent() / bokdot -> num_ticks );
-      bokdot -> target = t;
-      bokdot -> execute();
-    }
+
+    trigger_blackout_kick_dot( this, t, direct_dmg * data().effectN( 2 ).percent( ) );
   }
 
   virtual double cost()
@@ -1161,6 +1155,7 @@ void monk_t::init_spells()
 // spec.leather_specialization = find_specialization_spell( "Leather Specialization" ); TODO: implement for hybrid and remove hardcoding
 
   //SPELLS
+  active_blackout_kick_dot = new dot_blackout_kick_t( this );
 
   //GLYPHS
 
