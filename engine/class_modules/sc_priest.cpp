@@ -46,7 +46,6 @@ struct priest_t : public player_t
     {
       absorb_buff_t* power_word_shield;
       absorb_buff_t* divine_aegis;
-      absorb_buff_t* spirit_shell;
     } buffs;
 
     priest_td_t( player_t* target, priest_t* p );
@@ -4356,55 +4355,6 @@ struct spirit_shell_heal_t : priest_heal_t
   }
 };
 
-struct spirit_shell_buff_t : public absorb_buff_t
-{
-public:
-  heal_t* spirit_shell_heal;
-  spirit_shell_buff_t( actor_pair_t p ) :
-    absorb_buff_t( absorb_buff_creator_t( p, "spirit_shell" )
-                   .spell( p.source -> find_spell( 114908 ) )
-                   .source( p.source -> get_stats( "spirit_shell" ) )
-                 ),
-    spirit_shell_heal( NULL )
-  { }
-
-  virtual void expire()
-  {
-    if ( current_value > 0 )
-    {
-      if ( spirit_shell_heal )
-      {
-        spirit_shell_heal -> base_dd_min = spirit_shell_heal -> base_dd_max = current_value * data().effectN( 2 ).percent();
-        spirit_shell_heal->execute();
-      }
-    }
-
-    absorb_buff_t::expire();
-  }
-};
-
-struct spirit_shell_absorb_t : priest_absorb_t
-{
-  spirit_shell_absorb_t( priest_t* p, const std::string& options_str ) :
-    priest_absorb_t( "spirit_shell", p, p -> find_class_spell( "Spirit Shell" ) )
-  {
-    parse_options( NULL, options_str );
-
-    stats->add_child( p->get_stats( "spirit_shell_heal" ) );
-
-    dynamic_cast<spirit_shell_buff_t*>( td( target )->buffs.spirit_shell ) ->spirit_shell_heal = p -> spells.spirit_shell;
-
-    // Parse values from buff spell effect
-    action_t::parse_effect_data( p -> find_spell( 114908 ) -> effectN( 1 ) );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    td( s -> target ) -> buffs.spirit_shell -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0, s -> result_amount, ABSORB, s -> result );
-  }
-};
-
 } // NAMESPACE heals
 
 // ==========================================================================
@@ -4434,11 +4384,9 @@ priest_t::priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", source -> find_spell( 47753 ) )
                          .source( source -> get_stats( "divine_aegis" ) );
 
-    buffs.spirit_shell = new spirit_shell_buff_t( *this );
 
     target -> absorb_buffs.push_back( buffs.power_word_shield );
     target -> absorb_buffs.push_back( buffs.divine_aegis );
-    target -> absorb_buffs.push_back( buffs.spirit_shell );
   }
 }
 
@@ -4633,7 +4581,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( this, options_str );
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( this, options_str );
-  if ( name == "spirit_shell"           ) return new spirit_shell_absorb_t   ( this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( this, options_str );
   if ( name == "halo_heal"              ) return new halo_heal_t             ( this, options_str );
   if ( name == "divine_star_heal"       ) return new divine_star_heal_t      ( this, options_str );
