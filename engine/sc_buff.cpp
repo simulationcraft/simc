@@ -813,6 +813,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
       {
         action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
         assert( 0 );
+        action -> sim -> cancel();
         // Prevent segfault
         buff = buff_creator_t( action -> player, "dummy" );
       }
