@@ -4679,7 +4679,6 @@ void warlock_t::init_actions()
 
       add_action( "Life Tap",              "if=mana.pct<50" );
       add_action( "Shadow Bolt" );
-      add_action( "Void Ray",              "moving=1" );
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list

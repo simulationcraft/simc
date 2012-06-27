@@ -37,7 +37,6 @@ actions+=/demonic_slash
 actions+=/summon_felguard,if=buff.grimoire_of_sacrifice.stack<2
 actions+=/life_tap,if=mana.pct<50
 actions+=/shadow_bolt
-actions+=/void_ray,moving=1
 actions+=/fel_flame,moving=1
 actions+=/life_tap
 actions.aoe=summon_doomguard,if=num_targets<7
