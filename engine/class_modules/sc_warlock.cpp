@@ -4501,17 +4501,6 @@ void warlock_t::add_action( const spell_data_t* s, std::string options, std::str
 
 void warlock_t::init_actions()
 {
-  // FIXME!!! This is required in order to support target_haunt_remains in conjunction with cycle_targets
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    for ( size_t i=0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* target = sim -> actor_list[ i ];
-      if ( ! target -> is_enemy() ) continue;
-      get_target_data( target );
-    }
-  }
-
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
@@ -4618,11 +4607,11 @@ void warlock_t::init_actions()
 
     case WARLOCK_AFFLICTION:
       add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
-      add_action( "Haunt",                 "if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time" );
+      add_action( "Haunt",                 "if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time" );
       add_action( "Soulburn",              "if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
-      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time&soul_shard>1" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&soul_shard>1" );
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
@@ -4641,7 +4630,7 @@ void warlock_t::init_actions()
       // AoE action list
       add_action( "Soulburn",              "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target", "aoe" );
       add_action( "Seed of Corruption",    "cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)", "aoe" );
-      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&target_haunt_remains<cast_time+travel_time", "aoe" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time", "aoe" );
       add_action( "Life Tap",              "if=mana.pct<70",                                                                     "aoe" );
       add_action( "Fel Flame",             "cycle_targets=1,if=!in_flight_to_target",                                            "aoe" );
       break;
@@ -4833,17 +4822,6 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       virtual double evaluate() { return player.resources.current[ RESOURCE_BURNING_EMBER ] >= 10 && player.sim -> current_time >= player.ember_react; }
     };
     return new ember_react_expr_t( *this );
-  }
-  else if ( name_str == "target_haunt_remains" )
-  {
-    struct target_haunt_remains_expr_t : public expr_t
-    {
-      warlock_spell_t& action;
-      target_haunt_remains_expr_t( warlock_spell_t& a ) :
-        expr_t( "target_haunt_remains" ), action( a ) { }
-      virtual double evaluate() { return action.td( action.target ) -> debuffs_haunt -> remains().total_seconds(); }
-    };
-    return new target_haunt_remains_expr_t( *( debug_cast<warlock_spell_t*>( a ) ) );
   }
   else if ( name_str == "felstorm_is_ticking" )
   {

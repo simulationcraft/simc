@@ -1964,7 +1964,10 @@ public:
   virtual void combat_begin();
   virtual void combat_end();
 
-  expr_t* create_expression( const std::string& type );
+  static expr_t* create_expression( std::string buff_name,
+                                    action_t* action,
+                                    const std::string& type,
+                                    buff_t* static_buff = 0 );
   std::string to_str() const;
 
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source=0 );
@@ -3782,7 +3785,6 @@ struct player_t : public noncopyable
 
   cooldown_t* find_cooldown( const std::string& name );
   dot_t*      find_dot     ( const std::string& name, player_t* source );
-  buff_t*     find_buff    ( const std::string& name, player_t* source );
   stats_t*    find_stats   ( const std::string& name );
   gain_t*     find_gain    ( const std::string& name );
   proc_t*     find_proc    ( const std::string& name );

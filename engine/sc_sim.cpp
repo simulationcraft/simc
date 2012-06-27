@@ -1998,7 +1998,7 @@ expr_t* sim_t::create_expression( action_t* a,
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) return 0;
-      return buff -> create_expression( splits[ 2 ] );
+      return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
     }
   }
   if ( num_splits >= 3 && splits[ 0 ] == "actors" )

@@ -6645,9 +6645,10 @@ expr_t* player_t::create_expression( action_t* a,
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
-      buff_t* buff = buff_t::find( this, splits[ 1 ] );
-      if ( buff ) 
-        return buff -> create_expression( splits[ 2 ] );
+      a -> player -> get_target_data( this );
+      buff_t* buff = buff_t::find( this, splits[ 1 ], a -> player );
+      if ( ! buff ) buff = buff_t::find( this, splits[ 1 ], this ); // Raid debuffs
+      if ( buff ) return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
