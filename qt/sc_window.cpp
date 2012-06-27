@@ -823,8 +823,10 @@ void SimulationCraftWindow::createBestInSlotTab()
   bisTree->setHeaderLabels( headerLabels );
   importTab->addTab( bisTree, "BiS" );
 
-  const int TIER_MAX=1;
-  const char* tierNames[] = { "T13" };
+  const int TIER_MAX=2;
+  const char* tierNames[] = { "T12", "T13" };
+  QTreeWidgetItem* playerItems[ PLAYER_MAX ];
+  range::fill( playerItems, 0 );
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
   for ( player_e i = DEATH_KNIGHT; i <= WARRIOR; i++ )
   {
@@ -913,19 +915,24 @@ void SimulationCraftWindow::createBestInSlotTab()
       {
         if ( !rootItems[ player ][ tier ] )
         {
-          QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
-          bisTree->addTopLevelItem( top );
-          for ( int j=0; j < TIER_MAX; j++ )
+          if ( !playerItems[ player ] )
           {
-            QTreeWidgetItem* tier = new QTreeWidgetItem( QStringList( tierNames[ j ] ) );
-            top->addChild( rootItems[ player ][ j ] =  tier );
+            QTreeWidgetItem* top = new QTreeWidgetItem( QStringList( util::player_type_string( player ) ) );
+            playerItems[ player ] = top;
+            bisTree->addTopLevelItem( top );
+          }
 
-            tier -> setExpanded( true ); // Expand the subclass Tier bullets by default for now
+          if( !rootItems[ player ][ tier ] )
+          {
+            QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[ tier ] ) );
+            playerItems[ player ] -> addChild( rootItems[ player ][ tier ] =  tieritem );
+
+            tieritem -> setExpanded( true ); // Expand the subclass Tier bullets by default for now
           }
         }
 
         QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[ i ] << profile );
-        rootItems[ player ][ tier ]->addChild( item );
+        rootItems[ player ][ tier ] -> addChild( item );
       }
     }
   }
