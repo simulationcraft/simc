@@ -1875,7 +1875,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
   if ( num_splits > 2 && splits[ 0 ] == "target" )
   {
     // Find target
-    player_t* expr_target = sim -> find_player( splits[ 1 ] );
+    player_t* expr_target;
+    if ( splits[ 1 ][ 0 ] >= '0' && splits[ 1 ][ 0 ] <= '9' )
+      expr_target = find_target_by_number( atoi( splits[ 1 ].c_str() ) );
+    else
+      expr_target = sim -> find_player( splits[ 1 ] );
     size_t start_rest = 2;
     if ( ! expr_target )
     {
