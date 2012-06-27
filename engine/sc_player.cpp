@@ -1942,7 +1942,8 @@ void player_t::init_buffs()
                         .stat( STAT_SPELL_POWER )
                         .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
 
-  buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
+  if ( ! is_enemy() )
+    buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
 
   double lb_amount = 0.0;
   if      ( profession[ PROF_HERBALISM ] >= 600 )
