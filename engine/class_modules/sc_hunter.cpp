@@ -75,7 +75,6 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* glyph_of_arcane_shot;
     gain_t* invigoration;
     gain_t* fervor;
     gain_t* focus_fire;
@@ -83,7 +82,6 @@ public:
     gain_t* roar_of_recovery;
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
-    gain_t* glyph_aimed_shot;
     gain_t* cobra_shot;
   } gains;
 
@@ -94,7 +92,6 @@ public:
     proc_t* wild_quiver;
     proc_t* lock_and_load;
     proc_t* flaming_arrow;
-    proc_t* deferred_piercing_shots;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
   } procs;
@@ -151,14 +148,15 @@ public:
 
     // Beast Mastery
     const spell_data_t* kill_command;
+    const spell_data_t* intimidation;
     const spell_data_t* go_for_the_throat;
     const spell_data_t* beast_cleave;
     const spell_data_t* frenzy;
     const spell_data_t* focus_fire;
-    const spell_data_t* cobra_strikes;
     const spell_data_t* bestial_wrath;
+    const spell_data_t* cobra_strikes;
+    //const spell_data_t* the_beast_within;
     const spell_data_t* kindred_spirits;
-    const spell_data_t* intimidation;
     const spell_data_t* invigoration;
     const spell_data_t* exotic_beasts;
 
@@ -172,6 +170,7 @@ public:
     const spell_data_t* chimera_shot;
     const spell_data_t* steady_focus;
     const spell_data_t* piercing_shots;
+    // const spell_data_t* wild quiver;
 
     // Survival
     const spell_data_t* explosive_shot;
@@ -1139,11 +1138,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     else
     {
       hunter_ranged_attack_t::execute();
-      if ( result == RESULT_CRIT )
-      {
-        if ( p() -> active_pet )
-        p() -> resource_gain( RESOURCE_FOCUS, p() -> glyphs.aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.glyph_aimed_shot );
-      }
     }
   }
 
@@ -1992,7 +1986,7 @@ struct bestial_wrath_t : public hunter_spell_t
   {
     hunter_pet_t* pet = p() -> active_pet;
 
-    p()   -> buffs.beast_within  -> trigger();
+    p() -> buffs.beast_within  -> trigger();
     pet -> buffs.bestial_wrath -> trigger();
 
     hunter_spell_t::execute();
@@ -3268,7 +3262,6 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.glyph_of_arcane_shot = get_gain( "glyph_of_arcane_shot" );
   gains.invigoration         = get_gain( "invigoration"         );
   gains.fervor               = get_gain( "fervor"               );
   gains.focus_fire           = get_gain( "focus_fire"           );
@@ -3276,7 +3269,6 @@ void hunter_t::init_gains()
   gains.roar_of_recovery     = get_gain( "roar_of_recovery"     );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
-  gains.glyph_aimed_shot     = get_gain( "glyph_aimed_shot"     );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
 }
 
@@ -3301,14 +3293,13 @@ void hunter_t::init_position()
 // hunter_t::init_procs =====================================================
 
 void hunter_t::init_procs()
-{
+{ 
   player_t::init_procs();
 
   procs.thrill_of_the_hunt           = get_proc( "thrill_of_the_hunt"           );
   procs.wild_quiver                  = get_proc( "wild_quiver"                  );
   procs.lock_and_load                = get_proc( "lock_and_load"                );
   procs.flaming_arrow                = get_proc( "flaming_arrow"                );
-  procs.deferred_piercing_shots      = get_proc( "deferred_piercing_shots"      );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
 }
