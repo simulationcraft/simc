@@ -2414,10 +2414,12 @@ struct pet_melee_t : public hunter_pet_attack_t
 
 struct pet_auto_attack_t : public hunter_pet_attack_t
 {
-  pet_auto_attack_t( hunter_pet_t* player, const std::string& /* options_str */ ) :
+  pet_auto_attack_t( hunter_pet_t* player, const std::string&  options_str ) :
     hunter_pet_attack_t( "auto_attack", player, 0 )
   {
-    p() -> main_hand_attack = new pet_melee_t( player );
+    parse_options( NULL, options_str );
+
+    player -> main_hand_attack = new pet_melee_t( player );
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
@@ -2736,7 +2738,7 @@ struct qiraji_fortitude_t : public hunter_pet_spell_t
   qiraji_fortitude_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "qiraji_fortitude", player, player -> find_pet_spell( "Qiraji Fortitude" ) )
   {
-    hunter_t*     o = p() -> cast_owner();
+    hunter_t*     o = player -> cast_owner();
 
     parse_options( NULL, options_str );
 
@@ -2760,7 +2762,7 @@ struct lightning_breath_t : public hunter_pet_spell_t
   lightning_breath_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "lightning_breath", player, player -> find_pet_spell( "Lightning Breath" ) )
   {
-////    hunter_t*     o = p() -> cast_owner();
+//    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
@@ -2784,7 +2786,7 @@ struct corrosive_spit_t : public hunter_pet_spell_t
   corrosive_spit_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "corrosive_spit", player, player -> find_spell( 95466 ) )
   {
-    hunter_t*     o = p() -> cast_owner();
+    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
@@ -2808,7 +2810,7 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
   demoralizing_screech_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "demoralizing_screech", player, player -> find_spell( 24423 ) )
   {
-    hunter_t*     o = p() -> cast_owner();
+    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
@@ -2833,7 +2835,7 @@ struct ravage_t : public hunter_pet_spell_t
   ravage_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "ravage", player, player -> find_spell( 50518 ) )
   {
-    hunter_t*     o = p() -> cast_owner();
+    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
@@ -2849,7 +2851,7 @@ struct tear_armor_t : public hunter_pet_spell_t
   tear_armor_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "tear_armor", player, player -> find_spell( 95467 ) )
   {
-////    hunter_t*     o = p() -> cast_owner();
+//    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
@@ -2874,7 +2876,7 @@ struct tendon_rip_t : public hunter_pet_spell_t
   tendon_rip_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "tendon_rip", player, player -> find_spell( 50271 ) )
   {
-    hunter_t*     o = p() -> cast_owner();
+    hunter_t*     o = player -> cast_owner();
 
     parse_options( 0, options_str );
 
