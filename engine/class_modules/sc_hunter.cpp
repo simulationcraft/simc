@@ -30,14 +30,13 @@ enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
 struct hunter_t : public player_t
 {
-private:
   struct hunter_td_t : public actor_pair_t
   {
     dot_t* dots_serpent_sting;
 
     hunter_td_t( player_t*, hunter_t* );
   };
-public:
+
   // Active
   hunter_pet_t* active_pet;
   aspect_type   active_aspect;
@@ -351,13 +350,11 @@ public:
 
 struct hunter_pet_t : public pet_t
 {
-private:
   struct hunter_pet_td_t : public actor_pair_t
   {
     hunter_pet_td_t( player_t*, hunter_pet_t* );
   };
 
-public:
   action_t* kill_command;
 
   struct talents_t
@@ -2294,7 +2291,7 @@ struct hunter_pet_action_t : public Base
 
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, player, s )
+    Base( n, player, s )
   {
     ab::base_crit += player -> talents.spiders_bite -> effectN( 1 ).percent();
 
