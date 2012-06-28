@@ -741,23 +741,23 @@ public:
 template <class Base>
 struct hunter_action_t : public Base
 {
-  typedef Base action_base_t;
+  typedef Base ab;
   typedef hunter_action_t base_t;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, player, s )
+    ab( n, player, s )
   {
-    action_base_t::stateless     = true;
+    ab::stateless     = true;
   }
 
-  hunter_t* p() { return debug_cast<hunter_t*>( action_base_t::player ); }
+  hunter_t* p() { return debug_cast<hunter_t*>( ab::player ); }
 
-  hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual double cost()
   {
-    double c = action_base_t::cost();
+    double c = ab::cost();
 
     if ( c == 0 )
       return 0;
@@ -777,7 +777,7 @@ struct hunter_action_t : public Base
 
     if (p() -> rngs.thrill_of_the_hunt -> roll ( p() -> talents.thrill_of_the_hunt -> proc_chance() ) )
     {
-      double gain = action_base_t::base_costs[ action_base_t::current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
+      double gain = ab::base_costs[ ab::current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
       p() -> procs.thrill_of_the_hunt -> occur();
       p() -> resource_gain( RESOURCE_FOCUS, gain, p() -> gains.thrill_of_the_hunt );
     }
@@ -839,12 +839,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     return h;
   }
-
-  virtual double action_multiplier()
-  {
-    double am = base_t::action_multiplier();
-    return am;
-  }
 };
 
 // trigger_go_for_the_throat ================================================
@@ -859,6 +853,9 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
 
   a -> p() -> active_pet -> resource_gain( RESOURCE_FOCUS, a -> p() -> specs.go_for_the_throat -> effectN( 1 ).base_value(), a -> p() -> active_pet -> gains.go_for_the_throat );
 }
+
+// Piercing Shots
+
 struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
 {
   piercing_shots_t( hunter_t* p ) :
@@ -919,7 +916,7 @@ static void trigger_vishanka( hunter_ranged_attack_t* a )
 
 void hunter_ranged_attack_t::execute()
 {
-  ranged_attack_t::execute();
+  base_t::execute();
   
   if ( p() -> specs.steady_focus -> ok() )
     trigger_steady_focus();
@@ -935,6 +932,7 @@ void hunter_ranged_attack_t::execute()
   if ( result_is_hit() )
     trigger_vishanka( this );
 }
+
 // Ranged Attack ============================================================
 
 struct ranged_t : public hunter_ranged_attack_t
@@ -1063,6 +1061,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     virtual void execute()
     {
       hunter_ranged_attack_t::execute();
+
       p() -> buffs.master_marksman_fire -> expire();
     }
 
@@ -1175,7 +1174,9 @@ struct arcane_shot_t : public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-    if ( result_is_hit() )
+
+    // Maybe move to impact?
+    if ( result_is_hit( execute_state -> result) )
     {
       // Needs testing
       p() -> buffs.tier13_4pc -> trigger();
@@ -1210,8 +1211,11 @@ struct power_shot_t : public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+
     trigger_thrill_of_the_hunt();
-    if ( result_is_hit() )
+
+    // Maybe move to impact?
+    if ( result_is_hit( execute_state -> result) )
     {
       // Needs testing
       p() -> buffs.tier13_4pc -> trigger();
@@ -1221,6 +1225,7 @@ struct power_shot_t : public hunter_ranged_attack_t
   virtual void impact_s( action_state_t* state )
   {
     hunter_ranged_attack_t::impact_s( state );
+
     if ( result_is_hit( state -> result ) )
     {
       p() -> buffs.cobra_strikes -> trigger( 2 );
@@ -1294,11 +1299,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
       p() -> procs.lock_and_load -> occur();
       p() -> cooldowns.explosive_shot -> reset();
     }
-  }
-
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
   }
 };
 
@@ -1398,23 +1398,17 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     //cooldown -> duration += p() -> glyphs.chimera_shot -> mod_additive_time( P_COOLDOWN );
   }
 
-
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      cast_td() -> dots_serpent_sting -> refresh_duration();
-    }
-  }
-
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
 
     if ( impact_result == RESULT_CRIT )
       trigger_piercing_shots( this, t, travel_dmg );
+
+    if ( result_is_hit( impact_result ) )
+    {
+      cast_td( t ) -> dots_serpent_sting -> refresh_duration();
+    }
   }
 };
 
@@ -1458,16 +1452,6 @@ struct cobra_shot_t : public hunter_ranged_attack_t
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
     }
-  }
-
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
-  }
-
-  void player_buff()
-  {
-    hunter_ranged_attack_t::player_buff();
   }
 };
 
@@ -1857,7 +1841,6 @@ struct wild_quiver_shot_t : public ranged_t
     repeating   = false;
     proc = true;
     normalize_weapon_speed=true;
-    init();
   }
 
   virtual void execute()
@@ -2222,7 +2205,6 @@ struct readiness_t : public hunter_spell_t
 
   virtual bool ready()
   {
-
     if ( wait_for_rf && ! p() -> buffs.rapid_fire -> check() )
       return false;
 
@@ -2307,25 +2289,25 @@ namespace pet_actions {
 template <class Base>
 struct hunter_pet_action_t : public Base
 {
-  typedef Base action_base_t;
+  typedef Base ab;
   typedef hunter_pet_action_t base_t;
 
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, player, s )
   {
-    action_base_t::base_crit += player -> talents.spiders_bite -> effectN( 1 ).percent();
+    ab::base_crit += player -> talents.spiders_bite -> effectN( 1 ).percent();
 
     // Assume happy pet
-    action_base_t::base_multiplier *= 1.25;
+    ab::base_multiplier *= 1.25;
 
     // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
-    action_base_t::base_multiplier *= 1.05;
+    ab::base_multiplier *= 1.05;
   }
 
-  hunter_pet_t* p() { return debug_cast<hunter_pet_t*>( action_base_t::player ); }
+  hunter_pet_t* p() { return debug_cast<hunter_pet_t*>( ab::player ); }
 
-  hunter_pet_t::hunter_pet_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  hunter_pet_t::hunter_pet_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================
@@ -2812,7 +2794,6 @@ struct ravage_t : public hunter_pet_spell_t
 
     auto_cast = true;
   }
-
 };
 
 // Raptor Tear Armor  =======================================================
@@ -3012,6 +2993,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "wyvern_sting"          ) return new           wyvern_sting_t( this, options_str );
 #endif
+
   return base_t::create_action( name, options_str );
 }
 
