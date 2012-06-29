@@ -540,7 +540,7 @@ struct hunter_pet_t : public pet_t
     pet_t::init_buffs();
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" );
-//    buffs.owls_focus        = buff_creator_t( this, 53515, "owls_focus" ).chance( talents.owls_focus-> proc_chance() );
+    buffs.owls_focus        = buff_creator_t( this, 53515, "owls_focus" ).chance( 0.15 );
     buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
     buffs.rabid_power_stack = buff_creator_t( this, 53403, "rabid_power_stack" );
     buffs.wolverine_bite    = buff_creator_t( this, "wolverine_bite" ).duration( timespan_t::from_seconds( 10.0 ) );
@@ -3070,6 +3070,7 @@ void hunter_t::init_spells()
 
   specs.kill_command      = find_specialization_spell( "Kill Command" );
   specs.piercing_shots    = find_specialization_spell( "Piercing Shots" );
+  specs.frenzy            = find_specialization_spell( "Frenzy" );
 
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
@@ -3157,6 +3158,7 @@ void hunter_t::init_buffs()
 
   // Own TSA for Glyph of TSA
   buffs.trueshot_aura               = buff_creator_t( this, 19506, "trueshot_aura" );
+
 }
 
 // hunter_t::init_values ====================================================
@@ -3251,21 +3253,6 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
-  if ( true )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Player %s's class isn't supported yet.", name() );
-    quiet = true;
-    return;
-  }
-
-  if ( main_hand_weapon.group() != WEAPON_RANGED )
-  {
-    sim -> errorf( "Player %s does not have a ranged weapon at the Main Hand slot.", name() );
-    quiet = true;
-    return;
-  }
-
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
@@ -3281,7 +3268,8 @@ void hunter_t::init_actions()
       action_list_str += ",precombat=1";
     }
 
-    action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
+    // Todo: Add ranged_vulnerability
+    //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     action_list_str += "/summon_pet";
 //    if ( talents.trueshot_aura -> ok() )
 //      action_list_str += "/trueshot_aura,if=!aura.attack_power_multiplier.up|!aura.critical_strike.up";
@@ -3784,11 +3772,7 @@ struct hunter_module_t : public module_t
   {
     return new hunter_t( sim, name, r );
   }
-#if MOP_IN_PROGRESS
-  virtual bool valid() { return true; }
-#else
   virtual bool valid() { return false; }
-#endif
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}
