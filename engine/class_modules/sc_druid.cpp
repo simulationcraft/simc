@@ -4303,7 +4303,7 @@ void druid_t::init_buffs()
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
-                               .max_stack( ( _spec == DRUID_BALANCE || _spec == DRUID_RESTORATION )
+                               .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 1 ).base_value()
                                            : 1 )
                                .quiet( true );
@@ -4344,16 +4344,10 @@ void druid_t::init_buffs()
                                .chance( spec.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
-  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", spell_data_t::nil() )
-                               .cd( timespan_t::zero() )
-                               .duration( timespan_t::from_seconds( 15 ) )
-                               .max_stack( 3 )
-                               .default_value( 0.20 );
-  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", spell_data_t::nil() )
-                               .cd( timespan_t::zero() )
-                               .duration( timespan_t::from_seconds( 15 ) )
-                               .max_stack( 3 )
-                               .default_value( 0.15 );
+  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 129633 ) )
+                               .max_stack( 3 );
+  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 129632 ) )
+                               .max_stack( 3 );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
@@ -4523,46 +4517,45 @@ void druid_t::init_actions()
       }
     }
 
+    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+
     if ( level >= 80 )
     {
       // Flask
-      action_list_str += "flask,type=";
+      precombat_list = "flask,type=";
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-        action_list_str += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
+        precombat_list += ( ( level > 85 ) ? "spring_blossoms" : "winds" );
       else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-        action_list_str += ( ( level > 85 ) ? "earth" : "steelskin" );
+        precombat_list += ( ( level > 85 ) ? "earth" : "steelskin" );
       else
-        action_list_str += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
-      action_list_str += ",precombat=1";
+        precombat_list += ( ( level > 85 ) ? "warm_sun" : "draconic_mind" );
 
       // Food
-      action_list_str += "/food,type=";
-      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
-      action_list_str += ",precombat=1";
+      precombat_list += "/food,type=";
+      precombat_list += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
     }
 
     // MotW
-    action_list_str += "/mark_of_the_wild,precombat=1,if=!aura.str_agi_int.up";
+    precombat_list += "/mark_of_the_wild,if=!aura.str_agi_int.up";
 
     // Forms
     if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      action_list_str += "/cat_form,precombat=1";
+      precombat_list += "/cat_form";
     else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-      action_list_str += "/bear_form,precombat=1";
+      precombat_list += "/bear_form";
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
-      action_list_str += "/moonkin_form,precombat=1";
+      precombat_list += "/moonkin_form";
 
     // Snapshot stats
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat_list += "/snapshot_stats";
 
     if ( level >= 80 )
     {
       // Prepotion
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-        action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+        precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       else
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
-      action_list_str += ",precombat=1";
+        precombat_list += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
 
       // Potion use
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -4634,18 +4627,14 @@ void druid_t::init_actions()
       {
         // Align the use of Incarnation and Celestial Alignment
         action_list_str += "/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16&buff.chosen_of_elune.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21&buff.chosen_of_elune.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21&buff.chosen_of_elune.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21&buff.chosen_of_elune.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&!buff.solar_eclipse.up&buff.chosen_of_elune.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&!buff.lunar_eclipse.up&buff.chosen_of_elune.up";
       }
       else
       {
         // CA just as we are going to leave Eclipse
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.wrath=1&eclipse<16";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&prev.starsurge=1&eclipse<21";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starfire=1&eclipse>-21";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&prev.starsurge=1&eclipse>-21";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&!buff.solar_eclipse.up";
+        action_list_str += "/celestial_alignment,if=eclipse_dir=1&!buff.lunar_eclipse.up";
       }
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
@@ -4655,16 +4644,12 @@ void druid_t::init_actions()
       if ( talent.force_of_nature -> ok() )
         action_list_str += "/treants,if=time>=5";
       action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
-      action_list_str += "/starfire,if=eclipse_dir=1&eclipse<80";
-      action_list_str += "/starfire,if=prev.wrath=1&eclipse_dir=-1&eclipse<=-85";
-      action_list_str += "/wrath,if=eclipse_dir=-1&eclipse>-85";
-      action_list_str += "/wrath,if=prev.starfire=1&eclipse_dir=1&eclipse>=80";
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
       action_list_str += "/wrath";
       action_list_str += "/moonfire,moving=1,if=!dot.sunfire.ticking";
       action_list_str += "/sunfire,moving=1,if=!dot.moonfire.ticking";
-      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<3";
+      action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<5";
       action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
       action_list_str += "/moonfire,moving=1";
       action_list_str += "/sunfire,moving=1";
@@ -4806,7 +4791,7 @@ void druid_t::combat_begin()
 
   // Moonkins and Resto can precast 3 wild mushrooms without aggroing the boss
   if ( preplant_mushrooms )
-    buff.wild_mushroom -> trigger( 3 );
+    buff.wild_mushroom -> trigger( buff.wild_mushroom -> max_stack() );
 
   if ( ( specialization() == DRUID_BALANCE ) && ( initial_eclipse != 0 ) )
   {
