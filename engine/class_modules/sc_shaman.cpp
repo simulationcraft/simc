@@ -73,26 +73,18 @@ struct shaman_spell_t;
 struct shaman_td_t : public actor_pair_t
 {
   dot_t* dots_flame_shock;
-  dot_t* dots_searing_flames;
 
-  buff_t* debuffs_searing_flames;
   buff_t* debuffs_stormstrike;
-  buff_t* debuffs_unleashed_fury_ft;
+  buff_t* debuffs_unleashed_fury;
 
   shaman_td_t( player_t* target, player_t* p ) :
     actor_pair_t( target, p )
   {
     dots_flame_shock    = target -> get_dot( "flame_shock",    p );
-    dots_searing_flames = target -> get_dot( "searing_flames", p );
-
-    debuffs_searing_flames = ( buff_creator_t( *this, "searing_flames", p -> find_specialization_spell( "Searing Flames" ) )
-                               .chance( p -> dbc.spell( 77661 ) -> proc_chance() )
-                               .duration( p -> dbc.spell( 77661 ) -> duration() )
-                               .max_stack( p -> dbc.spell( 77661 ) -> max_stacks() ) );
 
     debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
 
-    debuffs_unleashed_fury_ft = ( buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) ) );
+    debuffs_unleashed_fury = ( buff_creator_t( *this, "unleashed_fury", p -> find_spell( 118470 ) ) );
   }
 };
 
@@ -107,7 +99,6 @@ struct shaman_t : public player_t
 
   // Active
   action_t* active_lightning_charge;
-  action_t* active_searing_flames_dot;
 
   // Cached actions
   action_t* action_flame_shock;
@@ -133,6 +124,7 @@ struct shaman_t : public player_t
     buff_t* lava_surge;
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
+    buff_t* searing_flames;
     buff_t* shamanistic_rage;
     buff_t* spiritwalkers_grace;
     buff_t* tier13_2pc_caster;
@@ -294,7 +286,6 @@ struct shaman_t : public player_t
 
     // Active
     active_lightning_charge   = 0;
-    active_searing_flames_dot = 0;
 
     action_flame_shock = 0;
     action_improved_lava_lash = 0;
@@ -996,10 +987,7 @@ struct fire_elemental_t : public pet_t
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-      {
-        shaman_td_t* td = p -> o() -> get_target_data( state -> target );
-        td -> debuffs_searing_flames -> trigger();
-      }
+        p -> o() -> buff.searing_flames -> trigger();
     }
   };
 
@@ -1407,6 +1395,16 @@ struct lava_burst_overload_t : public shaman_spell_t
     }
   }
 
+  virtual double action_multiplier()
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.unleash_flame -> up() )
+      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
   virtual double composite_target_crit( player_t* target )
   {
     if ( targetdata( target ) -> dots_flame_shock -> ticking )
@@ -1516,49 +1514,6 @@ struct lava_beam_overload_t : public shaman_spell_t
   }
 };
 
-struct searing_flames_t : public shaman_spell_t
-{
-  searing_flames_t( shaman_t* player ) :
-    shaman_spell_t( player, player -> find_spell( 77661 ) )
-  {
-    background       = true;
-    may_miss         = false;
-    tick_may_crit    = true;
-    proc             = true;
-    dot_behavior     = DOT_REFRESH;
-    hasted_ticks     = true;
-    may_crit         = true;
-    stateless        = true;
-    update_flags     = 0;
-
-    // Override spell data values, as they seem wrong, instead
-    // make searing totem calculate the damage portion of the
-    // spell, without using any tick power modifiers or
-    // player based multipliers here
-    base_td          = 0.0;
-    tick_power_mod   = 0.0;
-  }
-
-  virtual void init()
-  {
-    shaman_spell_t::init();
-
-    // Override snapshot flags
-    snapshot_flags = STATE_HASTE | STATE_CRIT | STATE_TGT_CRIT | STATE_TGT_MUL_TA;
-  }
-
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    return targetdata( target ) -> debuffs_searing_flames -> stack();
-  }
-
-  void last_tick( dot_t* d )
-  {
-    shaman_spell_t::last_tick( d );
-    targetdata( target ) -> debuffs_searing_flames -> expire();
-  }
-};
-
 struct lightning_charge_t : public shaman_spell_t
 {
   int threshold;
@@ -1649,6 +1604,15 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       base_attack_power_multiplier = 0;
       base_spell_power_multiplier  = w -> swing_time.total_seconds() / 4.0 * 0.1253;
     }
+  }
+  
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    m *= 1.0 + p() -> buff.searing_flames -> stack() * 0.08;
+
+    return m;
   }
 
   virtual double composite_attack_power()
@@ -1991,7 +1955,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   {
     double m = shaman_melee_attack_t::composite_target_multiplier( target );
 
-    m *= 1.0 + ( targetdata( target ) -> debuffs_searing_flames -> check() * sf_bonus ) +
+    m *= 1.0 + p() -> buff.searing_flames -> check() * sf_bonus +
                ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
@@ -2004,9 +1968,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       shaman_td_t* td = targetdata( state -> target );
-      td -> debuffs_searing_flames -> expire();
-      if ( p() -> active_searing_flames_dot )
-        p() -> active_searing_flames_dot -> get_dot() -> cancel();
+      p() -> buff.searing_flames -> expire();
 
       trigger_static_shock( this );
       if ( td -> dots_flame_shock -> ticking )
@@ -2737,17 +2699,6 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  virtual double action_da_multiplier()
-  {
-    double m = shaman_spell_t::action_da_multiplier();
-
-    shaman_td_t* td = targetdata( target );
-    if ( td -> debuffs_unleashed_fury_ft -> up() )
-      m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual double composite_target_crit( player_t* target )
   {
     if ( targetdata( target ) -> dots_flame_shock -> ticking )
@@ -2819,8 +2770,8 @@ struct lightning_bolt_t : public shaman_spell_t
     double m = shaman_spell_t::action_da_multiplier();
 
     shaman_td_t* td = targetdata( target );
-    if ( td -> debuffs_unleashed_fury_ft -> up() )
-      m *= 1.0 + td -> debuffs_unleashed_fury_ft -> data().effectN( 1 ).percent();
+    if ( td -> debuffs_unleashed_fury -> up() )
+      m *= 1.0 + td -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -3544,24 +3495,13 @@ struct searing_totem_t : public shaman_totem_t
     // Also kludge totem school to fire
     school           = p() -> dbc.spell( 3606 ) -> get_school_type();
     stats -> school  = school;
-    p() -> active_searing_flames_dot = new searing_flames_t( p() );
   }
 
   virtual void tick( dot_t* d )
   {
-    shaman_td_t* td = targetdata( target );
     shaman_totem_t::tick( d );
-    if ( result_is_hit() && p() -> spec.searing_flames -> ok() &&
-         td -> debuffs_searing_flames -> trigger() )
-    {
-      double new_base_td = tick_dmg;
-      // Searing flame dot treats all hits as.. HITS
-      if ( result == RESULT_CRIT )
-        new_base_td /= 1.0 + total_crit_bonus();
-
-      p() -> active_searing_flames_dot -> base_td = new_base_td / p() -> active_searing_flames_dot -> num_ticks;
-      p() -> active_searing_flames_dot -> execute();
-    }
+    if ( result_is_hit() && p() -> spec.searing_flames -> ok() )
+      p() -> buff.searing_flames -> trigger();
   }
 };
 
@@ -4272,6 +4212,10 @@ void shaman_t::init_buffs()
   buff.maelstrom_weapon    = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
                              .chance( spec.maelstrom_weapon -> proc_chance() )
                              .activated( false );
+  buff.searing_flames      = buff_creator_t( this, "searing_flames", find_specialization_spell( "Searing Flames" ) )
+                             .chance( dbc.spell( 77661 ) -> proc_chance() )
+                             .duration( dbc.spell( 77661 ) -> duration() )
+                             .max_stack( dbc.spell( 77661 ) -> max_stacks() );
   buff.shamanistic_rage    = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
   buff.spiritwalkers_grace = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
                              .chance( 1.0 )
