@@ -1617,6 +1617,7 @@ struct frost_bomb_t : public mage_spell_t
     explosion_spell_aoe( 0 )
   {
     parse_options( NULL, options_str );
+    base_tick_time = data().duration();
     num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
     hasted_ticks = true; // Haste decreases the 'tick' time to explosion
 
@@ -1631,7 +1632,7 @@ struct frost_bomb_t : public mage_spell_t
   virtual void execute()
   {
     // Cooldown is reduced by haste
-    cooldown -> duration = original_cooldown / ( 1.0 + mage_spell_t::composite_haste() );
+    cooldown -> duration = original_cooldown * composite_haste();
     mage_spell_t::execute();
   }
 
