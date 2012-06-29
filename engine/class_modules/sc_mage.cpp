@@ -3261,7 +3261,7 @@ void mage_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   if ( buffs.rune_of_power -> up() ) // FIXME: Does Nether Attunement affect this as well?
-    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
+    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
 
   if ( pets.water_elemental )
     benefits.water_elemental -> update( pets.water_elemental -> current.sleeping == 0 );
