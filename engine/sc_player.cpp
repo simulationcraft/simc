@@ -3501,6 +3501,8 @@ action_t* player_t::execute_action()
   {
     action_t* a = active_action_list -> foreground_action_list[ i ];
 
+    if ( a -> background ) continue;
+
     if ( unlikely( a -> wait_on_ready == 1 ) )
       break;
 
