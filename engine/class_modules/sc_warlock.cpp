@@ -133,7 +133,7 @@ struct warlock_t : public player_t
     const spell_data_t* metamorphosis;
     const spell_data_t* molten_core;
     const spell_data_t* doom;
-    const spell_data_t* demonic_slash;
+    const spell_data_t* touch_of_chaos;
     const spell_data_t* chaos_wave;
     const spell_data_t* demonic_rebirth;
 
@@ -200,7 +200,6 @@ struct warlock_t : public player_t
   {
     spell_t* seed_of_corruption_aoe;
     spell_t* soulburn_seed_of_corruption_aoe;
-    spell_t* touch_of_chaos;
     spell_t* archimondes_vengeance_dmg;
     spell_t* metamorphosis;
   } spells;
@@ -276,7 +275,6 @@ struct warlock_t : public player_t
   virtual double composite_armor();
   virtual double composite_movement_speed();
   virtual void moving();
-  virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual double assess_damage( double        amount,
@@ -1777,7 +1775,7 @@ struct corruption_t : public warlock_spell_t
 
     if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 100, p() -> gains.nightfall );
     }
   }
 
@@ -1874,11 +1872,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 1.5; // tested in beta 2012/05/13
-
-    // FIXME: Overrides as per Ghostcrawler post http://us.battle.net/wow/en/forum/topic/5889309137?page=35#691
-    tick_power_mod *= 0.867;
-    base_td *= 0.867;
+    tick_power_mod = 1.3; // assumed based on Ghostcrawler post, needs testing
   }
 
   virtual double composite_target_multiplier( player_t* target )
@@ -1897,7 +1891,7 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
+    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 100, p() -> gains.drain_soul );
     generate_shard = ! generate_shard;
 
     consume_tick_resource( d );
@@ -2369,113 +2363,6 @@ struct life_tap_t : public warlock_spell_t
 };
 
 
-struct touch_of_chaos_t : public warlock_spell_t
-{
-  bool cancelled;
-
-  touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "touch_of_chaos", p, p -> find_spell( 103988 ) ), cancelled( false )
-  {
-    background        = true;
-    repeating         = true;
-    base_execute_time = timespan_t::from_seconds( 1 );
-  }
-
-  virtual void reset()
-  {
-    warlock_spell_t::reset();
-
-    cancelled = false;
-  }
-
-  virtual void cancel()
-  {
-    warlock_spell_t::cancel();
-
-    cancelled = true;
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    warlock_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
-    }
-  }
-};
-
-struct activate_touch_of_chaos_t : public warlock_spell_t
-{
-  activate_touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "activate_touch_of_chaos", p, spell_data_t::nil() )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-
-    if ( ! p -> spells.touch_of_chaos ) p -> spells.touch_of_chaos = new touch_of_chaos_t( p );
-  }
-
-  virtual void execute()
-  {
-    p() -> spells.touch_of_chaos -> execute();
-  }
-
-  virtual expr_t* create_expression( const std::string& name )
-  {
-    if ( name == "cancelled" )
-    {
-      struct cancelled_expr_t : public expr_t
-      {
-        touch_of_chaos_t& toc;
-
-        cancelled_expr_t( touch_of_chaos_t& t ) : expr_t( "cancelled" ), toc( t ) {}
-        virtual double evaluate() { return toc.cancelled; }
-      };
-      return new cancelled_expr_t( *( debug_cast<touch_of_chaos_t*>( p() -> spells.touch_of_chaos ) ) );
-    }
-    return warlock_spell_t::create_expression( name );
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-    
-    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-    else if ( p() -> spells.touch_of_chaos -> execute_event != 0 ) r = false;
-    else if ( p() -> is_moving() ) r = false;
-
-    return r;
-  }
-
-};
-
-struct cancel_touch_of_chaos_t : public warlock_spell_t
-{
-  cancel_touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "cancel_touch_of_chaos", p, spell_data_t::nil() )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    p() -> spells.touch_of_chaos -> cancel();
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> spells.touch_of_chaos -> execute_event == 0 ) r = false;
-
-    return r;
-  }
-};
-
-
 struct metamorphosis_t : public warlock_spell_t
 {
   metamorphosis_t( warlock_t* p ) :
@@ -2493,7 +2380,6 @@ struct metamorphosis_t : public warlock_spell_t
     assert( cost_event == 0 );
     
     p() -> buffs.metamorphosis -> trigger();
-    p() -> spells.touch_of_chaos -> reset();
     cost_event = new ( sim ) cost_event_t( p(), this );
   }
 
@@ -2501,7 +2387,6 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_spell_t::cancel();
     
-    if ( p() -> spells.touch_of_chaos ) p() -> spells.touch_of_chaos -> cancel();
     p() -> buffs.metamorphosis -> expire();
     event_t::cancel( cost_event );
   }
@@ -2751,16 +2636,16 @@ struct chaos_wave_t : public warlock_spell_t
 };
 
 
-struct demonic_slash_t : public warlock_spell_t
+struct touch_of_chaos_t : public warlock_spell_t
 {
-  demonic_slash_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "demonic_slash", p, p -> spec.demonic_slash )
+  touch_of_chaos_t( warlock_t* p, bool dtr = false ) :
+    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
   {
     direct_power_mod = 0.8; // from tooltip
 
     if ( ! dtr && p -> has_dtr )
     {
-      dtr_action = new demonic_slash_t( p, true );
+      dtr_action = new touch_of_chaos_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
   }
@@ -2770,7 +2655,10 @@ struct demonic_slash_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
+      extend_dot( td( s -> target ) -> dots_corruption, 2, player -> composite_spell_haste() );
+    }
   }
 
   virtual void execute()
@@ -2894,10 +2782,6 @@ struct malefic_grasp_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true;
     may_crit     = false;
-
-    // FIXME: Overrides as per Ghostcrawler post http://us.battle.net/wow/en/forum/topic/5889309137?page=35#691
-    tick_power_mod *= 0.6;
-    base_td *= 0.6;
   }
 
   virtual double action_multiplier()
@@ -4115,14 +3999,6 @@ void warlock_t::moving()
 }
 
 
-void warlock_t::halt()
-{
-  player_t::halt();
-
-  if ( spells.touch_of_chaos ) spells.touch_of_chaos -> cancel();
-}
-
-
 double warlock_t::assess_damage( double        amount,
                                  school_e school,
                                  dmg_e    type,
@@ -4175,7 +4051,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
   else if ( name == "chaos_wave"            ) a = new            chaos_wave_t( this );
   else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
-  else if ( name == "demonic_slash"         ) a = new         demonic_slash_t( this );
+  else if ( name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
   else if ( name == "drain_life"            ) a = new            drain_life_t( this );
   else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
@@ -4220,8 +4096,6 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_succubus"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, name );
-  else if ( name == "touch_of_chaos"        ) a = new activate_touch_of_chaos_t( this );
-  else if ( name == "cancel_touch_of_chaos" ) a = new   cancel_touch_of_chaos_t( this );
   else return player_t::create_action( name, options_str );
 
   a -> parse_options( NULL, options_str );
@@ -4318,9 +4192,9 @@ void warlock_t::init_spells()
   spec.molten_core     = find_specialization_spell( "Molten Core" );
   spec.demonic_rebirth = find_specialization_spell( "Demonic Rebirth" );
 
-  spec.doom          = ( find_specialization_spell( "Metamorphosis: Doom"          ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
-  spec.demonic_slash = ( find_specialization_spell( "Metamorphosis: Demonic Slash" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
-  spec.chaos_wave    = ( find_specialization_spell( "Metamorphosis: Chaos Wave"    ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
+  spec.doom           = ( find_specialization_spell( "Metamorphosis: Doom"           ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
+  spec.touch_of_chaos = ( find_specialization_spell( "Metamorphosis: Touch of Chaos" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
+  spec.chaos_wave     = ( find_specialization_spell( "Metamorphosis: Chaos Wave"     ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
 
   // Destruction
   spec.aftermath      = find_specialization_spell( "Aftermath" );
@@ -4391,7 +4265,7 @@ void warlock_t::init_base()
 
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
+  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 300 + ( ( glyphs.soul_shards -> ok() ) ? 100 : 0 );
   if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
   if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30 + ( ( glyphs.burning_embers -> ok() ) ? 10 : 0 );
 
@@ -4567,12 +4441,7 @@ void warlock_t::init_actions()
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 
-    if ( specialization() == WARLOCK_DEMONOLOGY )
-    {
-      if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/touch_of_chaos,if=!cancelled";
-    }
-    else if ( talents.grimoire_of_sacrifice -> ok() )
+    if ( specialization() != WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
     {
       add_action( talents.grimoire_of_sacrifice );
       action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
@@ -4663,16 +4532,13 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-      {
-        action_list_str += "/cancel_touch_of_chaos,if=((dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750)|demonic_fury<=120)&target.time_to_die>30";
-        action_list_str += "/cancel_metamorphosis,if=!action.touch_of_chaos.executing&!action.touch_of_chaos.in_flight";
-      }
+        action_list_str += "/cancel_metamorphosis,if=((dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750)|demonic_fury<=120)&target.time_to_die>30";
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
       add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
-      add_action( spec.demonic_slash );
+      add_action( spec.touch_of_chaos );
 
       if ( talents.grimoire_of_sacrifice -> ok() )
         action_list_str += "/summon_felguard,if=buff.grimoire_of_sacrifice.stack<2";

@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15781
+// Class based active abilities, wow build 15799
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -178,7 +178,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 40 abilities
+    // General tree, 41 abilities
     {
         3044, // Arcane Shot
        61648, // Aspect of the Beast
@@ -200,6 +200,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        13813, // Explosive Trap (Fire)
         5384, // Feign Death
       125050, // Fetch
+      127933, // Fireworks
         1543, // Flare
         1499, // Freezing Trap (Frost)
         1130, // Hunter's Mark
@@ -407,7 +408,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Discipline tree, 11 abilities
     {
-      109147, // Archangel
+       81700, // Archangel
         2060, // Greater Heal
         2050, // Heal
        14914, // Holy Fire
@@ -538,7 +539,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 34 abilities
+    // General tree, 35 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -569,6 +570,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8017, // Rockbiter Weapon
         3599, // Searing Totem
        79206, // Spiritwalker's Grace
+      115356, // Stormblast
       120668, // Stormlash Totem
         8143, // Tremor Totem
        73680, // Unleash Elements
@@ -695,7 +697,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 27 abilities
+    // General tree, 26 abilities
     {
          710, // Banish
          172, // Corruption
@@ -712,7 +714,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          755, // Health Funnel
       104316, // Imp Swarm (Glyph)
         1454, // Life Tap
-        5740, // Rain of Fire
          686, // Shadow Bolt
        29858, // Soulshatter
        20707, // Soulstone
@@ -726,7 +727,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104773, // Unending Resolve
            0,
     },
-    // Affliction tree, 11 abilities
+    // Affliction tree, 12 abilities
     {
          980, // Agony
        18223, // Curse of Exhaustion
@@ -734,6 +735,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1120, // Drain Soul
        48181, // Haunt
       103103, // Malefic Grasp
+        5740, // Rain of Fire
       114790, // Seed of Corruption (Soulburn)
        27243, // Seed of Corruption
        86121, // Soul Swap
@@ -741,12 +743,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 9 abilities
+    // Demonology tree, 10 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
       109151, // Demonic Leap
       105174, // Hand of Gul'dan
+        1949, // Hellfire
       104025, // Immolation Aura (Metamorphosis)
       103958, // Metamorphosis
         6353, // Soul Fire
@@ -754,7 +757,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115422, // Void Ray
            0,
     },
-    // Destruction tree, 11 abilities
+    // Destruction tree, 12 abilities
     {
       116858, // Chaos Bolt
        17962, // Conflagrate
@@ -766,6 +769,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          348, // Immolate
        29722, // Incinerate
       104232, // Rain of Fire
+        5740, // Rain of Fire
        17877, // Shadowburn
            0,
     },
@@ -884,7 +888,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 44 abilities
+    // General tree, 43 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -918,7 +922,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1822, // Rake
        20484, // Rebirth
          774, // Rejuvenation
-        2782, // Remove Corruption
       108238, // Renewal
         2908, // Soothe
       106898, // Stampeding Roar
@@ -932,12 +935,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath
            0,
     },
-    // Balance tree, 11 abilities
+    // Balance tree, 12 abilities
     {
       127663, // Astral Communion
       106996, // Astral Storm (Balance)
       112071, // Celestial Alignment
        24858, // Moonkin Form
+        2782, // Remove Corruption
        78675, // Solar Beam
        48505, // Starfall
         2912, // Starfire
@@ -947,10 +951,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        88751, // Wild Mushroom: Detonate
            0,
     },
-    // Feral tree, 7 abilities
+    // Feral tree, 8 abilities
     {
       106952, // Berserk
         6785, // Ravage
+        2782, // Remove Corruption
         1079, // Rip
        52610, // Savage Roar
         5221, // Shred
@@ -958,11 +963,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 7 abilities
+    // Guardian tree, 8 abilities
     {
       102795, // Bear Hug
       106952, // Berserk
         5229, // Enrage
+        2782, // Remove Corruption
         1079, // Rip
        62606, // Savage Defense
       106839, // Skull Bash
@@ -988,9 +994,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
 };
 
-#define TREE_SPECIALIZATION_SIZE (22)
+#define TREE_SPECIALIZATION_SIZE (24)
 
-// Talent tree specialization abilities, wow build 15781
+// Talent tree specialization abilities, wow build 15799
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   {
     {
@@ -1110,7 +1116,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Retribution tree
     {
-      107396, // Crusader's Zeal
        53385, // Divine Storm
       121783, // Emancipate
          879, // Exorcism
@@ -1172,6 +1177,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77767, // Cobra Shot
        19387, // Entrapment
        53301, // Explosive Shot
+       82834, // Improved Serpent Sting
        56343, // Lock and Load
        76658, // Mastery: Essence of the Viper
        87935, // Serpent Spread
@@ -1237,7 +1243,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Discipline tree
     {
-      109147, // Archangel
+       81700, // Archangel
        81749, // Atonement
        52798, // Borrowed Time
        47515, // Divine Aegis
@@ -1259,6 +1265,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109964, // Spirit Shell
        89488, // Strength of Soul
        92297, // Train of Thought
+           0,
     },
     // Specialization abilities for Holy tree
     {
@@ -1496,6 +1503,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       103103, // Malefic Grasp
        77215, // Mastery: Potent Afflictions
       108558, // Nightfall
+        5740, // Rain of Fire
        27243, // Seed of Corruption
       117198, // Soul Shards
        86121, // Soul Swap
@@ -1519,13 +1527,15 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       103134, // Felguard: Felstorm
       103129, // Felguard: Pursuit
       105174, // Hand of Gul'dan
+        1949, // Hellfire
        77219, // Mastery: Master Demonologist
       103958, // Metamorphosis
       124917, // Metamorphosis: Chaos Wave
       116208, // Metamorphosis: Cursed Auras
-      112089, // Metamorphosis: Demonic Slash
       124913, // Metamorphosis: Doom
       109797, // Metamorphosis: Immolation Aura
+      112089, // Metamorphosis: Touch of Chaos
+      129343, // Metamorphosis: Void Ray
       122351, // Molten Core
       114129, // Nether Plating
         6353, // Soul Fire
@@ -1550,6 +1560,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        29722, // Incinerate
        77220, // Mastery: Emberstorm
       123686, // Pyroclasm
+        5740, // Rain of Fire
       116852, // Self Burning Triggers
        17877, // Shadowburn
            0,
@@ -1645,6 +1656,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        84738, // Celestial Focus
        79577, // Eclipse
        81062, // Euphoria
+      129631, // Fae Empowerment
       108299, // Killer Instinct
        86104, // Leather Specialization
        33605, // Lunar Shower
@@ -1652,6 +1664,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        24858, // Moonkin Form
       112857, // Natural Insight
        48393, // Owlkin Frenzy
+        2782, // Remove Corruption
        93399, // Shooting Stars
        78675, // Solar Beam
        48505, // Starfall
@@ -1673,8 +1686,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        33873, // Nurturing Instinct
        16864, // Omen of Clarity
        16974, // Predatory Swiftness
-       16961, // Primal Fury
         6785, // Ravage
+        2782, // Remove Corruption
         1079, // Rip
        52610, // Savage Roar
         5221, // Shred
@@ -1695,7 +1708,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86096, // Leather Specialization
        77494, // Mastery: Nature's Guardian
        33873, // Nurturing Instinct
-       16961, // Primal Fury
+        2782, // Remove Corruption
         1079, // Rip
        62606, // Savage Defense
       106839, // Skull Bash
@@ -1735,7 +1748,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15781
+// Class mastery abilities, wow build 15799
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -1961,7 +1974,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15781
+// Racial abilities, wow build 15799
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2304,7 +2317,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     },
     // Racial abilities for Monk class
     {
-      25046, // Arcane Torrent
+      129597, // Arcane Torrent
           0,
     },
     {     0, },
@@ -2673,7 +2686,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15781
+// Glyph spells for classes, wow build 15799
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2693,7 +2706,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58377, // Glyph of Blitz
        58367, // Glyph of Bloodthirst
        94372, // Glyph of Bull Rush
-       58366, // Glyph of Cleaving
        89003, // Glyph of Colossus Smash
        63325, // Glyph of Death From Above
        58355, // Glyph of Enraged Speed
@@ -2701,6 +2713,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58357, // Glyph of Gag Order
        58385, // Glyph of Hamstring
        58388, // Glyph of Heavy Repercussions
+       58366, // Glyph of Hindering Strikes
        58387, // Glyph of Hoarse Voice
        58364, // Glyph of Hold the Line
       122013, // Glyph of Incite
@@ -2847,6 +2860,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     // Major Glyphs (24 spells)
     {
+       56821, // Glyph of Adrenaline Rush
        56813, // Glyph of Ambush
        56818, // Glyph of Blade Flurry
        91299, // Glyph of Blind
@@ -2865,7 +2879,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56798, // Glyph of Sap
        56808, // Glyph of Shadow Walk
        56810, // Glyph of Shiv
-       56821, // Glyph of Sinister Strike
        56819, // Glyph of Smoke Bomb
        56811, // Glyph of Sprint
        63253, // Glyph of Stealth
@@ -3080,7 +3093,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63093, // Glyph of Mirror Image
        56384, // Glyph of Momentum
        89749, // Glyph of Rapid Teleportation
-       63092, // Glyph of Ritual of Refreshment
+       63092, // Glyph of Ritual of Refreshment [NYI]
        58136, // Glyph of the Bear Cub
        57927, // Glyph of the Monkey
        52648, // Glyph of the Penguin
@@ -3127,8 +3140,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56248, // Glyph of Hand of Gul'dan
        56238, // Glyph of Health Funnel
        56232, // Glyph of Nightmares
-       58094, // Glyph of Ritual of Souls
        56240, // Glyph of Shadow Bolt
+       58094, // Glyph of Soulwell
        56217, // Glyph of Subtlety
        58079, // Glyph of Unending Breath
        56241, // Glyph of Verdant Spheres
@@ -3248,7 +3261,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15781
+// Tier item set bonuses for class, wow build 15799
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
