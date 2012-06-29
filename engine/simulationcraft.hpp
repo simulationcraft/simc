@@ -1773,9 +1773,6 @@ public:
   buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
   buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name );
   buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-
-  operator buff_t* () const;
-  operator debuff_t* () const;
 };
 
 // This helper template is necessary so that reference functions of the classes inheriting from it return the type of the derived class.
@@ -1824,6 +1821,9 @@ public:
     base_t( q, id, name ) {}
   buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ) {}
+
+  operator buff_t* () const;
+  operator debuff_t* () const;
 };
 
 struct stat_buff_creator_t : public buff_creator_helper_t<stat_buff_creator_t>
@@ -1940,7 +1940,7 @@ public:
 
 protected:
   buff_t( const buff_creator_basics_t& params );
-  friend struct buff_creation::buff_creator_basics_t;
+  friend struct buff_creation::buff_creator_t;
 public:
 
   // Use check() inside of ready() methods to prevent skewing of "benefit" calculations.
@@ -1992,7 +1992,7 @@ public:
   int max_stack() { return _max_stack; }
 };
 
-inline buff_creator_basics_t::operator buff_t* () const
+inline buff_creator_t::operator buff_t* () const
 { return new buff_t( *this ); }
 
 struct stat_buff_t : public buff_t
@@ -2049,10 +2049,10 @@ struct debuff_t : public buff_t
 {
 private:
   debuff_t( const buff_creator_basics_t& params );
-  friend struct buff_creation::buff_creator_basics_t;
+  friend struct buff_creation::buff_creator_t;
 };
 
-inline buff_creator_basics_t::operator debuff_t* () const
+inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
 
 typedef struct buff_t aura_t;
