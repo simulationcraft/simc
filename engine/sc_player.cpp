@@ -290,6 +290,7 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
 
 static bool has_foreground_actions( player_t* p )
 {
+  if ( ! p -> active_action_list ) return false;
   return ( p -> active_action_list -> foreground_action_list.size() > 0 );
 }
 
