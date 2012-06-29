@@ -9,7 +9,7 @@ role=spell
 spec=fire
 professions=enchanting=600/tailoring=600
 talents=222220
-glyphs=evocation
+glyphs=evocation/fire_blast/counterspell/mirror_image
 actions=flask,type=draconic_mind
 actions+=/food,type=seafood_magnifique_feast
 actions+=/arcane_brilliance
