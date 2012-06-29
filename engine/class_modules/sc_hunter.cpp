@@ -251,8 +251,8 @@ struct hunter_t : public player_t
     procs( procs_t() ),
     rngs( rngs_t() ),
     talents( talents_t() ),
-    glyphs( glyphs_t() ),
     specs( specs_t() ),
+    glyphs( glyphs_t() ),
     mastery( mastery_spells_t() )
   {
     target_data.init( "target_data", this );
@@ -522,8 +522,6 @@ struct hunter_pet_t : public pet_t
 
   virtual void init_talents()
   {
-    int tab = group();
-
     // Common Talents
     talents.spiked_collar     = find_talent_spell( "Spiked Collar" );
     talents.wild_hunt         = find_talent_spell( "Wild Hunt" );
@@ -706,23 +704,23 @@ struct hunter_pet_t : public pet_t
 template <class Base>
 struct hunter_action_t : public Base
 {
-  typedef Base action_base_t;
+  typedef Base ab;
   typedef hunter_action_t base_t;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, player, s )
+    ab( n, player, s )
   {
-    stateless     = true;
+    ab::stateless = true;
   }
 
-  hunter_t* p() { return debug_cast<hunter_t*>( action_base_t::player ); }
+  hunter_t* p() { return debug_cast<hunter_t*>( ab::player ); }
 
-  hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual double cost()
   {
-    double c = action_base_t::cost();
+    double c = ab::cost();
 
     if ( c == 0 )
       return 0;
@@ -742,7 +740,7 @@ struct hunter_action_t : public Base
 
     if (p() -> rngs.thrill_of_the_hunt -> roll ( p() -> talents.thrill_of_the_hunt -> proc_chance() ) )
     {
-      double gain = base_costs[ current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
+      double gain = ab::base_costs[ ab::current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
       p() -> procs.thrill_of_the_hunt -> occur();
       p() -> resource_gain( RESOURCE_FOCUS, gain, p() -> gains.thrill_of_the_hunt );
     }
@@ -2118,7 +2116,7 @@ struct rapid_fire_t : public hunter_spell_t
   rapid_fire_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "rapid_fire", player, player -> find_class_spell( "Rapid Fire" ) )
   {
-//    parse_options( NULL, options_str );
+    parse_options( NULL, options_str );
 
 //    cooldown -> duration += p() -> talents.posthaste -> effectN( 1 ).time_value();
 
@@ -2272,23 +2270,23 @@ namespace pet_actions {
 template <class Base>
 struct hunter_pet_action_t : public Base
 {
-  typedef Base action_base_t;
+  typedef Base ab;
   typedef hunter_pet_action_t base_t;
 
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    Base( n, player, s )
+    ab( n, player, s )
   {
   }
 
   hunter_pet_t* p() 
   { 
-    return debug_cast<hunter_pet_t*>( action_base_t::player ); 
+    return debug_cast<hunter_pet_t*>( ab::player );
   }
 
   hunter_pet_t::hunter_pet_td_t* cast_td( player_t* t = 0 ) 
   { 
-    return p() -> get_target_data( t ? t : action_base_t::target ); 
+    return p() -> get_target_data( t ? t : ab::target );
   }
 };
 
