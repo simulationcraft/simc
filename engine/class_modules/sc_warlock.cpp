@@ -4532,7 +4532,7 @@ void warlock_t::init_actions()
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
-        action_list_str += "/cancel_metamorphosis,if=((dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750)|demonic_fury<=120)&target.time_to_die>30";
+        action_list_str += "/cancel_metamorphosis,if=dot.corruption.remains>20&buff.dark_soul.down&demonic_fury<=750&target.time_to_die>30";
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
