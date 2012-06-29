@@ -3525,11 +3525,14 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action -> schedule_execute();
-    iteration_executed_foreground_actions++;
-    if ( action -> marker && sim -> current_iteration == 0 )
-      report_information.action_sequence.push_back( new action_sequence_data_t( action, action -> target, sim -> current_time ) );
-    if ( ! action -> label_str.empty() )
-      action_map[ action -> label_str ] += 1;
+    if ( ! quiet )
+    {
+      iteration_executed_foreground_actions++;
+      if ( action -> marker && sim -> current_iteration == 0 )
+        report_information.action_sequence.push_back( new action_sequence_data_t( action, action -> target, sim -> current_time ) );
+      if ( ! action -> label_str.empty() )
+        action_map[ action -> label_str ] += 1;
+    }
   }
 
   return action;
@@ -5515,6 +5518,7 @@ struct run_action_list_t : public swap_action_list_t
   run_action_list_t( player_t* player, const std::string& options_str ) :
     swap_action_list_t( player, options_str, "run_action_list" )
   {
+    quiet = true;
   }
 
   virtual void execute()

@@ -34,6 +34,7 @@ action_t::action_t( action_e       ty,
   background(),
   sequence(),
   use_off_gcd(),
+  quiet(),
   direct_tick(),
   repeating(),
   harmful( true ),
@@ -1500,6 +1501,8 @@ void action_t::init()
   }
 
   stats -> school      = school;
+
+  if ( quiet ) stats -> quiet = true;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;

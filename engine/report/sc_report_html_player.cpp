@@ -1251,7 +1251,6 @@ void print_html_player_action_priority_list( FILE* file, sim_t* sim, player_t* p
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
       action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
-      if ( data -> action -> name_str == "run_action_list" ) continue;
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
       fprintf( file,

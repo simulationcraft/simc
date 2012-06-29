@@ -4026,7 +4026,7 @@ struct action_t
   result_e result;
   resource_e resource_current;
   int aoe, pre_combat;
-  bool dual, callbacks, special, channeled, background, sequence, use_off_gcd;
+  bool dual, callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, repeating, harmful, proc, item_proc, proc_ignores_slot;
   bool may_trigger_dtr, discharge_proc, auto_cast, initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
