@@ -2834,7 +2834,9 @@ void mage_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
+                               .max_stack( find_spell( 36032 ) -> max_stacks() )
+                               .duration( find_spell( 36032 ) -> duration() );
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.25 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
