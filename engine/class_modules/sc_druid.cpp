@@ -4344,9 +4344,10 @@ void druid_t::init_buffs()
                                .chance( spec.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
-  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 129633 ) )
+                                
+  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 1 ).trigger() )
                                .max_stack( 3 );
-  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 129632 ) )
+  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 2 ).trigger() )
                                .max_stack( 3 );
 
   // Feral
