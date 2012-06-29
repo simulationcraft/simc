@@ -1561,29 +1561,6 @@ struct frost_armor_t : public mage_spell_t
 
 // Frost Bomb ===============================================================
 
-// This applies full damage (effect 1) to the primary target
-struct frost_bomb_damage_t : public mage_spell_t
-{
-  frost_bomb_damage_t( mage_t* p, bool dtr = false ) :
-    mage_spell_t( "frost_bomb_damage", p, p -> find_spell( p -> talents.frost_bomb -> effectN( 2 ).base_value() ) )
-  {
-    background = true;
-    parse_effect_data( data().effectN( 1 ) );
-
-    // FIXME: Assuming this triggers from dtr like Living Bomb's Explosion
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new frost_bomb_damage_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
-  }
-
-  virtual resource_e current_resource()
-  { return RESOURCE_NONE; }
-};
-
-// This applies half damage (effect 2) to all secondary targets in range
-// TODO: This needs to apply damage to every target except the primary
 struct frost_bomb_explosion_t : public mage_spell_t
 {
   frost_bomb_explosion_t( mage_t* p, bool dtr = false ) :
@@ -1592,6 +1569,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     aoe = -1;
     base_aoe_multiplier = 0.5; // This is stored in effectN( 2 ), but it's just 50% of effectN( 1 )
     background = true;
+    parse_effect_data( data().effectN( 1 ) );
 
     // FIXME: Assuming this triggers from dtr like Living Bomb's Explosion
     if ( ! dtr && player -> has_dtr )
@@ -1608,23 +1586,19 @@ struct frost_bomb_explosion_t : public mage_spell_t
 struct frost_bomb_t : public mage_spell_t
 {
   timespan_t original_cooldown;
-  frost_bomb_damage_t* explosion_spell_primary;
-  frost_bomb_explosion_t* explosion_spell_aoe;
+  frost_bomb_explosion_t* explosion_spell;
 
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb ),
-    explosion_spell_primary( 0 ),
-    explosion_spell_aoe( 0 )
+    explosion_spell( 0 )
   {
     parse_options( NULL, options_str );
     base_tick_time = data().duration();
     num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
     hasted_ticks = true; // Haste decreases the 'tick' time to explosion
 
-    explosion_spell_primary = new frost_bomb_damage_t( p );
-    explosion_spell_aoe     = new frost_bomb_explosion_t( p );
-    add_child( explosion_spell_primary );
-    add_child( explosion_spell_aoe );
+    explosion_spell     = new frost_bomb_explosion_t( p );
+    add_child( explosion_spell );
 
     original_cooldown = cooldown -> duration;
   }
@@ -1649,10 +1623,7 @@ struct frost_bomb_t : public mage_spell_t
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
-
-    explosion_spell_primary -> execute();
-//    TODO: Reenable this when the constructor is fixed
-//    explosion_spell_aoe -> execute();
+    explosion_spell -> execute();
   }
 };
 
