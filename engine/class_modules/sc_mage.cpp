@@ -205,7 +205,7 @@ struct mage_t : public player_t
     const spell_data_t* cold_snap;
     const spell_data_t* nether_tempest; // Extra target NYI
     const spell_data_t* living_bomb;
-    const spell_data_t* frost_bomb;
+    const spell_data_t* frost_bomb; // Extra targets NYI
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
     const spell_data_t* incanters_ward; // NYI
@@ -2691,6 +2691,21 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
+  if ( name == "mage_bomb"         )
+  {
+    if ( talents.frost_bomb -> ok() )
+    {
+      return new frost_bomb_t( this, options_str );
+    }
+    else if ( talents.living_bomb -> ok() )
+    {
+      return new living_bomb_t( this, options_str );
+    }
+    else if ( talents.nether_tempest -> ok() )
+    {
+      return new nether_tempest_t( this, options_str );
+    }
+  }
   if ( name == "mana_gem"          ) return new                mana_gem_t( this, options_str );
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "molten_armor"      ) return new            molten_armor_t( this, options_str );

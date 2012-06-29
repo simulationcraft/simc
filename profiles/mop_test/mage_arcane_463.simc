@@ -24,7 +24,7 @@ actions+=/mana_gem,if=mana.deficit>12500
 actions+=/evocation,if=mana.pct<30&target.time_to_die>=20
 actions+=/arcane_power,if=buff.arcane_charge.stack=4
 actions+=/arcane_missiles,if=buff.arcane_charge.stack>3
-actions+=/nether_tempest,if=!ticking
+actions+=/mage_bomb,if=!ticking
 actions+=/arcane_barrage,if=buff.arcane_charge.stack=4
 actions+=/arcane_missiles,if=buff.arcane_charge.stack>0
 #actions+=/mirror_image,if=buff.arcane_power.up|(cooldown.arcane_power.remains>20&target.time_to_die>15)
@@ -35,7 +35,7 @@ actions+=/evocation
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
-head=barovian_ritual_hood,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_643hit_526mastery
+head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160crit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit
 chest=robes_of_koegler,heroic=1,type=cloth,ilevel=463,quality=rare,stats=2037armor_899int_1349sta_643hit_526crit,enchant=80all

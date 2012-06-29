@@ -24,12 +24,12 @@ actions+=/mana_gem,if=mana.deficit>12500
 actions+=/evocation,if=mana.pct<30&target.time_to_die>=20
 actions+=/combustion,if=dot.ignite.ticking&dot.pyroblast.ticking
 actions+=/mirror_image,if=target.time_to_die>=25
-actions+=/living_bomb,if=!ticking
+actions+=/mage_bomb,if=!ticking
 actions+=/inferno_blast,if=buff.heating_up.react
 actions+=/pyroblast,if=buff.pyroblast.react
 actions+=/fireball
 actions+=/scorch
-head=barovian_ritual_hood,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_643hit_526mastery
+head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160crit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit
 chest=robes_of_koegler,heroic=1,type=cloth,ilevel=463,quality=rare,stats=2037armor_899int_1349sta_643hit_526crit,enchant=80all

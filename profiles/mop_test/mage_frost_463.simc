@@ -21,7 +21,7 @@ actions+=/counterspell
 #actions+=/volcanic_potion,if=!in_combat
 #actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
-actions+=/frost_bomb
+actions+=/mage_bomb,if=!ticking
 actions+=/mana_gem,if=mana.deficit>12500
 actions+=/evocation,if=mana.pct<10&target.time_to_die>=30&(buff.icy_veins.react|buff.bloodlust.react)
 actions+=/frozen_orb,if=target.time_to_die>=12&!ticking
