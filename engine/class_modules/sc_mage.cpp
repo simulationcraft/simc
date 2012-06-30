@@ -1241,7 +1241,6 @@ struct cold_snap_t : public mage_spell_t
   cold_snap_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "cold_snap", p, p -> talents.cold_snap )
   {
-    check_talent( p -> talents.cold_snap -> ok() );
     parse_options( NULL, options_str );
 
     harmful = false;
@@ -1960,7 +1959,6 @@ struct living_bomb_t : public mage_spell_t
   living_bomb_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "living_bomb", p, p -> talents.living_bomb )
   {
-    check_talent( p -> talents.living_bomb -> ok() );
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
@@ -2136,8 +2134,6 @@ struct nether_tempest_t : public mage_spell_t
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest )
   {
-    check_talent( p -> talents.nether_tempest -> ok() );
-
     parse_options( NULL, options_str );
   }
 
@@ -2159,8 +2155,6 @@ struct presence_of_mind_t : public mage_spell_t
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "presence_of_mind", p, p -> talents.presence_of_mind )
   {
-    check_talent( p -> talents.presence_of_mind -> ok() );
-
     parse_options( NULL, options_str );
     harmful = false;
   }
@@ -2253,8 +2247,6 @@ struct rune_of_power_t : public mage_spell_t
   rune_of_power_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "rune_of_power", p, p -> talents.rune_of_power )
   {
-    check_talent( p -> talents.rune_of_power -> ok() );
-
     parse_options( NULL, options_str );
   }
 
@@ -2274,8 +2266,6 @@ struct scorch_t : public mage_spell_t
   scorch_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "scorch", p, p -> talents.scorch )
   {
-    check_talent( p -> talents.scorch -> ok() );
-
     parse_options( NULL, options_str );
 
     may_hot_streak = true;
