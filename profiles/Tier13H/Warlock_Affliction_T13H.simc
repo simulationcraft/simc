@@ -8,7 +8,7 @@ spec=affliction
 role=spell
 position=back
 professions=tailoring=525/blacksmithing=525
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!....0.
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!....2.
 glyphs=everlasting_affliction/soul_shards/soul_swap
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
@@ -19,6 +19,8 @@ actions.precombat+=/volcanic_potion
 actions=volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/blood_fury
 actions+=/dark_soul
+actions+=/grimoire_of_sacrifice
+actions+=/summon_felhunter,if=buff.grimoire_of_sacrifice.down
 actions+=/run_action_list,name=aoe,if=num_targets>3
 actions+=/summon_doomguard
 actions+=/drain_soul,if=soul_shard=0,interrupt_if=soul_shard!=0

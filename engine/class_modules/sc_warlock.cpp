@@ -295,8 +295,8 @@ struct warlock_t : public player_t
   {
     switch ( specialization() )
     {
-    case WARLOCK_AFFLICTION:  return "000010"; break;
-    case WARLOCK_DEMONOLOGY:  return "300030"; break;
+    case WARLOCK_AFFLICTION:  return "000030"; break;
+    case WARLOCK_DEMONOLOGY:  return "300020"; break;
     case WARLOCK_DESTRUCTION: return "000010"; break;
     default: break;
     }
@@ -1419,16 +1419,6 @@ public:
     return um;
   }
 
-  virtual double action_multiplier()
-  {
-    double m = spell_t::action_multiplier();
-
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && aoe == 0 )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
@@ -1642,6 +1632,15 @@ struct shadow_bolt_t : public warlock_spell_t
       dtr_action = new shadow_bolt_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1892,7 +1891,9 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t::tick( d );
 
     if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 100, p() -> gains.drain_soul );
-    generate_shard = ! generate_shard;
+    generate_shard = ! generate_shard;    
+
+    trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
     consume_tick_resource( d );
   }
@@ -2258,6 +2259,8 @@ struct soul_fire_t : public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> composite_spell_crit();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2650,6 +2653,15 @@ struct touch_of_chaos_t : public warlock_spell_t
     }
   }
 
+  virtual double action_multiplier()
+  {
+    double m = spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
+
   virtual void impact_s( action_state_t* s )
   {
     warlock_spell_t::impact_s( s );
@@ -2716,10 +2728,11 @@ struct fel_flame_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    // Exclude demonology because it's already covered by warlock_spell_t::action_multiplier()
-
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -2746,11 +2759,21 @@ struct void_ray_t : public warlock_spell_t
     warlock_spell_t( p, "Void Ray" )
   {
     aoe = -1;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new void_ray_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -4508,11 +4531,14 @@ void warlock_t::init_actions()
     if ( talents.grimoire_of_service -> ok() )
       action_list_str += "/service_" + pet;
 
-    if ( specialization() != WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
+    if ( talents.grimoire_of_sacrifice -> ok() )
     {
       add_action( talents.grimoire_of_sacrifice );
       action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
     }
+
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+      action_list_str += "/felguard:felstorm";
 
     int multidot_max = 3;
 
@@ -4525,14 +4551,6 @@ void warlock_t::init_actions()
     }
 
     action_list_str += "/run_action_list,name=aoe,if=num_targets>" + util::to_string( multidot_max );
-
-    if ( specialization() == WARLOCK_DEMONOLOGY )
-    {
-      add_action( talents.grimoire_of_sacrifice );
-      action_list_str += "/felguard:felstorm";
-      if ( talents.grimoire_of_sacrifice -> ok() )
-        action_list_str += "/summon_felguard,if=buff.metamorphosis.down&buff.demonic_rebirth.up&buff.demonic_rebirth.remains<3";
-    }
 
     add_action( "Summon Doomguard" );
     add_action( "Summon Doomguard", "if=num_targets<7", "aoe" );
@@ -4607,15 +4625,11 @@ void warlock_t::init_actions()
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.touch_of_chaos );
 
-      if ( talents.grimoire_of_sacrifice -> ok() )
-        action_list_str += "/summon_felguard,if=buff.grimoire_of_sacrifice.stack<2";
-
       add_action( "Life Tap",              "if=mana.pct<50" );
       add_action( "Shadow Bolt" );
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      get_action_priority_list( "aoe" ) -> action_list_str += "/felguard:felstorm";
       add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",      "aoe" );
       add_action( "Immolation Aura",       "",                                                               "aoe" );
       add_action( find_spell( 603 ),       "cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30", "aoe" );
