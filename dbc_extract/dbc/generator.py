@@ -1838,7 +1838,7 @@ class SpellDataGenerator(DataGenerator):
         s += 'static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) )
 
         for power in powers + [ self._spellpower_db[0] ]:
-            fields = power.field('id', 'id_spell', 'aura_id', 'type_power', 'cost', 'cost_2', 'cost_per_second' )
+            fields = power.field('id', 'id_spell', 'aura_id', 'type_power', 'cost', 'cost_2', 'cost_per_second', 'cost_per_second2' )
 
             s += '  { %s },\n' % (', '.join(fields))
             
@@ -2495,7 +2495,7 @@ class ClassFlagGenerator(SpellDataGenerator):
             copts = self._spellclassoptions_db[spell.id_class_opts]
             if not copts.spell_family_name in spell_family.keys():
                 spell_family[copts.spell_family_name] = [ ]
-                for i in xrange(0, 96):
+                for i in xrange(0, 128):
                     spell_family[copts.spell_family_name].append({
                         'spells' : [ ],
                         'effects': [ ]
@@ -2503,7 +2503,7 @@ class ClassFlagGenerator(SpellDataGenerator):
 
 
             # Assign this spell to bitfield entries
-            for i in xrange(1, 4):
+            for i in xrange(1, 5):
                 f = getattr(copts, 'spell_family_flags_%u' % i)
                 
                 for bit in xrange(0, 31):
@@ -2518,7 +2518,7 @@ class ClassFlagGenerator(SpellDataGenerator):
                 if not effect:
                     continue
 
-                for i in xrange(1, 4):
+                for i in xrange(1, 5):
                     f = getattr(effect, 'class_mask_%u' % i)
                     for bit in xrange(0, 31):
                         if not (f & (1 << bit)):

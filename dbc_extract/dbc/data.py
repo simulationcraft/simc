@@ -341,7 +341,7 @@ _DBC_FIELDS = {
         ( 'base_value', '%7d' ),     ( 'coefficient', '%13.10f' ),     ( 'dmg_multiplier', '%f' ),   'chain_target',                  ( 'die_sides', '%2d' ),
           'item_type',                   'mechanic',                     ( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ),         ( 'points_per_combo_points', '%5.1f' ), 
           'id_radius',                   'id_radius_max',                ( 'real_ppl', '%5.3f' ),    ( 'class_mask_1', '%#.8x' ),    ( 'class_mask_2', '%#.8x' ),
-        ( 'class_mask_3', '%#.8x' ),      'unk_15464',            ( 'trigger_spell', '%5d' ),   'implicit_target_1',              'implicit_target_2',     
+        ( 'class_mask_3', '%#.8x' ),   ( 'class_mask_4', '%#.8x' ),  ( 'trigger_spell', '%5d' ),   'implicit_target_1',              'implicit_target_2',     
     ( 'id_spell', '%6u' ),             ( 'index', '%2u' ),           'unk_14040'
     ],
     # New in MoP
@@ -368,7 +368,7 @@ _DBC_FIELDS = {
     ],
     'SpellPower.dbc' : [
           ( 'id', '%6u' ), ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
-          'id_display', ( 'cost_2', '%5.2f' ),     ( 'unk_14732', '%f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
+          'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
     ],
     'SpellRadius.dbc' : [
           'id', ( 'radius_1', '%7.1f' ), 'radius_2', ( 'radius_3', '%7.f' )

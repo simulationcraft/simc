@@ -44,6 +44,7 @@ struct spellpower_data_t
   int      _cost;
   double   _cost_2;
   int      _cost_per_second;    // Unsure
+  double   _cost_per_second_2;
 
   resource_e resource() const;
   unsigned id() const { return _id; }
