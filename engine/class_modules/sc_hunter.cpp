@@ -3756,13 +3756,8 @@ struct hunter_module_t : public module_t
   {
     return new hunter_t( sim, name, r );
   }
-  
-#if MOP_IN_PROGRESS
-  // HACK until hunter is working routinely and is "valid"
+
   virtual bool valid() { return true; }
-#else
-  virtual bool valid() { return false; }
-#endif
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}
