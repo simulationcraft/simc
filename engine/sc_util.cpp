@@ -1551,6 +1551,7 @@ int util::class_id( player_e type )
   case MONK:         return 10;
   case DRUID:        return 11;
   case PLAYER_SPECIAL_SCALE: return 12;
+  case PLAYER_SPECIAL_SCALE2: return 13;
   default:           return 0;
   }
 }

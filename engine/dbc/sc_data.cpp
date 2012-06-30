@@ -61,6 +61,7 @@ player_e spell_data_t::scaling_class() const
 {
   switch ( _scaling_type )
   {
+  case -2: return PLAYER_SPECIAL_SCALE2;
   case -1: return PLAYER_SPECIAL_SCALE;
   case 1:  return WARRIOR;
   case 2:  return PALADIN;
