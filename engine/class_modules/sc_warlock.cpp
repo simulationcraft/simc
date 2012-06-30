@@ -1872,17 +1872,17 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 1.3; // assumed based on Ghostcrawler post, needs testing
+    tick_power_mod = 1.5; // tested in beta 2012/06/30
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double action_multiplier()
   {
-    double m = warlock_spell_t::composite_target_multiplier( target );
+    double m = warlock_spell_t::action_multiplier();
 
     if ( target -> health_percentage() <= data().effectN( 3 ).base_value() )
-    {
       m *= 2.0;
-    }
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -3032,7 +3032,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   const spell_data_t& parent_data;
 
   rain_of_fire_tick_t( warlock_t* p, const spell_data_t& pd ) :
-    warlock_spell_t( "rain_of_fire_tick", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104233 ) : p -> find_spell( 42223 ) ), parent_data( pd )
+    warlock_spell_t( "rain_of_fire_tick", p, pd.effectN( 2 ).trigger() ), parent_data( pd )
   {
     background  = true;
     aoe         = -1;
@@ -3065,7 +3065,7 @@ struct rain_of_fire_t : public warlock_spell_t
   rain_of_fire_tick_t* rain_of_fire_tick;
 
   rain_of_fire_t( warlock_t* p ) :
-    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : p -> find_spell( 5740 ) ),
+    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : ( p -> specialization() == WARLOCK_AFFLICTION ) ? p -> find_spell( 5740 ) : spell_data_t::not_found() ),
     rain_of_fire_tick( 0 )
   {
     dot_behavior = DOT_CLIP;
@@ -3093,6 +3093,72 @@ struct rain_of_fire_t : public warlock_spell_t
     rain_of_fire_tick -> execute();
 
     if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
+  }
+
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  {
+    return num_ticks;
+  }
+};
+
+
+struct hellfire_tick_t : public warlock_spell_t
+{
+  const spell_data_t& parent_data;
+
+  hellfire_tick_t( warlock_t* p, const spell_data_t& pd ) :
+    warlock_spell_t( "hellfire_tick", p, pd.effectN( 1 ).trigger() ), parent_data( pd )
+  {
+    background  = true;
+    aoe         = -1;
+    direct_tick = true;
+    dual        = true;
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain );
+  }
+};
+
+
+struct hellfire_t : public warlock_spell_t
+{
+  hellfire_tick_t* hellfire_tick;
+
+  hellfire_t( warlock_t* p ) :
+    warlock_spell_t( p, "Hellfire" ), hellfire_tick( 0 )
+  {
+    tick_zero = true;
+    may_miss = false;
+    channeled = true;
+    tick_zero = true;
+
+    hellfire_tick = new hellfire_tick_t( p, data() );
+  }
+
+  virtual bool usable_moving()
+  {
+    return true;
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    hellfire_tick -> stats = stats;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    hellfire_tick -> execute();
+
+    if ( d -> current_tick != 0 ) consume_tick_resource( d );
   }
 
   virtual bool ready()
@@ -3793,8 +3859,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     decrement_event_t( warlock_t* p, buff_t* b ) :
       event_t( p -> sim, p, "grimoire_of_sacrifice_decrement" ), buff( b )
     {
-      // FIXME: It takes at least 20 seconds to decrement currently, contrary to what the tooltip says.
-      sim -> add_event( this, timespan_t::from_seconds( 20 ) );
+      sim -> add_event( this, timespan_t::from_seconds( 15 ) );
     }
 
     virtual void execute()
@@ -3832,6 +3897,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
       if ( p() -> spec.demonic_rebirth -> ok() )
         p() -> buffs.demonic_rebirth -> trigger();
 
+      // FIXME: Add heal event.
       decrement_event = new ( sim ) decrement_event_t( p(), p() -> buffs.grimoire_of_sacrifice );
     }
   }
@@ -4083,6 +4149,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "havoc"                 ) a = new                 havoc_t( this );
   else if ( name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
   else if ( name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
+  else if ( name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( name == "immolation_aura"       ) a = new       immolation_aura_t( this );
   else if ( name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( name == "imp_swarm"             ) a = new             imp_swarm_t( this );
