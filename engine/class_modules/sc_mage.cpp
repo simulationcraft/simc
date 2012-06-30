@@ -2047,7 +2047,7 @@ struct mana_gem_t : public action_t
     p -> procs.mana_gem -> occur();
     p -> mana_gem_charges--;
 
-    double gain = sim -> rng -> range( min, max );
+    double gain = sim -> range( min, max );
 
     player -> resource_gain( RESOURCE_MANA, gain, p -> gains.mana_gem );
 
