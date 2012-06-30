@@ -86,14 +86,14 @@ struct mage_t : public player_t
   // Glyphs
   struct glyphs_t
   {
-    // Prime
+
+    // Major
+    const spell_data_t* mirror_image;
     const spell_data_t* arcane_power;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* living_bomb;
-
-    // Major
-    const spell_data_t* mirror_image;
+    const spell_data_t* mana_gem;
 
     // Minor
     const spell_data_t* arcane_brilliance;
@@ -1349,13 +1349,26 @@ struct conjure_mana_gem_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> mana_gem_charges = 3;
+    if ( p() -> glyphs.mana_gem -> ok() )
+    {
+      p() -> mana_gem_charges = 10;
+    }
+    else
+    {
+      p() -> mana_gem_charges = 3;
+    }
   }
 
   virtual bool ready()
   {
-    if ( p() -> mana_gem_charges == 3 )
+    if ( p() -> glyphs.mana_gem -> ok() && p() -> mana_gem_charges == 10 )
+    {
       return false;
+    }
+    else if ( !p() -> glyphs.mana_gem -> ok() && p() -> mana_gem_charges == 3 )
+    {
+      return false;
+    }
 
     return mage_spell_t::ready();
   }
@@ -2030,8 +2043,8 @@ struct mana_gem_t : public action_t
 
     // FIXME: These currently always return 1, either need to figure out the DBC information
     // or hardcode them
-    min = p -> dbc.effect_min( 1936, p -> level );
-    max = p -> dbc.effect_max( 1936, p -> level );
+    min = p -> find_spell( 5405 ) -> effectN( 1 ).min( p );
+    max = p -> find_spell( 5405 ) -> effectN( 1 ).max( p );
 
     cooldown -> duration = timespan_t::from_seconds( 120.0 );
     trigger_gcd = timespan_t::zero();
@@ -2764,6 +2777,7 @@ void mage_t::init_spells()
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
+  glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -3241,7 +3255,14 @@ void mage_t::reset()
   player_t::reset();
 
   rotation.reset();
-  mana_gem_charges = 3;
+  if ( glyphs.mana_gem -> ok() )
+  {
+    mana_gem_charges = 10;
+  }
+  else
+  {
+    mana_gem_charges = 3;
+  }
 }
 
 // mage_t::regen  ===========================================================
