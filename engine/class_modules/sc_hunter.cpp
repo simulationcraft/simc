@@ -93,7 +93,6 @@ struct hunter_t : public player_t
     proc_t* thrill_of_the_hunt;
     proc_t* wild_quiver;
     proc_t* lock_and_load;
-    proc_t* flaming_arrow;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
   } procs;
@@ -235,8 +234,6 @@ struct hunter_t : public player_t
 
   target_specific_t<hunter_td_t> target_data;
 
-  action_t* flaming_arrow;
-
   double merge_piercing_shots;
   double tier13_4pc_cooldown;
   uint32_t vishanka;
@@ -270,7 +267,6 @@ struct hunter_t : public player_t
     summon_pet_str = "";
     initial.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
-    flaming_arrow = NULL;
 
     tier13_4pc_cooldown = 105.0;
     vishanka = 0;
@@ -451,7 +447,7 @@ struct hunter_pet_t : public pet_t
     case PET_CAT:          return "roar_of_courage";
     case PET_CORE_HOUND:   return NULL;
     case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
-    case PET_HYENA:        return "tendon_rip";
+    case PET_HYENA:        return "cackling_howl";
     case PET_MOTH:         return NULL;
     case PET_RAPTOR:       return "tear_armor";
     case PET_SPIRIT_BEAST: return "roar_of_courage";
@@ -1187,24 +1183,6 @@ struct power_shot_t : public hunter_ranged_attack_t
       p() -> buffs.cobra_strikes -> trigger( 2 );
     }
   }
-};
-
-
-// Flaming Arrow Attack =====================================================
-
-struct flaming_arrow_t : public hunter_ranged_attack_t
-{
-  flaming_arrow_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "flaming_arrow", player, player -> find_spell( 99058 ) )
-  {
-    background = true;
-    repeating = false;
-    proc = true;
-    normalize_weapon_speed=true;
-  }
-
-  virtual void trigger_steady_focus()
-  { }
 };
 
 // Black Arrow ==============================================================
@@ -2770,7 +2748,7 @@ struct ravage_t : public hunter_pet_spell_t
 struct tear_armor_t : public hunter_pet_spell_t
 {
   tear_armor_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "tear_armor", player, player -> find_spell( 95467 ) )
+    hunter_pet_spell_t( "tear_armor", player, player -> find_spell( 50498 ) )
   {
 
     parse_options( 0, options_str );
@@ -2789,12 +2767,12 @@ struct tear_armor_t : public hunter_pet_spell_t
   }
 };
 
-// Hyena Tendon Rip =========================================================
+// Hyena Cackling Howl =========================================================
 
-struct tendon_rip_t : public hunter_pet_spell_t
+struct cackling_howl_t : public hunter_pet_spell_t
 {
-  tendon_rip_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "tendon_rip", player, player -> find_spell( 50271 ) )
+  cackling_howl_t( hunter_pet_t* player, const std::string& options_str ) :
+    hunter_pet_spell_t( "cackling_howl", player, player -> find_spell( 50271 ) )
   {
 
     parse_options( 0, options_str );
@@ -2902,7 +2880,7 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if ( name == "demoralizing_screech"  ) return new demoralizing_screech_t( this, options_str );
   if ( name == "ravage"                ) return new               ravage_t( this, options_str );
   if ( name == "tear_armor"            ) return new           tear_armor_t( this, options_str );
-  if ( name == "tendon_rip"            ) return new           tendon_rip_t( this, options_str );
+  if ( name == "cackling_howl"         ) return new        cackling_howl_t( this, options_str );
   if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
 
   return pet_t::create_action( name, options_str );
@@ -3086,8 +3064,6 @@ void hunter_t::init_spells()
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
 
-  flaming_arrow = new flaming_arrow_t( this );
-
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
@@ -3218,7 +3194,6 @@ void hunter_t::init_procs()
   procs.thrill_of_the_hunt           = get_proc( "thrill_of_the_hunt"           );
   procs.wild_quiver                  = get_proc( "wild_quiver"                  );
   procs.lock_and_load                = get_proc( "lock_and_load"                );
-  procs.flaming_arrow                = get_proc( "flaming_arrow"                );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
 }
