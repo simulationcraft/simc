@@ -350,6 +350,22 @@ static bool parse_talent_url( sim_t* sim,
   return false;
 }
 
+// parse_talent_override =========================================================
+
+static bool parse_talent_override( sim_t* sim,
+                              const std::string& name,
+                              const std::string& override_str )
+{
+  assert( name == "talent_override" ); ( void )name;
+
+  player_t* p = sim -> active_player;
+
+  if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
+  p -> talent_overrides_str += override_str;
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
 static bool parse_role_string( sim_t* sim,
@@ -1888,6 +1904,82 @@ void player_t::init_rating()
   rating.init( sim, dbc, level, type );
 }
 
+struct override_talent_t : action_t
+{
+  override_talent_t( player_t* player ) : action_t( ACTION_OTHER, "override_talent", player )
+  {
+    background = true;
+  }
+
+  virtual bool is_valid_target( player_t* t )
+  {
+    // This skips the sleeping check, which would have made all targets ineligible at this point
+    return ( ( type == ACTION_HEAL && ! t -> is_enemy() ) || ( type != ACTION_HEAL && t -> is_enemy() ) );
+  }
+
+  virtual expr_t* create_expression( const std::string& name_str )
+  {
+    // For safety we'll only allow the expressions we know will work prior to action initialization
+    if ( name_str == "num_targets" )
+      return action_t::create_expression( name_str );
+    else
+      return 0;
+  }
+};
+
+void player_t::override_talent( std::string override_str )
+{
+  std::string::size_type cut_pt = override_str.find( "," );
+
+  if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
+  {
+    override_talent_t* dummy_action = new override_talent_t( this );
+    expr_t* expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
+    if ( ! expr || ! expr -> success() ) return;
+    override_str = override_str.substr( 0, cut_pt );
+  }
+
+  unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str() );
+
+  if ( ! spell_id || ! dbc.spell( spell_id ) )
+  {
+    sim -> errorf( "Override talent %s not found for player %s.\n", override_str.c_str(), name() );
+    return;
+  }
+
+  for ( unsigned int j = 0; j < MAX_TALENT_ROWS; j++ )
+  {
+    for ( unsigned int i = 0; i < MAX_TALENT_COLS; i++ )
+    {
+      talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+      if ( td && ( td -> spell_id() == spell_id ) )
+      {
+        if ( level < ( int )( ( j + 1 ) * 15 ) ) 
+        {
+          sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
+          return;
+        }
+        for ( unsigned int k = 0; k < MAX_TALENT_COLS; k++ )
+        {
+          if ( k == i )
+          {
+            if ( sim -> debug && talent_list[ j * MAX_TALENT_COLS + k ] )
+              sim -> output( "talent_override - %s for player %s: no action taken, talent was already enabled\n", override_str.c_str(), name() );
+            talent_list[ j * MAX_TALENT_COLS + k ] = 1;
+          }
+          else
+          {
+            if ( sim -> debug && talent_list[ j * MAX_TALENT_COLS + k ] )
+              sim -> output( "talent_override - %s for player %s: talent %d in tier %d replaced\n", override_str.c_str(), name(), k + 1, j + 1 );
+            talent_list[ j * MAX_TALENT_COLS + k ] = 0;
+          }
+        }
+      }
+    }
+  }
+
+}
+
 // player_t::init_talents ====================================================
 
 void player_t::init_talents()
@@ -1898,6 +1990,16 @@ void player_t::init_talents()
 
     if ( glyphs_str.empty() )
       glyphs_str = set_default_glyphs();
+  }
+
+  if ( ! talent_overrides_str.empty() )
+  {
+    std::vector<std::string> splits;
+    unsigned int num_splits = util::string_split( splits, talent_overrides_str, "/" );
+    for ( size_t i = 0; i < num_splits; i++ )
+    {
+      override_talent( splits[ i ] );
+    }
   }
 }
 
@@ -7222,6 +7324,7 @@ void player_t::create_options()
     { "server",                               OPT_STRING,   &( server_str                             ) },
     { "id",                                   OPT_STRING,   &( id_str                                 ) },
     { "talents",                              OPT_FUNC,     ( void* ) ::parse_talent_url                },
+    { "talent_override",                      OPT_FUNC,     ( void* ) ::parse_talent_override           },
     { "glyphs",                               OPT_STRING,   &( glyphs_str                             ) },
     { "race",                                 OPT_STRING,   &( race_str                               ) },
     { "level",                                OPT_INT,      &( level                                  ) },

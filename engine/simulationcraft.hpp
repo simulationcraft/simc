@@ -3153,6 +3153,7 @@ struct player_t : public noncopyable
 
   // Talent Parsing
   std::array<uint32_t,MAX_TALENT_SLOTS> talent_list;
+  std::string talent_overrides_str;
 
   // Glyph Parsing
   std::vector<const spell_data_t*> glyph_list;
@@ -3579,6 +3580,7 @@ struct player_t : public noncopyable
   virtual const char* name() { return name_str.c_str(); }
 
   virtual void init();
+  virtual void override_talent( std::string override_str );
   virtual void init_talents();
   virtual void init_glyphs();
   virtual void init_base() = 0;
