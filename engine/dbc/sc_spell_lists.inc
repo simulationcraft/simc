@@ -988,7 +988,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102791, // Wild Mushroom: Bloom
            0,
     },
+    // Pet tree, 1 abilities
     {
+      113769, // Wrath
            0,
     },
   },
