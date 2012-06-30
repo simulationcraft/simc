@@ -197,12 +197,6 @@ action_t::action_t( action_e       ty,
 
   stats = player -> get_stats( name_str , this );
 
-  if ( &data() == &spell_data_not_found_t::singleton )
-  {
-    sim -> errorf( "Player %s could not find spell data for action %s", player -> name(), name() );
-    background = true; // prevent action from being executed
-  }
-
   if ( data().ok() )
   {
     parse_spell_data( data() );
@@ -914,6 +908,13 @@ void action_t::execute()
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
+  }
+
+  if ( &data() == &spell_data_not_found_t::singleton )
+  {
+    sim -> errorf( "Player %s could not find spell data for action %s", player -> name(), name() );
+    assert( 0 );
+    sim -> cancel();
   }
 
   if ( sim -> log && ! dual )

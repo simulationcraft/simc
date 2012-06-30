@@ -4528,14 +4528,11 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-    if ( talents.grimoire_of_service -> ok() )
-      action_list_str += "/service_" + pet;
+    
+    action_list_str += "/service_" + pet + ",if=talent.grimoire_of_service.enabled";
 
-    if ( talents.grimoire_of_sacrifice -> ok() )
-    {
-      add_action( talents.grimoire_of_sacrifice );
-      action_list_str += "/summon_" + pet + ",if=buff.grimoire_of_sacrifice.down";
-    }
+    action_list_str += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
+    action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down";
 
     if ( specialization() == WARLOCK_DEMONOLOGY )
       action_list_str += "/felguard:felstorm";
@@ -4575,6 +4572,8 @@ void warlock_t::init_actions()
         add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
         add_action( "Unstable Affliction", "cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
       }
+      action_list_str += "/soulburn,if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&cooldown.instant_summon_pet.remains=0";
+      action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&buff.soulburn.up&cooldown.instant_summon_pet.remains=0";
       add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
       add_action( "Life Tap",              "if=mana.pct<=35" );
       add_action( "Malefic Grasp",         "chain=1" );
@@ -4636,9 +4635,10 @@ void warlock_t::init_actions()
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                                     "aoe" );
       add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                               "aoe" );
-      add_action( talents.harvest_life,    "chain=1",                                                        "aoe" );
-      if ( ! talents.harvest_life -> ok() )
-        add_action( "Rain of Fire",          "",                                                               "aoe" );
+
+      get_action_priority_list( "aoe" ) -> action_list_str += "/harvest_life,chain=1,if=talent.harvest_life.enabled";
+
+      add_action( "Rain of Fire",          "if=!talent.harvest_life.enabled",                                "aoe" );
       add_action( "Life Tap",              "",                                                               "aoe" );
       break;
 

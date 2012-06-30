@@ -1995,7 +1995,7 @@ void player_t::init_talents()
   if ( ! talent_overrides_str.empty() )
   {
     std::vector<std::string> splits;
-    unsigned int num_splits = util::string_split( splits, talent_overrides_str, "/" );
+    size_t num_splits = util::string_split( splits, talent_overrides_str, "/" );
     for ( size_t i = 0; i < num_splits; i++ )
     {
       override_talent( splits[ i ] );
@@ -7122,6 +7122,16 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += "talents=" + talents_str + term;
     };
 
+    if ( talent_overrides_str.size() > 0 )
+    {
+      std::vector<std::string> splits;
+      size_t num_splits = util::string_split( splits, talent_overrides_str, "/" );
+      for ( size_t i = 0; i < num_splits; i++ )
+      {
+        profile_str += "talent_override=" + splits[ i ] + term;
+      }
+    }
+
     if ( glyphs_str.size() > 0 )
     {
       profile_str += "glyphs=" + glyphs_str + term;
@@ -7292,6 +7302,7 @@ void player_t::copy_from( player_t* source )
   position_str = source -> position_str;
   professions_str = source -> professions_str;
   recreate_talent_str( TALENT_FORMAT_UNCHANGED );
+  talent_overrides_str = source -> talent_overrides_str;
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   action_priority_list.clear();
