@@ -1445,9 +1445,19 @@ public:
 
   void consume_tick_resource( dot_t* d )
   {
-    consume_resource();
     resource_e r = current_resource();
-    if ( p() -> resources.current[ r ] < base_costs[ r ] ) 
+    resource_consumed = costs_per_second[ r ] * base_tick_time.total_seconds();
+    
+    player -> resource_loss( r, resource_consumed, 0, this );
+
+    if ( sim -> log )
+      sim -> output( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( r ),
+                     name(), player -> resources.current[ r ] );
+
+    stats -> consume_resource( r, resource_consumed );
+
+    if ( player -> resources.current[ r ] < resource_consumed ) 
     {
       if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
         p() -> spells.metamorphosis -> cancel();
@@ -1462,10 +1472,10 @@ public:
 
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
-    // If getting to 10 was a surprise, the player would have to react to it
-    if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] == 10 && amount > 1 && chance < 1.0 )
+    // If getting to 1 full ember was a surprise, the player would have to react to it
+    if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] == 1 && amount > 0.1 && chance < 1.0 )
       p -> ember_react = p -> sim -> current_time + p -> total_reaction_time();
-    else if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] >= 10 )
+    else if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] >= 1 )
       p -> ember_react = p -> sim -> current_time;
     else
       p -> ember_react = timespan_t::max();
@@ -1473,7 +1483,7 @@ public:
 
   static void refund_embers( warlock_t* p )
   {
-    double refund = ceil( ( p -> resources.current[ RESOURCE_BURNING_EMBER ] + 10.0 ) / 4.0 );
+    double refund = ceil( ( p -> resources.current[ RESOURCE_BURNING_EMBER ] + 1.0 ) / 4.0 );
 
     if ( refund > 0 ) p -> resource_gain( RESOURCE_BURNING_EMBER, refund, p -> gains.miss_refund );
   }
@@ -1774,7 +1784,7 @@ struct corruption_t : public warlock_spell_t
 
     if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 100, p() -> gains.nightfall );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
     }
   }
 
@@ -1890,15 +1900,12 @@ struct drain_soul_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 100, p() -> gains.drain_soul );
+    if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
     generate_shard = ! generate_shard;    
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
-    // FIXME: This currently costs twice as much per tick as you'd think
-    base_costs[ RESOURCE_MANA ] *= 2;
     consume_tick_resource( d );
-    base_costs[ RESOURCE_MANA ] /= 2;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -2032,14 +2039,14 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 1, p() -> gains.immolate, 1.0 );
+    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
   }
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 1, p() -> gains.immolate, 1.0 );
+    if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
   }
 };
 
@@ -2157,7 +2164,7 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 2 : 1, p() -> gains.incinerate  );
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate  );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2717,7 +2724,7 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::impact_s( s );
 
-    if ( p() -> specialization() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 1, p() -> gains.fel_flame );
+    if ( p() -> specialization() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3081,7 +3088,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     warlock_spell_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking )
-      trigger_ember_gain( p(), 1, p() -> gains.rain_of_fire, parent_data.effectN( 2 ).percent() );
+      trigger_ember_gain( p(), 0.1, p() -> gains.rain_of_fire, parent_data.effectN( 2 ).percent() );
   }
 };
 
@@ -3613,7 +3620,7 @@ struct flames_of_xoroth_t : public warlock_spell_t
       p() -> pets.active = p() -> pets.last;
     }
 
-    if ( gain_ember ) p() -> resource_gain( RESOURCE_BURNING_EMBER, 10, ember_gain );
+    if ( gain_ember ) p() -> resource_gain( RESOURCE_BURNING_EMBER, 1, ember_gain );
   }
 };
 
@@ -4358,9 +4365,9 @@ void warlock_t::init_base()
 
   base.mp5 *= 1.0 + spec.chaotic_energy -> effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 300 + ( ( glyphs.soul_shards -> ok() ) ? 100 : 0 );
+  if ( specialization() == WARLOCK_AFFLICTION )  resources.base[ RESOURCE_SOUL_SHARD ]    = 3 + ( ( glyphs.soul_shards -> ok() ) ? 1 : 0 );
   if ( specialization() == WARLOCK_DEMONOLOGY )  resources.base[ RESOURCE_DEMONIC_FURY ]  = 1000;
-  if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 30 + ( ( glyphs.burning_embers -> ok() ) ? 10 : 0 );
+  if ( specialization() == WARLOCK_DESTRUCTION ) resources.base[ RESOURCE_BURNING_EMBER ] = 3 + ( ( glyphs.burning_embers -> ok() ) ? 1 : 0 );
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_capi = 0.006650;
@@ -4768,7 +4775,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       warlock_t& player;
       ember_react_expr_t( warlock_t& p ) :
         expr_t( "ember_react" ), player( p ) { }
-      virtual double evaluate() { return player.resources.current[ RESOURCE_BURNING_EMBER ] >= 10 && player.sim -> current_time >= player.ember_react; }
+      virtual double evaluate() { return player.resources.current[ RESOURCE_BURNING_EMBER ] >= 1 && player.sim -> current_time >= player.ember_react; }
     };
     return new ember_react_expr_t( *this );
   }

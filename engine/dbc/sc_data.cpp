@@ -182,31 +182,44 @@ resource_e spellpower_data_t::resource() const
   return util::translate_power_type( type() );
 }
 
+double spellpower_data_t::cost_divisor() const
+{  
+  switch ( type() )
+  {
+  case POWER_MANA:
+  case POWER_SOUL_SHARDS:
+    return 100.0;
+  case POWER_RAGE:
+  case POWER_RUNIC_POWER:
+  case POWER_BURNING_EMBER:
+    return 10.0;
+  default:
+    return 1.0;
+  }
+}
+
 double spellpower_data_t::cost() const
 {
   double cost = 0.0;
-  double divisor;
 
   if ( _cost > 0 )
     cost = _cost;
   else
     cost = _cost_2;
 
-  switch ( type() )
-  {
-  case POWER_MANA:
-    divisor = 100.0;
-    break;
-  case POWER_RAGE:
-  case POWER_RUNIC_POWER:
-    divisor = 10.0;
-    break;
-  default:
-    divisor = 1.0;
-    break;
-  }
+  return cost / cost_divisor();;
+}
 
-  return cost / divisor;
+double spellpower_data_t::cost_per_second() const
+{
+  double cost = 0.0;
+
+  if ( _cost_per_second > 0 )
+    cost = _cost_per_second;
+  else
+    cost = _cost_per_second_2;
+
+  return cost / cost_divisor();
 }
 
 // ==========================================================================
