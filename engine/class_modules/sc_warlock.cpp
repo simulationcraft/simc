@@ -1895,7 +1895,10 @@ struct drain_soul_t : public warlock_spell_t
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
+    // FIXME: This currently costs twice as much per tick as you'd think
+    base_costs[ RESOURCE_MANA ] *= 2;
     consume_tick_resource( d );
+    base_costs[ RESOURCE_MANA ] /= 2;
   }
 
   virtual void impact_s( action_state_t* s )
