@@ -60,7 +60,7 @@ struct hunter_t : public player_t
     buff_t* master_marksman_fire;
     buff_t* pre_steady_focus;
     buff_t* rapid_fire;
-    buff_t* trueshot_aura;
+    // buff_t* trueshot_aura;
     buff_t* tier13_4pc;
   } buffs;
 
@@ -139,48 +139,46 @@ struct hunter_t : public player_t
   // Specialization Spells
   struct specs_t
   {
-    // TODO OBSOLETE 
-    const spell_data_t* improved_serpent_sting;    
-
     // Baseline    
-    const spell_data_t* trueshot_aura;
+    // const spell_data_t* trueshot_aura;
 
     // Shared
-    const spell_data_t* cobra_shot;
+    //const spell_data_t* cobra_shot;
 
     // Beast Mastery
-    const spell_data_t* kill_command;
-    const spell_data_t* intimidation;
+    // const spell_data_t* kill_command;
+    // const spell_data_t* intimidation;
     const spell_data_t* go_for_the_throat;
     const spell_data_t* beast_cleave;
     const spell_data_t* frenzy;
     const spell_data_t* focus_fire;
-    const spell_data_t* bestial_wrath;
+    // const spell_data_t* bestial_wrath;
     const spell_data_t* cobra_strikes;
-    //const spell_data_t* the_beast_within;
-    const spell_data_t* kindred_spirits;
+    const spell_data_t* the_beast_within;
+    // const spell_data_t* kindred_spirits;
     const spell_data_t* invigoration;
-    const spell_data_t* exotic_beasts;
-
-    // Marksmanship
-    const spell_data_t* aimed_shot;
+    // const spell_data_t* exotic_beasts;
+    // 
+    // // Marksmanship
+    // const spell_data_t* aimed_shot;
     const spell_data_t* careful_aim;
-    const spell_data_t* concussive_barrage;
+    // const spell_data_t* concussive_barrage;
     const spell_data_t* bombardment;
     const spell_data_t* rapid_recuperation;
     const spell_data_t* master_marksman;
-    const spell_data_t* chimera_shot;
+    // const spell_data_t* chimera_shot;
     const spell_data_t* steady_focus;
     const spell_data_t* piercing_shots;
-    // const spell_data_t* wild quiver;
-
-    // Survival
-    const spell_data_t* explosive_shot;
-    const spell_data_t* lock_and_load;
-    const spell_data_t* black_arrow;
-    const spell_data_t* entrapment;
-    const spell_data_t* viper_venom;
-    const spell_data_t* trap_mastery;
+    // // const spell_data_t* wild quiver;
+    // 
+    // // Survival
+    // const spell_data_t* explosive_shot;
+    // const spell_data_t* lock_and_load;
+    const spell_data_t* improved_serpent_sting;    
+    // const spell_data_t* black_arrow;
+    // const spell_data_t* entrapment;
+    // const spell_data_t* viper_venom;
+    // const spell_data_t* trap_mastery;
     const spell_data_t* serpent_spread;
   } specs;
 
@@ -1346,7 +1344,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
   chimera_shot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "chimera_shot", player, player -> find_class_spell( "Chimera Shot" ) )
   {
-    check_talent( p() -> specs.chimera_shot -> ok() );
+    // TODO no longer needed? check_talent( p() -> specs.chimera_shot -> ok() );
 
     parse_options( NULL, options_str );
 
@@ -2241,7 +2239,7 @@ struct trueshot_aura_t : public hunter_spell_t
   trueshot_aura_t( hunter_t* player, const std::string& /* options_str */ ) :
     hunter_spell_t( "trueshot_aura", player, player -> find_class_spell( "Trueshot Aura" ) )
   {
-    check_talent( p() -> specs.trueshot_aura -> ok() );
+    // Not needed: check_talent( p() -> specs.trueshot_aura -> ok() );
     trigger_gcd = timespan_t::zero();
     harmful = false;
     background = ( sim -> overrides.attack_power_multiplier != 0 && sim -> overrides.critical_strike != 0 );
@@ -3068,21 +3066,27 @@ void hunter_t::init_spells()
   glyphs.tame_beast          = find_glyph_spell( "Glyph of Tame Beast"  );
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah"  );
 
-  specs.kill_command      = find_specialization_spell( "Kill Command" );
-  specs.piercing_shots    = find_specialization_spell( "Piercing Shots" );
-  specs.frenzy            = find_specialization_spell( "Frenzy" );
+  specs.piercing_shots       = find_specialization_spell( "Piercing Shots" );
+  specs.steady_focus         = find_specialization_spell( "Steady Focus" );
+  specs.go_for_the_throat    = find_specialization_spell( "Go for the Throat" );
+  specs.careful_aim          = find_specialization_spell( "Careful Aim" );
+  specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
+  specs.frenzy               = find_specialization_spell( "Frenzy" );
+  specs.focus_fire           = find_specialization_spell( "Focus Fire" );
+  specs.cobra_strikes        = find_specialization_spell( "Cobra Strikes" );
+  specs.the_beast_within     = find_specialization_spell( "The Beast Within" );
+  specs.invigoration         = find_specialization_spell( "Invigoration" );
+  specs.careful_aim          = find_specialization_spell( "Careful Aim" );
+  specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
+  specs.bombardment          = find_specialization_spell( "Bombardment" );
+  specs.rapid_recuperation   = find_specialization_spell( "Rapid Recuperation" );
+  specs.master_marksman      = find_specialization_spell( "Master Marksman" );
+  specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
 
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
 
   flaming_arrow = new flaming_arrow_t( this );
-
-  if ( vishanka )
-  {
-    uint32_t id = dbc.spell( vishanka ) -> effectN( 1 ).trigger_spell_id();
-
-    active_vishanka = new vishanka_t( this, id );
-  }
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -3140,14 +3144,14 @@ void hunter_t::init_buffs()
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
-//  buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( talents.the_beast_within -> ok() );
-//  buffs.bombardment                 = buff_creator_t( this, talents.bombardment -> ok() ? 35104 : 0, "bombardment" );
-//  buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( talents.cobra_strikes -> proc_chance() );
+  buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( specs.the_beast_within -> ok() );
+  buffs.bombardment                 = buff_creator_t( this, specs.bombardment -> ok() ? 35104 : 0, "bombardment" );
+  buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" );
-//  buffs.steady_focus        = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
-//  buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" ).chance( talents.tnt -> effectN( 1 ).percent() );
+  buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
+  buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" ).chance( find_spell( 56343 ) -> effectN( 1 ).percent() );
 //  if ( bugs ) buffs.lock_and_load -> cooldown -> duration = timespan_t::from_seconds( 10.0 ); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
-//  buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( talents.master_marksman -> proc_chance() );
+  buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
 
   buffs.rapid_fire                  = buff_creator_t( this, 3045, "rapid_fire" );
@@ -3155,9 +3159,6 @@ void hunter_t::init_buffs()
   buffs.pre_steady_focus    = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" ).chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ).duration( timespan_t::from_seconds( tier13_4pc_cooldown ) );
-
-  // Own TSA for Glyph of TSA
-  buffs.trueshot_aura               = buff_creator_t( this, 19506, "trueshot_aura" );
 
 }
 
@@ -3253,6 +3254,13 @@ void hunter_t::init_scaling()
 
 void hunter_t::init_actions()
 {
+  if ( main_hand_weapon.group() != WEAPON_RANGED )
+  {
+    sim -> errorf( "Player %s does not have a ranged weapon at the Main Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
@@ -3271,8 +3279,7 @@ void hunter_t::init_actions()
     // Todo: Add ranged_vulnerability
     //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     action_list_str += "/summon_pet";
-//    if ( talents.trueshot_aura -> ok() )
-//      action_list_str += "/trueshot_aura,if=!aura.attack_power_multiplier.up|!aura.critical_strike.up";
+    action_list_str += "/trueshot_aura";
     action_list_str += "/snapshot_stats,precombat=1";
 
     if ( level >= 80 )
@@ -3410,6 +3417,8 @@ void hunter_t::init_items()
     {
       // Store the spell id, not just if we have it or not
       vishanka = item.heroic() ? 109859 : item.lfr() ? 109857 : 107822;
+      uint32_t id = dbc.spell( vishanka ) -> effectN( 1 ).trigger_spell_id();
+      active_vishanka = new vishanka_t( this, id );
     }
   }
 }
@@ -3772,7 +3781,13 @@ struct hunter_module_t : public module_t
   {
     return new hunter_t( sim, name, r );
   }
+  
+#if MOP_IN_PROGRESS
+  // HACK until hunter is working routinely and is "valid"
+  virtual bool valid() { return true; }
+#else
   virtual bool valid() { return false; }
+#endif
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}

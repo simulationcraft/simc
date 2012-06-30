@@ -8,9 +8,9 @@ position=ranged_back
 role=attack
 use_pre_potion=1
 professions=blacksmithing=525/engineering=525
-talents=
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Yaa!...102!X
 spec=beast_mastery
-glyphs=kill_command/arcane_shot/kill_shot/bestial_wrath
+glyphs=bestial_wrath
 head=wyrmstalkers_headguard,heroic=1,type=mail,ilevel=410,quality=epic,stats=2366armor_489agi_824sta_393crit_242mastery,reforge=mastery_haste,gems=agile_shadowspirit_50agi_30agi,enchant=60agi_35haste
 neck=cameo_of_terrible_memories,ilevel=397,quality=epic,stats=271agi_406sta_183haste_176hit,reforge=hit_crit
 shoulders=wyrmstalkers_spaulders,heroic=1,type=mail,ilevel=410,quality=epic,stats=2184armor_368agi_611sta_274crit_222haste,gems=50agi_50agi_20agi,enchant=50agi_25mastery
@@ -25,8 +25,7 @@ finger2=signet_of_grasping_mouths,heroic=1,ilevel=410,quality=epic,stats=286agi_
 trinket1=wrath_of_unchaining,heroic=1,ilevel=416,quality=epic,equip=onattackhit_99agi_100%_10dur_10stack
 trinket2=vial_of_shadows,heroic=1,ilevel=410,quality=epic,stats=517agi,equip=onattackhit_-6770+40.55physical_45%_9cd_NoDodge_NoParry_NoBlock
 back=dreadfire_drape,heroic=1,ilevel=391,quality=epic,stats=745armor_241agi_384sta_113mastery_158hit,reforge=hit_crit,gems=50agi_50agi_20agi,enchant=22agi
-main_hand=kiril_fury_of_beasts,heroic=1,ilevel=416,quality=epic,stats=581agi_871sta,enchant=130agi,weapon=polearm_3.50speed_2968min_4453max
-ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
+main_hand=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
 # Gear Summary
 # gear_strength=20
 # gear_agility=7310
@@ -47,3 +46,6 @@ ranged=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_
 # main_hand=kiril_fury_of_beasts,heroic=1,weapon=polearm_3.50speed_2968min_4453max
 # ranged=vishanka_jaws_of_the_earth,heroic=1,weapon=bow_3.00speed_2226min_4135max,enchant=flintlockes_woodchucker
 
+actions.precombat=flask,type=winds
+actions.precomabt+=/food,type=seafood_magnifique_feast
+actions+=/cobra_shot
