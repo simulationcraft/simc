@@ -3,7 +3,7 @@
 mage=Mage_Frost_463
 origin="http://www.wowhead.com/profile=33895137"
 level=90
-race=troll
+race=human
 position=back
 role=spell
 spec=frost
@@ -18,8 +18,8 @@ actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
-actions+=/rune_of_power,if=buff.rune_of_power.down
-actions+=/evocation,if=buff.invocation.down
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down
+actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
 actions+=/volcanic_potion,if=!in_combat
 actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
