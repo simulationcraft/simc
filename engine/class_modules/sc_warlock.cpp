@@ -3169,6 +3169,8 @@ struct hellfire_t : public warlock_spell_t
     may_miss = false;
     channeled = true;
     tick_zero = true;
+    
+    tick_power_mod = base_td = 0;
 
     hellfire_tick = new hellfire_tick_t( p, data() );
   }
