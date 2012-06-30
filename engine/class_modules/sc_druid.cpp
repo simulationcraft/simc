@@ -3468,8 +3468,8 @@ struct starfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
     
-    if ( p() -> buff.lunar_empowerment -> check() )
-      m *= 1.0 + p() -> buff.lunar_empowerment -> value();
+    if ( p() -> buff.lunar_empowerment -> up() )
+      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -3994,8 +3994,8 @@ struct wrath_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
     
-    if ( p() -> buff.solar_empowerment -> check() )
-      m *= 1.0 + p() -> buff.solar_empowerment -> value();
+    if ( p() -> buff.solar_empowerment -> up() )
+      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent();
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
