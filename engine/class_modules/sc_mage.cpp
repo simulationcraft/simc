@@ -927,7 +927,7 @@ struct arcane_barrage_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p () -> buffs.arcane_charge -> data().effectN( 1 ).percent();
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
   }
 };
 
@@ -989,7 +989,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spec.arcane_charge -> effectN( 1 ).percent();
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
   }
 };
 
@@ -1061,7 +1061,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> buffs.arcane_charge -> data().effectN( 1 ).percent();
+    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
   }
 };
 
