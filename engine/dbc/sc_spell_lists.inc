@@ -3256,8 +3256,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
 };
 
-#define TIER_BONUSES_SIZE (6)
-#define TIER_BONUSES_MAX_TIER (2)
+#define TIER_BONUSES_SIZE (8)
+#define TIER_BONUSES_MAX_TIER (3)
 
 #define TIER_BONUSES_TIER_BASE (13)
 
@@ -3278,6 +3278,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105911, // Colossal Dragonplate Armor - 4 Piece Bonus (Item - Warrior T13 Protection 4P Bonus (Shield Wall))
           0,
     },
+    // Tier 14 bonuses (4 spells)
+    {
+      123142, // Battleplate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 DPS 2P Bonus)
+      123144, // Battleplate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 DPS 4P Bonus)
+      123146, // Plate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 Protection 2P Bonus)
+      123147, // Plate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 Protection 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3292,6 +3300,17 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105798, // Regalia of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Holy 4P Bonus (Holy Radiance))
       105800, // Armor of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Protection 2P Bonus (Judgment))
       105820, // Battleplate of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Retribution 4P Bonus (Zealotry))
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      123102, // White Tiger Vestments - 2 Piece Bonus (Item - Paladin T14 Holy 2P Bonus)
+      123103, // White Tiger Vestments - 4 Piece Bonus (Item - Paladin T14 Holy 4P Bonus)
+      123104, // White Tiger Plate - 2 Piece Bonus (Item - Paladin T14 Protection 2P Bonus)
+      123107, // White Tiger Plate - 4 Piece Bonus (Item - Paladin T14 Protection 4P Bonus)
+      123108, // White Tiger Battlegear - 2 Piece Bonus (Item - Paladin T14 Retribution 2P Bonus)
+      123110, // White Tiger Battlegear - 4 Piece Bonus (Item - Paladin T14 Retribution 4P Bonus)
+          0,
     },
     {
           0,
@@ -3305,6 +3324,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105921, // Wyrmstalker Battlegear - 4 Piece Bonus (Item - Hunter T13 4P Bonus (Arcane Shot))
           0,
     },
+    // Tier 14 bonuses (2 spells)
+    {
+      123090, // Yaungol Slayer Battlegear - 2 Piece Bonus (Item - Hunter T14 2P Bonus)
+      123091, // Yaungol Slayer Battlegear - 4 Piece Bonus (Item - Hunter T14 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3315,6 +3340,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
       105849, // Blackfang Battleweave - 2 Piece Bonus (Item - Rogue T13 2P Bonus (Tricks of the Trade))
       105865, // Blackfang Battleweave - 4 Piece Bonus (Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123116, // Battlegear of the Thousandfold Blades - 2 Piece Bonus (Item - Rogue T14 2P Bonus)
+      123122, // Battlegear of the Thousandfold Blades - 4 Piece Bonus (Item - Rogue T14 4P Bonus)
           0,
     },
     {
@@ -3331,6 +3362,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105844, // Regalia of Dying Light - 4 Piece Bonus (Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain))
           0,
     },
+    // Tier 14 bonuses (4 spells)
+    {
+      123111, // Vestments of the Guardian Serpent - 2 Piece Bonus (Item - Priest T14 Healer 2P Bonus)
+      123113, // Vestments of the Guardian Serpent - 4 Piece Bonus (Item - Priest T14 Healer 4P Bonus)
+      123114, // Regalia of the Guardian Serpent - 2 Piece Bonus (Item - Priest T14 Shadow 2P Bonus)
+      123115, // Regalia of the Guardian Serpent - 4 Piece Bonus (Item - Priest T14 Shadow 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3343,6 +3382,14 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105587, // Necrotic Boneplate Armor - 4 Piece Bonus (Item - Death Knight T13 Blood 4P Bonus)
       105609, // Necrotic Boneplate Battlegear - 2 Piece Bonus (Item - Death Knight T13 DPS 2P Bonus)
       105646, // Necrotic Boneplate Battlegear - 4 Piece Bonus (Item - Death Knight T13 DPS 4P Bonus)
+          0,
+    },
+    // Tier 14 bonuses (4 spells)
+    {
+      123077, // Battlegear of the Lost Catacomb - 2 Piece Bonus (Item - Death Knight T14 DPS 2P Bonus)
+      123078, // Battlegear of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 DPS 4P Bonus)
+      123079, // Plate of the Lost Catacomb - 2 Piece Bonus (Item - Death Knight T14 Blood 2P Bonus)
+      123080, // Plate of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 Blood 4P Bonus)
           0,
     },
     {
@@ -3359,6 +3406,17 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105866, // Spiritwalker's Battlegear - 2 Piece Bonus (Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon))
       105872, // Spiritwalker's Battlegear - 4 Piece Bonus (Item - Shaman T13 Enhancement 4P Bonus (Feral Spirits))
       105876, // Spiritwalker's Vestments - 4 Piece Bonus (Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace))
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      123123, // Regalia of the Firebird - 2 Piece Bonus (Item - Shaman T14 Elemental 2P Bonus)
+      123124, // Regalia of the Firebird - 4 Piece Bonus (Item - Shaman T14 Elemental 4P Bonus)
+      123132, // Battlegear of the Firebird - 2 Piece Bonus (Item - Shaman T14 Enhancement 2P Bonus)
+      123133, // Battlegear of the Firebird - 4 Piece Bonus (Item - Shaman T14 Enhancement 4P Bonus)
+      123134, // Vestments of the Firebird - 2 Piece Bonus (Item - Shaman T14 Restoration 2P Bonus)
+      123135, // Vestments of the Firebird - 4 Piece Bonus (Item - Shaman T14 Restoration 4P Bonus)
+          0,
     },
     {
           0,
@@ -3370,6 +3428,12 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
     {
       105788, // Time Lord's Regalia - 2 Piece Bonus (Item - Mage T13 2P Bonus (Haste))
       105790, // Time Lord's Regalia - 4 Piece Bonus (Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123097, // Regalia of the Burning Scroll - 2 Piece Bonus (Item - Mage T14 2P Bonus)
+      123101, // Regalia of the Burning Scroll - 4 Piece Bonus (Item - Mage T14 4P Bonus)
           0,
     },
     {
@@ -3384,12 +3448,31 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105888, // Vestments of the Faceless Shroud - 2 Piece Bonus (Item - Warlock T13 2P Bonus (Doomguard and Infernal))
           0,
     },
+    // Tier 14 bonuses (2 spells)
+    {
+      123136, // Sha-Skin Regalia - 2 Piece Bonus (Item - Warlock T14 2P Bonus)
+      123141, // Sha-Skin Regalia - 4 Piece Bonus (Item - Warlock T14 4P Bonus)
+          0,
+    },
     {
           0,
     },
   },
   // Tier bonuses for Monk
   {
+    {
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      123149, // Battlegear of the Red Crane - 2 Piece Bonus (Item - Monk T14 Windwalker 2P Bonus)
+      123150, // Battlegear of the Red Crane - 4 Piece Bonus (Item - Monk T14 Windwalker 4P Bonus)
+      123152, // Vestments of the Red Crane - 2 Piece Bonus (Item - Monk T14 Mistweaver 2P Bonus)
+      123153, // Vestments of the Red Crane - 4 Piece Bonus (Item - Monk T14 Mistweaver 4P Bonus)
+      123157, // Armor of the Red Crane - 2 Piece Bonus (Item - Monk T14 Brewmaster 2P Bonus)
+      123159, // Armor of the Red Crane - 4 Piece Bonus (Item - Monk T14 Brewmaster 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3404,6 +3487,18 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
       105725, // Deep Earth Battlegarb - 2 Piece Bonus (Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water))
       105735, // Deep Earth Battlegarb - 4 Piece Bonus (Item - Druid T13 Feral 4P Bonus (Might of Ursoc and Stampede))
       105770, // Deep Earth Vestments - 4 Piece Bonus (Item - Druid T13 Restoration 4P Bonus (Rejuvenation))
+          0,
+    },
+    // Tier 14 bonuses (8 spells)
+    {
+      123082, // Regalia of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Balance 2P Bonus)
+      123083, // Regalia of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Balance 4P Bonus)
+      123084, // Battlegear of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Feral 2P Bonus)
+      123085, // Battlegear of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Feral 4P Bonus)
+      123086, // Armor of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Guardian 2P Bonus)
+      123087, // Armor of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Guardian 4P Bonus)
+      123088, // Vestments of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Restoration 2P Bonus)
+      123089, // Vestments of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Restoration 4P Bonus)
     },
     {
           0,

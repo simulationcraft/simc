@@ -2064,6 +2064,8 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
     priest_procced_mastery_spell_t( "mind_flay_mastery", p,
                                     p -> find_class_spell( "Mind Flay" ) -> ok() ? p -> find_spell( 124468 ) : spell_data_t::not_found() )
   {
+    // TO-DO: Confirm this applies
+    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 };
 
@@ -2083,6 +2085,8 @@ struct mind_flay_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
+
+    base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
@@ -2492,11 +2496,12 @@ struct shadow_word_death_t : public priest_spell_t
 struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
 {
   int orbs_used;
+  double heal_pct;
 
   devouring_plague_mastery_t( priest_t* p ) :
     priest_procced_mastery_spell_t( "devouring_plague_mastery", p,
                                     p -> find_class_spell( "Devouring Plague" ) -> ok() ? p -> find_spell( 124467 ) : spell_data_t::not_found() ),
-    orbs_used( 0 )
+    orbs_used( 0 ), heal_pct( p -> find_class_spell( "Devouring Plague" ) -> effectN( 3 ).percent() / 100.0 )
   {
   }
 
@@ -2509,7 +2514,14 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
     return m;
   }
 
-  // BUG: Doesn't heal from ticks as of 15762
+  virtual void tick( dot_t* d )
+  {
+    priest_procced_mastery_spell_t::tick( d );
+
+    double a = heal_pct * orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+
+    p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+  }
 };
 
 
@@ -2546,7 +2558,9 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    tick_power_mod = 0.166; // hardcoded into tooltip in MoP build 15752
+    tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
+
+    parse_effect_data( data().effectN( 1 ) );
 
     tick_may_crit = true;
 
@@ -2640,9 +2654,10 @@ struct devouring_plague_t : public priest_spell_t
     priest_spell_t::tick( d );
 
     devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-    double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
 
-    p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+    // BUG: Doesn't heal from ticks as of 15762
+    // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+    // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
     if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
@@ -2680,6 +2695,8 @@ struct shadow_word_pain_t : public priest_spell_t
     tick_zero  = true;
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+
+    num_ticks += ( int ) ( ( p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
@@ -2769,6 +2786,9 @@ struct vampiric_touch_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
     may_crit   = false;
+
+    num_ticks += ( int ) ( ( p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
+
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new vampiric_touch_mastery_t( p );
@@ -4800,6 +4820,7 @@ void priest_t::init_spells()
   {
     //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
+    { 123114, 123115,     0,     0,     0,     0, 123111, 123113 }, // Tier14
     {      0,      0,     0,     0,     0,     0,      0,      0 },
   };
 
@@ -5349,6 +5370,33 @@ int priest_t::decode_set( item_t& item )
                   strstr( s, "handwraps"     ) ||
                   strstr( s, "legwraps"      ) );
     if ( is_healer ) return SET_T13_HEAL;
+  }
+
+  if ( strstr( s, "guardian_serpent" ) )
+  {
+    is_caster = ( strstr( s, "hood"          ) ||
+                  strstr( s, "shoulderwraps" ) ||
+                  strstr( s, "vestment"      ) ||
+                  strstr( s, "gloves"        ) ||
+                  strstr( s, "leggings"      ) );
+
+    /* FIX-ME: Kludge due to caster shoulders and chests have the wrong name */
+    const char* t = item.encoded_stats_str.c_str();
+
+    if ( ( ( item.slot == SLOT_SHOULDERS ) && strstr( t, "mastery"  ) ) ||
+         ( ( item.slot == SLOT_CHEST     ) && strstr( t, "crit" ) ) )
+    {
+      is_caster = 1;
+    }
+
+    if ( is_caster ) return SET_T14_CASTER;
+
+    is_healer = ( strstr( s, "cowl"          ) ||
+                  strstr( s, "mantle"        ) ||
+                  strstr( s, "robes"         ) ||
+                  strstr( s, "handwraps"     ) ||
+                  strstr( s, "legwraps"      ) );
+    if ( is_healer ) return SET_T14_HEAL;
   }
 
   if ( strstr( s, "_gladiators_mooncloth_" ) ) return SET_PVP_HEAL;

@@ -141,16 +141,6 @@ void dbc_t::apply_hotfixes()
   // Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
   spell_data_t* s;
 
-  // PRIEST
-  // Build Last Checked: 1568
-  // Description: Shadowy Apparition avg and coeff values are off.
-  s = spell_data_t::find( 87532, false );
-  if ( s && s -> ok() && s -> effectN( 1 ).ok() )
-  {
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.609;
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.989;
-  }
-
   // PALADIN
   // Build Last Checked: 15589
   // Description: Seal of Truth should be replacing Seal of Command but is missing it's ReplaceId vvalue

@@ -973,20 +973,20 @@ class SpellDataGenerator(DataGenerator):
         ( ( 93402, 1, True ), ( 106996, 1, True ), ( 112071, 1, True ), ), # Druid: Whitelist Sunfire
     ]
 
-    # Class specific item sets, T13
+    # Class specific item sets, T13, T14
     _item_set_list = [
         (),
-        ( ( 1073, 1074, ), ), # Warrior
-        ( ( 1063, 1065, 1064, ), ), #Paladin
-        ( ( 1061, ), ), # Hunter
-        ( ( 1068, ), ), # Rogue
-        ( ( 1066, 1067, ), ), #Priest
-        ( ( 1056, 1057, ), ), # Death Knight
-        ( ( 1070, 1071, 1069, ), ), #Shaman
-        ( ( 1062, ), ), # Mage
-        ( ( 1072, ), ), # Warlock
-        (), # Monk
-        ( ( 1059, 1058, 1060 ), ), #Druid
+        ( ( 1073, 1074, ), ( 1144, 1145, ), ), # Warrior
+        ( ( 1063, 1065, 1064, ), ( 1134, 1135, 1136, ), ), #Paladin
+        ( ( 1061, ), ( 1129, ), ), # Hunter
+        ( ( 1068, ), ( 1139, ), ), # Rogue
+        ( ( 1066, 1067, ), ( 1137, 1138, ), ), #Priest
+        ( ( 1056, 1057, ), ( 1123, 1124, ), ), # Death Knight
+        ( ( 1070, 1071, 1069, ), ( 1140, 1141, 1142, ), ), #Shaman
+        ( ( 1062, ), ( 1130, ), ), # Mage
+        ( ( 1072, ), ( 1143, ), ), # Warlock
+        ( ( ), ( 1131, 1132, 1133, ), ), # Monk
+        ( ( 1059, 1058, 1060 ), ( 1125, 1126, 1127, 1128, ), ), #Druid
     ]
   
     _profession_enchant_categories = [
