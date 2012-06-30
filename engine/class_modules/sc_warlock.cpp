@@ -4574,9 +4574,9 @@ void warlock_t::init_actions()
       }
       action_list_str += "/soulburn,if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&cooldown.instant_summon_pet.remains=0";
       action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&buff.soulburn.up&cooldown.instant_summon_pet.remains=0";
-      add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
-      add_action( "Life Tap",              "if=mana.pct<=35" );
-      add_action( "Malefic Grasp",         "chain=1" );
+      add_action( "Drain Soul",            "interrupt=1,chain=1" );
+//      add_action( "Life Tap",              "if=mana.pct<=35" );
+//      add_action( "Malefic Grasp",         "chain=1" );
       add_action( "Life Tap",              "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
       add_action( "Fel Flame",             "moving=1" );
 

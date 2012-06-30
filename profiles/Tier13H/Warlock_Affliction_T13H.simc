@@ -39,9 +39,7 @@ actions+=/corruption,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_
 actions+=/unstable_affliction,cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react
 actions+=/soulburn,if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&cooldown.instant_summon_pet.remains=0
 actions+=/summon_felhunter,if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&buff.soulburn.up&cooldown.instant_summon_pet.remains=0
-actions+=/drain_soul,interrupt=1,chain=1,if=target.health.pct<=20
-actions+=/life_tap,if=mana.pct<=35
-actions+=/malefic_grasp,chain=1
+actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/fel_flame,moving=1
 actions+=/life_tap
