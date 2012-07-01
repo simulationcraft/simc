@@ -4588,10 +4588,10 @@ struct dot_t
   dot_t( const std::string& n, player_t* target, player_t* source );
 
   void   cancel();
-  void   extend_duration( int extra_ticks, bool cap=false, uint32_t state_flags = 0 );
-  void   extend_duration_seconds( timespan_t extra_seconds, uint32_t state_flags = 0 );
+  void   extend_duration( int extra_ticks, bool cap=false, uint32_t state_flags = -1 );
+  void   extend_duration_seconds( timespan_t extra_seconds, uint32_t state_flags = -1 );
   void   recalculate_ready();
-  void   refresh_duration( uint32_t state_flags = 0 );
+  void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
   timespan_t remains();
   void   schedule_tick();

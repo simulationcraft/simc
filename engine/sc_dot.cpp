@@ -35,6 +35,8 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   if ( ! ticking )
     return;
 
+  if ( state_flags == -1 ) state_flags = action -> snapshot_flags;
+
   // Make sure this DoT is still ticking......
   assert( tick_event );
 
@@ -72,6 +74,8 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
 {
   if ( ! ticking )
     return;
+
+  if ( state_flags == -1 ) state_flags = action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
   assert( tick_event );
@@ -157,6 +161,8 @@ void dot_t::refresh_duration( uint32_t state_flags )
 {
   if ( ! ticking )
     return;
+
+  if ( state_flags == -1 ) state_flags = action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
   assert( tick_event );
