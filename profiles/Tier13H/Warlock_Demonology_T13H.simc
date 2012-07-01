@@ -22,6 +22,7 @@ actions+=/dark_soul
 actions+=/service_felguard,if=talent.grimoire_of_service.enabled
 actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_felguard,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
+actions+=/melee
 actions+=/felguard:felstorm
 actions+=/run_action_list,name=aoe,if=num_targets>5
 actions+=/summon_doomguard

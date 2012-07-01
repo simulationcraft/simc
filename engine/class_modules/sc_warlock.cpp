@@ -202,6 +202,7 @@ struct warlock_t : public player_t
     spell_t* soulburn_seed_of_corruption_aoe;
     spell_t* archimondes_vengeance_dmg;
     spell_t* metamorphosis;
+    spell_t* melee;
   } spells;
 
   struct soul_swap_state_t
@@ -275,6 +276,7 @@ struct warlock_t : public player_t
   virtual double composite_armor();
   virtual double composite_movement_speed();
   virtual void moving();
+  virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual double assess_damage( double        amount,
@@ -2376,6 +2378,102 @@ struct life_tap_t : public warlock_spell_t
 };
 
 
+struct melee_t : public warlock_spell_t
+{
+  bool cancelled;
+
+  melee_t( warlock_t* p ) :
+    warlock_spell_t( "melee", p, p -> find_spell( 103988 ) ), cancelled( false )
+  {
+    background        = true;
+    repeating         = true;
+    base_execute_time = timespan_t::from_seconds( 1 );
+  }
+
+  virtual void reset()
+  {
+    warlock_spell_t::reset();
+
+    cancelled = false;
+  }
+
+  virtual void cancel()
+  {
+    warlock_spell_t::cancel();
+
+    cancelled = true;
+  }
+};
+
+struct activate_melee_t : public warlock_spell_t
+{
+  activate_melee_t( warlock_t* p ) :
+    warlock_spell_t( "activate_melee", p, spell_data_t::nil() )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+
+    if ( ! p -> spells.melee ) p -> spells.melee = new melee_t( p );
+  }
+
+  virtual void execute()
+  {
+    p() -> spells.melee -> execute();
+  }
+
+  virtual expr_t* create_expression( const std::string& name )
+  {
+    if ( name == "cancelled" )
+    {
+      struct cancelled_expr_t : public expr_t
+      {
+        melee_t& action;
+
+        cancelled_expr_t( melee_t& a ) : expr_t( "cancelled" ), action( a ) {}
+        virtual double evaluate() { return action.cancelled; }
+      };
+      return new cancelled_expr_t( *( debug_cast<melee_t*>( p() -> spells.melee ) ) );
+    }
+    return warlock_spell_t::create_expression( name );
+  }
+
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+    
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+    else if ( p() -> spells.melee -> execute_event != 0 ) r = false;
+    else if ( p() -> is_moving() ) r = false;
+
+    return r;
+  }
+
+};
+
+struct cancel_melee_t : public warlock_spell_t
+{
+  cancel_melee_t( warlock_t* p ) :
+    warlock_spell_t( "cancel_melee", p, spell_data_t::nil() )
+  {
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    p() -> spells.melee -> cancel();
+  }
+
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( p() -> spells.melee -> execute_event == 0 ) r = false;
+
+    return r;
+  }
+};
+
 struct metamorphosis_t : public warlock_spell_t
 {
   metamorphosis_t( warlock_t* p ) :
@@ -2392,6 +2490,7 @@ struct metamorphosis_t : public warlock_spell_t
 
     assert( cost_event == 0 );
     
+    if ( p() -> spells.melee ) p() -> spells.melee -> reset();
     p() -> buffs.metamorphosis -> trigger();
     cost_event = new ( sim ) cost_event_t( p(), this );
   }
@@ -2400,6 +2499,7 @@ struct metamorphosis_t : public warlock_spell_t
   {
     warlock_spell_t::cancel();
     
+    if ( p() -> spells.melee ) p() -> spells.melee -> cancel();
     p() -> buffs.metamorphosis -> expire();
     event_t::cancel( cost_event );
   }
@@ -4100,6 +4200,14 @@ void warlock_t::moving()
 }
 
 
+void warlock_t::halt()
+{
+  player_t::halt();
+
+  if ( spells.melee ) spells.melee -> cancel();
+}
+
+
 double warlock_t::assess_damage( double        amount,
                                  school_e school,
                                  dmg_e    type,
@@ -4163,6 +4271,8 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
   else if ( name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
   else if ( name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
+  else if ( name == "melee"                 ) a = new        activate_melee_t( this );
+  else if ( name == "cancel_melee"          ) a = new          cancel_melee_t( this );
   else if ( name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
@@ -4547,7 +4657,10 @@ void warlock_t::init_actions()
     action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down";
 
     if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+      if ( find_class_spell( "Metamorphosis" ) -> ok() ) action_list_str += "/melee";
       action_list_str += "/felguard:felstorm";
+    }
 
     int multidot_max = 3;
 
