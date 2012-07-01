@@ -58,12 +58,13 @@ struct mage_t : public player_t
     buff_t* fingers_of_frost;
     buff_t* frost_armor;
     buff_t* heating_up;
-    buff_t* pyroblast;
+    buff_t* ice_floes;
     buff_t* icy_veins;
     buff_t* invocation;
     buff_t* mage_armor;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
+    buff_t* pyroblast;
     buff_t* rune_of_power;
     buff_t* tier13_2pc;
   } buffs;
@@ -193,7 +194,7 @@ struct mage_t : public player_t
   {
     const spell_data_t* presence_of_mind;
     const spell_data_t* scorch;
-    const spell_data_t* ice_flows; // NYI
+    const spell_data_t* ice_floes; // NYI
     const spell_data_t* temporal_shield; // NYI
     const spell_data_t* blazing_speed; // NYI
     const spell_data_t* ice_barrier; // NYI
@@ -765,6 +766,19 @@ struct mage_spell_t : public spell_t
       return timespan_t::zero();
 
     return t;
+  }
+
+  virtual bool usable_moving()
+  {
+    bool um = spell_t::usable_moving();
+
+    // TODO: Needs to check that cast time of spell is < 4 seconds
+    //       Should decrement charge at start of cast
+    if ( p() -> talents.ice_floes -> ok() &&
+         ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> remains() == timespan_t::zero() ) )
+      um = true;
+
+    return um;
   }
 
   virtual void player_buff()
@@ -1821,6 +1835,32 @@ struct frozen_orb_t : public mage_spell_t
   }
 };
 
+// Ice Floes Spell ===================================================
+
+// FIXME: This doesn't really do anything yet; there's just enough to
+//        put it into an action list without breaking the run
+struct ice_floes_t : public mage_spell_t
+{
+  ice_floes_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "ice_floes", p, p -> talents.ice_floes )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.ice_floes -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    return mage_spell_t::ready();
+  }
+};
+
 // Ice Lance Spell ==========================================================
 
 struct ice_lance_t : public mage_spell_t
@@ -2660,6 +2700,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
+  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
@@ -2732,7 +2773,7 @@ void mage_t::init_spells()
   talents.frost_bomb         = find_talent_spell( "Frost Bomb" );
   talents.greater_invis      = find_talent_spell( "Greater Invisibility" );
   talents.ice_barrier        = find_talent_spell( "Ice Barrier" );
-  talents.ice_flows          = find_talent_spell( "Ice Flows" );
+  talents.ice_floes          = find_talent_spell( "Ice Floes" );
   talents.ice_ward           = find_talent_spell( "Ice Ward" );
   talents.incanters_ward     = find_talent_spell( "Incanter's Ward" );
   talents.invocation         = find_talent_spell( "Invocation" );
@@ -2856,6 +2897,7 @@ void mage_t::init_buffs()
                                .max_stack( 2 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) );
   buffs.icy_veins            = new icy_veins_buff_t( this );
+  buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
   buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
