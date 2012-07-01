@@ -3635,7 +3635,7 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action -> schedule_execute();
-    if ( ! quiet )
+    if ( ! action -> quiet )
     {
       iteration_executed_foreground_actions++;
       if ( action -> marker && sim -> current_iteration == 0 )
