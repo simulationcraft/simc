@@ -30,7 +30,7 @@ void dot_t::cancel()
 
 // dot_t::extend_duration ===================================================
 
-void dot_t::extend_duration( int extra_ticks, bool cap )
+void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
 {
   if ( ! ticking )
     return;
@@ -59,7 +59,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
   if ( ! state )
     action -> player_buff();
   else
-    action -> snapshot_state( state, action -> snapshot_flags );
+    action -> snapshot_state( state, state_flags );
 
   added_ticks += extra_ticks;
   num_ticks += extra_ticks;
@@ -68,7 +68,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap )
 
 // dot_t::extend_duration_seconds ===========================================
 
-void dot_t::extend_duration_seconds( timespan_t extra_seconds )
+void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_flags )
 {
   if ( ! ticking )
     return;
@@ -101,7 +101,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds )
   if ( ! state )
     action -> player_buff();
   else
-    action -> snapshot_state( state, action -> snapshot_flags );
+    action -> snapshot_state( state, state_flags );
 
   added_seconds += extra_seconds;
 
@@ -153,7 +153,7 @@ void dot_t::recalculate_ready()
 
 // dot_t::refresh_duration ==================================================
 
-void dot_t::refresh_duration()
+void dot_t::refresh_duration( uint32_t state_flags )
 {
   if ( ! ticking )
     return;
@@ -167,7 +167,7 @@ void dot_t::refresh_duration()
   if ( ! state )
     action -> player_buff();
   else
-    action -> snapshot_state( state, action -> snapshot_flags );
+    action -> snapshot_state( state, state_flags );
 
   current_tick = 0;
   added_ticks = 0;
