@@ -3456,7 +3456,7 @@ struct starfire_t : public druid_spell_t
       {
         if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
         {
-          td( s -> target ) -> dots_moonfire -> refresh_duration();
+          td( s -> target ) -> dots_moonfire -> refresh_duration( STATE_HASTE );
         }
       }
     }
@@ -3629,10 +3629,10 @@ struct starsurge_t : public druid_spell_t
       if ( p() -> spec.eclipse -> ok() )
       {
         if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
-          td( s -> target ) -> dots_moonfire -> refresh_duration();
+          td( s -> target ) -> dots_moonfire -> refresh_duration( STATE_HASTE );
 
         if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
-          td( s -> target ) -> dots_sunfire -> refresh_duration();
+          td( s -> target ) -> dots_sunfire -> refresh_duration( STATE_HASTE );
 
       }
     }
@@ -3982,7 +3982,7 @@ struct wrath_t : public druid_spell_t
       {
         if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
         {
-          td( s -> target ) -> dots_sunfire -> refresh_duration();
+          td( s -> target ) -> dots_sunfire -> refresh_duration( STATE_HASTE );
         }
       }
     }
