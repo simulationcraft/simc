@@ -4969,14 +4969,11 @@ void priest_t::init_actions()
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
-
       add_action( "Devouring Plague", "if=shadow_orb=3&(!ticking|remains<tick_time)" );
-
-      add_action( "Archangel" );
 
       if ( set_bonus.tier13_2pc_caster() )
       {
-        add_action( "Shadow Word: Death", "if=num_targets<=5" );
+        add_action( "Shadow Word: Death", "if=num_targets<=5&(set_bonus.tier13_2pc_caster=1)" );
       }
 
       action_list_str += init_use_racial_actions();
@@ -4989,13 +4986,17 @@ void priest_t::init_actions()
       if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
         add_action( "Shadow Word: Insanity", "if=num_targets<=4&(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&!dot.devouring_plague.ticking)&((dot.shadow_word_pain.ticks_remain+dot.vampiric_touch.ticks_remain)=2)" );
 
-      add_action( "Power Infusion" );
+      add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
 
       add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|remains<tick_time)&miss_react" );
 
-      if ( ! set_bonus.tier13_2pc_caster() )
       {
-        add_action( "Shadow Word: Death", "if=num_targets<=4" );
+        std::string tstr = "if=num_targets<=4";
+
+        if ( ( level < 90 ) || ( set_bonus.tier13_2pc_caster() ) )
+          tstr += "&(set_bonus.tier13_2pc_caster=0)";
+
+        add_action( "Shadow Word: Death", tstr );
       }
 
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|remains<cast_time+tick_time)&miss_react" );
