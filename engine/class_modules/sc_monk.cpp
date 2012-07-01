@@ -37,20 +37,21 @@ struct monk_t;
 
 enum monk_stance_e { STANCE_DRUNKEN_OX=1, STANCE_FIERCE_TIGER, STANCE_WISE_SERPENT=4 };
 
-struct monk_td_t : public actor_pair_t
-{
-  struct buffs_t
-  {
-    debuff_t* rising_sun_kick;
-    debuff_t* tiger_palm;
-      buff_t* enveloping_mist;
-  } buff;
-
-  monk_td_t( player_t*, monk_t* );
-};
-
 struct monk_t : public player_t
 {
+public:
+  struct monk_td_t : public actor_pair_t
+  {
+    struct buffs_t
+    {
+      debuff_t* rising_sun_kick;
+      debuff_t* tiger_palm;
+        buff_t* enveloping_mist;
+    } buff;
+
+    monk_td_t( player_t*, monk_t* );
+  };
+
   monk_stance_e active_stance;
   action_t* active_blackout_kick_dot;
   double track_chi_consumption;
@@ -160,9 +161,9 @@ struct monk_t : public player_t
 
   // Options
   int initial_chi;
-
+private:
   target_specific_t<monk_td_t> target_data;
-
+public:
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
     active_stance( STANCE_DRUNKEN_OX ),
@@ -254,9 +255,9 @@ struct monk_action_t : public Base
     ab::stateless  = true;
   }
 
-  monk_t* p() const { return debug_cast<monk_t*>( ab::player ); }
+  monk_t* p() const { return static_cast<monk_t*>( ab::player ); }
 
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  monk_t::monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual bool ready()
   {
@@ -1083,7 +1084,7 @@ struct statue_t : public pet_t
   }
 
   monk_t* o() const
-  { return debug_cast<monk_t*>( owner ); }
+  { return static_cast<monk_t*>( owner ); }
 };
 
 struct jade_serpent_statue_t : public statue_t
@@ -1102,7 +1103,7 @@ struct jade_serpent_statue_t : public statue_t
 // Monk Character Definition
 // ==========================================================================
 
-monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
+monk_t::monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
   buff( buffs_t() )
 {

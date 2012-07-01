@@ -9,29 +9,6 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct death_knight_t;
 
-struct death_knight_td_t : public actor_pair_t
-{
-  dot_t* dots_blood_plague;
-  dot_t* dots_death_and_decay;
-  dot_t* dots_frost_fever;
-
-  int diseases()
-  {
-    int disease_count = 0;
-    if ( dots_blood_plague -> ticking ) disease_count++;
-    if ( dots_frost_fever  -> ticking ) disease_count++;
-    return disease_count;
-  }
-
-  death_knight_td_t( player_t* target, player_t* death_knight ) :
-    actor_pair_t( target, death_knight )
-  {
-    dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
-    dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
-    dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
-  }
-};
-
 struct dancing_rune_weapon_pet_t;
 
 // ==========================================================================
@@ -129,6 +106,30 @@ enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4
 
 struct death_knight_t : public player_t
 {
+public:
+  struct death_knight_td_t : public actor_pair_t
+  {
+    dot_t* dots_blood_plague;
+    dot_t* dots_death_and_decay;
+    dot_t* dots_frost_fever;
+
+    int diseases()
+    {
+      int disease_count = 0;
+      if ( dots_blood_plague -> ticking ) disease_count++;
+      if ( dots_frost_fever  -> ticking ) disease_count++;
+      return disease_count;
+    }
+
+    death_knight_td_t( player_t* target, player_t* death_knight ) :
+      actor_pair_t( target, death_knight )
+    {
+      dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
+      dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
+      dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+    }
+  };
+
   // Active
   int       active_presence;
 
@@ -291,9 +292,9 @@ struct death_knight_t : public player_t
   {
     benefit_t* rp_cap;
   } benefits;
-
+private:
   target_specific_t<death_knight_td_t> target_data;
-
+public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
@@ -1386,9 +1387,9 @@ struct death_knight_action_t : public Base
     _init_dk_action();
   }
 
-  death_knight_t* cast() { return debug_cast<death_knight_t*>( action_base_t::player ); }
+  death_knight_t* cast() { return static_cast<death_knight_t*>( action_base_t::player ); }
 
-  death_knight_td_t* cast_td( player_t* t = 0 )
+  death_knight_t::death_knight_td_t* cast_td( player_t* t = 0 )
   { return cast() -> get_target_data( t ? t : action_base_t::target ); }
 
   void _init_dk_action()
@@ -1811,7 +1812,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_td_t* td = cast_td( target );
+      death_knight_t::death_knight_td_t* td = cast_td( target );
 
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
@@ -1972,7 +1973,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( t, dtype );
 
-    death_knight_td_t* td = cast_td( t );
+    death_knight_t::death_knight_td_t* td = cast_td( t );
 
     base_dd_adder = td -> diseases() ? 95 : 0;
     direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
@@ -2421,9 +2422,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_td_t* td = cast_td();
-      td -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
-      td -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
+      cast_td() -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
+      cast_td() -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( 8 ) );
     }
   }
 };
@@ -2923,10 +2923,9 @@ struct pestilence_t : public death_knight_spell_t
   virtual void execute()
   {
     // See which diseases we can spread
-    death_knight_td_t* td = cast_td();
 
-    spread_bp = td -> dots_blood_plague -> ticking;
-    spread_ff = td -> dots_frost_fever -> ticking;
+    spread_bp = cast_td() -> dots_blood_plague -> ticking;
+    spread_ff = cast_td() -> dots_frost_fever -> ticking;
 
     death_knight_spell_t::execute();
     death_knight_t* p = cast();
@@ -2965,11 +2964,9 @@ struct pestilence_t : public death_knight_spell_t
 
   virtual bool ready()
   {
-    death_knight_td_t* td = cast_td();
-
     // BP or FF must be ticking to use
-    if ( ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking ) ||
-         ( td -> dots_frost_fever && td -> dots_frost_fever -> ticking ) )
+    if ( ( cast_td() -> dots_blood_plague && cast_td() -> dots_blood_plague -> ticking ) ||
+         ( cast_td() -> dots_frost_fever && cast_td() -> dots_frost_fever -> ticking ) )
       return death_knight_spell_t::ready();
 
     return false;

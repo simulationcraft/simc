@@ -96,40 +96,41 @@ struct combo_points_t
   }
 };
 
-struct druid_td_t : public actor_pair_t
-{
-  dot_t* dots_lacerate;
-  dot_t* dots_lifebloom;
-  dot_t* dots_moonfire;
-  dot_t* dots_rake;
-  dot_t* dots_regrowth;
-  dot_t* dots_rejuvenation;
-  dot_t* dots_rip;
-  dot_t* dots_sunfire;
-  dot_t* dots_wild_growth;
-
-  buff_t* buffs_lifebloom;
-
-  combo_points_t* combo_points;
-
-  druid_td_t( player_t* target, druid_t* source );
-
-  ~druid_td_t()
-  {
-    if ( combo_points ) delete combo_points;
-  }
-  bool hot_ticking()
-  {
-    return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
-  }
-  void reset()
-  {
-    combo_points->clear();
-  }
-};
-
 struct druid_t : public player_t
 {
+public:
+  struct druid_td_t : public actor_pair_t
+  {
+    dot_t* dots_lacerate;
+    dot_t* dots_lifebloom;
+    dot_t* dots_moonfire;
+    dot_t* dots_rake;
+    dot_t* dots_regrowth;
+    dot_t* dots_rejuvenation;
+    dot_t* dots_rip;
+    dot_t* dots_sunfire;
+    dot_t* dots_wild_growth;
+
+    buff_t* buffs_lifebloom;
+
+    combo_points_t* combo_points;
+
+    druid_td_t( player_t* target, druid_t* source );
+
+    ~druid_td_t()
+    {
+      if ( combo_points ) delete combo_points;
+    }
+    bool hot_ticking()
+    {
+      return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
+    }
+    void reset()
+    {
+      combo_points->clear();
+    }
+  };
+
   // Active
   heal_t*   active_swiftmend_aoe;
   heal_t*   active_living_seed;
@@ -373,9 +374,9 @@ struct druid_t : public player_t
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
   } talent;
-
+private:
   target_specific_t<druid_td_t> target_data;
-
+public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     buff( buffs_t() ),
@@ -500,6 +501,24 @@ struct druid_t : public player_t
   }
 };
 
+// Template for common druid action code. See priest_action_t.
+template <class Base>
+struct druid_action_t : public Base
+{
+  typedef Base ab; // action base, eg. spell_t
+   typedef druid_action_t base_t;
+
+   druid_action_t( const std::string& n, druid_t* player,
+                  const spell_data_t* s = spell_data_t::nil() ) :
+     ab( n, player, s )
+   {
+   }
+
+   druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
+
+   druid_t::druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+};
+
 // ==========================================================================
 // Druid Cat Attack
 // ==========================================================================
@@ -535,7 +554,7 @@ struct druid_cat_attack_state_t : public action_state_t
   }
 };
 
-struct druid_cat_attack_t : public melee_attack_t
+struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
 {
   bool             requires_stealth_;
   position_e  requires_position_;
@@ -547,7 +566,7 @@ struct druid_cat_attack_t : public melee_attack_t
   druid_cat_attack_t( const std::string& token, druid_t* p,
                       const spell_data_t* s = spell_data_t::nil(),
                       const std::string& options = std::string() ) :
-    melee_attack_t( token, p, s ),
+    base_t( token, p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0 ), base_ta_bonus( 0 )
@@ -581,7 +600,7 @@ struct druid_cat_attack_t : public melee_attack_t
 
   druid_cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                       const std::string& options = std::string() ) :
-    melee_attack_t( "", p, s ),
+    base_t( "", p, s ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0 ), base_ta_bonus( 0 )
@@ -613,13 +632,6 @@ struct druid_cat_attack_t : public melee_attack_t
     }
   }
 
-  druid_t* p() { return debug_cast<druid_t*>( player ); }
-
-  druid_td_t* td( player_t* t = 0 )
-  {
-    return p() -> get_target_data( t ? t : target );
-  }
-
   virtual double cost();
   virtual void   execute();
   virtual void   consume_resource();
@@ -640,7 +652,7 @@ struct druid_cat_attack_t : public melee_attack_t
 
   action_state_t* get_state( const action_state_t* s )
   {
-    action_state_t* s_ = melee_attack_t::get_state( s );
+    action_state_t* s_ = base_t::get_state( s );
 
     if ( s == 0 )
     {
@@ -666,7 +678,7 @@ struct druid_cat_attack_t : public melee_attack_t
       ds_ -> combo_points = td( travel_state -> target ) -> combo_points -> count;
     }
 
-    melee_attack_t::schedule_travel_s( travel_state );
+    base_t::schedule_travel_s( travel_state );
   }
 };
 
@@ -674,12 +686,12 @@ struct druid_cat_attack_t : public melee_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-struct druid_bear_attack_t : public melee_attack_t
+struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
 {
   druid_bear_attack_t( const std::string& token, druid_t* p,
                        const spell_data_t* s = spell_data_t::nil(),
                        const std::string& options = std::string() ) :
-    melee_attack_t( token, p, s )
+    base_t( token, p, s )
   {
     parse_options( 0, options );
 
@@ -692,7 +704,7 @@ struct druid_bear_attack_t : public melee_attack_t
 
   druid_bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                        const std::string& options = std::string() ) :
-    melee_attack_t( "", p, s )
+    base_t( "", p, s )
   {
     parse_options( 0, options );
 
@@ -703,10 +715,6 @@ struct druid_bear_attack_t : public melee_attack_t
     stateless     = true;
   }
 
-  druid_t* p() { return debug_cast<druid_t*>( player ); }
-
-  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target );}
-
   virtual void impact_s( action_state_t* );
 };
 
@@ -714,14 +722,14 @@ struct druid_bear_attack_t : public melee_attack_t
 // Druid Heal
 // ==========================================================================
 
-struct druid_heal_t : public heal_t
+struct druid_heal_t : public druid_action_t<heal_t>
 {
   bool   consume_ooc;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
-    heal_t( token, p, s ),
+    base_t( token, p, s ),
     consume_ooc( false )
   {
     parse_options( 0, options );
@@ -736,7 +744,7 @@ struct druid_heal_t : public heal_t
 
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
-    heal_t( "", p, s ),
+    base_t( "", p, s ),
     consume_ooc( false )
   {
     parse_options( 0, options );
@@ -748,10 +756,6 @@ struct druid_heal_t : public heal_t
     stateless         = true;
     weapon_multiplier = 0;
   }
-
-  druid_t* p() { return debug_cast<druid_t*>( player ); }
-
-  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void   consume_resource();
   virtual double cost();
@@ -767,12 +771,12 @@ struct druid_heal_t : public heal_t
 // Druid Spell
 // ==========================================================================
 
-struct druid_spell_t : public spell_t
+struct druid_spell_t : public druid_action_t<spell_t>
 {
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    spell_t( token, p, s )
+    base_t( token, p, s )
   {
     parse_options( 0, options );
 
@@ -783,7 +787,7 @@ struct druid_spell_t : public spell_t
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    spell_t( "", p, s )
+    base_t( "", p, s )
   {
     parse_options( 0, options );
 
@@ -791,10 +795,6 @@ struct druid_spell_t : public spell_t
     tick_may_crit = true;
     stateless     = true;
   }
-
-  druid_t* p() { return debug_cast<druid_t*>( player ); }
-
-  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void   consume_resource();
   virtual double cost();
@@ -1041,7 +1041,7 @@ static void trigger_swiftmend( druid_heal_t* a )
 
 static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_td_t* td = ( ( druid_t* ) s -> action -> player ) -> get_target_data( s -> target );
+  druid_t::druid_td_t* td = static_cast<druid_t*>( s -> action -> player ) -> get_target_data( s -> target );
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -1172,7 +1172,7 @@ static void trigger_revitalize( druid_heal_t* a )
 
 double druid_cat_attack_t::cost()
 {
-  double c = melee_attack_t::cost();
+  double c = base_t::cost();
 
   if ( c == 0 )
     return 0;
@@ -1191,7 +1191,7 @@ double druid_cat_attack_t::cost()
 void druid_cat_attack_t::consume_resource()
 {
   int combo_points_spent = 0;
-  melee_attack_t::consume_resource();
+  base_t::consume_resource();
 
   if ( requires_combo_points && result_is_hit( execute_state -> result ) )
   {
@@ -1225,7 +1225,7 @@ void druid_cat_attack_t::execute()
   base_dd_adder = base_da_bonus * td( target ) -> combo_points -> count;
   base_ta_adder = base_ta_bonus * td( target ) -> combo_points -> count;
 
-  melee_attack_t::execute();
+  base_t::execute();
 
   if ( result_is_hit( execute_state -> result ) )
   {
@@ -1256,7 +1256,7 @@ void druid_cat_attack_t::execute()
 
 bool druid_cat_attack_t::ready()
 {
-  if ( ! melee_attack_t::ready() )
+  if ( ! base_t::ready() )
     return false;
 
   if ( ! p() -> buff.cat_form -> check() )
@@ -1719,7 +1719,7 @@ struct rip_t : public druid_cat_attack_t
     if ( ! execute_state )
       return druid_cat_attack_t::ready();
 
-    druid_td_t* td = this -> td( execute_state -> target );
+    druid_t::druid_td_t* td = this -> td( execute_state -> target );
 
     if ( ! td -> dots_rip -> ticking )
       return druid_cat_attack_t::ready();
@@ -1916,7 +1916,7 @@ struct tigers_fury_t : public druid_cat_attack_t
 
 void druid_bear_attack_t::impact_s( action_state_t* state )
 {
-  melee_attack_t::impact_s( state );
+  base_t::impact_s( state );
 
   if ( state -> result == RESULT_CRIT )
     trigger_lotp( state );
@@ -2181,7 +2181,7 @@ struct thrash_bear_t : public druid_bear_attack_t
 
 void druid_heal_t::consume_resource()
 {
-  heal_t::consume_resource();
+  base_t::consume_resource();
 
   if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
   {
@@ -2202,7 +2202,7 @@ double druid_heal_t::cost()
   if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
     return 0;
 
-  double c = heal_t::cost();
+  double c = base_t::cost();
 
   c *= 1.0 + cost_reduction();
 
@@ -2225,7 +2225,7 @@ double druid_heal_t::cost_reduction()
 
 void druid_heal_t::execute()
 {
-  heal_t::execute();
+  base_t::execute();
 
   if ( base_execute_time > timespan_t::zero() )
   {
@@ -2244,14 +2244,14 @@ timespan_t druid_heal_t::execute_time()
   if ( p() -> buff.natures_swiftness -> check() )
     return timespan_t::zero();
 
-  return heal_t::execute_time();
+  return base_t::execute_time();
 }
 
 // druid_heal_t::haste ======================================================
 
 double druid_heal_t::haste()
 {
-  double h = heal_t::haste();
+  double h = base_t::haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
@@ -2264,7 +2264,7 @@ double druid_heal_t::haste()
 
 double druid_heal_t::action_da_multiplier()
 {
-  double adm = heal_t::action_da_multiplier();
+  double adm = base_t::action_da_multiplier();
 
   if ( p() -> buff.tree_of_life -> up() )
     adm += p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
@@ -2281,7 +2281,7 @@ double druid_heal_t::action_da_multiplier()
 
 double druid_heal_t::action_ta_multiplier()
 {
-  double adm = heal_t::action_ta_multiplier();
+  double adm = base_t::action_ta_multiplier();
 
   if ( p() -> buff.tree_of_life -> up() )
     adm += p() -> buff.tree_of_life -> data().effectN( 2 ).percent();
@@ -2600,7 +2600,7 @@ double druid_spell_t::cost()
   if ( harmful && p() -> buff.omen_of_clarity -> check() && spell_t::execute_time() != timespan_t::zero() )
     return 0;
 
-  double c = spell_t::cost();
+  double c = base_t::cost();
 
   c *= 1.0 + cost_reduction();
 
@@ -2614,7 +2614,7 @@ double druid_spell_t::cost()
 
 double druid_spell_t::haste()
 {
-  double h =  spell_t::haste();
+  double h =  base_t::haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
@@ -2625,14 +2625,14 @@ double druid_spell_t::haste()
 
 timespan_t druid_spell_t::execute_time()
 {
-  return spell_t::execute_time();
+  return base_t::execute_time();
 }
 
 // druid_spell_t::schedule_execute ==========================================
 
 void druid_spell_t::schedule_execute()
 {
-  spell_t::schedule_execute();
+  base_t::schedule_execute();
 
   if ( base_execute_time > timespan_t::zero() )
     p() -> buff.natures_swiftness -> expire();
@@ -2642,19 +2642,19 @@ void druid_spell_t::schedule_execute()
 
 void druid_spell_t::execute()
 {
-  spell_t::execute();
+  base_t::execute();
 }
 
 // druid_spell_t::consume_resource ==========================================
 
 void druid_spell_t::consume_resource()
 {
-  spell_t::consume_resource();
+  base_t::consume_resource();
 
   if ( harmful && p() -> buff.omen_of_clarity -> up() && spell_t::execute_time() != timespan_t::zero() )
   {
     // Treat the savings like a mana gain.
-    double amount = spell_t::cost();
+    double amount = base_t::cost();
     if ( amount > 0 )
     {
       p() -> gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
@@ -5240,7 +5240,7 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
-druid_td_t::druid_td_t( player_t* target, druid_t* source )
+druid_t::druid_td_t::druid_td_t( player_t* target, druid_t* source )
   : actor_pair_t( target, source )
 {
   combo_points = new combo_points_t( target );

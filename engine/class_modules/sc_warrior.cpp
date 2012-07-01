@@ -80,18 +80,19 @@ struct warrior_t;
 
 enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
 
-struct warrior_td_t : public actor_pair_t
-{
-  dot_t* dots_deep_wounds;
-  dot_t* dots_rend;
-
-  buff_t* debuffs_colossus_smash;
-
-  warrior_td_t( player_t* target, warrior_t* p );
-};
-
 struct warrior_t : public player_t
 {
+public:
+  struct warrior_td_t : public actor_pair_t
+  {
+    dot_t* dots_deep_wounds;
+    dot_t* dots_rend;
+
+    buff_t* debuffs_colossus_smash;
+
+    warrior_td_t( player_t* target, warrior_t* p );
+  };
+
   int instant_flurry_haste;
   int initial_rage;
 
@@ -280,10 +281,9 @@ struct warrior_t : public player_t
 
   // Up-Times
   benefit_t* uptimes_rage_cap;
-
-
+private:
   target_specific_t<warrior_td_t> target_data;
-
+public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     glyphs( glyphs_t() ),
@@ -374,7 +374,7 @@ struct warrior_t : public player_t
   }
 };
 
-warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
+warrior_t::warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
     actor_pair_t( target, p )
 {
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
@@ -406,9 +406,9 @@ struct warrior_attack_t : public melee_attack_t
   }
 
   warrior_t* cast() const
-  { return debug_cast<warrior_t*>( player ); }
+  { return static_cast<warrior_t*>( player ); }
 
-  warrior_td_t* cast_td( player_t* t = 0 ) const
+  warrior_t::warrior_td_t* cast_td( player_t* t = 0 ) const
   { return cast() -> get_target_data( t ? t : target ); }
 
   virtual double armor();
@@ -747,7 +747,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 double warrior_attack_t::armor()
 {
-  warrior_td_t* td = cast_td();
+  warrior_t::warrior_td_t* td = cast_td();
 
   double a = attack_t::armor();
 
@@ -1236,7 +1236,7 @@ struct bloodthirst_t : public warrior_attack_t
 
       if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
       {
-        warrior_td_t* td = cast_td();
+        warrior_t::warrior_td_t* td = cast_td();
         td -> debuffs_colossus_smash -> trigger();
         p -> procs_tier13_4pc_melee -> occur();
       }
@@ -1389,7 +1389,7 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_td_t* td = cast_td();
+      warrior_t::warrior_td_t* td = cast_td();
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
 
       if ( ! sim -> overrides.physical_vulnerability )
@@ -1675,7 +1675,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit() )
     {
-      warrior_td_t* td = cast_td();
+      warrior_t::warrior_td_t* td = cast_td();
       p -> buffs_lambs_to_the_slaughter -> trigger();
       p -> buffs_battle_trance -> trigger();
       p -> buffs_juggernaut -> expire();
@@ -2344,7 +2344,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-    //warrior_td_t* td = cast_td();
+    //warrior_t::warrior_td_t* td = cast_td();
 
     p -> buffs_thunderstruck -> trigger();
 
@@ -2454,9 +2454,9 @@ struct warrior_spell_t : public spell_t
 
 
   warrior_t* cast() const
-  { return debug_cast<warrior_t*>( player ); }
+  { return static_cast<warrior_t*>( player ); }
 
-  warrior_td_t* cast_td( player_t* t = 0 ) const
+  warrior_t::warrior_td_t* cast_td( player_t* t = 0 ) const
   { return cast() -> get_target_data( t ? t : target ); }
 
   void _init_warrior_spell_t()
@@ -3720,8 +3720,7 @@ void warrior_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  warrior_t* p = dynamic_cast<warrior_t*>( source );
-  assert( p );
+  warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage            = p -> initial_rage;
   instant_flurry_haste    = p -> instant_flurry_haste;

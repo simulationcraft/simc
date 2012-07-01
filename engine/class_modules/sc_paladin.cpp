@@ -24,27 +24,28 @@ enum seal_e
   SEAL_MAX
 };
 
-struct paladin_td_t : public actor_pair_t
-{
-  dot_t* dots_word_of_glory;
-  dot_t* dots_holy_radiance;
-  dot_t* dots_censure;
-
-  buff_t* debuffs_censure;
-
-  paladin_td_t( player_t* target, player_t* paladin ) :
-    actor_pair_t( target, paladin )
-  {
-    target -> get_dot( "word_of_glory", paladin );
-    target -> get_dot( "holy_radiance", paladin );
-    target -> get_dot( "censure",       paladin );
-
-    debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-  }
-};
-
 struct paladin_t : public player_t
 {
+public:
+  struct paladin_td_t : public actor_pair_t
+  {
+    dot_t* dots_word_of_glory;
+    dot_t* dots_holy_radiance;
+    dot_t* dots_censure;
+
+    buff_t* debuffs_censure;
+
+    paladin_td_t( player_t* target, player_t* paladin ) :
+      actor_pair_t( target, paladin )
+    {
+      target -> get_dot( "word_of_glory", paladin );
+      target -> get_dot( "holy_radiance", paladin );
+      target -> get_dot( "censure",       paladin );
+
+      debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+    }
+  };
+
   // Active
   seal_e active_seal;
   heal_t*   active_beacon_of_light;
@@ -177,9 +178,9 @@ struct paladin_t : public player_t
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
   } glyphs;
-
+private:
   target_specific_t<paladin_td_t> target_data;
-
+public:
   player_t* beacon_target;
   int ret_pvp_gloves;
 
@@ -370,15 +371,48 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   }
 };
 
+// Template for common paladin action code. See priest_action_t.
+template <class Base>
+struct paladin_action_t : public Base
+{
+  typedef Base ab; // action base, eg. spell_t
+   typedef paladin_action_t base_t;
+
+   paladin_action_t( const std::string& n, paladin_t* player,
+                  const spell_data_t* s = spell_data_t::nil() ) :
+     ab( n, player, s )
+   {
+   }
+
+   paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
+
+   paladin_t::paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+
+   virtual double cost()
+   {
+     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
+     {
+       if ( p() -> buffs.divine_purpose -> check() )
+       {
+         return 0.0;
+       }
+       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
+     }
+
+     return ab::cost();
+   }
+
+};
+
 // ==========================================================================
 // Paladin Heal
 // ==========================================================================
 
-struct paladin_heal_t : public heal_t
+struct paladin_heal_t : public paladin_action_t<heal_t>
 {
   paladin_heal_t( const std::string& n, paladin_t* p,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    heal_t( n, p, s )
+    base_t( n, p, s )
   {
     may_crit          = true;
     tick_may_crit     = true;
@@ -387,28 +421,11 @@ struct paladin_heal_t : public heal_t
     weapon_multiplier = 0.0;
   }
 
-  paladin_t* p()
-  { return debug_cast<paladin_t*>( player ); }
-
-  virtual double cost()
-  {
-    if ( current_resource() == RESOURCE_HOLY_POWER )
-    {
-      if ( p() -> buffs.divine_purpose -> check() )
-      {
-        return 0.0;
-      }
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
-    }
-
-    return heal_t::cost();
-  }
-
   virtual void execute();
 
   virtual void player_buff()
   {
-    heal_t::player_buff();
+    base_t::player_buff();
 
     if ( p() -> active_seal == SEAL_OF_INSIGHT )
     {
@@ -421,7 +438,7 @@ struct paladin_heal_t : public heal_t
 // Paladin Attacks
 // ==========================================================================
 
-struct paladin_melee_attack_t : public melee_attack_t
+struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
@@ -430,7 +447,7 @@ struct paladin_melee_attack_t : public melee_attack_t
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
                           bool use2hspec = true ) :
-    melee_attack_t( n, p, s ),
+    base_t( n, p, s ),
     trigger_seal( false ), trigger_seal_of_righteousness( false ), use_spell_haste( false )
   {
     may_crit = true;
@@ -438,13 +455,9 @@ struct paladin_melee_attack_t : public melee_attack_t
     special = true;
   }
 
-  paladin_t* p() { return debug_cast<paladin_t*>( player ); }
-
-  paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
   virtual double haste()
   {
-    return use_spell_haste ? p() -> composite_spell_haste() : melee_attack_t::haste();
+    return use_spell_haste ? p() -> composite_spell_haste() : base_t::haste();
   }
 
   virtual timespan_t gcd()
@@ -460,19 +473,19 @@ struct paladin_melee_attack_t : public melee_attack_t
       return t;
     }
     else
-      return melee_attack_t::gcd();
+      return base_t::gcd();
   }
 
   virtual double total_haste()
   {
-    return use_spell_haste ? p() -> composite_spell_haste() : melee_attack_t::total_haste();
+    return use_spell_haste ? p() -> composite_spell_haste() : base_t::total_haste();
   }
 
   virtual void execute()
   {
     double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
 
-    melee_attack_t::execute();
+    base_t::execute();
 
     if ( p() -> talents.divine_purpose -> ok() )
     {
@@ -522,26 +535,12 @@ struct paladin_melee_attack_t : public melee_attack_t
 
   virtual void player_buff()
   {
-    melee_attack_t::player_buff();
+    base_t::player_buff();
 
     if ( p() -> buffs.divine_shield -> up() )
     {
       player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effect1().percent();
     }
-  }
-
-  virtual double cost()
-  {
-    if ( current_resource() == RESOURCE_HOLY_POWER )
-    {
-      if ( p() -> buffs.divine_purpose -> check() )
-      {
-        return 0.0;
-      }
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
-    }
-
-    return melee_attack_t::cost();
   }
 };
 
@@ -549,35 +548,17 @@ struct paladin_melee_attack_t : public melee_attack_t
 // Paladin Spells
 // ==========================================================================
 
-struct paladin_spell_t : public spell_t
+struct paladin_spell_t : public paladin_action_t<spell_t>
 {
   paladin_spell_t( const std::string& n, paladin_t* p,
-                   const spell_data_t* s = spell_data_t::nil() )
-    : spell_t( n, p, s )
+                   const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, p, s )
   {
-  }
-
-  paladin_t* p() { return debug_cast<paladin_t*>( player ); }
-
-  paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
-
-  virtual double cost()
-  {
-    if ( current_resource() == RESOURCE_HOLY_POWER )
-    {
-      if ( p() -> buffs.divine_purpose -> check() )
-      {
-        return 0.0;
-      }
-      return std::max( base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
-    }
-
-    return spell_t::cost();
   }
 
   virtual void player_buff()
   {
-    spell_t::player_buff();
+    base_t::player_buff();
 
     if ( p() -> buffs.divine_shield -> up() )
     {
@@ -589,7 +570,7 @@ struct paladin_spell_t : public spell_t
   {
     double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
 
-    spell_t::execute();
+    base_t::execute();
 
     if ( p() -> talents.divine_purpose -> ok() )
     {
@@ -1886,7 +1867,7 @@ void paladin_heal_t::execute()
 {
   double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
 
-  heal_t::execute();
+  base_t::execute();
 
   if ( target != p() -> beacon_target )
     trigger_beacon_of_light( this );

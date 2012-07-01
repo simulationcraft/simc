@@ -231,9 +231,9 @@ struct hunter_t : public player_t
     const spell_data_t* wild_quiver;
     const spell_data_t* essence_of_the_viper;
   } mastery;
-
+private:
   target_specific_t<hunter_td_t> target_data;
-
+public:
   double merge_piercing_shots;
   double tier13_4pc_cooldown;
   uint32_t vishanka;
@@ -314,27 +314,8 @@ struct hunter_t : public player_t
   virtual void regen( timespan_t periodicity );
 
   // Temporary
-  virtual std::string set_default_talents()
-  {
-    switch ( specialization() )
-    {
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_talents();
-  }
-
-  virtual std::string set_default_glyphs()
-  {
-    switch ( specialization() )
-    {
-    case SPEC_NONE: break;
-    default: break;
-    }
-
-    return player_t::set_default_glyphs();
-  }
+  virtual std::string set_default_talents();
+  virtual std::string set_default_glyphs();
 };
 
 // ==========================================================================
@@ -400,9 +381,9 @@ struct hunter_pet_t : public pet_t
 
   // Benefits
   benefit_t* benefits_wild_hunt;
-
+private:
   target_specific_t<hunter_pet_td_t> target_data;
-
+public:
   hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
     talents( talents_t() ),
@@ -421,10 +402,11 @@ struct hunter_pet_t : public pet_t
     //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
 
+    target_data.init( "target_data", this );
   }
 
-  hunter_t* cast_owner()
-  { return debug_cast<hunter_t*>( owner ); }
+  hunter_t* cast_owner() const
+  { return static_cast<hunter_t*>( owner ); }
 
   virtual pet_e group()
   {
@@ -704,7 +686,7 @@ struct hunter_action_t : public Base
     ab::stateless = true;
   }
 
-  hunter_t* p() { return debug_cast<hunter_t*>( ab::player ); }
+  hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
   hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
@@ -2248,18 +2230,13 @@ struct hunter_pet_action_t : public Base
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
-  {
-  }
+  { }
 
-  hunter_pet_t* p() 
-  { 
-    return debug_cast<hunter_pet_t*>( ab::player );
-  }
+  hunter_pet_t* p() const
+  { return static_cast<hunter_pet_t*>( ab::player ); }
 
   hunter_pet_t::hunter_pet_td_t* cast_td( player_t* t = 0 ) 
-  { 
-    return p() -> get_target_data( t ? t : ab::target );
-  }
+  { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================
@@ -2829,7 +2806,7 @@ struct wild_quiver_trigger_t : public action_callback_t
   attack_t* attack;
   rng_t* rng;
 
-  wild_quiver_trigger_t( player_t* p, attack_t* a ) :
+  wild_quiver_trigger_t( hunter_t* p, attack_t* a ) :
     action_callback_t( p ), attack( a )
   {
     rng = p -> get_rng( "wild_quiver" );
@@ -2837,7 +2814,7 @@ struct wild_quiver_trigger_t : public action_callback_t
 
   virtual void trigger( action_t* a, void* /* call_data */ )
   {
-    hunter_t* p = ::debug_cast<hunter_t*>( listener );
+    hunter_t* p = static_cast<hunter_t*>( listener );
 
     if ( ! a -> weapon )
       return;
@@ -3541,9 +3518,7 @@ void hunter_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
 
-  hunter_t* p = dynamic_cast<hunter_t*>( source );
-
-  assert( p );
+  hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
   merge_piercing_shots = p -> merge_piercing_shots;
@@ -3740,6 +3715,32 @@ void hunter_t::moving()
 
   if ( main_hand_attack ) main_hand_attack -> cancel();
   if (  off_hand_attack )  off_hand_attack -> cancel();
+}
+
+// hunter_t::set_default_talents() =======================================================
+
+std::string hunter_t::set_default_talents()
+{
+  switch ( specialization() )
+  {
+  case SPEC_NONE: break;
+  default: break;
+  }
+
+  return player_t::set_default_talents();
+}
+
+// hunter_t::set_default_glyphs() =======================================================
+
+std::string hunter_t::set_default_glyphs()
+{
+  switch ( specialization() )
+  {
+  case SPEC_NONE: break;
+  default: break;
+  }
+
+  return player_t::set_default_glyphs();
 }
 
 // HUNTER MODULE INTERFACE ================================================
