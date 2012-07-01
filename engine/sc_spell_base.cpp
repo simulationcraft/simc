@@ -60,6 +60,16 @@ timespan_t spell_base_t::execute_time()
   return t;
 }
 
+// spell_base_t::tick_time ======================================================
+
+timespan_t spell_base_t::tick_time( double haste )
+{
+  if ( ! harmful && ! player -> in_combat )
+      return timespan_t::zero();
+
+  return action_t::tick_time( haste );
+}
+
 // spell_base_t::player_buff =====================================================
 
 void spell_base_t::player_buff()

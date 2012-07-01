@@ -4385,6 +4385,7 @@ struct spell_base_t : public action_t
   virtual double haste();
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
+  virtual timespan_t tick_time( double haste );
   virtual void   player_buff();
   virtual result_e   calculate_result( double, unsigned );
   virtual void   execute();
