@@ -22,7 +22,7 @@ actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down
 actions+=/jade_serpent_potion,if=!in_combat
 actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<85
-#actions+=/evocation,if=mana.pct<30&target.time_to_die>=20
+actions+=/evocation,if=!talent.invocation.enabled&!talent.rune_of_power.enabled&mana.pct<35&target.time_to_die>=30
 actions+=/arcane_power,if=buff.arcane_charge.stack>2
 actions+=/blood_fury,if=buff.arcane_charge.stack>2
 actions+=/arcane_missiles
@@ -33,7 +33,6 @@ actions+=/mirror_image
 actions+=/arcane_barrage,if=buff.arcane_charge.stack=4&buff.arcane_power.down&(mana.pct<85|cooldown.mana_gem.remains>10|mana_gem_charges=0)
 actions+=/presence_of_mind
 actions+=/arcane_blast
-#actions+=/evocation
 actions+=/arcane_barrage,moving=1
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
@@ -43,9 +42,9 @@ shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare
 chest=spelltwisters_grand_robe,heroic=0,type=cloth,ilevel=476,quality=epic,stats=2133armor_1015int_1523sta_726crit_594mastery,reforge=mastery_hit,enchant=80all
 waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,gems=160int
 legs=leggings_of_unleashed_anguish,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1782armor_899int_1349sta_676crit_469haste,reforge=haste_hit,enchant=285int_165crit
-feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=140mastery
+feet=scarlet_sandals,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1400armor_668int_1002sta_465crit_412hit,enchant=175hit
 wrists=deadwalker_bracers,heroic=1,type=cloth,ilevel=463,quality=rare,stats=891armor_501int_752sta_354hit_301crit,enchant=170int
-hands=spelltwisters_gloves,heroic=0,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170mastery
+hands=spelltwisters_gloves,heroic=0,type=cloth,ilevel=476,quality=epic,stats=1333armor_754int_1131sta_532hit_453mastery,enchant=170haste
 finger1=signet_of_the_hidden_door,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_254hit_381haste,reforge=haste_crit,enchant=160int
 finger2=eye_of_the_tornado,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_339hit_326mastery,enchant=160int
 trinket1=grakls_gleaming_talisman,heroic=0,ilevel=409,quality=rare,stats=512int,use=4232spellpower_20dur_120cd

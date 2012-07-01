@@ -770,10 +770,9 @@ struct mage_spell_t : public spell_t
   virtual bool usable_moving()
   {
     bool um = spell_t::usable_moving();
-
-    // TODO: Needs to check that cast time of spell is < 4 seconds
-    //       Should decrement charge at start of cast
+    timespan_t t = base_execute_time;
     if ( p() -> talents.ice_floes -> ok() &&
+         t < timespan_t::from_seconds( 4.0 ) &&
          ( p() -> buffs.ice_floes -> up() || p() -> buffs.ice_floes -> cooldown -> remains() == timespan_t::zero() ) )
       um = true;
 
@@ -851,7 +850,21 @@ struct mage_spell_t : public spell_t
       return;
 
     if ( ! channeled && spell_t::execute_time() > timespan_t::zero() )
-      p() -> buffs.presence_of_mind -> expire();
+    {
+      if ( p() -> buffs.presence_of_mind -> check() )
+      {
+        p() -> buffs.presence_of_mind -> expire();
+      }
+      // TODO: Needs to exclude the following:
+      //       - Scorch
+      //       - Summon Water Elemental
+      //       - Frostfire Bolt, if cast using Brain Freeze
+      //       - Pyroblast, if cast using Hot Streak
+      else if ( spell_t::usable_moving() )
+      {
+        p() -> buffs.ice_floes -> decrement();
+      }
+    }
 
     if ( result_is_hit() )
     {
@@ -1851,7 +1864,7 @@ struct ice_floes_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> buffs.ice_floes -> trigger();
+    p() -> buffs.ice_floes -> trigger( 2 );
   }
 
   virtual bool ready()
