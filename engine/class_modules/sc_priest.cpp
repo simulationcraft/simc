@@ -18,18 +18,10 @@ using namespace spells;
 using namespace heals;
 using namespace pets;
 
-static void cancel_dot( dot_t* dot )
-{
-  if ( dot -> ticking )
-  {
-    dot -> cancel();
-    dot -> reset();
-  }
-}
-
 struct priest_t : public player_t
 {
   typedef player_t base_t;
+public:
   struct priest_td_t : public actor_pair_t
   {
   public:
@@ -59,8 +51,7 @@ struct priest_t : public player_t
 
     // Discipline
     buff_t* holy_evangelism;
-    buff_t* dark_archangel;
-    buff_t* holy_archangel;
+    buff_t* archangel;
     buff_t* inner_fire;
     buff_t* inner_focus;
     buff_t* inner_will;
@@ -451,10 +442,17 @@ struct priest_pet_t : public pet_t
   virtual double composite_spell_crit()
   { return owner -> composite_spell_crit(); } // Seems to just use our crit directly, based on very rough numbers, needs more testing.
 
-  virtual double composite_attack_expertise( weapon_t* ) { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
-  virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
-  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
-  priest_t* o() const { return static_cast<priest_t*>( owner ); }
+  virtual double composite_attack_expertise( weapon_t* )
+  { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
+
+  virtual double composite_attack_hit()
+  { return owner -> composite_spell_hit(); }
+
+  virtual resource_e primary_resource()
+  { return RESOURCE_ENERGY; }
+
+  priest_t* o() const
+  { return static_cast<priest_t*>( owner ); }
 };
 
 // ==========================================================================
@@ -488,14 +486,12 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   {
     gain_t* fiend;
   } gains;
-  const spell_data_t* shadowcrawl;
   const spell_data_t* mana_leech;
   action_t* shadowcrawl_action;
 
   base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
     priest_guardian_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
-    shadowcrawl( spell_data_t::nil() ),
     mana_leech( spell_data_t::nil() ),
     shadowcrawl_action( 0 )
   {
@@ -520,18 +516,12 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
 
     priest_guardian_pet_t::init_actions();
   }
-  virtual void init_spells()
-  {
-    priest_guardian_pet_t::init_spells();
-
-    shadowcrawl = find_pet_spell( "Shadowcrawl" );
-  }
 
   virtual void init_buffs()
   {
     priest_guardian_pet_t::init_buffs();
 
-    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", shadowcrawl );
+    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", find_pet_spell( "Shadowcrawl" ) );
   }
 
   virtual void init_gains()
@@ -617,6 +607,7 @@ struct lightwell_pet_t : public priest_pet_t
 {
 public:
   int charges;
+
   lightwell_pet_t( sim_t* sim, priest_t* p ) :
     priest_pet_t( sim, p, "lightwell", PET_NONE, true ),
     charges( 0 )
@@ -630,6 +621,7 @@ public:
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
+
   virtual void summon( timespan_t duration )
   {
     spell_haste = o() -> spell_haste;
@@ -659,6 +651,7 @@ struct priest_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
+    stateless = true;
   }
 
   virtual void reset()
@@ -692,12 +685,14 @@ struct priest_pet_spell_t : public spell_t
     spell_t( n, p, p -> find_pet_spell( n ) )
   {
     may_crit = true;
+    stateless = true;
   }
 
   priest_pet_spell_t( const std::string& token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( token, p, s )
   {
     may_crit = true;
+    stateless = true;
   }
 
   priest_pet_t* p() const
@@ -711,7 +706,6 @@ struct shadowcrawl_t : public priest_pet_spell_t
   {
     may_miss  = false;
     harmful   = false;
-    stateless = true;
   }
 
   base_fiend_pet_t* p() const
@@ -735,7 +729,6 @@ struct fiend_melee_t : public priest_pet_melee_t
     base_dd_min       = weapon -> min_dmg;
     base_dd_max       = weapon -> max_dmg;
     direct_power_mod  = p -> direct_power_mod;
-    stateless = true;
   }
 
   base_fiend_pet_t* p() const
@@ -745,7 +738,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     double am = priest_pet_melee_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.shadowcrawl -> up() * p() -> shadowcrawl -> effectN( 2 ).percent();
+    am *= 1.0 + p() -> buffs.shadowcrawl -> up() * p() -> buffs.shadowcrawl -> data().effectN( 2 ).percent();
 
     return am;
   }
@@ -851,19 +844,19 @@ public:
   bool castable_in_shadowform;
   bool can_cancel_shadowform;
 
-  typedef Base action_base_t; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
 
   priest_action_t( const std::string& n, priest_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
-    action_base_t( n, player, s )
+    ab( n, player, s )
   {
-    action_base_t::may_crit          = true;
-    action_base_t::tick_may_crit     = true;
-    action_base_t::stateless         = true;
+    ab::may_crit          = true;
+    ab::tick_may_crit     = true;
+    ab::stateless         = true;
 
-    action_base_t::dot_behavior      = DOT_REFRESH;
-    action_base_t::weapon_multiplier = 0.0;
+    ab::dot_behavior      = DOT_REFRESH;
+    ab::weapon_multiplier = 0.0;
 
 
     can_cancel_shadowform = player -> autoUnshift;
@@ -886,24 +879,45 @@ public:
   }
 
   priest_t* p() const
-  { return static_cast<priest_t*>( action_base_t::player ); }
+  { return static_cast<priest_t*>( ab::player ); }
 
   priest_t::priest_td_t* td( player_t* t = 0 )
-  { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual void schedule_execute()
   {
     cancel_shadowform();
 
-    action_base_t::schedule_execute();
+    ab::schedule_execute();
   }
 
   virtual bool ready()
   {
-    if ( ! action_base_t::ready() )
+    if ( ! ab::ready() )
       return false;
 
     return check_shadowform();
+  }
+
+  virtual double cost()
+  {
+    double c = ab::cost();
+
+    if ( ( ab::base_execute_time <= timespan_t::zero() ) && ! ab::channeled )
+    {
+      c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effectN( 1 ).percent();
+      c  = floor( c );
+    }
+
+    return c;
+  }
+
+  virtual void consume_resource()
+  {
+    ab::consume_resource();
+
+    if ( ab::base_execute_time <= timespan_t::zero() )
+      p() -> buffs.inner_will -> up();
   }
 };
 
@@ -930,27 +944,6 @@ public:
   virtual double action_multiplier()
   {
     return base_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
-  }
-
-  virtual double cost()
-  {
-    double c = base_t::cost();
-
-    if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
-    {
-      c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effectN( 1 ).percent();
-      c  = floor( c );
-    }
-
-    return c;
-  }
-
-  virtual void consume_resource()
-  {
-    base_t::consume_resource();
-
-    if ( base_execute_time <= timespan_t::zero() )
-      p() -> buffs.inner_will -> up();
   }
 
   bool ready()
@@ -1069,7 +1062,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   virtual double action_multiplier()
   {
-    return base_t::action_multiplier() * ( 1.0 + p() -> buffs.holy_archangel -> value() );
+    return base_t::action_multiplier() * ( 1.0 + p() -> buffs.archangel -> value() );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1080,27 +1073,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
       ctm *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
 
     return ctm;
-  }
-
-  virtual double cost()
-  {
-    double c = base_t::cost();
-
-    if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
-    {
-      c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effectN( 1 ).percent();
-      c  = floor( c );
-    }
-
-    return c;
-  }
-
-  virtual void consume_resource()
-  {
-    base_t::consume_resource();
-
-    if ( base_execute_time <= timespan_t::zero() )
-      p() -> buffs.inner_will -> up();
   }
 
   void trigger_divine_aegis( player_t* t, double amount )
@@ -1297,19 +1269,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual double cost()
-  {
-    double c = base_t::cost();
-
-    if ( ( base_execute_time <= timespan_t::zero() ) && ! channeled )
-    {
-      c *= 1.0 + p() -> buffs.inner_will -> check() * p() -> buffs.inner_will -> data().effectN( 1 ).percent();
-      c  = floor( c );
-    }
-
-    return c;
-  }
-
   virtual void impact_s( action_state_t* s )
   {
     double save_health_percentage = s -> target -> health_percentage();
@@ -1323,15 +1282,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         p() -> buffs.twist_of_fate -> trigger();
       }
     }
-  }
-
-
-  virtual void consume_resource()
-  {
-    base_t::consume_resource();
-
-    if ( base_execute_time <= timespan_t::zero() )
-      p() -> buffs.inner_will -> up();
   }
 
   virtual void assess_damage( player_t* t,
@@ -1419,6 +1369,16 @@ public:
 
 namespace spells {
 
+void cancel_dot( dot_t* dot )
+{
+  if ( dot -> ticking )
+  {
+    dot -> cancel();
+    dot -> reset();
+  }
+}
+
+
 // ==========================================================================
 // Priest Abilities
 // ==========================================================================
@@ -1432,35 +1392,21 @@ namespace spells {
 struct archangel_t : public priest_spell_t
 {
   archangel_t( priest_t* player, const std::string& options_str ) :
-    priest_spell_t( "archangel", player, player -> find_talent_spell( "Archangel" ) )
+    priest_spell_t( "archangel", player, player -> specs.archangel )
   {
     parse_options( NULL, options_str );
 
     harmful           = false;
 
-    if ( p() -> specialization() == PRIEST_SHADOW )
-    {
-      cooldown -> duration = p() -> buffs.dark_archangel -> buff_cooldown;
-    }
-    else
-    {
-      cooldown -> duration = p() -> buffs.holy_archangel -> buff_cooldown;
-    }
+    cooldown -> duration = p() -> buffs.archangel -> buff_cooldown;
   }
 
   virtual void execute()
   {
     priest_spell_t::execute();
 
-    if ( p() -> specialization() == PRIEST_SHADOW )
-    {
-      p() -> buffs.dark_archangel -> trigger( 1, p() -> buffs.dark_archangel -> default_value );
-    }
-    else
-    {
-      p() -> buffs.holy_archangel -> trigger( 1, p() -> buffs.holy_archangel -> default_value * p() -> buffs.holy_evangelism -> stack() );
-      p() -> buffs.holy_evangelism -> expire();
-    }
+    p() -> buffs.archangel -> trigger( 1, p() -> buffs.archangel -> default_value * p() -> buffs.holy_evangelism -> stack() );
+    p() -> buffs.holy_evangelism -> expire();
   }
 };
 
@@ -1965,18 +1911,6 @@ struct mind_blast_t : public priest_spell_t
     }
   }
 
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( p() -> buffs.dark_archangel -> check() )
-    {
-      m *= 1.0 + p() -> buffs.dark_archangel -> value();
-    }
-
-    return m;
-  }
-
   virtual void execute()
   {
     priest_spell_t::execute();
@@ -2098,18 +2032,6 @@ struct mind_flay_t : public priest_spell_t
     }
   }
 
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( p() -> buffs.dark_archangel -> up() )
-    {
-      m *= 1.0 + p() -> buffs.dark_archangel -> value();
-    }
-
-    return m;
-  }
-
   virtual void tick( dot_t* d )
   {
     priest_spell_t::tick( d );
@@ -2184,19 +2106,6 @@ struct mind_spike_t : public priest_spell_t
     dps_t -> surge_of_darkness = p() -> buffs.consume_surge_of_darkness -> check() != 0;
 
     priest_spell_t::snapshot_state( state, flags );
-  }
-
-
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( p() -> buffs.dark_archangel -> up() )
-    {
-      m *= 1.0 + p() -> buffs.dark_archangel -> value();
-    }
-
-    return m;
   }
 
   virtual void execute()
@@ -2468,18 +2377,6 @@ struct shadow_word_death_t : public priest_spell_t
     }
 
     priest_spell_t::impact_s( s );
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( p() -> buffs.dark_archangel -> up() )
-    {
-      m *= 1.0 + p() -> buffs.dark_archangel -> value();
-    }
-
-    return m;
   }
 
   virtual bool ready()
@@ -3240,8 +3137,8 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 
   virtual void populate_target_list()
   {
-    for ( player_t* t = action_base_t::sim -> target_list; t; t = t -> next )
-    { if ( t != action_base_t::target ) targets.push_back( t ); }
+    for ( player_t* t = sim -> target_list; t; t = t -> next )
+    { if ( t != target ) targets.push_back( t ); }
   }
 };
 
@@ -3253,8 +3150,8 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 
   virtual void populate_target_list()
   {
-    for ( player_t* t = action_base_t::sim -> player_list; t; t = t -> next )
-    { if ( t != action_base_t::target ) targets.push_back( t ); }
+    for ( player_t* t = sim -> player_list; t; t = t -> next )
+    { if ( t != target ) targets.push_back( t ); }
   }
 };
 
@@ -3265,7 +3162,7 @@ template <class Base>
 struct halo_base_t : public Base
 {
   typedef Base ab; // typedef for the templated action type, priest_spell_t, or priest_heal_t
-  typedef halo_base_t base_t; // typedef for halo_base_t<action_base_t>
+  typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
   halo_base_t( const std::string& n, priest_t* p, const std::string& options_str ) :
     ab( n, p, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 120644 ) : p -> find_spell( 120517 ) )
@@ -4854,10 +4751,7 @@ void priest_t::init_buffs()
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( specs.evangelism -> ok() )
                                            .activated( false );
-  buffs.dark_archangel                   = buff_creator_t( this, "dark_archangel", find_spell( 87153 ) )
-                                           .chance( specs.archangel -> ok() )
-                                           .default_value( find_spell( 87153 ) -> effect1().percent() );
-  buffs.holy_archangel                   = buff_creator_t( this, "holy_archangel", find_spell( 81700 ) )
+  buffs.archangel                   = buff_creator_t( this, "archangel", find_spell( 81700 ) )
                                            .chance( specs.archangel -> ok() )
                                            .default_value( find_spell( 81700 ) -> effect1().percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
