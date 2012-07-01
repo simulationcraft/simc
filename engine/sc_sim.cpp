@@ -216,6 +216,10 @@ static bool parse_player( sim_t*             sim,
     }
   }
 
+  // Create options for player
+  if ( sim -> active_player )
+    sim -> active_player -> create_options();
+
   return sim -> active_player != 0;
 }
 

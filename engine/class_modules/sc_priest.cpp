@@ -287,8 +287,6 @@ public:
     cooldowns.inner_focus                = get_cooldown( "inner_focus" );
     cooldowns.penance                    = get_cooldown( "penance" );
     cooldowns.rapture                    = get_cooldown( "rapture" );
-
-    create_options();
   }
 
   // Character Definition
@@ -362,8 +360,6 @@ struct priest_pet_t : public pet_t
   {
     position                    = POSITION_BACK;
     initial.distance            = 3;
-
-    create_options();
   }
 
   struct _stat_list_t

@@ -270,8 +270,6 @@ struct hunter_t : public player_t
 
     tier13_4pc_cooldown = 105.0;
     vishanka = 0;
-
-    create_options();
   }
 
   // Character Definition
@@ -423,8 +421,6 @@ struct hunter_pet_t : public pet_t
     //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
 
-
-    create_options();
   }
 
   hunter_t* cast_owner()

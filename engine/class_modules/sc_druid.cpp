@@ -415,8 +415,6 @@ struct druid_t : public player_t
     equipped_weapon_dps = 0;
 
     initial.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
-
-    create_options();
   }
 
   // Character Definition

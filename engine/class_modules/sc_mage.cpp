@@ -244,8 +244,6 @@ struct mage_t : public player_t
     // Options
     initial.distance = 40;
     mana_gem_charges = 3;
-
-    create_options();
   }
 
   // Character Definition

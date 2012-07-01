@@ -307,8 +307,6 @@ struct warrior_t : public player_t
     initial_rage = 0;
 
     initial.distance = 3;
-
-    create_options();
   }
 
   // Character Definition

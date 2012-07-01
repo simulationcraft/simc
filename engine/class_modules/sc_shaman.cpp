@@ -317,8 +317,6 @@ struct shaman_t : public player_t
     windfury_oh    = 0;
     flametongue_mh = 0;
     flametongue_oh = 0;
-
-    create_options();
   }
 
   // Character Definition

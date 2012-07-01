@@ -178,8 +178,6 @@ struct monk_t : public player_t
     initial_chi( 0 )
   {
     target_data.init( "target_data", this );
-
-    create_options();
   }
 
   // Character Definition

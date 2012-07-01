@@ -321,9 +321,6 @@ struct rogue_t : public player_t
 
     initial.distance = 3;
 
-    // Options
-
-    create_options();
   }
 
   // Character Definition

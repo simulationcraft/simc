@@ -222,8 +222,6 @@ struct paladin_t : public player_t
     ret_pvp_gloves = -1;
 
     initial.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
-
-    create_options();
   }
 
   virtual void      init_defense();

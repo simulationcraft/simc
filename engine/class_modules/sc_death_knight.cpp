@@ -314,8 +314,6 @@ struct death_knight_t : public player_t
 
     cooldowns.howling_blast = get_cooldown( "howling_blast" );
 
-    create_options();
-
     initial.distance = 0;
   }
 

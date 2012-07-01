@@ -294,8 +294,6 @@ struct enemy_t : public player_t
     while ( *last ) last = &( ( *last ) -> next );
     *last = this;
     next = 0;
-
-    create_options();
   }
 
   virtual role_e primary_role()
@@ -332,7 +330,6 @@ struct add_t : public pet_t
   add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) :
     pet_t( s, o, n, pt )
   {
-    create_options();
   }
 
   virtual void init_actions()
