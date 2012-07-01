@@ -3499,7 +3499,7 @@ struct player_t : public noncopyable
     // new mop potions
     stat_buff_t* virmens_bite; // agi
     stat_buff_t* mogu_power; // str
-    stat_buff_t* jinyu; // int
+    stat_buff_t* jade_serpent; // int
     stat_buff_t* mountains; // armor
   } potion_buffs;
 

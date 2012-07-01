@@ -563,7 +563,7 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "golemblood_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.golemblood, options_str );
   if ( name == "tolvir_potion"        ) return new  potion_base_t( p, name, p -> potion_buffs.tolvir, options_str );
   // new mop potions
-  if ( name == "jinyu_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.jinyu, options_str );
+  if ( name == "jade_serpent_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.jade_serpent, options_str );
   if ( name == "mountains_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
   if ( name == "mogu_power_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
   if ( name == "virmens_bite_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );

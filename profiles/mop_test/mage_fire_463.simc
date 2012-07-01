@@ -19,8 +19,8 @@ actions+=/counterspell
 actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
 actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down
-actions+=/volcanic_potion,if=!in_combat
-actions+=/volcanic_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
+actions+=/jade_serpent_potion,if=!in_combat
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
 actions+=/berserking
 actions+=/mana_gem,if=mana.pct<85
 #actions+=/evocation,if=mana.pct<30&target.time_to_die>=20

@@ -2122,7 +2122,7 @@ void player_t::init_buffs()
 
     // New Mop potions
 
-    potion_buffs.jinyu        = potions_common_buff_creator()( this, "jinyu" )
+    potion_buffs.jade_serpent = potions_common_buff_creator()( this, "jade_serpent" )
                                 .stat( STAT_INTELLECT )
                                 .amount( 4000.0 );
 
