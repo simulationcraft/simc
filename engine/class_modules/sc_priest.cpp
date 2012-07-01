@@ -840,6 +840,7 @@ struct priest_action_t : public Base
 {
 private:
   buff_t* sform;
+  cooldown_t* min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
 public:
   bool castable_in_shadowform;
   bool can_cancel_shadowform;
@@ -862,6 +863,8 @@ public:
     can_cancel_shadowform = player -> autoUnshift;
     castable_in_shadowform = true;
     sform = player -> buffs.shadowform;
+
+    min_interval = player -> get_cooldown( "min_interval_" + ab::name_str );
   }
 
   bool check_shadowform()
@@ -896,7 +899,10 @@ public:
     if ( ! ab::ready() )
       return false;
 
-    return check_shadowform();
+    if( ! check_shadowform() )
+      return false;
+
+    return ( min_interval -> remains() <= timespan_t::zero() );
   }
 
   virtual double cost()
@@ -919,6 +925,32 @@ public:
     if ( ab::base_execute_time <= timespan_t::zero() )
       p() -> buffs.inner_will -> up();
   }
+
+  void parse_options( option_t*          options,
+                      const std::string& options_str )
+  {
+    const option_t base_options[] =
+    {
+      { "min_interval", OPT_TIMESPAN, &( min_interval -> duration ) },
+      { NULL,           OPT_UNKNOWN,  NULL      }
+    };
+
+    std::vector<option_t> merged_options;
+    ab::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
+  }
+
+  void update_ready()
+  {
+    ab::update_ready();
+
+    if ( min_interval -> duration > timespan_t::zero() && ! ab::dual )
+    {
+      min_interval -> start( timespan_t::min(), timespan_t::zero() );
+
+      if ( ab::sim -> debug ) ab::sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
+          ab::player -> name(), ab::name(), min_interval -> name(), min_interval -> ready.total_seconds() );
+    }
+  }
 };
 
 
@@ -938,45 +970,11 @@ public:
     may_crit          = false;
     tick_may_crit     = false;
     may_miss          = false;
-    min_interval      = player -> get_cooldown( "min_interval_" + name_str );
   }
 
   virtual double action_multiplier()
   {
     return base_t::action_multiplier() * ( 1.0 + ( p() -> composite_mastery() * p() -> mastery_spells.shield_discipline->effectN( 1 ).coeff() / 100.0 ) );
-  }
-
-  bool ready()
-  {
-    if ( min_interval -> remains() > timespan_t::zero() )
-      return false;
-
-    return base_t::ready();
-  }
-
-  void parse_options( option_t*          options,
-                      const std::string& options_str )
-  {
-    const option_t base_options[] =
-    {
-      { "min_interval", OPT_TIMESPAN,     &( min_interval -> duration ) },
-      { NULL,           OPT_UNKNOWN, NULL      }
-    };
-
-    std::vector<option_t> merged_options;
-    base_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
-  }
-
-  void update_ready()
-  {
-    base_t::update_ready();
-
-    if ( min_interval -> duration > timespan_t::zero() && ! dual )
-    {
-      min_interval -> start( timespan_t::min(), timespan_t::zero() );
-
-      if ( sim -> debug ) sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
-    }
   }
 };
 
@@ -1013,7 +1011,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   bool can_trigger_DA;
   divine_aegis_t* da;
-  cooldown_t* min_interval;
 
   // Priest Echo of Light, Ignite-Mechanic specialization
   void trigger_echo_of_light( priest_heal_t* s, player_t* t, double dmg )
@@ -1044,7 +1041,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ), can_trigger_DA( true ), da()
   {
-    min_interval = player -> get_cooldown( "min_interval_" + name_str );
   }
 
   virtual double composite_crit()
@@ -1132,39 +1128,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( p() -> specs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( p(), timespan_t::from_seconds( -1 * p() -> specs.strength_of_soul -> effectN( 1 ).base_value() ) );
-  }
-
-  void update_ready()
-  {
-    base_t::update_ready();
-
-    if ( min_interval -> duration > timespan_t::zero() && ! dual )
-    {
-      min_interval -> start( timespan_t::min(), timespan_t::zero() );
-
-      if ( sim -> debug ) sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
-    }
-  }
-
-  bool ready()
-  {
-    if ( ! base_t::ready() )
-      return false;
-
-    return ( min_interval -> remains() <= timespan_t::zero() );
-  }
-
-  void parse_options( option_t*          options,
-                      const std::string& options_str )
-  {
-    const option_t base_options[] =
-    {
-      { "min_interval", OPT_TIMESPAN, &( min_interval -> duration ) },
-      { NULL,           OPT_UNKNOWN,  NULL      }
-    };
-
-    std::vector<option_t> merged_options;
-    base_t::parse_options( option_t::merge( merged_options, options, base_options ), options_str );
   }
 };
 
