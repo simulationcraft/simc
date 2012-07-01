@@ -1872,7 +1872,6 @@ struct ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 1 ).percent();
 
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
