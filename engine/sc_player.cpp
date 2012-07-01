@@ -314,6 +314,8 @@ static bool parse_talent_url( sim_t* sim,
     {
       if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
       {
+        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+          sim -> talent_format = TALENT_FORMAT_ARMORY;
         return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
       }
     }
@@ -321,6 +323,8 @@ static bool parse_talent_url( sim_t* sim,
     {
       if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
       {
+        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+          sim -> talent_format = TALENT_FORMAT_ARMORY;
         return p -> parse_talents_old_armory( url.substr( cut_pt + 1 ) );
       }
     }
@@ -329,6 +333,8 @@ static bool parse_talent_url( sim_t* sim,
   {
     if ( ( cut_pt = url.find_first_of( "#" ) ) != url.npos )
     {
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_WOWHEAD;
       return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
     }
   }
@@ -341,6 +347,8 @@ static bool parse_talent_url( sim_t* sim,
 
     if ( all_digits )
     {
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_NUMBERS;
       return p -> parse_talents_numbers( url );
     }
   }
