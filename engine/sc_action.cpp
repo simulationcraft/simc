@@ -273,9 +273,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
     if ( pd -> _cost_per_second > 0 )
-      costs_per_second[ pd -> resource() ] = pd -> cost_per_second();
+      costs_per_second[ pd -> resource() ] = (int) pd -> cost_per_second();
     else
-      costs_per_second[ pd -> resource() ] = floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
+      costs_per_second[ pd -> resource() ] = (int) floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
   }
 
   for ( size_t i = 1; i <= spell_data._effects -> size(); i++ )

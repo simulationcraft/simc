@@ -3015,7 +3015,7 @@ void mage_t::init_actions()
     //Potions
     if ( level >= 80 )
     {
-      action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+      action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
       action_list_str += ",precombat=1";
     }
 
@@ -3046,17 +3046,17 @@ void mage_t::init_actions()
     {
       if ( specialization() == MAGE_FROST )
       {
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40";
       }
       else if ( specialization() == MAGE_ARCANE )
       {
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=target.time_to_die<=50";
       }
       else
       {
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
       }
     }

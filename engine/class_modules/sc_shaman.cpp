@@ -4416,7 +4416,7 @@ void shaman_t::init_actions()
   if ( primary_role() == ROLE_ATTACK )
     precombat_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
   else
-    precombat_s << ( ( level > 85 ) ? "/jinyu_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+    precombat_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
 
   // All Shamans Bloodlust and Wind Shear by default
   if ( level >= 16 ) default_s << "/wind_shear";
@@ -4426,7 +4426,7 @@ void shaman_t::init_actions()
   if ( primary_role() == ROLE_ATTACK )
     default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
   else
-    default_s << ( ( level > 85 ) ? "/jinyu_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
+    default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
   if ( level >= 80 ) default_s << ",if=buff.bloodlust.react|target.time_to_die<=40";
 
   // Melee turns on auto attack

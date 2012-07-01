@@ -4515,7 +4515,7 @@ void warlock_t::init_actions()
 
     // Pre-potion
     if ( level > 85 )
-      precombat_list += "/jinyu_potion";
+      precombat_list += "/jade_serpent_potion";
     else if ( level >= 80 )
       precombat_list += "/volcanic_potion";
 
@@ -4531,9 +4531,9 @@ void warlock_t::init_actions()
 
     // Potion
     if ( level > 85 )
-      action_list_str += "jinyu_potion,if=buff.bloodlust.react|target.health.pct<=20";
+      action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20";
     else if ( level > 80 )
-      action_list_str += "volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
+      action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20";
 
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions();

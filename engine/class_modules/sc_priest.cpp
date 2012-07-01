@@ -4938,7 +4938,7 @@ void priest_t::init_actions()
 
     if ( level > 85 )
     {
-      precombat_list += "/jinyu_potion";
+      precombat_list += "/jade_serpent_potion";
     }
     else if ( level >= 80 )
     {
@@ -4962,7 +4962,7 @@ void priest_t::init_actions()
     case PRIEST_SHADOW:
       if ( level > 85 )
       {
-        action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+        action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
       else if ( level > 80 )
       {
@@ -5029,7 +5029,7 @@ void priest_t::init_actions()
       {
         if ( level > 85 )
         {
-          action_list_str += "/jinyu_potion,if=buff.bloodlust.react|target.time_to_die<=40";
+          action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40";
         }
         else if ( level > 80 )
         {

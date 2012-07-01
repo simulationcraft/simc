@@ -4556,7 +4556,7 @@ void druid_t::init_actions()
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
         precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       else
-        precombat_list += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        precombat_list += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
 
       // Potion use
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -4566,7 +4566,7 @@ void druid_t::init_actions()
       }
       else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       {
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
         if ( talent.incarnation -> ok() )
           action_list_str += "|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
@@ -4575,7 +4575,7 @@ void druid_t::init_actions()
       }
       else
       {
-        action_list_str += ( level > 85 ) ? "/jinyu_potion" : "/volcanic_potion";
+        action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
         action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
       }
     }
