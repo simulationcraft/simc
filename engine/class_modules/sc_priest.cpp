@@ -255,9 +255,9 @@ struct priest_t : public player_t
   {
     double meditation_value;
   } constants;
-
+private:
   target_specific_t<priest_td_t> target_data;
-
+public:
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
@@ -362,6 +362,8 @@ struct priest_pet_t : public pet_t
   {
     position                    = POSITION_BACK;
     initial.distance            = 3;
+
+    create_options();
   }
 
   struct _stat_list_t
@@ -456,7 +458,7 @@ struct priest_pet_t : public pet_t
   virtual double composite_attack_expertise( weapon_t* ) { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
-  priest_t* o() { return debug_cast<priest_t*>( owner ); }
+  priest_t* o() const { return static_cast<priest_t*>( owner ); }
 };
 
 // ==========================================================================
@@ -497,12 +499,11 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
     priest_guardian_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
-    shadowcrawl( spell_data_t::nil() ), mana_leech( spell_data_t::nil() ),
+    shadowcrawl( spell_data_t::nil() ),
+    mana_leech( spell_data_t::nil() ),
     shadowcrawl_action( 0 )
   {
-    action_list_str += "/snapshot_stats";
-    action_list_str += "/shadowcrawl";
-    action_list_str += "/wait_for_shadowcrawl";
+
 
 
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -512,6 +513,17 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
 
+  virtual void init_actions()
+  {
+    if ( action_list_str.empty() )
+    {
+      action_list_str += "/snapshot_stats";
+      action_list_str += "/shadowcrawl";
+      action_list_str += "/wait_for_shadowcrawl";
+    }
+
+    priest_guardian_pet_t::init_actions();
+  }
   virtual void init_spells()
   {
     priest_guardian_pet_t::init_spells();
@@ -659,7 +671,7 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  priest_pet_t* p()
+  priest_pet_t* p() const
   { return static_cast<priest_pet_t*>( player ); }
 
   virtual timespan_t execute_time()
@@ -692,7 +704,7 @@ struct priest_pet_spell_t : public spell_t
     may_crit = true;
   }
 
-  priest_pet_t* p()
+  priest_pet_t* p() const
   { return static_cast<priest_pet_t*>( player ); }
 };
 
@@ -706,12 +718,12 @@ struct shadowcrawl_t : public priest_pet_spell_t
     stateless = true;
   }
 
-  base_fiend_pet_t* p()
+  base_fiend_pet_t* p() const
   { return static_cast<base_fiend_pet_t*>( player ); }
 
   virtual void execute()
   {
-    spell_t::execute();
+    priest_pet_spell_t::execute();
 
     p() -> buffs.shadowcrawl -> trigger();
   }
@@ -730,14 +742,8 @@ struct fiend_melee_t : public priest_pet_melee_t
     stateless = true;
   }
 
-  base_fiend_pet_t* p()
+  base_fiend_pet_t* p() const
   { return static_cast<base_fiend_pet_t*>( player ); }
-
-  virtual void execute()
-  {
-    priest_pet_melee_t::execute();
-  }
-
 
   virtual double action_multiplier()
   {
@@ -773,7 +779,7 @@ struct lightwell_renew_t : public heal_t
     tick_power_mod = 0.308;
   }
 
-  lightwell_pet_t* p()
+  lightwell_pet_t* p() const
   { return static_cast<lightwell_pet_t*>( player ); }
 
   virtual void execute()
@@ -883,9 +889,11 @@ public:
     }
   }
 
-  priest_t* p() { return debug_cast<priest_t*>( action_base_t::player ); }
+  priest_t* p() const
+  { return static_cast<priest_t*>( action_base_t::player ); }
 
-  priest_t::priest_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  priest_t::priest_td_t* td( player_t* t = 0 )
+  { return p() -> get_target_data( t ? t : action_base_t::target ); }
 
   virtual void schedule_execute()
   {
@@ -4620,6 +4628,8 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
   if ( pet_name == "shadowfiend" ) return new pets::shadowfiend_pet_t( sim, this );
   if ( pet_name == "mindbender"  ) return new pets::mindbender_pet_t ( sim, this );
   if ( pet_name == "lightwell"   ) return new pets::lightwell_pet_t  ( sim, this );
+
+  sim -> errorf( "Tried to create priest pet %s.", pet_name.c_str() );
 
   return 0;
 }

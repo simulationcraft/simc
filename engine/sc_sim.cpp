@@ -149,7 +149,6 @@ static bool parse_player( sim_t*             sim,
                           const std::string& name,
                           const std::string& value )
 {
-  sim -> active_player = 0;
 
   if ( name[ 0 ] >= '0' && name[ 0 ] <= '9' )
   {
@@ -157,7 +156,7 @@ static bool parse_player( sim_t*             sim,
     return false;
   }
 
-  if ( name == "pet" )
+  if ( name == "pet" || name == "guardian" )
   {
     std::string::size_type cut_pt = value.find( ',' );
     std::string pet_type( value, 0, cut_pt );
@@ -168,9 +167,14 @@ static bool parse_player( sim_t*             sim,
     else
       pet_name = value;
 
+    if ( ! sim -> active_player )
+    {
+      sim -> errorf( "Pet profile ( name %s ) needs a player preceding it.", name.c_str() );
+      return false;
+    }
+
     sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
   }
-
   else if ( name == "copy" )
   {
     std::string::size_type cut_pt = value.find( ',' );
@@ -193,6 +197,7 @@ static bool parse_player( sim_t*             sim,
   }
   else
   {
+    sim -> active_player = 0;
     module_t* module = module_t::get( name );
 
     if ( ! module || ! module -> valid() )
@@ -2153,6 +2158,7 @@ void sim_t::create_options()
     { "warrior",                          OPT_FUNC,   ( void* ) ::parse_player                      },
     { "enemy",                            OPT_FUNC,   ( void* ) ::parse_player                      },
     { "pet",                              OPT_FUNC,   ( void* ) ::parse_player                      },
+    { "guardian",                              OPT_FUNC,   ( void* ) ::parse_player                      },
     { "copy",                             OPT_FUNC,   ( void* ) ::parse_player                      },
     { "armory",                           OPT_FUNC,   ( void* ) ::parse_armory                      },
     { "guild",                            OPT_FUNC,   ( void* ) ::parse_guild                       },
