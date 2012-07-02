@@ -1475,9 +1475,9 @@ public:
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
     // If getting to 1 full ember was a surprise, the player would have to react to it
-    if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] == 1 && amount > 0.1 && chance < 1.0 )
+    if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] == 1.0 && ( amount > 0.1 || chance < 1.0 ) )
       p -> ember_react = p -> sim -> current_time + p -> total_reaction_time();
-    else if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] >= 1 )
+    else if ( p -> resources.current[ RESOURCE_BURNING_EMBER ] >= 1.0 )
       p -> ember_react = p -> sim -> current_time;
     else
       p -> ember_react = timespan_t::max();
