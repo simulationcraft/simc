@@ -250,7 +250,7 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
     {
       assert( action );
 
-      dot_t* dot = action -> get_dot();
+      dot_t* dot = action -> get_dot( target );
 
       double new_total_ignite_dmg = additional_ignite_dmg;
 
@@ -258,7 +258,7 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
 
       if ( dot -> ticking )
       {
-        new_total_ignite_dmg += action -> base_td * dot -> ticks();
+        new_total_ignite_dmg += action -> tick_dmg * dot -> ticks();
       }
 
 
@@ -269,6 +269,7 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
         action_state_t* s = action -> get_state();
         s -> target = target;
         s -> result = RESULT_HIT;
+        action -> snapshot_state( s, action -> snapshot_flags );
         s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel_s( s );
         action -> stats -> add_execute( timespan_t::zero() );
@@ -277,6 +278,8 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
       {
         action -> direct_dmg = new_total_ignite_dmg;
         action -> result = RESULT_HIT;
+        action -> player_buff();
+        action -> target_debuff( target, DMG_DIRECT );
         action -> schedule_travel( target );
         action -> stats -> add_execute( timespan_t::zero() );
       }

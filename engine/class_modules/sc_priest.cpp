@@ -2417,30 +2417,33 @@ struct devouring_plague_t : public priest_spell_t
     }
   };
 
-  devouring_plague_mastery_t* proc_spell;
+  struct devouring_plague_dot_t : public priest_spell_t
+  {
 
-  devouring_plague_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
-    priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
+    devouring_plague_mastery_t* proc_spell;
+
+
+  devouring_plague_dot_t( priest_t* p ) :
+    priest_spell_t( "devouring_plague_tick", p, p -> find_class_spell( "Devouring Plague" ) ),
     proc_spell( 0 )
   {
-    parse_options( NULL, options_str );
 
     tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
 
-    parse_effect_data( data().effectN( 1 ) );
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
 
     tick_may_crit = true;
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new devouring_plague_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
+    background = true;
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
       proc_spell = new devouring_plague_mastery_t( p );
     }
+  }
+
+  virtual action_state_t* new_state()
+  {
+    return new devouring_plague_state_t( this, target );
   }
 
   virtual void init()
@@ -2451,12 +2454,7 @@ struct devouring_plague_t : public priest_spell_t
     snapshot_flags |= STATE_USER_1;
   }
 
-  virtual action_state_t* new_state()
-  {
-    return new devouring_plague_state_t( this, target );
-  }
-
-  virtual action_state_t* get_state( const action_state_t* s )
+  virtual action_state_t* get_state( const action_state_t* s = 0 )
   {
     action_state_t* s_ = priest_spell_t::get_state( s );
 
@@ -2477,6 +2475,72 @@ struct devouring_plague_t : public priest_spell_t
       dps_t -> orbs_used = ( int ) p() -> resources.current[ current_resource() ];
 
     priest_spell_t::snapshot_state( state, flags );
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double m = priest_spell_t::action_ta_multiplier();
+
+    m *= p() -> resources.current[ current_resource() ];
+
+    return m;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    double saved_impact_dmg = s -> result_amount;
+    s -> result_amount = 0;
+    priest_spell_t::impact_s( s );
+
+    dot_t* dot = get_dot();
+    base_ta_adder = saved_impact_dmg / dot -> ticks();
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    priest_spell_t::tick( d );
+
+    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
+
+    // BUG: Doesn't heal from ticks as of 15762
+    // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+    // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+
+    if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
+      proc_spell -> orbs_used = dps_t -> orbs_used;
+      proc_spell -> schedule_execute();
+    }
+  }
+  };
+
+  devouring_plague_dot_t* dot_spell;
+
+  devouring_plague_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
+    priest_spell_t( "devouring_plague", p, p -> find_class_spell( "Devouring Plague" ) ),
+    dot_spell( 0 )
+  {
+    parse_options( NULL, options_str );
+
+    //tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
+
+    parse_effect_data( data().effectN( 1 ) );
+
+    base_td = num_ticks = 0;
+    base_tick_time = timespan_t::zero();
+
+
+    tick_may_crit = true;
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new devouring_plague_t( p, options_str, true );
+      dtr_action -> is_dtr_action = true;
+    }
+
+    dot_spell = new devouring_plague_dot_t( p );
+    add_child( dot_spell );
   }
 
   virtual void consume_resource()
@@ -2507,31 +2571,39 @@ struct devouring_plague_t : public priest_spell_t
     return m;
   }
 
-  virtual double action_ta_multiplier()
+  // Shortened and modified version of the ignite mechanic
+  // Damage from the old dot is added to the new one.
+  // Important here that the combined damage then will get multiplicated by the new orb amount.
+  void trigger_dot( player_t* t )
   {
-    double m = priest_spell_t::action_ta_multiplier();
+    dot_t* dot = dot_spell -> get_dot( t );
 
-    m *= p() -> resources.current[ current_resource() ];
+    double new_total_ignite_dmg = 0;
+    assert( dot_spell -> num_ticks > 0 );
 
-    return m;
+    if ( dot -> ticking )
+    {
+      new_total_ignite_dmg += dot_spell -> tick_dmg * dot -> ticks();
+    }
+
+
+    // Pass total amount of damage to the ignite dot_spell, and let it divide it by the correct number of ticks!
+
+    action_state_t* s = dot_spell -> get_state();
+    s -> target = t;
+    dot_spell -> snapshot_state( s, dot_spell -> snapshot_flags );
+    s -> result = RESULT_HIT;
+    s -> result_amount = new_total_ignite_dmg;
+    dot_spell -> schedule_travel_s( s );
+    dot_spell -> stats -> add_execute( timespan_t::zero() );
+
   }
 
-  virtual void tick( dot_t* d )
+  virtual void impact_s( action_state_t* s )
   {
-    priest_spell_t::tick( d );
+    priest_spell_t::impact_s( s );
 
-    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-
-    // BUG: Doesn't heal from ticks as of 15762
-    // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
-    // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
-
-    if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
-    {
-      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-      proc_spell -> orbs_used = dps_t -> orbs_used;
-      proc_spell -> schedule_execute();
-    }
+    trigger_dot( s -> target );
   }
 };
 
@@ -4835,7 +4907,7 @@ void priest_t::init_actions()
         action_list_str += "/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40";
       }
 
-      add_action( "Devouring Plague", "if=shadow_orb=3&(!ticking|remains<tick_time)" );
+      add_action( "Devouring Plague", "if=shadow_orb=3" );
 
       if ( set_bonus.tier13_2pc_caster() )
       {
