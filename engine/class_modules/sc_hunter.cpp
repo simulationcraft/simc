@@ -1505,7 +1505,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    const spell_data_t* scaling_data = player -> find_spell( data().effectN( 1 ).trigger_spell_id(), "Serpent Sting" ); // id 118253
+    const spell_data_t* scaling_data = data().effectN( 1 ).trigger(); // id 118253
     parse_effect_data( scaling_data -> effectN( 1 ) );
     tick_power_mod = scaling_data -> extra_coeff();
 
