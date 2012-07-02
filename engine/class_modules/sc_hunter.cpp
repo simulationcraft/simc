@@ -718,11 +718,16 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
   }
-    
-  virtual bool ready()
+
+  virtual void init()
   {
-    return player -> main_hand_weapon.group() == WEAPON_RANGED;
-  }  
+    if ( player -> main_hand_weapon.group() != WEAPON_RANGED )
+    {
+      background = true;
+    }
+
+    base_t::init();
+  }
 
   virtual void trigger_steady_focus()
   {
@@ -3086,8 +3091,6 @@ void hunter_t::init_actions()
   if ( main_hand_weapon.group() != WEAPON_RANGED )
   {
     sim -> errorf( "Player %s does not have a ranged weapon at the Main Hand slot.", name() );
-    quiet = true;
-    return;
   }
 
   if ( action_list_str.empty() )
