@@ -1587,8 +1587,8 @@ struct multi_shot_t : public hunter_ranged_attack_t
     aoe = -1;
 
     normalize_weapon_speed = true;
-//    if ( p() -> talents.serpent_spread -> ok() )
-//     spread_sting = new serpent_sting_spread_t( player, options_str );
+    if ( p() -> specs.serpent_spread -> ok() )
+      spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
@@ -1596,14 +1596,15 @@ struct multi_shot_t : public hunter_ranged_attack_t
     //target_t* q = t -> cast_target();
 
     hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
-    int crit_occurred = 0;
 
     if ( result_is_hit( impact_result ) )
     {
       if ( spread_sting )
         spread_sting -> execute();
-      if ( impact_result == RESULT_CRIT )
-        crit_occurred++;
+      if ( impact_result == RESULT_CRIT && p() -> specs.bombardment -> ok())
+        p() -> buffs.bombardment -> trigger();
+
+      // TODO determine multishot adds in execute.
       /*for ( int i=0; i < q -> adds_nearby; i++ ) {
         // Calculate a result for each nearby add to determine whether to proc
         // bombardment
@@ -1612,9 +1613,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
           crit_occurred++;
       }*/
     }
-
-    if ( p() -> specs.bombardment -> ok() && crit_occurred )
-      p() -> buffs.bombardment -> trigger();
   }
 
   virtual double cost()
