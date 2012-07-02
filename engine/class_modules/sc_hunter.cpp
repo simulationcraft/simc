@@ -1498,7 +1498,6 @@ struct serpent_sting_burst_t : public hunter_ranged_attack_t
 struct serpent_sting_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t* serpent_sting_burst;
-  double focus_gain;
 
   serpent_sting_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "serpent_sting", player, player -> find_class_spell( "Serpent Sting" ) )
@@ -1508,8 +1507,6 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     const spell_data_t* scaling_data = data().effectN( 1 ).trigger(); // id 118253
     parse_effect_data( scaling_data -> effectN( 1 ) );
     tick_power_mod = scaling_data -> extra_coeff();
-
-    focus_gain = player -> find_spell( 118974, "Viper Venom" ) -> effectN( 1 ).base_value();
 
     may_block = false;
     may_crit  = false;
@@ -1539,6 +1536,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
 
     if (p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero()) 
     {
+      double focus_gain = p() -> specs.viper_venom->effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.viper_venom );
       p() -> cooldowns.viper_venom -> start();
     }
