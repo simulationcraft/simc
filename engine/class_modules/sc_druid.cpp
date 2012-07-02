@@ -4897,17 +4897,25 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
   {
 
     // Both eclipse buffs need their own checks
-    if ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM )
+    if ( school == SCHOOL_ARCANE )
       if ( buff.eclipse_lunar -> up() )
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
                  + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
                  + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
 
-    if ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
+    if ( school == SCHOOL_NATURE )
       if ( buff.eclipse_solar -> up() )
         m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
                  + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
                  + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+
+    // Both eclipse buffs need their own checks
+    if ( school == SCHOOL_SPELLSTORM )
+      if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
+        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+
   }
 
   if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM )
