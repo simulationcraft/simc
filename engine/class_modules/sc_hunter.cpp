@@ -1536,7 +1536,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
 
     if (p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero()) 
     {
-      double focus_gain = p() -> specs.viper_venom->effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+      double focus_gain = p() -> specs.viper_venom -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.viper_venom );
       p() -> cooldowns.viper_venom -> start();
     }
@@ -2906,6 +2906,7 @@ void hunter_t::init_spells()
   specs.master_marksman      = find_specialization_spell( "Master Marksman" );
   specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
 
+
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
 
@@ -2994,6 +2995,8 @@ void hunter_t::init_values()
 
   if ( set_bonus.pvp_4pc_melee() )
     initial.attribute[ ATTR_AGILITY ]   += 90;
+
+  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 3.0 ); // hardcoded into tooltip
 }
 
 // hunter_t::init_gains =====================================================
