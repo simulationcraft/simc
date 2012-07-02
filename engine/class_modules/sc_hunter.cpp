@@ -1502,6 +1502,10 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
+    const spell_data_t* scaling_data = player -> find_spell( 118253, "Serpent Sting" ); 
+    //const spell_data_t* scaling_data = find_spell( 118253 ); 
+    parse_effect_data( scaling_data -> effectN( 1 ) );
+
     may_block = false;
     may_crit  = false;
 
