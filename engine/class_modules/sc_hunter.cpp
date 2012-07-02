@@ -1502,14 +1502,13 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    const spell_data_t* scaling_data = player -> find_spell( 118253, "Serpent Sting" ); 
-    //const spell_data_t* scaling_data = find_spell( 118253 ); 
+    const spell_data_t* scaling_data = player -> find_spell( data().effectN( 1 ).trigger_spell_id(), "Serpent Sting" ); // id 118253
     parse_effect_data( scaling_data -> effectN( 1 ) );
+    tick_power_mod = scaling_data -> extra_coeff();
 
     may_block = false;
     may_crit  = false;
 
-    tick_power_mod = 0.4 / num_ticks; // hardcoded into tooltip
 
     // FIXME
     //base_crit += p() -> talents.improved_serpent_sting -> mod_additive( P_CRIT );
