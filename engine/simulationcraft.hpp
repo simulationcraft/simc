@@ -455,6 +455,17 @@ enum school_e
   SCHOOL_MAX
 };
 
+enum school_mask_e
+{
+  SCHOOL_MASK_PHYSICAL = 0x01,
+  SCHOOL_MASK_HOLY     = 0x02,
+  SCHOOL_MASK_FIRE     = 0x04,
+  SCHOOL_MASK_NATURE   = 0x08,
+  SCHOOL_MASK_FROST    = 0x10,
+  SCHOOL_MASK_SHADOW   = 0x20,
+  SCHOOL_MASK_ARCANE   = 0x40,
+};
+
 const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_BLEED )        | ( int64_t( 1 ) << SCHOOL_PHYSICAL )     |
                                      ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE )   | ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE )  |
                                      ( int64_t( 1 ) << SCHOOL_STORMSTRIKE )  | ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE )  |

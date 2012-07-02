@@ -25,8 +25,6 @@
 // - Talents Totemic Restoration, Ancestral Swiftness Instacast
 //
 // General:
-// - Echo of the Elements proc rates nearer to release, currently (~late April 2k12)
-//   tested to 30% for Enhancement, 6% for Elemental / Restoration (1k LB casts both)
 // - Class base stats for 87..90
 // - Unleashed fury
 //   * Flametongue: Additive or Multiplicative modifier (has a new spell data aura type)
@@ -36,7 +34,6 @@
 // - Glyph of Telluric Currents
 //   * Additive or Multiplicative with other modifiers (spell data indicates additive)
 // - Does Unleash Flame "double cast" still exist?
-// - Elemental blast buff trigger is random
 //
 // Enhancement:
 // - Lava Lash damage formula, currently weapon_dmg * ( 1.0 + ft_bonus + sf_stack * sf_bonus )
@@ -111,7 +108,6 @@ public:
   struct
   {
     buff_t* ascendance;
-    buff_t* elemental_blast;
     buff_t* elemental_focus;
     buff_t* elemental_mastery;
     buff_t* flurry;
@@ -121,14 +117,17 @@ public:
     buff_t* searing_flames;
     buff_t* shamanistic_rage;
     buff_t* spiritwalkers_grace;
-    buff_t* tier13_2pc_caster;
-    buff_t* tier13_4pc_caster;
     buff_t* tier13_4pc_healer;
     buff_t* unleash_flame;
     buff_t* unleash_wind;
-    buff_t* unleashed_fury_ft;
     buff_t* unleashed_fury_wf;
     buff_t* water_shield;
+
+    stat_buff_t* elemental_blast_crit;
+    stat_buff_t* elemental_blast_haste;
+    stat_buff_t* elemental_blast_mastery;
+    stat_buff_t* tier13_2pc_caster;
+    stat_buff_t* tier13_4pc_caster;
   } buff;
 
   // Cooldowns
@@ -325,7 +324,9 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
+  virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
+  virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
@@ -367,8 +368,8 @@ public:
   {
     switch ( specialization() )
     {
-    case SHAMAN_ELEMENTAL:   return "fire_elemental_totem/flame_shock/thunder/thunderstorm";
-    case SHAMAN_ENHANCEMENT: return "ghost_wolf/lightning_shield/chain_lightning/astral_recall/renewed_life/lava_lash";
+    case SHAMAN_ELEMENTAL:   return "flame_shock/chain_lightning/thunderstorm";
+    case SHAMAN_ENHANCEMENT: return "chain_lightning";
     default: break;
     }
 
@@ -379,11 +380,10 @@ public:
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_pair_t( target, p )
 {
-  dots_flame_shock    = target -> get_dot( "flame_shock",    p );
+  dots_flame_shock       = target -> get_dot( "flame_shock", p );
 
-  debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
-
-  debuffs_unleashed_fury = ( buff_creator_t( *this, "unleashed_fury", p -> find_spell( 118470 ) ) );
+  debuffs_stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
+  debuffs_unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
 }
 
 // Template for common shaman action code. See priest_action_t.
@@ -391,7 +391,7 @@ template <class Base>
 struct shaman_action_t : public Base
 {
   typedef Base ab; // action base, eg. spell_t
-   typedef shaman_action_t base_t;
+  typedef shaman_action_t base_t;
 
    shaman_action_t( const std::string& n, shaman_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
@@ -502,16 +502,6 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
       return true;
 
     return base_t::usable_moving();
-  }
-
-  virtual double composite_target_crit( player_t* target )
-  {
-    double c = base_t::composite_target_crit( target );
-
-    if ( school == SCHOOL_NATURE && td( target ) -> debuffs_stormstrike -> up() )
-      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
-
-    return c;
   }
 
   virtual double composite_haste()
@@ -884,6 +874,16 @@ struct fire_elemental_t : public pet_t
       stateless = true;
       crit_bonus_multiplier *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
     }
+
+    virtual double composite_da_multiplier()
+    {
+      double m = spell_t::composite_da_multiplier();
+
+      if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
+        m *= 1.0 + p -> o() -> composite_mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+
+      return m;
+    }
   };
 /*
   struct fire_shield_t : public fire_elemental_spell_t
@@ -1187,7 +1187,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
 
 // trigger_rolling_thunder ==================================================
 
-static bool trigger_rolling_thunder ( shaman_spell_t* s )
+static bool trigger_rolling_thunder( shaman_spell_t* s )
 {
   shaman_t* p = s -> p();
 
@@ -1202,8 +1202,10 @@ static bool trigger_rolling_thunder ( shaman_spell_t* s )
 
     if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
       p -> proc.wasted_ls -> occur();
+    
+    int stacks = ( p -> set_bonus.tier14_2pc_caster() ) ? 2 : 1;
 
-    p -> buff.lightning_shield -> trigger();
+    p -> buff.lightning_shield -> trigger( stacks );
     p -> proc.rolling_thunder  -> occur();
     return true;
   }
@@ -1521,6 +1523,35 @@ struct lava_beam_overload_t : public shaman_spell_t
   }
 };
 
+struct elemental_blast_overload_t : public shaman_spell_t
+{
+  elemental_blast_overload_t( shaman_t* player, bool dtr = false ) :
+    shaman_spell_t( "elemental_blast_overload", player, player -> dbc.spell( 120588 ) )
+  {
+    overload             = true;
+    background           = true;
+    stateless            = true;
+    base_execute_time    = timespan_t::zero();
+    base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
+
+    if ( ! dtr && player -> has_dtr )
+    {
+      dtr_action = new elemental_blast_overload_t( player, true );
+      dtr_action -> is_dtr_action = true;
+    }
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.unleash_flame -> up() )
+      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+};
+
 struct lightning_charge_t : public shaman_spell_t
 {
   int threshold;
@@ -1539,6 +1570,19 @@ struct lightning_charge_t : public shaman_spell_t
       dtr_action = new lightning_charge_t( n, player, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  double composite_target_crit( player_t* target )
+  {
+    double c = spell_t::composite_target_crit( target );
+
+    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    {
+      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    }
+
+    return c;
   }
 
   virtual double composite_da_multiplier()
@@ -1582,6 +1626,14 @@ struct unleash_flame_t : public shaman_spell_t
     {
       shaman_spell_t::execute();
     }
+  }
+  
+  void impact_s( action_state_t* state )
+  {
+    shaman_spell_t::impact_s( state );
+    
+    if ( result_is_hit( state -> result ) && p() -> talent.unleashed_fury -> ok() )
+      td( state -> target ) -> debuffs_unleashed_fury -> trigger();
   }
 };
 
@@ -1946,6 +1998,8 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     school = SCHOOL_FIRE;
 
+    base_multiplier += player -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+
     parse_options( NULL, options_str );
 
     stateless           = true;
@@ -2179,7 +2233,7 @@ void shaman_spell_t::execute()
 {
   base_t::execute();
 
-  if ( ! is_totem && ! proc && school == SCHOOL_FIRE )
+  if ( ! is_totem && ! proc && data().school_mask() & SCHOOL_FIRE )
     p() -> buff.unleash_flame -> expire();
 
   // Record maelstrom weapon stack usage
@@ -2349,6 +2403,19 @@ struct chain_lightning_t : public shaman_spell_t
     }
   }
 
+  virtual double composite_target_crit( player_t* target )
+  {
+    double c = spell_t::composite_target_crit( target );
+
+    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    {
+      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
   void execute()
   {
     shaman_spell_t::execute();
@@ -2364,7 +2431,7 @@ struct chain_lightning_t : public shaman_spell_t
       trigger_rolling_thunder( this );
 
       double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 2 ).base_value() / 10000.0 / 3.0;
+                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() / 3.0;
 
       if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
       {
@@ -2442,7 +2509,7 @@ struct lava_beam_t : public shaman_spell_t
       trigger_rolling_thunder( this );
 
       double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 2 ).base_value() / 10000.0 / 3.0;
+                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() / 3.0;
 
       if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
       {
@@ -2502,15 +2569,13 @@ struct call_of_the_elements_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // For now, reset earth / fire elemental totem cooldowns
-
-    if ( p() -> cooldown.earth_elemental -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
+    if ( p() -> cooldown.earth_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.earth_elemental -> reset();
 
-    if ( p() -> cooldown.fire_elemental -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
+    if ( p() -> cooldown.fire_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.fire_elemental -> reset();
     
-    if ( p() -> cooldown.stormlash -> duration <= timespan_t::from_seconds( 5 * 60.0 ) )
+    if ( p() -> cooldown.stormlash -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.stormlash -> reset();
   }
 };
@@ -2732,7 +2797,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit( state -> result ) )
     {
       double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 2 ).base_value() / 10000.0;
+                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
 
       if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
       {
@@ -2756,7 +2821,8 @@ struct lightning_bolt_t : public shaman_spell_t
     maelstrom          = true;
     stateless          = true;
     base_multiplier   += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
-                         player -> spec.shamanism -> effectN( 1 ).percent();
+                         player -> spec.shamanism -> effectN( 1 ).percent() + 
+                         player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload           = new lightning_bolt_overload_t( player );
@@ -2766,6 +2832,19 @@ struct lightning_bolt_t : public shaman_spell_t
       dtr_action = new lightning_bolt_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual double composite_target_crit( player_t* target )
+  {
+    double c = spell_t::composite_target_crit( target );
+
+    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    {
+      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    }
+
+    return c;
   }
 
   virtual double action_da_multiplier()
@@ -2808,7 +2887,7 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_rolling_thunder( this );
 
       double overload_chance = p() -> composite_mastery() *
-                               p() -> mastery.elemental_overload -> effectN( 2 ).base_value() / 10000.0;
+                               p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value();
 
       if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
       {
@@ -2842,16 +2921,34 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
+  rng_t* buff_rng;
+  elemental_blast_overload_t* overload;
+  
   elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
-    shaman_spell_t( player, player -> find_talent_spell( "Elemental Blast" ), options_str )
+    shaman_spell_t( player, player -> find_talent_spell( "Elemental Blast" ), options_str ),
+    buff_rng( 0 ), overload( 0 )
   {
     stateless   = true;
+    maelstrom   = true;
+    overload    = new elemental_blast_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new elemental_blast_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+    
+    buff_rng = player -> get_rng( "elemental_blast_rng" );
+  }
+
+  virtual double action_multiplier()
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.unleash_flame -> up() )
+      m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    return m;
   }
 
   virtual void impact_s( action_state_t* state )
@@ -2859,7 +2956,17 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::impact_s( state );
 
     if ( result_is_hit( state -> result ) )
-      p() -> buff.elemental_blast -> trigger();
+    {
+      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, 3 ) );
+      assert( b < 3 );
+
+      if ( b == 0 )
+        p() -> buff.elemental_blast_crit -> trigger();
+      else if ( b == 1 )
+        p() -> buff.elemental_blast_haste -> trigger();
+      else
+        p() -> buff.elemental_blast_mastery -> trigger();
+    }
   }
 };
 
@@ -2960,11 +3067,7 @@ struct unleash_elements_t : public shaman_spell_t
 
     // You get the buffs, regardless of hit/miss
     if ( p() -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    {
       p() -> buff.unleash_flame -> trigger();
-      if ( p() -> talent.unleashed_fury -> ok() )
-        p() -> buff.unleashed_fury_ft -> trigger();
-    }
     else if ( p() -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
     {
       p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
@@ -3043,6 +3146,19 @@ struct earth_shock_t : public shaman_spell_t
       dtr_action = new earth_shock_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  double composite_target_crit( player_t* target )
+  {
+    double c = shaman_spell_t::composite_target_crit( target );
+
+    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    {
+      c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    }
+
+    return c;
   }
 
   virtual void execute()
@@ -3525,7 +3641,7 @@ struct stormlash_totem_t : public shaman_totem_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> current.sleeping )
+      if ( p -> current.sleeping || p -> type == PLAYER_GUARDIAN )
         continue;
 
       p -> buffs.stormlash -> trigger();
@@ -3931,31 +4047,76 @@ struct ascendance_buff_t : public buff_t
 
 struct flurry_buff_t : public buff_t
 {
-  stat_buff_t* flurry_haste;
-
   flurry_buff_t( shaman_t* p, const spell_data_t* s ) :
-    buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) ),
-    flurry_haste( 0 )
-  {
-    flurry_haste = stat_buff_creator_t( p, "flurry_haste", s ).stat( STAT_HASTE_RATING ).quiet( true ).max_stack( 1 );
-  }
+    buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) )
+  { }
   
+  // Note that if attack -> swing_haste() > old_swing_haste, this could 
+  // probably be handled by rescheduling, but the code is slightly simpler if
+  // we just cancel the event and make a new one.
+  void reschedule_auto_attack( attack_t*& attack, double old_swing_haste )
+  {
+    if ( attack && attack -> execute_event && 
+         attack -> execute_event -> remains() > timespan_t::zero() )
+    {
+      timespan_t time_to_hit = attack -> execute_event -> remains();
+      time_to_hit *= attack -> swing_haste() / old_swing_haste;
+
+      if ( sim -> debug )
+      {
+        sim_t::output( sim, "Flurry reschedules %s attack from %f to %f",
+          attack -> name(),
+          attack -> execute_event -> remains().total_seconds(),
+          time_to_hit.total_seconds() );
+      }
+
+      event_t::cancel( attack -> execute_event );
+      attack -> execute_event = new ( sim ) action_execute_event_t( sim, attack, time_to_hit );
+    }
+  }
+
   void execute( int stacks, double value, timespan_t duration )
   {
+    int is_up = check();
+    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
+    
+    if ( ! is_up )
+    {
+      old_mh_swing_haste = player -> main_hand_attack -> swing_haste();
+      if ( player -> off_hand_attack )
+        old_oh_swing_haste  = player -> off_hand_attack -> swing_haste();
+    }
+
     buff_t::execute( stacks, value, duration );
 
-    double haste_rating = player -> stats.haste_rating;
-    if ( flurry_haste -> check() )
-      haste_rating -= flurry_haste -> current_value;
-
-    flurry_haste -> trigger( 1, haste_rating * data().effectN( 2 ).percent(), -1, timespan_t::zero() );
+    // Down -> Up, haste remaining swing speeds
+    if ( ! is_up )
+    {
+      reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
+      reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
+    }
   }
-  
+
   void expire()
   {
+    int is_up = check();
+    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
+
+    if ( is_up )
+    {
+      old_mh_swing_haste = player -> main_hand_attack -> swing_haste();
+      if ( player -> off_hand_attack )
+        old_oh_swing_haste  = player -> off_hand_attack -> swing_haste();
+    }
+
     buff_t::expire();
-    
-    flurry_haste -> expire();
+
+    // Up -> Down, slow down remaining swing speeds
+    if ( is_up )
+    {
+      reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
+      reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
+    }
   }
 };
 
@@ -4077,6 +4238,7 @@ void shaman_t::init_spells()
   {
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
     { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
+    { 123123, 123124, 123132, 123133,     0,     0, 123134, 123135 }, // Tier14
     {      0,      0,      0,      0,     0,     0,      0,      0 },
   };
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4199,12 +4361,26 @@ void shaman_t::init_buffs()
   player_t::init_buffs();
 
   buff.ascendance          = new ascendance_buff_t( this );
-  buff.elemental_blast     = buff_creator_t( this, "elemental_blast", dbc.spell( 118522 ) );
+  buff.elemental_blast_crit = stat_buff_creator_t( this, "elemental_blast_crit", dbc.spell( 118522 ) )
+                              .max_stack( 1 )
+                              .stat( STAT_CRIT_RATING )
+                              .amount( dbc.spell( 118522 ) -> effectN( 1 ).average( this ) );
+  buff.elemental_blast_haste = stat_buff_creator_t( this, "elemental_blast_haste", dbc.spell( 118522 ) )
+                               .max_stack( 1 )
+                               .stat( STAT_HASTE_RATING )
+                               .amount( dbc.spell( 118522 ) -> effectN( 2 ).average( this ) );
+  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", dbc.spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .stat( STAT_MASTERY_RATING )
+                                 .amount( dbc.spell( 118522 ) -> effectN( 3 ).average( this ) );
   buff.elemental_focus     = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
                              .activated( false );
   buff.elemental_mastery   = buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                              .chance( 1.0 );
   buff.flurry              = new flurry_buff_t( this, spec.flurry -> effectN( 1 ).trigger() );
+  //buff.flurry              = buff_creator_t( this, "flurry", spec.flurry -> effectN( 1 ).trigger() )
+//    .chance( spec.flurry -> proc_chance() );
+//                             .activated( false );
   buff.lava_surge          = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                              .activated( false );
   buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
@@ -4440,13 +4616,13 @@ void shaman_t::init_actions()
   default_s << init_use_profession_actions();
   default_s << init_use_racial_actions();
 
-  if ( talent.call_of_the_elements -> ok() )
-    default_s << "/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0";
+  //if ( talent.call_of_the_elements -> ok() )
+  //  default_s << "/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0";
 
   if ( talent.elemental_mastery -> ok() )
     default_s << "/elemental_mastery";
 
-  if ( level >= 78 ) default_s << "/stormlash_totem";
+  //if ( level >= 78 ) default_s << "/stormlash_totem";
   if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!ticking";
   if ( level >= 87 ) default_s << "/ascendance";
 
@@ -4460,6 +4636,8 @@ void shaman_t::init_actions()
     if ( level >= 26 ) single_s << "/stormstrike";
     else if ( level >= 3 ) single_s << "/primal_strike";
     if ( level >= 10 ) single_s << "/lava_lash";
+    if ( talent.elemental_blast -> ok() )
+      single_s << "/elemental_blast";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)";
     if ( level >= 81 ) single_s << "/unleash_elements";
     if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|buff.unleash_flame.up";
@@ -4467,6 +4645,8 @@ void shaman_t::init_actions()
     if ( level >= 60 ) single_s << "/feral_spirit";
     if ( level >= 58 ) single_s << "/earth_elemental_totem";
     if ( level >= 85 ) single_s << "/spiritwalkers_grace,moving=1";
+//    if ( talent.elemental_blast -> ok() )
+//      single_s << "/elemental_blast,if=buff.maelstrom_weapon.react>1";
     single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
 
     // AoE
@@ -4625,6 +4805,18 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
   return 0.0;
 }
 
+// shaman_t::composite_spell_haste ==========================================
+
+double shaman_t::composite_spell_haste()
+{
+  double h = player_t::composite_attack_haste() / spell_haste;
+  double hm = 1.0;
+  if ( buff.flurry -> up() )
+    hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
+  h *= 1.0 / ( 1.0 + stats.haste_rating * hm / rating.spell_haste );
+  return h;
+}
+
 // shaman_t::composite_spell_hit ============================================
 
 double shaman_t::composite_spell_hit()
@@ -4635,6 +4827,18 @@ double shaman_t::composite_spell_hit()
            ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
+}
+
+// shaman_t::composite_attack_haste =========================================
+
+double shaman_t::composite_attack_haste()
+{
+  double h = player_t::composite_attack_haste() / attack_haste;
+  double hm = 1.0;
+  if ( buff.flurry -> up() )
+    hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
+  h *= 1.0 / ( 1.0 + stats.haste_rating * hm / rating.attack_haste );
+  return h;
 }
 
 // shaman_t::composite_attack_speed =========================================

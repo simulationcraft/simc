@@ -7,7 +7,6 @@ race=orc
 role=attack
 professions=enchanting=525/alchemy=525
 spec=enhancement
-glyphs=fire_elemental_totem
 head=spiritwalkers_helmet,id=78686,gems=agile_shadowspirit_50agi_30agi,reforge=hit_mastery
 neck=choker_of_the_vanquished_lord,id=71610,reforge=haste_crit
 shoulders=spiritwalkers_spaulders,id=78733,gems=50agi_25agi_25mastery_20agi,enchant=50agi_25mastery,reforge=hit_mastery
@@ -32,7 +31,6 @@ race=troll
 role=spell
 professions=tailoring=525/alchemy=525
 spec=elemental
-glyphs=fire_elemental_totem/flame_shock
 head=spiritwalkers_headpiece,id=78685,gems=burning_shadowspirit_50int_30int
 neck=petrified_fungal_heart,id=78364,reforge=spi_mastery
 shoulders=spiritwalkers_shoulderwraps,id=78741,gems=50int_50int_20int,enchant=50int_25haste,reforge=spi_mastery

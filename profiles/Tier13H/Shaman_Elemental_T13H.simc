@@ -9,7 +9,7 @@ role=spell
 position=back
 professions=tailoring=525/alchemy=525
 talents=131330
-glyphs=fire_elemental_totem/flame_shock
+glyphs=flame_shock/chain_lightning/thunderstorm
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/flametongue_weapon,weapon=main
@@ -20,7 +20,6 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<=25|target.time_to_die<=60
 actions+=/volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/berserking
-actions+=/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0
 actions+=/fire_elemental_totem,if=!ticking
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1
@@ -55,7 +54,7 @@ finger2=signet_of_suturing,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_
 trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
 back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,reforge=hit_haste,enchant=lightweave_embroidery_2
-main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1305max
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=hit_mastery,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_2344min_3517max
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
@@ -71,4 +70,4 @@ main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=271hast
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
 # back=nanoprecise_cape,enchant=lightweave_embroidery_2
-# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1305max,enchant=power_torrent
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_2344min_3517max,enchant=power_torrent

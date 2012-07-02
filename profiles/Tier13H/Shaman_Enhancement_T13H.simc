@@ -9,7 +9,7 @@ role=attack
 position=back
 professions=enchanting=525/alchemy=525
 talents=131330
-glyphs=fire_elemental_totem
+glyphs=chain_lightning
 actions.precombat=flask,type=winds
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/windfury_weapon,weapon=main
@@ -22,7 +22,6 @@ actions+=/bloodlust,if=target.health.pct<=25|target.time_to_die<=60
 actions+=/tolvir_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/auto_attack
 actions+=/blood_fury
-actions+=/call_of_the_elements,if=cooldown.fire_elemental_totem.remains>0
 actions+=/fire_elemental_totem,if=!ticking
 actions+=/run_action_list,name=single,if=num_targets=1
 actions+=/run_action_list,name=ae,if=num_targets>1

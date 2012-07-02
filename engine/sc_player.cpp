@@ -42,7 +42,7 @@ struct hymn_of_hope_buff_t : public buff_t
 // - Does stormlash damage benefit from CoE, or actor multipliers in general
 // - Stormlash damage formula for attacks, spells
 // - What exactly procs stormlash damage, item based procs? normal procs? totems?
-// - Do pets / guardians gain stormlash?
+// - Do pets gain stormlash?
 // - Do we want a stormlash totem without a Shaman in raid for optimal_raid=1 ?
 
 struct stormlash_attack_t : public attack_t
@@ -3902,7 +3902,7 @@ void player_t::stat_gain( stat_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) sim -> output( "%s gains %.0f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> output( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
@@ -3990,7 +3990,7 @@ void player_t::stat_loss( stat_e stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) sim -> output( "%s loses %.0f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> output( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
