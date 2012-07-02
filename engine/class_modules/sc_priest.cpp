@@ -2422,10 +2422,12 @@ struct devouring_plague_t : public priest_spell_t
 
     devouring_plague_mastery_t* proc_spell;
 
+    double special_tick_dmg;
 
   devouring_plague_dot_t( priest_t* p ) :
     priest_spell_t( "devouring_plague_tick", p, p -> find_class_spell( "Devouring Plague" ) ),
-    proc_spell( 0 )
+    proc_spell( 0 ),
+    special_tick_dmg( 0 )
   {
 
     tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
@@ -2439,6 +2441,13 @@ struct devouring_plague_t : public priest_spell_t
     {
       proc_spell = new devouring_plague_mastery_t( p );
     }
+  }
+
+  virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
+  {
+    special_tick_dmg = action_t::calculate_tick_damage( r, power, 1.0, t );
+
+    return action_t::calculate_tick_damage( r, power, multiplier, t );
   }
 
   virtual action_state_t* new_state()
@@ -2583,7 +2592,7 @@ struct devouring_plague_t : public priest_spell_t
 
     if ( dot -> ticking )
     {
-      new_total_ignite_dmg += dot_spell -> tick_dmg * dot -> ticks();
+      new_total_ignite_dmg += dot_spell -> special_tick_dmg * dot -> ticks();
     }
 
 
