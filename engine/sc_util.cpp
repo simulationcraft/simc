@@ -1077,6 +1077,8 @@ const char* util::flask_type_string( flask_e flask )
   case FLASK_EARTH:             return "earth";
   case FLASK_WINTERS_BITE:      return "winters_bite";
   case FLASK_SPRING_BLOSSOMS:   return "spring_blossoms";
+  // alchemist's
+  case FLASK_ALCHEMISTS:        return "alchemists";
   default:                      return "unknown";
   }
 }

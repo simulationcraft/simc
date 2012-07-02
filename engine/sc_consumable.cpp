@@ -120,28 +120,54 @@ struct flask_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) sim -> output( "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
-    p -> flask = type;
 
-    for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
+    if ( type == FLASK_ALCHEMISTS ) 
     {
-      flask_data_t d = flask_data[ i ];
-      if ( type == d.ft )
-      {
-        double amount = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
-        p -> stat_gain( d.st, amount, gain, this );
+      if ( player -> profession[ PROF_ALCHEMY ] < 300 )
+        return;
 
-        if ( d.st == STAT_STAMINA )
+      stat_e boost_stat = STAT_STRENGTH;
+
+      if ( p -> agility() > p -> strength() )
+      {
+        if ( p -> agility() >= p -> intellect() )
+          boost_stat = STAT_AGILITY;
+        else
+          boost_stat = STAT_INTELLECT;
+      }
+      else if ( p -> intellect() > p -> strength() )
+      {
+        boost_stat = STAT_INTELLECT;
+      }
+
+      double amount = util::ability_rank( p -> level, 320,86, 80,81, 40,71,  24,61,  0,0 );
+
+      p -> stat_gain( boost_stat, amount, gain, this );
+    }
+    else 
+    {
+      for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
+      {
+        flask_data_t d = flask_data[ i ];
+        if ( type == d.ft )
         {
-          // Cap Health for stamina flasks if they are used outside of combat
-          if ( ! player -> in_combat )
+          double amount = ( p -> profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
+          p -> stat_gain( d.st, amount, gain, this );
+
+          if ( d.st == STAT_STAMINA )
           {
-            if ( amount > 0 )
-              player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
+            // Cap Health for stamina flasks if they are used outside of combat
+            if ( ! player -> in_combat )
+            {
+              if ( amount > 0 )
+                player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
+            }
           }
         }
       }
     }
+    if ( sim -> log ) sim -> output( "%s uses Flask %s", p -> name(), util::flask_type_string( type ) );
+    p -> flask = type;
   }
 
   virtual bool ready()

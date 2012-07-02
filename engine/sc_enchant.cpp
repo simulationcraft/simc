@@ -20,15 +20,69 @@ struct enchant_data_t
 
 static enchant_data_t enchant_db[] =
 {
+  { "4916",  "+520 Intellect and +100 Critical Strike",                   "520int_100crit",                 NULL,        NULL },
+  { "4915",  "+520 Intellect and +100 Critical Strike",                   "520int_100crit",                 NULL,        NULL },
+  { "4914",  "+520 Agility and +100 Critical Strike",                     "520agi_100crit",                 NULL,        NULL },
+  { "4913",  "+520 Strength and +100 Critical Strike",                    "520str_100crit",                 NULL,        NULL },
+  { "4912",  "+780 Stamina and +100 Dodge",                               "780sta_100dodge",                NULL,        NULL },
+  { "4910",  "+180 Stamina and +80 Dodge",                                "180sta_80dodge",                 NULL,        NULL },
+  { "4909",  "+120 Intellect and +80 Critical Strike",                    "120int_80crit",                  NULL,        NULL },
+  { "4908",  "+120 Agility and +80 Critical Strike",                      "120agi_80crit",                  NULL,        NULL },
+  { "4907",  "+120 Strength and +80 Critical Strike",                     "120str_80crit",                  NULL,        NULL },
+  { "4898",  "Synapse Springs (Mark II)",                                 "synapse_springs_2",              NULL,        NULL },
+  { "4896",  "+285 Intellect and +165 Spirit",                            "285int_165spi",                  NULL,        NULL },
+  { "4895",  "+285 Intellect and +165 Critical Strike",                   "285int_165crit",                 NULL,        NULL },
   { "4894",  "Swordguard Embroidery (Rank 3)",                            "swordguard_embroidery_3",        NULL,        NULL },
   { "4893",  "Darkglow Embroidery (Rank 3)",                              "darkglow_embroidery_3",          NULL,        NULL },
   { "4892",  "Lightweave Embroidery (Rank 3)",                            "lightweave_embroidery_3",        NULL,        NULL },
+  { "4882",  "+430 Stamina and +165 Dodge",                               "430sta_165dodge",                NULL,        NULL },
+  { "4881",  "+285 Strength and +165 Critical Strike",                    "285str_165crit",                 NULL,        NULL },
+  { "4880",  "+285 Agility and +165 Critical Strike",                     "285agi_165crit",                 NULL,        NULL },
+  { "4879",  "+500 Strength",                                             "500str",                         NULL,        NULL },
+  { "4878",  "+750 Stamina",                                              "750sta",                         NULL,        NULL },
+  { "4877",  "+500 Intellect",                                            "500int",                         NULL,        NULL },
+  { "4875",  "+500 Agility",                                              "500agi",                         NULL,        NULL },  
+  { "4826",  "+285 Intellect and +165 Spirit",                            "285int_165spi",                  NULL,        NULL },
+  { "4825",  "+285 Intellect and +165 Critical Strike",                   "285int_165crit",                 NULL,        NULL },
+  { "4807",  "+160 Strength",                                             "160str",                         NULL,        NULL },
+  { "4806",  "+200 Intellect and +100 Critical Strike",                   "200int_100crit",                 NULL,        NULL },
+  { "4805",  "+300 Stamina and +100 Dodge",                               "300sta_100dodge",                NULL,        NULL },
+  { "4804",  "+200 Agility and +100 Critical Strike",                     "200agi_100crit",                 NULL,        NULL },
+  { "4803",  "+200 Strength and +100 Critical Strike",                    "200str_100crit",                 NULL,        NULL },
+  { "4700",  "Mirror Scope",                                              "mirror_scope",                   NULL,        NULL },
+  { "4699",  "Lord Blastington's Scope of Doom",                          "lord_blastingtons_scope_of_doom",NULL,        NULL },
+  { "4697",  "Phase Fingers",                                             "phase_fingers",                  NULL,        NULL },
   { "4446",  "Flowing River",                                             "flowing_river",                  NULL,        NULL },
   { "4445",  "Colossus",                                                  "colossus",                       NULL,        NULL },
   { "4444",  "Dancing Steel",                                             "dancing_steel",                  NULL,        NULL },
   { "4443",  "Elemental Force",                                           "elemental_force",                NULL,        NULL },
   { "4442",  "Jade Spirit",                                               "jade_spirit",                    NULL,        NULL },
   { "4441",  "Windsong",                                                  "windsong",                       NULL,        NULL },
+  { "4434",  "+165 Intellect",                                            "165int",                         NULL,        NULL },
+  { "4433",  "+170 Mastery",                                              "170mastery",                     NULL,        NULL },
+  { "4432",  "+170 Strength",                                             "170str",                         NULL,        NULL },
+  { "4431",  "+170 Expertise",                                            "170exp",                         NULL,        NULL },
+  { "4430",  "+170 Haste",                                                "170haste",                       NULL,        NULL },
+  { "4429",  "+140 Mastery & Minor Speed Increase",                       "140mastery",                     NULL,        NULL },
+  { "4428",  "+140 Agility & Minor Speed Increase",                       "140agi",                         NULL,        NULL },
+  { "4427",  "+175 Hit",                                                  "175hit",                         NULL,        NULL },
+  { "4426",  "+175 Haste",                                                "175haste",                       NULL,        NULL },
+  { "4424",  "+180 Critical Strike",                                      "180crit",                        NULL,        NULL },
+  { "4423",  "+180 Intellect",                                            "180int",                         NULL,        NULL },
+  { "4422",  "+200 Stamina",                                              "200sta",                         NULL,        NULL },
+  { "4421",  "+180 Hit",                                                  "180hit",                         NULL,        NULL },
+  { "4420",  "+300 Stamina",                                              "300sta",                         NULL,        NULL },
+  { "4419",  "+80 All Stats",                                             "80all",                          NULL,        NULL },
+  { "4418",  "+200 Spirit",                                               "200spi",                         NULL,        NULL },
+  { "4417",  "+200 PvP Resilience",                                       "",                               NULL,        NULL },
+  { "4416",  "+170 Agility",                                              "170agi",                         NULL,        NULL },
+  { "4415",  "+170 Strength",                                             "170str",                         NULL,        NULL },
+  { "4414",  "+170 Intellect",                                            "170int",                         NULL,        NULL },
+  { "4412",  "+170 Dodge",                                                "170dodge",                       NULL,        NULL },
+  { "4411",  "+170 Mastery",                                              "170mastery",                     NULL,        NULL },
+  { "4361",  "+240 Stamina",                                              "240sta",                         NULL,        NULL },
+  { "4360",  "+160 Intellect",                                            "150int",                         NULL,        NULL },
+  { "4359",  "+160 Agility",                                              "160agi",                         NULL,        NULL },
   { "4270",  "+145 Stamina and +55 Dodge Rating",                         "145sta_55dodge",                 NULL,        NULL },
   { "4267",  "Flintlocke's Woodchucker",                                  "flintlockes_woodchucker",        NULL,        NULL },
   { "4266",  "+50 Agility",                                               "50agi",                          NULL,        NULL },
@@ -703,6 +757,57 @@ static void register_synapse_springs( item_t* item )
   item -> use.cooldown = timespan_t::from_seconds( 60.0 );
 }
 
+// register_synapse_springs_2 =================================================
+
+static void register_synapse_springs_2( item_t* item )
+{
+  player_t* p = item -> player;
+
+  if ( p -> profession[ PROF_ENGINEERING ] < 550 )
+  {
+    item -> sim -> errorf( "Player %s attempting to use synapse springs mk 2 without 500 in engineering.\n", p -> name() );
+    return;
+  }
+
+  static const attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT };
+
+  stat_e max_stat = STAT_INTELLECT;
+  double max_value = -1;
+
+  for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
+  {
+    if ( p -> current.attribute[ attr[ i ] ] > max_value )
+    {
+      max_value = p -> current.attribute[ attr[ i ] ];
+      max_stat = stat_from_attr( attr[ i ] );
+    }
+  }
+
+  item -> use.name_str = "synapse_springs_2";
+  item -> use.stat = max_stat;
+  item -> use.stat_amount = 2940.0;
+  item -> use.duration = timespan_t::from_seconds( 10.0 );
+  item -> use.cooldown = timespan_t::from_seconds( 60.0 );
+}
+
+// register_synapse_springs_2 =================================================
+
+static void register_phase_fingers( item_t* item )
+{
+  player_t* p = item -> player;
+
+  if ( p -> profession[ PROF_ENGINEERING ] < 500 )
+  {
+    item -> sim -> errorf( "Player %s attempting to use phase fingers without 500 in engineering.\n", p -> name() );
+    return;
+  }
+  item -> use.name_str = "phase_fingers";
+  item -> use.stat = STAT_DODGE_RATING;
+  item -> use.stat_amount = 240.0;
+  item -> use.duration = timespan_t::from_seconds( 10.0 );
+  item -> use.cooldown = timespan_t::from_seconds( 60.0 );
+}
+
 static void register_avalanche( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "avalanche" || oh_enchant == "avalanche" )
@@ -925,6 +1030,59 @@ static void register_gnomish_xray( player_t* p, const std::string& enchant, weap
   }
 }
 
+static void register_lord_blastingtons_scope_of_doom( player_t* p, const std::string& enchant, weapon_t* w )
+{
+  if ( enchant == "lord_blastingtons_scope_of_doom" )
+  {
+    //FIXME: Using gnomish x-ray proc and icd for now. CONFIRM.
+    stat_buff_t* buff = stat_buff_creator_t( p, "lord_blastingtons_scope_of_doom" )
+                        .spell( p -> find_spell( 109085 ) )
+                        .cd( timespan_t::from_seconds( 40 ) )
+                        .activated( false )
+                        .stat( STAT_ATTACK_POWER )
+                        .amount( p->find_spell( 109085 )->effectN( 1 ).base_value() );
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
+  }
+}
+
+static void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w )
+{
+  if ( enchant == "mirror_scope" )
+  {
+    //FIXME: Using gnomish x-ray proc and icd for now. CONFIRM.
+    stat_buff_t* buff = stat_buff_creator_t( p, "mirror_scope" )
+                        .spell( p -> find_spell( 109092 ) )
+                        .cd( timespan_t::from_seconds( 40 ) )
+                        .activated( false )
+                        .stat( STAT_CRIT_RATING )
+                        .amount( p->find_spell( 109092 )->effectN( 1 ).base_value() );
+
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
+  }
+}
+
+#if 0
+static void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
+{
+  if ( mh_enchant == "elemental_force" || oh_enchant == "elemental_force" )
+  {
+    if ( mh_enchant == "elemental_force" )
+    {
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_mh", p, mhw, 1, SCHOOL_ELEMENTAL, 3000, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    }
+    if ( oh_enchant == "elemental_force" )
+    {
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, 3000, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    }
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_s", p, 0, 1, SCHOOL_ELEMENTAL, 3000, 0.25/*FIXED*/, 0, timespan_t::from_seconds( 0.01 )/*CD*/ );
+    p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+  }
+}
+#endif
+
 // ==========================================================================
 // Enchant
 // ==========================================================================
@@ -967,6 +1125,8 @@ void enchant::init( player_t* p )
   register_windwalk( p, oh_enchant, ohw, "oh" );
 
   register_gnomish_xray( p, mh_enchant, mhw );
+  register_lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
+  register_mirror_scope( p, mh_enchant, mhw );
 
   // Special Meta Gem "Enchants"
   if ( p -> meta_gem == META_THUNDERING_SKYFIRE )
@@ -1019,6 +1179,26 @@ void enchant::init( player_t* p )
     else if ( item.encoded_addon_str == "synapse_springs" )
     {
       register_synapse_springs( &item );
+      item.unique_addon = true;
+    }
+    else if ( item.encoded_enchant_str == "synapse_springs_2" )
+    {
+      register_synapse_springs_2( &item );
+      item.unique_enchant = true;
+    }
+    else if ( item.encoded_addon_str == "synapse_springs_2" )
+    {
+      register_synapse_springs_2( &item );
+      item.unique_addon = true;
+    }
+    else if ( item.encoded_enchant_str == "phase_fingers" )
+    {
+      register_phase_fingers( &item );
+      item.unique_enchant = true;
+    }
+    else if ( item.encoded_addon_str == "phase_fingers" )
+    {
+      register_phase_fingers( &item );
       item.unique_addon = true;
     }
   }

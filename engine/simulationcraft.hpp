@@ -719,6 +719,8 @@ enum flask_e
   FLASK_EARTH,
   FLASK_WINTERS_BITE,
   FLASK_SPRING_BLOSSOMS,
+  // alchemist's flask
+  FLASK_ALCHEMISTS,
   FLASK_MAX
 };
 
