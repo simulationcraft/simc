@@ -18,30 +18,33 @@ using namespace spells;
 using namespace heals;
 using namespace pets;
 
+struct priest_t;
+
+struct priest_td_t : public actor_pair_t
+{
+public:
+  struct dots_t
+  {
+    dot_t* devouring_plague;
+    dot_t* shadow_word_pain;
+    dot_t* vampiric_touch;
+    dot_t* holy_fire;
+    dot_t* renew;
+  } dots;
+
+  struct buffs_t
+  {
+    absorb_buff_t* power_word_shield;
+    absorb_buff_t* divine_aegis;
+  } buffs;
+
+  priest_td_t( player_t* target, priest_t* p );
+};
+
 struct priest_t : public player_t
 {
-  typedef player_t base_t;
 public:
-  struct priest_td_t : public actor_pair_t
-  {
-  public:
-    struct dots_t
-    {
-      dot_t* devouring_plague;
-      dot_t* shadow_word_pain;
-      dot_t* vampiric_touch;
-      dot_t* holy_fire;
-      dot_t* renew;
-    } dots;
-
-    struct buffs_t
-    {
-      absorb_buff_t* power_word_shield;
-      absorb_buff_t* divine_aegis;
-    } buffs;
-
-    priest_td_t( player_t* target, priest_t* p );
-  };
+  typedef player_t base_t;
 
   struct buffs_t
   {
@@ -884,7 +887,7 @@ public:
   priest_t* p() const
   { return static_cast<priest_t*>( ab::player ); }
 
-  priest_t::priest_td_t* td( player_t* t = 0 )
+  priest_td_t* td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual void schedule_execute()
@@ -4245,7 +4248,7 @@ struct spirit_shell_heal_t : priest_heal_t
 // Priest
 // ==========================================================================
 
-priest_t::priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
+priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
   actor_pair_t( target, p ),
   dots( dots_t() ),
   buffs( buffs_t() )

@@ -24,27 +24,20 @@ enum seal_e
   SEAL_MAX
 };
 
+struct paladin_td_t : public actor_pair_t
+{
+  dot_t* dots_word_of_glory;
+  dot_t* dots_holy_radiance;
+  dot_t* dots_censure;
+
+  buff_t* debuffs_censure;
+
+  paladin_td_t( player_t* target, paladin_t* paladin );
+};
+
 struct paladin_t : public player_t
 {
 public:
-  struct paladin_td_t : public actor_pair_t
-  {
-    dot_t* dots_word_of_glory;
-    dot_t* dots_holy_radiance;
-    dot_t* dots_censure;
-
-    buff_t* debuffs_censure;
-
-    paladin_td_t( player_t* target, player_t* paladin ) :
-      actor_pair_t( target, paladin )
-    {
-      target -> get_dot( "word_of_glory", paladin );
-      target -> get_dot( "holy_radiance", paladin );
-      target -> get_dot( "censure",       paladin );
-
-      debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-    }
-  };
 
   // Active
   seal_e active_seal;
@@ -294,6 +287,16 @@ public:
   }
 };
 
+paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
+  actor_pair_t( target, paladin )
+{
+  target -> get_dot( "word_of_glory", paladin );
+  target -> get_dot( "holy_radiance", paladin );
+  target -> get_dot( "censure",       paladin );
+
+  debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+}
+
 // Guardian of Ancient Kings Pet ============================================
 
 // TODO: melee attack
@@ -386,7 +389,7 @@ struct paladin_action_t : public Base
 
    paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
 
-   paladin_t::paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+   paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
    virtual double cost()
    {

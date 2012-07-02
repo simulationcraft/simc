@@ -11,40 +11,41 @@
 
 struct warlock_t;
 
+struct warlock_td_t : public actor_pair_t
+{
+  dot_t*  dots_corruption;
+  dot_t*  dots_unstable_affliction;
+  dot_t*  dots_agony;
+  dot_t*  dots_doom;
+  dot_t*  dots_immolate;
+  dot_t*  dots_drain_soul;
+  dot_t*  dots_shadowflame;
+  dot_t*  dots_malefic_grasp;
+  dot_t*  dots_seed_of_corruption;
+  dot_t*  dots_soulburn_seed_of_corruption;
+
+  buff_t* debuffs_haunt;
+
+  bool ds_started_below_20;
+  int shadowflame_stack;
+  int agony_stack;
+  double soc_trigger, soulburn_soc_trigger;
+
+  warlock_td_t( player_t* target, warlock_t* source );
+
+  void reset()
+  {
+    ds_started_below_20 = false;
+    shadowflame_stack = 1;
+    agony_stack = 1;
+    soc_trigger = 0;
+    soulburn_soc_trigger = 0;
+  }
+};
+
 struct warlock_t : public player_t
 {
 public:
-  struct warlock_td_t : public actor_pair_t
-  {
-    dot_t*  dots_corruption;
-    dot_t*  dots_unstable_affliction;
-    dot_t*  dots_agony;
-    dot_t*  dots_doom;
-    dot_t*  dots_immolate;
-    dot_t*  dots_drain_soul;
-    dot_t*  dots_shadowflame;
-    dot_t*  dots_malefic_grasp;
-    dot_t*  dots_seed_of_corruption;
-    dot_t*  dots_soulburn_seed_of_corruption;
-
-    buff_t* debuffs_haunt;
-
-    bool ds_started_below_20;
-    int shadowflame_stack;
-    int agony_stack;
-    double soc_trigger, soulburn_soc_trigger;
-
-    warlock_td_t( player_t* target, warlock_t* source );
-
-    void reset()
-    {
-      ds_started_below_20 = false;
-      shadowflame_stack = 1;
-      agony_stack = 1;
-      soc_trigger = 0;
-      soulburn_soc_trigger = 0;
-    }
-  };
 
   player_t* havoc_target;
 
@@ -321,7 +322,7 @@ public:
   }
 };
 
-warlock_t::warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
+warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   : actor_pair_t( target, p ), ds_started_below_20( false ), shadowflame_stack( 1 ), agony_stack( 1 ), soc_trigger( 0 )
 {
   dots_corruption          = target -> get_dot( "corruption", p );
@@ -1217,7 +1218,7 @@ public:
 
     virtual void execute()
     {
-      warlock_t::warlock_td_t* td = spell -> td( target );
+      warlock_td_t* td = spell -> td( target );
       if ( td -> dots_malefic_grasp -> ticking || ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
       {
         dot_t* dot = spell -> get_dot( target );
@@ -1249,7 +1250,7 @@ public:
 
   warlock_t* p() const { return static_cast<warlock_t*>( player ); }
 
-  warlock_t::warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
+  warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void init()
   {
@@ -1420,7 +1421,7 @@ public:
     return um;
   }
 
-  void trigger_seed_of_corruption( warlock_t::warlock_td_t* td, warlock_t* p, double amount )
+  void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> action && id == td -> dots_seed_of_corruption -> action -> id )
            || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )

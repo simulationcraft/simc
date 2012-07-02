@@ -70,26 +70,19 @@ enum imbue_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE };
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
 
+struct shaman_td_t : public actor_pair_t
+{
+  dot_t* dots_flame_shock;
+
+  buff_t* debuffs_stormstrike;
+  buff_t* debuffs_unleashed_fury;
+
+  shaman_td_t( player_t* target, shaman_t* p );
+};
+
 struct shaman_t : public player_t
 {
 public:
-  struct shaman_td_t : public actor_pair_t
-  {
-    dot_t* dots_flame_shock;
-
-    buff_t* debuffs_stormstrike;
-    buff_t* debuffs_unleashed_fury;
-
-    shaman_td_t( player_t* target, player_t* p ) :
-      actor_pair_t( target, p )
-    {
-      dots_flame_shock    = target -> get_dot( "flame_shock",    p );
-
-      debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
-
-      debuffs_unleashed_fury = ( buff_creator_t( *this, "unleashed_fury", p -> find_spell( 118470 ) ) );
-    }
-  };
 
   // Options
   timespan_t wf_delay;
@@ -383,6 +376,16 @@ public:
   }
 };
 
+shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
+  actor_pair_t( target, p )
+{
+  dots_flame_shock    = target -> get_dot( "flame_shock",    p );
+
+  debuffs_stormstrike = ( buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) ) );
+
+  debuffs_unleashed_fury = ( buff_creator_t( *this, "unleashed_fury", p -> find_spell( 118470 ) ) );
+}
+
 // Template for common shaman action code. See priest_action_t.
 template <class Base>
 struct shaman_action_t : public Base
@@ -398,7 +401,7 @@ struct shaman_action_t : public Base
 
    shaman_t* p() const { return static_cast<shaman_t*>( ab::player ); }
 
-   shaman_t::shaman_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+   shaman_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================

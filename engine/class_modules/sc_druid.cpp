@@ -96,40 +96,41 @@ struct combo_points_t
   }
 };
 
+struct druid_td_t : public actor_pair_t
+{
+  dot_t* dots_lacerate;
+  dot_t* dots_lifebloom;
+  dot_t* dots_moonfire;
+  dot_t* dots_rake;
+  dot_t* dots_regrowth;
+  dot_t* dots_rejuvenation;
+  dot_t* dots_rip;
+  dot_t* dots_sunfire;
+  dot_t* dots_wild_growth;
+
+  buff_t* buffs_lifebloom;
+
+  combo_points_t* combo_points;
+
+  druid_td_t( player_t* target, druid_t* source );
+
+  ~druid_td_t()
+  {
+    if ( combo_points ) delete combo_points;
+  }
+  bool hot_ticking()
+  {
+    return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
+  }
+  void reset()
+  {
+    combo_points->clear();
+  }
+};
+
 struct druid_t : public player_t
 {
 public:
-  struct druid_td_t : public actor_pair_t
-  {
-    dot_t* dots_lacerate;
-    dot_t* dots_lifebloom;
-    dot_t* dots_moonfire;
-    dot_t* dots_rake;
-    dot_t* dots_regrowth;
-    dot_t* dots_rejuvenation;
-    dot_t* dots_rip;
-    dot_t* dots_sunfire;
-    dot_t* dots_wild_growth;
-
-    buff_t* buffs_lifebloom;
-
-    combo_points_t* combo_points;
-
-    druid_td_t( player_t* target, druid_t* source );
-
-    ~druid_td_t()
-    {
-      if ( combo_points ) delete combo_points;
-    }
-    bool hot_ticking()
-    {
-      return dots_regrowth->ticking || dots_rejuvenation->ticking || dots_lifebloom->ticking || dots_wild_growth->ticking;
-    }
-    void reset()
-    {
-      combo_points->clear();
-    }
-  };
 
   // Active
   heal_t*   active_swiftmend_aoe;
@@ -516,7 +517,7 @@ struct druid_action_t : public Base
 
    druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
 
-   druid_t::druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================
@@ -1041,7 +1042,7 @@ static void trigger_swiftmend( druid_heal_t* a )
 
 static void trigger_lifebloom_refresh( action_state_t* s )
 {
-  druid_t::druid_td_t* td = static_cast<druid_t*>( s -> action -> player ) -> get_target_data( s -> target );
+  druid_td_t* td = static_cast<druid_t*>( s -> action -> player ) -> get_target_data( s -> target );
 
   if ( td -> dots_lifebloom -> ticking )
   {
@@ -1719,7 +1720,7 @@ struct rip_t : public druid_cat_attack_t
     if ( ! execute_state )
       return druid_cat_attack_t::ready();
 
-    druid_t::druid_td_t* td = this -> td( execute_state -> target );
+    druid_td_t* td = this -> td( execute_state -> target );
 
     if ( ! td -> dots_rip -> ticking )
       return druid_cat_attack_t::ready();
@@ -5240,7 +5241,7 @@ player_t::heal_info_t druid_t::assess_heal( double        amount,
   return player_t::assess_heal( amount, school, dmg_type, result, action );
 }
 
-druid_t::druid_td_t::druid_td_t( player_t* target, druid_t* source )
+druid_td_t::druid_td_t( player_t* target, druid_t* source )
   : actor_pair_t( target, source )
 {
   combo_points = new combo_points_t( target );

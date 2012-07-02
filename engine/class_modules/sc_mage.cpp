@@ -15,27 +15,28 @@ struct mage_t;
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
+struct mage_td_t : public actor_pair_t
+{
+  struct dots_t
+  {
+    dot_t* flamestrike;
+    dot_t* ignite;
+    dot_t* living_bomb;
+    dot_t* nether_tempest;
+    dot_t* pyroblast;
+  } dots;
+
+  struct debuffs_t
+  {
+    buff_t* slow;
+  } debuffs;
+
+  mage_td_t( player_t* target, mage_t* mage );
+};
+
 struct mage_t : public player_t
 {
 public:
-  struct mage_td_t : public actor_pair_t
-  {
-    struct dots_t
-    {
-      dot_t* flamestrike;
-      dot_t* ignite;
-      dot_t* living_bomb;
-      dot_t* nether_tempest;
-      dot_t* pyroblast;
-    } dots;
-
-    struct debuffs_t
-    {
-      buff_t* slow;
-    } debuffs;
-
-    mage_td_t( player_t* target, mage_t* mage );
-  };
 
   // Active
   spell_t* active_ignite;
@@ -705,7 +706,7 @@ struct mage_spell_t : public spell_t
 
   mage_t* p() const { return static_cast<mage_t*>( player ); }
 
-  mage_t::mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
+  mage_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : target ); }
 
   virtual void parse_options( option_t*          options,
                               const std::string& options_str )
@@ -2668,7 +2669,7 @@ struct choose_rotation_t : public action_t
 
 // mage_td_t ================================================================
 
-mage_t::mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
+mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   actor_pair_t( target, mage ),
   dots( dots_t() ),
   debuffs( debuffs_t() )

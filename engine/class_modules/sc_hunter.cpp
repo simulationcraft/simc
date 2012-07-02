@@ -18,28 +18,29 @@ using namespace attacks;
 using namespace spells;
 using namespace pet_actions;
 
-struct hunter_t;
-
 // ==========================================================================
 // Hunter
 // ==========================================================================
+
+struct hunter_t;
 
 struct hunter_pet_t;
 
 enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_FOX, ASPECT_MAX };
 
+struct hunter_td_t : public actor_pair_t
+{
+  struct dots_t
+  {
+    dot_t* serpent_sting;
+  } dots;
+
+  hunter_td_t( player_t* target, hunter_t* p);
+};
+
 struct hunter_t : public player_t
 {
-  struct hunter_td_t : public actor_pair_t
-  {
-    dot_t* dots_serpent_sting;
-
-    hunter_td_t( player_t* target, hunter_t* p) : actor_pair_t( target, p )
-    {
-      dots_serpent_sting = target -> get_dot( "serpent_sting", p );
-    }
-  };
-
+public:
   // Active
   hunter_pet_t* active_pet;
   aspect_type   active_aspect;
@@ -321,15 +322,14 @@ public:
 // Hunter Pet
 // ==========================================================================
 
+struct hunter_pet_td_t : public actor_pair_t
+{
+  hunter_pet_td_t( player_t* target, hunter_pet_t* p );
+};
+
 struct hunter_pet_t : public pet_t
 {
-  struct hunter_pet_td_t : public actor_pair_t
-  {
-    hunter_pet_td_t( player_t* target, hunter_pet_t* p ) : actor_pair_t( target, p )
-    {
-    }
-  };
-
+public:
   action_t* kill_command;
 
   struct talents_t
@@ -670,7 +670,7 @@ struct hunter_action_t : public Base
 
   hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
-  hunter_t::hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
   virtual double cost()
   {
@@ -1296,7 +1296,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit() )
     {
-      cast_td() -> dots_serpent_sting -> refresh_duration();
+      cast_td() -> dots.serpent_sting -> refresh_duration();
     }
   }
 
@@ -1341,7 +1341,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit() )
     {
-      cast_td() -> dots_serpent_sting -> extend_duration( 2 );
+      cast_td() -> dots.serpent_sting -> extend_duration( 2 );
 
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
@@ -2165,7 +2165,7 @@ struct hunter_pet_action_t : public Base
   hunter_pet_t* p() const
   { return static_cast<hunter_pet_t*>( ab::player ); }
 
-  hunter_pet_t::hunter_pet_td_t* cast_td( player_t* t = 0 ) 
+  hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
@@ -2721,6 +2721,17 @@ struct wild_quiver_trigger_t : public action_callback_t
   }
 };
 
+hunter_td_t::hunter_td_t( player_t* target, hunter_t* p) :
+  actor_pair_t( target, p ),
+  dots( dots_t() )
+{
+  dots.serpent_sting = target -> get_dot( "serpent_sting", p );
+}
+
+hunter_pet_td_t::hunter_pet_td_t( player_t* target, hunter_pet_t* p ) :
+  actor_pair_t( target, p )
+{
+}
 // hunter_pet_t::create_action ==============================================
 
 action_t* hunter_pet_t::create_action( const std::string& name,

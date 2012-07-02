@@ -102,33 +102,34 @@ struct dk_rune_t
 // Death Knight
 // ==========================================================================
 
+struct death_knight_td_t : public actor_pair_t
+{
+  dot_t* dots_blood_plague;
+  dot_t* dots_death_and_decay;
+  dot_t* dots_frost_fever;
+
+  int diseases()
+  {
+    int disease_count = 0;
+    if ( dots_blood_plague -> ticking ) disease_count++;
+    if ( dots_frost_fever  -> ticking ) disease_count++;
+    return disease_count;
+  }
+
+  death_knight_td_t( player_t* target, player_t* death_knight ) :
+    actor_pair_t( target, death_knight )
+  {
+    dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
+    dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
+    dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+  }
+};
+
 enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
 
 struct death_knight_t : public player_t
 {
 public:
-  struct death_knight_td_t : public actor_pair_t
-  {
-    dot_t* dots_blood_plague;
-    dot_t* dots_death_and_decay;
-    dot_t* dots_frost_fever;
-
-    int diseases()
-    {
-      int disease_count = 0;
-      if ( dots_blood_plague -> ticking ) disease_count++;
-      if ( dots_frost_fever  -> ticking ) disease_count++;
-      return disease_count;
-    }
-
-    death_knight_td_t( player_t* target, player_t* death_knight ) :
-      actor_pair_t( target, death_knight )
-    {
-      dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
-      dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
-      dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
-    }
-  };
 
   // Active
   int       active_presence;
@@ -1389,7 +1390,7 @@ struct death_knight_action_t : public Base
 
   death_knight_t* cast() { return static_cast<death_knight_t*>( action_base_t::player ); }
 
-  death_knight_t::death_knight_td_t* cast_td( player_t* t = 0 )
+  death_knight_td_t* cast_td( player_t* t = 0 )
   { return cast() -> get_target_data( t ? t : action_base_t::target ); }
 
   void _init_dk_action()
@@ -1812,7 +1813,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit() )
     {
-      death_knight_t::death_knight_td_t* td = cast_td( target );
+      death_knight_td_t* td = cast_td( target );
 
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
@@ -1973,7 +1974,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     death_knight_spell_t::target_debuff( t, dtype );
 
-    death_knight_t::death_knight_td_t* td = cast_td( t );
+    death_knight_td_t* td = cast_td( t );
 
     base_dd_adder = td -> diseases() ? 95 : 0;
     direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
