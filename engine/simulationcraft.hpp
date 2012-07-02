@@ -3917,9 +3917,9 @@ struct new_player_pet_t : public pet_t
 
   struct owner_coefficients_t
   {
-    double armor, health, mana, mastery;
+    double armor, health, mana, mastery, mp5;
     owner_coefficients_t() :
-    armor ( 1.0 ), health( 1.0 ), mana( 0.0 ), mastery( 0.0 ) {}
+    armor ( 1.0 ), health( 1.0 ), mana( 0.0 ), mastery( 0.0 ), mp5( 0.0 ) {}
   } coeff;
 
   new_player_pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian=false ) :
@@ -3927,8 +3927,8 @@ struct new_player_pet_t : public pet_t
     coeff( owner_coefficients_t() )
   { }
 
-  virtual double composite_attack_expertise( weapon_t* )
-  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise() * 0.50; }
+  virtual double composite_attack_expertise( weapon_t* w )
+  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise( w) * 0.50; }
 
   virtual double composite_attack_hit()
   { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise() * 0.50; }
@@ -3968,14 +3968,16 @@ struct new_player_pet_t : public pet_t
   { return coeff.mastery > 0.0 ? owner -> composite_mastery() * coeff.mastery : base_t::composite_mastery(); }
 
   virtual double composite_armor()
-  { return coeff.armor > 0.0 ? owner -> composite_armor() * coeff.armor : base_t::composite_armor(); }
+  { return owner -> composite_armor() * coeff.armor; }
+
+  virtual double composite_mp5()
+  { return coeff.mp5 > 0.0 ? owner -> composite_mp5() * coeff.mp5 : base_t::composite_mp5(); }
 
   virtual void init_resources( bool force )
   {
     base_t::init_resources( force );
 
-    if( coeff.health > 0.0 )
-      resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
+    resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
     if ( coeff.mana > 0.0 )
       resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ] * coeff.mana;
 
