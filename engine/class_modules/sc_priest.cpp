@@ -4331,7 +4331,7 @@ double priest_t::composite_spell_power_multiplier()
 {
   double m = base_t::composite_spell_power_multiplier();
 
-  m *= 1.0 + buffs.inner_fire -> data().effectN( 2 ).percent();
+  m *= 1.0 + buffs.inner_fire -> up () * buffs.inner_fire -> data().effectN( 2 ).percent();
 
   return m;
 }

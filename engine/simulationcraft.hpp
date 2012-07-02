@@ -3870,6 +3870,8 @@ struct target_specific_t
 
 struct pet_t : public player_t
 {
+  typedef player_t base_t;
+
   std::string full_name_str;
   player_t* owner;
   double stamina_per_owner;
@@ -3906,6 +3908,80 @@ public:
   virtual const char* name() { return full_name_str.c_str(); }
 
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
+};
+
+// new proposed pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
+struct new_player_pet_t : public pet_t
+{
+  typedef pet_t base_t;
+
+  struct owner_coefficients_t
+  {
+    double armor, health, mana, mastery;
+    owner_coefficients_t() :
+    armor ( 1.0 ), health( 1.0 ), mana( 0.0 ), mastery( 0.0 ) {}
+  } coeff;
+
+  new_player_pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian=false ) :
+    base_t( sim, owner, name, pt, guardian ),
+    coeff( owner_coefficients_t() )
+  { }
+
+  virtual double composite_attack_expertise( weapon_t* )
+  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise() * 0.50; }
+
+  virtual double composite_attack_hit()
+  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise() * 0.50; }
+
+  virtual double composite_spell_hit()
+  { return owner -> composite_spell_hit(); }
+
+  virtual double composite_attack_crit( weapon_t* w )
+  { return owner -> composite_attack_crit( w ); }
+
+  virtual double composite_spell_crit()
+  { return owner -> composite_spell_crit(); }
+
+  virtual double composite_attack_haste()
+  { return owner -> composite_attack_haste(); }
+
+  virtual double composite_spell_haste()
+  { return owner -> composite_spell_haste(); }
+
+
+  // Assuming diminishing returns are transfered to the pet as well
+  virtual double composite_tank_dodge()
+  { return owner -> composite_tank_dodge(); }
+
+  virtual double diminished_dodge()
+  { return owner -> diminished_dodge(); }
+
+  virtual double composite_tank_parry()
+  { return owner -> composite_tank_parry(); }
+
+  virtual double diminished_parry()
+  { return owner -> diminished_parry(); }
+
+
+  // Influenced by coefficients [ 0, 1 ]
+  virtual double composite_mastery()
+  { return coeff.mastery > 0.0 ? owner -> composite_mastery() * coeff.mastery : base_t::composite_mastery(); }
+
+  virtual double composite_armor()
+  { return coeff.armor > 0.0 ? owner -> composite_armor() * coeff.armor : base_t::composite_armor(); }
+
+  virtual void init_resources( bool force )
+  {
+    base_t::init_resources( force );
+
+    if( coeff.health > 0.0 )
+      resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
+    if ( coeff.mana > 0.0 )
+      resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ] * coeff.mana;
+
+    resources.current = resources.max = resources.initial;
+  }
+
 };
 
 // Gain =====================================================================

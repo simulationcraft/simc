@@ -53,7 +53,7 @@ pet_t::pet_t( sim_t*             s,
   init_pet_t_();
 }
 
-// player_t::pet_attribute =================================
+// base_t::pet_attribute =================================
 
 double pet_t::composite_attribute( attribute_e attr )
 {
@@ -86,7 +86,7 @@ void pet_t::init_base()
 void pet_t::init_target()
 {
   if ( ! target_str.empty() )
-    player_t::init_target();
+    base_t::init_target();
   else
     target = owner -> target;
 }
@@ -95,7 +95,7 @@ void pet_t::init_target()
 
 void pet_t::reset()
 {
-  player_t::reset();
+  base_t::reset();
 
   expiration = 0;
 }
@@ -174,7 +174,7 @@ double pet_t::assess_damage( double              amount,
   if ( ! action || action -> aoe )
     amount *= 0.10;
 
-  return player_t::assess_damage( amount, school, type, result, action );
+  return base_t::assess_damage( amount, school, type, result, action );
 }
 
 // pet_t::combat_begin ======================================================
@@ -184,14 +184,14 @@ void pet_t::combat_begin()
   // By default, only report statistics in the context of the owner
   quiet = ! sim -> report_pets_separately;
 
-  player_t::combat_begin();
+  base_t::combat_begin();
 }
 
 // pet_t::composite_player_multiplier ======================================================
 
 double pet_t::composite_player_multiplier( school_e school, action_t* a )
 {
-  double m = player_t::composite_player_multiplier( school, a );
+  double m = base_t::composite_player_multiplier( school, a );
 
   // FIXME: check if Guardian Pets benefit from it or not.
   // FIXME: This is no longer a universal mechanic for all pets; it works differently for each class
