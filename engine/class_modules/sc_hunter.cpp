@@ -2035,7 +2035,7 @@ struct readiness_t : public hunter_spell_t
   std::vector<cooldown_t*> cooldown_list;
 
   readiness_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "readiness", player, player -> find_class_spell( "Readiness" ) ),
+    hunter_spell_t( "readiness", player, player -> talents.readiness ),
     wait_for_rf( false )
   {
     option_t options[] =
@@ -3108,30 +3108,30 @@ void hunter_t::init_actions()
   {
     clear_action_priority_lists();
 
+    std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+
     if ( level >= 80 )
     {
-      action_list_str += "/flask,type=";
-      action_list_str += ( level > 85 ) ? "spring_blossoms" : "winds";
-      action_list_str += ",precombat=1";
+      precombat += "/flask,type=";
+      precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
 
-      action_list_str += "/food,type=";
-      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
-      action_list_str += ",precombat=1";
+      precombat += "/food,type=";
+      precombat += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
     }
 
     // Todo: Add ranged_vulnerability
     //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
-    action_list_str += "/summon_pet";
-    action_list_str += "/trueshot_aura";
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat += "/summon_pet";
+    if( find_class_spell( "Trueshot Aura" ) -> ok() )
+      precombat += "/trueshot_aura";
+    precombat += "/snapshot_stats";
 
     if ( level >= 80 )
     {
-      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-      action_list_str += ",precombat=1";
+      precombat += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
 
       action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-      action_list_str += ",if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=60";
     }
     
     if ( specialization() == HUNTER_SURVIVAL )
@@ -3154,15 +3154,13 @@ void hunter_t::init_actions()
     action_list_str += "/serpent_sting,if=!ticking";
 
     action_list_str += init_use_racial_actions();
-//      if ( talents.bestial_wrath -> ok() )
-    action_list_str += "/bestial_wrath,if=focus>60";
     action_list_str += "/multi_shot,if=target.adds>5";
     action_list_str += "/cobra_shot,if=target.adds>5";
     action_list_str += "/kill_shot";
     action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
     action_list_str += "/kill_command";
 
-//      if ( talents.fervor -> ok() )
+      if ( talents.fervor -> ok() )
     action_list_str += "/fervor,if=focus<=37";
 
     action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
@@ -3177,24 +3175,25 @@ void hunter_t::init_actions()
       action_list_str += init_use_racial_actions();
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
-      action_list_str += "/serpent_sting,if=!ticking&target.health_pct<=90";
+      action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
 //      if ( talents.chimera_shot -> ok() )
-      action_list_str += "/chimera_shot,if=target.health_pct<=90";
+      action_list_str += "/chimera_shot,if=target.health.pct<=90";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
+      if ( talents.readiness -> ok() )
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
       if ( set_bonus.tier13_4pc_melee() )
       {
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
-        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health_pct>90";
+        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
+        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up|target.health.pct>90";
       }
       else
       {
         //if ( ! glyphs.arcane_shot -> ok() )
         //  action_list_str += "/aimed_shot,if=cooldown.chimera_shot.remains>5|focus>=80|buff.rapid_fire.up|buff.bloodlust.react|target.health_pct>90";
-        action_list_str += "/aimed_shot,if=target.health_pct>90|buff.rapid_fire.up|buff.bloodlust.react";
+        action_list_str += "/aimed_shot,if=target.health.pct>90|buff.rapid_fire.up|buff.bloodlust.react";
         if ( race == RACE_TROLL )
           action_list_str += "|buff.berserking.up";
         action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=5)&(target.health_pct<90&!buff.rapid_fire.up&!buff.bloodlust.react";
@@ -3214,7 +3213,7 @@ void hunter_t::init_actions()
       action_list_str += "/explosive_shot,if=(remains<2.0)";
 
 //      if ( ! talents.black_arrow -> ok() )
-      action_list_str += "/explosive_trap,not_flying=1,if=target.time_to_die>=11";
+      action_list_str += "/explosive_trap,if=target.time_to_die>=11&target.debuff.flying.down";
 
       action_list_str += "/kill_shot";
 

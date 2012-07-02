@@ -46,6 +46,6 @@ main_hand=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182a
 # main_hand=kiril_fury_of_beasts,heroic=1,weapon=polearm_3.50speed_2968min_4453max
 # ranged=vishanka_jaws_of_the_earth,heroic=1,weapon=bow_3.00speed_2226min_4135max,enchant=flintlockes_woodchucker
 
-actions.precombat=flask,type=winds
-actions.precomabt+=/food,type=seafood_magnifique_feast
-actions+=/steady_shot
+#actions.precombat=flask,type=winds
+#actions.precomabt+=/food,type=seafood_magnifique_feast
+#actions+=/steady_shot
