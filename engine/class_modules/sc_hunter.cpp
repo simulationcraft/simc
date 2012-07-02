@@ -69,6 +69,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* explosive_shot;
+    cooldown_t* viper_venom;
     cooldown_t* vishanka;
   } cooldowns;
 
@@ -82,10 +83,10 @@ public:
     gain_t* fervor;
     gain_t* focus_fire;
     gain_t* rapid_recuperation;
-    gain_t* roar_of_recovery;
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
     gain_t* cobra_shot;
+    gain_t* viper_venom;
   } gains;
 
   // Procs
@@ -176,7 +177,7 @@ public:
     const spell_data_t* improved_serpent_sting;    
     // const spell_data_t* black_arrow;
     // const spell_data_t* entrapment;
-    // const spell_data_t* viper_venom;
+    const spell_data_t* viper_venom;
     // const spell_data_t* trap_mastery;
     const spell_data_t* serpent_spread;
   } specs;
@@ -262,6 +263,7 @@ public:
 
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
+    cooldowns.viper_venom    = get_cooldown( "viper_venom" );
     cooldowns.vishanka       = get_cooldown( "vishanka"       );
 
     summon_pet_str = "";
@@ -1496,6 +1498,7 @@ struct serpent_sting_burst_t : public hunter_ranged_attack_t
 struct serpent_sting_t : public hunter_ranged_attack_t
 {
   serpent_sting_burst_t* serpent_sting_burst;
+  double focus_gain;
 
   serpent_sting_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "serpent_sting", player, player -> find_class_spell( "Serpent Sting" ) )
@@ -1506,18 +1509,11 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     parse_effect_data( scaling_data -> effectN( 1 ) );
     tick_power_mod = scaling_data -> extra_coeff();
 
+    focus_gain = player -> find_spell( 118974, "Viper Venom" ) -> effectN( 1 ).base_value();
+
     may_block = false;
     may_crit  = false;
 
-
-    // FIXME
-    //base_crit += p() -> talents.improved_serpent_sting -> mod_additive( P_CRIT );
-    // FIXME
-    //base_crit += p() -> glyphs.serpent_sting -> mod_additive( P_CRIT );
-    // Testing shows SS crits for 2.09x dmg with the crit dmg meta gem, this
-    // yields the right result
-    crit_bonus = 0.5;
-//    crit_bonus_multiplier *= 1.0 + p() -> talents.toxicology -> effectN( 1 ).percent();
     serpent_sting_burst = new serpent_sting_burst_t( p() );
     add_child( serpent_sting_burst );
   }
@@ -1534,6 +1530,17 @@ struct serpent_sting_t : public hunter_ranged_attack_t
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
       serpent_sting_burst -> execute();
+    }
+  }
+    
+  virtual void tick( dot_t* d )
+  {
+    hunter_ranged_attack_t::tick( d );
+
+    if (p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero()) 
+    {
+      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.viper_venom );
+      p() -> cooldowns.viper_venom -> start();
     }
   }
 };
@@ -2415,40 +2422,6 @@ struct rabid_t : public hunter_pet_spell_t
   }
 };
 
-// Roar of Recovery =========================================================
-
-struct roar_of_recovery_t : public hunter_pet_spell_t
-{
-  roar_of_recovery_t( hunter_pet_t* player, const std::string& options_str ) :
-    hunter_pet_spell_t( "roar_of_recovery", player, player -> find_pet_spell( "Roar of Recovery" ) )
-  {
-
-    parse_options( 0, options_str );
-
-    auto_cast = true;
-    harmful   = false;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hunter_t* o = p() -> cast_owner();
-
-    hunter_pet_spell_t::tick( d );
-
-    o -> resource_gain( RESOURCE_FOCUS, data().effectN( 1 ).base_value(), o -> gains.roar_of_recovery );
-  }
-
-  virtual bool ready()
-  {
-    hunter_t* o = p() -> cast_owner();
-
-    if ( o -> resources.current[ RESOURCE_FOCUS ] > 50 )
-      return false;
-
-    return hunter_pet_spell_t::ready();
-  }
-};
-
 // ==========================================================================
 // Unique Pet Specials
 // ==========================================================================
@@ -2749,7 +2722,6 @@ action_t* hunter_pet_t::create_action( const std::string& name,
   if ( name == "lightning_breath"      ) return new     lightning_breath_t( this, options_str );
   if ( name == "monstrous_bite"        ) return new       monstrous_bite_t( this, options_str );
   if ( name == "rabid"                 ) return new                rabid_t( this, options_str );
-  if ( name == "roar_of_recovery"      ) return new     roar_of_recovery_t( this, options_str );
   if ( name == "corrosive_spit"        ) return new       corrosive_spit_t( this, options_str );
   if ( name == "demoralizing_screech"  ) return new demoralizing_screech_t( this, options_str );
   if ( name == "ravage"                ) return new               ravage_t( this, options_str );
@@ -2930,6 +2902,7 @@ void hunter_t::init_spells()
   specs.invigoration         = find_specialization_spell( "Invigoration" );
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
+  specs.viper_venom          = find_specialization_spell( "Viper Venom" );
   specs.bombardment          = find_specialization_spell( "Bombardment" );
   specs.rapid_recuperation   = find_specialization_spell( "Rapid Recuperation" );
   specs.master_marksman      = find_specialization_spell( "Master Marksman" );
@@ -3035,10 +3008,10 @@ void hunter_t::init_gains()
   gains.fervor               = get_gain( "fervor"               );
   gains.focus_fire           = get_gain( "focus_fire"           );
   gains.rapid_recuperation   = get_gain( "rapid_recuperation"   );
-  gains.roar_of_recovery     = get_gain( "roar_of_recovery"     );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
+  gains.viper_venom          = get_gain( "viper_venom"           );
 }
 
 // hunter_t::init_position ==================================================
