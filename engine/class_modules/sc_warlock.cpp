@@ -3535,8 +3535,8 @@ private:
   }
 
 public:
-  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname ) :
-    warlock_spell_t( p, sname ), summoning_duration ( timespan_t::zero() ), pet( 0 )
+  summon_pet_t( const std::string& n, warlock_t* p, const std::string& sname = "" ) :
+    warlock_spell_t( p, sname.empty() ? "Summon " + n : sname ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
     _init_summon_pet_t( n );
   }
@@ -3547,7 +3547,7 @@ public:
     _init_summon_pet_t( n );
   }
 
-  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd = spell_data_t::nil() ) :
+  summon_pet_t( const std::string& n, warlock_t* p, const spell_data_t* sd ) :
     warlock_spell_t( n, p, sd ), summoning_duration ( timespan_t::zero() ), pet( 0 )
   {
     _init_summon_pet_t( n );
@@ -3566,8 +3566,8 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
-  summon_main_pet_t( const char* n, warlock_t* p, const char* sname ) :
-    summon_pet_t( n, p, sname ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
+  summon_main_pet_t( const char* n, warlock_t* p ) :
+    summon_pet_t( n, p ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
 
@@ -3674,42 +3674,6 @@ struct flames_of_xoroth_t : public warlock_spell_t
 
     if ( gain_ember ) p() -> resource_gain( RESOURCE_BURNING_EMBER, 1, ember_gain );
   }
-};
-
-
-struct summon_felhunter_t : public summon_main_pet_t
-{
-  summon_felhunter_t( warlock_t* p ) :
-    summon_main_pet_t( "felhunter", p, "Summon Felhunter" )
-  { }
-};
-
-struct summon_felguard_t : public summon_main_pet_t
-{
-  summon_felguard_t( warlock_t* p ) :
-    summon_main_pet_t( "felguard", p, "Summon Felguard" )
-  { }
-};
-
-struct summon_succubus_t : public summon_main_pet_t
-{
-  summon_succubus_t( warlock_t* p ) :
-    summon_main_pet_t( "succubus", p, "Summon Succubus" )
-  { }
-};
-
-struct summon_imp_t : public summon_main_pet_t
-{
-  summon_imp_t( warlock_t* p ) :
-    summon_main_pet_t( "imp", p, "Summon Imp" )
-  { }
-};
-
-struct summon_voidwalker_t : public summon_main_pet_t
-{
-  summon_voidwalker_t( warlock_t* p ) :
-    summon_main_pet_t( "voidwalker", p, "Summon Voidwalker" )
-  { }
 };
 
 
@@ -4227,13 +4191,6 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
   else if ( name == "shadowburn"            ) a = new            shadowburn_t( this );
   else if ( name == "soul_fire"             ) a = new             soul_fire_t( this );
-  else if ( name == "summon_felhunter"      ) a = new      summon_felhunter_t( this );
-  else if ( name == "summon_felguard"       ) a = new       summon_felguard_t( this );
-  else if ( name == "summon_succubus"       ) a = new       summon_succubus_t( this );
-  else if ( name == "summon_voidwalker"     ) a = new     summon_voidwalker_t( this );
-  else if ( name == "summon_imp"            ) a = new            summon_imp_t( this );
-  else if ( name == "summon_infernal"       ) a = new       summon_infernal_t( this );
-  else if ( name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
   else if ( name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
   else if ( name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
   else if ( name == "fel_flame"             ) a = new             fel_flame_t( this );
@@ -4253,6 +4210,13 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
   else if ( name == "harvest_life"          ) a = new          harvest_life_t( this );
   else if ( name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
+  else if ( name == "summon_infernal"       ) a = new       summon_infernal_t( this );
+  else if ( name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
+  else if ( name == "summon_felhunter"      ) a = new summon_main_pet_t( "felhunter", this );
+  else if ( name == "summon_felguard"       ) a = new summon_main_pet_t( "felguard", this );
+  else if ( name == "summon_succubus"       ) a = new summon_main_pet_t( "succubus", this );
+  else if ( name == "summon_voidwalker"     ) a = new summon_main_pet_t( "voidwalker", this );
+  else if ( name == "summon_imp"            ) a = new summon_main_pet_t( "imp", this );
   else if ( name == "service_felguard"      ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_felhunter"     ) a = new grimoire_of_service_t( this, name );
   else if ( name == "service_imp"           ) a = new grimoire_of_service_t( this, name );
