@@ -376,6 +376,7 @@ struct warlock_pet_t : public pet_t
   double ap_per_owner_sp;
   gain_t* owner_fury_gain;
   action_t* special_action;
+  melee_attack_t* melee_attack;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual bool ooc_buffs() { return true; }
@@ -419,6 +420,14 @@ struct warlock_pet_melee_t : public melee_attack_t
 
   warlock_pet_t* p()
   { return static_cast<warlock_pet_t*>( player ); }
+
+  virtual void execute()
+  {
+    if ( ! p() -> executing && ! p() -> channeling ) 
+      melee_attack_t::execute();
+    else
+      schedule_execute();
+  }
 };
 
 
@@ -842,9 +851,9 @@ timespan_t warlock_pet_t::available()
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
-  if ( main_hand_attack && ! main_hand_attack -> execute_event )
+  if ( melee_attack && ! melee_attack -> execute_event )
   {
-    main_hand_attack -> schedule_execute();
+    melee_attack -> execute();
   }
 
   pet_t::schedule_ready( delta_time, waiting );
@@ -936,7 +945,7 @@ struct felguard_pet_t : public warlock_main_pet_t
   {
     warlock_main_pet_t::init_base();
 
-    main_hand_attack = new felguard_melee_t( this );
+    melee_attack = new felguard_melee_t( this );
     special_action = new felstorm_t( this );
   }
 
@@ -962,7 +971,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
   {
     warlock_main_pet_t::init_base();
 
-    main_hand_attack = new warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -988,7 +997,7 @@ struct succubus_pet_t : public warlock_main_pet_t
   {
     warlock_main_pet_t::init_base();
 
-    main_hand_attack = new warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     special_action = new whiplash_t( this );
   }
 
@@ -1014,7 +1023,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   {
     warlock_main_pet_t::init_base();
 
-    main_hand_attack = new warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1040,7 +1049,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   {
     warlock_guardian_pet_t::init_base();
 
-    main_hand_attack = new warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
