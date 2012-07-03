@@ -3938,20 +3938,20 @@ struct new_player_pet_t : public pet_t
     coeff( owner_coefficients_t() )
   { }
 
-  virtual double composite_attack_expertise( weapon_t* w )
-  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise( w) * 0.50; }
+  virtual double composite_attack_expertise( weapon_t* /*w*/ )
+  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) ) * 0.50; }
 
   virtual double composite_attack_hit()
-  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise() * 0.50; }
+  { return owner -> composite_attack_hit() * 0.50 + owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) ) * 0.50; }
 
   virtual double composite_spell_hit()
   { return owner -> composite_spell_hit(); }
 
-  virtual double composite_attack_crit( weapon_t* w )
-  { return owner -> composite_attack_crit( w ); }
+  virtual double composite_attack_crit( weapon_t* /*w*/ )
+  { return owner -> composite_attack_crit( &( owner -> main_hand_weapon ) ); }
 
   virtual double composite_spell_crit()
-  { return owner -> composite_spell_crit(); }
+  { return std::max( owner -> composite_spell_crit(), owner -> composite_attack_crit( &( owner -> main_hand_weapon ) ) ); }
 
   virtual double composite_attack_haste()
   { return owner -> composite_attack_haste(); }
