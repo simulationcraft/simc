@@ -853,7 +853,7 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( melee_attack && ! melee_attack -> execute_event )
   {
-    melee_attack -> execute();
+    melee_attack -> schedule_execute();
   }
 
   pet_t::schedule_ready( delta_time, waiting );
@@ -892,11 +892,6 @@ struct warlock_main_pet_t : public warlock_pet_t
   warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
     warlock_pet_t( sim, owner, pet_name, pt, guardian )
   {}
-
-  virtual double composite_attack_expertise( weapon_t* )
-  {
-    return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 );
-  }
 };
 
 
