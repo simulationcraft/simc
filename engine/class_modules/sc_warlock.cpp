@@ -1666,8 +1666,8 @@ struct shadowburn_t : public warlock_spell_t
   {
     min_gcd = timespan_t::from_millis( 500 );
 
-    mana_delay  = p -> find_spell( 29314 ) -> duration();
-    mana_amount = p -> find_spell( 125882 ) -> effectN( 1 ).percent();
+    mana_delay  = data().effectN( 1 ).trigger() -> duration();
+    mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -3679,8 +3679,8 @@ struct flames_of_xoroth_t : public warlock_spell_t
 
 struct infernal_awakening_t : public warlock_spell_t
 {
-  infernal_awakening_t( warlock_t* p ) :
-    warlock_spell_t( "infernal_awakening", p, p -> find_spell( 22703 ) )
+  infernal_awakening_t( warlock_t* p, spell_data_t* spell ) :
+    warlock_spell_t( "infernal_awakening", p, spell )
   {
     aoe        = -1;
     background = true;
@@ -3701,49 +3701,40 @@ struct summon_infernal_t : public summon_pet_t
   {
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
-    summoning_duration = timespan_t::from_seconds( 60 );
+    summoning_duration = data().effectN( 2 ).trigger() -> duration();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> specialization() == WARLOCK_DEMONOLOGY ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
 
-    infernal_awakening = new infernal_awakening_t( p );
+    infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
     infernal_awakening -> stats = stats;
   }
 
   virtual void execute()
   {
-    if ( infernal_awakening )
-      infernal_awakening -> execute();
+    summon_pet_t::execute();
 
     p() -> cooldowns.doomguard -> start();
-
-    summon_pet_t::execute();
+    infernal_awakening -> execute();
   }
 };
 
 
 struct summon_doomguard2_t : public summon_pet_t
 {
-  summon_doomguard2_t( warlock_t* p ) :
-    summon_pet_t( "doomguard", p, 60478 )
+  summon_doomguard2_t( warlock_t* p, spell_data_t* spell ) :
+    summon_pet_t( "doomguard", p, spell )
   {
     harmful = false;
     background = true;
     dual       = true;
     proc       = true;
-    summoning_duration = timespan_t::from_seconds( 60 );
+    summoning_duration = data().duration();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> specialization() == WARLOCK_DEMONOLOGY ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
-  }
-
-  virtual void execute()
-  {
-    p() -> cooldowns.infernal -> start();
-
-    summon_pet_t::execute();
   }
 };
 
@@ -3759,15 +3750,15 @@ struct summon_doomguard_t : public warlock_spell_t
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
     harmful = false;
-    summon_doomguard2 = new summon_doomguard2_t( p );
+    summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
     summon_doomguard2 -> stats = stats;
   }
 
   virtual void execute()
   {
-    consume_resource();
-    update_ready();
-
+    warlock_spell_t::execute();
+    
+    p() -> cooldowns.infernal -> start();
     summon_doomguard2 -> execute();
   }
 };
