@@ -37,7 +37,8 @@ pet_t::pet_t( sim_t*             s,
               const std::string& n,
               bool               g ) :
   player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
-  owner( o ), summoned( false ), pet_type( PET_NONE ), coeff( owner_coefficients_t() )
+  owner( o ), summoned( false ), pet_type( PET_NONE ),
+  coeff( owner_coefficients_t() )
 {
   init_pet_t_();
 }
@@ -48,7 +49,8 @@ pet_t::pet_t( sim_t*             s,
               pet_e         pt,
               bool               g ) :
   player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
-  owner( o ), summoned( false ), pet_type( pt ), coeff( owner_coefficients_t() )
+  owner( o ), summoned( false ), pet_type( pt ),
+  coeff( owner_coefficients_t() )
 {
   init_pet_t_();
 }
@@ -187,26 +189,6 @@ void pet_t::combat_begin()
   base_t::combat_begin();
 }
 
-// pet_t::composite_player_multiplier ======================================================
-
-double pet_t::composite_player_multiplier( school_e school, action_t* a )
-{
-  double m = base_t::composite_player_multiplier( school, a );
-
-  // FIXME: check if Guardian Pets benefit from it or not.
-  // FIXME: This is no longer a universal mechanic for all pets; it works differently for each class
-  //        Testing on beta as of 2012/05/30 reveals it is implemented as a spell/attack
-  //        power multiplier for warlock pets and a player multiplier for hunter pets
-  // FIXME: This will need reimplementation individually in each class module, after testing
-  /*
-  if ( owner -> race == RACE_ORC )
-  {
-    m  *= 1.05;
-  }
-  */
-  return m;
-}
-
 // pet_t::find_pet_spell =============================================
 
 const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::string& token )
@@ -224,4 +206,13 @@ const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::s
   dbc_t::add_token( spell_id, token, dbc.ptr );
 
   return ( dbc.spell( spell_id ) );
+}
+
+void pet_t::init_resources( bool force )
+{
+  base_t::init_resources( force );
+
+  resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
+
+  resources.current = resources.max = resources.initial;
 }

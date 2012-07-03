@@ -3891,43 +3891,54 @@ struct pet_t : public player_t
   pet_e pet_type;
   event_t* expiration;
 
+  struct owner_coefficients_t
+  {
+    double armor, health;
+    owner_coefficients_t() :
+    armor ( 1.0 ), health( 1.0 ) {}
+  } coeff;
+
 private:
   void init_pet_t_();
 public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian=false );
 
-  struct owner_coefficients_t
-  {
-    double armor, health, mana, mastery, mp5;
-    owner_coefficients_t() :
-    armor ( 1.0 ), health( 1.0 ), mana( 0.0 ), mastery( 0.0 ), mp5( 0.0 ) {}
-  } coeff;
+  virtual void init_base();
+  virtual void init_target();
+  virtual void reset();
+  virtual void summon( timespan_t duration=timespan_t::zero() );
+  virtual void dismiss();
+  virtual bool ooc_buffs() { return false; }
+  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual void combat_begin();
 
+  virtual const char* name() { return full_name_str.c_str(); }
+
+  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
+
+  virtual double composite_attribute( attribute_e attr );
+
+  // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
+  // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
+
+  double hit_exp()
+  { 
+    double e = owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) );
+
+    if ( owner -> off_hand_weapon.damage > 0 )
+      e = std::max( e, owner -> composite_attack_expertise( &( owner -> off_hand_weapon ) ) );
+ 
+    return ( e + owner -> composite_attack_hit() ) * 0.50; // attack and spell hit are equal in MoP
+  }
   virtual double composite_attack_expertise( weapon_t* /*w*/ )
-  { 
-    double e = owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) );
-
-    if ( owner -> off_hand_weapon.damage > 0 )
-      e = std::max( e, owner -> composite_attack_expertise( &( owner -> off_hand_weapon ) ) );
- 
-    return ( e + owner -> composite_attack_hit() ) * 0.50;
-  }
-
+  { return hit_exp(); }
   virtual double composite_attack_hit()
-  { 
-    double e = owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) );
-
-    if ( owner -> off_hand_weapon.damage > 0 )
-      e = std::max( e, owner -> composite_attack_expertise( &( owner -> off_hand_weapon ) ) );
- 
-    return ( e + owner -> composite_attack_hit() ) * 0.50;
-  }
-
+  { return hit_exp(); }
   virtual double composite_spell_hit()
-  { return owner -> composite_spell_hit(); }
+  { return hit_exp(); }
 
-  virtual double composite_attack_crit( weapon_t* /*w*/ )
+  double pet_crit()
   { 
     double c = owner -> composite_attack_crit( &( owner -> main_hand_weapon ) );
 
@@ -3936,15 +3947,17 @@ public:
  
     return std::max( c, owner -> composite_spell_crit() );
   }
-
+  virtual double composite_attack_crit( weapon_t* /*w*/ )
+  { return pet_crit(); }
   virtual double composite_spell_crit()
-  { return std::max( owner -> composite_spell_crit(), owner -> composite_attack_crit( &( owner -> main_hand_weapon ) ) ); }
+  { return pet_crit(); }
 
+  // Assumption: Works similar to crit as specified in http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
   virtual double composite_attack_haste()
-  { return owner -> composite_attack_haste(); }
+  { return std::max( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
   virtual double composite_spell_haste()
-  { return owner -> composite_spell_haste(); }
+  { return std::max( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
 
   // Assuming diminishing returns are transfered to the pet as well
@@ -3962,42 +3975,11 @@ public:
 
 
   // Influenced by coefficients [ 0, 1 ]
-  virtual double composite_mastery()
-  { return coeff.mastery > 0.0 ? owner -> composite_mastery() * coeff.mastery : base_t::composite_mastery(); }
-
   virtual double composite_armor()
   { return owner -> composite_armor() * coeff.armor; }
 
-  virtual double composite_mp5()
-  { return coeff.mp5 > 0.0 ? owner -> composite_mp5() * coeff.mp5 : base_t::composite_mp5(); }
+  virtual void init_resources( bool force );
 
-  virtual void init_resources( bool force )
-  {
-    base_t::init_resources( force );
-
-    resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
-    if ( coeff.mana > 0.0 )
-      resources.initial[ RESOURCE_MANA ] = owner -> resources.max[ RESOURCE_MANA   ] * coeff.mana;
-
-    resources.current = resources.max = resources.initial;
-  }
-
-  virtual double composite_player_multiplier( school_e school, action_t* a );
-
-  virtual double composite_attribute( attribute_e attr );
-
-  virtual void init_base();
-  virtual void init_target();
-  virtual void reset();
-  virtual void summon( timespan_t duration=timespan_t::zero() );
-  virtual void dismiss();
-  virtual bool ooc_buffs() { return false; }
-  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
-  virtual void combat_begin();
-
-  virtual const char* name() { return full_name_str.c_str(); }
-
-  const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 };
 
 
