@@ -778,7 +778,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 }
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-  pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 )
+  pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 )
 {
   ap_per_owner_sp = 3.5;
   owner_fury_gain = owner -> get_gain( pet_name );
