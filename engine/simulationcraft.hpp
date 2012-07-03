@@ -3954,10 +3954,10 @@ public:
 
   // Assumption: Works similar to crit as specified in http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
   virtual double composite_attack_haste()
-  { return std::max( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
+  { return std::max( owner -> attack_haste, owner -> spell_haste ); }
 
   virtual double composite_spell_haste()
-  { return std::max( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
+  { return std::max( owner -> attack_haste, owner -> spell_haste ); }
 
 
   // Assuming diminishing returns are transfered to the pet as well

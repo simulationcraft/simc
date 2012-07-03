@@ -386,12 +386,8 @@ struct warlock_pet_t : public pet_t
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual double composite_spell_haste();
-  virtual double composite_attack_haste();
   virtual double composite_spell_power( school_e school );
   virtual double composite_attack_power();
-  virtual double composite_attack_crit( weapon_t* );
-  virtual double composite_spell_crit();
   virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
@@ -794,7 +790,7 @@ void warlock_pet_t::init_base()
   initial.spell_power_per_intellect = 1;
 
   intellect_per_owner = 0;
-  stamina_per_owner = 0.6496; // level invariant, not tested for MoP
+  stamina_per_owner = 0;
 
   main_hand_weapon.type = WEAPON_BEAST;
 
@@ -854,20 +850,6 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::composite_spell_haste()
-{
-  double h = player_t::composite_spell_haste();
-  h *= owner -> spell_haste;
-  return h;
-}
-
-double warlock_pet_t::composite_attack_haste()
-{
-  double h = player_t::composite_attack_haste();
-  h *= owner -> spell_haste;
-  return h;
-}
-
 double warlock_pet_t::composite_spell_power( school_e school )
 {
   double sp = pet_t::composite_spell_power( school );
@@ -881,20 +863,6 @@ double warlock_pet_t::composite_attack_power()
   double ap = 0; // Pets don't appear to get attack power from strength at all
   ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
   return ap;
-}
-
-double warlock_pet_t::composite_attack_crit( weapon_t* )
-{
-  double ac = owner -> composite_spell_crit(); // FIXME: Seems to just use our crit directly, based on very rough numbers, needs more testing.
-
-  return ac;
-}
-
-double warlock_pet_t::composite_spell_crit()
-{
-  double sc = owner -> composite_spell_crit(); // FIXME: Seems to just use our crit directly, based on very rough numbers, needs more testing.
-
-  return sc;
 }
 
 double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a )
