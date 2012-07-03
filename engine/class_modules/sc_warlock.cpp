@@ -887,32 +887,10 @@ double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a 
 }
 
 
-struct warlock_main_pet_t : public warlock_pet_t
-{
-  warlock_main_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
-    warlock_pet_t( sim, owner, pet_name, pt, guardian )
-  {}
-};
-
-
-struct warlock_guardian_pet_t : public warlock_pet_t
-{
-  warlock_guardian_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt ) :
-    warlock_pet_t( sim, owner, pet_name, pt, true )
-  {}
-
-  virtual void summon( timespan_t duration = timespan_t::zero() )
-  {
-    reset();
-    warlock_pet_t::summon( duration );
-  }
-};
-
-
-struct imp_pet_t : public warlock_main_pet_t
+struct imp_pet_t : public warlock_pet_t
 {
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" ) :
-    warlock_main_pet_t( sim, owner, name, PET_IMP, name != "imp" )
+    warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/firebolt";
@@ -922,15 +900,15 @@ struct imp_pet_t : public warlock_main_pet_t
   {
     if ( name == "firebolt" ) return new firebolt_t( this );
 
-    return warlock_main_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct felguard_pet_t : public warlock_main_pet_t
+struct felguard_pet_t : public warlock_pet_t
 {
   felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" ) :
-    warlock_main_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
+    warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/legion_strike";
@@ -938,7 +916,7 @@ struct felguard_pet_t : public warlock_main_pet_t
 
   virtual void init_base()
   {
-    warlock_main_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     melee_attack = new felguard_melee_t( this );
     special_action = new felstorm_t( this );
@@ -948,15 +926,15 @@ struct felguard_pet_t : public warlock_main_pet_t
   {
     if ( name == "legion_strike"   ) return new legion_strike_t( this );
 
-    return warlock_main_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct felhunter_pet_t : public warlock_main_pet_t
+struct felhunter_pet_t : public warlock_pet_t
 {
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ) :
-    warlock_main_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
+    warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/shadow_bite";
@@ -964,7 +942,7 @@ struct felhunter_pet_t : public warlock_main_pet_t
 
   virtual void init_base()
   {
-    warlock_main_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -973,15 +951,15 @@ struct felhunter_pet_t : public warlock_main_pet_t
   {
     if ( name == "shadow_bite" ) return new shadow_bite_t( this );
 
-    return warlock_main_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct succubus_pet_t : public warlock_main_pet_t
+struct succubus_pet_t : public warlock_pet_t
 {
   succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" ) :
-    warlock_main_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
+    warlock_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/lash_of_pain";
@@ -990,7 +968,7 @@ struct succubus_pet_t : public warlock_main_pet_t
 
   virtual void init_base()
   {
-    warlock_main_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new whiplash_t( this );
@@ -1000,15 +978,15 @@ struct succubus_pet_t : public warlock_main_pet_t
   {
     if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
 
-    return warlock_main_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct voidwalker_pet_t : public warlock_main_pet_t
+struct voidwalker_pet_t : public warlock_pet_t
 {
   voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" ) :
-    warlock_main_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
+    warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/torment";
@@ -1016,7 +994,7 @@ struct voidwalker_pet_t : public warlock_main_pet_t
 
   virtual void init_base()
   {
-    warlock_main_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1025,15 +1003,15 @@ struct voidwalker_pet_t : public warlock_main_pet_t
   {
     if ( name == "torment" ) return new torment_t( this );
 
-    return warlock_main_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct infernal_pet_t : public warlock_guardian_pet_t
+struct infernal_pet_t : public warlock_pet_t
 {
   infernal_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_guardian_pet_t( sim, owner, "infernal", PET_INFERNAL )
+    warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
     action_list_str = "snapshot_stats";
     if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
@@ -1042,7 +1020,7 @@ struct infernal_pet_t : public warlock_guardian_pet_t
 
   virtual void init_base()
   {
-    warlock_guardian_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1051,20 +1029,20 @@ struct infernal_pet_t : public warlock_guardian_pet_t
   {
     if ( name == "immolation" ) return new infernal_immolation_t( this, options_str );
 
-    return warlock_guardian_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct doomguard_pet_t : public warlock_guardian_pet_t
+struct doomguard_pet_t : public warlock_pet_t
 {
   doomguard_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_guardian_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
+    warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD, true )
   { }
 
   virtual void init_base()
   {
-    warlock_guardian_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     action_list_str = "snapshot_stats";
     action_list_str += "/doom_bolt";
@@ -1074,20 +1052,20 @@ struct doomguard_pet_t : public warlock_guardian_pet_t
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
 
-    return warlock_guardian_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 };
 
 
-struct wild_imp_pet_t : public warlock_guardian_pet_t
+struct wild_imp_pet_t : public warlock_pet_t
 {
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ) :
-    warlock_guardian_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true )
   { }
 
   virtual void init_base()
   {
-    warlock_guardian_pet_t::init_base();
+    warlock_pet_t::init_base();
 
     action_list_str = "snapshot_stats";
     action_list_str += "/firebolt";
@@ -1106,12 +1084,12 @@ struct wild_imp_pet_t : public warlock_guardian_pet_t
   {
     if ( name == "firebolt" ) return new wild_firebolt_t( this );
 
-    return warlock_guardian_pet_t::create_action( name, options_str );
+    return warlock_pet_t::create_action( name, options_str );
   }
 
   virtual void demise()
   {
-    warlock_guardian_pet_t::demise();
+    warlock_pet_t::demise();
     // FIXME: This should not be necessary, but it asserts later due to negative event count if we don't do this
     sim -> cancel_events( this );
   }
