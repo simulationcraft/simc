@@ -5,8 +5,8 @@
 //
 //  TODO:
 //
-//  Finish implementing tiger strikes
-//  !!! test spinning crane kick and fists of fury dots
+//  Force tiger strikes not to be missed dodged or parried. (unless it can be)
+//  BREWMASTER: Make sure tiger palm cost doesn't double refund and costs 0.
 //  Add all damaging abilities
 //  Ensure values are correct
 //  Add mortal wounds to RSK
@@ -84,6 +84,7 @@ public:
     gain_t* chi;
     gain_t* combo_breaker_savings;
     gain_t* energizing_brew;
+    gain_t* avoided_chi;
   } gain;
   // Stances
 
@@ -293,7 +294,9 @@ struct monk_action_t : public Base
 
     // Track Chi Consumption
     if ( ab::current_resource() == RESOURCE_CHI )
+    {
       p() -> track_chi_consumption += ab::resource_consumed;
+    }
 
     // If Accumulated Chi consumption is greater than 4, reduce it by 4 and trigger a Tigereye Brew stack.
     if ( p() -> track_chi_consumption >= 4 )
@@ -301,6 +304,12 @@ struct monk_action_t : public Base
       p() -> track_chi_consumption -= 4;
 
       p() -> buff.tigereye_brew -> trigger();
+    }
+    // Chi Savings on Dodge & Parry
+    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ( ab::execute_state -> result == RESULT_DODGE || ab::execute_state -> result == RESULT_PARRY) )
+    {
+      double chi_restored = ab::resource_consumed;
+      p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.avoided_chi );
     }
   }
 };
@@ -725,7 +734,7 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
     background       = true;
-    may_glance       = false;
+    may_glance = may_dodge = may_parry = may_miss = false;
     if ( player -> dual_wield() )
       base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 2 ).percent(); // It is affected by this.
   }
@@ -988,7 +997,7 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
       monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
     {
       background  = true;
-      base_attack_power_multiplier = 1.0;
+      base_attack_power_multiplier = 1;
       direct_power_mod = data().extra_coeff();
       dual = true;
     }
@@ -1187,7 +1196,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-  base_energy_regen_per_second = 8; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 13.0; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -1235,6 +1244,7 @@ void monk_t::init_gains()
   gain.chi                   = get_gain( "chi" );
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
   gain.energizing_brew       = get_gain( "energizing_brew" );
+  gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
 }
 
 // monk_t::init_procs =======================================================
