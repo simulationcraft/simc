@@ -3936,7 +3936,7 @@ public:
   virtual double composite_attack_hit()
   { return hit_exp(); }
   virtual double composite_spell_hit()
-  { return hit_exp(); }
+  { return hit_exp() + composite_attack_expertise( 0 ); }
 
   double pet_crit()
   { 
