@@ -574,7 +574,6 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    proc        = true;
     callbacks   = false;
     weapon = &( p -> main_hand_weapon );
   }
@@ -656,7 +655,6 @@ struct immolation_damage_t : public warlock_pet_spell_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    proc        = true;
     callbacks   = false;
     may_crit    = false;
   }
@@ -2506,8 +2504,8 @@ struct shadowflame_t : public warlock_spell_t
   {
     aoe        = -1;
     background = true;
-    generate_fury = 2;
     may_miss   = false;
+    generate_fury = 2;
   }
 
   virtual timespan_t travel_time()
@@ -2548,11 +2546,10 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
   hand_of_guldan_dmg_t( warlock_t* p ) :
     warlock_spell_t( "hand_of_guldan_dmg", p, p -> find_spell( 86040 ) )
   {
-    proc       = true;
+    aoe        = -1;
     background = true;
     dual       = true;
     may_miss   = false;
-    aoe        = -1;
   }
 
   virtual timespan_t travel_time()
@@ -2575,15 +2572,22 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     shadowflame = new shadowflame_t( p );
     hog_damage  = new hand_of_guldan_dmg_t( p );
-
-    add_child( shadowflame );
-    hog_damage  -> stats = stats;
+    
+    if ( ! dtr )
+      add_child( shadowflame );
 
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new hand_of_guldan_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void init()
+  {
+    warlock_spell_t::init();
+
+    hog_damage -> stats = stats;
   }
 
   virtual timespan_t travel_time()
@@ -2618,9 +2622,8 @@ struct chaos_wave_dmg_t : public warlock_spell_t
   chaos_wave_dmg_t( warlock_t* p ) :
     warlock_spell_t( "chaos_wave_dmg", p, p -> find_spell( 124915 ) )
   {
-    proc       = true;
-    background = true;
     aoe        = -1;
+    background = true;
     dual       = true;
   }
 
@@ -2983,7 +2986,6 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     aoe        = -1;
     dual       = true;
     background = true;
-    proc       = true;
     callbacks  = false;
   }
 
@@ -3005,7 +3007,6 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     aoe        = -1;
     dual       = true;
     background = true;
-    proc       = true;
     callbacks  = false;
     corruption -> background = true;
     corruption -> dual = true;
@@ -3096,7 +3097,6 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    proc        = true;
     callbacks   = false;
   }
 
@@ -3162,7 +3162,6 @@ struct hellfire_tick_t : public warlock_spell_t
     dual        = true;
     background  = true;
     direct_tick = true;
-    proc        = true;
     callbacks   = false;
   }
 
@@ -3230,7 +3229,6 @@ struct immolation_aura_tick_t : public warlock_spell_t
     aoe         = -1;
     background  = true;
     direct_tick = true;
-    proc        = true;
     dual        = true;
     callbacks   = false;
   }
@@ -3630,7 +3628,6 @@ struct infernal_awakening_t : public warlock_spell_t
   {
     aoe        = -1;
     background = true;
-    proc       = true;
     dual       = true;
     trigger_gcd= timespan_t::zero();
   }
@@ -3677,7 +3674,7 @@ struct summon_doomguard2_t : public summon_pet_t
     harmful = false;
     background = true;
     dual       = true;
-    proc       = true;
+    callbacks  = false;
     summoning_duration = data().duration();
     summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
                           ( p -> specialization() == WARLOCK_DEMONOLOGY ?
@@ -3740,11 +3737,13 @@ struct harvest_life_tick_t : public warlock_spell_t
   harvest_life_tick_t( warlock_t* p ) :
     warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) )
   {
-    may_miss = false;
-    background = true;
-    dual = true;
+    aoe         = -1;
+    dual        = true;
+    background  = true;
     direct_tick = true;
-    aoe = -1;
+    callbacks   = false;
+    may_miss    = false;
+    direct_tick_callbacks = true;
     base_dd_min = base_dd_max = base_td;
     direct_power_mod = tick_power_mod;
     num_ticks = 0;

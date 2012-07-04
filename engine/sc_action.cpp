@@ -36,6 +36,7 @@ action_t::action_t( action_e       ty,
   use_off_gcd(),
   quiet(),
   direct_tick(),
+  direct_tick_callbacks(),
   repeating(),
   harmful( true ),
   proc(),
@@ -1195,9 +1196,16 @@ void action_t::assess_damage( player_t*     t,
                      util::result_type_string( result ) );
     }
 
-    direct_dmg = dmg_adjusted;
-
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, assess_state );
+    if ( direct_tick_callbacks )
+    {
+      tick_dmg = dmg_adjusted;
+      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, assess_state );
+    }
+    else
+    {
+      direct_dmg = dmg_adjusted;
+      if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, assess_state );
+    }
   }
   else // DMG_OVER_TIME
   {
