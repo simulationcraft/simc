@@ -951,28 +951,66 @@ class SpellDataGenerator(DataGenerator):
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
           52586,  68043,  68044,    # Gurthalak, Voice of the Deeps - LFR, N, H
         ),
-        (),     # Warrior:
-        ( ( 86700, 5 ), ),     # Paladin: Ancient Power
-        ( ( 82928, 0 ), ( 83381, 0 ), ), # Hunter: Aimed Shot! and Kill Command base dmg
-        ( ), # Rogue: 
-        ( ( 63619, 5 ), ( 94472, 0 ), ( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), ( 127627, 3 ), ( 127628, 3 ), ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. Shadow Mastery "duplicate" ticks, Shadow Cascade
-        ( ( 70890, 0 ), ( 51963, 5 ), ), # DK: weird Scourge Strike secondary effect, gargoyle strike.
-        (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ),       # Shaman: Overloads
-            ( 115356, 0 ), ( 114093, 0 ),                   # Ascendance: Stormblast, offhand melee swing,
-            ( 114074, 0 ), ( 114738, 0 ),                   # Ascendance: Lava Beam, Lava Beam overload
-            ( 120687, 0 ), ( 120588, 0 ),                   # Stormlash, Elemental Blast overload
+        
+        # Warrior:
+        (),     
+        
+        # Paladin:
+        ( 	( 86700, 5 ), # Ancient Power
+        ),  
+        
+        # Hunter:
+        ( 	( 83381, 0 ), #  Kill Command base dmg
+          	( 82928, 0 ), # Aimed Shot Master Marksman
         ),
+          
+        # Rogue:
+        ( ),  
+        
+        # Priest:
+        ( 	( 63619, 5 ), # shadowfiend "Shadowcrawl"
+        	( 94472, 0 ), # Atonement Crit
+        	( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), # Shadow Mastery "duplicate" ticks
+        	( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
+        ), 
+        
+        # Death Knight:
+        ( 	( 70890, 0 ), # weird Scourge Strike secondary effect
+        	( 51963, 5 ), # gargoyle strike
+        ),  
+        
+        # Shaman:
+        (   ( 77451, 0 ), ( 45284, 0 ), ( 45297, 0 ), 	#  Overloads
+            ( 115356, 0 ), ( 114093, 0 ), 				# Ascendance: Stormblast, offhand melee swing,
+            ( 114074, 0 ), ( 114738, 0 ),               # Ascendance: Lava Beam, Lava Beam overload
+            ( 120687, 0 ), ( 120588, 0 ),               # Stormlash, Elemental Blast overload
+        ),
+        
+        # Mage:
         ( 
             ( 48107, 0, False ), ( 48108, 0, False ), # Heating Up and Pyroblast! buffs
             ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
             ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
             ( 80354, 0 ),                                           # Temporal Displacement
         ), 
-        ( ( 85692, 5 ), ( 115422, 2, True ), ( 104025, 2, True ), ( 104232, 3, True ), ( 114790, 1 ), ( 87385, 1 ) ), # Warlock: doomguard doom bolt, void ray, immolation aura, destruction rain of fire, soulburn seed of corruption
-        ( ( 118864, 3 ), ( 116768, 3 ) ), # Monk:
-        ( ( 93402, 1, True ), ( 106996, 1, True ), ( 112071, 1, True ), 
-          ( 113769, 5 ),
-        ), # Druid: Whitelist Sunfire
+        
+        # Warlock:
+        ( 	( 85692, 5 ), #  doomguard doom bolt
+        	( 115422, 2, True ), # void ray
+        	( 104025, 2, True ), # immolation aura
+        	( 104232, 3, True ), # destruction rain of fire
+        	( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
+        ),
+        
+        # Monk:
+        ( 	( 118864, 3 ), # Combo Breaker: Tiger Palm
+        	( 116768, 3 ), # Combo Breaker: Blackout Kick 
+        ),
+        
+        # Druid:
+        ( 	( 93402, 1, True ), ( 106996, 1, True ), ( 112071, 1, True ), 
+          	( 113769, 5 ),
+        ), # Whitelist Sunfire
     ]
 
     # Class specific item sets, T13, T14
