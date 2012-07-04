@@ -2260,13 +2260,18 @@ struct pyroblast_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.pyroblast -> expire();
+  }
+
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
     trigger_ignite( this, t, travel_dmg );
-
-    p() -> buffs.pyroblast -> expire();
 
     if ( result_is_hit() )
     {
