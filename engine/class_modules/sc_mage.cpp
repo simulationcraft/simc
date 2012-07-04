@@ -687,7 +687,7 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak, may_proc_missiles;
+  bool frozen, may_hot_streak, may_proc_missiles, consumes_ice_floes;
   int dps_rotation;
   int dpm_rotation;
 
@@ -695,7 +695,7 @@ struct mage_spell_t : public spell_t
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     frozen( false ), may_hot_streak( false ), may_proc_missiles( true ),
-    dps_rotation( 0 ), dpm_rotation( 0 )
+    consumes_ice_floes( true ), dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -858,7 +858,7 @@ struct mage_spell_t : public spell_t
       //       - Summon Water Elemental
       //       - Frostfire Bolt, if cast using Brain Freeze
       //       - Pyroblast, if cast using Hot Streak
-      else if ( spell_t::usable_moving() )
+      else if ( consumes_ice_floes )
       {
         p() -> buffs.ice_floes -> decrement();
       }
@@ -2321,6 +2321,7 @@ struct scorch_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     may_hot_streak = true;
+    consumes_ice_floes = false;
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
@@ -2420,6 +2421,7 @@ struct summon_water_elemental_t : public mage_spell_t
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
     harmful = false;
+    consumes_ice_floes = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -2437,6 +2439,9 @@ struct summon_water_elemental_t : public mage_spell_t
 
     return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> current.sleeping );
   }
+
+  virtual bool usable_moving()
+  { return true; }
 };
 
 // Choose Rotation ==========================================================
