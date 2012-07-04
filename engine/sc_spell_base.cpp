@@ -155,10 +155,12 @@ void spell_base_t::init()
 {
   action_t::init();
 
-  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0
+    || ( tick_action && tick_action -> direct_power_mod > 0 ) ) )
     snapshot_flags |= STATE_SP;
 
-  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0
+    || ( tick_action && ( tick_action -> direct_power_mod > 0 || tick_action -> weapon_power_mod > 0 ) ) ) )
     snapshot_flags |= STATE_AP;
 
   if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
