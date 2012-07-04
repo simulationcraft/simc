@@ -574,6 +574,8 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     dual        = true;
     background  = true;
     direct_tick = true;
+    proc        = true;
+    callbacks   = false;
   }
 };
 
@@ -585,20 +587,12 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p ) :
     warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
   {
-    callbacks = false;
-    harmful   = false;
     tick_zero = true;
     hasted_ticks = false;
     weapon_multiplier = 0;
 
     felstorm_tick = new felstorm_tick_t( p );
     felstorm_tick -> weapon = &( p -> main_hand_weapon );
-  }
-
-  virtual void init()
-  {
-    warlock_pet_melee_attack_t::init();
-
     felstorm_tick -> stats = stats;
   }
 
@@ -667,12 +661,13 @@ struct immolation_damage_t : public warlock_pet_spell_t
   immolation_damage_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "immolation_dmg", p, p -> find_spell( 20153 ) )
   {
+    aoe         = -1;
     dual        = true;
     background  = true;
-    aoe         = -1;
-    may_crit    = false;
     direct_tick = true;
-    stats = p -> get_stats( "immolation", this );
+    proc        = true;
+    callbacks   = false;
+    may_crit    = false;
   }
 };
 
@@ -685,12 +680,11 @@ struct infernal_immolation_t : public warlock_pet_spell_t
   {
     parse_options( NULL, options_str );
 
-    callbacks    = false;
     num_ticks    = 1;
     hasted_ticks = false;
-    harmful      = false;
 
     immolation_damage = new immolation_damage_t( p );
+    immolation_damage -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -1208,7 +1202,7 @@ public:
   {
     spell_t::init();
 
-    if ( harmful ) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
+    if ( harmful && ! tick_action ) trigger_gcd += p() -> spec.chaotic_energy -> effectN( 3 ).time_value();
   }
 
   virtual void reset()
@@ -1240,7 +1234,7 @@ public:
   virtual void execute()
   {
     bool havoc = false;
-    if ( harmful && ! background && aoe == 0 && p() -> buffs.havoc -> up() && p() -> havoc_target != target ) 
+    if ( harmful && ! background && aoe == 0 && ! tick_action && p() -> buffs.havoc -> up() && p() -> havoc_target != target ) 
     {
       aoe = 2;
       havoc = true;
@@ -2595,19 +2589,13 @@ struct hand_of_guldan_t : public warlock_spell_t
     hog_damage  = new hand_of_guldan_dmg_t( p );
 
     add_child( shadowflame );
+    hog_damage  -> stats = stats;
 
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new hand_of_guldan_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    hog_damage  -> stats = stats;
   }
 
   virtual timespan_t travel_time()
@@ -2665,19 +2653,13 @@ struct chaos_wave_t : public warlock_spell_t
     cooldown = p -> cooldowns.hand_of_guldan;
 
     cw_damage  = new chaos_wave_dmg_t( p );
+    cw_damage -> stats = stats;
 
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new chaos_wave_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    cw_damage  -> stats = stats;
   }
 
   virtual timespan_t travel_time()
@@ -3010,9 +2992,11 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
   seed_of_corruption_aoe_t( warlock_t* p ) :
     warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
   {
+    aoe        = -1;
     dual       = true;
     background = true;
-    aoe        = -1;
+    proc       = true;
+    callbacks  = false;
   }
 
   virtual void init()
@@ -3030,9 +3014,11 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
   soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
     warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 87385 ) ), corruption( new corruption_t( p, true ) )
   {
+    aoe        = -1;
     dual       = true;
     background = true;
-    aoe        = -1;
+    proc       = true;
+    callbacks  = false;
     corruption -> background = true;
     corruption -> dual = true;
     corruption -> may_miss = false;
@@ -3083,12 +3069,6 @@ struct seed_of_corruption_t : public warlock_spell_t
     if ( ! p -> spells.soulburn_seed_of_corruption_aoe ) p -> spells.soulburn_seed_of_corruption_aoe = new soulburn_seed_of_corruption_aoe_t( p );
 
     add_child( p -> spells.seed_of_corruption_aoe );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
     soulburn_spell -> stats = stats;
   }
 
@@ -3124,10 +3104,12 @@ struct rain_of_fire_tick_t : public warlock_spell_t
   rain_of_fire_tick_t( warlock_t* p, const spell_data_t& pd ) :
     warlock_spell_t( "rain_of_fire_tick", p, pd.effectN( 2 ).trigger() ), parent_data( pd )
   {
-    background  = true;
     aoe         = -1;
-    direct_tick = true;
     dual        = true;
+    background  = true;
+    direct_tick = true;
+    proc        = true;
+    callbacks   = false;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -3152,35 +3134,23 @@ struct rain_of_fire_tick_t : public warlock_spell_t
 
 struct rain_of_fire_t : public warlock_spell_t
 {
-  rain_of_fire_tick_t* rain_of_fire_tick;
-
   rain_of_fire_t( warlock_t* p ) :
-    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : ( p -> specialization() == WARLOCK_AFFLICTION ) ? p -> find_spell( 5740 ) : spell_data_t::not_found() ),
-    rain_of_fire_tick( 0 )
+    warlock_spell_t( "rain_of_fire", p, ( p -> specialization() == WARLOCK_DESTRUCTION ) ? p -> find_spell( 104232 ) : ( p -> specialization() == WARLOCK_AFFLICTION ) ? p -> find_spell( 5740 ) : spell_data_t::not_found() )
   {
     dot_behavior = DOT_CLIP;
-    harmful = false;
     may_miss = false;
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
 
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
-    rain_of_fire_tick = new rain_of_fire_tick_t( p, data() );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    rain_of_fire_tick -> stats = stats;
+    tick_action = new rain_of_fire_tick_t( p, data() );
+    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-
-    rain_of_fire_tick -> execute();
 
     if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
   }
@@ -3199,10 +3169,12 @@ struct hellfire_tick_t : public warlock_spell_t
   hellfire_tick_t( warlock_t* p, const spell_data_t& pd ) :
     warlock_spell_t( "hellfire_tick", p, pd.effectN( 1 ).trigger() ), parent_data( pd )
   {
-    background  = true;
     aoe         = -1;
-    direct_tick = true;
     dual        = true;
+    background  = true;
+    direct_tick = true;
+    proc        = true;
+    callbacks   = false;
   }
 
   virtual void execute()
@@ -3230,18 +3202,12 @@ struct hellfire_t : public warlock_spell_t
     tick_power_mod = base_td = 0;
 
     hellfire_tick = new hellfire_tick_t( p, data() );
+    hellfire_tick -> stats = stats;
   }
 
   virtual bool usable_moving()
   {
     return true;
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
-    hellfire_tick -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3302,12 +3268,6 @@ struct immolation_aura_t : public warlock_spell_t
     tick_zero = true;
 
     immolation_aura_tick = new immolation_aura_tick_t( p );
-  }
-
-  virtual void init()
-  {
-    warlock_spell_t::init();
-
     immolation_aura_tick -> stats = stats;
   }
 
@@ -3706,6 +3666,8 @@ struct summon_infernal_t : public summon_pet_t
     summon_pet_t( "infernal", p, "Summon Infernal" ),
     infernal_awakening( 0 )
   {
+    harmful = false;
+
     cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
 
     summoning_duration = data().effectN( 2 ).trigger() -> duration();
@@ -3831,8 +3793,6 @@ struct harvest_life_tick_t : public warlock_spell_t
 
 struct harvest_life_t : public warlock_spell_t
 {
-  harvest_life_tick_t* tick_spell;
-
   harvest_life_t( warlock_t* p ) :
     warlock_spell_t( "harvest_life", p, p -> talents.harvest_life )
   {
@@ -3842,16 +3802,13 @@ struct harvest_life_t : public warlock_spell_t
 
     tick_power_mod = base_td = 0;
 
-    tick_spell = new harvest_life_tick_t( p );
-
-    tick_spell -> stats = stats;
+    tick_action = new harvest_life_tick_t( p );
+    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-
-    tick_spell -> execute();
 
     consume_tick_resource( d );
   }

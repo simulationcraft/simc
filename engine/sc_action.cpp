@@ -151,12 +151,14 @@ action_t::action_t( action_e       ty,
   last_reaction_time             = timespan_t::zero();
   dtr_action                     = 0;
   is_dtr_action                  = false;
+  tick_action                    = 0;
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
   state_cache = 0;
   execute_state = 0;
+  pre_execute_state = 0;
   action_list = "";
 
   range::fill( base_costs, 0.0 );
@@ -226,6 +228,9 @@ action_t::~action_t()
 {
   if ( execute_state )
     delete execute_state;
+
+  if ( pre_execute_state )
+    delete pre_execute_state;
 
   if ( ! is_dtr_action )
   {
@@ -974,7 +979,7 @@ void action_t::execute()
 
       for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
       {
-        action_state_t* s = get_state();
+        action_state_t* s = get_state( pre_execute_state );
         s -> target = tl[ t ];
         snapshot_state( s, snapshot_flags );
         s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
@@ -990,7 +995,7 @@ void action_t::execute()
     }
     else // stateless single target
     {
-      action_state_t* s = get_state();
+      action_state_t* s = get_state( pre_execute_state );
       s -> target = target;
       snapshot_state( s, snapshot_flags );
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
@@ -1010,6 +1015,12 @@ void action_t::execute()
   update_ready();
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
+
+  if ( pre_execute_state ) 
+  {
+    release_state( pre_execute_state );
+    pre_execute_state = 0;
+  }
 
   if ( repeating && ! proc ) schedule_execute();
 }
@@ -1060,6 +1071,14 @@ void action_t::tick( dot_t* d )
     d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
 
     assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
+
+    if ( tick_action )
+    {
+      assert( tick_action -> stateless );
+      tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
+      tick_action -> pre_execute_state -> da_multiplier = d -> state -> ta_multiplier;
+      tick_action -> execute();
+    }
 
     if ( harmful && callbacks )
       action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );

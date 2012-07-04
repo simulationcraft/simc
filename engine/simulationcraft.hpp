@@ -4173,6 +4173,7 @@ struct action_t
   bool can_trigger_dtr;
   target_specific_t<dot_t> target_specific_dot;
   std::string action_list;
+  action_t* tick_action;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   virtual ~action_t();
@@ -4280,6 +4281,7 @@ struct action_t
   /* New stuff */
   action_state_t* state_cache;
   action_state_t* execute_state; /* State of the last execute() */
+  action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
   uint32_t snapshot_flags;
   uint32_t update_flags;
 
