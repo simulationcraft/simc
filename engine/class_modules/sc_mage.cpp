@@ -1651,20 +1651,11 @@ struct frost_bomb_t : public mage_spell_t
     mage_spell_t::execute();
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
-
-    if ( result_is_hit( impact_result ) )
-    {
-      p() -> buffs.brain_freeze -> trigger();
-    }
-  }
-
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
     explosion_spell -> execute();
+    p() -> buffs.brain_freeze -> trigger();
   }
 };
 
@@ -2036,14 +2027,11 @@ struct living_bomb_t : public mage_spell_t
     add_child( explosion_spell );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void tick( dot_t* d )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::tick( d );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      p() -> buffs.brain_freeze -> trigger();
-    }
+    p() -> buffs.brain_freeze -> trigger();
   }
 
   virtual void last_tick( dot_t* d )
@@ -2204,14 +2192,11 @@ struct nether_tempest_t : public mage_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void tick( dot_t* d )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::tick( d );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      p() -> buffs.brain_freeze -> trigger();
-    }
+    p() -> buffs.brain_freeze -> trigger();
   }
 };
 

@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=frost
 professions=enchanting=600/tailoring=600
-talents=133332
+talents=133312
 glyphs=evocation/ice_lance/cone_of_cold
 actions=flask,type=warm_sun
 actions+=/food,type=great_pandaren_banquet
@@ -40,8 +40,8 @@ actions+=/frostbolt
 actions+=/scorch,if=talent.scorch.enabled
 actions+=/fire_blast
 actions+=/ice_lance
-head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit
-neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
+head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,reforge=crit_hit,gems=burning_primal_80int_160hit
+neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=shoulders_of_engulfing_winds,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_445crit_445haste,reforge=crit_hit,enchant=200int_100crit
 chest=spelltwisters_grand_robe,heroic=0,type=cloth,ilevel=476,quality=epic,stats=2133armor_1015int_1523sta_726crit_594mastery,reforge=mastery_hit,enchant=80all
 waist=girdle_of_endemic_anger,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1146armor_668int_1002sta_401crit_471hit,reforge=crit_haste,gems=160int
