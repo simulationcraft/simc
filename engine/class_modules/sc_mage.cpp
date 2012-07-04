@@ -208,7 +208,7 @@ public:
     const spell_data_t* cold_snap;
     const spell_data_t* nether_tempest; // Extra target NYI
     const spell_data_t* living_bomb;
-    const spell_data_t* frost_bomb; // Extra targets NYI
+    const spell_data_t* frost_bomb;
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
     const spell_data_t* incanters_ward; // NYI
@@ -335,7 +335,7 @@ struct water_elemental_pet_t : public pet_t
 
       if ( result_is_hit( impact_result ) )
       {
-        p -> o() -> buffs.fingers_of_frost -> trigger();
+        p -> o() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
       }
     }
 
@@ -1811,6 +1811,7 @@ struct frozen_orb_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     channeled = true;
+    hasted_ticks = false;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
 
@@ -1822,11 +1823,7 @@ struct frozen_orb_t : public mage_spell_t
   {
     mage_spell_t::impact( t, impact_result, travel_dmg );
 
-    if ( result_is_hit( impact_result ) )
-    {
-      p() -> buffs.fingers_of_frost -> trigger();
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
-    }
+    p() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
   }
 
   virtual void tick( dot_t* d )
@@ -1834,6 +1831,7 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t::tick( d );
 
     bolt -> execute();
+    p() -> buffs.fingers_of_frost -> trigger( 1, -1, 0.12 );
   }
 };
 
@@ -1900,6 +1898,7 @@ struct ice_lance_t : public mage_spell_t
     {
       player_multiplier *= 4.0; // Built in bonus against frozen targets
       player_multiplier *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
+      p() -> buffs.fingers_of_frost -> decrement();
     }
   }
 };
