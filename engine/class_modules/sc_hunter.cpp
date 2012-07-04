@@ -652,7 +652,7 @@ public:
 
     if ( cast_owner() -> mastery.master_of_beasts -> ok() )
     {
-      m *= 1.0 + cast_owner() -> mastery.master_of_beasts -> effectN( 1 ).coeff() / 100.0 * owner -> composite_mastery();
+      m *= 1.0 + cast_owner() -> mastery.master_of_beasts -> effectN( 1 ).mastery_value() * owner -> composite_mastery();
     }
 
     if ( buffs.bestial_wrath -> up() )
@@ -1956,7 +1956,7 @@ struct kill_command_t : public hunter_spell_t
 
     if ( p() -> active_pet )
     {
-      p() -> active_pet -> kill_command -> base_dd_adder = 0.516 * total_power(); // hardcoded into tooltip
+      p() -> active_pet -> kill_command -> base_dd_adder = 0.516 * execute_state -> attack_power; // hardcoded into tooltip
       p() -> active_pet -> kill_command -> execute();
     }
   }
