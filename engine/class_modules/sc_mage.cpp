@@ -196,7 +196,7 @@ public:
   {
     const spell_data_t* presence_of_mind;
     const spell_data_t* scorch;
-    const spell_data_t* ice_floes; // NYI
+    const spell_data_t* ice_floes;
     const spell_data_t* temporal_shield; // NYI
     const spell_data_t* blazing_speed; // NYI
     const spell_data_t* ice_barrier; // NYI
@@ -853,15 +853,11 @@ struct mage_spell_t : public spell_t
       {
         p() -> buffs.presence_of_mind -> expire();
       }
-      // TODO: Needs to exclude the following:
-      //       - Scorch
-      //       - Summon Water Elemental
-      //       - Frostfire Bolt, if cast using Brain Freeze
-      //       - Pyroblast, if cast using Hot Streak
-      else if ( consumes_ice_floes )
-      {
-        p() -> buffs.ice_floes -> decrement();
-      }
+    }
+
+    if ( execute_time() > timespan_t::zero() && consumes_ice_floes )
+    {
+      p() -> buffs.ice_floes -> decrement();
     }
 
     if ( result_is_hit() )
@@ -1843,8 +1839,6 @@ struct frozen_orb_t : public mage_spell_t
 
 // Ice Floes Spell ===================================================
 
-// FIXME: This doesn't really do anything yet; there's just enough to
-//        put it into an action list without breaking the run
 struct ice_floes_t : public mage_spell_t
 {
   ice_floes_t( mage_t* p, const std::string& options_str ) :

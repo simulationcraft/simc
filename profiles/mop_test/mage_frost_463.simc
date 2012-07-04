@@ -22,7 +22,6 @@ actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down
 actions+=/jade_serpent_potion,if=!in_combat
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|buff.icy_veins.react|target.time_to_die<=40
-actions+=/ice_floes,if=talent.ice_floes.enabled
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
 actions+=/ice_lance,if=buff.fingers_of_frost.stack>1
 actions+=/frost_bomb,if=talent.frost_bomb.enabled
@@ -36,6 +35,7 @@ actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.berserking.down&buff.bloodlust.down
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled
+actions+=/ice_floes,if=talent.ice_floes.enabled
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
 actions+=/frostbolt
 actions+=/scorch,if=talent.scorch.enabled
