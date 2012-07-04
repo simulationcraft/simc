@@ -4174,6 +4174,7 @@ struct action_t
   target_specific_t<dot_t> target_specific_dot;
   std::string action_list;
   action_t* tick_action;
+  bool dynamic_tick_action;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   virtual ~action_t();

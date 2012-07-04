@@ -576,31 +576,22 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     direct_tick = true;
     proc        = true;
     callbacks   = false;
+    weapon = &( p -> main_hand_weapon );
   }
 };
 
 
 struct felstorm_t : public warlock_pet_melee_attack_t
 {
-  felstorm_tick_t* felstorm_tick;
-
   felstorm_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) ), felstorm_tick( 0 )
+    warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) )
   {
     tick_zero = true;
     hasted_ticks = false;
-    weapon_multiplier = 0;
-
-    felstorm_tick = new felstorm_tick_t( p );
-    felstorm_tick -> weapon = &( p -> main_hand_weapon );
-    felstorm_tick -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    felstorm_tick -> execute();
-
-    stats -> add_tick( d -> time_to_tick );
+    
+    dynamic_tick_action = true;
+    tick_action = new felstorm_tick_t( p );
+    tick_action -> stats = stats;
   }
 
   virtual void cancel()
@@ -673,27 +664,24 @@ struct immolation_damage_t : public warlock_pet_spell_t
 
 struct infernal_immolation_t : public warlock_pet_spell_t
 {
-  immolation_damage_t* immolation_damage;
-
   infernal_immolation_t( warlock_pet_t* p, const std::string& options_str ) :
-    warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) ), immolation_damage( 0 )
+    warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
   {
     parse_options( NULL, options_str );
 
     num_ticks    = 1;
     hasted_ticks = false;
 
-    immolation_damage = new immolation_damage_t( p );
-    immolation_damage -> stats = stats;
+    dynamic_tick_action = true;
+    tick_action = new immolation_damage_t( p );
+    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
   {
     d -> current_tick = 0; // ticks indefinitely
 
-    immolation_damage -> execute();
-
-    stats -> add_tick( d -> time_to_tick );
+    warlock_pet_spell_t::tick( d );
   }
 
   virtual void cancel()
@@ -3139,6 +3127,7 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     dot_behavior = DOT_CLIP;
     may_miss = false;
+    may_crit = false;
     channeled = ( p -> spec.aftermath -> ok() ) ? false : true;
     tick_zero = ( p -> spec.aftermath -> ok() ) ? false : true;
 
@@ -3189,20 +3178,20 @@ struct hellfire_tick_t : public warlock_spell_t
 
 struct hellfire_t : public warlock_spell_t
 {
-  hellfire_tick_t* hellfire_tick;
-
   hellfire_t( warlock_t* p ) :
-    warlock_spell_t( p, "Hellfire" ), hellfire_tick( 0 )
+    warlock_spell_t( p, "Hellfire" )
   {
     tick_zero = true;
     may_miss = false;
     channeled = true;
     tick_zero = true;
+    may_crit = false;
     
     tick_power_mod = base_td = 0;
 
-    hellfire_tick = new hellfire_tick_t( p, data() );
-    hellfire_tick -> stats = stats;
+    dynamic_tick_action = true;
+    tick_action = new hellfire_tick_t( p, data() );
+    tick_action -> stats = stats;
   }
 
   virtual bool usable_moving()
@@ -3213,8 +3202,6 @@ struct hellfire_t : public warlock_spell_t
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-
-    hellfire_tick -> execute();
 
     if ( d -> current_tick != 0 ) consume_tick_resource( d );
   }
@@ -3240,35 +3227,28 @@ struct immolation_aura_tick_t : public warlock_spell_t
   immolation_aura_tick_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 5857 ) )
   {
-    background  = true;
     aoe         = -1;
+    background  = true;
     direct_tick = true;
-
-    if ( ! dtr )
-      dual = true;
-
-    if ( ! dtr && p -> has_dtr )
-    {
-      dtr_action = new immolation_aura_tick_t( p, true );
-      dtr_action -> is_dtr_action = true;
-    }
+    proc        = true;
+    dual        = true;
+    callbacks   = false;
   }
 };
 
 
 struct immolation_aura_t : public warlock_spell_t
 {
-  immolation_aura_tick_t* immolation_aura_tick;
-
   immolation_aura_t( warlock_t* p ) :
-    warlock_spell_t( p, "Immolation Aura" ),
-    immolation_aura_tick( 0 )
+    warlock_spell_t( p, "Immolation Aura" )
   {
     may_miss = false;
     tick_zero = true;
+    may_crit = false;
 
-    immolation_aura_tick = new immolation_aura_tick_t( p );
-    immolation_aura_tick -> stats = stats;
+    dynamic_tick_action = true;
+    tick_action = new immolation_aura_tick_t( p );
+    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3280,8 +3260,6 @@ struct immolation_aura_t : public warlock_spell_t
     }
 
     warlock_spell_t::tick( d );
-
-    immolation_aura_tick -> execute();
   }
 
   virtual void last_tick( dot_t* d )
@@ -3333,6 +3311,7 @@ struct carrion_swarm_t : public warlock_spell_t
     warlock_spell_t( p, "Carrion Swarm" )
   {
     aoe = -1;
+
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new carrion_swarm_t( p, true );

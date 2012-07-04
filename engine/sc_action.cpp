@@ -152,6 +152,7 @@ action_t::action_t( action_e       ty,
   dtr_action                     = 0;
   is_dtr_action                  = false;
   tick_action                    = 0;
+  dynamic_tick_action            = false;
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
@@ -1059,32 +1060,26 @@ void action_t::tick( dot_t* d )
   }
   else // stateless
   {
-    d -> state -> result = RESULT_HIT;
-    snapshot_state( d -> state, update_flags );
-
     if ( tick_action )
     {
       assert( tick_action -> stateless );
-      d -> state -> result_amount = 0;
+      tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
+      snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
+      tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
+      tick_action -> execute();
     }
     else
     {
+      d -> state -> result = RESULT_HIT;
+      snapshot_state( d -> state, update_flags );
+
       if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
         d -> state -> result = RESULT_CRIT;
 
       d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
+      assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
     }
-
-    assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
-
-    if ( tick_action )
-    {
-      tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
-      tick_action -> pre_execute_state -> da_multiplier = d -> state -> ta_multiplier;
-      tick_action -> execute();
-      d -> state -> result_amount = tick_action -> execute_state -> result_amount;
-    }
-
+    
     if ( harmful && callbacks )
       action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
 
@@ -1222,7 +1217,7 @@ void action_t::assess_damage( player_t*     t,
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, assess_state );
   }
 
-  if ( type == DMG_DIRECT || ! tick_action ) stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );
+  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );
 }
 
 // action_t::additional_damage ==============================================
