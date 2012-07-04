@@ -953,7 +953,7 @@ class SpellDataGenerator(DataGenerator):
         ),
         (),     # Warrior:
         ( ( 86700, 5 ), ),     # Paladin: Ancient Power
-        ( ( 83381, 0 ), ), # Hunter: Kill Command base dmg
+        ( ( 82928, 0 ), ( 83381, 0 ), ), # Hunter: Aimed Shot! and Kill Command base dmg
         ( ), # Rogue: 
         ( ( 63619, 5 ), ( 94472, 0 ), ( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), ( 127627, 3 ), ( 127628, 3 ), ),     # Priest: shadowfiend "Shadowcrawl", Atonement Crit. Shadow Mastery "duplicate" ticks, Shadow Cascade
         ( ( 70890, 0 ), ( 51963, 5 ), ), # DK: weird Scourge Strike secondary effect, gargoyle strike.
