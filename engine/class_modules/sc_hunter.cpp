@@ -2320,6 +2320,8 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     background = true;
     proc=true;
 
+    base_multiplier *= 1.8; // hardcoded into hunter kill command tooltip
+
 //    base_crit += o -> talents.improved_kill_command -> effectN( 1 ).percent();
   }
 };
