@@ -1763,6 +1763,8 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
   fprintf( file,
            "\t\t\t\t\t\t\t</tr>\n" );
 
+  stat_buff_t* stat_buff = dynamic_cast<stat_buff_t*>( b );
+
   if ( report_details )
   {
     fprintf( file,
@@ -1775,14 +1777,25 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
              "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n"
-             "\t\t\t\t\t\t\t\t\t</ul>\n",
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n",
              b -> cooldown -> name_str.c_str(),
              b -> max_stack(),
              b -> buff_duration.total_seconds(),
              b -> cooldown -> duration.total_seconds(),
              b -> default_chance * 100,
              b -> default_value );
+
+    if( stat_buff )
+    {
+      fprintf( file,
+             "\t\t\t\t\t\t\t\t\t<h4>Stat Buff details</h4>\n"
+             "\t\t\t\t\t\t\t\t\t<ul>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">stat:</span>%s</li>\n"
+             "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">amount:</span>%.2f</li>\n",
+             util::stat_type_string( stat_buff->stat ),
+             stat_buff->amount );
+    }
+    fprintf( file, "\t\t\t\t\t\t\t\t\t</ul>\n" );
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
@@ -1833,6 +1846,7 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
               "\t\t\t\t\t\t\t</tr>\n" );
   }
 }
+
 // print_html_player_buffs ==================================================
 
 void print_html_player_buffs( FILE* file, player_t* p, player_t::report_information_t& ri )

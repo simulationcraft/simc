@@ -43,6 +43,23 @@ struct buff_delay_t : public event_t
     buff -> delay = 0;
   }
 };
+
+stat_e translate_stat_buff_misc_number( int x )
+{
+  switch ( x )
+  {
+  case 3355443:
+    return STAT_MASTERY_RATING;
+  case 1792:
+    return STAT_CRIT_RATING;
+  case 917504:
+    return STAT_HASTE_RATING;
+
+  default: break;
+  }
+
+  return STAT_NONE;
+}
 }
 
 buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
@@ -930,6 +947,18 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   buff_t( params ), amount( params._amount ), stat( params._stat )
 {
+  for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+  {
+    if ( data().effectN( i ).subtype() == A_MOD_RATING )
+    {
+      if ( params._amount == 0 )
+        amount = player->dbc.effect_average( data().effectN( i ).id(), player -> level );
+      if ( params._stat == STAT_NONE )
+        stat = translate_stat_buff_misc_number( data().effectN( 1 ).misc_value1() );
+
+      break; // only parse first effect for now
+    }
+  }
 }
 
 // stat_buff_t::bump ========================================================
