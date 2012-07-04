@@ -360,6 +360,11 @@ public:
 
   } talents;
 
+  struct specs_t
+  {
+    const spell_data_t* wild_hunt;
+  } specs;
+
   // Buffs
   struct buffs_t
   {
@@ -377,14 +382,22 @@ public:
     gain_t* go_for_the_throat;
   } gains;
 
+  // Benefits
+  struct benefits_t
+  {
+    benefit_t* wild_hunt;
+  } benefits;
+
 private:
   target_specific_t<hunter_pet_td_t> target_data;
 public:
   hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
     talents( talents_t() ),
+    specs( specs_t() ),
     buffs( buffs_t() ),
-    gains( gains_t() )
+    gains( gains_t() ),
+    benefits( benefits_t() )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = rating_t::interpolate( level, 0, 0, 51, 73 ); // FIXME needs level 60 and 70 values
@@ -499,7 +512,7 @@ public:
 
     pet_t::init_talents();
   }
-  
+
   virtual void init_buffs()
   {
     pet_t::init_buffs();
@@ -522,8 +535,8 @@ public:
   {
     pet_t::init_benefits();
 
+    benefits.wild_hunt = get_benefit( "wild_hunt" );
   }
-
   virtual void init_actions()
   {
     if ( action_list_str.empty() )
@@ -2110,19 +2123,24 @@ struct trueshot_aura_t : public hunter_spell_t
 
 namespace pet_actions {
 
-
 // Template for common hunter pet action code. See priest_action_t.
 template <class Base>
 struct hunter_pet_action_t : public Base
 {
+  bool basic_attack;
+
   typedef Base ab;
   typedef hunter_pet_action_t base_t;
 
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    basic_attack( false )
   {
     ab::stateless = true;
+
+    if ( ab::data().rank_str() && !strcmp( ab::data().rank_str(), "Basic Attack" ) )
+      basic_attack = true;
   }
 
   hunter_pet_t* p() const
@@ -2133,6 +2151,25 @@ struct hunter_pet_action_t : public Base
 
   hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
+
+
+  virtual double action_multiplier()
+  {
+    double am = ab::action_multiplier();
+
+    if ( basic_attack )
+    {
+      if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
+      {
+        p() -> benefits.wild_hunt -> update( true );
+        am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
+      }
+      else
+        p() -> benefits.wild_hunt -> update( false );
+    }
+
+    return am;
+  }
 };
 
 // ==========================================================================
@@ -2256,6 +2293,7 @@ struct claw_t : public hunter_pet_attack_t
 
     return cc;
   }
+
 };
 
 // Devilsaur Monstrous Bite =================================================
@@ -2308,6 +2346,7 @@ struct rabid_t : public hunter_pet_spell_t
   {
 
     parse_options( NULL, options_str );
+
   }
 
   virtual void execute()
@@ -2822,6 +2861,8 @@ void hunter_pet_t::init_spells()
   pet_t::init_spells();
 
   kill_command = new pet_kill_command_t( this );
+
+  specs.wild_hunt = find_spell( 62762 );
 }
 
 // hunter_t::init_base ======================================================
