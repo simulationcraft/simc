@@ -375,46 +375,6 @@ public:
     return player_t::set_default_glyphs();
   }
 
-  virtual void stat_gain( stat_e stat, double amount, gain_t* g, action_t* a, bool temporary )
-  {
-    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
-
-    if ( stat == STAT_HASTE_RATING )
-    {
-      old_mh_swing_haste = main_hand_attack -> swing_haste();
-      if ( off_hand_attack )
-        old_oh_swing_haste  = off_hand_attack -> swing_haste();
-    }
-
-    player_t::stat_gain( stat, amount, g, a, temporary );
-
-    if ( stat == STAT_HASTE_RATING )
-    {
-      shaman_t::reschedule_auto_attack( main_hand_attack, old_mh_swing_haste );
-      shaman_t::reschedule_auto_attack( off_hand_attack, old_oh_swing_haste );
-    }
-  }
-
-  virtual void stat_loss( stat_e stat, double amount, gain_t* g, action_t* a, bool temporary )
-  {
-    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
-
-    if ( stat == STAT_HASTE_RATING )
-    {
-      old_mh_swing_haste = main_hand_attack -> swing_haste();
-      if ( off_hand_attack )
-        old_oh_swing_haste  = off_hand_attack -> swing_haste();
-    }
-
-    player_t::stat_loss( stat, amount, g, a, temporary );
-
-    if ( stat == STAT_HASTE_RATING )
-    {
-      shaman_t::reschedule_auto_attack( main_hand_attack, old_mh_swing_haste );
-      shaman_t::reschedule_auto_attack( off_hand_attack, old_oh_swing_haste );
-    }
-  }
-
   // Note that if attack -> swing_haste() > old_swing_haste, this could 
   // probably be handled by rescheduling, but the code is slightly simpler if
   // we just cancel the event and make a new one.
