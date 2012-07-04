@@ -33,7 +33,6 @@
 // - Searing totem base damage scaling
 // - Glyph of Telluric Currents
 //   * Additive or Multiplicative with other modifiers (spell data indicates additive)
-// - Does Unleash Flame "double cast" still exist?
 //
 // Enhancement:
 // - Lava Lash damage formula, currently weapon_dmg * ( 1.0 + ft_bonus + sf_stack * sf_bonus )
@@ -374,6 +373,70 @@ public:
     }
 
     return player_t::set_default_glyphs();
+  }
+
+  virtual void stat_gain( stat_e stat, double amount, gain_t* g, action_t* a, bool temporary )
+  {
+    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
+
+    if ( stat == STAT_HASTE_RATING )
+    {
+      old_mh_swing_haste = main_hand_attack -> swing_haste();
+      if ( off_hand_attack )
+        old_oh_swing_haste  = off_hand_attack -> swing_haste();
+    }
+
+    player_t::stat_gain( stat, amount, g, a, temporary );
+
+    if ( stat == STAT_HASTE_RATING )
+    {
+      shaman_t::reschedule_auto_attack( main_hand_attack, old_mh_swing_haste );
+      shaman_t::reschedule_auto_attack( off_hand_attack, old_oh_swing_haste );
+    }
+  }
+
+  virtual void stat_loss( stat_e stat, double amount, gain_t* g, action_t* a, bool temporary )
+  {
+    double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
+
+    if ( stat == STAT_HASTE_RATING )
+    {
+      old_mh_swing_haste = main_hand_attack -> swing_haste();
+      if ( off_hand_attack )
+        old_oh_swing_haste  = off_hand_attack -> swing_haste();
+    }
+
+    player_t::stat_loss( stat, amount, g, a, temporary );
+
+    if ( stat == STAT_HASTE_RATING )
+    {
+      shaman_t::reschedule_auto_attack( main_hand_attack, old_mh_swing_haste );
+      shaman_t::reschedule_auto_attack( off_hand_attack, old_oh_swing_haste );
+    }
+  }
+
+  // Note that if attack -> swing_haste() > old_swing_haste, this could 
+  // probably be handled by rescheduling, but the code is slightly simpler if
+  // we just cancel the event and make a new one.
+  static void reschedule_auto_attack( attack_t*& attack, double old_swing_haste )
+  {
+    if ( attack && attack -> execute_event && 
+         attack -> execute_event -> remains() > timespan_t::zero() )
+    {
+      timespan_t time_to_hit = attack -> execute_event -> remains();
+      time_to_hit *= attack -> swing_haste() / old_swing_haste;
+
+      if ( attack -> sim -> debug )
+      {
+        sim_t::output( attack -> sim, "Haste change, reschedule %s attack from %f to %f",
+          attack -> name(),
+          attack -> execute_event -> remains().total_seconds(),
+          time_to_hit.total_seconds() );
+      }
+
+      event_t::cancel( attack -> execute_event );
+      attack -> execute_event = new ( attack -> sim ) action_execute_event_t( attack -> sim, attack, time_to_hit );
+    }
   }
 };
 
@@ -830,17 +893,6 @@ struct earth_elemental_pet_t : public pet_t
     return 0.0;
   }
 
-  virtual double composite_attack_hit()
-  {
-    return owner -> composite_spell_hit();
-  }
-
-  virtual double composite_attack_expertise( weapon_t* )
-  {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
-  }
-
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -1079,36 +1131,6 @@ struct fire_elemental_t : public pet_t
   virtual double composite_attack_power()
   {
     return 0.0;
-  }
-
-  virtual double composite_spell_crit()
-  {
-    return owner -> composite_spell_crit();
-  }
-
-  virtual double composite_attack_crit( weapon_t* w = 0 )
-  {
-    return owner -> composite_attack_crit( w );
-  }
-
-  virtual double composite_spell_haste()
-  {
-    return owner -> composite_spell_haste();
-  }
-
-  virtual double composite_attack_haste()
-  {
-    return owner -> composite_attack_haste();
-  }
-
-  virtual double composite_attack_hit()
-  {
-    return owner -> composite_spell_hit();
-  }
-
-  virtual double composite_attack_expertise( weapon_t* )
-  {
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -4050,30 +4072,6 @@ struct flurry_buff_t : public buff_t
   flurry_buff_t( shaman_t* p, const spell_data_t* s ) :
     buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) )
   { }
-  
-  // Note that if attack -> swing_haste() > old_swing_haste, this could 
-  // probably be handled by rescheduling, but the code is slightly simpler if
-  // we just cancel the event and make a new one.
-  void reschedule_auto_attack( attack_t*& attack, double old_swing_haste )
-  {
-    if ( attack && attack -> execute_event && 
-         attack -> execute_event -> remains() > timespan_t::zero() )
-    {
-      timespan_t time_to_hit = attack -> execute_event -> remains();
-      time_to_hit *= attack -> swing_haste() / old_swing_haste;
-
-      if ( sim -> debug )
-      {
-        sim_t::output( sim, "Flurry reschedules %s attack from %f to %f",
-          attack -> name(),
-          attack -> execute_event -> remains().total_seconds(),
-          time_to_hit.total_seconds() );
-      }
-
-      event_t::cancel( attack -> execute_event );
-      attack -> execute_event = new ( sim ) action_execute_event_t( sim, attack, time_to_hit );
-    }
-  }
 
   void execute( int stacks, double value, timespan_t duration )
   {
@@ -4092,8 +4090,8 @@ struct flurry_buff_t : public buff_t
     // Down -> Up, haste remaining swing speeds
     if ( ! is_up )
     {
-      reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
-      reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
+      shaman_t::reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
+      shaman_t::reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
     }
   }
 
@@ -4114,8 +4112,8 @@ struct flurry_buff_t : public buff_t
     // Up -> Down, slow down remaining swing speeds
     if ( is_up )
     {
-      reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
-      reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
+      shaman_t::reschedule_auto_attack( player -> main_hand_attack, old_mh_swing_haste );
+      shaman_t::reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
     }
   }
 };
@@ -4813,7 +4811,7 @@ double shaman_t::composite_spell_haste()
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
-  h *= 1.0 / ( 1.0 + stats.haste_rating * hm / rating.spell_haste );
+  h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.spell_haste );
   return h;
 }
 
@@ -4837,7 +4835,7 @@ double shaman_t::composite_attack_haste()
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
-  h *= 1.0 / ( 1.0 + stats.haste_rating * hm / rating.attack_haste );
+  h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.attack_haste );
   return h;
 }
 

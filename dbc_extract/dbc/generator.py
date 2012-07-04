@@ -984,6 +984,7 @@ class SpellDataGenerator(DataGenerator):
           ( 115356, 0 ), ( 114093, 0 ), 				        # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
+            ( 58859,  5 ),                              # Spirit Wolf: Spirit Bite
         ),
         
         # Mage:
@@ -1799,7 +1800,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellicon_db[self._spellmisc_db[spell.id_misc].id_icon].field('name')
             else:
                 fields += [ '0' ]
-            field += spell.field('rank')
+            fields += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
             fields += [ '0', '0' ]
 
