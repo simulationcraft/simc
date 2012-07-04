@@ -238,6 +238,7 @@ public:
 
   int initial_burning_embers, initial_demonic_fury;
   timespan_t ember_react;
+  double nightfall_chance;
 private:
   target_specific_t<warlock_td_t> target_data;
 public:
@@ -355,7 +356,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   demonic_calling_event( 0 ),
   initial_burning_embers( 0 ),
   initial_demonic_fury( 200 ),
-  ember_react( timespan_t::max() )
+  ember_react( timespan_t::max() ),
+  nightfall_chance( 0 )
 {
   target_data.init( "target_data", this );
 
@@ -1734,9 +1736,14 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && p() -> rngs.nightfall -> roll( 0.1 ) )
+    if ( p() -> spec.nightfall -> ok() )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+      p() -> nightfall_chance += 0.02;
+      if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
+      {
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
+        p() -> nightfall_chance = 0;
+      }
     }
   }
 
@@ -4722,6 +4729,7 @@ void warlock_t::reset()
 
   pets.active = 0;
   ember_react = timespan_t::max();
+  nightfall_chance = 0;
   event_t::cancel( demonic_calling_event );
 }
 
