@@ -3953,14 +3953,11 @@ public:
   { return pet_crit(); }
 
   // Assumption: Works similar to crit as specified in http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
-  // FIXME: For now we're adding the pet's own player_t::composite_xxx_haste() so that it'll benefit from things like 
-  // Bloodlust, while using the owner's attack_haste/spell_haste to prevent it from benefiting from things like Dark Soul: Misery.
-  // In actuality, as of 2012/07/03 the pet appears to gain benefit from Bloodlust through the owner, but we should retest this later.
   virtual double composite_attack_haste()
-  { return player_t::composite_attack_haste() * std::min( owner -> attack_haste, owner -> spell_haste ); }
+  { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
   virtual double composite_spell_haste()
-  { return player_t::composite_spell_haste() * std::min( owner -> attack_haste, owner -> spell_haste ); }
+  { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
 
   // Assuming diminishing returns are transfered to the pet as well
