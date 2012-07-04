@@ -867,7 +867,7 @@ void hunter_ranged_attack_t::execute()
 
   trigger_thrill_of_the_hunt();
 
-  if ( result_is_hit() )
+  if ( result_is_hit( execute_state -> result ) )
     trigger_vishanka( this );
 }
 // Ranged Attack ============================================================
@@ -988,6 +988,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     virtual void execute()
     {
       hunter_ranged_attack_t::execute();
+
       p() -> buffs.master_marksman_fire -> expire();
     }
 
@@ -1091,22 +1092,15 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     direct_power_mod = 0.0483; // hardcoded into tooltip
   }
 
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
-    if ( result_is_hit() )
-    {
-      // Needs testing
-      p() -> buffs.tier13_4pc -> trigger();
-    }
-  }
-
   virtual void impact_s( action_state_t* state )
   {
     hunter_ranged_attack_t::impact_s( state );
     if ( result_is_hit( state -> result ) )
     {
       p() -> buffs.cobra_strikes -> trigger( 2 );
+
+      // Needs testing
+      p() -> buffs.tier13_4pc -> trigger();
     }
   }
 };
@@ -1122,23 +1116,15 @@ struct power_shot_t : public hunter_ranged_attack_t
 //    base_costs[ current_resource() ] += p() -> talents.efficiency -> effectN( 2 ).resource( RESOURCE_FOCUS );
   }
 
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
-    trigger_thrill_of_the_hunt();
-    if ( result_is_hit() )
-    {
-      // Needs testing
-      p() -> buffs.tier13_4pc -> trigger();
-    }
-  }
-
   virtual void impact_s( action_state_t* state )
   {
     hunter_ranged_attack_t::impact_s( state );
     if ( result_is_hit( state -> result ) )
     {
       p() -> buffs.cobra_strikes -> trigger( 2 );
+
+      // Needs testing
+      p() -> buffs.tier13_4pc -> trigger();
     }
   }
 };
@@ -1189,11 +1175,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
       p() -> procs.lock_and_load -> occur();
       p() -> cooldowns.explosive_shot -> reset();
     }
-  }
-
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
   }
 };
 
@@ -1293,18 +1274,20 @@ struct chimera_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( result_is_hit() )
-    {
-      cast_td() -> dots.serpent_sting -> refresh_duration();
-    }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, t, travel_dmg );
+    if ( result_is_hit( s -> result ) )
+    {
+      cast_td( s -> target ) -> dots.serpent_sting -> refresh_duration();
+
+    if ( s -> result == RESULT_CRIT )
+      trigger_piercing_shots( this, s -> target, s -> result_amount );
+
+    }
   }
 };
 
@@ -1334,13 +1317,13 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     return p() -> active_aspect == ASPECT_FOX;
   }
 
-  void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result ) )
     {
-      cast_td() -> dots.serpent_sting -> extend_duration( 2 );
+      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration( 2 );
 
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
@@ -1580,8 +1563,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
   virtual void impact_s( action_state_t* s )
   {
-    //target_t* q = t -> cast_target();
-
     hunter_ranged_attack_t::impact_s( s );
 
     if ( result_is_hit( s -> result ) )
@@ -1655,9 +1636,12 @@ struct steady_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) && ! p() -> buffs.master_marksman_fire -> check() )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> buffs.master_marksman -> trigger() )
+
+      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
+
+      if( ! p() -> buffs.master_marksman_fire -> check() && p() -> buffs.master_marksman -> trigger() )
       {
         if ( p() -> buffs.master_marksman -> stack() == 5 )
         {
@@ -1665,25 +1649,15 @@ struct steady_shot_t : public hunter_ranged_attack_t
           p() -> buffs.master_marksman -> expire();
         }
       }
-    }
 
-    if ( s -> result == RESULT_CRIT )
-      trigger_piercing_shots( this, s -> target, s -> result_amount );
+      if ( s -> result == RESULT_CRIT )
+        trigger_piercing_shots( this, s -> target, s -> result_amount );
+    }
   }
 
   virtual bool usable_moving()
   {
     return p() -> active_aspect == ASPECT_FOX;
-  }
-
-  void execute()
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( result_is_hit() )
-    {
-      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
-    }
   }
 
   virtual double composite_target_crit( player_t* t )
@@ -1708,12 +1682,6 @@ struct wild_quiver_shot_t : public ranged_t
     repeating   = false;
     proc = true;
     normalize_weapon_speed=true;
-    init();
-  }
-
-  virtual void execute()
-  {
-    hunter_ranged_attack_t::execute();
   }
 };
 
@@ -2160,6 +2128,9 @@ struct hunter_pet_action_t : public Base
   hunter_pet_t* p() const
   { return static_cast<hunter_pet_t*>( ab::player ); }
 
+  hunter_t* o() const
+  { return static_cast<hunter_t*>( p() -> cast_owner() ); }
+
   hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 };
@@ -2186,11 +2157,11 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
     return h;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    base_t::execute();
+    base_t::impact_s( s );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> buffs.rabid -> up() )
       {
@@ -2214,7 +2185,6 @@ struct pet_melee_t : public hunter_pet_attack_t
     repeating         = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = school;
-
   }
 };
 
@@ -2262,9 +2232,16 @@ struct claw_t : public hunter_pet_attack_t
     o -> buffs.cobra_strikes -> decrement();
     if ( o -> specs.frenzy -> ok() )
       p() -> buffs.frenzy -> trigger( 1 );
-    if ( result == RESULT_CRIT )
+
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    hunter_pet_attack_t::impact_s( s );
+
+    if ( s -> result == RESULT_CRIT )
     {
-      o -> resource_gain( RESOURCE_FOCUS, o -> specs.invigoration -> effectN( 1 ).resource( RESOURCE_FOCUS ), o -> gains.invigoration );
+      o() -> resource_gain( RESOURCE_FOCUS, o() -> specs.invigoration -> effectN( 1 ).resource( RESOURCE_FOCUS ), o() -> gains.invigoration );
     }
   }
 
@@ -2492,12 +2469,10 @@ struct ravage_t : public hunter_pet_spell_t
   ravage_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "ravage", player, player -> find_spell( 50518 ) )
   {
-
     parse_options( 0, options_str );
 
     auto_cast = true;
   }
-
 };
 
 // Raptor Tear Armor  =======================================================
@@ -2507,7 +2482,6 @@ struct tear_armor_t : public hunter_pet_spell_t
   tear_armor_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "tear_armor", player, player -> find_spell( 50498 ) )
   {
-
     parse_options( 0, options_str );
 
     auto_cast = true;
@@ -2531,7 +2505,6 @@ struct cackling_howl_t : public hunter_pet_spell_t
   cackling_howl_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "cackling_howl", player, player -> find_spell( 50271 ) )
   {
-
     parse_options( 0, options_str );
 
     auto_cast = true;
@@ -3171,7 +3144,9 @@ void hunter_t::register_callbacks()
 
   if ( mastery.wild_quiver -> ok() )
   {
-    callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, new wild_quiver_shot_t( this ) ) );
+    attack_t* wq = new wild_quiver_shot_t( this ); // Fixme: Should be created before player_t::init_actions
+    callbacks.register_attack_callback( RESULT_ALL_MASK, new wild_quiver_trigger_t( this, wq ) );
+    wq -> init();
   }
 }
 
