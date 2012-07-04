@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=arcane
 professions=enchanting=600/tailoring=600
-talents=111121
+talents=111122
 glyphs=evocation/mana_gem/slow/mirror_image
 actions=flask,type=warm_sun
 actions+=/food,type=great_pandaren_banquet
@@ -18,10 +18,11 @@ actions+=/snapshot_stats
 actions+=/counterspell
 actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3
 actions+=/evocation,if=talent.invocation.enabled&buff.invocation.down
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.down
 actions+=/jade_serpent_potion,if=!in_combat
 actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<=50
 actions+=/mana_gem,if=mana.pct<85
-actions+=/evocation,if=mana.pct<35&target.time_to_die>=30
+actions+=/evocation,if=!talent.rune_of_power.enabled&mana.pct<35&target.time_to_die>=30
 actions+=/arcane_power,if=buff.arcane_charge.stack>2
 actions+=/blood_fury,if=buff.arcane_charge.stack>2
 actions+=/arcane_missiles
@@ -29,6 +30,7 @@ actions+=/frost_bomb,if=talent.frost_bomb.enabled
 actions+=/living_bomb,if=talent.living_bomb.enabled&!ticking
 actions+=/nether_tempest,if=talent.nether_tempest.enabled&!ticking
 actions+=/mirror_image
+actions+=/arcane_barrage,if=!talent.invocation.enabled&buff.arcane_charge.stack=4&buff.arcane_power.down&(mana.pct<85|cooldown.mana_gem.remains>10|mana_gem_charges=0)
 actions+=/presence_of_mind
 actions+=/arcane_blast
 actions+=/arcane_barrage,moving=1

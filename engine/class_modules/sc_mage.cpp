@@ -82,6 +82,7 @@ public:
   struct gains_t
   {
     gain_t* evocation;
+    gain_t* incanters_ward_passive;
     gain_t* mana_gem;
     gain_t* rune_of_power;
   } gains;
@@ -211,7 +212,7 @@ public:
     const spell_data_t* frost_bomb;
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
-    const spell_data_t* incanters_ward; // NYI
+    const spell_data_t* incanters_ward; // Active effect NYI
 
   } talents;
 private:
@@ -308,6 +309,17 @@ public:
 
     return player_t::set_default_glyphs();
   }
+
+  virtual double composite_spell_power_multiplier()
+  {
+    double m = player_t::composite_spell_power_multiplier();
+    if ( talents.incanters_ward -> ok() )
+    {
+      m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+    }
+    return m;
+  }
+
 };
 
 // ==========================================================================
@@ -635,11 +647,6 @@ struct mirror_image_pet_t : public pet_t
     }
 
     return 0;
-  }
-
-  virtual double composite_spell_power_multiplier()
-  {
-    return 1.0;
   }
 
   virtual double composite_spell_haste()
@@ -2927,9 +2934,10 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation     = get_gain( "evocation"     );
-  gains.mana_gem      = get_gain( "mana_gem"      );
-  gains.rune_of_power = get_gain( "rune_of_power" );
+  gains.evocation              = get_gain( "evocation"              );
+  gains.incanters_ward_passive = get_gain( "incanters_ward_passive" );
+  gains.mana_gem               = get_gain( "mana_gem"               );
+  gains.rune_of_power          = get_gain( "rune_of_power"          );
 }
 
 // mage_t::init_procs =======================================================
@@ -3320,8 +3328,14 @@ void mage_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs.rune_of_power -> up() ) // FIXME: Does Nether Attunement affect this as well?
+  if ( buffs.rune_of_power -> up() )
+  {
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
+  }
+  else if ( talents.incanters_ward -> ok() )
+  {
+    resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
+  }
 
   if ( pets.water_elemental )
     benefits.water_elemental -> update( pets.water_elemental -> current.sleeping == 0 );
