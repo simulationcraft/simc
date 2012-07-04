@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=frost
 professions=enchanting=600/tailoring=600
-talents=333332
+talents=133332
 glyphs=evocation/ice_lance/cone_of_cold
 actions=flask,type=warm_sun
 actions+=/food,type=great_pandaren_banquet
@@ -34,12 +34,12 @@ actions+=/evocation,if=!talent.invocation.enabled&!talent.rune_of_power.enabled&
 actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/berserking,if=buff.icy_veins.down&buff.bloodlust.down
 actions+=/icy_veins,if=buff.berserking.down&buff.bloodlust.down
-actions+=/frostbolt
-actions+=/presence_of_mind,if=talent.presence_of_mind.enabled,moving=1
-actions+=/scorch,if=talent.scorch.enabled,moving=1
+actions+=/presence_of_mind,if=talent.presence_of_mind.enabled
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
-actions+=/fire_blast,moving=1
-actions+=/ice_lance,moving=1
+actions+=/frostbolt
+actions+=/scorch,if=talent.scorch.enabled
+actions+=/fire_blast
+actions+=/ice_lance
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
 shoulders=shoulders_of_engulfing_winds,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_445crit_445haste,reforge=crit_hit,enchant=200int_100crit

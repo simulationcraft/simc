@@ -324,7 +324,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       aoe = -1;
       may_crit = true;
-      crit_multiplier *= 1.33;
       base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
@@ -359,7 +358,6 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      crit_multiplier *= 1.33;
       base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
@@ -689,19 +687,18 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak;
+  bool frozen, may_hot_streak, may_proc_missiles;
   int dps_rotation;
   int dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ),
+    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ),
     dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
-    crit_multiplier *= 1.33;
   }
 
   mage_t* p() const { return static_cast<mage_t*>( player ); }
@@ -872,7 +869,11 @@ struct mage_spell_t : public spell_t
       trigger_hot_streak( this );
     }
 
-    if ( p() -> specialization() == MAGE_ARCANE )
+    if ( !harmful )
+    {
+      may_proc_missiles = false;
+    }
+    if ( p() -> specialization() == MAGE_ARCANE && may_proc_missiles )
     {
       p() -> buffs.arcane_missiles -> trigger();
     }
@@ -1103,6 +1104,7 @@ struct arcane_missiles_t : public mage_spell_t
     channeled = true;
     may_miss = false;
     hasted_ticks = false;
+    may_proc_missiles = false;
 
     tick_spell = new arcane_missiles_tick_t( p );
   }
@@ -1699,7 +1701,7 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_spell_t::player_buff();
 
-    if ( p() -> passives.shatter -> ok() )
+    if ( frozen )
     {
       player_multiplier *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
     }
