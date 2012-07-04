@@ -1888,6 +1888,7 @@ struct ice_lance_t : public mage_spell_t
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
     mage_spell_t::execute();
+    p() -> buffs.fingers_of_frost -> decrement();
   }
 
   virtual void player_buff()
@@ -1898,7 +1899,6 @@ struct ice_lance_t : public mage_spell_t
     {
       player_multiplier *= 4.0; // Built in bonus against frozen targets
       player_multiplier *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
-      p() -> buffs.fingers_of_frost -> decrement();
     }
   }
 };
@@ -1967,9 +1967,14 @@ struct inferno_blast_t : public mage_spell_t
     trigger_ignite( this, t, travel_dmg );
   }
 
-  virtual double total_crit()
+  virtual result_e calculate_result( double crit, unsigned int level )
   {
-    return 1.0;
+    result_e r = mage_spell_t::calculate_result( crit, level );
+
+    // Inferno Blast always crits
+    if ( result_is_hit( r ) ) return RESULT_CRIT;
+
+    return r;
   }
 
   // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
