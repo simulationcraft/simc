@@ -15,7 +15,7 @@ OS         = WINDOWS
 OPENSSL_PATH =
 
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I. -Wno-missing-field-initializers
 ifneq (${NO_DEBUG},)
 CPP_FLAGS += -DNDEBUG
 endif

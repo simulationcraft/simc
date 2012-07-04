@@ -1799,6 +1799,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellicon_db[self._spellmisc_db[spell.id_misc].id_icon].field('name')
             else:
                 fields += [ '0' ]
+            field += spell.field('rank')
             # Pad struct with empty pointers for direct access to spell effect data
             fields += [ '0', '0' ]
 

@@ -108,6 +108,7 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_STR,      "tooltip"       },
   { SD_TYPE_STR,      "desc_vars"     },
   { SD_TYPE_STR,      "icon"          },
+  { SD_TYPE_STR,      "rank"          },
 };
 
 static const std::string _class_strings[] =
