@@ -346,7 +346,7 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       // FIXME: needs testing
-      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier() * 0.4;
+      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier();
       player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };
@@ -368,7 +368,7 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       // FIXME: needs testing
-      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier() * 0.4;
+      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier();
       player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };
