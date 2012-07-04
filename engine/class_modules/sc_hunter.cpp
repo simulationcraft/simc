@@ -338,7 +338,6 @@ public:
   {
     // Common Talents
     const spell_data_t* dash;
-    const spell_data_t* wild_hunt;
 
     // Cunning
     const spell_data_t* roar_of_sacrifice;
@@ -378,8 +377,6 @@ public:
     gain_t* go_for_the_throat;
   } gains;
 
-  // Benefits
-  benefit_t* benefits_wild_hunt;
 private:
   target_specific_t<hunter_pet_td_t> target_data;
 public:
@@ -493,7 +490,6 @@ public:
   {
     // Common Talents
     talents.spiked_collar     = find_talent_spell( "Spiked Collar" );
-    talents.wild_hunt         = find_talent_spell( "Wild Hunt" );
 
     // Ferocity
     talents.rabid            = find_talent_spell( "Rabid" );
@@ -526,7 +522,6 @@ public:
   {
     pet_t::init_benefits();
 
-    benefits_wild_hunt  = get_benefit( "wild_hunt" );
   }
 
   virtual void init_actions()
@@ -617,6 +612,13 @@ public:
     return composite_attack_hit() * 17.0 / 8.0;
   }
 
+  double composite_spell_power( school_e school )
+  {
+    double sp = pet_t::composite_spell_power( school );
+    sp += 0.125 * owner -> composite_spell_power( school );
+    return sp;
+  }
+
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
@@ -639,6 +641,9 @@ public:
     {
       m *= 1.0 + cast_owner() -> mastery.master_of_beasts -> effectN( 1 ).coeff() / 100.0 * owner -> composite_mastery();
     }
+
+    if ( buffs.bestial_wrath -> up() )
+      m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -893,23 +898,15 @@ struct ranged_t : public hunter_ranged_attack_t
   virtual void trigger_steady_focus()
   { }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result ) )
     {
-      if ( result == RESULT_CRIT )
+      if ( s -> result == RESULT_CRIT )
         trigger_go_for_the_throat( this );
     }
-  }
-
-  virtual void player_buff()
-  {
-    hunter_ranged_attack_t::player_buff();
-
-    // FIXME
-    //player_multiplier *= 1.0 + p()() -> passive_spells.artisan_quiver -> mod_additive( P_GENERIC );
   }
 };
 
@@ -994,12 +991,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> buffs.master_marksman_fire -> expire();
     }
 
-    virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+    virtual void impact_s( action_state_t* s )
     {
-      hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
+      hunter_ranged_attack_t::impact_s( s );
 
-      if ( impact_result == RESULT_CRIT )
-        trigger_piercing_shots( this, t, travel_dmg );
+      if ( s -> result == RESULT_CRIT )
+        trigger_piercing_shots( this, s -> target, s -> result_amount );
     }
   };
 
@@ -1072,12 +1069,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, t, travel_dmg );
+    if ( s -> result == RESULT_CRIT )
+      trigger_piercing_shots( this, s -> target, s -> result_amount );
   }
 };
 
@@ -1349,16 +1346,6 @@ struct cobra_shot_t : public hunter_ranged_attack_t
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );
     }
   }
-
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
-  }
-
-  void player_buff()
-  {
-    hunter_ranged_attack_t::player_buff();
-  }
 };
 
 // Explosive Shot ===========================================================
@@ -1591,17 +1578,17 @@ struct multi_shot_t : public hunter_ranged_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
     //target_t* q = t -> cast_target();
 
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( spread_sting )
         spread_sting -> execute();
-      if ( impact_result == RESULT_CRIT && p() -> specs.bombardment -> ok())
+      if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok())
         p() -> buffs.bombardment -> trigger();
 
       // TODO determine multishot adds in execute.
@@ -1664,11 +1651,11 @@ struct steady_shot_t : public hunter_ranged_attack_t
     p() -> buffs.pre_steady_focus -> trigger( 1 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact( t, impact_result, travel_dmg );
+    hunter_ranged_attack_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) && ! p() -> buffs.master_marksman_fire -> check() )
+    if ( result_is_hit( s -> result ) && ! p() -> buffs.master_marksman_fire -> check() )
     {
       if ( p() -> buffs.master_marksman -> trigger() )
       {
@@ -1680,8 +1667,8 @@ struct steady_shot_t : public hunter_ranged_attack_t
       }
     }
 
-    if ( impact_result == RESULT_CRIT )
-      trigger_piercing_shots( this, t, travel_dmg );
+    if ( s -> result == RESULT_CRIT )
+      trigger_piercing_shots( this, s -> target, s -> result_amount );
   }
 
   virtual bool usable_moving()
@@ -1950,12 +1937,12 @@ struct hunters_mark_t : public hunter_spell_t
     background = ( sim -> overrides.ranged_vulnerability != 0 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_spell_t::impact( t, impact_result, travel_dmg );
+    hunter_spell_t::impact_s( s );
 
     if ( ! sim -> overrides.ranged_vulnerability )
-      t -> debuffs.ranged_vulnerability -> trigger();
+      s -> target -> debuffs.ranged_vulnerability -> trigger();
   }
 };
 
@@ -2166,7 +2153,9 @@ struct hunter_pet_action_t : public Base
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
-  { }
+  {
+    ab::stateless = true;
+  }
 
   hunter_pet_t* p() const
   { return static_cast<hunter_pet_t*>( ab::player ); }
@@ -2208,20 +2197,6 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
         p() -> buffs.rabid_power_stack -> trigger();
       }
     }
-  }
-
-  virtual void player_buff()
-  {
-    base_t::player_buff();
-
-    if ( p() -> buffs.bestial_wrath -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 2 ).percent();
-    
-  }
-
-  virtual void target_debuff( player_t* t, dmg_e dtype )
-  {
-    base_t::target_debuff( t, dtype );
   }
 };
 
@@ -2293,40 +2268,16 @@ struct claw_t : public hunter_pet_attack_t
     }
   }
 
-  virtual void player_buff()
+  virtual double composite_crit()
   {
+    double cc = hunter_pet_attack_t::composite_crit();
+
     hunter_t*     o = p() -> cast_owner();
 
-    hunter_pet_attack_t::player_buff();
-
     if ( o -> buffs.cobra_strikes -> up() )
-      player_crit += o -> buffs.cobra_strikes -> data().effectN( 1 ).percent();
+      cc += o -> buffs.cobra_strikes -> data().effectN( 1 ).percent();
 
-    if ( p() -> talents.wild_hunt -> ok() && ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 ) )
-    {
-      p() -> benefits_wild_hunt -> update( true );
-      player_multiplier *= 1.0 + p() -> talents.wild_hunt -> effectN( 1 ).percent();
-    }
-    else
-      p() -> benefits_wild_hunt -> update( false );
-  }
-
-  virtual double cost()
-  {
-    double basec = hunter_pet_attack_t::cost();
-
-    double c = basec;
-
-    if ( c == 0 )
-      return 0;
-
-    if ( p() -> talents.wild_hunt -> ok() && ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 ) )
-      c *= 1.0 + p() -> talents.wild_hunt -> effectN( 2 ).percent();
-    
-    if ( c < 0 )
-      c = 0;
-
-    return c;
+    return cc;
   }
 };
 
@@ -2356,16 +2307,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
 
 //    base_crit += o -> talents.improved_kill_command -> effectN( 1 ).percent();
   }
-
-  virtual void execute()
-  {
-    hunter_pet_attack_t::execute();
-  }
-
-  virtual void player_buff()
-  {
-    hunter_pet_attack_t::player_buff();
-  }
 };
 
 // ==========================================================================
@@ -2378,23 +2319,6 @@ struct hunter_pet_spell_t : public hunter_pet_action_t<spell_t>
                       const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
-  }
-
-  virtual void player_buff()
-  {
-    hunter_t* o = p() -> cast_owner();
-
-    base_t::player_buff();
-
-    player_spell_power += 0.125 * o -> composite_attack_power();
-
-    if ( p() -> buffs.bestial_wrath -> up() )
-      player_multiplier *= 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 2 ).percent();
-  }
-
-  virtual void target_debuff( player_t* t, dmg_e dtype )
-  {
-    base_t::target_debuff( t, dtype );
   }
 };
 
@@ -2505,12 +2429,12 @@ struct lightning_breath_t : public hunter_pet_spell_t
     background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
+    hunter_pet_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) && ! sim -> overrides.magic_vulnerability )
-      t -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, data().duration() );
+    if ( result_is_hit( s -> result ) && ! sim -> overrides.magic_vulnerability )
+      s -> target -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, data().duration() );
   }
 };
 
@@ -2528,12 +2452,12 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
+    hunter_pet_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_armor )
-      t -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
+    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
+      s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
   }
 };
 
@@ -2551,13 +2475,13 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_blows != 0 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
+    hunter_pet_spell_t::impact_s( s );
 
     // TODO: Is actually an aoe ability
-    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_blows )
-      t -> debuffs.weakened_blows -> trigger( 1, -1.0, -1.0, data().duration() );
+    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_blows )
+      s -> target -> debuffs.weakened_blows -> trigger( 1, -1.0, -1.0, data().duration() );
   }
 };
 
@@ -2591,12 +2515,12 @@ struct tear_armor_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    hunter_pet_spell_t::impact( t, impact_result, travel_dmg );
+    hunter_pet_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) && ! sim -> overrides.weakened_armor )
-      t -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
+    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
+      s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
   }
 };
 
