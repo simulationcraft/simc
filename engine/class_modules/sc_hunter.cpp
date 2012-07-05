@@ -158,7 +158,7 @@ public:
     const spell_data_t* the_beast_within;
     // const spell_data_t* kindred_spirits;
     const spell_data_t* invigoration;
-    // const spell_data_t* exotic_beasts;
+    const spell_data_t* exotic_beasts;
     // 
     // // Marksmanship
     // const spell_data_t* aimed_shot;
@@ -1064,7 +1064,6 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_class_spell( "Arcane Shot" ) )
   {
     parse_options( NULL, options_str );
-//    base_costs[ current_resource() ] += p() -> talents.efficiency -> effectN( 2 ).resource( RESOURCE_FOCUS );
 
     direct_power_mod = 0.0483; // hardcoded into tooltip
   }
@@ -1090,7 +1089,6 @@ struct power_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "power_shot", player, player -> find_class_spell( "Power Shot" ) )
   {
     parse_options( NULL, options_str );
-//    base_costs[ current_resource() ] += p() -> talents.efficiency -> effectN( 2 ).resource( RESOURCE_FOCUS );
   }
 
   virtual void impact_s( action_state_t* state )
@@ -2116,6 +2114,10 @@ struct hunter_pet_action_t : public Base
   hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 
+  void apply_exotic_beast_cd() 
+  {
+    cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
+  }
 };
 
 // ==========================================================================
@@ -2255,13 +2257,24 @@ struct basic_attack_t : public hunter_pet_attack_t
     if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
     {
       p() -> benefits.wild_hunt -> update( true );
-      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
     }
     else
       p() -> benefits.wild_hunt -> update( false );
 
     return am;
   }
+  
+  virtual double cost()
+  {
+    double c = ab::cost();
+
+    if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
+      c *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
+
+    return c;
+  }
+
 };
 
 // Devilsaur Monstrous Bite =================================================
@@ -2273,6 +2286,7 @@ struct monstrous_bite_t : public hunter_pet_attack_t
   {
     parse_options( NULL, options_str );
     auto_cast = true;
+    apply_exotic_beast_cd();
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
   }
@@ -2312,9 +2326,7 @@ struct rabid_t : public hunter_pet_spell_t
   rabid_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "rabid", player, player -> find_spell( 53401 ) )
   {
-
     parse_options( NULL, options_str );
-
   }
 
   virtual void execute()
@@ -2801,6 +2813,7 @@ void hunter_t::init_spells()
   specs.focus_fire           = find_specialization_spell( "Focus Fire" );
   specs.cobra_strikes        = find_specialization_spell( "Cobra Strikes" );
   specs.the_beast_within     = find_specialization_spell( "The Beast Within" );
+  specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
   specs.invigoration         = find_specialization_spell( "Invigoration" );
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
