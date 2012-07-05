@@ -1065,7 +1065,6 @@ void action_t::tick( dot_t* d )
     {
       assert( tick_action -> stateless );
       tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
-      assert( typeid( tick_action -> pre_execute_state ) == typeid( d -> state ) );
       snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
       tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
       tick_action -> execute();
