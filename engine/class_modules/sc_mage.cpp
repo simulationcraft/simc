@@ -322,6 +322,7 @@ public:
 
 };
 
+namespace pets {
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
@@ -336,30 +337,20 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       aoe = -1;
       may_crit = true;
+      stateless = true;
       base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
-    virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+    virtual void impact_s( action_state_t* s )
     {
-      spell_t::impact( t, impact_result, travel_dmg );
+      spell_t::impact_s( s );
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
-      if ( result_is_hit( impact_result ) )
+      if ( result_is_hit( s -> result ) )
       {
         p -> o() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
       }
-    }
-
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      // FIXME: needs testing
-      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier();
-      player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };
 
@@ -370,18 +361,8 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
+      stateless = true;
       base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
-    }
-
-    virtual void player_buff()
-    {
-      spell_t::player_buff();
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      // FIXME: needs testing
-      player_spell_power = p -> o() -> composite_spell_power( SCHOOL_FROST ) * p -> o() -> composite_spell_power_multiplier();
-      player_crit = p -> o() -> composite_spell_crit(); // Needs testing, but closer than before
     }
   };
 
@@ -458,15 +439,19 @@ struct mirror_image_pet_t : public pet_t
     {
       may_crit          = true;
       background        = true;
+      stateless = true;
     }
 
     mirror_image_pet_t* p() const
     { return static_cast<mirror_image_pet_t*>( player ); }
 
-    virtual void player_buff()
+    virtual double action_multiplier()
     {
-      spell_t::player_buff();
-      player_multiplier *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+      double am = spell_t::action_multiplier();
+
+      am *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+      return am;
     }
 
     virtual void execute()
@@ -496,6 +481,7 @@ struct mirror_image_pet_t : public pet_t
     {
       background        = true;
       may_crit          = true;
+      stateless = true;
     }
 
     virtual void execute()
@@ -524,6 +510,7 @@ struct mirror_image_pet_t : public pet_t
     {
       may_crit          = true;
       background        = true;
+      stateless = true;
     }
 
     virtual void execute()
@@ -552,6 +539,7 @@ struct mirror_image_pet_t : public pet_t
     {
       may_crit          = true;
       background        = true;
+      stateless = true;
     }
 
     virtual void execute()
@@ -686,6 +674,8 @@ struct mirror_image_pet_t : public pet_t
   }
 };
 
+} // pets
+
 namespace { // ANONYMOUS NAMESPACE
 
 // ==========================================================================
@@ -706,6 +696,7 @@ struct mage_spell_t : public spell_t
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
+    stateless = true;
   }
 
   mage_t* p() const { return static_cast<mage_t*>( player ); }
@@ -784,17 +775,19 @@ struct mage_spell_t : public spell_t
     return um;
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    spell_t::player_buff();
+    double am = spell_t::action_multiplier();
 
     if ( frozen )
-      player_multiplier *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+      am *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+
+    return am;
   }
 
-  virtual double total_crit()
+  virtual double composite_crit()
   {
-    double c = spell_t::total_crit();
+    double c = spell_t::composite_crit();
 
     if ( frozen && p() -> passives.shatter -> ok() )
     {
@@ -867,7 +860,7 @@ struct mage_spell_t : public spell_t
       p() -> buffs.ice_floes -> decrement();
     }
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       trigger_hot_streak( this );
     }
@@ -910,14 +903,14 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 };
 
 // Mage Ignite specialization
-void trigger_ignite( mage_spell_t* s, player_t* t, double dmg )
+void trigger_ignite( mage_spell_t* s, action_state_t* state )
 {
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
   trigger_ignite_like_mechanic(
       p -> active_ignite, // ignite spell
-      t, // target
-      dmg * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
+      state -> target, // target
+      state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -954,11 +947,13 @@ struct arcane_barrage_t : public mage_spell_t
     p() -> buffs.arcane_charge -> expire();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -1009,18 +1004,20 @@ struct arcane_blast_t : public mage_spell_t
 
     p() -> buffs.arcane_charge -> trigger();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 1 );
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -1065,7 +1062,7 @@ struct arcane_explosion_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
       p() -> buffs.arcane_charge -> trigger();
   }
 };
@@ -1088,11 +1085,13 @@ struct arcane_missiles_tick_t : public mage_spell_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
-    player_multiplier *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -1228,11 +1227,11 @@ struct blizzard_shard_t : public mage_spell_t
     background = true;
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent() );
     }
@@ -1537,23 +1536,23 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    trigger_ignite( this, t, travel_dmg );
+    trigger_ignite( this, s );
   }
 
-  virtual double total_crit()
+  virtual double composite_crit()
   {
-    double c = mage_spell_t::total_crit();
+    double c = mage_spell_t::composite_crit();
 
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -1684,28 +1683,28 @@ struct frostbolt_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
     if ( frozen )
-    {
-      player_multiplier *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
-    }
+      am *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
+
+    return am;
   }
 
-  virtual void impact( player_t* t, result_e travel_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, travel_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    if ( result_is_hit( travel_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
@@ -1751,11 +1750,13 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::execute_time();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
-    player_multiplier *= 1.0 + p() -> buffs.brain_freeze -> check() * p() -> buffs.brain_freeze -> value();
+    am *= 1.0 + p() -> buffs.brain_freeze -> check() * p() -> buffs.brain_freeze -> value();
+
+    return am;
   }
 
   virtual void execute()
@@ -1768,25 +1769,25 @@ struct frostfire_bolt_t : public mage_spell_t
     p() -> buffs.brain_freeze -> expire();
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
 
-      trigger_ignite( this, t, travel_dmg );
+      trigger_ignite( this, s );
 
       if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
   }
 
-  virtual double total_crit()
+  virtual double composite_crit()
   {
-    double c = mage_spell_t::total_crit();
+    double c = mage_spell_t::composite_crit();
 
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -1826,9 +1827,9 @@ struct frozen_orb_t : public mage_spell_t
     add_child( bolt );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
   }
@@ -1898,15 +1899,17 @@ struct ice_lance_t : public mage_spell_t
     p() -> buffs.fingers_of_frost -> decrement();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    mage_spell_t::player_buff();
+    double am = mage_spell_t::action_multiplier();
 
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
-      player_multiplier *= 4.0; // Built in bonus against frozen targets
-      player_multiplier *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
+      am *= 4.0; // Built in bonus against frozen targets
+      am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
     }
+
+    return am;
   }
 };
 
@@ -1967,11 +1970,11 @@ struct inferno_blast_t : public mage_spell_t
     cooldown = p -> cooldowns.inferno_blast;
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    trigger_ignite( this, t, travel_dmg );
+    trigger_ignite( this, s );
   }
 
   virtual result_e calculate_result( double crit, unsigned int level )
@@ -2007,11 +2010,11 @@ struct living_bomb_explosion_t : public mage_spell_t
   virtual resource_e current_resource()
   { return RESOURCE_NONE; }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
+    spell_t::impact_s( s );
     // FIXME: Is this still true?
     // Explosion doesn't trigger ignite
-    spell_t::impact( t, impact_result, travel_dmg );
   }
 };
 
@@ -2279,22 +2282,22 @@ struct pyroblast_t : public mage_spell_t
     p() -> buffs.pyroblast -> expire();
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    trigger_ignite( this, t, travel_dmg );
+    trigger_ignite( this, s );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result) )
     {
       if ( player -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
   }
 
-  virtual double total_crit()
+  virtual double composite_crit()
   {
-    double c = mage_spell_t::total_crit();
+    double c = mage_spell_t::composite_crit();
 
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -2343,21 +2346,21 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    mage_spell_t::impact( t, impact_result, travel_dmg );
+    mage_spell_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_ignite( this, t, travel_dmg );
+      trigger_ignite( this, s );
       if ( p() -> specialization() == MAGE_FROST )
         p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent() );
     }
   }
 
-  virtual double total_crit()
+  virtual double composite_crit()
   {
-    double c = mage_spell_t::total_crit();
+    double c = mage_spell_t::composite_crit();
 
     c *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -2759,8 +2762,8 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "mirror_image_3"  ) return new mirror_image_pet_t   ( sim, this );
-  if ( pet_name == "water_elemental" ) return new water_elemental_pet_t( sim, this );
+  if ( pet_name == "mirror_image_3"  ) return new pets::mirror_image_pet_t   ( sim, this );
+  if ( pet_name == "water_elemental" ) return new pets::water_elemental_pet_t( sim, this );
 
   return 0;
 }
