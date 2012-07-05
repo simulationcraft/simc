@@ -85,6 +85,7 @@ public:
   timespan_t wf_delay_stddev;
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
+  timespan_t autoattack_sync_delay;
   double     eoe_proc_chance;
 
   // Active
@@ -95,7 +96,7 @@ public:
   action_t* action_improved_lava_lash;
 
   // Pets
-  pet_t* pet_feral_spirit;
+  pet_t* pet_feral_spirit[2];
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
@@ -167,6 +168,8 @@ public:
 
     proc_t* fulmination[7];
     proc_t* maelstrom_weapon_used[6];
+    proc_t* melee_sync;
+    proc_t* melee_out_of_sync;
   } proc;
 
   // Random Number Generators
@@ -272,7 +275,7 @@ public:
     player_t( sim, SHAMAN, name, r ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 )
+    autoattack_sync_delay( timespan_t::zero() ), eoe_proc_chance( 0 )
   {
     target_data.init( "target_data", this );
 
@@ -283,7 +286,8 @@ public:
     action_improved_lava_lash = 0;
 
     // Pets
-    pet_feral_spirit     = 0;
+    pet_feral_spirit[ 0 ] = 0;
+    pet_feral_spirit[ 1 ] = 0;
     pet_fire_elemental  = 0;
     pet_earth_elemental = 0;
 
@@ -384,7 +388,7 @@ public:
          attack -> execute_event -> remains() > timespan_t::zero() )
     {
       timespan_t time_to_hit = attack -> execute_event -> remains();
-      time_to_hit *= attack -> swing_haste() / old_swing_haste;
+      time_to_hit *= attack -> swing_haste() / old_swing_haste; 
 
       if ( attack -> sim -> debug )
       {
@@ -614,63 +618,83 @@ struct feral_spirit_pet_t : public pet_t
   struct melee_t : public melee_attack_t
   {
     melee_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "wolf_melee", player, spell_data_t::nil() )
+      melee_attack_t( "melee", player, spell_data_t::nil() )
     {
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       background = true;
       repeating = true;
       may_crit = true;
+      stateless = true;
       school      = SCHOOL_PHYSICAL;
 
       // Two wolves
-      base_multiplier  *= 2.0;
+      //base_multiplier  *= 2.0;
       // TODO: Wolves get no weapon speed based bonus to damage?
       weapon_power_mod /= player -> main_hand_weapon.swing_time.total_seconds();
     }
 
     feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
 
-    virtual void execute()
+    void init()
+    {
+      melee_attack_t::init();
+      
+      pet_t* first_pet = p() -> o() -> find_pet( "spirit_wolf" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
+    }
+
+    virtual void impact_s( action_state_t* state )
     {
       shaman_t* o = p() -> o();
 
-      melee_attack_t::execute();
+      melee_attack_t::impact_s( state );
 
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
-      if ( result_is_hit() )
+      if ( result_is_hit( state -> result ) )
       {
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> check();
-          if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
-          {
-            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
-              o -> proc.wasted_mw -> occur();
+          o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 );
+          o -> proc.maelstrom_weapon -> occur();
 
-            o -> proc.maelstrom_weapon -> occur();
-          }
-        }
-
-        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
-        {
-          int mwstack = o -> buff.maelstrom_weapon -> check();
-          if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
-          {
-            if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
-              o -> proc.wasted_mw -> occur();
-
-            o -> proc.maelstrom_weapon -> occur();
-          }
+          if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
+            o -> proc.wasted_mw -> occur();
         }
       }
+    }
+  };
+  
+  struct spirit_bite_t : public melee_attack_t
+  {
+    spirit_bite_t( feral_spirit_pet_t* player ) :
+      melee_attack_t( "spirit_bite", player, player -> find_spell( 58859 ) )
+    {
+      may_crit  = true;
+      special   = true;
+      stateless = true;
+      direct_power_mod = data().extra_coeff();
+      cooldown -> duration = timespan_t::from_seconds( 7.0 );
+      
+    }
+
+    feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      pet_t* first_pet = p() -> o() -> find_pet( "spirit_wolf" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
     }
   };
 
   melee_t* melee;
 
   feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "feral_spirit" ), melee( 0 )
+    pet_t( sim, owner, "spirit_wolf" ), melee( 0 ) 
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 655; // Level 85 Values, approximated
@@ -698,6 +722,21 @@ struct feral_spirit_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
+  
+  virtual void init_actions()
+  {
+    action_list_str = "spirit_bite";
+
+    pet_t::init_actions();
+  }
+  
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "spirit_bite" ) return new spirit_bite_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
 
   virtual double composite_attack_power()
   {
@@ -706,29 +745,13 @@ struct feral_spirit_pet_t : public pet_t
 
     return ap + ap_per_owner * o() -> composite_attack_power_multiplier() * o() -> composite_attack_power();
   }
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
-    pet_t::summon( duration );
-    melee -> execute(); // Kick-off repeating attack
-  }
+    if ( melee && ! melee -> execute_event )
+      melee -> schedule_execute();
 
-  virtual double composite_attribute_multiplier( attribute_e attr )
-  {
-    if ( attr == ATTR_STRENGTH || attr == ATTR_AGILITY )
-      return 1.0;
-
-    return player_t::composite_attribute_multiplier( attr );
-  }
-
-  virtual double composite_attack_power_multiplier()
-  {
-    return current.attack_power_multiplier;
-  }
-
-  virtual double composite_player_multiplier( school_e, action_t* )
-  {
-    return 1.0;
+    pet_t::schedule_ready( delta_time, waiting );
   }
 };
 
@@ -820,6 +843,8 @@ struct earth_elemental_pet_t : public pet_t
     main_hand_weapon.max_dmg    = 409;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base()
@@ -841,16 +866,6 @@ struct earth_elemental_pet_t : public pet_t
   {
     pet_t::summon();
     owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
-  }
-
-  virtual double composite_spell_power( school_e )
-  {
-    return owner_sp;
-  }
-
-  virtual double composite_attack_power()
-  {
-    return 0.0;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -879,12 +894,16 @@ struct fire_elemental_t : public pet_t
   {
     fire_elemental_t* p;
 
-    fire_elemental_spell_t( const std::string& t, fire_elemental_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    fire_elemental_spell_t( const std::string& t, fire_elemental_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
       spell_t( t, p, s ), p( p )
     {
-      school    = SCHOOL_FIRE;
-      stateless = true;
-      crit_bonus_multiplier *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+      parse_options( 0, options );
+
+      school                      = SCHOOL_FIRE;
+      stateless                   = true;
+      may_crit                    = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
     }
 
     virtual double composite_da_multiplier()
@@ -952,12 +971,9 @@ struct fire_elemental_t : public pet_t
 */
   struct fire_blast_t : public fire_elemental_spell_t
   {
-    fire_blast_t( fire_elemental_t* player ) :
-      fire_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ) )
+    fire_blast_t( fire_elemental_t* player, const std::string& options ) :
+      fire_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
     {
-      may_crit                    = true;
-      base_costs[ RESOURCE_MANA ] = 0;
-
       base_dd_min        = 1 + ( p -> o() -> level - 10 );
       base_dd_max        = 1 + ( p -> o() -> level - 10 ) + 1;
     }
@@ -975,6 +991,13 @@ struct fire_elemental_t : public pet_t
     {
       return true;
     }
+  };
+  
+  struct immolate_t : public fire_elemental_spell_t
+  {
+    immolate_t( fire_elemental_t* player, const std::string& options ) :
+      fire_elemental_spell_t( "immolate", player, player -> find_spell( 118297 ), options )
+    { }
   };
 
   struct fire_melee_t : public melee_attack_t
@@ -1041,10 +1064,10 @@ struct fire_elemental_t : public pet_t
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
 
   fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, "fire_elemental", guardian /*GUARDIAN*/ )
+    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "fire_elemental", guardian /*GUARDIAN*/ )
   {
-    intellect_per_owner         = 0.0;
     stamina_per_owner           = 1.0;
+    owner_coeff.sp_from_sp = 0.55;
   }
 
   virtual void init_base()
@@ -1062,44 +1085,34 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.max_dmg         = 344;
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
+  }
+  
+  void init_actions()
+  {
+    action_list_str = "travel/auto_attack";
+    if ( type == PLAYER_PET )
+      action_list_str += "/immolate,if=!ticking";
+    else
+      action_list_str += "/fire_blast";
 
-    // Run menacingly to the target, start meleeing and acting erratically
-    //action_list_str                  = "travel/auto_attack/fire_nova/fire_blast";
-    action_list_str                  = "travel/fire_blast/auto_attack";
+    pet_t::init_actions();
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-
-  virtual void regen( timespan_t periodicity )
-  {
-    if ( ! recent_cast() )
-    {
-      resource_gain( RESOURCE_MANA, 10.66 * periodicity.total_seconds() ); // FIXME! Does regen scale with gear???
-    }
-  }
 
   virtual double composite_player_multiplier( school_e school, action_t* a = 0 )
   {
     return pet_t::composite_player_multiplier( school, a ) * ( ( type == PLAYER_PET ) ? 1.5 : 1.0 );
   }
 
-  virtual double composite_spell_power( school_e school )
-  {
-    return owner -> composite_spell_power( school ) * 0.55;
-  }
-
-  virtual double composite_attack_power()
-  {
-    return 0.0;
-  }
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "travel"      ) return new travel_t     ( this );
+    if ( name == "travel"      ) return new travel_t( this );
+    if ( name == "fire_blast"  ) return new fire_blast_t( this, options_str );
+    if ( name == "auto_attack" ) return new auto_melee_attack_t( this );
+    if ( name == "immolate"    ) return new immolate_t( this, options_str );
 //    if ( name == "fire_nova"   ) return new fire_nova_t  ( this );
-    if ( name == "fire_blast"  ) return new fire_blast_t ( this );
-    if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1763,13 +1776,22 @@ struct windlash_t : public shaman_melee_attack_t
   {
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
-      if ( sim -> debug ) sim -> output( "Executing '%s' during windlash (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
       schedule_execute();
     }
     else
     {
+      if ( ( weapon -> slot == SLOT_MAIN_HAND && 
+             player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
+             player -> off_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) ||
+           ( weapon -> slot == SLOT_OFF_HAND &&
+             player -> main_hand_attack -> execute_event &&
+             player -> main_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) )
+      {
+        p() -> buff.flurry -> decrement();
+      }
+
       p() -> buff.unleash_wind -> decrement();
-      p() -> buff.flurry       -> decrement();
 
       shaman_melee_attack_t::execute();
     }
@@ -1893,8 +1915,22 @@ struct melee_t : public shaman_melee_attack_t
     }
     else
     {
+      // Decrement flurry only if the time between main and off-hand autoattacks
+      // is over shaman_t::autoattack_sync_delay. Default is 0ms, i.e., you need
+      // perfectly synced swings
+      if ( ( weapon -> slot == SLOT_MAIN_HAND && 
+             player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
+             player -> off_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) ||
+           ( weapon -> slot == SLOT_OFF_HAND &&
+             player -> main_hand_attack -> execute_event &&
+             player -> main_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) )
+      {
+        p() -> proc.melee_out_of_sync -> occur();
+        p() -> buff.flurry -> decrement();
+      }
+      else
+        p() -> proc.melee_sync -> occur();
       p() -> buff.unleash_wind -> decrement();
-      p() -> buff.flurry       -> decrement();
 
       shaman_melee_attack_t::execute();
     }
@@ -2991,7 +3027,8 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> pet_feral_spirit -> summon( data().duration() );
+    p() -> pet_feral_spirit[ 0 ] -> summon( data().duration() );
+    p() -> pet_feral_spirit[ 1 ] -> summon( data().duration() );
   }
 };
 
@@ -4027,10 +4064,10 @@ struct ascendance_buff_t : public buff_t
   }
 };
 
-struct flurry_buff_t : public buff_t
+struct haste_buff_t : public buff_t
 {
-  flurry_buff_t( shaman_t* p, const spell_data_t* s ) :
-    buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) )
+  haste_buff_t( buff_creator_t creator ) :
+    buff_t( creator )
   { }
 
   void execute( int stacks, double value, timespan_t duration )
@@ -4078,6 +4115,20 @@ struct flurry_buff_t : public buff_t
   }
 };
 
+struct flurry_buff_t : public haste_buff_t
+{
+  flurry_buff_t( shaman_t* p, const spell_data_t* s ) :
+    haste_buff_t( buff_creator_t( p, "flurry", s ).chance( s -> proc_chance() ).activated( false ) )
+  { }
+};
+
+struct unleash_wind_buff_t : public haste_buff_t
+{
+  unleash_wind_buff_t( shaman_t* p, const spell_data_t* s ) :
+    haste_buff_t( buff_creator_t( p, "unleash_wind", s ) )
+  { }
+};
+
 // ==========================================================================
 // Shaman Character Definition
 // ==========================================================================
@@ -4095,6 +4146,7 @@ void shaman_t::create_options()
     { "uf_expiration_delay",        OPT_TIMESPAN, &( uf_expiration_delay        ) },
     { "uf_expiration_delay_stddev", OPT_TIMESPAN, &( uf_expiration_delay_stddev ) },
     { "eoe_proc_chance",            OPT_FLT,      &( eoe_proc_chance            ) },
+    { "autoattack_sync_delay",      OPT_TIMESPAN, &( autoattack_sync_delay      ) },
     { NULL,                         OPT_UNKNOWN,  NULL                            }
   };
 
@@ -4166,7 +4218,8 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  pet_feral_spirit        = create_pet( "feral_spirit"            );
+  pet_feral_spirit[ 0 ]   = create_pet( "feral_spirit"            );
+  pet_feral_spirit[ 1 ]   = create_pet( "feral_spirit"            );
   pet_fire_elemental      = create_pet( "fire_elemental_pet"      );
   guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
   pet_earth_elemental     = create_pet( "earth_elemental"         );
@@ -4336,9 +4389,6 @@ void shaman_t::init_buffs()
   buff.elemental_mastery   = buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                              .chance( 1.0 );
   buff.flurry              = new flurry_buff_t( this, spec.flurry -> effectN( 1 ).trigger() );
-  //buff.flurry              = buff_creator_t( this, "flurry", spec.flurry -> effectN( 1 ).trigger() )
-//    .chance( spec.flurry -> proc_chance() );
-//                             .activated( false );
   buff.lava_surge          = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                              .activated( false );
   buff.lightning_shield    = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
@@ -4359,7 +4409,8 @@ void shaman_t::init_buffs()
                                         glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
                                         sets -> set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
   buff.unleash_flame       = new unleash_flame_buff_t( this );
-  buff.unleash_wind        = buff_creator_t( this, "unleash_wind", dbc.spell( 73681 ) );
+  //buff.unleash_wind        = buff_creator_t( this, "unleash_wind", dbc.spell( 73681 ) );
+  buff.unleash_wind        = new unleash_wind_buff_t( this, dbc.spell( 73681 ) );
   buff.unleashed_fury_wf   = buff_creator_t( this, "unleashed_fury_wf", dbc.spell( 118472 ) );
   buff.water_shield        = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
 
@@ -4420,6 +4471,8 @@ void shaman_t::init_procs()
   proc.elemental_overload = get_proc( "elemental_overload"      );
   proc.lava_surge         = get_proc( "lava_surge"              );
   proc.maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
+  proc.melee_sync         = get_proc( "auto_attack_sync"        );
+  proc.melee_out_of_sync  = get_proc( "auto_attack_out_of_sync" );
   proc.static_shock       = get_proc( "static_shock"            );
   proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
   proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
@@ -4596,7 +4649,7 @@ void shaman_t::init_actions()
     if ( level >= 10 ) single_s << "/lava_lash";
     if ( talent.elemental_blast -> ok() )
       single_s << "/elemental_blast";
-    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)";
+    single_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 81 ) single_s << "/unleash_elements";
     if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|buff.unleash_flame.up";
     if ( level >= 6  ) single_s << "/earth_shock";
@@ -4615,8 +4668,8 @@ void shaman_t::init_actions()
     if ( level >= 10 ) aoe_s << "/lava_lash";
     if ( level >= 81 ) aoe_s << "/unleash_elements";
     if ( level >= 20 ) aoe_s << "/fire_nova";
-    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active))";
-    aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)";
+    if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active))";
+    aoe_s << "/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)";
     if ( level >= 12 ) aoe_s << "/flame_shock,cycle_targets=1,if=!ticking";
     if ( level >= 60 ) aoe_s << "/feral_spirit";
     if ( level >= 28 ) aoe_s << "/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1";
@@ -4767,7 +4820,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
 
 double shaman_t::composite_spell_haste()
 {
-  double h = player_t::composite_attack_haste() / spell_haste;
+  double h = player_t::composite_spell_haste() / spell_haste;
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + buff.flurry -> data().effectN( 2 ).percent();
