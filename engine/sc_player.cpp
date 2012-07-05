@@ -5263,6 +5263,14 @@ struct snapshot_stats_t : public action_t
 
     p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
     p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+
+    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    {
+      pet_t* pet = p -> pet_list[ i ];
+      action_t* pet_snapshot = pet -> find_action( "snapshot_stats" );
+      if ( ! pet_snapshot ) pet_snapshot = pet -> create_action( "snapshot_stats", "" );
+      pet_snapshot -> execute();
+    }
   }
 
   virtual void reset()

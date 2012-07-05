@@ -867,8 +867,7 @@ struct imp_pet_t : public warlock_pet_t
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" ) :
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
-    action_list_str = "snapshot_stats";
-    action_list_str += "/firebolt";
+    action_list_str = "firebolt";
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -885,8 +884,7 @@ struct felguard_pet_t : public warlock_pet_t
   felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" ) :
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
-    action_list_str = "snapshot_stats";
-    action_list_str += "/legion_strike";
+    action_list_str = "legion_strike";
   }
 
   virtual void init_base()
@@ -911,8 +909,7 @@ struct felhunter_pet_t : public warlock_pet_t
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ) :
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
-    action_list_str = "snapshot_stats";
-    action_list_str += "/shadow_bite";
+    action_list_str = "shadow_bite";
   }
 
   virtual void init_base()
@@ -936,8 +933,7 @@ struct succubus_pet_t : public warlock_pet_t
   succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" ) :
     warlock_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
   {
-    action_list_str = "snapshot_stats";
-    action_list_str += "/lash_of_pain";
+    action_list_str = "lash_of_pain";
     owner_coeff.ap_from_sp = 1.667;
   }
 
@@ -963,8 +959,7 @@ struct voidwalker_pet_t : public warlock_pet_t
   voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" ) :
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
-    action_list_str = "snapshot_stats";
-    action_list_str += "/torment";
+    action_list_str = "torment";
   }
 
   virtual void init_base()
@@ -988,8 +983,7 @@ struct infernal_pet_t : public warlock_pet_t
   infernal_pet_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
-    action_list_str = "snapshot_stats";
-    if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
+    action_list_str = "immolation,if=!ticking";
     owner_coeff.ap_from_sp = 0.5;
   }
 
@@ -1019,8 +1013,7 @@ struct doomguard_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    action_list_str = "snapshot_stats";
-    action_list_str += "/doom_bolt";
+    action_list_str = "doom_bolt";
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1042,8 +1035,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   {
     warlock_pet_t::init_base();
 
-    action_list_str = "snapshot_stats";
-    action_list_str += "/firebolt";
+    action_list_str = "firebolt";
 
     resources.base[ RESOURCE_ENERGY ] = 10;
     base_energy_regen_per_second = 0;
