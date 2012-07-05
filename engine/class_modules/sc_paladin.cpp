@@ -542,7 +542,7 @@ struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
 
     if ( p() -> buffs.divine_shield -> up() )
     {
-      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effect1().percent();
+      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
     }
   }
 };
@@ -565,7 +565,7 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
 
     if ( p() -> buffs.divine_shield -> up() )
     {
-      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effect1().percent();
+      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
     }
   }
 
@@ -622,8 +622,8 @@ static void trigger_beacon_of_light( paladin_heal_t* h )
   p -> active_beacon_of_light -> target = p -> beacon_target;
 
 
-  p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effect1().percent();
-  p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effect1().percent();
+  p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+  p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
 
   // Holy light heals for 100% instead of 50%
   if ( h -> data().id() == p -> spells.holy_light -> id() )
@@ -677,7 +677,7 @@ static void trigger_illuminated_healing( paladin_heal_t* h )
 
   // FIXME: This should stack when the buff is present already
 
-  double bubble_value = p -> passives.illuminated_healing -> effect2().base_value() / 10000.0
+  double bubble_value = p -> passives.illuminated_healing -> effectN( 2 ).base_value() / 10000.0
                         * p -> composite_mastery()
                         * h -> direct_dmg;
 
@@ -1562,7 +1562,7 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p() -> buffs.avenging_wrath -> trigger( 1, data().effect1().percent() );
+    p() -> buffs.avenging_wrath -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
 
@@ -1840,7 +1840,7 @@ struct inquisition_t : public paladin_spell_t
 
   inquisition_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ),
-      base_duration( data().duration() ), m( data().effect1().percent() )
+      base_duration( data().duration() ), m( data().effectN( 1 ).percent() )
   {
     parse_options( NULL, options_str );
 
@@ -1943,7 +1943,7 @@ struct divine_light_t : public paladin_heal_t
     timespan_t t = paladin_heal_t::execute_time();
 
     if ( p() -> buffs.infusion_of_light -> up() )
-      t += p() -> buffs.infusion_of_light -> data().effect1().time_value();
+      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
   }
@@ -1972,7 +1972,7 @@ struct flash_of_light_t : public paladin_heal_t
     timespan_t t = paladin_heal_t::execute_time();
 
     if ( p() -> buffs.infusion_of_light -> up() )
-      t += p() -> buffs.infusion_of_light -> data().effect1().time_value();
+      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
   }
@@ -2001,7 +2001,7 @@ struct holy_light_t : public paladin_heal_t
     timespan_t t = paladin_heal_t::execute_time();
 
     if ( p() -> buffs.infusion_of_light -> up() )
-      t += p() -> buffs.infusion_of_light -> data().effect1().time_value();
+      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
   }
@@ -2030,9 +2030,9 @@ struct holy_radiance_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     // FIXME: This is an AoE Hot, which isn't supported currently
-    aoe = data().effect2().base_value();
+    aoe = data().effectN( 2 ).base_value();
 
-    hot = new holy_radiance_hot_t( p, data().effect1().trigger_spell_id() );
+    hot = new holy_radiance_hot_t( p, data().effectN( 1 ).trigger_spell_id() );
   }
 
   virtual void tick( dot_t* d )
@@ -2054,7 +2054,7 @@ struct holy_radiance_t : public paladin_heal_t
     timespan_t t = paladin_heal_t::execute_time();
 
     if ( p() -> buffs.infusion_of_light -> up() )
-      t += p() -> buffs.infusion_of_light -> data().effect1().time_value();
+      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
 
     return t;
   }
@@ -2086,7 +2086,7 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
-    int g = p() -> dbc.spell( 25914 ) -> effect2().base_value();
+    int g = p() -> dbc.spell( 25914 ) -> effectN( 2 ).base_value();
     p() -> resource_gain( RESOURCE_HOLY_POWER,
                           g,
                           p() -> gains.hp_holy_shock );
@@ -2970,7 +2970,7 @@ void paladin_t::regen( timespan_t periodicity )
   }
   if ( buffs.judgments_of_the_wise -> up() )
   {
-    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgments_of_the_wise -> data().effect1().percent();
+    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgments_of_the_wise -> data().effectN( 1 ).percent();
     double amount = periodicity.total_seconds() * tot_amount / buffs.judgments_of_the_wise -> buff_duration.total_seconds();
     resource_gain( RESOURCE_MANA, amount, gains.judgments_of_the_wise );
   }
@@ -2993,17 +2993,17 @@ double paladin_t::assess_damage( double        amount,
   }
 
   if ( buffs.gotak_prot -> up() )
-    amount *= 1.0 + dbc.spell( 86657 ) -> effect2().percent(); // Value of the buff is stored in another spell
+    amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
 
   if ( buffs.divine_protection -> up() )
   {
     if ( util::school_type_component( school, SCHOOL_MAGIC ) )
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect1().percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
+      amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
     }
     else
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effect2().percent() + glyphs.divine_protection -> effectN( 2 ).percent();
+      amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
     }
   }
 

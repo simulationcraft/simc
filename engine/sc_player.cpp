@@ -2060,13 +2060,13 @@ void player_t::init_buffs()
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 15.0 ) )
                           .stat( STAT_ATTACK_POWER )
-                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect1().id(), sim -> max_player_level ) ) );
+                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effectN( 1 ).id(), sim -> max_player_level ) ) );
 
     buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp" )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 15.0 ) )
                           .stat( STAT_SPELL_POWER )
-                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effect2().id(), sim -> max_player_level ) ) );
+                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effectN( 2 ).id(), sim -> max_player_level ) ) );
 
       buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
 

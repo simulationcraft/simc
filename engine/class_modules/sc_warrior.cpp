@@ -3583,7 +3583,7 @@ double warrior_t::composite_tank_crit_block()
 {
   double b = player_t::composite_tank_crit_block();
 
-  b += composite_mastery() * mastery.critical_block->effect1().coeff() / 100.0;
+  b += composite_mastery() * mastery.critical_block->effectN( 1 ).coeff() / 100.0;
 
   if ( buffs_hold_the_line -> up() )
     b += 0.10;

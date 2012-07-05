@@ -1421,7 +1421,7 @@ struct death_knight_action_t : public Base
         if ( p -> buffs.frost_presence -> check() )
         {
           p -> resource_gain( RESOURCE_RUNIC_POWER,
-                              action_base_t::rp_gain * p -> dbc.spell( 48266 ) -> effect2().percent(),
+                              action_base_t::rp_gain * p -> dbc.spell( 48266 ) -> effectN( 2 ).percent(),
                               p -> gains.frost_presence );
         }
         p -> resource_gain( RESOURCE_RUNIC_POWER, action_base_t::rp_gain, rp_gains );
@@ -1819,7 +1819,7 @@ struct melee_t : public death_knight_melee_attack_t
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect1().percent() ) ) ? 2 : 1;
+        int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
         ( void )new_stacks;
       }
 
@@ -2838,7 +2838,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
       // Ensure that if we have 1 that we only refresh, not add another stack
-      int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effect2().percent() ) ) ? 2 : 1;
+      int new_stacks = ( p -> set_bonus.tier13_2pc_melee() && sim -> roll( p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) ) ? 2 : 1;
       ( void )new_stacks;
     }
 
@@ -2876,7 +2876,7 @@ struct outbreak_t : public death_knight_spell_t
 
     may_crit = false;
 
-    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effect3().time_value();
+    cooldown -> duration += p -> spells.veteran_of_the_third_war -> effectN( 3 ).time_value();
 
     assert( p -> active_spells.blood_plague );
     assert( p -> active_spells.frost_fever );
@@ -3135,7 +3135,7 @@ struct presence_t : public death_knight_spell_t
       break;
     case PRESENCE_FROST:
     {
-      double fp_value = p -> dbc.spell( 48266 ) -> effect1().percent();
+      double fp_value = p -> dbc.spell( 48266 ) -> effectN( 1 ).percent();
       p -> buffs.frost_presence -> trigger( 1, fp_value );
     }
     break;
@@ -3171,7 +3171,7 @@ struct raise_dead_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += p -> spells.master_of_ghouls -> effect1().time_value();
+    cooldown -> duration += p -> spells.master_of_ghouls -> effectN( 1 ).time_value();
 
     harmful = false;
   }
@@ -3181,7 +3181,7 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     death_knight_t* p = cast();
 
-    p -> pets.ghoul -> summon( ( p -> specialization() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effect1().base_value() ) -> duration() );
+    p -> pets.ghoul -> summon( ( p -> specialization() == DEATH_KNIGHT_UNHOLY ) ? timespan_t::zero() : p -> dbc.spell( data().effectN( 1 ).base_value() ) -> duration() );
   }
 
   virtual bool ready()
@@ -3682,12 +3682,12 @@ void death_knight_t::init_base()
 
   double str_mult = 0.0;
 
-  str_mult += spells.unholy_might -> effect1().percent();
+  str_mult += spells.unholy_might -> effectN( 1 ).percent();
 
   initial.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + str_mult;
 
-  initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effect1().percent();
-  base.attack_expertise = spells.veteran_of_the_third_war -> effect2().percent();
+  initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spells.veteran_of_the_third_war -> effectN( 1 ).percent();
+  base.attack_expertise = spells.veteran_of_the_third_war -> effectN( 2 ).percent();
 
   base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
@@ -4014,7 +4014,7 @@ void death_knight_t::init_enchant()
       death_knight_spell_t::target_debuff( t, dtype );
       death_knight_t* p = cast();
 
-      target_multiplier /= 1.0 + p -> buffs.rune_of_razorice -> check() * p -> buffs.rune_of_razorice -> data().effect1().percent();
+      target_multiplier /= 1.0 + p -> buffs.rune_of_razorice -> check() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
     }
   };
 
@@ -4129,7 +4129,7 @@ void death_knight_t::init_buffs()
                               .duration( timespan_t::from_seconds( 10.0 ) )
                               .cd( timespan_t::zero() )
                               .chance( 1.0 );
-  buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" ).spell( find_spell( 105647 ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effect1().base_value() );
+  buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" ).spell( find_spell( 105647 ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effectN( 1 ).base_value() );
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
 
   struct bloodworms_buff_t : public buff_t
@@ -4252,7 +4252,7 @@ double death_knight_t::assess_damage( double            amount,
                                       action_t*         action )
 {
   if ( buffs.blood_presence -> check() )
-    amount *= 1.0 - dbc.spell( 61261 ) -> effect1().percent();
+    amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
 
   if ( result != RESULT_MISS )
     buffs.scent_of_blood -> trigger();
@@ -4270,7 +4270,7 @@ double death_knight_t::composite_armor_multiplier()
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs.blood_presence -> check() )
-    a += buffs.blood_presence -> data().effect1().percent();
+    a += buffs.blood_presence -> data().effectN( 1 ).percent();
 
   return a;
 }
@@ -4302,11 +4302,11 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr )
 
   if ( tree == DEATH_KNIGHT_UNHOLY || tree == DEATH_KNIGHT_FROST )
     if ( attr == ATTR_STRENGTH )
-      return spells.plate_specialization -> effect1().percent();
+      return spells.plate_specialization -> effectN( 1 ).percent();
 
   if ( tree == DEATH_KNIGHT_BLOOD )
     if ( attr == ATTR_STAMINA )
-      return spells.plate_specialization -> effect1().percent();
+      return spells.plate_specialization -> effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -4345,10 +4345,10 @@ double death_knight_t::composite_player_multiplier( school_e school, action_t* a
   m *= 1.0 + buffs.bone_shield -> value();
 
   if ( school == SCHOOL_SHADOW )
-    m *= 1.0 + spells.dreadblade -> effect1().coeff() * 0.01 * composite_mastery();
+    m *= 1.0 + spells.dreadblade -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
 
   if ( school == SCHOOL_FROST )
-    m *= 1.0 + spells.frozen_heart -> effect1().coeff() * 0.01 * composite_mastery();
+    m *= 1.0 + spells.frozen_heart -> effectN( 1 ).coeff() * 0.01 * composite_mastery();
 
   return m;
 }

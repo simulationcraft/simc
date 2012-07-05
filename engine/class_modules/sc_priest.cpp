@@ -1883,7 +1883,7 @@ struct mind_blast_t : public priest_spell_t
       return timespan_t::zero();
     }
 
-    a *= 1 + ( p() -> buffs.glyph_mind_spike -> stack() * p() -> glyphs.mind_spike -> effect1().percent() );
+    a *= 1 + ( p() -> buffs.glyph_mind_spike -> stack() * p() -> glyphs.mind_spike -> effectN( 1 ).percent() );
 
     return a;
   }
@@ -3446,7 +3446,7 @@ struct divine_hymn_t : public priest_heal_t
     dynamic_tick_action = true;
 
     tick_action = new divine_hymn_tick_t( p, data().effectN( 2 ).base_value() );
-    add_child( divine_hymn_tick );
+    add_child( tick_action );
   }
 
 };
@@ -4697,7 +4697,7 @@ void priest_t::init_buffs()
                                            .activated( false );
   buffs.archangel                   = buff_creator_t( this, "archangel", find_spell( 81700 ) )
                                            .chance( specs.archangel -> ok() )
-                                           .default_value( find_spell( 81700 ) -> effect1().percent() );
+                                           .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
                                            .cd( timespan_t::zero() );

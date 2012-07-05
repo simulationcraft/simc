@@ -1281,7 +1281,7 @@ static void register_bonelink_fetish( item_t* item )
     bonelink_fetish_callback_t( player_t* p, uint32_t id ) :
       action_callback_t( p ), chance( p -> dbc.spell( id ) -> proc_chance() )
     {
-      attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effect1().trigger_spell_id() );
+      attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effectN( 1 ).trigger_spell_id() );
 
       cooldown = p -> get_cooldown( "bonelink_fetish" );
       cooldown -> duration = timespan_t::from_seconds( 25.0 ); // 25 second ICD
@@ -1726,7 +1726,7 @@ static void register_titahk( item_t* item )
   bool lfr    = item -> lfr();
 
   uint32_t spell_id = heroic ? 109846 : lfr ? 109843 : 107805;
-  uint32_t buff_id = p -> dbc.spell( spell_id ) -> effect1().trigger_spell_id();
+  uint32_t buff_id = p -> dbc.spell( spell_id ) -> effectN( 1 ).trigger_spell_id();
 
   const spell_data_t* spell = p -> dbc.spell( spell_id );
   const spell_data_t* buff  = p -> dbc.spell( buff_id );
@@ -1746,11 +1746,11 @@ static void register_titahk( item_t* item )
       timespan_t duration = buff -> duration();
       buff_self   = stat_buff_creator_t( p, "titahk_self" ).duration( duration )
                     .cd( timespan_t::from_seconds( 45.0 ) ) // FIXME: Confirm ICD
-                    .stat( STAT_HASTE_RATING ).amount( buff -> effect1().base_value() );
+                    .stat( STAT_HASTE_RATING ).amount( buff -> effectN( 1 ).base_value() );
 
       buff_radius = stat_buff_creator_t( p, "titahk_aoe" ).duration( duration )
                     .cd( timespan_t::from_seconds( 45.0 ) )// FIXME: Confirm ICD
-                    .stat( STAT_HASTE_RATING ).amount( buff -> effect2().base_value() ); // FIXME: Apply aoe buff to other players
+                    .stat( STAT_HASTE_RATING ).amount( buff -> effectN( 2 ).base_value() ); // FIXME: Apply aoe buff to other players
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )

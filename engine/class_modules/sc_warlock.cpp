@@ -3934,7 +3934,7 @@ double warlock_t::composite_spell_power_multiplier()
 
   if ( buffs.tier13_4pc_caster -> up() )
   {
-    m *= 1.0 + sets -> set ( SET_T13_4PC_CASTER ) -> effect1().percent();
+    m *= 1.0 + sets -> set ( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   return m;

@@ -494,7 +494,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
     may_crit  = true;
 
-    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
   shaman_spell_t( shaman_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
@@ -506,7 +506,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
 
     may_crit  = true;
 
-    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effect1().percent();
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
   action_state_t* new_state() { return new shaman_spell_state_t( this, target ); }
@@ -535,7 +535,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
       h *= 1.0 / ( 1.0 + p() -> buff.elemental_mastery -> data().effectN( 1 ).percent() );
 
     if ( p() -> buff.tier13_4pc_healer -> up() )
-      h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> data().effect1().percent() );
+      h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
 
     if ( p() -> talent.ancestral_swiftness -> ok() )
       h *= 1.0 / 1.05;
@@ -640,7 +640,7 @@ struct feral_spirit_pet_t : public pet_t
       // Two independent chances to proc it since we model 2 wolf pets as 1 ..
       if ( result_is_hit() )
       {
-        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
+        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> check();
           if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
@@ -652,7 +652,7 @@ struct feral_spirit_pet_t : public pet_t
           }
         }
 
-        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effect1().percent() ) )
+        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> check();
           if ( o -> buff.maelstrom_weapon -> trigger( 1, -1, 1.0 ) )
@@ -909,7 +909,7 @@ struct fire_elemental_t : public pet_t
       may_crit                  = true;
       base_execute_time         = timespan_t::from_seconds( 3.0 );
       base_dd_min = base_dd_max = 89;
-      direct_power_mod          = player -> dbc.spell( 13376 ) -> effect1().coeff();
+      direct_power_mod          = player -> dbc.spell( 13376 ) -> effectN( 1 ).coeff();
     }
 
     virtual void execute()
@@ -928,7 +928,7 @@ struct fire_elemental_t : public pet_t
     {
       aoe                  = -1;
       may_crit             = true;
-      direct_power_mod     = player -> dbc.spell( 12470 ) -> effect1().coeff();
+      direct_power_mod     = player -> dbc.spell( 12470 ) -> effectN( 1 ).coeff();
       cooldown -> duration = timespan_t::from_seconds( player -> rng_ability_cooldown -> range( 30.0, 60.0 ) );
 
       // 207 = 80
@@ -1179,7 +1179,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
   if ( p -> rng.rolling_thunder -> roll( p -> spec.rolling_thunder -> proc_chance() ) )
   {
     p -> resource_gain( RESOURCE_MANA,
-                        p -> dbc.spell( 88765 ) -> effect1().percent() * p -> resources.max[ RESOURCE_MANA ],
+                        p -> dbc.spell( 88765 ) -> effectN( 1 ).percent() * p -> resources.max[ RESOURCE_MANA ],
                         p -> gain.rolling_thunder );
 
     if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
@@ -1823,7 +1823,7 @@ void shaman_melee_attack_t::impact_s( action_state_t* state )
 
     if ( p() -> rng.primal_wisdom -> roll( p() -> spec.primal_wisdom -> proc_chance() ) )
     {
-      double amount = p() -> spell.primal_wisdom -> effect1().percent() * p() -> resources.base[ RESOURCE_MANA ];
+      double amount = p() -> spell.primal_wisdom -> effectN( 1 ).percent() * p() -> resources.base[ RESOURCE_MANA ];
       p() -> resource_gain( RESOURCE_MANA, amount, p() -> gain.primal_wisdom );
     }
 
