@@ -28,7 +28,7 @@ actions+=/run_action_list,name=ae,if=num_targets>1
 actions.single=searing_totem
 actions.single+=/stormstrike
 actions.single+=/lava_lash
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions.single+=/unleash_elements
 actions.single+=/flame_shock,if=!ticking|buff.unleash_flame.up
 actions.single+=/earth_shock
@@ -42,8 +42,8 @@ actions.ae+=/stormstrike
 actions.ae+=/lava_lash
 actions.ae+=/unleash_elements
 actions.ae+=/fire_nova
-actions.ae+=/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active))
-actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.feral_spirit.active)
+actions.ae+=/chain_lightning,if=num_targets>2&(buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active))
+actions.ae+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(set_bonus.tier13_4pc_melee=1&buff.maelstrom_weapon.react>=4&pet.spirit_wolf.active)
 actions.ae+=/flame_shock,cycle_targets=1,if=!ticking
 actions.ae+=/feral_spirit
 actions.ae+=/chain_lightning,if=num_targets>2&buff.maelstrom_weapon.react>1
