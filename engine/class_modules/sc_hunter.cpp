@@ -481,9 +481,6 @@ public:
     base.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
     base.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
-    base.attack_power = -20;
-    initial.attack_power_per_strength = 2.0;
-
     base.attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
 
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
@@ -567,17 +564,14 @@ public:
   {
     double ap = pet_t::composite_attack_power();
 
-    ap += owner -> composite_attack_power() * 0.425;
-
     return ap;
   }
 
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
-
     mult *= 1.0 + buffs.rabid_power_stack -> stack() * buffs.rabid_power_stack -> data().effectN( 1 ).percent();
-
+    // TODO pet charge should show up here.
     return mult;
   }
 
@@ -585,13 +579,8 @@ public:
   {
     double ac = pet_t::composite_attack_crit( 0 );
 
-    ac += owner -> composite_attack_crit( &( owner -> main_hand_weapon ) );
-
-    if ( talents.spiked_collar -> ok() )
-    {
-      ac *= 1.0 + talents.spiked_collar -> effectN( 3 ).percent();
-    }
-
+    ac *= 1.0 + talents.spiked_collar -> effectN( 3 ).percent();
+    
     return ac;
   }
 
@@ -600,29 +589,13 @@ public:
     double h = owner -> composite_attack_haste();
 
     // Pets do not scale with haste from certain buffs on the owner
-
+    // TODO confirm that this is still true
     if ( owner -> buffs.bloodlust -> check() )
       h *= 1.30;
 
     h *= 1.0 + cast_owner() -> buffs.rapid_fire -> check() * cast_owner() -> buffs.rapid_fire -> current_value;
 
     return h;
-  }
-
-  virtual double composite_attack_hit()
-  {
-    // Hunter pets' hit does not round down in cataclysm and scales with Heroic Presence (as of 12/21)
-    return owner -> composite_attack_hit();
-  }
-
-  virtual double composite_attack_expertise( weapon_t* /* w */ )
-  {
-    return ( ( 100.0 * owner -> current.attack_hit ) * 26.0 / 8.0 ) / 100.0;
-  }
-
-  virtual double composite_spell_hit()
-  {
-    return composite_attack_hit() * 17.0 / 8.0;
   }
 
   double composite_spell_power( school_e school )
@@ -657,6 +630,10 @@ public:
 
     if ( buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
+
+    // Orc racial
+    if ( owner -> race == RACE_ORC )
+      m *= 1.05;
 
     return m;
   }
@@ -2127,20 +2104,14 @@ namespace pet_actions {
 template <class Base>
 struct hunter_pet_action_t : public Base
 {
-  bool basic_attack;
-
   typedef Base ab;
   typedef hunter_pet_action_t base_t;
 
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ),
-    basic_attack( false )
+    ab( n, player, s )
   {
     ab::stateless = true;
-
-    if ( ab::data().rank_str() && !strcmp( ab::data().rank_str(), "Basic Attack" ) )
-      basic_attack = true;
   }
 
   hunter_pet_t* p() const
@@ -2152,24 +2123,6 @@ struct hunter_pet_action_t : public Base
   hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 
-
-  virtual double action_multiplier()
-  {
-    double am = ab::action_multiplier();
-
-    if ( basic_attack )
-    {
-      if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
-      {
-        p() -> benefits.wild_hunt -> update( true );
-        am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
-      }
-      else
-        p() -> benefits.wild_hunt -> update( false );
-    }
-
-    return am;
-  }
 };
 
 // ==========================================================================
@@ -2258,7 +2211,7 @@ struct claw_t : public hunter_pet_attack_t
   {
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
-//    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2294,6 +2247,20 @@ struct claw_t : public hunter_pet_attack_t
     return cc;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = ab::action_multiplier();
+
+    if ( p() -> resources.current[ RESOURCE_FOCUS ] > 50 )
+    {
+      p() -> benefits.wild_hunt -> update( true );
+      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
+    }
+    else
+      p() -> benefits.wild_hunt -> update( false );
+
+    return am;
+  }
 };
 
 // Devilsaur Monstrous Bite =================================================
@@ -2321,8 +2288,6 @@ struct pet_kill_command_t : public hunter_pet_attack_t
     proc=true;
 
     base_multiplier *= 1.8; // hardcoded into hunter kill command tooltip
-
-//    base_crit += o -> talents.improved_kill_command -> effectN( 1 ).percent();
   }
 };
 
@@ -2873,11 +2838,6 @@ void hunter_t::init_base()
 {
   player_t::init_base();
 
-//  initial.attribute_multiplier[ ATTR_AGILITY ]   *= 1.0 + talents.hunting_party -> effectN( 1 ).percent();
-//  initial.attribute_multiplier[ ATTR_AGILITY ]   *= 1.0 + passive_spells.into_the_wildness -> effectN( 1 ).percent();
-
-//  initial.attribute_multiplier[ ATTR_STAMINA ]   *= 1.0 + talents.hunter_vs_wild -> effectN( 1 ).percent();
-
   base.attack_power = level * 2;
 
   initial.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
@@ -2916,7 +2876,7 @@ void hunter_t::init_buffs()
 
   buffs.rapid_fire                  = buff_creator_t( this, 3045, "rapid_fire" );
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
-  buffs.pre_steady_focus    = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
+  buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" ).chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ).duration( timespan_t::from_seconds( tier13_4pc_cooldown ) );
 
@@ -3062,10 +3022,7 @@ void hunter_t::init_actions()
     {
     // BEAST MASTERY
     case HUNTER_BEAST_MASTERY:
-//      if ( talents.focus_fire -> ok() )
-    {
-      action_list_str += "/focus_fire,five_stacks=1";
-    }
+    action_list_str += "/focus_fire,five_stacks=1";
     action_list_str += "/serpent_sting,if=!ticking";
 
     action_list_str += init_use_racial_actions();
