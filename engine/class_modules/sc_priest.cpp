@@ -344,12 +344,10 @@ namespace pets {
 
 struct priest_pet_t : public pet_t
 {
-  double ap_per_owner_sp;
   double direct_power_mod;
 
   priest_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false ) :
     pet_t( sim, owner, pet_name, pt, guardian ),
-    ap_per_owner_sp( 1.0 ),
     direct_power_mod( 0.0 )
   {
     position                    = POSITION_BACK;
@@ -359,7 +357,7 @@ struct priest_pet_t : public pet_t
   struct _stat_list_t
   {
     int id;
-    double stats[ BASE_STAT_MAX ];
+    double stats[ ATTRIBUTE_MAX ];
   };
 
   virtual void init_base()
@@ -370,9 +368,9 @@ struct priest_pet_t : public pet_t
       // Base Stats, same for all pets. Depend on level
       static const _stat_list_t pet_base_stats[]=
       {
-        //       str, agi,  sta, int, spi,   hp,  mana, scrit/int, d/agi, mcrit, scrit, mp5, spi_reg
+        //   none, str, agi, sta, int, spi
         {  0, { 0 } },
-        { 85, {  453, 883,  353, 159, 225,    0,     0,         0,     0,     0,     0,   0,       0 } }
+        { 85, { 0, 453, 883, 353, 159, 225  } },
       };
 
       assert( sizeof_array( pet_base_stats ) > 0 );
@@ -386,32 +384,9 @@ struct priest_pet_t : public pet_t
           break;
         }
       }
-      base.attribute[ ATTR_STRENGTH  ]  = ps.stats[ BASE_STAT_STRENGTH ];
-      base.attribute[ ATTR_AGILITY   ]  = ps.stats[ BASE_STAT_AGILITY ];
-      base.attribute[ ATTR_STAMINA   ]  = ps.stats[ BASE_STAT_STAMINA ];
-      base.attribute[ ATTR_INTELLECT ]  = ps.stats[ BASE_STAT_INTELLECT ];
-      base.attribute[ ATTR_SPIRIT    ]  = ps.stats[ BASE_STAT_SPIRIT ];
-      resources.base[ RESOURCE_HEALTH ] = ps.stats[ BASE_STAT_HEALTH ];
-      resources.base[ RESOURCE_MANA ]   = ps.stats[ BASE_STAT_MANA ];
-      initial.attack_crit_per_agility   = ps.stats[ BASE_STAT_MELEE_CRIT_PER_AGI ];
-      initial.spell_crit_per_intellect  = ps.stats[ BASE_STAT_SPELL_CRIT_PER_INT ];
-      initial.dodge_per_agility         = ps.stats[ BASE_STAT_DODGE_PER_AGI ];
-      base.spell_crit                   = ps.stats[ BASE_STAT_SPELL_CRIT ];
-      base.attack_crit                  = ps.stats[ BASE_STAT_MELEE_CRIT ];
-      base.mp5                          = ps.stats[ BASE_STAT_MP5 ];
+      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
+        base.attribute[ i ] = ps.stats[ i ];
     }
-
-    resources.base[ RESOURCE_MANA ]   = o() -> resources.max[ RESOURCE_MANA ];
-    initial.attack_power_per_strength = 2.0; // tested in-game as of 2010/12/20
-    base.attack_power = -20; // technically, the first 20 str give 0 ap. - tested
-    stamina_per_owner = 0.6496; // level invariant, tested
-    intellect_per_owner = 0; // removed in cata, tested
-
-    initial.attack_crit_per_agility   += 0.01 / 52.0; // untested
-    initial.spell_crit_per_intellect  += owner -> initial.spell_crit_per_intellect; // untested
-    //health_per_stamina = 10.0; // untested!
-    //mana_per_intellect = 0; // tested - does not scale with pet int, but with owner int, at level/80 * 7.5 mana per point of owner int that exceeds owner base int
-    //mp5_per_intellect  = 2.0 / 3.0; // untested!
   }
 
   virtual void schedule_ready( timespan_t delta_time, bool waiting )
@@ -424,32 +399,14 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_spell_haste()
-  { return player_t::composite_spell_haste() * owner -> spell_haste; }
-
-  virtual double composite_attack_haste()
-  { return player_t::composite_attack_haste() * owner -> spell_haste; }
-
   virtual double composite_spell_power( school_e school )
-  { return owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier(); }
+  { return owner -> composite_spell_power( school ); }
 
   virtual double composite_spell_power_multiplier()
-  { return 1.0; }
+  { return owner -> composite_spell_power_multiplier(); }
 
   virtual double composite_attack_power()
-  { return owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp; }
-
-  virtual double composite_attack_crit( weapon_t* )
-  { return owner -> composite_spell_crit(); } // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-
-  virtual double composite_spell_crit()
-  { return owner -> composite_spell_crit(); } // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-
-  virtual double composite_attack_expertise( weapon_t* )
-  { return owner -> composite_spell_hit() + owner -> composite_attack_expertise() - ( owner -> buffs.heroic_presence -> up() ? 0.01 : 0.0 ); }
-
-  virtual double composite_attack_hit()
-  { return owner -> composite_spell_hit(); }
+  { return owner -> composite_spell_power( SCHOOL_MAX ); }
 
   virtual resource_e primary_resource()
   { return RESOURCE_ENERGY; }
@@ -498,14 +455,13 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
     mana_leech( spell_data_t::nil() ),
     shadowcrawl_action( 0 )
   {
-
-
-
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = util::ability_rank( owner -> level, 387, 90, 360, 85, 0, 1 );
     main_hand_weapon.max_dmg    = util::ability_rank( owner -> level, 467, 90, 433, 85, 0, 1 );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+
+    coeff.health = 0.3;
   }
 
   virtual void init_actions()
@@ -543,7 +499,6 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   {
     priest_guardian_pet_t::init_resources( force );
 
-    resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.3;
     resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ];
     resources.current = resources.max = resources.initial;
   }
