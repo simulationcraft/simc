@@ -2094,11 +2094,17 @@ struct hunter_pet_action_t : public Base
   typedef Base ab;
   typedef hunter_pet_action_t base_t;
 
+  bool special_ability;
+
   hunter_pet_action_t( const std::string& n, hunter_pet_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    special_ability( false )
   {
     ab::stateless = true;
+
+    if ( ab::data().rank_str() && !strcmp( ab::data().rank_str(), "Special Ability" ) )
+      special_ability = true;
   }
 
   hunter_pet_t* p() const
