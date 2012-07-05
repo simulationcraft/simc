@@ -567,8 +567,8 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
 struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
-  felstorm_tick_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( "felstorm_tick", p, p -> find_spell( 89753 ) )
+  felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ) :
+    warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
     dual        = true;
@@ -589,7 +589,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     hasted_ticks = false;
     
     dynamic_tick_action = true;
-    tick_action = new felstorm_tick_t( p );
+    tick_action = new felstorm_tick_t( p, data() );
     tick_action -> stats = stats;
   }
 
@@ -648,8 +648,8 @@ struct torment_t : public warlock_pet_spell_t
 
 struct immolation_damage_t : public warlock_pet_spell_t
 {
-  immolation_damage_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "immolation_dmg", p, p -> find_spell( 20153 ) )
+  immolation_damage_t( warlock_pet_t* p, const spell_data_t& s ) :
+    warlock_pet_spell_t( "immolation_dmg", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
     dual        = true;
@@ -671,7 +671,7 @@ struct infernal_immolation_t : public warlock_pet_spell_t
     hasted_ticks = false;
 
     dynamic_tick_action = true;
-    tick_action = new immolation_damage_t( p );
+    tick_action = new immolation_damage_t( p, data() );
     tick_action -> stats = stats;
   }
 
@@ -3153,10 +3153,8 @@ struct rain_of_fire_t : public warlock_spell_t
 
 struct hellfire_tick_t : public warlock_spell_t
 {
-  const spell_data_t& parent_data;
-
-  hellfire_tick_t( warlock_t* p, const spell_data_t& pd ) :
-    warlock_spell_t( "hellfire_tick", p, pd.effectN( 1 ).trigger() ), parent_data( pd )
+  hellfire_tick_t( warlock_t* p, const spell_data_t& s ) :
+    warlock_spell_t( "hellfire_tick", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
     dual        = true;
@@ -3223,8 +3221,8 @@ struct hellfire_t : public warlock_spell_t
 
 struct immolation_aura_tick_t : public warlock_spell_t
 {
-  immolation_aura_tick_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( "immolation_aura_tick", p, p -> find_spell( 5857 ) )
+  immolation_aura_tick_t( warlock_t* p, const spell_data_t& s ) :
+    warlock_spell_t( "immolation_aura_tick", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
     background  = true;
@@ -3245,7 +3243,7 @@ struct immolation_aura_t : public warlock_spell_t
     may_crit = false;
 
     dynamic_tick_action = true;
-    tick_action = new immolation_aura_tick_t( p );
+    tick_action = new immolation_aura_tick_t( p, data() );
     tick_action -> stats = stats;
   }
 
@@ -3795,8 +3793,8 @@ struct harvest_life_t : public warlock_spell_t
 
 struct mortal_coil_heal_t : public warlock_heal_t
 {
-  mortal_coil_heal_t( warlock_t* p ) :
-    warlock_heal_t( "mortal_coil_heal", p, 108396 )
+  mortal_coil_heal_t( warlock_t* p, const spell_data_t& s ) :
+    warlock_heal_t( "mortal_coil_heal", p, s.effectN( 3 ).trigger_spell_id() )
   {
     background = true;
     may_miss = false;
@@ -3819,7 +3817,7 @@ struct mortal_coil_t : public warlock_spell_t
     warlock_spell_t( "mortal_coil", p, p -> talents.mortal_coil ), heal( 0 )
   {
     base_dd_min = base_dd_max = 0;
-    heal = new mortal_coil_heal_t( p );
+    heal = new mortal_coil_heal_t( p, data() );
   }
 
   virtual void impact_s( action_state_t* s )
