@@ -1444,12 +1444,14 @@ static void extend_dot( dot_t* dot, int ticks, double haste )
 }
 
 
-struct curse_of_elements_t : public warlock_spell_t
+struct curse_of_the_elements_t : public warlock_spell_t
 {
-  curse_of_elements_t( warlock_t* p ) :
+  curse_of_the_elements_t( warlock_t* p ) :
     warlock_spell_t( p, "Curse of the Elements" )
   {
     background = ( sim -> overrides.magic_vulnerability != 0 );
+    num_ticks = 0;
+    may_crit = false;
   }
 
   virtual void execute()
@@ -4089,7 +4091,7 @@ action_t* warlock_t::create_action( const std::string& name,
   else if ( name == "doom"                  ) a = new                  doom_t( this );
   else if ( name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
   else if ( name == "chaos_wave"            ) a = new            chaos_wave_t( this );
-  else if ( name == "curse_of_elements"     ) a = new     curse_of_elements_t( this );
+  else if ( name == "curse_of_the_elements" ) a = new curse_of_the_elements_t( this );
   else if ( name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
   else if ( name == "drain_life"            ) a = new            drain_life_t( this );
   else if ( name == "drain_soul"            ) a = new            drain_soul_t( this );
@@ -4460,6 +4462,8 @@ void warlock_t::init_actions()
       precombat_list += "/jade_serpent_potion";
     else if ( level >= 80 )
       precombat_list += "/volcanic_potion";
+
+    add_action( "Curse of the Elements", "if=debuff.magic_vulnerability.down" );
 
     // Usable Item
     for ( int i = items.size() - 1; i >= 0; i-- )

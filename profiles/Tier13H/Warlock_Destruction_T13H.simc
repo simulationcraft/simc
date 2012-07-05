@@ -17,7 +17,8 @@ actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_felhunter
 actions.precombat+=/snapshot_stats
 actions.precombat+=/volcanic_potion
-actions=volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/volcanic_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/blood_fury
 actions+=/dark_soul
 actions+=/service_felhunter,if=talent.grimoire_of_service.enabled
