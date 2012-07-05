@@ -627,11 +627,6 @@ struct feral_spirit_pet_t : public pet_t
       may_crit = true;
       stateless = true;
       school      = SCHOOL_PHYSICAL;
-
-      // Two wolves
-      //base_multiplier  *= 2.0;
-      // TODO: Wolves get no weapon speed based bonus to damage?
-      weapon_power_mod /= player -> main_hand_weapon.swing_time.total_seconds();
     }
 
     feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
@@ -647,13 +642,12 @@ struct feral_spirit_pet_t : public pet_t
 
     virtual void impact_s( action_state_t* state )
     {
-      shaman_t* o = p() -> o();
-
       melee_attack_t::impact_s( state );
 
-      // Two independent chances to proc it since we model 2 wolf pets as 1 ..
       if ( result_is_hit( state -> result ) )
       {
+        shaman_t* o = p() -> o();
+
         if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> check();
@@ -697,10 +691,12 @@ struct feral_spirit_pet_t : public pet_t
     pet_t( sim, owner, "spirit_wolf" ), melee( 0 ) 
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 655; // Level 85 Values, approximated
-    main_hand_weapon.max_dmg    = 934;
+    main_hand_weapon.min_dmg    = 555; // MoP level 85 values, approximated
+    main_hand_weapon.max_dmg    = 833;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    
+    owner_coeff.ap_from_ap = 0.31;
   }
 
   shaman_t* o() { return static_cast<shaman_t*>( owner ); }
@@ -708,17 +704,6 @@ struct feral_spirit_pet_t : public pet_t
   virtual void init_base()
   {
     pet_t::init_base();
-
-    // New approximated pet values at 85, roughly the same ratio of str/agi as per the old ones
-    // At 85, the wolf has a base attack power of 932
-    base.attribute[ ATTR_STRENGTH  ] = 407;
-    base.attribute[ ATTR_AGILITY   ] = 138;
-    base.attribute[ ATTR_STAMINA   ] = 361;
-    base.attribute[ ATTR_INTELLECT ] = 90; // Pet has 90 spell damage :)
-    base.attribute[ ATTR_SPIRIT    ] = 109;
-
-    base.attack_power = -20;
-    initial.attack_power_per_strength = 2.0;
 
     melee = new melee_t( this );
   }
@@ -738,14 +723,6 @@ struct feral_spirit_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_attack_power()
-  {
-    double ap           = pet_t::composite_attack_power();
-    double ap_per_owner = 0.4944;
-
-    return ap + ap_per_owner * o() -> composite_attack_power_multiplier() * o() -> composite_attack_power();
-  }
-  
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
     if ( melee && ! melee -> execute_event )
@@ -757,8 +734,6 @@ struct feral_spirit_pet_t : public pet_t
 
 struct earth_elemental_pet_t : public pet_t
 {
-  double owner_sp;
-
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
@@ -807,33 +782,11 @@ struct earth_elemental_pet_t : public pet_t
       base_attack_power_multiplier = 0;
     }
 
-    virtual double swing_haste()
-    {
-      return 1.0;
-    }
-
     virtual double    available() { return sim -> max_time.total_seconds(); }
-
-    // Earth elemental scales purely with spell power
-    virtual double total_attack_power()
-    {
-      return player -> composite_spell_power( SCHOOL_MAX );
-    }
-
-    // Melee swings have a ~3% crit rate on boss level mobs
-    virtual double crit_chance( int )
-    {
-      return 0.03;
-    }
-
-    virtual double crit_chance( double, int )
-    {
-      return 0.03;
-    }
   };
 
   earth_elemental_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "earth_elemental", true /*GUARDIAN*/ ), owner_sp( 0.0 )
+    pet_t( sim, owner, "earth_elemental", true /*GUARDIAN*/ )
   {
     stamina_per_owner   = 1.0;
 
@@ -865,7 +818,6 @@ struct earth_elemental_pet_t : public pet_t
   virtual void summon( timespan_t /* duration */ )
   {
     pet_t::summon();
-    owner_sp = owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1085,6 +1037,9 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.max_dmg         = 344;
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
+
+    if ( o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp += 0.5;
   }
   
   void init_actions()
@@ -1099,12 +1054,17 @@ struct fire_elemental_t : public pet_t
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-
-  virtual double composite_player_multiplier( school_e school, action_t* a = 0 )
+/*
+  double composite_player_multiplier( school_e school, action_t* a = 0 )
   {
-    return pet_t::composite_player_multiplier( school, a ) * ( ( type == PLAYER_PET ) ? 1.5 : 1.0 );
-  }
+    double m = pet_t::composite_player_multiplier( school, a );
 
+    if ( owner -> race == RACE_ORC )
+      m *= 1.0 + find_spell( 65222 ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+*/
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
