@@ -843,8 +843,8 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 double warlock_pet_t::composite_spell_power( school_e school )
 {
   // Warlock pets, uniquely, do get spell power from their base intellect. This is not reflected in the pet pane.
-  double sp = current.spell_power_per_intellect * ( intellect() - 10 );
-  if ( owner -> race == RACE_ORC ) sp /= 1.05; // Base spell power from the pet's own intellect is not affected by the orc racial
+  double sp = player_t::composite_spell_power( school );
+  sp /= current.spell_power_multiplier; // Base spell power from the pet's own intellect is not affected by the orc racial
   sp += pet_t::composite_spell_power( school );
   return sp;
 }
