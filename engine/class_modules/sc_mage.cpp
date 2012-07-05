@@ -372,6 +372,8 @@ struct water_elemental_pet_t : public pet_t
     action_list_str  = "freeze,if=owner.buff.fingers_of_frost.stack=0";
     action_list_str += "/water_bolt";
     create_options();
+
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   mage_t* o()
@@ -389,13 +391,6 @@ struct water_elemental_pet_t : public pet_t
 
     //health_per_stamina = 7.5;
     //mana_per_intellect = 5;
-  }
-
-  virtual double composite_spell_haste()
-  {
-    double h = player_t::composite_spell_haste();
-    h *= owner -> spell_haste;
-    return h;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -425,7 +420,10 @@ struct mirror_image_pet_t : public pet_t
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "mirror_image_3", true /*guardian*/ ),
     num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
-  {}
+  {
+
+    owner_coeff.sp_from_sp = 1.0;
+  }
 
   mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
@@ -637,18 +635,6 @@ struct mirror_image_pet_t : public pet_t
     return 0;
   }
 
-  virtual double composite_spell_haste()
-  {
-    double h = player_t::composite_spell_haste();
-    h *= owner -> spell_haste;
-    return h;
-  }
-
-  virtual double composite_spell_crit()
-  {
-    return owner -> composite_spell_crit(); // Seems to just use our crit directly, based on very rough numbers, needs more testing.
-  }
-
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
@@ -797,24 +783,19 @@ struct mage_spell_t : public spell_t
     return c;
   }
 
-  virtual double hot_streak_crit()
-  { return player_crit; }
-
-  void trigger_hot_streak( mage_spell_t* s )
+  void trigger_hot_streak( action_state_t* s )
   {
-    mage_t* p = s -> p();
+    mage_t* p = this -> p();
 
-    if ( ! s -> may_hot_streak )
+    if ( ! may_hot_streak )
       return;
 
     if ( p -> specialization() != MAGE_FIRE )
       return;
 
-    int result = s -> result;
-
     p -> procs.test_for_crit_hotstreak -> occur();
 
-    if ( result == RESULT_CRIT )
+    if ( s -> result == RESULT_CRIT )
     {
       p -> procs.crit_for_hotstreak -> occur();
       // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
@@ -862,7 +843,7 @@ struct mage_spell_t : public spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      trigger_hot_streak( this );
+      trigger_hot_streak( execute_state );
     }
 
     if ( !harmful )
@@ -878,17 +859,16 @@ struct mage_spell_t : public spell_t
 
 // calculate_dot_dps ========================================================
 
-static double calculate_dot_dps( dot_t* dot )
+static double calculate_dot_dps( dot_t* d )
 {
-  if ( ! dot -> ticking ) return 0;
+  if ( ! d -> ticking ) return 0;
 
-  action_t* a = dot -> action;
+  action_t* a = d -> action;
 
-  a -> result = RESULT_HIT;
+  d -> state -> result = RESULT_HIT;
+  a -> snapshot_state( d -> state, a -> update_flags );
 
-  player_t* target = ( a -> stateless ) ? dot -> state -> target : dot -> target;
-
-  return ( a -> calculate_tick_damage( a -> result, a -> total_power(), a -> total_td_multiplier(), target ) / a -> base_tick_time.total_seconds() );
+  return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target ) / a -> base_tick_time.total_seconds() );
 }
 
 // trigger_ignite ===========================================================
