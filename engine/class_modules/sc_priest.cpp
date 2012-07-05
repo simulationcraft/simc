@@ -387,6 +387,9 @@ struct priest_pet_t : public pet_t
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
         base.attribute[ i ] = ps.stats[ i ];
     }
+
+    owner_coeff.ap_from_sp = 1.0;
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   virtual void schedule_ready( timespan_t delta_time, bool waiting )
@@ -399,14 +402,16 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_spell_power( school_e school )
-  { return owner -> composite_spell_power( school ); }
+  virtual double composite_player_multiplier( school_e school, action_t* a )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
 
-  virtual double composite_spell_power_multiplier()
-  { return owner -> composite_spell_power_multiplier(); }
+    // Orc racial
+    if ( owner -> race == RACE_ORC )
+      m *= 1.05;
 
-  virtual double composite_attack_power()
-  { return owner -> composite_spell_power( SCHOOL_MAX ); }
+    return m;
+  }
 
   virtual resource_e primary_resource()
   { return RESOURCE_ENERGY; }
