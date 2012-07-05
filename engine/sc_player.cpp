@@ -3037,6 +3037,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
 {
   double m = current.attribute_multiplier[ attr ];
 
+  if ( is_pet() || is_enemy() ) return m;
+
   switch ( attr )
   {
   case ATTR_STRENGTH:
