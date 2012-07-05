@@ -1478,11 +1478,8 @@ struct hymn_of_hope_tick_t : public priest_spell_t
 
 struct hymn_of_hope_t : public priest_spell_t
 {
-  hymn_of_hope_tick_t* hymn_of_hope_tick;
-
   hymn_of_hope_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "hymn_of_hope", p, p -> find_class_spell( "Hymn of Hope" ) ),
-    hymn_of_hope_tick( 0 )
+    priest_spell_t( "hymn_of_hope", p, p -> find_class_spell( "Hymn of Hope" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1490,21 +1487,14 @@ struct hymn_of_hope_t : public priest_spell_t
 
     channeled = true;
 
-    hymn_of_hope_tick = new hymn_of_hope_tick_t( p );
+    tick_action = new hymn_of_hope_tick_t( p );
   }
 
   virtual void init()
   {
     priest_spell_t::init();
 
-    hymn_of_hope_tick -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hymn_of_hope_tick -> execute();
-
-    stats -> add_tick( d -> time_to_tick );
+    tick_action -> stats = stats;
   }
 };
 
@@ -2131,22 +2121,17 @@ struct mind_sear_tick_t : public priest_spell_t
     dual        = true;
     aoe         = -1;
     callbacks   = false;
-  }
-
-  virtual void execute()
-  {
-    priest_spell_t::execute();
+    direct_tick = true;
   }
 };
 
 struct mind_sear_t : public priest_spell_t
 {
-  mind_sear_tick_t* mind_sear_tick;
   mind_sear_mastery_t* proc_spell;
 
   mind_sear_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "mind_sear", p, p -> find_class_spell( "Mind Sear" ) ),
-    mind_sear_tick( 0 ), proc_spell( 0 )
+    proc_spell( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2154,7 +2139,7 @@ struct mind_sear_t : public priest_spell_t
     may_crit     = false;
     hasted_ticks = false;
 
-    mind_sear_tick = new mind_sear_tick_t( p );
+    tick_action = new mind_sear_tick_t( p );
 
     if ( p -> mastery_spells.shadowy_recall -> ok() )
     {
@@ -2162,29 +2147,21 @@ struct mind_sear_t : public priest_spell_t
     }
   }
 
-  virtual void execute()
-  {
-    priest_spell_t::execute();
-  }
-
   virtual void init()
   {
     priest_spell_t::init();
 
-    mind_sear_tick -> stats = stats;
+    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
   {
-    if ( mind_sear_tick )
-      mind_sear_tick -> execute();
+    priest_spell_t::tick( d );
 
     if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
     }
-
-    stats -> add_tick( d -> time_to_tick );
   }
 };
 
@@ -2892,11 +2869,8 @@ struct penance_t : public priest_spell_t
     }
   };
 
-  penance_tick_t* tick_spell;
-
   penance_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "penance", p, p -> find_class_spell( "Penance" ) ),
-    tick_spell( 0 )
+    priest_spell_t( "penance", p, p -> find_class_spell( "Penance" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2910,7 +2884,7 @@ struct penance_t : public priest_spell_t
 
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
 
-    tick_spell = new penance_tick_t( p );
+    tick_action = new penance_tick_t( p );
 
     castable_in_shadowform = false;
   }
@@ -2919,14 +2893,7 @@ struct penance_t : public priest_spell_t
   {
     priest_spell_t::init();
 
-    tick_spell -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
-    tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    tick_action -> stats = stats;
   }
 
   virtual double cost()
@@ -3942,34 +3909,32 @@ struct lightwell_t : public priest_spell_t
 
 // Penance Heal Spell =======================================================
 
-struct penance_heal_tick_t : public priest_heal_t
-{
-  penance_heal_tick_t( priest_t* player ) :
-    priest_heal_t( "penance_heal_tick", player, player -> find_spell( 47666 ) )
-  {
-    background  = true;
-    may_crit    = true;
-    dual        = true;
-    direct_tick = true;
-
-    school = SCHOOL_HOLY;
-    stats = player -> get_stats( "penance_heal", this );
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    priest_heal_t::impact_s( s );
-
-    trigger_grace( s -> target );
-  }
-};
-
 struct penance_heal_t : public priest_heal_t
 {
-  penance_heal_tick_t* penance_tick;
+  struct penance_heal_tick_t : public priest_heal_t
+  {
+    penance_heal_tick_t( priest_t* player ) :
+      priest_heal_t( "penance_heal_tick", player, player -> find_spell( 47666 ) )
+    {
+      background  = true;
+      may_crit    = true;
+      dual        = true;
+      direct_tick = true;
+
+      school = SCHOOL_HOLY;
+      stats = player -> get_stats( "penance_heal", this );
+    }
+
+    virtual void impact_s( action_state_t* s )
+    {
+      priest_heal_t::impact_s( s );
+
+      trigger_grace( s -> target );
+    }
+  };
 
   penance_heal_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "penance_heal", p, p -> find_class_spell( "Penance" ) ), penance_tick( 0 )
+    priest_heal_t( "penance_heal", p, p -> find_class_spell( "Penance" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3983,16 +3948,14 @@ struct penance_heal_t : public priest_heal_t
     cooldown = p -> cooldowns.penance;
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
 
-    penance_tick = new penance_heal_tick_t( p );
-    penance_tick -> target = target;
+    tick_action = new penance_heal_tick_t( p );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void init()
   {
-    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
-    penance_tick -> target = target;
-    penance_tick -> execute();
-    stats -> add_tick( d -> time_to_tick );
+    priest_heal_t::init();
+
+    tick_action -> stats = stats;
   }
 
   virtual double cost()
@@ -4950,7 +4913,7 @@ void priest_t::init_actions()
           action_list_str += ",if=(pet.shadowfiend.active|pet.shadowfiend.active)&mana.pct<=20";
         if ( race == RACE_TROLL )
           action_list_str += "/berserking";
-        action_list_str += "/power_infusion";
+        add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
         action_list_str += "/power_word_shield,if=buff.weakened_soul.down";
 
         action_list_str += "/shadow_word_pain,if=miss_react&(remains<tick_time|!ticking)";
@@ -4979,7 +4942,7 @@ void priest_t::init_actions()
         if ( race == RACE_TROLL )
           action_list_str += "/berserking";
         action_list_str += "/inner_focus";
-        action_list_str += "/power_infusion";
+        add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
         action_list_str += "/power_word_shield";
         action_list_str += "/greater_heal,if=buff.inner_focus.up";
 
