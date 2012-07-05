@@ -375,7 +375,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
 
 struct warlock_pet_t : public pet_t
 {
-  double ap_per_owner_sp;
   gain_t* owner_fury_gain;
   action_t* special_action;
   melee_attack_t* melee_attack;
@@ -390,7 +389,6 @@ struct warlock_pet_t : public pet_t
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
   virtual double composite_spell_power( school_e school );
-  virtual double composite_attack_power();
   virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
@@ -762,8 +760,9 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
   pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 )
 {
-  ap_per_owner_sp = 3.5;
   owner_fury_gain = owner -> get_gain( pet_name );
+  owner_coeff.ap_from_sp = 3.5;
+  owner_coeff.sp_from_sp = 1.0;
 }
 
 void warlock_pet_t::init_base()
@@ -843,17 +842,11 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 
 double warlock_pet_t::composite_spell_power( school_e school )
 {
-  double sp = pet_t::composite_spell_power( school );
+  // Warlock pets, uniquely, do get spell power from their base intellect. This is not reflected in the pet pane.
+  double sp = current.spell_power_per_intellect * ( intellect() - 10 );
   if ( owner -> race == RACE_ORC ) sp /= 1.05; // Base spell power from the pet's own intellect is not affected by the orc racial
-  sp += owner -> composite_spell_power( school );
+  sp += pet_t::composite_spell_power( school );
   return sp;
-}
-
-double warlock_pet_t::composite_attack_power()
-{
-  double ap = 0; // Pets don't appear to get attack power from strength at all
-  ap += owner -> composite_spell_power( SCHOOL_MAX ) * ap_per_owner_sp;
-  return ap;
 }
 
 double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a )
@@ -945,7 +938,7 @@ struct succubus_pet_t : public warlock_pet_t
   {
     action_list_str = "snapshot_stats";
     action_list_str += "/lash_of_pain";
-    ap_per_owner_sp = 1.667;
+    owner_coeff.ap_from_sp = 1.667;
   }
 
   virtual void init_base()
@@ -997,7 +990,7 @@ struct infernal_pet_t : public warlock_pet_t
   {
     action_list_str = "snapshot_stats";
     if ( level >= 50 ) action_list_str += "/immolation,if=!ticking";
-    ap_per_owner_sp = 0.5;
+    owner_coeff.ap_from_sp = 0.5;
   }
 
   virtual void init_base()

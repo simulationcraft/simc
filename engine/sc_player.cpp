@@ -2852,7 +2852,7 @@ double player_t::composite_spell_power_multiplier()
 {
   double m = current.spell_power_multiplier;
 
-  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() && sim -> auras.spell_power_multiplier -> check() )
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.spell_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.spell_power_multiplier -> value();
   return m;
 }
@@ -2863,7 +2863,7 @@ double player_t::composite_spell_crit()
 {
   double sc = current.spell_crit + ( intellect() / current.spell_crit_per_intellect / 100.0 );
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() )
+  if ( ! is_pet() && ! is_enemy() )
   {
     if ( sim -> auras.critical_strike -> check() )
       sc += sim -> auras.critical_strike -> value();
@@ -2901,7 +2901,7 @@ double player_t::composite_mastery()
 {
   double m = floor( ( current.mastery * 100.0 ) + 0.5 ) / 100.0;
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.mastery -> check() )
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value();
 
   return m;
@@ -2913,7 +2913,7 @@ double player_t::composite_attack_power_multiplier()
 {
   double m = current.attack_power_multiplier;
 
-  if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.attack_power_multiplier -> check() )
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.attack_power_multiplier -> check() )
     m *= 1.0 + sim -> auras.attack_power_multiplier -> value();
 
   return m;

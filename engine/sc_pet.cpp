@@ -38,7 +38,7 @@ pet_t::pet_t( sim_t*             s,
               bool               g ) :
   player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
   owner( o ), summoned( false ), pet_type( PET_NONE ),
-  coeff( owner_coefficients_t() )
+  owner_coeff( owner_coefficients_t() )
 {
   init_pet_t_();
 }
@@ -50,7 +50,7 @@ pet_t::pet_t( sim_t*             s,
               bool               g ) :
   player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
   owner( o ), summoned( false ), pet_type( pt ),
-  coeff( owner_coefficients_t() )
+  owner_coeff( owner_coefficients_t() )
 {
   init_pet_t_();
 }
@@ -212,7 +212,7 @@ void pet_t::init_resources( bool force )
 {
   base_t::init_resources( force );
 
-  resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * coeff.health;
+  resources.initial[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * owner_coeff.health;
 
   resources.current = resources.max = resources.initial;
 }

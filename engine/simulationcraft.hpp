@@ -3893,10 +3893,10 @@ struct pet_t : public player_t
 
   struct owner_coefficients_t
   {
-    double armor, health;
+    double armor, health, ap_from_ap, ap_from_sp, sp_from_ap, sp_from_sp;
     owner_coefficients_t() :
-    armor ( 1.0 ), health( 1.0 ) {}
-  } coeff;
+    armor ( 1.0 ), health( 1.0 ), ap_from_ap( 0.0 ), ap_from_sp( 0.0 ), sp_from_ap( 0.0 ), sp_from_sp( 0.0 ) {}
+  } owner_coeff;
 
 private:
   void init_pet_t_();
@@ -3959,6 +3959,25 @@ public:
   virtual double composite_spell_haste()
   { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
+  virtual double composite_attack_power()
+  {
+    double ap = 0;
+    if ( owner_coeff.ap_from_ap > 0.0 )
+      ap += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+    if ( owner_coeff.ap_from_sp > 0.0 )
+      ap += owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+    return ap;
+  }
+
+  virtual double composite_spell_power( school_e school )
+  {
+    double sp = 0;
+    if ( owner_coeff.sp_from_ap > 0.0 )
+      sp += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+    if ( owner_coeff.sp_from_sp > 0.0 )
+      sp += owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+    return sp;
+  }
 
   // Assuming diminishing returns are transfered to the pet as well
   virtual double composite_tank_dodge()
@@ -3976,7 +3995,7 @@ public:
 
   // Influenced by coefficients [ 0, 1 ]
   virtual double composite_armor()
-  { return owner -> composite_armor() * coeff.armor; }
+  { return owner -> composite_armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );
 

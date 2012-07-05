@@ -444,7 +444,7 @@ struct base_fiend_pet_t : public priest_pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    coeff.health = 0.3;
+    owner_coeff.health = 0.3;
   }
 
   virtual void init_actions()
