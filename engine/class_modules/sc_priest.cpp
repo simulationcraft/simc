@@ -2869,6 +2869,7 @@ struct penance_t : public priest_spell_t
     dynamic_tick_action = true;
 
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
+    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
     tick_action = new penance_tick_t( p );
 
@@ -3385,6 +3386,8 @@ struct circle_of_healing_t : public priest_heal_t
     base_costs[ current_resource() ] *= 1.0 + p -> glyphs.circle_of_healing -> effectN( 2 ).percent();
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
     aoe = p -> glyphs.circle_of_healing -> ok() ? 5 : 4;
+
+    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
@@ -3502,13 +3505,17 @@ struct flash_heal_t : public priest_heal_t
 
   virtual double cost()
   {
-    double c = priest_heal_t::cost();
 
     if ( p() -> buffs.inner_focus -> check() )
-      c = 0;
+      return 0;
 
     if ( p() -> buffs.surge_of_light -> check() )
-      c = 0;
+      return 0;
+
+    double c = priest_heal_t::cost();
+
+
+    c *= 1.0 + p() -> sets -> set( SET_T14_2PC_HEAL ) -> effectN( 1 ).percent();
 
     return c;
   }
@@ -3926,6 +3933,7 @@ struct penance_heal_t : public priest_heal_t
 
     cooldown = p -> cooldowns.penance;
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
+    cooldown -> duration += p -> sets -> set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
     tick_action = new penance_heal_tick_t( p );
   }
