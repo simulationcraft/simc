@@ -1469,6 +1469,7 @@ struct hymn_of_hope_t : public priest_spell_t
     harmful = false;
 
     channeled = true;
+    dynamic_tick_action = true;
 
     tick_action = new hymn_of_hope_tick_t( p );
   }
@@ -2121,6 +2122,7 @@ struct mind_sear_t : public priest_spell_t
     channeled    = true;
     may_crit     = false;
     hasted_ticks = false;
+    dynamic_tick_action = true;
 
     tick_action = new mind_sear_tick_t( p );
 
@@ -2864,6 +2866,7 @@ struct penance_t : public priest_spell_t
     num_ticks      = 2;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
+    dynamic_tick_action = true;
 
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
 
@@ -3433,27 +3436,19 @@ struct divine_hymn_tick_t : public priest_heal_t
 
 struct divine_hymn_t : public priest_heal_t
 {
-  divine_hymn_tick_t* divine_hymn_tick;
-
   divine_hymn_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "divine_hymn", p, p -> find_class_spell( "Divine Hymn" ) ),
-    divine_hymn_tick( 0 )
+    priest_heal_t( "divine_hymn", p, p -> find_class_spell( "Divine Hymn" ) )
   {
     parse_options( NULL, options_str );
 
     harmful = false;
     channeled = true;
+    dynamic_tick_action = true;
 
-    divine_hymn_tick = new divine_hymn_tick_t( p, data().effectN( 2 ).base_value() );
+    tick_action = new divine_hymn_tick_t( p, data().effectN( 2 ).base_value() );
     add_child( divine_hymn_tick );
   }
 
-  virtual void tick( dot_t* d )
-  {
-    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
-    divine_hymn_tick -> execute();
-    stats -> add_tick( d -> time_to_tick );
-  }
 };
 
 // Flash Heal Spell =========================================================
@@ -3927,6 +3922,7 @@ struct penance_heal_t : public priest_heal_t
     num_ticks      = 2;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
+    dynamic_tick_action = true;
 
     cooldown = p -> cooldowns.penance;
     cooldown -> duration = data().cooldown() + p -> glyphs.penance -> effectN( 2 ).time_value();
