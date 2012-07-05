@@ -216,3 +216,43 @@ void pet_t::init_resources( bool force )
 
   resources.current = resources.max = resources.initial;
 }
+
+double pet_t::hit_exp()
+{
+  double e = owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) );
+
+  if ( owner -> off_hand_weapon.damage > 0 )
+    e = std::max( e, owner -> composite_attack_expertise( &( owner -> off_hand_weapon ) ) );
+
+  return ( e + owner -> composite_attack_hit() ) * 0.50; // attack and spell hit are equal in MoP
+}
+
+double pet_t::pet_crit()
+{
+  double c = owner -> composite_attack_crit( &( owner -> main_hand_weapon ) );
+
+  if ( owner -> off_hand_weapon.damage > 0 )
+    c = std::max( c, owner -> composite_attack_crit( &( owner -> off_hand_weapon ) ) );
+
+  return std::max( c, owner -> composite_spell_crit() );
+}
+
+double pet_t::composite_attack_power()
+{
+  double ap = 0;
+  if ( owner_coeff.ap_from_ap > 0.0 )
+    ap += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+  if ( owner_coeff.ap_from_sp > 0.0 )
+    ap += owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+  return ap;
+}
+
+double pet_t::composite_spell_power( school_e school )
+{
+  double sp = 0;
+  if ( owner_coeff.sp_from_ap > 0.0 )
+    sp += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+  if ( owner_coeff.sp_from_sp > 0.0 )
+    sp += owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+  return sp;
+}

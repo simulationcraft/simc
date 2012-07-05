@@ -494,6 +494,9 @@ public:
 
     world_lag = timespan_t::from_seconds( 0.3 ); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
     world_lag_override = true;
+
+    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.sp_from_ap = 0.5;
   }
 
   virtual void init_talents()
@@ -560,9 +563,6 @@ public:
     pet_t::init_actions();
   }
 
-  virtual double composite_attack_power()
-  { return owner -> composite_attack_power(); }
-
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
@@ -589,9 +589,6 @@ public:
 
     return h;
   }
-
-  double composite_spell_power( school_e school )
-  { return 0.125 * owner -> composite_spell_power( school ); }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
@@ -625,6 +622,7 @@ public:
 
     return m;
   }
+
   virtual hunter_pet_td_t* get_target_data( player_t* target )
   {
     hunter_pet_td_t*& td = target_data[ target ];
@@ -2192,10 +2190,10 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
 
 // Pet Claw =================================================================
 
-struct claw_t : public hunter_pet_attack_t
+struct basic_attack_t : public hunter_pet_attack_t
 {
-  claw_t( hunter_pet_t* p, const std::string& options_str ) :
-    hunter_pet_attack_t( "claw", p, p -> find_spell( 16827 ) )
+  basic_attack_t( hunter_pet_t* p, const std::string& name, const std::string& options_str ) :
+    hunter_pet_attack_t( name, p, p -> find_pet_spell( name ) )
   {
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
@@ -2204,11 +2202,10 @@ struct claw_t : public hunter_pet_attack_t
 
   virtual void execute()
   {
-    hunter_t* o     = p() -> cast_owner();
     hunter_pet_attack_t::execute();
 
-    o -> buffs.cobra_strikes -> decrement();
-    if ( o -> specs.frenzy -> ok() )
+    o() -> buffs.cobra_strikes -> decrement();
+    if ( o() -> specs.frenzy -> ok() )
       p() -> buffs.frenzy -> trigger( 1 );
 
   }
@@ -2227,10 +2224,8 @@ struct claw_t : public hunter_pet_attack_t
   {
     double cc = hunter_pet_attack_t::composite_crit();
 
-    hunter_t*     o = p() -> cast_owner();
-
-    if ( o -> buffs.cobra_strikes -> up() )
-      cc += o -> buffs.cobra_strikes -> data().effectN( 1 ).percent();
+    if ( o() -> buffs.cobra_strikes -> up() )
+      cc += o() -> buffs.cobra_strikes -> data().effectN( 1 ).percent();
 
     return cc;
   }
@@ -2601,7 +2596,9 @@ action_t* hunter_pet_t::create_action( const std::string& name,
                                        const std::string& options_str )
 {
   if ( name == "auto_attack"           ) return new      pet_auto_attack_t( this, options_str );
-  if ( name == "claw"                  ) return new                 claw_t( this, options_str );
+  if ( name == "claw"                  ) return new         basic_attack_t( this, "Claw", options_str );
+  if ( name == "bite"                  ) return new         basic_attack_t( this, "Bite", options_str );
+  if ( name == "smack"                  ) return new        basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath"     ) return new    froststorm_breath_t( this, options_str );
   if ( name == "furious_howl"          ) return new         furious_howl_t( this, options_str );
   if ( name == "roar_of_courage"       ) return new      roar_of_courage_t( this, options_str );

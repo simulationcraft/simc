@@ -3922,31 +3922,17 @@ public:
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
 
-  double hit_exp()
-  { 
-    double e = owner -> composite_attack_expertise( &( owner -> main_hand_weapon ) );
+  double hit_exp();
 
-    if ( owner -> off_hand_weapon.damage > 0 )
-      e = std::max( e, owner -> composite_attack_expertise( &( owner -> off_hand_weapon ) ) );
- 
-    return ( e + owner -> composite_attack_hit() ) * 0.50; // attack and spell hit are equal in MoP
-  }
   virtual double composite_attack_expertise( weapon_t* /*w*/ = NULL )
   { return hit_exp(); }
   virtual double composite_attack_hit()
   { return hit_exp(); }
   virtual double composite_spell_hit()
-  { return hit_exp() + composite_attack_expertise( 0 ); }
+  { return hit_exp(); }
 
-  double pet_crit()
-  { 
-    double c = owner -> composite_attack_crit( &( owner -> main_hand_weapon ) );
+  double pet_crit();
 
-    if ( owner -> off_hand_weapon.damage > 0 )
-      c = std::max( c, owner -> composite_attack_crit( &( owner -> off_hand_weapon ) ) );
- 
-    return std::max( c, owner -> composite_spell_crit() );
-  }
   virtual double composite_attack_crit( weapon_t* /*w*/ = NULL )
   { return pet_crit(); }
   virtual double composite_spell_crit()
@@ -3959,25 +3945,9 @@ public:
   virtual double composite_spell_haste()
   { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
 
-  virtual double composite_attack_power()
-  {
-    double ap = 0;
-    if ( owner_coeff.ap_from_ap > 0.0 )
-      ap += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-    if ( owner_coeff.ap_from_sp > 0.0 )
-      ap += owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
-    return ap;
-  }
+  virtual double composite_attack_power();
 
-  virtual double composite_spell_power( school_e school )
-  {
-    double sp = 0;
-    if ( owner_coeff.sp_from_ap > 0.0 )
-      sp += owner -> composite_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
-    if ( owner_coeff.sp_from_sp > 0.0 )
-      sp += owner -> composite_spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
-    return sp;
-  }
+  virtual double composite_spell_power( school_e school );
 
   // Assuming diminishing returns are transfered to the pet as well
   virtual double composite_tank_dodge()
