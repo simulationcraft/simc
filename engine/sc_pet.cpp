@@ -184,7 +184,8 @@ double pet_t::assess_damage( double              amount,
 void pet_t::combat_begin()
 {
   // By default, only report statistics in the context of the owner
-  quiet = ! sim -> report_pets_separately;
+  if ( !quiet)
+    quiet = ! sim -> report_pets_separately;
 
   base_t::combat_begin();
 }

@@ -29,7 +29,7 @@ void print_html_contents( FILE*  file, sim_t* sim )
       {
         pet_t* pet = sim -> players_by_name[ i ] -> pet_list[ j ];
 
-        if ( pet -> summoned )
+        if ( pet -> summoned && !pet -> quiet )
           ++c;
       }
     }
@@ -1591,7 +1591,7 @@ void print_html_( FILE* file, sim_t* sim )
       for ( size_t i = 0; i < pl.size(); ++i )
       {
         pet_t* pet = pl[ i ];
-        if ( pet -> summoned )
+        if ( pet -> summoned && !pet -> quiet )
           report::print_html_player( file, pet, 1 );
       }
     }

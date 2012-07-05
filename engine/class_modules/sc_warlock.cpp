@@ -4196,6 +4196,8 @@ void warlock_t::create_pets()
     for ( int i = 0; i < WILD_IMP_LIMIT; i++ )
     {
       pets.wild_imps[ i ] = new wild_imp_pet_t( sim, this );
+      if ( i > 0 )
+        pets.wild_imps[ i ] -> quiet = 1;
     }
   }
 
