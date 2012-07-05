@@ -92,6 +92,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* invigoration;
     proc_t* thrill_of_the_hunt;
     proc_t* wild_quiver;
     proc_t* lock_and_load;
@@ -2192,12 +2193,19 @@ struct pet_auto_attack_t : public hunter_pet_attack_t
 
 struct basic_attack_t : public hunter_pet_attack_t
 {
+  rng_t* rng_invigoration;
+  double chance_invigoration;
+  double gain_invigoration;
+
   basic_attack_t( hunter_pet_t* p, const std::string& name, const std::string& options_str ) :
     hunter_pet_attack_t( name, p, p -> find_pet_spell( name ) )
   {
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
     base_multiplier *= 1.0 + p -> talents.spiked_collar -> effectN( 1 ).percent();
+    rng_invigoration = player -> get_rng( "invigoration ");
+    chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
+    gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
   virtual void execute()
@@ -2207,16 +2215,20 @@ struct basic_attack_t : public hunter_pet_attack_t
     o() -> buffs.cobra_strikes -> decrement();
     if ( o() -> specs.frenzy -> ok() )
       p() -> buffs.frenzy -> trigger( 1 );
-
   }
 
   virtual void impact_s( action_state_t* s )
   {
     hunter_pet_attack_t::impact_s( s );
 
-    if ( s -> result == RESULT_CRIT )
+    if ( result_is_hit( s -> result ) ) 
     {
-      o() -> resource_gain( RESOURCE_FOCUS, o() -> specs.invigoration -> effectN( 1 ).resource( RESOURCE_FOCUS ), o() -> gains.invigoration );
+      if ( o() -> specs.invigoration -> ok() && rng_invigoration -> roll( chance_invigoration ) )
+      {
+        o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
+
+        o() -> procs.invigoration -> occur();
+      }
     }
   }
 
@@ -2922,6 +2934,7 @@ void hunter_t::init_procs()
 { 
   player_t::init_procs();
 
+  procs.invigoration                 = get_proc( "invigoration"                 );
   procs.thrill_of_the_hunt           = get_proc( "thrill_of_the_hunt"           );
   procs.wild_quiver                  = get_proc( "wild_quiver"                  );
   procs.lock_and_load                = get_proc( "lock_and_load"                );
