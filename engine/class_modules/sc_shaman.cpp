@@ -1788,9 +1788,11 @@ struct windlash_t : public shaman_melee_attack_t
              player -> main_hand_attack -> execute_event &&
              player -> main_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) )
       {
+        p() -> proc.melee_out_of_sync -> occur();
         p() -> buff.flurry -> decrement();
       }
-
+      else
+        p() -> proc.melee_sync -> occur();
       p() -> buff.unleash_wind -> decrement();
 
       shaman_melee_attack_t::execute();
