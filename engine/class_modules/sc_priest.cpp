@@ -416,27 +416,10 @@ struct priest_pet_t : public pet_t
 };
 
 // ==========================================================================
-// Priest Guardian Pet
-// ==========================================================================
-
-struct priest_guardian_pet_t : public priest_pet_t
-{
-  priest_guardian_pet_t( sim_t* sim, priest_t* owner, const std::string& pet_name, pet_e pt ) :
-    priest_pet_t( sim, owner, pet_name, pt, true )
-  {}
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
-  {
-    reset();
-    priest_pet_t::summon( duration );
-  }
-};
-
-// ==========================================================================
 // Base Pet for Shadowfiend and Mindbender
 // ==========================================================================
 
-struct base_fiend_pet_t : public priest_guardian_pet_t
+struct base_fiend_pet_t : public priest_pet_t
 {
   struct buffs_t
   {
@@ -450,7 +433,7 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   action_t* shadowcrawl_action;
 
   base_fiend_pet_t( sim_t* sim, priest_t* owner, pet_e pt, const std::string& name = "basefiend" ) :
-    priest_guardian_pet_t( sim, owner, name, pt ),
+    priest_pet_t( sim, owner, name, pt ),
     buffs( buffs_t() ),
     mana_leech( spell_data_t::nil() ),
     shadowcrawl_action( 0 )
@@ -473,19 +456,19 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
       action_list_str += "/wait_for_shadowcrawl";
     }
 
-    priest_guardian_pet_t::init_actions();
+    priest_pet_t::init_actions();
   }
 
   virtual void init_buffs()
   {
-    priest_guardian_pet_t::init_buffs();
+    priest_pet_t::init_buffs();
 
     buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", find_pet_spell( "Shadowcrawl" ) );
   }
 
   virtual void init_gains()
   {
-    priest_guardian_pet_t::init_gains();
+    priest_pet_t::init_gains();
 
     if      ( pet_type == PET_SHADOWFIEND )
       gains.fiend = o() -> gains.shadowfiend;
@@ -497,7 +480,7 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
 
   virtual void init_resources( bool force )
   {
-    priest_guardian_pet_t::init_resources( force );
+    priest_pet_t::init_resources( force );
 
     resources.initial[ RESOURCE_MANA   ] = owner -> resources.max[ RESOURCE_MANA   ];
     resources.current = resources.max = resources.initial;
@@ -507,7 +490,7 @@ struct base_fiend_pet_t : public priest_guardian_pet_t
   {
     dismiss();
 
-    priest_guardian_pet_t::summon( duration );
+    priest_pet_t::summon( duration );
 
     if ( shadowcrawl_action )
     {
@@ -760,7 +743,7 @@ struct lightwell_renew_t : public heal_t
 
 void base_fiend_pet_t::init_base()
 {
-  priest_guardian_pet_t::init_base();
+  priest_pet_t::init_base();
 
   main_hand_attack = new fiend_melee_t( this );
 }
@@ -776,7 +759,7 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 
   if ( name == "wait_for_shadowcrawl" ) return new wait_for_cooldown_t( this, "shadowcrawl" );
 
-  return priest_guardian_pet_t::create_action( name, options_str );
+  return priest_pet_t::create_action( name, options_str );
 }
 
 action_t* lightwell_pet_t::create_action( const std::string& name,
