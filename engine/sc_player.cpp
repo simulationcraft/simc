@@ -3354,11 +3354,13 @@ void player_t::trigger_ready()
 void player_t::schedule_ready( timespan_t delta_time,
                                bool       waiting )
 {
+#ifndef NDEBUG
   if ( readying )
   {
     sim -> errorf( "\nplayer_t::schedule_ready assertion error: readying == true ( player %s )\n", name() );
     assert( 0 );
   }
+#endif
   action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( current.sleeping )

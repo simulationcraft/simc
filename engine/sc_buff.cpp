@@ -520,11 +520,13 @@ void buff_t::start( int        stacks,
 {
   if ( _max_stack == 0 ) return;
 
+#ifndef NDEBUG
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::start assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
     assert( 0 );
   }
+#endif
 
   if ( sim -> current_time <= timespan_t::from_seconds( 0.01 ) ) constant = true;
 
@@ -615,11 +617,13 @@ void buff_t::bump( int stacks, double value )
 void buff_t::override( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
+#ifndef NDEBUG
   if ( current_stack != 0 )
   {
     sim -> errorf( "buff_t::override assertion error current_stack is not zero, buff %s from %s.\n", name_str.c_str(), player -> name() );
     assert( 0 );
   }
+#endif
 
   if ( value < 0.0 )
   {
@@ -731,11 +735,14 @@ void buff_t::merge( const buff_t* other )
 
   uptime_pct.merge( other -> uptime_pct );
 
+#ifndef NDEBUG
   if ( stack_uptime.size() != other -> stack_uptime.size() )
   {
     sim->errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
     assert( 0 );
   }
+#endif
+
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> merge ( *( other -> stack_uptime[ i ] ) );
 }

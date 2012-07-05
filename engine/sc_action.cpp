@@ -914,11 +914,13 @@ player_t* action_t::find_target_by_number( int number )
 
 void action_t::execute()
 {
+#ifndef NDEBUG
   if ( unlikely( ! initialized ) )
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
   }
+#endif
 
   if ( &data() == &spell_data_not_found_t::singleton )
   {

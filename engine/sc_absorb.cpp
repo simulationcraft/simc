@@ -48,8 +48,10 @@ void absorb_t::player_buff()
 
 void absorb_t::execute()
 {
+#ifndef NDEBUG
   if ( !stateless ) // Safety check to ensure stateless flag never gets turned off. Remove when non-stateless system is discontinued.
     assert( 0 );
+#endif
 
   spell_base_t::execute();
 

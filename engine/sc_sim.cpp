@@ -947,11 +947,13 @@ void sim_t::flush_events()
         // not technically matter
         e -> canceled = 1;
         e -> player -> events--;
+#ifndef NDEBUG
         if ( e -> player -> events < 0 )
         {
           errorf( "sim_t::flush_events assertion error! flushing event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
           assert( 0 );
         }
+#endif
       }
       timing_wheel[ i ] = e -> next;
       delete e;

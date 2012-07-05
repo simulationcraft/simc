@@ -39,11 +39,13 @@ void action_t::release_state( action_state_t* s )
 void action_state_t::copy_state( const action_state_t* o )
 {
   if ( this == o || o == 0 ) return;
+#ifndef NDEBUG
   if( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
   {
     std::cout << "action_state_t::copy_state: state runtime types not equal! this= " << typeid( this ).name() << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
     assert( 0 );
   }
+#endif
 
   action = o -> action; target = o -> target;
   result = o -> result; result_amount = o -> result_amount;

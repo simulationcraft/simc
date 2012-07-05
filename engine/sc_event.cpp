@@ -83,11 +83,13 @@ void event_t::cancel_( event_t* e )
   if ( e -> player && ! e -> canceled )
   {
     e -> player -> events--;
+#ifndef NDEBUG
     if ( e -> player -> events < 0 )
     {
       e -> sim -> errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n", e -> name, e -> player -> name() );
       assert( 0 );
     }
+#endif
   }
   e -> canceled = 1;
 }
