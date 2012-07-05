@@ -4576,8 +4576,6 @@ void warlock_t::init_actions()
       add_action( "Conflagrate",           "if=ember_react&buff.fire_and_brimstone.up",              "aoe" );
       add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                          "aoe" );
       add_action( "Immolate",              "cycle_targets=1,if=!ticking",                            "aoe" );
-      add_action( "Conflagrate",           "",                                                       "aoe" );
-      add_action( "Incinerate",            "if=mana.pct>=50",                                        "aoe" );
       break;
 
     case WARLOCK_DEMONOLOGY:
