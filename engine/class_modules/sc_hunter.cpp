@@ -561,11 +561,7 @@ public:
   }
 
   virtual double composite_attack_power()
-  {
-    double ap = pet_t::composite_attack_power();
-
-    return ap;
-  }
+  { return owner -> composite_attack_power(); }
 
   virtual double composite_attack_power_multiplier()
   {

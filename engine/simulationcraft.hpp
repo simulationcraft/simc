@@ -3952,15 +3952,6 @@ public:
   virtual double composite_spell_crit()
   { return pet_crit(); }
 
-  virtual double composite_attack_power()
-  {
-    double ap = owner -> composite_attack_power();
-
-    if ( vengeance.enabled )
-      ap += vengeance.value;
-    return ap;
-  }
-
   // Assumption: Works similar to crit as specified in http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
   virtual double composite_attack_haste()
   { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
