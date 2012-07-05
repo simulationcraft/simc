@@ -3931,7 +3931,7 @@ public:
  
     return ( e + owner -> composite_attack_hit() ) * 0.50; // attack and spell hit are equal in MoP
   }
-  virtual double composite_attack_expertise( weapon_t* /*w*/ )
+  virtual double composite_attack_expertise( weapon_t* /*w*/ = NULL )
   { return hit_exp(); }
   virtual double composite_attack_hit()
   { return hit_exp(); }
@@ -3947,7 +3947,7 @@ public:
  
     return std::max( c, owner -> composite_spell_crit() );
   }
-  virtual double composite_attack_crit( weapon_t* /*w*/ )
+  virtual double composite_attack_crit( weapon_t* /*w*/ = NULL )
   { return pet_crit(); }
   virtual double composite_spell_crit()
   { return pet_crit(); }

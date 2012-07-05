@@ -566,6 +566,7 @@ public:
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
+
     mult *= 1.0 + buffs.rabid_power_stack -> stack() * buffs.rabid_power_stack -> data().effectN( 1 ).percent();
     // TODO pet charge should show up here.
     return mult;
@@ -573,7 +574,7 @@ public:
 
   virtual double composite_attack_crit( weapon_t* /* w */ )
   {
-    double ac = pet_t::composite_attack_crit( 0 );
+    double ac = pet_t::composite_attack_crit();
 
     ac *= 1.0 + talents.spiked_collar -> effectN( 3 ).percent();
     
@@ -582,12 +583,7 @@ public:
 
   virtual double composite_attack_haste()
   {
-    double h = owner -> composite_attack_haste();
-
-    // Pets do not scale with haste from certain buffs on the owner
-    // TODO confirm that this is still true
-    if ( owner -> buffs.bloodlust -> check() )
-      h *= 1.30;
+    double h = pet_t::composite_attack_haste();
 
     h *= 1.0 + cast_owner() -> buffs.rapid_fire -> check() * cast_owner() -> buffs.rapid_fire -> current_value;
 
@@ -595,11 +591,7 @@ public:
   }
 
   double composite_spell_power( school_e school )
-  {
-    double sp = pet_t::composite_spell_power( school );
-    sp += 0.125 * owner -> composite_spell_power( school );
-    return sp;
-  }
+  { return 0.125 * owner -> composite_spell_power( school ); }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
