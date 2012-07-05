@@ -8,7 +8,7 @@ position=back
 role=spell
 spec=arcane
 professions=enchanting=600/tailoring=600
-talents=111122
+talents=111121
 glyphs=evocation/mana_gem/slow/mirror_image
 actions=flask,type=warm_sun
 actions+=/food,type=great_pandaren_banquet
