@@ -353,7 +353,13 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       tick_dmg_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_tick_dmg", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> prev_tick_amount; }
+      virtual double evaluate()
+      {
+        if ( !dot() -> action-> stateless ) // non-stateless
+          return dot() -> prev_tick_amount;
+        else // stateless
+          return dot() -> state ? dot() -> state -> result_amount : 0.0;
+      }
     };
     return new tick_dmg_expr_t( this, action, dynamic );
   }

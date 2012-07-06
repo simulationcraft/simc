@@ -1081,8 +1081,6 @@ void action_t::tick( dot_t* d )
 
       d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
 
-      d -> prev_tick_amount = d -> state -> result_amount;
-
       assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
     }
     
