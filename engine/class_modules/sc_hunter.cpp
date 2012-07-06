@@ -179,7 +179,7 @@ public:
     // const spell_data_t* black_arrow;
     // const spell_data_t* entrapment;
     const spell_data_t* viper_venom;
-    // const spell_data_t* trap_mastery;
+    const spell_data_t* trap_mastery;
     const spell_data_t* serpent_spread;
   } specs;
 
@@ -1118,13 +1118,13 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     cooldown = p() -> get_cooldown( "traps" );
     cooldown -> duration = data().cooldown();
-//    cooldown -> duration += p() -> talents.resourcefulness -> effectN( 1 ).time_value();
 
-//    base_multiplier *= 1.0 + p() -> talents.trap_mastery -> effectN( 1 ).percent();
+    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+
     // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
     // yields the right result
     crit_bonus = 0.5;
-//    crit_bonus_multiplier *= 1.0 + p() -> talents.toxicology -> effectN( 1 ).percent();
 
     base_dd_min=base_dd_max=0;
     tick_power_mod = data().extra_coeff();
@@ -1164,7 +1164,9 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
     background = true;
     tick_power_mod = data().extra_coeff();
 
-//    base_multiplier *= 1.0 + p() -> talents.trap_mastery -> effectN( 1 ).percent();
+    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
+
     may_miss = false;
     may_crit = false;
     tick_may_crit = true;
@@ -1992,6 +1994,21 @@ struct readiness_t : public hunter_spell_t
     cooldown_list.push_back( p() -> get_cooldown( "silencing_shot"   ) );
     cooldown_list.push_back( p() -> get_cooldown( "kill_command"     ) );
     cooldown_list.push_back( p() -> get_cooldown( "rapid_fire"       ) );
+    cooldown_list.push_back( p() -> get_cooldown( "bestial_wrath"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "concussive_shot"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "dire_beast"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "powershot"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "barrage"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "lynx_rush"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "a_murder_of_crows"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "glaive_toss"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "deterrence"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "distracting_shot"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "freezing_trap"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "frost_trap"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "explosive_trap"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "explosive_shot"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"    ) ); //????
   }
 
   virtual void execute()
@@ -2822,6 +2839,7 @@ void hunter_t::init_spells()
   specs.rapid_recuperation   = find_specialization_spell( "Rapid Recuperation" );
   specs.master_marksman      = find_specialization_spell( "Master Marksman" );
   specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
+  specs.trap_mastery         = find_specialization_spell( "Trap Mastery" );
 
 
   if ( specs.piercing_shots -> ok() )
@@ -3065,7 +3083,6 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
-//      if ( talents.chimera_shot -> ok() )
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       if ( talents.readiness -> ok() )
@@ -3100,23 +3117,11 @@ void hunter_t::init_actions()
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
-
-//      if ( ! talents.black_arrow -> ok() )
-      action_list_str += "/explosive_trap,if=target.time_to_die>=11&target.debuff.flying.down";
-
       action_list_str += "/kill_shot";
-
-//      if ( talents.black_arrow -> ok() )
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
-
       action_list_str += "/rapid_fire";
-
       action_list_str += "/arcane_shot,if=focus>=67";
-
-      if ( level >=81 )
-        action_list_str += "/cobra_shot";
-      else
-        action_list_str += "/steady_shot";
+      action_list_str += level >= 81 ? "/cobra_shot" : "/steady_shot";
 
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";
