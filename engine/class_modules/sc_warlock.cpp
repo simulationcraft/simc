@@ -390,7 +390,6 @@ struct warlock_pet_t : public pet_t
                                bool   waiting=false );
   virtual double composite_spell_power( school_e school );
   virtual double composite_player_multiplier( school_e school, action_t* a );
-  virtual double composite_attack_hit() { return owner -> composite_spell_hit(); }
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
@@ -407,8 +406,24 @@ static double get_fury_gain( const spell_data_t& data )
 
 struct warlock_pet_melee_t : public melee_attack_t
 {
-  warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
+  struct off_hand_swing : public melee_attack_t
+  {
+    off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ) :
     melee_attack_t( name, p, spell_data_t::nil() )
+    {
+      school = SCHOOL_PHYSICAL;
+      weapon = &( p -> off_hand_weapon ); 
+      base_execute_time = weapon -> swing_time;  
+      may_crit    = true;
+      background  = true;
+      base_hit -= 0.19;
+    }
+  };
+
+  off_hand_swing* oh;
+
+  warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
+    melee_attack_t( name, p, spell_data_t::nil() ), oh( 0 )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
@@ -416,17 +431,29 @@ struct warlock_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-  }
 
-  warlock_pet_t* p()
-  { return static_cast<warlock_pet_t*>( player ); }
+    if ( p -> dual_wield() )
+    {
+      base_hit -= 0.19;
+      oh = new off_hand_swing( p );
+    }
+  }
 
   virtual void execute()
   {
-    if ( ! p() -> executing && ! p() -> channeling ) 
+    if ( ! player -> executing && ! player -> channeling ) 
+    {
       melee_attack_t::execute();
+      if ( oh )
+      {
+        oh -> time_to_execute = time_to_execute;
+        oh -> execute();
+      }
+    }
     else
+    {
       schedule_execute();
+    }
   }
 };
 
@@ -1169,11 +1196,16 @@ struct wrathguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
     action_list_str = "mortal_cleave";
+    owner_coeff.ap_from_sp = 2.3; // FIXME: Retest this in a few builds
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
+    
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
+    off_hand_weapon.type = main_hand_weapon.type;
+    off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new wrathstorm_t( this );
@@ -1218,12 +1250,16 @@ struct shivarra_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "shivarra", PET_SUCCUBUS )
   {
     action_list_str = "bladedance";
-    owner_coeff.ap_from_sp = 1.667;
+    owner_coeff.ap_from_sp = 2.3; // FIXME: Retest this in a few builds
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
+    
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
+    off_hand_weapon.type = main_hand_weapon.type;
+    off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new fellash_t( this );
