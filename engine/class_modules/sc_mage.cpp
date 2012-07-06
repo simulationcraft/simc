@@ -1096,7 +1096,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> current_arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1105,7 +1105,6 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p() -> current_arcane_charges = p() -> buffs.arcane_charge -> stack();
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> decrement();
     p() -> buffs.arcane_charge   -> trigger();
