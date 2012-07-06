@@ -941,7 +941,8 @@ class SpellDataGenerator(DataGenerator):
     # to True) or disappear (if set to False) from the class activated spell list, 
     # regardless of the automated activated check.
     # Manually entered general spells ("tree" 0) do not appear in class activated lists, even if
-    # they pass the "activated" check.
+    # they pass the "activated" check, but will appear there if the optional activated parameter 
+    # exists, and is set to True.
     # The first tuple in the list is for non-class related, generic spells that are whitelisted,
     # without a category
     _spell_id_list = [
@@ -984,7 +985,7 @@ class SpellDataGenerator(DataGenerator):
           ( 115356, 0 ), ( 114093, 0 ),                 # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
-            ( 58859,  5 ),                              # Spirit Wolf: Spirit Bite
+          ( 58859,  5 ),                              # Spirit Wolf: Spirit Bite
         ),
         
         # Mage:
@@ -2404,14 +2405,16 @@ class SpellListGenerator(SpellDataGenerator):
         for cls in xrange(1, len(SpellDataGenerator._spell_id_list)):
             for spell_tuple in SpellDataGenerator._spell_id_list[cls]:
                 # Skip spells with zero tree, as they dont exist
-                if spell_tuple[1] == 0:
-                    continue
+                #if spell_tuple[1] == 0:
+                #    continue
 
                 spell = self._spell_db[spell_tuple[0]]
                 if not spell.id:
                     continue
 
-                if len(spell_tuple) == 2 and not self.spell_state(spell):
+                if len(spell_tuple) == 2 and spell_tuple[1] == 0:
+                    continue
+                elif len(spell_tuple) == 2 and not self.spell_state(spell):
                     continue
                 elif len(spell_tuple) == 3 and spell_tuple[2] == False:
                     continue
