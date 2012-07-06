@@ -219,6 +219,7 @@ private:
   target_specific_t<mage_td_t> target_data;
 public:
   int mana_gem_charges;
+  int current_arcane_charges;
 
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
@@ -1069,7 +1070,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> current_arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
     return am;
   }
@@ -1101,6 +1102,7 @@ struct arcane_missiles_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
+    p() -> current_arcane_charges = p() -> buffs.arcane_charge -> stack();
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> expire();
     p() -> buffs.arcane_charge   -> trigger();
@@ -3223,6 +3225,9 @@ double mage_t::composite_mp5()
 
   if ( passives.nether_attunement -> ok() )
     mp5 /= mage_t::composite_spell_haste();
+
+  if ( talents.invocation -> ok() )
+    mp5 /= 2.0;
 
   return mp5;
 }
