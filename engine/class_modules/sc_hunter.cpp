@@ -2116,7 +2116,7 @@ struct hunter_pet_action_t : public Base
 
   void apply_exotic_beast_cd() 
   {
-    cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
+   // cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
   }
 };
 

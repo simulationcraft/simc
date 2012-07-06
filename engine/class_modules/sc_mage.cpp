@@ -402,6 +402,18 @@ struct water_elemental_pet_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
+
+  virtual double composite_player_multiplier( school_e school, action_t* a )
+  {
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    // Orc racial
+    if ( owner -> race == RACE_ORC )
+      m *= 1.05;
+
+    return m;
+  }
+
 };
 
 // ==========================================================================
@@ -1104,7 +1116,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> current_arcane_charges = p() -> buffs.arcane_charge -> stack();
     p() -> buffs.arcane_missiles -> up();
-    p() -> buffs.arcane_missiles -> expire();
+    p() -> buffs.arcane_missiles -> decrement();
     p() -> buffs.arcane_charge   -> trigger();
   }
 

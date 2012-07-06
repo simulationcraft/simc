@@ -3,7 +3,7 @@
 mage=Mage_Frost_463
 origin="http://www.wowhead.com/profile=33895137"
 level=90
-race=troll
+race=orc
 position=back
 role=spell
 spec=frost
@@ -13,7 +13,7 @@ glyphs=evocation/ice_lance/cone_of_cold
 actions=flask,type=warm_sun
 actions+=/food,type=great_pandaren_banquet
 actions+=/arcane_brilliance
-actions+=/molten_armor
+actions+=/frost_armor
 actions+=/water_elemental
 actions+=/snapshot_stats
 actions+=/counterspell
@@ -40,6 +40,7 @@ actions+=/icy_veins,if=buff.berserking.down&buff.bloodlust.down
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
 actions+=/frostbolt
+actions+=/evocation,if=!talent.rune_of_power.enabled
 actions+=/scorch,if=talent.scorch.enabled
 actions+=/fire_blast
 actions+=/ice_lance
