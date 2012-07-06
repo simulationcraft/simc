@@ -205,6 +205,7 @@ bool option_t::parse( sim_t*             sim,
         std::map<std::string,std::string>* m = ( std::map<std::string,std::string>* ) address;
         std::string& value = ( *m )[ n.substr( dot+1, last-dot ) ];
         value = append ? ( value + v ) : v;
+        return true;
       }
     }
   }
