@@ -294,7 +294,7 @@ int buff_t::stack_react()
 
 // buff_t::remains ==========================================================
 
-timespan_t buff_t::remains()
+timespan_t buff_t::remains() const
 {
   if ( current_stack <= 0 )
   {

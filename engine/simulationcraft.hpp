@@ -1965,7 +1965,7 @@ public:
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
-  timespan_t remains();
+  timespan_t remains() const;
   bool   remains_gt( timespan_t time );
   bool   remains_lt( timespan_t time );
   bool   trigger  ( action_t*, int stacks=1, double value=-1.0, timespan_t duration = timespan_t::min() );

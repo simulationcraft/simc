@@ -3501,6 +3501,62 @@ struct mage_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
+namespace alter_time_development {
+
+struct buff_state_t
+{
+  const buff_t* buff;
+  int stacks;
+  timespan_t remain_time;
+  double value;
+
+  buff_state_t( const buff_t* b ) :
+    buff( b ),
+    stacks( b -> current_stack ),
+    remain_time( b -> remains() ),
+    value( b -> current_value )
+  { }
+
+  void write_back_state()
+  {
+    // Todo: Determine how exactly buffs are restored
+  }
+};
+
+struct mage_state_t
+{
+  std::array<double, RESOURCE_MAX > resources;
+  // location
+  std::vector<buff_state_t*> buff_states;
+
+  mage_state_t( const mage_t* m ) :
+    resources( m -> resources.current )
+  {
+    for( size_t i = 0; i < m -> buff_list.size(); ++i )
+    {
+      buff_t* b = m -> buff_list[ i ];
+      buff_states.push_back( new buff_state_t( b ) );
+    }
+  }
+
+  void write_back_state( mage_t* m ) const
+  {
+    m -> resources.current = resources;
+
+    for( size_t i = 0; i < buff_states.size(); ++ i )
+    {
+      buff_states[ i ] -> write_back_state();
+    }
+  }
+
+  ~mage_state_t()
+  {
+    range::dispose( buff_states );
+  }
+};
+
+} // alter_time_development
+
 } // ANONYMOUS NAMESPACE
 
 module_t* module_t::mage()
