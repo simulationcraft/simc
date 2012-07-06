@@ -13,6 +13,10 @@ namespace { // ANONYMOUS NAMESPACE
 
 struct mage_t;
 
+namespace alter_time {
+struct mage_state_t;
+};
+
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
 struct mage_td_t : public actor_pair_t
@@ -40,6 +44,7 @@ public:
 
   // Active
   spell_t* active_ignite;
+  alter_time::mage_state_t* alter_time_state;
 
   // Benefits
   struct benefits_t
@@ -676,6 +681,113 @@ struct mirror_image_pet_t : public pet_t
 };
 
 } // pets
+
+namespace alter_time {
+
+// 6s event to finish alter time
+struct alter_time_event_t : public event_t
+{
+  alter_time::mage_state_t* state;
+
+  alter_time_event_t( mage_t* player, alter_time::mage_state_t* s ) :
+    event_t( player -> sim, player, "alter_time" ),
+    state( s )
+  {
+    if ( sim -> debug )
+      sim -> output( "Creating alter_time_event_t for mage %s", player -> name() );
+
+    sim -> add_event( this, timespan_t::from_seconds( 6 ) );
+  }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual void execute();
+};
+
+// Class to save buff state information relevant to alter time for a buff
+struct buff_state_t
+{
+  const buff_t* buff;
+  int stacks;
+  timespan_t remain_time;
+  double value;
+
+  buff_state_t( const buff_t* b ) :
+    buff( b ),
+    stacks( b -> current_stack ),
+    remain_time( b -> remains() ),
+    value( b -> current_value )
+  {
+    if ( b -> sim -> debug && stacks > 0 )
+    {
+      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
+          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
+
+      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
+          stacks, remain_time.total_seconds(), value );
+    }
+  }
+
+  void write_back_state() const
+  {
+    if ( buff -> sim -> debug && stacks > 0 )
+      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
+          buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
+
+
+    // Todo: Determine how exactly buffs are restored
+  }
+};
+
+struct mage_state_t
+{
+  std::array<double, RESOURCE_MAX > resources;
+  // location
+  std::vector<buff_state_t*> buff_states;
+
+
+  mage_state_t( mage_t* m ) : // Snapshot and start 6s event
+    resources( m -> resources.current )
+  {
+    if ( m -> sim -> debug )
+      m -> sim -> output( "Creating mage_state_t for mage %s", m -> name() );
+
+    for( size_t i = 0; i < m -> buff_list.size(); ++i )
+    {
+      buff_t* b = m -> buff_list[ i ];
+      buff_states.push_back( new buff_state_t( b ) );
+    }
+
+    new ( m -> sim ) alter_time_event_t( m, this );
+  }
+
+  void write_back_state( mage_t* m ) const
+  {
+    m -> resources.current = resources;
+
+    for( size_t i = 0; i < buff_states.size(); ++ i )
+    {
+      buff_states[ i ] -> write_back_state();
+    }
+  }
+
+  ~mage_state_t()
+  {
+    range::dispose( buff_states );
+  }
+};
+
+void alter_time_event_t::execute()
+{
+  if ( state )
+  {
+    state -> write_back_state( p() );
+    delete state;
+  }
+}
+
+}; // alter_time namespace
 
 namespace { // ANONYMOUS NAMESPACE
 
@@ -2644,6 +2756,26 @@ struct choose_rotation_t : public action_t
   }
 };
 
+// Alter Time Spell ===============================================================
+
+struct alter_time_t : public mage_spell_t
+{
+  alter_time_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "alter_time_activate", p, p -> find_class_spell( "Alter Time" ) )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> alter_time_state = new alter_time::mage_state_t( p() );
+  }
+};
+
+
+
 } // ANONYMOUS NAMESPACE
 
 // ==========================================================================
@@ -2726,7 +2858,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
-  if ( name == "water_elemental"   ) return new   summon_water_elemental_t( this, options_str );
+  if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
+  if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3036,6 +3169,7 @@ void mage_t::init_actions()
 
     // Counterspell
     action_list_str += "/counterspell";
+
     // Refresh Gem during invuln phases
     if ( level >= 48 ) action_list_str += "/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react";
     // Arcane Choose Rotation
@@ -3500,62 +3634,6 @@ struct mage_module_t : public module_t
   virtual void combat_begin( sim_t* ) {}
   virtual void combat_end  ( sim_t* ) {}
 };
-
-namespace alter_time_development {
-
-struct buff_state_t
-{
-  const buff_t* buff;
-  int stacks;
-  timespan_t remain_time;
-  double value;
-
-  buff_state_t( const buff_t* b ) :
-    buff( b ),
-    stacks( b -> current_stack ),
-    remain_time( b -> remains() ),
-    value( b -> current_value )
-  { }
-
-  void write_back_state()
-  {
-    // Todo: Determine how exactly buffs are restored
-  }
-};
-
-struct mage_state_t
-{
-  std::array<double, RESOURCE_MAX > resources;
-  // location
-  std::vector<buff_state_t*> buff_states;
-
-  mage_state_t( const mage_t* m ) :
-    resources( m -> resources.current )
-  {
-    for( size_t i = 0; i < m -> buff_list.size(); ++i )
-    {
-      buff_t* b = m -> buff_list[ i ];
-      buff_states.push_back( new buff_state_t( b ) );
-    }
-  }
-
-  void write_back_state( mage_t* m ) const
-  {
-    m -> resources.current = resources;
-
-    for( size_t i = 0; i < buff_states.size(); ++ i )
-    {
-      buff_states[ i ] -> write_back_state();
-    }
-  }
-
-  ~mage_state_t()
-  {
-    range::dispose( buff_states );
-  }
-};
-
-} // alter_time_development
 
 } // ANONYMOUS NAMESPACE
 
