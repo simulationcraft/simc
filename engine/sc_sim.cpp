@@ -2253,7 +2253,11 @@ bool sim_t::setup( sim_control_t* c )
   {
     option_tuple_t& o = control -> options[ i ];
     if ( o.scope != "global" ) continue;
-    parse_option( o.name, o.value );
+    if ( ! parse_option( o.name, o.value ) )
+    {
+      errorf( "Unknown option \"%s\" with value \"%s\"\n", o.name.c_str(), o.value.c_str() );
+      return false;
+    }
   }
 
   // Combat
