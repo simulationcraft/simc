@@ -6,7 +6,6 @@ level=85
 race=orc
 position=ranged_back
 role=attack
-use_pre_potion=1
 professions=blacksmithing=525/engineering=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Yaa!...102!X
 spec=beast_mastery
