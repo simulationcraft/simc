@@ -137,7 +137,7 @@ public:
   heal_t*   active_living_seed;
 
   // Pets
-  pet_t* pet_treants;
+  pet_t* pet_treants[ 3 ];
 
   // Auto-attacks
   melee_attack_t* cat_melee_attack;
@@ -395,8 +395,6 @@ public:
 
     active_swiftmend_aoe      = 0;
     active_living_seed        = 0;
-
-    pet_treants           = 0;
 
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
@@ -881,6 +879,97 @@ struct treants_pet_t : public pet_t
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
+  }
+};
+
+struct treants_balance_t : public pet_t
+{
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( treants_balance_t* player ) :
+      melee_attack_t( "treant_melee", player )
+    {
+      if ( player -> o() -> pet_treants[ 0 ] )
+        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "treant_melee" );
+
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = 1;
+      school = SCHOOL_PHYSICAL;
+
+      trigger_gcd = timespan_t::zero();
+
+      background = true;
+      repeating  = false;
+      special    = false;
+      may_glance = true;
+      may_crit   = true;
+    }
+  };
+
+  struct wrath_t : public spell_t
+  {
+    wrath_t( treants_balance_t* player ) :
+      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+    {
+      stateless = true;
+      
+      if ( player -> o() -> pet_treants[ 0 ] )
+        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "wrath" );
+    }
+  };
+
+  druid_t* o() { return static_cast< druid_t* >( owner ); }
+
+  treants_balance_t( sim_t* sim, druid_t* owner ) :
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+  {
+    owner_coeff.sp_from_sp = 1.00;
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_MANA   ] = 0;
+    
+    base.attribute[ ATTR_INTELLECT ] = 0;
+    initial.spell_power_per_intellect = 0;
+    intellect_per_owner = 0;
+    stamina_per_owner = 0;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 580;
+    main_hand_weapon.max_dmg    = 580;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
+
+    main_hand_attack = new melee_t( this );    
+  }
+  
+  void init_actions()
+  {
+    action_list_str = "wrath";
+
+    pet_t::init_actions();
+  }
+
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "wrath"  ) return new wrath_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+  virtual void summon( timespan_t duration=timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    // Treants cast on the target will instantly perform a melee before
+    // starting to cast wrath
+    main_hand_attack -> execute();
   }
 };
 
@@ -3876,8 +3965,13 @@ struct treants_spell_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    p() -> pet_treants -> summon( p() -> talent.force_of_nature -> duration() );
+    if ( p() -> pet_treants[ 0 ] )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+      }
+    }
   }
 };
 
@@ -4116,8 +4210,10 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "treants"        ) return new        treants_pet_t( sim, this, pet_name );
-
+  if ( pet_name == "treants" ) 
+  {
+    if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
+  }
   return 0;
 }
 
@@ -4125,7 +4221,12 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
 void druid_t::create_pets()
 {
-  pet_treants        = create_pet( "treants" );
+  for ( int i = 0; i < 3; i++ )
+  {
+    pet_treants[ i ] = create_pet( "treants" );
+    if ( i > 0 )
+      pet_treants[ i ] -> quiet = 1;
+  }
 }
 
 // druid_t::init_spells =====================================================
