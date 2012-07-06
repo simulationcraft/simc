@@ -777,20 +777,24 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 23 abilities
+    // Pet tree, 29 abilities
     {
        89766, // Axe Toss (Special Ability)
+      115748, // Bladedance (Basic Attack)
         6307, // Blood Pact (Special Ability)
       119899, // Cauterize Master (Special Ability)
        19505, // Devour Magic (Special Ability)
       118093, // Disarm (Special Ability)
        85692, // Doom Bolt
+      115746, // Felbolt (Basic Attack)
+      115770, // Fellash (Special Ability)
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
        89792, // Flee (Special Ability)
         7814, // Lash of Pain (Basic Attack)
        30213, // Legion Strike (Basic Attack)
         7870, // Lesser Invisibility (Special Ability)
+      115625, // Mortal Cleave (Basic Attack)
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Special Ability)
        54049, // Shadow Bite (Basic Attack)
@@ -800,8 +804,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
       112042, // Threatening Presence (Special Ability)
+      115778, // Tongue Lash (Basic Attack)
         3716, // Torment (Basic Attack)
         6360, // Whiplash (Special Ability)
+      115831, // Wrathstorm (Special Ability)
            0,
     },
   },

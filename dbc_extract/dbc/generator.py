@@ -968,20 +968,20 @@ class SpellDataGenerator(DataGenerator):
         ( ),  
         
         # Priest:
-        ( (  63619, 5 ), # Shadowfiend "Shadowcrawl"
-        	(  94472, 0 ), # Atonement Crit
-        	( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), # Shadow Mastery "duplicate" ticks
-        	( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
+        (   (  63619, 5 ), # Shadowfiend "Shadowcrawl"
+            (  94472, 0 ), # Atonement Crit
+            ( 124464, 3 ), ( 124465, 3 ), ( 124467, 3 ), ( 124468, 3 ), ( 124469, 3 ), # Shadow Mastery "duplicate" ticks
+            ( 127627, 3 ), ( 127628, 3 ), # Shadow Cascade
         ), 
         
         # Death Knight:
         ( ( 70890, 0 ), # weird Scourge Strike secondary effect
-        	( 51963, 5 ), # gargoyle strike
+          ( 51963, 5 ), # gargoyle strike
         ),  
         
         # Shaman:
-        ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ), 	#  Overloads
-          ( 115356, 0 ), ( 114093, 0 ), 				        # Ascendance: Stormblast, offhand melee swing,
+        ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
+          ( 115356, 0 ), ( 114093, 0 ),                 # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
             ( 58859,  5 ),                              # Spirit Wolf: Spirit Bite
@@ -996,16 +996,22 @@ class SpellDataGenerator(DataGenerator):
         ), 
         
         # Warlock:
-        ( (  85692, 5 ),       # doomguard doom bolt
-        	( 115422, 2, True ), # void ray
-        	( 104025, 2, True ), # immolation aura
-        	( 104232, 3, True ), # destruction rain of fire
-        	( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
+        (   (  85692, 5 ),       # doomguard doom bolt
+            ( 115746, 5 ),       # fel imp felbolt
+            ( 115778, 5 ),       # observer tongue lash
+            ( 115748, 5 ),       # shivarra bladedance
+            ( 115770, 5 ),       # shivarra fellash
+            ( 115625, 5 ),       # wrathguard mortal cleave
+            ( 115831, 5 ),       # wrathguard wrathstorm
+            ( 115422, 2, True ), # void ray
+            ( 104025, 2, True ), # immolation aura
+            ( 104232, 3, True ), # destruction rain of fire
+            ( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
         ),
         
         # Monk:
         ( ( 118864, 3 ), # Combo Breaker: Tiger Palm
-        	( 116768, 3 ), # Combo Breaker: Blackout Kick 
+          ( 116768, 3 ), # Combo Breaker: Blackout Kick 
         ),
         
         # Druid:
