@@ -879,7 +879,6 @@ static double calculate_dot_dps( dot_t* d )
   action_t* a = d -> action;
 
   d -> state -> result = RESULT_HIT;
-  a -> snapshot_state( d -> state, a -> update_flags );
 
   return ( a -> calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target ) / a -> base_tick_time.total_seconds() );
 }
