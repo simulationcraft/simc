@@ -321,6 +321,8 @@ public:
     return m;
   }
 
+  void add_action( std::string action, std::string options = "", std::string alist = "default" );
+  void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
 };
 
 namespace pets {
@@ -2965,6 +2967,21 @@ void mage_t::init_benefits()
   benefits.water_elemental   = get_benefit( "water_elemental" );
 }
 
+void mage_t::add_action( std::string action, std::string options, std::string alist )
+{
+  add_action( find_talent_spell( action ) -> ok() ? find_talent_spell( action ) : find_class_spell( action ), options, alist );
+}
+
+void mage_t::add_action( const spell_data_t* s, std::string options, std::string alist )
+{
+  std::string *str = ( alist == "default" ) ? &action_list_str : &( get_action_priority_list( alist ) -> action_list_str );
+  if ( s -> ok() )
+  {
+    *str += "/" + dbc_t::get_token( s -> id() );
+    if ( ! options.empty() ) *str += "," + options;
+  }
+}
+
 // mage_t::init_actions =====================================================
 
 void mage_t::init_actions()
@@ -2987,48 +3004,51 @@ void mage_t::init_actions()
     }
 #endif
 
+    std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+
     if ( level >= 80 )
     {
       // Flask
-      action_list_str += "/flask,type=";
-      action_list_str += ( level > 85 ) ? "warm_sun" : "draconic_mind";
-      action_list_str += ",precombat=1";
+      precombat += "/flask,type=";
+      precombat += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      precombat += ",precombat=1";
 
       // Food
-      action_list_str += "/food,type=";
-      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
-      action_list_str += ",precombat=1";
+      precombat += "/food,type=";
+      precombat += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      precombat += ",precombat=1";
     }
 
     // Arcane Brilliance
-    if ( level >= 58 ) action_list_str += "/arcane_brilliance,precombat=1,if=!aura.spell_power_multiplier.up|!aura.critical_strike.up";
+    add_action( "Arcane Brilliance", "if=!aura.spell_power_multiplier.up|!aura.critical_strike.up", "precombat" );
 
     // Armor
     if ( specialization() == MAGE_ARCANE )
     {
-      action_list_str += "/mage_armor,precombat=1";
+      add_action( "Mage Armor", "", "precombat" );
     }
     else if ( specialization() == MAGE_FIRE )
     {
-      action_list_str += "/molten_armor,precombat=1,if=buff.mage_armor.down&buff.molten_armor.down";
-      action_list_str += "/molten_armor,precombat=1,if=mana.pct>45&buff.mage_armor.up";
+
+      add_action( "Molten Armor", "if=buff.mage_armor.down&buff.molten_armor.down", "precombat" );
+      add_action( "Molten Armor", "if=if=mana.pct>45&buff.mage_armor.up", "precombat" );
     }
     else
     {
-      action_list_str += "/molten_armor,precombat=1";
+      add_action( "Molten Armor", "", "precombat" );
     }
 
     // Water Elemental
-    if ( specialization() == MAGE_FROST ) action_list_str += "/water_elemental,precombat=1";
+    if ( specialization() == MAGE_FROST )
+      precombat += "/water_elemental";
 
     // Snapshot Stats
-    action_list_str += "/snapshot_stats,precombat=1";
+    precombat += "/snapshot_stats";
 
     //Potions
     if ( level >= 80 )
     {
-      action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-      action_list_str += ",precombat=1";
+      precombat += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
     }
 
     // Counterspell
