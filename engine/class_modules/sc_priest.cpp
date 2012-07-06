@@ -2849,15 +2849,6 @@ struct penance_t : public priest_spell_t
       direct_tick = true;
       base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
     }
-
-    virtual double action_multiplier()
-    {
-      double m = priest_spell_t::action_multiplier();
-
-      m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-      return m;
-    }
   };
 
   penance_t( priest_t* p, const std::string& options_str ) :
@@ -2898,6 +2889,15 @@ struct penance_t : public priest_spell_t
     c *= 1.0 + p() -> glyphs.penance -> effectN( 1 ).percent();
 
     return c;
+  }
+  
+  virtual double action_multiplier()
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    m *= 1.0 + ( p() -> buffs.holy_evangelism -> stack() * p() -> buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+
+    return m;
   }
 };
 
@@ -3431,16 +3431,6 @@ struct divine_hymn_tick_t : public priest_heal_t
 
     aoe = nr_targets - 1;
   }
-
-  virtual double action_multiplier()
-  {
-    double am = priest_heal_t::action_multiplier();
-
-    if ( p() -> buffs.chakra_sanctuary -> up() )
-      am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
 struct divine_hymn_t : public priest_heal_t
@@ -3458,6 +3448,15 @@ struct divine_hymn_t : public priest_heal_t
     add_child( tick_action );
   }
 
+  virtual double action_multiplier()
+  {
+    double am = priest_heal_t::action_multiplier();
+
+    if ( p() -> buffs.chakra_sanctuary -> up() )
+      am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 // Flash Heal Spell =========================================================

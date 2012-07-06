@@ -69,7 +69,7 @@ void heal_t::execute()
 
   if ( callbacks )
   {
-    if ( result != RESULT_NONE )
+    if ( ! is_tick_action && result != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.heal[ result ], this );
     }
@@ -100,7 +100,8 @@ void heal_t::assess_damage( player_t* t,
                      util::result_type_string( heal_result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, assess_state );
+    if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, assess_state );
+    if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, assess_state );
   }
   else // HEAL_OVER_TIME
   {

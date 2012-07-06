@@ -130,7 +130,7 @@ void spell_base_t::execute()
 
   if ( callbacks )
   {
-    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    if ( ! is_tick_action && ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.spell[ result ], this );
     }

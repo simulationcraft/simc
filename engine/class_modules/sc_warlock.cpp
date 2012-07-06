@@ -569,10 +569,7 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
-    dual        = true;
     background  = true;
-    direct_tick = true;
-    callbacks   = false;
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -588,7 +585,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     
     dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, data() );
-    tick_action -> stats = stats;
   }
 
   virtual void cancel()
@@ -650,10 +646,7 @@ struct immolation_damage_t : public warlock_pet_spell_t
     warlock_pet_spell_t( "immolation_dmg", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
-    dual        = true;
     background  = true;
-    direct_tick = true;
-    callbacks   = false;
     may_crit    = false;
   }
 };
@@ -670,7 +663,6 @@ struct infernal_immolation_t : public warlock_pet_spell_t
 
     dynamic_tick_action = true;
     tick_action = new immolation_damage_t( p, data() );
-    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3081,20 +3073,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     warlock_spell_t( "rain_of_fire_tick", p, pd.effectN( 2 ).trigger() ), parent_data( pd )
   {
     aoe         = -1;
-    dual        = true;
     background  = true;
-    direct_tick = true;
-    callbacks   = false;
-  }
-
-  virtual double composite_target_multiplier( player_t* t )
-  {
-    double m = warlock_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> dots_immolate -> ticking )
-      m *= 1.5;
-
-    return m;
   }
 
   virtual void impact_s( action_state_t* s )
@@ -3121,7 +3100,6 @@ struct rain_of_fire_t : public warlock_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     tick_action = new rain_of_fire_tick_t( p, data() );
-    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3135,6 +3113,17 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     return num_ticks;
   }
+  
+  virtual double composite_target_ta_multiplier( player_t* t )
+  {
+    double m = warlock_spell_t::composite_target_ta_multiplier( t );
+
+    if ( td( t ) -> dots_immolate -> ticking )
+      m *= 1.5;
+
+    return m;
+  }
+
 };
 
 
@@ -3144,10 +3133,7 @@ struct hellfire_tick_t : public warlock_spell_t
     warlock_spell_t( "hellfire_tick", p, s.effectN( 1 ).trigger() )
   {
     aoe         = -1;
-    dual        = true;
     background  = true;
-    direct_tick = true;
-    callbacks   = false;
   }
 
   virtual void execute()
@@ -3175,7 +3161,6 @@ struct hellfire_t : public warlock_spell_t
 
     dynamic_tick_action = true;
     tick_action = new hellfire_tick_t( p, data() );
-    tick_action -> stats = stats;
   }
 
   virtual bool usable_moving()
@@ -3213,9 +3198,6 @@ struct immolation_aura_tick_t : public warlock_spell_t
   {
     aoe         = -1;
     background  = true;
-    direct_tick = true;
-    dual        = true;
-    callbacks   = false;
   }
 };
 
@@ -3231,7 +3213,6 @@ struct immolation_aura_t : public warlock_spell_t
 
     dynamic_tick_action = true;
     tick_action = new immolation_aura_tick_t( p, data() );
-    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )
@@ -3723,10 +3704,7 @@ struct harvest_life_tick_t : public warlock_spell_t
     warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) )
   {
     aoe         = -1;
-    dual        = true;
     background  = true;
-    direct_tick = true;
-    callbacks   = false;
     may_miss    = false;
     direct_tick_callbacks = true;
     base_dd_min = base_dd_max = base_td;
@@ -3766,7 +3744,6 @@ struct harvest_life_t : public warlock_spell_t
     tick_power_mod = base_td = 0;
 
     tick_action = new harvest_life_tick_t( p );
-    tick_action -> stats = stats;
   }
 
   virtual void tick( dot_t* d )

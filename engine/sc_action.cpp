@@ -154,6 +154,7 @@ action_t::action_t( action_e       ty,
   is_dtr_action                  = false;
   tick_action                    = 0;
   dynamic_tick_action            = false;
+  is_tick_action                 = false;
   // New Stuff
   stateless = false;
   snapshot_flags = 0;
@@ -985,7 +986,7 @@ void action_t::execute()
       {
         action_state_t* s = get_state( pre_execute_state );
         s -> target = tl[ t ];
-        snapshot_state( s, pre_execute_state ? update_flags : snapshot_flags );
+        if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
         s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
         if ( result_is_hit( s -> result ) )
@@ -1001,7 +1002,7 @@ void action_t::execute()
     {
       action_state_t* s = get_state( pre_execute_state );
       s -> target = target;
-      snapshot_state( s, pre_execute_state ? update_flags : snapshot_flags );
+      if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
@@ -1069,6 +1070,7 @@ void action_t::tick( dot_t* d )
       tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
       snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
       tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
+      tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
       tick_action -> execute();
     }
     else
@@ -1532,6 +1534,14 @@ void action_t::init()
       stats = player -> get_stats( stats -> name_str + "_DTR", this );
 
     background = true;
+  }
+
+  if ( tick_action )
+  {
+    tick_action -> is_tick_action = true;
+    tick_action -> direct_tick = true;
+    tick_action -> dual = true;
+    tick_action -> stats = stats;
   }
 
   stats -> school      = school;

@@ -1068,15 +1068,28 @@ struct arcane_missiles_tick_t : public mage_spell_t
   arcane_missiles_tick_t( mage_t* p, bool dtr=false ) :
     mage_spell_t( "arcane_missiles_tick", p, p -> find_class_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
   {
-    dual        = true;
     background  = true;
-    direct_tick = true;
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new arcane_missiles_tick_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+};
+
+struct arcane_missiles_t : public mage_spell_t
+{
+  arcane_missiles_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
+  {
+    parse_options( NULL, options_str );
+    channeled = true;
+    may_miss = false;
+    hasted_ticks = false;
+    may_proc_missiles = false;
+
+    tick_action = new arcane_missiles_tick_t( p );
   }
 
   virtual double action_multiplier()
@@ -1087,30 +1100,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
     return am;
   }
-};
 
-struct arcane_missiles_t : public mage_spell_t
-{
-  arcane_missiles_tick_t* tick_spell;
-
-  arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
-  {
-    parse_options( NULL, options_str );
-    channeled = true;
-    may_miss = false;
-    hasted_ticks = false;
-    may_proc_missiles = false;
-
-    tick_spell = new arcane_missiles_tick_t( p );
-  }
-
-  virtual  void init()
-  {
-    mage_spell_t::init();
-
-    tick_spell -> stats = stats;
-  }
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -1119,12 +1109,6 @@ struct arcane_missiles_t : public mage_spell_t
     p() -> buffs.arcane_missiles -> up();
     p() -> buffs.arcane_missiles -> decrement();
     p() -> buffs.arcane_charge   -> trigger();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual bool ready()
