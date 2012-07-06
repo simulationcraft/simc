@@ -698,7 +698,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 26 abilities
+    // General tree, 32 abilities
     {
          710, // Banish
          172, // Corruption
@@ -718,11 +718,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          686, // Shadow Bolt
        29858, // Soulshatter
        20707, // Soulstone
+      112921, // Summon Abyssal (Guardian)
        18540, // Summon Doomguard (Guardian)
+      112866, // Summon Fel Imp (Summon)
          691, // Summon Felhunter (Summon)
          688, // Summon Imp (Summon)
         1122, // Summon Infernal (Guardian)
+      112869, // Summon Observer (Summon)
+      112868, // Summon Shivarra (Summon)
          712, // Summon Succubus (Summon)
+      112927, // Summon Terrorguard (Guardian)
+      112867, // Summon Voidlord (Summon)
          697, // Summon Voidwalker (Summon)
         6229, // Twilight Ward
       104773, // Unending Resolve
@@ -744,7 +750,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 10 abilities
+    // Demonology tree, 11 abilities
     {
       103967, // Carrion Swarm (Metamorphosis)
       113861, // Dark Soul: Knowledge
@@ -755,6 +761,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103958, // Metamorphosis
         6353, // Soul Fire
        30146, // Summon Felguard (Summon)
+      112870, // Summon Wrathguard (Summon)
       115422, // Void Ray
            0,
     },

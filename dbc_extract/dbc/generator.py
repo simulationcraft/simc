@@ -1004,6 +1004,13 @@ class SpellDataGenerator(DataGenerator):
             ( 115770, 5 ),       # shivarra fellash
             ( 115625, 5 ),       # wrathguard mortal cleave
             ( 115831, 5 ),       # wrathguard wrathstorm
+            ( 112866, 0, True ), # fel imp summon
+            ( 112867, 0, True ), # voidlord summon
+            ( 112868, 0, True ), # shivarra summon
+            ( 112869, 0, True ), # observer summon
+            ( 112870, 2, True ), # wrathguard summon
+            ( 112921, 0, True ), # abyssal summon
+            ( 112927, 0, True ), # terrorguard summon
             ( 115422, 2, True ), # void ray
             ( 104025, 2, True ), # immolation aura
             ( 104232, 3, True ), # destruction rain of fire
