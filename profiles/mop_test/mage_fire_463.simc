@@ -29,7 +29,8 @@ actions+=/use_item,name=flashfrozen_rosin_globule,if=cooldown.evocation.remains>
 actions+=/combustion,if=dot.ignite.ticking&dot.pyroblast.ticking
 actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled
-actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
+actions+=/alter_time,if=buff.pyroblast.react
+actions+=/pyroblast,if=(buff.pyroblast.react|buff.presence_of_mind.up)&(cooldown.alter_time_activate.remains>4|buff.heating_up.react)
 actions+=/inferno_blast,if=buff.heating_up.react
 actions+=/frost_bomb,if=talent.frost_bomb.enabled
 actions+=/living_bomb,if=talent.living_bomb.enabled&!ticking
