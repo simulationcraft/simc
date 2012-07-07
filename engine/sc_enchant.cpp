@@ -1106,23 +1106,23 @@ void enchant::init( player_t* p )
 
   register_hurricane( p, mh_enchant, oh_enchant, mhw, ohw );
 
-  register_berserking( p, mh_enchant, mhw, "mh" );
-  register_berserking( p, oh_enchant, ohw, "oh" );
+  register_berserking( p, mh_enchant, mhw, "" );
+  register_berserking( p, oh_enchant, ohw, "_oh" );
 
-  register_landslide( p, mh_enchant, mhw, "mh" );
-  register_landslide( p, oh_enchant, ohw, "oh" );
+  register_landslide( p, mh_enchant, mhw, "" );
+  register_landslide( p, oh_enchant, ohw, "_oh" );
 
-  register_mongoose( p, mh_enchant, mhw, "mh" );
-  register_mongoose( p, oh_enchant, ohw, "oh" );
+  register_mongoose( p, mh_enchant, mhw, "" );
+  register_mongoose( p, oh_enchant, ohw, "_oh" );
 
-  register_power_torrent( p, mh_enchant, "mh" );
-  register_power_torrent( p, oh_enchant, "oh" );
+  register_power_torrent( p, mh_enchant, "" );
+  register_power_torrent( p, oh_enchant, "_oh" );
 
-  register_jade_spirit( p, mh_enchant, "mh" );
-  register_jade_spirit( p, oh_enchant, "oh" );
+  register_jade_spirit( p, mh_enchant, "" );
+  register_jade_spirit( p, oh_enchant, "_oh" );
 
-  register_windwalk( p, mh_enchant, mhw, "mh" );
-  register_windwalk( p, oh_enchant, ohw, "oh" );
+  register_windwalk( p, mh_enchant, mhw, "" );
+  register_windwalk( p, oh_enchant, ohw, "_oh" );
 
   register_gnomish_xray( p, mh_enchant, mhw );
   register_lord_blastingtons_scope_of_doom( p, mh_enchant, mhw );
