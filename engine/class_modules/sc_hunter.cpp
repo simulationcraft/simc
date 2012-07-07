@@ -3121,7 +3121,11 @@ void hunter_t::init_actions()
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
       action_list_str += "/rapid_fire";
       action_list_str += "/arcane_shot,if=focus>=67";
-      action_list_str += level >= 81 ? "/cobra_shot" : "/steady_shot";
+
+      if ( find_class_spell( "Cobra Shot" ) )
+        action_list_str += "/cobra_shot";
+      else if ( find_class_spell( "Steady Shot" ) )
+        action_list_str += "/steady_shot";
 
       if ( summon_pet_str.empty() )
         summon_pet_str = "cat";

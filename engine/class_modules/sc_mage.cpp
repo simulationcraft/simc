@@ -74,6 +74,7 @@ public:
     buff_t* pyroblast;
     buff_t* rune_of_power;
     buff_t* tier13_2pc;
+    buff_t* alter_time;
   } buffs;
 
   // Cooldowns
@@ -229,6 +230,7 @@ public:
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
     active_ignite( 0 ),
+    alter_time_state( NULL ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -684,42 +686,21 @@ struct mirror_image_pet_t : public pet_t
 
 namespace alter_time {
 
-// 6s event to finish alter time
-struct alter_time_event_t : public event_t
-{
-  alter_time::mage_state_t* state;
-
-  alter_time_event_t( mage_t* player, alter_time::mage_state_t* s ) :
-    event_t( player -> sim, player, "alter_time" ),
-    state( s )
-  {
-    if ( sim -> debug )
-      sim -> output( "Creating alter_time_event_t for mage %s", player -> name() );
-
-    sim -> add_event( this, timespan_t::from_seconds( 6 ) );
-  }
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual void execute();
-};
-
 // Class to save buff state information relevant to alter time for a buff
 struct buff_state_t
 {
-  const buff_t* buff;
+  buff_t* buff;
   int stacks;
   timespan_t remain_time;
   double value;
 
-  buff_state_t( const buff_t* b ) :
+  buff_state_t( buff_t* b ) :
     buff( b ),
     stacks( b -> current_stack ),
     remain_time( b -> remains() ),
     value( b -> current_value )
   {
-    if ( b -> sim -> debug && stacks > 0 )
+    if ( b -> sim -> debug )
     {
       b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
           b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
@@ -729,25 +710,26 @@ struct buff_state_t
     }
   }
 
-  void write_back_state() const
+  void write_back_state()
   {
-    if ( buff -> sim -> debug && stacks > 0 )
+    if ( buff -> sim -> debug )
       buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
           buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
 
-
-    // Todo: Determine how exactly buffs are restored
+      buff -> execute( stacks, value, remain_time );
   }
 };
 
 struct mage_state_t
 {
+  mage_t* mage;
   std::array<double, RESOURCE_MAX > resources;
   // location
   std::vector<buff_state_t*> buff_states;
 
 
   mage_state_t( mage_t* m ) : // Snapshot and start 6s event
+    mage( m ),
     resources( m -> resources.current )
   {
     if ( m -> sim -> debug )
@@ -756,15 +738,17 @@ struct mage_state_t
     for( size_t i = 0; i < m -> buff_list.size(); ++i )
     {
       buff_t* b = m -> buff_list[ i ];
+
+      if ( b -> current_stack == 0 )
+        continue;
+
       buff_states.push_back( new buff_state_t( b ) );
     }
-
-    new ( m -> sim ) alter_time_event_t( m, this );
   }
 
-  void write_back_state( mage_t* m ) const
+  void write_back_state() const
   {
-    m -> resources.current = resources;
+    mage -> resources.current = resources;
 
     for( size_t i = 0; i < buff_states.size(); ++ i )
     {
@@ -778,14 +762,43 @@ struct mage_state_t
   }
 };
 
-void alter_time_event_t::execute()
+struct alter_time_buff_t : public buff_t
 {
-  if ( state )
+  alter_time_buff_t( mage_t* player ) :
+    buff_t( buff_creator_t( player, "alter_time" ).spell( player -> find_spell( 110909 ) ) )
+  { }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual bool trigger( int        stacks,
+                                   double     value,
+                                   double     chance,
+                                   timespan_t duration )
   {
-    state -> write_back_state( p() );
-    delete state;
+    assert( p() -> alter_time_state == NULL );
+
+    p() -> alter_time_state = new alter_time::mage_state_t( p() );
+
+    return buff_t::trigger( stacks, value, chance, duration );
   }
-}
+
+  virtual void expire()
+  {
+    if ( p() -> alter_time_state )
+    {
+      p() -> alter_time_state -> write_back_state();
+      delete p() -> alter_time_state;
+      p() -> alter_time_state = NULL;
+    }
+
+    buff_t::expire();
+  }
+};
+
+
+
+
 
 }; // alter_time namespace
 
@@ -2764,16 +2777,19 @@ struct alter_time_t : public mage_spell_t
     mage_spell_t( "alter_time_activate", p, p -> find_class_spell( "Alter Time" ) )
   {
     parse_options( NULL, options_str );
+
+    harmful = false;
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
 
-    p() -> alter_time_state = new alter_time::mage_state_t( p() );
+    p() -> buffs.alter_time -> trigger();
   }
-};
 
+  // Todo: Add mechanic to end alter time prematurely. For this, just expire() the buff, and everything will be taken care of.
+};
 
 
 } // ANONYMOUS NAMESPACE
@@ -3040,6 +3056,7 @@ void mage_t::init_buffs()
                                .max_stack( 10 )
                                .stat( STAT_HASTE_RATING )
                                .amount( 50.0 );
+  buffs.alter_time           = new alter_time::alter_time_buff_t( this );
 }
 
 // mage_t::init_gains =======================================================
