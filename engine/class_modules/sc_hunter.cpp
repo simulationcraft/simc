@@ -802,7 +802,6 @@ struct vishanka_t : public hunter_ranged_attack_t
     background  = true;
     proc        = true;
     trigger_gcd = timespan_t::zero();
-    crit_bonus = 0.5; // Only crits for 150% on live
     init();
 
     // FIX ME: Can this crit, miss, etc?
@@ -1121,11 +1120,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-
-    // Testing shows BA crits for 2.09x dmg with the crit dmg meta gem, this
-    // yields the right result
-    crit_bonus = 0.5;
-
+    
     base_dd_min=base_dd_max=0;
     tick_power_mod = data().extra_coeff();
   }
@@ -1170,7 +1165,6 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
     may_miss = false;
     may_crit = false;
     tick_may_crit = true;
-    crit_bonus = 0.5;
   }
 
   virtual void tick( dot_t* d )
@@ -1332,14 +1326,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     may_block = false;
     may_crit  = false;
-
-//    base_costs[ current_resource() ] += p() -> talents.efficiency -> effectN( 1 ).resource( RESOURCE_FOCUS );
-    // FIXME
-    //base_crit += p() -> glyphs.explosive_shot -> mod_additive( P_CRIT );
-    // Testing shows ES crits for 2.09x dmg with the crit dmg meta gem, this
-    // yields the right result
-    crit_bonus = 0.5;
-    crit_bonus_multiplier *= 2.0;
 
     tick_power_mod = 0.273; // hardcoded into tooltip
     tick_zero = true;
