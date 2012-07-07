@@ -51,8 +51,8 @@ static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j
            "\t\t\t\t\t\t\t\t<td class=\"left small\">" );
   if ( p -> sim -> report_details )
     fprintf( file,
-             "<a href=\"#\" class=\"toggle-details\" rel=\"spell=%i\">%s</a></td>\n",
-             id,
+             "<a href=\"#\" class=\"toggle-details\"%s>%s</a></td>\n",
+             id > 0 ? ( " rel=\"spell=" + util::to_string( id ) + "\"" ).c_str() : "",
              s -> name_str.c_str() );
   else
     fprintf( file,
@@ -1739,7 +1739,8 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
   fprintf( file, ">\n" );
   if ( report_details )
     fprintf( file,
-             "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n",
+             "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\"%s>%s</a></td>\n",
+             b -> data().ok() ? ( " rel=\"spell=" + util::to_string( b -> data().id() ) + "\"" ).c_str() : "",
              buff_name.c_str() );
   else
     fprintf( file,
