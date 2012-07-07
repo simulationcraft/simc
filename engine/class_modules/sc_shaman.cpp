@@ -2335,7 +2335,7 @@ struct bloodlust_t : public shaman_spell_t
 
     for ( player_t* p = sim -> player_list; p; p = p -> next )
     {
-      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> type == PLAYER_GUARDIAN )
+      if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
         continue;
       p -> buffs.bloodlust -> trigger();
       p -> buffs.exhaustion -> trigger();

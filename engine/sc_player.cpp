@@ -2448,23 +2448,20 @@ double player_t::composite_attack_haste()
 {
   double h = attack_haste;
 
-  if ( type != PLAYER_GUARDIAN && ! is_enemy() )
+  if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.bloodlust -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.30 );
+      h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
     }
 
     if ( buffs.unholy_frenzy -> up() )
     {
-      h *= 1.0 / ( 1.0 + 0.20 );
+      h *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> data().effectN( 1 ).percent() );
     }
 
-    if ( type != PLAYER_PET )
-    {
-      if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
-      if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
-    }
+    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
+    if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / rating.attack_haste );
 
     if ( buffs.berserking -> up() )
     {
@@ -2782,7 +2779,7 @@ double player_t::composite_spell_haste()
 {
   double h = spell_haste;
 
-  if ( type != PLAYER_GUARDIAN && ! is_enemy() && ! is_add() )
+  if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.bloodlust -> up() )
     {
@@ -2796,7 +2793,7 @@ double player_t::composite_spell_haste()
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.spell_haste -> check() )
+    if ( sim -> auras.spell_haste -> check() )
     {
       h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
     }
