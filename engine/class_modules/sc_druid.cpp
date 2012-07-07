@@ -882,6 +882,8 @@ struct treants_pet_t : public pet_t
   }
 };
 
+// Balance Treants ==========================================================
+
 struct treants_balance_t : public pet_t
 {
   struct melee_t : public melee_attack_t
@@ -972,6 +974,86 @@ struct treants_balance_t : public pet_t
     main_hand_attack -> execute();
   }
 };
+
+// Feral Treants ============================================================
+
+struct treants_feral_t : public pet_t
+{
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( treants_feral_t* player ) :
+      melee_attack_t( "treant_melee", player )
+    {
+      if ( player -> o() -> pet_treants[ 0 ] )
+        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "treant_melee" );
+
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = 1;
+      school = SCHOOL_PHYSICAL;
+
+      trigger_gcd = timespan_t::zero();
+
+      background = true;
+      repeating  = true;
+      special    = false;
+      may_glance = true;
+      may_crit   = true;
+    }
+  };
+
+  druid_t* o() { return static_cast< druid_t* >( owner ); }
+
+  treants_feral_t( sim_t* sim, druid_t* owner ) :
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+  {
+    // FIX ME
+    owner_coeff.ap_from_ap = 1.00;
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_MANA   ] = 0;
+    
+    stamina_per_owner = 0;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 580;
+    main_hand_weapon.max_dmg    = 580;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
+
+    main_hand_attack = new melee_t( this );    
+  }
+  
+  void init_actions()
+  {
+    action_list_str = "auto_attack";
+
+    pet_t::init_actions();
+  }
+
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "auto_attack"  ) return new melee_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+  virtual void summon( timespan_t duration=timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    // Treants cast on the target will instantly perform a melee before
+    // starting to cast wrath
+    main_hand_attack -> execute();
+  }
+};
+
 
 // trigger_eclipse_proc =====================================================
 
@@ -4213,6 +4295,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
   if ( pet_name == "treants" ) 
   {
     if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
+    if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
   }
   return 0;
 }
