@@ -730,7 +730,7 @@ struct mage_state_t
   mage_t* mage;
   std::array<double, RESOURCE_MAX > resources;
   // location
-  std::vector<buff_state_t*> buff_states;
+  auto_dispose< std::vector<buff_state_t*> > buff_states;
 
 
   mage_state_t( mage_t* m ) : // Snapshot and start 6s event
@@ -759,11 +759,6 @@ struct mage_state_t
     {
       buff_states[ i ] -> write_back_state();
     }
-  }
-
-  ~mage_state_t()
-  {
-    range::dispose( buff_states );
   }
 };
 

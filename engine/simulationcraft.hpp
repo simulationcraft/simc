@@ -4587,10 +4587,13 @@ struct cooldown_t
   };
 
   recharge_event_t* recharge_event;
-  cooldown_t( const std::string& n, player_t* p ) : sim( p->sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), reset_react( timespan_t::zero() )
-                                                                 , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
-  cooldown_t( const std::string& n, sim_t* s )    : sim( s ),      player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ), reset_react( timespan_t::zero() )
-                                                                 , next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
+  cooldown_t( const std::string& n, player_t* p ) :
+    sim( p -> sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ),
+    reset_react( timespan_t::zero() ), next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
+
+  cooldown_t( const std::string& n, sim_t* s ) :
+    sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ),
+    reset_react( timespan_t::zero() ), next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
 
   void adjust( timespan_t amount )
   {
@@ -4992,7 +4995,6 @@ private:
   bool   gauss_pair_use;
 public:
   rng_t* next;
-  // FIXME: Change rng-creation so that average_range and average_gauss can be protected again.
 protected:
   rng_t( const std::string& n, rng_e );
 
