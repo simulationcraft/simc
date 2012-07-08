@@ -92,29 +92,16 @@ public:
 
   struct talents_t
   {
-    const spell_data_t* dark_regeneration;
     const spell_data_t* soul_leech;
     const spell_data_t* harvest_life;
-
-    const spell_data_t* howl_of_terror;
     const spell_data_t* mortal_coil;
     const spell_data_t* shadowfury;
-
     const spell_data_t* soul_link;
-    const spell_data_t* sacrificial_pact;
-    const spell_data_t* dark_bargain;
-
-    const spell_data_t* blood_fear;
-    const spell_data_t* burning_rush;
-    const spell_data_t* unbound_will;
-
     const spell_data_t* grimoire_of_supremacy;
     const spell_data_t* grimoire_of_service;
     const spell_data_t* grimoire_of_sacrifice;
-
     const spell_data_t* archimondes_vengeance;
     const spell_data_t* kiljaedens_cunning;
-    const spell_data_t* mannoroths_fury;
   } talents;
 
   // Specialization Spells
@@ -4495,8 +4482,6 @@ void warlock_t::init_spells()
   };
   sets                        = new set_bonus_array_t( this, set_bonuses );
 
-  // Spec spells =========================================================
-
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.fel_armor   = find_spell( 104938 );
@@ -4526,37 +4511,21 @@ void warlock_t::init_spells()
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
 
-  // Mastery
   mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
   mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
-  // Talents
-  talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
   talents.soul_leech            = find_talent_spell( "Soul Leech" );
   talents.harvest_life          = find_talent_spell( "Harvest Life" );
-
-  talents.howl_of_terror        = find_talent_spell( "Howl of Terror" );
   talents.mortal_coil           = find_talent_spell( "Mortal Coil" );
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
-
   talents.soul_link             = find_talent_spell( "Soul Link" );
-  talents.sacrificial_pact      = find_talent_spell( "Sacrificial Pact" );
-  talents.dark_bargain          = find_talent_spell( "Dark Bargain" );
-
-  talents.blood_fear            = find_talent_spell( "Blood Fear" );
-  talents.burning_rush          = find_talent_spell( "Burning Rush" );
-  talents.unbound_will          = find_talent_spell( "Unbound Will" );
-
   talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
   talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
   talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
-
   talents.archimondes_vengeance = find_talent_spell( "Archimonde's Vengeance" );
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
-  talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
-  // Major
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
   glyphs.dark_soul              = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
