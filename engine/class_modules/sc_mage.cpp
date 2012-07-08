@@ -348,7 +348,6 @@ struct water_elemental_pet_t : public pet_t
       aoe = -1;
       may_crit = true;
       stateless = true;
-      base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
 
     virtual void impact_s( action_state_t* s )
@@ -372,7 +371,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
-      base_multiplier *= 1.0 + p -> o() -> spec.frostburn -> effectN( 3 ).percent();
     }
   };
 
@@ -415,7 +413,8 @@ struct water_elemental_pet_t : public pet_t
   virtual double composite_player_multiplier( school_e school, action_t* a )
   {
     double m = pet_t::composite_player_multiplier( school, a );
-
+    m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
+    
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.05;
@@ -444,7 +443,7 @@ struct mirror_image_pet_t : public pet_t
     num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
   {
 
-    owner_coeff.sp_from_sp = 1.0;
+    owner_coeff.sp_from_sp = 0.085;
   }
 
   mage_t* o() const
@@ -639,31 +638,9 @@ struct mirror_image_pet_t : public pet_t
     pet_t::init_actions();
   }
 
-  virtual double composite_spell_power( school_e school )
-  {
-    if ( school == SCHOOL_ARCANE )
-    {
-      return snapshot_arcane_sp * 0.75;
-    }
-    else if ( school == SCHOOL_FIRE )
-    {
-      return snapshot_fire_sp * 0.75;
-    }
-    else if ( school == SCHOOL_FROST )
-    {
-      return snapshot_frost_sp * 0.75;
-    }
-
-    return 0;
-  }
-
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
-
-    snapshot_arcane_sp = o() -> composite_spell_power( SCHOOL_ARCANE ) * owner -> composite_spell_power_multiplier();
-    snapshot_fire_sp   = o() -> composite_spell_power( SCHOOL_FIRE   ) * owner -> composite_spell_power_multiplier();
-    snapshot_frost_sp  = o() -> composite_spell_power( SCHOOL_FROST  ) * owner -> composite_spell_power_multiplier();
 
     sequence_finished = 0;
 
