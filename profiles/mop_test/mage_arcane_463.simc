@@ -30,7 +30,7 @@ actions+=/arcane_power,if=buff.arcane_charge.stack>2|target.time_to_die<20
 actions+=/blood_fury,if=buff.arcane_charge.stack>2|target.time_to_die<20
 actions+=/use_item,name=flashfrozen_rosin_globule,if=cooldown.evocation.remains>25|(talent.invocation.enabled&buff.invocation.remains>25)
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled
-actions+=/alter_time,if=buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack=4
+actions+=/alter_time,if=buff.arcane_power.up&buff.arcane_missiles.up&buff.arcane_charge.stack=4&buff.alter_time.down
 actions+=/arcane_missiles,if=buff.arcane_missiles.react&(cooldown.alter_time_activate.remains>4|target.time_to_die<10)
 actions+=/frost_bomb,if=talent.frost_bomb.enabled
 actions+=/living_bomb,if=talent.living_bomb.enabled&!ticking
