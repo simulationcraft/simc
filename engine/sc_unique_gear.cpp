@@ -7,6 +7,8 @@
 
 namespace { // ANONYMOUS NAMESPACE
 
+#define maintenance_check( ilvl ) static_assert( ilvl > 300, "unique item below min level, should be deprecated." )
+
 // stat_proc_callback =======================================================
 
 struct stat_proc_callback_t : public action_callback_t
@@ -543,6 +545,8 @@ static void register_touch_of_the_grave( player_t* p )
 
 static void register_apparatus_of_khazgoroth( item_t* item )
 {
+  maintenance_check( 391 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -622,38 +626,12 @@ static void register_apparatus_of_khazgoroth( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, heroic ) );
 }
 
-// register_darkmoon_card_greatness =========================================
-
-static void register_darkmoon_card_greatness( item_t* item )
-{
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  static attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT, ATTR_SPIRIT };
-
-  stat_e max_stat = stat_from_attr( attr[ 0 ] );
-  double max_value = p -> current.attribute[ attr[ 0 ] ];
-
-  for ( unsigned i = 1; i < sizeof_array( attr ); i++ )
-  {
-    if ( p -> current.attribute[ attr[ i ] ] > max_value )
-    {
-      max_value = p -> current.attribute[ attr[ i ] ];
-      max_stat = stat_from_attr( attr[ i ] );
-    }
-  }
-
-  action_callback_t* cb = new stat_proc_callback_t( "darkmoon_card_greatness", p, max_stat, 1, 300, 0.35, timespan_t::from_seconds( 15.0 ), timespan_t::from_seconds( 45.0 ), timespan_t::zero(), false, false );
-
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-}
-
 // register_fury_of_angerforge ==============================================
 
 static void register_fury_of_angerforge( item_t* item )
 {
+  maintenance_check( 359 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -702,6 +680,8 @@ static void register_fury_of_angerforge( item_t* item )
 
 static void register_heart_of_ignacious( item_t* item )
 {
+  maintenance_check( 372 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -743,6 +723,8 @@ static void register_heart_of_ignacious( item_t* item )
 
 static void register_matrix_restabilizer( item_t* item )
 {
+  maintenance_check( 397 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -818,6 +800,8 @@ static void register_matrix_restabilizer( item_t* item )
 
 static void register_shard_of_woe( item_t* item )
 {
+  maintenance_check( 379 );
+
   // February 15 - Hotfix
   // Shard of Woe (Heroic trinket) now reduces the base mana cost of
   // spells by 205, with the exception of Holy and Nature spells --
@@ -837,6 +821,8 @@ static void register_shard_of_woe( item_t* item )
 
 static void register_sorrowsong( item_t* item )
 {
+  maintenance_check( 346 );
+
   // H: http://www.wowhead.com/item=56400
   player_t* p = item -> player;
 
@@ -866,6 +852,8 @@ static void register_sorrowsong( item_t* item )
 
 static void register_tyrandes_favorite_doll( item_t* item )
 {
+  maintenance_check( 359 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -929,6 +917,8 @@ static void register_tyrandes_favorite_doll( item_t* item )
 
 static void register_dragonwrath_tarecgosas_rest( item_t* item )
 {
+  maintenance_check( 397 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1017,6 +1007,8 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
 static void register_blazing_power( item_t* item )
 {
+  maintenance_check( 391 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1080,6 +1072,8 @@ static void register_blazing_power( item_t* item )
 
 static void register_windward_heart( item_t* item )
 {
+  maintenance_check( 410 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1142,6 +1136,8 @@ static void register_windward_heart( item_t* item )
 
 static void register_symbiotic_worm( item_t* item )
 {
+  maintenance_check( 372 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1169,6 +1165,8 @@ static void register_symbiotic_worm( item_t* item )
 
 static void register_indomitable_pride( item_t* item )
 {
+  maintenance_check( 410 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1217,6 +1215,8 @@ static void register_indomitable_pride( item_t* item )
 
 static void register_spidersilk_spindle( item_t* item )
 {
+  maintenance_check( 391 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1259,6 +1259,8 @@ static void register_spidersilk_spindle( item_t* item )
 
 static void register_bonelink_fetish( item_t* item )
 {
+  maintenance_check( 410 );
+
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
   bool lfr      = item -> lfr();
@@ -1323,6 +1325,8 @@ static void register_bonelink_fetish( item_t* item )
 
 static void register_fury_of_the_beast( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p = item -> player;
 
   item -> unique = true;
@@ -1391,6 +1395,8 @@ static void register_fury_of_the_beast( item_t* item )
 
 static void register_gurthalak( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
   bool lfr      = item -> lfr();
@@ -1509,6 +1515,8 @@ static void register_gurthalak( item_t* item )
 
 static void register_nokaled( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p   = item -> player;
   bool heroic   = item -> heroic();
   bool lfr      = item -> lfr();
@@ -1615,6 +1623,8 @@ static void register_nokaled( item_t* item )
 
 static void register_rathrak( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p = item -> player;
   bool heroic = item -> heroic();
   bool lfr    = item -> lfr();
@@ -1664,6 +1674,8 @@ static void register_rathrak( item_t* item )
 
 static void register_souldrinker( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p = item -> player;
   bool heroic = item -> heroic();
   bool lfr    = item -> lfr();
@@ -1731,6 +1743,8 @@ static void register_souldrinker( item_t* item )
 
 static void register_titahk( item_t* item )
 {
+  maintenance_check( 416 );
+
   player_t* p = item -> player;
   bool heroic = item -> heroic();
   bool lfr    = item -> lfr();
@@ -1818,7 +1832,6 @@ void unique_gear::init( player_t* p )
 
     if ( ! strcmp( item.name(), "apparatus_of_khazgoroth"             ) ) register_apparatus_of_khazgoroth           ( &item );
     if ( ! strcmp( item.name(), "bonelink_fetish"                     ) ) register_bonelink_fetish                   ( &item );
-    if ( ! strcmp( item.name(), "darkmoon_card_greatness"             ) ) register_darkmoon_card_greatness           ( &item );
     if ( ! strcmp( item.name(), "dragonwrath_tarecgosas_rest"         ) ) register_dragonwrath_tarecgosas_rest       ( &item );
     if ( ! strcmp( item.name(), "eye_of_blazing_power"                ) ) register_blazing_power                     ( &item );
     if ( ! strcmp( item.name(), "fury_of_angerforge"                  ) ) register_fury_of_angerforge                ( &item );
