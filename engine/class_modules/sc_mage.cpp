@@ -716,7 +716,12 @@ struct buff_state_t
       buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
           buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
 
-      buff -> execute( stacks, value, remain_time );
+    timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
+    buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
+
+    buff -> execute( stacks, value, remain_time ); // Reset the buff
+
+    buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
   }
 };
 
@@ -2783,12 +2788,32 @@ struct alter_time_t : public mage_spell_t
 
   virtual void execute()
   {
-    mage_spell_t::execute();
+    // Buff trigger / Snapshot happens before resource is spent
+    if ( p() -> buffs.alter_time -> check() > 0 )
+      p() -> buffs.alter_time -> expire();
+    else
+      p() -> buffs.alter_time -> trigger();
 
-    p() -> buffs.alter_time -> trigger();
+    mage_spell_t::execute();
   }
 
-  // Todo: Add mechanic to end alter time prematurely. For this, just expire() the buff, and everything will be taken care of.
+  virtual bool ready()
+  {
+    if ( p() -> buffs.alter_time -> check() ) // Allow execution if the buff is up, even tough cooldown already is started.
+    {
+      timespan_t cd_ready = cooldown -> ready;
+
+      cooldown -> ready = sim -> current_time;
+
+      bool ready = mage_spell_t::ready();
+
+      cooldown -> ready = cd_ready;
+
+      return ready;
+    }
+
+    return mage_spell_t::ready();
+  }
 };
 
 
