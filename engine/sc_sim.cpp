@@ -460,7 +460,11 @@ bool parse_armory( sim_t*             sim,
   catch ( names_and_options_t::error& )
   { return false; }
 
-  return true;
+  // Create options for player
+  if ( sim -> active_player )
+    sim -> active_player -> create_options();
+
+  return sim -> active_player != 0;
 }
 
 bool parse_guild( sim_t*             sim,
