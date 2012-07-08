@@ -4941,13 +4941,13 @@ struct stop_moving_t : public action_t
 
 // Arcane Torrent ===========================================================
 
-struct arcane_torrent_t : public action_t
+struct arcane_torrent_t : public spell_t
 {
   resource_e resource;
   double gain;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
+    spell_t( "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
     parse_options( NULL, options_str );
@@ -4974,26 +4974,31 @@ struct arcane_torrent_t : public action_t
 
     player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
 
-    update_ready();
+    spell_t::execute();
   }
 };
 
 // Berserking ===============================================================
 
-struct berserking_t : public action_t
+struct berserking_t : public spell_t
 {
   berserking_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "berserking", p, p -> find_racial_spell( "Berserking" ) )
+    spell_t( "berserking", p, p -> find_racial_spell( "Berserking" ) )
   {
     harmful = false;
     parse_options( NULL, options_str );
+
+    if ( &data() == &spell_data_not_found_t::singleton )
+    {
+      sim -> errorf( "Player %s attempting to execute action %s without spell data. Setting action to background.\n",
+                     player -> name(), name() );
+      background = true; // prevent action from being executed
+    }
   }
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
-
-    update_ready();
+    spell_t::execute();
 
     player -> buffs.berserking -> trigger();
   }
@@ -5001,10 +5006,10 @@ struct berserking_t : public action_t
 
 // Blood Fury ===============================================================
 
-struct blood_fury_t : public action_t
+struct blood_fury_t : public spell_t
 {
   blood_fury_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "blood_fury", p, p -> find_racial_spell( "Blood Fury" ) )
+    spell_t( "blood_fury", p, p -> find_racial_spell( "Blood Fury" ) )
   {
     harmful = false;
     parse_options( NULL, options_str );
@@ -5012,10 +5017,7 @@ struct blood_fury_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
-
-    update_ready();
-
+    spell_t::execute();
 
     player -> buffs.blood_fury -> trigger();
   }
@@ -5038,10 +5040,10 @@ struct rocket_barrage_t : public spell_t
 
 // Stoneform ================================================================
 
-struct stoneform_t : public action_t
+struct stoneform_t : public spell_t
 {
   stoneform_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
+    spell_t( "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
   {
     harmful = false;
     parse_options( NULL, options_str );
@@ -5049,9 +5051,7 @@ struct stoneform_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
-
-    update_ready();
+    spell_t::execute();
 
     player -> buffs.stoneform -> trigger();
   }
@@ -5059,10 +5059,10 @@ struct stoneform_t : public action_t
 
 // Lifeblood ================================================================
 
-struct lifeblood_t : public action_t
+struct lifeblood_t : public spell_t
 {
   lifeblood_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "lifeblood", player )
+    spell_t( "lifeblood", player )
   {
     if ( player -> profession[ PROF_HERBALISM ] < 1 )
     {
@@ -5079,9 +5079,7 @@ struct lifeblood_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
-
-    update_ready();
+    spell_t::execute();
 
     player -> buffs.lifeblood -> trigger();
   }
@@ -5091,7 +5089,7 @@ struct lifeblood_t : public action_t
     if ( player -> profession[ PROF_HERBALISM ] < 450 )
       return false;
 
-    return action_t::ready();
+    return spell_t::ready();
   }
 };
 
@@ -5159,7 +5157,8 @@ struct restore_mana_t : public action_t
   double mana;
 
   restore_mana_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "restore_mana", player ), mana( 0 )
+    action_t( ACTION_OTHER, "restore_mana", player ),
+    mana( 0 )
   {
     option_t options[] =
     {
