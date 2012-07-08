@@ -4129,7 +4129,10 @@ void death_knight_t::init_buffs()
                               .duration( timespan_t::from_seconds( 10.0 ) )
                               .cd( timespan_t::zero() )
                               .chance( 1.0 );
-  buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" ).spell( find_spell( 105647 ) ).stat( STAT_MASTERY_RATING ).amount( dbc.spell( 105647 ) -> effectN( 1 ).base_value() );
+
+  buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" )
+                              .spell( find_spell( 105647 ) );
+
   buffs.unholy_presence     = buff_creator_t( this, "unholy_presence", find_class_spell( "Unholy Presence" ) );
 
   struct bloodworms_buff_t : public buff_t

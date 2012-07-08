@@ -53,7 +53,12 @@ stat_e translate_stat_buff_misc_number( int x )
   case 1792:
     return STAT_CRIT_RATING;
   case 917504:
+  case 393216: // melee and ranged haste
     return STAT_HASTE_RATING;
+  case 1:
+    return STAT_AGILITY;
+  case 3:
+    return STAT_INTELLECT;
 
   default: break;
   }
@@ -952,39 +957,65 @@ expr_t* buff_t::create_expression(  std::string buff_name,
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
-  buff_t( params ), amount( params._amount ), stat( params._stat )
+  buff_t( params )
 {
-  for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+
+  if ( params.stats.size() == 0  )
   {
-    if ( data().effectN( i ).subtype() == A_MOD_RATING )
+    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
     {
-      if ( params._amount == 0 )
-        amount = player->dbc.effect_average( data().effectN( i ).id(), player -> level );
-      if ( params._stat == STAT_NONE )
-        stat = translate_stat_buff_misc_number( data().effectN( 1 ).misc_value1() );
+      if ( data().effectN( i ).subtype() == A_MOD_RATING )
+      {
+        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
+        stat_e stat = translate_stat_buff_misc_number( data().effectN( 1 ).misc_value1() );
+
+        stats.push_back( buff_stat_t( stat, amount ) );
 
       break; // only parse first effect for now
+      }
+      else if ( data().effectN( i ).subtype() == A_MOD_RANGED_ATTACK_POWER )
+      {
+        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
+        stat_e stat = STAT_ATTACK_POWER;
+
+        stats.push_back( buff_stat_t( stat, amount ) );
+      }
+      else if ( data().effectN( i ).subtype() == A_MOD_DAMAGE_DONE && data().effectN( i ).misc_value1() == 126 )
+      {
+        // examples: blood fury 33702
+        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
+        stat_e stat = STAT_SPELL_POWER;
+
+        stats.push_back( buff_stat_t( stat, amount ) );
+      }
+    }
+  }
+  else // parse stats from params
+  {
+    for ( size_t i = 0; i < params.stats.size(); ++i )
+    {
+      stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount ) );
     }
   }
 }
 
 // stat_buff_t::bump ========================================================
 
-void stat_buff_t::bump( int stacks, double value )
+void stat_buff_t::bump( int stacks, double /* value */ )
 {
-  if ( value > 0 )
-  {
-    amount = value;
-  }
+
   buff_t::bump( stacks );
-  double delta = amount * current_stack - current_value;
-  if ( delta > 0 )
+  for ( size_t i = 0; i < stats.size(); ++i )
   {
-    player -> stat_gain( stat, delta, 0, 0, buff_duration > timespan_t::zero() );
-    current_value += delta;
+    double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
+    if ( delta > 0 )
+    {
+      player -> stat_gain( stats[ i ].stat, delta, 0, 0, buff_duration > timespan_t::zero() );
+      stats[ i ].current_value += delta;
+    }
+    else
+      assert( delta == 0 );
   }
-  else
-    assert( delta == 0 );
 }
 
 // stat_buff_t::decrement ===================================================
@@ -997,10 +1028,13 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   }
   else
   {
-    double delta = amount * stacks;
-    player -> stat_loss( stat, delta, 0, 0, buff_duration > timespan_t::zero() );
+    for ( size_t i = 0; i < stats.size(); ++i )
+    {
+      double delta = stats[ i ].amount * stacks;
+      player -> stat_loss( stats[ i ].stat, delta, 0, 0, buff_duration > timespan_t::zero() );
+      stats[ i ].current_value -= delta;
+    }
     current_stack -= stacks;
-    current_value -= delta;
   }
 }
 
@@ -1010,7 +1044,11 @@ void stat_buff_t::expire()
 {
   if ( current_stack > 0 )
   {
-    player -> stat_loss( stat, current_value, 0, 0, buff_duration > timespan_t::zero() );
+    for ( size_t i = 0; i < stats.size(); ++i )
+    {
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
+      stats[ i ].current_value = 0;
+    }
     buff_t::expire();
   }
 }

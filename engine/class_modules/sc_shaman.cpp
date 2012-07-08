@@ -4336,16 +4336,13 @@ void shaman_t::init_buffs()
   buff.ascendance          = new ascendance_buff_t( this );
   buff.elemental_blast_crit = stat_buff_creator_t( this, "elemental_blast_crit", dbc.spell( 118522 ) )
                               .max_stack( 1 )
-                              .stat( STAT_CRIT_RATING )
-                              .amount( dbc.spell( 118522 ) -> effectN( 1 ).average( this ) );
+                              .add_stat( STAT_CRIT_RATING, dbc.spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_haste = stat_buff_creator_t( this, "elemental_blast_haste", dbc.spell( 118522 ) )
                                .max_stack( 1 )
-                               .stat( STAT_HASTE_RATING )
-                               .amount( dbc.spell( 118522 ) -> effectN( 2 ).average( this ) );
+                               .add_stat( STAT_HASTE_RATING, dbc.spell( 118522 ) -> effectN( 2 ).average( this ) );
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", dbc.spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .stat( STAT_MASTERY_RATING )
-                                 .amount( dbc.spell( 118522 ) -> effectN( 3 ).average( this ) );
+                                 .add_stat( STAT_MASTERY_RATING, dbc.spell( 118522 ) -> effectN( 3 ).average( this ) );
   buff.elemental_focus     = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
                              .activated( false );
   buff.elemental_mastery   = buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
@@ -4377,12 +4374,12 @@ void shaman_t::init_buffs()
   buff.water_shield        = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
 
   // Tier13 set bonuses
-  buff.tier13_2pc_caster   = stat_buff_creator_t( this, "tier13_2pc_caster", dbc.spell( 105779 ) )
-                             .stat( STAT_MASTERY_RATING )
-                             .amount( dbc.spell( 105779 ) -> effectN( 1 ).base_value() );
-  buff.tier13_4pc_caster   = stat_buff_creator_t( this, "tier13_4pc_caster", dbc.spell( 105821 ) )
-                             .stat( STAT_HASTE_RATING )
-                             .amount( dbc.spell( 105821 ) -> effectN( 1 ).base_value() );
+  buff.tier13_2pc_caster   = stat_buff_creator_t( this, "tier13_2pc_caster" )
+                             .spell( find_spell( 105779 ) );
+
+  buff.tier13_4pc_caster   = stat_buff_creator_t( this, "tier13_4pc_caster" )
+                             .spell( find_spell( 105821 ) );
+
   buff.tier13_4pc_healer   = buff_creator_t( this, "tier13_4pc_healer", dbc.spell( 105877 ) );
 }
 

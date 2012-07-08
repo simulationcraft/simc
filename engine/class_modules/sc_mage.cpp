@@ -3077,10 +3077,8 @@ void mage_t::init_buffs()
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
 
   buffs.tier13_2pc           = stat_buff_creator_t( this, "tier13_2pc" )
-                               .duration( timespan_t::from_seconds( 30.0 ) )
-                               .max_stack( 10 )
-                               .stat( STAT_HASTE_RATING )
-                               .amount( 50.0 );
+                               .spell( find_spell( 105785 ) );
+
   buffs.alter_time           = new alter_time::alter_time_buff_t( this );
 }
 

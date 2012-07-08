@@ -1843,21 +1843,26 @@ public:
 struct stat_buff_creator_t : public buff_creator_helper_t<stat_buff_creator_t>
 {
 private:
-  double _amount;
-  stat_e _stat;
+
+  struct buff_stat_t
+  {
+    stat_e stat;
+    double amount;
+    buff_stat_t( stat_e s, double a ) :
+      stat( s ), amount( a ) {}
+  };
+
+  std::vector<buff_stat_t> stats;
+
   friend struct ::stat_buff_t;
 public:
   stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ),
-    _amount( 0 ), _stat( STAT_NONE ) {}
+    base_t( q, name, s ) {}
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( sim, name, s ),
-    _amount( 0 ), _stat( STAT_NONE ) {}
+    base_t( sim, name, s ) {}
 
-  bufftype& amount( double a )
-  { _amount=a; return *this; }
-  bufftype& stat( stat_e s )
-  { _stat=s; return *this; }
+  bufftype& add_stat( stat_e s, double a )
+  { stats.push_back( buff_stat_t( s, a ) ); return *this; }
 
   operator stat_buff_t* () const;
 };
@@ -2011,8 +2016,15 @@ inline buff_creator_t::operator buff_t* () const
 
 struct stat_buff_t : public buff_t
 {
-  double amount;
-  stat_e stat;
+  struct buff_stat_t
+  {
+    stat_e stat;
+    double amount;
+    double current_value;
+    buff_stat_t( stat_e s, double a ) :
+      stat( s ), amount( a ), current_value( 0 ) {}
+  };
+  std::vector<buff_stat_t> stats;
 
   virtual void bump     ( int stacks=1, double value=-1.0 );
   virtual void decrement( int stacks=1, double value=-1.0 );
@@ -3474,8 +3486,7 @@ struct player_t : public noncopyable
   {
     buff_t* beacon_of_light;
     buff_t* berserking;
-    buff_t* blood_fury_ap;
-    buff_t* blood_fury_sp;
+    buff_t* blood_fury;
     buff_t* bloodlust;
     buff_t* body_and_soul;
     buff_t* exhaustion;

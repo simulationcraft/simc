@@ -2094,14 +2094,8 @@ void player_t::init_buffs()
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
     buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
 
-    // stat_buff_t( sim, name, stat, amount, max_stack, duration, cooldown, proc_chance, quiet )
-    buffs.blood_fury_ap = stat_buff_creator_t( this, "blood_fury_ap", find_spell( 20572 ) )
-                          .stat( STAT_ATTACK_POWER )
-                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effectN( 1 ).id(), sim -> max_player_level ) ) );
-
-    buffs.blood_fury_sp = stat_buff_creator_t( this, "blood_fury_sp", find_spell( 33702 ) )
-                          .stat( STAT_SPELL_POWER )
-                          .amount( is_enemy() ? 0 : floor( sim -> dbc.effect_average( sim -> dbc.spell( 33697 ) -> effectN( 2 ).id(), sim -> max_player_level ) ) );
+    buffs.blood_fury = stat_buff_creator_t( this, "blood_fury" ).
+                          spell( find_racial_spell( "Blood Fury" ) );
 
     buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
 
@@ -2128,8 +2122,7 @@ void player_t::init_buffs()
     buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
                       .max_stack( 1 )
                       .duration( timespan_t::from_seconds( 20.0 ) )
-                      .stat( STAT_HASTE_RATING )
-                      .amount( lb_amount );
+                      .add_stat( STAT_HASTE_RATING, lb_amount );
 
     // Potions
     struct potions_common_buff_creator
@@ -2147,42 +2140,33 @@ void player_t::init_buffs()
     };
 
     potion_buffs.speed      = potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) )
-                              .stat( STAT_HASTE_RATING )
-                              .amount( 500.0 );
+                              .add_stat( STAT_HASTE_RATING, 500.0 );
 
     potion_buffs.volcanic   = potions_common_buff_creator()( this, "volcanic" )
-                              .stat( STAT_INTELLECT )
-                              .amount( 1200.0 );
+                              .add_stat( STAT_INTELLECT, 1200.0 );
 
     potion_buffs.earthen    = potions_common_buff_creator()( this, "earthen" )
-                              .stat( STAT_ARMOR )
-                              .amount( 4800.0 );
+                              .add_stat( STAT_ARMOR, 4800.0 );
 
     potion_buffs.golemblood = potions_common_buff_creator()( this, "golemblood" )
-                              .stat( STAT_STRENGTH )
-                              .amount( 1200.0 );
+                              .add_stat( STAT_STRENGTH, 1200.0 );
 
     potion_buffs.tolvir     = potions_common_buff_creator()( this, "tolvir" )
-                              .stat( STAT_AGILITY )
-                              .amount( 1200.0 );
+                              .add_stat( STAT_AGILITY, 1200.0 );
 
     // New Mop potions
 
     potion_buffs.jade_serpent = potions_common_buff_creator()( this, "jade_serpent" )
-                                .stat( STAT_INTELLECT )
-                                .amount( 4000.0 );
+                                .add_stat( STAT_INTELLECT, 4000.0 );
 
     potion_buffs.mountains    = potions_common_buff_creator()( this, "mountains" )
-                                .stat( STAT_ARMOR )
-                                .amount( 12000.0 );
+                                .add_stat( STAT_ARMOR, 12000.0 );
 
     potion_buffs.mogu_power   = potions_common_buff_creator()( this, "mogu_power" )
-                                .stat( STAT_STRENGTH )
-                                .amount( 4000.0 );
+                                .add_stat( STAT_STRENGTH, 4000.0 );
 
     potion_buffs.virmens_bite = potions_common_buff_creator()( this, "virmens_bite" )
-                                .stat( STAT_AGILITY )
-                                .amount( 4000.0 );
+                                .add_stat( STAT_AGILITY, 4000.0 );
 
 
     buffs.mongoose_mh = NULL;
@@ -5032,16 +5016,8 @@ struct blood_fury_t : public action_t
 
     update_ready();
 
-    if ( player -> type == WARRIOR || player -> type == ROGUE || player -> type == DEATH_KNIGHT ||
-         player -> type == HUNTER  || player -> type == SHAMAN )
-    {
-      player -> buffs.blood_fury_ap -> trigger();
-    }
 
-    if ( player -> type == SHAMAN  || player -> type == WARLOCK || player -> type == MAGE )
-    {
-      player -> buffs.blood_fury_sp -> trigger();
-    }
+    player -> buffs.blood_fury -> trigger();
   }
 };
 
@@ -5480,8 +5456,7 @@ struct use_item_t : public action_t
              .cd( timespan_t::zero() )
              .chance( e.proc_chance )
              .reverse( e.reverse )
-             .stat( e.stat )
-             .amount( e.stat_amount );
+             .add_stat( e.stat, e.stat_amount );
     }
     else assert( false );
 

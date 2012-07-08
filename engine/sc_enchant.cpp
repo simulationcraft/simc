@@ -835,13 +835,10 @@ static void register_executioner( player_t* p, const std::string& mh_enchant, co
     // MH-OH trigger/refresh the same Executioner buff.  It does not stack.
 
     stat_buff_t* buff = stat_buff_creator_t( p, "executioner" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 15 ) )
+                        .spell( p -> find_spell( 42976 ) )
                         .cd( timespan_t::zero() )
                         .chance( 0 )
-                        .activated( false )
-                        .stat( STAT_CRIT_RATING )
-                        .amount( 120 );
+                        .activated( false );
 
     if ( mh_enchant == "executioner" )
     {
@@ -862,26 +859,20 @@ static void register_hurricane( player_t* p, const std::string& mh_enchant, cons
     if ( mh_enchant == "hurricane" )
     {
       mh_buff = stat_buff_creator_t( p, "hurricane_mh" )
-                .max_stack( 1 )
-                .duration( timespan_t::from_seconds( 12 ) )
+                .spell( p -> find_spell( 74221 ) )
                 .cd( timespan_t::zero() )
                 .chance( 0 )
-                .activated( false )
-                .stat( STAT_HASTE_RATING )
-                .amount( 450.0 );
+                .activated( false );
       p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
       p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, mhw, mh_buff, 1.0/*PPM*/, true/*ALL*/ ) );
     }
     if ( oh_enchant == "hurricane" )
     {
       oh_buff = stat_buff_creator_t( p, "hurricane_oh" )
-                .max_stack( 1 )
-                .duration( timespan_t::from_seconds( 12 ) )
+                .spell( p -> find_spell( 74221 ) )
                 .cd( timespan_t::zero() )
                 .chance( 0 )
-                .activated( false )
-                .stat( STAT_HASTE_RATING )
-                .amount( 450.0 );
+                .activated( false );
       p -> callbacks.register_direct_damage_callback( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
       p -> callbacks.register_tick_damage_callback  ( SCHOOL_ATTACK_MASK, new weapon_stat_proc_callback_t( p, ohw, oh_buff, 1.0/*PPM*/, true /*ALL*/ ) );
     }
@@ -915,10 +906,9 @@ static void register_hurricane( player_t* p, const std::string& mh_enchant, cons
       }
     };
     stat_buff_t* s_buff = stat_buff_creator_t( p, "hurricane_s" )
-                          .duration( timespan_t::from_seconds( 12 ) )
+                          .spell( p -> find_spell( 74221 ) )
                           .cd( timespan_t::from_seconds( 45.0 ) )
-                          .activated( false )
-                          .stat( STAT_HASTE_RATING ).amount( 450 );
+                          .activated( false );
     p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
     p -> callbacks.register_tick_damage_callback  ( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
     p -> callbacks.register_direct_heal_callback( SCHOOL_SPELL_MASK, new hurricane_spell_proc_callback_t( p, mh_buff, oh_buff, s_buff ) );
@@ -930,8 +920,10 @@ static void register_landslide( player_t* p, const std::string& enchant, weapon_
 {
   if ( enchant == "landslide" )
   {
-    stat_buff_t* buff = stat_buff_creator_t( p, "landslide_" + weapon_appendix ).duration( timespan_t::from_seconds( 12 ) ).activated( false )
-                        .stat( STAT_ATTACK_POWER ).amount( 1000 );
+    stat_buff_t* buff = stat_buff_creator_t( p, "landslide_" + weapon_appendix )
+                        .spell( p -> find_spell( 74245 ) )
+                        .activated( false )
+                        .add_stat( STAT_ATTACK_POWER, 1000 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
 }
@@ -940,8 +932,10 @@ static void register_mongoose( player_t* p, const std::string& enchant, weapon_t
 {
   if ( enchant == "mongoose" )
   {
-    p -> buffs.mongoose_mh = stat_buff_creator_t( p, "mongoose_" + weapon_appendix ).duration( timespan_t::from_seconds( 15 ) ).activated( false )
-                             .stat( STAT_AGILITY ).amount( 120 );
+    p -> buffs.mongoose_mh = stat_buff_creator_t( p, "mongoose_" + weapon_appendix )
+                             .duration( timespan_t::from_seconds( 15 ) )
+                             .activated( false )
+                             .add_stat( STAT_AGILITY, 120 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, p -> buffs.mongoose_mh, 1.0/*PPM*/ ) );
   }
 }
@@ -951,11 +945,11 @@ static void register_power_torrent( player_t* p, const std::string& enchant, con
   if ( enchant == "power_torrent" )
   {
     stat_buff_t* buff = stat_buff_creator_t( p, "power_torrent" + weapon_appendix )
-                        .duration( timespan_t::from_seconds( 12 ) )
+                        .spell( p -> find_spell( 74241 ) )
                         .cd( timespan_t::from_seconds( 45 ) )
                         .chance( 0.20 )
                         .activated( false )
-                        .stat( STAT_INTELLECT ).amount( 500 );
+                        .add_stat( STAT_INTELLECT, 500 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
@@ -975,7 +969,7 @@ static void register_jade_spirit( player_t* p, const std::string& enchant, const
                         .cd( timespan_t::from_seconds( 45 ) )
                         .chance( 0.10 )
                         .activated( false )
-                        .stat( STAT_INTELLECT ).amount( 1650 );
+                        .add_stat( STAT_INTELLECT, 1650 );
     weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
     p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
@@ -993,7 +987,7 @@ static void register_windwalk( player_t* p, const std::string& enchant, weapon_t
                         .cd( timespan_t::from_seconds( 45 ) )
                         .chance( 0.15 )
                         .activated( false )
-                        .stat( STAT_DODGE_RATING ).amount( 600 );
+                        .add_stat( STAT_DODGE_RATING, 600 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff ) );
   }
 }
@@ -1008,8 +1002,7 @@ static void register_berserking( player_t* p, const std::string& enchant, weapon
                         .cd( timespan_t::zero() )
                         .chance( 0 )
                         .activated( false )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( 400.0 );
+                        .add_stat( STAT_ATTACK_POWER, 400.0 );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
 }
@@ -1022,9 +1015,7 @@ static void register_gnomish_xray( player_t* p, const std::string& enchant, weap
     stat_buff_t* buff = stat_buff_creator_t( p, "xray_targeting" )
                         .spell( p -> find_spell( 95712 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
-                        .activated( false )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( p->find_spell( 95712 )->effectN( 1 ).base_value() );
+                        .activated( false );
 
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
@@ -1038,9 +1029,7 @@ static void register_lord_blastingtons_scope_of_doom( player_t* p, const std::st
     stat_buff_t* buff = stat_buff_creator_t( p, "lord_blastingtons_scope_of_doom" )
                         .spell( p -> find_spell( 109085 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
-                        .activated( false )
-                        .stat( STAT_ATTACK_POWER )
-                        .amount( p->find_spell( 109085 )->effectN( 1 ).base_value() );
+                        .activated( false );
 
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
@@ -1054,9 +1043,7 @@ static void register_mirror_scope( player_t* p, const std::string& enchant, weap
     stat_buff_t* buff = stat_buff_creator_t( p, "mirror_scope" )
                         .spell( p -> find_spell( 109092 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
-                        .activated( false )
-                        .stat( STAT_CRIT_RATING )
-                        .amount( p->find_spell( 109092 )->effectN( 1 ).base_value() );
+                        .activated( false );
 
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, w, buff, 1.0/*PPM*/ ) );
   }
@@ -1135,9 +1122,7 @@ void enchant::init( player_t* p )
     stat_buff_t* buff = stat_buff_creator_t( p, "skyfire_swiftness" )
                         .spell( p -> find_spell( 39959 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
-                        .activated( false )
-                        .stat( STAT_HASTE_RATING )
-                        .amount( p->find_spell( 39959 )->effectN( 1 ).base_value() );
+                        .activated( false );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
   }
@@ -1146,9 +1131,7 @@ void enchant::init( player_t* p )
     stat_buff_t* buff = stat_buff_creator_t( p, "skyflare_swiftness" )
                         .spell( p -> find_spell( 55379 ) )
                         .cd( timespan_t::from_seconds( 40 ) )
-                        .activated( false )
-                        .stat( STAT_HASTE_RATING )
-                        .amount( p->find_spell( 55379 )->effectN( 1 ).base_value() );
+                        .activated( false );
     //FIXME: 0.2 ppm and 40 second icd seems to roughly match in-game behavior, but we need to verify the exact mechanics
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, mhw, buff, 0.2/*PPM*/ ) );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new weapon_stat_proc_callback_t( p, ohw, buff, 0.2/*PPM*/ ) );
