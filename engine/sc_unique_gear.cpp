@@ -971,7 +971,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
         {
           listener -> sim -> output( "%s action %s procs Dragonwrath Tarecgosas Rest.", a -> player -> name(), a -> name() );
         }
-        new (  listener -> sim ) action_execute_event_t(  listener -> sim, a -> dtr_action, timespan_t::zero() /* Add DTR Proc Delay here */ );
+        a -> dtr_action->start_action_execute_event( timespan_t::zero() ); // Add DTR Proc Delay here
       }
     }
   };

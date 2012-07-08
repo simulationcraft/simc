@@ -3796,13 +3796,13 @@ struct player_t : public noncopyable
   static player_t* create( sim_t* sim, const player_description_t& );
 
   // Raid-wide aura/buff/debuff maintenance
-  static bool init        ( sim_t* sim );
+  static bool init ( sim_t* sim );
 
   bool is_pet() { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
   bool is_enemy() { return type == ENEMY || type == ENEMY_ADD; }
   bool is_add() { return type == ENEMY_ADD; }
 
-  pet_t         * cast_pet         () { assert( is_pet()             ); return ( pet_t         * ) this; }
+  pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -4317,6 +4317,9 @@ struct action_t
     for ( std::vector<event_t*>::iterator i = travel_events.begin(); i != travel_events.end(); ++i )
       if ( ( *i ) == e ) { travel_events.erase( i ); break; }
   }
+
+  event_t* start_action_execute_event( timespan_t time );
+  event_t* start_action_travel_event( player_t* target, timespan_t time );
 };
 
 struct action_state_t
@@ -4739,64 +4742,12 @@ struct action_priority_list_t
   {}
 };
 
-// Player Ready Event =======================================================
-
-struct player_ready_event_t : public event_t
-{
-  player_ready_event_t( sim_t* sim, player_t* p, timespan_t delta_time );
-  virtual void execute();
-};
-
-struct player_gcd_event_t : public event_t
-{
-  player_gcd_event_t( sim_t* sim, player_t* p, timespan_t delta_time );
-  virtual void execute();
-};
-
-// Action Execute Event =====================================================
-
-struct action_execute_event_t : public event_t
-{
-  action_t* action;
-  action_execute_event_t( sim_t* sim, action_t* a, timespan_t time_to_execute );
-  virtual void execute();
-};
-
-// DoT Tick Event ===========================================================
-
-struct dot_tick_event_t : public event_t
-{
-  dot_t* dot;
-  dot_tick_event_t( sim_t* sim, dot_t* d, timespan_t time_to_tick );
-  virtual void execute();
-};
-
-// Action Travel Event ======================================================
-
-struct action_travel_event_t : public event_t
-{
-  action_t* action;
-  player_t* target;
-  result_e result;
-  double damage;
-  action_travel_event_t( sim_t* sim, player_t* t, action_t* a, timespan_t time_to_travel );
-  virtual void execute();
-};
-
 struct stateless_travel_event_t : public event_t
 {
   action_t* action;
   action_state_t* state;
   stateless_travel_event_t( sim_t* sim, action_t* a, action_state_t* state, timespan_t time_to_travel );
   virtual ~stateless_travel_event_t() { if ( unlikely( state && canceled ) ) action -> release_state( state ); }
-  virtual void execute();
-};
-
-// Regen Event ==============================================================
-
-struct regen_event_t : public event_t
-{
-  regen_event_t( sim_t* sim );
   virtual void execute();
 };
 

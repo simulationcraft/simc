@@ -9,6 +9,142 @@
 // Action
 // ==========================================================================
 
+namespace { // anonymous namespace
+
+
+struct player_gcd_event_t : public event_t
+{
+  player_gcd_event_t( sim_t*    sim,
+                                          player_t* p,
+                                          timespan_t delta_time ) :
+    event_t( sim, p, "Player-Ready-GCD" )
+  {
+    if ( sim -> debug ) sim -> output( "New Player-Ready-GCD Event: %s", p -> name() );
+    sim -> add_event( this, delta_time );
+  }
+
+  virtual void execute()
+  {
+    action_t* a = 0;
+
+    for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
+          i < player -> active_off_gcd_list -> off_gcd_actions.end(); i++ )
+    {
+      a = *i;
+      if ( a -> ready() )
+      {
+        action_priority_list_t* alist = player -> active_action_list;
+
+        a -> execute();
+        if ( ! a -> quiet )
+        {
+          player -> iteration_executed_foreground_actions++;
+          if ( a -> marker && sim -> current_iteration == 0 )
+            player -> report_information.action_sequence.push_back( new action_sequence_data_t( a, a -> target, sim -> current_time ) );
+          if ( ! a -> label_str.empty() )
+            player -> action_map[ a -> label_str ] += 1;
+        }
+
+        // Need to restart because the active action list changed
+        if ( alist != player -> active_action_list )
+        {
+          player -> activate_action_list( player -> active_action_list, true );
+          execute();
+          player -> activate_action_list( alist, true );
+          return;
+        }
+      }
+    }
+
+    if ( player -> restore_action_list != 0 )
+    {
+      player -> activate_action_list( player -> restore_action_list );
+      player -> restore_action_list = 0;
+    }
+
+    player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::from_seconds( 0.1 ) );
+  }
+};
+// Action Execute Event =====================================================
+
+struct action_execute_event_t : public event_t
+{
+  action_t* action;
+
+  action_execute_event_t( sim_t*    sim,
+                                                  action_t* a,
+                                                  timespan_t time_to_execute ) :
+    event_t( sim, a -> player, "Action-Execute" ), action( a )
+  {
+    if ( sim -> debug )
+      sim -> output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
+                     player -> name(), a -> name(), time_to_execute.total_seconds(), a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
+    sim -> add_event( this, time_to_execute );
+  }
+
+  // action_execute_event_t::execute ==========================================
+
+  virtual void execute()
+  {
+    action -> execute_event = 0;
+    action -> execute();
+
+    if ( ! action -> background &&
+         ! player -> channeling )
+    {
+      if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
+
+      player -> schedule_ready( timespan_t::zero() );
+    }
+
+    if ( player -> active_off_gcd_list == 0 )
+      return;
+
+    // Kick off the during-gcd checker, first run is immediately after
+    event_t::cancel( player -> off_gcd );
+
+    if ( ! player -> channeling )
+      player -> off_gcd = new ( sim ) player_gcd_event_t( sim, player, timespan_t::zero() );
+  }
+
+};
+
+// Action Travel Event ======================================================
+
+struct action_travel_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  result_e result;
+  double damage;
+
+  action_travel_event_t( sim_t*    sim,
+                                                player_t* t,
+                                                action_t* a,
+                                                timespan_t time_to_travel ) :
+    event_t( sim, a -> player, "Action Travel" ), action( a ), target( t )
+  {
+    result = a -> result;
+    damage = a -> direct_dmg;
+
+    if ( sim -> debug )
+      sim -> output( "New Action Travel Event: %s %s %.2f",
+                     player -> name(), a -> name(), time_to_travel.total_seconds() );
+
+    sim -> add_event( this, time_to_travel );
+  }
+
+  // action_travel_event_t::execute ===========================================
+
+  virtual void execute()
+  {
+    action -> impact( target, result, damage );
+    action -> remove_travel_event( this );
+  }
+};
+
+} // end anonymous namespace
+
 // action_t::action_t =======================================================
 
 action_t::action_t( action_e       ty,
@@ -1257,7 +1393,7 @@ void action_t::schedule_execute()
 
   time_to_execute = execute_time();
 
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+  execute_event = start_action_execute_event( time_to_execute );
 
   if ( ! background )
   {
@@ -1312,7 +1448,7 @@ void action_t::schedule_travel( player_t* t )
       sim -> output( "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
-    add_travel_event( new ( sim ) action_travel_event_t( sim, t, this, time_to_travel ) );
+    add_travel_event( start_action_travel_event( t, time_to_travel ) );
   }
 }
 
@@ -1336,7 +1472,7 @@ void action_t::reschedule_execute( timespan_t time )
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {
     event_t::cancel( execute_event );
-    execute_event = new ( sim ) action_execute_event_t( sim, this, time );
+    execute_event = start_action_execute_event( time );
   }
 }
 
@@ -2069,3 +2205,13 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> target_crit = composite_target_crit( state -> target );
 }
 
+event_t* action_t::start_action_execute_event( timespan_t t )
+{
+  return new ( sim ) action_execute_event_t( sim, this, t );
+}
+
+
+event_t* action_t::start_action_travel_event( player_t* target, timespan_t time )
+{
+  return new ( sim ) action_travel_event_t( sim, target, this, time );
+}

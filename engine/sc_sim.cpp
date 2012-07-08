@@ -697,6 +697,29 @@ struct resource_timeline_collect_event_t : public event_t
   }
 };
 
+struct regen_event_t : public event_t
+{
+  regen_event_t( sim_t* sim ) : event_t( sim, 0, "Regen Event" )
+  {
+    if ( sim -> debug ) sim -> output( "New Regen Event" );
+    sim -> add_event( this, sim -> regen_periodicity );
+  }
+
+  virtual void execute()
+  {
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      if ( p -> current.sleeping ) continue;
+      if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+
+      p -> regen( sim -> regen_periodicity );
+    }
+
+    new ( sim ) regen_event_t( sim );
+  }
+};
+
 } // ANONYMOUS NAMESPACE ===================================================
 
 // ==========================================================================

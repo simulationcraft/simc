@@ -399,7 +399,7 @@ public:
       }
 
       event_t::cancel( attack -> execute_event );
-      attack -> execute_event = new ( attack -> sim ) action_execute_event_t( attack -> sim, attack, time_to_hit );
+      attack -> execute_event = attack -> start_action_execute_event( time_to_hit );
     }
   }
 };
@@ -2301,7 +2301,7 @@ void shaman_spell_t::schedule_execute()
 
   time_to_execute = execute_time();
 
-  execute_event = new ( sim ) action_execute_event_t( sim, this, time_to_execute );
+  execute_event = start_action_execute_event( time_to_execute );
 
   if ( ! background )
   {
