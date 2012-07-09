@@ -2057,12 +2057,14 @@ struct inferno_blast_t : public mage_spell_t
     trigger_ignite( this, s );
   }
 
-  virtual double composite_crit()
+  virtual result_e calculate_result( double crit, unsigned int level )
   {
-    // FIXME: There is probably a better way to do this, but the method
-    // used for chaos bolt fails to count as a crit for purposes of
-    // hot streak.
-    return 2.0;
+    result_e r = mage_spell_t::calculate_result( crit, level );
+
+    // Inferno Blast always crits
+    if ( result_is_hit( r ) ) return RESULT_CRIT;
+
+    return r;
   }
 
   // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
