@@ -2046,6 +2046,10 @@ struct absorb_buff_t : public buff_t
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
   friend struct buff_creation::absorb_buff_creator_t;
+
+public:
+  virtual void absorb_used( double /* amount */ )
+  { }
 };
 
 inline absorb_buff_creator_t::operator absorb_buff_t* () const

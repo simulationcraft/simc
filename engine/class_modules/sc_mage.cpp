@@ -75,6 +75,8 @@ public:
     buff_t* rune_of_power;
     buff_t* tier13_2pc;
     buff_t* alter_time;
+    absorb_buff_t* incanters_ward;
+    buff_t* incanters_ward_post;
   } buffs;
 
   // Cooldowns
@@ -82,6 +84,7 @@ public:
   {
     cooldown_t* evocation;
     cooldown_t* inferno_blast;
+    cooldown_t* incanters_ward;
   } cooldowns;
 
   // Gains
@@ -249,8 +252,9 @@ public:
     target_data.init( "target_data", this );
 
     // Cooldowns
-    cooldowns.evocation     = get_cooldown( "evocation"     );
-    cooldowns.inferno_blast = get_cooldown( "inferno_blast" );
+    cooldowns.evocation      = get_cooldown( "evocation"     );
+    cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
+    cooldowns.incanters_ward = get_cooldown( "incanters_ward" );
 
     // Options
     initial.distance = 40;
@@ -318,15 +322,7 @@ public:
     return player_t::set_default_glyphs();
   }
 
-  virtual double composite_spell_power_multiplier()
-  {
-    double m = player_t::composite_spell_power_multiplier();
-    if ( talents.incanters_ward -> ok() )
-    {
-      m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
-    }
-    return m;
-  }
+  virtual double composite_spell_power_multiplier();
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
@@ -769,9 +765,6 @@ struct alter_time_buff_t : public buff_t
     buff_t::expire();
   }
 };
-
-
-
 
 
 }; // alter_time namespace
@@ -2785,6 +2778,73 @@ struct alter_time_t : public mage_spell_t
   }
 };
 
+struct incanters_ward_buff_t : public absorb_buff_t
+{
+  double max_absorb;
+  gain_t* gain;
+
+  incanters_ward_buff_t( mage_t* player ) :
+    absorb_buff_t( absorb_buff_creator_t( player, "incanters_ward" ).spell( player -> talents.incanters_ward ) ),
+    max_absorb( 0 )
+  {
+    gain = player -> get_gain( "incanters_ward mana gain" );
+  }
+
+  mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  virtual bool trigger( int        stacks,
+                                   double    /* value */,
+                                   double     chance,
+                                   timespan_t duration )
+  {
+    max_absorb = player -> dbc.effect_average( data().effectN( 1 ).id(), player -> level );
+    // coeff hardcoded into tooltip
+    max_absorb += 1.320 * p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
+
+    return absorb_buff_t::trigger( stacks, max_absorb, chance, duration );
+  }
+
+  virtual void absorb_used( double amount )
+  {
+    if ( max_absorb > 0 )
+    {
+      double resource_gain = amount / max_absorb * 0.18 * p() -> resources.current[ RESOURCE_MANA ];
+      p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
+    }
+
+  }
+
+  virtual void expire()
+  {
+
+    // Trigger second buff with value between 0 and 1, depending on how much absorb has been used.
+    double post_sp_coeff = ( max_absorb - current_value ) / max_absorb;
+    p() -> buffs.incanters_ward_post -> trigger( 1, post_sp_coeff );
+
+    absorb_buff_t::expire();
+  }
+};
+
+// incanters_ward Spell ===============================================================
+
+struct incanters_ward_t : public mage_spell_t
+{
+  incanters_ward_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    p() -> buffs.incanters_ward -> trigger();
+
+    mage_spell_t::execute();
+  }
+};
 
 } // ANONYMOUS NAMESPACE
 
@@ -2870,6 +2930,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
+  if ( name == "incanters_ward"    ) return new          incanters_ward_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3049,6 +3110,11 @@ void mage_t::init_buffs()
                                .spell( find_spell( 105785 ) );
 
   buffs.alter_time           = new alter_time::alter_time_buff_t( this );
+  buffs.incanters_ward       = new incanters_ward_buff_t( this );
+  absorb_buffs.push_back( buffs.incanters_ward );
+  buffs.incanters_ward_post  = buff_creator_t( this, "incanters_ward_post" )
+                               .spell( find_spell( 116267) );
+
 }
 
 // mage_t::init_gains =======================================================
@@ -3440,6 +3506,19 @@ double mage_t::composite_spell_haste()
   return h;
 }
 
+double mage_t::composite_spell_power_multiplier()
+{
+  double m = player_t::composite_spell_power_multiplier();
+
+  if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+  {
+    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+  }
+
+  m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
+
+  return m;
+}
 // mage_t::matching_gear_multiplier =========================================
 
 double mage_t::matching_gear_multiplier( attribute_e attr )
@@ -3477,7 +3556,7 @@ void mage_t::regen( timespan_t periodicity )
   {
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
   }
-  else if ( talents.incanters_ward -> ok() )
+  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
   {
     resource_gain( RESOURCE_MANA, composite_mp5() / 5.0 * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
   }
