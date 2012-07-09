@@ -958,11 +958,6 @@ struct mage_spell_t : public spell_t
       p() -> buffs.ice_floes -> decrement();
     }
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      trigger_hot_streak( execute_state );
-    }
-
     if ( !harmful )
     {
       may_proc_missiles = false;
@@ -972,6 +967,17 @@ struct mage_spell_t : public spell_t
       p() -> buffs.arcane_missiles -> trigger();
     }
   }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    spell_t::impact_s( s );
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      trigger_hot_streak( execute_state );
+    }
+  }
+
 };
 
 // calculate_dot_dps ========================================================
@@ -1765,6 +1771,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
       if ( p() -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
     }
@@ -1780,16 +1787,6 @@ struct frostbolt_t : public mage_spell_t
     return am;
   }
 
-  virtual void impact_s( action_state_t* s )
-  {
-    mage_spell_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> specialization() == MAGE_FROST )
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
-    }
-  }
 };
 
 // Frostfire Bolt Spell =====================================================
@@ -1847,6 +1844,11 @@ struct frostfire_bolt_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.brain_freeze -> expire();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
+    }
   }
 
   virtual void impact_s( action_state_t* s )
@@ -1859,9 +1861,6 @@ struct frostfire_bolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
 
       trigger_ignite( this, s );
-
-      if ( p() -> specialization() == MAGE_FROST )
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
   }
 
@@ -2047,6 +2046,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     check_spec( MAGE_FIRE );
     parse_options( NULL, options_str );
+    may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
   }
 
@@ -2057,14 +2057,12 @@ struct inferno_blast_t : public mage_spell_t
     trigger_ignite( this, s );
   }
 
-  virtual result_e calculate_result( double crit, unsigned int level )
+  virtual double composite_crit()
   {
-    result_e r = mage_spell_t::calculate_result( crit, level );
-
-    // Inferno Blast always crits
-    if ( result_is_hit( r ) ) return RESULT_CRIT;
-
-    return r;
+    // FIXME: There is probably a better way to do this, but the method
+    // used for chaos bolt fails to count as a crit for purposes of
+    // hot streak.
+    return 2.0;
   }
 
   // FIX ME: Add spreading of Pyro, Ignite, Flamestrike, Combustion
