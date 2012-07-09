@@ -434,9 +434,6 @@ struct mirror_image_pet_t : public pet_t
   int num_rotations;
   std::vector<action_t*> sequences;
   int sequence_finished;
-  double snapshot_arcane_sp;
-  double snapshot_fire_sp;
-  double snapshot_frost_sp;
 
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "mirror_image_3", true /*guardian*/ ),
@@ -972,9 +969,9 @@ struct mage_spell_t : public spell_t
   {
     spell_t::impact_s( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_hot_streak( execute_state );
+      trigger_hot_streak( s );
     }
   }
 
