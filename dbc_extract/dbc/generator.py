@@ -1048,6 +1048,7 @@ class SpellDataGenerator(DataGenerator):
   
     _profession_enchant_categories = [
         165,  # Leatherworking
+        171,  # Alchemy
         197,  # Tailoring
         202,  # Engineering
         333,  # Enchanting
@@ -1530,9 +1531,9 @@ class SpellDataGenerator(DataGenerator):
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
         for ability_id, ability_data in self._skilllineability_db.iteritems():
-            if ( ability_data.id_skill not in self._profession_enchant_categories ):
+            if ability_data.id_skill not in self._profession_enchant_categories:
                 continue;
-                        
+            
             spell = self._spell_db[ability_data.id_spell]
             if not spell.id:
                 continue
@@ -1554,7 +1555,7 @@ class SpellDataGenerator(DataGenerator):
                         id_spell = getattr(item, 'id_spell_%d' % i)
                         enchant_spell = self._spell_db[id_spell]
                         for enchant_effect in enchant_spell._effects:
-                            if not enchant_effect or enchant_effect.type != 53:
+                            if not enchant_effect or (enchant_effect.type != 53 and enchant_effect.type != 6):
                                 continue
 
                             enchant_spell_id = id_spell
