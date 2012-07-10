@@ -3,7 +3,7 @@
 setlocal
 
 set INEXT=DBFilesClient
-set OUTPATH=%~dp0..\engine\dbc
+set OUTPATH=%~dp0..\engine
 set RUNFILE=%~dp0\dbc_extract.py
 
 
@@ -24,8 +24,6 @@ echo.
 goto usage
 :okay
 
-
-python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_list                  > %OUTPATH%\sc_spec_list.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% --itemcache=%INPATH% -b %BUILD% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t scale                   > %OUTPATH%\sc_scale_data%PTREXT%.inc
@@ -42,16 +40,6 @@ python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_ench              >> 
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_armor             >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%.inc
-
-echo // ==========================================================================>  %OUTPATH%\specialization.hpp
-echo // Dedmonwakeen's Raid DPS/TPS Simulator.>> %OUTPATH%\specialization.hpp
-echo // Send questions to natehieter@gmail.com>> %OUTPATH%\specialization.hpp
-echo // ==========================================================================>> %OUTPATH%\specialization.hpp
-echo #ifndef SPECIALIZATION_HPP>> %OUTPATH%\specialization.hpp
-echo #define SPECIALIZATION_HPP>> %OUTPATH%\specialization.hpp
-echo.>> %OUTPATH%\specialization.hpp
-python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_enum                  	   >> %OUTPATH%\specialization.hpp
-echo #endif>> %OUTPATH%\specialization.hpp
 
 echo Done!
 

@@ -3,23 +3,23 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "simulationcraft.h"
 
 namespace { // ANONYMOUS NAMESPACE ==========================================
 
 // is_plot_stat =============================================================
 
 static bool is_plot_stat( sim_t* sim,
-                          stat_e stat )
+                          int    stat )
 {
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )
   {
     std::vector<std::string> stat_list;
-    size_t num_stats = util::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
+    int num_stats = util_t::string_split( stat_list, sim -> plot -> dps_plot_stat_str, ",:;/|" );
     bool found = false;
-    for ( size_t i = 0; i < num_stats && ! found; i++ )
+    for ( int i=0; i < num_stats && ! found; i++ )
     {
-      found = ( util::parse_stat_type( stat_list[ i ] ) == stat );
+      found = ( util_t::parse_stat_type( stat_list[ i ] ) == stat );
     }
     if ( ! found ) return false;
   }
@@ -49,7 +49,7 @@ plot_t::plot_t( sim_t* s ) :
   dps_plot_points( 20 ),
   dps_plot_iterations ( -1 ),
   dps_plot_debug( 0 ),
-  current_plot_stat( STAT_NONE ),
+  current_plot_stat( 0 ),
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
   remaining_plot_points( 0 ),
@@ -69,7 +69,7 @@ double plot_t::progress( std::string& phase )
   if ( current_plot_stat <= 0 ) return 0;
 
   phase  = "Plot - ";
-  phase += util::stat_type_abbrev( current_plot_stat );
+  phase += util_t::stat_type_abbrev( current_plot_stat );
 
   double stat_progress = ( num_plot_stats - remaining_plot_stats ) / ( double ) num_plot_stats;
 
@@ -86,16 +86,16 @@ void plot_t::analyze_stats()
 {
   if ( dps_plot_stat_str.empty() ) return;
 
-  size_t num_players = sim -> players_by_name.size();
+  int num_players = ( int ) sim -> players_by_name.size();
   if ( num_players == 0 ) return;
 
   remaining_plot_stats = 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( int i=0; i < STAT_MAX; i++ )
     if ( is_plot_stat( sim, i ) )
       remaining_plot_stats++;
   num_plot_stats = remaining_plot_stats;
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( int i=0; i < STAT_MAX; i++ )
   {
     if ( sim -> canceled ) break;
 
@@ -105,7 +105,7 @@ void plot_t::analyze_stats()
 
     if ( sim -> report_progress )
     {
-      util::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util::stat_type_string( i ) );
+      util_t::fprintf( stdout, "\nGenerating DPS Plot for %s...\n", util_t::stat_type_string( i ) );
       fflush( stdout );
     }
 
@@ -138,16 +138,16 @@ void plot_t::analyze_stats()
         delta_sim -> execute();
         if ( dps_plot_debug )
         {
-          util::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
-          report::print_text( sim -> output_file, delta_sim, true );
+          util_t::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util_t::stat_type_string( i ), j );
+          report_t::print_text( sim -> output_file, delta_sim, true );
         }
       }
 
-      for ( size_t k = 0; k < num_players; k++ )
+      for ( int k=0; k < num_players; k++ )
       {
         player_t* p = sim -> players_by_name[ k ];
 
-        if ( ! p -> scales_with[ i ] ) continue;
+        if ( p -> scales_with[ i ] <= 0 ) continue;
 
         if ( delta_sim )
         {
@@ -187,6 +187,12 @@ void plot_t::analyze()
 
   analyze_stats();
 
+  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  {
+    if ( p -> quiet ) continue;
+
+    chart_t::scaling_dps( p -> scaling_dps_chart, p );
+  }
 }
 
 // plot_t::create_options ===================================================

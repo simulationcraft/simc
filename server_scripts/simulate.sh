@@ -22,7 +22,7 @@ if [ ! -f "/home/jon/sites/simulationcraft.org/auto/r$REV.txt" ]; then
 		cp /home/jon/sites/simulationcraft.org/auto/r$REV.html /home/jon/sites/simulationcraft.org/$LIVEFOLDER/Raid_$GEAR.html
 		echo $LIVEFOLDER > /home/jon/sites/simulationcraft.org/LIVEFOLDER
 	fi
-	if grep -q "#define SC_USE_PTR ( 1 )" engine/simulationcraft.hpp; then
+	if grep -q "#define SC_USE_PTR ( 1 )" engine/simulationcraft.h; then
 		/usr/bin/time -f "r$REV-ptr: %U" -o "/home/jon/sites/simulationcraft.org/auto/runtimes.txt" -a engine/simc ptr=1 Raid_$GEAR_PTR.simc html=/home/jon/sites/simulationcraft.org/auto/r$REV-ptr.html output=/home/jon/sites/simulationcraft.org/auto/r$REV-ptr.txt iterations=5000 threads=2 hosted_html=1
 	fi
 	PTRFOLDER="nil"

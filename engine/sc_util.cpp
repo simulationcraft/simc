@@ -3,44 +3,24 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "simulationcraft.h"
+#include "utf8.h"
 
-// parse_enum ===============================================================
-
-template <typename T, T Min, T Max, const char* F( T )>
-inline T parse_enum( const std::string& name )
-{
-  for ( T i = Min; i < Max; ++i )
-    if ( util::str_compare_ci( name, F( i ) ) )
-      return i;
-  return Min;
-}
+namespace { // ANONYMOUS ====================================================
 
 // pred_ci ==================================================================
 
-static bool pred_ci ( char a, char b )
+bool pred_ci ( char a, char b )
 {
   return std::tolower( a ) == std::tolower( b );
 }
 
-// vfprintf_helper ==========================================================
+} // ANONYMOUS namespace ====================================================
 
-static int vfprintf_helper( FILE *stream, const char *format, va_list args )
-{
-  std::string p_locale = setlocale( LC_CTYPE, NULL );
-  setlocale( LC_CTYPE, "" );
+// util_t::str_compare_ci ===================================================
 
-  int retcode = ::vfprintf( stream, format, args );
-
-  setlocale( LC_CTYPE, p_locale.c_str() );
-
-  return retcode;
-}
-
-// str_compare_ci ===================================================
-
-bool util::str_compare_ci( const std::string& l,
-                           const std::string& r )
+bool util_t::str_compare_ci( const std::string& l,
+                             const std::string& r )
 {
   if ( l.size() != r.size() || l.size() == 0 )
     return false;
@@ -48,29 +28,10 @@ bool util::str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// glyph_name =======================================================
+// util_t::str_prefix_ci ====================================================
 
-std::string& util::glyph_name( std::string& n )
-{
-  tokenize( n );
-
-  if ( n.size() >= 9 )
-  {
-    if ( std::equal( n.begin(), n.begin() + 7, "glyph__" ) )
-      n.erase( 0, 7 );
-    else if ( n.size() >= 13 && std::equal( n.begin(), n.begin() + 13, "glyph_of_the_" ) )
-      n.erase( 0, 13 );
-    else if ( std::equal( n.begin(), n.begin() + 9, "glyph_of_" ) )
-      n.erase( 0, 9 );
-  }
-
-  return n;
-}
-
-// str_prefix_ci ====================================================
-
-bool util::str_prefix_ci( const std::string& str,
-                          const std::string& prefix )
+bool util_t::str_prefix_ci( const std::string& str,
+                            const std::string& prefix )
 {
   if ( str.size() < prefix.size() )
     return false;
@@ -78,19 +39,105 @@ bool util::str_prefix_ci( const std::string& str,
   return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
-// str_in_str_ci ====================================================
+// util_t::str_in_str_ci ====================================================
 
-bool util::str_in_str_ci( const std::string& l,
-                          const std::string& r )
+bool util_t::str_in_str_ci( const std::string& l,
+                            const std::string& r )
 {
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-// ability_rank =====================================================
+// util_t::talent_rank ======================================================
 
-double util::ability_rank( int    player_level,
-                           double ability_value,
-                           int    ability_level, ... )
+double util_t::talent_rank( int    num,
+                            int    max,
+                            double increment )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if ( num > max ) num = max;
+
+  return num * increment;
+}
+
+// util_t::talent_rank ======================================================
+
+int util_t::talent_rank( int num,
+                         int max,
+                         int increment )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if ( num > max ) num = max;
+
+  return num * increment;
+}
+
+// util_t::talent_rank ======================================================
+
+double util_t::talent_rank( int    num,
+                            int    max,
+                            double first,
+                            double second, ... )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if ( num > max ) num = max;
+
+  if ( num == 1 ) return first;
+  if ( num == 2 ) return second;
+
+  va_list vap;
+  va_start( vap, second );
+
+  double value=0;
+
+  for ( int i=3; i <= num; i++ )
+  {
+    value = ( double ) va_arg( vap, double );
+  }
+  va_end( vap );
+
+  return value;
+}
+
+// util_t::talent_rank ======================================================
+
+int util_t::talent_rank( int num,
+                         int max,
+                         int first,
+                         int second, ... )
+{
+  assert( num >= 0 );
+  assert( max > 0 );
+
+  if ( num > max ) num = max;
+
+  if ( num == 1 ) return first;
+  if ( num == 2 ) return second;
+
+  va_list vap;
+  va_start( vap, second );
+
+  int value=0;
+
+  for ( int i=3; i <= num; i++ )
+  {
+    value = ( int ) va_arg( vap, int );
+  }
+  va_end( vap );
+
+  return value;
+}
+
+// util_t::ability_rank =====================================================
+
+double util_t::ability_rank( int    player_level,
+                             double ability_value,
+                             int    ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -106,11 +153,11 @@ double util::ability_rank( int    player_level,
   return ability_value;
 }
 
-// ability_rank =====================================================
+// util_t::ability_rank =====================================================
 
-int util::ability_rank( int player_level,
-                        int ability_value,
-                        int ability_level, ... )
+int util_t::ability_rank( int player_level,
+                          int ability_value,
+                          int ability_level, ... )
 {
   va_list vap;
   va_start( vap, ability_level );
@@ -126,22 +173,37 @@ int util::ability_rank( int player_level,
   return ability_value;
 }
 
-// dot_behavior_type_string =========================================
+// util_t::dup ==============================================================
 
-const char* util::dot_behavior_type_string( dot_behavior_e t )
+char* util_t::dup( const char *value )
 {
-  switch ( t )
-  {
-  case DOT_REFRESH: return "DOT_REFRESH";
-  case DOT_CLIP:    return "DOT_CLIP";
-  case DOT_EXTEND:  return "DOT_EXTEND";
-  default:          return "unknown";
-  }
+  std::size_t n = strlen( value ) + 1;
+  void *p = malloc( n );
+  if ( p ) memcpy( p, value, n );
+  return static_cast<char*>( p );
 }
 
-// role_type_string =================================================
+#ifdef _MSC_VER
+// vsnprintf ================================================================
 
-const char* util::role_type_string( role_e role )
+int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
+{
+  if ( buf && size )
+  {
+    int rval = _vsnprintf( buf, size, fmt, ap );
+    if ( rval < 0 || static_cast<size_t>( rval ) < size )
+      return rval;
+
+    buf[ size - 1 ] = '\0';
+  }
+
+  return _vscprintf( fmt, ap );
+}
+#endif
+
+// util_t::role_type_string =================================================
+
+const char* util_t::role_type_string( int role )
 {
   switch ( role )
   {
@@ -152,20 +214,24 @@ const char* util::role_type_string( role_e role )
   case ROLE_TANK:      return "tank";
   case ROLE_HEAL:      return "heal";
   case ROLE_NONE:      return "auto";
-  default:             return "unknown";
   }
+  return "unknown";
 }
 
-// parse_role_type ==================================================
+// util_t::parse_role_type ==================================================
 
-role_e util::parse_role_type( const std::string& name )
+role_type util_t::parse_role_type( const std::string& name )
 {
-  return parse_enum<role_e,ROLE_NONE,ROLE_MAX,role_type_string>( name );
+  for ( int i=( int ) ROLE_NONE; i < ( int )ROLE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::role_type_string( i ) ) )
+      return ( role_type ) i;
+
+  return ROLE_HYBRID;
 }
 
-// race_type_string =================================================
+// util_t::race_type_string =================================================
 
-const char* util::race_type_string( race_e type )
+const char* util_t::race_type_string( int type )
 {
   switch ( type )
   {
@@ -186,35 +252,35 @@ const char* util::race_type_string( race_e type )
   case RACE_UNDEAD:    return "undead";
   case RACE_GOBLIN:    return "goblin";
   case RACE_WORGEN:    return "worgen";
-  case RACE_PANDAREN:  return "pandaren";
-  default:             return "unknown";
   }
+  return "unknown";
 }
 
-// race_type_string =================================================
+// util_t::parse_race_type ==================================================
 
-const char* util::stats_type_string( stats_e type )
+race_type util_t::parse_race_type( const std::string& name )
 {
-  switch ( type )
-  {
-  case STATS_NEUTRAL:  return "neutral";
-  case STATS_DMG:      return "damage";
-  case STATS_HEAL:     return "heal";
-  case STATS_ABSORB:   return "absorb";
-  default:             return "unknown";
-  }
+  for ( int i=( int ) RACE_NONE; i < ( int )RACE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::race_type_string( i ) ) )
+      return ( race_type ) i;
+
+  return RACE_NONE;
 }
 
-// parse_race_type ==================================================
+// util_t::parse_position_type ==============================================
 
-race_e util::parse_race_type( const std::string &name )
+position_type util_t::parse_position_type( const std::string& name )
 {
-  return parse_enum<race_e,RACE_NONE,RACE_MAX,race_type_string>( name );
+  for ( int i = ( int ) POSITION_NONE; i < ( int ) POSITION_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::position_type_string( i ) ) )
+      return ( position_type ) i;
+
+  return POSITION_NONE;
 }
 
-// position_type_string =============================================
+// util_t::position_type_string =============================================
 
-const char* util::position_type_string( position_e type )
+const char* util_t::position_type_string( int type )
 {
   switch ( type )
   {
@@ -223,20 +289,14 @@ const char* util::position_type_string( position_e type )
   case POSITION_FRONT:        return "front";
   case POSITION_RANGED_BACK:  return "ranged_back";
   case POSITION_RANGED_FRONT: return "ranged_front";
-  default:                    return "unknown";
   }
+
+  return "unknown";
 }
 
-// parse_position_type ==============================================
+// util_t::profession_type_string ===========================================
 
-position_e util::parse_position_type( const std::string &name )
-{
-  return parse_enum<position_e,POSITION_NONE,POSITION_MAX,position_type_string>( name );
-}
-
-// profession_type_string ===========================================
-
-const char* util::profession_type_string( profession_e type )
+const char* util_t::profession_type_string( int type )
 {
   switch ( type )
   {
@@ -252,20 +312,24 @@ const char* util::profession_type_string( profession_e type )
   case PROF_MINING:         return "mining";
   case PROF_SKINNING:       return "skinning";
   case PROF_TAILORING:      return "tailoring";
-  default:                  return "unknown";
   }
+  return "unknown";
 }
 
-// parse_profession_type ============================================
+// util_t::parse_profession_type ============================================
 
-profession_e util::parse_profession_type( const std::string& name )
+int util_t::parse_profession_type( const std::string& name )
 {
-  return parse_enum<profession_e,PROFESSION_NONE,PROFESSION_MAX,profession_type_string>( name );
+  for ( int i=0; i < PROFESSION_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::profession_type_string( i ) ) )
+      return i;
+
+  return PROFESSION_NONE;
 }
 
-// translate_profession_id ==========================================
+// util_t::translate_profession_id ==========================================
 
-profession_e util::translate_profession_id( int skill_id )
+profession_type util_t::translate_profession_id( int skill_id )
 {
   switch ( skill_id )
   {
@@ -284,9 +348,9 @@ profession_e util::translate_profession_id( int skill_id )
   return PROFESSION_NONE;
 }
 
-// player_type_string ===============================================
+// util_t::player_type_string ===============================================
 
-const char* util::player_type_string( player_e type )
+const char* util_t::player_type_string( int type )
 {
   switch ( type )
   {
@@ -306,28 +370,44 @@ const char* util::player_type_string( player_e type )
   case PLAYER_GUARDIAN: return "guardian";
   case ENEMY:           return "enemy";
   case ENEMY_ADD:       return "add";
-  default:              return "unknown";
   }
+  return "unknown";
 }
 
-// parse_player_type ================================================
+// util_t::translate_class_str ==============================================
 
-player_e util::parse_player_type( const std::string& name )
+int util_t::translate_class_str( std::string& s )
 {
-  return parse_enum<player_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( name );
+  std::string fmt_s = armory_t::format( s );
+  if      ( fmt_s == "death_knight" ) return DEATH_KNIGHT;
+  else if ( fmt_s == "deathknight"  ) return DEATH_KNIGHT;
+  else if ( fmt_s == "druid"        ) return DRUID;
+  else if ( fmt_s == "hunter"       ) return HUNTER;
+  else if ( fmt_s == "mage"         ) return MAGE;
+  else if ( fmt_s == "monk"         ) return MONK;
+  else if ( fmt_s == "paladin"      ) return PALADIN;
+  else if ( fmt_s == "priest"       ) return PRIEST;
+  else if ( fmt_s == "rogue"        ) return ROGUE;
+  else if ( fmt_s == "shaman"       ) return SHAMAN;
+  else if ( fmt_s == "warlock"      ) return WARLOCK;
+  else if ( fmt_s == "warrior"      ) return WARRIOR;
+  return PLAYER_NONE;
 }
 
-// translate_class_str ================================================
+// util_t::parse_player_type ================================================
 
-player_e util::translate_class_str( std::string& s )
+player_type util_t::parse_player_type( const std::string& name )
 {
-  return parse_enum<player_e,PLAYER_NONE,PLAYER_MAX,player_type_string>( s );
+  for ( int i=( int ) PLAYER_NONE; i < ( int ) PLAYER_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::player_type_string( i ) ) )
+      return ( player_type ) i;
+
+  return PLAYER_NONE;
 }
 
+// util_t::pet_type_string ==================================================
 
-// pet_type_string ==================================================
-
-const char* util::pet_type_string( pet_e type )
+const char* util_t::pet_type_string( int type )
 {
   switch ( type )
   {
@@ -376,6 +456,7 @@ const char* util::pet_type_string( pet_e type )
   case PET_SUCCUBUS:            return "succubus";
   case PET_INFERNAL:            return "infernal";
   case PET_DOOMGUARD:           return "doomguard";
+  case PET_EBON_IMP:            return "ebon_imp";
   case PET_GHOUL:               return "ghoul";
   case PET_BLOODWORMS:          return "bloodworms";
   case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
@@ -386,20 +467,24 @@ const char* util::pet_type_string( pet_e type )
   case PET_FIRE_ELEMENTAL:      return "fire_elemental";
   case PET_EARTH_ELEMENTAL:     return "earth_elemental";
   case PET_ENEMY:               return "pet_enemy";
-  default:                      return "unknown";
   }
+  return "unknown";
 }
 
-// parse_pet_type ===================================================
+// util_t::parse_pet_type ===================================================
 
-pet_e util::parse_pet_type( const std::string& name )
+pet_type_t util_t::parse_pet_type( const std::string& name )
 {
-  return parse_enum<pet_e,PET_NONE,PET_MAX,pet_type_string>( name );
+  for ( int i=( int )PET_NONE; i < ( int )PET_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::pet_type_string( i ) ) )
+      return ( pet_type_t )i;
+
+  return PET_NONE;
 }
 
-// attribute_type_string ============================================
+// util_t::attribute_type_string ============================================
 
-const char* util::attribute_type_string( attribute_e type )
+const char* util_t::attribute_type_string( int type )
 {
   switch ( type )
   {
@@ -408,35 +493,36 @@ const char* util::attribute_type_string( attribute_e type )
   case ATTR_STAMINA:   return "stamina";
   case ATTR_INTELLECT: return "intellect";
   case ATTR_SPIRIT:    return "spirit";
-  default:             return "unknown";
   }
+  return "unknown";
 }
 
-// parse_attribute_type =============================================
+// util_t::parse_attribute_type =============================================
 
-attribute_e util::parse_attribute_type( const std::string& name )
+int util_t::parse_attribute_type( const std::string& name )
 {
-  return parse_enum<attribute_e,ATTRIBUTE_NONE,ATTRIBUTE_MAX,attribute_type_string>( name );
+  for ( int i=0; i < ATTRIBUTE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::attribute_type_string( i ) ) )
+      return i;
+
+  return ATTRIBUTE_NONE;
 }
 
-// dmg_type_string ==================================================
+// util_t::dmg_type_string ==================================================
 
-const char* util::dmg_type_string( dmg_e type )
+const char* util_t::dmg_type_string( int type )
 {
   switch ( type )
   {
   case DMG_DIRECT:    return "hit";
   case DMG_OVER_TIME: return "tick";
-  case HEAL_DIRECT:   return "heal";
-  case HEAL_OVER_TIME:return "hot";
-  case ABSORB:        return "absorb";
-  default:            return "unknown";
   }
+  return "unknown";
 }
 
-// gem_type_string ==================================================
+// util_t::gem_type_string ==================================================
 
-const char* util::gem_type_string( gem_e type )
+const char* util_t::gem_type_string( int type )
 {
   switch ( type )
   {
@@ -449,64 +535,54 @@ const char* util::gem_type_string( gem_e type )
   case GEM_GREEN:     return "green";
   case GEM_PURPLE:    return "purple";
   case GEM_COGWHEEL:  return "cogwheel";
-  default:            return "unknown";
   }
+  return "unknown";
 }
 
-// parse_gem_type ===================================================
+// util_t::parse_gem_type ===================================================
 
-gem_e util::parse_gem_type( const std::string& name )
+int util_t::parse_gem_type( const std::string& name )
 {
-  return parse_enum<gem_e,GEM_NONE,GEM_MAX,gem_type_string>( name );
+  for ( int i=0; i < GEM_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::gem_type_string( i ) ) )
+      return i;
+
+  return GEM_NONE;
 }
 
-// meta_gem_type_string =============================================
+// util_t::meta_gem_type_string =============================================
 
-const char* util::meta_gem_type_string( meta_gem_e type )
+const char* util_t::meta_gem_type_string( int type )
 {
   switch ( type )
   {
   case META_AGILE_SHADOWSPIRIT:         return "agile_shadowspirit";
-  case META_AGILE_PRIMAL:               return "agile_primal";
   case META_AUSTERE_EARTHSIEGE:         return "austere_earthsiege";
   case META_AUSTERE_SHADOWSPIRIT:       return "austere_shadowspirit";
-  case META_AUSTERE_PRIMAL:             return "austere_primal";
   case META_BEAMING_EARTHSIEGE:         return "beaming_earthsiege";
   case META_BRACING_EARTHSIEGE:         return "bracing_earthsiege";
   case META_BRACING_EARTHSTORM:         return "bracing_earthstorm";
   case META_BRACING_SHADOWSPIRIT:       return "bracing_shadowspirit";
   case META_BURNING_SHADOWSPIRIT:       return "burning_shadowspirit";
-  case META_BURNING_PRIMAL:             return "burning_primal";
   case META_CHAOTIC_SHADOWSPIRIT:       return "chaotic_shadowspirit";
   case META_CHAOTIC_SKYFIRE:            return "chaotic_skyfire";
   case META_CHAOTIC_SKYFLARE:           return "chaotic_skyflare";
   case META_DESTRUCTIVE_SHADOWSPIRIT:   return "destructive_shadowspirit";
-  case META_DESTRUCTIVE_PRIMAL:         return "destructive_primal";
-  case META_DESTRUCTIVE_SKYFIRE:        return "destructive_skyfire";
-  case META_DESTRUCTIVE_SKYFLARE:       return "destructive_skyflare";
   case META_EFFULGENT_SHADOWSPIRIT:     return "effulgent_shadowspirit";
-  case META_EFFULGENT_PRIMAL:           return "effulgent_primal";
   case META_EMBER_SHADOWSPIRIT:         return "ember_shadowspirit";
-  case META_EMBER_PRIMAL:               return "ember_primal";
-  case META_EMBER_SKYFIRE:              return "ember_skyfire";
   case META_EMBER_SKYFLARE:             return "ember_skyflare";
   case META_ENIGMATIC_SHADOWSPIRIT:     return "enigmatic_shadowspirit";
-  case META_ENIGMATIC_PRIMAL:           return "enigmatic_primal";
   case META_ENIGMATIC_SKYFLARE:         return "enigmatic_skyflare";
   case META_ENIGMATIC_STARFLARE:        return "enigmatic_starflare";
   case META_ENIGMATIC_SKYFIRE:          return "enigmatic_skyfire";
   case META_ETERNAL_EARTHSIEGE:         return "eternal_earthsiege";
   case META_ETERNAL_EARTHSTORM:         return "eternal_earthstorm";
   case META_ETERNAL_SHADOWSPIRIT:       return "eternal_shadowspirit";
-  case META_ETERNAL_PRIMAL:             return "eternal_primal";
   case META_FLEET_SHADOWSPIRIT:         return "fleet_shadowspirit";
-  case META_FLEET_PRIMAL:               return "fleet_primal";
   case META_FORLORN_SHADOWSPIRIT:       return "forlorn_shadowspirit";
-  case META_FORLORN_PRIMAL:             return "forlorn_primal";
   case META_FORLORN_SKYFLARE:           return "forlorn_skyflare";
   case META_FORLORN_STARFLARE:          return "forlorn_starflare";
   case META_IMPASSIVE_SHADOWSPIRIT:     return "impassive_shadowspirit";
-  case META_IMPASSIVE_PRIMAL:           return "impassive_primal";
   case META_IMPASSIVE_SKYFLARE:         return "impassive_skyflare";
   case META_IMPASSIVE_STARFLARE:        return "impassive_starflare";
   case META_INSIGHTFUL_EARTHSIEGE:      return "insightful_earthsiege";
@@ -519,13 +595,10 @@ const char* util::meta_gem_type_string( meta_gem_e type )
   case META_POWERFUL_EARTHSIEGE:        return "powerful_earthsiege";
   case META_POWERFUL_EARTHSTORM:        return "powerful_earthstorm";
   case META_POWERFUL_SHADOWSPIRIT:      return "powerful_shadowspirit";
-  case META_POWERFUL_PRIMAL:            return "powerful_primal";
   case META_RELENTLESS_EARTHSIEGE:      return "relentless_earthsiege";
   case META_RELENTLESS_EARTHSTORM:      return "relentless_earthstorm";
   case META_REVERBERATING_SHADOWSPIRIT: return "reverberating_shadowspirit";
-  case META_REVERBERATING_PRIMAL:       return "reverberating_primal";
   case META_REVITALIZING_SHADOWSPIRIT:  return "revitalizing_shadowspirit";
-  case META_REVITALIZING_PRIMAL:        return "revitalizing_primal";
   case META_REVITALIZING_SKYFLARE:      return "revitalizing_skyflare";
   case META_SWIFT_SKYFIRE:              return "swift_skyfire";
   case META_SWIFT_SKYFLARE:             return "swift_skyflare";
@@ -534,91 +607,104 @@ const char* util::meta_gem_type_string( meta_gem_e type )
   case META_THUNDERING_SKYFIRE:         return "thundering_skyfire";
   case META_THUNDERING_SKYFLARE:        return "thundering_skyflare";
   case META_TIRELESS_STARFLARE:         return "tireless_starflare";
-  case META_TIRELESS_SKYFLARE:          return "tireless_skyflare";
   case META_TRENCHANT_EARTHSHATTER:     return "trenchant_earthshatter";
   case META_TRENCHANT_EARTHSIEGE:       return "trenchant_earthsiege";
-  default:                              return "unknown";
   }
+  return "unknown";
 }
 
-// parse_meta_gem_type ==============================================
+// util_t::parse_meta_gem_type ==============================================
 
-meta_gem_e util::parse_meta_gem_type( const std::string& name )
+int util_t::parse_meta_gem_type( const std::string& name )
 {
-  return parse_enum<meta_gem_e,META_GEM_NONE,META_GEM_MAX,meta_gem_type_string>( name );
+  for ( int i=0; i < META_GEM_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::meta_gem_type_string( i ) ) )
+      return i;
+
+  return META_GEM_NONE;
 }
 
-// result_type_string ===============================================
+// util_t::result_type_string ===============================================
 
-const char* util::result_type_string( result_e type )
+const char* util_t::result_type_string( int type )
 {
   switch ( type )
   {
-  case RESULT_NONE:       return "none";
-  case RESULT_MISS:       return "miss";
-  case RESULT_DODGE:      return "dodge";
-  case RESULT_PARRY:      return "parry";
-  case RESULT_BLOCK:      return "block";
-  case RESULT_GLANCE:     return "glance";
-  case RESULT_CRIT:       return "crit";
+  case RESULT_NONE:   return "none";
+  case RESULT_MISS:   return "miss";
+  case RESULT_RESIST: return "resist";
+  case RESULT_DODGE:  return "dodge";
+  case RESULT_PARRY:  return "parry";
+  case RESULT_BLOCK:  return "block";
+  case RESULT_GLANCE: return "glance";
+  case RESULT_CRIT:   return "crit";
   case RESULT_CRIT_BLOCK: return "crit-block";
-  case RESULT_HIT:        return "hit";
-  default:                return "unknown";
+  case RESULT_HIT:    return "hit";
   }
+  return "unknown";
 }
 
-// parse_result_type ================================================
+// util_t::parse_result_type ================================================
 
-result_e util::parse_result_type( const std::string& name )
+int util_t::parse_result_type( const std::string& name )
 {
-  return parse_enum<result_e,RESULT_NONE,RESULT_MAX,result_type_string>( name );
+  for ( int i=0; i < RESULT_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::result_type_string( i ) ) )
+      return i;
+
+  return RESULT_NONE;
 }
 
-// resource_type_string =============================================
+// util_t::resource_type_string =============================================
 
-const char* util::resource_type_string( resource_e resource_type )
+const char* util_t::resource_type_string( int type )
 {
-  switch ( resource_type )
+  switch ( type )
   {
-  case RESOURCE_NONE:          return "none";
-  case RESOURCE_HEALTH:        return "health";
-  case RESOURCE_MANA:          return "mana";
-  case RESOURCE_RAGE:          return "rage";
-  case RESOURCE_ENERGY:        return "energy";
-  case RESOURCE_FOCUS:         return "focus";
-  case RESOURCE_RUNIC_POWER:   return "runic_power";
-  case RESOURCE_RUNE:          return "rune";
-  case RESOURCE_RUNE_BLOOD:    return "blood_rune";
-  case RESOURCE_RUNE_UNHOLY:   return "unholy_rune";
-  case RESOURCE_RUNE_FROST:    return "frost_rune";
-  case RESOURCE_SOUL_SHARD:    return "soul_shard";
-  case RESOURCE_BURNING_EMBER: return "burning_ember";
-  case RESOURCE_DEMONIC_FURY:  return "demonic_fury";
-  case RESOURCE_HOLY_POWER:    return "holy_power";
-  case RESOURCE_CHI:           return "chi";
-  case RESOURCE_SHADOW_ORB:    return "shadow_orb";
-  default:                     return "unknown";
+  case RESOURCE_NONE:         return "none";
+  case RESOURCE_HEALTH:       return "health";
+  case RESOURCE_MANA:         return "mana";
+  case RESOURCE_RAGE:         return "rage";
+  case RESOURCE_ENERGY:       return "energy";
+  case RESOURCE_FOCUS:        return "focus";
+  case RESOURCE_RUNIC:        return "runic_power";
+  case RESOURCE_RUNE:         return "all_runes";
+  case RESOURCE_RUNE_BLOOD:   return "blood_runes";
+  case RESOURCE_RUNE_UNHOLY:  return "unholy_runes";
+  case RESOURCE_RUNE_FROST:   return "frost_runes";
+  case RESOURCE_SOUL_SHARDS:  return "soul_shards";
+  case RESOURCE_HOLY_POWER:   return "holy_power";
+  case RESOURCE_CHI:          return "chi";
+  case RESOURCE_LIGHT_FORCE:  return "light_force";
+  case RESOURCE_DARK_FORCE:   return "dark_Force";
   }
+  return "unknown";
 }
 
-// parse_resource_type ==============================================
+// util_t::parse_resource_type ==============================================
 
-resource_e util::parse_resource_type( const std::string& name )
+int util_t::parse_resource_type( const std::string& name )
 {
-  return parse_enum<resource_e,RESOURCE_NONE,RESOURCE_MAX,resource_type_string>( name );
+  for ( int i=0; i < RESOURCE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::resource_type_string( i ) ) )
+      return i;
+
+  return RESOURCE_NONE;
 }
 
-// school_type_component ============================================
+// util_t::school_type_component ============================================
 
-uint32_t util::school_type_component( school_e s_type, school_e c_type )
+int util_t::school_type_component( int s_type, int c_type )
 {
-  return( spell_data_t::get_school_mask( s_type ) &
-          spell_data_t::get_school_mask( c_type ) );
+  uint32_t s_mask = spell_id_t::get_school_mask( ( school_type ) s_type );
+  uint32_t c_mask = spell_id_t::get_school_mask( ( school_type ) c_type );
+
+  return s_mask & c_mask;
 }
 
-// school_type_string ===============================================
+// util_t::school_type_string ===============================================
 
-const char* util::school_type_string( school_e school )
+const char* util_t::school_type_string( int school )
 {
   switch ( school )
   {
@@ -656,290 +742,189 @@ const char* util::school_type_string( school_e school )
   case SCHOOL_CHROMATIC:        return "chromatic";
   case SCHOOL_MAGIC:            return "magic";
   case SCHOOL_DRAIN:            return "drain";
-  default:                      return "unknown";
   }
+  return "unknown";
 }
 
-// parse_school_type ================================================
+// util_t::parse_school_type ================================================
 
-school_e util::parse_school_type( const std::string& name )
+school_type util_t::parse_school_type( const std::string& name )
 {
-  return parse_enum<school_e,SCHOOL_NONE,SCHOOL_MAX,school_type_string>( name );
+  for ( int i=SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::school_type_string( i ) ) )
+      return ( school_type )( i );
+
+  return SCHOOL_NONE;
 }
 
-// translate_spec_str ===============================================
+// util_t::talent_tree ======================================================
 
-specialization_e util::translate_spec_str( player_e ptype, const std::string& spec_str )
+int util_t::talent_tree( int tree, player_type ptype )
 {
   switch ( ptype )
   {
   case DEATH_KNIGHT:
-  {
-    if ( str_compare_ci( spec_str, "blood" ) )
-      return DEATH_KNIGHT_BLOOD;
-    if ( str_compare_ci( spec_str, "tank" ) )
-      return DEATH_KNIGHT_BLOOD;
-    else if ( str_compare_ci( spec_str, "frost" ) )
-      return DEATH_KNIGHT_FROST;
-    else if ( str_compare_ci( spec_str, "unholy" ) )
-      return DEATH_KNIGHT_UNHOLY;
-    break;
-  }
+    switch ( tree )
+    {
+    case DEATH_KNIGHT_BLOOD:    return TREE_BLOOD;
+    case DEATH_KNIGHT_FROST:    return TREE_FROST;
+    case DEATH_KNIGHT_UNHOLY:   return TREE_UNHOLY;
+    }
   case DRUID:
-  {
-    if ( str_compare_ci( spec_str, "balance" ) )
-      return DRUID_BALANCE;
-    if ( str_compare_ci( spec_str, "caster" ) )
-      return DRUID_BALANCE;
-    else if ( str_compare_ci( spec_str, "feral" ) )
-      return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "feral_combat" ) )
-      return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "cat" ) )
-      return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "melee" ) )
-      return DRUID_FERAL;
-    else if ( str_compare_ci( spec_str, "guardian" ) )
-      return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "bear" ) )
-      return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "tank" ) )
-      return DRUID_GUARDIAN;
-    else if ( str_compare_ci( spec_str, "restoration" ) )
-      return DRUID_RESTORATION;
-    else if ( str_compare_ci( spec_str, "resto" ) )
-      return DRUID_RESTORATION;
-    else if ( str_compare_ci( spec_str, "healer" ) )
-      return DRUID_RESTORATION;
-
-    break;
-  }
+    switch ( tree )
+    {
+    case DRUID_BALANCE:         return TREE_BALANCE;
+    case DRUID_FERAL:           return TREE_FERAL;
+    case DRUID_RESTORATION:     return TREE_RESTORATION;
+    }
   case HUNTER:
-  {
-    if ( str_compare_ci( spec_str, "beast_mastery" ) )
-      return HUNTER_BEAST_MASTERY;
-    if ( str_compare_ci( spec_str, "bm" ) )
-      return HUNTER_BEAST_MASTERY;
-    else if ( str_compare_ci( spec_str, "marksmanship" ) )
-      return HUNTER_MARKSMANSHIP;
-    else if ( str_compare_ci( spec_str, "mm" ) )
-      return HUNTER_MARKSMANSHIP;
-    else if ( str_compare_ci( spec_str, "survival" ) )
-      return HUNTER_SURVIVAL;
-    else if ( str_compare_ci( spec_str, "sv" ) )
-      return HUNTER_SURVIVAL;
-    break;
-  }
+    switch ( tree )
+    {
+    case HUNTER_BEAST_MASTERY:  return TREE_BEAST_MASTERY;
+    case HUNTER_MARKSMANSHIP:   return TREE_MARKSMANSHIP;
+    case HUNTER_SURVIVAL:       return TREE_SURVIVAL;
+    }
   case MAGE:
-  {
-    if ( str_compare_ci( spec_str, "arcane" ) )
-      return MAGE_ARCANE;
-    else if ( str_compare_ci( spec_str, "fire" ) )
-      return MAGE_FIRE;
-    else if ( str_compare_ci( spec_str, "frost" ) )
-      return MAGE_FROST;
-    break;
-  }
-  case MONK:
-  {
-    if ( str_compare_ci( spec_str, "brewmaster" ) )
-      return MONK_BREWMASTER;
-    if ( str_compare_ci( spec_str, "tank" ) )
-      return MONK_BREWMASTER;
-    else if ( str_compare_ci( spec_str, "mistweaver" ) )
-      return MONK_MISTWEAVER;
-    else if ( str_compare_ci( spec_str, "healer" ) )
-      return MONK_MISTWEAVER;
-    else if ( str_compare_ci( spec_str, "windwalker" ) )
-      return MONK_WINDWALKER;
-    else if ( str_compare_ci( spec_str, "dps" ) )
-      return MONK_WINDWALKER;
-    else if ( str_compare_ci( spec_str, "melee" ) )
-      return MONK_WINDWALKER;
-    break;
-  }
+    switch ( tree )
+    {
+    case MAGE_ARCANE:           return TREE_ARCANE;
+    case MAGE_FIRE:             return TREE_FIRE;
+    case MAGE_FROST:            return TREE_FROST;
+    }
   case PALADIN:
-  {
-    if ( str_compare_ci( spec_str, "holy" ) )
-      return PALADIN_HOLY;
-    if ( str_compare_ci( spec_str, "healer" ) )
-      return PALADIN_HOLY;
-    else if ( str_compare_ci( spec_str, "protection" ) )
-      return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "prot" ) )
-      return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "tank" ) )
-      return PALADIN_PROTECTION;
-    else if ( str_compare_ci( spec_str, "retribution" ) )
-      return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "ret" ) )
-      return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "dps" ) )
-      return PALADIN_RETRIBUTION;
-    else if ( str_compare_ci( spec_str, "melee" ) )
-      return PALADIN_RETRIBUTION;
-    break;
-  }
+    switch ( tree )
+    {
+    case PALADIN_HOLY:          return TREE_HOLY;
+    case PALADIN_PROTECTION:    return TREE_PROTECTION;
+    case PALADIN_RETRIBUTION:   return TREE_RETRIBUTION;
+    }
   case PRIEST:
-  {
-    if ( str_compare_ci( spec_str, "discipline" ) )
-      return PRIEST_DISCIPLINE;
-    if ( str_compare_ci( spec_str, "disc" ) )
-      return PRIEST_DISCIPLINE;
-    else if ( str_compare_ci( spec_str, "holy" ) )
-      return PRIEST_HOLY;
-    else if ( str_compare_ci( spec_str, "shadow" ) )
-      return PRIEST_SHADOW;
-    else if ( str_compare_ci( spec_str, "caster" ) )
-      return PRIEST_SHADOW;
-    break;
-  }
+    switch ( tree )
+    {
+    case PRIEST_DISCIPLINE:     return TREE_DISCIPLINE;
+    case PRIEST_HOLY:           return TREE_HOLY;
+    case PRIEST_SHADOW:         return TREE_SHADOW;
+    }
   case ROGUE:
-  {
-    if ( str_compare_ci( spec_str, "assassination" ) )
-      return ROGUE_ASSASSINATION;
-    if ( str_compare_ci( spec_str, "ass" ) )
-      return ROGUE_ASSASSINATION;
-    if ( str_compare_ci( spec_str, "mut" ) )
-      return ROGUE_ASSASSINATION;
-    else if ( str_compare_ci( spec_str, "combat" ) )
-      return ROGUE_COMBAT;
-    else if ( str_compare_ci( spec_str, "subtlety" ) )
-      return ROGUE_SUBTLETY;
-    else if ( str_compare_ci( spec_str, "sub" ) )
-      return ROGUE_SUBTLETY;
-    break;
-  }
+    switch ( tree )
+    {
+    case ROGUE_ASSASSINATION:   return TREE_ASSASSINATION;
+    case ROGUE_COMBAT:          return TREE_COMBAT;
+    case ROGUE_SUBTLETY:        return TREE_SUBTLETY;
+    }
   case SHAMAN:
-  {
-    if ( str_compare_ci( spec_str, "elemental" ) )
-      return SHAMAN_ELEMENTAL;
-    if ( str_compare_ci( spec_str, "ele" ) )
-      return SHAMAN_ELEMENTAL;
-    if ( str_compare_ci( spec_str, "caster" ) )
-      return SHAMAN_ELEMENTAL;
-    else if ( str_compare_ci( spec_str, "enhancement" ) )
-      return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "enh" ) )
-      return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "melee" ) )
-      return SHAMAN_ENHANCEMENT;
-    else if ( str_compare_ci( spec_str, "restoration" ) )
-      return SHAMAN_RESTORATION;
-    else if ( str_compare_ci( spec_str, "resto" ) )
-      return SHAMAN_RESTORATION;
-    else if ( str_compare_ci( spec_str, "healer" ) )
-      return SHAMAN_RESTORATION;
-    break;
-  }
+    switch ( tree )
+    {
+    case SHAMAN_ELEMENTAL:      return TREE_ELEMENTAL;
+    case SHAMAN_ENHANCEMENT:    return TREE_ENHANCEMENT;
+    case SHAMAN_RESTORATION:    return TREE_RESTORATION;
+    }
   case WARLOCK:
-  {
-    if ( str_compare_ci( spec_str, "affliction" ) )
-      return WARLOCK_AFFLICTION;
-    if ( str_compare_ci( spec_str, "affl" ) )
-      return WARLOCK_AFFLICTION;
-    if ( str_compare_ci( spec_str, "aff" ) )
-      return WARLOCK_AFFLICTION;
-    else if ( str_compare_ci( spec_str, "demonology" ) )
-      return WARLOCK_DEMONOLOGY;
-    else if ( str_compare_ci( spec_str, "demo" ) )
-      return WARLOCK_DEMONOLOGY;
-    else if ( str_compare_ci( spec_str, "destruction" ) )
-      return WARLOCK_DESTRUCTION;
-    else if ( str_compare_ci( spec_str, "destro" ) )
-      return WARLOCK_DESTRUCTION;
-    break;
-  }
+    switch ( tree )
+    {
+    case WARLOCK_AFFLICTION:    return TREE_AFFLICTION;
+    case WARLOCK_DEMONOLOGY:    return TREE_DEMONOLOGY;
+    case WARLOCK_DESTRUCTION:   return TREE_DESTRUCTION;
+    }
   case WARRIOR:
-  {
-    if ( str_compare_ci( spec_str, "arms" ) )
-      return WARRIOR_ARMS;
-    else if ( str_compare_ci( spec_str, "fury" ) )
-      return WARRIOR_FURY;
-    else if ( str_compare_ci( spec_str, "protection" ) )
-      return WARRIOR_PROTECTION;
-    else if ( str_compare_ci( spec_str, "prot" ) )
-      return WARRIOR_PROTECTION;
-    else if ( str_compare_ci( spec_str, "tank" ) )
-      return WARRIOR_PROTECTION;
+    switch ( tree )
+    {
+    case WARRIOR_ARMS:          return TREE_ARMS;
+    case WARRIOR_FURY:          return TREE_FURY;
+    case WARRIOR_PROTECTION:    return TREE_PROTECTION;
+    }
+  default:
     break;
   }
-  default: break;
-  }
-  return SPEC_NONE;
+  return TREE_NONE;
 }
 
-// specialization_string ===============================================
+// util_t::talent_tree_string ===============================================
 
-std::string util::specialization_string( specialization_e spec )
+const char* util_t::talent_tree_string( int tree, bool armory_format )
 {
-  switch ( spec )
+  if ( armory_format )
   {
-  case WARRIOR_ARMS: return "arms";
-  case WARRIOR_FURY: return "fury";
-  case WARRIOR_PROTECTION: return "protection";
-  case PALADIN_HOLY: return "holy";
-  case PALADIN_PROTECTION: return "protection";
-  case PALADIN_RETRIBUTION: return "retribution";
-  case HUNTER_BEAST_MASTERY: return "beast_mastery";
-  case HUNTER_MARKSMANSHIP: return "marksmanship";
-  case HUNTER_SURVIVAL: return "survival";
-  case ROGUE_ASSASSINATION: return "assassination";
-  case ROGUE_COMBAT: return "combat";
-  case ROGUE_SUBTLETY: return "subtlety";
-  case PRIEST_DISCIPLINE: return "discipline";
-  case PRIEST_HOLY: return "holy";
-  case PRIEST_SHADOW: return "shadow";
-  case DEATH_KNIGHT_BLOOD: return "blood";
-  case DEATH_KNIGHT_FROST: return "frost";
-  case DEATH_KNIGHT_UNHOLY: return "unholy";
-  case SHAMAN_ELEMENTAL: return "elemental";
-  case SHAMAN_ENHANCEMENT: return "enhancement";
-  case SHAMAN_RESTORATION: return "restoration";
-  case MAGE_ARCANE: return "arcane";
-  case MAGE_FIRE: return "fire";
-  case MAGE_FROST: return "frost";
-  case WARLOCK_AFFLICTION: return "affliction";
-  case WARLOCK_DEMONOLOGY: return "demonology";
-  case WARLOCK_DESTRUCTION: return "destruction";
-  case MONK_BREWMASTER: return "brewmaster";
-  case MONK_MISTWEAVER: return "mistweaver";
-  case MONK_WINDWALKER: return "windwalker";
-  case DRUID_BALANCE: return "balance";
-  case DRUID_FERAL: return "feral";
-  case DRUID_GUARDIAN: return "guardian";
-  case DRUID_RESTORATION: return "restoration";
-  case PET_FEROCITY: return "ferocity";
-  case PET_TENACITY: return "tenacity";
-  case PET_CUNNING: return "cunning";
-  default: return "unknown";
+    switch ( tree )
+    {
+    case TREE_BLOOD:         return "blood";
+    case TREE_UNHOLY:        return "unholy";
+    case TREE_BALANCE:       return "balance";
+    case TREE_FERAL:         return "feral";
+    case TREE_RESTORATION:   return "restoration";
+    case TREE_BEAST_MASTERY: return "beast_mastery";
+    case TREE_MARKSMANSHIP:  return "marksmanship";
+    case TREE_SURVIVAL:      return "survival";
+    case TREE_ARCANE:        return "arcane";
+    case TREE_FIRE:          return "fire";
+    case TREE_FROST:         return "frost";
+    case TREE_RETRIBUTION:   return "retribution";
+    case TREE_DISCIPLINE:    return "discipline";
+    case TREE_HOLY:          return "holy";
+    case TREE_SHADOW:        return "shadow";
+    case TREE_ASSASSINATION: return "assassination";
+    case TREE_COMBAT:        return "combat";
+    case TREE_SUBTLETY:      return "subtlety";
+    case TREE_ELEMENTAL:     return "elemental";
+    case TREE_ENHANCEMENT:   return "enhancement";
+    case TREE_AFFLICTION:    return "affliction";
+    case TREE_DEMONOLOGY:    return "demonology";
+    case TREE_DESTRUCTION:   return "destruction";
+    case TREE_ARMS:          return "arms";
+    case TREE_FURY:          return "fury";
+    case TREE_PROTECTION:    return "protection";
+    default: return "Unknown";
+    }
+  }
+  else
+  {
+    switch ( tree )
+    {
+    case TREE_BLOOD:         return "Blood";
+    case TREE_UNHOLY:        return "Unholy";
+    case TREE_BALANCE:       return "Balance";
+    case TREE_FERAL:         return "Feral";
+    case TREE_RESTORATION:   return "Restoration";
+    case TREE_BEAST_MASTERY: return "Beast Mastery";
+    case TREE_MARKSMANSHIP:  return "Marksmanship";
+    case TREE_SURVIVAL:      return "Survival";
+    case TREE_ARCANE:        return "Arcane";
+    case TREE_FIRE:          return "Fire";
+    case TREE_FROST:         return "Frost";
+    case TREE_RETRIBUTION:   return "Retribution";
+    case TREE_DISCIPLINE:    return "Discipline";
+    case TREE_HOLY:          return "Holy";
+    case TREE_SHADOW:        return "Shadow";
+    case TREE_ASSASSINATION: return "Assassination";
+    case TREE_COMBAT:        return "Combat";
+    case TREE_SUBTLETY:      return "Subtlety";
+    case TREE_ELEMENTAL:     return "Elemental";
+    case TREE_ENHANCEMENT:   return "Enhancement";
+    case TREE_AFFLICTION:    return "Affliction";
+    case TREE_DEMONOLOGY:    return "Demonology";
+    case TREE_DESTRUCTION:   return "Destruction";
+    case TREE_ARMS:          return "Arms";
+    case TREE_FURY:          return "Fury";
+    case TREE_PROTECTION:    return "Protection";
+    default: return "Unknown";
+    }
   }
 }
 
-resource_e util::translate_power_type( power_e pt )
+// util_t::parse_talent_tree ================================================
+
+int util_t::parse_talent_tree( const std::string& name )
 {
-  switch ( pt )
-  {
-  case POWER_HEALTH:        return RESOURCE_HEALTH;
-  case POWER_MANA:          return RESOURCE_MANA;
-  case POWER_RAGE:          return RESOURCE_RAGE;
-  case POWER_FOCUS:         return RESOURCE_FOCUS;
-  case POWER_ENERGY:        return RESOURCE_ENERGY;
-  case POWER_MONK_ENERGY:   return RESOURCE_ENERGY;
-  case POWER_RUNIC_POWER:   return RESOURCE_RUNIC_POWER;
-  case POWER_SOUL_SHARDS:   return RESOURCE_SOUL_SHARD;
-  case POWER_BURNING_EMBER: return RESOURCE_BURNING_EMBER;
-  case POWER_DEMONIC_FURY:  return RESOURCE_DEMONIC_FURY;
-  case POWER_HOLY_POWER:    return RESOURCE_HOLY_POWER;
-  case POWER_CHI:           return RESOURCE_CHI;
-  case POWER_SHADOW_ORB:    return RESOURCE_SHADOW_ORB;
-  default:                  return RESOURCE_NONE;
-  }
+  for ( int i=0; i < TALENT_TREE_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::talent_tree_string( i ) ) )
+      return i;
+
+  return TREE_NONE;
 }
 
-// weapon_type_string ===============================================
+// util_t::weapon_type_string ===============================================
 
-const char* util::weapon_type_string( weapon_e weapon )
+const char* util_t::weapon_type_string( int weapon )
 {
   switch ( weapon )
   {
@@ -960,25 +945,24 @@ const char* util::weapon_type_string( weapon_e weapon )
   case WEAPON_CROSSBOW: return "crossbow";
   case WEAPON_GUN:      return "gun";
   case WEAPON_THROWN:   return "thrown";
-  case WEAPON_WAND:     return "wand";
-  default:              return "unknown";
   }
+  return "unknown";
 }
 
-// weapon_subclass_string ===========================================
+// util_t::weapon_subclass_string ===========================================
 
-const char* util::weapon_subclass_string( item_subclass_weapon subclass )
+const char* util_t::weapon_subclass_string( int subclass )
 {
   switch ( subclass )
   {
-  case ITEM_SUBCLASS_WEAPON_AXE:
+  case ITEM_SUBCLASS_WEAPON_AXE:      return "Axe";
   case ITEM_SUBCLASS_WEAPON_AXE2:     return "Axe";
   case ITEM_SUBCLASS_WEAPON_BOW:      return "Bow";
   case ITEM_SUBCLASS_WEAPON_GUN:      return "Gun";
-  case ITEM_SUBCLASS_WEAPON_MACE:
+  case ITEM_SUBCLASS_WEAPON_MACE:     return "Mace";
   case ITEM_SUBCLASS_WEAPON_MACE2:    return "Mace";
   case ITEM_SUBCLASS_WEAPON_POLEARM:  return "Polearm";
-  case ITEM_SUBCLASS_WEAPON_SWORD:
+  case ITEM_SUBCLASS_WEAPON_SWORD:    return "Sword";
   case ITEM_SUBCLASS_WEAPON_SWORD2:   return "Sword";
   case ITEM_SUBCLASS_WEAPON_STAFF:    return "Staff";
   case ITEM_SUBCLASS_WEAPON_FIST:     return "Fist Weapon";
@@ -986,15 +970,15 @@ const char* util::weapon_subclass_string( item_subclass_weapon subclass )
   case ITEM_SUBCLASS_WEAPON_THROWN:   return "Thrown";
   case ITEM_SUBCLASS_WEAPON_CROSSBOW: return "Crossbow";
   case ITEM_SUBCLASS_WEAPON_WAND:     return "Wand";
-  default:                            return "Unknown";
   }
+  return "Unknown";
 }
 
-// weapon_class_string ==============================================
+// util_t::weapon_class_string ==============================================
 
-const char* util::weapon_class_string( inventory_type it )
+const char* util_t::weapon_class_string( int class_ )
 {
-  switch ( it )
+  switch ( class_ )
   {
   case INVTYPE_WEAPON:
     return "One Hand";
@@ -1004,95 +988,113 @@ const char* util::weapon_class_string( inventory_type it )
     return "Main Hand";
   case INVTYPE_WEAPONOFFHAND:
     return "Off Hand";
-    //case INVTYPE_RANGED:
-    //case INVTYPE_THROWN:
-  default:
-    return 0;
   }
+  return 0;
 }
 
-// set_item_type_string =============================================
+// util_t::set_item_type_string =============================================
 
-const char* util::set_item_type_string( int item_set )
+const char* util_t::set_item_type_string( int item_set )
 {
   switch ( item_set )
   {
     // Melee sets
-  case 1057:   // DK T13
-  case 1058:   // Druid T13
-  case 1061:   // Hunter T13
-  case 1064:   // Paladin T13
-  case 1068:   // Rogue T13
-  case 1071:   // Shaman T13
-  case 1073:   // Warrior T13
+  case 925:   // Death Knight T11
+  case 927:   // Druid T11
+  case 932:   // Paladin T11
+  case 939:   // Shaman T11
+  case 942:   // Warrior T11
+  case 1000:  // Death Knight T12
+  case 1002:  // Druid T12
+  case 1011:  // Paladin T12
+  case 1015:  // Shaman T12
+  case 1017:  // Warrior T12
     return "Melee";
 
     // Tank sets
-  case 1056:   // DK T13
-  case 1065:   // Paladin T13
-  case 1074:   // Warrior T13
+  case 926:   // Death Knight T11
+  case 934:   // Paladin T11
+  case 943:   // Warrior T11
+  case 1001:  // Death Knight T12
+  case 1013:  // Paladin T12
+  case 1018:  // Warrior T12
     return "Tank";
 
     // Healer sets
-  case 1060:   // Druid T13
-  case 1063:   // Paladin T13
-  case 1066:   // Priest T13
-  case 1069:   // Shaman T13
+  case 928:   // Druid T11
+  case 933:   // Paladin T11
+  case 935:   // Priest T11
+  case 938:   // Shaman T11
+  case 1003:  // Druid T12
+  case 1010:  // Priest T12
+  case 1012:  // Paladin T12
+  case 1014:  // Shaman T12
     return "Healer";
 
     // DPS Caster sets
-  case 1059:   // Druid T13
-  case 1062:   // Mage T13
-  case 1067:   // Priest T13
-  case 1070:   // Shaman T13
-  case 1072:   // Warlock T13
+  case 929:   // Druid T11
+  case 936:   // Priest T11
+  case 940:   // Shaman T11
+  case 1004:  // Druid T12
+  case 1009:  // Priest T12
+  case 1016:  // Shaman T12
     return "Caster";
   }
   return 0;
 }
 
-// parse_weapon_type ================================================
+// util_t::parse_weapon_type ================================================
 
-weapon_e util::parse_weapon_type( const std::string& name )
+int util_t::parse_weapon_type( const std::string& name )
 {
-  return parse_enum<weapon_e,WEAPON_NONE,WEAPON_MAX,weapon_type_string>( name );
+  for ( int i=0; i < WEAPON_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::weapon_type_string( i ) ) )
+      return i;
+
+  return WEAPON_NONE;
 }
 
-// flask_type_string ================================================
+// util_t::flask_type_string ================================================
 
-const char* util::flask_type_string( flask_e flask )
+const char* util_t::flask_type_string( int flask )
 {
   switch ( flask )
   {
   case FLASK_NONE:               return "none";
-  // cataclysm
-  case FLASK_DRACONIC_MIND:     return "draconic_mind";
-  case FLASK_FLOWING_WATER:     return "flowing_water";
-  case FLASK_STEELSKIN:         return "steelskin";
-  case FLASK_TITANIC_STRENGTH:  return "titanic_strength";
-  case FLASK_WINDS:             return "winds";
-  // mop
-  case FLASK_WARM_SUN:          return "warm_sun";
-  case FLASK_FALLING_LEAVES:    return "falling_leaves";
-  case FLASK_EARTH:             return "earth";
-  case FLASK_WINTERS_BITE:      return "winters_bite";
-  case FLASK_SPRING_BLOSSOMS:   return "spring_blossoms";
-  // alchemist's
-  case FLASK_ALCHEMISTS:        return "alchemists";
-  default:                      return "unknown";
+  case FLASK_BLINDING_LIGHT:     return "blinding_light";
+  case FLASK_DISTILLED_WISDOM:   return "distilled_wisdom";
+  case FLASK_DRACONIC_MIND:      return "draconic_mind";
+  case FLASK_ENDLESS_RAGE:       return "endless_rage";
+  case FLASK_ENHANCEMENT:        return "enhancement";
+  case FLASK_FLOWING_WATER:      return "flowing_water";
+  case FLASK_FROST_WYRM:         return "frost_wyrm";
+  case FLASK_MIGHTY_RESTORATION: return "mighty_restoration";
+  case FLASK_NORTH:              return "north";
+  case FLASK_PURE_DEATH:         return "pure_death";
+  case FLASK_PURE_MOJO:          return "pure_mojo";
+  case FLASK_RELENTLESS_ASSAULT: return "relentless_assault";
+  case FLASK_SUPREME_POWER:      return "supreme_power";
+  case FLASK_STEELSKIN:          return "steelskin";
+  case FLASK_TITANIC_STRENGTH:   return "titanic_strength";
+  case FLASK_WINDS:              return "winds";
   }
+  return "unknown";
 }
 
-// parse_flask_type =================================================
+// util_t::parse_flask_type =================================================
 
-flask_e util::parse_flask_type( const std::string& name )
+int util_t::parse_flask_type( const std::string& name )
 {
-  return parse_enum<flask_e,FLASK_NONE,FLASK_MAX,flask_type_string>( name );
+  for ( int i=0; i < FLASK_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::flask_type_string( i ) ) )
+      return i;
+
+  return FLASK_NONE;
 }
 
-// food_type_string =================================================
+// util_t::food_type_string =================================================
 
-const char* util::food_type_string( food_e food )
+const char* util_t::food_type_string( int food )
 {
   switch ( food )
   {
@@ -1101,93 +1103,103 @@ const char* util::food_type_string( food_e food )
   case FOOD_BASILISK_LIVERDOG:        return "basilisk_liverdog";
   case FOOD_BEER_BASTED_CROCOLISK:    return "beer_basted_crocolisk";
   case FOOD_BLACKBELLY_SUSHI:         return "blackbelly_sushi";
+  case FOOD_BLACKENED_BASILISK:       return "blackened_basilisk";
+  case FOOD_BLACKENED_DRAGONFIN:      return "blackened_dragonfin";
   case FOOD_CROCOLISK_AU_GRATIN:      return "crocolisk_au_gratin";
+  case FOOD_CRUNCHY_SERPENT:          return "crunchy_serpent";
   case FOOD_DELICIOUS_SAGEFISH_TAIL:  return "delicious_sagefish_tail";
-  case FOOD_FISH_CAKE:                return "fish_cake";
+  case FOOD_DRAGONFIN_FILET:          return "dragonfin_filet";
   case FOOD_FISH_FEAST:               return "fish_feast";
   case FOOD_FORTUNE_COOKIE:           return "fortune_cookie";
-  case FOOD_GINSENG_CHICKEN_SOUP:     return "ginseng_chicken_soup";
-  case FOOD_GREAT_PANDAREN_BANQUET:   return "great_pandaren_banquet";
+  case FOOD_GOLDEN_FISHSTICKS:        return "golden_fishsticks";
+  case FOOD_GREAT_FEAST:              return "great_feast";
   case FOOD_GRILLED_DRAGON:           return "grilled_dragon";
+  case FOOD_HEARTY_RHINO:             return "hearty_rhino";
+  case FOOD_IMPERIAL_MANTA_STEAK:     return "imperial_manta_steak";
   case FOOD_LAVASCALE_FILLET:         return "lavascale_fillet";
+  case FOOD_MEGA_MAMMOTH_MEAL:        return "mega_mammoth_meal";
   case FOOD_MUSHROOM_SAUCE_MUDFISH:   return "mushroom_sauce_mudfish";
-  case FOOD_PANDAREN_BANQUET:         return "pandaren_banquet";
-  case FOOD_PANDAREN_MEATBALL:        return "pandaren_meatball";
-  case FOOD_RICE_PUDDING:             return "rice_pudding";
+  case FOOD_POACHED_NORTHERN_SCULPIN: return "poached_northern_sculpin";
+  case FOOD_POACHED_BLUEFISH:         return "poached_bluefish";
+  case FOOD_RHINOLICIOUS_WORMSTEAK:   return "rhinolicious_wormsteak";
   case FOOD_SEAFOOD_MAGNIFIQUE_FEAST: return "seafood_magnifique_feast";
   case FOOD_SEVERED_SAGEFISH_HEAD:    return "severed_sagefish_head";
   case FOOD_SKEWERED_EEL:             return "skewered_eel";
-  default:                            return "unknown";
+  case FOOD_SMOKED_SALMON:            return "smoked_salmon";
+  case FOOD_SNAPPER_EXTREME:          return "snapper_extreme";
+  case FOOD_TENDER_SHOVELTUSK_STEAK:  return "tender_shoveltusk_steak";
+  case FOOD_VERY_BURNT_WORG:          return "very_burnt_worg";
   }
+  return "unknown";
 }
 
-// parse_food_type ==================================================
+// util_t::parse_food_type ==================================================
 
-food_e util::parse_food_type( const std::string& name )
+int util_t::parse_food_type( const std::string& name )
 {
-  return parse_enum<food_e,FOOD_NONE,FOOD_MAX,food_type_string>( name );
+  for ( int i=0; i < FOOD_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::food_type_string( i ) ) )
+      return i;
+
+  return FOOD_NONE;
 }
 
-// set_bonus_string =================================================
+// util_t::set_bonus_string =================================================
 
-const char* util::set_bonus_string( set_e type )
+const char* util_t::set_bonus_string( set_type type )
 {
   switch ( type )
   {
+  case SET_T11_2PC_CASTER: return "tier11_2pc_caster";
+  case SET_T11_4PC_CASTER: return "tier11_4pc_caster";
+  case SET_T11_2PC_MELEE:  return "tier11_2pc_melee";
+  case SET_T11_4PC_MELEE:  return "tier11_4pc_melee";
+  case SET_T11_2PC_TANK:   return "tier11_2pc_tank";
+  case SET_T11_4PC_TANK:   return "tier11_4pc_tank";
+  case SET_T12_2PC_CASTER: return "tier12_2pc_caster";
+  case SET_T12_4PC_CASTER: return "tier12_4pc_caster";
+  case SET_T12_2PC_MELEE:  return "tier12_2pc_melee";
+  case SET_T12_4PC_MELEE:  return "tier12_4pc_melee";
+  case SET_T12_2PC_TANK:   return "tier12_2pc_tank";
+  case SET_T12_4PC_TANK:   return "tier12_4pc_tank";
   case SET_T13_2PC_CASTER: return "tier13_2pc_caster";
   case SET_T13_4PC_CASTER: return "tier13_4pc_caster";
   case SET_T13_2PC_MELEE:  return "tier13_2pc_melee";
   case SET_T13_4PC_MELEE:  return "tier13_4pc_melee";
   case SET_T13_2PC_TANK:   return "tier13_2pc_tank";
   case SET_T13_4PC_TANK:   return "tier13_4pc_tank";
-  case SET_T13_2PC_HEAL:   return "tier13_2pc_heal";
-  case SET_T13_4PC_HEAL:   return "tier13_4pc_heal";
   case SET_T14_2PC_CASTER: return "tier14_2pc_caster";
   case SET_T14_4PC_CASTER: return "tier14_4pc_caster";
   case SET_T14_2PC_MELEE:  return "tier14_2pc_melee";
   case SET_T14_4PC_MELEE:  return "tier14_4pc_melee";
   case SET_T14_2PC_TANK:   return "tier14_2pc_tank";
   case SET_T14_4PC_TANK:   return "tier14_4pc_tank";
-  case SET_T14_2PC_HEAL:   return "tier14_2pc_heal";
-  case SET_T14_4PC_HEAL:   return "tier14_4pc_heal";
-  case SET_T15_2PC_CASTER: return "tier15_2pc_caster";
-  case SET_T15_4PC_CASTER: return "tier15_4pc_caster";
-  case SET_T15_2PC_MELEE:  return "tier15_2pc_melee";
-  case SET_T15_4PC_MELEE:  return "tier15_4pc_melee";
-  case SET_T15_2PC_TANK:   return "tier15_2pc_tank";
-  case SET_T15_4PC_TANK:   return "tier15_4pc_tank";
-  case SET_T15_2PC_HEAL:   return "tier15_2pc_heal";
-  case SET_T15_4PC_HEAL:   return "tier15_4pc_heal";
-  case SET_T16_2PC_CASTER: return "tier16_2pc_caster";
-  case SET_T16_4PC_CASTER: return "tier16_4pc_caster";
-  case SET_T16_2PC_MELEE:  return "tier16_2pc_melee";
-  case SET_T16_4PC_MELEE:  return "tier16_4pc_melee";
-  case SET_T16_2PC_TANK:   return "tier16_2pc_tank";
-  case SET_T16_4PC_TANK:   return "tier16_4pc_tank";
-  case SET_T16_2PC_HEAL:   return "tier16_2pc_heal";
-  case SET_T16_4PC_HEAL:   return "tier16_4pc_heal";
   case SET_PVP_2PC_CASTER: return "pvp_2pc_caster";
   case SET_PVP_4PC_CASTER: return "pvp_4pc_caster";
   case SET_PVP_2PC_MELEE:  return "pvp_2pc_melee";
   case SET_PVP_4PC_MELEE:  return "pvp_4pc_melee";
   case SET_PVP_2PC_TANK:   return "pvp_2pc_tank";
   case SET_PVP_4PC_TANK:   return "pvp_4pc_tank";
-  case SET_PVP_2PC_HEAL:   return "pvp_2pc_heal";
-  case SET_PVP_4PC_HEAL:   return "pvp_4pc_heal";
-  default:                 return "unknown";
+  default:
+    break;
   }
+  return "unknown";
 }
 
-// parse_set_bonus ==================================================
+// util_t::parse_set_bonus ==================================================
 
-set_e util::parse_set_bonus( const std::string& name )
+set_type util_t::parse_set_bonus( const std::string& name )
 {
-  return parse_enum<set_e,SET_NONE,SET_MAX,set_bonus_string>( name );
+  for ( int i=0; i < SET_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::set_bonus_string( ( set_type ) i ) ) )
+      return ( set_type ) i;
+
+  return SET_NONE;
 }
 
-// slot_type_string =================================================
+// util_t::slot_type_string =================================================
 
-const char* util::slot_type_string( slot_e slot )
+const char* util_t::slot_type_string( int slot )
 {
   switch ( slot )
   {
@@ -1208,16 +1220,19 @@ const char* util::slot_type_string( slot_e slot )
   case SLOT_BACK:      return "back";
   case SLOT_MAIN_HAND: return "main_hand";
   case SLOT_OFF_HAND:  return "off_hand";
+  case SLOT_RANGED:    return "ranged";
   case SLOT_TABARD:    return "tabard";
-  default:             return "unknown";
   }
+  return "unknown";
 }
 
-// armor_type_string ================================================
+// util_t::armor_type_string ================================================
 
-const char* util::armor_type_string( player_e ptype, slot_e s )
+const char* util_t::armor_type_string( player_type ptype, int slot_type )
 {
-  switch ( s )
+  bool has_armor_type = false;
+
+  switch ( slot_type )
   {
   case SLOT_HEAD:
   case SLOT_SHOULDERS:
@@ -1227,9 +1242,11 @@ const char* util::armor_type_string( player_e ptype, slot_e s )
   case SLOT_FEET:
   case SLOT_WRISTS:
   case SLOT_HANDS:
+    has_armor_type = true;
     break;
   default:
-    return 0;
+    has_armor_type = false;
+    break;
   }
 
   switch ( ptype )
@@ -1237,33 +1254,37 @@ const char* util::armor_type_string( player_e ptype, slot_e s )
   case WARRIOR:
   case PALADIN:
   case DEATH_KNIGHT:
-    return "plate";
+    return ( has_armor_type ? "plate" : NULL );
   case HUNTER:
   case SHAMAN:
-    return "mail";
+    return ( has_armor_type ? "mail" : NULL );
   case DRUID:
   case ROGUE:
   case MONK:
-    return "leather";
+    return ( has_armor_type ? "leather" : NULL );
   case MAGE:
   case PRIEST:
   case WARLOCK:
-    return "cloth";
+    return ( has_armor_type ? "cloth" : NULL );
   default:
     return NULL;
   }
 }
 
-// parse_slot_type ==================================================
+// util_t::parse_slot_type ==================================================
 
-slot_e util::parse_slot_type( const std::string& name )
+int util_t::parse_slot_type( const std::string& name )
 {
-  return parse_enum<slot_e,SLOT_MIN,SLOT_MAX,slot_type_string>( name );
+  for ( int i=0; i < SLOT_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::slot_type_string( i ) ) )
+      return i;
+
+  return SLOT_NONE;
 }
 
-// stat_type_string =================================================
+// util_t::stat_type_string =================================================
 
-const char* util::stat_type_string( stat_e stat )
+const char* util_t::stat_type_string( int stat )
 {
   switch ( stat )
   {
@@ -1274,19 +1295,15 @@ const char* util::stat_type_string( stat_e stat )
   case STAT_SPIRIT:    return "spirit";
 
   case STAT_HEALTH: return "health";
-  case STAT_MAX_HEALTH: return "maximum_health";
   case STAT_MANA:   return "mana";
   case STAT_MAX_MANA: return "maximum_mana";
   case STAT_RAGE:   return "rage";
-  case STAT_MAX_RAGE: return "maximum_rage";
   case STAT_ENERGY: return "energy";
-  case STAT_MAX_ENERGY: return "maximum_energy";
   case STAT_FOCUS:  return "focus";
-  case STAT_MAX_FOCUS: return "maximum_focus";
   case STAT_RUNIC:  return "runic";
-  case STAT_MAX_RUNIC: return "maximum_runic";
 
   case STAT_SPELL_POWER:       return "spell_power";
+  case STAT_SPELL_PENETRATION: return "spell_penetration";
   case STAT_MP5:               return "mp5";
 
   case STAT_ATTACK_POWER:             return "attack_power";
@@ -1314,15 +1331,14 @@ const char* util::stat_type_string( stat_e stat )
 
   case STAT_MASTERY_RATING: return "mastery_rating";
 
-  case STAT_ALL: return "all";
-
-  default: return "unknown";
+  case STAT_MAX: return "all";
   }
+  return "unknown";
 }
 
-// stat_type_abbrev =================================================
+// util_t::stat_type_abbrev =================================================
 
-const char* util::stat_type_abbrev( stat_e stat )
+const char* util_t::stat_type_abbrev( int stat )
 {
   switch ( stat )
   {
@@ -1333,19 +1349,14 @@ const char* util::stat_type_abbrev( stat_e stat )
   case STAT_SPIRIT:    return "Spi";
 
   case STAT_HEALTH: return "Health";
-  case STAT_MAX_HEALTH: return "MaxHealth";
   case STAT_MANA:   return "Mana";
-  case STAT_MAX_MANA: return "MaxMana";
   case STAT_RAGE:   return "Rage";
-  case STAT_MAX_RAGE: return "MaxRage";
   case STAT_ENERGY: return "Energy";
-  case STAT_MAX_ENERGY: return "MaxEnergy";
   case STAT_FOCUS:  return "Focus";
-  case STAT_MAX_FOCUS: return "MaxFocus";
   case STAT_RUNIC:  return "Runic";
-  case STAT_MAX_RUNIC: return "MaxRunic";
 
   case STAT_SPELL_POWER:       return "SP";
+  case STAT_SPELL_PENETRATION: return "SPen";
   case STAT_MP5:               return "MP5";
 
   case STAT_ATTACK_POWER:             return "AP";
@@ -1373,15 +1384,14 @@ const char* util::stat_type_abbrev( stat_e stat )
 
   case STAT_MASTERY_RATING: return "Mastery";
 
-  case STAT_ALL: return "All";
-
-  default: return "unknown";
+  case STAT_MAX: return "All";
   }
+  return "unknown";
 }
 
-// stat_type_wowhead ================================================
+// util_t::stat_type_wowhead ================================================
 
-const char* util::stat_type_wowhead( stat_e stat )
+const char* util_t::stat_type_wowhead( int stat )
 {
   switch ( stat )
   {
@@ -1399,6 +1409,7 @@ const char* util::stat_type_wowhead( stat_e stat )
   case STAT_RUNIC:  return "runic";
 
   case STAT_SPELL_POWER:       return "spellPower";
+  case STAT_SPELL_PENETRATION: return "spellPen";
 
   case STAT_ATTACK_POWER:             return "attackPower";
   case STAT_EXPERTISE_RATING:         return "expertiseRating";
@@ -1419,22 +1430,25 @@ const char* util::stat_type_wowhead( stat_e stat )
   case STAT_MASTERY_RATING: return "masteryRating";
 
   case STAT_MAX: return "__all";
-  default: return "unknown";
   }
+  return "unknown";
 }
 
-// parse_stat_type ==================================================
+// util_t::parse_stat_type ==================================================
 
-stat_e util::parse_stat_type( const std::string& name )
+stat_type util_t::parse_stat_type( const std::string& name )
 {
-  stat_e s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_string>( name );
-  if ( s != STAT_NONE ) return s;
+  for ( int i=0; i <= STAT_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_string( i ) ) )
+      return ( stat_type ) i;
 
-  s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_abbrev>( name );
-  if ( s != STAT_NONE ) return s;
+  for ( int i=0; i <= STAT_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_abbrev( i ) ) )
+      return ( stat_type ) i;
 
-  s = parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_wowhead>( name );
-  if ( s != STAT_NONE ) return s;
+  for ( int i=0; i <= STAT_MAX; i++ )
+    if ( util_t::str_compare_ci( name, util_t::stat_type_wowhead( i ) ) )
+      return ( stat_type ) i;
 
   if ( name == "rgdcritstrkrtng" ) return STAT_CRIT_RATING;
 
@@ -1449,18 +1463,19 @@ stat_e util::parse_stat_type( const std::string& name )
   if ( name == "parryrtng"      ) return STAT_PARRY_RATING;
   if ( name == "resiliencertng" ) return STAT_RESILIENCE_RATING;
   if ( name == "splpwr"         ) return STAT_SPELL_POWER;
+  if ( name == "splpen"         ) return STAT_SPELL_PENETRATION;
   if ( name == "spi"            ) return STAT_SPIRIT;
-  if ( str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
-  if ( str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
+  if ( util_t::str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
+  if ( util_t::str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
 
   return STAT_NONE;
 }
 
-// parse_reforge_type ===============================================
+// util_t::parse_reforge_type ===============================================
 
-stat_e util::parse_reforge_type( const std::string& name )
+stat_type util_t::parse_reforge_type( const std::string& name )
 {
-  stat_e s = parse_stat_type( name );
+  stat_type s = util_t::parse_stat_type( name );
 
   switch ( s )
   {
@@ -1478,21 +1493,21 @@ stat_e util::parse_reforge_type( const std::string& name )
   }
 }
 
-// parse_origin =====================================================
+// util_t::parse_origin =====================================================
 
-bool util::parse_origin( std::string& region_str,
-                         std::string& server_str,
-                         std::string& name_str,
-                         const std::string& origin_str )
+bool util_t::parse_origin( std::string& region_str,
+                           std::string& server_str,
+                           std::string& name_str,
+                           const std::string& origin_str )
 {
   if ( ( origin_str.find( ".battle."    ) == std::string::npos ) &&
        ( origin_str.find( ".wowarmory." ) == std::string::npos ) )
     return false;
 
   std::vector<std::string> tokens;
-  size_t num_tokens = string_split( tokens, origin_str, "/:.?&=" );
+  int num_tokens = util_t::string_split( tokens, origin_str, "/:.?&=" );
 
-  for ( size_t i = 0; i < num_tokens; i++ )
+  for ( int i=0; i < num_tokens; i++ )
   {
     std::string& t = tokens[ i ];
 
@@ -1526,18 +1541,18 @@ bool util::parse_origin( std::string& region_str,
   return true;
 }
 
-// class_id_mask ====================================================
+// util_t::class_id_mask ====================================================
 
-int util::class_id_mask( player_e type )
+int util_t::class_id_mask( int type )
 {
   int cid = class_id( type );
   if ( cid <= 0 ) return 0;
   return 1 << ( cid - 1 );
 }
 
-// class_id =========================================================
+// util_t::class_id =========================================================
 
-int util::class_id( player_e type )
+int util_t::class_id( int type )
 {
   switch ( type )
   {
@@ -1550,17 +1565,16 @@ int util::class_id( player_e type )
   case SHAMAN:       return  7;
   case MAGE:         return  8;
   case WARLOCK:      return  9;
-  case MONK:         return 10;
   case DRUID:        return 11;
   case PLAYER_SPECIAL_SCALE: return 12;
-  case PLAYER_SPECIAL_SCALE2: return 13;
-  default:           return 0;
   }
+
+  return 0;
 }
 
-// race_id ==========================================================
+// util_t::race_id ==========================================================
 
-unsigned util::race_id( race_e r )
+unsigned util_t::race_id( int r )
 {
   switch ( r )
   {
@@ -1576,16 +1590,14 @@ unsigned util::race_id( race_e r )
   case RACE_BLOOD_ELF: return 10;
   case RACE_TAUREN: return 6;
   case RACE_GOBLIN: return 9;
-  case RACE_PANDAREN: return 24;
-  case RACE_PANDAREN_ALLIANCE: return 25;
-  case RACE_PANDAREN_HORDE: return 26;
-  default: return 0;
+  default: break;
   }
+  return 0;
 }
 
-// race_mask ========================================================
+// util_t::race_mask ========================================================
 
-unsigned util::race_mask( race_e r )
+unsigned util_t::race_mask( int r )
 {
   uint32_t id = race_id( r );
 
@@ -1595,11 +1607,11 @@ unsigned util::race_mask( race_e r )
   return 0x00;
 }
 
-// pet_class_type ===================================================
+// util_t::pet_class_type ===================================================
 
-player_e util::pet_class_type( pet_e c )
+player_type util_t::pet_class_type( int c )
 {
-  player_e p = WARRIOR;
+  player_type p = WARRIOR;
 
   if ( c <= PET_HUNTER )
   {
@@ -1621,23 +1633,23 @@ player_e util::pet_class_type( pet_e c )
   return p;
 }
 
-// pet_mask =========================================================
+// util_t::pet_mask =========================================================
 
-unsigned util::pet_mask( pet_e p )
+unsigned util_t::pet_mask( int p )
 {
-  if ( p <= PET_FEROCITY_TYPE )
+  if ( p <= PET_FEROCITY )
     return 0x1;
-  if ( p <= PET_TENACITY_TYPE )
+  if ( p <= PET_TENACITY )
     return 0x2;
-  if ( p <= PET_CUNNING_TYPE )
+  if ( p <= PET_CUNNING )
     return 0x4;
 
   return 0x0;
 }
 
-// pet_id ===========================================================
+// util_t::pet_id ===========================================================
 
-unsigned util::pet_id( pet_e p )
+unsigned util_t::pet_id( int p )
 {
   uint32_t mask = pet_mask( p );
 
@@ -1651,9 +1663,9 @@ unsigned util::pet_id( pet_e p )
   return 0;
 }
 
-// class_id_string ==================================================
+// util_t::class_id_string ==================================================
 
-const char* util::class_id_string( player_e type )
+const char* util_t::class_id_string( int type )
 {
   switch ( type )
   {
@@ -1666,15 +1678,15 @@ const char* util::class_id_string( player_e type )
   case SHAMAN:       return  "7";
   case MAGE:         return  "8";
   case WARLOCK:      return  "9";
-  case MONK:         return "10";
   case DRUID:        return "11";
-  default:           return "0";
   }
+
+  return "0";
 }
 
-// translate_class_id ===============================================
+// util_t::translate_class_id ===============================================
 
-player_e util::translate_class_id( int cid )
+int util_t::translate_class_id( int cid )
 {
   switch ( cid )
   {
@@ -1687,15 +1699,15 @@ player_e util::translate_class_id( int cid )
   case  7: return SHAMAN;
   case  8: return MAGE;
   case  9: return WARLOCK;
-  case 10: return MONK;
   case 11: return DRUID;
-  default: return PLAYER_NONE;
   }
+
+  return PLAYER_NONE;
 }
 
-// translate_race_id ================================================
+// util_t::translate_race_id ================================================
 
-race_e util::translate_race_id( int rid )
+race_type util_t::translate_race_id( int rid )
 {
   switch ( rid )
   {
@@ -1711,17 +1723,14 @@ race_e util::translate_race_id( int rid )
   case 10: return RACE_BLOOD_ELF;
   case 11: return RACE_DRAENEI;
   case 22: return RACE_WORGEN;
-  case 24: return RACE_PANDAREN;
-  case 25: return RACE_PANDAREN_ALLIANCE;
-  case 26: return RACE_PANDAREN_HORDE;
   }
 
   return RACE_NONE;
 }
 
-// translate_item_mod ===============================================
+// util_t::translate_item_mod ===============================================
 
-stat_e util::translate_item_mod( item_mod_type item_mod )
+stat_type util_t::translate_item_mod( int item_mod )
 {
   switch ( item_mod )
   {
@@ -1743,13 +1752,14 @@ stat_e util::translate_item_mod( item_mod_type item_mod )
   case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
   case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
   case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
-  default:                           return STAT_NONE;
   }
+
+  return STAT_NONE;
 }
 
-// translate_weapon_subclass ========================================
+// util_t::translate_weapon_subclass ========================================
 
-weapon_e util::translate_weapon_subclass( item_subclass_weapon id )
+weapon_type util_t::translate_weapon_subclass( item_subclass_weapon id )
 {
   switch ( id )
   {
@@ -1774,9 +1784,9 @@ weapon_e util::translate_weapon_subclass( item_subclass_weapon id )
   return WEAPON_NONE;
 }
 
-// translate_invtype ================================================
+// util_t::translate_invtype ================================================
 
-slot_e util::translate_invtype( inventory_type inv_type )
+slot_type util_t::translate_invtype( int inv_type )
 {
   switch ( inv_type )
   {
@@ -1789,7 +1799,10 @@ slot_e util::translate_invtype( inventory_type inv_type )
   case INVTYPE_HOLDABLE:
     return SLOT_OFF_HAND;
   case INVTYPE_THROWN:
-    return SLOT_MAIN_HAND;
+  case INVTYPE_RELIC:
+  case INVTYPE_RANGED:
+  case INVTYPE_RANGEDRIGHT:
+    return SLOT_RANGED;
   case INVTYPE_CHEST:
   case INVTYPE_ROBE:
     return SLOT_CHEST;
@@ -1817,18 +1830,20 @@ slot_e util::translate_invtype( inventory_type inv_type )
     return SLOT_WAIST;
   case INVTYPE_WRISTS:
     return SLOT_WRISTS;
-  default:
-    return SLOT_INVALID;
   }
+
+  return SLOT_NONE;
 }
 
-// socket_gem_match =================================================
+// util_t::socket_gem_match =================================================
 
-bool util::socket_gem_match( gem_e socket, gem_e gem )
+bool util_t::socket_gem_match( int socket,
+                               int gem )
 {
   if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
 
-  if ( socket == GEM_COGWHEEL ) return ( gem == GEM_COGWHEEL );
+  if ( socket == GEM_COGWHEEL && gem == GEM_COGWHEEL ) return true;
+
   if ( socket == GEM_META ) return ( gem == GEM_META );
 
   if ( socket == GEM_RED    ) return ( gem == GEM_RED    || gem == GEM_ORANGE || gem == GEM_PURPLE );
@@ -1838,9 +1853,40 @@ bool util::socket_gem_match( gem_e socket, gem_e gem )
   return false;
 }
 
-// string_split =====================================================
+// util_t::item_quality_string ==============================================
 
-size_t util::string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes )
+const char* util_t::item_quality_string( int quality )
+{
+  switch ( quality )
+  {
+  case 1:   return "common";
+  case 2:   return "uncommon";
+  case 3:   return "rare";
+  case 4:   return "epic";
+  case 5:   return "legendary";
+  default:  return "poor";
+  }
+}
+
+// util_t::parse_item_quality ===============================================
+
+int util_t::parse_item_quality( const std::string& quality )
+{
+  int i = 6;
+
+  while ( --i > 0 )
+    if ( str_compare_ci( quality, item_quality_string( i ) ) )
+      break;
+
+  return i;
+}
+
+// util_t::string_split =====================================================
+
+void util_t::string_split_( std::vector<std::string>& results,
+                            const std::string&        str,
+                            const char*               delim,
+                            bool                      allow_quotes )
 {
   std::string buffer = str;
   std::string::size_type cut_pt, start = 0;
@@ -1889,141 +1935,19 @@ size_t util::string_split( std::vector<std::string>& results, const std::string&
       results.push_back( buffer );
     }
   */
-
-  return results.size();
 }
 
-// replace_all ======================================================
+// util_t::string_split =====================================================
 
-std::string& util::replace_all( std::string& s, const char* from, char to )
-{
-  std::string::size_type pos = s.find( from );
-  if ( pos != s.npos )
-  {
-    std::size_t len = std::strlen( from );
-    do
-      s.replace( pos, len, 1, to );
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// replace_all ======================================================
-
-std::string& util::replace_all( std::string& s, char from, const char* to )
-{
-  std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
-  {
-    std::size_t len = std::strlen( to );
-    do
-    {
-      s.replace( pos, 1, to, len );
-      pos += len;
-    }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// replace_all ======================================================
-
-std::string& util::replace_all( std::string& s, const std::string& from, const std::string& to )
-{
-  std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
-  {
-    std::size_t len = to.length();
-    do
-    {
-      s.replace( pos, from.length(), to );
-      pos += len;
-    }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// erase_all ======================================================
-
-std::string& util::erase_all( std::string& s, const char* from )
-{
-  std::string::size_type pos;
-
-
-  if ( ( pos = s.find( from ) ) != s.npos )
-  {
-    std::size_t len = std::strlen( from );
-
-  do
-  {
-    s.erase( pos, len );
-  }
-  while ( ( pos = s.find( from ) ) != s.npos );
-  }
-
-  return s;
-}
-
-// translate_gem_color ==============================================
-
-gem_e util::translate_socket_color( item_socket_color c )
-{
-  switch ( c )
-  {
-  case SOCKET_COLOR_BLUE:      return GEM_BLUE;
-  case SOCKET_COLOR_META:      return GEM_META;
-  case SOCKET_COLOR_PRISMATIC: return GEM_PRISMATIC;
-  case SOCKET_COLOR_RED:       return GEM_RED;
-  case SOCKET_COLOR_YELLOW:    return GEM_YELLOW;
-  case SOCKET_COLOR_COGWHEEL:  return GEM_COGWHEEL;
-  case SOCKET_COLOR_NONE:
-  default:                     return GEM_NONE;
-  }
-}
-
-// item_quality_string ==============================================
-
-const char* util::item_quality_string( int quality )
-{
-  switch ( quality )
-  {
-  case 1:   return "common";
-  case 2:   return "uncommon";
-  case 3:   return "rare";
-  case 4:   return "epic";
-  case 5:   return "legendary";
-  default:  return "poor";
-  }
-}
-
-// parse_item_quality ===============================================
-
-int util::parse_item_quality( const std::string& quality )
-{
-  int i = 6;
-
-  while ( --i > 0 )
-    if ( str_compare_ci( quality, item_quality_string( i ) ) )
-      break;
-
-  return i;
-}
-
-// string_split =====================================================
-
-int util::string_split( const std::string& str,
-                        const char*        delim,
-                        const char*        format, ... )
+int util_t::string_split( const std::string& str,
+                          const char*        delim,
+                          const char*        format, ... )
 {
   std::vector<std::string>    str_splits;
   std::vector<std::string> format_splits;
 
-  int    str_size = string_split(    str_splits, str,    delim );
-  int format_size = string_split( format_splits, format, " "   );
+  int    str_size = util_t::string_split(    str_splits, str,    delim );
+  int format_size = util_t::string_split( format_splits, format, " "   );
 
   if ( str_size == format_size )
   {
@@ -2048,9 +1972,9 @@ int util::string_split( const std::string& str,
   return str_size;
 }
 
-// string_strip_quotes ==============================================
+// util_t::string_strip_quotes ==============================================
 
-void util::string_strip_quotes( std::string& str )
+void util_t::string_strip_quotes( std::string& str )
 {
   std::string::size_type pos = str.find( '"' );
   if ( pos == str.npos ) return;
@@ -2065,18 +1989,47 @@ void util::string_strip_quotes( std::string& str )
   str.resize( dst - str.begin() );
 }
 
-// to_string ========================================================
+// util_t::replace_all ======================================================
 
-std::string util::to_string( double f, int precision )
+void util_t::replace_all_( std::string& s, const char* from, char to )
 {
-  std::ostringstream ss;
-  ss << std::fixed << std::setprecision( precision ) << f;
-  return ss.str();
+  std::string::size_type pos = s.find( from );
+  if ( pos != s.npos )
+  {
+    std::size_t len = std::strlen( from );
+    do
+      s.replace( pos, len, 1, to );
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
 }
 
-// to_string ========================================================
+void util_t::replace_all_( std::string& s, char from, const char* to )
+{
+  std::string::size_type pos;
+  if ( ( pos = s.find( from ) ) != s.npos )
+  {
+    std::size_t len = std::strlen( to );
+    do
+    {
+      s.replace( pos, 1, to, len );
+      pos += len;
+    }
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+}
 
-std::string util::to_string( double f )
+// util_t::to_string ========================================================
+
+std::string util_t::to_string( double f, int precision )
+{
+  char buffer[ 64 ];
+  snprintf( buffer, sizeof( buffer ), "%.*f", precision, f );
+  return std::string( buffer );
+}
+
+// util_t::to_string ========================================================
+
+std::string util_t::to_string( double f )
 {
   if ( std::abs( f - static_cast<int>( f ) ) < 0.001 )
     return to_string( static_cast<int>( f ) );
@@ -2084,26 +2037,26 @@ std::string util::to_string( double f )
     return to_string( f, 3 );
 }
 
-// milliseconds =====================================================
+// util_t::milliseconds =====================================================
 
-int64_t util::milliseconds()
+int64_t util_t::milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
-// parse_date =======================================================
+// util_t::parse_date =======================================================
 
-int64_t util::parse_date( const std::string& month_day_year )
+int64_t util_t::parse_date( const std::string& month_day_year )
 {
   std::vector<std::string> splits;
-  size_t num_splits = string_split( splits, month_day_year, " _,;-/ \t\n\r" );
+  int num_splits = util_t::string_split( splits, month_day_year, " _,;-/ \t\n\r" );
   if ( num_splits != 3 ) return 0;
 
   std::string& month = splits[ 0 ];
   std::string& day   = splits[ 1 ];
   std::string& year  = splits[ 2 ];
 
-  tolower( month );
+  std::transform( month.begin(), month.end(), month.begin(), ( int( * )( int ) ) std::tolower );
 
   if ( month.find( "jan" ) != std::string::npos ) month = "01";
   if ( month.find( "feb" ) != std::string::npos ) month = "02";
@@ -2131,9 +2084,24 @@ int64_t util::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// fprintf ==========================================================
+// util_t::vfprintf_helper ==================================================
 
-int util::fprintf( FILE *stream, const char *format,  ... )
+int util_t::vfprintf_helper( FILE *stream, const char *format, va_list args )
+{
+  char *p_locale = util_t::dup( setlocale( LC_CTYPE, NULL ) );
+  setlocale( LC_CTYPE, "" );
+
+  int retcode = ::vfprintf( stream, format, args );
+
+  setlocale( LC_CTYPE, p_locale );
+  free( p_locale );
+
+  return retcode;
+}
+
+// util_t::fprintf ==========================================================
+
+int util_t::fprintf( FILE *stream, const char *format,  ... )
 {
   va_list fmtargs;
   va_start( fmtargs, format );
@@ -2145,9 +2113,9 @@ int util::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-// printf ===========================================================
+// util_t::printf ===========================================================
 
-int util::printf( const char *format,  ... )
+int util_t::printf( const char *format,  ... )
 {
   va_list fmtargs;
   va_start( fmtargs, format );
@@ -2159,9 +2127,9 @@ int util::printf( const char *format,  ... )
   return retcode;
 }
 
-// snprintf =========================================================
+// util_t::snprintf =========================================================
 
-int util::snprintf( char* buf, size_t size, const char* fmt, ... )
+int util_t::snprintf( char* buf, size_t size, const char* fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );
@@ -2172,41 +2140,27 @@ int util::snprintf( char* buf, size_t size, const char* fmt, ... )
   return rval;
 }
 
-// vfprintf =========================================================
 
-int util::vfprintf( FILE *stream, const char *format, va_list fmtargs )
-{
-  return vfprintf_helper( stream, format, fmtargs );
-}
+// util_t::str_to_utf8_ =====================================================
 
-// vprintf ==========================================================
-
-int util::vprintf( const char *format, va_list fmtargs )
-{
-  return util::vfprintf( stdout, format, fmtargs );
-}
-
-// str_to_utf8 ======================================================
-
-std::string& util::str_to_utf8( std::string& str )
+void util_t::str_to_utf8_( std::string& str )
 {
   std::string::iterator p = utf8::find_invalid( str.begin(), str.end() );
-  if ( p == str.end() ) return str;
+  if ( p == str.end() ) return;
 
   std::string temp( str.begin(), p );
   for ( std::string::iterator e = str.end(); p != e; ++p )
     utf8::append( static_cast<unsigned char>( *p ), std::back_inserter( temp ) );
 
   str.swap( temp );
-  return str;
 }
 
-// str_to_latin1 ====================================================
+// util_t::str_to_latin1_ ===================================================
 
-std::string& util::str_to_latin1( std::string& str )
+void util_t::str_to_latin1_( std::string& str )
 {
-  if ( str.empty() ) return str;
-  if ( ! range::is_valid_utf8( str ) ) return str;
+  if ( str.empty() ) return;
+  if ( ! utf8::is_valid( str.begin(), str.end() ) ) return;
 
 
   std::string temp;
@@ -2216,16 +2170,14 @@ std::string& util::str_to_latin1( std::string& str )
     temp += ( unsigned char ) utf8::next( i, e );
 
   str.swap( temp );
-
-  return str;
 }
 
-// urlencode ========================================================
+// util_t::urlencode_ =======================================================
 
-std::string& util::urlencode( std::string& str )
+void util_t::urlencode_( std::string& str )
 {
   std::string::size_type l = str.length();
-  if ( ! l ) return str;
+  if ( ! l ) return;
 
   std::string temp;
 
@@ -2248,16 +2200,14 @@ std::string& util::urlencode( std::string& str )
   }
 
   str.swap( temp );
-
-  return str;
 }
 
-// urldecode ========================================================
+// util_t::urldecode_ =======================================================
 
-std::string& util::urldecode( std::string& str )
+void util_t::urldecode_( std::string& str )
 {
   std::string::size_type l = str.length();
-  if ( ! l ) return str;
+  if ( ! l ) return;
 
   std::string temp;
 
@@ -2278,28 +2228,24 @@ std::string& util::urldecode( std::string& str )
   }
 
   str.swap( temp );
-
-  return str;
 }
 
-// format_text ======================================================
+// util_t::format_text ======================================================
 
-std::string& util::format_text( std::string& name, bool input_is_utf8 )
+void util_t::format_text_( std::string& name, bool input_is_utf8 )
 {
-  if ( name.empty() ) return name;
-  bool is_utf8 = range::is_valid_utf8( name );
+  if ( name.empty() ) return;
+  bool is_utf8 = utf8::is_valid( name.begin(), name.end() );
 
   if ( is_utf8 && ! input_is_utf8 )
-    str_to_latin1( name );
+    util_t::str_to_latin1( name );
   else if ( ! is_utf8 && input_is_utf8 )
-    str_to_utf8( name );
-
-  return name;
+    util_t::str_to_utf8( name );
 }
 
-// html_special_char_decode =========================================
+// util_t::html_special_char_decode_ ========================================
 
-std::string& util::html_special_char_decode( std::string& str )
+void util_t::html_special_char_decode_( std::string& str )
 {
   std::string::size_type pos = 0;
 
@@ -2333,25 +2279,11 @@ std::string& util::html_special_char_decode( std::string& str )
       str.insert( pos, ">" );
     }
   }
-
-  return str;
 }
 
-// encode_html ==============================================================
+// util_t::floor ============================================================
 
-std::string util::encode_html( const std::string& s )
-{
-  std::string buffer = std::string();
-  buffer += s;
-  replace_all( buffer, '&', "&amp;" );
-  replace_all( buffer, '<', "&lt;" );
-  replace_all( buffer, '>', "&gt;" );
-  return buffer;
-}
-
-// floor ============================================================
-
-double util::floor( double X, unsigned int decplaces )
+double util_t::floor( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2363,7 +2295,7 @@ double util::floor( double X, unsigned int decplaces )
   case 5: return ::floor( X * 100000.0 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;
@@ -2373,9 +2305,9 @@ double util::floor( double X, unsigned int decplaces )
   }
 }
 
-// ceil =============================================================
+// util_t::ceil =============================================================
 
-double util::ceil( double X, unsigned int decplaces )
+double util_t::ceil( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2387,7 +2319,7 @@ double util::ceil( double X, unsigned int decplaces )
   case 5: return ::ceil( X * 100000.0 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;
@@ -2397,9 +2329,9 @@ double util::ceil( double X, unsigned int decplaces )
   }
 }
 
-// round ============================================================
+// util_t::round ============================================================
 
-double util::round( double X, unsigned int decplaces )
+double util_t::round( double X, unsigned int decplaces )
 {
   switch ( decplaces )
   {
@@ -2411,7 +2343,7 @@ double util::round( double X, unsigned int decplaces )
   case 5: return ::floor( X * 100000.0 + 0.5 ) * 0.00001;
   default:
     double mult = 1000000.0;
-    double div = 0.000001;
+    double div = SC_EPSILON;
     for ( unsigned int i = 6; i < decplaces; i++ )
     {
       mult *= 10.0;
@@ -2421,253 +2353,96 @@ double util::round( double X, unsigned int decplaces )
   }
 }
 
-// tolower ==================================================================
+// util_t::tolower_ =========================================================
 
-std::string& util::tolower( std::string& str )
+void util_t::tolower_( std::string& str )
 {
-  // Transform all chars to lower case
-  range::transform_self( str, ( int( * )( int ) ) std::tolower );
-  return str;
+  for ( std::string::size_type i = 0, n = str.length(); i < n; ++i )
+    str[i] = ::tolower( str[i] );
 }
 
-// tokenize =================================================================
+//-------------------------------
+// std::STRING   utils
+//-------------------------------
 
-void util::tokenize( std::string& name, format_e f )
+// utility functions
+std::string tolower( const std::string& src )
 {
-  std::string::size_type l = name.length();
-  if ( ! l ) return;
+  std::string dest;
+  for ( std::string::size_type i = 0, n = src.length(); i < n; ++i )
+    dest.push_back( tolower( src[ i ] ) );
+  return dest;
+}
 
+#if 0 // UNUSED
+std::string trim( const std::string& src )
+{
+  std::string dest;
 
-  str_to_utf8( name );
-
-  // remove leading '_' or '+'
-  while ( ( name[ 0 ] == '_' || name[ 0 ] == '+' ) && !name.empty() )
+  std::string::size_type begin = src.find_first_not_of( ' ' );
+  if ( begin != src.npos )
   {
-    name.erase( 0, 1 );
+    std::string::size_type end = src.find_last_not_of( ' ' );
+    dest.assign( src, begin, end - begin );
   }
 
-  std::string buffer;
-  l = name.length();
-  for ( std::string::size_type i = 0; i < l; ++i )
-  {
-    unsigned char c = name[ i ];
+  return dest;
+}
 
-    if ( c >= 0x80 )
+void replace_char( std::string& str, char old_c, char new_c  )
+{
+  for ( std::string::size_type i = 0, n = str.length(); i < n; ++i )
+  {
+    if ( str[ i ] == old_c )
+      str[ i ] = new_c;
+  }
+}
+
+void replace_str( std::string& src, const std::string& old_str, const std::string& new_str  )
+{
+  if ( old_str.empty() ) return;
+
+  std::string::size_type p = 0;
+  while ( ( p = src.find( old_str, p ) ) != std::string::npos )
+  {
+    src.replace( p, p + old_str.length(), new_str );
+    p += new_str.length();
+  }
+}
+
+bool str_to_float( std::string src, double& dest )
+{
+  bool was_sign=false;
+  bool was_digit=false;
+  bool was_dot=false;
+  bool res=true;
+  //check each char
+  for ( std::size_t p=0; res&&( p<src.length() ); p++ )
+  {
+    char ch=src[p];
+    if ( ch==' ' ) continue;
+    if ( ( ( ch=='+' )||( ch=='-' ) )&& !( was_sign||was_digit ) )
     {
+      was_sign=true;
       continue;
     }
-    else if ( std::isalpha( c ) )
+    if ( ( ch=='.' )&& was_digit && !was_dot )
     {
-      if ( f == FORMAT_CHAR_NAME )
-      {
-        if ( i != 0 )
-          c = std::tolower( c );
-      }
-      else
-        c = std::tolower( c );
-    }
-    else if ( c == ' ' )
-    {
-      c = '_';
-    }
-    else if ( c != '_' &&
-              c != '+' &&
-              c != '.' &&
-              c != '%' &&
-              ! std::isdigit( c ) )
-    {
+      was_dot=true;
       continue;
     }
-    buffer += c;
-  }
-  name.swap( buffer );
-}
-
-// inverse_tokenize =========================================================
-
-std::string util::inverse_tokenize( const std::string& name )
-{
-  std::string s = std::string( name );
-
-  std::string::size_type l = s.length();
-  if ( ! l ) return s;
-
-  util::str_to_utf8( s );
-
-  for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
-  {
-    if ( *i == '_' )
+    if ( ( ch>='0' )&&( ch<='9' ) )
     {
-      *i = ' ';
-      ++i;
-      if ( i == s.end() )
-        break;
-      *i = std::toupper( *i );
+      was_digit=true;
+      continue;
     }
-    else if ( i == s.begin() )
-    {
-      *i = std::toupper( *i );
-    }
+    //if none of above, fail
+    res=false;
   }
-
-  return s;
+  //check if we had at least one digit
+  if ( !was_digit ) res=false;
+  //return result
+  dest=atof( src.c_str() );
+  return res;
 }
-
-// is_number ================================================================
-
-bool util::is_number( const std::string& s )
-{
-  for ( std::string::size_type i = 0, l = s.length(); i < l; ++i )
-    if ( ! std::isdigit( s[ i ] ) )
-      return false;
-  return true;
-}
-
-// stat_search ==============================================================
-
-static void stat_search( std::string&              encoding_str,
-                         std::vector<std::string>& description_tokens,
-                         stat_e               type,
-                         const std::string&        stat_str )
-{
-  std::vector<std::string> stat_tokens;
-  size_t num_stats = util::string_split( stat_tokens, stat_str, " " );
-  size_t num_descriptions = description_tokens.size();
-
-  for ( size_t i = 0; i < num_descriptions; i++ )
-  {
-    bool match = true;
-
-    for ( size_t j = 0; j < num_stats && match; j++ )
-    {
-      if ( ( i + j ) == num_descriptions )
-      {
-        match = false;
-      }
-      else
-      {
-        if ( stat_tokens[ j ][ 0 ] == '!' )
-        {
-          if ( stat_tokens[ j ].substr( 1 ) == description_tokens[ i + j ] )
-          {
-            match = false;
-          }
-        }
-        else
-        {
-          if ( stat_tokens[ j ] != description_tokens[ i + j ] )
-          {
-            match = false;
-          }
-        }
-      }
-    }
-
-    if ( match )
-    {
-      std::string value_str;
-
-      if ( ( i > 0 ) &&
-           ( util::is_number( description_tokens[ i-1 ] ) ) )
-      {
-        value_str = description_tokens[ i-1 ];
-      }
-      if ( ( ( i + num_stats + 1 ) < num_descriptions ) &&
-           ( description_tokens[ i + num_stats ] == "by" ) &&
-           ( util::is_number( description_tokens[ i + num_stats + 1 ] ) ) )
-      {
-        value_str = description_tokens[ i + num_stats + 1 ];
-      }
-
-      if ( ! value_str.empty() )
-      {
-        encoding_str += '_' + value_str + util::stat_type_abbrev( type );
-      }
-    }
-  }
-}
-
-// is_proc_description ======================================================
-
-static bool is_proc_description( const std::string& description_str )
-{
-  if ( description_str.find( "chance" ) != std::string::npos ) return true;
-  if ( description_str.find( "stack"  ) != std::string::npos ) return true;
-  if ( description_str.find( "time"   ) != std::string::npos ) return true;
-  if ( ( description_str.find( "_sec"   ) != std::string::npos ) &&
-       ! ( ( description_str.find( "restores" ) != std::string::npos ) &&
-           ( ( description_str.find( "_per_5_sec" ) != std::string::npos ) ||
-             ( description_str.find( "_every_5_sec" ) != std::string::npos ) ) ) )
-    return true;
-
-  return false;
-}
-
-// fuzzy_stats ==============================================================
-
-void util::fuzzy_stats( std::string&       encoding_str,
-                        const std::string& description_str )
-{
-  if ( description_str.empty() ) return;
-
-  std::string buffer = description_str;
-  util::tokenize( buffer );
-
-  if ( is_proc_description( buffer ) )
-    return;
-
-  std::vector<std::string> splits;
-  util::string_split( splits, buffer, "_." );
-
-  stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
-  stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );
-
-  stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
-  stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
-  stat_search( encoding_str, splits, STAT_STAMINA,   "stamina" );
-  stat_search( encoding_str, splits, STAT_INTELLECT, "intellect" );
-  stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
-
-  stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana regen" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana every 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana restored per 5" );
-  stat_search( encoding_str, splits, STAT_MP5,         "mana 5" );
-
-  stat_search( encoding_str, splits, STAT_ATTACK_POWER,             "attack power" );
-  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING,         "expertise rating" );
-
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,         "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,           "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,           "hit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,          "crit rating" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,       "mastery rating" );
-
-  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,    "armor !penetration" );
-  stat_search( encoding_str, splits, STAT_DODGE_RATING,   "dodge rating" );
-  stat_search( encoding_str, splits, STAT_PARRY_RATING,   "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,   "block_rating" );
-}
-
-#ifdef _MSC_VER
-
-// vsnprintf ================================================================
-
-int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
-{
-  if ( buf && size )
-  {
-    int rval = _vsnprintf( buf, size, fmt, ap );
-    if ( rval < 0 || static_cast<size_t>( rval ) < size )
-      return rval;
-
-    buf[ size - 1 ] = '\0';
-  }
-
-  return _vscprintf( fmt, ap );
-}
-
 #endif
