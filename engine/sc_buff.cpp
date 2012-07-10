@@ -49,6 +49,7 @@ stat_e translate_stat_buff_misc_number( int x )
   switch ( x )
   {
   case 3355443:
+  case 33554432:
     return STAT_MASTERY_RATING;
   case 1792:
     return STAT_CRIT_RATING;

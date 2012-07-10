@@ -68,7 +68,7 @@ public:
     buff_t* ice_floes;
     buff_t* icy_veins;
     buff_t* invocation;
-    buff_t* mage_armor;
+    stat_buff_t* mage_armor;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
     buff_t* pyroblast;
@@ -279,7 +279,6 @@ public:
   virtual int       decode_set( item_t& item );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() { return ROLE_SPELL; }
-  virtual double    composite_mastery();
   virtual double    composite_mp5();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_crit();
@@ -3098,7 +3097,7 @@ void mage_t::init_buffs()
   buffs.icy_veins            = new icy_veins_buff_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invocation           = buff_creator_t( this, "invocation", find_spell( 116257 ) ).chance( talents.invocation -> ok() ? 1.0 : 0 );
-  buffs.mage_armor           = buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
+  buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) ).duration( timespan_t::from_seconds( 60 ) );
@@ -3426,18 +3425,6 @@ void mage_t::init_actions()
   }
 
   player_t::init_actions();
-}
-
-// mage_t::composite_mastery ================================================
-
-double mage_t::composite_mastery()
-{
-  double m = player_t::composite_mastery();
-
-  if ( buffs.mage_armor -> up() )
-    m += buffs.mage_armor -> data().effectN( 1 ).base_value();
-
-  return m;
 }
 
 // mage_t::composite_mp5 ====================================================
