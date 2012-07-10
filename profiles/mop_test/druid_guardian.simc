@@ -6,11 +6,11 @@ level=85
 role=tank
 race=night_elf
 professions=Alchemy=525/Herbalism=525
-#actions=flask,type=steelskin
-#actions+=/food,type=seafood_magnifique_feast
-#actions+=/mark_of_the_wild,if=!aura.str_agi_int.up
-#actions+=/bear_form
-#actions+=/auto_attack
+#actions.precombat=flask,type=steelskin
+#actions.precombat+=/food,type=seafood_magnifique_feast
+#actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+#actions.precombat+=/bear_form
+#actions=/auto_attack
 #actions+=/snapshot_stats
 #actions+=/skull_bash_bear
 #actions+=/faerie_fire,if=debuff.weakened_armor.stack<=3
