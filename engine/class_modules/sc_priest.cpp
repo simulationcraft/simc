@@ -445,8 +445,8 @@ struct base_fiend_pet_t : public priest_pet_t
     shadowcrawl_action( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = util::ability_rank( owner -> level, 387, 90, 360, 85, 0, 1 );
-    main_hand_weapon.max_dmg    = util::ability_rank( owner -> level, 467, 90, 433, 85, 0, 1 );
+    main_hand_weapon.min_dmg    = util::ability_rank( owner -> level, 606, 90, 360, 85, 0, 1 );
+    main_hand_weapon.max_dmg    = util::ability_rank( owner -> level, 765, 90, 433, 85, 0, 1 );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
@@ -519,7 +519,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 0.5114705;
+    direct_power_mod = 0.511421559;
   }
 
   virtual void init_spells()
@@ -539,7 +539,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "mindbender" ) :
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
   {
-    direct_power_mod = 1.16349445;
+    direct_power_mod = 0.511421559;
   }
 
   virtual void init_spells()

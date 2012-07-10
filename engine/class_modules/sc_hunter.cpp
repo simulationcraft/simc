@@ -1774,6 +1774,8 @@ struct moc_t : public hunter_spell_t
   moc_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
   {
+    parse_options( NULL, options_str );
+
     crows_summoned = 0;
 
     hasted_ticks = false;
