@@ -1547,6 +1547,8 @@ int string_split( const std::string& str, const char* delim, const char* format,
 void string_strip_quotes( std::string& str );
 std::string& replace_all( std::string& s, const char* from, char to );
 std::string& replace_all( std::string& s, char from, const char* to );
+std::string& replace_all( std::string& s, const std::string&, const std::string& );
+std::string& erase_all( std::string& s, const char* from );
 
 template <typename T>
 std::string to_string( const T& t )
@@ -3069,7 +3071,7 @@ struct item_database_t
   static bool     parse_gems(         item_t&      item,
                                       const item_data_t* item_data,
                                       const std::string  gem_ids[ 3 ] );
-  static bool     parse_enchant(      item_t& item, const std::string& enchant_id );
+  static bool     parse_enchant(      item_t& item, std::string&, const std::string& enchant_id );
 };
 
 // Set Bonus ================================================================
@@ -4827,12 +4829,9 @@ bool get_use_encoding( std::string& encoding,
 namespace enchant
 {
 void init( player_t* );
-bool get_encoding        ( std::string& name, std::string& encoding, const std::string& enchant_id, bool ptr );
 bool get_addon_encoding  ( std::string& name, std::string& encoding, const std::string& addon_id, bool ptr );
 bool get_reforge_encoding( std::string& name, std::string& encoding, const std::string& reforge_id );
 int  get_reforge_id      ( stat_e stat_from, stat_e stat_to );
-bool download        ( item_t&, const std::string& enchant_id );
-bool download_addon  ( item_t&, const std::string& addon_id   );
 bool download_reforge( item_t&, const std::string& reforge_id );
 bool download_rsuffix( item_t&, const std::string& rsuffix_id );
 };

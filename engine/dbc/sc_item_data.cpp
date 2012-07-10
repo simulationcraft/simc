@@ -536,6 +536,7 @@ bool item_database_t::parse_gems( item_t&            item,
 }
 
 bool item_database_t::parse_enchant( item_t&            item,
+                                     std::string& result,
                                      const std::string& enchant_id )
 {
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
@@ -551,7 +552,7 @@ bool item_database_t::parse_enchant( item_t&            item,
     return true;
   }
 
-  item.armory_enchant_str.clear();
+  result.clear();
 
   for ( unsigned i = 0; i < 3; i++ )
   {
@@ -563,15 +564,47 @@ bool item_database_t::parse_enchant( item_t&            item,
     }
   }
 
-  // For now, if there's a spell in the enchant, defer back to old ways
+
   if ( has_spell )
   {
-    return enchant::download( item, enchant_id );
+
+    // Intention: If enchant name contains a linked number ( $ ) or the spell contains a rank_str, use the spell name
+    // otherwise use enchant name
+    std::string dbc_name = item_enchant.name;
+    const spell_data_t* es = item.player -> dbc.spell( item_enchant.ench_prop[ 0 ] );
+
+    if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != 0 ) )
+    {
+      if ( es && es -> id() > 0 )
+      {
+        result = es -> name_cstr(); // Use Spell Name
+
+        if ( es -> rank_str() != 0 ) // If rank str is available, append its number to the enchant name
+        {
+          std::string rank = std::string( es -> rank_str() );
+          if (  rank.find( "Rank " ) != rank.npos )
+            rank.erase( rank.find( "Rank " ), std::string( "Rank " ).length() );
+          result += "_" + rank;
+        }
+      }
+    }
+    else
+      result = item_enchant.name;
+
+    util::tokenize( result );
+
+    // Special modifications
+    util::erase_all( result, "+" ); // remove plus signs
+    util::replace_all( result, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
+
+
+    // debug
+    // std::cout << "id=" << item_enchant.id << " name=" << result << "\n";
   }
   else
   {
     if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
-      item.armory_enchant_str = encode_stats( stats );
+      result = encode_stats( stats );
   }
 
   return true;
@@ -593,17 +626,19 @@ bool item_database_t::download_slot( item_t&            item,
 
   parse_gems( item, item_data, gem_ids );
 
-  if ( ! parse_enchant( item, enchant_id ) )
+
+  if ( ! parse_enchant( item, item.armory_enchant_str, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
   }
 
-  if ( ! enchant::download_addon( item, addon_id ) )
+  if ( ! parse_enchant( item, item.armory_addon_str, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), addon_id.c_str(), item.name(), item.slot_name() );
   }
+
 
   if ( ! enchant::download_reforge( item, reforge_id ) )
   {

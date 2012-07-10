@@ -1928,6 +1928,46 @@ std::string& util::replace_all( std::string& s, char from, const char* to )
   return s;
 }
 
+// replace_all ======================================================
+
+std::string& util::replace_all( std::string& s, const std::string& from, const std::string& to )
+{
+  std::string::size_type pos;
+  if ( ( pos = s.find( from ) ) != s.npos )
+  {
+    std::size_t len = to.length();
+    do
+    {
+      s.replace( pos, from.length(), to );
+      pos += len;
+    }
+    while ( ( pos = s.find( from, pos ) ) != s.npos );
+  }
+
+  return s;
+}
+
+// erase_all ======================================================
+
+std::string& util::erase_all( std::string& s, const char* from )
+{
+  std::string::size_type pos;
+
+
+  if ( ( pos = s.find( from ) ) != s.npos )
+  {
+    std::size_t len = std::strlen( from );
+
+  do
+  {
+    s.erase( pos, len );
+  }
+  while ( ( pos = s.find( from ) ) != s.npos );
+  }
+
+  return s;
+}
+
 // translate_gem_color ==============================================
 
 gem_e util::translate_socket_color( item_socket_color c )

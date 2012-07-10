@@ -17,7 +17,7 @@ struct token_t
 
 // parse_tokens =============================================================
 
-static int parse_tokens( std::vector<token_t>& tokens,
+int parse_tokens( std::vector<token_t>& tokens,
                          const std::string&    encoded_str )
 {
   std::vector<std::string> splits;
@@ -50,7 +50,7 @@ static int parse_tokens( std::vector<token_t>& tokens,
 
 // is_meta_prefix ===========================================================
 
-static bool is_meta_prefix( const std::string& option_name )
+bool is_meta_prefix( const std::string& option_name )
 {
   for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
@@ -66,7 +66,7 @@ static bool is_meta_prefix( const std::string& option_name )
 
 // is_meta_suffix ===========================================================
 
-static bool is_meta_suffix( const std::string& option_name )
+bool is_meta_suffix( const std::string& option_name )
 {
   for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
@@ -783,7 +783,7 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
-  if ( encoded_addon_str == "synapse_springs" )
+  if ( encoded_addon_str == "synapse_springs" || encoded_addon_str == "nitro_boosts" || encoded_addon_str == "flexweave_underlay" )
   {
     unique_addon = true;
     return true;

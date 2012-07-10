@@ -27,7 +27,7 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-static void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
+void print_html_action_damage( FILE* file, stats_t* s, player_t* p, int j )
 {
   int id = 0;
 
