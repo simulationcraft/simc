@@ -3172,14 +3172,14 @@ void hunter_t::init_actions()
       action_list_str += "/focus_fire,five_stacks=1";
       action_list_str += "/serpent_sting,if=!ticking";
 
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/multi_shot,if=target.adds>5";
-      action_list_str += "/cobra_shot,if=target.adds>5";
-      action_list_str += "/kill_shot";
-      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
-
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
+    action_list_str += init_use_racial_actions();
+    action_list_str += "/multi_shot,if=target.adds>5";
+    action_list_str += "/cobra_shot,if=target.adds>5";
+    action_list_str += "/kill_shot";
+    action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
+    
+    //if ( talents.a_murder_of_crows -> ok() ) 
+    //  action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
 
       action_list_str += "/kill_command";
 
@@ -3207,9 +3207,9 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows";
+          
+      //if ( talents.a_murder_of_crows -> ok() ) 
+      //  action_list_str += "/a_murder_of_crows";
 
       if ( set_bonus.tier13_4pc_melee() )
       {
@@ -3238,10 +3238,10 @@ void hunter_t::init_actions()
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
-
-      if ( talents.a_murder_of_crows -> ok() )
-        action_list_str += "/a_murder_of_crows";
-
+          
+      //if ( talents.a_murder_of_crows -> ok() ) 
+      //  action_list_str += "/a_murder_of_crows";
+      
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
       action_list_str += "/rapid_fire";
