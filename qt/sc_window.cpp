@@ -824,7 +824,11 @@ void SimulationCraftWindow::createBestInSlotTab()
   importTab->addTab( bisTree, "BiS" );
 
   const int TIER_MAX=2;
+#if SC_BETA == 1
+  const char* tierNames[] = { "" }; // For the beta include ALL profiles
+#else
   const char* tierNames[] = { "T12", "T13" };
+#endif
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
   range::fill( playerItems, 0 );
   QTreeWidgetItem* rootItems[ PLAYER_MAX ][ TIER_MAX ];
