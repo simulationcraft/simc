@@ -4,7 +4,7 @@ import re
 import string
 
 # Read current styles.css file and write slimmed-down version for inclusion
-# in sc_report.cpp
+# in report\sc_report.cpp
 
 OUTFILE = open('cpp-styles.txt', 'w')
 
@@ -13,7 +13,7 @@ OUTFILE.write('  // If file is being hosted on simulationcraft.org, link to the 
 OUTFILE.write('  // stylesheet; otherwise, embed the styles.\n')
 OUTFILE.write('  if ( sim -> hosted_html )\n')
 OUTFILE.write('  {\n')
-OUTFILE.write('    util_t::fprintf( file,\n')
+OUTFILE.write('    util::fprintf( file,\n')
 OUTFILE.write('      "\\t\\t<style type=\\"text/css\\" media=\\"screen\\">\\n"\n')
 OUTFILE.write('      "\\t\\t\\t@import url(\'http://www.simulationcraft.org/css/styles.css\');\\n"\n')
 OUTFILE.write('      "\\t\\t</style>\\n"\n')
@@ -23,7 +23,7 @@ OUTFILE.write('      "\\t\\t</style>\\n" );\n')
 OUTFILE.write('  }\n')
 OUTFILE.write('  else if ( sim -> print_styles )\n')
 OUTFILE.write('  {\n')
-OUTFILE.write('    util_t::fprintf( file,\n')
+OUTFILE.write('    util::fprintf( file,\n')
 OUTFILE.write('      "\\t\\t<style type=\\"text/css\\" media=\\"all\\">\\n"\n')
 
 INFILE = open('../html/css/styles-print.css', 'r')
@@ -63,7 +63,7 @@ INFILE.close()
 OUTFILE.write('  }\n')
 OUTFILE.write('  else\n')
 OUTFILE.write('  {\n')
-OUTFILE.write('    util_t::fprintf( file,\n')
+OUTFILE.write('    util::fprintf( file,\n')
 OUTFILE.write('      "\\t\\t<style type=\\"text/css\\" media=\\"all\\">\\n"\n')
 
 INFILE = open('../html/css/styles.css', 'r')

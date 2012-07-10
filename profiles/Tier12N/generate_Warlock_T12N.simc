@@ -1,9 +1,0 @@
-#!./simc 
-
-# Tier 12 Normal
-
-chardev=194155 name=Warlock_Affliction_T12N save=Warlock_Affliction_T12N.simc
-
-chardev=194164 name=Warlock_Demonology_T12N save=Warlock_Demonology_T12N.simc
-
-chardev=194173 name=Warlock_Destruction_T12N save=Warlock_Destruction_T12N.simc

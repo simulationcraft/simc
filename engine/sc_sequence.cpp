@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Sequence Action
@@ -12,24 +12,26 @@
 // sequence_t::sequence_t ===================================================
 
 sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
-  action_t( ACTION_SEQUENCE, "default", p ), current_action( -1 ), restarted( false )
+  action_t( ACTION_SEQUENCE, "default", p ),
+  current_action( -1 ), restarted( false ), last_restart( timespan_t::min() )
 {
-  trigger_gcd = timespan_t::zero;
+  trigger_gcd = timespan_t::zero();
 
   std::vector<std::string> splits;
-  int size = util_t::string_split( splits, sub_action_str, ":" );
-
-  option_t options[] =
+  size_t size = util::string_split( splits, sub_action_str, ":" );
+  if ( ! splits.empty() )
   {
-    { "name", OPT_STRING,  &name_str },
-    { NULL, OPT_UNKNOWN, NULL }
-  };
-  parse_options( options, splits[ 0 ] );
+    option_t options[] =
+    {
+      { "name", OPT_STRING,  &name_str },
+      { NULL,   OPT_UNKNOWN, NULL }
+    };
+    parse_options( options, splits[ 0 ] );
+  }
 
   // First token is sequence options, so skip
-  for ( int i=1; i < size; i++ )
+  for ( size_t i = 1; i < size; ++i )
   {
-
     std::string::size_type cut_pt = splits[ i ].find( ',' );
     std::string action_name( splits[ i ], 0, cut_pt );
     std::string action_options;
@@ -55,8 +57,13 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 void sequence_t::schedule_execute()
 {
   assert( 0 <= current_action && static_cast<std::size_t>( current_action ) < sub_actions.size() );
-  if ( sim -> log ) log_t::output( sim, "Player %s executes Schedule %s action #%d \"%s\"", player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
+
+  if ( sim -> log )
+    sim -> output( "Player %s executes Schedule %s action #%d \"%s\"",
+                   player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
+
   sub_actions[ current_action++ ] -> schedule_execute();
+
   // No longer restarted
   restarted = false;
 }
@@ -66,19 +73,18 @@ void sequence_t::schedule_execute()
 void sequence_t::reset()
 {
   action_t::reset();
+
   if ( current_action == -1 )
   {
-    for ( unsigned i=0; i < sub_actions.size(); i++ )
+    for ( size_t i = 0; i < sub_actions.size(); ++i )
     {
-      action_t* a = sub_actions[ i ];
-      if ( a -> wait_on_ready == -1 )
-      {
-        a -> wait_on_ready = wait_on_ready;
-      }
+      if ( sub_actions[ i ] -> wait_on_ready == -1 )
+        sub_actions[ i ] -> wait_on_ready = wait_on_ready;
     }
   }
   current_action = 0;
   restarted = false;
+  last_restart = timespan_t::min();
 }
 
 // sequence_t::ready ========================================================
@@ -89,7 +95,7 @@ bool sequence_t::ready()
 
   wait_on_ready = 0;
 
-  for ( ; current_action < static_cast<int>( sub_actions.size() ); ++current_action )
+  for ( int num_sub_actions = static_cast<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
     action_t* a = sub_actions[ current_action ];
 

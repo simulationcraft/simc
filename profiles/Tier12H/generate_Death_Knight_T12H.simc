@@ -1,9 +1,0 @@
-#!./simc 
-
-
-chardev=254241  name=Death_Knight_Frost_1h_T12H           save=Death_Knight_Frost_1h_T12H.simc
-chardev=254257  name=Death_Knight_Frost_2h_T12H           save=Death_Knight_Frost_2h_T12H.simc
-chardev=254265  name=Death_Knight_Unholy_2h_T12H          save=Death_Knight_Unholy_2h_T12H.simc
-chardev=263806  name=Death_Knight_Unholy_2h_T12H          save=Death_Knight_Unholy_2h_T12H_PTR.simc
-chardev=254266  name=Death_Knight_Unholy_1h_T12H          save=Death_Knight_Unholy_1h_T12H.simc
-

@@ -1,7 +1,8 @@
+#include "simulationcraft.hpp"
 #include <QLocale>
 #include <QtGui/QApplication>
 #include <locale>
-#include "simulationcraftqt.h"
+#include "simulationcraftqt.hpp"
 #ifndef SIMC_NO_AUTOUPDATE
 #include "sc_autoupdate.h"
 #endif /* SIMC_NO_AUTOUPDATE */
@@ -12,7 +13,6 @@ int main( int argc, char *argv[] )
   std::locale::global( std::locale( "C" ) );
   setlocale( LC_ALL, "C" );
 
-  thread_t::init();
   dbc_t::init();
 
   QApplication a( argc, argv );
@@ -62,6 +62,8 @@ int main( int argc, char *argv[] )
   {
     w.showNormal();
   }
+
+  w.setWindowTitle( "SimulationCraft " + QString( SC_MAJOR_VERSION ) + "-" + QString( SC_MINOR_VERSION ) );
 
   w.cmdLine->setFocus();
 

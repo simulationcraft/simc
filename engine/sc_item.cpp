@@ -3,10 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
-{
+namespace { // ANONYMOUS NAMESPACE ==========================================
 
 struct token_t
 {
@@ -18,11 +17,11 @@ struct token_t
 
 // parse_tokens =============================================================
 
-static int parse_tokens( std::vector<token_t>& tokens,
+int parse_tokens( std::vector<token_t>& tokens,
                          const std::string&    encoded_str )
 {
   std::vector<std::string> splits;
-  int num_splits = util_t::string_split( splits, encoded_str, "_" );
+  int num_splits = util::string_split( splits, encoded_str, "_" );
 
   tokens.resize( num_splits );
   for ( int i=0; i < num_splits; i++ )
@@ -51,11 +50,11 @@ static int parse_tokens( std::vector<token_t>& tokens,
 
 // is_meta_prefix ===========================================================
 
-static bool is_meta_prefix( const std::string& option_name )
+bool is_meta_prefix( const std::string& option_name )
 {
-  for ( int i=0; i < META_GEM_MAX; i++ )
+  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
-    const char* meta_gem_name = util_t::meta_gem_type_string( i );
+    const char* meta_gem_name = util::meta_gem_type_string( i );
 
     for ( int j=0; tolower( meta_gem_name[ j ] ) == tolower( option_name[ j ] ); j++ )
       if ( option_name[ j+1 ] == '\0' )
@@ -67,11 +66,11 @@ static bool is_meta_prefix( const std::string& option_name )
 
 // is_meta_suffix ===========================================================
 
-static bool is_meta_suffix( const std::string& option_name )
+bool is_meta_suffix( const std::string& option_name )
 {
-  for ( int i=0; i < META_GEM_MAX; i++ )
+  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
   {
-    const char* meta_gem_name = util_t::meta_gem_type_string( i );
+    const char* meta_gem_name = util::meta_gem_type_string( i );
 
     const char* s = strstr( meta_gem_name, "_" );
     if ( ! s ) continue;
@@ -87,14 +86,11 @@ static bool is_meta_suffix( const std::string& option_name )
 
 // parse_meta_gem ===========================================================
 
-static int parse_meta_gem( const std::string& prefix,
+meta_gem_e parse_meta_gem( const std::string& prefix,
                            const std::string& suffix )
 {
   if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
-
-  std::string name = prefix + "_" + suffix;
-
-  return util_t::parse_meta_gem_type( name );
+  return util::parse_meta_gem_type( prefix + '_' + suffix );
 }
 
 } // ANONYMOUS NAMESPACE ====================================================
@@ -102,7 +98,7 @@ static int parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-  sim( p -> sim ), player( p ), slot( SLOT_NONE ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
+  sim( p -> sim ), player( p ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
   unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( p -> dbc.ptr ),
   is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
   options_str( o )
@@ -111,32 +107,32 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 // item_t::active ===========================================================
 
-bool item_t::active() const
+bool item_t::active()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   if ( ! encoded_name_str.empty() ) return true;
   return false;
 }
 
 // item_t::heroic ===========================================================
 
-bool item_t::heroic() const
+bool item_t::heroic()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_heroic;
 }
 
 // item_t::lfr ==============================================================
 
-bool item_t::lfr() const
+bool item_t::lfr()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_lfr;
 }
 
 // item_t::ptr ==============================================================
 
-bool item_t::ptr() const
+bool item_t::ptr()
 {
   return is_ptr;
 }
@@ -145,21 +141,21 @@ bool item_t::ptr() const
 
 bool item_t::matching_type()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_matching_type;
 }
 
 // item_t::reforged =========================================================
 
-bool item_t::reforged() const
+bool item_t::reforged()
 {
-  if ( slot == SLOT_NONE ) return false;
+  if ( slot == SLOT_INVALID ) return false;
   return is_reforged;
 }
 
 // item_t::name =============================================================
 
-const char* item_t::name() const
+const char* item_t::name()
 {
   if ( ! encoded_name_str.empty() ) return encoded_name_str.c_str();
   if ( !  armory_name_str.empty() ) return  armory_name_str.c_str();
@@ -168,25 +164,24 @@ const char* item_t::name() const
 
 // item_t::slot_name ========================================================
 
-const char* item_t::slot_name() const
+const char* item_t::slot_name()
 {
-  return util_t::slot_type_string( slot );
+  return util::slot_type_string( slot );
 }
 
 // item_t::slot_name ========================================================
 
 const char* item_t::armor_type()
 {
-  return util_t::armor_type_string( player -> type, slot );
+  return util::armor_type_string( player -> type, slot );
 }
 
 // item_t::weapon ===========================================================
 
-weapon_t* item_t::weapon() const
+weapon_t* item_t::weapon()
 {
   if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
   if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );
-  if ( slot == SLOT_RANGED    ) return &( player ->    ranged_weapon );
   return 0;
 }
 
@@ -230,23 +225,23 @@ bool item_t::parse_options()
 
   option_t::parse( sim, option_name_str.c_str(), options, remainder );
 
-  armory_t::format( option_name_str );
+  util::tokenize( option_name_str );
 
-  util_t::tolower( option_id_str            );
-  util_t::tolower( option_stats_str         );
-  util_t::tolower( option_gems_str          );
-  util_t::tolower( option_enchant_str       );
-  util_t::tolower( option_addon_str         );
-  util_t::tolower( option_equip_str         );
-  util_t::tolower( option_use_str           );
-  util_t::tolower( option_weapon_str        );
-  util_t::tolower( option_heroic_str        );
-  util_t::tolower( option_lfr_str           );
-  util_t::tolower( option_armor_type_str    );
-  util_t::tolower( option_reforge_str       );
-  util_t::tolower( option_random_suffix_str );
-  util_t::tolower( option_ilevel_str        );
-  util_t::tolower( option_quality_str       );
+  util::tolower( option_id_str            );
+  util::tolower( option_stats_str         );
+  util::tolower( option_gems_str          );
+  util::tolower( option_enchant_str       );
+  util::tolower( option_addon_str         );
+  util::tolower( option_equip_str         );
+  util::tolower( option_use_str           );
+  util::tolower( option_weapon_str        );
+  util::tolower( option_heroic_str        );
+  util::tolower( option_lfr_str           );
+  util::tolower( option_armor_type_str    );
+  util::tolower( option_reforge_str       );
+  util::tolower( option_random_suffix_str );
+  util::tolower( option_ilevel_str        );
+  util::tolower( option_quality_str       );
 
   return true;
 }
@@ -303,23 +298,25 @@ bool item_t::init()
     }
   }
 
-  if ( encoded_name_str != "empty" &&
-       encoded_name_str != "none" )
+  if ( encoded_name_str.empty() || encoded_name_str == "empty" || encoded_name_str == "none" )
   {
-    id_str                    = armory_id_str;
-    encoded_stats_str         = armory_stats_str;
-    encoded_reforge_str       = armory_reforge_str;
-    encoded_gems_str          = armory_gems_str;
-    encoded_enchant_str       = armory_enchant_str;
-    encoded_addon_str         = armory_addon_str;
-    encoded_weapon_str        = armory_weapon_str;
-    encoded_heroic_str        = armory_heroic_str;
-    encoded_lfr_str           = armory_lfr_str;
-    encoded_armor_type_str    = armory_armor_type_str;
-    encoded_ilevel_str        = armory_ilevel_str;
-    encoded_quality_str       = armory_quality_str;
-    encoded_random_suffix_str = armory_random_suffix_str;
+    encode_options();
+    return true;
   }
+
+  id_str                    = armory_id_str;
+  encoded_stats_str         = armory_stats_str;
+  encoded_reforge_str       = armory_reforge_str;
+  encoded_gems_str          = armory_gems_str;
+  encoded_enchant_str       = armory_enchant_str;
+  encoded_addon_str         = armory_addon_str;
+  encoded_weapon_str        = armory_weapon_str;
+  encoded_heroic_str        = armory_heroic_str;
+  encoded_lfr_str           = armory_lfr_str;
+  encoded_armor_type_str    = armory_armor_type_str;
+  encoded_ilevel_str        = armory_ilevel_str;
+  encoded_quality_str       = armory_quality_str;
+  encoded_random_suffix_str = armory_random_suffix_str;
 
   if ( ! option_heroic_str.empty()  ) encoded_heroic_str  = option_heroic_str;
 
@@ -341,8 +338,8 @@ bool item_t::init()
 
   if ( ! decode_quality() ) return false;
 
-  unique_gear_t::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
-  unique_gear_t::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
@@ -450,7 +447,7 @@ bool item_t::decode_ilevel()
 bool item_t::decode_quality()
 {
   if ( ! encoded_quality_str.empty() )
-    quality = util_t::parse_item_quality( encoded_quality_str );
+    quality = util::parse_item_quality( encoded_quality_str );
   return true;
 }
 
@@ -467,7 +464,7 @@ bool item_t::decode_stats()
   {
     token_t& t = tokens[ i ];
 
-    int s = util_t::parse_stat_type( t.name );
+    stat_e s = util::parse_stat_type( t.name );
 
     if ( s != STAT_NONE )
     {
@@ -520,8 +517,8 @@ bool item_t::decode_reforge()
     return false;
   }
 
-  stat_type s1 = util_t::parse_reforge_type( tokens[ 0 ].name );
-  stat_type s2 = util_t::parse_reforge_type( tokens[ 1 ].name );
+  stat_e s1 = util::parse_reforge_type( tokens[ 0 ].name );
+  stat_e s2 = util::parse_reforge_type( tokens[ 1 ].name );
   if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
   {
     sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n",
@@ -584,7 +581,7 @@ bool item_t::decode_random_suffix()
 
   if ( sim -> debug )
   {
-    log_t::output( sim, "random_suffix: item=%s suffix_id=%ld ilevel=%d quality=%d random_point_pool=%d",
+    sim -> output( "random_suffix: item=%s suffix_id=%ld ilevel=%d quality=%d random_point_pool=%d",
                    name(), rsid, ilevel, quality, f );
   }
 
@@ -617,7 +614,7 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_type stat = util_t::translate_item_mod( enchant_data.ench_prop[ j ] );
+      stat_e stat = util::translate_item_mod( static_cast<item_mod_type>( enchant_data.ench_prop[ j ] ) );
 
       if ( stat == STAT_NONE ) continue;
 
@@ -627,20 +624,20 @@ bool item_t::decode_random_suffix()
         base_stats.add_stat( stat, static_cast< int >( stat_amount ) );
         stats.add_stat( stat, static_cast< int >( stat_amount ) );
 
-        std::string stat_str = util_t::stat_type_abbrev( stat );
-        stat_str = tolower( stat_str );
+        std::string stat_str = util::stat_type_abbrev( stat );
+        stat_str = util::tolower( stat_str );
         char statbuf[32];
         snprintf( statbuf, sizeof( statbuf ), "%d%s", static_cast< int >( stat_amount ), stat_str.c_str() );
         stat_list.push_back( statbuf );
 
         if ( sim -> debug )
-          log_t::output( sim, "random_suffix: stat=%d (%s) stat_amount=%f", stat, stat_str.c_str(), stat_amount );
+          sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat, stat_str.c_str(), stat_amount );
       }
       else
       {
         if ( sim -> debug )
         {
-          log_t::output( sim, "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.",
+          sim -> output( "random_suffix: Player %s item %s attempted to add base stat %d %d (%d) twice, due to random suffix.",
                          player -> name(), name(), j, stat, enchant_data.ench_type[ j ] );
         }
       }
@@ -648,7 +645,7 @@ bool item_t::decode_random_suffix()
   }
 
   std::string name_str = suffix_data.suffix;
-  armory_t::format( name_str );
+  util::tokenize( name_str );
 
   if ( encoded_name_str.find( name_str ) == std::string::npos )
   {
@@ -687,9 +684,9 @@ bool item_t::decode_gems()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_e s;
 
-    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -708,7 +705,7 @@ bool item_t::decode_gems()
     }
   }
 
-  int meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
+  meta_gem_e meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
 
   if ( meta_gem != META_GEM_NONE )
   {
@@ -732,6 +729,7 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "hurricane"        ||
        encoded_enchant_str == "landslide"        ||
        encoded_enchant_str == "power_torrent"    ||
+       encoded_enchant_str == "jade_spirit"      ||
        encoded_enchant_str == "windwalk"         ||
        encoded_enchant_str == "spellsurge"       ||
        encoded_enchant_str == "synapse_springs"  ||
@@ -741,20 +739,8 @@ bool item_t::decode_enchant()
     return true;
   }
 
-  if ( encoded_enchant_str == "lightweave_embroidery" ||
-       encoded_enchant_str == "lightweave_embroidery_old" ||
-       encoded_enchant_str == "lightweave" ||
-       encoded_enchant_str == "lightweave_old" ||
-       encoded_enchant_str == "swordguard_embroidery" ||
-       encoded_enchant_str == "swordguard_embroidery_old" ||
-       encoded_enchant_str == "darkglow_embroidery" ||
-       encoded_enchant_str == "darkglow_embroidery_old" )
-  {
-    stats.add_stat( STAT_SPIRIT, 1 );
-  }
-
   std::string use_str;
-  if ( unique_gear_t::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     use.name_str = encoded_enchant_str;
@@ -762,7 +748,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, encoded_enchant_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_enchant = true;
     enchant.name_str = encoded_enchant_str;
@@ -775,9 +761,9 @@ bool item_t::decode_enchant()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_e s;
 
-    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -797,14 +783,14 @@ bool item_t::decode_addon()
 {
   if ( encoded_addon_str == "none" ) return true;
 
-  if ( encoded_addon_str == "synapse_springs" )
+  if ( encoded_addon_str == "synapse_springs" || encoded_addon_str == "nitro_boosts" || encoded_addon_str == "flexweave_underlay" )
   {
     unique_addon = true;
     return true;
   }
 
   std::string use_str;
-  if ( unique_gear_t::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     use.name_str = encoded_addon_str;
@@ -812,7 +798,7 @@ bool item_t::decode_addon()
   }
 
   std::string equip_str;
-  if ( unique_gear_t::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, encoded_addon_str, heroic(), lfr(), player -> dbc.ptr ) )
   {
     unique_addon = true;
     addon.name_str = encoded_addon_str;
@@ -825,9 +811,9 @@ bool item_t::decode_addon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
+    stat_e s;
 
-    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       stats.add_stat( s, t.value );
     }
@@ -854,21 +840,21 @@ bool item_t::decode_special( special_effect_t& effect,
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int s;
-    school_type sc;
+    stat_e s;
+    school_e sc;
 
-    if ( ( s = util_t::parse_stat_type( t.name ) ) != STAT_NONE )
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
     {
       effect.stat = s;
       effect.stat_amount = t.value;
     }
-    else if ( ( sc = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( sc = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       effect.school = sc;
       effect.discharge_amount = t.value;
 
       std::vector<std::string> splits;
-      if ( 2 == util_t::string_split( splits, t.value_str, "+" ) )
+      if ( 2 == util::string_split( splits, t.value_str, "+" ) )
       {
         effect.discharge_amount  = atof( splits[ 0 ].c_str() );
         effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
@@ -913,53 +899,53 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "nocrit" )
     {
-      effect.override_result_types_mask |= RESULT_CRIT_MASK;
-      effect.result_types_mask &= ~RESULT_CRIT_MASK;
+      effect.override_result_es_mask |= RESULT_CRIT_MASK;
+      effect.result_es_mask &= ~RESULT_CRIT_MASK;
     }
     else if ( t.name == "maycrit" )
     {
-      effect.override_result_types_mask |= RESULT_CRIT_MASK;
-      effect.result_types_mask |= RESULT_CRIT_MASK;
+      effect.override_result_es_mask |= RESULT_CRIT_MASK;
+      effect.result_es_mask |= RESULT_CRIT_MASK;
     }
     else if ( t.name == "nomiss" )
     {
-      effect.override_result_types_mask |= RESULT_MISS_MASK;
-      effect.result_types_mask &= ~RESULT_MISS_MASK;
+      effect.override_result_es_mask |= RESULT_MISS_MASK;
+      effect.result_es_mask &= ~RESULT_MISS_MASK;
     }
     else if ( t.name == "maymiss" )
     {
-      effect.override_result_types_mask |= RESULT_MISS_MASK;
-      effect.result_types_mask |= RESULT_MISS_MASK;
+      effect.override_result_es_mask |= RESULT_MISS_MASK;
+      effect.result_es_mask |= RESULT_MISS_MASK;
     }
     else if ( t.name == "nododge" )
     {
-      effect.override_result_types_mask |= RESULT_DODGE_MASK;
-      effect.result_types_mask &= ~RESULT_DODGE_MASK;
+      effect.override_result_es_mask |= RESULT_DODGE_MASK;
+      effect.result_es_mask &= ~RESULT_DODGE_MASK;
     }
     else if ( t.name == "maydodge" )
     {
-      effect.override_result_types_mask |= RESULT_DODGE_MASK;
-      effect.result_types_mask |= RESULT_DODGE_MASK;
+      effect.override_result_es_mask |= RESULT_DODGE_MASK;
+      effect.result_es_mask |= RESULT_DODGE_MASK;
     }
     else if ( t.name == "noparry" )
     {
-      effect.override_result_types_mask |= RESULT_PARRY_MASK;
-      effect.result_types_mask &= ~RESULT_PARRY_MASK;
+      effect.override_result_es_mask |= RESULT_PARRY_MASK;
+      effect.result_es_mask &= ~RESULT_PARRY_MASK;
     }
     else if ( t.name == "mayparry" )
     {
-      effect.override_result_types_mask |= RESULT_PARRY_MASK;
-      effect.result_types_mask |= RESULT_PARRY_MASK;
+      effect.override_result_es_mask |= RESULT_PARRY_MASK;
+      effect.result_es_mask |= RESULT_PARRY_MASK;
     }
     else if ( t.name == "noblock" )
     {
-      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
-      effect.result_types_mask &= ~RESULT_BLOCK_MASK;
+      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_es_mask &= ~RESULT_BLOCK_MASK;
     }
     else if ( t.name == "mayblock" )
     {
-      effect.override_result_types_mask |= RESULT_BLOCK_MASK;
-      effect.result_types_mask |= RESULT_BLOCK_MASK;
+      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
+      effect.result_es_mask |= RESULT_BLOCK_MASK;
     }
     else if ( t.name == "nobuffs" )
     {
@@ -972,6 +958,16 @@ bool item_t::decode_special( special_effect_t& effect,
     else if ( t.name == "norefresh" )
     {
       effect.no_refresh = true;
+    }
+    else if ( t.full == "aoe" )
+    {
+      effect.aoe = -1;
+    }
+    else if ( t.name == "aoe" )
+    {
+      effect.aoe = ( int ) t.value;
+      if ( effect.aoe < -1 )
+        effect.aoe = -1;
     }
     else if ( t.full == "ondamage" )
     {
@@ -996,6 +992,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_str  = t.full;
       effect.trigger_type = PROC_DIRECT_DAMAGE;
       effect.trigger_mask = SCHOOL_ALL_MASK;
+    }
+    else if ( t.full == "ondirectharmfulspellhit" )
+    {
+      effect.trigger_str  = t.full;
+      effect.trigger_type = PROC_DIRECT_HARMFUL_SPELL;
+      effect.trigger_mask = RESULT_HIT_MASK;
     }
     else if ( t.full == "onspelldamage" )
     {
@@ -1231,6 +1233,12 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.trigger_type = PROC_DAMAGE_HEAL;
       effect.trigger_mask = SCHOOL_SPELL_MASK;
     }
+    else if ( t.full == "ondamagehealspellcast" )
+    {
+      effect.trigger_str = t.full;
+      effect.trigger_type = PROC_DAMAGE_HEAL_SPELL;
+      effect.trigger_mask = RESULT_NONE_MASK;
+    }
     else
     {
       sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
@@ -1256,14 +1264,14 @@ bool item_t::decode_weapon()
   for ( int i=0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
-    int type;
-    school_type school;
+    weapon_e type;
+    school_e school;
 
-    if ( ( type = util_t::parse_weapon_type( t.name ) ) != WEAPON_NONE )
+    if ( ( type = util::parse_weapon_type( t.name ) ) != WEAPON_NONE )
     {
       w -> type = type;
     }
-    else if ( ( school = util_t::parse_school_type( t.name ) ) != SCHOOL_NONE )
+    else if ( ( school = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
     {
       w -> school = school;
     }
@@ -1347,7 +1355,7 @@ bool item_t::download_slot( item_t& item,
                             const std::string& rsuffix_id,
                             const std::string gem_ids[ 3 ] )
 {
-  const cache::behavior_t cb = cache::items();
+  const cache::behavior_e cb = cache::items();
   bool success = false;
 
   if ( cb != cache::CURRENT )
@@ -1360,16 +1368,14 @@ bool item_t::download_slot( item_t& item,
       if ( src == "local" )
         has_local = true;
       else if ( src == "wowhead" )
-        success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "ptrhead" )
-        success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                 rsuffix_id, gem_ids, cache::ONLY );
-      else if ( src == "armory" )
-        success = armory_t::download_slot( item, item_id, cache::ONLY );
+        success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                               rsuffix_id, gem_ids, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cache::ONLY );
@@ -1387,16 +1393,14 @@ bool item_t::download_slot( item_t& item,
     {
       const std::string& src = item.sim -> item_db_sources[ i ];
       if ( src == "wowhead" )
-        success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, item.player -> dbc.ptr, cb );
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cb );
       else if ( src == "ptrhead" )
-        success = wowhead_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                            rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                 rsuffix_id, gem_ids, cb );
-      else if ( src == "armory" )
-        success = armory_t::download_slot( item, item_id, cache::items() );
+        success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                               rsuffix_id, gem_ids, cb );
       else if ( src == "bcpapi" )
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cb );
@@ -1429,13 +1433,11 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       if ( source_list[ i ] == "local" )
         has_local = true;
       else if ( source_list[ i ] == "wowhead" )
-        success = wowhead_t::download_item( item, item_id, false, cache::ONLY );
+        success = wowhead::download_item( item, item_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        success = wowhead_t::download_item( item, item_id, true, cache::ONLY );
+        success = wowhead::download_item( item, item_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        success = mmo_champion_t::download_item( item, item_id, cache::ONLY );
-      else if ( source_list[ i ] == "armory" )
-        success = armory_t::download_item( item, item_id, cache::ONLY );
+        success = mmo_champion::download_item( item, item_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id, cache::ONLY );
     }
@@ -1450,13 +1452,11 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     for ( unsigned i = 0; ! success && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        success = wowhead_t::download_item( item, item_id, false );
+        success = wowhead::download_item( item, item_id, false );
       else if ( source_list[ i ] == "ptrhead" )
-        success = wowhead_t::download_item( item, item_id, true );
+        success = wowhead::download_item( item, item_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        success = mmo_champion_t::download_item( item, item_id );
-      else if ( source_list[ i ] == "armory" )
-        success = armory_t::download_item( item, item_id );
+        success = mmo_champion::download_item( item, item_id );
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id );
     }
@@ -1482,11 +1482,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       if ( src == "local" )
         has_local = true;
       else if ( src == "wowhead" )
-        success = wowhead_t::download_glyph( player, glyph_name, glyph_id, false, cache::ONLY );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, false, cache::ONLY );
       else if ( src == "ptrhead" )
-        success = wowhead_t::download_glyph( player, glyph_name, glyph_id, true, cache::ONLY );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, true, cache::ONLY );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
+        success = mmo_champion::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
     }
@@ -1502,23 +1502,25 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     {
       const std::string& src = player -> sim -> item_db_sources[ i ];
       if ( src == "wowhead" )
-        success = wowhead_t::download_glyph( player, glyph_name, glyph_id );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "ptrhead" )
-        success = wowhead_t::download_glyph( player, glyph_name, glyph_id, true );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, true );
       else if ( src == "mmoc" )
-        success = mmo_champion_t::download_glyph( player, glyph_name, glyph_id );
+        success = mmo_champion::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id );
     }
   }
+
+  util::glyph_name( glyph_name );
 
   return success;
 }
 
 // item_t::parse_gem ========================================================
 
-int item_t::parse_gem( item_t&            item,
-                       const std::string& gem_id )
+gem_e item_t::parse_gem( item_t&            item,
+                         const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
@@ -1531,46 +1533,46 @@ int item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  int gem_type = GEM_NONE;
+  gem_e type = GEM_NONE;
 
   if ( cache::items() != cache::CURRENT )
   {
     // Check data source caches, except local
     bool has_local = false;
 
-    for ( unsigned i = 0; gem_type == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
         has_local = true;
       else if ( source_list[ i ] == "wowhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, false, cache::ONLY );
+        type = wowhead::parse_gem( item, gem_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, true, cache::ONLY );
+        type = wowhead::parse_gem( item, gem_id, true, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type = mmo_champion_t::parse_gem( item, gem_id, cache::ONLY );
+        type = mmo_champion::parse_gem( item, gem_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
+        type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
     }
 
-    if ( gem_type == GEM_NONE && has_local )
-      gem_type = item_database_t::parse_gem( item, gem_id );
+    if ( type == GEM_NONE && has_local )
+      type = item_database_t::parse_gem( item, gem_id );
   }
 
   if ( cache::items() != cache::ONLY )
   {
     // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
-    for ( unsigned i = 0; gem_type == GEM_NONE && i < source_list.size(); i++ )
+    for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id );
+        type = wowhead::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "ptrhead" )
-        gem_type = wowhead_t::parse_gem( item, gem_id, true );
+        type = wowhead::parse_gem( item, gem_id, true );
       else if ( source_list[ i ] == "mmoc" )
-        gem_type = mmo_champion_t::parse_gem( item, gem_id );
+        type = mmo_champion::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "bcpapi" )
-        gem_type = bcp_api::parse_gem( item, gem_id );
+        type = bcp_api::parse_gem( item, gem_id );
     }
   }
 
-  return gem_type;
+  return type;
 }

@@ -1,0 +1,44 @@
+#!./simc 
+
+mage=Mage_Fire_T13H
+origin="http://www.wowhead.com/profile=33895045"
+level=85
+race=troll
+position=back
+role=spell
+spec=fire
+professions=blacksmithing=525/tailoring=525
+talents=000000
+glyphs=fireball/pyroblast/molten_armor/evocation/dragons_breath/mana_shield/conjuring/arcane_brilliance/slow_fall
+head=time_lords_hood,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit,reforge=haste_hit,gems=burning_shadowspirit_50int_30int
+neck=flowform_choker,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery,reforge=mastery_crit,gems=50int_10int
+shoulders=time_lords_mantle,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery,reforge=mastery_haste,gems=50int_50int_20int,enchant=50int_25haste
+chest=time_lords_robes,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste,reforge=haste_crit,gems=50int_50int_25int_25crit_30int,enchant=20all
+waist=cord_of_the_slain_champion,heroic=1,type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste,reforge=haste_hit,gems=50int_50int_50int_20int
+legs=time_lords_leggings,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste,reforge=mastery_hit,gems=50int_50int_25int_25crit_30int,enchant=95int_80sta
+feet=janglespur_jackboots,heroic=1,type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste,reforge=haste_hit,gems=50int_50int_20int,enchant=50hit
+wrists=bracers_of_the_banished,heroic=1,type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste,reforge=mastery_hit,gems=50int_50int_10int,enchant=50int
+hands=gloves_of_liquid_smoke,heroic=1,type=cloth,ilevel=416,quality=epic,stats=1059armor_391int_647sta_291haste_238crit,reforge=haste_hit,gems=50int_50int_50int_20int,enchant=65mastery
+finger1=ring_of_the_riven,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste,reforge=mastery_hit,gems=50int_10int
+finger2=infinite_loop,heroic=1,ilevel=410,quality=epic,stats=286int_459sta_164hit_212crit,gems=50int_10int
+trinket1=will_of_unbinding,heroic=1,ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
+trinket2=insignia_of_the_corrupted_mind,heroic=1,ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
+back=nanoprecise_cape,ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit,reforge=mastery_crit,gems=50int_10int,enchant=lightweave_embroidery_2
+main_hand=dragonwrath_tarecgosas_rest,ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,reforge=haste_crit,gems=50int_50int_50int_30int,enchant=power_torrent,weapon=staff_3.30speed_869min_1304max
+# Gear Summary
+# gear_strength=20
+# gear_agility=20
+# gear_stamina=8208
+# gear_intellect=7271
+# gear_spirit=21
+# gear_spell_power=2786
+# gear_hit_rating=1749
+# gear_crit_rating=1943
+# gear_haste_rating=2225
+# gear_mastery_rating=906
+# gear_armor=10254
+# meta_gem=burning_shadowspirit
+# tier13_2pc_caster=1
+# tier13_4pc_caster=1
+# back=nanoprecise_cape,enchant=lightweave_embroidery_2
+# main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1304max,enchant=power_torrent

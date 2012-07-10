@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.h"
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Gear Stats
@@ -11,8 +11,8 @@
 
 // gear_stats_t::add_stat ===================================================
 
-void gear_stats_t::add_stat( int    stat,
-                             double value )
+void gear_stats_t::add_stat( stat_e stat,
+                             double      value )
 {
   switch ( stat )
   {
@@ -29,7 +29,7 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_RAGE:   resource[ RESOURCE_RAGE   ] += value; break;
   case STAT_ENERGY: resource[ RESOURCE_ENERGY ] += value; break;
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] += value; break;
-  case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] += value; break;
+  case STAT_RUNIC:  resource[ RESOURCE_RUNIC_POWER  ] += value; break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -39,7 +39,6 @@ void gear_stats_t::add_stat( int    stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       += value; break;
-  case STAT_SPELL_PENETRATION: spell_penetration += value; break;
   case STAT_MP5:               mp5               += value; break;
 
   case STAT_ATTACK_POWER:             attack_power             += value; break;
@@ -67,17 +66,19 @@ void gear_stats_t::add_stat( int    stat,
 
   case STAT_MASTERY_RATING: mastery_rating += value; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] += value; }
+  case STAT_ALL:
+    for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    { attribute[ i ] += value; }
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
 // gear_stats_t::set_stat ===================================================
 
-void gear_stats_t::set_stat( int    stat,
-                             double value )
+void gear_stats_t::set_stat( stat_e stat,
+                             double      value )
 {
   switch ( stat )
   {
@@ -94,7 +95,7 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_RAGE:   resource[ RESOURCE_RAGE   ] = value; break;
   case STAT_ENERGY: resource[ RESOURCE_ENERGY ] = value; break;
   case STAT_FOCUS:  resource[ RESOURCE_FOCUS  ] = value; break;
-  case STAT_RUNIC:  resource[ RESOURCE_RUNIC  ] = value; break;
+  case STAT_RUNIC:  resource[ RESOURCE_RUNIC_POWER  ] = value; break;
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -104,7 +105,6 @@ void gear_stats_t::set_stat( int    stat,
   case STAT_MAX_RUNIC:  break;
 
   case STAT_SPELL_POWER:       spell_power       = value; break;
-  case STAT_SPELL_PENETRATION: spell_penetration = value; break;
   case STAT_MP5:               mp5               = value; break;
 
   case STAT_ATTACK_POWER:             attack_power             = value; break;
@@ -132,16 +132,18 @@ void gear_stats_t::set_stat( int    stat,
 
   case STAT_MASTERY_RATING: mastery_rating = value; break;
 
-  case STAT_MAX: for ( int i=0; i < ATTRIBUTE_MAX; i++ ) { attribute[ i ] = value; }
+  case STAT_ALL:
+    for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+    { attribute[ i ] = value; }
     break;
 
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
 // gear_stats_t::get_stat ===================================================
 
-double gear_stats_t::get_stat( int stat ) const
+double gear_stats_t::get_stat( stat_e stat )
 {
   switch ( stat )
   {
@@ -158,7 +160,7 @@ double gear_stats_t::get_stat( int stat ) const
   case STAT_RAGE:   return resource[ RESOURCE_RAGE   ];
   case STAT_ENERGY: return resource[ RESOURCE_ENERGY ];
   case STAT_FOCUS:  return resource[ RESOURCE_FOCUS  ];
-  case STAT_RUNIC:  return resource[ RESOURCE_RUNIC  ];
+  case STAT_RUNIC:  return resource[ RESOURCE_RUNIC_POWER  ];
 
   case STAT_MAX_HEALTH:
   case STAT_MAX_MANA:
@@ -168,7 +170,6 @@ double gear_stats_t::get_stat( int stat ) const
   case STAT_MAX_RUNIC:  return 0;
 
   case STAT_SPELL_POWER:       return spell_power;
-  case STAT_SPELL_PENETRATION: return spell_penetration;
   case STAT_MP5:               return mp5;
 
   case STAT_ATTACK_POWER:             return attack_power;
@@ -196,7 +197,9 @@ double gear_stats_t::get_stat( int stat ) const
 
   case STAT_MASTERY_RATING: return mastery_rating;
 
-  default: assert( 0 );
+  case STAT_ALL: return 0;
+
+  default: assert( 0 ); break;
   }
   return 0;
 }
@@ -205,28 +208,28 @@ double gear_stats_t::get_stat( int stat ) const
 
 void gear_stats_t::print( FILE* file )
 {
-  for ( int i=0; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     double value = get_stat( i );
 
     if ( value != 0 )
     {
-      util_t::fprintf( file, " %s=%.*f", util_t::stat_type_abbrev( i ), ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
+      util::fprintf( file, " %s=%.*f", util::stat_type_abbrev( i ),
+                     ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
     }
   }
-  util_t::fprintf( file, "\n" );
+  util::fprintf( file, "\n" );
 }
 
 // gear_stats_t::stat_mod ===================================================
 
-double gear_stats_t::stat_mod( int stat )
+double gear_stats_t::stat_mod( stat_e stat )
 {
   switch ( stat )
   {
   case STAT_MP5:               return 2.50;
   case STAT_ATTACK_POWER:      return 0.50;
   case STAT_SPELL_POWER:       return 0.86;
-  case STAT_SPELL_PENETRATION: return 0.80;
+  default:                     return 1.0;
   }
-  return 1.0;
 }
