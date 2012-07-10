@@ -448,26 +448,26 @@ void register_mirror_scope( player_t* p, const std::string& enchant, weapon_t* w
   }
 }
 
-#if 0
 void register_elemental_force( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
   if ( mh_enchant == "elemental_force" || oh_enchant == "elemental_force" )
   {
     if ( mh_enchant == "elemental_force" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_mh", p, mhw, 1, SCHOOL_ELEMENTAL, 3000, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_mh", p, mhw, 1, SCHOOL_ELEMENTAL, 3000, 0, 3.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "elemental_force" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, 3000, 0, 5.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_oh", p, ohw, 1, SCHOOL_ELEMENTAL, 3000, 0, 3.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
-    action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_s", p, 0, 1, SCHOOL_ELEMENTAL, 3000, 0.25/*FIXED*/, 0, timespan_t::from_seconds( 0.01 )/*CD*/ );
-    p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+    // TO-DO: Confirm proc rate.
+    action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_s", p, 0, 1, SCHOOL_ELEMENTAL, 3000, 0.08/*FIXED*/, 0, timespan_t::from_seconds( 0.01 )/*CD*/ );
+    p -> callbacks.register_tick_damage_callback( RESULT_HIT_MASK, cb );
+    p -> callbacks.register_direct_damage_callback( RESULT_HIT_MASK, cb );
   }
 }
-#endif
 
 } // END ANONYMOUS NAMESPACE
 
@@ -489,6 +489,8 @@ void enchant::init( player_t* p )
   weapon_t* ohw = &( p -> off_hand_weapon );
 
   register_avalanche( p, mh_enchant, oh_enchant, mhw, ohw );
+
+  register_elemental_force( p, mh_enchant, oh_enchant, mhw, ohw );
 
   register_executioner( p, mh_enchant, oh_enchant, mhw, ohw );
 

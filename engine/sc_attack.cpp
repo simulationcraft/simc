@@ -258,7 +258,7 @@ result_e attack_t::calculate_result( double crit, unsigned target_level )
       result = RESULT_CRIT;
   }
 
-  if ( result == RESULT_HIT && may_block ) // Specials are 2-roll calculations
+  if ( result == RESULT_HIT && may_block ) // Blocks are on their own roll
   {
     int delta_level = target_level - player -> level;
 
