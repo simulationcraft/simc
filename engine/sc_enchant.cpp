@@ -49,6 +49,53 @@ struct weapon_stat_proc_callback_t : public action_callback_t
   }
 };
 
+// Weapon 2-Stat Proc Callback ================================================
+
+struct weapon_2_stat_proc_callback_t : public action_callback_t
+{
+  weapon_t* weapon;
+  buff_t* buff;
+  buff_t* buff2;
+  double PPM;
+  bool all_damage;
+  bool (*check_func)( action_t* a );
+
+  weapon_2_stat_proc_callback_t( player_t* p, weapon_t* w, buff_t* b, buff_t* b2, bool (*c)( action_t* a ), double ppm=0.0, bool all=false  ) :
+    action_callback_t( p ), weapon( w ), buff( b ), buff2( b2 ), PPM( ppm ), all_damage( all ), check_func( c ) {}
+
+  virtual void trigger( action_t* a, void* /* call_data */ )
+  {
+    bool res = false;
+
+    if ( ! all_damage && a -> proc ) return;
+    if ( weapon && a -> weapon != weapon ) return;
+
+    if ( PPM > 0 )
+    {
+      res = buff -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) ); // scales with haste
+    }
+    else
+    {
+      res = buff -> trigger();
+    }
+    buff -> up();  // track uptime info
+
+    if ( res && check_func( a ) )
+    {
+      if ( PPM > 0 )
+      {
+        buff2 -> trigger( 1, 0, weapon -> proc_chance_on_swing( PPM ) );
+      }
+      else
+      {
+        buff2 -> trigger();
+      }
+      buff2 -> up();
+    }
+  }
+};
+
+
 // Weapon Discharge Proc Callback ===========================================
 
 struct weapon_discharge_proc_callback_t : public action_callback_t
@@ -359,17 +406,35 @@ void register_power_torrent( player_t* p, const std::string& enchant, const std:
 
 // FIX ME: Guessing at proc chance, ICD; not sure how to implement
 // conditional spirit buff
+static bool jade_spirit_check_func( action_t* a )
+{
+  if ( a -> player -> resources.max[ RESOURCE_MANA ] <= 0.0 ) return false;
+
+  if ( a -> player -> resources.current[ RESOURCE_MANA ] / a -> player -> resources.max[ RESOURCE_MANA ] < 0.25 )
+    return true;
+
+  return false;
+}
+
 void register_jade_spirit( player_t* p, const std::string& enchant, const std::string& weapon_appendix )
 {
   if ( enchant == "jade_spirit" )
   {
-    stat_buff_t* buff = stat_buff_creator_t( p, "jade_spirit" + weapon_appendix )
-                        .duration( timespan_t::from_seconds( 12 ) )
-                        .cd( timespan_t::from_seconds( 45 ) )
-                        .chance( 0.10 )
-                        .activated( false )
-                        .add_stat( STAT_INTELLECT, 1650 );
-    weapon_stat_proc_callback_t* cb = new weapon_stat_proc_callback_t( p, NULL, buff );
+    stat_buff_t* buff  = stat_buff_creator_t( p, "jade_spirit" + weapon_appendix )
+                         .duration( timespan_t::from_seconds( 12 ) )
+                         .cd( timespan_t::from_seconds( 45 ) )
+                         .chance( 0.10 )
+                         .activated( false )
+                         .add_stat( STAT_INTELLECT, 1650 );
+    stat_buff_t* buff2 = stat_buff_creator_t( p, "jade_spirit_spi" + weapon_appendix )
+                         .duration( timespan_t::from_seconds( 12 ) )
+                         .cd( timespan_t::from_seconds( 45 ) )
+                         .chance( 1.0 )
+                         .activated( false )
+                         .add_stat( STAT_SPIRIT, 750 );
+
+    weapon_2_stat_proc_callback_t* cb = new weapon_2_stat_proc_callback_t( p, NULL, buff, buff2, jade_spirit_check_func );
+
     p -> callbacks.register_tick_damage_callback  ( RESULT_ALL_MASK, cb );
     p -> callbacks.register_direct_damage_callback( RESULT_ALL_MASK, cb );
     p -> callbacks.register_tick_heal_callback    ( RESULT_ALL_MASK, cb );
