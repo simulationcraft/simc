@@ -4710,7 +4710,8 @@ void shaman_t::init_actions()
       if ( talent_feral_spirit -> rank() ) action_list_str += "/spirit_wolf";
       action_list_str += "/earth_elemental_totem";
       action_list_str += "/fire_nova,if=target.adds>1";
-      action_list_str += "/spiritwalkers_grace,moving=1";
+      if ( level >= 85 )
+        action_list_str += "/spiritwalkers_grace,moving=1";
       action_list_str += "/lightning_bolt,if=buff.maelstrom_weapon.react>1";
     }
     else
@@ -4764,12 +4765,12 @@ void shaman_t::init_actions()
           action_list_str += "/elemental_mastery";
         else
         {
-          action_list_str += "/elemental_mastery,time_to_die<=17";
+          action_list_str += "/elemental_mastery,if=target.time_to_die<=17";
           action_list_str += "/elemental_mastery,if=!buff.bloodlust.react";
         }
       }
 
-      if ( set_bonus.tier13_4pc_heal() )
+      if ( set_bonus.tier13_4pc_heal() &&  level >= 85 )
         action_list_str += "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
 
       if ( ! glyph_unleashed_lightning -> ok() )
@@ -4838,12 +4839,15 @@ void shaman_t::init_actions()
       action_list_str += "/earth_elemental_totem,if=!ticking";
       action_list_str += "/searing_totem";
 
-      if ( glyph_unleashed_lightning -> ok() )
+      if ( level >= 85 )
       {
-        action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0&set_bonus.tier12_4pc_caster=0";
+        if ( glyph_unleashed_lightning -> ok() )
+        {
+          action_list_str += "/spiritwalkers_grace,moving=1,if=cooldown.lava_burst.remains=0&set_bonus.tier12_4pc_caster=0";
+        }
+        else
+          action_list_str += "/spiritwalkers_grace,moving=1";
       }
-      else
-        action_list_str += "/spiritwalkers_grace,moving=1";
 
       action_list_str += "/chain_lightning,if=target.adds>2";
       if ( ! ( set_bonus.tier11_4pc_caster() || level > 80 ) )
