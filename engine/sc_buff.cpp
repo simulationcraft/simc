@@ -995,7 +995,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   {
     for ( size_t i = 0; i < params.stats.size(); ++i )
     {
-      stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount ) );
+      stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount, params.stats[ i ].check_func ) );
     }
   }
 }
@@ -1008,6 +1008,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
   buff_t::bump( stacks );
   for ( size_t i = 0; i < stats.size(); ++i )
   {
+    if ( stats[ i ].check_func && ! stats[ i ].check_func( player ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
     if ( delta > 0 )
     {
@@ -1032,7 +1033,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     for ( size_t i = 0; i < stats.size(); ++i )
     {
       double delta = stats[ i ].amount * stacks;
-      player -> stat_loss( stats[ i ].stat, delta, 0, 0, buff_duration > timespan_t::zero() );
+      player -> stat_loss( stats[ i ].stat, ( delta <= stats[ i ].current_value ) ? delta : 0.0, 0, 0, buff_duration > timespan_t::zero() );
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;

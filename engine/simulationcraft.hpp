@@ -1850,8 +1850,10 @@ private:
   {
     stat_e stat;
     double amount;
-    buff_stat_t( stat_e s, double a ) :
-      stat( s ), amount( a ) {}
+    bool (*check_func)( player_t* p );
+
+    buff_stat_t( stat_e s, double a, bool (*c)( player_t* ) = 0 ) :
+      stat( s ), amount( a ), check_func( c ) {}
   };
 
   std::vector<buff_stat_t> stats;
@@ -1863,8 +1865,8 @@ public:
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ) {}
 
-  bufftype& add_stat( stat_e s, double a )
-  { stats.push_back( buff_stat_t( s, a ) ); return *this; }
+  bufftype& add_stat( stat_e s, double a, bool (*c)( player_t* ) = 0 )
+  { stats.push_back( buff_stat_t( s, a, c ) ); return *this; }
 
   operator stat_buff_t* () const;
 };
@@ -2023,8 +2025,10 @@ struct stat_buff_t : public buff_t
     stat_e stat;
     double amount;
     double current_value;
-    buff_stat_t( stat_e s, double a ) :
-      stat( s ), amount( a ), current_value( 0 ) {}
+    bool (*check_func)( player_t* a );
+
+    buff_stat_t( stat_e s, double a, bool (*c)( player_t* a ) = 0 ) :
+      stat( s ), amount( a ), current_value( 0 ), check_func( c ) {}
   };
   std::vector<buff_stat_t> stats;
 
