@@ -109,7 +109,7 @@ namespace std {using namespace tr1; }
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
 #define SC_MAJOR_VERSION "501"
-#define SC_MINOR_VERSION "9"
+#define SC_MINOR_VERSION "10"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
 #ifndef M_PI
