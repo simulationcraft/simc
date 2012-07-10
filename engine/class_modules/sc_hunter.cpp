@@ -22,6 +22,8 @@ using namespace pet_actions;
 // Hunter
 // ==========================================================================
 
+#define CROW_LIMIT 8
+
 struct hunter_t;
 
 struct hunter_pet_t;
@@ -46,6 +48,9 @@ public:
   aspect_type   active_aspect;
   action_t*     active_piercing_shots;
   action_t*     active_vishanka;
+
+  // Secondary pets
+  pet_t* moc_crows[ CROW_LIMIT ];
 
   // Buffs
   struct buffs_t
@@ -1673,6 +1678,134 @@ public:
   }
 };
 
+
+// A Murder of Crows ==============================================================
+
+//in your case, instead of felstorm_t and felstorm_tick_t you'd have moc_t, moc_tick_t, and crow_tick_t or something
+//the tick_action?  I was assumign I'd have one dot which is the murder spell. it's tick_action would spawn a crow dot.
+//and moc_t's tick_action would be an instance of moc_tick_t, and moc_tick_t's tick action would be an instance of crow_tick_t
+//and crow_tick_t would be the actual damage, so it'd have SCHOOL_PHYSICAL etc
+//and a base damage and an attack power coefficient and whatnot
+
+struct moc_crow_t : public pet_t
+{
+  struct peck_t : public melee_attack_t
+  {
+    peck_t( moc_crow_t* player ) :
+      melee_attack_t( "crow_peck", player )
+    {
+      if ( player -> o() -> moc_crows[ 0 ] )
+        stats = player -> o() -> moc_crows[ 0 ] -> get_stats( "crow_peck" );
+
+      background  = true;
+
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = 1;
+      school = SCHOOL_PHYSICAL;
+
+      trigger_gcd = timespan_t::zero();
+
+      background = true;
+      repeating  = true;
+      special    = false;
+      may_glance = true;
+      may_crit   = true;
+    }
+  };
+
+  hunter_t* o() { return static_cast< hunter_t* >( owner ); }
+
+  moc_crow_t( sim_t* sim, hunter_t* owner ) :
+    pet_t( sim, owner, "moc_crow", true /*GUARDIAN*/ )
+  {
+    // FIX ME
+    owner_coeff.ap_from_ap = 1.00;
+  }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    // FIXME numbers are from treant. correct them.
+    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_MANA   ] = 0;
+    
+    stamina_per_owner = 0;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 580;
+    main_hand_weapon.max_dmg    = 580;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    main_hand_attack = new peck_t( this );    
+  }
+/*  
+  void init_actions()
+  {
+    action_list_str = "auto_attack";
+
+    pet_t::init_actions();
+  }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "auto_attack"  ) return new peck_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+  */
+  virtual void summon( timespan_t duration=timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    // Crows cast on the target will instantly perform a melee before
+    // starting to cast wrath
+    main_hand_attack -> execute();
+  }
+};
+
+struct moc_t : public hunter_spell_t
+{
+  int crows_summoned;
+
+  moc_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
+  {
+    crows_summoned = 0;
+
+    hasted_ticks = false;
+    may_crit = true;
+
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    // The eighth tick comes from tick_zero.  Unfortunately tick number 
+    // does not inlude tick_zero, so we need our own counter.
+    num_ticks = 7;
+    tick_zero = true;
+
+    dynamic_tick_action = true;
+    // tick_action = new moc_tick_t( p, data() );
+  }
+
+  virtual void execute()
+  {
+    crows_summoned = 0;
+    hunter_spell_t::execute();
+    // FIXME I'd rather have this get reset on expiration so that it could potentially stack
+  }
+    
+  virtual void tick( dot_t* d )
+  {
+    hunter_spell_t::tick( d );
+    if ( crows_summoned < CROW_LIMIT ) {
+      p() -> moc_crows[ crows_summoned ] -> summon( timespan_t::from_seconds( 16 ) );
+      crows_summoned++;
+    }
+  }
+};
+
 // Aspect of the Hawk =======================================================
 
 struct aspect_of_the_hawk_t : public hunter_spell_t
@@ -1920,6 +2053,7 @@ struct kill_command_t : public hunter_spell_t
   }
 };
 
+
 // Rapid Fire ===============================================================
 
 struct rapid_fire_t : public hunter_spell_t
@@ -2074,7 +2208,7 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    // TODO LOK do we still need to trigger the aura?  e.g., to manage stacking
+    // FIXME do we still need to trigger the aura?  e.g., to manage stacking
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger();
@@ -2319,6 +2453,7 @@ struct hunter_pet_spell_t : public hunter_pet_action_t<spell_t>
                       const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
+    apply_exotic_beast_cd();
   }
 };
 
@@ -2679,6 +2814,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
+  if ( name == "a_murder_of_crows"     ) return new             moc_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
@@ -2729,6 +2865,13 @@ void hunter_t::create_pets()
   create_pet( "raptor",       "raptor"       );
   create_pet( "wind_serpent", "wind_serpent" );
   create_pet( "wolf",         "wolf"         );
+
+  for ( int i = 0; i < CROW_LIMIT; i++ )
+  {
+    moc_crows[ i ] = new moc_crow_t( sim, this );
+    if ( i > 0 )
+      moc_crows[ i ] -> quiet = 1;
+  }
 }
 
 // hunter_t::init_spells ====================================================
@@ -3051,19 +3194,24 @@ void hunter_t::init_actions()
     action_list_str += "/cobra_shot,if=target.adds>5";
     action_list_str += "/kill_shot";
     action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
+    
+    if ( talents.a_murder_of_crows -> ok() ) 
+      action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
+
     action_list_str += "/kill_command";
 
-      if ( talents.fervor -> ok() )
-    action_list_str += "/fervor,if=focus<=37";
+    if ( talents.fervor -> ok() )
+      action_list_str += "/fervor,if=focus<=37";
 
-    action_list_str += "/arcane_shot,if=focus>=59|buff.beast_within.up";
+    action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
+
     if ( level >= 81 )
       action_list_str += "/cobra_shot";
     else
       action_list_str += "/steady_shot";
     break;
 
-    // MAKRMANSHIP
+    // MARKSMANSHIP
     case HUNTER_MARKSMANSHIP:
       action_list_str += init_use_racial_actions();
       action_list_str += "/multi_shot,if=target.adds>5";
@@ -3076,6 +3224,10 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
+          
+      if ( talents.a_murder_of_crows -> ok() ) 
+        action_list_str += "/a_murder_of_crows";
+
       if ( set_bonus.tier13_4pc_melee() )
       {
         action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(target.health.pct<90&!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
@@ -3103,6 +3255,10 @@ void hunter_t::init_actions()
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
+          
+      if ( talents.a_murder_of_crows -> ok() ) 
+        action_list_str += "/a_murder_of_crows";
+
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
       action_list_str += "/rapid_fire";
