@@ -1741,28 +1741,11 @@ struct moc_crow_t : public pet_t
 
     main_hand_attack = new peck_t( this );    
   }
-/*  
-  void init_actions()
-  {
-    action_list_str = "auto_attack";
 
-    pet_t::init_actions();
-  }
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "auto_attack"  ) return new peck_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-  */
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
-    // Crows cast on the target will instantly perform a melee before
-    // starting to cast wrath
+    // Crows cast on the target will instantly perform a melee 
     main_hand_attack -> execute();
   }
 };
@@ -1774,21 +1757,18 @@ struct moc_t : public hunter_spell_t
   moc_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
   {
-    parse_options( NULL, options_str );
-
     crows_summoned = 0;
 
     hasted_ticks = false;
     may_crit = true;
 
     base_tick_time = timespan_t::from_seconds( 2.0 );
-    // The eighth tick comes from tick_zero.  Unfortunately tick number 
+    // The eighth summons comes from tick_zero.  Unfortunately tick number 
     // does not inlude tick_zero, so we need our own counter.
     num_ticks = 7;
     tick_zero = true;
 
     dynamic_tick_action = true;
-    // tick_action = new moc_tick_t( p, data() );
   }
 
   virtual void execute()
