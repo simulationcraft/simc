@@ -1786,19 +1786,19 @@ void print_html_player_buff( FILE* file, buff_t* b, int report_details, size_t i
              b -> default_chance * 100,
              b -> default_value );
 
-    if( stat_buff )
+    if ( stat_buff )
     {
       fprintf( file,
-             "\t\t\t\t\t\t\t\t\t<h4>Stat Buff details</h4>\n"
-             "\t\t\t\t\t\t\t\t\t<ul>\n" );
+               "\t\t\t\t\t\t\t\t\t<h4>Stat Buff details</h4>\n"
+               "\t\t\t\t\t\t\t\t\t<ul>\n" );
 
       for ( size_t i = 0; i < stat_buff -> stats.size(); ++i )
       {
         fprintf( file,
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">stat:</span>%s</li>\n"
-               "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">amount:</span>%.2f</li>\n",
-               util::stat_type_string( stat_buff -> stats[ i ].stat ),
-               stat_buff -> stats[ i ].amount );
+                 "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">stat:</span>%s</li>\n"
+                 "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">amount:</span>%.2f</li>\n",
+                 util::stat_type_string( stat_buff -> stats[ i ].stat ),
+                 stat_buff -> stats[ i ].amount );
       }
     }
     fprintf( file, "\t\t\t\t\t\t\t\t\t</ul>\n" );

@@ -505,17 +505,17 @@ template <class Base>
 struct druid_action_t : public Base
 {
   typedef Base ab; // action base, eg. spell_t
-   typedef druid_action_t base_t;
+  typedef druid_action_t base_t;
 
-   druid_action_t( const std::string& n, druid_t* player,
+  druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-     ab( n, player, s )
-   {
-   }
+    ab( n, player, s )
+  {
+  }
 
-   druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
+  druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
 
-   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================
@@ -915,7 +915,7 @@ struct treants_balance_t : public pet_t
       spell_t( "wrath", player, player -> find_spell( 113769 ) )
     {
       stateless = true;
-      
+
       if ( player -> o() -> pet_treants[ 0 ] )
         stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "wrath" );
     }
@@ -935,7 +935,7 @@ struct treants_balance_t : public pet_t
 
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 0;
-    
+
     base.attribute[ ATTR_INTELLECT ] = 0;
     initial.spell_power_per_intellect = 0;
     intellect_per_owner = 0;
@@ -947,9 +947,9 @@ struct treants_balance_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
 
-    main_hand_attack = new melee_t( this );    
+    main_hand_attack = new melee_t( this );
   }
-  
+
   void init_actions()
   {
     action_list_str = "wrath";
@@ -1017,7 +1017,7 @@ struct treants_feral_t : public pet_t
 
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 0;
-    
+
     stamina_per_owner = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1026,9 +1026,9 @@ struct treants_feral_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
 
-    main_hand_attack = new melee_t( this );    
+    main_hand_attack = new melee_t( this );
   }
-  
+
   void init_actions()
   {
     action_list_str = "auto_attack";
@@ -3175,7 +3175,7 @@ struct faerie_fire_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
-    
+
     if ( p() -> specialization() == DRUID_BALANCE )
     {
       p() -> buff.lunar_empowerment -> trigger( 3 );
@@ -3187,7 +3187,7 @@ struct faerie_fire_t : public druid_spell_t
   {
     return druid_spell_t::ready();
   }
-  
+
   virtual double action_multiplier()
   {
     if ( p() -> buff.bear_form -> check() )
@@ -3195,8 +3195,8 @@ struct faerie_fire_t : public druid_spell_t
     else
       return 0.0;
   }
-  
-  
+
+
   virtual void impact_s( action_state_t* state )
   {
     druid_spell_t::impact_s( state );
@@ -3488,7 +3488,7 @@ struct moonfire_t : public druid_spell_t
   {
     if ( ! druid_spell_t::ready() )
       return false;
-    
+
     if ( p() -> eclipse_bar_direction < 0 && ! p() -> buff.celestial_alignment -> check() )
       return false;
 
@@ -3633,11 +3633,11 @@ struct starfire_t : public druid_spell_t
       }
     }
   }
-  
+
   virtual double action_multiplier()
   {
     double m = druid_spell_t::action_multiplier();
-    
+
     if ( p() -> buff.lunar_empowerment -> up() )
       m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
 
@@ -3646,13 +3646,13 @@ struct starfire_t : public druid_spell_t
 
     return m;
   }
-  
+
   virtual void execute()
   {
     druid_spell_t::execute();
-      
+
     p() -> buff.lunar_empowerment -> decrement();
-    
+
     // Cast starfire, but solar eclipse was up?
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_starfire -> occur();
@@ -3681,7 +3681,7 @@ struct starfire_t : public druid_spell_t
         }
       }
     }
-     
+
   }
 
 };
@@ -3785,7 +3785,7 @@ struct starsurge_t : public druid_spell_t
   virtual double action_multiplier()
   {
     double m = druid_spell_t::action_multiplier();
-    
+
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -4117,7 +4117,7 @@ struct wild_mushroom_detonate_t : public druid_spell_t
   virtual double action_multiplier()
   {
     double m = druid_spell_t::action_multiplier();
-    
+
     m *= p() -> buff.wild_mushroom -> stack();
 
     return m;
@@ -4168,7 +4168,7 @@ struct wrath_t : public druid_spell_t
   virtual double action_multiplier()
   {
     double m = druid_spell_t::action_multiplier();
-    
+
     if ( p() -> buff.solar_empowerment -> up() )
       m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent();
 
@@ -4181,7 +4181,7 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    
+
     p() -> buff.solar_empowerment -> decrement();
 
     // Cast wrath, but lunar eclipse was up?
@@ -4292,7 +4292,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "treants" ) 
+  if ( pet_name == "treants" )
   {
     if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
     if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
@@ -4527,7 +4527,7 @@ void druid_t::init_buffs()
                                .chance( spec.shooting_stars -> effectN( 1 ).percent() );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
-                                
+
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 1 ).trigger() )
                                .max_stack( 3 );
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 2 ).trigger() )
@@ -5084,21 +5084,21 @@ double druid_t::composite_player_multiplier( school_e school, action_t* a )
     if ( school == SCHOOL_ARCANE )
       if ( buff.eclipse_lunar -> up() )
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
 
     if ( school == SCHOOL_NATURE )
       if ( buff.eclipse_solar -> up() )
         m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
-                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
 
     // Both eclipse buffs need their own checks
     if ( school == SCHOOL_SPELLSTORM )
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                 + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
-                 + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + buff.chosen_of_elune -> up() * buff.chosen_of_elune -> data().effectN( 1 ).percent()
+                     + composite_mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
 
   }
 

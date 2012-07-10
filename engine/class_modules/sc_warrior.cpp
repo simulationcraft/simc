@@ -376,7 +376,7 @@ public:
 };
 
 warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
-    actor_pair_t( target, p )
+  actor_pair_t( target, p )
 {
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
 }
@@ -419,7 +419,7 @@ struct warrior_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
   virtual bool   ready();
-  virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t*);
+  virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t* );
 };
 
 

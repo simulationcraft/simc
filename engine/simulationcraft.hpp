@@ -3214,13 +3214,13 @@ struct player_t : public noncopyable
   struct initial_current_t
   {
     initial_current_t() : attribute_multiplier(), resource_reduction(),
-     spell_power_multiplier( 0 ), attack_power_multiplier( 0 ), armor_multiplier( 0 ),
-     spell_power_per_intellect( 0 ), spell_crit_per_intellect( 0 ),
-     attack_power_per_strength( 0 ), attack_power_per_agility( 0 ), attack_crit_per_agility( 0 ),
-     dodge_per_agility( 0 ), parry_rating_per_strength( 0 ),
-     mp5_per_spirit( 0 ), mp5_from_spirit_multiplier( 0 ), health_per_stamina( 0 ),
-     skill( 0 ), distance( 0 ),
-     sleeping( false ) { }
+      spell_power_multiplier( 0 ), attack_power_multiplier( 0 ), armor_multiplier( 0 ),
+      spell_power_per_intellect( 0 ), spell_crit_per_intellect( 0 ),
+      attack_power_per_strength( 0 ), attack_power_per_agility( 0 ), attack_crit_per_agility( 0 ),
+      dodge_per_agility( 0 ), parry_rating_per_strength( 0 ),
+      mp5_per_spirit( 0 ), mp5_from_spirit_multiplier( 0 ), health_per_stamina( 0 ),
+      skill( 0 ), distance( 0 ),
+      sleeping( false ) { }
 
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     std::array<double,SCHOOL_MAX> resource_reduction;
@@ -3910,7 +3910,7 @@ struct pet_t : public player_t
   {
     double armor, health, ap_from_ap, ap_from_sp, sp_from_ap, sp_from_sp;
     owner_coefficients_t() :
-    armor ( 1.0 ), health( 1.0 ), ap_from_ap( 0.0 ), ap_from_sp( 0.0 ), sp_from_ap( 0.0 ), sp_from_sp( 0.0 ) {}
+      armor ( 1.0 ), health( 1.0 ), ap_from_ap( 0.0 ), ap_from_sp( 0.0 ), sp_from_ap( 0.0 ), sp_from_sp( 0.0 ) {}
   } owner_coeff;
 
 private:

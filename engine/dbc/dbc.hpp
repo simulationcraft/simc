@@ -54,7 +54,7 @@ struct spellpower_data_t
   double cost_divisor() const;
   double cost() const;
   double cost_per_second() const;
-  
+
   static spellpower_data_t* nil();
   static spellpower_data_t* list( bool ptr = false );
   static void               link( bool ptr = false );

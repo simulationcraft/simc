@@ -269,7 +269,7 @@ result_e attack_t::calculate_result( double crit, unsigned target_level )
     // FIXME: pure assumption on how crit block is handled, needs testing!
     if ( rng_result -> roll( block_total ) )
     {
-      if ( rng_result -> roll( crit_block) )
+      if ( rng_result -> roll( crit_block ) )
         result = RESULT_CRIT_BLOCK;
       else
         result = RESULT_BLOCK;

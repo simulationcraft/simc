@@ -922,7 +922,7 @@ void SimulationCraftWindow::createBestInSlotTab()
             bisTree->addTopLevelItem( top );
           }
 
-          if( !rootItems[ player ][ tier ] )
+          if ( !rootItems[ player ][ tier ] )
           {
             QTreeWidgetItem* tieritem = new QTreeWidgetItem( QStringList( tierNames[ tier ] ) );
             playerItems[ player ] -> addChild( rootItems[ player ][ tier ] =  tieritem );

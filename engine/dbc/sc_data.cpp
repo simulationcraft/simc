@@ -184,7 +184,7 @@ resource_e spellpower_data_t::resource() const
 }
 
 double spellpower_data_t::cost_divisor() const
-{  
+{
   switch ( type() )
   {
   case POWER_MANA:

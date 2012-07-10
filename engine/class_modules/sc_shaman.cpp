@@ -379,23 +379,23 @@ public:
     return player_t::set_default_glyphs();
   }
 
-  // Note that if attack -> swing_haste() > old_swing_haste, this could 
+  // Note that if attack -> swing_haste() > old_swing_haste, this could
   // probably be handled by rescheduling, but the code is slightly simpler if
   // we just cancel the event and make a new one.
   static void reschedule_auto_attack( attack_t*& attack, double old_swing_haste )
   {
-    if ( attack && attack -> execute_event && 
+    if ( attack && attack -> execute_event &&
          attack -> execute_event -> remains() > timespan_t::zero() )
     {
       timespan_t time_to_hit = attack -> execute_event -> remains();
-      time_to_hit *= attack -> swing_haste() / old_swing_haste; 
+      time_to_hit *= attack -> swing_haste() / old_swing_haste;
 
       if ( attack -> sim -> debug )
       {
         sim_t::output( attack -> sim, "Haste change, reschedule %s attack from %f to %f",
-          attack -> name(),
-          attack -> execute_event -> remains().total_seconds(),
-          time_to_hit.total_seconds() );
+                       attack -> name(),
+                       attack -> execute_event -> remains().total_seconds(),
+                       time_to_hit.total_seconds() );
       }
 
       event_t::cancel( attack -> execute_event );
@@ -420,15 +420,15 @@ struct shaman_action_t : public Base
   typedef Base ab; // action base, eg. spell_t
   typedef shaman_action_t base_t;
 
-   shaman_action_t( const std::string& n, shaman_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-     ab( n, player, s )
-   {
-   }
+  shaman_action_t( const std::string& n, shaman_t* player,
+                   const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s )
+  {
+  }
 
-   shaman_t* p() const { return static_cast<shaman_t*>( ab::player ); }
+  shaman_t* p() const { return static_cast<shaman_t*>( ab::player ); }
 
-   shaman_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  shaman_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
 // ==========================================================================
@@ -634,7 +634,7 @@ struct feral_spirit_pet_t : public pet_t
     void init()
     {
       melee_attack_t::init();
-      
+
       pet_t* first_pet = p() -> o() -> find_pet( "spirit_wolf" );
       if ( first_pet != player )
         stats = first_pet -> find_stats( name() );
@@ -660,7 +660,7 @@ struct feral_spirit_pet_t : public pet_t
       }
     }
   };
-  
+
   struct spirit_bite_t : public melee_attack_t
   {
     spirit_bite_t( feral_spirit_pet_t* player ) :
@@ -671,7 +671,7 @@ struct feral_spirit_pet_t : public pet_t
       stateless = true;
       direct_power_mod = data().extra_coeff();
       cooldown -> duration = timespan_t::from_seconds( 7.0 );
-      
+
     }
 
     feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
@@ -688,14 +688,14 @@ struct feral_spirit_pet_t : public pet_t
   melee_t* melee;
 
   feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "spirit_wolf" ), melee( 0 ) 
+    pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = 555; // MoP level 85 values, approximated
     main_hand_weapon.max_dmg    = 833;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    
+
     owner_coeff.ap_from_ap = 0.31;
   }
 
@@ -707,14 +707,14 @@ struct feral_spirit_pet_t : public pet_t
 
     melee = new melee_t( this );
   }
-  
+
   virtual void init_actions()
   {
     action_list_str = "spirit_bite";
 
     pet_t::init_actions();
   }
-  
+
   action_t* create_action( const std::string& name,
                            const std::string& options_str )
   {
@@ -796,7 +796,7 @@ struct earth_elemental_pet_t : public pet_t
     main_hand_weapon.max_dmg    = 409;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    
+
     owner_coeff.ap_from_sp = 1.0;
   }
 
@@ -944,7 +944,7 @@ struct fire_elemental_t : public pet_t
       return true;
     }
   };
-  
+
   struct immolate_t : public fire_elemental_spell_t
   {
     immolate_t( fire_elemental_t* player, const std::string& options ) :
@@ -1041,7 +1041,7 @@ struct fire_elemental_t : public pet_t
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.sp_from_sp += 0.5;
   }
-  
+
   void init_actions()
   {
     action_list_str = "travel/auto_attack";
@@ -1157,7 +1157,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
 
     if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
       p -> proc.wasted_ls -> occur();
-    
+
     int stacks = ( p -> set_bonus.tier14_2pc_caster() ) ? 2 : 1;
 
     p -> buff.lightning_shield -> trigger( stacks );
@@ -1582,11 +1582,11 @@ struct unleash_flame_t : public shaman_spell_t
       shaman_spell_t::execute();
     }
   }
-  
+
   void impact_s( action_state_t* state )
   {
     shaman_spell_t::impact_s( state );
-    
+
     if ( result_is_hit( state -> result ) && p() -> talent.unleashed_fury -> ok() )
       td( state -> target ) -> debuffs_unleashed_fury -> trigger();
   }
@@ -1619,7 +1619,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       base_spell_power_multiplier  = w -> swing_time.total_seconds() / 4.0 * 0.1253;
     }
   }
-  
+
   virtual double composite_target_multiplier( player_t* target )
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
@@ -1741,7 +1741,7 @@ struct windlash_t : public shaman_melee_attack_t
     }
     else
     {
-      if ( ( weapon -> slot == SLOT_MAIN_HAND && 
+      if ( ( weapon -> slot == SLOT_MAIN_HAND &&
              player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
              player -> off_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) ||
            ( weapon -> slot == SLOT_OFF_HAND &&
@@ -1880,7 +1880,7 @@ struct melee_t : public shaman_melee_attack_t
       // Decrement flurry only if the time between main and off-hand autoattacks
       // is over shaman_t::autoattack_sync_delay. Default is 0ms, i.e., you need
       // perfectly synced swings
-      if ( ( weapon -> slot == SLOT_MAIN_HAND && 
+      if ( ( weapon -> slot == SLOT_MAIN_HAND &&
              player -> off_hand_attack && player -> off_hand_attack -> execute_event &&
              player -> off_hand_attack -> execute_event -> remains() > p() -> autoattack_sync_delay ) ||
            ( weapon -> slot == SLOT_OFF_HAND &&
@@ -1997,7 +1997,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     double m = shaman_melee_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + p() -> buff.searing_flames -> check() * sf_bonus +
-               ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
+         ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
   }
@@ -2554,7 +2554,7 @@ struct call_of_the_elements_t : public shaman_spell_t
 
     if ( p() -> cooldown.fire_elemental -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.fire_elemental -> reset();
-    
+
     if ( p() -> cooldown.stormlash -> duration < timespan_t::from_seconds( 5 * 60.0 ) )
       p() -> cooldown.stormlash -> reset();
   }
@@ -2801,7 +2801,7 @@ struct lightning_bolt_t : public shaman_spell_t
     maelstrom          = true;
     stateless          = true;
     base_multiplier   += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
-                         player -> spec.shamanism -> effectN( 1 ).percent() + 
+                         player -> spec.shamanism -> effectN( 1 ).percent() +
                          player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
@@ -2903,7 +2903,7 @@ struct elemental_blast_t : public shaman_spell_t
 {
   rng_t* buff_rng;
   elemental_blast_overload_t* overload;
-  
+
   elemental_blast_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_talent_spell( "Elemental Blast" ), options_str ),
     buff_rng( 0 ), overload( 0 )
@@ -2917,7 +2917,7 @@ struct elemental_blast_t : public shaman_spell_t
       dtr_action = new elemental_blast_t( player, options_str, true );
       dtr_action -> is_dtr_action = true;
     }
-    
+
     buff_rng = player -> get_rng( "elemental_blast_rng" );
   }
 
@@ -3608,14 +3608,14 @@ struct searing_totem_t : public shaman_totem_t
 
 struct stormlash_totem_t : public shaman_totem_t
 {
-  stormlash_totem_t( shaman_t* player, const std::string& options_str ) : 
+  stormlash_totem_t( shaman_t* player, const std::string& options_str ) :
     shaman_totem_t( "stormlash_totem", "Stormlash Totem", player, options_str, TOTEM_AIR )
   {
     harmful = false;
     may_crit = false;
     totem_duration = data().duration();
   }
-  
+
   void execute()
   {
     shaman_totem_t::execute();
@@ -4036,7 +4036,7 @@ struct haste_buff_t : public buff_t
   {
     int is_up = check();
     double old_mh_swing_haste = 0, old_oh_swing_haste = 0;
-    
+
     if ( ! is_up )
     {
       old_mh_swing_haste = player -> main_hand_attack -> swing_haste();

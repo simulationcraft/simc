@@ -379,31 +379,31 @@ template <class Base>
 struct paladin_action_t : public Base
 {
   typedef Base ab; // action base, eg. spell_t
-   typedef paladin_action_t base_t;
+  typedef paladin_action_t base_t;
 
-   paladin_action_t( const std::string& n, paladin_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-     ab( n, player, s )
-   {
-   }
+  paladin_action_t( const std::string& n, paladin_t* player,
+                    const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s )
+  {
+  }
 
-   paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
+  paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
 
-   paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
-   virtual double cost()
-   {
-     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
-     {
-       if ( p() -> buffs.divine_purpose -> check() )
-       {
-         return 0.0;
-       }
-       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
-     }
+  virtual double cost()
+  {
+    if ( ab::current_resource() == RESOURCE_HOLY_POWER )
+    {
+      if ( p() -> buffs.divine_purpose -> check() )
+      {
+        return 0.0;
+      }
+      return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
+    }
 
-     return ab::cost();
-   }
+    return ab::cost();
+  }
 
 };
 

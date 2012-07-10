@@ -41,7 +41,7 @@ static enchant_data_t enchant_db[] =
   { "4879",  "+500 Strength",                                             "500str",                         NULL,        NULL },
   { "4878",  "+750 Stamina",                                              "750sta",                         NULL,        NULL },
   { "4877",  "+500 Intellect",                                            "500int",                         NULL,        NULL },
-  { "4875",  "+500 Agility",                                              "500agi",                         NULL,        NULL },  
+  { "4875",  "+500 Agility",                                              "500agi",                         NULL,        NULL },
   { "4826",  "+285 Intellect and +165 Spirit",                            "285int_165spi",                  NULL,        NULL },
   { "4825",  "+285 Intellect and +165 Critical Strike",                   "285int_165crit",                 NULL,        NULL },
   { "4807",  "+160 Strength",                                             "160str",                         NULL,        NULL },

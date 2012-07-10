@@ -121,7 +121,7 @@ struct flask_t : public action_t
   {
     player_t* p = player;
 
-    if ( type == FLASK_ALCHEMISTS ) 
+    if ( type == FLASK_ALCHEMISTS )
     {
       if ( player -> profession[ PROF_ALCHEMY ] < 300 )
         return;
@@ -144,7 +144,7 @@ struct flask_t : public action_t
 
       p -> stat_gain( boost_stat, amount, gain, this );
     }
-    else 
+    else
     {
       for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
       {

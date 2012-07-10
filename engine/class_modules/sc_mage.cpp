@@ -409,7 +409,7 @@ struct water_elemental_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school, a );
     m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
-    
+
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.05;
@@ -672,10 +672,10 @@ struct buff_state_t
     if ( b -> sim -> debug )
     {
       b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
-          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
+                          b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
 
       b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
-          stacks, remain_time.total_seconds(), value );
+                          stacks, remain_time.total_seconds(), value );
     }
   }
 
@@ -683,7 +683,7 @@ struct buff_state_t
   {
     if ( buff -> sim -> debug )
       buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
-          buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
+                             buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
 
     timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
     buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
@@ -709,7 +709,7 @@ struct mage_state_t
     if ( m -> sim -> debug )
       m -> sim -> output( "Creating mage_state_t for mage %s", m -> name() );
 
-    for( size_t i = 0; i < m -> buff_list.size(); ++i )
+    for ( size_t i = 0; i < m -> buff_list.size(); ++i )
     {
       buff_t* b = m -> buff_list[ i ];
 
@@ -724,7 +724,7 @@ struct mage_state_t
   {
     mage -> resources.current = resources;
 
-    for( size_t i = 0; i < buff_states.size(); ++ i )
+    for ( size_t i = 0; i < buff_states.size(); ++ i )
     {
       buff_states[ i ] -> write_back_state();
     }
@@ -741,9 +741,9 @@ struct alter_time_buff_t : public buff_t
   { return static_cast<mage_t*>( player ); }
 
   virtual bool trigger( int        stacks,
-                                   double     value,
-                                   double     chance,
-                                   timespan_t duration )
+                        double     value,
+                        double     chance,
+                        timespan_t duration )
   {
     assert( p() -> alter_time_state == NULL );
 
@@ -988,7 +988,7 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
 {
   ignite_t( mage_t* player ) :
     base_t( "ignite", player, player -> dbc.spell( 12654 )  )
-  // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
+    // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
   {
   }
 };
@@ -999,9 +999,9 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
   trigger_ignite_like_mechanic(
-      p -> active_ignite, // ignite spell
-      state -> target, // target
-      state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
+    p -> active_ignite, // ignite spell
+    state -> target, // target
+    state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage
 }
 // ==========================================================================
 // Mage Spell
@@ -2357,7 +2357,7 @@ struct pyroblast_t : public mage_spell_t
 
     trigger_ignite( this, s );
 
-    if ( result_is_hit( s -> result) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( player -> set_bonus.tier13_2pc_caster() )
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
@@ -2793,9 +2793,9 @@ struct incanters_ward_buff_t : public absorb_buff_t
   { return static_cast<mage_t*>( player ); }
 
   virtual bool trigger( int        stacks,
-                                   double    /* value */,
-                                   double     chance,
-                                   timespan_t duration )
+                        double    /* value */,
+                        double     chance,
+                        timespan_t duration )
   {
     max_absorb = player -> dbc.effect_average( data().effectN( 1 ).id(), player -> level );
     // coeff hardcoded into tooltip
@@ -3112,7 +3112,7 @@ void mage_t::init_buffs()
   buffs.incanters_ward       = new incanters_ward_buff_t( this );
   absorb_buffs.push_back( buffs.incanters_ward );
   buffs.incanters_ward_post  = buff_creator_t( this, "incanters_ward_post" )
-                               .spell( find_spell( 116267) );
+                               .spell( find_spell( 116267 ) );
 
 }
 

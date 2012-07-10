@@ -66,7 +66,7 @@ struct stormlash_attack_t : public attack_t
 
 struct stormlash_spell_t : public spell_t
 {
-  stormlash_spell_t( player_t* p ) : 
+  stormlash_spell_t( player_t* p ) :
     spell_t( "stormlash_spell", p, p -> find_spell( 120687 ) )
   {
     stateless  = true;
@@ -124,11 +124,11 @@ struct stormlash_callback_t : public action_callback_t
 
       if ( listener -> sim -> debug )
       {
-        sim_t::output( listener -> sim, "%s stormlash proc: amount=%f base_time=%f coefficient=%f", 
-          a -> name(), 
-          amount * coeff, 
-          std::max( a -> base_execute_time.total_seconds(), 1.5 ),
-          coeff );
+        sim_t::output( listener -> sim, "%s stormlash proc: amount=%f base_time=%f coefficient=%f",
+                       a -> name(),
+                       amount * coeff,
+                       std::max( a -> base_execute_time.total_seconds(), 1.5 ),
+                       coeff );
       }
     }
   }
@@ -145,7 +145,7 @@ struct stormlash_buff_t : public buff_t
     p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
     stormlash_cb -> deactivate();
   }
-  
+
   void execute( int stacks, double value, timespan_t duration )
   {
     buff_t::execute( stacks, value, duration );
@@ -216,8 +216,8 @@ struct vengeance_event_t : public event_t
 struct player_ready_event_t : public event_t
 {
   player_ready_event_t( sim_t*    sim,
-                                              player_t* p,
-                                              timespan_t delta_time ) :
+                        player_t* p,
+                        timespan_t delta_time ) :
     event_t( sim, p, "Player-Ready" )
   {
     if ( sim -> debug ) sim -> output( "New Player-Ready Event: %s", p -> name() );
@@ -280,7 +280,7 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
 
       if ( sim -> debug )
         sim -> output( "New %s Sampling Event: %s ( delta time: %.4f )",
-                        action -> name(), player -> name(), delay_duration.total_seconds() );
+                       action -> name(), player -> name(), delay_duration.total_seconds() );
 
       sim -> add_event( this, delay_duration );
     }
@@ -403,8 +403,8 @@ static bool parse_talent_url( sim_t* sim,
 // parse_talent_override =========================================================
 
 static bool parse_talent_override( sim_t* sim,
-                              const std::string& name,
-                              const std::string& override_str )
+                                   const std::string& name,
+                                   const std::string& override_str )
 {
   assert( name == "talent_override" ); ( void )name;
 
@@ -2004,7 +2004,7 @@ void player_t::override_talent( std::string override_str )
       talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
-        if ( level < ( int )( ( j + 1 ) * 15 ) ) 
+        if ( level < ( int )( ( j + 1 ) * 15 ) )
         {
           sim -> errorf( "Override talent %s is too high level for player %s.\n", override_str.c_str(), name() );
           return;
@@ -2095,7 +2095,7 @@ void player_t::init_buffs()
     buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
 
     buffs.blood_fury = stat_buff_creator_t( this, "blood_fury" ).
-                          spell( find_racial_spell( "Blood Fury" ) );
+                       spell( find_racial_spell( "Blood Fury" ) );
 
     buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
 

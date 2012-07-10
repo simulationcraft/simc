@@ -972,7 +972,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
         stats.push_back( buff_stat_t( stat, amount ) );
 
-      break; // only parse first effect for now
+        break; // only parse first effect for now
       }
       else if ( data().effectN( i ).subtype() == A_MOD_RANGED_ATTACK_POWER || data().effectN( i ).subtype() == A_MOD_ATTACK_POWER )
       {

@@ -846,7 +846,7 @@ public:
     if ( ! ab::ready() )
       return false;
 
-    if( ! check_shadowform() )
+    if ( ! check_shadowform() )
       return false;
 
     return ( min_interval -> remains() <= timespan_t::zero() );
@@ -967,9 +967,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
       return;
 
     trigger_ignite_like_mechanic(
-        p -> spells.echo_of_light, // ignite spell
-        t, // target
-        dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
+      p -> spells.echo_of_light, // ignite spell
+      t, // target
+      dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
   }
 
   virtual void init()
@@ -2347,104 +2347,104 @@ struct devouring_plague_t : public priest_spell_t
 
     double special_tick_dmg;
 
-  devouring_plague_dot_t( priest_t* p ) :
-    priest_spell_t( "devouring_plague_tick", p, p -> find_class_spell( "Devouring Plague" ) ),
-    proc_spell( 0 ),
-    special_tick_dmg( 0 )
-  {
-
-    tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
-
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
-
-    tick_may_crit = true;
-    background = true;
-
-    if ( p -> mastery_spells.shadowy_recall -> ok() )
+    devouring_plague_dot_t( priest_t* p ) :
+      priest_spell_t( "devouring_plague_tick", p, p -> find_class_spell( "Devouring Plague" ) ),
+      proc_spell( 0 ),
+      special_tick_dmg( 0 )
     {
-      proc_spell = new devouring_plague_mastery_t( p );
-    }
-  }
 
-  virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
-  {
-    special_tick_dmg = action_t::calculate_tick_damage( r, power, 1.0, t );
+      tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
 
-    return action_t::calculate_tick_damage( r, power, multiplier, t );
-  }
+      base_dd_min = base_dd_max = direct_power_mod = 0.0;
 
-  virtual action_state_t* new_state()
-  {
-    return new devouring_plague_state_t( this, target );
-  }
+      tick_may_crit = true;
+      background = true;
 
-  virtual void init()
-  {
-    priest_spell_t::init();
-
-    // Override snapshot flags
-    snapshot_flags |= STATE_USER_1;
-  }
-
-  virtual action_state_t* get_state( const action_state_t* s = 0 )
-  {
-    action_state_t* s_ = priest_spell_t::get_state( s );
-
-    if ( s == 0 )
-    {
-      devouring_plague_state_t* ds_ = static_cast< devouring_plague_state_t* >( s_ );
-      ds_ -> orbs_used = 0;
+      if ( p -> mastery_spells.shadowy_recall -> ok() )
+      {
+        proc_spell = new devouring_plague_mastery_t( p );
+      }
     }
 
-    return s_;
-  }
-
-  virtual void snapshot_state( action_state_t* state, uint32_t flags )
-  {
-    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( state );
-
-    if ( flags & STATE_USER_1 )
-      dps_t -> orbs_used = ( int ) p() -> resources.current[ current_resource() ];
-
-    priest_spell_t::snapshot_state( state, flags );
-  }
-
-  virtual double action_ta_multiplier()
-  {
-    double m = priest_spell_t::action_ta_multiplier();
-
-    m *= p() -> resources.current[ current_resource() ];
-
-    return m;
-  }
-
-  virtual void impact_s( action_state_t* s )
-  {
-    double saved_impact_dmg = s -> result_amount;
-    s -> result_amount = 0;
-    priest_spell_t::impact_s( s );
-
-    dot_t* dot = get_dot();
-    base_ta_adder = saved_impact_dmg / dot -> ticks();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    priest_spell_t::tick( d );
-
-    devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-
-    // BUG: Doesn't heal from ticks as of 15762
-    // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
-    // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
-
-    if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
     {
+      special_tick_dmg = action_t::calculate_tick_damage( r, power, 1.0, t );
+
+      return action_t::calculate_tick_damage( r, power, multiplier, t );
+    }
+
+    virtual action_state_t* new_state()
+    {
+      return new devouring_plague_state_t( this, target );
+    }
+
+    virtual void init()
+    {
+      priest_spell_t::init();
+
+      // Override snapshot flags
+      snapshot_flags |= STATE_USER_1;
+    }
+
+    virtual action_state_t* get_state( const action_state_t* s = 0 )
+    {
+      action_state_t* s_ = priest_spell_t::get_state( s );
+
+      if ( s == 0 )
+      {
+        devouring_plague_state_t* ds_ = static_cast< devouring_plague_state_t* >( s_ );
+        ds_ -> orbs_used = 0;
+      }
+
+      return s_;
+    }
+
+    virtual void snapshot_state( action_state_t* state, uint32_t flags )
+    {
+      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( state );
+
+      if ( flags & STATE_USER_1 )
+        dps_t -> orbs_used = ( int ) p() -> resources.current[ current_resource() ];
+
+      priest_spell_t::snapshot_state( state, flags );
+    }
+
+    virtual double action_ta_multiplier()
+    {
+      double m = priest_spell_t::action_ta_multiplier();
+
+      m *= p() -> resources.current[ current_resource() ];
+
+      return m;
+    }
+
+    virtual void impact_s( action_state_t* s )
+    {
+      double saved_impact_dmg = s -> result_amount;
+      s -> result_amount = 0;
+      priest_spell_t::impact_s( s );
+
+      dot_t* dot = get_dot();
+      base_ta_adder = saved_impact_dmg / dot -> ticks();
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      priest_spell_t::tick( d );
+
       devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
-      proc_spell -> orbs_used = dps_t -> orbs_used;
-      proc_spell -> schedule_execute();
+
+      // BUG: Doesn't heal from ticks as of 15762
+      // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+      // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+
+      if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+      {
+        devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
+        proc_spell -> orbs_used = dps_t -> orbs_used;
+        proc_spell -> schedule_execute();
+      }
     }
-  }
   };
 
   devouring_plague_dot_t* dot_spell;
@@ -2890,7 +2890,7 @@ struct penance_t : public priest_spell_t
 
     return c;
   }
-  
+
   virtual double action_multiplier()
   {
     double m = priest_spell_t::action_multiplier();
@@ -3049,7 +3049,7 @@ struct cascade_base_t : public Base
         {
           if ( ab::sim -> debug )
             ab::sim -> output( "%s action %s jumps to player %s",
-                                ab::player -> name(), ab::name(), t -> name() );
+                               ab::player -> name(), ab::name(), t -> name() );
 
 
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
@@ -3059,7 +3059,7 @@ struct cascade_base_t : public Base
           ab::snapshot_state( s, ab::snapshot_flags );
           s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
 
-          if (ab:: result_is_hit( s -> result ) )
+          if ( ab:: result_is_hit( s -> result ) )
             s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
           if ( ab::sim -> debug )
@@ -3184,7 +3184,7 @@ struct divine_star_base_t : public Base
   {
     int jump_counter;
     divine_star_state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-        jump_counter( 0 )
+      jump_counter( 0 )
     { }
   };
 
@@ -3214,20 +3214,20 @@ struct divine_star_base_t : public Base
     if ( cs -> jump_counter < 1 )
     {
 
-          // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
-          divine_star_state_t* s = debug_cast<divine_star_state_t*>( ab::get_state() );
-          s -> target = cs -> target;
-          s -> jump_counter = cs -> jump_counter + 1;
-          ab::snapshot_state( s, ab::snapshot_flags );
-          s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
+      // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
+      divine_star_state_t* s = debug_cast<divine_star_state_t*>( ab::get_state() );
+      s -> target = cs -> target;
+      s -> jump_counter = cs -> jump_counter + 1;
+      ab::snapshot_state( s, ab::snapshot_flags );
+      s -> result = ab::calculate_result( s -> composite_crit(), s -> target -> level );
 
-          if ( ab::result_is_hit( s -> result ) )
-            s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+      if ( ab::result_is_hit( s -> result ) )
+        s -> result_amount = ab::calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
-          if ( ab::sim -> debug )
-            s -> debug();
+      if ( ab::sim -> debug )
+        s -> debug();
 
-          ab::schedule_travel_s( s );
+      ab::schedule_travel_s( s );
     }
     else
     {
@@ -3605,8 +3605,8 @@ struct greater_heal_t : public priest_heal_t
     if ( p() -> buffs.inner_focus -> check() )
       c = 0;
 
-    if( p() -> buffs.serendipity -> check() )
-     c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
+    if ( p() -> buffs.serendipity -> check() )
+      c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
 
     return c;
   }
@@ -3616,8 +3616,8 @@ struct greater_heal_t : public priest_heal_t
     timespan_t et = priest_heal_t::execute_time();
 
 
-    if( p() -> buffs.serendipity -> check() )
-     et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.serendipity -> check() )
+      et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
 
     return et;
   }
@@ -4117,8 +4117,8 @@ struct prayer_of_healing_t : public priest_heal_t
     if ( p() -> buffs.inner_focus -> check() )
       c = 0;
 
-    if( p() -> buffs.serendipity -> check() )
-     c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
+    if ( p() -> buffs.serendipity -> check() )
+      c *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 2 ).percent();
 
     return c;
   }
@@ -4128,8 +4128,8 @@ struct prayer_of_healing_t : public priest_heal_t
     timespan_t et = priest_heal_t::execute_time();
 
 
-    if( p() -> buffs.serendipity -> check() )
-     et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.serendipity -> check() )
+      et *= 1.0 + p() -> buffs.serendipity -> check() * p() -> buffs.serendipity -> data().effectN( 1 ).percent();
 
     return et;
   }
@@ -4720,8 +4720,8 @@ void priest_t::init_buffs()
                                            .chance( specs.evangelism -> ok() )
                                            .activated( false );
   buffs.archangel                   = buff_creator_t( this, "archangel", find_spell( 81700 ) )
-                                           .chance( specs.archangel -> ok() )
-                                           .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
+                                      .chance( specs.archangel -> ok() )
+                                      .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
                                            .cd( timespan_t::zero() );

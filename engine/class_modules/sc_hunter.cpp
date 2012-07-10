@@ -37,7 +37,7 @@ struct hunter_td_t : public actor_pair_t
     dot_t* serpent_sting;
   } dots;
 
-  hunter_td_t( player_t* target, hunter_t* p);
+  hunter_td_t( player_t* target, hunter_t* p );
 };
 
 struct hunter_t : public player_t
@@ -145,7 +145,7 @@ public:
   // Specialization Spells
   struct specs_t
   {
-    // Baseline    
+    // Baseline
     // const spell_data_t* trueshot_aura;
 
     // Shared
@@ -164,7 +164,7 @@ public:
     // const spell_data_t* kindred_spirits;
     const spell_data_t* invigoration;
     const spell_data_t* exotic_beasts;
-    // 
+    //
     // // Marksmanship
     // const spell_data_t* aimed_shot;
     const spell_data_t* careful_aim;
@@ -176,11 +176,11 @@ public:
     const spell_data_t* steady_focus;
     const spell_data_t* piercing_shots;
     // // const spell_data_t* wild quiver;
-    // 
+    //
     // // Survival
     // const spell_data_t* explosive_shot;
     // const spell_data_t* lock_and_load;
-    const spell_data_t* improved_serpent_sting;    
+    const spell_data_t* improved_serpent_sting;
     // const spell_data_t* black_arrow;
     // const spell_data_t* entrapment;
     const spell_data_t* viper_venom;
@@ -583,7 +583,7 @@ public:
     double ac = pet_t::composite_attack_crit();
 
     ac *= 1.0 + talents.spiked_collar -> effectN( 3 ).percent();
-    
+
     return ac;
   }
 
@@ -681,7 +681,7 @@ struct hunter_action_t : public Base
     if ( ! p() -> talents.thrill_of_the_hunt -> ok() )
       return;
 
-    if (p() -> rngs.thrill_of_the_hunt -> roll ( p() -> talents.thrill_of_the_hunt -> proc_chance() ) )
+    if ( p() -> rngs.thrill_of_the_hunt -> roll ( p() -> talents.thrill_of_the_hunt -> proc_chance() ) )
     {
       double gain = ab::base_costs[ ab::current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
       p() -> procs.thrill_of_the_hunt -> occur();
@@ -794,9 +794,9 @@ void trigger_piercing_shots( HUNTER_ACTION* s, player_t* t, double dmg )
   if ( ! p -> specs.piercing_shots -> ok() ) return;
 
   trigger_ignite_like_mechanic(
-      p -> active_piercing_shots, // ignite spell
-      t, // target
-      p -> specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
+    p -> active_piercing_shots, // ignite spell
+    t, // target
+    p -> specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
 }
 
 struct vishanka_t : public hunter_ranged_attack_t
@@ -836,7 +836,7 @@ static void trigger_vishanka( hunter_ranged_attack_t* a )
 void hunter_ranged_attack_t::execute()
 {
   ranged_attack_t::execute();
-  
+
   if ( p() -> specs.steady_focus -> ok() )
     trigger_steady_focus();
 
@@ -1125,7 +1125,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-    
+
     base_dd_min=base_dd_max=0;
     tick_power_mod = data().extra_coeff();
   }
@@ -1260,8 +1260,8 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     {
       cast_td( s -> target ) -> dots.serpent_sting -> refresh_duration();
 
-    if ( s -> result == RESULT_CRIT )
-      trigger_piercing_shots( this, s -> target, s -> result_amount );
+      if ( s -> result == RESULT_CRIT )
+        trigger_piercing_shots( this, s -> target, s -> result_amount );
 
     }
   }
@@ -1277,7 +1277,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_class_spell( "Cobra Shot" ) )
   {
     parse_options( NULL, options_str );
- 
+
     direct_power_mod = 0.017; // hardcoded into tooltip
 
 
@@ -1390,7 +1390,7 @@ struct kill_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "kill_shot", player, player -> find_class_spell( "Kill Shot" ) )
   {
     parse_options( NULL, options_str );
-    
+
     base_dd_min *= weapon_multiplier; // Kill Shot's weapon multiplier applies to the base damage as well
     base_dd_max *= weapon_multiplier;
     direct_power_mod = 0.45 * weapon_multiplier; // and the coefficient too
@@ -1467,12 +1467,12 @@ struct serpent_sting_t : public hunter_ranged_attack_t
       serpent_sting_burst -> execute();
     }
   }
-    
+
   virtual void tick( dot_t* d )
   {
     hunter_ranged_attack_t::tick( d );
 
-    if (p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero()) 
+    if ( p() -> specs.viper_venom -> ok() && p() -> cooldowns.viper_venom -> remains() == timespan_t::zero() )
     {
       double focus_gain = p() -> specs.viper_venom -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.viper_venom );
@@ -1537,7 +1537,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
     {
       if ( spread_sting )
         spread_sting -> execute();
-      if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok())
+      if ( s -> result == RESULT_CRIT && p() -> specs.bombardment -> ok() )
         p() -> buffs.bombardment -> trigger();
 
       // TODO determine multishot adds in execute.
@@ -1609,7 +1609,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
 
-      if( ! p() -> buffs.master_marksman_fire -> check() && p() -> buffs.master_marksman -> trigger() )
+      if ( ! p() -> buffs.master_marksman_fire -> check() && p() -> buffs.master_marksman -> trigger() )
       {
         if ( p() -> buffs.master_marksman -> stack() == 5 )
         {
@@ -1730,7 +1730,7 @@ struct moc_crow_t : public pet_t
     // FIXME numbers are from treant. correct them.
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 0;
-    
+
     stamina_per_owner = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1739,13 +1739,13 @@ struct moc_crow_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
-    main_hand_attack = new peck_t( this );    
+    main_hand_attack = new peck_t( this );
   }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
-    // Crows cast on the target will instantly perform a melee 
+    // Crows cast on the target will instantly perform a melee
     main_hand_attack -> execute();
   }
 };
@@ -1763,7 +1763,7 @@ struct moc_t : public hunter_spell_t
     may_crit = true;
 
     base_tick_time = timespan_t::from_seconds( 2.0 );
-    // The eighth summons comes from tick_zero.  Unfortunately tick number 
+    // The eighth summons comes from tick_zero.  Unfortunately tick number
     // does not inlude tick_zero, so we need our own counter.
     num_ticks = 7;
     tick_zero = true;
@@ -1777,11 +1777,12 @@ struct moc_t : public hunter_spell_t
     hunter_spell_t::execute();
     // FIXME I'd rather have this get reset on expiration so that it could potentially stack
   }
-    
+
   virtual void tick( dot_t* d )
   {
     hunter_spell_t::tick( d );
-    if ( crows_summoned < CROW_LIMIT ) {
+    if ( crows_summoned < CROW_LIMIT )
+    {
       p() -> moc_crows[ crows_summoned ] -> summon( timespan_t::from_seconds( 16 ) );
       crows_summoned++;
     }
@@ -2014,7 +2015,7 @@ struct kill_command_t : public hunter_spell_t
       stats -> children.push_back( pet -> get_stats( "kill_command" ) );
     }
   }
-    
+
   virtual void execute()
   {
     hunter_spell_t::execute();
@@ -2233,7 +2234,7 @@ struct hunter_pet_action_t : public Base
   hunter_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 
-  void apply_exotic_beast_cd() 
+  void apply_exotic_beast_cd()
   {
     ab::cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
   }
@@ -2330,7 +2331,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
     base_multiplier *= 1.0 + p -> talents.spiked_collar -> effectN( 1 ).percent();
-    rng_invigoration = player -> get_rng( "invigoration ");
+    rng_invigoration = player -> get_rng( "invigoration " );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
@@ -2348,7 +2349,7 @@ struct basic_attack_t : public hunter_pet_attack_t
   {
     hunter_pet_attack_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) ) 
+    if ( result_is_hit( s -> result ) )
     {
       if ( o() -> specs.invigoration -> ok() && rng_invigoration -> roll( chance_invigoration ) )
       {
@@ -2383,7 +2384,7 @@ struct basic_attack_t : public hunter_pet_attack_t
 
     return am;
   }
-  
+
   virtual double cost()
   {
     double c = ab::cost();
@@ -2729,7 +2730,7 @@ struct wild_quiver_trigger_t : public action_callback_t
   }
 };
 
-hunter_td_t::hunter_td_t( player_t* target, hunter_t* p) :
+hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
   actor_pair_t( target, p ),
   dots( dots_t() )
 {
@@ -2891,7 +2892,7 @@ void hunter_t::init_spells()
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.wild_quiver          = find_mastery_spell( HUNTER_MARKSMANSHIP );
   mastery.essence_of_the_viper = find_mastery_spell( HUNTER_SURVIVAL );
-  
+
   // Major
   glyphs.aimed_shot          = find_glyph_spell( "Glyph of Aimed Shot"     ); // id=119465
   glyphs.endless_wrath       = find_glyph_spell( "Glyph of Endless Wrath"  );
@@ -2918,8 +2919,8 @@ void hunter_t::init_spells()
   glyphs.scattering          = find_glyph_spell( "Glyph of Scattering"  );
   glyphs.snake_trap          = find_glyph_spell( "Glyph of Snake Trap"  );
   glyphs.tranquilizing_shot  = find_glyph_spell( "Glyph of Tranquilizing Shot"  );
-                            
-  // Minor                   
+
+  // Minor
   glyphs.aspects             = find_glyph_spell( "Glyph of Aspects"  );
   glyphs.aspect_of_the_pack  = find_glyph_spell( "Glyph of Aspect of the Pack"  );
   glyphs.direction           = find_glyph_spell( "Glyph of Direction"  );
@@ -3079,7 +3080,7 @@ void hunter_t::init_position()
 // hunter_t::init_procs =====================================================
 
 void hunter_t::init_procs()
-{ 
+{
   player_t::init_procs();
 
   procs.invigoration                 = get_proc( "invigoration"                 );
@@ -3143,7 +3144,7 @@ void hunter_t::init_actions()
     // Todo: Add ranged_vulnerability
     //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     precombat += "/summon_pet";
-    if( find_class_spell( "Trueshot Aura" ) -> ok() )
+    if ( find_class_spell( "Trueshot Aura" ) -> ok() )
       precombat += "/trueshot_aura";
     precombat += "/snapshot_stats";
 
@@ -3154,7 +3155,7 @@ void hunter_t::init_actions()
       action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
       action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=60";
     }
-    
+
     if ( specialization() == HUNTER_SURVIVAL )
       action_list_str += init_use_racial_actions();
     action_list_str += init_use_item_actions();
@@ -3168,30 +3169,30 @@ void hunter_t::init_actions()
     {
     // BEAST MASTERY
     case HUNTER_BEAST_MASTERY:
-    action_list_str += "/focus_fire,five_stacks=1";
-    action_list_str += "/serpent_sting,if=!ticking";
+      action_list_str += "/focus_fire,five_stacks=1";
+      action_list_str += "/serpent_sting,if=!ticking";
 
-    action_list_str += init_use_racial_actions();
-    action_list_str += "/multi_shot,if=target.adds>5";
-    action_list_str += "/cobra_shot,if=target.adds>5";
-    action_list_str += "/kill_shot";
-    action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
-    
-    if ( talents.a_murder_of_crows -> ok() ) 
-      action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
+      action_list_str += init_use_racial_actions();
+      action_list_str += "/multi_shot,if=target.adds>5";
+      action_list_str += "/cobra_shot,if=target.adds>5";
+      action_list_str += "/kill_shot";
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
 
-    action_list_str += "/kill_command";
+      if ( talents.a_murder_of_crows -> ok() )
+        action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
 
-    if ( talents.fervor -> ok() )
-      action_list_str += "/fervor,if=focus<=37";
+      action_list_str += "/kill_command";
 
-    action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
+      if ( talents.fervor -> ok() )
+        action_list_str += "/fervor,if=focus<=37";
 
-    if ( level >= 81 )
-      action_list_str += "/cobra_shot";
-    else
-      action_list_str += "/steady_shot";
-    break;
+      action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
+
+      if ( level >= 81 )
+        action_list_str += "/cobra_shot";
+      else
+        action_list_str += "/steady_shot";
+      break;
 
     // MARKSMANSHIP
     case HUNTER_MARKSMANSHIP:
@@ -3206,8 +3207,8 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-          
-      if ( talents.a_murder_of_crows -> ok() ) 
+
+      if ( talents.a_murder_of_crows -> ok() )
         action_list_str += "/a_murder_of_crows";
 
       if ( set_bonus.tier13_4pc_melee() )
@@ -3237,8 +3238,8 @@ void hunter_t::init_actions()
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
-          
-      if ( talents.a_murder_of_crows -> ok() ) 
+
+      if ( talents.a_murder_of_crows -> ok() )
         action_list_str += "/a_murder_of_crows";
 
       action_list_str += "/kill_shot";
@@ -3671,7 +3672,7 @@ struct hunter_module_t : public module_t
   {
     return new hunter_t( sim, name, r );
   }
-  
+
   virtual bool valid() { return true; }
   virtual void init        ( sim_t* ) {}
   virtual void combat_begin( sim_t* ) {}

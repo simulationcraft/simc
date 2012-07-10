@@ -43,7 +43,7 @@ struct monk_td_t : public actor_pair_t
   {
     debuff_t* rising_sun_kick;
     debuff_t* tiger_palm;
-      buff_t* enveloping_mist;
+    buff_t* enveloping_mist;
   } buff;
 
   monk_td_t( player_t*, monk_t* );
@@ -306,7 +306,7 @@ struct monk_action_t : public Base
       p() -> buff.tigereye_brew -> trigger();
     }
     // Chi Savings on Dodge & Parry
-    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ( ab::execute_state -> result == RESULT_DODGE || ab::execute_state -> result == RESULT_PARRY) )
+    if ( ab::current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ( ab::execute_state -> result == RESULT_DODGE || ab::execute_state -> result == RESULT_PARRY ) )
     {
       double chi_restored = ab::resource_consumed;
       p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.avoided_chi );
@@ -525,9 +525,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_t* p = s -> p();
 
     trigger_ignite_like_mechanic(
-        p -> active_blackout_kick_dot,
-        t,
-        dmg );
+      p -> active_blackout_kick_dot,
+      t,
+      dmg );
   }
 
   blackout_kick_t( monk_t* p, const std::string& options_str ) :
@@ -782,7 +782,7 @@ struct melee_t : public monk_melee_attack_t
     }
   }
 
- void init()
+  void init()
   {
     monk_melee_attack_t::init();
 
@@ -1003,13 +1003,13 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
     }
   };
   monk_spell_t* zen_sphere_damage;
-  
+
   zen_sphere_t( monk_t* player, const std::string& options_str  ) :
     monk_heal_t( "zen_sphere", player, player -> talent.zen_sphere ),
     zen_sphere_damage( 0 )
   {
     parse_options( NULL, options_str );
-    
+
     zen_sphere_damage = new zen_sphere_damage_t( player );
   }
 
@@ -1019,17 +1019,17 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
 
     p() -> buff.zen_sphere -> trigger();
 
-    if( zen_sphere_damage )
+    if ( zen_sphere_damage )
     {
       zen_sphere_damage -> stats -> add_execute( time_to_execute );
     }
   }
-  
+
   virtual void tick( dot_t* d )
   {
     monk_heal_t::tick( d );
 
-    if( zen_sphere_damage )
+    if ( zen_sphere_damage )
       zen_sphere_damage -> execute();
   }
 
@@ -1101,7 +1101,7 @@ struct jade_serpent_statue_t : public statue_t
 {
   typedef statue_t base_t;
 
-  jade_serpent_statue_t (sim_t* sim, monk_t* owner, const std::string& n ) :
+  jade_serpent_statue_t ( sim_t* sim, monk_t* owner, const std::string& n ) :
     base_t( sim, owner, n, PET_NONE, true )
   {
 
@@ -1312,7 +1312,7 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/rising_sun_kick";
-      if( talent.zen_sphere -> ok() )
+      if ( talent.zen_sphere -> ok() )
         action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
       action_list_str += "/fists_of_fury";
       action_list_str += "/zen_sphere";
@@ -1347,11 +1347,11 @@ void monk_t::regen( timespan_t periodicity )
   if ( resource_type == RESOURCE_MANA )
   {
 
-  //TODO: add mana tea here
+    //TODO: add mana tea here
   }
   else if ( resource_type == RESOURCE_ENERGY )
   {
-    if ( buff.energizing_brew -> up())
+    if ( buff.energizing_brew -> up() )
       resource_gain( RESOURCE_ENERGY, buff.energizing_brew -> data().effectN( 1 ).base_value() * periodicity.total_seconds(), gain.energizing_brew );
   }
 

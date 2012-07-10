@@ -19,8 +19,8 @@ struct dot_tick_event_t : public event_t
   dot_t* dot;
 
   dot_tick_event_t( sim_t* sim,
-                                      dot_t* d,
-                                      timespan_t time_to_tick ) :
+                    dot_t* d,
+                    timespan_t time_to_tick ) :
     event_t( sim, d -> source, "DoT Tick" ), dot( d )
   {
     if ( sim -> debug )

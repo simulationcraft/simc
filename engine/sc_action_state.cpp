@@ -40,7 +40,7 @@ void action_state_t::copy_state( const action_state_t* o )
 {
   if ( this == o || o == 0 ) return;
 #ifndef NDEBUG
-  if( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
+  if ( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
   {
     std::cout << "action_state_t::copy_state: state runtime types not equal! this= " << typeid( this ).name() << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
     assert( 0 );

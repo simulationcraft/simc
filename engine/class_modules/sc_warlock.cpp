@@ -396,11 +396,11 @@ struct warlock_pet_melee_t : public melee_attack_t
   struct off_hand_swing : public melee_attack_t
   {
     off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ) :
-    melee_attack_t( name, p, spell_data_t::nil() )
+      melee_attack_t( name, p, spell_data_t::nil() )
     {
       school = SCHOOL_PHYSICAL;
-      weapon = &( p -> off_hand_weapon ); 
-      base_execute_time = weapon -> swing_time;  
+      weapon = &( p -> off_hand_weapon );
+      base_execute_time = weapon -> swing_time;
       may_crit    = true;
       background  = true;
       base_hit -= 0.19;
@@ -428,7 +428,7 @@ struct warlock_pet_melee_t : public melee_attack_t
 
   virtual void execute()
   {
-    if ( ! player -> executing && ! player -> channeling ) 
+    if ( ! player -> executing && ! player -> channeling )
     {
       melee_attack_t::execute();
       if ( oh )
@@ -596,7 +596,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
-    
+
     dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, data() );
   }
@@ -703,7 +703,7 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
   {
     tick_zero = true;
     hasted_ticks = false;
-    
+
     dynamic_tick_action = true;
     tick_action = new wrathstorm_tick_t( p, data() );
   }
@@ -1189,7 +1189,7 @@ struct wrathguard_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-    
+
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
     off_hand_weapon.type = main_hand_weapon.type;
     off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
@@ -1243,7 +1243,7 @@ struct shivarra_pet_t : public warlock_pet_t
   virtual void init_base()
   {
     warlock_pet_t::init_base();
-    
+
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
     off_hand_weapon.type = main_hand_weapon.type;
     off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
@@ -1392,7 +1392,7 @@ public:
     player_t* target;
 
     extra_tick_event_t( player_t* p, warlock_spell_t* s, player_t* t, timespan_t delay ) :
-      event_t( p -> sim, p, "extra_tick_event" ), spell( s ), target(t )
+      event_t( p -> sim, p, "extra_tick_event" ), spell( s ), target( t )
     {
       sim -> add_event( this, delay );
     }
@@ -1469,7 +1469,7 @@ public:
   virtual void execute()
   {
     bool havoc = false;
-    if ( harmful && ! background && aoe == 0 && ! tick_action && p() -> buffs.havoc -> up() && p() -> havoc_target != target ) 
+    if ( harmful && ! background && aoe == 0 && ! tick_action && p() -> buffs.havoc -> up() && p() -> havoc_target != target )
     {
       aoe = 2;
       havoc = true;
@@ -1525,7 +1525,7 @@ public:
   {
     dot_t* dot;
     bool start_extra_ticks = false;
-    if ( num_ticks > 0 && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION ) 
+    if ( num_ticks > 0 && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION )
     {
       dot = get_dot( s -> target );
       if ( ! dot -> ticking ) start_extra_ticks = true;
@@ -1573,7 +1573,7 @@ public:
 
     // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
     if ( channeled && p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-          ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
+         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> remains() == timespan_t::zero() )
       t *= ( 1.0 + p() -> kc_cast_speed_reduction );
 
     return t;
@@ -1630,7 +1630,7 @@ public:
   {
     resource_e r = current_resource();
     resource_consumed = costs_per_second[ r ] * base_tick_time.total_seconds();
-    
+
     player -> resource_loss( r, resource_consumed, 0, this );
 
     if ( sim -> log )
@@ -1640,7 +1640,7 @@ public:
 
     stats -> consume_resource( r, resource_consumed );
 
-    if ( player -> resources.current[ r ] < resource_consumed ) 
+    if ( player -> resources.current[ r ] < resource_consumed )
     {
       if ( r == RESOURCE_DEMONIC_FURY && p() -> buffs.metamorphosis -> check() )
         p() -> spells.metamorphosis -> cancel();
@@ -2091,7 +2091,7 @@ struct drain_soul_t : public warlock_spell_t
     warlock_spell_t::tick( d );
 
     if ( generate_shard ) p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
-    generate_shard = ! generate_shard;    
+    generate_shard = ! generate_shard;
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
@@ -2628,7 +2628,7 @@ struct activate_melee_t : public warlock_spell_t
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
-    
+
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
     else if ( p() -> spells.melee -> execute_event != 0 ) r = false;
     else if ( p() -> is_moving() ) r = false;
@@ -2677,7 +2677,7 @@ struct metamorphosis_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     assert( cost_event == 0 );
-    
+
     if ( p() -> spells.melee ) p() -> spells.melee -> reset();
     p() -> buffs.metamorphosis -> trigger();
     cost_event = new ( sim ) cost_event_t( p(), this );
@@ -2686,7 +2686,7 @@ struct metamorphosis_t : public warlock_spell_t
   virtual void cancel()
   {
     warlock_spell_t::cancel();
-    
+
     if ( p() -> spells.melee ) p() -> spells.melee -> cancel();
     p() -> buffs.metamorphosis -> expire();
     event_t::cancel( cost_event );
@@ -2733,7 +2733,7 @@ struct cancel_metamorphosis_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    
+
     p() -> spells.metamorphosis -> cancel();
   }
 
@@ -2823,7 +2823,7 @@ struct hand_of_guldan_t : public warlock_spell_t
 
     shadowflame = new shadowflame_t( p );
     hog_damage  = new hand_of_guldan_dmg_t( p );
-    
+
     if ( ! dtr )
       add_child( shadowflame );
 
@@ -3385,7 +3385,7 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     return num_ticks;
   }
-  
+
   virtual double composite_target_ta_multiplier( player_t* t )
   {
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
@@ -3428,7 +3428,7 @@ struct hellfire_t : public warlock_spell_t
     channeled = true;
     tick_zero = true;
     may_crit = false;
-    
+
     tick_power_mod = base_td = 0;
 
     dynamic_tick_action = true;
@@ -3940,7 +3940,7 @@ struct summon_doomguard_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
-    
+
     p() -> cooldowns.infernal -> start();
     summon_doomguard2 -> execute();
   }
@@ -4733,7 +4733,7 @@ void warlock_t::init_actions()
 
     add_action( spec.dark_soul );
 
-    
+
     action_list_str += "/service_" + pet + ",if=talent.grimoire_of_service.enabled";
 
     action_list_str += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";

@@ -15,8 +15,8 @@ namespace { // anonymous namespace
 struct player_gcd_event_t : public event_t
 {
   player_gcd_event_t( sim_t*    sim,
-                                          player_t* p,
-                                          timespan_t delta_time ) :
+                      player_t* p,
+                      timespan_t delta_time ) :
     event_t( sim, p, "Player-Ready-GCD" )
   {
     if ( sim -> debug ) sim -> output( "New Player-Ready-GCD Event: %s", p -> name() );
@@ -72,8 +72,8 @@ struct action_execute_event_t : public event_t
   action_t* action;
 
   action_execute_event_t( sim_t*    sim,
-                                                  action_t* a,
-                                                  timespan_t time_to_execute ) :
+                          action_t* a,
+                          timespan_t time_to_execute ) :
     event_t( sim, a -> player, "Action-Execute" ), action( a )
   {
     if ( sim -> debug )
@@ -119,9 +119,9 @@ struct action_travel_event_t : public event_t
   double damage;
 
   action_travel_event_t( sim_t*    sim,
-                                                player_t* t,
-                                                action_t* a,
-                                                timespan_t time_to_travel ) :
+                         player_t* t,
+                         action_t* a,
+                         timespan_t time_to_travel ) :
     event_t( sim, a -> player, "Action Travel" ), action( a ), target( t )
   {
     result = a -> result;
@@ -417,9 +417,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
       base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
     if ( pd -> _cost_per_second > 0 )
-      costs_per_second[ pd -> resource() ] = (int) pd -> cost_per_second();
+      costs_per_second[ pd -> resource() ] = ( int ) pd -> cost_per_second();
     else
-      costs_per_second[ pd -> resource() ] = (int) floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
+      costs_per_second[ pd -> resource() ] = ( int ) floor( pd -> cost_per_second() * player -> resources.base[ pd -> resource() ] );
   }
 
   for ( size_t i = 1; i <= spell_data._effects -> size(); i++ )
@@ -1030,21 +1030,21 @@ std::vector< player_t* > action_t::target_list()
 
 player_t* action_t::find_target_by_number( int number )
 {
-    int j = 1;
+  int j = 1;
 
-    std::vector< player_t* > tl;
-    size_t total_targets = available_targets( tl );
+  std::vector< player_t* > tl;
+  size_t total_targets = available_targets( tl );
 
-    for ( size_t i = 0; i < total_targets; i++ )
+  for ( size_t i = 0; i < total_targets; i++ )
+  {
+    int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
+    if ( this_target_number == number )
     {
-      int this_target_number = ( tl[ i ] == player -> target ) ? 1 : ++j;
-      if ( this_target_number == number )
-      {
-        return tl[ i ];
-      }
+      return tl[ i ];
     }
+  }
 
-    return 0;
+  return 0;
 }
 
 // action_t::execute ========================================================
@@ -1157,7 +1157,7 @@ void action_t::execute()
 
   if ( ! dual ) stats -> add_execute( time_to_execute );
 
-  if ( pre_execute_state ) 
+  if ( pre_execute_state )
   {
     release_state( pre_execute_state );
     pre_execute_state = 0;
@@ -1221,7 +1221,7 @@ void action_t::tick( dot_t* d )
 
       assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
     }
-    
+
     if ( harmful && callbacks )
       action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
 
@@ -2030,7 +2030,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return new prev_expr_t( *this, splits[ 1 ] );
     }
   }
-  
+
   if ( num_splits == 3 && splits[ 0 ] == "dot" )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
