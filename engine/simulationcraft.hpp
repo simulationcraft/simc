@@ -2659,7 +2659,6 @@ public:
   event_t*  next_event();
   void      reset();
   bool      init();
-  void      analyze_player( player_t* p );
   void      analyze();
   void      merge( sim_t& other_sim );
   void      merge();
@@ -3909,6 +3908,8 @@ struct player_t : public noncopyable
   virtual double composite_ranged_attack_player_vulnerability();
 
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
+
+  virtual void analyze( sim_t& );
 };
 
 // Target Specific ==========================================================
@@ -4058,10 +4059,10 @@ struct gain_t
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
     { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
-  void analyze( sim_t* sim )
+  void analyze( sim_t& sim )
   {
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
-    { actual[ i ] /= sim -> iterations; overflow[ i ] /= sim -> iterations; count[ i ] /= sim -> iterations; }
+    { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
   }
   const char* name() { return name_str.c_str(); }
 };

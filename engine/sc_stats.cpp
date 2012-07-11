@@ -217,7 +217,7 @@ void stats_t::analyze()
   portion_aps.analyze( true, true, true, 50 );
   portion_apse.analyze( true, true, true, 50 );
 
-  resource_gain.analyze( sim );
+  resource_gain.analyze( *sim );
 
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;

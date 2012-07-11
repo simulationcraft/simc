@@ -7589,3 +7589,237 @@ double player_t::composite_ranged_attack_player_vulnerability()
   return 1.0;
 }
 
+namespace { // UNNAMED NAMESPACE
+
+struct compare_stats_name
+{
+  bool operator()( stats_t* l, stats_t* r ) const
+  {
+    return l -> name_str <= r -> name_str;
+  }
+};
+
+void player_convergence( int iterations,
+                                int convergence_scale,
+                                double confidence_estimator,
+                                sample_data_t& dps,
+                                std::vector<double>& dps_convergence_error,
+                                double dps_error,
+                                double& dps_convergence )
+{
+  // Error Convergence ======================================================
+
+  int    convergence_iterations = 0;
+  double convergence_dps = 0;
+  double convergence_min = +1.0E+50;
+  double convergence_max = -1.0E+50;
+  double convergence_std_dev = 0;
+
+  if ( iterations > 1 && convergence_scale > 1 && !dps.simple )
+  {
+    for ( int i=0; i < iterations; i += convergence_scale )
+    {
+      double i_dps = dps.data()[ i ];
+      convergence_dps += i_dps;
+      if ( convergence_min > i_dps ) convergence_min = i_dps;
+      if ( convergence_max < i_dps ) convergence_max = i_dps;
+    }
+    convergence_iterations = ( iterations + convergence_scale - 1 ) / convergence_scale;
+    convergence_dps /= convergence_iterations;
+
+    assert( dps_convergence_error.empty() );
+    dps_convergence_error.reserve( iterations );
+
+    double sum_of_squares = 0;
+
+    for ( int i = 0; i < iterations; i++ )
+    {
+      double delta = dps.data()[ i ] - convergence_dps;
+      double delta_squared = delta * delta;
+
+      sum_of_squares += delta_squared;
+
+      if ( i > 1 )
+        dps_convergence_error.push_back( confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i ) );
+
+      if ( ( i % convergence_scale ) == 0 )
+        convergence_std_dev += delta_squared;
+    }
+  }
+
+  if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
+  convergence_std_dev = sqrt( convergence_std_dev );
+  double convergence_error = confidence_estimator * convergence_std_dev;
+  if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
+
+  if ( convergence_error > 0 )
+    dps_convergence = convergence_error / ( dps_error * convergence_scale );
+}
+
+} // UNNAMED NAMESPACE
+
+void player_t::analyze( sim_t& s )
+{
+  assert( s.iterations > 0 );
+
+   pre_analyze_hook();
+
+  // Sample Data Analysis ========================================================
+
+  // sample_data_t::analyze(calc_basics,calc_variance,sort )
+
+   deaths.analyze( true, true, true, 50 );
+
+   fight_length.analyze( true, true );
+   waiting_time.analyze();
+   executed_foreground_actions.analyze();
+
+   dmg.analyze( true, true );
+   compound_dmg.analyze();
+   dps.analyze( true, true, true, 50 );
+   dpse.analyze();
+
+   dmg_taken.analyze();
+   dtps.analyze( true, true );
+
+   heal.analyze();
+   compound_heal.analyze();
+   hps.analyze( true, true, true, 50 );
+   hpse.analyze();
+
+   heal_taken.analyze();
+   htps.analyze( true, true );
+
+   deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
+   dps_error =  dps.mean_std_dev * s.confidence_estimator;
+   dtps_error =  dtps.mean_std_dev * s.confidence_estimator;
+   hps_error =  hps.mean_std_dev * s.confidence_estimator;
+
+  for ( size_t i = 0; i <  buff_list.size(); ++i )
+     buff_list[ i ] -> analyze();
+
+  for ( benefit_t* u =  benefit_list; u; u = u -> next )
+    u -> analyze();
+
+  for ( uptime_t* u =  uptime_list; u; u = u -> next )
+    u -> analyze();
+
+  range::sort(  stats_list, compare_stats_name() );
+
+  if (  quiet ) return;
+  if (  fight_length.mean == 0 ) return;
+
+  // Pet Chart Adjustment ===================================================
+  size_t max_buckets = static_cast<size_t>(  fight_length.max );
+
+  // Make the pet graphs the same length as owner's
+  if (  is_pet() )
+  {
+    player_t* o =  cast_pet() -> owner;
+    max_buckets = static_cast<size_t>( o -> fight_length.max );
+  }
+
+  // Stats Analysis =========================================================
+  std::vector<stats_t*> tmp_stats_list;
+
+  // Append  stats_list to stats_list
+  tmp_stats_list.insert( tmp_stats_list.end(),  stats_list.begin(),  stats_list.end() );
+
+  for ( size_t i = 0; i <  pet_list.size(); ++i )
+  {
+    pet_t* pet =  pet_list[ i ];
+    // Append pet -> stats_list to stats_list
+    tmp_stats_list.insert( tmp_stats_list.end(), pet -> stats_list.begin(), pet -> stats_list.end() );
+  }
+
+  size_t num_stats = tmp_stats_list.size();
+
+  if ( !  is_pet() )
+  {
+    for ( size_t i = 0; i < num_stats; i++ )
+    {
+      stats_t* s = tmp_stats_list[ i ];
+      s -> analyze();
+
+      if ( s -> type == STATS_DMG )
+        s -> portion_amount =  compound_dmg.mean ? s -> compound_amount /  compound_dmg.mean : 0 ;
+      else
+        s -> portion_amount =  compound_heal.mean ? s -> compound_amount /  compound_heal.mean : 0;
+    }
+  }
+
+  // Actor Lists ============================================================
+  if (  !  quiet && !  is_enemy() && !  is_add() && ! (  is_pet() && s.report_pets_separately ) )
+  {
+    s.players_by_dps.push_back( this );
+    s.players_by_hps.push_back( this );
+    s.players_by_name.push_back( this );
+  }
+  if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
+    s.targets_by_name.push_back( this );
+
+
+  // Resources & Gains ======================================================
+  for ( size_t i = 0; i <  resource_timeline_count; ++i )
+  {
+    std::vector<double>& timeline =  resource_timelines[ i ].timeline;
+    if ( timeline.size() > max_buckets ) timeline.resize( max_buckets );
+
+    assert( timeline.size() == max_buckets );
+    for ( size_t j = 0; j < max_buckets; j++ )
+    {
+      timeline[ j ] /= s.divisor_timeline[ j ];
+    }
+  }
+
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  {
+    resource_lost  [ i ] /= s.iterations;
+    resource_gained[ i ] /= s.iterations;
+  }
+
+  double rl = resource_lost[  primary_resource() ];
+  dpr = ( rl > 0 ) ? (  dmg.mean / rl ) : -1.0;
+  hpr = ( rl > 0 ) ? (  heal.mean / rl ) : -1.0;
+
+  rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean;
+  rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean;
+
+  for ( gain_t* g =  gain_list; g; g = g -> next )
+    g -> analyze( s );
+
+  for ( size_t i = 0; i <  pet_list.size(); ++i )
+  {
+    pet_t* pet =  pet_list[ i ];
+    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+      g -> analyze( s );
+  }
+
+  // Procs ==================================================================
+
+  for ( proc_t* proc =  proc_list; proc; proc = proc -> next )
+    proc -> analyze();
+
+  // Damage Timelines =======================================================
+
+   timeline_dmg.assign( max_buckets, 0 );
+  for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
+  {
+    stats_t* s = tmp_stats_list[ i ];
+    if ( ( s -> type != STATS_DMG ) == is_hps )
+    {
+      size_t j_max = std::min( max_buckets, s -> timeline_amount.size() );
+      for ( size_t j = 0; j < j_max; j++ )
+         timeline_dmg[ j ] += s -> timeline_amount[ j ];
+    }
+  }
+
+
+   recreate_talent_str( s.talent_format );
+
+  // Error Convergence ======================================================
+  player_convergence( s.iterations, s.convergence_scale, s.confidence_estimator,
+                       dps,  dps_convergence_error,  dps_error,  dps_convergence );
+
+}
+
