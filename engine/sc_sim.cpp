@@ -1170,6 +1170,7 @@ void sim_t::combat_begin()
   {
     if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override();
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override();
+    if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override();
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override();
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
     if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override( 3 );
@@ -1942,6 +1943,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.slowed_casting          = optimal_raid;
   overrides.magic_vulnerability     = optimal_raid;
+  overrides.ranged_vulnerability    = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.physical_vulnerability  = optimal_raid;
   overrides.weakened_armor          = optimal_raid;
@@ -2113,6 +2115,7 @@ void sim_t::create_options()
     { "override.str_agi_int",             OPT_INT,    &( overrides.str_agi_int                    ) },
     { "override.slowed_casting",          OPT_INT,    &( overrides.slowed_casting                 ) },
     { "override.magic_vulnerability",     OPT_INT,    &( overrides.magic_vulnerability            ) },
+    { "override.ranged_vulnerability",     OPT_INT,   &( overrides.ranged_vulnerability            ) },
     { "override.mortal_wounds",           OPT_INT,    &( overrides.mortal_wounds                  ) },
     { "override.physical_vulnerability",  OPT_INT,    &( overrides.physical_vulnerability         ) },
     { "override.weakened_armor",          OPT_INT,    &( overrides.weakened_armor                 ) },
