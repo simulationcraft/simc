@@ -4791,7 +4791,7 @@ void priest_t::init_actions()
 
     if ( level > 85 )
     {
-      precombat_list += "/food,type=great_pandaren_banquet";
+      precombat_list += "/food,type=mogu_fish_stew";
     }
     else if ( level >= 80 )
     {

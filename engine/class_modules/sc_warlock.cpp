@@ -4684,7 +4684,7 @@ void warlock_t::init_actions()
     if ( level >= 80 )
     {
       precombat_list += "/food,type=";
-      precombat_list += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     }
 
     add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up", "precombat" );

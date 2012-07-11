@@ -4716,7 +4716,11 @@ void druid_t::init_actions()
 
       // Food
       precombat_list += "/food,type=";
-      precombat_list += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+
+      if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+        precombat_list += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      else
+        precombat_list += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
     }
 
     // MotW

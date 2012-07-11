@@ -4531,7 +4531,7 @@ void shaman_t::init_actions()
 
   // Food
   if ( level >= 80 ) precombat_s << "/food,type=";
-  precombat_s << ( ( level > 85 ) ? "great_pandaren_banquet" : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
+  precombat_s << ( ( level > 85 ) ? ( ( specialization() == SHAMAN_ENHANCEMENT ) ? "sea_mist_rice_noodles" : "mogu_fish_stew" ) : ( level >= 80 ) ? "seafood_magnifique_feast" : "" );
 
   // Weapon Enchants
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )

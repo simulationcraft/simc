@@ -3208,7 +3208,7 @@ void mage_t::init_actions()
 
       // Food
       precombat += "/food,type=";
-      precombat += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      precombat += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
       precombat += ",precombat=1";
     }
 

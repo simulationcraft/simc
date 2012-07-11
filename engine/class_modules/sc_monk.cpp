@@ -1298,7 +1298,8 @@ void monk_t::init_actions()
       // Food
       if ( level > 85 )
       {
-        precombat += "/food,type=great_pandaren_banquet";
+        precombat += "/food,type=";
+        precombat += ( specialization() == MONK_MISTWEAVER ) ? "mogu_fish_stew" : "sea_mist_rice_noodles";
       }
       else if ( level > 80 )
       {

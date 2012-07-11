@@ -3786,7 +3786,7 @@ void death_knight_t::init_actions()
         // Food
         if ( level > 85 )
         {
-          action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
+          action_list_str += "/food,type=black_pepper_ribs_and_shrimp,precombat=1";
         }
         else
         {

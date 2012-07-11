@@ -1757,6 +1757,8 @@ struct moc_t : public hunter_spell_t
   moc_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
   {
+    parse_options( NULL, options_str );
+
     crows_summoned = 0;
 
     hasted_ticks = false;
@@ -3138,7 +3140,7 @@ void hunter_t::init_actions()
       precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
 
       precombat += "/food,type=";
-      precombat += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
     }
 
     // Todo: Add ranged_vulnerability

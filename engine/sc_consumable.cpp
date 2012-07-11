@@ -42,52 +42,108 @@ struct food_data_t
 static const food_data_t food_data[] =
 {
   // cataclysm
-  { FOOD_BAKED_ROCKFISH,              STAT_CRIT_RATING,   90 },
-  { FOOD_BAKED_ROCKFISH,              STAT_STAMINA,       90 },
+  { FOOD_BAKED_ROCKFISH,               STAT_CRIT_RATING,       90 },
+  { FOOD_BAKED_ROCKFISH,               STAT_STAMINA,           90 },
 
-  { FOOD_BASILISK_LIVERDOG,           STAT_HASTE_RATING,  90 },
-  { FOOD_BASILISK_LIVERDOG,           STAT_STAMINA,       90 },
+  { FOOD_BASILISK_LIVERDOG,            STAT_HASTE_RATING,      90 },
+  { FOOD_BASILISK_LIVERDOG,            STAT_STAMINA,           90 },
 
-  { FOOD_BEER_BASTED_CROCOLISK,       STAT_STRENGTH,  90 },
-  { FOOD_BEER_BASTED_CROCOLISK,       STAT_STAMINA,   90 },
+  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STRENGTH,          90 },
+  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STAMINA,           90 },
 
-  { FOOD_BLACKBELLY_SUSHI,            STAT_PARRY_RATING,  90 },
-  { FOOD_BLACKBELLY_SUSHI,            STAT_STAMINA,       90 },
+  { FOOD_BLACK_PEPPER_RIBS_AND_SHRIMP, STAT_STRENGTH,         300 },
 
-  { FOOD_CROCOLISK_AU_GRATIN,         STAT_EXPERTISE_RATING,  90 },
-  { FOOD_CROCOLISK_AU_GRATIN,         STAT_STAMINA,           90 },
+  { FOOD_BLACKBELLY_SUSHI,             STAT_PARRY_RATING,      90 },
+  { FOOD_BLACKBELLY_SUSHI,             STAT_STAMINA,           90 },
 
-  { FOOD_DELICIOUS_SAGEFISH_TAIL,     STAT_SPIRIT,    90 },
-  { FOOD_DELICIOUS_SAGEFISH_TAIL,     STAT_STAMINA,   90 },
+  { FOOD_BLANCHED_NEEDLE_MUSHROOMS,    STAT_DODGE_RATING,     200 },
 
-  { FOOD_FISH_CAKE,                   STAT_HIT_RATING, 275 },
+  { FOOD_BOILED_SILKWORM_PUPA,         STAT_HIT_RATING,       100 },
 
-  { FOOD_FISH_FEAST,                  STAT_ATTACK_POWER,  80 },
-  { FOOD_FISH_FEAST,                  STAT_SPELL_POWER,   46 },
-  { FOOD_FISH_FEAST,                  STAT_STAMINA,       40 },
+  { FOOD_BRAISED_TURTLE,               STAT_INTELLECT,        275 },
 
-  { FOOD_GINSENG_CHICKEN_SOUP,        STAT_HIT_RATING, 275 },
+  { FOOD_CHARBROILED_TIGER_STEAK,      STAT_STRENGTH,         250 },
 
-  { FOOD_GRILLED_DRAGON,              STAT_HIT_RATING,  90 },
-  { FOOD_GRILLED_DRAGON,              STAT_STAMINA,     90 },
+  { FOOD_CHUN_TIAN_SPRING_ROLLS,       STAT_STAMINA,          450 },
 
-  { FOOD_LAVASCALE_FILLET,            STAT_MASTERY_RATING,  90 },
-  { FOOD_LAVASCALE_FILLET,            STAT_STAMINA,         90 },
+  { FOOD_CROCOLISK_AU_GRATIN,          STAT_EXPERTISE_RATING,  90 },
+  { FOOD_CROCOLISK_AU_GRATIN,          STAT_STAMINA,           90 },
 
-  { FOOD_MUSHROOM_SAUCE_MUDFISH,      STAT_DODGE_RATING,  90 },
-  { FOOD_MUSHROOM_SAUCE_MUDFISH,      STAT_STAMINA,       90 },
+  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_SPIRIT,            90 },
+  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_STAMINA,           90 },
 
-  { FOOD_PANDAREN_MEATBALL,           STAT_EXPERTISE_RATING, 275 },
+  { FOOD_DRIED_NEEDLE_MUSHROOMS,       STAT_DODGE_RATING,     100 },
 
-  { FOOD_RICE_PUDDING,                STAT_EXPERTISE_RATING, 275 },
+  { FOOD_DRIED_PEACHES,                STAT_PARRY_RATING,     100 },
 
-  { FOOD_SEVERED_SAGEFISH_HEAD,       STAT_INTELLECT,   90 },
-  { FOOD_SEVERED_SAGEFISH_HEAD,       STAT_STAMINA,     90 },
+  { FOOD_ETERNAL_BLOSSOM_FISH,         STAT_STRENGTH,         275 },
 
-  { FOOD_SKEWERED_EEL,                STAT_AGILITY,  90 },
-  { FOOD_SKEWERED_EEL,                STAT_STAMINA,  90 },
+  { FOOD_FIRE_SPIRIT_SALMON,           STAT_SPIRIT,           275 },
 
-  { FOOD_MOGU_FISH_STEW,              STAT_INTELLECT,  300 },
+  { FOOD_FISH_FEAST,                   STAT_ATTACK_POWER,      80 },
+  { FOOD_FISH_FEAST,                   STAT_SPELL_POWER,       46 },
+  { FOOD_FISH_FEAST,                   STAT_STAMINA,           40 },
+
+  { FOOD_GREEN_CURRY_FISH,             STAT_CRIT_RATING,      200 },
+
+  { FOOD_GRILLED_DRAGON,               STAT_HIT_RATING,        90 },
+  { FOOD_GRILLED_DRAGON,               STAT_STAMINA,           90 },
+
+  { FOOD_LAVASCALE_FILLET,             STAT_MASTERY_RATING,    90 },
+  { FOOD_LAVASCALE_FILLET,             STAT_STAMINA,           90 },
+
+  { FOOD_MOGU_FISH_STEW,               STAT_INTELLECT,        300 },
+
+  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_DODGE_RATING,      90 },
+  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_STAMINA,           90 },
+
+  { FOOD_PEACH_PIE,                    STAT_PARRY_RATING,     200 },
+
+  { FOOD_PEARL_MILK_TEA,               STAT_MASTERY_RATING,   200 },
+
+  { FOOD_POUNDED_RICE_CAKE,            STAT_EXPERTISE_RATING, 100 },
+
+  { FOOD_RED_BEAN_BUN,                 STAT_EXPERTISE_RATING, 200 },
+
+  { FOOD_RICE_PUDDING,                 STAT_EXPERTISE_RATING, 275 },
+
+  { FOOD_ROASTED_BARLEY_TEA,           STAT_MASTERY_RATING,   100 },
+
+  { FOOD_SAUTEED_CARROTS,              STAT_AGILITY,          250 },
+
+  { FOOD_SEA_MIST_RICE_NOODLES,        STAT_AGILITY,          300 },
+
+  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_INTELLECT,         90 },
+  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_STAMINA,           90 },
+
+  { FOOD_SKEWERED_EEL,                 STAT_AGILITY,           90 },
+  { FOOD_SKEWERED_EEL,                 STAT_STAMINA,           90 },
+
+  { FOOD_SHRIMP_DUMPLINGS,             STAT_SPIRIT,           250 },
+
+  { FOOD_SKEWERED_PEANUT_CHICKEN,      STAT_HIT_RATING,       200 },
+
+  { FOOD_SPICY_SALMON,                 STAT_HIT_RATING,       300 },
+
+  { FOOD_SPICY_VEGETABLE_BOWL,         STAT_EXPERTISE_RATING, 300 },
+
+  { FOOD_STEAMED_CRAB_SURPRISE,        STAT_SPIRIT,           300 },
+
+  { FOOD_SWIRLING_MIST_SOUP,           STAT_INTELLECT,        250 },
+
+  { FOOD_TANGY_YOGURT,                 STAT_HASTE_RATING,     200 },
+
+  { FOOD_TOASTED_FISH_JERKY,           STAT_CRIT_RATING,      100 },
+
+  { FOOD_TWIN_FISH_PLATTER,            STAT_STAMINA,          415 },
+
+  { FOOD_VALLEY_STIR_FRY,              STAT_AGILITY,          275 },
+
+  { FOOD_WILDFOWL_GINSENG_SOUP,        STAT_HIT_RATING,       275 },
+
+  { FOOD_WILDFOWL_ROAST,               STAT_STAMINA,          375 },
+
+  { FOOD_YAK_CHEESE_CURDS,             STAT_HASTE_RATING,     100 },
 };
 
 struct flask_t : public action_t
@@ -243,6 +299,8 @@ struct food_t : public action_t
 
 
     double stamina = 0;
+    double gain_amount = 0;
+
     switch ( type )
     {
     case FOOD_FORTUNE_COOKIE:
@@ -297,30 +355,45 @@ struct food_t : public action_t
       }
       stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
+    case FOOD_BANQUET_OF_THE_BREW:
+    case FOOD_BANQUET_OF_THE_GRILL:
+    case FOOD_BANQUET_OF_THE_OVEN:
+    case FOOD_BANQUET_OF_THE_POT:
+    case FOOD_BANQUET_OF_THE_STEAMER:
+    case FOOD_BANQUET_OF_THE_WOK:
+    case FOOD_GREAT_BANQUET_OF_THE_BREW:
+    case FOOD_GREAT_BANQUET_OF_THE_GRILL:
+    case FOOD_GREAT_BANQUET_OF_THE_OVEN:
+    case FOOD_GREAT_BANQUET_OF_THE_POT:
+    case FOOD_GREAT_BANQUET_OF_THE_STEAMER:
+    case FOOD_GREAT_BANQUET_OF_THE_WOK:
+      if ( gain_amount <= 0.0 ) gain_amount = 250;
     case FOOD_PANDAREN_BANQUET:
     case FOOD_GREAT_PANDAREN_BANQUET:
+      if ( gain_amount <= 0.0 ) gain_amount = 275;
+
       if ( p -> stats.dodge_rating > 0 )
       {
-        p -> stat_gain( STAT_DODGE_RATING, 275 * food_stat_multiplier );
+        p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
       }
       else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
         if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
-          p -> stat_gain( STAT_STRENGTH, 275 * food_stat_multiplier );
+          p -> stat_gain( STAT_STRENGTH, gain_amount * food_stat_multiplier );
         }
         else
         {
-          p -> stat_gain( STAT_AGILITY, 275 * food_stat_multiplier );
+          p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
         }
       }
       else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
-        p -> stat_gain( STAT_INTELLECT, 275 * food_stat_multiplier, gain, this );
+        p -> stat_gain( STAT_INTELLECT, gain_amount * food_stat_multiplier, gain, this );
       }
       else
       {
-        p -> stat_gain( STAT_AGILITY, 275 * food_stat_multiplier );
+        p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
       }
       break;
 

@@ -3246,10 +3246,10 @@ void warrior_t::init_actions()
         action_list_str += "/flask,type=titanic_strength,precombat=1";
 
       // Food
-      if ( level >= 80 )
-        action_list_str += "/food,type=great_pandaren_banquet,precombat=1";
-      else if ( level >= 70 )
-        action_list_str += "/food,type=beer_basted_crocolisk,precombat=1";
+      if ( level > 85 )
+        action_list_str += "/food,type=black_pepper_ribs_and_shrimp,precombat=1";
+      else if ( level >= 80 )
+        action_list_str += "/food,type=seafood_magnifique_feast,precombat=1";
 
       break;
 

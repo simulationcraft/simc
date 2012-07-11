@@ -2488,7 +2488,7 @@ void paladin_t::init_actions()
     {
       if ( level > 85 )
       {
-        action_list_str += "/flask,precombat=1,type=winters_bite/food,precombat=1,type=great_pandaren_banquet";
+        action_list_str += "/flask,precombat=1,type=winters_bite/food,precombat=1,type=black_pepper_ribs_and_shrimp";
       }
       else if ( level >= 80 )
       {

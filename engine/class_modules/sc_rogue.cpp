@@ -3148,7 +3148,7 @@ void rogue_t::init_actions()
 
       // Food
       action_list_str += "/food,type=";
-      action_list_str += ( level > 85 ) ? "great_pandaren_banquet" : "seafood_magnifique_feast";
+      action_list_str += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
       action_list_str += ",precombat=1";
     }
 
