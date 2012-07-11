@@ -1384,6 +1384,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
 struct kill_shot_t : public hunter_ranged_attack_t
 {
+  cooldown_t* cd_glyph_kill_shot;
+
   kill_shot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "kill_shot", player, player -> find_class_spell( "Kill Shot" ) )
   {
@@ -1392,8 +1394,22 @@ struct kill_shot_t : public hunter_ranged_attack_t
     base_dd_min *= weapon_multiplier; // Kill Shot's weapon multiplier applies to the base damage as well
     base_dd_max *= weapon_multiplier;
     direct_power_mod = 0.45 * weapon_multiplier; // and the coefficient too
+    
+    cd_glyph_kill_shot = player -> get_cooldown( "cooldowns.glyph_kill_shot" );
+    cd_glyph_kill_shot -> duration = player -> dbc.spell( 90967 ) -> duration();
 
     normalize_weapon_speed = true;
+  }
+    
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( cd_glyph_kill_shot -> remains() == timespan_t::zero() )
+    {
+      cooldown -> reset();
+      cd_glyph_kill_shot -> start();
+    }
   }
 
   virtual bool ready()
@@ -3023,7 +3039,6 @@ void hunter_t::init_buffs()
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" ).chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ).cd( timespan_t::from_seconds( tier13_4pc_cooldown ) );
-
 }
 
 // hunter_t::init_values ====================================================
