@@ -680,7 +680,7 @@ struct buff_state_t
     }
   }
 
-  void write_back_state()
+  void write_back_state() const
   {
     if ( buff -> sim -> debug )
       buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
@@ -700,7 +700,7 @@ struct mage_state_t
   mage_t* mage;
   std::array<double, RESOURCE_MAX > resources;
   // location
-  auto_dispose< std::vector<buff_state_t*> > buff_states;
+  std::vector<buff_state_t> buff_states;
 
 
   mage_state_t( mage_t* m ) : // Snapshot and start 6s event
@@ -717,7 +717,7 @@ struct mage_state_t
       if ( b -> current_stack == 0 )
         continue;
 
-      buff_states.push_back( new buff_state_t( b ) );
+      buff_states.push_back( buff_state_t( b ) );
     }
   }
 
@@ -727,7 +727,7 @@ struct mage_state_t
 
     for ( size_t i = 0; i < buff_states.size(); ++ i )
     {
-      buff_states[ i ] -> write_back_state();
+      buff_states[ i ].write_back_state();
     }
   }
 };
