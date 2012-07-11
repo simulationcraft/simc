@@ -75,7 +75,6 @@ public:
     buff_t* judgments_of_the_pure;
     buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
-    buff_t* zealotry;
   } buffs;
 
   // Gains
@@ -117,7 +116,6 @@ public:
   struct passives_t
   {
     const spell_data_t* boundless_conviction;
-    const spell_data_t* crusaders_zeal;
     const spell_data_t* divine_bulwark;
     const spell_data_t* ancient_fury;
     const spell_data_t* ancient_power;
@@ -232,6 +230,7 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    composite_attack_crit( weapon_t* = 0 );
+  virtual double    composite_spell_crit();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
@@ -713,10 +712,6 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t::execute();
     if ( result_is_hit() )
     {
-      if ( p() -> passives.crusaders_zeal -> ok() )
-      {
-        p() -> buffs.zealotry -> trigger();
-      }
       if ( p() -> passives.the_art_of_war -> ok() && sim -> roll( p() -> passives.the_art_of_war -> proc_chance() ) )
       {
         if ( p() -> cooldowns.exorcism -> remains() <= timespan_t::zero() )
@@ -1056,8 +1051,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
+  double cooldown_mult;
+
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), true )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ), true ),
+    cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1075,7 +1073,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown -> duration = timespan_t::zero();
+      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
   }
 
@@ -1096,6 +1094,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       }
       trigger_hand_of_light( this );
     }
+  }
+
+  virtual void update_ready()
+  {
+    timespan_t save_cooldown = cooldown -> duration;
+    
+    if ( p() -> buffs.avenging_wrath -> up() )
+    {
+      cooldown -> duration *= cooldown_mult; 
+    }
+
+    paladin_melee_attack_t::update_ready();
+
+    cooldown -> duration = save_cooldown;
   }
 
   virtual bool ready()
@@ -1245,8 +1257,6 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
     proc              = true;
     trigger_gcd       = timespan_t::zero();
     weapon            = &( p -> main_hand_weapon );
-    base_spell_power_multiplier  = 0.0; // FIX-ME: It's bugged in game as of 15589.
-    base_attack_power_multiplier = 0.0; // FIX-ME: It's bugged in game as of 15589.
   }
 };
 
@@ -1376,9 +1386,11 @@ struct seal_of_command_proc_t : public paladin_melee_attack_t
 struct judgment_t : public paladin_melee_attack_t
 {
   player_t* old_target;
+  double cooldown_mult;
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 ),
+    cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1397,7 +1409,7 @@ struct judgment_t : public paladin_melee_attack_t
 
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown -> duration = timespan_t::zero();
+      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
   }
 
@@ -1452,6 +1464,20 @@ struct judgment_t : public paladin_melee_attack_t
       player_multiplier *= 1.0 + p() -> buffs.double_jeopardy -> value();
       old_target = target;
     }
+  }
+
+  virtual void update_ready()
+  {
+    timespan_t save_cooldown = cooldown -> duration;
+    
+    if ( p() -> buffs.avenging_wrath -> up() )
+    {
+      cooldown -> duration *= cooldown_mult; 
+    }
+
+    paladin_melee_attack_t::update_ready();
+
+    cooldown -> duration = save_cooldown;
   }
 
   virtual bool ready()
@@ -1765,8 +1791,11 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 // TODO: fix the fugly hack
 struct holy_shock_t : public paladin_spell_t
 {
+  double cooldown_mult;
+
   holy_shock_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_shock", p, p -> find_class_spell( "Holy Shock" ) )
+    : paladin_spell_t( "holy_shock", p, p -> find_class_spell( "Holy Shock" ) ),
+    cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
@@ -1774,9 +1803,11 @@ struct holy_shock_t : public paladin_spell_t
     // to do damage is 25912
     parse_effect_data( ( *player -> dbc.effect( 25912 ) ) );
 
+    base_crit += 0.25;
+
     if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown -> duration = timespan_t::zero();
+      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
   }
 
@@ -1792,6 +1823,20 @@ struct holy_shock_t : public paladin_spell_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
     }
+  }
+
+  virtual void update_ready()
+  {
+    timespan_t save_cooldown = cooldown -> duration;
+    
+    if ( p() -> buffs.avenging_wrath -> up() )
+    {
+      cooldown -> duration *= cooldown_mult; 
+    }
+
+    paladin_spell_t::update_ready();
+
+    cooldown -> duration = save_cooldown;
   }
 };
 
@@ -2434,6 +2479,11 @@ void paladin_t::init_buffs()
 
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+  {
+    buffs.avenging_wrath -> buff_duration *= 1.0 + find_talent_spell( "Sanctified Wrath" ) -> effectN( 2 ).percent();
+  }
+
   buffs.divine_protection      = buff_creator_t( this, "divine_protection", find_class_spell( "Divine Protection" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
@@ -2449,10 +2499,6 @@ void paladin_t::init_buffs()
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power );
   buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
-  buffs.zealotry               = buff_creator_t( this, "zealotry", passives.crusaders_zeal )
-                                 .default_value( passives.crusaders_zeal -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                 .max_stack( 3 )
-                                 .duration( passives.crusaders_zeal -> effectN( 1 ).trigger() -> duration() );
 }
 
 // paladin_t::init_actions ==================================================
@@ -2482,46 +2528,48 @@ void paladin_t::init_actions()
   {
     clear_action_priority_lists();
 
+    std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
+
     switch ( specialization() )
     {
     case PALADIN_RETRIBUTION:
     {
       if ( level > 85 )
       {
-        action_list_str += "/flask,precombat=1,type=winters_bite/food,precombat=1,type=black_pepper_ribs_and_shrimp";
+        precombat_list += "/flask,type=winters_bite/food,type=black_pepper_ribs_and_shrimp";
       }
       else if ( level >= 80 )
       {
-        action_list_str += "/flask,precombat=1,type=titanic_strength/food,precombat=1,type=beer_basted_crocolisk";
+        precombat_list += "/flask,type=titanic_strength/food,type=beer_basted_crocolisk";
       }
 
       if ( find_class_spell( "Blessing of Kings" ) -> ok() )
-        action_list_str += "/blessing_of_kings,precombat=1,if=!aura.str_agi_int.up";
+        precombat_list += "/blessing_of_kings,if=!aura.str_agi_int.up";
       if ( find_class_spell( "Blessing of Might" ) -> ok() )
       {
-        action_list_str += "/blessing_of_might,precombat=1,if=!aura.mastery.up";
+        precombat_list += "/blessing_of_might,if=!aura.mastery.up";
         if ( find_class_spell( "Blessing of Kings" ) -> ok() )
-          action_list_str += "&!aura.str_agi_int.up";
+          precombat_list += "&!aura.str_agi_int.up";
       }
 
       if ( find_class_spell( "Seal of Truth" ) -> ok() )
       {
-        action_list_str += "/seal_of_truth,precombat=1";
+        precombat_list += "/seal_of_truth";
       }
 
-      action_list_str += "/snapshot_stats,precombat=1";
+      precombat_list += "/snapshot_stats";
 
       if ( level > 85 )
       {
-        action_list_str += "/mogu_power_potion,precombat=1";
+        precombat_list += "/mogu_power_potion";
       }
       else if ( level >= 80 )
       {
-        action_list_str += "/golemblood_potion,precombat=1";
+        precombat_list += "/golemblood_potion";
       }
 
       if ( find_class_spell( "Rebuke" ) -> ok() )
-        action_list_str += "/rebuke";
+        action_list_str = "/rebuke";
 
       if ( find_class_spell( "Seal of Truth" ) -> ok() )
       {
@@ -2752,7 +2800,6 @@ void paladin_t::init_spells()
     vengeance.enabled = true;
 
   // Ret Passives
-  passives.crusaders_zeal         = find_specialization_spell( "Crusader's Zeal" );
   passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
   passives.ancient_power          = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86700 : 0 );
   passives.judgments_of_the_bold  = find_specialization_spell( "Judgments of the Bold" );
@@ -2854,7 +2901,25 @@ double paladin_t::composite_attack_crit( weapon_t* w )
 {
   double m = player_t::composite_attack_crit( w );
 
-  m *= 1.0 + buffs.zealotry -> value() * buffs.zealotry -> check();  // BUG: 15677. Multiplies with crit rather than adding to it.
+  if ( buffs.inquisition -> check() )
+  {
+    m += buffs.inquisition -> s_data -> effectN( 3 ).percent();
+  }
+
+  return m;
+}
+
+
+// paladin_t::composite_spell_crit ===================================
+
+double paladin_t::composite_spell_crit()
+{
+  double m = player_t::composite_spell_crit();
+
+  if ( buffs.inquisition -> check() )
+  {
+    m += buffs.inquisition -> s_data -> effectN( 3 ).percent();
+  }
 
   return m;
 }
