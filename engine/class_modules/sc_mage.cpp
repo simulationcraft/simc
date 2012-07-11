@@ -1252,8 +1252,11 @@ struct arcane_power_t : public mage_spell_t
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
     harmful = false;
+
     if ( p -> glyphs.arcane_power -> ok() )
       cooldown -> duration *= 2;
+
+    orig_duration = cooldown -> duration;
   }
 
   virtual void execute()
