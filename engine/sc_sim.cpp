@@ -1569,7 +1569,8 @@ void sim_t::merge( sim_t& other_sim )
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
-    buff_list[ i ] -> merge( buff_t::find( &other_sim, buff_list[ i ] -> name_str.c_str() ) );
+    if ( buff_t* otherbuff = buff_t::find( &other_sim, buff_list[ i ] -> name_str.c_str() ) )
+      buff_list[ i ] -> merge( *otherbuff );
   }
 
   for ( size_t i = 0; i < actor_list.size(); i++ )

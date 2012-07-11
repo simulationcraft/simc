@@ -2036,7 +2036,7 @@ public:
   virtual void reset();
   virtual void aura_gain();
   virtual void aura_loss();
-  virtual void merge( const buff_t* other_buff );
+  virtual void merge( const buff_t& other_buff );
   virtual void analyze();
   void init();
   virtual void combat_begin();
@@ -4059,12 +4059,12 @@ struct gain_t
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
     { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
-  void analyze( sim_t& sim )
+  void analyze( const sim_t& sim )
   {
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
     { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
   }
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Stats ====================================================================
@@ -4140,7 +4140,7 @@ struct stats_t
   void combat_end();
   void reset();
   void analyze();
-  void merge( const stats_t* other );
+  void merge( const stats_t& other );
 };
 
 // Action ===================================================================
@@ -4673,7 +4673,7 @@ struct dot_t
 
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 
   /* New stuff */
   void schedule_new_tick();

@@ -728,21 +728,21 @@ void buff_t::reset()
 
 // buff_t::merge ============================================================
 
-void buff_t::merge( const buff_t* other )
+void buff_t::merge( const buff_t& other )
 {
-  start_intervals.merge( other -> start_intervals );
-  trigger_intervals.merge( other -> trigger_intervals );
-  up_count              += other -> up_count;
-  down_count            += other -> down_count;
-  start_count           += other -> start_count;
-  refresh_count         += other -> refresh_count;
-  trigger_attempts      += other -> trigger_attempts;
-  trigger_successes     += other -> trigger_successes;
+  start_intervals.merge( other.start_intervals );
+  trigger_intervals.merge( other.trigger_intervals );
+  up_count              += other.up_count;
+  down_count            += other.down_count;
+  start_count           += other.start_count;
+  refresh_count         += other.refresh_count;
+  trigger_attempts      += other.trigger_attempts;
+  trigger_successes     += other.trigger_successes;
 
-  uptime_pct.merge( other -> uptime_pct );
+  uptime_pct.merge( other.uptime_pct );
 
 #ifndef NDEBUG
-  if ( stack_uptime.size() != other -> stack_uptime.size() )
+  if ( stack_uptime.size() != other.stack_uptime.size() )
   {
     sim->errorf( "buff_t::merge buff %s of player %s stack_uptime vector not of equal length.\n", name_str.c_str(), player ? player -> name() : "" );
     assert( 0 );
@@ -750,7 +750,7 @@ void buff_t::merge( const buff_t* other )
 #endif
 
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> merge ( *( other -> stack_uptime[ i ] ) );
+    stack_uptime[ i ] -> merge ( *( other.stack_uptime[ i ] ) );
 }
 
 // buff_t::analyze ==========================================================

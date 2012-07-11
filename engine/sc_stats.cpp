@@ -329,29 +329,29 @@ inline void stats_t::stats_results_t::combat_end()
 
 // stats_t::merge ===========================================================
 
-void stats_t::merge( const stats_t* other )
+void stats_t::merge( const stats_t& other )
 {
-  resource_gain.merge( other->resource_gain );
-  num_direct_results  += other -> num_direct_results;
-  num_tick_results    += other -> num_tick_results;
-  num_executes        += other -> num_executes;
-  num_ticks           += other -> num_ticks;
-  total_execute_time  += other -> total_execute_time;
-  total_tick_time     += other -> total_tick_time;
-  opportunity_cost    += other -> opportunity_cost;
+  resource_gain.merge( other.resource_gain );
+  num_direct_results  += other.num_direct_results;
+  num_tick_results    += other.num_tick_results;
+  num_executes        += other.num_executes;
+  num_ticks           += other.num_ticks;
+  total_execute_time  += other.total_execute_time;
+  total_tick_time     += other.total_tick_time;
+  opportunity_cost    += other.opportunity_cost;
 
-  total_amount.merge( other -> total_amount );
-  actual_amount.merge( other -> actual_amount );
-  portion_aps.merge( other -> portion_aps );
-  portion_apse.merge( other -> portion_apse );
+  total_amount.merge( other.total_amount );
+  actual_amount.merge( other.actual_amount );
+  portion_aps.merge( other.portion_aps );
+  portion_apse.merge( other.portion_apse );
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
   {
-    direct_results[ i ].merge( other -> direct_results[ i ] );
-    tick_results[ i ].merge( other -> tick_results[ i ] );
+    direct_results[ i ].merge( other.direct_results[ i ] );
+    tick_results[ i ].merge( other.tick_results[ i ] );
   }
 
-  size_t i_max = std::min( timeline_amount.size(), other -> timeline_amount.size() );
+  size_t i_max = std::min( timeline_amount.size(), other.timeline_amount.size() );
   for ( size_t i = 0; i < i_max; i++ )
-    timeline_amount[ i ] += other -> timeline_amount[ i ];
+    timeline_amount[ i ] += other.timeline_amount[ i ];
 }

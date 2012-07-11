@@ -3240,7 +3240,7 @@ void player_t::merge( player_t& other )
   {
     buff_t* b = buff_list[ i ];
     if ( buff_t* otherbuff = buff_t::find( &other, b -> name_str.c_str() ) )
-      b -> merge( otherbuff );
+      b -> merge( *otherbuff );
   }
 
   for ( proc_t* proc = proc_list; proc; proc = proc -> next )
@@ -3254,7 +3254,7 @@ void player_t::merge( player_t& other )
   }
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ] -> merge( other.get_stats( stats_list[ i ] -> name_str ) );
+    stats_list[ i ] -> merge( *other.get_stats( stats_list[ i ] -> name_str ) );
 
   for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
   {
