@@ -3050,6 +3050,7 @@ struct void_ray_t : public warlock_spell_t
     warlock_spell_t( p, "Void Ray" )
   {
     aoe = -1;
+    travel_speed = 0;
 
     if ( ! dtr && p -> has_dtr )
     {
