@@ -79,6 +79,7 @@ SRC = \
 	sc_attack.cpp \
 	sc_buff.cpp \
 	sc_consumable.cpp \
+	sc_cooldown.cpp \
 	sc_dot.cpp \
 	sc_enchant.cpp \
 	sc_expressions.cpp \

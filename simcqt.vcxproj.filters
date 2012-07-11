@@ -45,6 +45,9 @@
     <ClCompile Include="engine\sc_consumable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="engine\sc_cooldown.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="engine\dbc\sc_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

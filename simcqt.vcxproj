@@ -165,6 +165,7 @@
     <ClCompile Include="engine\report\sc_chart.cpp" />
     <ClCompile Include="engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="engine\sc_consumable.cpp" />
+    <ClCompile Include="engine\sc_cooldown.cpp" />
     <ClCompile Include="engine\dbc\sc_data.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
     <ClCompile Include="engine\sc_dot.cpp" />

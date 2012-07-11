@@ -242,6 +242,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_cooldown.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\dbc\sc_data.cpp"
 			>
 		</File>

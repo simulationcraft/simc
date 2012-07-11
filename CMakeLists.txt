@@ -37,6 +37,7 @@ SET(SIMC_ENGINE_SOURCE
   "engine/report/sc_chart.cpp"
   "engine/dbc/sc_const_data.cpp"
   "engine/sc_consumable.cpp"
+  "engine/sc_cooldown.cpp"
   "engine/dbc/sc_data.cpp"
   "engine/sc_dot.cpp"
   "engine/sc_enchant.cpp"

@@ -53,6 +53,7 @@ SOURCES += engine/sc_action_state.cpp
 SOURCES += engine/sc_attack.cpp
 SOURCES += engine/sc_buff.cpp
 SOURCES += engine/sc_consumable.cpp
+SOURCES += engine/sc_cooldown.cpp
 SOURCES += engine/sc_dot.cpp
 SOURCES += engine/sc_enchant.cpp
 SOURCES += engine/sc_event.cpp
