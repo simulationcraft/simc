@@ -595,7 +595,7 @@ bool item_database_t::parse_enchant( item_t&            item,
       util::replace_all( result, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
 
       // debug
-       std::cout << "enchant spell id= " << es -> id() << "enchant spell name= " << es -> name_cstr();
+      // std::cout << "enchant spell id= " << es -> id() << "enchant spell name= " << es -> name_cstr();
     }
     else
     {
