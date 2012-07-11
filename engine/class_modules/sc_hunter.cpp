@@ -377,7 +377,6 @@ public:
     buff_t* bestial_wrath;
     buff_t* frenzy;
     buff_t* rabid;
-    buff_t* rabid_power_stack;
   } buffs;
 
   // Gains
@@ -525,7 +524,6 @@ public:
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" );
     buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
-    buffs.rabid_power_stack = buff_creator_t( this, 53403, "rabid_power_stack" );
   }
 
   virtual void init_gains()
@@ -573,7 +571,7 @@ public:
   {
     double mult = pet_t::composite_attack_power_multiplier();
 
-    mult *= 1.0 + buffs.rabid_power_stack -> stack() * buffs.rabid_power_stack -> data().effectN( 1 ).percent();
+    mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
     // TODO pet charge should show up here.
     return mult;
   }
@@ -1779,7 +1777,7 @@ struct moc_t : public hunter_spell_t
     hunter_spell_t::init();
 
     if ( p() -> moc_crows[ 0 ] )
-      stats->add_child( p()-> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
+      stats -> add_child( p() -> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
   }
 
   virtual void execute()
@@ -1956,7 +1954,7 @@ struct focus_fire_t : public hunter_spell_t
 
   virtual void execute()
   {
-    double value = p() -> active_pet -> buffs.frenzy -> stack() * p() -> specs.focus_fire -> effectN( 3 ).percent();
+    double value = p() -> active_pet -> buffs.frenzy -> stack() * p() -> specs.focus_fire -> effectN( 1 ).percent();
     p() -> buffs.focus_fire -> trigger( 1, value );
 
     double gain = p() -> specs.focus_fire -> effectN( 2 ).resource( RESOURCE_FOCUS );
@@ -2015,15 +2013,13 @@ struct kill_command_t : public hunter_spell_t
 
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
-    // FIXME
-    //base_costs[ current_resource() ] += p() -> glyphs.kill_command -> mod_additive( P_RESOURCE_COST );
 
     harmful = false;
 
     for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
     {
       pet_t* pet = p() -> pet_list[ i ];
-      stats -> children.push_back( pet -> get_stats( "kill_command" ) );
+      stats -> add_child( pet -> get_stats( "kill_command" ) );
     }
   }
 
@@ -2276,14 +2272,6 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
   virtual void impact_s( action_state_t* s )
   {
     base_t::impact_s( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> buffs.rabid -> up() )
-      {
-        p() -> buffs.rabid_power_stack -> trigger();
-      }
-    }
   }
 };
 
@@ -2463,7 +2451,6 @@ struct rabid_t : public hunter_pet_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.rabid_power_stack -> expire();
     p() -> buffs.rabid -> trigger();
 
     hunter_pet_spell_t::execute();
@@ -3183,14 +3170,15 @@ void hunter_t::init_actions()
       action_list_str += "/focus_fire,five_stacks=1";
       action_list_str += "/serpent_sting,if=!ticking";
 
-    action_list_str += init_use_racial_actions();
-    action_list_str += "/multi_shot,if=target.adds>5";
-    action_list_str += "/cobra_shot,if=target.adds>5";
-    action_list_str += "/kill_shot";
-    action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
+      action_list_str += init_use_racial_actions();
+      action_list_str += "/bestial_wrath,if=focus>60";
+      action_list_str += "/multi_shot,if=target.adds>5";
+      action_list_str += "/cobra_shot,if=target.adds>5";
+      action_list_str += "/kill_shot";
+      action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
     
-    //if ( talents.a_murder_of_crows -> ok() ) 
-    //  action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
+      if ( talents.a_murder_of_crows -> ok() ) 
+        action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
 
       action_list_str += "/kill_command";
 
@@ -3219,8 +3207,8 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
           
-      //if ( talents.a_murder_of_crows -> ok() ) 
-      //  action_list_str += "/a_murder_of_crows";
+      if ( talents.a_murder_of_crows -> ok() ) 
+        action_list_str += "/a_murder_of_crows";
 
       if ( set_bonus.tier13_4pc_melee() )
       {
@@ -3250,8 +3238,8 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
       action_list_str += "/explosive_shot,if=(remains<2.0)";
           
-      //if ( talents.a_murder_of_crows -> ok() ) 
-      //  action_list_str += "/a_murder_of_crows";
+      if ( talents.a_murder_of_crows -> ok() ) 
+        action_list_str += "/a_murder_of_crows";
       
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
