@@ -1771,6 +1771,15 @@ struct moc_t : public hunter_spell_t
     tick_zero = true;
 
     dynamic_tick_action = true;
+
+  }
+
+  virtual void init()
+  {
+    hunter_spell_t::init();
+
+    if ( p() -> moc_crows[ 0 ] )
+      stats->add_child( p()-> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
   }
 
   virtual void execute()
