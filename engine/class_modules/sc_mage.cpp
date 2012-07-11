@@ -1349,6 +1349,7 @@ struct cold_snap_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
+    trigger_gcd = timespan_t::zero();
     harmful = false;
 
     cooldown_list.push_back( p -> get_cooldown( "cone_of_cold"  ) );
@@ -1531,14 +1532,15 @@ struct evocation_t : public mage_spell_t
     cooldown = p -> cooldowns.evocation;
     cooldown -> duration += p -> talents.invocation -> effectN( 1 ).time_value();
 
-    // FIXME: Does Nether Attunement affect this as well?
   }
 
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
 
-    double mana = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
+    // FIXME: Nether Attunement should increase Evocation gains. Something like
+    //        this worked for mana gems, but doesn't seem to work here.
+    double mana = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent() / player -> composite_spell_haste();
     player -> resource_gain( RESOURCE_MANA, mana, p() -> gains.evocation );
   }
 
@@ -2179,7 +2181,7 @@ struct mana_gem_t : public action_t
     p -> procs.mana_gem -> occur();
     p -> mana_gem_charges--;
 
-    double gain = sim -> range( min, max );
+    double gain = sim -> range( min, max ) / p -> composite_spell_haste();
 
     player -> resource_gain( RESOURCE_MANA, gain, p -> gains.mana_gem );
 
@@ -2382,6 +2384,7 @@ struct rune_of_power_t : public mage_spell_t
     mage_spell_t( "rune_of_power", p, p -> talents.rune_of_power )
   {
     parse_options( NULL, options_str );
+    harmful = false;
   }
 
   virtual void execute()

@@ -86,6 +86,8 @@ static const food_data_t food_data[] =
 
   { FOOD_SKEWERED_EEL,                STAT_AGILITY,  90 },
   { FOOD_SKEWERED_EEL,                STAT_STAMINA,  90 },
+
+  { FOOD_MOGU_FISH_STEW,              STAT_INTELLECT,  300 },
 };
 
 struct flask_t : public action_t

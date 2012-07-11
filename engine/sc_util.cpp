@@ -1110,6 +1110,7 @@ const char* util::food_type_string( food_e food )
   case FOOD_GREAT_PANDAREN_BANQUET:   return "great_pandaren_banquet";
   case FOOD_GRILLED_DRAGON:           return "grilled_dragon";
   case FOOD_LAVASCALE_FILLET:         return "lavascale_fillet";
+  case FOOD_MOGU_FISH_STEW:           return "mogu_fish_stew";
   case FOOD_MUSHROOM_SAUCE_MUDFISH:   return "mushroom_sauce_mudfish";
   case FOOD_PANDAREN_BANQUET:         return "pandaren_banquet";
   case FOOD_PANDAREN_MEATBALL:        return "pandaren_meatball";
