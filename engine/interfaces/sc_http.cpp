@@ -19,7 +19,7 @@ http::proxy_t proxy;
 
 cache::cache_control_t cache::cache_control_t::singleton;
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 static const bool HTTP_CACHE_DEBUG = false;
 
@@ -493,7 +493,7 @@ static bool download( url_cache_entry_t& entry,
 
 #endif
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 // http::clear_cache ========================================================
 

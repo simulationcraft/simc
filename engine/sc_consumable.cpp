@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct flask_data_t
 {
@@ -642,7 +642,7 @@ struct potion_base_t : public action_t
   }
 };
 
-} // END ANONYMOUS NAMESPACE
+} // END UNNAMED NAMESPACE
 
 // ==========================================================================
 // consumable_t::create_action

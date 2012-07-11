@@ -55,7 +55,7 @@
 // Shaman
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct shaman_t;
 
@@ -5003,7 +5003,7 @@ struct shaman_module_t : public module_t
   virtual void combat_end( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::shaman()
 {

@@ -10,7 +10,7 @@
 // Report
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )
@@ -110,7 +110,7 @@ struct buff_comp
   }
 };
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 // report::print_profiles ===================================================
 

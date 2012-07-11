@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 // print_html_action_damage =================================================
 
@@ -2588,7 +2588,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* q, int j=0 )
            "\t\t\t\t</div>\n\n" );
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 namespace report {
 

@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 static const stat_e reforge_stats[] =
 {
@@ -523,7 +523,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
   }
 }
 
-} // END ANONYMOUS NAMESPACE
+} // END UNNAMED NAMESPACE
 
 // ==========================================================================
 // Enchant

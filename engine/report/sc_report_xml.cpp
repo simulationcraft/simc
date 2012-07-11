@@ -7,7 +7,7 @@
 #include "sc_report.hpp"
 #include <stack>
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 class xml_writer_t
 {
@@ -1265,7 +1265,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
   writer.end_tag( "action_definitions" );
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 
 namespace report {

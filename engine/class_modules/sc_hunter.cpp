@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
 // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
@@ -1769,7 +1769,8 @@ struct moc_t : public hunter_spell_t
   int crows_summoned;
 
   moc_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
+    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) ),
+    crows_summoned( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -3693,7 +3694,7 @@ struct hunter_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::hunter()
 {

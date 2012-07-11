@@ -9,7 +9,7 @@
 // Blizzard Community Platform API
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct player_spec_t
 {

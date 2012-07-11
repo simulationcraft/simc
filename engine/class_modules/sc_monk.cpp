@@ -20,7 +20,7 @@
 // Monk
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
 // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
@@ -1498,7 +1498,7 @@ struct monk_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::monk()
 {

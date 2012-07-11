@@ -9,7 +9,7 @@
 #include <signal.h>
 #endif
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 #ifdef SC_SIGACTION
 // POSIX-only signal handler ================================================
@@ -720,7 +720,7 @@ struct regen_event_t : public event_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ===================================================
+} // UNNAMED NAMESPACE ===================================================
 
 // ==========================================================================
 // Simulator

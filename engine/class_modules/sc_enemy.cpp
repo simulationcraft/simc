@@ -9,7 +9,7 @@
 // Enemy
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
@@ -623,7 +623,7 @@ struct enemy_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
-} // END ANONYMOUS NAMESPACE
+} // END UNNAMED NAMESPACE
 
 module_t* module_t::enemy()
 {

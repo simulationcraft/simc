@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct death_knight_t;
 
@@ -4655,7 +4655,7 @@ struct death_knight_module_t : public module_t
   virtual void combat_end( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::death_knight()
 {

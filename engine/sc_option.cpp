@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 // is_white_space ===========================================================
 
@@ -27,7 +27,7 @@ static bool only_white_space( char* s )
   return true;
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 // option_t::print ==========================================================
 

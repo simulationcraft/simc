@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 // hymn_of_hope_buff ========================================================
 
@@ -250,8 +250,202 @@ struct player_ready_event_t : public event_t
 };
 
 
-} // ANONYMOUS NAMESPACE ===================================================
 
+// has_foreground_actions ===================================================
+
+bool has_foreground_actions( player_t* p )
+{
+  if ( ! p -> active_action_list ) return false;
+  return ( p -> active_action_list -> foreground_action_list.size() > 0 );
+}
+
+// parse_talent_url =========================================================
+
+bool parse_talent_url( sim_t* sim,
+                              const std::string& name,
+                              const std::string& url )
+{
+  assert( name == "talents" ); ( void )name;
+
+  player_t* p = sim -> active_player;
+
+  p -> talents_str = url;
+
+  std::string::size_type cut_pt;
+
+  if ( url.find( ".battle.net" ) != url.npos )
+  {
+    if ( url.find( "/mists-of-pandaria/" ) != url.npos )
+    {
+      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
+      {
+        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+          sim -> talent_format = TALENT_FORMAT_ARMORY;
+        return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
+      }
+    }
+    else
+    {
+      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
+      {
+        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+          sim -> talent_format = TALENT_FORMAT_ARMORY;
+        return p -> parse_talents_old_armory( url.substr( cut_pt + 1 ) );
+      }
+    }
+  }
+  else if ( url.find( "mop.wowhead.com" ) != url.npos )
+  {
+    if ( ( cut_pt = url.find_first_of( "#" ) ) != url.npos )
+    {
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_WOWHEAD;
+      return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
+    }
+  }
+  else
+  {
+    bool all_digits = true;
+    for ( size_t i=0; i < url.size() && all_digits; i++ )
+      if ( ! isdigit( url[ i ] ) )
+        all_digits = false;
+
+    if ( all_digits )
+    {
+      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
+        sim -> talent_format = TALENT_FORMAT_NUMBERS;
+      return p -> parse_talents_numbers( url );
+    }
+  }
+
+  sim -> errorf( "Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
+
+  return false;
+}
+
+// parse_talent_override =========================================================
+
+bool parse_talent_override( sim_t* sim,
+                                   const std::string& name,
+                                   const std::string& override_str )
+{
+  assert( name == "talent_override" ); ( void )name;
+
+  player_t* p = sim -> active_player;
+
+  if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
+  p -> talent_overrides_str += override_str;
+
+  return true;
+}
+
+// parse_role_string ========================================================
+
+bool parse_role_string( sim_t* sim,
+                               const std::string& name,
+                               const std::string& value )
+{
+  assert( name == "role" ); ( void )name;
+
+  sim -> active_player -> role = util::parse_role_type( value );
+
+  return true;
+}
+
+
+// parse_world_lag ==========================================================
+
+bool parse_world_lag( sim_t* sim,
+                             const std::string& name,
+                             const std::string& value )
+{
+  assert( name == "world_lag" ); ( void )name;
+
+  sim -> active_player -> world_lag = timespan_t::from_seconds( atof( value.c_str() ) );
+
+  if ( sim -> active_player -> world_lag < timespan_t::zero() )
+  {
+    sim -> active_player -> world_lag = timespan_t::zero();
+  }
+
+  sim -> active_player -> world_lag_override = true;
+
+  return true;
+}
+
+
+// parse_world_lag ==========================================================
+
+bool parse_world_lag_stddev( sim_t* sim,
+                                    const std::string& name,
+                                    const std::string& value )
+{
+  assert( name == "world_lag_stddev" ); ( void )name;
+
+  sim -> active_player -> world_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
+
+  if ( sim -> active_player -> world_lag_stddev < timespan_t::zero() )
+  {
+    sim -> active_player -> world_lag_stddev = timespan_t::zero();
+  }
+
+  sim -> active_player -> world_lag_stddev_override = true;
+
+  return true;
+}
+
+// parse_brain_lag ==========================================================
+
+bool parse_brain_lag( sim_t* sim,
+                             const std::string& name,
+                             const std::string& value )
+{
+  assert( name == "brain_lag" ); ( void )name;
+
+  sim -> active_player -> brain_lag = timespan_t::from_seconds( atof( value.c_str() ) );
+
+  if ( sim -> active_player -> brain_lag < timespan_t::zero() )
+  {
+    sim -> active_player -> brain_lag = timespan_t::zero();
+  }
+
+  return true;
+}
+
+
+// parse_brain_lag_stddev ===================================================
+
+bool parse_brain_lag_stddev( sim_t* sim,
+                                    const std::string& name,
+                                    const std::string& value )
+{
+  assert( name == "brain_lag_stddev" ); ( void )name;
+
+  sim -> active_player -> brain_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
+
+  if ( sim -> active_player -> brain_lag_stddev < timespan_t::zero() )
+  {
+    sim -> active_player -> brain_lag_stddev = timespan_t::zero();
+  }
+
+  return true;
+}
+
+// parse_specialization ======================================================
+
+bool parse_specialization( sim_t* sim,
+                                  const std::string&,
+                                  const std::string& value )
+{
+  sim -> active_player -> _spec = util::translate_spec_str( sim -> active_player -> type, value );
+
+  if ( sim -> active_player -> _spec == SPEC_NONE )
+    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
+
+  return true;
+}
+
+} // UNNAMED NAMESPACE ===================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
 // It should get specialized in the class module
@@ -326,200 +520,6 @@ void trigger_ignite_like_mechanic( action_t* ignite_action,
   };
 
   new ( ignite_action -> sim ) delay_event_t( ignite_action -> sim, t, ignite_action, dmg );
-}
-
-// has_foreground_actions ===================================================
-
-static bool has_foreground_actions( player_t* p )
-{
-  if ( ! p -> active_action_list ) return false;
-  return ( p -> active_action_list -> foreground_action_list.size() > 0 );
-}
-
-// parse_talent_url =========================================================
-
-static bool parse_talent_url( sim_t* sim,
-                              const std::string& name,
-                              const std::string& url )
-{
-  assert( name == "talents" ); ( void )name;
-
-  player_t* p = sim -> active_player;
-
-  p -> talents_str = url;
-
-  std::string::size_type cut_pt;
-
-  if ( url.find( ".battle.net" ) != url.npos )
-  {
-    if ( url.find( "/mists-of-pandaria/" ) != url.npos )
-    {
-      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
-      {
-        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-          sim -> talent_format = TALENT_FORMAT_ARMORY;
-        return p -> parse_talents_armory( url.substr( cut_pt + 1 ) );
-      }
-    }
-    else
-    {
-      if ( ( cut_pt = url.find_first_of( '#' ) ) != url.npos )
-      {
-        if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-          sim -> talent_format = TALENT_FORMAT_ARMORY;
-        return p -> parse_talents_old_armory( url.substr( cut_pt + 1 ) );
-      }
-    }
-  }
-  else if ( url.find( "mop.wowhead.com" ) != url.npos )
-  {
-    if ( ( cut_pt = url.find_first_of( "#" ) ) != url.npos )
-    {
-      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-        sim -> talent_format = TALENT_FORMAT_WOWHEAD;
-      return p -> parse_talents_wowhead( url.substr( cut_pt + 1 ) );
-    }
-  }
-  else
-  {
-    bool all_digits = true;
-    for ( size_t i=0; i < url.size() && all_digits; i++ )
-      if ( ! isdigit( url[ i ] ) )
-        all_digits = false;
-
-    if ( all_digits )
-    {
-      if ( sim -> talent_format == TALENT_FORMAT_UNCHANGED )
-        sim -> talent_format = TALENT_FORMAT_NUMBERS;
-      return p -> parse_talents_numbers( url );
-    }
-  }
-
-  sim -> errorf( "Unable to decode talent string %s for %s\n", url.c_str(), p -> name() );
-
-  return false;
-}
-
-// parse_talent_override =========================================================
-
-static bool parse_talent_override( sim_t* sim,
-                                   const std::string& name,
-                                   const std::string& override_str )
-{
-  assert( name == "talent_override" ); ( void )name;
-
-  player_t* p = sim -> active_player;
-
-  if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
-  p -> talent_overrides_str += override_str;
-
-  return true;
-}
-
-// parse_role_string ========================================================
-
-static bool parse_role_string( sim_t* sim,
-                               const std::string& name,
-                               const std::string& value )
-{
-  assert( name == "role" ); ( void )name;
-
-  sim -> active_player -> role = util::parse_role_type( value );
-
-  return true;
-}
-
-
-// parse_world_lag ==========================================================
-
-static bool parse_world_lag( sim_t* sim,
-                             const std::string& name,
-                             const std::string& value )
-{
-  assert( name == "world_lag" ); ( void )name;
-
-  sim -> active_player -> world_lag = timespan_t::from_seconds( atof( value.c_str() ) );
-
-  if ( sim -> active_player -> world_lag < timespan_t::zero() )
-  {
-    sim -> active_player -> world_lag = timespan_t::zero();
-  }
-
-  sim -> active_player -> world_lag_override = true;
-
-  return true;
-}
-
-
-// parse_world_lag ==========================================================
-
-static bool parse_world_lag_stddev( sim_t* sim,
-                                    const std::string& name,
-                                    const std::string& value )
-{
-  assert( name == "world_lag_stddev" ); ( void )name;
-
-  sim -> active_player -> world_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
-
-  if ( sim -> active_player -> world_lag_stddev < timespan_t::zero() )
-  {
-    sim -> active_player -> world_lag_stddev = timespan_t::zero();
-  }
-
-  sim -> active_player -> world_lag_stddev_override = true;
-
-  return true;
-}
-
-// parse_brain_lag ==========================================================
-
-static bool parse_brain_lag( sim_t* sim,
-                             const std::string& name,
-                             const std::string& value )
-{
-  assert( name == "brain_lag" ); ( void )name;
-
-  sim -> active_player -> brain_lag = timespan_t::from_seconds( atof( value.c_str() ) );
-
-  if ( sim -> active_player -> brain_lag < timespan_t::zero() )
-  {
-    sim -> active_player -> brain_lag = timespan_t::zero();
-  }
-
-  return true;
-}
-
-
-// parse_brain_lag_stddev ===================================================
-
-static bool parse_brain_lag_stddev( sim_t* sim,
-                                    const std::string& name,
-                                    const std::string& value )
-{
-  assert( name == "brain_lag_stddev" ); ( void )name;
-
-  sim -> active_player -> brain_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
-
-  if ( sim -> active_player -> brain_lag_stddev < timespan_t::zero() )
-  {
-    sim -> active_player -> brain_lag_stddev = timespan_t::zero();
-  }
-
-  return true;
-}
-
-// parse_specialization ======================================================
-
-static bool parse_specialization( sim_t* sim,
-                                  const std::string&,
-                                  const std::string& value )
-{
-  sim -> active_player -> _spec = util::translate_spec_str( sim -> active_player -> type, value );
-
-  if ( sim -> active_player -> _spec == SPEC_NONE )
-    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
-
-  return true;
 }
 
 // ==========================================================================
@@ -5669,7 +5669,7 @@ struct run_action_list_t : public swap_action_list_t
 };
 
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // player_t::create_action ==================================================
 

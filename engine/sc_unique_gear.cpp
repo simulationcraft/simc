@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 #define maintenance_check( ilvl ) static_assert( ilvl > 300, "unique item below min level, should be deprecated." )
 
@@ -479,7 +479,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
   }
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // register_touch_of_the_grave ==============================================
 

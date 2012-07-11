@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // The purpose of these namespaces is to allow modern IDEs to collapse sections of code.
 // Is neither intended nor desired to provide name-uniqueness, hence the global uplift.
@@ -1018,12 +1018,15 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return ctm;
   }
 
-  void trigger_divine_aegis( player_t* t, double amount )
+  void trigger_divine_aegis( action_state_t* s )
   {
+    if ( s -> result != RESULT_CRIT )
+      return;
+
     if ( da )
     {
-      da -> base_dd_min = da -> base_dd_max = amount * da -> shield_multiple;
-      da -> target = t;
+      da -> base_dd_min = da -> base_dd_max = s -> result_amount * da -> shield_multiple;
+      da -> target = s -> target;
       da -> execute();
     }
   }
@@ -1037,10 +1040,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( s -> result_amount > 0 )
     {
       // Divine Aegis
-      if ( s -> result == RESULT_CRIT )
-      {
-        trigger_divine_aegis( s -> target, s -> result_amount );
-      }
+      trigger_divine_aegis( s );
 
       trigger_echo_of_light( this, s -> target, s -> result_amount );
 
@@ -1059,10 +1059,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     base_t::tick( d );
 
     // Divine Aegis
-    if ( result == RESULT_CRIT )
-    {
-      trigger_divine_aegis( target, tick_dmg );
-    }
+    trigger_divine_aegis( d -> state );
   }
 
   void trigger_grace( player_t* t )
@@ -3977,6 +3974,13 @@ struct glyph_power_word_shield_t : public priest_heal_t
 
     castable_in_shadowform = true;
   }
+
+  void trigger( action_state_t* s )
+  {
+    base_dd_min  = base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
+    target = s -> target;
+    execute();
+  }
 };
 
 struct power_word_shield_t : public priest_absorb_t
@@ -4033,9 +4037,7 @@ struct power_word_shield_t : public priest_absorb_t
     // Glyph
     if ( glyph_pws )
     {
-      glyph_pws -> base_dd_min  = glyph_pws -> base_dd_max  = p() -> glyphs.power_word_shield -> effectN( 1 ).percent() * s -> result_amount;
-      glyph_pws -> target = s -> target;
-      glyph_pws -> execute();
+      glyph_pws -> trigger( s );
     }
 
     td( s -> target ) -> buffs.power_word_shield -> trigger( 1, s -> result_amount );
@@ -4084,10 +4086,9 @@ struct prayer_of_healing_t : public priest_heal_t
     priest_heal_t::impact_s( s );
 
     // Divine Aegis
-    if ( s -> result != RESULT_CRIT )
-    {
-      trigger_divine_aegis( s -> target, s -> result_amount * 0.5 );
-    }
+    s -> result_amount *= 0.5;
+    trigger_divine_aegis( s );
+    s -> result_amount *= 2.0;
   }
 
   virtual double action_multiplier()
@@ -5323,7 +5324,7 @@ struct priest_module_t : public module_t
   virtual void combat_end( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::priest()
 {

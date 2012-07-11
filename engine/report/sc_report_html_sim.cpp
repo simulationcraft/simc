@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 // print_html_contents ======================================================
 
@@ -1639,7 +1639,7 @@ void print_html_( FILE* file, sim_t* sim )
   fclose( file );
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 namespace report {
 

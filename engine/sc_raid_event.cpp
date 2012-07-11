@@ -9,7 +9,7 @@
 // Raid Events
 // ==========================================================================
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct adds_event_t : public raid_event_t
 {
@@ -460,7 +460,7 @@ struct position_event_t : public raid_event_t
   }
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // raid_event_t::raid_event_t ===============================================
 

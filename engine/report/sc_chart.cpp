@@ -310,7 +310,7 @@ static std::string color_temperature_gradient( double n, double min, double rang
   return result;
 }
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 struct compare_downtime
 {
@@ -387,7 +387,7 @@ struct compare_gain
   }
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Chart

@@ -6,7 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 void simplify_html( std::string& buffer )
 {
@@ -752,7 +752,7 @@ void print_text_player( FILE* file, player_t* p )
 
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 
 namespace report {

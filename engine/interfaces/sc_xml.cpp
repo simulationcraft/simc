@@ -31,7 +31,7 @@ struct xml_node_t
   }
 };
 
-namespace { // ANONYMOUS NAMESPACE =========================================
+namespace { // UNNAMED NAMESPACE =========================================
 
 struct xml_cache_entry_t
 {
@@ -44,7 +44,7 @@ typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;
 static xml_cache_t xml_cache;
 static mutex_t xml_mutex;
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // Forward Declarations =====================================================
 

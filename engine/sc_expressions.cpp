@@ -137,7 +137,7 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t
   }
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 // precedence ===============================================================
 

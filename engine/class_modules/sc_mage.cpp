@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage
@@ -769,7 +769,7 @@ struct alter_time_buff_t : public buff_t
 
 }; // alter_time namespace
 
-namespace { // ANONYMOUS NAMESPACE
+namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage Spell
@@ -2863,7 +2863,7 @@ struct incanters_ward_t : public mage_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage Character Definition
@@ -3729,7 +3729,7 @@ struct mage_module_t : public module_t
   virtual void combat_end  ( sim_t* ) {}
 };
 
-} // ANONYMOUS NAMESPACE
+} // UNNAMED NAMESPACE
 
 module_t* module_t::mage()
 {

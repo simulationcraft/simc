@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 struct token_t
 {
@@ -93,7 +93,7 @@ meta_gem_e parse_meta_gem( const std::string& prefix,
   return util::parse_meta_gem_type( prefix + '_' + suffix );
 }
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 // item_t::item_t ===========================================================
 

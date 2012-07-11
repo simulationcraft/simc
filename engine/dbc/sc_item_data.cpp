@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace   // ANONYMOUS NAMESPACE ==========================================
+namespace   // UNNAMED NAMESPACE ==========================================
 {
 
 std::string stat_to_str( item_mod_type stat, int stat_amount )
@@ -248,7 +248,7 @@ void log_item( const item_t& item )
   }
 }
 
-}  // ANONYMOUS NAMESPACE ====================================================
+}  // UNNAMED NAMESPACE ====================================================
 
 // item_database_t::initialize_item_sources =================================
 

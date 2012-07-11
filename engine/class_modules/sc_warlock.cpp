@@ -1329,7 +1329,7 @@ struct terrorguard_pet_t : public warlock_pet_t
 
 // SPELLS
 
-namespace { // ANONYMOUS NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ==========================================
 
 struct warlock_heal_t : public heal_t
 {
@@ -4162,7 +4162,7 @@ struct archimondes_vengeance_t : public warlock_spell_t
   }
 };
 
-} // ANONYMOUS NAMESPACE ====================================================
+} // UNNAMED NAMESPACE ====================================================
 
 
 double warlock_t::composite_spell_power_multiplier()
