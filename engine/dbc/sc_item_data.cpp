@@ -542,7 +542,6 @@ bool item_database_t::parse_enchant( item_t&            item,
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
 
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
-  bool                              has_spell = false;
   std::vector<std::string> stats;
 
   const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
@@ -556,55 +555,58 @@ bool item_database_t::parse_enchant( item_t&            item,
 
   for ( unsigned i = 0; i < 3; i++ )
   {
-    if ( item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE ) continue;
+    if ( item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE )
+      continue;
+
+    bool has_spell = false;
     if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
-    {
       has_spell = true;
-      break;
-    }
-  }
 
-
-  if ( has_spell )
-  {
-
-    // Intention: If enchant name contains a linked number ( $ ) or the spell contains a rank_str, use the spell name
-    // otherwise use enchant name
-    std::string dbc_name = item_enchant.name;
-    const spell_data_t* es = item.player -> dbc.spell( item_enchant.ench_prop[ 0 ] );
-
-    if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != 0 ) )
+    if ( has_spell )
     {
-      if ( es && es -> id() > 0 )
-      {
-        result = es -> name_cstr(); // Use Spell Name
 
-        if ( es -> rank_str() != 0 ) // If rank str is available, append its number to the enchant name
+      // Intention: If enchant name contains a linked number ( $ ) or the spell contains a rank_str, use the spell name
+      // otherwise use enchant name
+      std::string dbc_name = item_enchant.name;
+      const spell_data_t* es = item.player -> dbc.spell( item_enchant.ench_prop[ i ] );
+
+      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != 0 ) )
+      {
+        if ( es && es -> id() > 0 )
         {
-          std::string rank = std::string( es -> rank_str() );
-          if (  rank.find( "Rank " ) != rank.npos )
-            rank.erase( rank.find( "Rank " ), std::string( "Rank " ).length() );
-          result += "_" + rank;
+          result = es -> name_cstr(); // Use Spell Name
+
+          if ( es -> rank_str() != 0 ) // If rank str is available, append its number to the enchant name
+          {
+            std::string rank = std::string( es -> rank_str() );
+            if (  rank.find( "Rank " ) != rank.npos )
+              rank.erase( rank.find( "Rank " ), std::string( "Rank " ).length() );
+            result += "_" + rank;
+          }
         }
       }
+      else
+        result = item_enchant.name;
+
+      util::tokenize( result );
+
+      // Special modifications
+      util::erase_all( result, "+" ); // remove plus signs
+      util::replace_all( result, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
+
+      // debug
+       std::cout << "enchant spell id= " << es -> id() << "enchant spell name= " << es -> name_cstr();
     }
     else
-      result = item_enchant.name;
-
-    util::tokenize( result );
-
-    // Special modifications
-    util::erase_all( result, "+" ); // remove plus signs
-    util::replace_all( result, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
-
+    {
+      if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
+        result = encode_stats( stats );
+    }
 
     // debug
-    // std::cout << "id=" << item_enchant.id << " name=" << result << "\n";
-  }
-  else
-  {
-    if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
-      result = encode_stats( stats );
+     //std::cout << "id=" << item_enchant.id << " name=" << result << " enchant_name= " << item_enchant.name << "\n";
+
+     break;
   }
 
   return true;
