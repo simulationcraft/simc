@@ -1225,6 +1225,9 @@ struct arcane_power_buff_t : public buff_t
     buff_t( buff_creator_t( p, "arcane_power", p -> find_class_spell( "Arcane Power" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+
+    if ( p -> glyphs.arcane_power -> ok() )
+      buff_duration *= 2;
   }
 
   virtual void expire()
@@ -1249,18 +1252,8 @@ struct arcane_power_t : public mage_spell_t
     check_spec( MAGE_ARCANE );
     parse_options( NULL, options_str );
     harmful = false;
-    orig_duration = cooldown -> duration;
-  }
-
-  virtual void init()
-  {
-    mage_spell_t::init();
-
-    if ( p() -> glyphs.arcane_power -> ok() )
-    {
+    if ( p -> glyphs.arcane_power -> ok() )
       cooldown -> duration *= 2;
-      p() -> buffs.arcane_power -> buff_duration *= 2;
-    }
   }
 
   virtual void execute()
