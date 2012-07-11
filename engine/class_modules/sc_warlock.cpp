@@ -4836,17 +4836,20 @@ void warlock_t::init_actions()
       add_action( "Fel Flame",             "moving=1" );
 
       // AoE action list
-      add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",      "aoe" );
-      add_action( "Immolation Aura",       "",                                                               "aoe" );
-      add_action( find_spell( 603 ),       "cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30", "aoe" );
       if ( glyphs.imp_swarm -> ok() )
-        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                                     "aoe" );
-      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight",                               "aoe" );
+        add_action( find_spell( 104316 ),  "if=buff.metamorphosis.down",                                                       "aoe" );
+      add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react", "aoe" );
+      add_action( "Hand of Gul'dan",       "",                                                                                 "aoe" );
+      add_action( "Metamorphosis",         "if=demonic_fury>=1000|demonic_fury>=31*target.time_to_die",                        "aoe" );
+      add_action( "Immolation Aura",       "",                                                                                 "aoe" );
+      add_action( "Void Ray",              "if=dot.corruption.remains<10",                                                     "aoe" );
+      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<40)&target.time_to_die>30&miss_react",        "aoe" );
+      add_action( "Void Ray",              "",                                                                                 "aoe" );
 
       get_action_priority_list( "aoe" ) -> action_list_str += "/harvest_life,chain=1,if=talent.harvest_life.enabled";
 
-      add_action( "Rain of Fire",          "if=!talent.harvest_life.enabled",                                "aoe" );
-      add_action( "Life Tap",              "",                                                               "aoe" );
+      add_action( "Hellfire",              "if=!talent.harvest_life.enabled",                                                  "aoe" );
+      add_action( "Life Tap",              "",                                                                                 "aoe" );
       break;
 
     default:
@@ -4854,8 +4857,8 @@ void warlock_t::init_actions()
       add_action( "Shadow Bolt" );
 
       // AoE action list
-      add_action( "Corruption",            "cycle_targets=1,if=!ticking",                                    "aoe" );
-      add_action( "Shadow Bolt",           "",                                                               "aoe" );
+      add_action( "Corruption",            "cycle_targets=1,if=!ticking",                                                      "aoe" );
+      add_action( "Shadow Bolt",           "",                                                                                 "aoe" );
       break;
     }
 
