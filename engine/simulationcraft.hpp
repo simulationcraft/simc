@@ -2553,6 +2553,7 @@ public:
     int ranged_vulnerability;
     int weakened_armor;
     int weakened_blows;
+    int bleeding;
 
     // Misc stuff needs resolving
     int bloodlust;

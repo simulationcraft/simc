@@ -1174,6 +1174,7 @@ void sim_t::combat_begin()
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
     if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override( 3 );
     if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
+    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override();
   }
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -1945,6 +1946,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.physical_vulnerability  = optimal_raid;
   overrides.weakened_armor          = optimal_raid;
   overrides.weakened_blows          = optimal_raid;
+  overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
   overrides.honor_among_thieves     = optimal_raid;
@@ -2115,6 +2117,7 @@ void sim_t::create_options()
     { "override.physical_vulnerability",  OPT_INT,    &( overrides.physical_vulnerability         ) },
     { "override.weakened_armor",          OPT_INT,    &( overrides.weakened_armor                 ) },
     { "override.weakened_blows",          OPT_INT,    &( overrides.weakened_blows                 ) },
+    { "override.bleeding",                OPT_INT,    &( overrides.bleeding                       ) },
     // Lag
     { "channel_lag",                      OPT_TIMESPAN, &( channel_lag                            ) },
     { "channel_lag_stddev",               OPT_TIMESPAN, &( channel_lag_stddev                     ) },
