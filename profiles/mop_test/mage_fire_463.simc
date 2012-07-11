@@ -10,11 +10,11 @@ spec=fire
 professions=enchanting=600/tailoring=600
 talents=122221
 glyphs=evocation/fire_blast/counterspell/mirror_image
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
-actions.precombat+=/arcane_brilliance
-actions.precombat+=/molten_armor
-actions=/snapshot_stats
+actions=flask,type=warm_sun
+actions+=/food,type=mogu_fish_stew
+actions+=/arcane_brilliance
+actions+=/molten_armor
+actions+=/snapshot_stats
 actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
 actions+=/counterspell
 actions+=/conjure_mana_gem,if=target.debuff.invulnerable.react&mana_gem_charges<3

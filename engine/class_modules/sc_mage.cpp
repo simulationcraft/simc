@@ -105,6 +105,7 @@ public:
     const spell_data_t* arcane_power;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
+    const spell_data_t* icy_veins;
     const spell_data_t* living_bomb;
     const spell_data_t* mana_gem;
 
@@ -1251,6 +1252,17 @@ struct arcane_power_t : public mage_spell_t
     orig_duration = cooldown -> duration;
   }
 
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    if ( p() -> glyphs.arcane_power -> ok() )
+    {
+      cooldown -> duration *= 2;
+      p() -> buffs.arcane_power -> buff_duration *= 2;
+    }
+  }
+
   virtual void execute()
   {
     if ( p() -> set_bonus.tier13_4pc_caster() )
@@ -2015,6 +2027,17 @@ struct icy_veins_t : public mage_spell_t
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
     orig_duration = cooldown -> duration;
+  }
+
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    if ( p() -> glyphs.icy_veins -> ok() )
+    {
+      cooldown -> duration *= 0.5;
+      p() -> buffs.icy_veins -> buff_duration *= 0.5;
+    }
   }
 
   virtual void execute()
@@ -3018,6 +3041,7 @@ void mage_t::init_spells()
   glyphs.conjuring           = find_glyph_spell( "Glyph of Conjuring" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
+  glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
