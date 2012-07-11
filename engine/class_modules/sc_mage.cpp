@@ -2003,6 +2003,9 @@ struct icy_veins_buff_t : public buff_t
     buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+    
+    if ( p -> glyphs.icy_veins -> ok() )
+      buff_duration *= 0.5;
   }
 
   virtual void expire()
@@ -2026,18 +2029,11 @@ struct icy_veins_t : public mage_spell_t
   {
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
-    orig_duration = cooldown -> duration;
-  }
 
-  virtual void init()
-  {
-    mage_spell_t::init();
-
-    if ( p() -> glyphs.icy_veins -> ok() )
-    {
+    if ( p -> glyphs.icy_veins -> ok() )
       cooldown -> duration *= 0.5;
-      p() -> buffs.icy_veins -> buff_duration *= 0.5;
-    }
+
+    orig_duration = cooldown -> duration;
   }
 
   virtual void execute()
