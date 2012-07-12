@@ -346,7 +346,6 @@ public:
     const spell_data_t* dash;
 
     // Cunning
-    const spell_data_t* roar_of_sacrifice;
     const spell_data_t* bullheaded;
     // const spell_data_t* feeding_frenzy;
     const spell_data_t* cornered;
@@ -427,6 +426,9 @@ public:
 
     //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
+
+    // FIXME work around assert in pet specs
+    //_spec = PET_FEROCITY;
 
     target_data.init( "target_data", this );
 
@@ -521,14 +523,13 @@ public:
 
   virtual void init_talents()
   {
+    // FIXME work around assert in pet specs by just giving the ferocity abilities to all pets.
+
     // Common Talents
-    talents.spiked_collar     = find_talent_spell( "Spiked Collar" );
-
+    talents.spiked_collar    = find_spell( 53184 ); //find_specialization_spell( "Spiked Collar" );
+    
     // Ferocity
-    talents.rabid            = find_talent_spell( "Rabid" );
-
-    // Cunning
-    talents.roar_of_sacrifice = find_talent_spell( "Roar of Recovery" );
+    talents.rabid            = find_spell( 53401 ); //find_specialization_spell( "Rabid" );
 
     pet_t::init_talents();
   }
