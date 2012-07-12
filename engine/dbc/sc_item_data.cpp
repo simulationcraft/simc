@@ -41,18 +41,28 @@ std::string encode_stats( const std::vector<std::string>& stats )
   return s;
 }
 
+void encode_item_enchant_effect_stats( const item_enchantment_data_t& enchantment, std::string& stats, int i )
+{
+  assert( enchantment.id );
+  assert( i >= 0 && i < 3 );
+
+  if ( enchantment.ench_type[ i ] == ITEM_ENCHANTMENT_STAT )
+  {
+    std::string stat_str = stat_to_str( static_cast<item_mod_type>( enchantment.ench_prop[ i ] ),
+                                        enchantment.ench_amount[ i ] );
+    if ( ! stat_str.empty() ) stats = stat_str;
+  }
+}
+
 std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<std::string>& stats )
 {
   assert( enchantment.id );
 
   for ( int i = 0; i < 3; i++ )
   {
-    if ( enchantment.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
-      continue;
-
-    std::string stat_str = stat_to_str( static_cast<item_mod_type>( enchantment.ench_prop[ i ] ),
-                                        enchantment.ench_amount[ i ] );
-    if ( ! stat_str.empty() ) stats.push_back( stat_str );
+    std::string s;
+    encode_item_enchant_effect_stats( enchantment, s, i );
+    stats.push_back( s );
   }
 
   return stats.size();
@@ -542,7 +552,6 @@ bool item_database_t::parse_enchant( item_t&            item,
   if ( enchant_id.empty() || enchant_id == "none" || enchant_id == "0" ) return true;
 
   long                                    eid = strtol( enchant_id.c_str(), 0, 10 );
-  std::vector<std::string> stats;
 
   const item_enchantment_data_t& item_enchant = item.player -> dbc.item_enchantment( eid );
   if ( ! item_enchant.id )
@@ -553,16 +562,17 @@ bool item_database_t::parse_enchant( item_t&            item,
 
   result.clear();
 
-  for ( unsigned i = 0; i < 3; i++ )
+  for ( unsigned i = 0, j = 0; i < 3; ++i ) // loop through the 3 enchant effects and append them to result string
   {
     if ( item_enchant.ench_type[ i ] == ITEM_ENCHANTMENT_NONE )
       continue;
 
-    bool has_spell = false;
-    if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT )
-      has_spell = true;
+    // debug
+    //std::cout << "id=" << item_enchant.id << " effectnr=" << i << " ";
 
-    if ( has_spell )
+    std::string enchant_effect; // tmp storage of the enchant effect
+
+    if ( item_enchant.ench_type[ i ] != ITEM_ENCHANTMENT_STAT ) // "enchant spell"
     {
 
       // Intention: If enchant name contains a linked number ( $ ) or the spell contains a rank_str, use the spell name
@@ -574,39 +584,49 @@ bool item_database_t::parse_enchant( item_t&            item,
       {
         if ( es && es -> id() > 0 )
         {
-          result = es -> name_cstr(); // Use Spell Name
+          enchant_effect = es -> name_cstr(); // Use Spell Name
 
           if ( es -> rank_str() != 0 ) // If rank str is available, append its number to the enchant name
           {
             std::string rank = std::string( es -> rank_str() );
             if (  rank.find( "Rank " ) != rank.npos )
               rank.erase( rank.find( "Rank " ), std::string( "Rank " ).length() );
-            result += "_" + rank;
+            enchant_effect += "_" + rank;
           }
         }
       }
       else
-        result = item_enchant.name;
+        enchant_effect = item_enchant.name;
 
-      util::tokenize( result );
+      util::tokenize( enchant_effect );
 
       // Special modifications
-      util::erase_all( result, "+" ); // remove plus signs
-      util::replace_all( result, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
+      util::erase_all( enchant_effect, "+" ); // remove plus signs
+      util::replace_all( enchant_effect, "_all_stats", "all" ); // change _all_stats enchants to simple stats enchant with stat "all"
 
       // debug
-      // std::cout << "enchant spell id= " << es -> id() << "enchant spell name= " << es -> name_cstr();
+      //std::cout << "enchant spell id=" << es -> id() << " enchant spell name=" << es -> name_cstr() << " ";
     }
-    else
+    else // stat-enchant
     {
-      if ( encode_item_enchant_stats( item_enchant, stats ) > 0 )
-        result = encode_stats( stats );
+      encode_item_enchant_effect_stats( item_enchant, enchant_effect, i );
     }
+
+    if ( !enchant_effect.empty() )
+    {
+      if ( j > 0 )
+        result += "_";
+
+      result += enchant_effect;
+
+      ++j;
+    }
+
 
     // debug
-     //std::cout << "id=" << item_enchant.id << " name=" << result << " enchant_name= " << item_enchant.name << "\n";
+    //std::cout << "name= " << enchant_effect << " enchant_name= " << item_enchant.name << "\n";
 
-     break;
+    // break;
   }
 
   return true;
