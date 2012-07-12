@@ -427,11 +427,9 @@ public:
     //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
 
-    // FIXME work around assert in pet specs
-    //_spec = PET_FEROCITY;
-
     target_data.init( "target_data", this );
 
+    // FIXME work around assert in pet specs
     // Set default specs
     //_spec = default_spec( pt );
   }
