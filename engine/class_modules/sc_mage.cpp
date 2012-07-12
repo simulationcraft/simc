@@ -1262,7 +1262,7 @@ struct arcane_power_t : public mage_spell_t
   virtual void execute()
   {
     if ( p() -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).time_value();
+      cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
 
     mage_spell_t::execute();
 
@@ -1418,7 +1418,7 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( td() -> dots.pyroblast );
 
     if ( p() -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 2 ).time_value();
+      cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
 
     p() -> cooldowns.inferno_blast -> reset();
 
@@ -1671,7 +1671,7 @@ struct frost_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    spell_t::execute();
+    mage_spell_t::execute();
 
     p() -> buffs.molten_armor -> expire();
     p() -> buffs.mage_armor -> expire();
@@ -2034,10 +2034,10 @@ struct icy_veins_t : public mage_spell_t
 
   virtual void execute()
   {
-    spell_t::execute();
-
     if ( player -> set_bonus.tier13_4pc_caster() )
-      cooldown -> duration = orig_duration + p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 3 ).time_value();
+      cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
+    
+    mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
   }
@@ -2149,7 +2149,7 @@ struct mage_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    spell_t::execute();
+    mage_spell_t::execute();
 
     p() -> buffs.frost_armor -> expire();
     p() -> buffs.molten_armor -> expire();
@@ -2259,7 +2259,7 @@ struct molten_armor_t : public mage_spell_t
 
   virtual void execute()
   {
-    spell_t::execute();
+    mage_spell_t::execute();
 
     p() -> buffs.frost_armor -> expire();
     p() -> buffs.mage_armor -> expire();
