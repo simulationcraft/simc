@@ -401,8 +401,11 @@ void enemy_t::init_base()
     case 86: a = 11387; break;
     case 87: a = 11682; break;
     case 88: a = 11977; break;
+    case 93: a = 24835; break;
     default: if ( level < 80 )
-        a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+               a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+             else if ( level < 93 )
+               a = 24000; // FIX-ME: Totally made up number.
       break;
     }
   }
