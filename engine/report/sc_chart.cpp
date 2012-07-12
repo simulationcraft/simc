@@ -1336,7 +1336,7 @@ std::string chart::scaling_dps( player_t* p )
   s += "&amp;";
   std::string formatted_name = p -> name_str;
   util::urlencode( util::str_to_utf8( formatted_name ) );
-  s += chart_title( formatted_name + "DPS Scaling" ); // Set chart title
+  s += chart_title( formatted_name + " DPS Scaling" ); // Set chart title
 
   s += "chts=" + chart_bg_color( p -> sim -> print_styles ) + ",18";
 
