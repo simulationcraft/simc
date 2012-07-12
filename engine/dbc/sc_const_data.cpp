@@ -509,7 +509,9 @@ unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) 
 
 unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
 {
-  assert( class_id < dbc_t::class_max_size() && tree_id < specialization_max_per_class() && n < specialization_ability_size() );
+  assert( class_id < dbc_t::class_max_size() );
+  assert( tree_id < specialization_max_per_class() );
+  assert( n < specialization_ability_size() );
 
 #if SC_USE_PTR
   return ptr ? __ptr_tree_specialization_data[ class_id ][ tree_id ][ n ]

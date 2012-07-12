@@ -393,6 +393,18 @@ public:
     benefit_t* wild_hunt;
   } benefits;
 
+  specialization_e default_spec( pet_e pt )
+  {
+    switch ( pt )
+    {
+    case PET_CAT:
+      return PET_FEROCITY;
+
+    default: break;
+    }
+
+    return PET_FEROCITY;
+  }
 private:
   target_specific_t<hunter_pet_td_t> target_data;
 public:
@@ -417,6 +429,9 @@ public:
     initial.armor_multiplier *= 1.05;
 
     target_data.init( "target_data", this );
+
+    // Set default specs
+    //_spec = default_spec( pt );
   }
 
   hunter_t* cast_owner() const
