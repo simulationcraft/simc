@@ -22,7 +22,9 @@ using namespace pet_actions;
 // Hunter
 // ==========================================================================
 
-#define CROW_LIMIT 8
+// We require enough crows for murder_of_crows/readiness/murder_of_crows
+// There are two extra in case theey make teh rate of summons dependent on haste
+#define CROW_LIMIT 18
 
 struct hunter_t;
 
@@ -1709,12 +1711,7 @@ public:
 
 // A Murder of Crows ==============================================================
 
-//in your case, instead of felstorm_t and felstorm_tick_t you'd have moc_t, moc_tick_t, and crow_tick_t or something
-//the tick_action?  I was assumign I'd have one dot which is the murder spell. it's tick_action would spawn a crow dot.
-//and moc_t's tick_action would be an instance of moc_tick_t, and moc_tick_t's tick action would be an instance of crow_tick_t
-//and crow_tick_t would be the actual damage, so it'd have SCHOOL_PHYSICAL etc
-//and a base damage and an attack power coefficient and whatnot
-
+// Each crow is modeled as a pet.
 struct moc_crow_t : public pet_t
 {
   struct peck_t : public melee_attack_t
@@ -1780,15 +1777,10 @@ struct moc_crow_t : public pet_t
 
 struct moc_t : public hunter_spell_t
 {
-  int crows_summoned;
-
   moc_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) ),
-    crows_summoned( 0 )
+    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
   {
     parse_options( NULL, options_str );
-
-    crows_summoned = 0;
 
     hasted_ticks = false;
     may_crit = true;
@@ -1800,7 +1792,6 @@ struct moc_t : public hunter_spell_t
     tick_zero = true;
 
     dynamic_tick_action = true;
-
   }
 
   virtual void init()
@@ -1810,22 +1801,23 @@ struct moc_t : public hunter_spell_t
     if ( p() -> moc_crows[ 0 ] )
       stats -> add_child( p() -> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
   }
-
-  virtual void execute()
-  {
-    crows_summoned = 0;
-    hunter_spell_t::execute();
-    // FIXME I'd rather have this get reset on expiration so that it could potentially stack
-  }
-
+  
   virtual void tick( dot_t* d )
   {
     hunter_spell_t::tick( d );
-    if ( crows_summoned < CROW_LIMIT )
+    for ( int i = 0; i < CROW_LIMIT; i++)
     {
-      p() -> moc_crows[ crows_summoned ] -> summon( timespan_t::from_seconds( 16 ) );
-      crows_summoned++;
+      // summon the first unsummoned crow. 
+      // This simplifies handling readiness because we just keep summoning more crows
+      pet_t* crow = p() -> moc_crows[ i ];
+      if ( crow -> current.sleeping )
+      {
+        crow -> summon( timespan_t::from_seconds( 16 ) );
+        return;
+      }
     }
+    p() -> sim -> errorf( "Player %s ran out of crows.\n", p() -> name() );
+    assert( false ); // Will only get here if there are no available crows
   }
 };
 
@@ -2128,28 +2120,28 @@ struct readiness_t : public hunter_spell_t
 
     harmful = false;
 
-    cooldown_list.push_back( p() -> get_cooldown( "traps"            ) );
-    cooldown_list.push_back( p() -> get_cooldown( "chimera_shot"     ) );
-    cooldown_list.push_back( p() -> get_cooldown( "kill_shot"        ) );
-    cooldown_list.push_back( p() -> get_cooldown( "scatter_shot"     ) );
-    cooldown_list.push_back( p() -> get_cooldown( "silencing_shot"   ) );
-    cooldown_list.push_back( p() -> get_cooldown( "kill_command"     ) );
-    cooldown_list.push_back( p() -> get_cooldown( "rapid_fire"       ) );
-    cooldown_list.push_back( p() -> get_cooldown( "bestial_wrath"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "concussive_shot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "dire_beast"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "powershot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "barrage"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "lynx_rush"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "a_murder_of_crows"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "glaive_toss"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "deterrence"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "distracting_shot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "freezing_trap"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "frost_trap"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "traps"             ) );
+    cooldown_list.push_back( p() -> get_cooldown( "chimera_shot"      ) );
+    cooldown_list.push_back( p() -> get_cooldown( "kill_shot"         ) );
+    cooldown_list.push_back( p() -> get_cooldown( "scatter_shot"      ) );
+    cooldown_list.push_back( p() -> get_cooldown( "silencing_shot"    ) );
+    cooldown_list.push_back( p() -> get_cooldown( "kill_command"      ) );
+    cooldown_list.push_back( p() -> get_cooldown( "rapid_fire"        ) );
+    cooldown_list.push_back( p() -> get_cooldown( "bestial_wrath"     ) );
+    cooldown_list.push_back( p() -> get_cooldown( "concussive_shot"   ) );
+    cooldown_list.push_back( p() -> get_cooldown( "dire_beast"        ) );
+    cooldown_list.push_back( p() -> get_cooldown( "powershot"         ) );
+    cooldown_list.push_back( p() -> get_cooldown( "barrage"           ) );
+    cooldown_list.push_back( p() -> get_cooldown( "lynx_rush"         ) );
+    cooldown_list.push_back( p() -> get_cooldown( "a_murder_of_crows" ) );
+    cooldown_list.push_back( p() -> get_cooldown( "glaive_toss"       ) );
+    cooldown_list.push_back( p() -> get_cooldown( "deterrence"        ) );
+    cooldown_list.push_back( p() -> get_cooldown( "distracting_shot"  ) );
+    cooldown_list.push_back( p() -> get_cooldown( "freezing_trap"     ) );
+    cooldown_list.push_back( p() -> get_cooldown( "frost_trap"        ) );
     cooldown_list.push_back( p() -> get_cooldown( "explosive_trap"    ) );
     cooldown_list.push_back( p() -> get_cooldown( "explosive_shot"    ) );
-    cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"    ) ); //????
+    cooldown_list.push_back( p() -> get_cooldown( "lock_and_load"     ) ); 
   }
 
   virtual void execute()
@@ -3215,6 +3207,9 @@ void hunter_t::init_actions()
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=37";
 
+      if ( talents.readiness -> ok() )
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
+
       action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
 
       if ( level >= 81 )
@@ -3274,6 +3269,10 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
       action_list_str += "/rapid_fire";
+
+      if ( talents.readiness -> ok() )
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
+
       action_list_str += "/arcane_shot,if=focus>=67";
 
       if ( find_class_spell( "Cobra Shot" ) )
