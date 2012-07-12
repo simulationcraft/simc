@@ -62,7 +62,8 @@ std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantmen
   {
     std::string s;
     encode_item_enchant_effect_stats( enchantment, s, i );
-    stats.push_back( s );
+    if ( ! s.empty() )
+      stats.push_back( s );
   }
 
   return stats.size();
@@ -760,6 +761,7 @@ gem_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
       {
         if ( ! item.armory_gems_str.empty() )
           item.armory_gems_str += '_';
+
         item.armory_gems_str += encode_stats( stats );
       }
     }
