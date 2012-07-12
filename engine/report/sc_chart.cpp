@@ -344,7 +344,7 @@ struct filter_stats_dpet
   {
     if ( st->quiet ) return true;
     if ( st->apet <= 0 ) return true;
-    if ( st->apet > ( 5 * p.dps.mean ) ) return true;
+    if ( st->num_refreshes > st->num_executes ) return true;
     if ( ( p.primary_role() == ROLE_HEAL ) != ( st->type != STATS_DMG ) ) return true;
 
     return false;

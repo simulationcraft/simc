@@ -4088,7 +4088,7 @@ struct stats_t
   bool background;
 
   // Variables used both during combat and for reporting
-  double num_executes, num_ticks;
+  double num_executes, num_ticks, num_refreshes;
   double num_direct_results, num_tick_results;
   timespan_t total_execute_time, total_tick_time;
   double portion_amount;

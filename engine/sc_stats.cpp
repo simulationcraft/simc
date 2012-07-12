@@ -20,7 +20,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   quiet( false ),
   background( true ),
   // Variables used both during combat and for reporting
-  num_executes( 0 ), num_ticks( 0 ),
+  num_executes( 0 ), num_ticks( 0 ), num_refreshes( 0 ),
   num_direct_results( 0 ), num_tick_results( 0 ),
   total_execute_time( timespan_t::zero() ), total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
@@ -221,6 +221,7 @@ void stats_t::analyze()
 
   num_executes       /= num_iterations;
   num_ticks          /= num_iterations;
+  num_refreshes      /= num_iterations;
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -336,6 +337,7 @@ void stats_t::merge( const stats_t& other )
   num_tick_results    += other.num_tick_results;
   num_executes        += other.num_executes;
   num_ticks           += other.num_ticks;
+  num_refreshes       += other.num_refreshes;
   total_execute_time  += other.total_execute_time;
   total_tick_time     += other.total_tick_time;
   opportunity_cost    += other.opportunity_cost;
