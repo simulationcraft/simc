@@ -3268,7 +3268,7 @@ void player_t::merge( player_t& other )
 
   for ( benefit_t* benefit = benefit_list; benefit; benefit = benefit -> next )
   {
-    benefit -> merge( other.get_benefit( benefit -> name_str ) );
+    benefit -> merge( *other.get_benefit( benefit -> name_str ) );
   }
 
   for ( std::map<std::string,int>::const_iterator it = other.action_map.begin(),

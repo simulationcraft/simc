@@ -36,6 +36,31 @@ struct recharge_event_t : event_t
 
 } // UNNAMED NAMESPACE
 
+cooldown_t::cooldown_t( const std::string& n, player_t* p ) :
+  sim( p -> sim ),
+  player( p ),
+  name_str( n ),
+  duration( timespan_t::zero() ),
+  ready( ready_init() ),
+  reset_react( timespan_t::zero() ),
+  next( 0 ),
+  charges( 1 ),
+  current_charge( 1 ),
+  recharge_event( 0 )
+{}
+
+cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
+  sim( s ),
+  player( 0 ),
+  name_str( n ),
+  duration( timespan_t::zero() ),
+  ready( ready_init() ),
+  reset_react( timespan_t::zero() ),
+  next( 0 ),
+  charges( 1 ),
+  current_charge( 1 ),
+  recharge_event( 0 )
+{}
 
 void cooldown_t::adjust( timespan_t amount )
 {

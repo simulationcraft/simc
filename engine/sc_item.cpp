@@ -284,8 +284,8 @@ void item_t::encode_options()
   o = encoded_name_str;
 
   if ( ! id_str.empty() && id_str[ 0 ] != 0 ) { o += ",id=";               o += id_str;                                           }
-  if ( heroic()                             ) { encode_option( "heroic=1" );                                                      }
-  if ( lfr()                                ) { encode_option( "lfr=1" );                                                         }
+  //if ( heroic()                             ) { encode_option( "heroic=1" );                                                      }
+  //if ( lfr()                                ) { encode_option( "lfr=1" );                                                         }
   if ( armor_type()                         ) { encode_option( "type=",    option_armor_type_str,    encoded_armor_type_str );    }
   if ( ! encoded_ilevel_str.empty()         ) { encode_option( "ilevel=",  option_ilevel_str,        encoded_ilevel_str );        }
   if ( ! encoded_quality_str.empty()        ) { encode_option( "quality=", option_quality_str,       encoded_quality_str );       }
@@ -587,7 +587,7 @@ bool item_t::decode_reforge()
 
 bool item_t::decode_random_suffix()
 {
-  int                                       f = item_database_t::random_suffix_type( *this );
+  int                                       f = item_database::random_suffix_type( *this );
 
   if ( encoded_random_suffix_str.empty() ||
        encoded_random_suffix_str == "none" ||
@@ -1416,7 +1416,7 @@ bool item_t::download_slot( item_t& item,
     }
 
     if ( ! success && has_local )
-      success = item_database_t::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+      success = item_database::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                                 rsuffix_id, gem_ids );
   }
 
@@ -1449,7 +1449,7 @@ bool item_t::download_slot( item_t& item,
 bool item_t::download_item( item_t& item, const std::string& item_id )
 {
   std::vector<std::string> source_list;
-  if ( ! item_database_t::initialize_item_sources( item, source_list ) )
+  if ( ! item_database::initialize_item_sources( item, source_list ) )
   {
     item.sim -> errorf( "Your item-specific data source string \"%s\" contained no valid sources to download item id %s.\n",
                         item.option_data_source_str.c_str(), item_id.c_str() );
@@ -1477,7 +1477,7 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     }
 
     if ( ! success && has_local )
-      success = item_database_t::download_item( item, item_id );
+      success = item_database::download_item( item, item_id );
   }
 
   if ( cache::items() != cache::ONLY )
@@ -1526,7 +1526,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     }
 
     if ( ! success && has_local )
-      success = item_database_t::download_glyph( player, glyph_name, glyph_id );
+      success = item_database::download_glyph( player, glyph_name, glyph_id );
   }
 
   if ( cache::items() != cache::ONLY )
@@ -1560,7 +1560,7 @@ gem_e item_t::parse_gem( item_t&            item,
     return GEM_NONE;
 
   std::vector<std::string> source_list;
-  if ( ! item_database_t::initialize_item_sources( item, source_list ) )
+  if ( ! item_database::initialize_item_sources( item, source_list ) )
   {
     item.sim -> errorf( "Your item-specific data source string \"%s\" contained no valid sources to download gem id %s.\n",
                         item.option_data_source_str.c_str(), gem_id.c_str() );
@@ -1589,7 +1589,7 @@ gem_e item_t::parse_gem( item_t&            item,
     }
 
     if ( type == GEM_NONE && has_local )
-      type = item_database_t::parse_gem( item, gem_id );
+      type = item_database::parse_gem( item, gem_id );
   }
 
   if ( cache::items() != cache::ONLY )

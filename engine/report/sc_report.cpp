@@ -274,7 +274,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
-      util::fprintf( sim -> output_file, "%s", spell_info_t::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
+      util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
@@ -282,7 +282,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *i ) -> spell_id() );
       if ( spell )
       {
-        spell_info_t::effect_to_str( sim,
+        spell_info::effect_to_str( sim,
                                      spell,
                                      sim -> dbc.effect( *i ),
                                      sqs );
@@ -292,7 +292,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
     else
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
-      util::fprintf( sim -> output_file, "%s", spell_info_t::to_str( sim, spell, level ).c_str() );
+      util::fprintf( sim -> output_file, "%s", spell_info::to_str( sim, spell, level ).c_str() );
     }
   }
 }

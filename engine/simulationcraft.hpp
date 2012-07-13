@@ -519,7 +519,7 @@ enum set_e
   SET_PVP_HEAL,   SET_PVP_2PC_HEAL,   SET_PVP_4PC_HEAL,
   SET_MAX
 };
-//static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
+static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
 
 enum gem_e
 {
@@ -804,10 +804,6 @@ enum format_e
 #define MAX_LEVEL (90)
 #endif
 
-#ifndef NUM_SPELL_FLAGS
-#define NUM_SPELL_FLAGS (10)
-#endif
-
 enum power_e
 {
   POWER_HEALTH        = -2,
@@ -815,7 +811,7 @@ enum power_e
   POWER_RAGE          = 1,
   POWER_FOCUS         = 2,
   POWER_ENERGY        = 3,
-  POWER_MONK_ENERGY   = 4,
+  POWER_MONK_ENERGY   = 4, // translated to RESOURCE_ENERGY
   POWER_RUNE          = 5,
   POWER_RUNIC_POWER   = 6,
   POWER_SOUL_SHARDS   = 7,
@@ -1169,16 +1165,16 @@ bool is_number( const std::string& s );
 
 int snprintf( char* buf, size_t size, const char* fmt, ... ) PRINTF_ATTRIBUTE( 3,4 );
 void fuzzy_stats( std::string& encoding, const std::string& description );
-};
+}; // namespace util
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
-struct spell_info_t
+namespace spell_info
 {
-  static std::string to_str( sim_t* sim, const spell_data_t* spell, int level=MAX_LEVEL );
-  //static std::string to_str( sim_t* sim, uint32_t spell_id, int level=MAX_LEVEL );
-  static std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level=MAX_LEVEL );
-  static std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level=MAX_LEVEL );
+std::string to_str( sim_t* sim, const spell_data_t* spell, int level = MAX_LEVEL );
+  //static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
+std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level = MAX_LEVEL );
+std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
 };
 
 
@@ -1963,7 +1959,9 @@ struct target_specific_entry_t
   size_t index;
   std::string name;
   player_t* source;
-  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) : index( i ), name( n ), source( s ) {}
+
+  target_specific_entry_t( size_t i, const std::string& n, player_t* s ) :
+    index( i ), name( n ), source( s ) {}
 };
 
 // Simulation Engine ========================================================
@@ -2235,7 +2233,10 @@ public:
 struct module_t
 {
   player_e type;
-  module_t( player_e t ) : type( t ) {}
+
+  module_t( player_e t ) :
+    type( t ) {}
+
   virtual ~module_t() {}
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) = 0;
   virtual bool valid() = 0;
@@ -2473,13 +2474,10 @@ struct weapon_t
   timespan_t normalized_weapon_speed();
   double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero() );
 
-  weapon_t( weapon_e t=WEAPON_NONE,
-            double d=0,
-            timespan_t st=timespan_t::from_seconds( 2.0 ),
-            school_e s=SCHOOL_PHYSICAL ) :
-    type( t ), school( s ), damage( d ), min_dmg( d ), max_dmg( d ),
-    swing_time( st ), slot( SLOT_INVALID ), buff_type( 0 ), buff_value( 0 ),
-    bonus_dmg( 0 ) {}
+  weapon_t( weapon_e t    = WEAPON_NONE,
+            double d      = 0,
+            timespan_t st = timespan_t::from_seconds( 2.0 ),
+            school_e s    = SCHOOL_PHYSICAL );
 };
 
 // Item =====================================================================
@@ -2587,6 +2585,7 @@ struct item_t
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
     unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( false ), is_matching_type( false ), is_reforged( false ) {}
   item_t( player_t*, const std::string& options_str );
+
   bool active();
   bool heroic();
   bool lfr();
@@ -2599,7 +2598,7 @@ struct item_t
   weapon_t* weapon();
   bool init();
   bool parse_options();
-  void encode_option( std::string prefix_str, std::string& option_str = std::string(), std::string& encoded_str = std::string() );
+  void encode_option( std::string prefix_str, std::string& option_str, std::string& encoded_str );
   void encode_options();
   bool decode_stats();
   bool decode_gems();
@@ -2630,34 +2629,34 @@ struct item_t
 
 // Item database ============================================================
 
-struct item_database_t
+namespace item_database
 {
-  static bool     download_slot(      item_t& item,
-                                      const std::string& item_id,
-                                      const std::string& enchant_id,
-                                      const std::string& addon_id,
-                                      const std::string& reforge_id,
-                                      const std::string& rsuffix_id,
-                                      const std::string gem_ids[ 3 ] );
-  static bool     download_item(      item_t& item, const std::string& item_id );
-  static bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static gem_e parse_gem(        item_t& item, const std::string& gem_id );
-  static bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
+bool     download_slot(      item_t& item,
+                             const std::string& item_id,
+                             const std::string& enchant_id,
+                             const std::string& addon_id,
+                             const std::string& reforge_id,
+                             const std::string& rsuffix_id,
+                             const std::string gem_ids[ 3 ] );
+bool     download_item(      item_t& item, const std::string& item_id );
+bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
+gem_e    parse_gem(          item_t& item, const std::string& gem_id );
+bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
-  static int      random_suffix_type( item_t& item );
-  static int      random_suffix_type( const item_data_t* );
-  static uint32_t armor_value(        item_t& item, unsigned item_id );
-  static uint32_t armor_value(        const item_data_t*, const dbc_t& );
-  static uint32_t weapon_dmg_min(     item_t& item, unsigned item_id );
-  static uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
-  static uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
-  static uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
+int      random_suffix_type( item_t& item );
+int      random_suffix_type( const item_data_t* );
+uint32_t armor_value(        item_t& item, unsigned item_id );
+uint32_t armor_value(        const item_data_t*, const dbc_t& );
+uint32_t weapon_dmg_min(     item_t& item, unsigned item_id );
+uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
+uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
+uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
 
-  static bool     load_item_from_data( item_t& item, const item_data_t* item_data );
-  static bool     parse_gems(         item_t&      item,
-                                      const item_data_t* item_data,
-                                      const std::string  gem_ids[ 3 ] );
-  static bool     parse_enchant(      item_t& item, std::string&, const std::string& enchant_id );
+bool     load_item_from_data( item_t& item, const item_data_t* item_data );
+bool     parse_gems(          item_t&      item,
+                              const item_data_t* item_data,
+                              const std::string  gem_ids[ 3 ] );
+bool     parse_enchant(       item_t& item, std::string&, const std::string& enchant_id );
 };
 
 // Set Bonus ================================================================
@@ -2665,6 +2664,7 @@ struct item_database_t
 struct set_bonus_t
 {
   std::array<int,SET_MAX> count;
+
   int tier13_2pc_caster(); int tier13_2pc_melee(); int tier13_2pc_tank(); int tier13_2pc_heal();
   int tier13_4pc_caster(); int tier13_4pc_melee(); int tier13_4pc_tank(); int tier13_4pc_heal();
   int tier14_2pc_caster(); int tier14_2pc_melee(); int tier14_2pc_tank(); int tier14_2pc_heal();
@@ -3290,11 +3290,11 @@ struct player_t : public noncopyable
   virtual double composite_attribute_multiplier( attribute_e attr );
 
   double get_attribute( attribute_e a );
-  double strength() { return get_attribute( ATTR_STRENGTH ); }
-  double agility() { return get_attribute( ATTR_AGILITY ); }
-  double stamina() { return get_attribute( ATTR_STAMINA ); }
+  double strength()  { return get_attribute( ATTR_STRENGTH ); }
+  double agility()   { return get_attribute( ATTR_AGILITY ); }
+  double stamina()   { return get_attribute( ATTR_STAMINA ); }
   double intellect() { return get_attribute( ATTR_INTELLECT ); }
-  double spirit() { return get_attribute( ATTR_SPIRIT ); }
+  double spirit()    { return get_attribute( ATTR_SPIRIT ); }
 
   virtual void      interrupt();
   virtual void      halt();
@@ -3499,8 +3499,7 @@ struct pet_t : public player_t
   struct owner_coefficients_t
   {
     double armor, health, ap_from_ap, ap_from_sp, sp_from_ap, sp_from_sp;
-    owner_coefficients_t() :
-      armor ( 1.0 ), health( 1.0 ), ap_from_ap( 0.0 ), ap_from_sp( 0.0 ), sp_from_ap( 0.0 ), sp_from_sp( 0.0 ) {}
+    owner_coefficients_t();
   } owner_coeff;
 
 private:
@@ -3771,6 +3770,7 @@ struct action_t
   bool dynamic_tick_action, is_tick_action;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
@@ -3957,24 +3957,16 @@ struct action_state_t
   virtual void debug();
 
   virtual double composite_crit()
-  {
-    return crit + target_crit;
-  }
+  { return crit + target_crit; }
 
   virtual double composite_power()
-  {
-    return attack_power + spell_power;
-  }
+  { return attack_power + spell_power; }
 
   virtual double composite_da_multiplier()
-  {
-    return da_multiplier * target_da_multiplier;
-  }
+  { return da_multiplier * target_da_multiplier; }
 
   virtual double composite_ta_multiplier()
-  {
-    return ta_multiplier * target_ta_multiplier;
-  }
+  { return ta_multiplier * target_ta_multiplier; }
 };
 
 // Attack ===================================================================
@@ -4004,8 +3996,10 @@ struct attack_t : public action_t
   /* New stuffs */
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> composite_attack_hit(); }
+
   virtual double composite_crit()
   { return action_t::composite_crit() + player -> composite_attack_crit( weapon ); }
+
   virtual double composite_haste()
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
 };
@@ -4028,7 +4022,8 @@ struct melee_attack_t : public attack_t
   virtual double glance_chance( int delta_level );
 
   /* New stuffs */
-  virtual double composite_expertise() { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
+  virtual double composite_expertise()
+  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Ranged Attack ===================================================================
@@ -4047,10 +4042,12 @@ struct ranged_attack_t : public attack_t
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
-  virtual double composite_target_multiplier( player_t* target ) { return target -> composite_ranged_attack_player_vulnerability(); }
+  virtual double composite_target_multiplier( player_t* target )
+  { return target -> composite_ranged_attack_player_vulnerability(); }
 
   /* New stuffs */
-  virtual double composite_expertise() { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
+  virtual double composite_expertise()
+  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Spell Base ====================================================================
@@ -4089,7 +4086,8 @@ public:
   virtual double miss_chance( double hit, int delta_level );
 
   /* New stuffs */
-  virtual double composite_hit() { return action_t::composite_hit() + player -> composite_spell_hit(); }
+  virtual double composite_hit()
+  { return action_t::composite_hit() + player -> composite_spell_hit(); }
 };
 
 // Heal =====================================================================
@@ -4155,17 +4153,12 @@ struct cooldown_t
   int current_charge;
   event_t* recharge_event;
 
-  cooldown_t( const std::string& n, player_t* p ) :
-    sim( p -> sim ), player( p ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ),
-    reset_react( timespan_t::zero() ), next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
-
-  cooldown_t( const std::string& n, sim_t* s ) :
-    sim( s ), player( 0 ), name_str( n ), duration( timespan_t::zero() ), ready( ready_init() ),
-    reset_react( timespan_t::zero() ), next( 0 ), charges( 1 ), current_charge( 1 ), recharge_event( 0 ) {}
+  cooldown_t( const std::string& name, player_t* );
+  cooldown_t( const std::string& name, sim_t* );
 
   void adjust( timespan_t );
   void reset( bool early = false );
-  void start( timespan_t override=timespan_t::min(), timespan_t delay=timespan_t::zero() );
+  void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
   timespan_t remains() const
   {
@@ -4383,7 +4376,8 @@ public:
 
   void update( int is_up ) { if ( is_up ) up++; else down++; }
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const
+  { return name_str.c_str(); }
 
   void analyze()
   {
@@ -4391,8 +4385,8 @@ public:
       ratio = 1.0 * up / ( down + up );
   }
 
-  void merge( const benefit_t* other )
-  { up += other -> up; down += other -> down; }
+  void merge( const benefit_t& other )
+  { up += other.up; down += other.down; }
 };
 
 // Uptime ==================================================================
@@ -4446,7 +4440,8 @@ struct uptime_t : public uptime_common_t
     uptime_common_t( s ), name_str( n )
   {}
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const
+  { return name_str.c_str(); }
 };
 
 struct buff_uptime_t : public uptime_common_t
@@ -4493,7 +4488,8 @@ struct proc_t
     interval_sum.analyze();
   }
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const
+  { return name_str.c_str(); }
 };
 
 // Report ===================================================================
@@ -4532,7 +4528,8 @@ private:
   virtual void    _seed( uint32_t start ) = 0;
 public:
 
-  const char* name() { return name_str.c_str(); }
+  const char* name() const
+  { return name_str.c_str(); }
   void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
   double real() { return _real(); }
   rng_e type() { return _type; }
@@ -4563,7 +4560,7 @@ public:
   static double stdnormal_cdf( double u );
   static double stdnormal_inv( double p );
 
-  static rng_t* create( const std::string& name, rng_e=RNG_STANDARD );
+  static rng_t* create( const std::string& name, rng_e = RNG_STANDARD );
 };
 
 // Wowhead  =================================================================
@@ -4597,7 +4594,7 @@ gem_e parse_gem( item_t& item, const std::string& gem_id,
 
 namespace chardev
 {
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b=cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
 }
 
 // MMO Champion =============================================================
@@ -4611,16 +4608,16 @@ bool download_slot( item_t&,
                     const std::string& reforge_id,
                     const std::string& rsuffix_id,
                     const std::string gem_ids[ 3 ],
-                    cache::behavior_e b=cache::items() );
+                    cache::behavior_e b = cache::items() );
 
 bool download_item( item_t&, const std::string& item_id,
-                    cache::behavior_e b=cache::items() );
+                    cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name,
-                     const std::string& glyph_id, cache::behavior_e b=cache::items() );
+                     const std::string& glyph_id, cache::behavior_e b = cache::items() );
 
 gem_e parse_gem( item_t& item, const std::string& gem_id,
-                 cache::behavior_e b=cache::items() );
+                 cache::behavior_e b = cache::items() );
 };
 
 // Rawr =====================================================================

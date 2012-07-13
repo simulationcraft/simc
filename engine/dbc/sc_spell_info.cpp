@@ -212,7 +212,7 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
   return s.str();
 }
 
-std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
+std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
                                                  const spell_data_t*       spell,
                                                  const spelleffect_data_t* e,
                                                  std::ostringstream&       s,
@@ -376,7 +376,7 @@ std::ostringstream& spell_info_t::effect_to_str( sim_t*                    sim,
   return s;
 }
 
-std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int level )
+std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
@@ -606,7 +606,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
     else
       e = sim -> dbc.effect( effect_id );
 
-    spell_info_t::effect_to_str( sim, spell, e, s, level );
+    spell_info::effect_to_str( sim, spell, e, s, level );
   }
 
   if ( spell -> desc() )
@@ -623,7 +623,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
   return s.str();
 }
 
-std::string spell_info_t::talent_to_str( sim_t* sim, const talent_data_t* talent, int /* level */ )
+std::string spell_info::talent_to_str( sim_t* sim, const talent_data_t* talent, int /* level */ )
 {
   std::ostringstream s;
 

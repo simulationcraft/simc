@@ -841,13 +841,13 @@ ItemDataDelegate::itemStatsString( const item_data_t* item, bool /* html */ ) co
       .arg( util::weapon_class_string( item -> inventory_type ) ? QString( util::weapon_class_string( item -> inventory_type ) ) + QString( " " ) : "" )
       .arg( util::weapon_subclass_string( item -> item_subclass ) );
     weapon_stats += QString( "%1 - %2 (%3)" )
-      .arg( item_database_t::weapon_dmg_min( item, dbc ) )
-      .arg( item_database_t::weapon_dmg_max( item, dbc ) )
+      .arg( item_database::weapon_dmg_min( item, dbc ) )
+      .arg( item_database::weapon_dmg_max( item, dbc ) )
       .arg( dbc.weapon_dps( item -> id ), 0, 'f', 1 );
     weapon_stats += QString( "%1 Speed</strong>" ).arg( item -> delay / 1000.0, 0, 'f', 2 );
   }
 
-  if ( ( armor = item_database_t::armor_value( item, dbc ) ) > 0 )
+  if ( ( armor = item_database::armor_value( item, dbc ) ) > 0 )
     stats += QString( "%1 Armor" ).arg( armor );
 
   for ( int i = 0; i < 10; i++ )
@@ -1064,7 +1064,7 @@ QString
 RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix ) const
 {
   const item_data_t* item = m_profile -> slotItem( m_profile -> currentSlot() );
-  int f = item_database_t::random_suffix_type( item );
+  int f = item_database::random_suffix_type( item );
   dbc_t dbc( false );
 
   const random_prop_data_t& ilevel_data   = dbc.random_property( item -> level );

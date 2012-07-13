@@ -1083,13 +1083,13 @@ bool wowhead::download_slot( item_t&            item,
     return false;
   }
 
-  if ( ! item_database_t::parse_enchant( item, item.armory_enchant_str, enchant_id ) )
+  if ( ! item_database::parse_enchant( item, item.armory_enchant_str, enchant_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse enchant id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), enchant_id.c_str(), item.name(), item.slot_name() );
   }
 
-  if ( ! item_database_t::parse_enchant( item, item.armory_addon_str, addon_id ) )
+  if ( ! item_database::parse_enchant( item, item.armory_addon_str, addon_id ) )
   {
     item.sim -> errorf( "Player %s unable to parse addon id %s for item \"%s\" at slot %s.\n",
                         item.player -> name(), addon_id.c_str(), item.name(), item.slot_name() );

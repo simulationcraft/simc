@@ -16,6 +16,10 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 // FIXME! This is a generated header.  Be nice if it was not seperate.
 #include "specialization.hpp"
 
+#ifndef NUM_SPELL_FLAGS
+#define NUM_SPELL_FLAGS (10)
+#endif
+
 // Spell ID class
 
 enum s_e

@@ -178,7 +178,7 @@ bool parse_item_stats( item_t&            item,
 
   item.armory_stats_str.clear();
 
-  if ( ( armor = item_database_t::armor_value( item, item_data -> id ) ) > 0 )
+  if ( ( armor = item_database::armor_value( item, item_data -> id ) ) > 0 )
   {
     char b[64];
     snprintf( b, sizeof( b ), "%darmor", armor );
@@ -204,8 +204,8 @@ bool parse_weapon_type( item_t&            item,
     return true;
 
   speed   = item_data -> delay / 1000.0;
-  min_dam = item_database_t::weapon_dmg_min( item, item_data -> id );
-  max_dam = item_database_t::weapon_dmg_max( item, item_data -> id );
+  min_dam = item_database::weapon_dmg_min( item, item_data -> id );
+  max_dam = item_database::weapon_dmg_max( item, item_data -> id );
 
   if ( ! speed || ! min_dam || ! max_dam )
     return true;
@@ -230,7 +230,7 @@ const item_data_t* download_common( item_t& item, const std::string& item_id )
   if ( iid <= 0 || ! item_data )
     return 0;
 
-  if ( ! item_database_t::load_item_from_data( item, item_data ) )
+  if ( ! item_database::load_item_from_data( item, item_data ) )
     return 0;
 
   return item_data;
@@ -263,7 +263,7 @@ void log_item( const item_t& item )
 
 // item_database_t::initialize_item_sources =================================
 
-bool item_database_t::initialize_item_sources( item_t& item, std::vector<std::string>& source_list )
+bool item_database::initialize_item_sources( item_t& item, std::vector<std::string>& source_list )
 {
   source_list = item.sim -> item_db_sources;
 
@@ -300,7 +300,7 @@ bool item_database_t::initialize_item_sources( item_t& item, std::vector<std::st
 
 // item_database_t::random_suffix_type ======================================
 
-int item_database_t::random_suffix_type( const item_data_t* item )
+int item_database::random_suffix_type( const item_data_t* item )
 {
   switch ( item -> item_class )
   {
@@ -358,7 +358,7 @@ int item_database_t::random_suffix_type( const item_data_t* item )
   return -1;
 }
 
-int item_database_t::random_suffix_type( item_t& item )
+int item_database::random_suffix_type( item_t& item )
 {
   if ( weapon_t* w = item.weapon() )
   {
@@ -417,7 +417,7 @@ int item_database_t::random_suffix_type( item_t& item )
   }
 }
 
-uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc )
+uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc )
 {
   if ( ! item || item -> quality > 5 )
     return 0;
@@ -460,7 +460,7 @@ uint32_t item_database_t::armor_value( const item_data_t* item, const dbc_t& dbc
 
 // item_database_t::armor_value =============================================
 
-uint32_t item_database_t::armor_value( item_t& item_struct, unsigned item_id )
+uint32_t item_database::armor_value( item_t& item_struct, unsigned item_id )
 {
   const dbc_t& dbc = item_struct.player -> dbc;
   return armor_value( dbc.item( item_id ), dbc );
@@ -468,35 +468,35 @@ uint32_t item_database_t::armor_value( item_t& item_struct, unsigned item_id )
 
 // item_database_t::weapon_dmg_min/max ======================================
 
-uint32_t item_database_t::weapon_dmg_min( item_t& item, unsigned item_id )
+uint32_t item_database::weapon_dmg_min( item_t& item, unsigned item_id )
 {
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
                              ( 1 - item.player -> dbc.item( item_id ) -> dmg_range / 2 ) );
 }
 
-uint32_t item_database_t::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
+uint32_t item_database::weapon_dmg_min( const item_data_t* item, const dbc_t& dbc )
 {
   return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
                              dbc.item( item -> id ) -> delay / 1000.0 *
                              ( 1 - dbc.item( item -> id ) -> dmg_range / 2 ) );
 }
 
-uint32_t item_database_t::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
+uint32_t item_database::weapon_dmg_max( const item_data_t* item, const dbc_t& dbc )
 {
   return ( uint32_t ) floor( dbc.weapon_dps( item -> id ) *
                              dbc.item( item -> id ) -> delay / 1000.0 *
                              ( 1 + dbc.item( item -> id ) -> dmg_range / 2 ) + 0.5 );
 }
 
-uint32_t item_database_t::weapon_dmg_max( item_t& item, unsigned item_id )
+uint32_t item_database::weapon_dmg_max( item_t& item, unsigned item_id )
 {
   return ( uint32_t ) floor( item.player -> dbc.weapon_dps( item_id ) *
                              item.player -> dbc.item( item_id ) -> delay / 1000.0 *
                              ( 1 + item.player -> dbc.item( item_id ) -> dmg_range / 2 ) + 0.5 );
 }
 
-bool item_database_t::parse_gems( item_t&            item,
+bool item_database::parse_gems( item_t&            item,
                                   const item_data_t* item_data,
                                   const std::string  gem_ids[ 3 ] )
 {
@@ -546,7 +546,7 @@ bool item_database_t::parse_gems( item_t&            item,
   return true;
 }
 
-bool item_database_t::parse_enchant( item_t&            item,
+bool item_database::parse_enchant( item_t&            item,
                                      std::string& result,
                                      const std::string& enchant_id )
 {
@@ -635,7 +635,7 @@ bool item_database_t::parse_enchant( item_t&            item,
 
 // item_database_t::download_slot ===========================================
 
-bool item_database_t::download_slot( item_t&            item,
+bool item_database::download_slot( item_t&            item,
                                      const std::string& item_id,
                                      const std::string& enchant_id,
                                      const std::string& addon_id,
@@ -682,7 +682,7 @@ bool item_database_t::download_slot( item_t&            item,
 
 // item_database_t::load_item_from_data =====================================
 
-bool item_database_t::load_item_from_data( item_t& item, const item_data_t* item_data )
+bool item_database::load_item_from_data( item_t& item, const item_data_t* item_data )
 {
   if ( ! item_data ) return false;
 
@@ -700,7 +700,7 @@ bool item_database_t::load_item_from_data( item_t& item, const item_data_t* item
 
 // item_database_t::download_item ===========================================
 
-bool item_database_t::download_item( item_t& item, const std::string& item_id )
+bool item_database::download_item( item_t& item, const std::string& item_id )
 {
   if ( ! download_common( item, item_id ) )
     return false;
@@ -710,7 +710,7 @@ bool item_database_t::download_item( item_t& item, const std::string& item_id )
 
 // item_database_t::download_glyph ==========================================
 
-bool item_database_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
+bool item_database::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
 {
   long gid                 = strtol( glyph_id.c_str(), 0, 10 );
   const item_data_t* glyph = player -> dbc.item( gid );
@@ -724,7 +724,7 @@ bool item_database_t::download_glyph( player_t* player, std::string& glyph_name,
 
 // item_database_t::parse_gem ===============================================
 
-gem_e item_database_t::parse_gem( item_t& item, const std::string& gem_id )
+gem_e item_database::parse_gem( item_t& item, const std::string& gem_id )
 {
   long gid = strtol( gem_id.c_str(), 0, 10 );
   if ( gid <= 0 )

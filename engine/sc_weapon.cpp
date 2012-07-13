@@ -9,6 +9,22 @@
 // Weapon
 // ==========================================================================
 
+weapon_t::weapon_t( weapon_e t,
+                    double d,
+                    timespan_t st,
+                    school_e s ) :
+  type( t ),
+  school( s ),
+  damage( d ),
+  min_dmg( d ),
+  max_dmg( d ),
+  swing_time( st ),
+  slot( SLOT_INVALID ),
+  buff_type( 0 ),
+  buff_value( 0 ),
+  bonus_dmg( 0 )
+{}
+
 // weapon_t::group ==========================================================
 
 weapon_e weapon_t::group()
