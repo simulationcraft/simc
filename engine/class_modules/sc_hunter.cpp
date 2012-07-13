@@ -1045,24 +1045,26 @@ struct arcane_shot_t : public hunter_ranged_attack_t
 
 // Power Shot Attack =======================================================
 
-struct power_shot_t : public hunter_ranged_attack_t
+struct powershot_t : public hunter_ranged_attack_t
 {
-  power_shot_t( hunter_t* player, const std::string& options_str ) :
+  powershot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "power_shot", player, player -> find_class_spell( "Power Shot" ) )
   {
     parse_options( NULL, options_str );
+
+    // FIXME add the AoE elements
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual double action_multiplier()
   {
-    hunter_ranged_attack_t::impact_s( state );
-    if ( result_is_hit( state -> result ) )
-    {
-      p() -> buffs.cobra_strikes -> trigger( 2 );
+    double am = ab::action_multiplier();
 
-      // Needs testing
-      p() -> buffs.tier13_4pc -> trigger();
-    }
+    // from the tooltip
+    am *= 4.0;
+    // The tooltip mentions effect 2, but it's not actually a percent number.
+    // am *= p() -> talents.powershot -> effectN( 2 ).percent();
+
+    return am;
   }
 };
 
@@ -2818,14 +2820,13 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "a_murder_of_crows"     ) return new             moc_t( this, options_str );
+  if ( name == "powershot"             ) return new             powershot_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
   if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
-  if ( name == "powershot"             ) return new             power_shot_t( this, options_str );
   if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
   if ( name == "aspect_of_the_iron_hawk" ) return new      aspect_of_the_iron_hawk_t( this, options_str );
-  if ( name == "a_murder_of_crows"     ) return new      a_murder_of_crows_t( this, options_str );
   if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
