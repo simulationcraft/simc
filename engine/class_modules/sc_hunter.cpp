@@ -2234,6 +2234,8 @@ void create_moc_pets( hunter_t* p, size_t n )
     {
       pet_t* s = new moc_crow_t( p );
       p -> moc_free.push( s );
+      if ( i )
+        s -> quiet = 1;
     }
   }
 

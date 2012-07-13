@@ -820,7 +820,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
       for ( size_t i = 0; i < pl.size(); ++i )
       {
         pet_t* pet = pl[ i ];
-        if ( pet -> summoned )
+        if ( pet -> summoned && !pet -> quiet )
           print_text_player( file, pet );
       }
     }
