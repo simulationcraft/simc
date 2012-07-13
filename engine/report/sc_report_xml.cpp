@@ -612,8 +612,9 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "benefits" );
 
-  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
+    benefit_t* u = p -> benefit_list[ j ];
     if ( u -> ratio > 0 )
     {
       writer.begin_tag( "benefit" );
@@ -628,8 +629,9 @@ void print_xml_player_uptime( xml_writer_t & writer, player_t * p )
 
   writer.begin_tag( "uptimes" );
 
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
   {
+    uptime_t* u = p -> uptime_list[ j ];
     if ( u -> uptime_sum.mean > 0 )
     {
       writer.begin_tag( "uptime" );
@@ -646,8 +648,9 @@ void print_xml_player_procs( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "procs" );
 
-  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+  for ( size_t i = 0; i < p -> proc_list.size(); ++i )
   {
+    proc_t* proc = p -> proc_list[ i ];
     if ( proc -> count > 0 )
     {
       writer.begin_tag( "proc" );
@@ -665,8 +668,9 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "gains" );
 
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
   {
+    gain_t* g = p -> gain_list[ i ];
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
     {
       if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )

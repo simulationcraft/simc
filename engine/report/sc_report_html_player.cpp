@@ -1479,8 +1479,9 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
 
   {
     int j = 0;
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
+      gain_t* g = p -> gain_list[ i ];
       print_html_gain( file, tabs, g, j );
     }
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
@@ -1488,8 +1489,9 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
       pet_t* pet = p -> pet_list[ i ];
       if ( pet -> fight_length.mean <= 0 ) continue;
       bool first = true;
-      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+      for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       {
+        gain_t* g = pet -> gain_list[ i ];
         if ( first )
         {
           bool found = false;
@@ -1565,8 +1567,9 @@ void print_html_player_resources( FILE* file, player_t* p, player_t::report_info
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
     if ( j == RESOURCE_RUNE_BLOOD || j == RESOURCE_RUNE_UNHOLY || j == RESOURCE_RUNE_FROST ) continue;
     double total_gain=0;
-    for ( gain_t* g = p -> gain_list; g; g = g -> next )
+    for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
+      gain_t* g = p -> gain_list[ i ];
       if ( g -> actual[ j ] > 0 )
         total_gain += g -> actual[ j ];
     }
@@ -2249,8 +2252,9 @@ void print_html_player_benefits_uptimes( FILE* file, player_t* p )
            "\t\t\t\t\t\t\t\t</tr>\n" );
   int i = 1;
 
-  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
+    benefit_t* u = p -> benefit_list[ j ];
     if ( u -> ratio > 0 )
     {
       fprintf( file,
@@ -2273,8 +2277,9 @@ void print_html_player_benefits_uptimes( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    for ( benefit_t* u = pet -> benefit_list; u; u = u -> next )
+    for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
     {
+      benefit_t* u = p -> benefit_list[ j ];
       if ( u -> ratio > 0 )
       {
         std::string benefit_name;
@@ -2304,8 +2309,9 @@ void print_html_player_benefits_uptimes( FILE* file, player_t* p )
            "\t\t\t\t\t\t\t\t\t<th>Uptimes</th>\n"
            "\t\t\t\t\t\t\t\t\t<th>%%</th>\n"
            "\t\t\t\t\t\t\t\t</tr>\n" );
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
   {
+    uptime_t* u = p -> uptime_list[ j ];
     if ( u -> uptime_sum.mean > 0 )
     {
       fprintf( file,
@@ -2328,8 +2334,9 @@ void print_html_player_benefits_uptimes( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    for ( uptime_t* u = pet -> uptime_list; u; u = u -> next )
+    for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
     {
+      uptime_t* u = p -> uptime_list[ j ];
       if ( u -> uptime_sum.mean > 0 )
       {
         std::string uptime_name;
@@ -2364,7 +2371,7 @@ void print_html_player_benefits_uptimes( FILE* file, player_t* p )
 
 // print_html_player_procs ========================================================
 
-void print_html_player_procs( FILE* file, proc_t* pr )
+void print_html_player_procs( FILE* file, std::vector<proc_t*> pr )
 {
   // Procs Section
   fprintf( file,
@@ -2379,8 +2386,9 @@ void print_html_player_procs( FILE* file, proc_t* pr )
            "\t\t\t\t\t\t\t\t</tr>\n" );
   {
     int i = 1;
-    for ( proc_t* proc = pr; proc; proc = proc -> next )
+    for ( size_t j = 0; j < pr.size(); ++j )
     {
+      proc_t* proc = pr[ j ];
       if ( proc -> count > 0 )
       {
         fprintf( file,

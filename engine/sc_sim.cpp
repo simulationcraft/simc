@@ -830,19 +830,11 @@ sim_t::~sim_t()
     delete p;
   }
 
-  while ( rng_t* r = rng_list )
-  {
-    rng_list = r -> next;
-    delete r;
-  }
+  range::dispose( rng_list );
 
   range::dispose( buff_list );
 
-  while ( cooldown_t* d = cooldown_list )
-  {
-    cooldown_list = d -> next;
-    delete d;
-  }
+  range::dispose( cooldown_list );
 
   delete rng;
   delete _deterministic_rng;
@@ -1673,23 +1665,16 @@ cooldown_t* sim_t::get_cooldown( const std::string& name )
 {
   cooldown_t* c=0;
 
-  for ( c = cooldown_list; c; c = c -> next )
+  for ( size_t i = 0; i < cooldown_list.size(); ++i )
   {
+    cooldown_t* c = cooldown_list[ i ];
     if ( c -> name_str == name )
       return c;
   }
 
   c = new cooldown_t( name, this );
 
-  cooldown_t** tail = &cooldown_list;
-
-  while ( *tail && name > ( ( *tail ) -> name_str ) )
-  {
-    tail = &( ( *tail ) -> next );
-  }
-
-  c -> next = *tail;
-  *tail = c;
+  cooldown_list.push_back( c );
 
   return c;
 }
@@ -1762,15 +1747,16 @@ rng_t* sim_t::get_rng( const std::string& n, int type )
 
   rng_t* r=0;
 
-  for ( r = rng_list; r; r = r -> next )
+  for ( size_t i = 0; i < rng_list.size(); ++i )
   {
+    rng_t* r = rng_list[ i ];
     if ( r -> name_str == n )
       return r;
   }
 
   r = rng_t::create( n, static_cast<rng_e> ( type ) );
-  r -> next = rng_list;
-  rng_list = r;
+
+  rng_list.push_back( r );
 
   return r;
 }

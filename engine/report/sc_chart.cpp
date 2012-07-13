@@ -1097,9 +1097,11 @@ std::string chart::gains( player_t* p, resource_e type )
 {
   std::vector<gain_t*> gains_list;
 
-  double total_gain=0;
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  double total_gain = 0;
+
+  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
   {
+    gain_t* g = p -> gain_list[ i ];
     if ( g -> actual[ type ] <= 0 ) continue;
     total_gain += g -> actual[ type ];
     gains_list.push_back( g );

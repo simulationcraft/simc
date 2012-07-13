@@ -11,8 +11,7 @@ rng_t::rng_t( const std::string& n, rng_e t ) :
   name_str( n ), _type( t ),
   actual_roll( 0 ), actual_range( 0 ), actual_gauss( 0 ),
   num_roll( 0 ), num_range( 0 ), num_gauss( 0 ),
-  gauss_pair_use( false ),
-  next( 0 )
+  gauss_pair_use( false )
 {}
 
 // rng_t::roll ==============================================================

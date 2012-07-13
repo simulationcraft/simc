@@ -2036,7 +2036,7 @@ struct sim_t : private thread_t
   // Random Number Generation
 private:
   rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
-  rng_t* rng_list;
+  std::vector<rng_t*> rng_list;
   int deterministic_rng;
 public:
   rng_t* rng;
@@ -2118,7 +2118,7 @@ public:
   timespan_t default_aura_delay;
   timespan_t default_aura_delay_stddev;
 
-  cooldown_t* cooldown_list;
+  std::vector<cooldown_t*> cooldown_list;
 
   // Reporting
   scaling_t* scaling;
@@ -2921,7 +2921,6 @@ struct player_t : public noncopyable
   std::string action_list_skip;
   std::string modify_action;
   int         action_list_default;
-  cooldown_t* cooldown_list;
   std::vector<dot_t*> dot_list;
   std::map<std::string,int> action_map;
   std::vector<action_priority_list_t*> action_priority_list;
@@ -2957,11 +2956,13 @@ struct player_t : public noncopyable
   } buffed;
 
   std::vector<buff_t*> buff_list;
-  proc_t*   proc_list;
-  gain_t*   gain_list;
+  std::vector<proc_t*> proc_list;
+  std::vector<gain_t*> gain_list;
   std::vector<stats_t*> stats_list;
-  benefit_t* benefit_list;
-  uptime_t* uptime_list;
+  std::vector<benefit_t*> benefit_list;
+  std::vector<uptime_t*> uptime_list;
+  std::vector<cooldown_t*> cooldown_list;
+  std::vector<rng_t*> rng_list;
   std::array< std::vector<double>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
 
@@ -2973,8 +2974,7 @@ struct player_t : public noncopyable
     resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
   };
 
-  // Health/primary/secondary makes 3 resources, does any class/spec need more?
-  // Druid: health/mana/energy/rage
+  // Druid requires 4 resource timelines health/mana/energy/rage
   std::array<resource_timeline_t,4> resource_timelines;
   size_t resource_timeline_count;
 
@@ -3144,7 +3144,6 @@ struct player_t : public noncopyable
     proc_t* hat_donor;
   } procs;
 
-  rng_t* rng_list;
 
   struct rngs_t
   {
@@ -3557,10 +3556,9 @@ struct gain_t
   std::array<double, RESOURCE_MAX> actual, overflow, count;
 
   std::string name_str;
-  gain_t* next;
 
   gain_t( const std::string& n ) :
-    name_str( n ), next( NULL )
+    name_str( n )
   {
     range::fill( actual, 0.0 );
     range::fill( overflow, 0.0 );
@@ -4122,7 +4120,6 @@ struct cooldown_t
   timespan_t duration;
   timespan_t ready;
   timespan_t reset_react;
-  cooldown_t* next;
   int charges;
   int current_charge;
   event_t* recharge_event;
@@ -4341,7 +4338,6 @@ private:
   int up, down;
 public:
   double ratio;
-  benefit_t* next;
   std::string name_str;
 
   explicit benefit_t( const std::string& n ) :
@@ -4408,7 +4404,6 @@ struct uptime_common_t
 struct uptime_t : public uptime_common_t
 {
   std::string name_str;
-  uptime_t* next;
 
   uptime_t( sim_t* s, const std::string& n ) :
     uptime_common_t( s ), name_str( n )
@@ -4432,12 +4427,10 @@ struct proc_t
   double count;
   timespan_t last_proc;
   sample_data_t interval_sum;
-  proc_t* next;
 
   proc_t( sim_t* s, player_t* p, const std::string& n ) :
     sim( s ), player( p ), name_str( n ),
-    count( 0.0 ), last_proc( timespan_t::zero() ), interval_sum( s -> statistics_level < 6 ),
-    next( NULL )
+    count( 0.0 ), last_proc( timespan_t::zero() ), interval_sum( s -> statistics_level < 6 )
   {}
 
   void occur()
@@ -4489,8 +4482,6 @@ private:
   uint64_t num_roll, num_range, num_gauss;
   double gauss_pair_value;
   bool   gauss_pair_use;
-public:
-  rng_t* next;
 protected:
   rng_t( const std::string& n, rng_e );
 

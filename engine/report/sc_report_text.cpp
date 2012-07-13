@@ -327,8 +327,9 @@ void print_text_gains( FILE* file, gain_t* g, int max_length )
 void print_text_player_gains( FILE* file, player_t* p )
 {
   int max_length = 0;
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
   {
+    gain_t* g = p -> gain_list[ i ];
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     {
       if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
@@ -342,8 +343,9 @@ void print_text_player_gains( FILE* file, player_t* p )
 
   util::fprintf( file, "  Gains:\n" );
 
-  for ( gain_t* g = p -> gain_list; g; g = g -> next )
+  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
   {
+    gain_t* g = p -> gain_list[ i ];
     print_text_gains( file, g, max_length );
   }
 }
@@ -358,8 +360,9 @@ void print_text_pet_gains( FILE* file, player_t* p )
     if ( pet -> dmg.mean <= 0 ) continue;
 
     int max_length = 0;
-    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+    for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
     {
+      gain_t* g = pet -> gain_list[ i ];
       for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
       {
         if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
@@ -373,8 +376,9 @@ void print_text_pet_gains( FILE* file, player_t* p )
     {
       util::fprintf( file, "  Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
 
-      for ( gain_t* g = pet -> gain_list; g; g = g -> next )
+      for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       {
+        gain_t* g = pet -> gain_list[ i ];
         print_text_gains( file, g, max_length );
       }
     }
@@ -385,10 +389,11 @@ void print_text_pet_gains( FILE* file, player_t* p )
 
 void print_text_procs( FILE* file, player_t* p )
 {
-  bool first=true;
+  bool first = true;
 
-  for ( proc_t* proc = p -> proc_list; proc; proc = proc -> next )
+  for ( size_t i = 0; i < p -> proc_list.size(); ++i )
   {
+    proc_t* proc = p -> proc_list[ i ];
     if ( proc -> count > 0 )
     {
       if ( first ) util::fprintf( file, "  Procs:\n" ); first = false;
@@ -404,8 +409,9 @@ void print_text_uptime( FILE* file, player_t* p )
 {
   bool first=true;
 
-  for ( benefit_t* u = p -> benefit_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
+    benefit_t* u = p -> benefit_list[ j ];
     if ( u -> ratio > 0 )
     {
       if ( first ) util::fprintf( file, "  Benefits:\n" ); first = false;
@@ -414,8 +420,9 @@ void print_text_uptime( FILE* file, player_t* p )
   }
 
   first=true;
-  for ( uptime_t* u = p -> uptime_list; u; u = u -> next )
+  for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
   {
+    uptime_t* u = p -> uptime_list[ j ];
     if ( u -> uptime_sum.mean > 0 )
     {
       if ( first ) util::fprintf( file, "  Up-Times:\n" ); first = false;

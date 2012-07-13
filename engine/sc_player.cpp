@@ -600,7 +600,7 @@ player_t::player_t( sim_t*             s,
   executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
-  action_list( 0 ), action_list_default( 0 ), cooldown_list( 0 ), dot_list( 0 ),
+  action_list( 0 ), action_list_default( 0 ), dot_list( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
@@ -610,7 +610,8 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
-  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ),
+  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ), cooldown_list( 0 ),
+  rng_list( 0 ),
   resource_timeline_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
@@ -638,7 +639,6 @@ player_t::player_t( sim_t*             s,
   debuffs( debuffs_t() ),
   gains( gains_t() ),
   procs( procs_t() ),
-  rng_list( 0 ),
   rngs( rngs_t() ),
   uptimes( uptimes_t() )
 {
@@ -744,41 +744,23 @@ player_t::~player_t()
 {
   range::dispose( action_list );
 
-  while ( proc_t* p = proc_list )
-  {
-    proc_list = p -> next;
-    delete p;
-  }
-  while ( gain_t* g = gain_list )
-  {
-    gain_list = g -> next;
-    delete g;
-  }
+  range::dispose( proc_list );
+
+  range::dispose( gain_list );
 
   range::dispose( stats_list );
 
-  while ( uptime_t* u = uptime_list )
-  {
-    uptime_list = u -> next;
-    delete u;
-  }
-  while ( benefit_t* u = benefit_list )
-  {
-    benefit_list = u -> next;
-    delete u;
-  }
-  while ( rng_t* r = rng_list )
-  {
-    rng_list = r -> next;
-    delete r;
-  }
+  range::dispose( uptime_list );
+
+  range::dispose( benefit_list );
+
+  range::dispose( rng_list );
+
   range::dispose( dot_list );
+
   range::dispose( buff_list );
-  while ( cooldown_t* d = cooldown_list )
-  {
-    cooldown_list = d -> next;
-    delete d;
-  }
+
+  range::dispose( cooldown_list );
 
   glyph_list.clear();
 
@@ -3222,8 +3204,8 @@ void player_t::combat_end()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> combat_end();
 
-  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
-    uptime -> combat_end();
+  for ( size_t i = 0; i < uptime_list.size(); ++i )
+    uptime_list[ i ] -> combat_end();
 }
 
 // player_t::merge ==========================================================
@@ -3279,26 +3261,30 @@ void player_t::merge( player_t& other )
       b -> merge( *otherbuff );
   }
 
-  for ( proc_t* proc = proc_list; proc; proc = proc -> next )
+  for ( size_t i = 0; i < proc_list.size(); ++i )
   {
+    proc_t* proc = proc_list[ i ];
     proc -> merge( ( *other.get_proc( proc -> name_str ) ) );
   }
 
-  for ( gain_t* gain = gain_list; gain; gain = gain -> next )
+  for ( size_t i = 0; i < gain_list.size(); ++i )
   {
+    gain_t* gain = gain_list[ i ];
     gain -> merge( *other.get_gain( gain -> name_str ) );
   }
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> merge( *other.get_stats( stats_list[ i ] -> name_str ) );
 
-  for ( uptime_t* uptime = uptime_list; uptime; uptime = uptime -> next )
+  for ( size_t i = 0; i < uptime_list.size(); ++i )
   {
+    uptime_t* uptime = uptime_list[ i ];
     uptime -> merge( *other.get_uptime( uptime -> name_str ) );
   }
 
-  for ( benefit_t* benefit = benefit_list; benefit; benefit = benefit -> next )
+  for ( size_t i = 0; i < benefit_list.size(); ++i )
   {
+    benefit_t* benefit = benefit_list[ i ];
     benefit -> merge( *other.get_benefit( benefit -> name_str ) );
   }
 
@@ -3364,8 +3350,8 @@ void player_t::reset()
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ] -> reset();
 
-  for ( cooldown_t* c = cooldown_list; c; c = c -> next )
-    c -> reset();
+  for ( size_t i = 0; i < cooldown_list.size(); ++i )
+    cooldown_list[ i ] -> reset();
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
     dot_list[ i ] -> reset();
@@ -4657,43 +4643,31 @@ T* find_vector_member( std::vector<T*> list, const std::string& name )
   return 0;
 }
 
-template <typename T>
-T* find_list_member( T* list, const std::string& name )
-{
-  for ( T* t = list; t; t = t -> next )
-  {
-    if ( t -> name_str == name )
-      return t;
-  }
-
-  return 0;
-}
-
 // player_t::find_stats ======================================================
 
 stats_t* player_t::find_stats( const std::string& name )
-{ return find_vector_member<stats_t>( stats_list, name ); }
+{ return find_vector_member( stats_list, name ); }
 
-gain_t* player_t::find_gain    ( const std::string& name )
-{ return find_list_member<gain_t>( gain_list, name ); }
+gain_t* player_t::find_gain ( const std::string& name )
+{ return find_vector_member( gain_list, name ); }
 
-proc_t* player_t::find_proc    ( const std::string& name )
-{ return find_list_member<proc_t>( proc_list, name ); }
+proc_t* player_t::find_proc ( const std::string& name )
+{ return find_vector_member( proc_list, name ); }
 
 benefit_t* player_t::find_benefit ( const std::string& name )
-{ return find_list_member<benefit_t>( benefit_list, name ); }
+{ return find_vector_member( benefit_list, name ); }
 
-uptime_t* player_t::find_uptime  ( const std::string& name )
-{ return find_list_member<uptime_t>( uptime_list, name ); }
+uptime_t* player_t::find_uptime ( const std::string& name )
+{ return find_vector_member( uptime_list, name ); }
 
-rng_t* player_t::find_rng     ( const std::string& name )
-{ return find_list_member<rng_t>( rng_list, name ); }
+rng_t* player_t::find_rng ( const std::string& name )
+{ return find_vector_member( rng_list, name ); }
 
 cooldown_t* player_t::find_cooldown( const std::string& name )
-{ return find_list_member<cooldown_t>( cooldown_list, name ); }
+{ return find_vector_member( cooldown_list, name ); }
 
 action_t* player_t::find_action( const std::string& name )
-{ return find_vector_member<action_t>( action_list, name ); }
+{ return find_vector_member( action_list, name ); }
 
 // player_t::get_cooldown ===================================================
 
@@ -4705,15 +4679,7 @@ cooldown_t* player_t::get_cooldown( const std::string& name )
   {
     c = new cooldown_t( name, this );
 
-    cooldown_t** tail = &cooldown_list;
-
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-
-    c -> next = *tail;
-    *tail = c;
+    cooldown_list.push_back( c );
   }
 
   return c;
@@ -4745,15 +4711,7 @@ gain_t* player_t::get_gain( const std::string& name )
   {
     g = new gain_t( name );
 
-    gain_t** tail = &gain_list;
-
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-
-    g -> next = *tail;
-    *tail = g;
+    gain_list.push_back( g );
   }
 
   return g;
@@ -4769,15 +4727,7 @@ proc_t* player_t::get_proc( const std::string& name )
   {
     p = new proc_t( sim, this, name );
 
-    proc_t** tail = &proc_list;
-
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-
-    p -> next = *tail;
-    *tail = p;
+    proc_list.push_back( p );
   }
 
   return p;
@@ -4814,15 +4764,7 @@ benefit_t* player_t::get_benefit( const std::string& name )
   {
     u = new benefit_t( name );
 
-    benefit_t** tail = &benefit_list;
-
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-
-    u -> next = *tail;
-    *tail = u;
+    benefit_list.push_back( u );
   }
 
   return u;
@@ -4839,15 +4781,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
   {
     u = new uptime_t( sim, name );
 
-    uptime_t** tail = &uptime_list;
-
-    while ( *tail && name > ( ( *tail ) -> name_str ) )
-    {
-      tail = &( ( *tail ) -> next );
-    }
-
-    u -> next = *tail;
-    *tail = u;
+    uptime_list.push_back( u );
   }
 
   return u;
@@ -4867,8 +4801,8 @@ rng_t* player_t::get_rng( const std::string& n )
   if ( ! rng )
   {
     rng = rng_t::create( n );
-    rng -> next = rng_list;
-    rng_list = rng;
+
+    rng_list.push_back( rng );
   }
 
   return rng;
@@ -7733,11 +7667,11 @@ void player_t::analyze( sim_t& s )
   for ( size_t i = 0; i <  buff_list.size(); ++i )
      buff_list[ i ] -> analyze();
 
-  for ( benefit_t* u =  benefit_list; u; u = u -> next )
-    u -> analyze();
+  for ( size_t i = 0; i < benefit_list.size(); ++i )
+    benefit_list[ i ] -> analyze();
 
-  for ( uptime_t* u =  uptime_list; u; u = u -> next )
-    u -> analyze();
+  for ( size_t i = 0; i < uptime_list.size(); ++i )
+    uptime_list[ i ] -> analyze();
 
   range::sort(  stats_list, compare_stats_name() );
 
@@ -7820,20 +7754,20 @@ void player_t::analyze( sim_t& s )
   rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean;
   rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean;
 
-  for ( gain_t* g =  gain_list; g; g = g -> next )
-    g -> analyze( s );
+  for ( size_t i = 0; i < gain_list.size(); ++i )
+    gain_list[ i ] -> analyze( s );
 
-  for ( size_t i = 0; i <  pet_list.size(); ++i )
+  for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     pet_t* pet =  pet_list[ i ];
-    for ( gain_t* g = pet -> gain_list; g; g = g -> next )
-      g -> analyze( s );
+    for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
+      pet -> gain_list[ i ] -> analyze( s );
   }
 
   // Procs ==================================================================
 
-  for ( proc_t* proc =  proc_list; proc; proc = proc -> next )
-    proc -> analyze();
+  for ( size_t i = 0; i < proc_list.size(); ++i )
+    proc_list[ i ] -> analyze();
 
   // Damage Timelines =======================================================
 

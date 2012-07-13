@@ -43,7 +43,6 @@ cooldown_t::cooldown_t( const std::string& n, player_t* p ) :
   duration( timespan_t::zero() ),
   ready( ready_init() ),
   reset_react( timespan_t::zero() ),
-  next( 0 ),
   charges( 1 ),
   current_charge( 1 ),
   recharge_event( 0 )
@@ -56,7 +55,6 @@ cooldown_t::cooldown_t( const std::string& n, sim_t* s ) :
   duration( timespan_t::zero() ),
   ready( ready_init() ),
   reset_react( timespan_t::zero() ),
-  next( 0 ),
   charges( 1 ),
   current_charge( 1 ),
   recharge_event( 0 )
