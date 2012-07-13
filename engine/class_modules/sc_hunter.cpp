@@ -1770,8 +1770,8 @@ struct moc_t : public hunter_spell_t
   {
     hunter_spell_t::init();
 
-    if ( p() -> moc_active.size() > 0 && p() -> moc_active.front() )
-      stats -> add_child( p() -> moc_active.front() -> get_stats( "crow_peck" ) );
+    if ( p() -> moc_free.size() > 0 && p() -> moc_free.front() )
+      stats -> add_child( p() -> moc_free.front() -> get_stats( "crow_peck" ) );
   }
     
   virtual void execute()
