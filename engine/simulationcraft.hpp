@@ -2627,36 +2627,191 @@ struct item_t
                           const std::string& gem_id );
 };
 
-// Item database ============================================================
+// Pseudo Random Number Generation ==========================================
 
-namespace item_database
+struct rng_t
 {
-bool     download_slot(      item_t& item,
-                             const std::string& item_id,
-                             const std::string& enchant_id,
-                             const std::string& addon_id,
-                             const std::string& reforge_id,
-                             const std::string& rsuffix_id,
-                             const std::string gem_ids[ 3 ] );
-bool     download_item(      item_t& item, const std::string& item_id );
-bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-gem_e    parse_gem(          item_t& item, const std::string& gem_id );
-bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
+public:
+  std::string name_str;
+private:
+  rng_e _type;
+  double actual_roll, actual_range, actual_gauss;
+  uint64_t num_roll, num_range, num_gauss;
+  double gauss_pair_value;
+  bool   gauss_pair_use;
+protected:
+  rng_t( const std::string& n, rng_e );
 
-int      random_suffix_type( item_t& item );
-int      random_suffix_type( const item_data_t* );
-uint32_t armor_value(        item_t& item, unsigned item_id );
-uint32_t armor_value(        const item_data_t*, const dbc_t& );
-uint32_t weapon_dmg_min(     item_t& item, unsigned item_id );
-uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
-uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
-uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
+public:
+  virtual ~rng_t() {}
 
-bool     load_item_from_data( item_t& item, const item_data_t* item_data );
-bool     parse_gems(          item_t&      item,
-                              const item_data_t* item_data,
-                              const std::string  gem_ids[ 3 ] );
-bool     parse_enchant(       item_t& item, std::string&, const std::string& enchant_id );
+private:
+  virtual double  _real() = 0;
+  virtual void    _seed( uint32_t start ) = 0;
+public:
+
+  const char* name() const
+  { return name_str.c_str(); }
+  void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
+  double real() { return _real(); }
+  rng_e type() { return _type; }
+  bool    roll( double chance );
+  double range( double min, double max );
+  double gauss( double mean, double stddev, bool truncate_low_end = false );
+  double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
+  std::string report( double confidence_estimator );
+
+  timespan_t range( timespan_t min, timespan_t max )
+  {
+    return timespan_t::from_native( range( ( double ) timespan_t::to_native( min ),
+                                           ( double ) timespan_t::to_native( max ) ) );
+  }
+
+  timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ),
+                                           ( double ) timespan_t::to_native( stddev ) ) );
+  }
+
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+  {
+    return timespan_t::from_seconds(
+        exgauss( mean.total_seconds(), stddev.total_seconds(), nu.total_seconds(), nu.total_seconds(), 5.0 ) );
+  }
+
+  static double stdnormal_cdf( double u );
+  static double stdnormal_inv( double p );
+
+  static rng_t* create( const std::string& name, rng_e = RNG_STANDARD );
+};
+
+// Benefit ==================================================================
+
+struct benefit_t : public noncopyable
+{
+private:
+  int up, down;
+public:
+  double ratio;
+  std::string name_str;
+
+  explicit benefit_t( const std::string& n ) :
+    up( 0 ), down( 0 ),
+    ratio( 0.0 ), name_str( n ) {}
+
+  void update( int is_up ) { if ( is_up ) up++; else down++; }
+
+  const char* name() const
+  { return name_str.c_str(); }
+
+  void analyze()
+  {
+    if ( up != 0 )
+      ratio = 1.0 * up / ( down + up );
+  }
+
+  void merge( const benefit_t& other )
+  { up += other.up; down += other.down; }
+};
+
+// Uptime ==================================================================
+
+struct uptime_common_t
+{
+  timespan_t last_start;
+  timespan_t iteration_uptime_sum;
+  sample_data_t uptime_sum;
+  sim_t* sim;
+
+  uptime_common_t( sim_t* s ) :
+    last_start( timespan_t::min() ), iteration_uptime_sum( timespan_t::zero() ), uptime_sum( s -> statistics_level < 6 ), sim( s )
+  {}
+
+  void update( bool is_up )
+  {
+    if ( is_up )
+    {
+      if ( last_start < timespan_t::zero() )
+        last_start = sim -> current_time;
+    }
+    else if ( last_start >= timespan_t::zero() )
+    {
+      iteration_uptime_sum += sim -> current_time - last_start;
+      last_start = timespan_t::min();
+    }
+  }
+
+  void combat_end()
+  {
+    uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
+    iteration_uptime_sum = timespan_t::zero();
+  }
+
+  void reset() { last_start = timespan_t::min(); }
+
+  void analyze()
+  { uptime_sum.analyze(); }
+
+  void merge( const uptime_common_t& other )
+  { uptime_sum.merge( other.uptime_sum ); }
+};
+
+struct uptime_t : public uptime_common_t
+{
+  std::string name_str;
+
+  uptime_t( sim_t* s, const std::string& n ) :
+    uptime_common_t( s ), name_str( n )
+  {}
+
+  const char* name() const
+  { return name_str.c_str(); }
+};
+
+struct buff_uptime_t : public uptime_common_t
+{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
+
+// Proc =====================================================================
+
+struct proc_t : public noncopyable
+{
+public:
+  sim_t* const sim;
+  const std::string name_str;
+  sample_data_t interval_sum;
+  double count;
+private:
+  timespan_t last_proc;
+public:
+
+  proc_t( sim_t* s, const std::string& n ) :
+    sim( s ), name_str( n ), interval_sum( s -> statistics_level < 6 ), count( 0.0 ), last_proc( timespan_t::zero() )
+  {}
+
+  void occur()
+  {
+    count++;
+    if ( last_proc > timespan_t::zero() && last_proc < sim -> current_time )
+    {
+      interval_sum.add( sim -> current_time.total_seconds() - last_proc.total_seconds() );
+    }
+    last_proc = sim -> current_time;
+  }
+
+  void merge( const proc_t& other )
+  {
+    count          += other.count;
+    interval_sum.merge( other.interval_sum );
+  }
+
+  void analyze()
+  {
+    count /= sim -> iterations;
+    interval_sum.analyze();
+  }
+
+  const char* name() const
+  { return name_str.c_str(); }
 };
 
 // Set Bonus ================================================================
@@ -3551,7 +3706,7 @@ public:
 
 // Gain =====================================================================
 
-struct gain_t
+struct gain_t : public noncopyable
 {
   std::array<double, RESOURCE_MAX> actual, overflow, count;
 
@@ -3581,7 +3736,7 @@ struct gain_t
 
 // Stats ====================================================================
 
-struct stats_t
+struct stats_t : public noncopyable
 {
   std::string name_str;
   sim_t* sim;
@@ -4147,7 +4302,7 @@ private:
 
 // DoT ======================================================================
 
-struct dot_t
+struct dot_t : public noncopyable
 {
   sim_t* sim;
   player_t* target;
@@ -4258,6 +4413,38 @@ struct stateless_travel_event_t : public event_t
   virtual void execute();
 };
 
+// Item database ============================================================
+
+namespace item_database
+{
+bool     download_slot(      item_t& item,
+                             const std::string& item_id,
+                             const std::string& enchant_id,
+                             const std::string& addon_id,
+                             const std::string& reforge_id,
+                             const std::string& rsuffix_id,
+                             const std::string gem_ids[ 3 ] );
+bool     download_item(      item_t& item, const std::string& item_id );
+bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
+gem_e    parse_gem(          item_t& item, const std::string& gem_id );
+bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
+
+int      random_suffix_type( item_t& item );
+int      random_suffix_type( const item_data_t* );
+uint32_t armor_value(        item_t& item, unsigned item_id );
+uint32_t armor_value(        const item_data_t*, const dbc_t& );
+uint32_t weapon_dmg_min(     item_t& item, unsigned item_id );
+uint32_t weapon_dmg_min(     const item_data_t*, const dbc_t& );
+uint32_t weapon_dmg_max(     item_t& item, unsigned item_id );
+uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t& );
+
+bool     load_item_from_data( item_t& item, const item_data_t* item_data );
+bool     parse_gems(          item_t&      item,
+                              const item_data_t* item_data,
+                              const std::string  gem_ids[ 3 ] );
+bool     parse_enchant(       item_t& item, std::string&, const std::string& enchant_id );
+};
+
 // Unique Gear ==============================================================
 
 namespace unique_gear
@@ -4330,135 +4517,6 @@ namespace consumable
 action_t* create_action( player_t*, const std::string& name, const std::string& options );
 }
 
-// Benefit ==================================================================
-
-struct benefit_t : public noncopyable
-{
-private:
-  int up, down;
-public:
-  double ratio;
-  std::string name_str;
-
-  explicit benefit_t( const std::string& n ) :
-    up( 0 ), down( 0 ),
-    ratio( 0.0 ), name_str( n ) {}
-
-  void update( int is_up ) { if ( is_up ) up++; else down++; }
-
-  const char* name() const
-  { return name_str.c_str(); }
-
-  void analyze()
-  {
-    if ( up != 0 )
-      ratio = 1.0 * up / ( down + up );
-  }
-
-  void merge( const benefit_t& other )
-  { up += other.up; down += other.down; }
-};
-
-// Uptime ==================================================================
-
-struct uptime_common_t
-{
-  timespan_t last_start;
-  timespan_t iteration_uptime_sum;
-  sample_data_t uptime_sum;
-  sim_t* sim;
-
-  uptime_common_t( sim_t* s ) :
-    last_start( timespan_t::min() ), iteration_uptime_sum( timespan_t::zero() ), uptime_sum( s -> statistics_level < 6 ), sim( s )
-  {}
-
-  void update( bool is_up )
-  {
-    if ( is_up )
-    {
-      if ( last_start < timespan_t::zero() )
-        last_start = sim -> current_time;
-    }
-    else if ( last_start >= timespan_t::zero() )
-    {
-      iteration_uptime_sum += sim -> current_time - last_start;
-      last_start = timespan_t::min();
-    }
-  }
-
-  void combat_end()
-  {
-    uptime_sum.add( sim->current_time.total_seconds() ? iteration_uptime_sum.total_seconds() / sim->current_time.total_seconds() : 0.0 );
-    iteration_uptime_sum = timespan_t::zero();
-  }
-
-  void reset() { last_start = timespan_t::min(); }
-
-  void analyze()
-  { uptime_sum.analyze(); }
-
-  void merge( const uptime_common_t& other )
-  { uptime_sum.merge( other.uptime_sum ); }
-};
-
-struct uptime_t : public uptime_common_t
-{
-  std::string name_str;
-
-  uptime_t( sim_t* s, const std::string& n ) :
-    uptime_common_t( s ), name_str( n )
-  {}
-
-  const char* name() const
-  { return name_str.c_str(); }
-};
-
-struct buff_uptime_t : public uptime_common_t
-{ buff_uptime_t( sim_t* s ) : uptime_common_t( s ) {} };
-
-// Proc =====================================================================
-
-struct proc_t
-{
-  sim_t* sim;
-  player_t* player;
-  std::string name_str;
-
-  double count;
-  timespan_t last_proc;
-  sample_data_t interval_sum;
-
-  proc_t( sim_t* s, player_t* p, const std::string& n ) :
-    sim( s ), player( p ), name_str( n ),
-    count( 0.0 ), last_proc( timespan_t::zero() ), interval_sum( s -> statistics_level < 6 )
-  {}
-
-  void occur()
-  {
-    count++;
-    if ( last_proc > timespan_t::zero() && last_proc < sim -> current_time )
-    {
-      interval_sum.add( sim -> current_time.total_seconds() - last_proc.total_seconds() );
-    }
-    last_proc = sim -> current_time;
-  }
-
-  void merge( const proc_t& other )
-  {
-    count          += other.count;
-    interval_sum.merge( other.interval_sum );
-  }
-
-  void analyze()
-  {
-    count /= sim -> iterations;
-    interval_sum.analyze();
-  }
-
-  const char* name() const
-  { return name_str.c_str(); }
-};
-
 // Report ===================================================================
 
 namespace report
@@ -4468,64 +4526,6 @@ void print_spell_query( sim_t*, unsigned level );
 void print_profiles( sim_t* );
 void print_text( FILE*, sim_t*, bool detail );
 void print_suite( sim_t* );
-};
-
-// Pseudo Random Number Generation ==========================================
-
-struct rng_t
-{
-public:
-  std::string name_str;
-private:
-  rng_e _type;
-  double actual_roll, actual_range, actual_gauss;
-  uint64_t num_roll, num_range, num_gauss;
-  double gauss_pair_value;
-  bool   gauss_pair_use;
-protected:
-  rng_t( const std::string& n, rng_e );
-
-public:
-  virtual ~rng_t() {}
-
-private:
-  virtual double  _real() = 0;
-  virtual void    _seed( uint32_t start ) = 0;
-public:
-
-  const char* name() const
-  { return name_str.c_str(); }
-  void seed( uint32_t start = time( NULL ) ) { _seed( start ); }
-  double real() { return _real(); }
-  rng_e type() { return _type; }
-  bool    roll( double chance );
-  double range( double min, double max );
-  double gauss( double mean, double stddev, bool truncate_low_end = false );
-  double exgauss( double mean, double stddev, double nu_divisor, double nu_multiplier, double cutoff );
-  std::string report( double confidence_estimator );
-
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( ( double ) timespan_t::to_native( min ),
-                                           ( double ) timespan_t::to_native( max ) ) );
-  }
-
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ),
-                                           ( double ) timespan_t::to_native( stddev ) ) );
-  }
-
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_seconds(
-        exgauss( mean.total_seconds(), stddev.total_seconds(), nu.total_seconds(), nu.total_seconds(), 5.0 ) );
-  }
-
-  static double stdnormal_cdf( double u );
-  static double stdnormal_inv( double p );
-
-  static rng_t* create( const std::string& name, rng_e = RNG_STANDARD );
 };
 
 // Wowhead  =================================================================

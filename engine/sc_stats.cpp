@@ -14,7 +14,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   parent( 0 ),
   school( SCHOOL_NONE ),
   type( STATS_DMG ),
-  resource_gain( gain_t( n ) ),
+  resource_gain( n ),
   //Flags
   analyzed( false ),
   quiet( false ),

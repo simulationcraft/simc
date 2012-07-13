@@ -4725,7 +4725,7 @@ proc_t* player_t::get_proc( const std::string& name )
 
   if ( !p )
   {
-    p = new proc_t( sim, this, name );
+    p = new proc_t( sim, name );
 
     proc_list.push_back( p );
   }
