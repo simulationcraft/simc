@@ -2989,6 +2989,7 @@ void hunter_t::init_spells()
   {
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
     {     0,     0, 105732, 105921,     0,     0,     0,     0 }, // Tier13
+    {     0,     0, 123090, 123091,     0,     0,     0,     0 }, // Tier14
     {     0,     0,      0,      0,     0,     0,     0,     0 },
   };
 
@@ -3688,9 +3689,11 @@ int hunter_t::decode_set( item_t& item )
     return SET_NONE;
   }
 
-  if ( strstr( s, "wyrmstalkers"          ) ) return SET_T13_MELEE;
+  if ( strstr( s, "wyrmstalkers"       ) ) return SET_T13_MELEE;
 
-  if ( strstr( s, "_gladiators_chain_" ) )    return SET_PVP_MELEE;
+  if ( strstr( s, "yaungol_slayer"     ) ) return SET_T13_MELEE;
+
+  if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }

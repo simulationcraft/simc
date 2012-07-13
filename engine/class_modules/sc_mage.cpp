@@ -3042,6 +3042,7 @@ void mage_t::init_spells()
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13
+    { 123097, 123101,     0,     0,     0,     0,     0,     0 }, // Tier14
     {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
 
@@ -3706,7 +3707,9 @@ int mage_t::decode_set( item_t& item )
 
   const char* s = item.name();
 
-  if ( strstr( s, "time_lords_"   ) ) return SET_T13_CASTER;
+  if ( strstr( s, "time_lords_"       ) ) return SET_T13_CASTER;
+
+  if ( strstr( s, "burning_scroll"    ) ) return SET_T14_CASTER;
 
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;
 

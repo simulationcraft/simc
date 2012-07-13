@@ -1172,9 +1172,10 @@ void monk_t::init_spells()
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier13
-    {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier14
+    //    C2P      C4P     M2P     M4P     T2P     T4P     H2P     H4P
+    {       0,       0,      0,      0,      0,      0,      0,      0 }, // Tier13
+    {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
+    {       0,       0,      0,      0,      0,      0,      0,      0 },
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -1395,11 +1396,48 @@ int monk_t::decode_set( item_t& item )
     return SET_NONE;
   }
 
-  //const char* s = item.name();
+  const char* s = item.name();
 
-  //if ( strstr( s, "<setname>"      ) ) return SET_T14_TANK;
-  //if ( strstr( s, "<setname>"      ) ) return SET_T14_MELEE;
-  //if ( strstr( s, "<setname>"      ) ) return SET_T14_HEAL;
+  if ( strstr( s, "red_crane" ) )
+  {
+    bool is_healer = ( strstr( s, "helm"           ) ||
+                       strstr( s, "mantle"         ) ||
+                       strstr( s, "robes"          ) ||
+                       strstr( s, "legwraps"       ) ||
+                       strstr( s, "handwraps"      ) );
+
+    if ( is_healer ) return SET_T14_HEAL;
+
+    bool is_tank_or_melee = ( strstr( s, "headpiece"       ) ||
+                              strstr( s, "spaulders"       ) ||
+                              strstr( s, "raiment"         ) ||
+                              strstr( s, "legguards"       ) ||
+                              strstr( s, "grips"           ) );
+
+    if ( is_tank_or_melee )
+    {
+      const char* t = item.encoded_stats_str.c_str();
+
+      bool is_tank = false;
+
+      switch ( item.slot )
+      {
+        case SLOT_HEAD:      if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        case SLOT_SHOULDERS: if ( strstr( t, "dodge"     ) ) is_tank = true; break;
+        case SLOT_CHEST:     if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        case SLOT_HANDS:     if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        case SLOT_LEGS:      if ( strstr( t, "fixme"     ) ) is_tank = true; break; // Impossible to tell apart without the ID or set name.
+        default: return SET_NONE;
+      }
+
+      if ( is_tank ) return SET_T14_TANK;
+
+      return SET_T14_MELEE;
+    }
+  }
+
+  if ( strstr( s, "_gladiators_copperskin_"  ) ) return SET_PVP_HEAL;
+  if ( strstr( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }

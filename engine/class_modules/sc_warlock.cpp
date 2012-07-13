@@ -4479,6 +4479,7 @@ void warlock_t::init_spells()
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 105888, 105787,     0,     0,     0,     0,     0,     0 }, // Tier13
+    { 123136, 123141,     0,     0,     0,     0,     0,     0 }, // Tier14
     {      0,      0,     0,     0,     0,     0,     0,     0 },
   };
   sets                        = new set_bonus_array_t( this, set_bonuses );
@@ -4961,6 +4962,8 @@ int warlock_t::decode_set( item_t& item )
   const char* s = item.name();
 
   if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
+
+  if ( strstr( s, "sha_skin_"               ) ) return SET_T14_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 

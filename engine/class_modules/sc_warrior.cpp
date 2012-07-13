@@ -3041,6 +3041,7 @@ void warrior_t::init_spells()
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
     {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
+    {     0,     0, 123142, 123144, 123146, 123147,     0,     0 }, // Tier14
     {     0,     0,      0,      0,      0,      0,     0,     0 },
   };
 
@@ -3778,6 +3779,24 @@ int warrior_t::decode_set( item_t& item )
 
     if ( is_melee ) return SET_T13_MELEE;
     if ( is_tank  ) return SET_T13_TANK;
+  }
+
+  if ( strstr( s, "resounding_rings" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T14_MELEE;
+    if ( is_tank  ) return SET_T14_TANK;
   }
 
   if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;

@@ -4941,6 +4941,31 @@ int shaman_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T13_HEAL;
   }
 
+  if ( strstr( s, "firebirds_" ) )
+  {
+    bool is_caster = ( strstr( s, "headpiece"     ) ||
+                       strstr( s, "shoulderwraps" ) ||
+                       strstr( s, "hauberk"       ) ||
+                       strstr( s, "kilt"          ) ||
+                       strstr( s, "gloves"        ) );
+
+    bool is_melee = ( strstr( s, "helmet"         ) ||
+                      strstr( s, "spaulders"      ) ||
+                      strstr( s, "cuirass"        ) ||
+                      strstr( s, "legguards"      ) ||
+                      strstr( s, "grips"          ) );
+
+    bool is_heal  = ( strstr( s, "faceguard"      ) ||
+                      strstr( s, "mantle"         ) ||
+                      strstr( s, "tunic"          ) ||
+                      strstr( s, "legwraps"       ) ||
+                      strstr( s, "handwraps"      ) );
+
+    if ( is_caster ) return SET_T14_CASTER;
+    if ( is_melee  ) return SET_T14_MELEE;
+    if ( is_heal   ) return SET_T14_HEAL;
+  }
+
   if ( strstr( s, "_gladiators_linked_"   ) )     return SET_PVP_MELEE;
   if ( strstr( s, "_gladiators_mail_"     ) )     return SET_PVP_CASTER;
   if ( strstr( s, "_gladiators_ringmail_" ) )     return SET_PVP_MELEE;
