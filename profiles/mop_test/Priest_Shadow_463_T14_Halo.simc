@@ -1,12 +1,13 @@
 #!./simc 
 
-priest="Priest_Shadow_463_T14"
+priest="Priest_Shadow_463_T14_Halo"
 origin=""
 level=90
 race=troll
 spec=shadow
 role=spell
 position=back
+distance=27
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Xb!..1.22
 talent_override=twist_of_fate,if=num_targets>3
