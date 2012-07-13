@@ -389,18 +389,6 @@ public:
     benefit_t* wild_hunt;
   } benefits;
 
-  specialization_e default_spec( pet_e pt )
-  {
-    switch ( pt )
-    {
-    case PET_CAT:
-      return PET_FEROCITY;
-
-    default: break;
-    }
-
-    return PET_FEROCITY;
-  }
 private:
   target_specific_t<hunter_pet_td_t> target_data;
 public:
@@ -432,14 +420,13 @@ public:
 
   hunter_t* cast_owner() const
   { return static_cast<hunter_t*>( owner ); }
-
-  virtual pet_e group()
+  
+  specialization_e default_spec( pet_e pt )
   {
-    //assert( pet_type > PET_NONE && pet_type < PET_HUNTER );
-    if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCITY_TYPE;
-    if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACITY_TYPE;
-    if ( pet_type > PET_TENACITY_TYPE && pet_type < PET_CUNNING_TYPE  ) return PET_CUNNING_TYPE;
-    return PET_NONE;
+    if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCITY;
+    if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACITY;
+    if ( pet_type > PET_TENACITY_TYPE && pet_type < PET_CUNNING_TYPE  ) return PET_CUNNING;
+    return PET_FEROCITY;
   }
 
   virtual const char* unique_special()
