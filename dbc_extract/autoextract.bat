@@ -1,7 +1,7 @@
 @echo off
 
 setlocal enabledelayedexpansion
-set LANG=enGB
+set LANG=enUS
 
 set PTR=
 if not %1 == ptr goto start
