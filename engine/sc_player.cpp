@@ -1401,7 +1401,7 @@ void player_t::init_attack()
     a = 4037.5;
     b = -317117.5;
   }
-  if ( level > 80 )
+  else if ( level > 80 )
   {
     a = 2167.5;
     b = -158167.5;
