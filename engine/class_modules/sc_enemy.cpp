@@ -388,24 +388,25 @@ void enemy_t::init_base()
   if ( initial.armor <= 0 )
   {
     double& a = initial.armor;
-    // TO-DO: Fill in the blanks.
-    // For level 80+ at least it seems to pretty much follow a trend line of: armor = 280.26168*level - 12661.51713
+
     switch ( level )
     {
-    case 80: a = 9729; break;
+    case 80: a = 9616; break;
     case 81: a = 10034; break;
     case 82: a = 10338; break;
     case 83: a = 10643; break;
-    case 84: a = 10880; break; // Need real value
+    case 84: a = 10880; break; 
     case 85: a = 11092; break;
-    case 86: a = 11387; break;
-    case 87: a = 11682; break;
-    case 88: a = 11977; break;
+    case 86: a = dbc.ptr ? 11387 : 12810; break;
+    case 87: a = dbc.ptr ? 11682 : 14530; break;
+    case 88: a = dbc.ptr ? 11977 : 16250; break;
+    case 89: a = 17960; break;
+    case 90: a = 19680; break;
+    case 91: a = 21400; break; // TO-DO: Confirm.
+    case 92: a = 23115; break; // TO-DO: Confirm.
     case 93: a = 24835; break;
     default: if ( level < 80 )
                a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
-             else if ( level < 93 )
-               a = 24000; // FIX-ME: Totally made up number.
       break;
     }
   }

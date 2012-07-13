@@ -1396,6 +1396,11 @@ void player_t::init_attack()
   initial.attack_power_multiplier = 1.0;
 
   double a,b;
+  if ( level > 85 )
+  {
+    a = 4037.5;
+    b = -317117.5;
+  }
   if ( level > 80 )
   {
     a = 2167.5;
