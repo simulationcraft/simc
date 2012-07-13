@@ -52,7 +52,8 @@ public:
   action_t*     active_vishanka;
 
   // Secondary pets
-  pet_t* moc_crows[ CROW_LIMIT ];
+  std::queue<pet_t*> moc_free;
+  std::list<pet_t*>  moc_active;
 
   // Buffs
   struct buffs_t
@@ -1674,8 +1675,8 @@ struct moc_crow_t : public pet_t
     peck_t( moc_crow_t* player ) :
       melee_attack_t( "crow_peck", player )
     {
-      if ( player -> o() -> moc_crows[ 0 ] )
-        stats = player -> o() -> moc_crows[ 0 ] -> get_stats( "crow_peck" );
+      if ( player -> o() -> moc_active.size() > 0 && player -> o() -> moc_active.front() )
+        stats = player -> o() -> moc_active.front() -> get_stats( "crow_peck" );
 
       background  = true;
 
@@ -1694,10 +1695,11 @@ struct moc_crow_t : public pet_t
     }
   };
 
-  hunter_t* o() { return static_cast< hunter_t* >( owner ); }
+  hunter_t* o() const
+  { return static_cast< hunter_t* >( owner ); }
 
-  moc_crow_t( sim_t* sim, hunter_t* owner ) :
-    pet_t( sim, owner, "moc_crow", true /*GUARDIAN*/ )
+  moc_crow_t( hunter_t* owner ) :
+    pet_t( owner -> sim, owner, "moc_crow", true /*GUARDIAN*/ )
   {
     // FIX ME
     owner_coeff.ap_from_ap = 1.00;
@@ -1725,8 +1727,22 @@ struct moc_crow_t : public pet_t
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
+
+    // Remove this crow from the free list, add it to the active one.
+    o() -> moc_free.pop();
+    o() -> moc_active.push_back( this );
+
     // Crows cast on the target will instantly perform a melee
     main_hand_attack -> execute();
+  }
+
+  virtual void dismiss()
+  {
+    pet_t::dismiss();
+
+    // Cleanup. Re-add to free list.
+    o() -> moc_active.remove( this );
+    o() -> moc_free.push( this );
   }
 };
 
@@ -1754,8 +1770,8 @@ struct moc_t : public hunter_spell_t
   {
     hunter_spell_t::init();
 
-    if ( p() -> moc_crows[ 0 ] )
-      stats -> add_child( p() -> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
+    if ( p() -> moc_active.size() > 0 && p() -> moc_active.front() )
+      stats -> add_child( p() -> moc_active.front() -> get_stats( "crow_peck" ) );
   }
     
   virtual void execute()
@@ -1768,7 +1784,8 @@ struct moc_t : public hunter_spell_t
   virtual void tick( dot_t* d )
   {
     hunter_spell_t::tick( d );
-    for ( int i = 0; i < CROW_LIMIT; i++)
+
+/*    for ( int i = 0; i < CROW_LIMIT; i++)
     {
       // summon the first unsummoned crow. 
       // This simplifies handling readiness because we just keep summoning more crows
@@ -1779,8 +1796,23 @@ struct moc_t : public hunter_spell_t
         return;
       }
     }
-    p() -> sim -> errorf( "Player %s ran out of crows.\n", p() -> name() );
-    assert( false ); // Will only get here if there are no available crows
+*/
+
+    if ( ! p() -> moc_free.empty() )
+        {
+          pet_t* s = p() -> moc_free.front();
+
+          s -> target = d -> state -> target;
+
+
+
+          s -> summon( timespan_t::from_seconds( 16 ) );
+        }
+    else
+    {
+      p() -> sim -> errorf( "Player %s ran out of crows.\n", p() -> name() );
+      assert( false ); // Will only get here if there are no available crows
+    }
   }
 };
 
@@ -2193,6 +2225,21 @@ struct trueshot_aura_t : public hunter_spell_t
       sim -> auras.critical_strike -> trigger();
   }
 };
+
+void create_moc_pets( hunter_t* p, size_t n )
+{
+  if ( ! p -> moc_free.size() )
+  {
+    for ( size_t i = 0; i < n; i++ )
+    {
+      pet_t* s = new moc_crow_t( p );
+      p -> moc_free.push( s );
+    }
+  }
+
+  if ( p -> sim -> debug )
+    p -> sim -> output( "%s created %d moc pets", p -> name(), static_cast<unsigned>( p -> moc_free.size() ) );
+}
 
 } // spells
 
@@ -2833,12 +2880,7 @@ void hunter_t::create_pets()
   create_pet( "wind_serpent", "wind_serpent" );
   create_pet( "wolf",         "wolf"         );
 
-  for ( int i = 0; i < CROW_LIMIT; i++ )
-  {
-    moc_crows[ i ] = new moc_crow_t( sim, this );
-    if ( i > 0 )
-      moc_crows[ i ] -> quiet = 1;
-  }
+  create_moc_pets( this, CROW_LIMIT );
 }
 
 // hunter_t::init_spells ====================================================
@@ -3327,6 +3369,16 @@ void hunter_t::combat_begin()
 void hunter_t::reset()
 {
   player_t::reset();
+
+  // cleanup moc lists. Move all crows from the active to the free list.
+  while ( moc_active.size() )
+  {
+    pet_t* s = moc_active.front();
+
+    moc_active.pop_front();
+
+    moc_free.push( s );
+  }
 
   // Active
   active_pet            = 0;
