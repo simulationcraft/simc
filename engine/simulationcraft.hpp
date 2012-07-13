@@ -2494,6 +2494,9 @@ struct item_t
   stat_e reforged_from;
   stat_e reforged_to;
 
+  // Comment Data
+  std::string comment_str;
+
   // Option Data
   std::string option_name_str;
   std::string option_id_str;
@@ -2521,6 +2524,8 @@ struct item_t
   std::string armory_gems_str;
   std::string armory_enchant_str;
   std::string armory_addon_str;
+  std::string armory_equip_str;
+  std::string armory_use_str;
   std::string armory_weapon_str;
   std::string armory_heroic_str;
   std::string armory_lfr_str;
@@ -2594,6 +2599,7 @@ struct item_t
   weapon_t* weapon();
   bool init();
   bool parse_options();
+  void encode_option( std::string prefix_str, std::string& option_str = std::string(), std::string& encoded_str = std::string() );
   void encode_options();
   bool decode_stats();
   bool decode_gems();

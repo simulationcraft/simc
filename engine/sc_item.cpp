@@ -246,6 +246,32 @@ bool item_t::parse_options()
   return true;
 }
 
+void item_t::encode_option( std::string prefix_str, std::string& option_str, std::string& encoded_str )
+{
+  std::string& o = options_str;
+  std::string& c = comment_str;
+
+  if ( ! option_str.empty() )
+  {
+    o += ",";
+    o += prefix_str;
+    o += encoded_str;
+  }
+  else if ( ! encoded_str.empty() )
+  {
+    if ( c.empty() )
+    {
+      c += "# ";
+    }
+    else
+    {
+      c += ",";
+    }
+    c += prefix_str;
+    c += encoded_str;
+  }
+}
+
 // item_t::encode_options ===================================================
 
 void item_t::encode_options()
@@ -253,23 +279,25 @@ void item_t::encode_options()
   // Re-build options_str for use in saved profiles
 
   std::string& o = options_str;
+  std::string& c = comment_str;
 
   o = encoded_name_str;
 
-  if ( heroic() )                            { o += ",heroic=1";                                 }
-  if ( lfr() )                               { o += ",lfr=1";                                    }
-  if ( armor_type() )                        { o += ",type=";    o += encoded_armor_type_str;    }
-  if ( ! encoded_ilevel_str.empty()        ) { o += ",ilevel=";  o += encoded_ilevel_str;        }
-  if ( ! encoded_quality_str.empty()       ) { o += ",quality="; o += encoded_quality_str;       }
-  if ( ! encoded_stats_str.empty()         ) { o += ",stats=";   o += encoded_stats_str;         }
-  if ( ! encoded_reforge_str.empty()       ) { o += ",reforge="; o += encoded_reforge_str;       }
-  if ( ! encoded_gems_str.empty()          ) { o += ",gems=";    o += encoded_gems_str;          }
-  if ( ! encoded_enchant_str.empty()       ) { o += ",enchant="; o += encoded_enchant_str;       }
-  if ( ! encoded_addon_str.empty()         ) { o += ",addon=";   o += encoded_addon_str;         }
-  if ( ! encoded_equip_str.empty()         ) { o += ",equip=";   o += encoded_equip_str;         }
-  if ( ! encoded_use_str.empty()           ) { o += ",use=";     o += encoded_use_str;           }
-  if ( ! encoded_weapon_str.empty()        ) { o += ",weapon=";  o += encoded_weapon_str;        }
-  if ( ! encoded_random_suffix_str.empty() ) { o += ",suffix=";  o += encoded_random_suffix_str; }
+  if ( ! id_str.empty() && id_str[ 0 ] != 0 ) { o += ",id=";               o += id_str;                                           }
+  if ( heroic()                             ) { encode_option( "heroic=1" );                                                      }
+  if ( lfr()                                ) { encode_option( "lfr=1" );                                                         }
+  if ( armor_type()                         ) { encode_option( "type=",    option_armor_type_str,    encoded_armor_type_str );    }
+  if ( ! encoded_ilevel_str.empty()         ) { encode_option( "ilevel=",  option_ilevel_str,        encoded_ilevel_str );        }
+  if ( ! encoded_quality_str.empty()        ) { encode_option( "quality=", option_quality_str,       encoded_quality_str );       }
+  if ( ! encoded_stats_str.empty()          ) { encode_option( "stats=",   option_stats_str,         encoded_stats_str );         }
+  if ( ! encoded_equip_str.empty()          ) { encode_option( "equip=",   option_equip_str,         encoded_equip_str );         }
+  if ( ! encoded_use_str.empty()            ) { encode_option( "use=",     option_use_str,           encoded_use_str );           }
+  if ( ! encoded_weapon_str.empty()         ) { encode_option( "weapon=",  option_weapon_str,        encoded_weapon_str );        }
+  if ( ! encoded_random_suffix_str.empty()  ) { encode_option( "suffix=",  option_random_suffix_str, encoded_random_suffix_str ); }
+  if ( ! encoded_gems_str.empty()           ) { o += ",gems=";             o += encoded_gems_str;                                 }
+  if ( ! encoded_enchant_str.empty()        ) { o += ",enchant=";          o += encoded_enchant_str;                              }
+  if ( ! encoded_addon_str.empty()          ) { o += ",addon=";            o += encoded_addon_str;                                }
+  if ( ! encoded_reforge_str.empty()        ) { o += ",reforge=";          o += encoded_reforge_str;                              }
 }
 
 // item_t::init =============================================================
@@ -305,6 +333,7 @@ bool item_t::init()
   }
 
   id_str                    = armory_id_str;
+
   encoded_stats_str         = armory_stats_str;
   encoded_reforge_str       = armory_reforge_str;
   encoded_gems_str          = armory_gems_str;
@@ -317,6 +346,8 @@ bool item_t::init()
   encoded_ilevel_str        = armory_ilevel_str;
   encoded_quality_str       = armory_quality_str;
   encoded_random_suffix_str = armory_random_suffix_str;
+
+  if ( ! option_id_str.empty() ) id_str = option_id_str;
 
   if ( ! option_heroic_str.empty()  ) encoded_heroic_str  = option_heroic_str;
 
@@ -338,8 +369,11 @@ bool item_t::init()
 
   if ( ! decode_quality() ) return false;
 
-  unique_gear::get_equip_encoding( encoded_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
-  unique_gear::get_use_encoding  ( encoded_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_equip_encoding( armory_equip_str, encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+  unique_gear::get_use_encoding  ( armory_use_str,   encoded_name_str, heroic(), lfr(), player -> dbc.ptr, id_str );
+
+  encoded_equip_str = armory_equip_str;
+  encoded_use_str   = armory_use_str;
 
   if ( ! option_stats_str.empty()   ) encoded_stats_str   = option_stats_str;
   if ( ! option_reforge_str.empty() ) encoded_reforge_str = option_reforge_str;
