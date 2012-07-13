@@ -5,6 +5,11 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
+#define SC_MAJOR_VERSION "501"
+#define SC_MINOR_VERSION "11"
+#define SC_USE_PTR ( 0 )
+#define SC_BETA ( 1 )
+
 // Platform Initialization ==================================================
 
 #if defined( _MSC_VER ) || defined( __MINGW__ ) || defined( __MINGW32__ ) || defined( _WINDOWS ) || defined( WIN32 )
@@ -26,6 +31,12 @@
 #  include "../vs/stdint.h"
 #else
 #  include <stdint.h>
+#endif
+
+#if SC_BETA == 1 // Never run with NDEBUG if we're in Beta. Needs to becomes before 'cassert' is included
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 #endif
 
 #include <algorithm>
@@ -108,10 +119,7 @@ namespace std {using namespace tr1; }
 #define SC_PACKED_STRUCT      __attribute__((packed))
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
-#define SC_MAJOR_VERSION "501"
-#define SC_MINOR_VERSION "11"
-#define SC_USE_PTR ( 0 )
-#define SC_BETA ( 1 )
+
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
 #endif
