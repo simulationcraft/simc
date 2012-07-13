@@ -1014,23 +1014,41 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 // Talent tree specialization abilities, wow build 15799
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
+  // Specialization abilities for Hunter pets
   {
+    // Specialization abilities for Ferocity
     {
+       61684, // Dash
+       55709, // Heart of the Phoenix
+       53401, // Rabid
+       53184, // Spiked Collar
            0,
     },
+    // Specialization abilities for Tenacity
     {
+       53482, // Blood of the Rhino
+       61685, // Charge
+       61688, // Great Stamina
+       53478, // Last Stand
+       63900, // Thunderstomp
            0,
     },
+    // Specialization abilities for Cunning
     {
+       19596, // Boar's Speed
+       53490, // Bullheaded
+       53497, // Cornered
+       61684, // Dash
+       53480, // Roar of Sacrifice
            0,
     },
     {
            0,
     },
   },
-  // Talent Tree specialization abilities for Warrior
+  // Specialization abilities for Warrior
   {
-    // Specialization abilities for Arms tree
+    // Specialization abilities for Arms
     {
        84615, // Blood and Thunder
        86346, // Colossus Smash
@@ -1048,7 +1066,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1680, // Whirlwind
            0,
     },
-    // Specialization abilities for Fury tree
+    // Specialization abilities for Fury
     {
        46915, // Bloodsurge
        23881, // Bloodthirst
@@ -1066,7 +1084,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       100130, // Wild Strike
            0,
     },
-    // Specialization abilities for Protection tree
+    // Specialization abilities for Protection
     {
        84608, // Bastion of Defense
        84615, // Blood and Thunder
@@ -1089,9 +1107,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Paladin
+  // Specialization abilities for Paladin
   {
-    // Specialization abilities for Holy tree
+    // Specialization abilities for Holy
     {
        53563, // Beacon of Light
        88821, // Daybreak
@@ -1111,7 +1129,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        85512, // Tower of Radiance
            0,
     },
-    // Specialization abilities for Protection tree
+    // Specialization abilities for Protection
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -1130,7 +1148,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        84839, // Vengeance
            0,
     },
-    // Specialization abilities for Retribution tree
+    // Specialization abilities for Retribution
     {
        53385, // Divine Storm
       121783, // Emancipate
@@ -1153,9 +1171,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Hunter
+  // Specialization abilities for Hunter
   {
-    // Specialization abilities for Beast Mastery tree
+    // Specialization abilities for Beast Mastery
     {
       115939, // Beast Cleave
        19574, // Bestial Wrath
@@ -1173,7 +1191,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        34692, // The Beast Within
            0,
     },
-    // Specialization abilities for Marksmanship tree
+    // Specialization abilities for Marksmanship
     {
        19434, // Aimed Shot
        35110, // Bombardment
@@ -1187,7 +1205,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53224, // Steady Focus
            0,
     },
-    // Specialization abilities for Survival tree
+    // Specialization abilities for Survival
     {
         3674, // Black Arrow
        77767, // Cobra Shot
@@ -1205,9 +1223,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Rogue
+  // Specialization abilities for Rogue
   {
-    // Specialization abilities for Assassination tree
+    // Specialization abilities for Assassination
     {
        84601, // Assassin's Resolve
       121152, // Blindside
@@ -1222,7 +1240,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        79134, // Venomous Wounds
            0,
     },
-    // Specialization abilities for Combat tree
+    // Specialization abilities for Combat
     {
        13750, // Adrenaline Rush
        13852, // Ambidexterity
@@ -1236,7 +1254,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        61329, // Vitality
            0,
     },
-    // Specialization abilities for Subtlety tree
+    // Specialization abilities for Subtlety
     {
           53, // Backstab
        79152, // Energetic Recovery
@@ -1255,9 +1273,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Priest
+  // Specialization abilities for Priest
   {
-    // Specialization abilities for Discipline tree
+    // Specialization abilities for Discipline
     {
        81700, // Archangel
        81749, // Atonement
@@ -1283,7 +1301,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        92297, // Train of Thought
            0,
     },
-    // Specialization abilities for Holy tree
+    // Specialization abilities for Holy
     {
        81209, // Chakra: Chastise
        81206, // Chakra: Sanctuary
@@ -1306,7 +1324,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        20711, // Spirit of Redemption
            0,
     },
-    // Specialization abilities for Shadow tree
+    // Specialization abilities for Shadow
     {
         2944, // Devouring Plague
        47585, // Dispersion
@@ -1330,9 +1348,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Death Knight
+  // Specialization abilities for Death Knight
   {
-    // Specialization abilities for Blood tree
+    // Specialization abilities for Blood
     {
        49542, // Blood Parasite
        50034, // Blood Rites
@@ -1354,7 +1372,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81164, // Will of the Necropolis
            0,
     },
-    // Specialization abilities for Frost tree
+    // Specialization abilities for Frost
     {
        54637, // Blood of the North
        81328, // Brittle Bones
@@ -1373,7 +1391,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        55610, // Unholy Aura
            0,
     },
-    // Specialization abilities for Unholy tree
+    // Specialization abilities for Unholy
     {
        63560, // Dark Transformation
        51160, // Ebon Plaguebringer
@@ -1396,9 +1414,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Shaman
+  // Specialization abilities for Shaman
   {
-    // Specialization abilities for Elemental tree
+    // Specialization abilities for Elemental
     {
        89920, // Ancestral Focus
        61882, // Earthquake
@@ -1418,7 +1436,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51490, // Thunderstorm
            0,
     },
-    // Specialization abilities for Enhancement tree
+    // Specialization abilities for Enhancement
     {
        86629, // Dual Wield
        51533, // Feral Spirit
@@ -1439,7 +1457,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         8232, // Windfury Weapon
            0,
     },
-    // Specialization abilities for Restoration tree
+    // Specialization abilities for Restoration
     {
        51558, // Ancestral Awakening
        89920, // Ancestral Focus
@@ -1465,9 +1483,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Mage
+  // Specialization abilities for Mage
   {
-    // Specialization abilities for Arcane tree
+    // Specialization abilities for Arcane
     {
        44425, // Arcane Barrage
        30451, // Arcane Blast
@@ -1479,7 +1497,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        31589, // Slow
            0,
     },
-    // Specialization abilities for Fire tree
+    // Specialization abilities for Fire
     {
        11129, // Combustion
       117216, // Critical Mass
@@ -1491,7 +1509,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        44448, // Pyroblast Clearcasting Driver
            0,
     },
-    // Specialization abilities for Frost tree
+    // Specialization abilities for Frost
     {
        44549, // Brain Freeze
       112965, // Fingers of Frost
@@ -1506,9 +1524,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Warlock
+  // Specialization abilities for Warlock
   {
-    // Specialization abilities for Affliction tree
+    // Specialization abilities for Affliction
     {
          980, // Agony
        18223, // Curse of Exhaustion
@@ -1531,7 +1549,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        30108, // Unstable Affliction
            0,
     },
-    // Specialization abilities for Demonology tree
+    // Specialization abilities for Demonology
     {
       103967, // Carrion Swarm
       113861, // Dark Soul: Knowledge
@@ -1558,7 +1576,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        30146, // Summon Felguard
       114592, // Wild Imps
     },
-    // Specialization abilities for Destruction tree
+    // Specialization abilities for Destruction
     {
       109784, // Aftermath
       117896, // Backdraft
@@ -1585,9 +1603,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Monk
+  // Specialization abilities for Monk
   {
-    // Specialization abilities for Brewmaster tree
+    // Specialization abilities for Brewmaster
     {
       115213, // Avert Harm
       115181, // Breath of Fire
@@ -1612,7 +1630,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       120267, // Vengeance
            0,
     },
-    // Specialization abilities for Mistweaver tree
+    // Specialization abilities for Mistweaver
     {
       116346, // <DND> Soothing Mists Trigger
       123766, // Brewing: Mana Tea
@@ -1637,7 +1655,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116670, // Uplift
            0,
     },
-    // Specialization abilities for Windwalker tree
+    // Specialization abilities for Windwalker
     {
       126046, // Adaptation
       116092, // Afterlife
@@ -1661,9 +1679,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
            0,
     },
   },
-  // Talent Tree specialization abilities for Druid
+  // Specialization abilities for Druid
   {
-    // Specialization abilities for Balance tree
+    // Specialization abilities for Balance
     {
       127663, // Astral Communion
       106732, // Balance Overrides Passive
@@ -1690,7 +1708,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        88751, // Wild Mushroom: Detonate
            0,
     },
-    // Specialization abilities for Feral tree
+    // Specialization abilities for Feral
     {
       106952, // Berserk
        16949, // Feral Instinct
@@ -1713,7 +1731,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         5217, // Tiger's Fury
            0,
     },
-    // Specialization abilities for Guardian tree
+    // Specialization abilities for Guardian
     {
       102795, // Bear Hug
       106952, // Berserk
@@ -1735,7 +1753,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        84840, // Vengeance
            0,
     },
-    // Specialization abilities for Restoration tree
+    // Specialization abilities for Restoration
     {
       102342, // Ironbark
       108299, // Killer Instinct

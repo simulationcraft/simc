@@ -87,23 +87,21 @@ class SpecializationEnumGenerator(DataGenerator):
     
     def generate(self, ids = None):
         enum_ids = [
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
             [ None, None, None, None ], # pets come here
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
         ]
         
         spec_translations = [
-            [],
             [],
             [],
             [],
@@ -125,27 +123,19 @@ class SpecializationEnumGenerator(DataGenerator):
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
-                
-                if spec_data.spec_id > max_specialization:
-                    max_specialization = spec_data.spec_id
-                
-                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
-                    enum_ids[ spec_data.class_id ].append( None )
-                
-                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
             else:
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
 
-                if spec_data.spec_id > max_specialization:
-                    max_specialization = spec_data.spec_id
+            if spec_data.spec_id > max_specialization:
+                max_specialization = spec_data.spec_id
+            
+            for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
+                enum_ids[ spec_data.class_id ].append( None )
+            
+            enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
 
-                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ -1 ] ) ):
-                    enum_ids[ -1 ].append( None )
-
-                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_name }
-        
         s  = 'enum specialization_e {\n'
         s += '  SPEC_NONE            = 0,\n'
         s += '  SPEC_PET             = 1,\n'
@@ -176,23 +166,21 @@ class SpecializationListGenerator(DataGenerator):
     
     def generate(self, ids = None):
         enum_ids = [
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
             [ None, None, None, None ], # pets come here
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
+            [ None, None, None, None ],
         ]
         
         spec_translations = [
-            [],
             [],
             [],
             [],
@@ -214,27 +202,18 @@ class SpecializationListGenerator(DataGenerator):
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
-                
-                if spec_data.spec_id > max_specialization:
-                    max_specialization = spec_data.spec_id
-                
-                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
-                    enum_ids[ spec_data.class_id ].append( None )
-                
-                enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
             else:
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
-
-                if spec_data.spec_id > max_specialization:
-                    max_specialization = spec_data.spec_id
-
-                for i in xrange(0, (max_specialization + 1) - len(enum_ids[ -1 ] ) ):
-                    enum_ids[ -1 ].append( None )
-
-                enum_ids[ -1 ][ spec_data.f6 ] = { 'id': spec_id, 'name': spec_name }
-        
+                
+            if spec_data.spec_id > max_specialization:
+                max_specialization = spec_data.spec_id
+            
+            for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
+                enum_ids[ spec_data.class_id ].append( None )
+            
+            enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
         
         s  = '#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1)
         s += '#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids)
@@ -2142,9 +2121,6 @@ class SpecializationSpellGenerator(DataGenerator):
         
         for ssid, data in self._specializationspells_db.iteritems():
             chrspec = self._chrspecialization_db[data.spec_id]
-            if chrspec.class_id == 0:
-                continue
-            
             spell = self._spell_db[data.spell_id]
             if spell.id == 0:
                 continue
@@ -2174,13 +2150,12 @@ class SpecializationSpellGenerator(DataGenerator):
         )
 
         for cls in xrange(0, len(keys)):
-            if DataGenerator._class_names[cls]:
-                s += '  // Talent Tree specialization abilities for %s\n' % DataGenerator._class_names[cls]
+            s += '  // Specialization abilities for %s\n' % (cls > 0 and DataGenerator._class_names[cls] or 'Hunter pets')
             s += '  {\n'
 
             for tree in xrange(0, len(keys[cls])):
                 if len(keys[cls][tree]) > 0:
-                    s += '    // Specialization abilities for %s tree\n' % keys[cls][tree][0][2]
+                    s += '    // Specialization abilities for %s\n' % keys[cls][tree][0][2]
                 s += '    {\n'
                 for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
                     s += '      %6u, // %s\n' % ( ability[1], ability[0] )
@@ -2192,77 +2167,6 @@ class SpecializationSpellGenerator(DataGenerator):
             s += '  },\n'
         s += '};\n'
 
-        return s
-
-class TalentSpecializationGenerator(DataGenerator):
-    def __init__(self, options):
-        self._dbc = [ 'Spell', 'Talent', 'TalentTab', 'TalentTreePrimarySpells' ]
-
-        DataGenerator.__init__(self, options)
-        
-    def generate(self, ids = None):
-        max_ids = 0
-        keys = [ 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ], 
-            [ [], [], [] ] 
-        ]
-        
-        for k, v in self._talenttreeprimaryspells_db.iteritems():
-            talent_tab = self._talenttab_db[v.id_talent_tab]
-            
-            keys[self._class_map[talent_tab.mask_class]][talent_tab.tab_page].append( ( self._spell_db[v.id_spell].name, v.id_spell, talent_tab.name) )
-        
-        # Figure out tree with most abilities
-        for cls in xrange(0, len(keys)):
-            for tree in xrange(0, len(keys[cls])):
-                if len(keys[cls][tree]) > max_ids:
-                    max_ids = len(keys[cls][tree])
-
-        data_str = "%stree_specialization%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        s = '#define %s_SIZE (%d)\n\n' % (
-            data_str.upper(),
-            max_ids
-        )
-
-        s += '// Talent tree specialization abilities, wow build %d\n' % self._options.build 
-        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-        )
-        
-        for cls in xrange(0, len(keys)):
-            if DataGenerator._class_names[cls]:
-                s += '  // Talent Tree specialization abilities for %s\n' % DataGenerator._class_names[cls]
-            s += '  {\n'
-            
-            for tree in xrange(0, len(keys[cls])):
-                if len(keys[cls][tree]) > 0:
-                    s += '    // Specialization abilities for %s tree\n' % keys[cls][tree][0][2]
-                s += '    {\n'
-                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
-                    s += '      %6u, // %s\n' % ( ability[1], ability[0] )
-                    
-                if len(keys[cls][tree]) < max_ids:
-                    s += '      %6u,\n' % 0
-                    
-                s += '    },\n'
-            s += '  },\n'
-        s += '};\n'
-        
         return s
 
 class SpellListGenerator(SpellDataGenerator):

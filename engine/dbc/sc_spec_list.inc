@@ -1,9 +1,12 @@
 #define MAX_SPECS_PER_CLASS (4)
-#define MAX_SPEC_CLASS  (13)
+#define MAX_SPEC_CLASS  (12)
 
 static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = 
 {
   {
+    PET_FEROCITY,
+    PET_TENACITY,
+    PET_CUNNING,
     SPEC_NONE,
   },
   {
@@ -71,12 +74,6 @@ static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
     DRUID_FERAL,
     DRUID_GUARDIAN,
     DRUID_RESTORATION,
-  },
-  {
-    PET_FEROCITY,
-    PET_TENACITY,
-    PET_CUNNING,
-    SPEC_NONE,
   },
 };
 

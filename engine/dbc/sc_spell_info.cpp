@@ -397,6 +397,7 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 
   if ( spell -> class_mask() )
   {
+    bool pet_ability = false;
     s << "Class         : ";
 
     if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
@@ -407,6 +408,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); iter++ )
       {
+        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
+          pet_ability = true;
         s << util::inverse_tokenize( util::specialization_string( *iter ) ) << " ";
       }
       spec_list.clear();
@@ -423,6 +426,8 @@ std::string spell_info_t::to_str( sim_t* sim, const spell_data_t* spell, int lev
     }
 
     s.seekp( -2, std::ios_base::cur );
+    if ( pet_ability )
+      s << " Pet";
     s << std::endl;
   }
 

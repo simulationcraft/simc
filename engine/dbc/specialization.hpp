@@ -8,6 +8,9 @@
 enum specialization_e {
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
+  PET_FEROCITY         = 74,
+  PET_TENACITY         = 81,
+  PET_CUNNING          = 79,
   WARRIOR_ARMS         = 71,
   WARRIOR_FURY         = 72,
   WARRIOR_PROTECTION   = 73,
@@ -42,9 +45,6 @@ enum specialization_e {
   DRUID_FERAL          = 103,
   DRUID_GUARDIAN       = 104,
   DRUID_RESTORATION    = 105,
-  PET_FEROCITY         = 74,
-  PET_TENACITY         = 81,
-  PET_CUNNING          = 79,
 };
 
 

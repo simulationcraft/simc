@@ -427,7 +427,7 @@ public:
 
     // FIXME work around assert in pet specs
     // Set default specs
-    //_spec = default_spec( pt );
+    _spec = default_spec( pt );
   }
 
   hunter_t* cast_owner() const
@@ -3021,8 +3021,8 @@ void hunter_pet_t::init_spells()
   specs.wild_hunt= spell_data_t::not_found();
 
   // ferocity
-  specs.rabid            = find_spell( 53401 ); //find_specialization_spell( "Rabid" );
-  specs.spiked_collar    = find_spell( 53184 ); //find_specialization_spell( "Spiked Collar" );
+  specs.rabid            = find_specialization_spell( "Rabid" );
+  specs.spiked_collar    = find_specialization_spell( "Spiked Collar" );
 
   specs.wild_hunt = find_spell( 62762 );
 }
