@@ -1675,8 +1675,8 @@ struct moc_crow_t : public pet_t
     peck_t( moc_crow_t* player ) :
       melee_attack_t( "crow_peck", player )
     {
-      if ( player -> o() -> moc_active.size() > 0 && player -> o() -> moc_active.front() )
-        stats = player -> o() -> moc_active.front() -> get_stats( "crow_peck" );
+      if ( player -> o() -> moc_free.size() > 0 && player -> o() -> moc_free.front() )
+        stats = player -> o() -> moc_free.front() -> get_stats( "crow_peck" );
 
       background  = true;
 
