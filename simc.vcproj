@@ -182,6 +182,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\engine\sc_generic.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_timespan.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\utf8\checked.h"
 			>
 		</File>

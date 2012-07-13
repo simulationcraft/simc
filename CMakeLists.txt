@@ -98,6 +98,8 @@ SET(SIMC_ENGINE_SOURCE
 
 SET(SIMC_ENGINE_HEADERS
   "engine/simulationcraft.hpp"
+  "engine/sc_generic.hpp"
+  "engine/sc_timespan.hpp"
   "engine/dbc/specialization.hpp"
   "engine/dbc/dbc.hpp"
   "engine/utf8.h"

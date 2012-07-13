@@ -37,6 +37,8 @@ INCLUDEPATH += engine
 DEPENDPATH += engine
 
 HEADERS += engine/simulationcraft.hpp
+HEADERS += engine/sc_generic.hpp
+HEADERS += engine/sc_timespan.hpp
 HEADERS += engine/dbc/data_enums.hh
 HEADERS += engine/dbc/data_definitions.hh
 HEADERS += engine/dbc/specialization.hpp

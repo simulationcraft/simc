@@ -73,6 +73,8 @@ endif
 
 SRC = \
 	simulationcraft.hpp \
+	sc_generic.hpp \
+	sc_timespan.hpp \
 	utf8.h \
 	sc_action_state.cpp \
 	sc_action.cpp \
