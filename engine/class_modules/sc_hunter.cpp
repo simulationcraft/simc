@@ -601,15 +601,6 @@ public:
     return ac;
   }
 
-  virtual double composite_attack_haste()
-  {
-    double h = pet_t::composite_attack_haste();
-
-    h *= 1.0 + cast_owner() -> buffs.rapid_fire -> check() * cast_owner() -> buffs.rapid_fire -> current_value;
-
-    return h;
-  }
-
   virtual void summon( timespan_t duration=timespan_t::zero() )
   {
     pet_t::summon( duration );
@@ -734,6 +725,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
   virtual void trigger_steady_focus()
   {
+    // Most ranged attacks reset the counter for two steady shots in a row
     p() -> buffs.pre_steady_focus -> expire();
   }
 
@@ -759,23 +751,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     return t;
   }
-
-  virtual double swing_haste()
-  {
-    double h = base_t::swing_haste();
-
-    if ( p() -> buffs.steady_focus -> up() )
-      h *= 1.0/ ( 1.0 + p() -> specs.steady_focus -> effectN( 1 ).percent() );
-
-    return h;
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = base_t::action_multiplier();
-    return am;
-  }
-
 };
 
 // trigger_go_for_the_throat ================================================
@@ -856,7 +831,7 @@ void hunter_ranged_attack_t::execute()
 
   if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
   {
-    p() -> buffs.steady_focus -> trigger();
+    p() -> buffs.steady_focus -> trigger(1, p() -> buffs.steady_focus -> data().effectN( 1 ).percent() );
     p() -> buffs.pre_steady_focus -> expire();
   }
 
@@ -865,6 +840,7 @@ void hunter_ranged_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) )
     trigger_vishanka( this );
 }
+
 // Ranged Attack ============================================================
 
 struct ranged_t : public hunter_ranged_attack_t
@@ -1099,7 +1075,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
   }
 };
 
-// Arcane Shot Attack =======================================================
+// Power Shot Attack =======================================================
 
 struct power_shot_t : public hunter_ranged_attack_t
 {
@@ -1708,7 +1684,6 @@ public:
   }
 };
 
-
 // A Murder of Crows ==============================================================
 
 // Each crow is modeled as a pet.
@@ -1783,7 +1758,8 @@ struct moc_t : public hunter_spell_t
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
-    may_crit = true;
+    may_crit = false;
+    may_miss = false;
 
     base_tick_time = timespan_t::from_seconds( 2.0 );
     // The eighth summons comes from tick_zero.  Unfortunately tick number
@@ -1801,7 +1777,14 @@ struct moc_t : public hunter_spell_t
     if ( p() -> moc_crows[ 0 ] )
       stats -> add_child( p() -> moc_crows[ 0 ] -> get_stats( "crow_peck" ) );
   }
-  
+    
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+    if ( target -> health_percentage() < 20 )
+      cooldown -> reset();
+  }
+
   virtual void tick( dot_t* d )
   {
     hunter_spell_t::tick( d );
@@ -3368,6 +3351,7 @@ double hunter_t::composite_attack_haste()
   double h = player_t::composite_attack_haste();
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   return h;
 }
