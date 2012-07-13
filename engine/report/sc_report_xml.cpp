@@ -1210,9 +1210,10 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "tooltip", a -> data().tooltip() );
         }
-
-        writer.print_tag( "description", util::encode_html( a -> data().desc() ).c_str() );
-
+        if ( a -> data().desc() )
+        {
+          writer.print_tag( "description", util::encode_html( a -> data().desc() ).c_str() );
+        }
         if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
         {
           writer.begin_tag( "direct_damage" );
