@@ -75,6 +75,8 @@
   <ItemGroup>
     <None Include="engine\dbc\data_definitions.hh" />
     <None Include="engine\dbc\data_enums.hh" />
+    <None Include="engine\sc_generic.hpp" />
+    <None Include="engine\sc_timespan.hp" />
     <None Include="engine\utf8.h" />
     <None Include="engine\utf8\core.h">
       <Filter>utf8</Filter>

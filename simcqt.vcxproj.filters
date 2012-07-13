@@ -250,6 +250,12 @@
     <ClInclude Include="engine\dbc\specialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="engine\sc_generic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\sc_timespan.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="engine\utf8\unchecked.h">
       <Filter>Header Files</Filter>
     </ClInclude>

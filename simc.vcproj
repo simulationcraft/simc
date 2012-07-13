@@ -561,6 +561,14 @@
 			RelativePath=".\engine\utf8.h"
 			>
 		</File>
+		<File
+			RelativePath=".\engine\sc_generic.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_timespan.hpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
