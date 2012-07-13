@@ -2784,54 +2784,28 @@ struct player_t : public noncopyable
 
   struct base_initial_current_t
   {
-    base_initial_current_t() : attribute(),
-      mastery( 0 ), mastery_rating( 0 ), haste_rating( 0 ),
-      spell_hit( 0 ), spell_crit( 0 ), mp5( 0 ),
-      attack_power( 0 ), attack_hit( 0 ), attack_expertise( 0 ), attack_crit( 0 ),
-      armor( 0 ), bonus_armor( 0 ), miss( 0 ), dodge( 0 ), parry( 0 ), block( 0 ),
-      block_reduction( 0 )
-    { }
+    base_initial_current_t();
 
     std::array<double,ATTRIBUTE_MAX> attribute;
     double mastery, mastery_rating, haste_rating;
     double spell_hit, spell_crit, mp5;
     double attack_power, attack_hit, attack_expertise, attack_crit;
     double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
-  };
 
-  struct initial_current_t
-  {
-    initial_current_t() : attribute_multiplier(), resource_reduction(),
-      spell_power_multiplier( 0 ), attack_power_multiplier( 0 ), armor_multiplier( 0 ),
-      spell_power_per_intellect( 0 ), spell_crit_per_intellect( 0 ),
-      attack_power_per_strength( 0 ), attack_power_per_agility( 0 ), attack_crit_per_agility( 0 ),
-      dodge_per_agility( 0 ), parry_rating_per_strength( 0 ),
-      mp5_per_spirit( 0 ), mp5_from_spirit_multiplier( 0 ), health_per_stamina( 0 ),
-      skill( 0 ), distance( 0 ),
-      sleeping( false ) { }
-
-    std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     std::array<double,SCHOOL_MAX> resource_reduction;
-    double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+    std::array<double,SCHOOL_MAX + 1> spell_power;
     double spell_power_per_intellect, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
     double dodge_per_agility, parry_rating_per_strength;
     double mp5_per_spirit, mp5_from_spirit_multiplier, health_per_stamina;
     double skill, distance;
     bool sleeping;
-  };
 
-  struct initial_current_extended_t : public base_initial_current_t, public initial_current_t
-  {
-    initial_current_extended_t();
-  };
-  base_initial_current_t base;
-  initial_current_extended_t initial, current;
+    std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
+    double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+  } base, initial, current;
 
   // Spell Mechanics
-  double base_spell_power;
-  std::array<double,SCHOOL_MAX + 1> initial_spell_power;
-  std::array<double,SCHOOL_MAX + 1> spell_power;
   double mana_regen_base;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;

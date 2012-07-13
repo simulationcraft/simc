@@ -564,6 +564,8 @@ public:
     action_list_str  = "/snapshot_stats";
     action_list_str += "/lightwell_renew";
     action_list_str += "/wait,sec=cooldown.lightwell_renew.remains";
+
+    owner_coeff.sp_from_sp = 1.0;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -571,9 +573,6 @@ public:
 
   virtual void summon( timespan_t duration )
   {
-    spell_haste = o() -> spell_haste;
-    spell_power[ SCHOOL_HOLY ] = o() -> composite_spell_power( SCHOOL_HOLY ) * o() -> composite_spell_power_multiplier();
-
     charges = 10 + o() -> glyphs.lightwell -> effectN( 1 ).base_value();
 
     priest_pet_t::summon( duration );

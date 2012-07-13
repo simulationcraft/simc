@@ -2303,7 +2303,6 @@ void paladin_t::init_base()
   initial.attack_power_per_strength = 2.0;
   initial.spell_power_per_intellect = 1.0;
 
-  base_spell_power  = 0;
   base.attack_power = level * 3;
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();

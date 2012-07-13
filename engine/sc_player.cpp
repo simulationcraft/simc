@@ -576,9 +576,9 @@ player_t::player_t( sim_t*             s,
   spell_haste( 1.0 ), attack_haste( 1.0 ),
   // Mastery
   base( base_initial_current_t() ),
-  initial( initial_current_extended_t() ), current( initial_current_extended_t() ),
+  initial( base_initial_current_t() ),
+  current( base_initial_current_t() ),
   // Spell Mechanics
-  base_spell_power( 0 ),
   mana_regen_base( 0 ),
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero() ),
@@ -673,9 +673,6 @@ player_t::player_t( sim_t*             s,
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  range::fill( initial_spell_power, 0 );
-  range::fill( spell_power, 0 );
-
   range::fill( resource_lost, 0 );
   range::fill( resource_gained, 0 );
 
@@ -699,12 +696,46 @@ player_t::player_t( sim_t*             s,
     reaction_stddev = reaction_mean * 0.25;
 }
 
-player_t::initial_current_extended_t::initial_current_extended_t() :
-  base_initial_current_t(), initial_current_t()
+player_t::base_initial_current_t::base_initial_current_t() :
+  attribute(),
+  mastery( 0 ),
+  mastery_rating( 0 ),
+  haste_rating( 0 ),
+  spell_hit( 0 ),
+  spell_crit( 0 ),
+  mp5( 0 ),
+  attack_power( 0 ),
+  attack_hit( 0 ),
+  attack_expertise( 0 ),
+  attack_crit( 0 ),
+  armor( 0 ),
+  bonus_armor( 0 ),
+  miss( 0 ),
+  dodge( 0 ),
+  parry( 0 ),
+  block( 0 ),
+  block_reduction( 0 ),
+  resource_reduction(),
+  spell_power(),
+  spell_power_per_intellect( 0 ),
+  spell_crit_per_intellect( 0 ),
+  attack_power_per_strength( 0 ),
+  attack_power_per_agility( 0 ),
+  attack_crit_per_agility( 0 ),
+  dodge_per_agility( 0 ),
+  parry_rating_per_strength( 0 ),
+  mp5_per_spirit( 0 ),
+  mp5_from_spirit_multiplier( 0 ),
+  health_per_stamina( 0 ),
+  skill( 0 ),
+  distance( 0 ),
+  sleeping( false ),
+  attribute_multiplier(),
+  spell_power_multiplier( 1.0 ),
+  attack_power_multiplier( 1.0 ),
+  armor_multiplier( 1.0 )
 {
   range::fill( attribute_multiplier, 1 );
-  spell_power_multiplier = attack_power_multiplier = armor_multiplier = 1.0;
-  mp5_from_spirit_multiplier = 0.0;
 }
 
 // player_t::~player_t ======================================================
@@ -1352,7 +1383,7 @@ void player_t::init_spell()
   initial_stats.spell_power = gear.spell_power + enchant.spell_power + ( is_pet() ? 0 : sim -> enchant.spell_power );
   initial_stats.mp5         = gear.mp5         + enchant.mp5         + ( is_pet() ? 0 : sim -> enchant.mp5 );
 
-  initial_spell_power[ SCHOOL_MAX ] = base_spell_power + initial_stats.spell_power;
+  initial.spell_power[ SCHOOL_MAX ] = initial_stats.spell_power;
 
   initial.spell_hit = base.spell_hit + initial_stats.hit_rating / rating.spell_hit;
 
@@ -2341,7 +2372,7 @@ void player_t::init_scaling()
       case STAT_INTELLECT: initial.attribute[ ATTR_INTELLECT ] += v; break;
       case STAT_SPIRIT:    initial.attribute[ ATTR_SPIRIT    ] += v; break;
 
-      case STAT_SPELL_POWER:       initial_spell_power[ SCHOOL_MAX ] += v; break;
+      case STAT_SPELL_POWER:       initial.spell_power[ SCHOOL_MAX ] += v; break;
       case STAT_MP5:               initial.mp5                       += v; break;
 
       case STAT_ATTACK_POWER:      initial.attack_power              += v; break;
@@ -2835,31 +2866,31 @@ double player_t::composite_spell_haste()
 
 double player_t::composite_spell_power( school_e school )
 {
-  double sp = spell_power[ school ];
+  double sp = current.spell_power[ school ];
 
   switch ( school )
   {
   case SCHOOL_FROSTFIRE:
-    sp = std::max( spell_power[ SCHOOL_FROST ],
-                   spell_power[ SCHOOL_FIRE  ] );
+    sp = std::max( current.spell_power[ SCHOOL_FROST ],
+                   current.spell_power[ SCHOOL_FIRE  ] );
     break;
   case SCHOOL_SPELLSTORM:
-    sp = std::max( spell_power[ SCHOOL_NATURE ],
-                   spell_power[ SCHOOL_ARCANE ] );
+    sp = std::max( current.spell_power[ SCHOOL_NATURE ],
+                   current.spell_power[ SCHOOL_ARCANE ] );
     break;
   case SCHOOL_SHADOWFROST:
-    sp = std::max( spell_power[ SCHOOL_SHADOW ],
-                   spell_power[ SCHOOL_FROST ] );
+    sp = std::max( current.spell_power[ SCHOOL_SHADOW ],
+                   current.spell_power[ SCHOOL_FROST ] );
     break;
   case SCHOOL_SHADOWFLAME:
-    sp = std::max( spell_power[ SCHOOL_SHADOW ],
-                   spell_power[ SCHOOL_FIRE ] );
+    sp = std::max( current.spell_power[ SCHOOL_SHADOW ],
+                   current.spell_power[ SCHOOL_FIRE ] );
     break;
   default: break;
   }
 
   if ( school != SCHOOL_MAX )
-    sp += spell_power[ SCHOOL_MAX ];
+    sp += current.spell_power[ SCHOOL_MAX ];
 
 
   sp += current.spell_power_per_intellect * ( intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
@@ -3291,8 +3322,6 @@ void player_t::reset()
 
   vengeance.damage = vengeance.value = vengeance.max = 0.0;
 
-
-  spell_power = initial_spell_power;
 
   // Reset current stats to initial stats
   current = initial;
@@ -3964,7 +3993,7 @@ void player_t::stat_gain( stat_e stat,
   case STAT_MAX_FOCUS:  resources.max[ RESOURCE_FOCUS  ] += amount; resource_gain( RESOURCE_FOCUS,  amount, gain, action ); break;
   case STAT_MAX_RUNIC:  resources.max[ RESOURCE_RUNIC_POWER  ] += amount; resource_gain( RESOURCE_RUNIC_POWER,  amount, gain, action ); break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; spell_power[ SCHOOL_MAX ] += amount; break;
+  case STAT_SPELL_POWER:       stats.spell_power       += amount; temporary.spell_power += temp_value * amount; current.spell_power[ SCHOOL_MAX ] += amount; break;
   case STAT_MP5:               stats.mp5               += amount; current.mp5                       += amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             += amount; temporary.attack_power += temp_value * amount; current.attack_power       += amount;                            break;
@@ -4063,7 +4092,7 @@ void player_t::stat_loss( stat_e stat,
   }
   break;
 
-  case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; spell_power[ SCHOOL_MAX ] -= amount; break;
+  case STAT_SPELL_POWER:       stats.spell_power       -= amount; temporary.spell_power -= temp_value * amount; current.spell_power[ SCHOOL_MAX ] -= amount; break;
   case STAT_MP5:               stats.mp5               -= amount; current.mp5                       -= amount; break;
 
   case STAT_ATTACK_POWER:             stats.attack_power             -= amount; temporary.attack_power -= temp_value * amount; current.attack_power       -= amount;                            break;
