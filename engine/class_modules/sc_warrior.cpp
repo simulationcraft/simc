@@ -392,7 +392,7 @@ struct warrior_action_t : public Base
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     ab::may_crit   = true;
-    //ab::stateless  = true;
+    ab::stateless  = true;
   }
 
   warrior_t* cast() const { return static_cast<warrior_t*>( ab::player ); }
@@ -445,11 +445,102 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
   virtual void   consume_resource();
-  virtual double cost();
+
+  virtual double cost()
+  {
+    double c = base_t::cost();
+
+    warrior_t* p = cast();
+
+    if ( p -> buffs_deadly_calm -> check() )
+      c  = 0;
+
+    if ( p -> buffs_battle_trance -> check() && c > 5 )
+      c  = 0;
+
+    return c;
+  }
+
   virtual void   execute();
-  virtual double calculate_weapon_damage( double /* attack_power */ );
-  virtual void   player_buff();
+
+  virtual double calculate_weapon_damage( double attack_power )
+  {
+    double dmg = base_t::calculate_weapon_damage( attack_power );
+
+    // Catch the case where weapon == 0 so we don't crash/retest below.
+    if ( dmg == 0 )
+      return 0;
+
+    warrior_t* p = cast();
+
+    if ( weapon -> slot == SLOT_OFF_HAND )
+      dmg *= 1.0 + p -> spec.dual_wield_specialization -> effectN( 2 ).percent();
+
+    return dmg;
+  }
+
   virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t* );
+
+  virtual double action_multiplier()
+  {
+    double am = base_t::action_multiplier();
+
+    warrior_t* p = cast();
+
+    if ( weapon && weapon -> group() == WEAPON_2H )
+      am *= 1.0 + p -> spec.two_handed_weapon_specialization -> effectN( 1 ).percent();
+
+    if ( p -> dual_wield() && ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
+      am *= 1.0 + p -> spec.dual_wield_specialization -> effectN( 3 ).percent();
+
+    // --- Enrages ---
+
+    if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+      am *= 1.0 + p -> buffs_wrecking_crew -> value();
+
+    if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+      am *= 1.0 + p -> buffs_enrage -> value();
+
+    // FIXME
+    //if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && p -> buffs_bastion_of_defense -> up() )
+    //  player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
+
+    // --- Passive Talents ---
+
+    if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
+      am *= 1.0 + p -> buffs_death_wish -> value();
+
+    if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
+    {
+      if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
+           p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
+      {
+        am *= 1.0 + p -> talents.single_minded_fury -> effectN( 1 ).percent();
+      }
+    }
+
+    // --- Buffs / Procs ---
+
+    if ( p -> buffs_rude_interruption -> up() )
+      am *= 1.05;
+
+    return am;
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = base_t::composite_crit();
+
+    warrior_t* p = cast();
+
+    if ( special && p -> buffs_recklessness -> up() )
+      cc += 0.5;
+
+    if ( p -> buffs_hold_the_line -> up() )
+      cc += 0.10;
+
+    return cc;
+  }
 };
 
 
@@ -794,23 +885,6 @@ void warrior_attack_t::assess_damage( player_t* t, const double amount, const dm
   }*/
 }
 
-// warrior_attack_t::cost ===================================================
-
-double warrior_attack_t::cost()
-{
-  double c = base_t::cost();
-
-  warrior_t* p = cast();
-
-  if ( p -> buffs_deadly_calm -> check() )
-    c  = 0;
-
-  if ( p -> buffs_battle_trance -> check() && c > 5 )
-    c  = 0;
-
-  return c;
-}
-
 // warrior_attack_t::consume_resource =======================================
 
 void warrior_attack_t::consume_resource()
@@ -850,7 +924,7 @@ void warrior_attack_t::execute()
 
   if ( proc ) return;
 
-  if ( result_is_hit() )
+  if ( result_is_hit( execute_state -> result ) )
   {
     trigger_sudden_death( this );
 
@@ -865,86 +939,6 @@ void warrior_attack_t::execute()
   {
     p -> buffs_overpower -> trigger();
   }
-}
-
-// warrior_attack_t::calculate_weapon_damage ================================
-
-double warrior_attack_t::calculate_weapon_damage( double attack_power )
-{
-  double dmg = base_t::calculate_weapon_damage( attack_power );
-
-  // Catch the case where weapon == 0 so we don't crash/retest below.
-  if ( dmg == 0 )
-    return 0;
-
-  warrior_t* p = cast();
-
-  if ( weapon -> slot == SLOT_OFF_HAND )
-    dmg *= 1.0 + p -> spec.dual_wield_specialization -> effectN( 2 ).percent();
-
-  return dmg;
-}
-
-// warrior_attack_t::player_buff ============================================
-
-void warrior_attack_t::player_buff()
-{
-  base_t::player_buff();
-
-  warrior_t* p = cast();
-
-  // FIXME: much of this can be moved to base for efficiency, but we need
-  // to be careful to get the add_percent_mod effect ordering in the
-  // abilities right.
-
-  // --- Specializations --
-
-  if ( weapon && weapon -> group() == WEAPON_2H )
-    player_multiplier *= 1.0 + p -> spec.two_handed_weapon_specialization -> effectN( 1 ).percent();
-
-  if ( p -> dual_wield() && ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) )
-    player_multiplier *= 1.0 + p -> spec.dual_wield_specialization -> effectN( 3 ).percent();
-
-  // --- Enrages ---
-
-  if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-    player_multiplier *= 1.0 + p -> buffs_wrecking_crew -> value();
-
-  if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-    player_multiplier *= 1.0 + p -> buffs_enrage -> value();
-
-  // FIXME
-  //if ( ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED ) && p -> buffs_bastion_of_defense -> up() )
-  //  player_multiplier *= 1.0 + p -> talents.bastion_of_defense -> rank() * 0.05;
-
-  // --- Passive Talents ---
-
-  if ( school == SCHOOL_PHYSICAL || school == SCHOOL_BLEED )
-    player_multiplier *= 1.0 + p -> buffs_death_wish -> value();
-
-  if ( p -> talents.single_minded_fury -> ok() && p -> dual_wield() )
-  {
-    if ( p -> main_hand_attack -> weapon -> group() == WEAPON_1H &&
-         p ->  off_hand_attack -> weapon -> group() == WEAPON_1H )
-    {
-      player_multiplier *= 1.0 + p -> talents.single_minded_fury -> effectN( 1 ).percent();
-    }
-  }
-
-  // --- Buffs / Procs ---
-
-  if ( p -> buffs_rude_interruption -> up() )
-    player_multiplier *= 1.05;
-
-  if ( special && p -> buffs_recklessness -> up() )
-    player_crit += 0.5;
-
-  if ( p -> buffs_hold_the_line -> up() )
-    player_crit += 0.10;
-
-  if ( sim -> debug )
-    sim -> output( "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
-                   name(), player_hit, player_expertise, player_crit );
 }
 
 // Melee Attack =============================================================
@@ -1011,7 +1005,7 @@ struct melee_t : public warrior_attack_t
     if ( result != RESULT_MISS ) // Any attack that hits or is dodged/blocked/parried generates rage
       trigger_rage_gain( this );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! proc &&  p -> rng_blood_frenzy -> roll( p -> talents.blood_frenzy -> proc_chance() ) )
       {
@@ -1020,13 +1014,16 @@ struct melee_t : public warrior_attack_t
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_FURY )
-      player_multiplier *= 1.0 + p -> spec.precision -> effectN( 3 ).percent();
+      am *= 1.0 + p -> spec.precision -> effectN( 3 ).percent();
+
+    return am;
   }
 };
 
@@ -1149,7 +1146,7 @@ struct bladestorm_t : public warrior_attack_t
 
     bladestorm_mh -> execute();
 
-    if ( bladestorm_mh -> result_is_hit() && bladestorm_oh )
+    if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
     {
       bladestorm_oh -> execute();
     }
@@ -1228,7 +1225,7 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       warrior_t* p = cast();
 
@@ -1343,17 +1340,19 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
       p -> buffs_meat_cleaver -> trigger();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
 
     warrior_t* p = cast();
 
-    player_multiplier *= 1.0 + p -> talents.meat_cleaver -> effectN( 1 ).percent() * p -> buffs_meat_cleaver -> stack();
+    am *= 1.0 + p -> talents.meat_cleaver -> effectN( 1 ).percent() * p -> buffs_meat_cleaver -> stack();
+
+    return am;
   }
 
   virtual void update_ready()
@@ -1387,17 +1386,17 @@ struct colossus_smash_t : public warrior_attack_t
     // armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::execute();
+    warrior_attack_t::impact_s( s );
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result) )
     {
-      warrior_td_t* td = cast_td();
+      warrior_td_t* td = cast_td( s -> target);
       td -> debuffs_colossus_smash -> trigger( 1, armor_pen_value );
 
       if ( ! sim -> overrides.physical_vulnerability )
-        target -> debuffs.physical_vulnerability -> trigger();
+        s -> target -> debuffs.physical_vulnerability -> trigger();
     }
   }
 };
@@ -1454,12 +1453,12 @@ struct devastate_t : public warrior_attack_t
     }*/
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
+    warrior_attack_t::impact_s( s );
 
     if ( ! sim -> overrides.weakened_blows )
-      t -> debuffs.weakened_blows -> trigger();
+      s -> target -> debuffs.weakened_blows -> trigger();
   }
 };
 
@@ -1515,13 +1514,14 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    if ( result_is_hit() && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
+    if ( result_is_hit( execute_state -> result ) && p -> rng_executioner_talent -> roll( p -> talents.executioner -> proc_chance() ) )
       p -> buffs_executioner_talent -> trigger();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
     // player_buff happens before consume_resource
@@ -1533,9 +1533,11 @@ struct execute_t : public warrior_attack_t
     // Can't be derived by parse_data() for now.
     direct_power_mod = 0.0437 * max_consumed;
 
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
+    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
                                  ( p -> buffs_lambs_to_the_slaughter -> stack()
                                    * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
+
+    return am;
   }
 
   virtual bool ready()
@@ -1603,13 +1605,16 @@ struct heroic_strike_t : public warrior_attack_t
 
   }
 
-  virtual void player_buff()
+  virtual double composite_crit()
   {
-    warrior_attack_t::player_buff();
+    double cc = warrior_attack_t::composite_crit();
+
     warrior_t* p = cast();
 
     if ( p -> buffs_incite -> up() )
-      player_crit += 1.0;
+      cc += 1.0;
+
+    return cc;
   }
 
   virtual void update_ready()
@@ -1677,7 +1682,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       warrior_td_t* td = cast_td();
       p -> buffs_lambs_to_the_slaughter -> trigger();
@@ -1703,27 +1708,37 @@ struct mortal_strike_t : public warrior_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
+    warrior_attack_t::impact_s( s );
 
-    if ( sim -> overrides.mortal_wounds && result_is_hit( impact_result ) )
-      t -> debuffs.mortal_wounds -> trigger();
+    if ( sim -> overrides.mortal_wounds && result_is_hit( s -> result ) )
+      s -> target -> debuffs.mortal_wounds -> trigger();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
+    warrior_t* p = cast();
+
+    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
+                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
+                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
+                         + additive_multipliers;
+    return am;
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = warrior_attack_t::composite_crit();
 
     warrior_t* p = cast();
 
     if ( p -> buffs_juggernaut -> up() )
-      player_crit += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
+      cc += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
 
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
-                                 ( p -> buffs_lambs_to_the_slaughter -> stack()
-                                   * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
-                         + additive_multipliers;
+    return cc;
   }
 };
 
@@ -1760,14 +1775,16 @@ struct overpower_t : public warrior_attack_t
     p -> buffs_taste_for_blood -> expire();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
+    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
                                  ( p -> buffs_lambs_to_the_slaughter -> stack()
                                    * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 );
+    return am;
   }
 
   virtual bool ready()
@@ -1817,13 +1834,15 @@ struct raging_blow_attack_t : public warrior_attack_t
     base_crit += p -> glyphs.raging_blow -> effectN( 1 ).percent();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
-    player_multiplier *= 1.0 + p -> composite_mastery() *
+    am *= 1.0 + p -> composite_mastery() *
                          p -> mastery.unshackled_fury -> effectN( 3 ).base_value() / 10000.0;
+    return am;
   }
 };
 
@@ -1865,7 +1884,7 @@ struct raging_blow_t : public warrior_attack_t
   {
     attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       mh_attack -> execute();
       if ( oh_attack )
@@ -2003,19 +2022,20 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( cast(), execute_state );
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
+    warrior_attack_t::impact_s( s );
+
     warrior_t* p = cast();
 
     // Needs testing
     if ( absorb_stats )
     {
-      if ( result_is_hit( impact_result ) )
+      if ( result_is_hit( s -> result ) )
       {
-        double amount = 0.20 * travel_dmg;
+        double amount = 0.20 * s -> result_amount;
         p -> buffs_tier13_2pc_tank -> trigger( 1, amount );
-        absorb_stats -> add_result( amount, amount, ABSORB, impact_result );
+        absorb_stats -> add_result( amount, amount, ABSORB, s -> result );
         absorb_stats -> add_execute( timespan_t::zero() );
       }
     }
@@ -2046,12 +2066,12 @@ struct shattering_throw_t : public warrior_attack_t
     stancemask = STANCE_BATTLE;
   }
 
-  virtual void execute()
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::execute();
+    warrior_attack_t::impact_s( s );
 
-    if ( result_is_hit() )
-      target -> debuffs.shattering_throw -> trigger();
+    if ( result_is_hit( s -> result ) )
+      s -> target -> debuffs.shattering_throw -> trigger();
   }
 
   virtual bool ready()
@@ -2115,14 +2135,15 @@ struct shield_slam_t : public warrior_attack_t
     stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
 
     warrior_t* p = cast();
 
     if ( p -> buffs_shield_block -> up() )
-      player_multiplier *= 1.0 + p -> talents.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p -> talents.heavy_repercussions -> effectN( 1 ).percent();
+    return am;
   }
 
   virtual void execute()
@@ -2132,7 +2153,7 @@ struct shield_slam_t : public warrior_attack_t
 
     p -> buffs_sword_and_board -> expire();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
       p -> buffs_battle_trance -> trigger();
   }
 
@@ -2174,13 +2195,16 @@ struct shockwave_t : public warrior_attack_t
     p -> buffs_thunderstruck -> expire();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
-    player_multiplier *= 1.0 + p -> buffs_thunderstruck -> stack() *
+    am *= 1.0 + p -> buffs_thunderstruck -> stack() *
                          p -> talents.thunderstruck -> effectN( 2 ).percent();
+
+    return am;
   }
 };
 
@@ -2204,21 +2228,33 @@ struct slam_attack_t : public warrior_attack_t
                            + p -> talents.war_academy -> effectN( 1 ).percent();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    warrior_attack_t::player_buff();
+    double am = warrior_attack_t::action_multiplier();
+
     warrior_t* p = cast();
 
-    if ( p -> buffs_juggernaut -> up() )
-      player_crit += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
-
     if ( p -> buffs_bloodsurge -> up() )
-      player_multiplier *= 1.0 + p -> talents.bloodsurge -> effectN( 1 ).percent();
+      am *= 1.0 + p -> talents.bloodsurge -> effectN( 1 ).percent();
 
-    player_multiplier *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
+    am *= 1.0 + ( p -> buffs_lambs_to_the_slaughter -> data().ok() ?
                                  ( p -> buffs_lambs_to_the_slaughter -> stack()
                                    * p -> buffs_lambs_to_the_slaughter -> data().effectN( 1 ).percent() ) : 0 )
                          + additive_multipliers;
+
+    return am;
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    warrior_t* p = cast();
+
+    if ( p -> buffs_juggernaut -> up() )
+      cc += p -> buffs_juggernaut -> data().effectN( 1 ).percent();
+
+    return cc;
   }
 };
 
@@ -2277,7 +2313,7 @@ struct slam_t : public warrior_attack_t
     attack_t::execute();
     warrior_t* p = cast();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       mh_attack -> execute();
 
@@ -2310,14 +2346,14 @@ struct sunder_armor_t : public warrior_attack_t
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    warrior_attack_t::impact( t, impact_result, travel_dmg );
+    warrior_attack_t::impact_s( s );
 
-    if ( result_is_hit( impact_result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( ! sim -> overrides.weakened_armor )
-        t -> debuffs.weakened_armor -> trigger();
+        s -> target -> debuffs.weakened_armor -> trigger();
     }
   }
 };
@@ -2384,14 +2420,14 @@ struct whirlwind_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     warrior_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
       p -> buffs_meat_cleaver -> trigger();
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
       weapon = &( p -> off_hand_weapon );
       warrior_attack_t::execute();
-      if ( result_is_hit() )
+      if ( result_is_hit( execute_state -> result ) )
         p -> buffs_meat_cleaver -> trigger();
     }
 
