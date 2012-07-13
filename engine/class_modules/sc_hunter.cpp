@@ -342,34 +342,28 @@ struct hunter_pet_t : public pet_t
 public:
   action_t* kill_command;
 
-  struct talents_t
+  struct specs_t
   {
-    // Common Talents
-    const spell_data_t* dash;
-
-    // Cunning
-    const spell_data_t* bullheaded;
-    // const spell_data_t* feeding_frenzy;
+    // ferocity
+    const spell_data_t* rabid;
+    const spell_data_t* hearth_of_the_phoenix;
+    const spell_data_t* spiked_collar;
+    // tenacity
+    const spell_data_t* last_stand;
+    const spell_data_t* charge;
+    const spell_data_t* thunderstomp;
+    const spell_data_t* blood_of_the_rhino;
+    const spell_data_t* great_stamina;
+    // cunning
+    const spell_data_t* roar_of_sacrifice;
+    const spell_data_t* bullhead;
     const spell_data_t* cornered;
     const spell_data_t* boars_speed;
 
-    // Ferocity
-    const spell_data_t* rabid;
-    const spell_data_t* heart_of_the_phoenix;
-    const spell_data_t* spiked_collar;
+    const spell_data_t* dash; // ferocity, cunning
 
-    // Tenacity
-    const spell_data_t* last_stand;
-    const spell_data_t* charge;
-    const spell_data_t* blood_of_the_rhino;
-    const spell_data_t* great_stamina;
-    const spell_data_t* thunderstomp;
 
-  } talents;
-
-  struct specs_t
-  {
-    const spell_data_t* wild_hunt;
+    const spell_data_t* wild_hunt; // base for all pets
   } specs;
 
   // Buffs
@@ -411,7 +405,6 @@ private:
 public:
   hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
-    talents( talents_t() ),
     specs( specs_t() ),
     buffs( buffs_t() ),
     gains( gains_t() ),
@@ -521,19 +514,6 @@ public:
     owner_coeff.sp_from_ap = 0.5;
   }
 
-  virtual void init_talents()
-  {
-    // FIXME work around assert in pet specs by just giving the ferocity abilities to all pets.
-
-    // Common Talents
-    talents.spiked_collar    = find_spell( 53184 ); //find_specialization_spell( "Spiked Collar" );
-    
-    // Ferocity
-    talents.rabid            = find_spell( 53401 ); //find_specialization_spell( "Rabid" );
-
-    pet_t::init_talents();
-  }
-
   virtual void init_buffs()
   {
     pet_t::init_buffs();
@@ -564,7 +544,7 @@ public:
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
 
-      if ( talents.rabid -> ok() )
+      if ( specs.rabid -> ok() )
       {
         action_list_str += "/rabid";
       }
@@ -596,7 +576,7 @@ public:
   {
     double ac = pet_t::composite_attack_crit();
 
-    ac *= 1.0 + talents.spiked_collar -> effectN( 3 ).percent();
+    ac *= 1.0 + specs.spiked_collar -> effectN( 3 ).percent();
 
     return ac;
   }
@@ -2335,7 +2315,7 @@ struct basic_attack_t : public hunter_pet_attack_t
   {
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
-    base_multiplier *= 1.0 + p -> talents.spiked_collar -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration " );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -2977,7 +2957,30 @@ void hunter_pet_t::init_spells()
 {
   pet_t::init_spells();
 
+  // ferocity
   kill_command = new pet_kill_command_t( this );
+  specs.rabid= spell_data_t::not_found();
+  specs.hearth_of_the_phoenix= spell_data_t::not_found();
+  specs.spiked_collar= spell_data_t::not_found();
+  // tenacity
+  specs.last_stand= spell_data_t::not_found();
+  specs.charge= spell_data_t::not_found();
+  specs.thunderstomp= spell_data_t::not_found();
+  specs.blood_of_the_rhino= spell_data_t::not_found();
+  specs.great_stamina= spell_data_t::not_found();
+  // cunning
+  specs.roar_of_sacrifice= spell_data_t::not_found();
+  specs.bullhead= spell_data_t::not_found();
+  specs.cornered= spell_data_t::not_found();
+  specs.boars_speed= spell_data_t::not_found();
+
+  specs.dash= spell_data_t::not_found(); // ferocity, cunning
+
+  specs.wild_hunt= spell_data_t::not_found();
+
+  // ferocity
+  specs.rabid            = find_spell( 53401 ); //find_specialization_spell( "Rabid" );
+  specs.spiked_collar    = find_spell( 53184 ); //find_specialization_spell( "Spiked Collar" );
 
   specs.wild_hunt = find_spell( 62762 );
 }
