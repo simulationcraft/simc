@@ -375,50 +375,80 @@ public:
   }
 };
 
-warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
-  actor_pair_t( target, p )
+namespace { // UNNAMED NAMESPACE
+
+// Template for common warrior action code. See priest_action_t.
+template <class Base>
+struct warrior_action_t : public Base
 {
-  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
-}
+  int stancemask;
+
+  typedef Base ab; // action base, eg. spell_t
+  typedef warrior_action_t base_t;
+
+  warrior_action_t( const std::string& n, warrior_t* player,
+                 const spell_data_t* s = spell_data_t::nil() ) :
+    ab( n, player, s ),
+    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+  {
+    ab::may_crit   = true;
+    //ab::stateless  = true;
+  }
+
+  warrior_t* cast() const { return static_cast<warrior_t*>( ab::player ); }
+
+  warrior_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : ab::target ); }
+
+  virtual bool ready()
+  {
+    if ( ! ab::ready() )
+      return false;
+
+    // Attack available in current stance?
+    if ( ( stancemask & cast() -> active_stance ) == 0 )
+      return false;
+
+    return true;
+  }
+};
 
 // ==========================================================================
 // Warrior Attack
 // ==========================================================================
 
-struct warrior_attack_t : public melee_attack_t
+struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 {
-  int stancemask;
-
   warrior_attack_t( const std::string& n, warrior_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
-    melee_attack_t( n, p, s ),
-    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+    base_t( n, p, s )
   {
     may_crit   = true;
     may_glance = false;
   }
 
   warrior_attack_t( const std::string& n, uint32_t id, warrior_t* p ) :
-    melee_attack_t( n, p, p -> find_spell( id ) ),
-    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+    base_t( n, p, p -> find_spell( id ) )
   {
     may_crit   = true;
     may_glance = false;
   }
 
-  warrior_t* cast() const
-  { return static_cast<warrior_t*>( player ); }
+  virtual double armor()
+  {
+    warrior_td_t* td = cast_td();
 
-  warrior_td_t* cast_td( player_t* t = 0 ) const
-  { return cast() -> get_target_data( t ? t : target ); }
+    double a = base_t::armor();
 
-  virtual double armor();
+    a *= 1.0 - td -> debuffs_colossus_smash -> value();
+
+    return a;
+  }
+
   virtual void   consume_resource();
   virtual double cost();
   virtual void   execute();
   virtual double calculate_weapon_damage( double /* attack_power */ );
   virtual void   player_buff();
-  virtual bool   ready();
   virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t* );
 };
 
@@ -641,11 +671,10 @@ static void trigger_sudden_death( warrior_attack_t* a )
 
 // trigger_sword_and_board ==================================================
 
-static void trigger_sword_and_board( warrior_attack_t* a, result_e result )
+static void trigger_sword_and_board( warrior_t* p, action_state_t* s )
 {
-  warrior_t* p = a -> cast();
 
-  if ( a -> result_is_hit( result ) )
+  if ( s -> action -> result_is_hit( s -> result ) )
   {
     if ( p -> buffs_sword_and_board -> trigger() )
     {
@@ -746,22 +775,11 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 // Warrior Attacks
 // ==========================================================================
 
-double warrior_attack_t::armor()
-{
-  warrior_td_t* td = cast_td();
-
-  double a = attack_t::armor();
-
-  a *= 1.0 - td -> debuffs_colossus_smash -> value();
-
-  return a;
-}
-
 // warrior_attack_t::assess_damage ==========================================
 
 void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_e dmg_type, const result_e impact_result, action_state_t* s )
 {
-  attack_t::assess_damage( t, amount, dmg_type, impact_result, s );
+  base_t::assess_damage( t, amount, dmg_type, impact_result, s );
 
   /* warrior_t* p = cast();
 
@@ -780,7 +798,7 @@ void warrior_attack_t::assess_damage( player_t* t, const double amount, const dm
 
 double warrior_attack_t::cost()
 {
-  double c = attack_t::cost();
+  double c = base_t::cost();
 
   warrior_t* p = cast();
 
@@ -797,7 +815,7 @@ double warrior_attack_t::cost()
 
 void warrior_attack_t::consume_resource()
 {
-  attack_t::consume_resource();
+  base_t::consume_resource();
   warrior_t* p = cast();
 
   p -> buffs_deadly_calm -> up();
@@ -823,7 +841,7 @@ void warrior_attack_t::consume_resource()
 
 void warrior_attack_t::execute()
 {
-  attack_t::execute();
+  base_t::execute();
   warrior_t* p = cast();
 
   // Battle Trance only is effective+consumed if action cost was >5
@@ -853,7 +871,7 @@ void warrior_attack_t::execute()
 
 double warrior_attack_t::calculate_weapon_damage( double attack_power )
 {
-  double dmg = attack_t::calculate_weapon_damage( attack_power );
+  double dmg = base_t::calculate_weapon_damage( attack_power );
 
   // Catch the case where weapon == 0 so we don't crash/retest below.
   if ( dmg == 0 )
@@ -871,7 +889,8 @@ double warrior_attack_t::calculate_weapon_damage( double attack_power )
 
 void warrior_attack_t::player_buff()
 {
-  attack_t::player_buff();
+  base_t::player_buff();
+
   warrior_t* p = cast();
 
   // FIXME: much of this can be moved to base for efficiency, but we need
@@ -926,22 +945,6 @@ void warrior_attack_t::player_buff()
   if ( sim -> debug )
     sim -> output( "warrior_attack_t::player_buff: %s hit=%.2f expertise=%.2f crit=%.2f",
                    name(), player_hit, player_expertise, player_crit );
-}
-
-// warrior_attack_t::ready() ================================================
-
-bool warrior_attack_t::ready()
-{
-  if ( ! attack_t::ready() )
-    return false;
-
-  warrior_t* p = cast();
-
-  // Attack available in current stance?
-  if ( ( stancemask & p -> active_stance ) == 0 )
-    return false;
-
-  return true;
 }
 
 // Melee Attack =============================================================
@@ -1441,7 +1444,7 @@ struct devastate_t : public warrior_attack_t
 
     //warrior_t* p = cast();
 
-    trigger_sword_and_board( this, result );
+    trigger_sword_and_board( cast(), execute_state );
 
     // FIXME:
     /*if ( p -> talents.impending_victory -> rank() && target -> health_percentage() <= 20 )
@@ -1997,7 +2000,7 @@ struct revenge_t : public warrior_attack_t
 
     p -> buffs_revenge -> expire();
 
-    trigger_sword_and_board( this, result );
+    trigger_sword_and_board( cast(), execute_state );
   }
 
   virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
@@ -2436,31 +2439,15 @@ struct victory_rush_t : public warrior_attack_t
 // Warrior Spells
 // ==========================================================================
 
-struct warrior_spell_t : public spell_t
+struct warrior_spell_t : public warrior_action_t< spell_t >
 {
-  int stancemask;
   warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( n, p, s ),
-    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+    base_t( n, p, s )
   {
-    _init_warrior_spell_t();
   }
 
   warrior_spell_t( const std::string& n, uint32_t id, warrior_t* p ) :
-    spell_t( n, p, p -> find_spell( id ) ),
-    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
-  {
-    _init_warrior_spell_t();
-  }
-
-
-  warrior_t* cast() const
-  { return static_cast<warrior_t*>( player ); }
-
-  warrior_td_t* cast_td( player_t* t = 0 ) const
-  { return cast() -> get_target_data( t ? t : target ); }
-
-  void _init_warrior_spell_t()
+    base_t( n, p, p -> find_spell( id ) )
   {
   }
 
@@ -2468,17 +2455,6 @@ struct warrior_spell_t : public spell_t
   {
     // Unaffected by haste
     return trigger_gcd;
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = cast();
-
-    // Attack vailable in current stance?
-    if ( ( stancemask & p -> active_stance ) == 0 )
-      return false;
-
-    return spell_t::ready();
   }
 };
 
@@ -2918,9 +2894,17 @@ struct buff_last_stand_t : public buff_t
   }
 };
 
+} // UNNAMED NAMESPACE
+
 // ==========================================================================
 // Warrior Character Definition
 // ==========================================================================
+
+warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
+  actor_pair_t( target, p )
+{
+  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" ).duration( timespan_t::from_seconds( 6.0 ) );
+}
 
 // warrior_t::create_action  ================================================
 
