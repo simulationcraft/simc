@@ -19,7 +19,7 @@ set BUILD=%1
 set INPATH=%~f2\%BUILD%\%INEXT%
 
 if exist %INPATH% goto okay
-echo Error: Unable to find input files!
+echo Error: Unable to find input files! %INPATH%
 echo.
 goto usage
 :okay
