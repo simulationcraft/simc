@@ -415,13 +415,13 @@ public:
 
     // FIXME work around assert in pet specs
     // Set default specs
-    _spec = default_spec( pt );
+    _spec = default_spec();
   }
 
   hunter_t* cast_owner() const
   { return static_cast<hunter_t*>( owner ); }
   
-  specialization_e default_spec( pet_e pt )
+  specialization_e default_spec()
   {
     if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCITY;
     if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACITY;
