@@ -3070,15 +3070,15 @@ struct player_t : public noncopyable
   virtual void register_callbacks();
 
   // Action Priority List
-  std::vector<action_t*> action_list;
+  auto_dispose< std::vector<action_t*> > action_list;
   std::string action_list_str;
   std::string choose_action_list;
   std::string action_list_skip;
   std::string modify_action;
   int         action_list_default;
-  std::vector<dot_t*> dot_list;
+  auto_dispose< std::vector<dot_t*> > dot_list;
   std::map<std::string,int> action_map;
-  std::vector<action_priority_list_t*> action_priority_list;
+  auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
   action_priority_list_t* active_off_gcd_list;
@@ -3110,14 +3110,14 @@ struct player_t : public noncopyable
     double mastery;
   } buffed;
 
-  std::vector<buff_t*> buff_list;
-  std::vector<proc_t*> proc_list;
-  std::vector<gain_t*> gain_list;
-  std::vector<stats_t*> stats_list;
-  std::vector<benefit_t*> benefit_list;
-  std::vector<uptime_t*> uptime_list;
-  std::vector<cooldown_t*> cooldown_list;
-  std::vector<rng_t*> rng_list;
+  auto_dispose< std::vector<buff_t*> > buff_list;
+  auto_dispose< std::vector<proc_t*> > proc_list;
+  auto_dispose< std::vector<gain_t*> > gain_list;
+  auto_dispose< std::vector<stats_t*> > stats_list;
+  auto_dispose< std::vector<benefit_t*> > benefit_list;
+  auto_dispose< std::vector<uptime_t*> > uptime_list;
+  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  auto_dispose< std::vector<rng_t*> > rng_list;
   std::array< std::vector<double>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<reforge_plot_data_t> > reforge_plot_data;
 
@@ -3159,7 +3159,7 @@ struct player_t : public noncopyable
   struct report_information_t
   {
     bool charts_generated, buff_lists_generated;
-    std::vector<action_sequence_data_t*> action_sequence;
+    auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
     std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
     std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
     std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;

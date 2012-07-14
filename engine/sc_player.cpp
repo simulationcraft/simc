@@ -600,7 +600,7 @@ player_t::player_t( sim_t*             s,
   executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
-  action_list( 0 ), action_list_default( 0 ), dot_list( 0 ),
+  action_list_default( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
@@ -610,8 +610,6 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
   deaths(), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
-  buff_list( 0 ), proc_list( 0 ), gain_list( 0 ), stats_list( 0 ), benefit_list( 0 ), uptime_list( 0 ), cooldown_list( 0 ),
-  rng_list( 0 ),
   resource_timeline_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
@@ -742,32 +740,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
 
 player_t::~player_t()
 {
-  range::dispose( action_list );
-
-  range::dispose( proc_list );
-
-  range::dispose( gain_list );
-
-  range::dispose( stats_list );
-
-  range::dispose( uptime_list );
-
-  range::dispose( benefit_list );
-
-  range::dispose( rng_list );
-
-  range::dispose( dot_list );
-
-  range::dispose( buff_list );
-
-  range::dispose( cooldown_list );
-
-  glyph_list.clear();
-
-  range::dispose( action_priority_list );
-
-  range::dispose( report_information.action_sequence );
-
   delete sets;
 }
 
