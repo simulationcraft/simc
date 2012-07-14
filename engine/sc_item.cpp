@@ -1393,13 +1393,12 @@ bool item_t::download_slot( item_t& item,
 
   if ( cb != cache::CURRENT )
   {
-    bool has_local = false;
-
     for ( unsigned i = 0; ! success && i < item.sim -> item_db_sources.size(); i++ )
     {
       const std::string& src = item.sim -> item_db_sources[ i ];
       if ( src == "local" )
-        has_local = true;
+        success = item_database::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                                rsuffix_id, gem_ids );
       else if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
@@ -1413,10 +1412,6 @@ bool item_t::download_slot( item_t& item,
         success = bcp_api::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                           rsuffix_id, gem_ids, cache::ONLY );
     }
-
-    if ( ! success && has_local )
-      success = item_database::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                                rsuffix_id, gem_ids );
   }
 
   if ( cb != cache::ONLY )

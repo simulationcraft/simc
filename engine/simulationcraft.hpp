@@ -5,8 +5,8 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "501"
-#define SC_MINOR_VERSION "11"
+#define SC_MAJOR_VERSION "503"
+#define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
 
@@ -3672,12 +3672,11 @@ public:
   virtual double composite_spell_crit()
   { return pet_crit(); }
 
-  // Assumption: Works similar to crit as specified in http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
   virtual double composite_attack_haste()
-  { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
+  { return owner -> composite_attack_haste(); }
 
   virtual double composite_spell_haste()
-  { return std::min( owner -> composite_attack_haste(), owner -> composite_spell_haste() ); }
+  { return owner -> composite_attack_haste(); }
 
   virtual double composite_attack_power();
 

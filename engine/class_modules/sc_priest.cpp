@@ -446,8 +446,10 @@ struct base_fiend_pet_t : public priest_pet_t
     shadowcrawl_action( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = util::ability_rank( owner -> level, 606, 90, 360, 85, 0, 1 );
-    main_hand_weapon.max_dmg    = util::ability_rank( owner -> level, 765, 90, 433, 85, 0, 1 );
+
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
+    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
+
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
@@ -497,6 +499,8 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     dismiss();
 
+    duration += timespan_t::from_seconds( 0.01 );
+
     priest_pet_t::summon( duration );
 
     if ( shadowcrawl_action )
@@ -520,7 +524,7 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
   shadowfiend_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "shadowfiend" ) :
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
-    direct_power_mod = 0.511421559;
+    direct_power_mod = 0.5;
   }
 
   virtual void init_spells()
@@ -540,7 +544,7 @@ struct mindbender_pet_t : public base_fiend_pet_t
   mindbender_pet_t( sim_t* sim, priest_t* owner, const std::string& name = "mindbender" ) :
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
   {
-    direct_power_mod = 0.511421559;
+    direct_power_mod = 0.5;
   }
 
   virtual void init_spells()
@@ -598,7 +602,7 @@ struct priest_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    stateless = true;
+    stateless   = true;
   }
 
   virtual void reset()
@@ -1830,11 +1834,9 @@ struct mind_blast_t : public priest_spell_t
 
   void consume_resource()
   {
-/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.consume_divine_insight_shadow -> check() )
       resource_consumed = 0.0;
     else
-*/
       resource_consumed = cost();
 
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
@@ -1849,10 +1851,9 @@ struct mind_blast_t : public priest_spell_t
 
   virtual double cost()
   {
-/* BUG: Still costs mana as of 15726
     if ( p() -> buffs.divine_insight_shadow -> check() )
       return 0.0;
-*/
+
     return priest_spell_t::cost();
   }
 
@@ -2431,9 +2432,8 @@ struct devouring_plague_t : public priest_spell_t
 
       devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
 
-      // BUG: Doesn't heal from ticks as of 15762
-      // double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
-      // p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
+      double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
+      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
 
       if ( proc_spell && dps_t -> orbs_used && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
       {
@@ -2716,57 +2716,28 @@ struct power_word_solace_t : public priest_spell_t
 
 struct shadow_word_insanity_t : public priest_spell_t
 {
-  shadow_word_insanity_t( priest_t* p, const std::string& options_str, bool dtr=false ) :
+  shadow_word_insanity_t( priest_t* p, const std::string& options_str ) :
     priest_spell_t( "shadow_word_insanity", p, p -> talents.power_word_solace -> ok() ? p -> find_class_spell( "Shadow Word: Insanity" ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
-
-    if ( ! dtr && player -> has_dtr )
-    {
-      dtr_action = new shadow_word_insanity_t( p, options_str, true );
-      dtr_action -> is_dtr_action = true;
-    }
   }
 
   virtual void impact_s( action_state_t* s )
   {
     priest_spell_t::impact_s( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
-      cancel_dot( td( s -> target ) -> dots.vampiric_touch );
-      cancel_dot( td( s -> target ) -> dots.devouring_plague );
-      p() -> procs.shadow_word_insanity_dot_removal -> occur();
-    }
-  }
-
-  double dot_multiplier( dot_t* d ) const
-  {
-    double dm = 0.0;
-
-    if ( d -> ticking && d -> current_tick < d -> num_ticks )
-    {
-      dm = 1.0 * d -> current_tick / ( d -> num_ticks - 1 );
-    }
-
-    return dm;
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t )
-  {
-    double am = 1.0;
-
-    am += dot_multiplier( td( t ) -> dots.shadow_word_pain );
-    am += dot_multiplier( td( t ) -> dots.devouring_plague );
-    am += dot_multiplier( td( t ) -> dots.vampiric_touch );
-
-    return priest_spell_t::composite_target_da_multiplier( t ) * am;
+    cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
+    p() -> procs.shadow_word_insanity_dot_removal -> occur();
   }
 
   virtual bool ready()
   {
     if ( ! p() -> buffs.shadowform -> check() )
+    {
+      return false;
+    }
+
+    if ( ! td() -> dots.shadow_word_pain -> ticking || td() -> dots.shadow_word_pain -> ticks() >= 2 )
     {
       return false;
     }
@@ -4873,13 +4844,14 @@ void priest_t::init_actions()
 
       action_list_str += init_use_racial_actions();
 
+      if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
+        add_action( "Shadow Word: Insanity", "if=num_targets<=4" );
+
       add_action( "Mind Blast", "if=num_targets<=4&cooldown_react" );
 
       if ( find_talent_spell( "From Darkness Comes Light" ) -> ok() )
         add_action( "Mind Spike", "if=num_targets<=4&buff.surge_of_darkness.react" );
 
-      if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
-        add_action( "Shadow Word: Insanity", "if=num_targets<=4&(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&!dot.devouring_plague.ticking)&((dot.shadow_word_pain.ticks_remain+dot.vampiric_touch.ticks_remain)=2)" );
 
       add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
 

@@ -113,6 +113,8 @@ bool parse_item_name( item_t& item, const item_data_t* item_data )
 
   item.armory_name_str = item_data -> name;
 
+  item.armory_id_str = util::to_string( item_data -> id );
+
   util::tokenize( item.armory_name_str );
 
   return true;
