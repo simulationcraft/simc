@@ -3676,7 +3676,7 @@ public:
   { return owner -> composite_attack_haste(); }
 
   virtual double composite_spell_haste()
-  { return owner -> composite_attack_haste(); }
+  { return owner -> composite_spell_haste(); }
 
   virtual double composite_attack_power();
 
