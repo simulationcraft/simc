@@ -498,7 +498,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48265, // Unholy Presence
            0,
     },
-    // Blood tree, 7 abilities
+    // Blood tree, 8 abilities
     {
        49222, // Bone Shield
        49028, // Dancing Rune Weapon
@@ -506,22 +506,25 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        55050, // Heart Strike
        56815, // Rune Strike
        48982, // Rune Tap
+      114866, // Soul Reaper
        55233, // Vampiric Blood
            0,
     },
-    // Frost tree, 4 abilities
+    // Frost tree, 5 abilities
     {
        49143, // Frost Strike
        49184, // Howling Blast
        49020, // Obliterate
        51271, // Pillar of Frost
+      130735, // Soul Reaper
            0,
     },
-    // Unholy tree, 5 abilities
+    // Unholy tree, 6 abilities
     {
        63560, // Dark Transformation
        85948, // Festering Strike
        55090, // Scourge Strike
+      130736, // Soul Reaper
        49206, // Summon Gargoyle
        49016, // Unholy Frenzy
            0,
