@@ -894,6 +894,13 @@ struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
     // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
   {
   }
+
+  void init()
+  {
+    base_t::init();
+
+    update_flags = snapshot_flags = 0;
+  }
 };
 
 // Mage Ignite specialization
