@@ -222,7 +222,7 @@ public:
     const spell_data_t* frost_bomb;
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
-    const spell_data_t* incanters_ward; // Active effect NYI
+    const spell_data_t* incanters_ward;
 
   } talents;
 private:
@@ -494,6 +494,10 @@ struct mirror_image_pet_t : public pet_t
       background        = true;
       may_crit          = true;
       stateless = true;
+      // FIXME: Estimate until spell database is updated
+      base_dd_min       = 950;
+      base_dd_max       = 1056;
+      direct_power_mod = 1.02;
     }
 
     virtual void execute()
@@ -523,6 +527,10 @@ struct mirror_image_pet_t : public pet_t
       may_crit          = true;
       background        = true;
       stateless = true;
+      // FIXME: Estimate until spell database is updated
+      base_dd_min       = 1496;
+      base_dd_max       = 1903;
+      direct_power_mod = 1.8;
     }
 
     virtual void execute()
@@ -552,6 +560,10 @@ struct mirror_image_pet_t : public pet_t
       may_crit          = true;
       background        = true;
       stateless = true;
+      // FIXME: Estimate until spell database is updated
+      base_dd_min       = 966;
+      base_dd_max       = 1065;
+      direct_power_mod = 1.02;
     }
 
     virtual void execute()
@@ -3456,7 +3468,9 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buffs.arcane_power -> value();
 
   if ( buffs.rune_of_power -> check() )
-    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
+    // FIXME: Hacking to deal with bad DBC data
+//    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
+    m *= 1.15;
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
@@ -3500,7 +3514,9 @@ double mage_t::composite_spell_power_multiplier()
 
   if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
   {
-    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+    // FIXME: Hacking to deal with bad DBC data
+//    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+    m *= 1.06;
   }
 
   m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
