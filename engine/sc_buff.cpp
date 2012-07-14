@@ -237,6 +237,8 @@ void buff_t::init()
   }
   cooldown -> duration = buff_cooldown;
 
+  uptime_pct.reserve( sim -> iterations );
+
 }
 
 // buff_t::~buff_t ==========================================================

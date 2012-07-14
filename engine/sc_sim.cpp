@@ -1420,6 +1420,7 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 4;
 
+  iteration_timeline.reserve( iterations );
   raid_dps.reserve( iterations );
   total_dmg.reserve( iterations );
   raid_hps.reserve( iterations );

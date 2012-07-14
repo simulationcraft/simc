@@ -2725,7 +2725,9 @@ struct uptime_common_t
 
   uptime_common_t( sim_t* s ) :
     last_start( timespan_t::min() ), iteration_uptime_sum( timespan_t::zero() ), uptime_sum( s -> statistics_level < 6 ), sim( s )
-  {}
+  {
+    uptime_sum.reserve( s -> iterations );
+  }
 
   void update( bool is_up )
   {
