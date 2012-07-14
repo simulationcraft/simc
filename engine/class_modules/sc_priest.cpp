@@ -121,6 +121,7 @@ public:
     // Holy
     const spell_data_t* meditation_holy;
     const spell_data_t* serendipity;
+    const spell_data_t* rapid_renewal;
 
     // Shadow
     const spell_data_t* devouring_plague;
@@ -2696,6 +2697,8 @@ struct power_word_solace_t : public priest_spell_t
       dtr_action -> is_dtr_action = true;
     }
 
+    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
+
     can_cancel_shadowform = false;
     castable_in_shadowform = false;
   }
@@ -4183,25 +4186,40 @@ struct prayer_of_mending_t : public priest_heal_t
 
 // Renew Spell ==============================================================
 
-struct divine_touch_t : public priest_heal_t
-{
-  divine_touch_t( priest_t* player ) :
-    priest_heal_t( "divine_touch", player, player -> find_spell( 63544 ) )
-  {
-    school          = SCHOOL_HOLY;
-    stats -> school = school;
-
-    background = true;
-    proc       = true;
-  }
-};
-
 struct renew_t : public priest_heal_t
 {
+  struct rapid_renewal_t : public priest_heal_t
+  {
+    rapid_renewal_t( priest_t* p ) :
+      priest_heal_t( "rapid_renewal", p, p -> specs.rapid_renewal )
+    {
+
+      background = true;
+      proc       = true;
+    }
+
+    void trigger( action_state_t* s )
+    {
+      base_dd_min = base_dd_max = s -> result_amount * data().effectN( 2 ).percent(); // FIXME: check actual spell data
+      target = s -> target;
+    }
+
+    virtual double composite_da_multiplier()
+    { return 1.0; }
+  };
+  rapid_renewal_t* rr;
+
   renew_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "renew", p, p -> find_class_spell( "Renew" ) )
+    priest_heal_t( "renew", p, p -> find_class_spell( "Renew" ) ),
+    rr( NULL )
   {
     parse_options( NULL, options_str );
+
+    if ( p -> specs.rapid_renewal )
+    {
+      rr = new rapid_renewal_t( p );
+      cooldown -> duration += p -> specs.rapid_renewal -> effectN( 1 ).time_value(); // FIXME: check actual spell data
+    }
 
     may_crit = false;
 
@@ -4220,6 +4238,14 @@ struct renew_t : public priest_heal_t
       am *= 1.0 + p() -> buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    priest_heal_t::impact_s( s );
+
+    if ( rr )
+      rr -> trigger( s );
   }
 };
 
@@ -4639,6 +4665,7 @@ void priest_t::init_spells()
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
   specs.serendipity                    = find_specialization_spell( "Serendipity" );
+  specs.rapid_renewal                  = find_specialization_spell( "Rapid Renewal" );
 
   // Shadow
   specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
