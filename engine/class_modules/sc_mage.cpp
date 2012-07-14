@@ -436,7 +436,7 @@ struct mirror_image_pet_t : public pet_t
     num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
   {
 
-    owner_coeff.sp_from_sp = 0.085;
+    owner_coeff.sp_from_sp = 0.05;
   }
 
   mage_t* o() const
@@ -884,7 +884,7 @@ struct mage_spell_t : public spell_t
 
     if ( frozen && p() -> passives.shatter -> ok() )
     {
-      c = c * 2.0 + 0.40;
+      c = c * 2.0 + 0.50;
     }
 
     return c;
@@ -1776,16 +1776,6 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier()
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( frozen )
-      am *= 1.0 + p() -> passives.shatter -> effectN( 2 ).percent();
-
-    return am;
-  }
-
 };
 
 // Frostfire Bolt Spell =====================================================
@@ -1824,15 +1814,6 @@ struct frostfire_bolt_t : public mage_spell_t
       return timespan_t::zero();
 
     return mage_spell_t::execute_time();
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p() -> buffs.brain_freeze -> check() * p() -> buffs.brain_freeze -> value();
-
-    return am;
   }
 
   virtual void execute()
