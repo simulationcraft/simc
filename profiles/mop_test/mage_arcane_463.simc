@@ -9,9 +9,7 @@ role=spell
 spec=arcane
 professions=enchanting=600/tailoring=600
 talents=111122
-# Disabling mirror_image glyph until spell database is updated
-#glyphs=evocation/mana_gem/slow/mirror_image
-glyphs=evocation/mana_gem/slow
+glyphs=evocation/mana_gem/slow/mirror_image
 actions=flask,type=warm_sun
 actions+=/food,type=mogu_fish_stew
 actions+=/arcane_brilliance

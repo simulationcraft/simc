@@ -421,6 +421,29 @@ struct mirror_image_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
+      if ( p -> o() -> pets.mirror_images[ 0 ] )
+      {
+        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "arcane_blast" );
+      }
+    }
+
+    virtual void execute()
+    {
+      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
+
+      spell_t::execute();
+
+      p -> arcane_charge -> trigger();
+    }
+
+    virtual double action_multiplier()
+    {
+      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
+      double am = spell_t::action_multiplier();
+
+      am *= 1.0 + p -> arcane_charge -> stack() * p -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+      return am;
     }
   };
 
@@ -432,6 +455,10 @@ struct mirror_image_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
+      if ( p -> o() -> pets.mirror_images[ 0 ] )
+      {
+        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fire_blast" );
+      }
     }
   };
 
@@ -443,6 +470,10 @@ struct mirror_image_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
+      if ( p -> o() -> pets.mirror_images[ 0 ] )
+      {
+        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fireball" );
+      }
     }
   };
 
@@ -454,6 +485,10 @@ struct mirror_image_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
+      if ( p -> o() -> pets.mirror_images[ 0 ] )
+      {
+        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "frostbolt" );
+      }
     }
   };
 
@@ -496,6 +531,16 @@ struct mirror_image_pet_t : public pet_t
     }
     pet_t::init_actions(); 
   }
+
+  buff_t* arcane_charge;
+  virtual void init_buffs()
+  {
+    player_t::init_buffs();
+    arcane_charge        = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
+                               .max_stack( find_spell( 36032 ) -> max_stacks() )
+                               .duration( find_spell( 36032 ) -> duration() );
+  }
+
 
   virtual double composite_player_multiplier( school_e school, action_t* a )
   {
@@ -2805,7 +2850,7 @@ void mage_t::create_pets()
   pets.water_elemental = create_pet( "water_elemental" );
   for ( int i = 0; i < 3; i++ )
   {
-    pets.mirror_images[ i ]  = create_pet( "mirror_image"  );
+    pets.mirror_images[ i ] = new pets::mirror_image_pet_t( sim, this );
     if ( i > 0 )
     {
       pets.mirror_images[ i ] -> quiet = 1;
