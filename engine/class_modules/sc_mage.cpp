@@ -126,7 +126,7 @@ public:
   struct pets_t
   {
     pet_t* water_elemental;
-    pet_t* mirror_image_3;
+    pet_t* mirror_image;
   } pets;
 
   // Procs
@@ -383,20 +383,6 @@ struct water_elemental_pet_t : public pet_t
   mage_t* o()
   { return debug_cast<mage_t*>( owner ); }
 
-  virtual void init_base()
-  {
-    pet_t::init_base();
-
-    // Stolen from Priest's Shadowfiend
-    base.attribute[ ATTR_STRENGTH  ] = 145;
-    base.attribute[ ATTR_AGILITY   ] =  38;
-    base.attribute[ ATTR_STAMINA   ] = 190;
-    base.attribute[ ATTR_INTELLECT ] = 133;
-
-    //health_per_stamina = 7.5;
-    //mana_per_intellect = 5;
-  }
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
@@ -426,241 +412,97 @@ struct water_elemental_pet_t : public pet_t
 
 struct mirror_image_pet_t : public pet_t
 {
-  int num_images;
-  int num_rotations;
-  std::vector<action_t*> sequences;
-  int sequence_finished;
-
-  mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image_3", true /*guardian*/ ),
-    num_images( 3 ), num_rotations( 2 ), sequence_finished( 0 )
-  {
-
-    owner_coeff.sp_from_sp = 0.05;
-  }
-
-  mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
 
   struct arcane_blast_t : public spell_t
   {
-    action_t* next_in_sequence;
-
-    arcane_blast_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) ), next_in_sequence( nis )
+    arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
+      spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
     {
-      may_crit          = true;
-      background        = true;
+      parse_options( NULL, options_str );
+      may_crit = true;
       stateless = true;
-    }
-
-    mirror_image_pet_t* p() const
-    { return static_cast<mirror_image_pet_t*>( player ); }
-
-    virtual double action_multiplier()
-    {
-      double am = spell_t::action_multiplier();
-
-      am *= 1.0 + p() -> o() ->  buffs.arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-
-      return am;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-      if ( next_in_sequence )
-      {
-        next_in_sequence -> schedule_execute();
-      }
-      else
-      {
-        p() -> sequence_finished++;
-
-        if ( p() -> sequence_finished == p() -> num_images )
-          p() -> dismiss();
-      }
     }
   };
 
   struct fire_blast_t : public spell_t
   {
-    action_t* next_in_sequence;
-
-    fire_blast_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_fire_blast", p, p -> find_pet_spell( "Fire Blast" ) ),
-      next_in_sequence( nis )
+    fire_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
+      spell_t( "fire_blast", p, p -> find_pet_spell( "Fire Blast" ) )
     {
-      background        = true;
-      may_crit          = true;
+      parse_options( NULL, options_str );
+      may_crit = true;
       stateless = true;
-      // FIXME: Estimate until spell database is updated
-      base_dd_min       = 950;
-      base_dd_max       = 1056;
-      direct_power_mod = 1.02;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-      if ( next_in_sequence )
-      {
-        next_in_sequence -> schedule_execute();
-      }
-      else
-      {
-        mirror_image_pet_t* mi = static_cast<mirror_image_pet_t*>( player );
-        mi -> sequence_finished++;
-        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
-      }
     }
   };
 
   struct fireball_t : public spell_t
   {
-    action_t* next_in_sequence;
-
-    fireball_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_fireball", p, p -> find_pet_spell( "Fireball" ) ),
-      next_in_sequence( nis )
+    fireball_t( mirror_image_pet_t* p, const std::string& options_str ):
+      spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
     {
-      may_crit          = true;
-      background        = true;
+      parse_options( NULL, options_str );
+      may_crit = true;
       stateless = true;
-      // FIXME: Estimate until spell database is updated
-      base_dd_min       = 1496;
-      base_dd_max       = 1903;
-      direct_power_mod = 1.8;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-      if ( next_in_sequence )
-      {
-        next_in_sequence -> schedule_execute();
-      }
-      else
-      {
-        mirror_image_pet_t* mi = static_cast<mirror_image_pet_t*>( player );
-        mi -> sequence_finished++;
-        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
-      }
     }
   };
 
   struct frostbolt_t : public spell_t
   {
-    action_t* next_in_sequence;
-
-    frostbolt_t( mirror_image_pet_t* p, action_t* nis ):
-      spell_t( "mirror_frost_bolt", p, p -> find_pet_spell( "Frostbolt" ) ),
-      next_in_sequence( nis )
+    frostbolt_t( mirror_image_pet_t* p, const std::string& options_str ):
+      spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
     {
-      may_crit          = true;
-      background        = true;
+      parse_options( NULL, options_str );
+      may_crit = true;
       stateless = true;
-      // FIXME: Estimate until spell database is updated
-      base_dd_min       = 966;
-      base_dd_max       = 1065;
-      direct_power_mod = 1.02;
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-      if ( next_in_sequence )
-      {
-        next_in_sequence -> schedule_execute();
-      }
-      else
-      {
-        mirror_image_pet_t* mi = static_cast<mirror_image_pet_t*>( player );
-        mi -> sequence_finished++;
-        if ( mi -> sequence_finished == mi -> num_images ) mi -> dismiss();
-      }
     }
   };
 
-  virtual void init_base()
+  mage_t* o() const
+  { return static_cast<mage_t*>( owner ); }
+
+  mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
+    pet_t( sim, owner, "mirror_image" )
   {
-    pet_t::init_base();
-
-    // Stolen from Priest's Shadowfiend
-    base.attribute[ ATTR_STRENGTH  ] = 145;
-    base.attribute[ ATTR_AGILITY   ] =  38;
-    base.attribute[ ATTR_STAMINA   ] = 190;
-    base.attribute[ ATTR_INTELLECT ] = 133;
-
-    //health_per_stamina = 7.5;
-    //mana_per_intellect = 5;
-  }
-
-  virtual void init_actions()
-  {
-    for ( int i = 0; i < num_images; i++ )
+    if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
     {
-      action_t* front=0;
-
-      if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
+      if ( o() -> specialization() == MAGE_FIRE )
       {
-        // Fire/Arcane Mages cast 9 Fireballs/Arcane Blasts
-        num_rotations = 9;
-        for ( int j = 0; j < num_rotations; j++ )
-        {
-          if ( o() -> specialization() == MAGE_FIRE )
-          {
-            front = new fireball_t ( this, front );
-          }
-          else
-          {
-            front = new arcane_blast_t ( this, front );
-          }
-        }
+        action_list_str = "fireball";
       }
       else
       {
-        // Mirror Image casts 11 Frostbolts, 4 Fire Blasts
-        front = new fire_blast_t( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new fire_blast_t( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new fire_blast_t( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new fire_blast_t( this, front );
-        front = new frostbolt_t ( this, front );
-        front = new frostbolt_t ( this, front );
+        action_list_str = "arcane_blast";
       }
-      sequences.push_back( front );
     }
-
-    pet_t::init_actions();
-  }
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
-  {
-    pet_t::summon( duration );
-
-    sequence_finished = 0;
-
-    current.distance = owner -> current.distance;
-
-    for ( int i = 0; i < num_images; i++ )
+    else
     {
-      sequences[ i ] -> schedule_execute();
+      action_list_str = "fire_blast/frostbolt";
     }
+    create_options();
+
+    owner_coeff.sp_from_sp = 0.05;
+  }
+    
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
+    if ( name == "fire_blast" ) return new fire_blast_t( this, options_str );
+    if ( name == "fireball" ) return new fireball_t( this, options_str );
+    if ( name == "frostbolt" ) return new frostbolt_t ( this, options_str );
+
+    return pet_t::create_action( name, options_str );
   }
 
-  virtual void halt()
+  virtual double composite_player_multiplier( school_e school, action_t* a )
   {
-    pet_t::halt();
-    dismiss(); // FIXME! Interrupting them is too hard, just dismiss for now.
+    double m = pet_t::composite_player_multiplier( school, a );
+
+    // Orc racial
+    if ( owner -> race == RACE_ORC )
+      m *= 1.05;
+
+    return m;
   }
 };
 
@@ -2210,7 +2052,7 @@ struct mana_gem_t : public action_t
   }
 };
 
-// Mirror Image Spell =======================================================
+// Water Elemental Spell ====================================================
 
 struct mirror_image_t : public mage_spell_t
 {
@@ -2219,23 +2061,22 @@ struct mirror_image_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     harmful = false;
-
-    num_ticks = 0;
-
-    if ( p -> pets.mirror_image_3 )
-    {
-      stats -> add_child( p -> pets.mirror_image_3 -> get_stats( "mirror_arcane_blast" ) );
-      stats -> add_child( p -> pets.mirror_image_3 -> get_stats( "mirror_fire_blast" ) );
-      stats -> add_child( p -> pets.mirror_image_3 -> get_stats( "mirror_fireball" ) );
-      stats -> add_child( p -> pets.mirror_image_3 -> get_stats( "mirror_frost_bolt" ) );
-    }
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
   {
     mage_spell_t::execute();
 
-    p() -> pets.mirror_image_3 -> summon();
+    p() -> pets.mirror_image -> summon();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! mage_spell_t::ready() )
+      return false;
+
+    return ! ( p() -> pets.mirror_image && ! p() -> pets.mirror_image -> current.sleeping );
   }
 };
 
@@ -2532,9 +2373,6 @@ struct summon_water_elemental_t : public mage_spell_t
 
     return ! ( p() -> pets.water_elemental && ! p() -> pets.water_elemental -> current.sleeping );
   }
-
-  virtual bool usable_moving()
-  { return true; }
 };
 
 // Choose Rotation ==========================================================
@@ -2954,7 +2792,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "mirror_image_3"  ) return new pets::mirror_image_pet_t   ( sim, this );
+  if ( pet_name == "mirror_image"  ) return new pets::mirror_image_pet_t   ( sim, this );
   if ( pet_name == "water_elemental" ) return new pets::water_elemental_pet_t( sim, this );
 
   return 0;
@@ -2964,7 +2802,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
 void mage_t::create_pets()
 {
-  pets.mirror_image_3  = create_pet( "mirror_image_3"  );
+  pets.mirror_image  = create_pet( "mirror_image"  );
   pets.water_elemental = create_pet( "water_elemental" );
 }
 
@@ -3468,9 +3306,7 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buffs.arcane_power -> value();
 
   if ( buffs.rune_of_power -> check() )
-    // FIXME: Hacking to deal with bad DBC data
-//    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
-    m *= 1.15;
+    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
@@ -3514,9 +3350,7 @@ double mage_t::composite_spell_power_multiplier()
 
   if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
   {
-    // FIXME: Hacking to deal with bad DBC data
-//    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
-    m *= 1.06;
+    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
   }
 
   m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
