@@ -46,7 +46,7 @@ actions+=/ice_lance,if=buff.fingers_of_frost.react&(buff.alter_time.up|cooldown.
 actions+=/frozen_orb,if=target.time_to_die>=4&buff.fingers_of_frost.stack<2
 actions+=/mana_gem,if=mana.pct<83
 actions+=/evocation,if=!talent.invocation.enabled&!talent.rune_of_power.enabled&mana.pct<10&target.time_to_die>=30&(buff.icy_veins.react|buff.bloodlust.react)
-#actions+=/mirror_image,if=target.time_to_die>=25
+actions+=/mirror_image,if=target.time_to_die>=25
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
 actions+=/frostbolt
 actions+=/evocation,if=!talent.rune_of_power.enabled

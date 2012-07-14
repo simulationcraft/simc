@@ -126,7 +126,7 @@ public:
   struct pets_t
   {
     pet_t* water_elemental;
-    pet_t* mirror_image;
+    pet_t* mirror_images[ 3 ];
   } pets;
 
   // Procs
@@ -457,11 +457,27 @@ struct mirror_image_pet_t : public pet_t
     }
   };
 
+  mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
+    pet_t( sim, owner, "mirror_image" )
+  {
+    owner_coeff.sp_from_sp = 0.05;
+  }
+    
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
+    if ( name == "fire_blast" ) return new fire_blast_t( this, options_str );
+    if ( name == "fireball" ) return new fireball_t( this, options_str );
+    if ( name == "frostbolt" ) return new frostbolt_t ( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+
   mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
 
-  mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image" )
+  virtual void init_actions()
   {
     if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
     {
@@ -478,20 +494,7 @@ struct mirror_image_pet_t : public pet_t
     {
       action_list_str = "fire_blast/frostbolt";
     }
-    create_options();
-
-    owner_coeff.sp_from_sp = 0.05;
-  }
-    
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
-    if ( name == "fire_blast" ) return new fire_blast_t( this, options_str );
-    if ( name == "fireball" ) return new fireball_t( this, options_str );
-    if ( name == "frostbolt" ) return new frostbolt_t ( this, options_str );
-
-    return pet_t::create_action( name, options_str );
+    pet_t::init_actions(); 
   }
 
   virtual double composite_player_multiplier( school_e school, action_t* a )
@@ -2052,7 +2055,7 @@ struct mana_gem_t : public action_t
   }
 };
 
-// Water Elemental Spell ====================================================
+// Mirror Image Spell ====================================================
 
 struct mirror_image_t : public mage_spell_t
 {
@@ -2067,16 +2070,13 @@ struct mirror_image_t : public mage_spell_t
   virtual void execute()
   {
     mage_spell_t::execute();
-
-    p() -> pets.mirror_image -> summon();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! mage_spell_t::ready() )
-      return false;
-
-    return ! ( p() -> pets.mirror_image && ! p() -> pets.mirror_image -> current.sleeping );
+    if ( p() -> pets.mirror_images[ 0 ] )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        p() -> pets.mirror_images[ i ] -> summon( data().duration() );
+      }
+    }
   }
 };
 
@@ -2802,8 +2802,15 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 
 void mage_t::create_pets()
 {
-  pets.mirror_image  = create_pet( "mirror_image"  );
   pets.water_elemental = create_pet( "water_elemental" );
+  for ( int i = 0; i < 3; i++ )
+  {
+    pets.mirror_images[ i ]  = create_pet( "mirror_image"  );
+    if ( i > 0 )
+    {
+      pets.mirror_images[ i ] -> quiet = 1;
+    }
+  }
 }
 
 // mage_t::init_spells ======================================================
