@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15799
+// Class based active abilities, wow build 15851
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -133,10 +133,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        85673, // Word of Glory
            0,
     },
-    // Holy tree, 9 abilities
+    // Holy tree, 10 abilities
     {
        53563, // Beacon of Light
         2812, // Denounce
+       31842, // Divine Favor
        82326, // Divine Light
        54428, // Divine Plea
        86669, // Guardian of Ancient Kings
@@ -178,7 +179,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 41 abilities
+    // General tree, 42 abilities
     {
         3044, // Arcane Shot
        61648, // Aspect of the Beast
@@ -210,6 +211,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34477, // Misdirection
         2643, // Multi-Shot
         3045, // Rapid Fire
+       23989, // Readiness
          982, // Revive Pet
         1513, // Scare Beast
        19503, // Scatter Shot
@@ -1012,7 +1014,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (24)
 
-// Talent tree specialization abilities, wow build 15799
+// Talent tree specialization abilities, wow build 15851
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1114,6 +1116,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53563, // Beacon of Light
        88821, // Daybreak
         2812, // Denounce
+       31842, // Divine Favor
        82326, // Divine Light
        54428, // Divine Plea
        86669, // Guardian of Ancient Kings
@@ -1320,6 +1323,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        95861, // Meditation
          596, // Prayer of Healing
          527, // Purify
+       95649, // Rapid Renewal
        63733, // Serendipity
        20711, // Spirit of Redemption
            0,
@@ -1366,6 +1370,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81127, // Sanguine Fortitude
        81132, // Scarlet Fever
        49509, // Scent of Blood
+      114866, // Soul Reaper
        55233, // Vampiric Blood
        93099, // Vengeance
        50029, // Veteran of the Third War
@@ -1387,6 +1392,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51271, // Pillar of Frost
        86113, // Plate Specialization
        59057, // Rime
+      130735, // Soul Reaper
        66192, // Threat of Thassarian
        55610, // Unholy Aura
            0,
@@ -1403,6 +1409,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        56835, // Reaping
        55090, // Scourge Strike
        49572, // Shadow Infusion
+      130736, // Soul Reaper
        49530, // Sudden Doom
        49206, // Summon Gargoyle
        55610, // Unholy Aura
@@ -1782,7 +1789,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15799
+// Class mastery abilities, wow build 15851
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2008,7 +2015,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15799
+// Racial abilities, wow build 15851
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2720,7 +2727,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15799
+// Glyph spells for classes, wow build 15851
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2805,6 +2812,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        57955, // Glyph of Flash of Light
        54930, // Glyph of Focused Shield
        63219, // Glyph of Hammer of the Righteous
+       54938, // Glyph of Harsh Words
        63224, // Glyph of Holy Shock
        54923, // Glyph of Holy Wrath
        54937, // Glyph of Illumination
@@ -2818,7 +2826,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        54931, // Glyph of Turn Evil
        54936, // Glyph of Word of Glory
        63222, // Glyph of the Alabaster Shield
-       54938, // Glyph of the Ascetic Crusader
       119477, // Glyph of the Battle Healer
            0,
     },
@@ -3295,7 +3302,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15799
+// Tier item set bonuses for class, wow build 15851
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {

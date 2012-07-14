@@ -279,7 +279,6 @@ void item_t::encode_options()
   // Re-build options_str for use in saved profiles
 
   std::string& o = options_str;
-  std::string& c = comment_str;
 
   o = encoded_name_str;
 

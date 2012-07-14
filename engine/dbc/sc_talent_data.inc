@@ -1,6 +1,6 @@
 #define TALENT_SIZE (221)
 
-// 221 talents, wow build 15799
+// 221 talents, wow build 15851
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -64,7 +64,7 @@ static struct talent_data_t __talent_data[] = {
   { "Repentance"                        , 17575, 0x00, 0x0002, 0x00,     0,   1,   1,   20066,         0,  0 },
   { "Burden of Guilt"                   , 17577, 0x00, 0x0002, 0x00,     0,   2,   1,  110301,         0,  0 },
   { "Selfless Healer"                   , 17581, 0x00, 0x0002, 0x00,     0,   0,   2,   85804,         0,  0 },
-  { "Eternal Flame"                     , 17583, 0x00, 0x0002, 0x00,     0,   1,   2,  114163,         0,  0 },
+  { "Eternal Flame"                     , 17583, 0x00, 0x0002, 0x00,     0,   1,   2,  114163,     85673,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Sacred Shield"                     , 17585, 0x00, 0x0002, 0x00,     0,   2,   2,   20925,         0,  0 },
   { "Hand of Purity"                    , 17589, 0x00, 0x0002, 0x00,     0,   0,   3,  114039,         0,  0 },
@@ -185,7 +185,7 @@ static struct talent_data_t __talent_data[] = {
   { "Exhilaration"                      , 19350, 0x00, 0x0004, 0x00,     0,   0,   2,  109304,         0,  0 },
   { "Spirit Bond"                       , 19351, 0x00, 0x0004, 0x00,     0,   2,   2,  109212,         0,  0 },
   { "Fervor"                            , 19352, 0x00, 0x0004, 0x00,     0,   0,   3,   82726,         0,  0 },
-  { "Readiness"                         , 19353, 0x00, 0x0004, 0x00,     0,   1,   3,   23989,         0,  0 },
+  { "Dire Beast"                        , 19353, 0x00, 0x0004, 0x00,     0,   1,   3,  120679,         0,  0 },
   { "Posthaste"                         , 19354, 0x00, 0x0004, 0x00,     0,   0,   0,  109215,         0,  0 },
   { "Aspect of the Iron Hawk"           , 19356, 0x00, 0x0004, 0x00,     0,   1,   2,  109260,     13165,  0 },
   { "Glaive Toss"                       , 19357, 0x00, 0x0004, 0x00,     0,   0,   5,  117050,         0,  0 },
@@ -193,7 +193,7 @@ static struct talent_data_t __talent_data[] = {
   { "Binding Shot"                      , 19359, 0x00, 0x0004, 0x00,     0,   2,   1,  109248,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "A Murder of Crows"                 , 19360, 0x00, 0x0004, 0x00,     0,   0,   4,  120657,         0,  0 },
-  { "Dire Beast"                        , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  120679,         0,  0 },
+  { "Blink Strike"                      , 19361, 0x00, 0x0004, 0x00,     0,   1,   4,  130392,         0,  0 },
   { "Lynx Rush"                         , 19362, 0x00, 0x0004, 0x00,     0,   2,   4,  120697,         0,  0 },
   { "Narrow Escape"                     , 19363, 0x00, 0x0004, 0x00,     0,   1,   0,  109298,         0,  0 },
   { "Crouching Tiger, Hidden Chimera"   , 19364, 0x00, 0x0004, 0x00,     0,   2,   0,  118675,         0,  0 },
