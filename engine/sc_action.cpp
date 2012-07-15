@@ -295,7 +295,6 @@ action_t::action_t( action_e       ty,
   stateless = false;
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
-  state_cache = 0;
   execute_state = 0;
   pre_execute_state = 0;
   action_list = "";
@@ -377,12 +376,7 @@ action_t::~action_t()
     delete interrupt_if_expr;
   }
 
-  while ( state_cache )
-  {
-    action_state_t* s = state_cache;
-    state_cache = s -> next;
-    delete s;
-  }
+  range::dispose( state_cache );
 }
 
 // action_t::parse_data =====================================================

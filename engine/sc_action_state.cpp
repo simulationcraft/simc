@@ -9,11 +9,10 @@ action_state_t* action_t::get_state( const action_state_t* other )
 {
   action_state_t* s = 0;
 
-  if ( state_cache != 0 )
+  if( state_cache.size() > 0 )
   {
-    s = state_cache;
-    state_cache = s -> next;
-    s -> next = 0;
+    s = state_cache.back();
+    state_cache.pop_back();
   }
   else
     s = new_state();
@@ -32,8 +31,7 @@ action_state_t* action_t::new_state()
 
 void action_t::release_state( action_state_t* s )
 {
-  s -> next = state_cache;
-  state_cache = s;
+  state_cache.push_back( s );
 }
 
 void action_state_t::copy_state( const action_state_t* o )
@@ -68,8 +66,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
   da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
-  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
-  next( 0 )
+  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 )
 {
 }
 

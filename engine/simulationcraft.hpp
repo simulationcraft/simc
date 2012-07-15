@@ -3998,7 +3998,7 @@ struct action_t
   virtual player_t* find_target_by_number( int number );
 
   /* New stuff */
-  action_state_t* state_cache;
+  std::vector<action_state_t*> state_cache;
   action_state_t* execute_state; /* State of the last execute() */
   action_state_t* pre_execute_state; /* Optional - if defined before execute(), will be copied in */
   uint32_t snapshot_flags;
@@ -4070,8 +4070,6 @@ struct action_state_t
   double          ta_multiplier;
   double          target_da_multiplier;
   double          target_ta_multiplier;
-  // Cache pointer
-  action_state_t* next;
 
   action_state_t( action_t*, player_t* );
   virtual ~action_state_t() {};
