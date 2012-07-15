@@ -12,11 +12,9 @@ namespace { // UNNAMED NAMESPACE
 
 namespace spells {}
 namespace heals  {}
-namespace pets   {}
 
 using namespace spells;
 using namespace heals;
-using namespace pets;
 
 struct priest_t;
 
@@ -2333,7 +2331,7 @@ struct devouring_plague_t : public priest_spell_t
 
       action_state_t::copy_state( o );
 
-      const devouring_plague_state_t* dps_t = static_cast< const devouring_plague_state_t* >( o );
+      const devouring_plague_state_t* dps_t = debug_cast< const devouring_plague_state_t* >( o );
       orbs_used = dps_t -> orbs_used;
     }
   };
@@ -2362,6 +2360,13 @@ struct devouring_plague_t : public priest_spell_t
       {
         proc_spell = new devouring_plague_mastery_t( p );
       }
+    }
+
+    virtual void reset()
+    {
+      priest_spell_t::reset();
+
+      special_tick_dmg = 0;
     }
 
     virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
@@ -2430,7 +2435,7 @@ struct devouring_plague_t : public priest_spell_t
     {
       priest_spell_t::tick( d );
 
-      devouring_plague_state_t* dps_t = static_cast< devouring_plague_state_t* >( d -> state );
+      devouring_plague_state_t* dps_t = debug_cast< devouring_plague_state_t* >( d -> state );
 
       double a = data().effectN( 3 ).percent() / 100.0 * dps_t -> orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
       p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.devouring_plague_health );
