@@ -320,7 +320,7 @@ void register_landslide( player_t* p, const std::string& enchant, weapon_t* w, c
 {
   if ( enchant == "landslide" )
   {
-    stat_buff_t* buff = stat_buff_creator_t( p, "landslide_" + weapon_appendix )
+    stat_buff_t* buff = stat_buff_creator_t( p, "landslide" + weapon_appendix )
                         .spell( p -> find_spell( 74245 ) )
                         .activated( false )
                         .add_stat( STAT_ATTACK_POWER, 1000 );
@@ -332,7 +332,7 @@ void register_mongoose( player_t* p, const std::string& enchant, weapon_t* w, co
 {
   if ( enchant == "mongoose" )
   {
-    p -> buffs.mongoose_mh = stat_buff_creator_t( p, "mongoose_" + weapon_appendix )
+    p -> buffs.mongoose_mh = stat_buff_creator_t( p, "mongoose" + weapon_appendix )
                              .duration( timespan_t::from_seconds( 15 ) )
                              .activated( false )
                              .add_stat( STAT_AGILITY, 120 );
@@ -435,7 +435,7 @@ void register_windwalk( player_t* p, const std::string& enchant, weapon_t* w, co
 {
   if ( enchant == "windwalk" )
   {
-    stat_buff_t* buff = stat_buff_creator_t( p, "windwalk_" + weapon_appendix )
+    stat_buff_t* buff = stat_buff_creator_t( p, "windwalk" + weapon_appendix )
                         .duration( timespan_t::from_seconds( 10 ) )
                         .cd( timespan_t::from_seconds( 45 ) )
                         .chance( 0.15 )
@@ -449,7 +449,7 @@ void register_berserking( player_t* p, const std::string& enchant, weapon_t* w, 
 {
   if ( enchant == "berserking" )
   {
-    stat_buff_t* buff = stat_buff_creator_t( p, "berserking_" + weapon_appendix )
+    stat_buff_t* buff = stat_buff_creator_t( p, "berserking" + weapon_appendix )
                         .max_stack( 1 )
                         .duration( timespan_t::from_seconds( 15 ) )
                         .cd( timespan_t::zero() )
@@ -508,7 +508,7 @@ void register_elemental_force( player_t* p, const std::string& mh_enchant, const
   {
     if ( mh_enchant == "elemental_force" )
     {
-      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force_mh", p, mhw, 1, SCHOOL_ELEMENTAL, 3000, 0, 3.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
+      action_callback_t* cb = new weapon_discharge_proc_callback_t( "elemental_force", p, mhw, 1, SCHOOL_ELEMENTAL, 3000, 0, 3.0/*PPM*/, timespan_t::from_seconds( 0.01 )/*CD*/ );
       p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
     }
     if ( oh_enchant == "elemental_force" )
