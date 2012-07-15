@@ -138,6 +138,7 @@ public:
 
   // Pets
   pet_t* pet_treants[ 3 ];
+  pet_t* pet_mirror_images[ 3 ];
 
   // Auto-attacks
   melee_attack_t* cat_melee_attack;
@@ -149,6 +150,7 @@ public:
   struct buffs_t
   {
     // DONE
+    buff_t* astral_empowerment;
     buff_t* berserk;
     buff_t* cat_form;
     buff_t* celestial_alignment;
@@ -806,79 +808,48 @@ struct druid_spell_t : public druid_action_t<spell_t>
 };
 
 // ==========================================================================
-// Pet Treants
+// Pets and Guardians
 // ==========================================================================
 
-struct treants_pet_t : public pet_t
-{
-  struct melee_t : public melee_attack_t
-  {
-    melee_t( player_t* player ) :
-      melee_attack_t( "treant_melee", player )
-    {
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      background = true;
-      repeating = true;
-      may_crit = true;
+// Symbiosis Mirror Images
 
-      // Model the three Treants as one actor hitting 3x hard
-      base_multiplier *= 3.0;
+struct symbiosis_mirror_images_t : public pet_t
+{
+  // FIX ME: Currently a copy of treants, which spells do ththese cast?
+  struct wrath_t : public spell_t
+  {
+    wrath_t( symbiosis_mirror_images_t* player ) :
+      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+    {
+      stateless = true;
+
+      if ( player -> o() -> pet_mirror_images[ 0 ] )
+        stats = player -> o() -> pet_mirror_images[ 0 ] -> get_stats( "wrath" );
     }
   };
 
-  treants_pet_t( sim_t* sim, druid_t* owner, const std::string& pet_name ) :
-    pet_t( sim, owner, pet_name )
+  druid_t* o() { return static_cast< druid_t* >( owner ); }
+
+  symbiosis_mirror_images_t( sim_t* sim, druid_t* owner ) :
+    pet_t( sim, owner, "mirror_image", true /*GUARDIAN*/ )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 580;
-    main_hand_weapon.max_dmg    = 580;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
+    owner_coeff.sp_from_sp = 1.00;
+    action_list_str = "wrath";
   }
 
   virtual void init_base()
   {
     pet_t::init_base();
-
-    // At 85 base AP of 932
-    base.attribute[ ATTR_STRENGTH  ] = 476;
-    base.attribute[ ATTR_AGILITY   ] = 113;
-    base.attribute[ ATTR_STAMINA   ] = 361;
-    base.attribute[ ATTR_INTELLECT ] = 65;
-    base.attribute[ ATTR_SPIRIT    ] = 109;
-
-    base.attack_crit  = .05;
-    base.attack_power = -20;
-    initial.attack_power_per_strength = 2.0;
-
-    main_hand_attack = new melee_t( this );
   }
 
-  virtual double composite_attack_power()
-  {
-    double ap = pet_t::composite_attack_power();
-    ap += 0.57 * owner -> composite_spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier();
-    return ap;
-  }
+  virtual resource_e primary_resource() { return RESOURCE_MANA; }
 
-  virtual double composite_attack_hit()
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
   {
-    return owner -> composite_spell_hit();
-  }
+    if ( name == "wrath"  ) return new wrath_t( this );
 
-  virtual double composite_attack_expertise( weapon_t* )
-  {
-    // Hit scales that if they are hit capped, you're expertise capped.
-    return owner -> composite_spell_hit() * 26.0 / 17.0;
-  }
-
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
-                               bool   waiting=false )
-  {
-    pet_t::schedule_ready( delta_time, waiting );
-    if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
+    return pet_t::create_action( name, options_str );
   }
 };
 
@@ -924,9 +895,10 @@ struct treants_balance_t : public pet_t
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
   treants_balance_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+    pet_t( sim, owner, "treant", false /*GUARDIAN*/ )
   {
     owner_coeff.sp_from_sp = 1.00;
+    action_list_str = "wrath";
   }
 
   virtual void init_base()
@@ -948,13 +920,6 @@ struct treants_balance_t : public pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
 
     main_hand_attack = new melee_t( this );
-  }
-
-  void init_actions()
-  {
-    action_list_str = "wrath";
-
-    pet_t::init_actions();
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
@@ -1005,7 +970,7 @@ struct treants_feral_t : public pet_t
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
   treants_feral_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+    pet_t( sim, owner, "treant", false /*GUARDIAN*/ )
   {
     // FIX ME
     owner_coeff.ap_from_ap = 1.00;
@@ -1095,6 +1060,15 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
     return;
 
   druid_t* p = s -> p();
+  
+  // Fix me: currently no spelldata in dbc
+  if ( p -> buff.astral_empowerment -> up() && ! s -> channeled )
+  {
+    // W/SS/SF always use a charge, it's possible to waste them if you have
+    // the wrong eclipse up or under CA!
+    gain *= 1 + p -> buff.astral_empowerment -> data().effectN( 1 ).percent();
+    p -> buff.astral_empowerment -> decrement();
+  }
 
   if ( p -> buff.celestial_alignment -> check() )
     return;
@@ -3178,6 +3152,7 @@ struct faerie_fire_t : public druid_spell_t
 
     if ( p() -> specialization() == DRUID_BALANCE )
     {
+      p() -> buff.astral_empowerment -> trigger( 3 );
       p() -> buff.lunar_empowerment -> trigger( 3 );
       p() -> buff.solar_empowerment -> trigger( 3 );
     }
@@ -4297,6 +4272,9 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
     if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
     if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
   }
+  
+  if ( pet_name == "mirror_image" ) return new symbiosis_mirror_images_t( sim, this );
+  
   return 0;
 }
 
@@ -4306,9 +4284,8 @@ void druid_t::create_pets()
 {
   for ( int i = 0; i < 3; i++ )
   {
-    pet_treants[ i ] = create_pet( "treants" );
-    if ( i > 0 )
-      pet_treants[ i ] -> quiet = 1;
+    pet_treants[ i ]       = create_pet( "treants" );
+    if ( specialization() == DRUID_BALANCE ) pet_mirror_images[ i ] = create_pet( "mirror_image" );
   }
 }
 
@@ -4528,6 +4505,8 @@ void druid_t::init_buffs()
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
+  buff.astral_empowerment    = buff_creator_t( this, "astral_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 3 ).trigger() )
+                               .max_stack( 3 );
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 1 ).trigger() )
                                .max_stack( 3 );
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 2 ).trigger() )
