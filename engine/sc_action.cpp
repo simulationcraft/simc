@@ -2152,7 +2152,13 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
 {
   if ( ! hasted_ticks ) return num_ticks;
 
-  assert( player_haste > 0.0 );
+#ifndef NDEBUG
+  if ( haste <= 0.0 )
+  {
+    sim -> errorf( "%s action_t::hasted_num_ticks, action %s haste <= 0.0", player -> name(), name() );
+    assert( false );
+  }
+#endif
 
   // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
   // It's important that we're accurate here so that we model haste breakpoints correctly.

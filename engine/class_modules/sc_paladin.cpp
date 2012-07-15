@@ -317,6 +317,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       background = true;
       repeating  = true;
       trigger_gcd = timespan_t::zero();
+      stateless = true;
 
       owner = p -> o();
     }
@@ -324,7 +325,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     virtual void execute()
     {
       melee_attack_t::execute();
-      if ( result_is_hit() )
+      if ( result_is_hit( execute_state -> result ) )
       {
         owner -> buffs.ancient_power -> trigger();
       }
@@ -384,6 +385,7 @@ struct paladin_action_t : public Base
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
+    ab::stateless = true;
   }
 
   paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
@@ -425,14 +427,14 @@ struct paladin_heal_t : public paladin_action_t<heal_t>
 
   virtual void execute();
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    base_t::player_buff();
+    double am = base_t::action_multiplier();
 
     if ( p() -> active_seal == SEAL_OF_INSIGHT )
-    {
-      player_multiplier *= 1.0 + data().effectN( 2 ).percent();
-    }
+      am *= 1.0 + data().effectN( 2 ).percent();
+
+    return am;
   }
 };
 
@@ -440,7 +442,7 @@ struct paladin_heal_t : public paladin_action_t<heal_t>
 // Paladin Attacks
 // ==========================================================================
 
-struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
+struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 {
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
@@ -457,9 +459,9 @@ struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
     special = true;
   }
 
-  virtual double haste()
+  virtual double composite_haste()
   {
-    return use_spell_haste ? p() -> composite_spell_haste() : base_t::haste();
+    return use_spell_haste ? p() -> composite_spell_haste() : base_t::composite_haste();
   }
 
   virtual timespan_t gcd()
@@ -469,18 +471,13 @@ struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
       timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
 
-      t *= haste();
+      t *= composite_haste();
       if ( t < min_gcd ) t = min_gcd;
 
       return t;
     }
     else
       return base_t::gcd();
-  }
-
-  virtual double total_haste()
-  {
-    return use_spell_haste ? p() -> composite_spell_haste() : base_t::total_haste();
   }
 
   virtual void execute()
@@ -502,7 +499,7 @@ struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
       }
     }
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! p() -> guardian_of_ancient_kings -> current.sleeping )
       {
@@ -528,21 +525,20 @@ struct paladin_melee_attack_t : public paladin_action_t<melee_attack_t>
           p() -> active_seal_of_truth_dot -> execute();
           if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
           break;
-        default:
-          ;
+        default: break;
         }
       }
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    base_t::player_buff();
+    double am = base_t::action_multiplier();
 
     if ( p() -> buffs.divine_shield -> up() )
-    {
-      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
-    }
+      am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -558,14 +554,14 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
   {
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    base_t::player_buff();
+    double am = base_t::action_multiplier();
 
     if ( p() -> buffs.divine_shield -> up() )
-    {
-      player_multiplier *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
-    }
+      am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void execute()
@@ -710,7 +706,7 @@ struct melee_t : public paladin_melee_attack_t
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> passives.the_art_of_war -> ok() && sim -> roll( p() -> passives.the_art_of_war -> proc_chance() ) )
       {
@@ -773,10 +769,13 @@ struct ancient_fury_t : public paladin_spell_t
     p() -> buffs.ancient_power -> expire();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_spell_t::player_buff();
-    player_multiplier *= p() -> buffs.ancient_power -> stack();
+    double am = paladin_spell_t::action_multiplier();
+
+    am *= p() -> buffs.ancient_power -> stack();
+
+    return am;
   }
 };
 
@@ -918,7 +917,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike );
@@ -958,7 +957,7 @@ struct divine_storm_t : public paladin_melee_attack_t
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       trigger_hand_of_light( this );
       if ( p() -> glyphs.divine_storm -> ok() )
@@ -1027,7 +1026,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       proc -> execute();
 
@@ -1081,7 +1080,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> passives.sword_of_light -> ok() )
       {
@@ -1131,25 +1130,32 @@ struct hand_of_light_proc_t : public melee_attack_t
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
+    stateless = true;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    melee_attack_t::player_buff();
+    double am = 0.0;
+    //am = melee_attack_t::action_multiplier();
     // not *= since we don't want to double dip, just calling base to initialize variables
-    player_multiplier = static_cast<paladin_t*>( player ) -> get_hand_of_light();
-    player_multiplier *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();
+    am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
+    am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();
+
+    return am;
   }
 
-  virtual void target_debuff( player_t* t, dmg_e dt )
+  virtual double composite_target_multiplier( player_t* t )
   {
-    melee_attack_t::target_debuff( t, dt );
+    double ctm = melee_attack_t::composite_target_multiplier( t );
+
     // not *= since we don't want to double dip in other effects (like vunerability)
     // FIX-ME: Currently gets 8% from CoEl not 5%.
-    target_multiplier = 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );
+    ctm = 1.0 + ( t -> debuffs.magic_vulnerability -> check() ? 0.08 : 0.0 );
+
+    return ctm;
   }
 };
 
@@ -1283,8 +1289,8 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
 
 struct seal_of_truth_dot_t : public paladin_melee_attack_t
 {
-  seal_of_truth_dot_t( paladin_t* p )
-    : paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), false )
+  seal_of_truth_dot_t( paladin_t* p ) :
+    paladin_melee_attack_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ), false )
   {
     background       = true;
     proc             = true;
@@ -1299,6 +1305,7 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     may_miss         = false;
     dot_behavior     = DOT_REFRESH;
 
+
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     tick_power_mod               = 1.0;
@@ -1309,32 +1316,37 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void init()
   {
-    if ( result_is_hit( impact_result ) )
+    paladin_melee_attack_t::init();
+
+    snapshot_flags |= STATE_HASTE;
+  }
+
+  virtual void impact_s( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
     {
-      td( t ) -> debuffs_censure -> trigger();
-      player_buff();
+      td( s -> target ) -> debuffs_censure -> trigger();
     }
-    paladin_melee_attack_t::impact( t, impact_result, travel_dmg );
+
+    paladin_melee_attack_t::impact_s( s );
   }
 
-  virtual void player_buff()
+  virtual double composite_target_multiplier( player_t* t )
   {
-    paladin_melee_attack_t::player_buff();
-    player_multiplier *= td() -> debuffs_censure -> stack();
-  }
+    double am = paladin_melee_attack_t::composite_target_multiplier( t );
 
-  virtual double calculate_tick_damage( result_e r, double power, double multiplier, player_t* t )
-  {
-    double amt = paladin_melee_attack_t::calculate_tick_damage( r, power, multiplier, t );
-    return amt;
+    am *= td( t ) -> debuffs_censure -> stack();
+
+    return am;
   }
 
   virtual void last_tick( dot_t* d )
   {
+    td( d -> state -> target ) -> debuffs_censure -> expire();
+
     paladin_melee_attack_t::last_tick( d );
-    td() -> debuffs_censure -> expire();
   }
 };
 
@@ -1432,7 +1444,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> passives.judgments_of_the_bold -> ok() )
       {
@@ -1447,23 +1459,25 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double impact_dmg=0 )
+  virtual void impact_s( action_state_t* s )
   {
-    paladin_melee_attack_t::impact( t, impact_result, impact_dmg );
+    paladin_melee_attack_t::impact_s( s );
 
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
-      t -> debuffs.physical_vulnerability -> trigger();
+      s -> target -> debuffs.physical_vulnerability -> trigger();
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_melee_attack_t::player_buff();
+    double am = paladin_melee_attack_t::action_multiplier();
 
     if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
     {
-      player_multiplier *= 1.0 + p() -> buffs.double_jeopardy -> value();
+      am *= 1.0 + p() -> buffs.double_jeopardy -> value();
       old_target = target;
     }
+
+    return am;
   }
 
   virtual void update_ready()
@@ -1509,26 +1523,36 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> buffs.sacred_duty -> expire();
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_melee_attack_t::player_buff();
+    double am = paladin_melee_attack_t::action_multiplier();
 
     static const double holypower_pm[] = { 0, 1.0, 3.0, 6.0 };
 #ifndef NDEBUG
     assert( static_cast<unsigned>( p() -> holy_power_stacks() ) < sizeof_array( holypower_pm ) );
 #endif
-    player_multiplier = holypower_pm[ p() -> holy_power_stacks() ];
+    am *= holypower_pm[ p() -> holy_power_stacks() ];
+
+
+    return am;
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = paladin_melee_attack_t::composite_crit();
 
     if ( p() -> buffs.sacred_duty -> up() )
     {
-      player_crit += 1.0;
+      cc += 1.0;
     }
+
+    return cc;
   }
 
   virtual bool ready()
@@ -1555,20 +1579,22 @@ struct templars_verdict_t : public paladin_melee_attack_t
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       trigger_hand_of_light( this );
     }
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_melee_attack_t::player_buff();
+    double am = paladin_melee_attack_t::action_multiplier();
 
     if ( p() -> set_bonus.tier13_4pc_melee() )
     {
-      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     }
+
+    return am;
   }
 };
 
@@ -1637,16 +1663,17 @@ struct consecration_t : public paladin_spell_t
     tick_spell -> stats = stats;
   }
 
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
+  virtual void impact_s( action_state_t* s )
   {
-    if ( t -> debuffs.flying -> check() )
+    if ( s -> target -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), t -> name_str.c_str() );
+      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
     else
     {
-      paladin_spell_t::impact( t, impact_result, travel_dmg );
+      paladin_spell_t::impact_s( s );
     }
+
   }
 
   virtual void tick( dot_t* d )
@@ -1749,7 +1776,7 @@ struct exorcism_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_spell_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
@@ -1814,7 +1841,7 @@ struct holy_shock_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_spell_t::execute();
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
     {
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_holy_shock );
@@ -2190,11 +2217,13 @@ struct light_of_dawn_t : public paladin_heal_t
     aoe++;
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_heal_t::player_buff();
+    double am = paladin_heal_t::action_multiplier();
 
-    player_multiplier *= p() -> holy_power_stacks();
+    am *= p() -> holy_power_stacks();
+
+    return am;
   }
 };
 
@@ -2217,11 +2246,13 @@ struct word_of_glory_t : public paladin_heal_t
     num_ticks = 0;
   }
 
-  virtual void player_buff()
+  virtual double action_multiplier()
   {
-    paladin_heal_t::player_buff();
+    double am = paladin_heal_t::action_multiplier();
 
-    player_multiplier *= p() -> holy_power_stacks();
+    am *= p() -> holy_power_stacks();
+
+    return am;
   }
 };
 
