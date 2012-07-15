@@ -887,19 +887,12 @@ static double calculate_dot_dps( dot_t* d )
 
 // trigger_ignite ===========================================================
 
-struct ignite_t : public ignite_like_action_t< mage_spell_t, mage_t >
+struct ignite_t : public ignite::pct_based_action_t< mage_spell_t, mage_t >
 {
   ignite_t( mage_t* player ) :
     base_t( "ignite", player, player -> dbc.spell( 12654 )  )
     // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
   {
-  }
-
-  void init()
-  {
-    base_t::init();
-
-    update_flags = snapshot_flags = 0;
   }
 };
 
@@ -908,7 +901,7 @@ void trigger_ignite( mage_spell_t* s, action_state_t* state )
 {
   mage_t* p = s -> p();
   if ( ! p -> spec.ignite -> ok() ) return;
-  trigger_ignite_like_mechanic(
+  ignite::trigger_pct_based(
     p -> active_ignite, // ignite spell
     state -> target, // target
     state -> result_amount * p -> spec.ignite -> effectN( 1 ).mastery_value() * p -> composite_mastery() ); // ignite damage

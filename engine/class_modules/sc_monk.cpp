@@ -506,7 +506,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 //====Blackout Kick============
 //=============================
 
-struct  dot_blackout_kick_t : public ignite_like_action_t< monk_melee_attack_t, monk_t >
+struct  dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attack_t, monk_t >
 {
   dot_blackout_kick_t( monk_t* p ) :
     base_t( "blackout_kick_dot", p, p -> find_spell ( 128531 ) )
@@ -524,7 +524,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_t* p = s -> p();
 
-    trigger_ignite_like_mechanic(
+    ignite::trigger_pct_based(
       p -> active_blackout_kick_dot,
       t,
       dmg );

@@ -970,7 +970,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( ! p -> mastery_spells.echo_of_light -> ok() )
       return;
 
-    trigger_ignite_like_mechanic(
+    ignite::trigger_pct_based(
       p -> spells.echo_of_light, // ignite spell
       t, // target
       dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
@@ -3295,7 +3295,7 @@ void consume_inner_focus( priest_t* p )
   }
 }
 
-struct echo_of_light_t : public ignite_like_action_t< priest_heal_t, priest_t >
+struct echo_of_light_t : public ignite::pct_based_action_t< priest_heal_t, priest_t >
 {
   echo_of_light_t( priest_t* p ) :
     base_t( "echo_of_light", p, p -> find_spell( 77489 ) )

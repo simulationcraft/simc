@@ -4726,19 +4726,21 @@ struct wait_for_cooldown_t : public wait_action_base_t
   virtual timespan_t execute_time();
 };
 
+namespace ignite {
+
 // Template for a ignite like action. Not mandatory, but encouraged to use it.
 
 // It makes sure that the travel time corresponds to our ignite model,
 // and sets various flags so as to not further modify the damage with which it gets executed
 
 template <class Base, class Player_Class>
-struct ignite_like_action_t : public Base
+struct pct_based_action_t : public Base
 {
   typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
-  typedef ignite_like_action_t base_t;
+  typedef pct_based_action_t base_t;
   typedef Player_Class player_class_t;
 
-  ignite_like_action_t( const std::string& n, player_class_t* p, const spell_data_t* s ) :
+  pct_based_action_t( const std::string& n, player_class_t* p, const spell_data_t* s ) :
     ab( n, p, s )
   {
     ab::background = true;
@@ -4777,15 +4779,24 @@ struct ignite_like_action_t : public Base
   virtual void execute()
   { assert( 0 ); }
 
+  void init()
+  {
+    ab::init();
+
+    ab::update_flags = ab::snapshot_flags = 0;
+  }
+
   virtual double total_td_multiplier() { return 1.0; } // non-stateless
   virtual double composite_ta_multiplier() { return 1.0; } // stateless
 };
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
 // It should get specialized in the class module
-void trigger_ignite_like_mechanic( action_t* ignite_action,
+void trigger_pct_based( action_t* ignite_action,
                                    player_t* t,
                                    double dmg );
+
+}  // namespace ignite
 
 // Inlines ==================================================================
 

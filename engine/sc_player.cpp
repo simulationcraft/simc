@@ -454,7 +454,7 @@ bool parse_specialization( sim_t* sim,
 // http://us.battle.net/wow/en/forum/topic/5889309137?page=40#787
 
 // There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
-void trigger_ignite_like_mechanic( action_t* ignite_action,
+void ignite::trigger_pct_based( action_t* ignite_action,
                                    player_t* t,
                                    double dmg )
 {

@@ -733,7 +733,7 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
 
   a -> p() -> active_pet -> resource_gain( RESOURCE_FOCUS, a -> p() -> specs.go_for_the_throat -> effectN( 1 ).base_value(), a -> p() -> active_pet -> gains.go_for_the_throat );
 }
-struct piercing_shots_t : public ignite_like_action_t< attack_t, hunter_t >
+struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t >
 {
   piercing_shots_t( hunter_t* p ) :
     base_t( "piercing_shots", p, p -> find_spell( 63468 ) )
@@ -750,7 +750,7 @@ void trigger_piercing_shots( HUNTER_ACTION* s, player_t* t, double dmg )
   hunter_t* p = s -> p();
   if ( ! p -> specs.piercing_shots -> ok() ) return;
 
-  trigger_ignite_like_mechanic(
+  ignite::trigger_pct_based(
     p -> active_piercing_shots, // ignite spell
     t, // target
     p -> specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
