@@ -164,17 +164,18 @@ static bool parse_gems( item_t&           item,
   bool match = true;
   for ( int i=0; i < num_sockets; i++ )
   {
-    gem_e gem = item_t::parse_gem( item, gem_ids[ i ] );
+    unsigned gem = item_t::parse_gem( item, gem_ids[ i ] );
 
     gem_e socket;
     switch ( sockets[ i ] )
     {
-    case  1: socket = GEM_META;     break;
-    case  2: socket = GEM_RED;      break;
-    case  4: socket = GEM_YELLOW;   break;
-    case  8: socket = GEM_BLUE;     break;
-    case 32: socket = GEM_COGWHEEL; break;
-    default: socket = GEM_NONE;     break;
+    case  1: socket = GEM_META;      break;
+    case  2: socket = GEM_RED;       break;
+    case  4: socket = GEM_YELLOW;    break;
+    case  8: socket = GEM_BLUE;      break;
+    case 14: socket = GEM_PRISMATIC; break;
+    case 32: socket = GEM_COGWHEEL;  break;
+    default: socket = GEM_NONE;      break;
     }
 
     if ( ! util::socket_gem_match( socket, gem ) )

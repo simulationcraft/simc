@@ -1547,7 +1547,7 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 
 // item_t::parse_gem ========================================================
 
-gem_e item_t::parse_gem( item_t&            item,
+unsigned item_t::parse_gem( item_t&            item,
                          const std::string& gem_id )
 {
   if ( gem_id.empty() || gem_id == "0" )
@@ -1561,17 +1561,14 @@ gem_e item_t::parse_gem( item_t&            item,
     return GEM_NONE;
   }
 
-  gem_e type = GEM_NONE;
+  unsigned type = GEM_NONE;
 
   if ( cache::items() != cache::CURRENT )
   {
-    // Check data source caches, except local
-    bool has_local = false;
-
     for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
-        has_local = true;
+        type = item_database::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "wowhead" )
         type = wowhead::parse_gem( item, gem_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
@@ -1581,9 +1578,6 @@ gem_e item_t::parse_gem( item_t&            item,
       else if ( source_list[ i ] == "bcpapi" )
         type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
     }
-
-    if ( type == GEM_NONE && has_local )
-      type = item_database::parse_gem( item, gem_id );
   }
 
   if ( cache::items() != cache::ONLY )

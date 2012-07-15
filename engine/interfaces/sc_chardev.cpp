@@ -9,10 +9,17 @@
 
 static js_node_t* download_profile( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_e caching )
+                                    cache::behavior_e caching,
+                                    bool mop )
 {
-  std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
+  std::string url = "";
   std::string profile_str;
+
+  if ( mop )
+    url = "http://mop.chardev.org/php/interface/profiles/get_profile.php?id=" + id;
+  else
+    url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
+
 
   if ( ! http::get( profile_str, url, caching ) )
     return 0;
@@ -53,12 +60,13 @@ static const char* translate_slot( int slot )
 
 player_t* chardev::download_player( sim_t* sim,
                                     const std::string& id,
-                                    cache::behavior_e caching )
+                                    cache::behavior_e caching,
+                                    bool mop )
 {
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  js_node_t* profile_js = download_profile( sim, id, caching );
+  js_node_t* profile_js = download_profile( sim, id, caching, mop );
   if ( ! profile_js || ! ( profile_js = js::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
@@ -100,7 +108,7 @@ player_t* chardev::download_player( sim_t* sim,
     return 0;
   }
 
-  p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
+  p -> origin_str = ( mop ? "http://mop.chardev.org/profile/" : "http://chardev.org/profile/" ) + id + '-' + name_str + ".html";
   http::format( p -> origin_str );
 
   js_node_t*        gear_root = js::get_child( profile_js, "1" );
@@ -171,7 +179,7 @@ player_t* chardev::download_player( sim_t* sim,
   p -> items[ SLOT_RANGED ].armory_name_str.clear();
 
 
-  // FIX-ME: Temporary override until wowhead profile updated for MoP
+  // FIX-ME: Temporary override until chardev profile updated for MoP
   std::string talent_encodings;
 
   uint32_t maxv = 0;

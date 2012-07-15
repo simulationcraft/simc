@@ -1865,16 +1865,18 @@ slot_e util::translate_invtype( inventory_type inv_type )
 
 // socket_gem_match =================================================
 
-bool util::socket_gem_match( gem_e socket, gem_e gem )
+bool util::socket_gem_match( gem_e socket, unsigned gem )
 {
-  if ( socket == GEM_NONE || gem == GEM_PRISMATIC ) return true;
+  if ( socket == GEM_NONE      ) return true;
+  
+  if ( socket == GEM_PRISMATIC ) return ( gem & SOCKET_COLOR_PRISMATIC ) != 0;
 
-  if ( socket == GEM_COGWHEEL ) return ( gem == GEM_COGWHEEL );
-  if ( socket == GEM_META ) return ( gem == GEM_META );
+  if ( socket == GEM_COGWHEEL  ) return ( gem == SOCKET_COLOR_COGWHEEL );
+  if ( socket == GEM_META      ) return ( gem == SOCKET_COLOR_META );
 
-  if ( socket == GEM_RED    ) return ( gem == GEM_RED    || gem == GEM_ORANGE || gem == GEM_PURPLE );
-  if ( socket == GEM_YELLOW ) return ( gem == GEM_YELLOW || gem == GEM_ORANGE || gem == GEM_GREEN  );
-  if ( socket == GEM_BLUE   ) return ( gem == GEM_BLUE   || gem == GEM_PURPLE || gem == GEM_GREEN  );
+  if ( socket == GEM_RED       ) return ( gem & SOCKET_COLOR_RED ) != 0 ;
+  if ( socket == GEM_YELLOW    ) return ( gem & SOCKET_COLOR_YELLOW  ) != 0;
+  if ( socket == GEM_BLUE      ) return ( gem & SOCKET_COLOR_BLUE  ) != 0;
 
   return false;
 }

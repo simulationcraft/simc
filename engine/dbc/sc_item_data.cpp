@@ -726,7 +726,7 @@ bool item_database::download_glyph( player_t* player, std::string& glyph_name, c
 
 // item_database_t::parse_gem ===============================================
 
-gem_e item_database::parse_gem( item_t& item, const std::string& gem_id )
+unsigned item_database::parse_gem( item_t& item, const std::string& gem_id )
 {
   long gid = strtol( gem_id.c_str(), 0, 10 );
   if ( gid <= 0 )
@@ -769,5 +769,5 @@ gem_e item_database::parse_gem( item_t& item, const std::string& gem_id )
     }
   }
 
-  return util::translate_socket_color( static_cast<item_socket_color>( gem_prop.color ) );
+  return gem_prop.color;
 }

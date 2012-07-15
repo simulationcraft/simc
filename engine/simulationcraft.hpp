@@ -1112,7 +1112,7 @@ weapon_e translate_weapon_subclass( item_subclass_weapon weapon_subclass );
 profession_e translate_profession_id( int skill_id );
 gem_e translate_socket_color( item_socket_color );
 
-bool socket_gem_match( gem_e socket, gem_e gem );
+bool socket_gem_match( gem_e socket, unsigned gem );
 
 size_t string_split( std::vector<std::string>& results, const std::string& str, const char* delim, bool allow_quotes = false );
 int string_split( const std::string& str, const char* delim, const char* format, ... );
@@ -2619,8 +2619,8 @@ struct item_t
                              const std::string gem_ids[ 3 ] );
   static bool download_item( item_t&, const std::string& item_id );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static gem_e parse_gem( item_t&            item,
-                          const std::string& gem_id );
+  static unsigned parse_gem( item_t&            item,
+                             const std::string& gem_id );
 };
 
 // Pseudo Random Number Generation ==========================================
@@ -4423,7 +4423,7 @@ bool     download_slot(      item_t& item,
                              const std::string gem_ids[ 3 ] );
 bool     download_item(      item_t& item, const std::string& item_id );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-gem_e    parse_gem(          item_t& item, const std::string& gem_id );
+unsigned parse_gem(          item_t& item, const std::string& gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -4556,7 +4556,7 @@ gem_e parse_gem( item_t& item, const std::string& gem_id,
 
 namespace chardev
 {
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players(), bool mop = false );
 }
 
 // MMO Champion =============================================================
