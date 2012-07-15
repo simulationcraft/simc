@@ -1140,7 +1140,10 @@ void sim_t::combat_begin()
   if ( overrides.attack_haste            ) auras.attack_haste            -> override();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override();
-  if ( overrides.mastery                 ) auras.mastery                 -> override();
+
+  if ( overrides.mastery                 )
+    auras.mastery -> override( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
+
   if ( overrides.spell_haste             ) auras.spell_haste             -> override();
   if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override();
   if ( overrides.stamina                 ) auras.stamina                 -> override();

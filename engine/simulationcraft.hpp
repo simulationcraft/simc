@@ -3216,7 +3216,6 @@ struct player_t : public noncopyable
     buff_t* illuminated_healing;
     buff_t* innervate;
     buff_t* lifeblood;
-    buff_t* mana_tide;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* pain_supression;
@@ -4767,7 +4766,7 @@ struct pct_based_action_t : public Base
     dot_t* dot = ab::get_dot();
     ab::base_td = saved_impact_dmg / dot -> ticks();
   }
-
+  
   virtual timespan_t travel_time()
   {
     // Starts directly after ignite amount is calculated

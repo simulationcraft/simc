@@ -2087,7 +2087,7 @@ void player_t::init_buffs()
     buffs.blood_fury = stat_buff_creator_t( this, "blood_fury" ).
                        spell( find_racial_spell( "Blood Fury" ) );
 
-    buffs.stormlash = new stormlash_buff_t( this, find_spell( 120668 ) );
+    buffs.stormlash = new stormlash_buff_t( this, find_spell( 120687 ) );
 
     double lb_amount = 0.0;
     if      ( profession[ PROF_HERBALISM ] >= 600 )
@@ -2908,7 +2908,7 @@ double player_t::composite_mastery()
   double m = floor( ( current.mastery * 100.0 ) + 0.5 ) / 100.0;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
-    m += sim -> auras.mastery -> value();
+    m += sim -> auras.mastery -> value() / rating.mastery;
 
   return m;
 }
@@ -3056,10 +3056,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
   case ATTR_STAMINA:
     if ( sim -> auras.stamina -> check() )
       m *= 1.0 + sim -> auras.stamina -> value();
-    break;
-  case ATTR_SPIRIT:
-    if ( buffs.mana_tide -> check() )
-      m *= 1.0 + buffs.mana_tide -> value();
     break;
   default:
     break;

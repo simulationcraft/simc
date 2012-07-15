@@ -274,7 +274,7 @@ void print_text_spell_stats( FILE* file, player_t* p )
                  p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> stats.spell_power,
                  100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> stats.hit_rating,
                  100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> stats.crit_rating,
-                 100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> spell_haste - 1 ), p -> stats.haste_rating,
+                 100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> composite_spell_haste() - 1 ), p -> stats.haste_rating,
                  p -> buffed.mp5, p -> composite_mp5(), p -> stats.mp5 );
 }
 

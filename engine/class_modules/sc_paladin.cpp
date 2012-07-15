@@ -873,7 +873,9 @@ struct blessing_of_might_t : public paladin_spell_t
 
     if ( ! sim -> overrides.mastery )
     {
-      sim -> auras.mastery -> trigger();
+      double mastery_rating = data().effectN( 1 ).average( player );
+      if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
+        sim -> auras.mastery -> trigger( 1, mastery_rating );
       p() -> bom_up = true;
     }
     if ( ! sim -> overrides.str_agi_int && p() -> bok_up )
