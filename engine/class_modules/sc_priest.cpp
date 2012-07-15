@@ -4855,7 +4855,18 @@ void priest_t::init_actions()
 
       add_action( "Power Infusion", "if=talent.power_infusion.enabled" );
 
-      add_action( "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|remains<tick_time)&miss_react" );
+      {
+        std::string tstr = "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|";
+
+        if ( find_talent_spell( "Power Word: Solace" ) -> ok() )
+          tstr += "ticks_remain<1";
+        else
+          tstr += "remains<tick_time";
+
+        tstr += ")&miss_react";
+
+        add_action( "Shadow Word: Pain", tstr );
+      }
 
       {
         std::string tstr = "if=num_targets<=4";
