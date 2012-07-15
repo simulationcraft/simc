@@ -761,7 +761,7 @@ struct druid_heal_t : public druid_action_t<heal_t>
   virtual double cost_reduction();
   virtual void   execute();
   virtual timespan_t execute_time();
-  virtual double haste();
+  virtual double composite_haste();
   virtual double action_da_multiplier();
   virtual double action_ta_multiplier();
 };
@@ -800,7 +800,7 @@ struct druid_spell_t : public druid_action_t<spell_t>
   virtual double cost_reduction();
   virtual void   execute();
   virtual timespan_t execute_time();
-  virtual double haste();
+  virtual double composite_haste();
   virtual void   player_tick();
   virtual void   schedule_execute();
 };
@@ -2421,9 +2421,9 @@ timespan_t druid_heal_t::execute_time()
 
 // druid_heal_t::haste ======================================================
 
-double druid_heal_t::haste()
+double druid_heal_t::composite_haste()
 {
-  double h = base_t::haste();
+  double h = base_t::composite_haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
@@ -2784,9 +2784,9 @@ double druid_spell_t::cost()
 
 // druid_spell_t::haste =====================================================
 
-double druid_spell_t::haste()
+double druid_spell_t::composite_haste()
 {
-  double h =  base_t::haste();
+  double h =  base_t::composite_haste();
 
   h *= 1.0 / ( 1.0 +  p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
@@ -2887,7 +2887,7 @@ struct astral_communion_t : public druid_spell_t
     may_miss     = false;
   }
 
-  virtual double haste()
+  virtual double composite_haste()
   { return 1.0; }
 
   virtual void execute()

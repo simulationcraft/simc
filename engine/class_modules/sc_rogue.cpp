@@ -1948,7 +1948,7 @@ struct killing_spree_t : public rogue_melee_attack_t
   }
 
   // Killing Spree not modified by haste effects
-  virtual double haste() const { return 1.0; }
+  virtual double composite_haste() const { return 1.0; }
   virtual double swing_haste() const { return 1.0; }
 };
 
