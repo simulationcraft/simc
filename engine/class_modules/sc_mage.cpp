@@ -738,16 +738,6 @@ struct mage_spell_t : public spell_t
     return c;
   }
 
-  virtual double haste()
-  {
-    double h = spell_t::haste();
-    if ( p() -> buffs.icy_veins -> up() )
-    {
-      h *= 1.0 / ( 1.0 + p() -> buffs.icy_veins -> data().effectN( 1 ).percent() );
-    }
-    return h;
-  }
-
   virtual timespan_t execute_time()
   {
     timespan_t t = spell_t::execute_time();
@@ -1300,6 +1290,10 @@ struct combustion_t : public mage_spell_t
     num_ticks      = 10;
     base_tick_time = timespan_t::from_seconds( 1.0 );
 
+    if ( p -> set_bonus.tier14_4pc_caster() )
+    {
+      cooldown -> duration *= 0.8;
+    }
     orig_duration = cooldown -> duration;
 
     may_trigger_dtr = true;
@@ -1327,10 +1321,6 @@ struct combustion_t : public mage_spell_t
     if ( p() -> set_bonus.tier13_4pc_caster() )
     {
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
-    }
-    else if ( p() -> set_bonus.tier14_4pc_caster() )
-    {
-      cooldown -> duration = orig_duration * 0.8;
     }
 
     p() -> cooldowns.inferno_blast -> reset();
@@ -1924,9 +1914,16 @@ struct icy_veins_t : public mage_spell_t
   {
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
+    harmful = false;
 
     if ( p -> glyphs.icy_veins -> ok() )
+    {
       cooldown -> duration *= 0.5;
+    }
+    if ( player -> set_bonus.tier14_4pc_caster() )
+    {
+      cooldown -> duration *= 0.55;
+    }
 
     orig_duration = cooldown -> duration;
   }
@@ -1936,10 +1933,6 @@ struct icy_veins_t : public mage_spell_t
     if ( player -> set_bonus.tier13_4pc_caster() )
 	{
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
-    }
-    else if ( player -> set_bonus.tier14_4pc_caster() )
-    {
-      cooldown -> duration = orig_duration * 0.55;
     }
     
     mage_spell_t::execute();
@@ -3435,6 +3428,10 @@ double mage_t::composite_spell_haste()
     h *= 1.0 / ( 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent() );
   }
 
+  if ( buffs.icy_veins -> up() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.icy_veins -> data().effectN( 1 ).percent() );
+  }
   return h;
 }
 
