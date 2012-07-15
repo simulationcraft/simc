@@ -4002,7 +4002,7 @@ struct harvest_life_tick_t : public warlock_spell_t
     heal -> perform( main_target == target );
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain ); // FIXME: This may be a bug, retest later
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, main_target == target ? 10 : 3, gain ); // FIXME: This may be a bug, retest later
   }
 };
 
@@ -4011,6 +4011,7 @@ struct harvest_life_t : public warlock_spell_t
   harvest_life_t( warlock_t* p ) :
     warlock_spell_t( "harvest_life", p, p -> talents.harvest_life )
   {
+    // FIXME: Harvest Life is actually an aoe channel, not a channeled spell with aoe ticks
     channeled    = true;
     hasted_ticks = false;
     may_crit     = false;
