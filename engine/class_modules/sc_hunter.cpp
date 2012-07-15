@@ -134,7 +134,6 @@ public:
     const spell_data_t* spirit_bond;
 
     const spell_data_t* fervor;
-    const spell_data_t* readiness; // check
     const spell_data_t* thrill_of_the_hunt;
 
     const spell_data_t* a_murder_of_crows;
@@ -1382,7 +1381,6 @@ struct kill_shot_t : public hunter_ranged_attack_t
 
     base_dd_min *= weapon_multiplier; // Kill Shot's weapon multiplier applies to the base damage as well
     base_dd_max *= weapon_multiplier;
-    direct_power_mod = 0.45 * weapon_multiplier; // and the coefficient too
     
     cd_glyph_kill_shot = player -> get_cooldown( "cooldowns.glyph_kill_shot" );
     cd_glyph_kill_shot -> duration = player -> dbc.spell( 90967 ) -> duration();
@@ -1683,6 +1681,14 @@ public:
 
 // A Murder of Crows ==============================================================
 
+// FIXME The parameters need to be adjusted to achieve the following measured damages 
+// on a level 85 dummy by a level 85 toon
+// AP	    Dmg
+// 653	  250
+// 2279	  380
+// 9116	  928
+// 10152	1011
+
 // Each crow is modeled as a pet.
 struct moc_crow_t : public pet_t
 {
@@ -1702,7 +1708,7 @@ struct moc_crow_t : public pet_t
       school = SCHOOL_PHYSICAL;
 
       trigger_gcd = timespan_t::zero();
-
+      direct_power_mod = 0.1142;
       background = true;
       repeating  = true;
       special    = false;
@@ -1732,8 +1738,8 @@ struct moc_crow_t : public pet_t
     stamina_per_owner = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 580;
-    main_hand_weapon.max_dmg    = 580;
+    main_hand_weapon.min_dmg    = 282;
+    main_hand_weapon.max_dmg    = 282;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
@@ -1817,11 +1823,7 @@ struct moc_t : public hunter_spell_t
     if ( ! p() -> moc_free.empty() )
         {
           pet_t* s = p() -> moc_free.front();
-
           s -> target = d -> state -> target;
-
-
-
           s -> summon( timespan_t::from_seconds( 16 ) );
         }
     else
@@ -2117,7 +2119,7 @@ struct readiness_t : public hunter_spell_t
   std::vector<cooldown_t*> cooldown_list;
 
   readiness_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "readiness", player, player -> talents.readiness ),
+    hunter_spell_t( "readiness", player, player -> find_class_spell( "Readiness" ) ),
     wait_for_rf( false )
   {
     option_t options[] =
@@ -2221,7 +2223,7 @@ struct summon_pet_t : public hunter_spell_t
 struct trueshot_aura_t : public hunter_spell_t
 {
   trueshot_aura_t( hunter_t* player, const std::string& /* options_str */ ) :
-    hunter_spell_t( "trueshot_aura", player, player -> find_class_spell( "Trueshot Aura" ) )
+    hunter_spell_t( "trueshot_aura", player, player -> find_spell( 19506 ) )
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -2404,7 +2406,7 @@ struct basic_attack_t : public hunter_pet_attack_t
     parse_options( NULL, options_str );
     direct_power_mod = 0.2; // hardcoded into tooltip
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
-    rng_invigoration = player -> get_rng( "invigoration " );
+    rng_invigoration = player -> get_rng( "invigoration" );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
@@ -2944,7 +2946,6 @@ void hunter_t::init_spells()
   talents.spirit_bond                       = find_talent_spell( "Improved" );
 
   talents.fervor                            = find_talent_spell( "Fervor" );
-  talents.readiness                         = find_talent_spell( "Readiness" );
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
 
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
@@ -3234,8 +3235,7 @@ void hunter_t::init_actions()
     // Todo: Add ranged_vulnerability
     //action_list_str += "/hunters_mark,if=target.time_to_die>=21&!aura.ranged_vulnerability.up";
     precombat += "/summon_pet";
-    if ( find_class_spell( "Trueshot Aura" ) -> ok() )
-      precombat += "/trueshot_aura";
+    precombat += "/trueshot_aura";
     precombat += "/snapshot_stats";
 
     if ( level >= 80 )
@@ -3278,9 +3278,7 @@ void hunter_t::init_actions()
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=37";
 
-      if ( talents.readiness -> ok() )
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
-
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=69|buff.beast_within.up";
 
       if ( level >= 81 )
@@ -3297,8 +3295,7 @@ void hunter_t::init_actions()
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
-      if ( talents.readiness -> ok() )
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
       action_list_str += "/kill_shot";
       action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
@@ -3340,10 +3337,7 @@ void hunter_t::init_actions()
       action_list_str += "/kill_shot";
       action_list_str += "/black_arrow,if=target.time_to_die>=8";
       action_list_str += "/rapid_fire";
-
-      if ( talents.readiness -> ok() )
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
-
+      action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=67";
 
       if ( find_class_spell( "Cobra Shot" ) )
