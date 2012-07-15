@@ -381,7 +381,7 @@ struct water_elemental_pet_t : public pet_t
   }
 
   mage_t* o()
-  { return debug_cast<mage_t*>( owner ); }
+  { return static_cast<mage_t*>( owner ); }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -421,6 +421,7 @@ struct mirror_image_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
       stateless = true;
+
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
         stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "arcane_blast" );
@@ -429,22 +430,22 @@ struct mirror_image_pet_t : public pet_t
 
     virtual void execute()
     {
-      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
-
       spell_t::execute();
 
-      p -> arcane_charge -> trigger();
+      p() -> arcane_charge -> trigger();
     }
 
     virtual double action_multiplier()
     {
-      mirror_image_pet_t* p = static_cast<mirror_image_pet_t*>( player );
       double am = spell_t::action_multiplier();
 
-      am *= 1.0 + p -> arcane_charge -> stack() * p -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
       return am;
     }
+
+    mirror_image_pet_t* p() const
+    { return static_cast<mirror_image_pet_t*>( player ); }
   };
 
   struct fire_blast_t : public spell_t
@@ -492,8 +493,11 @@ struct mirror_image_pet_t : public pet_t
     }
   };
 
+  buff_t* arcane_charge;
+
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image" )
+    pet_t( sim, owner, "mirror_image" ),
+    arcane_charge( NULL )
   {
     owner_coeff.sp_from_sp = 0.05;
   }
@@ -502,9 +506,9 @@ struct mirror_image_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
-    if ( name == "fire_blast" ) return new fire_blast_t( this, options_str );
-    if ( name == "fireball" ) return new fireball_t( this, options_str );
-    if ( name == "frostbolt" ) return new frostbolt_t ( this, options_str );
+    if ( name == "fire_blast"   ) return new   fire_blast_t( this, options_str );
+    if ( name == "fireball"     ) return new     fireball_t( this, options_str );
+    if ( name == "frostbolt"    ) return new    frostbolt_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -527,18 +531,20 @@ struct mirror_image_pet_t : public pet_t
     }
     else
     {
-      action_list_str = "fire_blast/frostbolt";
+      action_list_str = "fire_blast";
+      action_list_str += "/frostbolt";
     }
+
     pet_t::init_actions(); 
   }
 
-  buff_t* arcane_charge;
   virtual void init_buffs()
   {
-    player_t::init_buffs();
-    arcane_charge        = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
-                               .max_stack( find_spell( 36032 ) -> max_stacks() )
-                               .duration( find_spell( 36032 ) -> duration() );
+    pet_t::init_buffs();
+
+    arcane_charge = buff_creator_t( this, "arcane_charge", o() -> spec.arcane_charge )
+                    .max_stack( find_spell( 36032 ) -> max_stacks() )
+                    .duration( find_spell( 36032 ) -> duration() );
   }
 
 
