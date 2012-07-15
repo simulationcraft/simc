@@ -3409,12 +3409,13 @@ struct hellfire_tick_t : public warlock_spell_t
     background  = true;
   }
 
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 10, gain );
+  virtual void impact_s( action_state_t* s )
+  {
+    warlock_spell_t::impact_s( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 2, gain );
   }
 };
 
