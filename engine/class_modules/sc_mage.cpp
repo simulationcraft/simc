@@ -397,6 +397,26 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
     m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
 
+    /*
+    // Code for changes in upcoming build
+    if ( o() -> buffs.invocation -> up() )
+    {
+      m *= 1.0 + o() -> buffs.invocation -> data().effectN( 1 ).percent();
+    }
+    else if ( o() -> buffs.rune_of_power -> check() )
+    {
+      m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 2 ).percent();
+    }
+    else if ( o() -> talents.incanters_ward -> ok() && o() -> cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+    {
+      m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+    }
+    else if ( o() -> talents.incanters_ward -> ok() )
+    {
+      m *= 1.0 + o() -> buffs.incanters_ward_post -> value() * o() -> buffs.incanters_ward_post -> data().effectN( 1 ).percent();
+    }
+    */
+
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.05;
@@ -3385,9 +3405,6 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_multiplier( school, a );
 
-  if ( buffs.invocation -> up() )
-    m *= 1.0 + buffs.invocation -> data().effectN( 1 ).percent();
-
   if ( buffs.arcane_power -> check() )
   {
     double v = buffs.arcane_power -> value();
@@ -3398,8 +3415,25 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + v;
   }
 
-  if ( buffs.rune_of_power -> check() )
+  if ( buffs.invocation -> up() )
+  {
+    m *= 1.0 + buffs.invocation -> data().effectN( 1 ).percent();
+  }
+  else if ( buffs.rune_of_power -> check() )
+  {
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
+  }
+  // Code for changes in upcoming build
+  /*
+  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
+  {
+    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
+  }
+  else if ( talents.incanters_ward -> ok() )
+  {
+    m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
+  }
+  */
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
@@ -3445,6 +3479,7 @@ double mage_t::composite_spell_power_multiplier()
 {
   double m = player_t::composite_spell_power_multiplier();
 
+  // TODO: This will come out in a future beta build
   if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
   {
     m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
