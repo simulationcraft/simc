@@ -692,7 +692,7 @@ void buff_t::aura_gain()
     {
       if ( sim -> log && ! player->current.sleeping )
       {
-        sim -> output( "%s gains %s ( value=%.2f )", player->name(), s.c_str(), current_value );
+        sim -> output( "%s gains %s ( value=%.2f )", player -> name(), s.c_str(), current_value );
       }
     }
     else

@@ -47,6 +47,7 @@ struct hunter_t : public player_t
 public:
   // Active
   hunter_pet_t* active_pet;
+  std::vector<hunter_pet_t*> hunter_main_pets;
   aspect_type   active_aspect;
   action_t*     active_piercing_shots;
   action_t*     active_vishanka;
@@ -373,6 +374,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* frenzy;
     buff_t* rabid;
+    buff_t* stampede;
   } buffs;
 
   // Gains
@@ -399,6 +401,8 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() )
   {
+    owner -> hunter_main_pets.push_back( this );
+
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = rating_t::interpolate( level, 0, 0, 51, 73 ); // FIXME needs level 60 and 70 values
     main_hand_weapon.max_dmg    = rating_t::interpolate( level, 0, 0, 78, 110 ); // FIXME needs level 60 and 70 values
@@ -508,6 +512,11 @@ public:
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" );
     buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
+
+    // Use buff to indicate wheter the pet is a stampede summon
+    buffs.stampede          = buff_creator_t( this, "stampede" )
+                              .activated( true )
+                              /*.quiet( true )*/;
   }
 
   virtual void init_gains()
@@ -576,11 +585,26 @@ public:
     cast_owner() -> active_pet = this;
   }
 
+  void stampede_summon( timespan_t duration )
+  {
+    if ( this == cast_owner() -> active_pet )
+    {
+      buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+      return;
+    }
+
+    pet_t::summon( duration );
+
+    buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+
+  }
+
   virtual void demise()
   {
     pet_t::demise();
 
-    cast_owner() -> active_pet = 0;
+    if ( cast_owner() -> active_pet == this )
+      cast_owner() -> active_pet = 0;
   }
 
   virtual double composite_player_multiplier( school_e school, action_t* a )
@@ -598,6 +622,9 @@ public:
     // Orc racial
     if ( owner -> race == RACE_ORC )
       m *= 1.05;
+
+    if( buffs.stampede -> check() )
+      m *= 1.0 + dbc.spell( 130201 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -2215,6 +2242,29 @@ struct trueshot_aura_t : public hunter_spell_t
   }
 };
 
+// Stampede ============================================================
+
+struct stampede_t : public hunter_spell_t
+{
+  stampede_t( hunter_t* p, const std::string& /* options_str */ ) :
+    hunter_spell_t( "stampede", p, p -> find_class_spell( "Stampede" ) )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+
+    for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
+    {
+      hunter_pet_t* pet = p() -> hunter_main_pets[ i ];
+
+      pet -> stampede_summon( data().duration() );
+    }
+  }
+};
+
 void create_moc_pets( hunter_t* p, size_t n )
 {
   if ( ! p -> moc_free.size() )
@@ -2819,8 +2869,9 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
-  if ( name == "a_murder_of_crows"     ) return new             moc_t( this, options_str );
-  if ( name == "powershot"             ) return new             powershot_t( this, options_str );
+  if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
+  if ( name == "powershot"             ) return new              powershot_t( this, options_str );
+  if ( name == "stampede"              ) return new               stampede_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
@@ -3216,6 +3267,7 @@ void hunter_t::init_actions()
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
       action_list_str += "/kill_shot";
+      //action_list_str += "/stampede";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
     
       if ( talents.a_murder_of_crows -> ok() ) 
