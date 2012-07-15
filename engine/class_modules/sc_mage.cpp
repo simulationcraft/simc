@@ -947,6 +947,11 @@ struct arcane_barrage_t : public mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.15;
+    }
+
     return am;
   }
 };
@@ -1320,7 +1325,13 @@ struct combustion_t : public mage_spell_t
     base_td += calculate_dot_dps( td() -> dots.pyroblast );
 
     if ( p() -> set_bonus.tier13_4pc_caster() )
+    {
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
+    }
+    else if ( p() -> set_bonus.tier14_4pc_caster() )
+    {
+      cooldown -> duration = orig_duration * 0.8;
+    }
 
     p() -> cooldowns.inferno_blast -> reset();
 
@@ -1870,6 +1881,11 @@ struct ice_lance_t : public mage_spell_t
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
     }
 
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.05;
+    }
+
     return am;
   }
 };
@@ -1918,7 +1934,13 @@ struct icy_veins_t : public mage_spell_t
   virtual void execute()
   {
     if ( player -> set_bonus.tier13_4pc_caster() )
+	{
       cooldown -> duration = orig_duration * ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
+    }
+    else if ( player -> set_bonus.tier14_4pc_caster() )
+    {
+      cooldown -> duration = orig_duration * 0.55;
+    }
     
     mage_spell_t::execute();
 
@@ -2268,6 +2290,19 @@ struct pyroblast_t : public mage_spell_t
 
     return c;
   }
+
+  virtual double action_multiplier()
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.05;
+    }
+
+    return am;
+  }
+
 };
 
 // Rune of Power ============================================================
@@ -3355,7 +3390,14 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
     m *= 1.0 + buffs.invocation -> data().effectN( 1 ).percent();
 
   if ( buffs.arcane_power -> check() )
-    m *= 1.0 + buffs.arcane_power -> value();
+  {
+    double v = buffs.arcane_power -> value();
+    if ( set_bonus.tier14_4pc_caster() )
+    {
+      v += 0.15;
+    }
+    m *= 1.0 + v;
+  }
 
   if ( buffs.rune_of_power -> check() )
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
