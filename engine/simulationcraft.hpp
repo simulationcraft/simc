@@ -2011,10 +2011,6 @@ struct sim_t : private thread_t
   std::vector<player_t*> actor_list;
   std::string main_target_str;
 
-#ifdef TEST_TIMEWHEEL
-  sample_data_t tw_addevent_loop;
-#endif
-
   // Target options
   double      target_death;
   double      target_death_pct;
