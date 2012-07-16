@@ -1679,14 +1679,6 @@ public:
 
 // A Murder of Crows ==============================================================
 
-// FIXME The parameters need to be adjusted to achieve the following measured damages 
-// on a level 85 dummy by a level 85 toon
-// AP	    Dmg
-// 653	  250
-// 2279	  380
-// 9116	  928
-// 10152	1011
-
 // Each crow is modeled as a pet.
 struct moc_crow_t : public pet_t
 {
@@ -1736,8 +1728,8 @@ struct moc_crow_t : public pet_t
     stamina_per_owner = 0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 282;
-    main_hand_weapon.max_dmg    = 282;
+    main_hand_weapon.min_dmg    = 313.8;
+    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
