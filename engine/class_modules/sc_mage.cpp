@@ -397,8 +397,8 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
     m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
 
-    /*
     // Code for changes in upcoming build
+    /*
     if ( o() -> buffs.invocation -> up() )
     {
       m *= 1.0 + o() -> buffs.invocation -> data().effectN( 1 ).percent();
@@ -3043,7 +3043,7 @@ void mage_t::init_buffs()
                                .duration( find_spell( 57761 ) -> duration() )
                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
                                .chance( spec.brain_freeze      -> ok() ? 
-                                      ( talents.nether_tempest -> ok() ? 0.10 :
+                                      ( talents.nether_tempest -> ok() ? 0.09 :
                                       ( talents.living_bomb    -> ok() ? 0.25 :
                                       ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
 
