@@ -1050,7 +1050,6 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
 
   druid_t* p = s -> p();
   
-  // Fix me: currently no spelldata in dbc
   if ( p -> buff.astral_empowerment -> up() && ! s -> channeled )
   {
     // W/SS/SF always use a charge, it's possible to waste them if you have
@@ -3369,7 +3368,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       // Todo: Does this sunfire proc SS?
-      if ( result == RESULT_CRIT )
+      if ( d -> state -> result == RESULT_CRIT )
         if ( p() -> buff.shooting_stars -> trigger() )
           p() -> cooldown.starsurge -> reset();
     }
@@ -3409,7 +3408,7 @@ struct moonfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    if ( result == RESULT_CRIT )
+    if ( d -> state -> result == RESULT_CRIT )
       if ( p() -> buff.shooting_stars -> trigger() )
         p() -> cooldown.starsurge -> reset();
   }
@@ -3890,7 +3889,7 @@ struct sunfire_t : public druid_spell_t
   virtual void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
-    if ( result == RESULT_CRIT )
+    if ( d -> state -> result == RESULT_CRIT )
       if ( p() -> buff.shooting_stars -> trigger() )
         p() -> cooldown.starsurge -> reset();
   }
