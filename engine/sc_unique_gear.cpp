@@ -724,21 +724,23 @@ static void register_matrix_restabilizer( item_t* item )
     {
       double amount = heroic ? 1834 : 1624;
 
-      struct common_buff_creator
+      struct common_buff_creator : public stat_buff_creator_t
       {
-        stat_buff_creator_t operator()( player_t* p, const std::string& n )
+        common_buff_creator( player_t* p, const std::string& n ) :
+          stat_buff_creator_t ( p, "matrix_restabilizer_" + n )
         {
-          return ( stat_buff_creator_t ( p, "matrix_restabilizer_" + n )
-                   .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )
-                   .chance( .15 ).activated( false ) );
+          duration ( timespan_t::from_seconds( 30 ) );
+          cd( timespan_t::from_seconds( 105 ) );
+          chance( .15 );
+          activated( false );
         }
       };
 
-      buff_matrix_restabilizer_crit     = common_buff_creator()( p, "crit" )
+      buff_matrix_restabilizer_crit     = common_buff_creator( p, "crit" )
                                           .add_stat( STAT_CRIT_RATING, amount );
-      buff_matrix_restabilizer_haste    = common_buff_creator()( p, "haste" )
+      buff_matrix_restabilizer_haste    = common_buff_creator( p, "haste" )
                                           .add_stat( STAT_HASTE_RATING, amount );
-      buff_matrix_restabilizer_mastery  = common_buff_creator()( p, "mastery" )
+      buff_matrix_restabilizer_mastery  = common_buff_creator( p, "mastery" )
                                           .add_stat( STAT_MASTERY_RATING, amount );
     }
 

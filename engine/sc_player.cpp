@@ -2097,47 +2097,47 @@ void player_t::init_buffs()
                       .add_stat( STAT_HASTE_RATING, lb_amount );
 
     // Potions
-    struct potions_common_buff_creator
+    struct potions_common_buff_creator : public stat_buff_creator_t
     {
-      stat_buff_creator_t operator()( player_t* p,
-                                      const std::string& n,
-                                      timespan_t d = timespan_t::from_seconds( 25.0 ),
-                                      timespan_t cd = timespan_t::from_seconds( 60.0 ) )
+      potions_common_buff_creator( player_t* p,
+          const std::string& n,
+          timespan_t d = timespan_t::from_seconds( 25.0 ),
+          timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
+            stat_buff_creator_t ( p,  n + "_potion" )
       {
-        return ( stat_buff_creator_t ( p,  n + "_potion" )
-                 .max_stack( 1 )
-                 .duration( d )
-                 .cd( cd ) );
+         max_stack( 1 );
+         duration( d );
+         this -> cd( cd );
       }
     };
 
-    potion_buffs.speed      = potions_common_buff_creator()( this, "speed", timespan_t::from_seconds( 15.0 ) )
+    potion_buffs.speed      = potions_common_buff_creator( this, "speed", timespan_t::from_seconds( 15.0 ) )
                               .add_stat( STAT_HASTE_RATING, 500.0 );
 
-    potion_buffs.volcanic   = potions_common_buff_creator()( this, "volcanic" )
+    potion_buffs.volcanic   = potions_common_buff_creator( this, "volcanic" )
                               .add_stat( STAT_INTELLECT, 1200.0 );
 
-    potion_buffs.earthen    = potions_common_buff_creator()( this, "earthen" )
+    potion_buffs.earthen    = potions_common_buff_creator( this, "earthen" )
                               .add_stat( STAT_ARMOR, 4800.0 );
 
-    potion_buffs.golemblood = potions_common_buff_creator()( this, "golemblood" )
+    potion_buffs.golemblood = potions_common_buff_creator( this, "golemblood" )
                               .add_stat( STAT_STRENGTH, 1200.0 );
 
-    potion_buffs.tolvir     = potions_common_buff_creator()( this, "tolvir" )
+    potion_buffs.tolvir     = potions_common_buff_creator( this, "tolvir" )
                               .add_stat( STAT_AGILITY, 1200.0 );
 
     // New Mop potions
 
-    potion_buffs.jade_serpent = potions_common_buff_creator()( this, "jade_serpent" )
+    potion_buffs.jade_serpent = potions_common_buff_creator( this, "jade_serpent" )
                                 .add_stat( STAT_INTELLECT, 4000.0 );
 
-    potion_buffs.mountains    = potions_common_buff_creator()( this, "mountains" )
+    potion_buffs.mountains    = potions_common_buff_creator( this, "mountains" )
                                 .add_stat( STAT_ARMOR, 12000.0 );
 
-    potion_buffs.mogu_power   = potions_common_buff_creator()( this, "mogu_power" )
+    potion_buffs.mogu_power   = potions_common_buff_creator( this, "mogu_power" )
                                 .add_stat( STAT_STRENGTH, 4000.0 );
 
-    potion_buffs.virmens_bite = potions_common_buff_creator()( this, "virmens_bite" )
+    potion_buffs.virmens_bite = potions_common_buff_creator( this, "virmens_bite" )
                                 .add_stat( STAT_AGILITY, 4000.0 );
 
 
