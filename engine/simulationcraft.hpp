@@ -3995,7 +3995,6 @@ struct action_t : public noncopyable
   virtual double action_ta_multiplier() { return base_td_multiplier; }
 
   virtual double composite_hit() { return base_hit; }
-  virtual double composite_expertise() { return 0.0; }
   virtual double composite_crit() { return base_crit; }
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> composite_attack_power(); }
@@ -4102,7 +4101,7 @@ struct attack_t : public action_t
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
 
   virtual double composite_expertise()
-  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
+  { return player -> composite_attack_expertise( weapon ); }
 };
 
 // Melee Attack ===================================================================
