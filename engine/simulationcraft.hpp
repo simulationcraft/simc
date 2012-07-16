@@ -1495,7 +1495,7 @@ using namespace buff_creation;
 
 // Buffs ====================================================================
 
-struct buff_t
+struct buff_t : public noncopyable
 {
   sim_t* sim;
   player_t* player;
@@ -2625,7 +2625,7 @@ struct item_t
 
 // Pseudo Random Number Generation ==========================================
 
-struct rng_t
+struct rng_t : public noncopyable
 {
 public:
   std::string name_str;
@@ -3808,7 +3808,7 @@ struct stats_t : public noncopyable
 
 // Action ===================================================================
 
-struct action_t
+struct action_t : public noncopyable
 {
   const spell_data_t* s_data;
   sim_t* sim;
