@@ -296,7 +296,7 @@ public:
     benefit_t* rp_cap;
   } benefits;
 private:
-  target_specific_t<death_knight_td_t> target_data;
+  mutable target_specific_t<death_knight_td_t> target_data;
 public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
@@ -365,10 +365,10 @@ public:
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
 
-  death_knight_td_t* get_target_data( player_t* target )
+  death_knight_td_t* get_target_data( player_t* target ) const
   {
     death_knight_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new death_knight_td_t( target, this );
+    if ( ! td ) td = new death_knight_td_t( target, const_cast<death_knight_t*>( this ) );
     return td;
   }
 

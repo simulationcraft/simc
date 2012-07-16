@@ -272,7 +272,7 @@ public:
   shaman_spell_t*  flametongue_mh;
   shaman_spell_t*  flametongue_oh;
 private:
-  target_specific_t<shaman_td_t> target_data;
+  mutable target_specific_t<shaman_td_t> target_data;
 public:
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
@@ -342,10 +342,10 @@ public:
   virtual role_e primary_role();
   virtual void      arise();
 
-  virtual shaman_td_t* get_target_data( player_t* target )
+  virtual shaman_td_t* get_target_data( player_t* target ) const
   {
     shaman_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new shaman_td_t( target, this );
+    if ( ! td ) td = new shaman_td_t( target, const_cast<shaman_t*>( this ) );
     return td;
   }
 

@@ -249,7 +249,7 @@ public:
     double meditation_value;
   } constants;
 private:
-  target_specific_t<priest_td_t> target_data;
+  mutable target_specific_t<priest_td_t> target_data;
 public:
   priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, PRIEST, name, r ),
@@ -322,10 +322,10 @@ public:
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
 
-  virtual priest_td_t* get_target_data( player_t* target )
+  virtual priest_td_t* get_target_data( player_t* target ) const
   {
     priest_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new priest_td_t( target, this );
+    if ( ! td ) td = new priest_td_t( target, const_cast<priest_t*>( this ) );
     return td;
   }
 

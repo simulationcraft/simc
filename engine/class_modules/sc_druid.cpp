@@ -378,7 +378,7 @@ public:
     const spell_data_t* natures_vigil;
   } talent;
 private:
-  target_specific_t<druid_td_t> target_data;
+  mutable target_specific_t<druid_td_t> target_data;
 public:
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
@@ -461,10 +461,10 @@ public:
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
 
-  virtual druid_td_t* get_target_data( player_t* target )
+  virtual druid_td_t* get_target_data( player_t* target ) const
   {
     druid_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new druid_td_t( target, this );
+    if ( ! td ) td = new druid_td_t( target, const_cast<druid_t*>( this ) );
     return td;
   }
 

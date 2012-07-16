@@ -289,7 +289,7 @@ struct rogue_t : public player_t
   uint32_t fof_p1, fof_p2, fof_p3;
 
 private:
-  target_specific_t<rogue_td_t> target_data;
+  mutable target_specific_t<rogue_td_t> target_data;
 public:
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -325,10 +325,10 @@ public:
   }
 
   // Character Definition
-  virtual rogue_td_t* get_target_data( player_t* target )
+  virtual rogue_td_t* get_target_data( player_t* target ) const
   {
     rogue_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new rogue_td_t( target, this );
+    if ( ! td ) td = new rogue_td_t( target, const_cast<rogue_t*>( this ) );
     return td;
   }
 

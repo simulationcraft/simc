@@ -226,7 +226,7 @@ public:
 
   } talents;
 private:
-  target_specific_t<mage_td_t> target_data;
+  mutable target_specific_t<mage_td_t> target_data;
 public:
   int mana_gem_charges;
   int current_arcane_charges;
@@ -287,10 +287,10 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      stun();
 
-  virtual mage_td_t* get_target_data( player_t* target )
+  virtual mage_td_t* get_target_data( player_t* target ) const
   {
     mage_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new mage_td_t( target, this );
+    if ( ! td ) td = new mage_td_t( target, const_cast<mage_t*>( this ) );
     return td;
   }
 

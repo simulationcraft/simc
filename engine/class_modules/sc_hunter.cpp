@@ -242,7 +242,7 @@ public:
     const spell_data_t* essence_of_the_viper;
   } mastery;
 private:
-  target_specific_t<hunter_td_t> target_data;
+  mutable target_specific_t<hunter_td_t> target_data;
 public:
   double merge_piercing_shots;
   double tier13_4pc_cooldown;
@@ -314,10 +314,10 @@ public:
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
 
-  virtual hunter_td_t* get_target_data( player_t* target )
+  virtual hunter_td_t* get_target_data( player_t* target ) const
   {
     hunter_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new hunter_td_t( target, this );
+    if ( ! td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
   }
 
@@ -391,7 +391,7 @@ public:
   } benefits;
 
 private:
-  target_specific_t<hunter_pet_td_t> target_data;
+  mutable target_specific_t<hunter_pet_td_t> target_data;
 public:
   hunter_pet_t( sim_t* sim, hunter_t* owner, const std::string& pet_name, pet_e pt ) :
     pet_t( sim, owner, pet_name, pt ),
@@ -628,10 +628,10 @@ public:
     return m;
   }
 
-  virtual hunter_pet_td_t* get_target_data( player_t* target )
+  virtual hunter_pet_td_t* get_target_data( player_t* target ) const
   {
     hunter_pet_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new hunter_pet_td_t( target, this );
+    if ( ! td ) td = new hunter_pet_td_t( target, const_cast<hunter_pet_t*>( this ) );
     return td;
   }
 
