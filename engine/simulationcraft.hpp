@@ -2870,7 +2870,6 @@ struct player_t : public noncopyable
   player_e type;
   std::string name_str;
 
-  player_t*   next;
   int         index;
   // (static) attributes - things which should not change during combat
   race_e       race;

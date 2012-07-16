@@ -520,7 +520,6 @@ player_t::player_t( sim_t*             s,
   type( t ),
   name_str( n ),
 
-  next( 0 ),
   index( -1 ),
 
   // (static) attributes
@@ -633,7 +632,6 @@ player_t::player_t( sim_t*             s,
   {
     if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
     sim -> player_list.push_back( this );
-    next = 0;
     index = ++( sim -> num_players );
   }
   else
