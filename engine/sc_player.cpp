@@ -4133,24 +4133,22 @@ void player_t::cost_reduction_loss( school_e school,
 
 // player_t::assess_damage ==================================================
 
-double player_t::assess_damage( double        amount,
-                                school_e school,
+double player_t::assess_damage( school_e school,
                                 dmg_e    type,
-                                result_e result,
-                                action_t*     action )
+                                action_state_t* s )
 {
-  if ( amount <= 0 ) return 0;
+  if ( s -> result_amount <= 0 ) return 0;
 
   if ( ! is_enemy() )
   {
     if ( buffs.pain_supression -> up() )
-      amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
+      s -> result_amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
     if ( buffs.stoneform -> up() )
-      amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
+      s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
   }
 
-  double mitigated_amount = target_mitigation( amount, school, type, result, action );
+  s -> result_amount = target_mitigation( s -> result_amount, school, type, s -> result, s -> action );
 
   double absorbed_amount = 0;
   for ( size_t i = 0; i < absorb_buffs.size(); i++ )
@@ -4159,7 +4157,7 @@ double player_t::assess_damage( double        amount,
     if ( ab -> check() )
     {
       double buff_value = ab -> value();
-      double value = std::min( mitigated_amount - absorbed_amount, buff_value );
+      double value = std::min( s -> result_amount - absorbed_amount, buff_value );
       if ( ab -> absorb_source )
         ab -> absorb_source -> add_result( value, 0, ABSORB, RESULT_HIT );
       absorbed_amount += value;
@@ -4180,11 +4178,11 @@ double player_t::assess_damage( double        amount,
     }
   }
 
-  mitigated_amount -= absorbed_amount;
+  s -> result_amount -= absorbed_amount;
 
-  iteration_dmg_taken += mitigated_amount;
+  iteration_dmg_taken += s -> result_amount;
 
-  double actual_amount = resource_loss( RESOURCE_HEALTH, mitigated_amount, 0, action );
+  double actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   if ( false && ( this == sim -> target ) )
   {
@@ -4198,10 +4196,10 @@ double player_t::assess_damage( double        amount,
     if ( buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
     {
       // Just assume that this is used so rarely that a strcmp hack will do
-      stats_t* s = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
+      stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
       double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
-      resource_gain( RESOURCE_HEALTH, amount );
-      if ( s ) s -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
+      resource_gain( RESOURCE_HEALTH, s -> result_amount );
+      if ( stat ) stat -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
       buffs.guardian_spirit -> expire();
     }
     else
@@ -4221,7 +4219,7 @@ double player_t::assess_damage( double        amount,
     vengeance.was_attacked = true;
   }
 
-  return mitigated_amount;
+  return s -> result_amount;
 }
 
 // player_t::target_mitigation ==============================================

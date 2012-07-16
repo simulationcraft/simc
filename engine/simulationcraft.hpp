@@ -3455,7 +3455,7 @@ struct player_t : public noncopyable
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a=0 );
 
-  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual double assess_damage( school_e, dmg_e, action_state_t* );
   virtual double target_mitigation( double amount, school_e, dmg_e, result_e, action_t* a=0 );
 
   struct heal_info_t { double actual, amount; };
@@ -3637,7 +3637,7 @@ public:
   virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
   virtual bool ooc_buffs() { return false; }
-  virtual double assess_damage( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual double assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void combat_begin();
 
   virtual const char* name() { return full_name_str.c_str(); }
@@ -3912,7 +3912,6 @@ struct action_t : public noncopyable
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
-  virtual void   additional_damage( player_t* t, double amount, dmg_e, result_e impact_result );
   virtual void   schedule_execute();
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready();

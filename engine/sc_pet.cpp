@@ -175,16 +175,14 @@ void pet_t::dismiss()
 
 // pet_t::assess_damage =====================================================
 
-double pet_t::assess_damage( double              amount,
-                             school_e       school,
+double pet_t::assess_damage( school_e       school,
                              dmg_e          type,
-                             result_e       result,
-                             action_t*           action )
+                             action_state_t* s )
 {
-  if ( ! action || action -> aoe )
-    amount *= 0.10;
+  if ( ! s -> action || s -> action -> aoe )
+    s -> result_amount *= 0.10;
 
-  return base_t::assess_damage( amount, school, type, result, action );
+  return base_t::assess_damage( school, type, s );
 }
 
 // pet_t::combat_begin ======================================================

@@ -348,7 +348,7 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RAGE; }
   virtual role_e primary_role();
-  virtual double    assess_damage( double amount, school_e, dmg_e, result_e, action_t* a );
+  virtual double    assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
 
   // Temporary
@@ -3642,18 +3642,16 @@ role_e warrior_t::primary_role()
 
 // warrior_t::assess_damage =================================================
 
-double warrior_t::assess_damage( double        amount,
-                                 school_e school,
+double warrior_t::assess_damage( school_e school,
                                  dmg_e    dtype,
-                                 result_e result,
-                                 action_t*     action )
+                                 action_state_t* s )
 {
-  if ( result == RESULT_HIT    ||
-       result == RESULT_CRIT   ||
-       result == RESULT_GLANCE ||
-       result == RESULT_BLOCK  )
+  if ( s -> result == RESULT_HIT    ||
+       s -> result == RESULT_CRIT   ||
+       s -> result == RESULT_GLANCE ||
+       s -> result == RESULT_BLOCK  )
   {
-    double rage_gain = amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
+    double rage_gain = s -> result_amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
     if ( buffs_berserker_rage -> up() )
       rage_gain *= 2.0;
 
@@ -3661,7 +3659,7 @@ double warrior_t::assess_damage( double        amount,
   }
 
 
-  if ( result == RESULT_BLOCK )
+  if ( s -> result == RESULT_BLOCK )
   {
     if ( talents.shield_specialization -> ok() )
     {
@@ -3671,16 +3669,16 @@ double warrior_t::assess_damage( double        amount,
   }
 
 
-  if ( result == RESULT_BLOCK ||
-       result == RESULT_DODGE ||
-       result == RESULT_PARRY )
+  if ( s -> result == RESULT_BLOCK ||
+       s -> result == RESULT_DODGE ||
+       s -> result == RESULT_PARRY )
   {
     buffs_bastion_of_defense -> trigger();
     buffs_revenge -> trigger();
   }
 
 
-  if ( result == RESULT_PARRY )
+  if ( s -> result == RESULT_PARRY )
   {
     buffs_hold_the_line -> trigger();
 
@@ -3697,13 +3695,13 @@ double warrior_t::assess_damage( double        amount,
     }
   }
 
-  trigger_retaliation( this, school, result );
+  trigger_retaliation( this, school, s -> result );
 
   // Defensive Stance
   if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
-    amount *= 0.90;
+    s -> result_amount *= 0.90;
 
-  return player_t::assess_damage( amount, school, dtype, result, action );
+  return player_t::assess_damage( school, dtype, s );
 }
 
 // warrior_t::create_options ================================================

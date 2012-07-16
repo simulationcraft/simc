@@ -456,7 +456,7 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
   virtual role_e primary_role();
-  virtual double    assess_damage( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual double    assess_damage( school_e school, dmg_e, action_state_t* );
   virtual heal_info_t assess_heal( double amount, school_e school, dmg_e, result_e, action_t* a );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
@@ -5395,27 +5395,25 @@ resource_e druid_t::primary_resource()
 
 // druid_t::assess_damage ===================================================
 
-double druid_t::assess_damage( double        amount,
-                               school_e school,
+double druid_t::assess_damage( school_e school,
                                dmg_e    dtype,
-                               result_e result,
-                               action_t*     action )
+                               action_state_t* s )
 {
   // This needs to use unmitigated damage, which amount currently is
   // FIX ME: Rage gains need to trigger on every attempt to poke the bear
-  double rage_gain = amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
+  double rage_gain = s -> result_amount * 18.92 / resources.max[ RESOURCE_HEALTH ];
   resource_gain( RESOURCE_RAGE, rage_gain, gain.incoming_damage );
 
   if ( buff.barkskin -> up() )
-    amount *= 1.0 + buff.barkskin -> value();
+    s -> result_amount *= 1.0 + buff.barkskin -> value();
 
   if ( buff.survival_instincts -> up() )
-    amount *= 1.0 + buff.survival_instincts -> value();
+    s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   // Call here to benefit from -10% physical damage before SD is taken into account
-  amount = player_t::assess_damage( amount, school, dtype, result, action );
+  s -> result_amount = player_t::assess_damage( school, dtype, s );
 
-  return amount;
+  return s -> result_amount;
 }
 
 player_t::heal_info_t druid_t::assess_heal( double        amount,

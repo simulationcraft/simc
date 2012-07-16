@@ -269,11 +269,9 @@ public:
   virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
-  virtual double assess_damage( double        amount,
-                                school_e school,
+  virtual double assess_damage( school_e school,
                                 dmg_e    type,
-                                result_e result,
-                                action_t*     action );
+                                action_state_t* );
 
   virtual warlock_td_t* get_target_data( player_t* target )
   {
@@ -4289,13 +4287,11 @@ void warlock_t::halt()
 }
 
 
-double warlock_t::assess_damage( double        amount,
-                                 school_e school,
+double warlock_t::assess_damage( school_e school,
                                  dmg_e    type,
-                                 result_e result,
-                                 action_t*     action )
+                                 action_state_t* s)
 {
-  double damage = player_t::assess_damage( amount, school, type, result, action );
+  double damage = player_t::assess_damage( school, type, s );
 
   double m = talents.archimondes_vengeance -> effectN( 1 ).percent();
 
@@ -4311,7 +4307,7 @@ double warlock_t::assess_damage( double        amount,
   {
     // FIXME: Needs testing! Should it include absorbed damage? Should it be unaffected by damage buffs?
     spells.archimondes_vengeance_dmg -> base_dd_min = spells.archimondes_vengeance_dmg -> base_dd_max = damage * m;
-    spells.archimondes_vengeance_dmg -> target = action -> player;
+    spells.archimondes_vengeance_dmg -> target = s -> action -> player;
     spells.archimondes_vengeance_dmg -> school = school; // FIXME: Assuming school is the school of the incoming damage for now
     spells.archimondes_vengeance_dmg -> execute();
   }

@@ -243,7 +243,7 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role();
   virtual void      regen( timespan_t periodicity );
-  virtual double    assess_damage( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual double    assess_damage( school_e school, dmg_e, action_state_t* s );
   virtual heal_info_t assess_heal( double amount, school_e school, dmg_e, result_e, action_t* a );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
@@ -3098,41 +3098,39 @@ void paladin_t::regen( timespan_t periodicity )
 
 // paladin_t::assess_damage =================================================
 
-double paladin_t::assess_damage( double        amount,
-                                 school_e school,
+double paladin_t::assess_damage( school_e school,
                                  dmg_e    dtype,
-                                 result_e result,
-                                 action_t*     action )
+                                 action_state_t* s )
 {
   if ( buffs.divine_shield -> up() )
   {
-    amount = 0;
+    s -> result_amount = 0;
 
     // Return out, as you don't get to benefit from anything else
-    return player_t::assess_damage( amount, school, dtype, result, action );
+    return player_t::assess_damage( school, dtype, s );
   }
 
   if ( buffs.gotak_prot -> up() )
-    amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
+    s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
 
   if ( buffs.divine_protection -> up() )
   {
     if ( util::school_type_component( school, SCHOOL_MAGIC ) )
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
+      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
     }
     else
     {
-      amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
+      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
     }
   }
 
   if ( buffs.glyph_exorcism -> check() )
   {
-    amount *= 1.0 + buffs.glyph_exorcism -> value();
+    s -> result_amount *= 1.0 + buffs.glyph_exorcism -> value();
   }
 
-  if ( result == RESULT_PARRY )
+  if ( s -> result == RESULT_PARRY )
   {
     if ( main_hand_attack && main_hand_attack -> execute_event )
     {
@@ -3156,7 +3154,7 @@ double paladin_t::assess_damage( double        amount,
     }
   }
 
-  return player_t::assess_damage( amount, school, dtype, result, action );
+  return player_t::assess_damage( school, dtype, s );
 }
 
 // paladin_t::assess_heal ===================================================

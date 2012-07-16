@@ -348,7 +348,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
-  virtual double    assess_damage( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual double    assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4244,22 +4244,20 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::assess_damage ============================================
 
-double death_knight_t::assess_damage( double            amount,
-                                      school_e     school,
+double death_knight_t::assess_damage( school_e     school,
                                       dmg_e        dtype,
-                                      result_e     result,
-                                      action_t*         action )
+                                      action_state_t* s )
 {
   if ( buffs.blood_presence -> check() )
-    amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
 
-  if ( result != RESULT_MISS )
+  if ( s -> result != RESULT_MISS )
     buffs.scent_of_blood -> trigger();
 
-  if ( result == RESULT_DODGE || result == RESULT_PARRY )
+  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
     buffs.rune_strike -> trigger();
 
-  return player_t::assess_damage( amount, school, dtype, result, action );
+  return player_t::assess_damage( school, dtype, s );
 }
 
 // death_knight_t::composite_armor_multiplier ===============================

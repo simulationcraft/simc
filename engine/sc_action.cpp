@@ -1042,7 +1042,7 @@ void action_t::last_tick( dot_t* d )
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
-  double dmg_adjusted = s -> target -> assess_damage( s -> result_amount, school, type, result, this );
+  double dmg_adjusted = s -> target -> assess_damage( school, type, s );
   double actual_amount = s -> target -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, s -> target -> resources.current[ RESOURCE_HEALTH ] );
   s -> result_amount = dmg_adjusted;
 
@@ -1087,19 +1087,6 @@ void action_t::assess_damage( dmg_e    type,
   }
 
   stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );
-}
-
-// action_t::additional_damage ==============================================
-
-void action_t::additional_damage( player_t*     t,
-                                  double        amount,
-                                  dmg_e    type,
-                                  result_e result )
-{
-  //amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
-  double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
-  double actual_amount = std::min( dmg_adjusted, t -> resources.current[ current_resource() ] );
-  stats -> add_result( actual_amount, amount, type, result );
 }
 
 // action_t::schedule_execute ===============================================
