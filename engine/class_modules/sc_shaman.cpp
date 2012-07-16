@@ -82,7 +82,6 @@ struct shaman_td_t : public actor_pair_t
 struct shaman_t : public player_t
 {
 public:
-
   // Options
   timespan_t wf_delay;
   timespan_t wf_delay_stddev;

@@ -4,7 +4,7 @@ import parser, db, data, constants
 
 def _rune_cost(generator, filter_data, record, *args):
     cost = 0
-    for rune_type in xrange(0, 3):
+    for rune_type in xrange(0, 4):
         for i in xrange(0, getattr(record, 'rune_cost_%d' % (rune_type + 1))):
             cost |= 1 << (rune_type * 2 + i)
     
@@ -1734,7 +1734,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration, RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -1755,7 +1755,7 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')
-            fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.3x'),
+            fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.4x'),
             fields += self._spellrunecost_db[spell.id_rune_cost].field('rune_power_gain')
             fields += self._spellauraoptions_db[spell.id_aura_opt].field(
                 'stack_amount', 'proc_chance', 'proc_charges'

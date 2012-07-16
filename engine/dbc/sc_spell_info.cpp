@@ -485,9 +485,11 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     int b = spell -> rune_cost() & 0x3;
     int u = ( spell -> rune_cost() & 0xC ) >> 2;
     int f = ( spell -> rune_cost() & 0x30 ) >> 4;
+    int d = ( spell -> rune_cost() & 0xC0 ) >> 6;
     if ( b > 0 ) s << ( b & 0x1 ? "1" : "2" ) << " Blood, ";
     if ( u > 0 ) s << ( u & 0x1 ? "1" : "2" ) << " Unholy, ";
     if ( f > 0 ) s << ( f & 0x1 ? "1" : "2" ) << " Frost, ";
+    if ( d > 0 ) s << ( d & 0x1 ? "1" : "2" ) << " Death, ";
 
     s.seekp( -2, std::ios_base::cur );
 

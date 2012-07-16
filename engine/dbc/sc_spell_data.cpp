@@ -847,20 +847,20 @@ struct spell_rune_expr_t : public spell_list_expr_t
 {
   static unsigned rune_cost( const std::string& s )
   {
-    const char _runes[] = { 'b', 'u', 'f' };
-    int n_runes[]       = { 0, 0, 0 };
+    const char _runes[] = { 'b', 'u', 'f', 'd' };
+    int n_runes[]       = { 0, 0, 0, 0 };
     unsigned rune_mask  = 0;
 
     for ( unsigned int i = 0; i < s.size(); i++ )
     {
-      for ( unsigned int j = 0; j < 3; j++ )
+      for ( unsigned int j = 0; j < 4; j++ )
       {
         if ( s[ i ] == _runes[ j ] )
           n_runes[ j ]++;
       }
     }
 
-    for ( unsigned int i = 0; i < 3; i++ )
+    for ( unsigned int i = 0; i < 4; i++ )
     {
       for ( int j = 0; j < std::min( 2, n_runes[ i ] ); j++ )
         rune_mask |= ( 1 << ( i * 2 + j ) );
