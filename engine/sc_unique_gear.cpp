@@ -151,7 +151,7 @@ struct cost_reduction_proc_callback_t : public action_callback_t
 
 struct discharge_spell_t : public spell_t
 {
-  discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+  discharge_spell_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, int ae,
                      unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
     spell_t( n, p, spell_data_t::nil() )
   {
@@ -166,15 +166,13 @@ struct discharge_spell_t : public spell_t
     may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
     may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     background  = true;
-    no_buffs = nb;
-    no_debuffs = nd;
     aoe = ae;
   }
 };
 
 struct discharge_attack_t : public attack_t
 {
-  discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+  discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, int ae,
                       unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
     attack_t( n, p, spell_data_t::nil() )
   {
@@ -195,8 +193,6 @@ struct discharge_attack_t : public attack_t
                 && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
     may_glance = false;
     background  = true;
-    no_buffs = nb;
-    no_debuffs = nd;
     aoe = ae;
   }
 };
@@ -237,8 +233,6 @@ struct discharge_proc_callback_base_t : public action_callback_t
                                   double scaling,
                                   double pc,
                                   timespan_t cd,
-                                  bool no_buffs,
-                                  bool no_debuffs,
                                   int aoe,
                                   unsigned int override_result_es_mask = 0,
                                   unsigned int result_es_mask = 0 ) :
@@ -250,11 +244,11 @@ struct discharge_proc_callback_base_t : public action_callback_t
 
     if ( amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, amount, scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -amount, scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
 
     proc = p -> get_proc( name_str );
@@ -322,12 +316,10 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
                              double scaling,
                              double pc,
                              timespan_t cd,
-                             bool no_buffs,
-                             bool no_debuffs,
                              int aoe,
                              unsigned int override_result_es_mask = 0,
                              unsigned int result_es_mask = 0 ) :
-    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_es_mask,result_es_mask )
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,aoe,override_result_es_mask,result_es_mask )
   { }
 };
 
@@ -344,12 +336,10 @@ struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
                                     double scaling,
                                     double pc,
                                     timespan_t cd,
-                                    bool no_buffs,
-                                    bool no_debuffs,
                                     int aoe,
                                     unsigned int override_result_es_mask = 0,
                                     unsigned int result_es_mask = 0 ) :
-    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,no_buffs,no_debuffs,aoe,override_result_es_mask,result_es_mask )
+    discharge_proc_callback_base_t( n,p,ms,school,amount,scaling,pc,cd,aoe,override_result_es_mask,result_es_mask )
   { }
 
   virtual double proc_chance()
@@ -380,8 +370,6 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                                   double proc_chance,
                                   timespan_t duration,
                                   timespan_t cooldown,
-                                  bool no_buffs,
-                                  bool no_debuffs,
                                   int aoe,
                                   bool activated = true,
                                   unsigned int override_result_es_mask = 0,
@@ -401,7 +389,7 @@ struct stat_discharge_proc_callback_t : public action_callback_t
 
     struct discharge_spell_t : public spell_t
     {
-      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+      discharge_spell_t( const std::string n, player_t* p, double amount, double scaling, school_e s, int ae,
                          unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
         spell_t( n, p, spell_data_t::nil() )
       {
@@ -416,17 +404,13 @@ struct stat_discharge_proc_callback_t : public action_callback_t
         may_crit = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) != 0 : true ); // Default true
         may_miss = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
         background  = true;
-        no_buffs = nb;
-        no_debuffs = nd;
         aoe = ae;
       }
     };
 
     struct discharge_attack_t : public attack_t
     {
-      bool no_buffs;
-
-      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, bool nb, bool nd, int ae,
+      discharge_attack_t( const std::string& n, player_t* p, double amount, double scaling, school_e s, int ae,
                           unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
         attack_t( n, p, spell_data_t::nil() )
       {
@@ -447,19 +431,17 @@ struct stat_discharge_proc_callback_t : public action_callback_t
                     && ( p -> position == POSITION_FRONT || p -> position == POSITION_RANGED_FRONT );
         may_glance = false;
         background  = true;
-        no_buffs = nb;
-        no_debuffs = nd;
         aoe = ae;
       }
     };
 
     if ( discharge_amount > 0 )
     {
-      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_spell_t( name_str, p, discharge_amount, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
     else
     {
-      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+      discharge_action = new discharge_attack_t( name_str, p, -discharge_amount, discharge_scaling, school, aoe, override_result_es_mask, result_es_mask );
     }
   }
 
@@ -509,8 +491,6 @@ static void register_touch_of_the_grave( player_t* p )
       may_crit         = false;
       may_miss         = false;
       background       = true;
-      no_buffs         = false;
-      no_debuffs       = false;
       aoe              = 0;
     }
 
@@ -927,7 +907,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     rng_t* rng;
 
     dragonwrath_tarecgosas_rest_callback_t( player_t* p, double pc ) :
-      discharge_proc_callback_t( "wrath_of_tarecgosa", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), true, true, false, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
+      discharge_proc_callback_t( "wrath_of_tarecgosa", p, 1, SCHOOL_ARCANE, 1.0, 0.0, pc, timespan_t::zero(), false, RESULT_MISS_MASK | RESULT_CRIT_MASK, 0 ), rng( 0 )
     {
       rng = p -> get_rng( "dragonwrath_tarecgosas_rest" );
     }
@@ -1998,14 +1978,12 @@ action_callback_t* unique_gear::register_discharge_proc( proc_e        type,
                                                          double             scaling,
                                                          double             proc_chance,
                                                          timespan_t         cooldown,
-                                                         bool               no_buffs,
-                                                         bool               no_debuffs,
                                                          int                aoe,
                                                          unsigned int       override_result_es_mask,
                                                          unsigned int       result_es_mask )
 {
   action_callback_t* cb = new discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                         no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+                                                         aoe, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2068,14 +2046,12 @@ action_callback_t* unique_gear::register_chance_discharge_proc( proc_e        ty
                                                                 double             scaling,
                                                                 double             proc_chance,
                                                                 timespan_t         cooldown,
-                                                                bool               no_buffs,
-                                                                bool               no_debuffs,
                                                                 int                aoe,
                                                                 unsigned int       override_result_es_mask,
                                                                 unsigned int       result_es_mask )
 {
   action_callback_t* cb = new chance_discharge_proc_callback_t( name, player, max_stacks, school, amount, scaling, proc_chance, cooldown,
-                                                                no_buffs, no_debuffs, aoe, override_result_es_mask, result_es_mask );
+                                                                aoe, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2141,14 +2117,12 @@ action_callback_t* unique_gear::register_stat_discharge_proc( proc_e        type
                                                               double             proc_chance,
                                                               timespan_t         duration,
                                                               timespan_t         cooldown,
-                                                              bool               no_buffs,
-                                                              bool               no_debuffs,
                                                               int                aoe,
                                                               unsigned int       override_result_es_mask,
                                                               unsigned int       result_es_mask )
 {
   action_callback_t* cb = new stat_discharge_proc_callback_t( name, player, stat, max_stacks, stat_amount, school, min_dmg, max_dmg, proc_chance,
-                                                              duration, cooldown, no_buffs, no_debuffs, aoe, type == PROC_NONE, override_result_es_mask, result_es_mask );
+                                                              duration, cooldown, aoe, type == PROC_NONE, override_result_es_mask, result_es_mask );
 
   if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
   {
@@ -2232,7 +2206,7 @@ action_callback_t* unique_gear::register_discharge_proc( item_t& i,
 
   return register_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                   e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                  e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
+                                  e.proc_chance, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================
@@ -2246,7 +2220,7 @@ action_callback_t* unique_gear::register_chance_discharge_proc( item_t& i,
 
   return register_chance_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                          e.max_stacks, e.school, e.discharge_amount, e.discharge_scaling,
-                                         e.proc_chance, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
+                                         e.proc_chance, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================
@@ -2261,7 +2235,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
   return register_stat_discharge_proc( e.trigger_type, e.trigger_mask, name, i.player,
                                        e.max_stacks, e.stat, e.stat_amount,
                                        e.school, e.discharge_amount, e.discharge_scaling,
-                                       e.proc_chance, e.duration, e.cooldown, e.no_player_benefits, e.no_debuffs, e.aoe, e.override_result_es_mask, e.result_es_mask );
+                                       e.proc_chance, e.duration, e.cooldown, e.aoe, e.override_result_es_mask, e.result_es_mask );
 }
 
 // ==========================================================================

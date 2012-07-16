@@ -980,14 +980,6 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.override_result_es_mask |= RESULT_BLOCK_MASK;
       effect.result_es_mask |= RESULT_BLOCK_MASK;
     }
-    else if ( t.name == "nobuffs" )
-    {
-      effect.no_player_benefits = true;
-    }
-    else if ( t.name == "nodebuffs" )
-    {
-      effect.no_player_benefits = true;
-    }
     else if ( t.name == "norefresh" )
     {
       effect.no_refresh = true;
