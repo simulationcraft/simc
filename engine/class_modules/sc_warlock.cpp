@@ -227,7 +227,7 @@ public:
   timespan_t ember_react;
   double nightfall_chance;
 private:
-  mutable target_specific_t<warlock_td_t> target_data;
+  target_specific_t<warlock_td_t> target_data;
 public:
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
@@ -271,10 +271,10 @@ public:
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
 
-  virtual warlock_td_t* get_target_data( player_t* target ) const
+  virtual warlock_td_t* get_target_data( player_t* target )
   {
     warlock_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new warlock_td_t( target, const_cast<warlock_t*>( this ) );
+    if ( ! td ) td = new warlock_td_t( target, this );
     return td;
   }
 

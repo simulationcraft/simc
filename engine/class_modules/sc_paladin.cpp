@@ -170,7 +170,7 @@ public:
     const spell_data_t* inquisition;
   } glyphs;
 private:
-  mutable target_specific_t<paladin_td_t> target_data;
+  target_specific_t<paladin_td_t> target_data;
 public:
   player_t* beacon_target;
   int ret_pvp_gloves;
@@ -254,10 +254,10 @@ public:
   double            get_hand_of_light();
   double            jotp_haste();
 
-  virtual paladin_td_t* get_target_data( player_t* target ) const
+  virtual paladin_td_t* get_target_data( player_t* target )
   {
     paladin_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new paladin_td_t( target, const_cast<paladin_t*>( this ) );
+    if ( ! td ) td = new paladin_td_t( target, this );
     return td;
   }
 

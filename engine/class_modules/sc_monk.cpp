@@ -164,7 +164,7 @@ public:
   // Options
   int initial_chi;
 private:
-  mutable target_specific_t<monk_td_t> target_data;
+  target_specific_t<monk_td_t> target_data;
 public:
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
@@ -204,10 +204,10 @@ public:
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
 
-  virtual monk_td_t* get_target_data( player_t* target ) const
+  virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new monk_td_t( target, const_cast<monk_t*>( this ) );
+    if ( ! td ) td = new monk_td_t( target, this );
     return td;
   }
 

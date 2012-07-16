@@ -283,7 +283,7 @@ public:
   // Up-Times
   benefit_t* uptimes_rage_cap;
 private:
-  mutable target_specific_t<warrior_td_t> target_data;
+  target_specific_t<warrior_td_t> target_data;
 public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
@@ -312,10 +312,10 @@ public:
 
   // Character Definition
 
-  virtual warrior_td_t* get_target_data( player_t* target ) const
+  virtual warrior_td_t* get_target_data( player_t* target )
   {
     warrior_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new warrior_td_t( target, const_cast<warrior_t*>( this ) );
+    if ( ! td ) td = new warrior_td_t( target, this );
     return td;
   }
 

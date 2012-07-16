@@ -68,7 +68,6 @@
 #if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 // Use C++11
 #include <array>
-#include <functional>
 #include <type_traits>
 #include <unordered_map>
 #if ( _MSC_VER && _MSC_VER < 1600 )
@@ -3559,7 +3558,7 @@ struct player_t : public noncopyable
   double      get_player_distance( player_t* p );
   double      get_position_distance( double m=0, double v=0 );
   action_priority_list_t* get_action_priority_list( const std::string& name );
-  virtual actor_pair_t* get_target_data( player_t* /* target */ ) const
+  virtual actor_pair_t* get_target_data( player_t* /* target */ )
   { return NULL; }
 
   // Opportunity to perform any stat fixups before analysis
