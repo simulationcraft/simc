@@ -1507,7 +1507,7 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
   virtual void execute()
   {
-    direct_power_mod = 0.223 * td( target ) -> combo_points -> count;
+    direct_power_mod = 0.196 * td( target ) -> combo_points -> count;
 
     excess_energy = std::min( max_excess_energy,
                               ( p() -> resources.current[ RESOURCE_ENERGY ] - druid_cat_attack_t::cost() ) );
@@ -1836,7 +1836,7 @@ struct rip_t : public druid_cat_attack_t
     druid_cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0 )
   {
-    ap_per_point          = 0.055;
+    ap_per_point          = 0.048;
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
@@ -2130,8 +2130,8 @@ struct lacerate_t : public druid_bear_attack_t
   lacerate_t( druid_t* p, const std::string& options_str ) :
     druid_bear_attack_t( p, p -> find_class_spell( "Lacerate" ), options_str )
   {
-    direct_power_mod     = 0.822;
-    tick_power_mod       = 0.0682;
+    direct_power_mod     = 0.616;
+    tick_power_mod       = 0.0512;
     dot_behavior         = DOT_REFRESH;
   }
 
@@ -2284,8 +2284,8 @@ struct thrash_bear_t : public druid_bear_attack_t
     druid_bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) -> is_level( player -> level ) ? player -> find_spell( 77758 ) : spell_data_t::not_found(), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = 0.203;
-    tick_power_mod    = 0.0936;
+    direct_power_mod  = 0.162;
+    tick_power_mod    = 0.0749;
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
   }
