@@ -1055,7 +1055,7 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   {
     // W/SS/SF always use a charge, it's possible to waste them if you have
     // the wrong eclipse up or under CA!
-    gain *= 1 + p -> buff.astral_empowerment -> data().effectN( 1 ).percent();
+    gain = (int) ( gain * ( 1 + p -> buff.astral_empowerment -> data().effectN( 1 ).percent() ) );
     p -> buff.astral_empowerment -> decrement();
   }
 
