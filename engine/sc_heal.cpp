@@ -65,13 +65,10 @@ void heal_t::execute()
 
 // heal_t::assess_damage ====================================================
 
-void heal_t::assess_damage( player_t* t,
-                            double heal_amount,
-                            dmg_e heal_type,
-                            result_e heal_result,
-                            action_state_t* assess_state )
+void heal_t::assess_damage( dmg_e heal_type,
+                            action_state_t* s )
 {
-  player_t::heal_info_t heal = t -> assess_heal( heal_amount, school, heal_type, heal_result, this );
+  player_t::heal_info_t heal = s -> target -> assess_heal( s -> result_amount, school, heal_type, s -> result, this );
 
   if ( heal_type == HEAL_DIRECT )
   {
@@ -79,29 +76,29 @@ void heal_t::assess_damage( player_t* t,
     {
       sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
-                     t -> name(), heal.amount, heal.actual,
-                     util::result_type_string( heal_result ) );
+                     s -> target -> name(), heal.amount, heal.actual,
+                     util::result_type_string( s -> result ) );
     }
 
-    if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, assess_state );
-    if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, assess_state );
+    if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, s );
+    if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
   else // HEAL_OVER_TIME
   {
     if ( sim -> log )
     {
-      dot_t* dot = get_dot( t );
+      dot_t* dot = get_dot( s -> target );
       sim -> output( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     t -> name(), heal.amount, heal.actual,
-                     util::result_type_string( heal_result ) );
+                     s -> target -> name(), heal.amount, heal.actual,
+                     util::result_type_string( s -> result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, assess_state );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
-  stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), heal_result );
+  stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
 }
 
 // heal_t::find_greatest_difference_player ==================================

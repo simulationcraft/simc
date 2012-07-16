@@ -3899,7 +3899,6 @@ struct action_t : public noncopyable
   virtual timespan_t tick_time( double haste );
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
-  virtual void   player_tick() {}
   virtual result_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
   virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
@@ -3915,7 +3914,7 @@ struct action_t : public noncopyable
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   assess_damage( player_t* t, double amount, dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
+  virtual void   assess_damage( dmg_e, action_state_t* assess_state );
   virtual void   additional_damage( player_t* t, double amount, dmg_e, result_e impact_result );
   virtual void   schedule_execute();
   virtual void   reschedule_execute( timespan_t time );
@@ -4172,7 +4171,7 @@ struct heal_t : public spell_base_t
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount, dmg_e, result_e, action_state_t* = 0 );
+  virtual void assess_damage( dmg_e, action_state_t* );
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& );
@@ -4198,8 +4197,7 @@ struct absorb_t : public spell_base_t
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual void execute();
-  virtual void assess_damage( player_t* t, double amount,
-                              dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
+  virtual void assess_damage( dmg_e, action_state_t* );
   virtual void impact_s( action_state_t* );
 
   virtual double composite_da_multiplier()

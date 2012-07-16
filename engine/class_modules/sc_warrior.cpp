@@ -478,7 +478,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     return dmg;
   }
 
-  virtual void   assess_damage( player_t* t, double, dmg_e, result_e, action_state_t* );
+  virtual void   assess_damage( dmg_e, action_state_t* );
 
   virtual double action_multiplier()
   {
@@ -867,9 +867,9 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 // warrior_attack_t::assess_damage ==========================================
 
-void warrior_attack_t::assess_damage( player_t* t, const double amount, const dmg_e dmg_type, const result_e impact_result, action_state_t* s )
+void warrior_attack_t::assess_damage( dmg_e dmg_type, action_state_t* s )
 {
-  base_t::assess_damage( t, amount, dmg_type, impact_result, s );
+  base_t::assess_damage( dmg_type, s );
 
   /* warrior_t* p = cast();
 

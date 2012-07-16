@@ -1188,17 +1188,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual void assess_damage( player_t* t,
-                              double amount,
-                              dmg_e type,
-                              result_e impact_result,
-                              action_state_t* assess_state )
+  virtual void assess_damage( dmg_e type,
+                              action_state_t* s )
   {
-    base_t::assess_damage( t, amount, type, impact_result, assess_state );
+    base_t::assess_damage( type, s );
 
-    if ( aoe == 0 && p() -> buffs.vampiric_embrace -> up() && result_is_hit( impact_result ) )
+    if ( aoe == 0 && p() -> buffs.vampiric_embrace -> up() && result_is_hit( s -> result ) )
     {
-      double a = amount * ( p() -> buffs.vampiric_embrace -> data().effectN( 1 ).percent() + p() -> glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
+      double a = s -> result_amount * ( p() -> buffs.vampiric_embrace -> data().effectN( 1 ).percent() + p() -> glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
 
       // Split amongst number of people in raid.
       a /= 1.0 + p() -> party_list.size();
@@ -1230,7 +1227,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     if ( atonement )
-      atonement -> trigger( amount, type, impact_result );
+      atonement -> trigger( s -> result_amount, type, s -> result );
   }
 
   static void trigger_shadowy_apparition( dot_t* d )

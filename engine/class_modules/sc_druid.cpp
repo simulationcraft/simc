@@ -777,6 +777,8 @@ struct druid_spell_t : public druid_action_t<spell_t>
 
     may_crit      = true;
     tick_may_crit = true;
+
+    update_flags |=  STATE_CRIT;
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -795,7 +797,6 @@ struct druid_spell_t : public druid_action_t<spell_t>
   virtual void   execute();
   virtual timespan_t execute_time();
   virtual double composite_haste();
-  virtual void   player_tick();
   virtual void   schedule_execute();
 };
 
@@ -2795,13 +2796,6 @@ void druid_spell_t::consume_resource()
       p() -> buff.omen_of_clarity -> expire();
     }
   }
-}
-
-// druid_spell_t::player_tick ===============================================
-
-void druid_spell_t::player_tick()
-{
-  //player_crit = p() -> composite_spell_crit();
 }
 
 // Auto Attack ==============================================================

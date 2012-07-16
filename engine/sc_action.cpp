@@ -1009,7 +1009,7 @@ void action_t::tick( dot_t* d )
 
     d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
 
-    assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
+    assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
   }
 
   if ( harmful && callbacks )
@@ -1041,16 +1041,12 @@ void action_t::last_tick( dot_t* d )
 
 // action_t::assess_damage ==================================================
 
-void action_t::assess_damage( player_t*     t,
-                              double        amount,
-                              dmg_e    type,
-                              result_e result,
-                              action_state_t* assess_state )
+void action_t::assess_damage( dmg_e    type,
+                              action_state_t* s )
 {
-  double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
-  double actual_amount = t -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, t -> resources.current[ RESOURCE_HEALTH ] );
-  if ( assess_state )
-    assess_state -> result_amount = dmg_adjusted;
+  double dmg_adjusted = s -> target -> assess_damage( s -> result_amount, school, type, result, this );
+  double actual_amount = s -> target -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, s -> target -> resources.current[ RESOURCE_HEALTH ] );
+  s -> result_amount = dmg_adjusted;
 
   if ( type == DMG_DIRECT )
   {
@@ -1058,7 +1054,7 @@ void action_t::assess_damage( player_t*     t,
     {
       sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     t -> name(), dmg_adjusted,
+                     s -> target -> name(), dmg_adjusted,
                      util::school_type_string( school ),
                      util::result_type_string( result ) );
     }
@@ -1066,33 +1062,33 @@ void action_t::assess_damage( player_t*     t,
     if ( direct_tick_callbacks )
     {
       tick_dmg = dmg_adjusted;
-      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, assess_state );
+      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
     }
     else
     {
       direct_dmg = dmg_adjusted;
-      if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, assess_state );
+      if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
     }
   }
   else // DMG_OVER_TIME
   {
     if ( sim -> log )
     {
-      dot_t* dot = get_dot( t );
+      dot_t* dot = get_dot( s -> target );
       sim -> output( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     t -> name(), dmg_adjusted,
+                     s -> target -> name(), dmg_adjusted,
                      util::school_type_string( school ),
                      util::result_type_string( result ) );
     }
 
     tick_dmg = dmg_adjusted;
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, assess_state );
+    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
-  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), result );
+  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );
 }
 
 // action_t::additional_damage ==============================================
@@ -1917,4 +1913,92 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
 event_t* action_t::start_action_execute_event( timespan_t t )
 {
   return new ( sim ) action_execute_event_t( sim, this, t );
+}
+
+void action_t::schedule_travel_s( action_state_t* s )
+{
+  time_to_travel = travel_time();
+
+  if ( ! execute_state )
+    execute_state = get_state();
+
+  execute_state -> copy_state( s );
+
+  if ( time_to_travel == timespan_t::zero() )
+  {
+    impact_s( s );
+    release_state( s );
+  }
+  else
+  {
+    if ( sim -> log )
+    {
+      sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
+    }
+
+    add_travel_event( new ( sim ) stateless_travel_event_t( sim, this, s, time_to_travel ) );
+  }
+}
+
+void action_t::impact_s( action_state_t* s )
+{
+  assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
+
+  if ( result_is_hit( s -> result ) )
+  {
+    if ( num_ticks > 0 || tick_zero )
+    {
+      dot_t* dot = get_dot( s -> target );
+      int remaining_ticks = dot -> num_ticks - dot -> current_tick;
+      if ( dot_behavior == DOT_CLIP ) dot -> cancel();
+      dot -> action = this;
+      dot -> current_tick = 0;
+      dot -> added_ticks = 0;
+      dot -> added_seconds = timespan_t::zero();
+      // Snapshot the stats
+      if ( ! dot -> state )
+        dot -> state = get_state( s );
+      else
+        dot -> state -> copy_state( s );
+      dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
+
+      if ( dot -> ticking )
+      {
+        assert( dot -> tick_event );
+
+        if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
+
+        // Recasting a dot while it's still ticking gives it an extra tick in total
+        dot -> num_ticks++;
+
+        // tick_zero dots tick again when reapplied
+        if ( tick_zero )
+        {
+          // this is hacky, but otherwise uptime gets messed up
+          timespan_t saved_tick_time = dot -> time_to_tick;
+          dot -> time_to_tick = timespan_t::zero();
+          tick( dot );
+          dot -> time_to_tick = saved_tick_time;
+        }
+      }
+      else
+      {
+        if ( school == SCHOOL_BLEED ) s -> target -> debuffs.bleeding -> increment();
+
+        dot -> schedule_tick();
+      }
+      dot -> recalculate_ready();
+
+      if ( sim -> debug )
+        sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
+                       player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
+    }
+  }
+  else
+  {
+    if ( sim -> log )
+    {
+      sim -> output( "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
+    }
+  }
 }

@@ -539,12 +539,12 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_multiplier = 8.0; // hardcoded into tooltip
   }
 
-  virtual void assess_damage( player_t* t, double amount, dmg_e type, result_e result, action_state_t* assess_state )
+  virtual void assess_damage( dmg_e type, action_state_t* s )
   {
-    monk_melee_attack_t::assess_damage( t, amount, type, result, assess_state );
+    monk_melee_attack_t::assess_damage( type, s );
 
 
-    trigger_blackout_kick_dot( this, t, direct_dmg * data().effectN( 2 ).percent( ) );
+    trigger_blackout_kick_dot( this, s -> target, direct_dmg * data().effectN( 2 ).percent( ) );
   }
 
   virtual double cost()
