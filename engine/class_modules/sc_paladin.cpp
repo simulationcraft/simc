@@ -317,7 +317,6 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       background = true;
       repeating  = true;
       trigger_gcd = timespan_t::zero();
-      stateless = true;
 
       owner = p -> o();
     }
@@ -385,7 +384,6 @@ struct paladin_action_t : public Base
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
-    ab::stateless = true;
   }
 
   paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
@@ -1132,7 +1130,6 @@ struct hand_of_light_proc_t : public melee_attack_t
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
-    stateless = true;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();

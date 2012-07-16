@@ -61,13 +61,6 @@ double attack_t::swing_haste()
   return player -> composite_attack_speed();
 }
 
-// attack_t::haste ==========================================================
-
-double attack_t::haste()
-{
-  return player -> composite_attack_haste();
-}
-
 // attack_t::execute_time ===================================================
 
 timespan_t attack_t::execute_time()

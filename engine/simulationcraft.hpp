@@ -3828,7 +3828,6 @@ struct action_t : public noncopyable
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   bool no_buffs, no_debuffs;
-  bool stateless;
   dot_behavior_e dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
   double rp_gain;
@@ -3848,7 +3847,6 @@ struct action_t : public noncopyable
   double base_dd_adder;
   double base_ta_adder;
   double direct_dmg, tick_dmg;
-  double snapshot_crit, snapshot_haste, snapshot_mastery;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -3896,8 +3894,6 @@ struct action_t : public noncopyable
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost();
-  virtual double total_haste()  { return haste(); }
-  virtual double haste()        { return 1.0; }
   virtual timespan_t gcd();
   virtual timespan_t execute_time() { return base_execute_time; }
   virtual timespan_t tick_time( double haste );
@@ -3943,11 +3939,11 @@ struct action_t : public noncopyable
   virtual double  block_chance( int /* delta_level */ ) { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ );
 
-  virtual double total_crit_bonus();
+  virtual double total_crit_bonus(); // Check if we want to move this into the stateless system.
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double bonus_damage() { return base_dd_adder; }
+  virtual double bonus_damage() const { return base_dd_adder; }
 
   virtual expr_t* create_expression( const std::string& name );
 
@@ -4074,8 +4070,6 @@ struct attack_t : public action_t
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
-  virtual double haste();
-  virtual double total_haste() { return swing_haste(); }
   virtual double swing_haste();
   virtual timespan_t execute_time();
   virtual void execute();
@@ -4139,7 +4133,6 @@ struct spell_base_t : public action_t
 {
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
   // Spell Overrides
-  virtual double haste();
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
   virtual timespan_t tick_time( double haste );
@@ -4722,7 +4715,6 @@ struct pct_based_action_t : public Base
     ab( n, p, s )
   {
     ab::background = true;
-    ab::stateless = true;
 
     ab::tick_may_crit = false;
     ab::hasted_ticks  = false;

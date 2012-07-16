@@ -392,7 +392,6 @@ struct warrior_action_t : public Base
     stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
   {
     ab::may_crit   = true;
-    ab::stateless  = true;
   }
 
   warrior_t* cast() const { return static_cast<warrior_t*>( ab::player ); }

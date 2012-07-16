@@ -161,7 +161,6 @@ action_t::action_t( action_e       ty,
   hasted_ticks(),
   no_buffs(),
   no_debuffs(),
-  stateless(),
   dot_behavior( DOT_CLIP ),
   ability_lag( timespan_t::zero() ),
   ability_lag_stddev( timespan_t::zero() ),
@@ -201,9 +200,6 @@ action_t::action_t( action_e       ty,
   base_ta_adder                  = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
-  snapshot_crit                  = 0.0;
-  snapshot_haste                 = 1.0;
-  snapshot_mastery               = 0.0;
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
@@ -241,7 +237,6 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action            = false;
   is_tick_action                 = false;
   // New Stuff
-  stateless = false;
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
   execute_state = 0;
@@ -736,7 +731,7 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   double base_direct_dmg = dmg;
   double weapon_dmg = 0;
 
-  dmg += base_dd_adder;
+  dmg += bonus_damage();
 
   if ( weapon_multiplier > 0 )
   {
@@ -937,76 +932,42 @@ void action_t::execute()
 
     player -> in_combat = true;
   }
-/*
-  if ( ! stateless )
+
+
+  if ( aoe == -1 || aoe > 0 ) // aoe
   {
-    player_buff();
+    std::vector< player_t* > tl = target_list();
 
-    if ( aoe == -1 || aoe > 0 )
-    {
-      std::vector< player_t* > tl = target_list();
-
-      for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
-      {
-        target_debuff( tl[ t ], DMG_DIRECT );
-
-        result = calculate_result( total_crit(), tl[ t ] -> level );
-
-        if ( result_is_hit() )
-          direct_dmg = calculate_direct_damage( result, t + 1, total_attack_power(), total_spell_power(), total_dd_multiplier(), tl[ t ] );
-
-        schedule_travel( tl[ t ] );
-      }
-    }
-    else
-    {
-      target_debuff( target, DMG_DIRECT );
-
-      result = calculate_result( total_crit(), target -> level );
-
-      if ( result_is_hit() )
-        direct_dmg = calculate_direct_damage( result, 0, total_attack_power(), total_spell_power(), total_dd_multiplier(), target );
-
-      schedule_travel( target );
-    }
-  }
-  else*/
-  {
-    if ( aoe == -1 || aoe > 0 ) // stateless aoe
-    {
-      std::vector< player_t* > tl = target_list();
-
-      for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
-      {
-        action_state_t* s = get_state( pre_execute_state );
-        s -> target = tl[ t ];
-        if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
-        s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
-
-        if ( result_is_hit( s -> result ) )
-          s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
-
-        if ( sim -> debug )
-          s -> debug();
-
-        schedule_travel_s( s );
-      }
-    }
-    else // stateless single target
+    for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
-      s -> target = target;
+      s -> target = tl[ t ];
       if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
       s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+        s -> result_amount = calculate_direct_damage( s -> result, t + 1, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
       if ( sim -> debug )
         s -> debug();
 
       schedule_travel_s( s );
     }
+  }
+  else // single target
+  {
+    action_state_t* s = get_state( pre_execute_state );
+    s -> target = target;
+    if ( ! pre_execute_state ) snapshot_state( s, snapshot_flags );
+    s -> result = calculate_result( s -> composite_crit(), s -> target -> level );
+
+    if ( result_is_hit( s -> result ) )
+      s -> result_amount = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
+
+    if ( sim -> debug )
+      s -> debug();
+
+    schedule_travel_s( s );
   }
 
   consume_resource();
@@ -1030,62 +991,32 @@ void action_t::tick( dot_t* d )
 {
   if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
-  /*if ( ! stateless ) // non-stateless
+  if ( tick_action )
   {
-    result = RESULT_HIT;
-
-    player_tick();
-
-    target_debuff( target, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
-
-    if ( tick_may_crit )
-    {
-      int delta_level = target -> level - player -> level;
-
-      if ( rng_result-> roll( crit_chance( total_crit(), delta_level ) ) )
-      {
-        result = RESULT_CRIT;
-      }
-    }
-
-    tick_dmg = calculate_tick_damage( result, total_power(), total_td_multiplier(), target );
-
-    d -> prev_tick_amount = tick_dmg;
-
-    assess_damage( target, tick_dmg, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, result );
-
-    if ( harmful && callbacks ) action_callback_t::trigger( player -> callbacks.tick[ result ], this );
+    tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
+    snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
+    tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
+    tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
+    tick_action -> execute();
   }
-  else // stateless
-  */{
-    if ( tick_action )
-    {
-      assert( tick_action -> stateless );
-      tick_action -> pre_execute_state = tick_action -> get_state( d -> state );
-      snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
-      tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
-      tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
-      tick_action -> execute();
-    }
-    else
-    {
-      d -> state -> result = RESULT_HIT;
-      snapshot_state( d -> state, update_flags );
+  else
+  {
+    d -> state -> result = RESULT_HIT;
+    snapshot_state( d -> state, update_flags );
 
-      if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
-        d -> state -> result = RESULT_CRIT;
+    if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
+      d -> state -> result = RESULT_CRIT;
 
-      d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
+    d -> state -> result_amount = calculate_tick_damage( d -> state -> result, d -> state -> composite_power(), d -> state -> composite_ta_multiplier(), d -> state -> target );
 
-      assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
-    }
-
-    if ( harmful && callbacks )
-      action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
-
-    if ( sim -> debug )
-      d -> state -> debug();
+    assess_damage( d -> state -> target, d -> state -> result_amount, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state -> result );
   }
+
+  if ( harmful && callbacks )
+    action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this );
+
+  if ( sim -> debug )
+    d -> state -> debug();
 
   stats -> add_tick( d -> time_to_tick );
 

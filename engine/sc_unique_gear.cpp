@@ -512,7 +512,6 @@ static void register_touch_of_the_grave( player_t* p )
       no_buffs         = false;
       no_debuffs       = false;
       aoe              = 0;
-      stateless        = true;
     }
 
     virtual void impact_s( action_state_t* s )

@@ -25,13 +25,6 @@ spell_base_t::spell_base_t( action_e at,
   special = true;
 }
 
-// spell_base_t::haste ===========================================================
-
-double spell_base_t::haste()
-{
-  return player -> composite_spell_haste();
-}
-
 // spell_base_t::gcd =============================================================
 
 timespan_t spell_base_t::gcd()
@@ -39,7 +32,7 @@ timespan_t spell_base_t::gcd()
   timespan_t t = action_t::gcd();
   if ( t == timespan_t::zero() ) return timespan_t::zero();
 
-  t *= haste();
+  t *= composite_haste();
   if ( t < min_gcd ) t = min_gcd;
 
   return t;
@@ -55,7 +48,7 @@ timespan_t spell_base_t::execute_time()
     return timespan_t::zero();
 
   if ( t <= timespan_t::zero() ) return timespan_t::zero();
-  t *= haste();
+  t *= composite_haste();
 
   return t;
 }

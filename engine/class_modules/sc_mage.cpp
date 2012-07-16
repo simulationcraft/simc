@@ -343,7 +343,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       aoe = -1;
       may_crit = true;
-      stateless = true;
     }
 
     virtual void impact_s( action_state_t* s )
@@ -366,7 +365,6 @@ struct water_elemental_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      stateless = true;
     }
   };
 
@@ -440,7 +438,6 @@ struct mirror_image_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      stateless = true;
 
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
@@ -475,7 +472,6 @@ struct mirror_image_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      stateless = true;
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
         stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fire_blast" );
@@ -490,7 +486,6 @@ struct mirror_image_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      stateless = true;
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
         stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fireball" );
@@ -505,7 +500,6 @@ struct mirror_image_pet_t : public pet_t
     {
       parse_options( NULL, options_str );
       may_crit = true;
-      stateless = true;
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
         stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "frostbolt" );
@@ -717,7 +711,6 @@ struct mage_spell_t : public spell_t
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
-    stateless = true;
   }
 
   mage_t* p() const { return static_cast<mage_t*>( player ); }

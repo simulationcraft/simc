@@ -578,7 +578,6 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
-    stateless     = true;
 
     for ( size_t i = 1; i <= data()._effects -> size(); i++ )
     {
@@ -612,7 +611,6 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
-    stateless     = true;
 
     for ( size_t i = 1; i <= data()._effects -> size(); i++ )
     {
@@ -700,7 +698,6 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
-    stateless     = true;
   }
 
   druid_bear_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -713,7 +710,6 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
     may_glance    = false;
     special       = true;
     tick_may_crit = true;
-    stateless     = true;
   }
 
   virtual void impact_s( action_state_t* );
@@ -739,7 +735,6 @@ struct druid_heal_t : public druid_action_t<heal_t>
     may_crit          = true;
     may_miss          = false;
     tick_may_crit     = true;
-    stateless         = true;
     weapon_multiplier = 0;
   }
 
@@ -754,7 +749,6 @@ struct druid_heal_t : public druid_action_t<heal_t>
     may_crit          = true;
     may_miss          = false;
     tick_may_crit     = true;
-    stateless         = true;
     weapon_multiplier = 0;
   }
 
@@ -783,7 +777,6 @@ struct druid_spell_t : public druid_action_t<spell_t>
 
     may_crit      = true;
     tick_may_crit = true;
-    stateless     = true;
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -794,7 +787,6 @@ struct druid_spell_t : public druid_action_t<spell_t>
 
     may_crit      = true;
     tick_may_crit = true;
-    stateless     = true;
   }
 
   virtual void   consume_resource();
@@ -821,8 +813,6 @@ struct symbiosis_mirror_images_t : public pet_t
     wrath_t( symbiosis_mirror_images_t* player ) :
       spell_t( "wrath", player, player -> find_spell( 113769 ) )
     {
-      stateless = true;
-
       if ( player -> o() -> pet_mirror_images[ 0 ] )
         stats = player -> o() -> pet_mirror_images[ 0 ] -> get_stats( "wrath" );
     }
@@ -885,8 +875,6 @@ struct treants_balance_t : public pet_t
     wrath_t( treants_balance_t* player ) :
       spell_t( "wrath", player, player -> find_spell( 113769 ) )
     {
-      stateless = true;
-
       if ( player -> o() -> pet_treants[ 0 ] )
         stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "wrath" );
     }

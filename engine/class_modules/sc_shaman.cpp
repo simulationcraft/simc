@@ -517,7 +517,6 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   virtual bool   is_periodic_damage() { return base_td > 0; };
   virtual double cost();
   virtual double cost_reduction();
-  virtual double haste() { return composite_haste(); }
   virtual void   consume_resource();
   virtual timespan_t execute_time();
   virtual void   execute();
@@ -622,7 +621,6 @@ struct feral_spirit_pet_t : public pet_t
       background = true;
       repeating = true;
       may_crit = true;
-      stateless = true;
       school      = SCHOOL_PHYSICAL;
     }
 
@@ -665,7 +663,6 @@ struct feral_spirit_pet_t : public pet_t
     {
       may_crit  = true;
       special   = true;
-      stateless = true;
       direct_power_mod = data().extra_coeff();
       cooldown -> duration = timespan_t::from_seconds( 7.0 );
 
@@ -772,7 +769,6 @@ struct earth_elemental_pet_t : public pet_t
       may_crit          = true;
       background        = true;
       repeating         = true;
-      stateless         = true;
       weapon            = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
     }
@@ -855,7 +851,6 @@ struct fire_elemental_t : public pet_t
       parse_options( 0, options );
 
       school                      = SCHOOL_FIRE;
-      stateless                   = true;
       may_crit                    = true;
       base_costs[ RESOURCE_MANA ] = 0;
       crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
@@ -908,7 +903,6 @@ struct fire_elemental_t : public pet_t
     fire_melee_t( fire_elemental_t* player ) :
       melee_attack_t( "fire_melee", player, spell_data_t::nil() )
     {
-      stateless                    = true;
       special                      = false;
       may_crit                     = true;
       background                   = true;
@@ -1167,7 +1161,6 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       proc = true;
       callbacks = false;
       background = true;
-      stateless = true;
 
       imp_ll_rng = sim -> get_rng( "improved_ll" );
       imp_ll_fs_cd = player -> get_cooldown( "improved_ll_fs_cooldown" );
@@ -1311,7 +1304,6 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
-    stateless            = true;
     base_execute_time    = timespan_t::zero();
 
     if ( ! dtr && player -> has_dtr )
@@ -1347,7 +1339,6 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
-    stateless            = true;
     base_execute_time    = timespan_t::zero();
 
     direct_power_mod  += player -> spec.shamanism -> effectN( 1 ).percent();
@@ -1378,7 +1369,6 @@ struct chain_lightning_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
-    stateless            = true;
     base_execute_time    = timespan_t::zero();
     base_multiplier     += p() -> glyph.chain_lightning    -> effectN( 2 ).percent() +
                            p() -> spec.shamanism -> effectN( 2 ).percent();
@@ -1408,7 +1398,6 @@ struct lava_beam_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
-    stateless            = true;
     base_execute_time    = timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
@@ -1447,7 +1436,6 @@ struct elemental_blast_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
-    stateless            = true;
     base_execute_time    = timespan_t::zero();
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
 
@@ -1480,7 +1468,6 @@ struct lightning_charge_t : public shaman_spell_t
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
     may_crit         = true;
-    stateless        = true;
     may_proc_eoe     = false;
 
     if ( ! dtr && player -> has_dtr )
@@ -1526,7 +1513,6 @@ struct unleash_flame_t : public shaman_spell_t
     harmful              = true;
     background           = true;
     //proc                 = true;
-    stateless            = true;
 
     // Don't cooldown here, unleash elements ability will handle it
     cooldown -> duration = timespan_t::zero();
@@ -1567,7 +1553,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     may_crit           = true;
     background         = true;
     proc               = true;
-    stateless          = true;
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
@@ -1607,7 +1592,6 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
     stats -> school  = SCHOOL_PHYSICAL;
     background       = true;
     callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
-    stateless        = true;
   }
 
   virtual double composite_attack_power()
@@ -1626,7 +1610,6 @@ struct unleash_wind_t : public shaman_melee_attack_t
     background            = true;
     windfury              = false;
     may_dodge = may_parry = false;
-    stateless             = true;
 
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
@@ -1660,7 +1643,6 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
     may_dodge            = false;
     may_parry            = false;
     weapon               = w;
-    stateless            = true;
   }
 };
 
@@ -1669,7 +1651,6 @@ struct windlash_t : public shaman_melee_attack_t
   windlash_t( const std::string& n, const spell_data_t* s, shaman_t* player, weapon_t* w ) :
     shaman_melee_attack_t( n, player, s )
   {
-    stateless         = true;
     background        = true;
     proc              = false;
     repeating         = true;
@@ -1779,7 +1760,6 @@ struct melee_t : public shaman_melee_attack_t
     background        = true;
     repeating         = true;
     trigger_gcd       = timespan_t::zero();
-    stateless         = true;
     special           = false;
     may_glance        = true;
     weapon            = w;
@@ -1890,7 +1870,6 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     parse_options( NULL, options_str );
 
-    stateless           = true;
     weapon              = &( player -> off_hand_weapon );
 
     if ( weapon -> type == WEAPON_NONE )
@@ -1934,7 +1913,6 @@ struct primal_strike_t : public shaman_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    stateless            = true;
     weapon               = &( p() -> main_hand_weapon );
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
@@ -1963,7 +1941,6 @@ struct stormstrike_t : public shaman_melee_attack_t
 
     parse_options( NULL, options_str );
 
-    stateless            = true;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
@@ -2024,7 +2001,6 @@ struct stormblast_t : public shaman_melee_attack_t
 
     parse_options( NULL, options_str );
 
-    stateless            = true;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
@@ -2262,7 +2238,6 @@ struct bloodlust_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Bloodlust" ), options_str )
   {
     harmful = false;
-    stateless = true;
   }
 
   virtual void execute()
@@ -2301,7 +2276,6 @@ struct chain_lightning_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Chain Lightning" ), options_str ),
     glyph_targets( 0 )
   {
-    stateless             = true;
     maelstrom             = true;
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     cooldown -> duration += p() -> spec.shamanism        -> effectN( 4 ).time_value();
@@ -2392,7 +2366,6 @@ struct lava_beam_t : public shaman_spell_t
   {
     check_spec( SHAMAN_ELEMENTAL );
 
-    stateless             = true;
     base_execute_time    += p() -> spec.shamanism        -> effectN( 3 ).time_value();
     base_multiplier      += p() -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = 5;
@@ -2455,7 +2428,6 @@ struct elemental_mastery_t : public shaman_spell_t
     harmful   = false;
     may_crit  = false;
     may_miss  = false;
-    stateless = true;
   }
 
   virtual void execute()
@@ -2476,7 +2448,6 @@ struct ancestral_swiftness_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_talent_spell( "Ancestral Swiftness" ), options_str )
   {
     harmful = may_crit = may_miss = callbacks = false;
-    stateless = true;
   }
   
   virtual void execute()
@@ -2497,7 +2468,6 @@ struct call_of_the_elements_t : public shaman_spell_t
     harmful   = false;
     may_crit  = false;
     may_miss  = false;
-    stateless = true;
   }
 
   virtual void execute()
@@ -2529,7 +2499,6 @@ struct fire_nova_explosion_t : public shaman_spell_t
     aoe        = -1;
     background = true;
     callbacks  = false;
-    stateless  = true;
   }
 
   double action_da_multiplier()
@@ -2575,7 +2544,6 @@ struct fire_nova_t : public shaman_spell_t
     may_miss  = false;
     callbacks = false;
     explosion = new fire_nova_explosion_t( player );
-    stateless = true;
   }
 
   virtual bool ready()
@@ -2623,7 +2591,6 @@ struct earthquake_rumble_t : public shaman_spell_t
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
     callbacks = false;
-    stateless = true;
   }
 
   virtual double composite_spell_power()
@@ -2658,7 +2625,6 @@ struct earthquake_t : public shaman_spell_t
     num_ticks = ( int ) data().duration().total_seconds();
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = false;
-    stateless = true;
 
     quake = new earthquake_rumble_t( player );
 
@@ -2682,7 +2648,6 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str, bool dtr = false ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
-    stateless        = true;
     overload         = new lava_burst_overload_t( player );
 
     if ( ! dtr && player -> has_dtr )
@@ -2754,7 +2719,6 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     maelstrom          = true;
-    stateless          = true;
     base_multiplier   += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
                          player -> spec.shamanism -> effectN( 1 ).percent() +
                          player -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -2863,7 +2827,6 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_talent_spell( "Elemental Blast" ), options_str ),
     buff_rng( 0 ), overload( 0 )
   {
-    stateless   = true;
     maelstrom   = true;
     overload    = new elemental_blast_overload_t( player );
 
@@ -2916,7 +2879,6 @@ struct shamanistic_rage_t : public shaman_spell_t
     check_spec( SHAMAN_ENHANCEMENT );
 
     harmful   = false;
-    stateless = true;
   }
 
   virtual void execute()
@@ -2937,7 +2899,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     check_spec( SHAMAN_ENHANCEMENT );
 
     harmful   = false;
-    stateless = true;
   }
 
   virtual void execute()
@@ -2960,7 +2921,6 @@ struct thunderstorm_t : public shaman_spell_t
   {
     check_spec( SHAMAN_ELEMENTAL );
 
-    stateless             = true;
     cooldown -> duration += player -> glyph.thunder -> effectN( 1 ).time_value();
     bonus                 = data().effectN( 2 ).percent() +
                             player -> glyph.thunderstorm -> effectN( 1 ).percent();
@@ -2988,7 +2948,6 @@ struct unleash_elements_t : public shaman_spell_t
   {
     may_crit    = false;
     may_miss    = false;
-    stateless   = true;
 
     wind        = new unleash_wind_t( player );
     flame       = new unleash_flame_t( player );
@@ -3073,7 +3032,6 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Earth Shock" ), options_str ),
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
-    stateless            = true;
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown();
 
@@ -3138,7 +3096,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     may_trigger_dtr       = false; // Disable the dot ticks procing DTR
     tick_may_crit         = true;
-    stateless             = true;
     dot_behavior          = DOT_REFRESH;
     num_ticks             = ( int ) floor( ( ( double ) num_ticks ) * ( 1.0 + player -> glyph.flame_shock -> effectN( 1 ).percent() ) );
     cooldown              = player -> cooldown.shock;
@@ -3191,7 +3148,6 @@ struct frost_shock_t : public shaman_spell_t
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
-    stateless            = true;
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown();
   }
@@ -3205,7 +3161,6 @@ struct wind_shear_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Wind Shear" ), options_str )
   {
     may_miss = may_crit = false;
-    stateless = true;
   }
 
   virtual bool ready()
@@ -3225,7 +3180,6 @@ struct ascendance_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Ascendance" ), options_str )
   {
     harmful = false;
-    stateless = true;
 
     strike_cd = p() -> cooldown.strike;
   }
@@ -3327,7 +3281,7 @@ struct shaman_totem_t : public shaman_spell_t
   shaman_totem_t( const std::string& totem_name, shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( totem_name ), options_str )
   {
-    stateless = is_totem = true;
+    is_totem = true;
     harmful = callbacks = may_miss = may_crit = false;
     totem_duration = data().duration();
     totem_pet      = dynamic_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
@@ -3358,7 +3312,7 @@ struct totem_pulse_action_t : public spell_t
   totem_pulse_action_t( shaman_totem_pet_t* p, const spell_data_t* s ) : 
     spell_t( "", p, s ), totem( p )
   {
-    stateless = may_crit = harmful = background = true;
+    may_crit = harmful = background = true;
     callbacks = false;
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }

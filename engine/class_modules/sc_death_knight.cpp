@@ -528,9 +528,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     drw_spell_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       spell_t( n, p, s )
-    {
-      stateless = true;
-    }
+    { }
 
     virtual bool ready() { return false; }
 
@@ -579,7 +577,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) )
     {
       background  = true;
-      stateless = true;
       trigger_gcd = timespan_t::zero();
       direct_power_mod = 0.23;
       base_dd_min      = data().effectN( 1 ).min( p ); // Values are saved in a not automatically parsed sub-effect
@@ -591,9 +588,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     drw_melee_attack_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       melee_attack_t( n, p, s )
-    {
-      stateless = true;
-    }
+    { }
 
     virtual bool ready() { return false; }
 
@@ -832,7 +827,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
                                    const spell_data_t* s = spell_data_t::nil() ) :
       melee_attack_t( n, p, s )
     {
-      stateless = true;
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
       base_multiplier *= 8.0; // 8 ghouls
@@ -977,7 +971,6 @@ struct bloodworms_pet_t : public death_knight_pet_t
       may_crit    = true;
       background  = true;
       repeating   = true;
-      stateless = true;
     }
   };
 
@@ -1035,7 +1028,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd = timespan_t::from_seconds( 1.5 );
       may_crit    = true;
       min_gcd     = timespan_t::from_seconds( 1.5 ); // issue961
-      stateless = true;
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
     }
@@ -1130,7 +1122,6 @@ struct ghoul_pet_t : public death_knight_pet_t
     {
       weapon = &( player -> main_hand_weapon );
       may_crit = true;
-      stateless = true;
     }
 
     virtual double action_multiplier()
@@ -1402,7 +1393,6 @@ struct death_knight_action_t : public Base
 
     action_base_t::may_crit   = true;
     action_base_t::may_glance = false;
-    action_base_t::stateless = true;
 
     rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
   }
@@ -3384,7 +3374,6 @@ struct unholy_frenzy_t : public spell_t
     {
       target = p;
     }
-    stateless = true;
     harmful = false;
     trigger_gcd = timespan_t::zero();
   }

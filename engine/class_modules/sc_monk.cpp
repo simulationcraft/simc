@@ -254,7 +254,6 @@ struct monk_action_t : public Base
     stancemask( STANCE_DRUNKEN_OX|STANCE_FIERCE_TIGER|STANCE_WISE_SERPENT )
   {
     ab::may_crit   = true;
-    ab::stateless  = true;
   }
 
   monk_t* p() const { return static_cast<monk_t*>( ab::player ); }

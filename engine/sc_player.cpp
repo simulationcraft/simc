@@ -50,7 +50,6 @@ struct stormlash_attack_t : public attack_t
   stormlash_attack_t( player_t* p ) :
     attack_t( "stormlash_attack", p, p -> find_spell( 120687 ) )
   {
-    stateless  = true;
     may_glance = false;
     may_crit   = true;
     may_parry  = true;
@@ -69,7 +68,6 @@ struct stormlash_spell_t : public spell_t
   stormlash_spell_t( player_t* p ) :
     spell_t( "stormlash_spell", p, p -> find_spell( 120687 ) )
   {
-    stateless  = true;
     may_crit   = true;
     special    = true;
     background = true;
@@ -96,13 +94,8 @@ struct stormlash_callback_t : public action_callback_t
     double amount = 0;
     double coeff  = 0;
 
-    if ( a -> stateless )
-    {
-      action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
-      amount = s -> result_amount;
-    }
-    else
-      amount = a -> direct_dmg;
+    action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+    amount = s -> result_amount;
 
     if ( a -> type == ACTION_ATTACK )
       coeff = 0.09;

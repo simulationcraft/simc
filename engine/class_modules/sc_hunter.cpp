@@ -652,9 +652,7 @@ struct hunter_action_t : public Base
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
-  {
-    ab::stateless = true;
-  }
+  { }
 
   hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
@@ -2302,8 +2300,6 @@ struct hunter_pet_action_t : public Base
     ab( n, player, s ),
     special_ability( false )
   {
-    ab::stateless = true;
-
     if ( ab::data().rank_str() && !strcmp( ab::data().rank_str(), "Special Ability" ) )
       special_ability = true;
   }

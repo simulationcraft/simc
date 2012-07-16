@@ -457,7 +457,6 @@ struct rogue_melee_attack_t : public melee_attack_t
     may_glance                = false;
     special                   = true;
     tick_may_crit             = true;
-    stateless                 = true;
     hasted_ticks              = false;
 
     for ( size_t i = 1; i <= data()._effects -> size(); i++ )

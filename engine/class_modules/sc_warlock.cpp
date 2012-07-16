@@ -453,7 +453,6 @@ private:
     weapon = &( player -> main_hand_weapon );
     may_crit   = true;
     special = true;
-    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
@@ -499,7 +498,6 @@ private:
   void _init_warlock_pet_spell_t()
   {
     may_crit = true;
-    stateless = true;
     generate_fury = get_fury_gain( data() );
   }
 
@@ -1349,7 +1347,6 @@ private:
   {
     may_crit      = true;
     tick_may_crit = true;
-    stateless     = true;
     dot_behavior  = DOT_REFRESH;
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );

@@ -600,7 +600,6 @@ struct priest_pet_melee_t : public melee_attack_t
     may_crit    = true;
     background  = true;
     repeating   = true;
-    stateless   = true;
   }
 
   virtual void reset()
@@ -634,14 +633,12 @@ struct priest_pet_spell_t : public spell_t
     spell_t( n, p, p -> find_pet_spell( n ) )
   {
     may_crit = true;
-    stateless = true;
   }
 
   priest_pet_spell_t( const std::string& token, priest_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( token, p, s )
   {
     may_crit = true;
-    stateless = true;
   }
 
   priest_pet_t* p() const
@@ -712,7 +709,6 @@ struct lightwell_renew_t : public heal_t
   {
     may_crit = false;
     tick_may_crit = true;
-    stateless = true;
 
     tick_power_mod = 0.308;
   }
@@ -803,7 +799,6 @@ public:
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
-    ab::stateless         = true;
 
     ab::dot_behavior      = DOT_REFRESH;
     ab::weapon_multiplier = 0.0;
