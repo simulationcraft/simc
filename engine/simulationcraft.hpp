@@ -153,6 +153,7 @@ struct effect_t;
 struct event_t;
 class  expr_t;
 struct gain_t;
+struct heal_state_t;
 struct heal_t;
 struct item_t;
 struct js_node_t;
@@ -3455,11 +3456,10 @@ struct player_t : public noncopyable
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a=0 );
 
-  virtual double assess_damage( school_e, dmg_e, action_state_t* );
-  virtual double target_mitigation( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual void assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void target_mitigation( school_e, dmg_e, action_state_t* );
 
-  struct heal_info_t { double actual, amount; };
-  virtual heal_info_t assess_heal( double amount, school_e, dmg_e, result_e, action_t* a=0 );
+  virtual void assess_heal( school_e, dmg_e, heal_state_t* );
 
   virtual void  summon_pet( const std::string& name, timespan_t duration=timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
@@ -3637,7 +3637,7 @@ public:
   virtual void summon( timespan_t duration=timespan_t::zero() );
   virtual void dismiss();
   virtual bool ooc_buffs() { return false; }
-  virtual double assess_damage( school_e, dmg_e, action_state_t* s );
+  virtual void assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void combat_begin();
 
   virtual const char* name() { return full_name_str.c_str(); }
@@ -4018,7 +4018,7 @@ struct action_t : public noncopyable
   event_t* start_action_execute_event( timespan_t time );
 };
 
-struct action_state_t
+struct action_state_t : public noncopyable
 {
   // Source action, target actor
   action_t*       action;
@@ -4058,6 +4058,15 @@ struct action_state_t
   { return ta_multiplier * target_ta_multiplier; }
 };
 
+struct heal_state_t : public action_state_t
+{
+  double total_result_amount;
+
+  heal_state_t( action_t*, player_t* );
+
+  virtual void copy_state( const action_state_t* );
+
+};
 // Attack ===================================================================
 
 struct attack_t : public action_t
@@ -4184,6 +4193,11 @@ struct heal_t : public spell_base_t
         player -> composite_player_heal_multiplier( school ) *
         player -> composite_player_th_multiplier( school );
   }
+
+  virtual action_state_t* new_state()
+  { return new heal_state_t( this, target ); }
+
+  virtual action_state_t* get_state( const action_state_t* = 0 );
 };
 
 // Absorb ===================================================================

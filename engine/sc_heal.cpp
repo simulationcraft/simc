@@ -66,9 +66,11 @@ void heal_t::execute()
 // heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( dmg_e heal_type,
-                            action_state_t* s )
+                            action_state_t* state )
 {
-  player_t::heal_info_t heal = s -> target -> assess_heal( s -> result_amount, school, heal_type, s -> result, this );
+  heal_state_t* s = debug_cast<heal_state_t*>( state );
+
+  s -> target -> assess_heal( school, heal_type, s );
 
   if ( heal_type == HEAL_DIRECT )
   {
@@ -76,7 +78,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     {
       sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
-                     s -> target -> name(), heal.amount, heal.actual,
+                     s -> target -> name(), s -> total_result_amount, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
 
@@ -91,14 +93,14 @@ void heal_t::assess_damage( dmg_e heal_type,
       sim -> output( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), heal.amount, heal.actual,
+                     s -> target -> name(), s -> total_result_amount, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
-  stats -> add_result( sim -> report_overheal ? heal.amount : heal.actual, heal.actual, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
+  stats -> add_result( sim -> report_overheal ? s -> total_result_amount : s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result );
 }
 
 // heal_t::find_greatest_difference_player ==================================
@@ -164,4 +166,32 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
   }
 
   return spell_base_t::available_targets( tl );
+}
+
+heal_state_t::heal_state_t( action_t* a, player_t* t ) :
+    action_state_t( a, t ),
+    total_result_amount( 0 )
+{
+
+}
+
+void heal_state_t::copy_state( const action_state_t* o )
+{
+  action_state_t::copy_state( o );
+
+  if ( o )
+  {
+    const heal_state_t* other = debug_cast<const heal_state_t*>( o );
+    this -> total_result_amount = other -> total_result_amount;
+  }
+}
+
+action_state_t* heal_t::get_state( const action_state_t* state )
+{
+  action_state_t* s = spell_base_t::get_state( state );
+  heal_state_t* hs = debug_cast< heal_state_t* >( s );
+
+  hs -> total_result_amount = 0.0;
+
+  return s;
 }

@@ -27,7 +27,6 @@ trinket2=jaws_of_defeat,heroic=1,ilevel=391,quality=epic,stats=433int,use=onspel
 back=flowing_flamewrath_cape,heroic=1,ilevel=391,quality=epic,stats=745armor_256int_384sta_181spi_154mastery,reforge=mastery_haste,enchant=lightweave_embroidery_2
 main_hand=kogun_hammer_of_the_firelord,heroic=1,ilevel=397,quality=epic,stats=208int_312sta_151spi_118haste_2783sp,enchant=power_torrent,weapon=mace_2.10speed_484min_899max
 off_hand=goblet_of_anger,heroic=1,ilevel=391,quality=epic,stats=256int_384sta_154spi_181haste,enchant=40int
-ranged=scorchvine_wand,heroic=1,ilevel=391,quality=epic,stats=145int_217sta_98spi_94mastery,reforge=mastery_haste
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

@@ -243,8 +243,7 @@ public:
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role();
   virtual void      regen( timespan_t periodicity );
-  virtual double    assess_damage( school_e school, dmg_e, action_state_t* s );
-  virtual heal_info_t assess_heal( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual void      assess_damage( school_e school, dmg_e, action_state_t* s );
   virtual cooldown_t* get_cooldown( const std::string& name );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -3098,7 +3097,7 @@ void paladin_t::regen( timespan_t periodicity )
 
 // paladin_t::assess_damage =================================================
 
-double paladin_t::assess_damage( school_e school,
+void paladin_t::assess_damage( school_e school,
                                  dmg_e    dtype,
                                  action_state_t* s )
 {
@@ -3107,7 +3106,8 @@ double paladin_t::assess_damage( school_e school,
     s -> result_amount = 0;
 
     // Return out, as you don't get to benefit from anything else
-    return player_t::assess_damage( school, dtype, s );
+    player_t::assess_damage( school, dtype, s );
+    return;
   }
 
   if ( buffs.gotak_prot -> up() )
@@ -3154,18 +3154,7 @@ double paladin_t::assess_damage( school_e school,
     }
   }
 
-  return player_t::assess_damage( school, dtype, s );
-}
-
-// paladin_t::assess_heal ===================================================
-
-player_t::heal_info_t paladin_t::assess_heal( double        amount,
-                                              school_e school,
-                                              dmg_e    dtype,
-                                              result_e result,
-                                              action_t*     action )
-{
-  return player_t::assess_heal( amount, school, dtype, result, action );
+  player_t::assess_damage( school, dtype, s );
 }
 
 // paladin_t::get_cooldown ==================================================

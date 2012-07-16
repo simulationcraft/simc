@@ -4133,11 +4133,12 @@ void player_t::cost_reduction_loss( school_e school,
 
 // player_t::assess_damage ==================================================
 
-double player_t::assess_damage( school_e school,
-                                dmg_e    type,
-                                action_state_t* s )
+void player_t::assess_damage( school_e school,
+                              dmg_e    type,
+                              action_state_t* s )
 {
-  if ( s -> result_amount <= 0 ) return 0;
+  if ( s -> result_amount <= 0 )
+    return;
 
   if ( ! is_enemy() )
   {
@@ -4148,7 +4149,7 @@ double player_t::assess_damage( school_e school,
       s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
   }
 
-  s -> result_amount = target_mitigation( s -> result_amount, school, type, s -> result, s -> action );
+  target_mitigation( school, type, s );
 
   double absorbed_amount = 0;
   for ( size_t i = 0; i < absorb_buffs.size(); i++ )
@@ -4218,78 +4219,64 @@ double player_t::assess_damage( school_e school,
     vengeance.damage += actual_amount;
     vengeance.was_attacked = true;
   }
-
-  return s -> result_amount;
 }
 
 // player_t::target_mitigation ==============================================
 
-double player_t::target_mitigation( double        amount,
-                                    school_e school,
-                                    dmg_e,
-                                    result_e result,
-                                    action_t*     action )
+void player_t::target_mitigation( school_e school,
+                                  dmg_e,
+                                  action_state_t* s )
 {
-  if ( amount == 0 )
-    return 0;
+  if ( s -> result_amount == 0 )
+    return;
 
-  double mitigated_amount = amount;
-
-  if ( result == RESULT_BLOCK )
+  if ( s -> result == RESULT_BLOCK )
   {
-    mitigated_amount *= ( 1 - composite_tank_block_reduction() );
-    if ( mitigated_amount < 0 ) return 0;
+    s -> result_amount *= ( 1 - composite_tank_block_reduction() );
+    if ( s -> result_amount <= 0 ) return;
   }
 
-  if ( result == RESULT_CRIT_BLOCK )
+  if ( s -> result == RESULT_CRIT_BLOCK )
   {
-    mitigated_amount *= ( 1 - 2 * composite_tank_block_reduction() );
-    if ( mitigated_amount < 0 ) return 0;
+    s -> result_amount *= ( 1 - 2 * composite_tank_block_reduction() );
+    if ( s -> result_amount <= 0 ) return;
   }
 
   if ( school == SCHOOL_PHYSICAL )
   {
-    if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-      sim -> output( "Damage to %s before armor mitigation is %f", action -> target -> name(), mitigated_amount );
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> output( "Damage to %s before armor mitigation is %f", s -> target -> name(), s -> result_amount );
 
     // Armor
-    if ( action )
+    if ( s -> action )
     {
-      double resist = action -> armor() / ( action -> armor() + action -> player -> armor_coeff );
+      double resist = s -> action -> armor() / ( s -> action -> armor() + s -> action -> player -> armor_coeff );
 
       if ( resist < 0.0 )
         resist = 0.0;
       else if ( resist > 0.75 )
         resist = 0.75;
-      mitigated_amount *= 1.0 - resist;
+      s -> result_amount *= 1.0 - resist;
     }
 
-    if ( sim -> debug && action && ! action -> target -> is_enemy() && ! action -> target -> is_add() )
-      sim -> output( "Damage to %s after armor mitigation is %f", action -> target -> name(), mitigated_amount );
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> output( "Damage to %s after armor mitigation is %f", s -> target -> name(), s -> result_amount );
   }
-
-  return mitigated_amount;
 }
 
 // player_t::assess_heal ====================================================
 
-player_t::heal_info_t player_t::assess_heal( double        amount,
-                                             school_e,
-                                             dmg_e,
-                                             result_e,
-                                             action_t*     action )
+void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
 {
-  heal_info_t heal;
 
   if ( buffs.guardian_spirit -> up() )
-    amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
-  heal.amount = resource_gain( RESOURCE_HEALTH, amount, 0, action );
-  heal.actual = amount;
+  s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  s -> total_result_amount = s -> result_amount;
 
-  iteration_heal_taken += amount;
+  iteration_heal_taken += s -> result_amount;
 
-  return heal;
 }
 
 // player_t::summon_pet =====================================================

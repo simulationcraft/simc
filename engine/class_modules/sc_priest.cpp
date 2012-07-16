@@ -315,7 +315,7 @@ public:
 
   virtual double    matching_gear_multiplier( attribute_e attr );
 
-  virtual double    target_mitigation( double amount, school_e school, dmg_e, result_e, action_t* a=0 );
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
   virtual double    shadowy_recall_chance();
 
@@ -5136,21 +5136,17 @@ void priest_t::pre_analyze_hook()
 
 // priest_t::target_mitigation ==============================================
 
-double priest_t::target_mitigation( double        amount,
-                                    school_e school,
+void priest_t::target_mitigation( school_e school,
                                     dmg_e    dt,
-                                    result_e result,
-                                    action_t*     action )
+                                    action_state_t* s )
 {
-  amount = base_t::target_mitigation( amount, school, dt, result, action );
+  base_t::target_mitigation( school, dt, s );
 
   if ( buffs.shadowform -> check() )
-  { amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
+  { s -> result_amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
 
   if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( spell_data_t::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
-  { amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
-
-  return amount;
+  { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
 }
 
 // priest_t::create_options =================================================

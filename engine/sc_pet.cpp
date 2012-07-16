@@ -175,7 +175,7 @@ void pet_t::dismiss()
 
 // pet_t::assess_damage =====================================================
 
-double pet_t::assess_damage( school_e       school,
+void pet_t::assess_damage( school_e       school,
                              dmg_e          type,
                              action_state_t* s )
 {

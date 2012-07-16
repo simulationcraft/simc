@@ -1042,9 +1042,7 @@ void action_t::last_tick( dot_t* d )
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
-  double dmg_adjusted = s -> target -> assess_damage( school, type, s );
-  double actual_amount = s -> target -> resources.is_infinite( RESOURCE_HEALTH ) ? dmg_adjusted : std::min( dmg_adjusted, s -> target -> resources.current[ RESOURCE_HEALTH ] );
-  s -> result_amount = dmg_adjusted;
+  s -> target -> assess_damage( school, type, s );
 
   if ( type == DMG_DIRECT )
   {
@@ -1052,19 +1050,19 @@ void action_t::assess_damage( dmg_e    type,
     {
       sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
-                     s -> target -> name(), dmg_adjusted,
+                     s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
                      util::result_type_string( result ) );
     }
 
     if ( direct_tick_callbacks )
     {
-      tick_dmg = dmg_adjusted;
+      tick_dmg = s -> result_amount;
       action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
     }
     else
     {
-      direct_dmg = dmg_adjusted;
+      direct_dmg = s -> result_amount;
       if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
     }
   }
@@ -1076,17 +1074,17 @@ void action_t::assess_damage( dmg_e    type,
       sim -> output( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), dmg_adjusted,
+                     s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
                      util::result_type_string( result ) );
     }
 
-    tick_dmg = dmg_adjusted;
+    tick_dmg = s -> result_amount;
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
-  stats -> add_result( actual_amount, dmg_adjusted, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );
+  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : type ), s -> result );
 }
 
 // action_t::schedule_execute ===============================================

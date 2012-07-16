@@ -456,8 +456,8 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
   virtual role_e primary_role();
-  virtual double    assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual heal_info_t assess_heal( double amount, school_e school, dmg_e, result_e, action_t* a );
+  virtual void    assess_damage( school_e school, dmg_e, action_state_t* );
+  virtual void assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
 
@@ -5395,7 +5395,7 @@ resource_e druid_t::primary_resource()
 
 // druid_t::assess_damage ===================================================
 
-double druid_t::assess_damage( school_e school,
+void druid_t::assess_damage( school_e school,
                                dmg_e    dtype,
                                action_state_t* s )
 {
@@ -5411,20 +5411,16 @@ double druid_t::assess_damage( school_e school,
     s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   // Call here to benefit from -10% physical damage before SD is taken into account
-  s -> result_amount = player_t::assess_damage( school, dtype, s );
-
-  return s -> result_amount;
+  player_t::assess_damage( school, dtype, s );
 }
 
-player_t::heal_info_t druid_t::assess_heal( double        amount,
-                                            school_e school,
+void druid_t::assess_heal( school_e school,
                                             dmg_e    dmg_type,
-                                            result_e result,
-                                            action_t*     action )
+                                            heal_state_t* s )
 {
-  amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
+  s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
 
-  return player_t::assess_heal( amount, school, dmg_type, result, action );
+  player_t::assess_heal( school, dmg_type, s );
 }
 
 druid_td_t::druid_td_t( player_t* target, druid_t* source )

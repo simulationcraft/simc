@@ -348,7 +348,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
-  virtual double    assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void    assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -4244,7 +4244,7 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::assess_damage ============================================
 
-double death_knight_t::assess_damage( school_e     school,
+void death_knight_t::assess_damage( school_e     school,
                                       dmg_e        dtype,
                                       action_state_t* s )
 {
@@ -4257,7 +4257,7 @@ double death_knight_t::assess_damage( school_e     school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
     buffs.rune_strike -> trigger();
 
-  return player_t::assess_damage( school, dtype, s );
+  player_t::assess_damage( school, dtype, s );
 }
 
 // death_knight_t::composite_armor_multiplier ===============================

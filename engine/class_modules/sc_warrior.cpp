@@ -348,7 +348,7 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RAGE; }
   virtual role_e primary_role();
-  virtual double    assess_damage( school_e, dmg_e, action_state_t* s );
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
 
   // Temporary
@@ -3642,7 +3642,7 @@ role_e warrior_t::primary_role()
 
 // warrior_t::assess_damage =================================================
 
-double warrior_t::assess_damage( school_e school,
+void warrior_t::assess_damage( school_e school,
                                  dmg_e    dtype,
                                  action_state_t* s )
 {
@@ -3701,7 +3701,7 @@ double warrior_t::assess_damage( school_e school,
   if ( active_stance == STANCE_DEFENSE && buffs_defensive_stance -> up() )
     s -> result_amount *= 0.90;
 
-  return player_t::assess_damage( school, dtype, s );
+  player_t::assess_damage( school, dtype, s );
 }
 
 // warrior_t::create_options ================================================
