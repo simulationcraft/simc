@@ -36,6 +36,7 @@ const char *rune_symbols = "!bfu!!";
 #define GET_BLOOD_RUNE_COUNT(x)  ((x >>  0) & 0xff)
 #define GET_FROST_RUNE_COUNT(x)  ((x >>  8) & 0xff)
 #define GET_UNHOLY_RUNE_COUNT(x) ((x >> 16) & 0xff)
+#define GET_DEATH_RUNE_COUNT(x)  ((x >> 24) & 0xff)
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
@@ -435,6 +436,28 @@ public:
   }
 };
 
+// ==========================================================================
+// Local Utility Functions
+// ==========================================================================
+
+static void extract_rune_cost( const spell_data_t* spell, int* cost_blood, int* cost_frost, int* cost_unholy, int* cost_death )
+{
+  // Rune costs appear to be in binary: 0a0b0c0d where 'd' is whether the ability
+  // costs a blood rune, 'c' is whether it costs an unholy rune, 'b'
+  // is whether it costs a frost rune, and 'a' is whether it costs a  death
+  // rune
+
+  if ( ! spell -> ok() ) return;
+
+  uint32_t rune_cost = spell -> rune_cost();
+  *cost_blood  =          rune_cost & 0x1;
+  *cost_unholy = ( rune_cost >> 2 ) & 0x1;
+  *cost_frost  = ( rune_cost >> 4 ) & 0x1;
+  *cost_death  = ( rune_cost >> 6 ) & 0x1;
+}
+
+// Log rune status ==========================================================
+
 static void log_rune_status( death_knight_t* p )
 {
   std::string rune_str;
@@ -449,6 +472,84 @@ static void log_rune_status( death_knight_t* p )
     rune_str += rune_letter;
   }
   p -> sim -> output( "%s runes: %s", p -> name(), rune_str.c_str() );
+}
+
+// Count Death Runes ========================================================
+
+static int count_death_runes( death_knight_t* p, bool inactive )
+{
+  // Getting death rune count is a bit more complicated as it depends
+  // on talents which runetype can be converted to death runes
+  int count = 0;
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    dk_rune_t& r = p -> _runes.slot[ i ];
+    if ( ( inactive || r.is_ready() ) && r.is_death() )
+      ++count;
+  }
+  return count;
+}
+
+// Consume Runes ============================================================
+
+static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX], bool convert_runes = false )
+{
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    if ( use[i] )
+    {
+      // Show the consumed type of the rune
+      // Not the type it is after consumption
+      int consumed_type = player -> _runes.slot[i].type;
+      player -> _runes.slot[i].consume( convert_runes );
+
+      if ( player -> sim -> log )
+        player -> sim -> output( "%s consumes rune #%d, type %d", player -> name(), i, consumed_type );
+    }
+  }
+
+  if ( player -> sim -> log )
+  {
+    log_rune_status( player );
+  }
+}
+
+// Group Runes ==============================================================
+
+static bool group_runes ( death_knight_t* player, int blood, int frost, int unholy, int death, bool group[ RUNE_SLOT_MAX ] )
+{
+  int cost[]  = { blood + frost + unholy + death, blood, frost, unholy };
+  bool use[ RUNE_SLOT_MAX ] = { false };
+
+  // Selecting available non-death runes to satisfy cost
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+  {
+    dk_rune_t& r = player -> _runes.slot[ i ];
+    if ( r.is_ready() && ! r.is_death() && cost[ r.get_type() ] > 0 )
+    {
+      --cost[ r.get_type() ];
+      --cost[ 0 ];
+      use[ i ] = true;
+    }
+  }
+
+  // Selecting available death runes to satisfy remaining cost
+  for ( int i = RUNE_SLOT_MAX; cost[ 0 ] > 0 && i--; )
+  {
+    dk_rune_t& r = player -> _runes.slot[ i ];
+    if ( r.is_ready() && r.is_death() )
+    {
+      --cost[ 0 ];
+      use[ i ] = true;
+    }
+  }
+
+  if ( cost[ 0 ] > 0 ) return false;
+
+  // Storing rune slots selected
+  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[ i ] = use[ i ];
+
+  return true;
 }
 
 void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
@@ -1304,6 +1405,7 @@ struct death_knight_action_t : public Base
   int    cost_blood;
   int    cost_frost;
   int    cost_unholy;
+  int    cost_death;
   double convert_runes;
   bool   use[RUNE_SLOT_MAX];
   gain_t* rp_gains;
@@ -1314,7 +1416,8 @@ struct death_knight_action_t : public Base
   death_knight_action_t( const std::string& n, death_knight_t* p,
                          const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ),
-    cost_blood( 0 ),cost_frost( 0 ),cost_unholy( 0 ),convert_runes( 0 )
+    cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), cost_death( 0 ),
+    convert_runes( 0 )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
 
@@ -1322,6 +1425,7 @@ struct death_knight_action_t : public Base
     action_base_t::may_glance = false;
 
     rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
+    extract_rune_cost( s, &cost_blood, &cost_frost, &cost_unholy, &cost_death );
   }
 
   death_knight_t* p() const { return static_cast< death_knight_t* >( action_base_t::player ); }
@@ -1446,8 +1550,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   {
     double am = base_t::action_multiplier();
 
-    ;
-
     if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
       am *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
 
@@ -1456,24 +1558,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
   virtual bool   ready();
 };
-
-// ==========================================================================
-// Local Utility Functions
-// ==========================================================================
-
-static void extract_rune_cost( const spell_data_t* spell, int* cost_blood, int* cost_frost, int* cost_unholy )
-{
-  // Rune costs appear to be in binary: 0a0b0c where 'c' is whether the ability
-  // costs a blood rune, 'b' is whether it costs an unholy rune, and 'a'
-  // is whether it costs a frost rune.
-
-  if ( ! spell -> ok() ) return;
-
-  uint32_t rune_cost = spell -> rune_cost();
-  *cost_blood  =        rune_cost & 0x1;
-  *cost_unholy = ( rune_cost >> 2 ) & 0x1;
-  *cost_frost  = ( rune_cost >> 4 ) & 0x1;
-}
 
 // Count Runes ==============================================================
 
@@ -1489,92 +1573,6 @@ static void extract_rune_cost( const spell_data_t* spell, int* cost_blood, int* 
 //
 //  return count_by_type[0] + ( count_by_type[1] << 8 ) + ( count_by_type[2] << 16 );
 //}
-
-// Count Death Runes ========================================================
-
-static int count_death_runes( death_knight_t* p, bool inactive )
-{
-  // Getting death rune count is a bit more complicated as it depends
-  // on talents which runetype can be converted to death runes
-  int count = 0;
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    dk_rune_t& r = p -> _runes.slot[ i ];
-    if ( ( inactive || r.is_ready() ) && r.is_death() )
-      ++count;
-  }
-  return count;
-}
-
-// Consume Runes ============================================================
-
-static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX], bool convert_runes = false )
-{
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    if ( use[i] )
-    {
-      // Show the consumed type of the rune
-      // Not the type it is after consumption
-      int consumed_type = player -> _runes.slot[i].type;
-      player -> _runes.slot[i].consume( convert_runes );
-
-      if ( player -> sim -> log )
-        player -> sim -> output( "%s consumes rune #%d, type %d", player -> name(), i, consumed_type );
-    }
-  }
-
-  if ( player -> sim -> log )
-  {
-    log_rune_status( player );
-  }
-}
-
-// Group Runes ==============================================================
-
-static bool group_runes ( death_knight_t* player, int blood, int frost, int unholy, bool group[RUNE_SLOT_MAX] )
-{
-  int cost[]  = { blood + frost + unholy, blood, frost, unholy };
-  bool use[RUNE_SLOT_MAX] = { false };
-
-  // Selecting available non-death runes to satisfy cost
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-  {
-    dk_rune_t& r = player -> _runes.slot[i];
-    if ( r.is_ready() && ! r.is_death() && cost[r.get_type()] > 0 )
-    {
-      --cost[r.get_type()];
-      --cost[0];
-      use[i] = true;
-    }
-  }
-
-  // Selecting available death runes to satisfy remaining cost
-  for ( int i = RUNE_SLOT_MAX; cost[0] > 0 && i--; )
-  {
-    dk_rune_t& r = player -> _runes.slot[i];
-    if ( r.is_ready() && r.is_death() )
-    {
-      --cost[0];
-      use[i] = true;
-    }
-  }
-
-  if ( cost[0] > 0 ) return false;
-
-  // Storing rune slots selected
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) group[i] = use[i];
-
-  return true;
-}
-
-// Refund Power =============================================================
-
-static void refund_power( death_knight_melee_attack_t* a )
-{
-  if ( a -> resource_consumed > 0 )
-    a -> p() -> resource_gain( RESOURCE_RUNIC_POWER, a -> resource_consumed * RUNIC_POWER_REFUND, a -> p() -> gains.power_refund );
-}
 
 // ==========================================================================
 // Triggers
@@ -1592,8 +1590,8 @@ void death_knight_melee_attack_t::consume_resource()
 
   if ( result_is_hit( execute_state -> result ) || always_consume )
     consume_runes( p(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
-  else
-    refund_power( this );
+  else if ( resource_consumed > 0 )
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 }
 
 // death_knight_melee_attack_t::execute() =========================================
@@ -1624,7 +1622,7 @@ bool death_knight_melee_attack_t::ready()
     if ( ! weapon || weapon -> group() == WEAPON_RANGED )
       return false;
 
-  return group_runes( p(), cost_blood, cost_frost, cost_unholy, use );
+  return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
 }
 
 // death_knight_melee_attack_t::swing_haste() =====================================
@@ -1676,9 +1674,9 @@ bool death_knight_spell_t::ready()
     return false;
 
   if ( ! player -> in_combat && ! harmful )
-    return group_runes( p(), 0, 0, 0, use );
+    return group_runes( p(), 0, 0, 0, 0, use );
   else
-    return group_runes( p(), cost_blood, cost_frost, cost_unholy, use );
+    return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
 }
 
 // ==========================================================================
@@ -1806,7 +1804,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     harmful     = false;
     channeled   = true;
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
   virtual void execute()
@@ -1853,7 +1850,6 @@ struct blood_boil_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     aoe                = -1;
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod   = 0.08; // hardcoded into tooltip, 31/10/2011
   }
 
@@ -1879,9 +1875,9 @@ struct blood_boil_t : public death_knight_spell_t
       return false;
 
     if ( ( ! p() -> in_combat && ! harmful ) || p() -> buffs.crimson_scourge -> check() )
-      return group_runes( p(), 0, 0, 0, use );
+      return group_runes( p(), 0, 0, 0, 0, use );
     else
-      return group_runes( p(), cost_blood, cost_frost, cost_unholy, use );
+      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
@@ -1957,8 +1953,6 @@ struct blood_strike_t : public death_knight_melee_attack_t
     special = true;
 
     weapon = &( p -> main_hand_weapon );
-
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
 
     if ( p -> specialization() == DEATH_KNIGHT_FROST ||
          p -> specialization() == DEATH_KNIGHT_UNHOLY )
@@ -2055,7 +2049,6 @@ struct bone_shield_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     harmful = false;
   }
 
@@ -2116,7 +2109,6 @@ struct dark_transformation_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
   virtual void execute()
@@ -2146,7 +2138,6 @@ struct death_and_decay_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     aoe              = -1;
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     tick_power_mod   = 0.064;
     base_td          = data().effectN( 1 ).average( p );
     base_tick_time   = timespan_t::from_seconds( 1.0 );
@@ -2234,7 +2225,6 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
       convert_runes = 1.0;
 
@@ -2291,7 +2281,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       convert_runes = 1.0;
@@ -2415,8 +2404,6 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     special = true;
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-
     aoe = 2;
     base_add_multiplier *= 0.75;
   }
@@ -2480,7 +2467,6 @@ struct howling_blast_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent(); // Only 50% of the direct damage is done for AoE
     direct_power_mod    = 0.4;
@@ -2535,7 +2521,6 @@ struct icy_touch_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     direct_power_mod = 0.2;
 
     assert( p -> active_spells.frost_fever );
@@ -2619,7 +2604,6 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
 
     special = true;
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
   virtual void impact( action_state_t* s )
@@ -2678,7 +2662,6 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     weapon = &( p -> main_hand_weapon );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
       convert_runes = 1.0;
 
@@ -2767,8 +2750,6 @@ struct pestilence_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-
     if ( p -> specialization() == DEATH_KNIGHT_FROST ||
          p -> specialization() == DEATH_KNIGHT_UNHOLY )
       convert_runes = 1.0;
@@ -2839,8 +2820,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
-
     harmful = false;
   }
 
@@ -2850,7 +2829,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
       return false;
 
     // Always activate runes, even pre-combat.
-    return group_runes( p(), cost_blood, cost_frost, cost_unholy, use );
+    return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
@@ -2890,7 +2869,6 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
     special = true;
 
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
     weapon = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
@@ -3141,7 +3119,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     special = true;
 
     scourge_strike_shadow = new scourge_strike_shadow_t( p );
-    extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
   void execute()
