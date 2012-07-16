@@ -1343,7 +1343,7 @@ struct actor_pair_t
 namespace buff_creation {
 
 // This is the base buff creator class containing data to create a buff_t
-struct buff_creator_basics_t
+struct buff_creator_basics_t : public noncopyable
 {
 protected:
   actor_pair_t _player;

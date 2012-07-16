@@ -726,7 +726,7 @@ static void register_matrix_restabilizer( item_t* item )
 
       struct common_buff_creator
       {
-        stat_buff_creator_t operator()( player_t* p, const std::string& n )
+        stat_buff_creator_t& operator()( player_t* p, const std::string& n )
         {
           return ( stat_buff_creator_t ( p, "matrix_restabilizer_" + n )
                    .duration ( timespan_t::from_seconds( 30 ) ).cd( timespan_t::from_seconds( 105 ) )

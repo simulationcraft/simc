@@ -2099,7 +2099,7 @@ void player_t::init_buffs()
     // Potions
     struct potions_common_buff_creator
     {
-      stat_buff_creator_t operator()( player_t* p,
+      stat_buff_creator_t& operator()( player_t* p,
                                       const std::string& n,
                                       timespan_t d = timespan_t::from_seconds( 25.0 ),
                                       timespan_t cd = timespan_t::from_seconds( 60.0 ) )
