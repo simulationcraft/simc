@@ -497,7 +497,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
       // Pass total amount of damage to the ignite action, and let it divide it by the correct number of ticks!
 
-      if ( action -> stateless )
+      // action execute
       {
         action_state_t* s = action -> get_state();
         s -> target = target;
@@ -505,15 +505,6 @@ void ignite::trigger_pct_based( action_t* ignite_action,
         action -> snapshot_state( s, action -> snapshot_flags );
         s -> result_amount = new_total_ignite_dmg;
         action -> schedule_travel_s( s );
-        action -> stats -> add_execute( timespan_t::zero() );
-      }
-      else
-      {
-        action -> direct_dmg = new_total_ignite_dmg;
-        action -> result = RESULT_HIT;
-        action -> player_buff();
-        action -> target_debuff( target, DMG_DIRECT );
-        action -> schedule_travel( target );
         action -> stats -> add_execute( timespan_t::zero() );
       }
     }
@@ -5191,8 +5182,6 @@ struct snapshot_stats_t : public action_t
       spell_t* spell = new spell_t( "snapshot_spell", p  );
       spell -> background = true;
       spell -> init();
-      spell -> player_buff();
-      spell -> target_debuff( target, DMG_DIRECT );
       double chance = spell -> miss_chance( spell -> composite_hit(), delta_level );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> rating.spell_hit;
     }
@@ -5202,8 +5191,6 @@ struct snapshot_stats_t : public action_t
       attack_t* attack = new melee_attack_t( "snapshot_attack", p );
       attack -> background = true;
       attack -> init();
-      attack -> player_buff();
-      attack -> target_debuff( target, DMG_DIRECT );
       double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> rating.attack_hit;

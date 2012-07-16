@@ -109,40 +109,6 @@ struct action_execute_event_t : public event_t
 
 };
 
-// Action Travel Event ======================================================
-
-struct action_travel_event_t : public event_t
-{
-  action_t* action;
-  player_t* target;
-  result_e result;
-  double damage;
-
-  action_travel_event_t( sim_t*    sim,
-                         player_t* t,
-                         action_t* a,
-                         timespan_t time_to_travel ) :
-    event_t( sim, a -> player, "Action Travel" ), action( a ), target( t )
-  {
-    result = a -> result;
-    damage = a -> direct_dmg;
-
-    if ( sim -> debug )
-      sim -> output( "New Action Travel Event: %s %s %.2f",
-                     player -> name(), a -> name(), time_to_travel.total_seconds() );
-
-    sim -> add_event( this, time_to_travel );
-  }
-
-  // action_travel_event_t::execute ===========================================
-
-  virtual void execute()
-  {
-    action -> impact( target, result, damage );
-    action -> remove_travel_event( this );
-  }
-};
-
 } // end anonymous namespace
 
 // action_t::action_t =======================================================
@@ -224,32 +190,21 @@ action_t::action_t( action_e       ty,
   base_multiplier                = 1.0;
   base_hit                       = 0.0;
   base_crit                      = 0.0;
-  player_multiplier              = 1.0;
-  player_td_multiplier           = 1.0;
-  player_dd_multiplier           = 1.0;
-  player_hit                     = 0.0;
-  player_crit                    = 0.0;
   rp_gain                        = 0.0;
   target_multiplier              = 1.0;
   target_hit                     = 0.0;
   target_crit                    = 0.0;
   base_spell_power               = 0.0;
   base_attack_power              = 0.0;
-  player_spell_power             = 0.0;
-  player_attack_power            = 0.0;
   target_spell_power             = 0.0;
   target_attack_power            = 0.0;
   base_spell_power_multiplier    = 0.0;
   base_attack_power_multiplier   = 0.0;
-  player_spell_power_multiplier  = 1.0;
-  player_attack_power_multiplier = 1.0;
   crit_multiplier                = 1.0;
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
-  player_dd_adder                = 0.0;
   target_dd_adder                = 0.0;
   base_ta_adder                  = 0.0;
-  player_haste                   = 1.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
   snapshot_crit                  = 0.0;
@@ -638,49 +593,6 @@ timespan_t action_t::travel_time()
   return timespan_t::from_seconds( t );
 }
 
-// action_t::player_buff ====================================================
-
-void action_t::player_buff()
-{
-  player_multiplier              = 1.0;
-  player_dd_multiplier           = 1.0;
-  player_td_multiplier           = 1.0;
-  player_hit                     = 0;
-  player_crit                    = 0;
-  player_dd_adder                = 0;
-  player_spell_power             = 0;
-  player_attack_power            = 0;
-  player_spell_power_multiplier  = 1.0;
-  player_attack_power_multiplier = 1.0;
-
-  if ( ! no_buffs )
-  {
-    player_t* p = player;
-
-    player_multiplier    = p -> composite_player_multiplier   ( school, this );
-    player_dd_multiplier = p -> composite_player_dd_multiplier( school, this );
-    player_td_multiplier = p -> composite_player_td_multiplier( school, this );
-
-    if ( base_attack_power_multiplier > 0 )
-    {
-      player_attack_power            = p -> composite_attack_power();
-      player_attack_power_multiplier = p -> composite_attack_power_multiplier();
-    }
-
-    if ( base_spell_power_multiplier > 0 )
-    {
-      player_spell_power            = p -> composite_spell_power( school );
-      player_spell_power_multiplier = p -> composite_spell_power_multiplier();
-    }
-  }
-
-  player_haste = total_haste();
-
-  if ( sim -> debug )
-    sim -> output( "action_t::player_buff: %s hit=%.2f crit=%.2f spell_power=%.2f attack_power=%.2f ",
-                   name(), player_hit, player_crit, player_spell_power, player_attack_power );
-}
-
 // action_t::target_debuff ==================================================
 
 void action_t::target_debuff( player_t* t, dmg_e )
@@ -872,7 +784,7 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   double base_direct_dmg = dmg;
   double weapon_dmg = 0;
 
-  dmg += base_dd_adder + player_dd_adder + target_dd_adder;
+  dmg += base_dd_adder + target_dd_adder;
 
   if ( weapon_multiplier > 0 )
   {
@@ -1073,7 +985,7 @@ void action_t::execute()
 
     player -> in_combat = true;
   }
-
+/*
   if ( ! stateless )
   {
     player_buff();
@@ -1106,7 +1018,7 @@ void action_t::execute()
       schedule_travel( target );
     }
   }
-  else
+  else*/
   {
     if ( aoe == -1 || aoe > 0 ) // stateless aoe
     {
@@ -1244,69 +1156,6 @@ void action_t::last_tick( dot_t* d )
   if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> decrement();
 }
 
-// action_t::impact =========================================================
-
-void action_t::impact( player_t* t, result_e impact_result, double impact_dmg )
-{
-  assess_damage( t, impact_dmg, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, impact_result );
-
-  // Set target so aoe dots work
-  player_t* orig_target = target;
-  target = t;
-
-  if ( result_is_hit( impact_result ) )
-  {
-    if ( num_ticks > 0 || tick_zero )
-    {
-      dot_t* dot = get_dot( t );
-      if ( dot_behavior == DOT_CLIP ) dot -> cancel();
-      dot -> action = this;
-      dot -> num_ticks = hasted_num_ticks( player_haste );
-      dot -> current_tick = 0;
-      dot -> added_ticks = 0;
-      dot -> added_seconds = timespan_t::zero();
-      if ( dot -> ticking )
-      {
-        assert( dot -> tick_event );
-
-        // Recasting a dot while it's still ticking gives it an extra tick in total
-        dot -> num_ticks++;
-
-        // tick_zero dots tick again when reapplied
-        if ( tick_zero )
-        {
-          tick( dot );
-          if ( dot -> current_tick == dot -> num_ticks )
-          {
-            dot -> action -> last_tick( dot );
-          }
-        }
-      }
-      else
-      {
-        if ( school == SCHOOL_BLEED ) target -> debuffs.bleeding -> increment();
-
-        dot -> schedule_tick();
-      }
-      dot -> recalculate_ready();
-
-      if ( sim -> debug )
-        sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
-                       player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
-    }
-  }
-  else
-  {
-    if ( sim -> log )
-    {
-      sim -> output( "Target %s avoids %s %s (%s)", target -> name(), player -> name(), name(), util::result_type_string( impact_result ) );
-    }
-  }
-
-  // Reset target
-  target = orig_target;
-}
-
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( player_t*     t,
@@ -1420,29 +1269,6 @@ void action_t::schedule_execute()
         player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
       }
     }
-  }
-}
-
-// action_t::schedule_travel ================================================
-
-void action_t::schedule_travel( player_t* t )
-{
-  time_to_travel = travel_time();
-
-  snapshot();
-
-  if ( time_to_travel == timespan_t::zero() )
-  {
-    impact( t, result, direct_dmg );
-  }
-  else
-  {
-    if ( sim -> log )
-    {
-      sim -> output( "%s schedules travel (%.2f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
-    }
-
-    add_travel_event( start_action_travel_event( t, time_to_travel ) );
   }
 }
 
@@ -1888,7 +1714,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action.get_dot();
         if ( dot -> ticking )
-          return action.tick_time( action.player_haste ).total_seconds();
+          return action.tick_time( action.composite_haste() ).total_seconds();
         else
           return 0;
       }
@@ -2208,10 +2034,4 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
 event_t* action_t::start_action_execute_event( timespan_t t )
 {
   return new ( sim ) action_execute_event_t( sim, this, t );
-}
-
-
-event_t* action_t::start_action_travel_event( player_t* target, timespan_t time )
-{
-  return new ( sim ) action_travel_event_t( sim, target, this, time );
 }

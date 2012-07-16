@@ -40,21 +40,6 @@ spell_t::spell_t( const std::string&  token,
   }
 }
 
-// spell_t::player_buff =====================================================
-
-void spell_t::player_buff()
-{
-  spell_base_t::player_buff();
-
-  if ( ! no_buffs )
-  {
-    player_hit  = player -> composite_spell_hit();
-  }
-
-  if ( sim -> debug ) sim -> output( "spell_t::player_buff: %s hit=%.2f",
-                                     name(), player_hit );
-}
-
 // spell_t::target_debuff ===================================================
 
 void spell_t::target_debuff( player_t* t, dmg_e type )

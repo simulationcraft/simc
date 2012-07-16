@@ -3841,19 +3841,14 @@ struct action_t : public noncopyable
   std::array< int, RESOURCE_MAX > costs_per_second;
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
-  double player_dd_multiplier, player_td_multiplier;
   double   base_multiplier,   base_hit,   base_crit;
-  double player_multiplier, player_hit, player_crit;
   double target_multiplier, target_hit, target_crit;
   double   base_spell_power,   base_attack_power;
-  double player_spell_power, player_attack_power;
   double target_spell_power, target_attack_power;
   double   base_spell_power_multiplier,   base_attack_power_multiplier;
-  double player_spell_power_multiplier, player_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
-  double base_dd_adder, player_dd_adder, target_dd_adder;
+  double base_dd_adder, target_dd_adder;
   double base_ta_adder;
-  double player_haste;
   double direct_dmg, tick_dmg;
   double snapshot_crit, snapshot_haste, snapshot_mastery;
   int num_ticks;
@@ -3910,7 +3905,6 @@ struct action_t : public noncopyable
   virtual timespan_t tick_time( double haste );
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
-  virtual void   player_buff();
   virtual void   player_tick() {}
   virtual void   target_debuff( player_t* t, dmg_e );
   virtual void   snapshot();
@@ -3929,11 +3923,9 @@ struct action_t : public noncopyable
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   impact( player_t*, result_e result, double dmg );
   virtual void   assess_damage( player_t* t, double amount, dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
   virtual void   additional_damage( player_t* t, double amount, dmg_e, result_e impact_result );
   virtual void   schedule_execute();
-  virtual void   schedule_travel( player_t* t );
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready();
   virtual bool   usable_moving();
@@ -3955,18 +3947,18 @@ struct action_t : public noncopyable
   virtual double  block_chance( int /* delta_level */ ) { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ );
 
-  virtual double total_multiplier() { return   base_multiplier * player_multiplier * target_multiplier; }
-  virtual double total_crit()       { return   base_crit       + player_crit       + target_crit;       }
+  virtual double total_multiplier() { return   base_multiplier * target_multiplier; }
+  virtual double total_crit()       { return   base_crit       + target_crit;       }
   virtual double total_crit_bonus();
 
-  virtual double total_spell_power()  { return util::round( ( base_spell_power  + player_spell_power  + target_spell_power  ) * base_spell_power_multiplier  * player_spell_power_multiplier  ); }
-  virtual double total_attack_power() { return util::round( ( base_attack_power + player_attack_power + target_attack_power ) * base_attack_power_multiplier * player_attack_power_multiplier ); }
+  virtual double total_spell_power()  { return util::round( ( base_spell_power  + target_spell_power  ) * base_spell_power_multiplier  ); }
+  virtual double total_attack_power() { return util::round( ( base_attack_power + target_attack_power ) * base_attack_power_multiplier ); }
   virtual double total_power();
 
   // Some actions require different multipliers for the "direct" and "tick" portions.
 
-  virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier * player_dd_multiplier; }
-  virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier * player_td_multiplier; }
+  virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
+  virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
 
   virtual double bonus_damage() { return base_dd_adder; }
 
@@ -4047,7 +4039,6 @@ struct action_t : public noncopyable
   }
 
   event_t* start_action_execute_event( timespan_t time );
-  event_t* start_action_travel_event( player_t* target, timespan_t time );
 };
 
 struct action_state_t
@@ -4102,7 +4093,6 @@ struct attack_t : public action_t
   virtual double swing_haste();
   virtual timespan_t execute_time();
   virtual void execute();
-  virtual void   player_buff();
   int build_table( std::array<double,RESULT_MAX>& chances,
                    std::array<result_e,RESULT_MAX>& results,
                    unsigned level,
@@ -4123,52 +4113,40 @@ struct attack_t : public action_t
 
   virtual double composite_haste()
   { return action_t::composite_haste() * player -> composite_attack_haste(); }
+
+  virtual double composite_expertise()
+  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Melee Attack ===================================================================
 
 struct melee_attack_t : public attack_t
 {
-  double base_expertise, player_expertise, target_expertise;
-
   melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
-  virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_e );
-  virtual double total_expertise();
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
 
-  /* New stuffs */
-  virtual double composite_expertise()
-  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Ranged Attack ===================================================================
 
 struct ranged_attack_t : public attack_t
 {
-  double base_expertise, player_expertise, target_expertise;
-
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_e );
-  virtual double total_expertise();
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* target )
   { return target -> composite_ranged_attack_player_vulnerability(); }
-
-  /* New stuffs */
-  virtual double composite_expertise()
-  { return attack_t::composite_expertise() + player -> composite_attack_expertise( weapon ); }
 };
 
 // Spell Base ====================================================================
@@ -4181,7 +4159,6 @@ struct spell_base_t : public action_t
   virtual timespan_t gcd();
   virtual timespan_t execute_time();
   virtual timespan_t tick_time( double haste );
-  virtual void   player_buff();
   virtual result_e   calculate_result( double, unsigned );
   virtual void   execute();
   virtual void   schedule_execute();
@@ -4201,7 +4178,6 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-  virtual void   player_buff();
   virtual void   target_debuff( player_t* t, dmg_e );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
@@ -4219,12 +4195,24 @@ struct heal_t : public spell_base_t
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
-  virtual void player_buff();
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount, dmg_e, result_e, action_state_t* = 0 );
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
   virtual size_t available_targets( std::vector< player_t* >& );
+
+  virtual double composite_da_multiplier()
+  {
+    return action_multiplier() * action_da_multiplier() *
+        player -> composite_player_heal_multiplier( school ) *
+        player -> composite_player_dh_multiplier( school );
+  }
+  virtual double composite_ta_multiplier()
+  {
+    return action_multiplier() * action_ta_multiplier() *
+        player -> composite_player_heal_multiplier( school ) *
+        player -> composite_player_th_multiplier( school );
+  }
 };
 
 // Absorb ===================================================================
@@ -4233,11 +4221,21 @@ struct absorb_t : public spell_base_t
 {
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
-  virtual void player_buff();
   virtual void execute();
   virtual void assess_damage( player_t* t, double amount,
                               dmg_e, result_e impact_result, action_state_t* assess_state = 0 );
   virtual void impact_s( action_state_t* );
+
+  virtual double composite_da_multiplier()
+  {
+    return action_multiplier() * action_da_multiplier() *
+        player -> composite_player_absorb_multiplier( school );
+  }
+  virtual double composite_ta_multiplier()
+  {
+    return action_multiplier() * action_ta_multiplier() *
+        player -> composite_player_absorb_multiplier( school );
+  }
 };
 
 // Sequence =================================================================
@@ -4741,20 +4739,13 @@ struct pct_based_action_t : public Base
     ab( n, p, s )
   {
     ab::background = true;
+    ab::stateless = true;
 
     ab::tick_may_crit = false;
     ab::hasted_ticks  = false;
     ab::may_crit = false;
     ab::tick_power_mod = 0;
     ab::dot_behavior  = DOT_REFRESH;
-  }
-
-  virtual void impact( player_t* t, result_e impact_result, double travel_dmg )
-  {
-    ab::impact( t, impact_result, 0 );
-
-    dot_t* dot = ab::get_dot();
-    ab::base_td = travel_dmg / dot -> ticks();
   }
 
   virtual void impact_s( action_state_t* s )

@@ -142,18 +142,13 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
     // Assuming this limit is based on current haste, not haste at previous application/extension/refresh.
 
     int max_extra_ticks;
-    if ( ! state )
-      max_extra_ticks = std::max( action -> hasted_num_ticks( action -> player_haste ) - ticks(), 0 );
-    else
-      max_extra_ticks = std::max( action -> hasted_num_ticks( state -> haste ) - ticks(), 0 );
+    max_extra_ticks = std::max( action -> hasted_num_ticks( state -> haste ) - ticks(), 0 );
 
     extra_ticks = std::min( extra_ticks, max_extra_ticks );
   }
 
-  if ( ! state )
-    action -> player_buff();
-  else
-    action -> snapshot_state( state, state_flags );
+  assert( state );
+  action -> snapshot_state( state, state_flags );
 
   added_ticks += extra_ticks;
   num_ticks += extra_ticks;
@@ -181,33 +176,25 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   int old_num_ticks = num_ticks;
   int old_remaining_ticks = old_num_ticks - current_tick - 1;
   double old_haste_factor = 0.0;
-  if ( ! state )
-    old_haste_factor = 1.0 / action -> player_haste;
-  else
-    old_haste_factor = 1.0 / state -> haste;
+
+  old_haste_factor = 1.0 / state -> haste;
 
   // Multiply with tick_time() for the duration left after the next tick
   timespan_t duration_left;
-  if ( ! state )
-    duration_left = old_remaining_ticks * action -> tick_time( action -> player_haste );
-  else
-    duration_left = old_remaining_ticks * action -> tick_time( state -> haste );
+
+  duration_left = old_remaining_ticks * action -> tick_time( state -> haste );
 
   // Add the added seconds
   duration_left += extra_seconds;
 
-  if ( ! state )
-    action -> player_buff();
-  else
-    action -> snapshot_state( state, state_flags );
+  assert( state );
+  action -> snapshot_state( state, state_flags );
 
   added_seconds += extra_seconds;
 
   int new_remaining_ticks;
-  if ( ! state )
-    new_remaining_ticks = action -> hasted_num_ticks( action -> player_haste, duration_left );
-  else
-    new_remaining_ticks = action -> hasted_num_ticks( state -> haste, duration_left );
+
+  new_remaining_ticks = action -> hasted_num_ticks( state -> haste, duration_left );
 
   num_ticks += ( new_remaining_ticks - old_remaining_ticks );
 
@@ -215,7 +202,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   {
     sim -> output( "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
                    source -> name(), name(), target -> name(), extra_seconds.total_seconds(),
-                   old_haste_factor, ( ! state ) ? ( 1.0 / action -> player_haste ) : ( 1.0 / state -> haste ),
+                   old_haste_factor, ( 1.0 / state -> haste ),
                    old_num_ticks, num_ticks,
                    old_remaining_ticks, new_remaining_ticks );
   }
@@ -240,10 +227,7 @@ void dot_t::recalculate_ready()
   int remaining_ticks = num_ticks - current_tick;
   if ( remaining_ticks > 0 && tick_event )
   {
-    if ( state )
-      ready = tick_event -> time + action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
-    else
-      ready = tick_event -> time + action -> tick_time( action -> player_haste ) * ( remaining_ticks - 1 );
+    ready = tick_event -> time + action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
   }
   else
   {
@@ -266,18 +250,14 @@ void dot_t::refresh_duration( uint32_t state_flags )
   if ( sim -> log )
     sim -> output( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
 
-  if ( ! state )
-    action -> player_buff();
-  else
-    action -> snapshot_state( state, state_flags );
+  assert( state );
+  action -> snapshot_state( state, state_flags );
 
   current_tick = 0;
   added_ticks = 0;
   added_seconds = timespan_t::zero();
-  if ( ! state )
-    num_ticks = action -> hasted_num_ticks( action ->  player_haste );
-  else
-    num_ticks = action -> hasted_num_ticks( state -> haste );
+
+  num_ticks = action -> hasted_num_ticks( state -> haste );
 
   // tick zero dots tick when refreshed
   if ( action -> tick_zero )
@@ -341,10 +321,7 @@ void dot_t::schedule_tick()
     }
   }
 
-  if ( ! action -> stateless )
-    time_to_tick = action -> tick_time( action -> player_haste );
-  else
-    time_to_tick = action -> tick_time( state -> haste );
+  time_to_tick = action -> tick_time( state -> haste );
 
   tick_event = new ( sim ) dot_tick_event_t( sim, this, time_to_tick );
 
@@ -429,7 +406,7 @@ expr_t* dot_t::create_expression( action_t* action,
       {
         // FIXME: What exactly is this supposed to be calculating?
         dot_t* dot = this->dot();
-        double haste = dot -> state ? dot -> state -> haste : dot -> action -> player_haste;
+        double haste = dot -> state -> haste;
         return ( dot -> action -> num_ticks * dot -> action -> tick_time( haste ) ).total_seconds();
       }
     };

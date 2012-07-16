@@ -70,20 +70,6 @@ timespan_t spell_base_t::tick_time( double haste )
   return action_t::tick_time( haste );
 }
 
-// spell_base_t::player_buff =====================================================
-
-void spell_base_t::player_buff()
-{
-  action_t::player_buff();
-
-  player_t* p = player;
-
-  player_crit = p -> composite_spell_crit();
-
-  if ( sim -> debug ) sim -> output( "spell_base_t::player_buff: %s crit=%.2f",
-                                     name(), player_crit );
-}
-
 // spell_base_t::calculate_result ================================================
 
 result_e spell_base_t::calculate_result( double crit, unsigned target_level )

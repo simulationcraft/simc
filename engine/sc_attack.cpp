@@ -82,23 +82,6 @@ timespan_t attack_t::execute_time()
   return base_execute_time * swing_haste();
 }
 
-// attack_t::player_buff ====================================================
-
-void attack_t::player_buff()
-{
-  action_t::player_buff();
-
-  if ( !no_buffs )
-  {
-    player_hit       += player -> composite_attack_hit();
-    player_crit      += player -> composite_attack_crit( weapon );
-  }
-
-  if ( sim -> debug )
-    sim -> output( "attack_t::player_buff: %s hit=%.2f crit=%.2f",
-                   name(), player_hit, player_crit );
-}
-
 // attack_t::miss_chance ====================================================
 
 double attack_t::miss_chance( double hit, int delta_level )
@@ -313,29 +296,12 @@ void attack_t::init()
 melee_attack_t::melee_attack_t( const std::string&  n,
                                 player_t*           p,
                                 const spell_data_t* s ) :
-  attack_t( n, p, s ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  attack_t( n, p, s )
 {
   may_miss = may_dodge = may_parry = may_glance = may_block = true;
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 ) range = 5;
-}
-
-// melee_attack_t::player_buff ====================================================
-
-void melee_attack_t::player_buff()
-{
-  attack_t::player_buff();
-
-  if ( !no_buffs )
-  {
-    player_expertise = player -> composite_attack_expertise( weapon );
-  }
-
-  if ( sim -> debug )
-    sim -> output( "melee_attack_t::player_buff: %s expertise=%.2f",
-                   name(), player_expertise );
 }
 
 // melee_attack_t::target_debuff ==================================================
@@ -344,14 +310,7 @@ void melee_attack_t::target_debuff( player_t* t, dmg_e dt )
 {
   attack_t::target_debuff( t, dt );
 
-  target_expertise = 0;
-}
-
-// melee_attack_t::total_expertise ================================================
-
-double melee_attack_t::total_expertise()
-{
-  return base_expertise + player_expertise + target_expertise;
+  //target_expertise = 0;
 }
 
 // melee_attack_t::dodge_chance ===================================================
@@ -386,8 +345,7 @@ double melee_attack_t::glance_chance( int delta_level )
 ranged_attack_t::ranged_attack_t( const std::string& token,
                                   player_t* p,
                                   const spell_data_t* s ) :
-  attack_t( token, p, s ),
-  base_expertise( 0 ), player_expertise( 0 ), target_expertise( 0 )
+  attack_t( token, p, s )
 {
   may_miss  = true;
   may_dodge = true;
@@ -396,27 +354,11 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
     may_block = true;
 }
 
-// ranged_attack_t::player_buff ====================================================
-
-void ranged_attack_t::player_buff()
-{
-  attack_t::player_buff();
-
-  if ( !no_buffs )
-  {
-    player_expertise = player -> composite_attack_expertise( weapon );
-  }
-
-  if ( sim -> debug )
-    sim -> output( "ranged_attack_t::player_buff: %s expertise=%.2f",
-                   name(), player_expertise );
-}
-
 void ranged_attack_t::target_debuff( player_t* t, dmg_e dt )
 {
   attack_t::target_debuff( t, dt );
 
-  target_expertise = 0;
+  //target_expertise = 0;
 
   if ( !no_debuffs )
   {
@@ -426,13 +368,6 @@ void ranged_attack_t::target_debuff( player_t* t, dmg_e dt )
   if ( sim -> debug )
     sim -> output( "ranged_attack_t::target_debuff: %s mult=%.2f",
                    name(), target_multiplier );
-}
-
-// ranged_attack_t::total_expertise ================================================
-
-double ranged_attack_t::total_expertise()
-{
-  return base_expertise + player_expertise + target_expertise;
 }
 
 // ranged_attack_t::dodge_chance ===================================================

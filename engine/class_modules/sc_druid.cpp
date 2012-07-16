@@ -2813,7 +2813,7 @@ void druid_spell_t::consume_resource()
 
 void druid_spell_t::player_tick()
 {
-  player_crit = p() -> composite_spell_crit();
+  //player_crit = p() -> composite_spell_crit();
 }
 
 // Auto Attack ==============================================================
@@ -3617,7 +3617,7 @@ struct starfire_t : public druid_spell_t
       m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
 
     if (  p() -> set_bonus.tier13_2pc_caster() )
-      player_multiplier *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
     return m;
   }

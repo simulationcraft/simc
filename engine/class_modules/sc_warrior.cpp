@@ -2433,19 +2433,6 @@ struct whirlwind_t : public warrior_attack_t
 
     warrior_attack_t::consume_resource();
   }
-
-  virtual void player_buff()
-  {
-    warrior_attack_t::player_buff();
-    warrior_t* p = cast();
-
-    if ( p -> buffs_meat_cleaver -> up() )
-    {
-      // Caution: additive
-      // FIXME:
-      // player_multiplier *= 1.0 + p -> talents.meat_cleaver -> rank() * 0.05 * p -> buffs_meat_cleaver -> stack();
-    }
-  }
 };
 
 // Victory Rush =============================================================

@@ -32,18 +32,6 @@ absorb_t::absorb_t( const std::string&  token,
   stats -> type = STATS_ABSORB;
 }
 
-// absorb_t::player_buff ====================================================
-
-void absorb_t::player_buff()
-{
-  spell_base_t::player_buff();
-
-  player_multiplier    = player -> composite_player_absorb_multiplier   ( school );
-
-  if ( sim -> debug ) sim -> output( "absorb_t::player_buff: %s mult=%.2f",
-                                     name(), player_multiplier );
-}
-
 // absorb_t::execute ========================================================
 
 void absorb_t::execute()

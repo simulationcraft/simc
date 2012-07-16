@@ -2964,13 +2964,13 @@ struct pestilence_t : public death_knight_spell_t
       if ( spread_bp )
       {
         p -> active_spells.blood_plague -> target = s -> target;
-        p -> active_spells.blood_plague -> player_multiplier *= multiplier;
+        p -> active_spells.blood_plague -> base_multiplier *= multiplier;
         p -> active_spells.blood_plague -> execute();
       }
       if ( spread_ff )
       {
         p -> active_spells.frost_fever -> target = s -> target;
-        p -> active_spells.frost_fever -> player_multiplier *= multiplier;
+        p -> active_spells.frost_fever -> base_multiplier *= multiplier;
         p -> active_spells.frost_fever -> execute();
       }
     }
