@@ -1557,8 +1557,9 @@ struct unleash_flame_t : public shaman_spell_t
 
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
-  static const double normalize_speed   = 2.174365;
-  static const double power_coefficient = 0.090315;
+  // static constant floats aren't allowed by the spec and some compilers
+  static double normalize_speed()   { return 2.174365; }
+  static double power_coefficient() { return 0.090315; }
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
     shaman_spell_t( n, player, player -> dbc.spell( 8024 ) )
@@ -1570,19 +1571,19 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
-    base_dd_min = w -> swing_time.total_seconds() / normalize_speed * player -> dbc.effect_min( data().effectN( 2 ).id(), player -> level ) / 25.0;
+    base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * player -> dbc.effect_min( data().effectN( 2 ).id(), player -> level ) / 25.0;
     base_dd_max = base_dd_min;
 
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags               = STATE_AP;
-      base_attack_power_multiplier = w -> swing_time.total_seconds() / normalize_speed * power_coefficient;
+      base_attack_power_multiplier = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
       base_spell_power_multiplier  = 0;
     }
     else
     {
       base_attack_power_multiplier = 0;
-      base_spell_power_multiplier  = w -> swing_time.total_seconds() / normalize_speed * power_coefficient;
+      base_spell_power_multiplier  = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
     }
   }
 
