@@ -4714,11 +4714,7 @@ void druid_t::init_actions()
       else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
       {
         action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40";
-        if ( talent.incarnation -> ok() )
-          action_list_str += "|(buff.chosen_of_elune.up&buff.celestial_alignment.up)";
-        else
-          action_list_str += "|buff.celestial_alignment.up";
+        action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
       }
       else
       {
@@ -4769,28 +4765,18 @@ void druid_t::init_actions()
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
+      action_list_str += "/treants,if=talent.force_of_nature.enabled";
+      action_list_str += "/faerie_fire,if=(eclipse_dir=1&eclipse>=19&buff.lunar_empowerment.down)|(eclipse_dir=-1&eclipse<=-40&buff.solar_empowerment.down)";
       action_list_str += init_use_racial_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-      if ( talent.incarnation -> ok() )
-      {
-        // Align the use of Incarnation and Celestial Alignment
-        action_list_str += "/incarnation,if=buff.lunar_eclipse.up|buff.solar_eclipse.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&!buff.solar_eclipse.up&buff.chosen_of_elune.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&!buff.lunar_eclipse.up&buff.chosen_of_elune.up";
-      }
-      else
-      {
-        // CA just as we are going to leave Eclipse
-        action_list_str += "/celestial_alignment,if=eclipse_dir=-1&!buff.solar_eclipse.up";
-        action_list_str += "/celestial_alignment,if=eclipse_dir=1&!buff.lunar_eclipse.up";
-      }
+      // Align the use of Incarnation and Celestial Alignment
+      action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
+      action_list_str += "/celestial_alignment,if=!buff.solar_eclipse.up&!buff.lunar_eclipse.up&(buff.chosen_of_elune.up|!(eclipse_dir=0))";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
       action_list_str += "/starsurge,if=buff.solar_eclipse.up|buff.lunar_eclipse.up";
       action_list_str += "/innervate,if=mana.pct<20";
-      if ( talent.force_of_nature -> ok() )
-        action_list_str += "/treants,if=time>=5";
       action_list_str += "/starsurge,if=(eclipse_dir=1&eclipse<30)|(eclipse_dir=-1&eclipse>-30)";
       action_list_str += "/starfire,if=eclipse_dir=1";
       action_list_str += "/wrath,if=eclipse_dir=-1";
