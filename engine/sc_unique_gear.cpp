@@ -938,6 +938,7 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
 
       discharge_action -> base_dd_min = a -> tick_dmg;
       discharge_action -> base_dd_max = a -> tick_dmg;
+      discharge_action -> update_flags = discharge_action -> snapshot_flags = 0;
 
       discharge_proc_callback_t::trigger( a, call_data );
     }
