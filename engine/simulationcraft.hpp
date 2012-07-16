@@ -1976,8 +1976,8 @@ struct sim_t : private thread_t
   sim_t*      parent;
   event_freelist_t free_list;
   player_t*   target;
-  player_t*   target_list;
-  player_t*   player_list;
+  std::vector<player_t*> target_list;
+  std::vector<player_t*> player_list;
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
@@ -2010,7 +2010,7 @@ struct sim_t : private thread_t
   int         save_talent_str;
   talent_format_e talent_format;
   bool        input_is_utf8;
-  std::vector<player_t*> actor_list;
+  auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
 
   // Target options
@@ -2034,7 +2034,7 @@ struct sim_t : private thread_t
   // Random Number Generation
 private:
   rng_t* default_rng_;     // == (deterministic_rng ? deterministic_rng : rng )
-  std::vector<rng_t*> rng_list;
+  auto_dispose< std::vector<rng_t*> > rng_list;
   int deterministic_rng;
 public:
   rng_t* rng;
@@ -2059,7 +2059,7 @@ public:
   timespan_t wheel_time;
 
   // Raid Events
-  std::vector<raid_event_t*> raid_events;
+  auto_dispose< std::vector<raid_event_t*> > raid_events;
   std::string raid_events_str;
   std::string fight_style;
 
@@ -2109,14 +2109,14 @@ public:
   } auras;
 
   // Auras and De-Buffs
-  std::vector<buff_t*> buff_list;
+  auto_dispose< std::vector<buff_t*> > buff_list;
   timespan_t aura_delay;
 
   // Global aura related delay
   timespan_t default_aura_delay;
   timespan_t default_aura_delay_stddev;
 
-  std::vector<cooldown_t*> cooldown_list;
+  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
 
   // Reporting
   scaling_t* scaling;
@@ -2166,7 +2166,7 @@ public:
 
   // Multi-Threading
   int threads;
-  std::vector<sim_t*> children;
+  auto_dispose< std::vector<sim_t*> > children;
   int thread_index;
   virtual void run() { iterate(); }
 

@@ -24,8 +24,9 @@ static bool is_scaling_stat( sim_t* sim,
     if ( ! found ) return false;
   }
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
     if ( p -> is_pet() ) continue;
 
@@ -463,8 +464,9 @@ void scaling_t::normalize()
 {
   if ( num_scaling_stats <= 0 ) return;
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
 
     double divisor = p -> scaling.get_stat( p -> normalize_by() );
@@ -495,8 +497,9 @@ void scaling_t::analyze()
   analyze_lag();
   normalize();
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
 
     // Sort scaling results

@@ -71,9 +71,12 @@ static bool need_to_save_profiles( sim_t* sim )
 {
   if ( sim -> save_profiles ) return true;
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  {
+    player_t* p = sim -> player_list[ i ];
     if ( ! p -> report_information.save_str.empty() )
       return true;
+  }
 
   return false;
 }
@@ -731,8 +734,13 @@ struct regen_event_t : public event_t
 // sim_t::sim_t =============================================================
 
 sim_t::sim_t( sim_t* p, int index ) :
-  control( 0 ), parent( p ),
-  target_list( 0 ), player_list( 0 ), active_player( 0 ), num_players( 0 ), num_enemies( 0 ), max_player_level( -1 ),
+  control( 0 ),
+  parent( p ),
+  target_list( 0 ),
+  active_player( 0 ),
+  num_players( 0 ),
+  num_enemies( 0 ),
+  max_player_level( -1 ),
   canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
@@ -740,9 +748,11 @@ sim_t::sim_t( sim_t* p, int index ) :
   queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ), strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
-  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ), regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
+  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
+  regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  current_time( timespan_t::zero() ), max_time( timespan_t::from_seconds( 450 ) ), expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
+  current_time( timespan_t::zero() ), max_time( timespan_t::from_seconds( 450 ) ),
+  expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
   last_event( timespan_t::zero() ), fixed_time( 0 ),
   events_remaining( 0 ), max_events_remaining( 0 ),
   events_processed( 0 ), total_events_processed( 0 ),
@@ -756,14 +766,13 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   input_is_utf8( false ),
   target_death( 0 ), target_death_pct( 0 ), target_level( -1 ), target_adds( 0 ),
-  default_rng_( 0 ), rng_list( 0 ), deterministic_rng( false ),
+  default_rng_( 0 ), deterministic_rng( false ),
   rng( 0 ), _deterministic_rng( 0 ), separated_rng( false ), average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   timing_wheel( 0 ), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
-  buff_list( 0 ), aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
+  aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-  cooldown_list( 0 ),
   elapsed_cpu( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), simulation_length( false ),
   report_progress( 1 ),
@@ -817,32 +826,11 @@ sim_t::~sim_t()
 {
   flush_events();
 
-  while ( player_t* t = target_list )
-  {
-    target_list = t -> next;
-    delete t;
-  }
-
-  while ( player_t* p = player_list )
-  {
-    player_list = p -> next;
-    delete p;
-  }
-
-  range::dispose( rng_list );
-
-  range::dispose( buff_list );
-
-  range::dispose( cooldown_list );
-
   delete rng;
   delete _deterministic_rng;
   delete scaling;
   delete plot;
   delete reforge_plot;
-
-  range::dispose( raid_events );
-  range::dispose( children );
 
   delete[] timing_wheel;
   delete spell_query;
@@ -1108,12 +1096,14 @@ void sim_t::reset()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> reset();
 
-  for ( player_t* t = target_list; t; t = t -> next )
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
+    player_t* t = target_list[ i ];
     t -> reset();
   }
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( size_t i = 0; i < player_list.size(); ++i )
   {
+    player_t* p = player_list[ i ];
     p -> reset();
   }
   raid_event_t::reset( this );
@@ -1129,8 +1119,9 @@ void sim_t::combat_begin()
 
   iteration_dmg = iteration_heal = 0;
 
-  for ( player_t* t = target_list; t; t = t -> next )
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
+    player_t* t = target_list[ i ];
     t -> combat_begin();
   }
 
@@ -1149,8 +1140,9 @@ void sim_t::combat_begin()
   if ( overrides.stamina                 ) auras.stamina                 -> override();
   if ( overrides.str_agi_int             ) auras.str_agi_int             -> override();
 
-  for ( player_t* t = target_list; t; t = t -> next )
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
+    player_t* t = target_list[ i ];
     if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override();
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override();
     if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override();
@@ -1169,8 +1161,9 @@ void sim_t::combat_begin()
 
   raid_event_t::combat_begin( this );
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( size_t i = 0; i < player_list.size(); ++i )
   {
+    player_t* p = player_list[ i ];
     p -> combat_begin();
   }
   new ( this ) regen_event_t( this );
@@ -1194,8 +1187,9 @@ void sim_t::combat_begin()
              ( sim -> bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim -> bloodlust_time ) ||
              ( sim -> bloodlust_time     > timespan_t::zero() && sim -> current_time      >  sim -> bloodlust_time ) )
         {
-          for ( player_t* p = sim -> player_list; p; p = p -> next )
+          for ( size_t i = 0; i < sim -> player_list.size(); ++i )
           {
+            player_t* p = sim -> player_list[ i ];
             if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
               continue;
 
@@ -1238,8 +1232,9 @@ void sim_t::combat_end()
 
   total_events_processed += events_processed;
 
-  for ( player_t* t = target_list; t; t = t -> next )
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
+    player_t* t = target_list[ i ];
     if ( t -> is_add() ) continue;
     t -> combat_end();
   }
@@ -1252,8 +1247,9 @@ void sim_t::combat_end()
 
   raid_event_t::combat_end( this );
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( size_t i = 0; i < player_list.size(); ++i )
   {
+    player_t* p = player_list[ i ];
     if ( p -> is_pet() ) continue;
     p -> combat_end();
   }
@@ -1370,9 +1366,9 @@ bool sim_t::init()
   if ( debug )
     output( "Creating Enemies." );
 
-  if ( target_list )
+  if ( target_list.size() > 0 )
   {
-    target = target_list;
+    target = target_list.front();
   }
   else if ( ! main_target_str.empty() )
   {
@@ -1386,8 +1382,9 @@ bool sim_t::init()
 
   if ( max_player_level < 0 )
   {
-    for ( player_t* p = player_list; p; p = p -> next )
+    for ( size_t i = 0; i < player_list.size(); ++i )
     {
+      player_t* p = player_list[ i ];
       if ( p -> is_enemy() || p -> is_add() )
         continue;
       if ( max_player_level < p -> level )
@@ -1398,8 +1395,9 @@ bool sim_t::init()
   if ( ! player_t::init( this ) ) return false;
 
   // Target overrides 2
-  for ( player_t* t = target_list; t; t = t -> next )
+  for ( size_t i = 0; i < target_list.size(); ++i )
   {
+    player_t* t = target_list[ i ];
     if ( ! target_race.empty() )
     {
       t -> race = util::parse_race_type( target_race );
@@ -1816,8 +1814,9 @@ void sim_t::print_options()
   util::fprintf( output_file, "\nSimulation Engine:\n" );
   for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
 
-  for ( player_t* p = player_list; p; p = p -> next )
+  for ( size_t i = 0; i < player_list.size(); ++i )
   {
+    player_t* p = player_list[ i ];
     num_options = ( int ) p -> options.size();
 
     util::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
@@ -2065,7 +2064,7 @@ bool sim_t::setup( sim_control_t* c )
     }
   }
 
-  if ( player_list == NULL && spell_query == NULL )
+  if ( player_list.size() == 0 && spell_query == NULL )
   {
     errorf( "Nothing to sim!\n" );
     cancel();

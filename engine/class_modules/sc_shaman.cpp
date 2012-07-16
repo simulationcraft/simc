@@ -2244,8 +2244,9 @@ struct bloodlust_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
         continue;
       p -> buffs.bloodlust -> trigger();
@@ -2565,8 +2566,9 @@ struct fire_nova_t : public shaman_spell_t
   {
     std::vector< player_t* > t;
 
-    for ( player_t* e = sim -> target_list; e; e = e -> next )
+    for ( size_t i = 0; i < sim -> target_list.size(); ++i )
     {
+      player_t* e = sim -> target_list[ i ];
       if ( e -> current.sleeping || ! e -> is_enemy() )
         continue;
 
@@ -3497,8 +3499,9 @@ struct stormlash_totem_t : public shaman_totem_pet_t
   {
     shaman_totem_pet_t::arise();
 
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> type == PLAYER_GUARDIAN )
         continue;
 
@@ -3508,8 +3511,9 @@ struct stormlash_totem_t : public shaman_totem_pet_t
 
   void demise()
   {
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> type == PLAYER_GUARDIAN )
         continue;
 

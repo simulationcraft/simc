@@ -632,9 +632,7 @@ player_t::player_t( sim_t*             s,
   if ( type != ENEMY && type != ENEMY_ADD )
   {
     if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
-    player_t** last = &( sim -> player_list );
-    while ( *last ) last = &( ( *last ) -> next );
-    *last = this;
+    sim -> player_list.push_back( this );
     next = 0;
     index = ++( sim -> num_players );
   }
@@ -804,13 +802,15 @@ static bool init_parties( sim_t* sim )
     if ( party_str == "reset" )
     {
       party_index = 0;
-      for ( player_t* p = sim -> player_list; p; p = p -> next ) p -> party = 0;
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+        sim -> player_list[ i ] -> party = 0;
     }
     else if ( party_str == "all" )
     {
       int member_index = 0;
-      for ( player_t* p = sim -> player_list; p; p = p -> next )
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
       {
+        player_t* p = sim -> player_list[ i ];
         p -> party = 1;
         p -> member = member_index++;
       }

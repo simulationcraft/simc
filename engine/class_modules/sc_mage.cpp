@@ -2418,8 +2418,9 @@ struct time_warp_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> current.sleeping || p -> buffs.exhaustion -> check() || p -> is_pet() || p -> is_enemy() )
         continue;
 

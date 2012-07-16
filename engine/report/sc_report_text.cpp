@@ -439,8 +439,9 @@ void print_text_waiting( FILE* file, sim_t* sim )
 
   bool nobody_waits = true;
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet )
       continue;
 

@@ -3066,8 +3066,11 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 
   virtual void populate_target_list()
   {
-    for ( player_t* t = sim -> target_list; t; t = t -> next )
-    { if ( t != target ) targets.push_back( t ); }
+    for ( size_t i = 0; i < sim -> target_list.size(); ++i )
+    {
+      player_t* t = sim -> target_list[ i ];
+      if ( t != target ) targets.push_back( t );
+    }
   }
 };
 
@@ -3079,8 +3082,11 @@ struct cascade_heal_t : public cascade_base_t<priest_heal_t>
 
   virtual void populate_target_list()
   {
-    for ( player_t* t = sim -> player_list; t; t = t -> next )
-    { if ( t != target ) targets.push_back( t ); }
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+    {
+      player_t* t = sim -> player_list[ i ];
+      if ( t != target ) targets.push_back( t );
+    }
   }
 };
 
@@ -5046,8 +5052,9 @@ void priest_t::init_party()
   if ( party == 0 )
     return;
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( ( p != this ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
     {
       party_list.push_back( p );

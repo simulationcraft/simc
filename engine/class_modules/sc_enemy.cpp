@@ -290,10 +290,7 @@ struct enemy_t : public player_t
     waiting_time( timespan_t::from_seconds( 1.0 ) )
 
   {
-    player_t** last = &( sim -> target_list );
-    while ( *last ) last = &( ( *last ) -> next );
-    *last = this;
-    next = 0;
+    s -> target_list.push_back( this );
   }
 
   virtual role_e primary_role()
@@ -449,8 +446,9 @@ void enemy_t::init_target()
   if ( target )
     return;
 
-  for ( player_t* q = sim -> player_list; q; q = q -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* q = sim -> player_list[ i ];
     if ( q -> primary_role() != ROLE_TANK )
       continue;
 

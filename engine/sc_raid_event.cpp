@@ -70,8 +70,9 @@ struct casting_event_t : public raid_event_t
   virtual void _start()
   {
     sim -> target -> debuffs.casting -> increment();
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> current.sleeping ) continue;
       p -> interrupt();
     }
@@ -134,8 +135,9 @@ struct invulnerable_event_t : public raid_event_t
   {
     sim -> target -> debuffs.invulnerable -> increment();
 
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> current.sleeping ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
@@ -537,8 +539,9 @@ void raid_event_t::start()
 
   affected_players.clear();
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( distance_min &&
          distance_min > p -> current.distance )
       continue;

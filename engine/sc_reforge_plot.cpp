@@ -24,8 +24,9 @@ static bool is_plot_stat( sim_t* sim,
     if ( ! found ) return false;
   }
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
     if ( p -> is_pet() ) continue;
 
@@ -75,8 +76,9 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
     if ( abs( sum ) > reforge_plot_amount )
       return;
 
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> quiet )
         continue;
       if ( p -> is_pet() )
@@ -95,8 +97,9 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
         mod_amount += reforge_plot_step )
   {
     bool negative_stat = false;
-    for ( player_t* p = sim -> player_list; p; p = p -> next )
+    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
     {
+      player_t* p = sim -> player_list[ i ];
       if ( p -> quiet )
         continue;
       if ( p -> is_pet() )
@@ -245,8 +248,9 @@ void reforge_plot_t::analyze()
     }
   }
 
-  for ( player_t* p = sim -> player_list; p; p = p -> next )
+  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
+    player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
 
     util::fprintf( reforge_plot_output_file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
