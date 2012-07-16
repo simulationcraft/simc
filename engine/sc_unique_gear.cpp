@@ -494,9 +494,9 @@ static void register_touch_of_the_grave( player_t* p )
       aoe              = 0;
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
-      spell_t::impact_s( s );
+      spell_t::impact( s );
 
       if ( result_is_hit( s -> result ) )
       {

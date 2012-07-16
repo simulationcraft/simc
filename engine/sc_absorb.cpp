@@ -50,9 +50,9 @@ void absorb_t::execute()
   }
 }
 
-// absorb_t::impact_s =========================================================
+// absorb_t::impact =========================================================
 
-void absorb_t::impact_s( action_state_t* s )
+void absorb_t::impact( action_state_t* s )
 {
   if ( s -> result_amount > 0 )
   {

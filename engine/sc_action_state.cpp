@@ -104,7 +104,7 @@ stateless_travel_event_t::stateless_travel_event_t( sim_t*    sim,
 
 void stateless_travel_event_t::execute()
 {
-  action -> impact_s( state );
+  action -> impact( state );
   action -> release_state( state );
   action -> remove_travel_event( this );
 }

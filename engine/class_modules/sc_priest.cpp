@@ -689,9 +689,9 @@ struct fiend_melee_t : public priest_pet_melee_t
     return am;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_pet_melee_t::impact_s( s );
+    priest_pet_melee_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -944,7 +944,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       shield_multiple  = p -> specs.divine_aegis -> effectN( 1 ).percent();
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
       double old_amount = td( s -> target ) -> buffs.divine_aegis -> value();
       double new_amount = std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount );
@@ -1028,11 +1028,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     double save_health_percentage = s -> target -> health_percentage();
 
-    base_t::impact_s( s );
+    base_t::impact( s );
 
     if ( s -> result_amount > 0 )
     {
@@ -1173,11 +1173,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     double save_health_percentage = s -> target -> health_percentage();
 
-    base_t::impact_s( s );
+    base_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1760,9 +1760,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     travel_speed      = 3.5;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     // Cleanup. Re-add to free list.
     p() -> spells.apparitions_active.remove( this );
@@ -1810,9 +1810,9 @@ struct mind_blast_t : public priest_spell_t
     p() -> buffs.consume_divine_insight_shadow -> expire();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2004,9 +2004,9 @@ struct mind_spike_t : public priest_spell_t
     p() -> buffs.consume_surge_of_darkness -> expire();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2234,7 +2234,7 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     s -> result_amount = floor( s -> result_amount );
 
@@ -2253,7 +2253,7 @@ struct shadow_word_death_t : public priest_spell_t
         generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
     }
 
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
   }
 
   virtual bool ready()
@@ -2413,11 +2413,11 @@ struct devouring_plague_t : public priest_spell_t
       return m;
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
       double saved_impact_dmg = s -> result_amount;
       s -> result_amount = 0;
-      priest_spell_t::impact_s( s );
+      priest_spell_t::impact( s );
 
       dot_t* dot = get_dot();
       base_ta_adder = saved_impact_dmg / dot -> ticks();
@@ -2520,14 +2520,14 @@ struct devouring_plague_t : public priest_spell_t
     dot_spell -> snapshot_state( s, dot_spell -> snapshot_flags );
     s -> result = RESULT_HIT;
     s -> result_amount = new_total_ignite_dmg;
-    dot_spell -> schedule_travel_s( s );
+    dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero() );
 
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     trigger_dot( s -> target );
   }
@@ -2700,9 +2700,9 @@ struct power_word_solace_t : public priest_spell_t
     castable_in_shadowform = false;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     double amount = player -> find_spell( 129253 ) -> effectN( 1 ).resource( RESOURCE_MANA ) * player->resources.current[ RESOURCE_MANA ];
     player -> resource_gain( RESOURCE_MANA, amount );
@@ -2719,9 +2719,9 @@ struct shadow_word_insanity_t : public priest_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::impact_s( s );
+    priest_spell_t::impact( s );
 
     cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
     p() -> procs.shadow_word_insanity_dot_removal -> occur();
@@ -2997,9 +2997,9 @@ struct cascade_base_t : public Base
     ab::execute();
   }
 
-  virtual void impact_s( action_state_t* q )
+  virtual void impact( action_state_t* q )
   {
-    ab::impact_s( q );
+    ab::impact( q );
 
     cascade_state_t* cs = debug_cast<cascade_state_t*>( q );
 
@@ -3032,7 +3032,7 @@ struct cascade_base_t : public Base
           if ( ab::sim -> debug )
             s -> debug();
 
-          ab::schedule_travel_s( s );
+          ab::schedule_travel( s );
         }
       }
     }
@@ -3169,9 +3169,9 @@ struct divine_star_base_t : public Base
     return new divine_star_state_t( this, ab::target );
   }
 
-  virtual void impact_s( action_state_t* q )
+  virtual void impact( action_state_t* q )
   {
-    ab::impact_s( q );
+    ab::impact( q );
 
     divine_star_state_t* cs = debug_cast<divine_star_state_t*>( q );
 
@@ -3194,7 +3194,7 @@ struct divine_star_base_t : public Base
       if ( ab::sim -> debug )
         s -> debug();
 
-      ab::schedule_travel_s( s );
+      ab::schedule_travel( s );
     }
     else
     {
@@ -3202,7 +3202,7 @@ struct divine_star_base_t : public Base
     }
   }
 
-  virtual void schedule_travel_s( action_state_t* s )
+  virtual void schedule_travel( action_state_t* s )
   {
     if ( debug_cast<divine_star_state_t*>( s ) -> jump_counter == 1 )
     {
@@ -3229,7 +3229,7 @@ struct divine_star_base_t : public Base
 
     if ( ab::time_to_travel == timespan_t::zero() )
     {
-      ab::impact_s( s );
+      ab::impact( s );
       ab::release_state( s );
     }
     else
@@ -3449,9 +3449,9 @@ struct flash_heal_t : public priest_heal_t
     p() -> buffs.surge_of_light -> trigger();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::impact_s( s );
+    priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
     trigger_strength_of_soul( s -> target );
@@ -3547,9 +3547,9 @@ struct greater_heal_t : public priest_heal_t
     p() -> buffs.surge_of_light -> trigger();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::impact_s( s );
+    priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
     trigger_strength_of_soul( s -> target );
@@ -3607,9 +3607,9 @@ struct _heal_t : public priest_heal_t
     p() -> buffs.surge_of_light -> trigger();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::impact_s( s );
+    priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
     trigger_strength_of_soul( s -> target );
@@ -3882,9 +3882,9 @@ struct penance_heal_t : public priest_heal_t
       stats = player -> get_stats( "penance_heal", this );
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
-      priest_heal_t::impact_s( s );
+      priest_heal_t::impact( s );
 
       trigger_grace( s -> target );
     }
@@ -3992,7 +3992,7 @@ struct power_word_shield_t : public priest_absorb_t
     return c;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
 
     s -> target -> buffs.weakened_soul -> trigger();
@@ -4051,9 +4051,9 @@ struct prayer_of_healing_t : public priest_heal_t
     consume_inner_focus( p() );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::impact_s( s );
+    priest_heal_t::impact( s );
 
     // Divine Aegis
     s -> result_amount *= 0.5;
@@ -4208,9 +4208,9 @@ struct renew_t : public priest_heal_t
     return am;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    priest_heal_t::impact_s( s );
+    priest_heal_t::impact( s );
 
     if ( rr )
       rr -> trigger( s );

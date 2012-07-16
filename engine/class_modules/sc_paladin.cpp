@@ -1321,14 +1321,14 @@ struct seal_of_truth_dot_t : public paladin_melee_attack_t
     snapshot_flags |= STATE_HASTE;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_censure -> trigger();
     }
 
-    paladin_melee_attack_t::impact_s( s );
+    paladin_melee_attack_t::impact( s );
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1457,9 +1457,9 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::impact_s( s );
+    paladin_melee_attack_t::impact( s );
 
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
@@ -1661,7 +1661,7 @@ struct consecration_t : public paladin_spell_t
     tick_spell -> stats = stats;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -1669,7 +1669,7 @@ struct consecration_t : public paladin_spell_t
     }
     else
     {
-      paladin_spell_t::impact_s( s );
+      paladin_spell_t::impact( s );
     }
 
   }

@@ -669,7 +669,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
 
   // Combo points need to be snapshot before we travel, they should also not
   // be snapshot during any other event in the stateless system.
-  void schedule_travel_s( action_state_t* travel_state )
+  void schedule_travel( action_state_t* travel_state )
   {
     if ( result_is_hit( travel_state -> result ) )
     {
@@ -677,7 +677,7 @@ struct druid_cat_attack_t : public druid_action_t<melee_attack_t>
       ds_ -> combo_points = td( travel_state -> target ) -> combo_points -> count;
     }
 
-    base_t::schedule_travel_s( travel_state );
+    base_t::schedule_travel( travel_state );
   }
 };
 
@@ -712,7 +712,7 @@ struct druid_bear_attack_t : public druid_action_t<melee_attack_t>
     tick_may_crit = true;
   }
 
-  virtual void impact_s( action_state_t* );
+  virtual void impact( action_state_t* );
 };
 
 // ==========================================================================
@@ -1443,9 +1443,9 @@ struct cat_melee_t : public druid_cat_attack_t
     return cm;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       trigger_omen_of_clarity( this );
@@ -1515,9 +1515,9 @@ struct ferocious_bite_t : public druid_cat_attack_t
     druid_cat_attack_t::execute();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1642,9 +1642,9 @@ struct mangle_cat_t : public druid_cat_attack_t
     adds_combo_points = p -> spell.combo_point -> effectN( 1 ).base_value();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1699,9 +1699,9 @@ struct pounce_t : public druid_cat_attack_t
     pounce_bleed -> stats = stats;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       pounce_bleed -> execute();
@@ -1766,9 +1766,9 @@ struct ravage_t : public druid_cat_attack_t
     p() -> buff.t13_4pc_melee -> expire();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1896,9 +1896,9 @@ struct savage_roar_t : public druid_cat_attack_t
       base_buff_duration = data().duration();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
     druid_cat_attack_state_t* ds = static_cast< druid_cat_attack_state_t* >( state );
 
     timespan_t duration = base_buff_duration;
@@ -1930,9 +1930,9 @@ struct shred_t : public druid_cat_attack_t
     requires_position_ = POSITION_BACK;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_cat_attack_t::impact_s( state );
+    druid_cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2046,11 +2046,11 @@ struct tigers_fury_t : public druid_cat_attack_t
 // Druid Bear Attack
 // ==========================================================================
 
-// druid_bear_attack_t::impact_s ============================================
+// druid_bear_attack_t::impact ============================================
 
-void druid_bear_attack_t::impact_s( action_state_t* state )
+void druid_bear_attack_t::impact( action_state_t* state )
 {
-  base_t::impact_s( state );
+  base_t::impact( state );
 
   if ( state -> result == RESULT_CRIT )
     trigger_lotp( state );
@@ -2078,9 +2078,9 @@ struct bear_melee_t : public druid_bear_attack_t
     return druid_bear_attack_t::execute_time();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact_s( state );
+    druid_bear_attack_t::impact( state );
 
     if ( state -> result != RESULT_MISS )
       trigger_rage_gain( this );
@@ -2135,9 +2135,9 @@ struct lacerate_t : public druid_bear_attack_t
     dot_behavior         = DOT_REFRESH;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact_s( state );
+    druid_bear_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.lacerate -> trigger();
@@ -2193,9 +2193,9 @@ struct mangle_bear_t : public druid_bear_attack_t
                           p() -> gain.mangle );
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact_s( state );
+    druid_bear_attack_t::impact( state );
 
     if ( state -> result == RESULT_CRIT )
     {
@@ -2290,9 +2290,9 @@ struct thrash_bear_t : public druid_bear_attack_t
     weapon_multiplier = 0;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_bear_attack_t::impact_s( state );
+    druid_bear_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
@@ -2438,9 +2438,9 @@ struct healing_touch_t : public druid_heal_t
     consume_ooc = true;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_heal_t::impact_s( state );
+    druid_heal_t::impact( state );
 
     if ( ! p() -> glyph.blooming -> ok() )
       trigger_lifebloom_refresh( state );
@@ -2512,9 +2512,9 @@ struct lifebloom_t : public druid_heal_t
     return ctm;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_heal_t::impact_s( state );
+    druid_heal_t::impact( state );
 
     td( state -> target ) -> buffs_lifebloom -> trigger();
   }
@@ -2545,9 +2545,9 @@ struct nourish_t : public druid_heal_t
     druid_heal_t( p, p -> find_class_spell( "Nourish" ), options_str )
   { }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_heal_t::impact_s( state );
+    druid_heal_t::impact( state );
 
     if ( ! p() -> glyph.blooming -> ok() )
       trigger_lifebloom_refresh( state );
@@ -2585,9 +2585,9 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_heal_t::impact_s( state );
+    druid_heal_t::impact( state );
 
     if ( ! p() -> glyph.blooming -> ok() )
       trigger_lifebloom_refresh( state );
@@ -2645,9 +2645,9 @@ struct swiftmend_t : public druid_heal_t
     consume_ooc = true;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_heal_t::impact_s( state );
+    druid_heal_t::impact( state );
 
     if ( state -> result == RESULT_CRIT )
       trigger_living_seed( state );
@@ -3153,9 +3153,9 @@ struct faerie_fire_t : public druid_spell_t
   }
 
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    druid_spell_t::impact_s( state );
+    druid_spell_t::impact( state );
 
     if ( p() -> buff.bear_form -> check() )
     {
@@ -3574,9 +3574,9 @@ struct starfire_t : public druid_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    druid_spell_t::impact_s( s );
+    druid_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3748,9 +3748,9 @@ struct starsurge_t : public druid_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    druid_spell_t::impact_s( s );
+    druid_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -4105,9 +4105,9 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    druid_spell_t::impact_s( s );
+    druid_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {

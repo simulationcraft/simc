@@ -861,9 +861,9 @@ struct ranged_t : public hunter_ranged_attack_t
   virtual void trigger_steady_focus()
   { }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -955,9 +955,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> buffs.master_marksman_fire -> expire();
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
-      hunter_ranged_attack_t::impact_s( s );
+      hunter_ranged_attack_t::impact( s );
 
       if ( s -> result == RESULT_CRIT )
         trigger_piercing_shots( this, s -> target, s -> result_amount );
@@ -1033,9 +1033,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
       trigger_piercing_shots( this, s -> target, s -> result_amount );
@@ -1054,9 +1054,9 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     direct_power_mod = 0.0483; // hardcoded into tooltip
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    hunter_ranged_attack_t::impact_s( state );
+    hunter_ranged_attack_t::impact( state );
     if ( result_is_hit( state -> result ) )
     {
       p() -> buffs.cobra_strikes -> trigger( 2 );
@@ -1236,9 +1236,9 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1277,9 +1277,9 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     return p() -> active_aspect == ASPECT_FOX;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1528,9 +1528,9 @@ struct multi_shot_t : public hunter_ranged_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1599,9 +1599,9 @@ struct steady_shot_t : public hunter_ranged_attack_t
     p() -> buffs.pre_steady_focus -> trigger( 1 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_ranged_attack_t::impact_s( s );
+    hunter_ranged_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2019,9 +2019,9 @@ struct hunters_mark_t : public hunter_spell_t
     background = ( sim -> overrides.ranged_vulnerability != 0 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_spell_t::impact_s( s );
+    hunter_spell_t::impact( s );
 
     if ( ! sim -> overrides.ranged_vulnerability )
       s -> target -> debuffs.ranged_vulnerability -> trigger();
@@ -2333,9 +2333,9 @@ struct hunter_pet_attack_t : public hunter_pet_action_t<attack_t>
     return h;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    base_t::impact_s( s );
+    base_t::impact( s );
   }
 };
 
@@ -2408,9 +2408,9 @@ struct basic_attack_t : public hunter_pet_attack_t
       p() -> buffs.frenzy -> trigger( 1 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_pet_attack_t::impact_s( s );
+    hunter_pet_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2608,9 +2608,9 @@ struct lightning_breath_t : public hunter_pet_spell_t
     background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_pet_spell_t::impact_s( s );
+    hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.magic_vulnerability )
       s -> target -> debuffs.magic_vulnerability -> trigger( 1, -1.0, -1.0, data().duration() );
@@ -2631,9 +2631,9 @@ struct corrosive_spit_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_pet_spell_t::impact_s( s );
+    hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
       s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );
@@ -2654,9 +2654,9 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_blows != 0 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_pet_spell_t::impact_s( s );
+    hunter_pet_spell_t::impact( s );
 
     // TODO: Is actually an aoe ability
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_blows )
@@ -2691,9 +2691,9 @@ struct tear_armor_t : public hunter_pet_spell_t
     background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    hunter_pet_spell_t::impact_s( s );
+    hunter_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
       s -> target -> debuffs.weakened_armor -> trigger( 1, -1.0, -1.0, data().duration() );

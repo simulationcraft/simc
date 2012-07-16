@@ -2008,9 +2008,9 @@ struct blood_plague_t : public death_knight_spell_t
     hasted_ticks     = false;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    death_knight_spell_t::impact_s( s );
+    death_knight_spell_t::impact( s );
 
     if ( ! sim -> overrides.weakened_blows && player -> specialization() == DEATH_KNIGHT_BLOOD &&
          result_is_hit( s -> result ) )
@@ -2265,7 +2265,7 @@ struct death_and_decay_t : public death_knight_spell_t
     hasted_ticks     = false;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -2273,7 +2273,7 @@ struct death_and_decay_t : public death_knight_spell_t
     }
     else
     {
-      death_knight_spell_t::impact_s( s );
+      death_knight_spell_t::impact( s );
     }
   }
 };
@@ -2413,9 +2413,9 @@ struct festering_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    death_knight_melee_attack_t::impact_s( s );
+    death_knight_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2444,9 +2444,9 @@ struct frost_fever_t : public death_knight_spell_t
     tick_power_mod   = 0.055 * 1.15;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    death_knight_spell_t::impact_s( s );
+    death_knight_spell_t::impact( s );
 
     if ( ! sim -> overrides.physical_vulnerability && player -> specialization() == DEATH_KNIGHT_FROST &&
          result_is_hit( s -> result ) )
@@ -2753,9 +2753,9 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
     extract_rune_cost( &data(), &cost_blood, &cost_frost, &cost_unholy );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    death_knight_melee_attack_t::impact_s( s );
+    death_knight_melee_attack_t::impact( s );
 
     if ( ! sim -> overrides.slowed_casting && result_is_hit( s -> result ) )
       s -> target -> debuffs.slowed_casting -> trigger();
@@ -2933,9 +2933,9 @@ struct pestilence_t : public death_knight_spell_t
       p -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    death_knight_spell_t::impact_s( s );
+    death_knight_spell_t::impact( s );
 
     // Doesn't affect the original target
     if ( s -> target == source )

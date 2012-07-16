@@ -949,7 +949,7 @@ void action_t::execute()
       if ( sim -> debug )
         s -> debug();
 
-      schedule_travel_s( s );
+      schedule_travel( s );
     }
   }
   else // single target
@@ -965,7 +965,7 @@ void action_t::execute()
     if ( sim -> debug )
       s -> debug();
 
-    schedule_travel_s( s );
+    schedule_travel( s );
   }
 
   consume_resource();
@@ -1898,7 +1898,7 @@ event_t* action_t::start_action_execute_event( timespan_t t )
   return new ( sim ) action_execute_event_t( sim, this, t );
 }
 
-void action_t::schedule_travel_s( action_state_t* s )
+void action_t::schedule_travel( action_state_t* s )
 {
   time_to_travel = travel_time();
 
@@ -1909,7 +1909,7 @@ void action_t::schedule_travel_s( action_state_t* s )
 
   if ( time_to_travel == timespan_t::zero() )
   {
-    impact_s( s );
+    impact( s );
     release_state( s );
   }
   else
@@ -1923,7 +1923,7 @@ void action_t::schedule_travel_s( action_state_t* s )
   }
 }
 
-void action_t::impact_s( action_state_t* s )
+void action_t::impact( action_state_t* s )
 {
   assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
 

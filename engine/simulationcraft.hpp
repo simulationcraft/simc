@@ -3977,8 +3977,8 @@ struct action_t : public noncopyable
   virtual action_state_t* new_state();
   virtual action_state_t* get_state( const action_state_t* = 0 );
   virtual void release_state( action_state_t* );
-  virtual void schedule_travel_s( action_state_t* );
-  virtual void impact_s( action_state_t* );
+  virtual void schedule_travel( action_state_t* );
+  virtual void impact( action_state_t* );
 
   virtual void   snapshot_state( action_state_t*, uint32_t );
 
@@ -4209,7 +4209,7 @@ struct absorb_t : public spell_base_t
 
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
-  virtual void impact_s( action_state_t* );
+  virtual void impact( action_state_t* );
 
   virtual double composite_da_multiplier()
   {
@@ -4732,11 +4732,11 @@ struct pct_based_action_t : public Base
     ab::dot_behavior  = DOT_REFRESH;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     double saved_impact_dmg = s -> result_amount;
     s -> result_amount = 0;
-    ab::impact_s( s );
+    ab::impact( s );
 
     dot_t* dot = ab::get_dot();
     ab::base_td = saved_impact_dmg / dot -> ticks();

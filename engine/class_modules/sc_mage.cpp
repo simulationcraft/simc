@@ -345,9 +345,9 @@ struct water_elemental_pet_t : public pet_t
       may_crit = true;
     }
 
-    virtual void impact_s( action_state_t* s )
+    virtual void impact( action_state_t* s )
     {
-      spell_t::impact_s( s );
+      spell_t::impact( s );
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
@@ -869,9 +869,9 @@ struct mage_spell_t : public spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    spell_t::impact_s( s );
+    spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1226,9 +1226,9 @@ struct blizzard_shard_t : public mage_spell_t
     background = true;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1550,9 +1550,9 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     trigger_ignite( this, s );
   }
@@ -1753,9 +1753,9 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1808,9 +1808,9 @@ struct frozen_orb_t : public mage_spell_t
     add_child( bolt );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
   }
@@ -1973,9 +1973,9 @@ struct inferno_blast_t : public mage_spell_t
     cooldown = p -> cooldowns.inferno_blast;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     trigger_ignite( this, s );
   }
@@ -2013,9 +2013,9 @@ struct living_bomb_explosion_t : public mage_spell_t
   virtual resource_e current_resource()
   { return RESOURCE_NONE; }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    spell_t::impact_s( s );
+    spell_t::impact( s );
     // FIXME: Is this still true?
     // Explosion doesn't trigger ignite
   }
@@ -2281,9 +2281,9 @@ struct pyroblast_t : public mage_spell_t
     p() -> buffs.pyroblast -> expire();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     trigger_ignite( this, s );
 
@@ -2359,9 +2359,9 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact_s( s );
+    mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {

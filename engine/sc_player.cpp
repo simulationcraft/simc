@@ -497,7 +497,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
         s -> result = RESULT_HIT;
         action -> snapshot_state( s, action -> snapshot_flags );
         s -> result_amount = new_total_ignite_dmg;
-        action -> schedule_travel_s( s );
+        action -> schedule_travel( s );
         action -> stats -> add_execute( timespan_t::zero() );
       }
     }

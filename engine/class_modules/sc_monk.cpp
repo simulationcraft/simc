@@ -164,7 +164,7 @@ public:
   // Options
   int initial_chi;
 private:
-  target_specific_t<monk_td_t> target_data;
+  mutable target_specific_t<monk_td_t> target_data;
 public:
   monk_t( sim_t* sim, const std::string& name, race_e r = RACE_PANDAREN ) :
     player_t( sim, MONK, name, r ),
@@ -204,10 +204,10 @@ public:
   virtual role_e    primary_role();
   virtual void      pre_analyze_hook();
 
-  virtual monk_td_t* get_target_data( player_t* target )
+  virtual monk_td_t* get_target_data( player_t* target ) const
   {
     monk_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new monk_td_t( target, this );
+    if ( ! td ) td = new monk_td_t( target, const_cast<monk_t*>( this ) );
     return td;
   }
 
@@ -473,9 +473,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     base_multiplier = 3.0; // hardcoded into tooltip
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    monk_melee_attack_t::impact_s( s );
+    monk_melee_attack_t::impact( s );
 
     td( s -> target ) -> buff.tiger_palm -> trigger();
     // will this top you from using the proc if you can't afford the ability?
@@ -586,9 +586,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
 //TEST: Mortal Wounds - ADD Later
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    monk_melee_attack_t::impact_s( s );
+    monk_melee_attack_t::impact( s );
 
     td( s -> target ) -> buff.rising_sun_kick -> trigger();
   }
@@ -789,9 +789,9 @@ struct melee_t : public monk_melee_attack_t
     assert( tsproc );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    monk_melee_attack_t::impact_s( s );
+    monk_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       p() -> buff.tiger_strikes -> trigger( 4 );
@@ -1072,9 +1072,9 @@ struct enveloping_mist_t : public monk_heal_t
     stancemask = STANCE_WISE_SERPENT;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    monk_heal_t::impact_s( s );
+    monk_heal_t::impact( s );
 
     td( s -> target ) -> buff.enveloping_mist -> trigger();
   }

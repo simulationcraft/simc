@@ -457,7 +457,7 @@ struct shaman_melee_attack_t : public shaman_action_t<melee_attack_t>
   }
 
   virtual void execute();
-  virtual void impact_s( action_state_t* );
+  virtual void impact( action_state_t* );
   virtual double cost();
   virtual double cost_reduction();
 };
@@ -520,7 +520,7 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
   virtual void   consume_resource();
   virtual timespan_t execute_time();
   virtual void   execute();
-  virtual void   impact_s( action_state_t* );
+  virtual void   impact( action_state_t* );
   virtual void   schedule_execute();
   virtual bool   usable_moving()
   {
@@ -601,7 +601,7 @@ struct eoe_execute_event_t : public event_t
                                                               ss -> target );
 
     spell -> eoe_stats -> add_execute( timespan_t::zero() );
-    spell -> schedule_travel_s( ss );
+    spell -> schedule_travel( ss );
   }
 };
 
@@ -635,9 +635,9 @@ struct feral_spirit_pet_t : public pet_t
         stats = first_pet -> find_stats( name() );
     }
 
-    virtual void impact_s( action_state_t* state )
+    virtual void impact( action_state_t* state )
     {
-      melee_attack_t::impact_s( state );
+      melee_attack_t::impact( state );
 
       if ( result_is_hit( state -> result ) )
       {
@@ -926,9 +926,9 @@ struct fire_elemental_t : public pet_t
         melee_attack_t::execute();
     }
 
-    virtual void impact_s( action_state_t* state )
+    virtual void impact( action_state_t* state )
     {
-      melee_attack_t::impact_s( state );
+      melee_attack_t::impact( state );
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( result_is_hit( state -> result ) && p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
@@ -1210,7 +1210,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
     // Impact on any target triggers a flame shock; for now, cache the
     // relevant parts of the spell and return them after execute has finished
-    void impact_s( action_state_t* state )
+    void impact( action_state_t* state )
     {
       if ( sim -> debug )
         sim -> output( "%s spreads Flame Shock (off of %s) on %s",
@@ -1350,9 +1350,9 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     }
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       trigger_rolling_thunder( this );
@@ -1382,9 +1382,9 @@ struct chain_lightning_overload_t : public shaman_spell_t
     }
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       trigger_rolling_thunder( this );
@@ -1420,9 +1420,9 @@ struct lava_beam_overload_t : public shaman_spell_t
     return m;
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
       trigger_rolling_thunder( this );
@@ -1532,9 +1532,9 @@ struct unleash_flame_t : public shaman_spell_t
     }
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) && p() -> talent.unleashed_fury -> ok() )
       td( state -> target ) -> debuffs_unleashed_fury -> trigger();
@@ -1670,9 +1670,9 @@ struct windlash_t : public shaman_melee_attack_t
     shaman_melee_attack_t::execute();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_melee_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
       trigger_static_shock( this );
@@ -1692,9 +1692,9 @@ void shaman_melee_attack_t::execute()
   p() -> buff.spiritwalkers_grace -> up();
 }
 
-void shaman_melee_attack_t::impact_s( action_state_t* state )
+void shaman_melee_attack_t::impact( action_state_t* state )
 {
-  base_t::impact_s( state );
+  base_t::impact( state );
 
   if ( result_is_hit( state -> result ) && ! proc )
   {
@@ -1786,9 +1786,9 @@ struct melee_t : public shaman_melee_attack_t
     shaman_melee_attack_t::execute();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_melee_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
       trigger_static_shock( this );
@@ -1889,9 +1889,9 @@ struct lava_lash_t : public shaman_melee_attack_t
     return m;
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_melee_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -1918,9 +1918,9 @@ struct primal_strike_t : public shaman_melee_attack_t
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_melee_attack_t::impact_s( state );
+    shaman_melee_attack_t::impact( state );
     if ( result_is_hit( state -> result ) )
       trigger_static_shock( this );
   }
@@ -1959,11 +1959,11 @@ struct stormstrike_t : public shaman_melee_attack_t
     }
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
     // are handled by stormstrike_melee_attack_t
-    melee_attack_t::impact_s( state );
+    melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2020,11 +2020,11 @@ struct stormblast_t : public shaman_melee_attack_t
     }
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
     // are handled by stormstrike_melee_attack_t
-    melee_attack_t::impact_s( state );
+    melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2174,7 +2174,7 @@ void shaman_spell_t::execute()
 
 // shaman_spell_t::impact ==================================================
 
-void shaman_spell_t::impact_s( action_state_t* state )
+void shaman_spell_t::impact( action_state_t* state )
 {
   shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( state );
 
@@ -2183,12 +2183,12 @@ void shaman_spell_t::impact_s( action_state_t* state )
     stats_t* tmp_stats = stats;
     stats = eoe_stats;
     is_dtr_action = true;
-    spell_t::impact_s( state );
+    spell_t::impact( state );
     is_dtr_action = false;
     stats = tmp_stats;
   }
   else
-    base_t::impact_s( state );
+    base_t::impact( state );
 
   // Triggers wont happen for procs or totems
   if ( proc || ! callbacks )
@@ -2312,9 +2312,9 @@ struct chain_lightning_t : public shaman_spell_t
     p() -> buff.maelstrom_weapon -> expire();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2389,9 +2389,9 @@ struct lava_beam_t : public shaman_spell_t
     return m;
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2554,7 +2554,7 @@ struct fire_nova_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
     explosion -> emit_target = state -> target;
     explosion -> execute();
@@ -2690,9 +2690,9 @@ struct lava_burst_t : public shaman_spell_t
     return shaman_spell_t::execute_time();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2777,9 +2777,9 @@ struct lightning_bolt_t : public shaman_spell_t
     return cr;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2849,9 +2849,9 @@ struct elemental_blast_t : public shaman_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -2926,9 +2926,9 @@ struct thunderstorm_t : public shaman_spell_t
                             player -> glyph.thunderstorm -> effectN( 1 ).percent();
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     player -> resource_gain( data().effectN( 2 ).resource_gain_type(),
                              player -> resources.max[ data().effectN( 2 ).resource_gain_type() ] * bonus,
@@ -3075,9 +3075,9 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* state )
+  virtual void impact( action_state_t* state )
   {
-    shaman_spell_t::impact_s( state );
+    shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -3457,9 +3457,9 @@ struct searing_totem_pulse_t : public totem_pulse_action_t
     base_dd_max += 10;
   }
 
-  void impact_s( action_state_t* state )
+  void impact( action_state_t* state )
   {
-    totem_pulse_action_t::impact_s( state );
+    totem_pulse_action_t::impact( state );
     
     if ( result_is_hit( state -> result ) )
     {

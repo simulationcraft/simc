@@ -1385,9 +1385,9 @@ struct colossus_smash_t : public warrior_attack_t
     // armor_pen_value = base_value( E_APPLY_AURA, A_345 ) / 100.0;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     if ( result_is_hit( s -> result) )
     {
@@ -1452,9 +1452,9 @@ struct devastate_t : public warrior_attack_t
     }*/
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     if ( ! sim -> overrides.weakened_blows )
       s -> target -> debuffs.weakened_blows -> trigger();
@@ -1707,9 +1707,9 @@ struct mortal_strike_t : public warrior_attack_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     if ( sim -> overrides.mortal_wounds && result_is_hit( s -> result ) )
       s -> target -> debuffs.mortal_wounds -> trigger();
@@ -2021,9 +2021,9 @@ struct revenge_t : public warrior_attack_t
     trigger_sword_and_board( cast(), execute_state );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     warrior_t* p = cast();
 
@@ -2065,9 +2065,9 @@ struct shattering_throw_t : public warrior_attack_t
     stancemask = STANCE_BATTLE;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       s -> target -> debuffs.shattering_throw -> trigger();
@@ -2345,9 +2345,9 @@ struct sunder_armor_t : public warrior_attack_t
     // TODO: Glyph of Sunder armor applies affect to nearby target
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warrior_attack_t::impact_s( s );
+    warrior_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {

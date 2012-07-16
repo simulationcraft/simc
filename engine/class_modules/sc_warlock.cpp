@@ -823,9 +823,9 @@ struct wild_firebolt_t : public warlock_pet_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_pet_spell_t::impact_s( s );
+    warlock_pet_spell_t::impact( s );
 
     if ( result_is_hit( s -> result )
          && p() -> o() -> spec.molten_core -> ok()
@@ -1514,7 +1514,7 @@ public:
     spell_t::last_tick( d );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     dot_t* dot;
     bool start_extra_ticks = false;
@@ -1524,7 +1524,7 @@ public:
       if ( ! dot -> ticking ) start_extra_ticks = true;
     }
 
-    spell_t::impact_s( s );
+    spell_t::impact( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
 
@@ -1831,9 +1831,9 @@ struct shadow_bolt_t : public warlock_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -1902,9 +1902,9 @@ struct shadowburn_t : public warlock_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     mana_event = new ( sim ) mana_event_t( p(), this );
   }
@@ -2091,9 +2091,9 @@ struct drain_soul_t : public warlock_spell_t
     consume_tick_resource( d );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2145,9 +2145,9 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2218,9 +2218,9 @@ struct immolate_t : public warlock_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
   }
@@ -2287,9 +2287,9 @@ struct conflagrate_t : public warlock_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
@@ -2343,9 +2343,9 @@ struct incinerate_t : public warlock_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate  );
 
@@ -2411,9 +2411,9 @@ struct soul_fire_t : public warlock_spell_t
       p() -> buffs.molten_core -> trigger();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
@@ -2770,7 +2770,7 @@ struct shadowflame_t : public warlock_spell_t
     return warlock_spell_t::calculate_tick_damage( r, p, m, t ) * td( t ) -> shadowflame_stack;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -2780,7 +2780,7 @@ struct shadowflame_t : public warlock_spell_t
         td( s -> target ) -> shadowflame_stack = 1;
     }
 
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
   }
 };
 
@@ -2848,9 +2848,9 @@ struct hand_of_guldan_t : public warlock_spell_t
     return r;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2911,9 +2911,9 @@ struct chaos_wave_t : public warlock_spell_t
     return r;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2946,9 +2946,9 @@ struct touch_of_chaos_t : public warlock_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2994,9 +2994,9 @@ struct fel_flame_t : public warlock_spell_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
 
@@ -3061,9 +3061,9 @@ struct void_ray_t : public warlock_spell_t
     return m;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3259,9 +3259,9 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
     corruption -> base_costs[ RESOURCE_MANA ] = 0;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     corruption -> target = s -> target;
     corruption -> execute();
@@ -3280,9 +3280,9 @@ struct soulburn_seed_of_corruption_t : public warlock_spell_t
     tick_power_mod = 0.3;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * coefficient;
@@ -3306,9 +3306,9 @@ struct seed_of_corruption_t : public warlock_spell_t
     soulburn_spell -> stats = stats;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * data().effectN( 3 ).coeff();
@@ -3342,9 +3342,9 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     background  = true;
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_immolate -> ticking )
       trigger_ember_gain( p(), 0.1, p() -> gains.rain_of_fire, parent_data.effectN( 2 ).percent() );
@@ -3403,9 +3403,9 @@ struct hellfire_tick_t : public warlock_spell_t
   }
 
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, 2, gain );
@@ -3500,13 +3500,13 @@ struct immolation_aura_t : public warlock_spell_t
     event_t::cancel( cost_event );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     dot_t* d = get_dot();
     bool add_ticks = ( d -> ticking > 0 ) ? true : false;
     int remaining_ticks = d -> num_ticks - d -> current_tick;
 
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3988,9 +3988,9 @@ struct harvest_life_tick_t : public warlock_spell_t
     warlock_spell_t::execute();
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     heal -> perform( main_target == target );
 
@@ -4052,9 +4052,9 @@ struct mortal_coil_t : public warlock_spell_t
     heal = new mortal_coil_heal_t( p, data() );
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
-    warlock_spell_t::impact_s( s );
+    warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
       heal -> execute();

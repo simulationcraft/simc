@@ -567,7 +567,7 @@ struct rogue_melee_attack_t : public melee_attack_t
 
   // Combo points need to be snapshot before we travel, they should also not
   // be snapshot during any other event in the stateless system.
-  void schedule_travel_s( action_state_t* travel_state )
+  void schedule_travel( action_state_t* travel_state )
   {
     if ( result_is_hit( travel_state -> result ) )
     {
@@ -575,7 +575,7 @@ struct rogue_melee_attack_t : public melee_attack_t
       ds_ -> combo_points = td( travel_state -> target ) -> combo_points -> count;
     }
 
-    melee_attack_t::schedule_travel_s( travel_state );
+    melee_attack_t::schedule_travel( travel_state );
   }
 };
 
@@ -2146,14 +2146,14 @@ struct rupture_t : public rogue_melee_attack_t
     }
   }
 
-  virtual void impact_s( action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     rogue_t* p = cast();
 
     if ( result_is_hit( s -> result ) )
       num_ticks = 3 + combo_points_spent + ( int )( p -> glyphs.rupture -> mod_additive_time( P_DURATION ) / base_tick_time );
 
-    rogue_melee_attack_t::impact_s( s );
+    rogue_melee_attack_t::impact( s );
   }
 
   virtual double action_multiplier() const
