@@ -3917,7 +3917,7 @@ struct ascendance_buff_t : public buff_t
 
 struct haste_buff_t : public buff_t
 {
-  haste_buff_t( const buff_creator_t& creator ) :
+  haste_buff_t( buff_creator_t creator ) :
     buff_t( creator )
   { }
 

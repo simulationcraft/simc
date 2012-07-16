@@ -75,12 +75,14 @@ public:
     buff_t* judgments_of_the_pure;
     buff_t* judgments_of_the_wise;
     buff_t* sacred_duty;
+    buff_t* glyph_of_word_of_glory;
   } buffs;
 
   // Gains
   struct gains_t
   {
     gain_t* divine_plea;
+    gain_t* extra_regen;
     gain_t* judgments_of_the_wise;
     gain_t* sanctuary;
     gain_t* seal_of_command_glyph;
@@ -129,6 +131,7 @@ public:
     const spell_data_t* vengeance;
     const spell_data_t* the_art_of_war;
     const spell_data_t* sanctity_of_battle;
+    const spell_data_t* seal_of_insight;
   } passives;
 
   // Pets
@@ -149,6 +152,7 @@ public:
   {
     const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
+    const spell_data_t* glyph_of_word_of_glory_damage;
   } spells;
 
   // Talents
@@ -160,14 +164,15 @@ public:
   // Glyphs
   struct glyphs_t
   {
-    const spell_data_t* ascetic_crusader;
     const spell_data_t* blessed_life;
     const spell_data_t* divine_protection;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
     const spell_data_t* exorcism;
+    const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
+    const spell_data_t* word_of_glory;
   } glyphs;
 private:
   target_specific_t<paladin_td_t> target_data;
@@ -177,6 +182,7 @@ public:
 
   bool bok_up;
   bool bom_up;
+  timespan_t last_extra_regen;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
@@ -187,7 +193,8 @@ public:
     procs( procs_t() ),
     spells( spells_t() ),
     talents( talents_t() ),
-    glyphs( glyphs_t() )
+    glyphs( glyphs_t() ),
+    last_extra_regen( timespan_t::from_seconds( 0.0 ) )
   {
     target_data.init( "target_data", this );
 
@@ -234,6 +241,7 @@ public:
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
+  virtual double    composite_spell_haste();
   virtual double    composite_tank_block();
   virtual double    composite_tank_crit( school_e school );
   virtual void      create_options();
@@ -278,6 +286,7 @@ public:
     switch ( specialization() )
     {
     case SPEC_NONE: break;
+    case PALADIN_RETRIBUTION: return "harsh_words,word_of_glory";
     default: break;
     }
 
@@ -316,7 +325,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       background = true;
       repeating  = true;
       trigger_gcd = timespan_t::zero();
-
+      direct_power_mod = 0.76338;
       owner = p -> o();
     }
 
@@ -335,8 +344,10 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg = util::ability_rank( p -> level, 5840.0,85, 1.0,0 ); // TODO
-    main_hand_weapon.max_dmg = util::ability_rank( p -> level, 7557.0,85, 1.0,0 ); // TODO
+    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level ) * 6.34396;
+    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level ) * 6.34396;
+    main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    owner_coeff.ap_from_ap = 1.0;
   }
 
   paladin_t* o()
@@ -535,6 +546,9 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     if ( p() -> buffs.divine_shield -> up() )
       am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
 
+    if ( p() -> buffs.glyph_of_word_of_glory -> up() )
+      am *= 1.0 + p() -> buffs.glyph_of_word_of_glory -> value();
+
     return am;
   }
 };
@@ -557,6 +571,9 @@ struct paladin_spell_t : public paladin_action_t<spell_t>
 
     if ( p() -> buffs.divine_shield -> up() )
       am *= 1.0 + p() -> buffs.divine_shield -> data().effectN( 1 ).percent();
+
+    if ( p() -> buffs.glyph_of_word_of_glory -> up() )
+      am *= 1.0 + p() -> buffs.glyph_of_word_of_glory -> value();
 
     return am;
   }
@@ -903,15 +920,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
 
-  virtual double cost()
-  {
-    double m = paladin_melee_attack_t::cost();
-
-    m *= 1.0 + p() -> glyphs.ascetic_crusader -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
@@ -1002,7 +1010,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     may_miss  = false;
     background = true;
     aoe       = -1;
-    use_spell_haste = p -> passives.sword_of_light -> ok() && p -> passives.sanctity_of_battle -> ok();
+    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION ) 
+                      && p -> passives.sanctity_of_battle -> ok();
 
     direct_power_mod = data().extra_coeff();
   }
@@ -1017,7 +1026,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = p -> passives.sword_of_light -> ok() && p -> passives.sanctity_of_battle -> ok();
+    use_spell_haste = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION ) 
+                      && p -> passives.sanctity_of_battle -> ok();
     trigger_seal_of_righteousness = true;
     proc = new hammer_of_the_righteous_aoe_t( p );
   }
@@ -1429,15 +1439,6 @@ struct judgment_t : public paladin_melee_attack_t
     old_target = 0;
   }
 
-  virtual double cost()
-  {
-    double m = paladin_melee_attack_t::cost();
-
-    m *= 1.0 + p() -> glyphs.ascetic_crusader -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
@@ -1630,7 +1631,6 @@ struct consecration_tick_t : public paladin_spell_t
     may_crit    = true;
     may_miss    = true;
     hasted_ticks = false;
-
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
@@ -1650,7 +1650,6 @@ struct consecration_t : public paladin_spell_t
     may_miss       = false;
     num_ticks      = 10;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-
     tick_spell = new consecration_tick_t( p );
   }
 
@@ -1931,6 +1930,40 @@ struct inquisition_t : public paladin_spell_t
     paladin_spell_t::execute();
   }
 };
+
+// Word of Glory Damage Spell ======================================================
+
+struct word_of_glory_damage_t : public paladin_spell_t
+{
+  word_of_glory_damage_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "word_of_glory_damage", p, 
+      ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() ) 
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = paladin_spell_t::action_multiplier();
+
+    am *= p() -> holy_power_stacks();
+
+    return am;
+  }
+
+  virtual void execute()
+  {
+    double hopo = p() -> holy_power_stacks();
+
+    paladin_spell_t::execute();
+
+    if ( p() -> spells.glyph_of_word_of_glory_damage -> ok() )
+    {
+      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory_damage -> effectN( 1 ).percent() * hopo );
+    }
+  }
+};
+
 
 // ==========================================================================
 // Paladin Heals
@@ -2252,6 +2285,19 @@ struct word_of_glory_t : public paladin_heal_t
 
     return am;
   }
+
+  virtual void execute()
+  {
+    double hopo = p() -> holy_power_stacks();
+
+    paladin_heal_t::execute();
+
+    if ( p() -> spells.glyph_of_word_of_glory_damage -> ok() )
+    {
+      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory_damage -> effectN( 1 ).percent() * hopo );
+    }
+  }
+
 };
 
 // ==========================================================================
@@ -2306,6 +2352,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
                                                active_seal_of_truth_dot          = new seal_of_truth_dot_t          ( this ); return a; }
 
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
+  if ( name == "word_of_glory_damage"      ) return new word_of_glory_damage_t     ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "divine_light"              ) return new divine_light_t             ( this, options_str );
@@ -2371,6 +2418,7 @@ void paladin_t::reset()
   active_seal = SEAL_NONE;
   bok_up      = false;
   bom_up      = false;
+  last_extra_regen = timespan_t::from_seconds( 0.0 );
 }
 
 // paladin_t::init_gains ====================================================
@@ -2380,6 +2428,7 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   gains.divine_plea                 = get_gain( "divine_plea"            );
+  gains.extra_regen                 = get_gain( "extra_regen"            );
   gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
   gains.sanctuary                   = get_gain( "sanctuary"              );
   gains.seal_of_command_glyph       = get_gain( "seal_of_command_glyph"  );
@@ -2524,6 +2573,8 @@ void paladin_t::init_buffs()
   buffs.glyph_exorcism         = buff_creator_t( this, "glyph_exorcism", glyphs.exorcism )
                                  .duration( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                  .default_value( find_spell( glyphs.exorcism -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
+
+  buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
@@ -2843,11 +2894,12 @@ void paladin_t::init_spells()
   passives.boundless_conviction   = find_spell( 115675 ); // find_specialization_spell( "Boundless Conviction" ); FIX-ME: (not in our spell lists for some reason)
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
   passives.sanctity_of_battle     = find_spell( 25956 ); // FIX-ME: find_specialization_spell( "Sanctity of Battle" )   (not in spell lists yet)
+  passives.seal_of_insight        = find_class_spell( "Seal of Insight" );
 
   // Holy Passives
 
   // Prot Passives
-  passives.judgments_of_the_wise = find_specialization_spell( "judgments of the Wise" );
+  passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance.enabled = true;
@@ -2859,16 +2911,19 @@ void paladin_t::init_spells()
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
-
+  
   // Glyphs
-  glyphs.ascetic_crusader         = find_glyph_spell( "Glyph of the Ascetic Crusader" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
   glyphs.exorcism                 = find_glyph_spell( "Glyph of Exorcism" );
+  glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
+  glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
+
+  spells.glyph_of_word_of_glory_damage = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
@@ -3029,6 +3084,21 @@ double paladin_t::composite_spell_power_multiplier()
   return player_t::composite_spell_power_multiplier();
 }
 
+
+// paladin_t::composite_spell_haste ==============================
+
+double paladin_t::composite_spell_haste()
+{
+  double m = player_t::composite_spell_haste();
+
+  if ( active_seal == SEAL_OF_INSIGHT )
+  {
+    m /= ( 1.0 + passives.seal_of_insight -> effectN( 3 ).percent() );
+  }
+
+  return m;
+}
+
 // paladin_t::composite_tank_block ==========================================
 
 double paladin_t::composite_tank_block()
@@ -3079,6 +3149,19 @@ void paladin_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
+  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
+  {
+    const timespan_t period = timespan_t::from_seconds( 1.5 );
+    last_extra_regen += periodicity;
+    while ( last_extra_regen >= period )
+    {
+      double amount = resources.max[ RESOURCE_MANA ] * 0.05;
+
+      resource_gain( RESOURCE_MANA, amount, gains.extra_regen );
+
+      last_extra_regen -= period;
+    }
+  }
 
   if ( buffs.divine_plea -> up() )
   {
@@ -3142,15 +3225,6 @@ void paladin_t::assess_damage( school_e school,
         main_hand_attack -> reschedule_execute( std::min( ( 0.40 * swing_time ), max_reschedule ) );
         procs.parry_haste -> occur();
       }
-    }
-  }
-
-  if ( ( dtype == DMG_DIRECT ) && glyphs.ascetic_crusader -> ok() )
-  {
-    if ( ! buffs.blessed_life -> up() )
-    {
-      resource_gain( RESOURCE_HOLY_POWER, 1, gains.hp_blessed_life );
-      buffs.blessed_life -> trigger();
     }
   }
 

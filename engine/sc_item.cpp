@@ -1445,13 +1445,10 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
   bool success = false;
   if ( cache::items() != cache::CURRENT )
   {
-    bool has_local = false;
-
-    // Check data source caches, except local
     for ( unsigned i = 0; ! success && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "local" )
-        has_local = true;
+        success = item_database::download_item( item, item_id );
       else if ( source_list[ i ] == "wowhead" )
         success = wowhead::download_item( item, item_id, false, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
@@ -1461,9 +1458,6 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       else if ( source_list[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, item_id, cache::ONLY );
     }
-
-    if ( ! success && has_local )
-      success = item_database::download_item( item, item_id );
   }
 
   if ( cache::items() != cache::ONLY )
@@ -1493,14 +1487,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 
   if ( cache::items() != cache::CURRENT )
   {
-    bool has_local = false;
-
-    // Check data source caches, except local
     for ( unsigned i = 0; ! success && i < player -> sim -> item_db_sources.size(); i++ )
     {
       const std::string& src = player -> sim -> item_db_sources[ i ];
       if ( src == "local" )
-        has_local = true;
+        success = item_database::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "wowhead" )
         success = wowhead::download_glyph( player, glyph_name, glyph_id, false, cache::ONLY );
       else if ( src == "ptrhead" )
@@ -1510,9 +1501,6 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
     }
-
-    if ( ! success && has_local )
-      success = item_database::download_glyph( player, glyph_name, glyph_id );
   }
 
   if ( cache::items() != cache::ONLY )
