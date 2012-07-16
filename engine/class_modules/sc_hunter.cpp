@@ -1461,7 +1461,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
       double t = ( p() -> specs.improved_serpent_sting -> effectN( 1 ).percent() ) *
-                 ( ceil( base_td ) * hasted_num_ticks( composite_haste() ) + total_power() * 0.4 );
+                 ( ceil( base_td ) * hasted_num_ticks( execute_state -> haste ) + execute_state -> attack_power * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;
@@ -1501,7 +1501,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     if ( serpent_sting_burst && p() -> specs.improved_serpent_sting -> ok() )
     {
       double t = ( p() -> specs.improved_serpent_sting -> effectN( 1 ).percent() ) *
-                 ( ceil( base_td ) * 5 + total_power() * 0.4 );
+                 ( ceil( base_td ) * 5 + execute_state -> attack_power * 0.4 );
 
       serpent_sting_burst -> base_dd_min = t;
       serpent_sting_burst -> base_dd_max = t;

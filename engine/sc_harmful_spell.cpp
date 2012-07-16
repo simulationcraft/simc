@@ -40,22 +40,6 @@ spell_t::spell_t( const std::string&  token,
   }
 }
 
-// spell_t::target_debuff ===================================================
-
-void spell_t::target_debuff( player_t* t, dmg_e type )
-{
-  spell_base_t::target_debuff( t, type );
-
-  if ( ! no_debuffs )
-  {
-    target_crit += target -> composite_spell_crit_vulnerability();
-  }
-
-  if ( sim -> debug )
-    sim -> output( "spell_t::target_debuff: %s multiplier=%.2f hit=%.2f crit=%.2f",
-                   name(), target_multiplier, target_hit, target_crit );
-}
-
 // spell_t::miss_chance =====================================================
 
 double spell_t::miss_chance( double hit, int delta_level )

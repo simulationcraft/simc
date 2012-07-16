@@ -1966,6 +1966,11 @@ struct blood_boil_t : public death_knight_spell_t
 
   virtual void execute()
   {
+    death_knight_td_t* td = cast_td( target );
+
+    base_dd_adder = td -> diseases() ? 95 : 0;
+    direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
+
     death_knight_spell_t::execute();
 
     death_knight_t* p = cast();
@@ -1975,16 +1980,6 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p -> buffs.crimson_scourge -> up() )
       p -> buffs.crimson_scourge -> expire();
-  }
-
-  virtual void target_debuff( player_t* t, dmg_e dtype )
-  {
-    death_knight_spell_t::target_debuff( t, dtype );
-
-    death_knight_td_t* td = cast_td( t );
-
-    base_dd_adder = td -> diseases() ? 95 : 0;
-    direct_power_mod = 0.08 + ( td -> diseases() ? 0.035 : 0 );
   }
 
   virtual bool ready()
@@ -4019,12 +4014,14 @@ void death_knight_t::init_enchant()
       proc        = true;
     }
 
-    void target_debuff( player_t* t, dmg_e dtype )
+    virtual double composite_target_multiplier( player_t* t )
     {
-      death_knight_spell_t::target_debuff( t, dtype );
+      double ctm = death_knight_spell_t::composite_target_multiplier( t );
       death_knight_t* p = cast();
 
-      target_multiplier /= 1.0 + p -> buffs.rune_of_razorice -> check() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
+      ctm /= 1.0 + p -> buffs.rune_of_razorice -> check() * p -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
+
+      return ctm;
     }
   };
 

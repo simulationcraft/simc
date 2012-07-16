@@ -304,15 +304,6 @@ melee_attack_t::melee_attack_t( const std::string&  n,
   if ( range < 0 ) range = 5;
 }
 
-// melee_attack_t::target_debuff ==================================================
-
-void melee_attack_t::target_debuff( player_t* t, dmg_e dt )
-{
-  attack_t::target_debuff( t, dt );
-
-  //target_expertise = 0;
-}
-
 // melee_attack_t::dodge_chance ===================================================
 
 double melee_attack_t::dodge_chance( double expertise, int delta_level )
@@ -352,22 +343,6 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
 
   if ( player -> position == POSITION_RANGED_FRONT )
     may_block = true;
-}
-
-void ranged_attack_t::target_debuff( player_t* t, dmg_e dt )
-{
-  attack_t::target_debuff( t, dt );
-
-  //target_expertise = 0;
-
-  if ( !no_debuffs )
-  {
-    target_multiplier       *= t -> composite_ranged_attack_player_vulnerability();
-  }
-
-  if ( sim -> debug )
-    sim -> output( "ranged_attack_t::target_debuff: %s mult=%.2f",
-                   name(), target_multiplier );
 }
 
 // ranged_attack_t::dodge_chance ===================================================

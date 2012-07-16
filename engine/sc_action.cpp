@@ -191,19 +191,13 @@ action_t::action_t( action_e       ty,
   base_hit                       = 0.0;
   base_crit                      = 0.0;
   rp_gain                        = 0.0;
-  target_multiplier              = 1.0;
-  target_hit                     = 0.0;
-  target_crit                    = 0.0;
   base_spell_power               = 0.0;
   base_attack_power              = 0.0;
-  target_spell_power             = 0.0;
-  target_attack_power            = 0.0;
   base_spell_power_multiplier    = 0.0;
   base_attack_power_multiplier   = 0.0;
   crit_multiplier                = 1.0;
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
-  target_dd_adder                = 0.0;
   base_ta_adder                  = 0.0;
   direct_dmg                     = 0.0;
   tick_dmg                       = 0.0;
@@ -593,36 +587,6 @@ timespan_t action_t::travel_time()
   return timespan_t::from_seconds( t );
 }
 
-// action_t::target_debuff ==================================================
-
-void action_t::target_debuff( player_t* t, dmg_e )
-{
-  target_multiplier            = 1.0;
-  target_hit                   = 0;
-  target_crit                  = 0;
-  target_attack_power          = 0;
-  target_spell_power           = 0;
-  target_dd_adder              = 0;
-
-  if ( ! no_debuffs )
-  {
-    target_multiplier *= t -> composite_player_vulnerability( school );
-  }
-
-  if ( sim -> debug )
-    sim -> output( "action_t::target_debuff: %s (target=%s) multiplier=%.2f hit=%.2f crit=%.2f attack_power=%.2f spell_power=%.2f",
-                   name(), t -> name(), target_multiplier, target_hit, target_crit, target_attack_power, target_spell_power );
-}
-
-// action_t::snapshot
-
-void action_t::snapshot()
-{
-  snapshot_crit    = total_crit();
-  snapshot_haste   = haste();
-  snapshot_mastery = player -> composite_mastery();
-}
-
 // action_t::result_is_hit ==================================================
 
 bool action_t::result_is_hit( result_e r )
@@ -699,18 +663,6 @@ double action_t::total_crit_bonus()
   return bonus;
 }
 
-// action_t::total_power ====================================================
-
-double action_t::total_power()
-{
-  double power=0;
-
-  if ( base_spell_power_multiplier  > 0 ) power += total_spell_power();
-  if ( base_attack_power_multiplier > 0 ) power += total_attack_power();
-
-  return power;
-}
-
 // action_t::calculate_weapon_damage ========================================
 
 double action_t::calculate_weapon_damage( double attack_power )
@@ -784,7 +736,7 @@ double action_t::calculate_direct_damage( result_e r, int chain_target, double a
   double base_direct_dmg = dmg;
   double weapon_dmg = 0;
 
-  dmg += base_dd_adder + target_dd_adder;
+  dmg += base_dd_adder;
 
   if ( weapon_multiplier > 0 )
   {
@@ -1078,7 +1030,7 @@ void action_t::tick( dot_t* d )
 {
   if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
-  if ( ! stateless ) // non-stateless
+  /*if ( ! stateless ) // non-stateless
   {
     result = RESULT_HIT;
 
@@ -1105,7 +1057,7 @@ void action_t::tick( dot_t* d )
     if ( harmful && callbacks ) action_callback_t::trigger( player -> callbacks.tick[ result ], this );
   }
   else // stateless
-  {
+  */{
     if ( tick_action )
     {
       assert( tick_action -> stateless );
@@ -1219,7 +1171,7 @@ void action_t::additional_damage( player_t*     t,
                                   dmg_e    type,
                                   result_e result )
 {
-  amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
+  //amount /= target_multiplier; // FIXME! Weak lip-service to the fact that the adds probably will not be properly debuffed.
   double dmg_adjusted = t -> assess_damage( amount, school, type, result, this );
   double actual_amount = std::min( dmg_adjusted, t -> resources.current[ current_resource() ] );
   stats -> add_result( actual_amount, amount, type, result );

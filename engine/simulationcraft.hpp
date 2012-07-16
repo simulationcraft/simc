@@ -3842,12 +3842,10 @@ struct action_t : public noncopyable
   double base_dd_min, base_dd_max, base_td, base_td_init;
   double   base_dd_multiplier,   base_td_multiplier;
   double   base_multiplier,   base_hit,   base_crit;
-  double target_multiplier, target_hit, target_crit;
   double   base_spell_power,   base_attack_power;
-  double target_spell_power, target_attack_power;
   double   base_spell_power_multiplier,   base_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
-  double base_dd_adder, target_dd_adder;
+  double base_dd_adder;
   double base_ta_adder;
   double direct_dmg, tick_dmg;
   double snapshot_crit, snapshot_haste, snapshot_mastery;
@@ -3906,8 +3904,6 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d=timespan_t::min() );
   virtual timespan_t travel_time();
   virtual void   player_tick() {}
-  virtual void   target_debuff( player_t* t, dmg_e );
-  virtual void   snapshot();
   virtual result_e calculate_result( double /* crit */, unsigned /* target_level */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual bool   result_is_hit ( result_e = RESULT_UNKNOWN );
   virtual bool   result_is_miss( result_e = RESULT_UNKNOWN );
@@ -3947,18 +3943,9 @@ struct action_t : public noncopyable
   virtual double  block_chance( int /* delta_level */ ) { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ );
 
-  virtual double total_multiplier() { return   base_multiplier * target_multiplier; }
-  virtual double total_crit()       { return   base_crit       + target_crit;       }
   virtual double total_crit_bonus();
 
-  virtual double total_spell_power()  { return util::round( ( base_spell_power  + target_spell_power  ) * base_spell_power_multiplier  ); }
-  virtual double total_attack_power() { return util::round( ( base_attack_power + target_attack_power ) * base_attack_power_multiplier ); }
-  virtual double total_power();
-
   // Some actions require different multipliers for the "direct" and "tick" portions.
-
-  virtual double total_dd_multiplier() { return total_multiplier() * base_dd_multiplier; }
-  virtual double total_td_multiplier() { return total_multiplier() * base_td_multiplier; }
 
   virtual double bonus_damage() { return base_dd_adder; }
 
@@ -4125,7 +4112,6 @@ struct melee_attack_t : public attack_t
   melee_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Melee Attack Overrides
-  virtual void   target_debuff( player_t* t, dmg_e );
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
@@ -4140,7 +4126,6 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual void   target_debuff( player_t* t, dmg_e );
 
   virtual double  dodge_chance( double /* expertise */, int delta_level );
   virtual double  parry_chance( double /* expertise */, int delta_level );
@@ -4178,7 +4163,6 @@ public:
   spell_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Harmful Spell Overrides
-  virtual void   target_debuff( player_t* t, dmg_e );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
 
