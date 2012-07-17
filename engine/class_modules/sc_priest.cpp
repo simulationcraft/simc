@@ -2092,24 +2092,40 @@ struct mind_sear_mastery_t : public priest_procced_mastery_spell_t
 
 struct mind_sear_tick_t : public priest_spell_t
 {
+  mind_sear_mastery_t* proc_spell;
+
   mind_sear_tick_t( priest_t* player ) :
-    priest_spell_t( "mind_sear_tick", player, player -> find_class_spell( "Mind Sear" ) -> effectN( 1 ).trigger() )
+    priest_spell_t( "mind_sear_tick", player, player -> find_class_spell( "Mind Sear" ) -> effectN( 1 ).trigger() ),
+    proc_spell( 0 )
   {
     background  = true;
     dual        = true;
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
+
+    if ( player -> mastery_spells.shadowy_recall -> ok() )
+    {
+      proc_spell = new mind_sear_mastery_t( player );
+    }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    priest_spell_t::impact( s );
+
+    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
+    {
+      proc_spell -> schedule_execute();
+    }
   }
 };
 
 struct mind_sear_t : public priest_spell_t
 {
-  mind_sear_mastery_t* proc_spell;
 
   mind_sear_t( priest_t* p, const std::string& options_str ) :
-    priest_spell_t( "mind_sear", p, p -> find_class_spell( "Mind Sear" ) ),
-    proc_spell( 0 )
+    priest_spell_t( "mind_sear", p, p -> find_class_spell( "Mind Sear" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2119,11 +2135,6 @@ struct mind_sear_t : public priest_spell_t
     dynamic_tick_action = true;
 
     tick_action = new mind_sear_tick_t( p );
-
-    if ( p -> mastery_spells.shadowy_recall -> ok() )
-    {
-      proc_spell = new mind_sear_mastery_t( p );
-    }
   }
 
   virtual void init()
@@ -2131,16 +2142,6 @@ struct mind_sear_t : public priest_spell_t
     priest_spell_t::init();
 
     tick_action -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    priest_spell_t::tick( d );
-
-    if ( proc_spell && p() -> rngs.mastery_extra_tick -> roll( p() -> shadowy_recall_chance() ) )
-    {
-      proc_spell -> schedule_execute();
-    }
   }
 };
 
@@ -4881,6 +4882,13 @@ void priest_t::init_actions()
       }
 
       add_action( "Vampiric Touch", "cycle_targets=1,max_cycle_targets=4,if=num_targets<=4&(!ticking|remains<cast_time+tick_time)&miss_react" );
+
+      if ( find_talent_spell( "Halo" ) -> ok() )
+        action_list_str += "/halo_damage";
+      else if ( find_talent_spell( "Cascade" ) -> ok() )
+        action_list_str += "/cascade_damage";
+      else if ( find_talent_spell( "Divine Star" ) -> ok() )
+        action_list_str += "/divine_star_damage";
 
       if ( find_talent_spell( "Mindbender" ) -> ok() )
         action_list_str += "/mindbender,if=cooldown_react";
