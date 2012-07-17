@@ -26,10 +26,10 @@ actions+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions+=/summon_felhunter,if=talent.grimoire_of_sacrifice.enabled&buff.grimoire_of_sacrifice.down
 actions+=/run_action_list,name=aoe,if=num_targets>3
 actions+=/summon_doomguard
+actions+=/soulburn,if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)
+actions+=/soul_swap,if=buff.soulburn.up
 actions+=/drain_soul,if=soul_shard=0,interrupt_if=soul_shard!=0
 actions+=/haunt,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time
-actions+=/soulburn,if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking
-actions+=/soul_swap,if=buff.soulburn.up
 actions+=/soul_swap,cycle_targets=1,if=num_targets>1&time<10
 actions+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&soul_shard>1
 actions+=/agony,cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react

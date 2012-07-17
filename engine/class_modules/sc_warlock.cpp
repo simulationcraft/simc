@@ -3408,7 +3408,7 @@ struct hellfire_tick_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 2, gain );
+      p() -> resource_gain( RESOURCE_DEMONIC_FURY, 3, gain );
   }
 };
 
@@ -4758,10 +4758,10 @@ void warlock_t::init_actions()
     {
 
     case WARLOCK_AFFLICTION:
+      add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)" );
+      add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
       add_action( "Haunt",                 "if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time" );
-      add_action( "Soulburn",              "if=!dot.agony.ticking&!dot.corruption.ticking&!dot.unstable_affliction.ticking" );
-      add_action( "Soul Swap",             "if=buff.soulburn.up" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&soul_shard>1" );
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );

@@ -283,8 +283,8 @@ void item_t::encode_options()
   o = encoded_name_str;
 
   if ( ! id_str.empty() && id_str[ 0 ] != 0 ) { o += ",id=";               o += id_str;                                           }
-  //if ( heroic()                             ) { encode_option( "heroic=1" );                                                      }
-  //if ( lfr()                                ) { encode_option( "lfr=1" );                                                         }
+  if ( heroic()                             ) { encode_option( "heroic=",  option_heroic_str,        encoded_heroic_str );        }
+  if ( lfr()                                ) { encode_option( "lfr=",     option_lfr_str,           encoded_lfr_str );           }
   if ( armor_type()                         ) { encode_option( "type=",    option_armor_type_str,    encoded_armor_type_str );    }
   if ( ! encoded_ilevel_str.empty()         ) { encode_option( "ilevel=",  option_ilevel_str,        encoded_ilevel_str );        }
   if ( ! encoded_quality_str.empty()        ) { encode_option( "quality=", option_quality_str,       encoded_quality_str );       }

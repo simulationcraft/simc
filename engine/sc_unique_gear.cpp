@@ -2352,7 +2352,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "varothens_brooch"                    ) e = "OnAttackHit_1149Mastery_20%_20Dur_45Cd";   // TO-DO: Confirm ICD. Min seen 50.192sec.
 
   // MoP
-  else if ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_120Cd";
+  else if ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
