@@ -3082,9 +3082,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     virtual double composite_target_multiplier( player_t* t )
     {
       // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
-      double ctm = 1.0;
-
-      ctm *= 1.0 + cast_td() -> diseases() * disease_coeff;
+      double ctm = cast_td( t ) -> diseases() * disease_coeff;
 
       if ( t -> debuffs.magic_vulnerability -> check() )
         ctm *= 1.0 + t -> debuffs.magic_vulnerability -> value();
@@ -3107,9 +3105,15 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) )
+
+    // The shadow damage is not 18% of the weapon damage per disease, it's 
+    // something close to 18% of the unmitigated physical damage, without any 
+    // sort of multipliers
+    if ( result_is_hit( s -> result ) && cast_td( s -> target ) -> diseases() > 0 )
     {
-      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = s -> result_amount;
+      double damage = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, 1.0, s -> target );
+
+      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = damage;
       scourge_strike_shadow -> execute();
     }
   }
