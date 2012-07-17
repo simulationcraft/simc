@@ -75,20 +75,28 @@ player_t* chardev::download_player( sim_t* sim,
 
   if ( sim -> debug ) js::print( profile_js, sim -> output_file );
 
-  std::string name_str, race_str, type_str;
+  std::string name_str, race_str, type_str, level_str;
+  uint32_t level;
 
   if ( ! js::get_value( name_str, profile_js, "0/0" ) )
     name_str = "chardev_" + id;
 
-  if ( ! js::get_value( race_str, profile_js, "0/2/1" ) ||
-       ! js::get_value( type_str, profile_js, "0/3/1" ) )
+  if ( ! js::get_value( race_str,  profile_js, "0/2/1" ) ||
+       ! js::get_value( type_str,  profile_js, "0/3/1" ) ||
+       ! js::get_value( level_str, profile_js, "0/4" ) )
   {
-    sim -> errorf( "Unable to extract player race/type from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
+    sim -> errorf( "Unable to extract player race/type/level from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
     return 0;
   }
 
   util::tokenize( type_str );
   util::tokenize( race_str );
+
+  if ( 1 != util::string_split( level_str, "", "i", &level ) )
+  {
+    sim -> errorf( "Unable to parse player level from CharDev id %s.\nThis is often caused by not saving the profile.\n", id.c_str() );
+    return 0;
+  }
 
   race_e race = util::parse_race_type( race_str );
   module_t* module = module_t::get( type_str );
@@ -108,14 +116,19 @@ player_t* chardev::download_player( sim_t* sim,
     return 0;
   }
 
+  p -> level = level;
+
   p -> origin_str = ( mop ? "http://mop.chardev.org/profile/" : "http://chardev.org/profile/" ) + id + '-' + name_str + ".html";
   http::format( p -> origin_str );
 
   js_node_t*        gear_root = js::get_child( profile_js, "1" );
+
   js_node_t*     talents_root = js::get_child( profile_js, "2" );
-/*
+
   js_node_t*      glyphs_root = js::get_child( profile_js, "3" );
-*/
+
+  js_node_t*        spec_root = js::get_child( profile_js, "4" );
+
   js_node_t* professions_root = js::get_child( profile_js, "5" );
 
   for ( int i=0; i < SLOT_MAX; i++ )
@@ -179,101 +192,115 @@ player_t* chardev::download_player( sim_t* sim,
   p -> items[ SLOT_RANGED ].armory_name_str.clear();
 
 
-  // FIX-ME: Temporary override until chardev profile updated for MoP
+
   std::string talent_encodings;
 
-  uint32_t maxv = 0;
-  uint32_t maxi = 0;
-  uint32_t v[ 3 ];
-  v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
-
-  std::vector<js_node_t*> talent_nodes;
-  int num_talents = js::get_children( talent_nodes, talents_root );
-  for ( int i=0; i < num_talents; i++ )
+  if ( mop )
   {
-    int ranks;
-    if ( js::get_value( ranks, talent_nodes[ i ] ) )
+    if ( ! js::get_value( talent_encodings, talents_root ) )
     {
-      v[ ( 3 * i ) / num_talents ] += ranks;
+      sim -> errorf( "\nTalent data is not available.\n" );
+      return 0;
     }
-  }
-  maxv = v[ 0 ];
-  for ( int i = 1; i < 3; i++ )
-  {
-    if ( v[ i ] >= maxv )
-    {
-      maxi = i;
-      maxv = v[ i ];
-    }
-  }
 
-  if ( maxv > 0 )
-  {
-    if ( p -> type == DRUID && maxi == 2 )
-      maxi = 3;
+    std::string spec_str;
+
+    if ( ! js::get_value( spec_str, spec_root ) )
+    {
+      sim -> errorf( "\nSpecialization is not available.\n" );
+      return 0;
+    } 
+
+    uint32_t maxi = 0;
+
+    if ( 1 != util::string_split( spec_str, " ", "i", &maxi ) )
+    {
+      sim -> errorf( "\nInvalid Specialization given.\n" );
+      return 0;
+    }
 
     p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
   }
-
-  if ( p -> _spec == DRUID_FERAL )
+  else
   {
-    int a;
+    // FIX-ME: Temporary override until chardev profile updated for MoP
+    uint32_t maxv = 0;
+    uint32_t maxi = 0;
+    uint32_t v[ 3 ];
+    v[ 0 ] = v[ 1 ] = v[ 2 ] = 0;
 
-    js::get_value( a, talent_nodes[ 30 ] );
-
-    if ( a > 0 )
+    std::vector<js_node_t*> talent_nodes;
+    int num_talents = js::get_children( talent_nodes, talents_root );
+    for ( int i=0; i < num_talents; i++ )
     {
-      p -> _spec = DRUID_GUARDIAN;
+      int ranks;
+      if ( js::get_value( ranks, talent_nodes[ i ] ) )
+      {
+        v[ ( 3 * i ) / num_talents ] += ranks;
+      }
     }
+    maxv = v[ 0 ];
+    for ( int i = 1; i < 3; i++ )
+    {
+      if ( v[ i ] >= maxv )
+      {
+        maxi = i;
+        maxv = v[ i ];
+      }
+    }
+
+    if ( maxv > 0 )
+    {
+      if ( p -> type == DRUID && maxi == 2 )
+        maxi = 3;
+
+      p -> _spec = p -> dbc.spec_by_idx( p -> type, maxi );
+    }
+
+    if ( p -> _spec == DRUID_FERAL )
+    {
+      int a;
+
+      js::get_value( a, talent_nodes[ 30 ] );
+
+      if ( a > 0 )
+      {
+        p -> _spec = DRUID_GUARDIAN;
+      }
+    }
+
+    talent_encodings = p -> set_default_talents();
   }
 
-  talent_encodings = p -> set_default_talents();
   if ( ! p -> parse_talents_numbers( talent_encodings ) )
   {
     sim -> errorf( "Player %s unable to parse talent encoding '%s'.\n", p -> name(), talent_encodings.c_str() );
     return 0;
   }
-  p -> glyphs_str = p -> set_default_glyphs();
 
   p -> create_talents_armory();
 
-/*
-  std::string talents_encoding;
-  std::vector<js_node_t*> talent_nodes;
-  int num_talents = js::get_children( talent_nodes, talents_root );
-  for ( int i=0; i < num_talents; i++ )
+  if ( mop )
   {
-    std::string ranks;
-    if ( js::get_value( ranks, talent_nodes[ i ] ) )
+    p -> glyphs_str = "";
+    std::vector<js_node_t*> glyph_nodes;
+    int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
+    for ( int i=0; i < num_glyphs; i++ )
     {
-      talents_encoding += ranks;
+      std::string glyph_name;
+      if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
+      {
+        util::glyph_name( glyph_name );
+        if ( ! p -> glyphs_str.empty() )
+          p -> glyphs_str += '/';
+        p -> glyphs_str += glyph_name;
+      }
     }
   }
-
-  if ( ! p -> parse_talents_armory( talents_encoding ) )
+  else
   {
-    sim -> errorf( "Player %s unable to parse talents '%s'.\n", p -> name(), talents_encoding.c_str() );
-    return 0;
+    p -> glyphs_str = p -> set_default_glyphs();
   }
-
-  std::string player_type_string = util::player_type_string( p -> type );
-  p -> talents_str = "http://www.wowhead.com/talent#" + player_type_string + "-" + talents_encoding;
-
-  p -> glyphs_str = "";
-  std::vector<js_node_t*> glyph_nodes;
-  int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
-  for ( int i=0; i < num_glyphs; i++ )
-  {
-    std::string glyph_name;
-    if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
-    {
-      util::glyph_name( glyph_name );
-      if ( ! p -> glyphs_str.empty() )
-        p -> glyphs_str += '/';
-      p -> glyphs_str += glyph_name;
-    }
-  }
-*/
 
   p -> professions_str = "";
   if ( professions_root )
