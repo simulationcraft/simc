@@ -66,6 +66,7 @@ public:
     buff_t* focus_fire;
     buff_t* steady_focus;
     buff_t* lock_and_load;
+    buff_t* thrill_of_the_hunt;
     buff_t* master_marksman;
     buff_t* master_marksman_fire;
     buff_t* pre_steady_focus;
@@ -114,8 +115,6 @@ public:
   {
     rng_t* frenzy;
     rng_t* invigoration;
-    rng_t* rabid_power;
-    rng_t* thrill_of_the_hunt;
   } rngs;
 
   // Talents
@@ -562,8 +561,8 @@ public:
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
-
-    mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
+    if ( buffs.rabid -> up() )
+      mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
     // TODO pet charge should show up here.
     return mult;
   }
@@ -671,18 +670,15 @@ struct hunter_action_t : public Base
     return c;
   }
 
-  // trigger_thrill_of_the_hunt ===============================================
+  // thrill_of_the_hunt support ===============================================
 
-  void trigger_thrill_of_the_hunt()
+  void consume_thrill_of_the_hunt()
   {
-    if ( ! p() -> talents.thrill_of_the_hunt -> ok() )
-      return;
-
-    if ( p() -> rngs.thrill_of_the_hunt -> roll ( p() -> talents.thrill_of_the_hunt -> proc_chance() ) )
+    if ( p() -> buffs.thrill_of_the_hunt -> up() )
     {
-      double gain = ab::base_costs[ ab::current_resource() ] * p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent();
-      p() -> procs.thrill_of_the_hunt -> occur();
-      p() -> resource_gain( RESOURCE_FOCUS, gain, p() -> gains.thrill_of_the_hunt );
+      double cost = hunter_action_t::cost();
+      p() -> resource_gain( RESOURCE_FOCUS, cost, p() -> gains.thrill_of_the_hunt );
+      p() -> buffs.thrill_of_the_hunt -> reset();
     }
   }
 };
@@ -827,7 +823,8 @@ void hunter_ranged_attack_t::execute()
     p() -> buffs.pre_steady_focus -> expire();
   }
 
-  trigger_thrill_of_the_hunt();
+  if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
+    p() -> procs.thrill_of_the_hunt -> occur();
 
   if ( result_is_hit( execute_state -> result ) )
     trigger_vishanka( this );
@@ -1052,6 +1049,20 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     direct_power_mod = 0.0483; // hardcoded into tooltip
+  }
+    
+  virtual double cost()
+  {
+    if ( p() -> buffs.thrill_of_the_hunt -> check() )
+      return 0;
+
+    return ab::cost();
+  }
+  
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+    consume_thrill_of_the_hunt();
   }
 
   virtual void impact( action_state_t* state )
@@ -1528,6 +1539,24 @@ struct multi_shot_t : public hunter_ranged_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
+  virtual double cost()
+  {    
+    if ( p() -> buffs.thrill_of_the_hunt -> check() )
+      return 0;
+
+    double cost = hunter_ranged_attack_t::cost();
+    if ( p() -> buffs.bombardment -> check() )
+      cost *= 1 + p() -> buffs.bombardment -> data().effectN( 1 ).percent();
+
+    return cost;
+  }
+
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+    consume_thrill_of_the_hunt();
+  }
+
   virtual void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
@@ -1548,14 +1577,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
           crit_occurred++;
       }*/
     }
-  }
-
-  virtual double cost()
-  {
-    if ( p() -> buffs.bombardment -> check() )
-      return base_costs[ current_resource() ] * ( 1 + p() -> buffs.bombardment -> data().effectN( 1 ).percent() );
-
-    return hunter_ranged_attack_t::cost();
   }
 };
 
@@ -3085,18 +3106,14 @@ void hunter_t::init_buffs()
 {
   player_t::init_buffs();
 
-  // buff_t( player, name, max_stack, duration, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-  // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
-
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( specs.the_beast_within -> ok() );
-  buffs.bombardment                 = buff_creator_t( this, specs.bombardment -> ok() ? 35104 : 0, "bombardment" );
+  buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" );
   buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
+  buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" ).chance( find_spell( 56343 ) -> effectN( 1 ).percent() );
-//  if ( bugs ) buffs.lock_and_load -> cooldown -> duration = timespan_t::from_seconds( 10.0 ); // http://elitistjerks.com/f74/t65904-hunter_dps_analyzer/p31/#post2050744
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
 
@@ -3177,13 +3194,11 @@ void hunter_t::init_rng()
   player_t::init_rng();
 
   rngs.invigoration         = get_rng( "invigoration"       );
-  rngs.thrill_of_the_hunt   = get_rng( "thrill_of_the_hunt" );
 
   // Overlapping procs require the use of a "distributed" RNG-stream when normalized_roll=1
   // also useful for frequent checks with low probability of proc and timed effect
 
   rngs.frenzy               = get_rng( "frenzy" );
-  rngs.rabid_power          = get_rng( "rabid_power" );
 }
 
 // hunter_t::init_scaling ===================================================
@@ -3262,6 +3277,7 @@ void hunter_t::init_actions()
         action_list_str += "/a_murder_of_crows,if=buff.beast_within.up";
 
       action_list_str += "/kill_command";
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
       if ( talents.fervor -> ok() )
         action_list_str += "/fervor,if=focus<=37";
@@ -3290,6 +3306,8 @@ void hunter_t::init_actions()
           
       if ( talents.a_murder_of_crows -> ok() ) 
         action_list_str += "/a_murder_of_crows";
+
+      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
       if ( set_bonus.tier13_4pc_melee() )
       {
