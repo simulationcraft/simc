@@ -8,9 +8,12 @@
 // sample_data_t::sample_data_t =============================================
 
 sample_data_t::sample_data_t( bool s, bool mm ) :
-  sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),mean( std::numeric_limits<double>::quiet_NaN() ),
-  min( std::numeric_limits<double>::infinity() ),max( -std::numeric_limits<double>::infinity() ),
-  variance( std::numeric_limits<double>::quiet_NaN() ),std_dev( std::numeric_limits<double>::quiet_NaN() ),
+  sum( s ? 0 : std::numeric_limits<double>::quiet_NaN() ),
+  mean( std::numeric_limits<double>::quiet_NaN() ),
+  min( std::numeric_limits<double>::infinity() ),
+  max( -std::numeric_limits<double>::infinity() ),
+  variance( std::numeric_limits<double>::quiet_NaN() ),
+  std_dev( std::numeric_limits<double>::quiet_NaN() ),
   mean_std_dev( std::numeric_limits<double>::quiet_NaN() ),
   simple( s ), min_max( mm ), count( 0 ),
   analyzed_basics( false ),analyzed_variance( false ),
@@ -18,7 +21,9 @@ sample_data_t::sample_data_t( bool s, bool mm ) :
 {
 }
 
-// sample_data_t::analyze ===================================================
+/**
+ * Add sample data
+ */
 
 void sample_data_t::add( double x )
 {
@@ -39,8 +44,9 @@ void sample_data_t::add( double x )
     _data.push_back( x );
 }
 
-
-// sample_data_t::analyze ===================================================
+/**
+ * Analyze collected data
+ */
 
 void sample_data_t::analyze(
   bool calc_basics,
@@ -63,7 +69,11 @@ void sample_data_t::analyze(
     create_distribution( create_dist );
 }
 
-// sample_data_t::analyze_basics ===============================================
+/**
+ *  Analyze Basics:
+ *  Simple: Mean
+ *  !Simple: Mean, min/max
+ */
 
 void sample_data_t::analyze_basics()
 {
@@ -96,7 +106,9 @@ void sample_data_t::analyze_basics()
   mean = sum / sample_size;
 }
 
-// sample_data_t::analyze_variance ===============================================
+/**
+ *  Analyze Variance: Variance, Stddev and Stddev of the mean
+ */
 
 void sample_data_t::analyze_variance()
 {
@@ -132,7 +144,9 @@ void sample_data_t::analyze_variance()
   mean_std_dev = std_dev / sqrt ( static_cast<double>( sample_size ) );
 }
 
-// sample_data_t::create_dist ===============================================
+/**
+ *  Create distribution of the data
+ */
 
 void sample_data_t::create_distribution( unsigned int num_buckets )
 {
@@ -165,7 +179,7 @@ void sample_data_t::create_distribution( unsigned int num_buckets )
 
 // sample_data_t::percentile ================================================
 
-double sample_data_t::percentile( double x )
+double sample_data_t::percentile( double x ) const
 {
   assert( x >= 0 && x <= 1.0 );
 
@@ -213,8 +227,7 @@ void sample_data_t::merge( const sample_data_t& other )
 
 // sample_data_t::merge =====================================================
 
-
-double sample_data_t::pearson_correlation( sample_data_t& x, sample_data_t& y )
+double sample_data_t::pearson_correlation( const sample_data_t& x, const sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return std::numeric_limits<double>::quiet_NaN();

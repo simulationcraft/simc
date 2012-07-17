@@ -317,7 +317,8 @@ public:
 
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
-  virtual double    shadowy_recall_chance();
+  double shadowy_recall_chance()
+  { return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery(); }
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
@@ -954,19 +955,20 @@ struct priest_heal_t : public priest_action_t<heal_t>
   };
 
   bool can_trigger_DA;
+  bool can_trigger_EoL;
   divine_aegis_t* da;
 
   // Priest Echo of Light, Ignite-Mechanic specialization
-  void trigger_echo_of_light( priest_heal_t* s, player_t* t, double dmg )
+  void trigger_echo_of_light( priest_heal_t* h, action_state_t* s )
   {
-    priest_t* p = s -> p();
-    if ( ! p -> mastery_spells.echo_of_light -> ok() )
+    priest_t* p = h -> p();
+    if ( ! p -> mastery_spells.echo_of_light -> ok() || ! can_trigger_EoL )
       return;
 
     ignite::trigger_pct_based(
       p -> spells.echo_of_light, // ignite spell
-      t, // target
-      dmg * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
+      s -> target, // target
+      s -> result_amount * p -> composite_mastery() * p -> mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
   }
 
   virtual void init()
@@ -983,7 +985,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   priest_heal_t( const std::string& n, priest_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s ), can_trigger_DA( true ), da()
+    base_t( n, player, s ),
+    can_trigger_DA( true ),
+    can_trigger_EoL( true ),
+    da()
   {
   }
 
@@ -1039,7 +1044,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       // Divine Aegis
       trigger_divine_aegis( s );
 
-      trigger_echo_of_light( this, s -> target, s -> result_amount );
+      trigger_echo_of_light( this, s );
 
       if ( p() -> buffs.chakra_serenity -> up() && td( s -> target ) -> dots.renew -> ticking )
         td( s -> target ) -> dots.renew -> refresh_duration();
@@ -1270,12 +1275,12 @@ public:
 
 namespace spells {
 
-void cancel_dot( dot_t* dot )
+void cancel_dot( dot_t& dot )
 {
-  if ( dot -> ticking )
+  if ( dot.ticking )
   {
-    dot -> cancel();
-    dot -> reset();
+    dot.cancel();
+    dot.reset();
   }
 }
 
@@ -2016,9 +2021,9 @@ struct mind_spike_t : public priest_spell_t
       mind_spike_state_t* dps_t = static_cast< mind_spike_state_t* >( s );
       if ( ! dps_t -> surge_of_darkness )
       {
-        cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
-        cancel_dot( td( s -> target ) -> dots.vampiric_touch );
-        cancel_dot( td( s -> target ) -> dots.devouring_plague );
+        cancel_dot( *td( s -> target ) -> dots.shadow_word_pain );
+        cancel_dot( *td( s -> target ) -> dots.vampiric_touch );
+        cancel_dot( *td( s -> target ) -> dots.devouring_plague );
         p() -> procs.mind_spike_dot_removal -> occur();
       }
     }
@@ -2724,7 +2729,7 @@ struct shadow_word_insanity_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    cancel_dot( td( s -> target ) -> dots.shadow_word_pain );
+    cancel_dot( *td( s -> target ) -> dots.shadow_word_pain );
     p() -> procs.shadow_word_insanity_dot_removal -> occur();
   }
 
@@ -3635,6 +3640,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
       dual        = true;
       background  = true;
       direct_tick = true;
+      can_trigger_EoL = false; // http://us.battle.net/wow/en/forum/topic/5889309137?page=107#2137
     }
 
     virtual double action_multiplier()
@@ -3648,37 +3654,20 @@ struct holy_word_sanctuary_t : public priest_heal_t
     }
   };
 
-  holy_word_sanctuary_tick_t* tick_spell;
-
   holy_word_sanctuary_t( priest_t* p, const std::string& options_str ) :
-    priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) ),
-    tick_spell( 0 )
+    priest_heal_t( "holy_word_sanctuary", p, p -> find_spell( 88685 ) )
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = false;
     may_crit     = false;
 
     base_tick_time = timespan_t::from_seconds( 2.0 );
     num_ticks = 9;
 
-    tick_spell = new holy_word_sanctuary_tick_t( p );
+    tick_action = new holy_word_sanctuary_tick_t( p );
 
     // Needs testing
     cooldown -> duration *= 1.0 + p -> set_bonus.tier13_4pc_heal() * -0.2;
-  }
-
-  virtual void init()
-  {
-    priest_heal_t::init();
-
-    tick_spell -> stats = stats;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick );
   }
 
   virtual bool ready()
@@ -4267,14 +4256,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t* p ) :
     target -> absorb_buffs.push_back( buffs.power_word_shield );
     target -> absorb_buffs.push_back( buffs.divine_aegis );
   }
-}
-
-
-// priest_t::shadowy_recall_chance ==============================================
-
-double priest_t::shadowy_recall_chance()
-{
-  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery();
 }
 
 // priest_t::primary_role ===================================================

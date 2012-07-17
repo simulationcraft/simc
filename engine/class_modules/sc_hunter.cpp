@@ -22,10 +22,6 @@ using namespace pet_actions;
 // Hunter
 // ==========================================================================
 
-// We require enough crows for murder_of_crows/readiness/murder_of_crows
-// There are two extra in case theey make teh rate of summons dependent on haste
-#define CROW_LIMIT 18
-
 struct hunter_t;
 
 struct hunter_pet_t;
@@ -2932,7 +2928,10 @@ void hunter_t::create_pets()
   create_pet( "wind_serpent", "wind_serpent" );
   create_pet( "wolf",         "wolf"         );
 
-  create_moc_pets( this, CROW_LIMIT );
+  // We require enough crows for murder_of_crows/readiness/murder_of_crows
+  // There are two extra in case theey make teh rate of summons dependent on haste
+  static const int crow_limit = 18;
+  create_moc_pets( this, crow_limit );
 }
 
 // hunter_t::init_spells ====================================================

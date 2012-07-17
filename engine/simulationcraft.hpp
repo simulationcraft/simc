@@ -1221,7 +1221,7 @@ public:
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
-  const char* name() { return name_str.c_str(); }
+  const char* name() const { return name_str.c_str(); }
 };
 
 // Gear Stats ===============================================================
@@ -1295,11 +1295,11 @@ public:
   { if ( ! simple ) _data.reserve( capacity ); }
   void add( double x=0 );
 
-  bool basics_analyzed() { return analyzed_basics; }
-  bool variance_analyzed() { return analyzed_variance; }
-  bool distribution_created() { return created_dist; }
-  bool sorted() { return is_sorted; }
-  int size() { if ( simple ) return count; return ( int ) _data.size(); }
+  bool basics_analyzed() const { return analyzed_basics; }
+  bool variance_analyzed() const { return analyzed_variance; }
+  bool distribution_created() const { return created_dist; }
+  bool sorted() const { return is_sorted; }
+  int size() const { if ( simple ) return count; return ( int ) _data.size(); }
 
   void analyze(
     bool calc_basics=true,
@@ -1313,11 +1313,11 @@ public:
   void clear() { count = 0; sum = 0; _data.clear(); distribution.clear(); }
 
   // Access functions
-  double percentile( double );
-  const std::vector<double>& data() { return _data; }
+  double percentile( double ) const;
+  const std::vector<double>& data() const { return _data; }
   void merge( const sample_data_t& );
 
-  static double pearson_correlation( sample_data_t&, sample_data_t& );
+  static double pearson_correlation( const sample_data_t&, const sample_data_t& );
 };
 
 // Actor Pair ===============================================================
@@ -1588,9 +1588,6 @@ public:
   int max_stack() { return _max_stack; }
 };
 
-inline buff_creator_t::operator buff_t* () const
-{ return new buff_t( *this ); }
-
 struct stat_buff_t : public buff_t
 {
   struct buff_stat_t
@@ -1614,10 +1611,6 @@ private:
   friend struct buff_creation::stat_buff_creator_t;
 };
 
-inline stat_buff_creator_t::operator stat_buff_t* () const
-{ return new stat_buff_t( *this ); }
-
-
 struct absorb_buff_t : public buff_t
 {
   stats_t* absorb_source;
@@ -1630,10 +1623,6 @@ public:
   virtual void absorb_used( double /* amount */ )
   { }
 };
-
-inline absorb_buff_creator_t::operator absorb_buff_t* () const
-{ return new absorb_buff_t( *this ); }
-
 
 struct cost_reduction_buff_t : public buff_t
 {
@@ -1651,18 +1640,12 @@ public:
   virtual void refresh  ( int stacks=0, double value=-1.0, timespan_t duration = timespan_t::min() );
 };
 
-inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
-{ return new cost_reduction_buff_t( *this ); }
-
 struct debuff_t : public buff_t
 {
 private:
   debuff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
 };
-
-inline buff_creator_t::operator debuff_t* () const
-{ return new debuff_t( *this ); }
 
 typedef struct buff_t aura_t;
 
@@ -3693,7 +3676,6 @@ public:
   { return owner -> composite_armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );
-
 };
 
 
@@ -4795,5 +4777,20 @@ inline double sim_t::averaged_range( double min, double max )
 
   return default_rng_ -> range( min, max );
 }
+
+inline buff_creator_t::operator buff_t* () const
+{ return new buff_t( *this ); }
+
+inline stat_buff_creator_t::operator stat_buff_t* () const
+{ return new stat_buff_t( *this ); }
+
+inline absorb_buff_creator_t::operator absorb_buff_t* () const
+{ return new absorb_buff_t( *this ); }
+
+inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
+{ return new cost_reduction_buff_t( *this ); }
+
+inline buff_creator_t::operator debuff_t* () const
+{ return new debuff_t( *this ); }
 
 #endif // SIMULATIONCRAFT_H
