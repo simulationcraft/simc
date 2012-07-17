@@ -395,8 +395,6 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school, a );
     m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> composite_mastery();
 
-    // Code for changes in upcoming build
-    /*
     if ( o() -> buffs.invocation -> up() )
     {
       m *= 1.0 + o() -> buffs.invocation -> data().effectN( 1 ).percent();
@@ -413,7 +411,6 @@ struct water_elemental_pet_t : public pet_t
     {
       m *= 1.0 + o() -> buffs.incanters_ward_post -> value() * o() -> buffs.incanters_ward_post -> data().effectN( 1 ).percent();
     }
-    */
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
@@ -3417,8 +3414,6 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
   }
-  // Code for changes in upcoming build
-  /*
   else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
   {
     m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
@@ -3427,7 +3422,6 @@ double mage_t::composite_player_multiplier( school_e school, action_t* a )
   {
     m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
   }
-  */
 
   double mana_pct = resources.pct( RESOURCE_MANA );
   m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * composite_mastery();
@@ -3473,16 +3467,9 @@ double mage_t::composite_spell_power_multiplier()
 {
   double m = player_t::composite_spell_power_multiplier();
 
-  // TODO: This will come out in a future beta build
-  if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> remains() == timespan_t::zero() )
-  {
-    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
-  }
-
-  m *= 1.0 + buffs.incanters_ward_post -> value() * buffs.incanters_ward_post -> data().effectN( 1 ).percent();
-
   return m;
 }
+
 // mage_t::matching_gear_multiplier =========================================
 
 double mage_t::matching_gear_multiplier( attribute_e attr )
