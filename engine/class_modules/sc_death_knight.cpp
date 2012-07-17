@@ -110,6 +110,8 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_blood_plague;
   dot_t* dots_death_and_decay;
   dot_t* dots_frost_fever;
+  
+  debuff_t* debuffs_frost_vulnerability;
 
   int diseases()
   {
@@ -125,6 +127,8 @@ struct death_knight_td_t : public actor_pair_t
     dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
     dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
     dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+    
+    debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   }
 };
 
@@ -298,6 +302,7 @@ public:
   {
     rng_t* blood_caked_blade;
     rng_t* rime;
+    rng_t* sudden_doom;
     rng_t* t13_2pc_melee;
   } rng;
 
@@ -1396,14 +1401,18 @@ struct death_knight_action_t : public Base
     }
   }
 
-  virtual double action_multiplier()
+  virtual double composite_target_multiplier( player_t* t )
   {
-    double am =action_base_t::action_multiplier();
+    double m = action_base_t::composite_target_multiplier( t );
+    
+    if ( action_base_t::school == SCHOOL_FROST || 
+         action_base_t::data().school_mask() & SCHOOL_MASK_FROST )
+    {
+         m *= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> stack() * 
+                    cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+    }
 
-    if ( action_base_t::school == SCHOOL_FROST  )
-      am *= 1.0 + p() -> buffs.rune_of_razorice -> stack() * p() -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
-
-    return am;
+    return m;
   }
 };
 
@@ -1525,7 +1534,7 @@ void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
 
-  if ( result_is_hit( execute_state -> result ) )
+  if ( ! proc && result_is_hit( execute_state -> result ) )
   {
     p() -> buffs.bloodworms -> trigger();
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
@@ -1652,7 +1661,8 @@ struct melee_t : public death_knight_melee_attack_t
         int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && sim -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
         // FIXME: Mists of Pandaria Sudden Doom PPM?
-        if ( sim -> roll( weapon -> proc_chance_on_swing( 3 ) ) )
+        if ( p() -> spec.sudden_doom -> ok() && 
+             p() -> rng.sudden_doom -> roll( weapon -> proc_chance_on_swing( 3 ) ) )
         {
            // If we're proccing 2 or we have 0 stacks, trigger like normal
            if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
@@ -2473,6 +2483,14 @@ struct howling_blast_t : public death_knight_spell_t
     p() -> buffs.rime -> decrement();
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+    
+    if ( result_is_hit( s -> result ) )
+      p() -> active_spells.frost_fever -> execute();    
+  }
+
   virtual bool ready()
   {
     if ( p() -> buffs.rime -> check() )
@@ -2525,10 +2543,15 @@ struct icy_touch_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_icy_touch -> execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> active_spells.frost_fever -> execute();
-
     p() -> buffs.rime -> decrement();
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+    
+    if ( result_is_hit( s -> result ) )
+      p() -> active_spells.frost_fever -> execute();    
   }
 
   virtual bool ready()
@@ -2645,7 +2668,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      base_multiplier += p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2748,9 +2771,6 @@ struct pestilence_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> spec.reaping -> ok() )
-      convert_runes = 1.0;
-
-    if ( p -> specialization() == DEATH_KNIGHT_FROST )
       convert_runes = 1.0;
 
     aoe = -1;
@@ -3106,12 +3126,9 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    // The shadow damage is not 18% of the weapon damage per disease, it's 
-    // something close to 18% of the unmitigated physical damage, without any 
-    // sort of multipliers
     if ( result_is_hit( s -> result ) && cast_td( s -> target ) -> diseases() > 0 )
     {
-      double damage = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, 1.0, s -> target );
+      double damage = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
 
       scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = damage;
       scourge_strike_shadow -> execute();
@@ -3435,6 +3452,7 @@ void death_knight_t::init_rng()
 
   rng.blood_caked_blade          = get_rng( "blood_caked_blade"          );
   rng.rime                       = get_rng( "rime"                       );
+  rng.sudden_doom                = get_rng( "sudden_doom"                );
   rng.t13_2pc_melee              = get_rng( "t13_2pc_melee"              );
 }
 
@@ -3805,37 +3823,39 @@ void death_knight_t::init_enchant()
   // Rune of the Razorice ===================================================
 
   // Damage Proc
-  struct razorice_spell_t : public death_knight_spell_t
+  struct razorice_attack_t : public death_knight_melee_attack_t
   {
-    razorice_spell_t( death_knight_t* player ) : death_knight_spell_t( "razorice", player, player -> find_spell( 50401 ) )
+    razorice_attack_t( death_knight_t* player ) : 
+      death_knight_melee_attack_t( "razorice", player, player -> find_spell( 50401 ) )
     {
+      school      = SCHOOL_FROST;
       may_miss    = false;
       may_crit    = false;
       background  = true;
       proc        = true;
+      callbacks   = false;
     }
-
+ 
     virtual double composite_target_multiplier( player_t* t )
     {
-      double ctm = death_knight_spell_t::composite_target_multiplier( t );
-      ;
+      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      ctm /= 1.0 + p() -> buffs.rune_of_razorice -> check() * p() -> buffs.rune_of_razorice -> data().effectN( 1 ).percent();
+      m /= 1.0 + cast_td( t ) -> debuffs_frost_vulnerability -> check() * 
+                 cast_td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
 
-      return ctm;
+      return m;
     }
   };
 
   struct razorice_callback_t : public action_callback_t
   {
     int slot;
-    buff_t* buff;
-    spell_t* razorice_damage_proc;
+    razorice_attack_t* razorice_damage_proc;
 
-    razorice_callback_t( death_knight_t* p, int s, buff_t* b ) :
-      action_callback_t( p ), slot( s ), buff( b ), razorice_damage_proc( 0 )
+    razorice_callback_t( death_knight_t* p, int s ) :
+      action_callback_t( p ), slot( s ), razorice_damage_proc( 0 )
     {
-      razorice_damage_proc = new razorice_spell_t( p );
+      razorice_damage_proc = new razorice_attack_t( p );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -3848,14 +3868,13 @@ void death_knight_t::init_enchant()
       // double PPM        = 2.0;
       // double swing_time = a -> time_to_execute;
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-      buff -> trigger();
 
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( a -> execute_state -> target ) -> debuffs_frost_vulnerability -> trigger();
       razorice_damage_proc -> execute();
     }
   };
 
   buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier" ).max_stack( 2 ).duration( timespan_t::from_seconds( 30.0 ) );
-  buffs.rune_of_razorice            = buff_creator_t( this, "rune_of_razorice" ).spell( find_spell( 51714 ) );
   buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
@@ -3864,7 +3883,7 @@ void death_knight_t::init_enchant()
   }
   else if ( mh_enchant == "rune_of_razorice" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_razorice ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND ) );
   }
   else if ( mh_enchant == "rune_of_cinderglacier" )
   {
@@ -3877,7 +3896,7 @@ void death_knight_t::init_enchant()
   }
   else if ( oh_enchant == "rune_of_razorice" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_razorice ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
   }
   else if ( oh_enchant == "rune_of_cinderglacier" )
   {
@@ -3935,11 +3954,10 @@ void death_knight_t::init_buffs()
                               .chance( 1.0 )
                               .quiet( true );
   buffs.runic_corruption    = buff_creator_t( this, 51460, "runic_corruption" );
-  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_specialization_spell( "Sudden Doom" ) )
+  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
-                              .duration( timespan_t::from_seconds( 10.0 ) )
                               .cd( timespan_t::zero() )
-                              .chance( 1.0 );
+                              .chance( spec.sudden_doom -> ok() );
   buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() );
   buffs.shadow_infusion     = buff_creator_t( this, "shadow_infusion", spec.shadow_infusion -> effectN( 1 ).trigger() );
   buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" )
