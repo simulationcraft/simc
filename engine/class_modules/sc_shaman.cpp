@@ -286,6 +286,7 @@ public:
 
     action_flame_shock = 0;
     action_improved_lava_lash = 0;
+    action_ancestral_swiftness = 0;
 
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
@@ -527,19 +528,6 @@ struct shaman_spell_t : public shaman_action_t<spell_t>
       return true;
 
     return base_t::usable_moving();
-  }
-
-  virtual double composite_haste()
-  {
-    double h = base_t::composite_haste();
-
-    if ( p() -> buff.elemental_mastery -> up() )
-      h *= 1.0 / ( 1.0 + p() -> buff.elemental_mastery -> data().effectN( 1 ).percent() );
-
-    if ( p() -> buff.tier13_4pc_healer -> up() )
-      h *= 1.0 / ( 1.0 + p() -> buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
-
-    return h;
   }
 
   virtual double composite_da_multiplier()
@@ -2448,6 +2436,8 @@ struct ancestral_swiftness_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_talent_spell( "Ancestral Swiftness" ), options_str )
   {
     harmful = may_crit = may_miss = callbacks = false;
+
+    player -> action_ancestral_swiftness = this;
   }
   
   virtual void execute()
@@ -4659,8 +4649,6 @@ void shaman_t::init_actions()
     get_action_priority_list( "ae" ) -> action_list_str = aoe_s.str();
 
   player_t::init_actions();
-
-  action_ancestral_swiftness = find_action( "ancestral_swiftness" );
 }
 
 // shaman_t::moving =========================================================
@@ -4748,6 +4736,12 @@ double shaman_t::composite_spell_haste()
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= 1.0 / 1.05;
+
+  if ( buff.elemental_mastery -> up() )
+    h *= 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+
+  if ( buff.tier13_4pc_healer -> up() )
+    h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
   return h;
 }
 
@@ -4775,6 +4769,12 @@ double shaman_t::composite_attack_haste()
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= 1.0 / 1.05;
+
+  if ( buff.elemental_mastery -> up() )
+    h *= 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+
+  if ( buff.tier13_4pc_healer -> up() )
+    h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
   return h;
 }
 
