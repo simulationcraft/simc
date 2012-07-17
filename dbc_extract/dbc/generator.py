@@ -957,6 +957,10 @@ class SpellDataGenerator(DataGenerator):
         # Death Knight:
         ( ( 70890, 0 ), # weird Scourge Strike secondary effect
           ( 51963, 5 ), # gargoyle strike
+          ( 66198, 0 ), # Obliterate off-hand
+          ( 66196, 0 ), # Frost Strike off-hand
+          ( 66216, 0 ), # Plague Strike off-hand
+          ( 66188, 0 ), # Death Strike off-hand
         ),  
         
         # Shaman:

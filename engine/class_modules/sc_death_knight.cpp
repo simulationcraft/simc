@@ -166,7 +166,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* howling_blast;
-  } cooldowns;
+  } cooldown;
 
   // Diseases
 
@@ -300,8 +300,9 @@ public:
   {
     rng_t* blood_caked_blade;
     rng_t* might_of_the_frozen_wastes;
+    rng_t* rime;
     rng_t* threat_of_thassarian;
-  } rngs;
+  } rng;
 
   // Runes
   struct runes_t
@@ -336,18 +337,16 @@ public:
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
     buffs( buffs_t() ),
-    cooldowns( cooldowns_t() ),
     active_spells( active_spells_t() ),
     gains( gains_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    rngs( rngs_t() ),
     _runes( runes_t() ),
     benefits( benefits_t() )
   {
     target_data.init( "target_data", this );
 
-    cooldowns.howling_blast = get_cooldown( "howling_blast" );
+    cooldown.howling_blast = get_cooldown( "howling_blast" );
 
     initial.distance = 0;
   }
@@ -1731,8 +1730,9 @@ struct melee_t : public death_knight_melee_attack_t
            }
          }
       }
-
-      // TODO: Confirm PPM for ranks 1 and 2 http://elitistjerks.com/f72/t110296-frost_dps_|_cataclysm_4_0_3_nothing_lose/p9/#post1869431
+      
+      // Killing Machine, presume rank 3 PPM (5)
+      p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 5 ) );
 
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
         p() -> buffs.crimson_scourge -> trigger();
@@ -2332,7 +2332,7 @@ struct frost_fever_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( ! sim -> overrides.physical_vulnerability && player -> specialization() == DEATH_KNIGHT_FROST &&
+    if ( ! sim -> overrides.physical_vulnerability && p() -> spec.brittle_bones -> ok() &&
          result_is_hit( s -> result ) )
       s -> target -> debuffs.physical_vulnerability -> trigger();
   }
@@ -2349,6 +2349,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
+    base_multiplier += p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -2365,32 +2366,50 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
 
 struct frost_strike_t : public death_knight_melee_attack_t
 {
-  melee_attack_t* oh_attack;
+  frost_strike_offhand_t* oh_attack;
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ), oh_attack( 0 )
+    death_knight_melee_attack_t( "frost_strike", p, p -> find_class_spell( "Frost Strike" ) ), 
+    oh_attack( 0 )
   {
     special = true;
 
     parse_options( NULL, options_str );
 
     weapon     = &( p -> main_hand_weapon );
+    base_multiplier += p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> spec.threat_of_thassarian -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
       oh_attack = new frost_strike_offhand_t( p );
+  }
+  
+  virtual double cost()
+  {
+    double c = death_knight_melee_attack_t::cost();
+    
+    if ( p() -> buffs.frost_presence -> check() )
+      c += p() -> spec.improved_frost_presence -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+
+    return c;
   }
 
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> trigger_runic_empowerment();
+    if ( oh_attack )
+      oh_attack -> execute();
 
     if ( p() -> buffs.killing_machine -> check() )
       p() -> procs.fs_killing_machine -> occur();
 
     p() -> buffs.killing_machine -> expire();
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+      p() -> trigger_runic_empowerment();
   }
 
   virtual double composite_crit()
@@ -2686,7 +2705,23 @@ struct obliterate_t : public death_knight_melee_attack_t
       // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
       // Ensure that if we have 1 that we only refresh, not add another stack
       int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && sim -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) ) ? 2 : 1;
-      ( void )new_stacks;
+      if ( p() -> rng.rime -> roll( p() -> spec.rime -> proc_chance() ) )
+      {
+         // If we're proccing 2 or we have 0 stacks, trigger like normal
+         if ( new_stacks == 2 || p() -> buffs.rime -> check() == 0 )
+         {
+           p() -> buffs.rime -> trigger( new_stacks );
+         }
+         // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
+         else
+         {
+           p() -> buffs.rime -> refresh( 0 );
+           if ( p() -> buffs.rime -> check() == 2 && new_stacks == 1 )
+             p() -> buffs.rime -> decrement( 1 );
+         }
+
+         p() -> cooldown.howling_blast -> reset();
+       }
     }
 
     if ( p() -> buffs.killing_machine -> check() )
@@ -3421,14 +3456,12 @@ void death_knight_t::init()
 {
   player_t::init();
 
-  if ( ( specialization() == DEATH_KNIGHT_FROST ) )
+  if ( spec.blood_of_the_north -> ok() )
   {
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
       if ( _runes.slot[i].type == RUNE_TYPE_BLOOD )
-      {
         _runes.slot[i].make_permanent_death_rune();
-      }
     }
   }
 }
@@ -3439,9 +3472,10 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rngs.blood_caked_blade          = get_rng( "blood_caked_blade"          );
-  rngs.might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
-  rngs.threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
+  rng.blood_caked_blade          = get_rng( "blood_caked_blade"          );
+  rng.might_of_the_frozen_wastes = get_rng( "might_of_the_frozen_wastes" );
+  rng.rime                       = get_rng( "rime"                       );
+  rng.threat_of_thassarian       = get_rng( "threat_of_thassarian"       );
 }
 
 // death_knight_t::init_defense =============================================
@@ -3926,7 +3960,9 @@ void death_knight_t::init_buffs()
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
-  buffs.killing_machine     = buff_creator_t( this, 51124, "killing_machine" ); // PPM based!
+  buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
+                              .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
+                              .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) );
   buffs.rime                = buff_creator_t( this, "rime", find_specialization_spell( "Rime" ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
