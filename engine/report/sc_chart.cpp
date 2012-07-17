@@ -886,7 +886,7 @@ std::string chart::action_dpet(  player_t* p )
     std::string school = school_color( stats_list[ i ] -> school );
     if ( school.empty() )
     {
-      p -> sim -> errorf( "chart_t::action_dpet assertion error! School unknown, stats %s from %s.\n", stats_list[ i ] -> name_str.c_str(), p -> name() );
+      p -> sim -> errorf( "chart_t::action_dpet assertion error! School color unknown, stats %s from %s. School %s\n", stats_list[ i ] -> name_str.c_str(), p -> name(), util::school_type_string( stats_list[ i ] -> school ) );
       assert( 0 );
     }
     s += school;
