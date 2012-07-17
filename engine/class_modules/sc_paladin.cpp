@@ -126,6 +126,7 @@ public:
     const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* plate_specialization;
+    const spell_data_t* guarded_by_the_light;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
     const spell_data_t* vengeance;
@@ -183,6 +184,8 @@ public:
   bool bok_up;
   bool bom_up;
   timespan_t last_extra_regen;
+  timespan_t extra_regen_period;
+  double extra_regen_percent;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
@@ -194,7 +197,9 @@ public:
     spells( spells_t() ),
     talents( talents_t() ),
     glyphs( glyphs_t() ),
-    last_extra_regen( timespan_t::from_seconds( 0.0 ) )
+    last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
+    extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
+    extra_regen_percent( 0.0 )
   {
     target_data.init( "target_data", this );
 
@@ -2428,7 +2433,7 @@ void paladin_t::init_gains()
   player_t::init_gains();
 
   gains.divine_plea                 = get_gain( "divine_plea"            );
-  gains.extra_regen                 = get_gain( "extra_regen"            );
+  gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
   gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
   gains.sanctuary                   = get_gain( "sanctuary"              );
   gains.seal_of_command_glyph       = get_gain( "seal_of_command_glyph"  );
@@ -2900,6 +2905,7 @@ void paladin_t::init_spells()
 
   // Prot Passives
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
+  passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   if ( passives.vengeance -> ok() )
     vengeance.enabled = true;
@@ -2924,6 +2930,17 @@ void paladin_t::init_spells()
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
   spells.glyph_of_word_of_glory_damage = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    extra_regen_period  = passives.sword_of_light -> effectN( 2 ).period();
+    extra_regen_percent = passives.sword_of_light -> effectN( 2 ).percent();
+  }
+  else if ( specialization() == PALADIN_PROTECTION )
+  {
+    extra_regen_period  = passives.guarded_by_the_light -> effectN( 3 ).period();
+    extra_regen_percent = passives.guarded_by_the_light -> effectN( 3 ).percent();
+  }
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
@@ -3150,17 +3167,14 @@ void paladin_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   // Guarded by the Light / Sword of Light regen.
-  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
+  if ( extra_regen_period > timespan_t::from_seconds( 0.0 ) )
   {
-    const timespan_t period = timespan_t::from_seconds( 2.0 );
     last_extra_regen += periodicity;
-    while ( last_extra_regen >= period )
+    while ( last_extra_regen >= extra_regen_period )
     {
-      double amount = resources.max[ RESOURCE_MANA ] * 0.06;
+      resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * extra_regen_percent, gains.extra_regen );
 
-      resource_gain( RESOURCE_MANA, amount, gains.extra_regen );
-
-      last_extra_regen -= period;
+      last_extra_regen -= extra_regen_period;
     }
   }
 

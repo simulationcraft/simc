@@ -124,8 +124,8 @@ public:
   int                        base_value() const { return _base_value; }
   double                     percent() const { return _base_value * ( 1 / 100.0 ); }
   timespan_t                 time_value() const { return timespan_t::from_millis( _base_value ); }
-  resource_e            resource_gain_type() const;
-  double resource( resource_e resource_type ) const;
+  resource_e                 resource_gain_type() const;
+  double                     resource( resource_e resource_type ) const;
   double                     mastery_value() const { return _coeff * ( 1 / 100.0 ); }
 
   int                        misc_value1() const { return _misc_value; }
