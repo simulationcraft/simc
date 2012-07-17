@@ -759,6 +759,7 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "mongoose"         ||
        encoded_enchant_str == "avalanche"        ||
        encoded_enchant_str == "elemental_slayer" ||
+       encoded_enchant_str == "elemental_force"  ||
        encoded_enchant_str == "hurricane"        ||
        encoded_enchant_str == "landslide"        ||
        encoded_enchant_str == "power_torrent"    ||
