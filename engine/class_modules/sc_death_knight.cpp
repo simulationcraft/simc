@@ -1440,15 +1440,17 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual void   consume_resource();
   virtual void   execute();
 
-  virtual double action_da_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double am = base_t::action_da_multiplier();
+    double m = base_t::composite_da_multiplier();
 
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    {
       if ( ! proc )
-        am *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+        m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+    }
 
-    return am;
+    return m;
   }
 
   virtual bool   ready();
@@ -1482,14 +1484,17 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   virtual void   consume_resource();
   virtual void   execute();
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double am = base_t::action_multiplier();
+    double m = base_t::composite_da_multiplier();
 
-    if ( ( school == SCHOOL_FROST || school == SCHOOL_SHADOW ) )
-      am *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+    if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
+    {
+      if ( ! proc )
+        m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+    }
 
-    return am;
+    return m;
   }
 
   virtual bool   ready();
@@ -1538,8 +1543,9 @@ void death_knight_melee_attack_t::execute()
   {
     p() -> buffs.bloodworms -> trigger();
     if ( school == SCHOOL_FROST || school == SCHOOL_SHADOW )
-      if ( ! proc )
-        p() -> buffs.rune_of_cinderglacier -> decrement();
+    {
+      p() -> buffs.rune_of_cinderglacier -> decrement();
+    }
   }
   
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
@@ -3795,7 +3801,7 @@ void death_knight_t::init_enchant()
       if ( ! w || w -> slot != slot ) return;
 
       // FIX ME: What is the proc rate? For now assuming the same as FC
-      buff -> trigger( 2, 0.2, w -> proc_chance_on_swing( 2.0 ) );
+      buff -> trigger( 2, -1, w -> proc_chance_on_swing( 2.0 ) );
 
       // FIX ME: This should roll the benefit when casting DND, it does not
     }
@@ -3874,7 +3880,8 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier" ).max_stack( 2 ).duration( timespan_t::from_seconds( 30.0 ) );
+  buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
+                                      .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() );
   buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 ).duration( timespan_t::from_seconds( 15.0 ) );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
