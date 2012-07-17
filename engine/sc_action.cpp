@@ -1052,7 +1052,7 @@ void action_t::assess_damage( dmg_e    type,
                      player -> name(), name(),
                      s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
-                     util::result_type_string( result ) );
+                     util::result_type_string( s -> result ) );
     }
 
     if ( direct_tick_callbacks )
