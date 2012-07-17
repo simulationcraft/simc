@@ -3754,11 +3754,11 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case SPEC_NONE: break;
-  default: break;
+  case HUNTER_BEAST_MASTERY:  return "000000";
+  case HUNTER_SURVIVAL:       return "000000";
+  case HUNTER_MARKSMANSHIP:   return "000000";
+  default:  return player_t::set_default_talents();
   }
-
-  return player_t::set_default_talents();
 }
 
 // hunter_t::set_default_glyphs() =======================================================
@@ -3767,11 +3767,11 @@ std::string hunter_t::set_default_glyphs()
 {
   switch ( specialization() )
   {
-  case SPEC_NONE: break;
-  default: break;
+  //case HUNTER_BEAST_MASTERY:  return "";
+  //case HUNTER_SURVIVAL:       return "";
+  //case HUNTER_MARKSMANSHIP:   return "";
+  default:  return player_t::set_default_glyphs();
   }
-
-  return player_t::set_default_glyphs();
 }
 
 // HUNTER MODULE INTERFACE ================================================
