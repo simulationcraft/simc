@@ -3149,13 +3149,14 @@ void paladin_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
+  // Guarded by the Light / Sword of Light regen.
   if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
   {
-    const timespan_t period = timespan_t::from_seconds( 1.5 );
+    const timespan_t period = timespan_t::from_seconds( 2.0 );
     last_extra_regen += periodicity;
     while ( last_extra_regen >= period )
     {
-      double amount = resources.max[ RESOURCE_MANA ] * 0.05;
+      double amount = resources.max[ RESOURCE_MANA ] * 0.06;
 
       resource_gain( RESOURCE_MANA, amount, gains.extra_regen );
 
