@@ -937,6 +937,7 @@ class SpellDataGenerator(DataGenerator):
         
         # Paladin:
         ( ( 86700, 5 ), # Ancient Power
+          ( 122287, 0, True ), # Symbiosis Wrath
         ),  
         
         # Hunter:
@@ -961,6 +962,7 @@ class SpellDataGenerator(DataGenerator):
           ( 66196, 0 ), # Frost Strike off-hand
           ( 66216, 0 ), # Plague Strike off-hand
           ( 66188, 0 ), # Death Strike off-hand
+          ( 113516, 0, True ), # Symbiosis Wild Mushroom: Plague
         ),  
         
         # Shaman:
@@ -1009,6 +1011,11 @@ class SpellDataGenerator(DataGenerator):
         ( (  93402, 1, True ), # Sunfire
           ( 106996, 1, True ), # Astral Storm
           ( 112071, 1, True ), # Celestial Alignment
+	  ( 110621, 0, True ), # Symbiosis spells
+          ( 110691, 0, True ),
+          ( 122283, 0, True ),
+          ( 110807, 0, True ),
+          ( 112997, 0, True ),
           ( 113769, 5 ),       # Wrath
         ), 
     ]

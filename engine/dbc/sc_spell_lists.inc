@@ -101,7 +101,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 28 abilities
+    // General tree, 29 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -131,6 +131,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        31801, // Seal of Truth
        10326, // Turn Evil
        85673, // Word of Glory
+      122287, // Wrath (Symbiosis)
            0,
     },
     // Holy tree, 10 abilities
@@ -469,7 +470,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 25 abilities
+    // General tree, 26 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -496,6 +497,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        46584, // Raise Dead
        47476, // Strangulate
        48265, // Unholy Presence
+      113516, // Wild Mushroom: Plague (Symbiosis)
            0,
     },
     // Blood tree, 8 abilities
@@ -907,16 +909,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 43 abilities
+    // General tree, 48 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
        33786, // Cyclone
+      122283, // Death Coil
       102280, // Displacer Beast
          339, // Entangling Roots
          770, // Faerie Fire
+      110807, // Feral Spirit
        22568, // Ferocious Bite
        33943, // Flight Form (Shapeshift)
       106737, // Force of Nature
@@ -934,6 +938,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102359, // Mass Entanglement
         6807, // Maul
       106922, // Might of Ursoc
+      110621, // Mirror Image
         8921, // Moonfire
        16689, // Nature's Grasp
        17116, // Nature's Swiftness
@@ -942,6 +947,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        20484, // Rebirth
          774, // Rejuvenation
       108238, // Renewal
+      112997, // Shattering Blow
         2908, // Soothe
       106898, // Stampeding Roar
        40120, // Swift Flight Form (Shapeshift)
@@ -951,6 +957,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          783, // Travel Form (Shapeshift)
        50516, // Typhoon
       102793, // Ursol's Vortex
+      110691, // Wrath
         5176, // Wrath
            0,
     },
