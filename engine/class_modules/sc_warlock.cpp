@@ -371,7 +371,6 @@ struct warlock_pet_t : public pet_t
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
-  virtual double composite_spell_power( school_e school );
   virtual double composite_player_multiplier( school_e school, action_t* a );
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   warlock_t* o() const
@@ -929,15 +928,6 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   }
 
   pet_t::schedule_ready( delta_time, waiting );
-}
-
-double warlock_pet_t::composite_spell_power( school_e school )
-{
-  // Warlock pets, uniquely, do get spell power from their base intellect. This is not reflected in the pet pane.
-  double sp = player_t::composite_spell_power( school );
-  sp /= current.spell_power_multiplier; // Base spell power from the pet's own intellect is not affected by the orc racial
-  sp += pet_t::composite_spell_power( school );
-  return sp;
 }
 
 double warlock_pet_t::composite_player_multiplier( school_e school, action_t* a )
