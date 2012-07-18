@@ -4867,8 +4867,11 @@ void warlock_t::combat_begin()
   resources.current[ RESOURCE_BURNING_EMBER ] = initial_burning_embers;
   resources.current[ RESOURCE_DEMONIC_FURY ] = initial_demonic_fury;
 
-  buffs.demonic_calling -> trigger();
-  demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * composite_spell_haste() ) ) );
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    buffs.demonic_calling -> trigger();
+    demonic_calling_event = new ( sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(), timespan_t::from_seconds( DEMONIC_CALLING_REFRESH * composite_spell_haste() ) ) );
+  }
 }
 
 
