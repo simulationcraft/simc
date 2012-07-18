@@ -2462,6 +2462,9 @@ struct devouring_plague_t : public priest_spell_t
     base_td = num_ticks = 0;
     base_tick_time = timespan_t::zero();
 
+    // BUG: 15851. FIX-ME.
+    direct_power_mod = 1.333;
+
 
     tick_may_crit = true;
 
