@@ -1651,10 +1651,19 @@ struct windlash_t : public shaman_melee_attack_t
 
   void execute()
   {
-    p() -> buff.flurry -> decrement();
-    p() -> buff.unleash_wind -> decrement();
+    if ( time_to_execute > timespan_t::zero() && p() -> executing )
+    {
+      if ( sim -> debug ) 
+        sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      schedule_execute();
+    }
+    else
+    {
+      p() -> buff.flurry -> decrement();
+      p() -> buff.unleash_wind -> decrement();
 
-    shaman_melee_attack_t::execute();
+      shaman_melee_attack_t::execute();
+    }
   }
 
   void impact( action_state_t* state )
