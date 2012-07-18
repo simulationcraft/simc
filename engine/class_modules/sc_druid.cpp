@@ -3085,6 +3085,34 @@ struct celestial_alignment_t : public druid_spell_t
   }
 };
 
+// Death Coil ===============================================================
+
+struct death_coil_t : public druid_spell_t
+{
+  death_coil_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "death_coil", player,
+      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+    
+    // 122282 has generic spell info
+    // 122283 has the damage dealing info
+    parse_spell_data( ( *player -> dbc.spell( 122283 ) ) );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != DEATH_KNIGHT )
+      return false;
+
+    if ( ! p() -> buff.cat_form -> check() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+
+};
+
 // Enrage ===================================================================
 
 struct enrage_t : public druid_spell_t
@@ -4242,6 +4270,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "claw"                   ) return new                   claw_t( this, options_str );
   if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
+  if ( name == "death_coil"             ) return new             death_coil_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
