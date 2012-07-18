@@ -512,7 +512,7 @@ option_db_t::option_db_t()
   auto_path += "Tier13N";
   auto_path += "|..";
   auto_path += DIRECTORY_DELIMITER;
-  auto_path += "|profiles";
+  auto_path += "profiles";
   auto_path += DIRECTORY_DELIMITER;
   auto_path += "PreRaid";
 }
