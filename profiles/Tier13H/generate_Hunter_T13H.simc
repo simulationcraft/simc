@@ -5,21 +5,18 @@
 # BM
 wowhead=34727487
 name=Hunter_BM_T13H
-professions=blacksmithing=525/engineering=525
-main_hand=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
+professions=jewelcrafting=525/enchanting=525
 save=Hunter_BM_T13H.simc
 
 # MM
-wowhead=34727605
+wowhead=34729655
 name=Hunter_MM_T13H
-professions=blacksmithing=525/engineering=525
-main_hand=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
+professions=jewelcrafting=525/enchanting=525
 save=Hunter_MM_T13H.simc
 
 # SV
-wowhead=34727608
+wowhead=34729653
 name=Hunter_SV_T13H
-professions=blacksmithing=525/engineering=525
-main_hand=vishanka_jaws_of_the_earth,heroic=1,ilevel=416,quality=epic,stats=182agi_274sta,enchant=flintlockes_woodchucker,weapon=bow_3.00speed_2226min_4135max
+professions=jewelcrafting=525/enchanting=525
 save=Hunter_SV_T13H.simc
 
