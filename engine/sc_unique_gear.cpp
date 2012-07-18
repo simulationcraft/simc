@@ -1821,14 +1821,14 @@ static void register_zen_alchemist_stone( item_t* item )
 
       player_t* p = a -> player;
 
-      if ( p -> current.attribute[ ATTR_STRENGTH ] > p -> current.attribute[ ATTR_AGILITY ] )
+      if ( p -> strength() > p -> agility() )
       {
-        if ( p -> current.attribute[ ATTR_STRENGTH ] > p -> current.attribute[ ATTR_INTELLECT ] )
+        if ( p -> strength() > p -> intellect() )
           buff = buff_zen_alchemist_stone_str;
         else
           buff = buff_zen_alchemist_stone_int;
       }
-      else if ( p -> current.attribute[ ATTR_AGILITY ] > p -> current.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> agility() > p -> intellect() )
         buff = buff_zen_alchemist_stone_agi;
       else
         buff = buff_zen_alchemist_stone_int;
