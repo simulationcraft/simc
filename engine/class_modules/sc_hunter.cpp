@@ -3753,9 +3753,9 @@ std::string hunter_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case HUNTER_BEAST_MASTERY:  return "000000";
-  case HUNTER_SURVIVAL:       return "000000";
-  case HUNTER_MARKSMANSHIP:   return "000000";
+  case HUNTER_BEAST_MASTERY:  return "000311";
+  case HUNTER_SURVIVAL:       return "000311";
+  case HUNTER_MARKSMANSHIP:   return "000311";
   default:  return player_t::set_default_talents();
   }
 }
