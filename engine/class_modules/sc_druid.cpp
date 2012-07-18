@@ -808,11 +808,10 @@ struct druid_spell_t : public druid_action_t<spell_t>
 
 struct symbiosis_mirror_images_t : public pet_t
 {
-  // FIX ME: Currently a copy of treants, which spells do ththese cast?
   struct wrath_t : public spell_t
   {
     wrath_t( symbiosis_mirror_images_t* player ) :
-      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+      spell_t( "wrath", player, player -> find_spell( 110691 ) )
     {
       if ( player -> o() -> pet_mirror_images[ 0 ] )
         stats = player -> o() -> pet_mirror_images[ 0 ] -> get_stats( "wrath" );
