@@ -666,7 +666,7 @@ bool mmo_champion::download_slot( item_t&            item,
   if ( ! node )
   {
     if ( caching != cache::ONLY )
-      item.sim -> errorf( "Player %s nable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+      item.sim -> errorf( "Player %s unable to download item id '%s' from mmo-champion at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
 
