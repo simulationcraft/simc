@@ -3999,7 +3999,7 @@ struct symbiosis_t : public druid_spell_t
 {
   player_e target_class;
   symbiosis_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ), options_str ),
+    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ) ),
     target_class( PLAYER_NONE )
   {
     std::string class_str;
@@ -4011,9 +4011,6 @@ struct symbiosis_t : public druid_spell_t
     parse_options( options, options_str );
 
     harmful = false;
-    // Override these as we can precast before combat begins
-    trigger_gcd       = timespan_t::zero();
-    base_execute_time = timespan_t::zero();
 
     if ( ! class_str.empty() )
       target_class = util::parse_player_type( class_str );
