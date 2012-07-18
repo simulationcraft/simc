@@ -1767,10 +1767,19 @@ struct melee_t : public shaman_melee_attack_t
 
   void execute()
   {
-    p() -> buff.flurry -> decrement();
-    p() -> buff.unleash_wind -> decrement();
+    if ( time_to_execute > timespan_t::zero() && p() -> executing )
+    {
+      if ( sim -> debug ) 
+        sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      schedule_execute();
+    }
+    else
+    {
+      p() -> buff.flurry -> decrement();
+      p() -> buff.unleash_wind -> decrement();
 
-    shaman_melee_attack_t::execute();
+      shaman_melee_attack_t::execute();
+    }
   }
 
   void impact( action_state_t* state )
@@ -2157,6 +2166,9 @@ void shaman_spell_t::execute()
       }
     }
   }
+  
+  if ( maelstrom )
+    p() -> buff.maelstrom_weapon -> expire();
 }
 
 // shaman_spell_t::impact ==================================================
@@ -2292,12 +2304,6 @@ struct chain_lightning_t : public shaman_spell_t
     }
 
     return c;
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
-    p() -> buff.maelstrom_weapon -> expire();
   }
 
   void impact( action_state_t* state )
@@ -2745,13 +2751,6 @@ struct lightning_bolt_t : public shaman_spell_t
       m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
-  }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    p() -> buff.maelstrom_weapon -> expire();
   }
 
   virtual timespan_t execute_time()
@@ -3823,7 +3822,7 @@ struct ascendance_buff_t : public buff_t
       timespan_t time_to_hit = timespan_t::zero();
       if ( player -> main_hand_attack -> execute_event )
       {
-        time_to_hit = player -> main_hand_attack -> execute_event -> remains();
+        time_to_hit = sim -> current_time - player -> main_hand_attack -> execute_event -> occurs();
         event_t::cancel( player -> main_hand_attack -> execute_event );
       }
 
@@ -3847,7 +3846,7 @@ struct ascendance_buff_t : public buff_t
         time_to_hit = timespan_t::zero();
         if ( player -> off_hand_attack -> execute_event )
         {
-          time_to_hit = player -> off_hand_attack -> execute_event -> remains();
+          time_to_hit = sim -> current_time - player -> off_hand_attack -> execute_event -> occurs();
           event_t::cancel( player -> off_hand_attack -> execute_event );
         }
 
