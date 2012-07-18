@@ -3999,7 +3999,7 @@ struct symbiosis_t : public druid_spell_t
 {
   player_e target_class;
   symbiosis_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ) ),
+    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ), options_str ),
     target_class( PLAYER_NONE )
   {
     std::string class_str;
