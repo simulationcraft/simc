@@ -588,7 +588,7 @@ int print_html_action_resource( FILE* file, stats_t* s, int j )
 
 // print_html_gear ==========================================================
 
-void print_html_gear ( FILE* file, double avg_ilvl, std::vector<item_t>& items )
+void print_html_gear ( FILE* file, player_t* p )
 {
   fprintf( file,
            "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
@@ -599,11 +599,18 @@ void print_html_gear ( FILE* file, double avg_ilvl, std::vector<item_t>& items )
            "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
            "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
            "\t\t\t\t\t\t\t\t\t</tr>\n",
-           avg_ilvl );
+           p -> avg_ilvl );
 
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
-    item_t& item = items[ i ];
+    item_t& item = p -> items[ i ];
+
+    std::string domain = p -> dbc.ptr ? "ptr" : "mop";
+    std::string item_string;
+    if ( item.active() )
+      item_string = item.id_str.empty() ? item.options_str : "<a href=\"http://" + domain + ".wowhead.com/item=" + item.id_str  + "\">" + item.options_str + "</a>";
+    else
+      item_string = "empty";
 
     fprintf( file,
              "\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -611,7 +618,7 @@ void print_html_gear ( FILE* file, double avg_ilvl, std::vector<item_t>& items )
              "\t\t\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
              "\t\t\t\t\t\t\t\t\t</tr>\n",
              util::inverse_tokenize( item.slot_name() ).c_str(),
-             item.active() ? item.options_str.c_str() : "empty" );
+             item_string.c_str() );
   }
 
   fprintf( file,
@@ -2582,7 +2589,7 @@ void print_html_player_( FILE* file, sim_t* sim, player_t* q, int j=0 )
 
   print_html_stats( file, p );
 
-  print_html_gear( file, p -> avg_ilvl, p -> items );
+  print_html_gear( file, p );
 
   print_html_talents( file, p );
 
