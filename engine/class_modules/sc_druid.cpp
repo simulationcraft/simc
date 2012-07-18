@@ -1461,6 +1461,34 @@ struct claw_t : public druid_cat_attack_t
   { }
 };
 
+// Death Coil ===============================================================
+
+struct death_coil_t : public druid_cat_attack_t
+{
+  death_coil_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "death_coil", player,
+      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+    
+    // 122282 has generic spell info
+    // 122283 has the damage dealing info
+    parse_spell_data( ( *player -> dbc.spell( 122283 ) ) );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != DEATH_KNIGHT )
+      return false;
+
+    if ( ! p() -> buff.cat_form -> check() )
+      return false;
+
+    return druid_cat_attack_t::ready();
+  }
+
+};
+
 // Feral Charge (Cat) =======================================================
 
 struct feral_charge_cat_t : public druid_cat_attack_t
@@ -1908,6 +1936,41 @@ struct savage_roar_t : public druid_cat_attack_t
 
     p() -> buff.savage_roar -> trigger( 1, -1.0, -1.0, duration );
   }
+};
+
+// Shattering Blow ==========================================================
+
+struct shattering_blow_t : public druid_cat_attack_t
+{
+  shattering_blow_t( druid_t* player, const std::string& options_str ) :
+    druid_cat_attack_t( "shattering_blow", player,
+      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    druid_cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      s -> target -> debuffs.shattering_throw -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != WARRIOR )
+      return false;
+
+    if ( ! p() -> buff.cat_form -> check() )
+      return false;
+
+    if ( target -> debuffs.shattering_throw -> check() )
+      return false;
+
+    return druid_cat_attack_t::ready();
+  }
+
 };
 
 // Shred ====================================================================
@@ -3083,34 +3146,6 @@ struct celestial_alignment_t : public druid_spell_t
 
     trigger_eclipse_proc( p() );
   }
-};
-
-// Death Coil ===============================================================
-
-struct death_coil_t : public druid_spell_t
-{
-  death_coil_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "death_coil", player,
-      ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 122282 ) : spell_data_t::not_found() )
-  {
-    parse_options( NULL, options_str );
-    
-    // 122282 has generic spell info
-    // 122283 has the damage dealing info
-    parse_spell_data( ( *player -> dbc.spell( 122283 ) ) );
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.symbiosis -> value() != DEATH_KNIGHT )
-      return false;
-
-    if ( ! p() -> buff.cat_form -> check() )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-
 };
 
 // Enrage ===================================================================
@@ -4298,6 +4333,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
+  if ( name == "shattering_blow"        ) return new        shattering_blow_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
