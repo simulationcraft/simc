@@ -41,35 +41,20 @@ actions.aoe+=/conflagrate,if=ember_react&buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 head=hood_of_the_faceless_shroud,id=78702,gems=burning_shadowspirit_50int_30int
-# type=cloth,ilevel=410,quality=epic,stats=1336armor_489int_824sta_370haste_280crit
 neck=flowform_choker,id=71472,gems=50int_10int,reforge=mastery_crit
-# ilevel=391,quality=epic,stats=256int_384sta_163haste_133mastery
 shoulders=mantle_of_the_faceless_shroud,id=78749,gems=50int_50int_20int,enchant=50int_25haste,reforge=mastery_hit
-# type=cloth,ilevel=410,quality=epic,stats=1233armor_368int_611sta_211crit_268mastery
 chest=robes_of_the_faceless_shroud,id=78730,gems=50int_50int_25int_25haste_30int,enchant=20all,reforge=haste_crit
-# type=cloth,ilevel=410,quality=epic,stats=1644armor_489int_824sta_307hit_362haste
 waist=cord_of_the_slain_champion,id=78391,gems=50int_50int_50int_20int,reforge=haste_hit
-# type=cloth,ilevel=410,quality=epic,stats=925armor_368int_611sta_247crit_256haste
 legs=leggings_of_the_faceless_shroud,id=78721,gems=50int_50int_25int_25haste_30int,enchant=95int_55spi,reforge=haste_hit
-# type=cloth,ilevel=410,quality=epic,stats=1439armor_489int_824sta_331mastery_341haste
 feet=janglespur_jackboots,id=78449,gems=50int_50int_20int,enchant=35mastery,reforge=haste_hit
-# type=cloth,ilevel=410,quality=epic,stats=1130armor_368int_611sta_248crit_256haste
 wrists=bracers_of_the_banished,id=78417,gems=50int_50int_10int,enchant=50int,reforge=mastery_hit
-# type=cloth,ilevel=410,quality=epic,stats=719armor_286int_459sta_184mastery_200haste
 hands=gloves_of_liquid_smoke,id=78461,gems=50int_50int_50int_20int,enchant=65mastery,reforge=haste_hit
-# type=cloth,ilevel=416,quality=epic,stats=1055armor_391int_647sta_291haste_238crit
 finger1=ring_of_the_riven,id=78419,gems=50int_10int,reforge=mastery_hit
-# ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste
 finger2=infinite_loop,id=78490,gems=50int_10int
-# ilevel=410,quality=epic,stats=286int_459sta_164hit_212crit
 trinket1=will_of_unbinding,id=77995
-# ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=insignia_of_the_corrupted_mind,id=77991
-# ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
 back=nanoprecise_cape,id=77098,gems=50int_10int,enchant=lightweave_embroidery_2,reforge=mastery_crit
-# ilevel=397,quality=epic,stats=769armor_251int_406sta_173mastery_166hit
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent,reforge=hit_crit
-# ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,weapon=staff_3.30speed_2344min_3517max
 # Gear Summary
 # gear_strength=20
 # gear_agility=20

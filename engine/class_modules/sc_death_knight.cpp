@@ -2103,7 +2103,7 @@ struct death_and_decay_t : public death_knight_spell_t
     tick_power_mod   = 0.064;
     base_td          = data().effectN( 2 ).average( p );
     base_tick_time   = timespan_t::from_seconds( 1.0 );
-    num_ticks        = data().duration().total_seconds() / base_tick_time.total_seconds(); // 11 with tick_zero
+    num_ticks        = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); // 11 with tick_zero
     tick_may_crit    = true;
     tick_zero        = true;
     hasted_ticks     = false;
@@ -2277,7 +2277,7 @@ struct frost_fever_t : public death_knight_spell_t
   {
     base_td          = data().effectN( 1 ).average( p );
     base_tick_time   = p -> find_spell( 55095 ) -> effectN( 1 ).period();
-    num_ticks        = p -> find_spell( 55095 ) -> duration().total_seconds() / base_tick_time.total_seconds();
+    num_ticks        = ( int ) ( p -> find_spell( 55095 ) -> duration().total_seconds() / base_tick_time.total_seconds() );
     hasted_ticks     = false;
     may_miss         = false;
     may_crit         = false;

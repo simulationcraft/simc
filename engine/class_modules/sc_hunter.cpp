@@ -3764,13 +3764,13 @@ std::string hunter_t::set_default_talents()
 
 std::string hunter_t::set_default_glyphs()
 {
-  switch ( specialization() )
-  {
+  //switch ( specialization() )
+  //{
   //case HUNTER_BEAST_MASTERY:  return "";
   //case HUNTER_SURVIVAL:       return "";
   //case HUNTER_MARKSMANSHIP:   return "";
-  default:  return player_t::set_default_glyphs();
-  }
+  /*default:*/  return player_t::set_default_glyphs();
+  //}
 }
 
 // HUNTER MODULE INTERFACE ================================================

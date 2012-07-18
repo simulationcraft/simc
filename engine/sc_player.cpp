@@ -7111,7 +7111,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       {
         profile_str += item.slot_name();
         profile_str += "=" + item.options_str + term;
-        if ( ! item.comment_str.empty() ) profile_str += item.comment_str + term;
+        if ( sim -> save_gear_comments && ! item.comment_str.empty() ) profile_str += item.comment_str + term;
       }
     }
     if ( ! items_str.empty() )

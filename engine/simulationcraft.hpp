@@ -2132,6 +2132,7 @@ public:
   int print_styles;
   int report_overheal;
   int save_raid_summary;
+  int save_gear_comments;
   int statistics_level;
   int separate_stats_by_actions;
   int report_raid_summary;
@@ -3646,6 +3647,9 @@ public:
   { return pet_crit(); }
   virtual double composite_spell_crit()
   { return pet_crit(); }
+
+  virtual double composite_attack_speed()
+  { return owner -> composite_attack_speed(); }
 
   virtual double composite_attack_haste()
   { return owner -> composite_attack_haste(); }
