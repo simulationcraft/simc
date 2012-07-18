@@ -17,6 +17,16 @@ static std::string source_str( wowhead::wowhead_e source )
   }
 }
 
+static std::string source_desc_str( wowhead::wowhead_e source )
+{
+  switch ( source )
+  {
+    case wowhead::PTR:  return "Public Test Realm";
+    case wowhead::MOP:  return "Mists of Pandaria";
+    default:   return "Live";
+  }
+}
+
 // format_server ============================================================
 
 static std::string& format_server( std::string& name )
@@ -954,15 +964,28 @@ bool wowhead::download_item( item_t&            item,
                              cache::behavior_e  caching )
 {
   player_t* p = item.player;
+  std::string error_str;
 
   xml_node_t* node = download_id( item.sim, item_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )
-      item.sim -> errorf( "Player %s unable to download item id '%s'' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+      item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
     return false;
   }
+  
+  if ( node && xml::get_value( error_str, node, "error/." ) )
+  {
+    if ( item.sim -> debug )
+    {
+      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s", 
+        source_desc_str( source ).c_str(), p -> name(), 
+        item_id.c_str(), item.slot_name(), error_str.c_str() );
+    }
 
+    return false;
+  }
+  
   if ( ! parse_item_name( item, node ) )
   {
     item.sim -> errorf( "Player %s unable to determine item name for id '%s'' at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
@@ -1027,12 +1050,25 @@ bool wowhead::download_slot( item_t&            item,
                              cache::behavior_e  caching )
 {
   player_t* p = item.player;
+  std::string error_str;
 
   xml_node_t* node = download_id( item.sim, item_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )
       item.sim -> errorf( "Player %s unable to download item id '%s' from wowhead at slot %s.\n", p -> name(), item_id.c_str(), item.slot_name() );
+    return false;
+  }
+
+  if ( node && xml::get_value( error_str, node, "error/." ) )
+  {
+    if ( item.sim -> debug )
+    {
+      item.sim -> errorf( "Wowhead (%s): Player %s item id '%s' in slot '%s' error: %s", 
+        source_desc_str( source ).c_str(), p -> name(), 
+        item_id.c_str(), item.slot_name(), error_str.c_str() );
+    }
+
     return false;
   }
 
