@@ -528,7 +528,7 @@ void http::cache_load()
 
     while ( ! file.eof() )
     {
-      uint32_t size;
+      size_t size;
 
       file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
       url.resize( size );
