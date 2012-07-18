@@ -174,6 +174,7 @@ public:
     buff_t* starfall;
     buff_t* stealthed;
     buff_t* survival_instincts;
+    buff_t* symbiosis;
     buff_t* t13_4pc_melee;
     buff_t* tigers_fury;
 
@@ -3337,6 +3338,41 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
+// Mirror Images (Symbiosis) Spell ==========================================
+
+struct mirror_images_spell_t : public druid_spell_t
+{
+  mirror_images_spell_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "mirror_images", player,
+      ( player -> specialization() == DRUID_BALANCE ) ? player -> find_spell( 110621 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    if ( p() -> pet_mirror_images[ 0 ] )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        p() -> pet_mirror_images[ i ] -> summon( player -> find_spell( 110621 ) -> duration() );
+      }
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != MAGE )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+
+};
+
 // Moonfire Spell ===========================================================
 
 struct moonfire_t : public druid_spell_t
@@ -3961,8 +3997,10 @@ struct survival_instincts_t : public druid_spell_t
 
 struct symbiosis_t : public druid_spell_t
 {
+  player_e target_class;
   symbiosis_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ) )
+    druid_spell_t( "symbiosis", player, player -> find_class_spell( "Symbiosis" ) ),
+    target_class( PLAYER_NONE )
   {
     std::string class_str;
     option_t options[] =
@@ -3976,6 +4014,26 @@ struct symbiosis_t : public druid_spell_t
     // Override these as we can precast before combat begins
     trigger_gcd       = timespan_t::zero();
     base_execute_time = timespan_t::zero();
+
+    if ( ! class_str.empty() )
+      target_class = util::parse_player_type( class_str );
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+    p() -> buff.symbiosis -> trigger( 1, target_class, 1.0 );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> in_combat )
+      return false;
+    
+    if ( p() -> buff.symbiosis -> check() )
+      return false;
+
+    return druid_spell_t::ready();
   }
 };
 
@@ -4201,6 +4259,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mangle_cat"             ) return new             mangle_cat_t( this, options_str );
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
+  if ( name == "mirror_images"          ) return new    mirror_images_spell_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
@@ -4225,6 +4284,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
+  if ( name == "symbiosis"              ) return new              symbiosis_t( this, options_str );
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
   if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
@@ -4441,6 +4501,7 @@ void druid_t::init_buffs()
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", find_talent_spell( "Soul of the Forest" ) -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
+  buff.symbiosis             = buff_creator_t( this, "symbiosis", find_class_spell( "Symbiosis" ) );
   buff.t13_4pc_melee         = buff_creator_t( this, "t13_4pc_melee", spell_data_t::nil() );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
