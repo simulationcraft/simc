@@ -399,6 +399,7 @@ struct warlock_pet_melee_t : public melee_attack_t
       may_crit    = true;
       background  = true;
       base_hit -= 0.19;
+      base_multiplier = 0.5;
     }
   };
 
@@ -1167,16 +1168,15 @@ struct wrathguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
     action_list_str = "mortal_cleave";
-    owner_coeff.ap_from_sp = 2.3; // FIXME: Retest this in a few builds
+    owner_coeff.ap_from_sp = 2.9; // FIXME: Retest this in a few builds
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
-    off_hand_weapon.type = main_hand_weapon.type;
-    off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.825;
+    off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new wrathstorm_t( this );
@@ -1221,16 +1221,15 @@ struct shivarra_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "shivarra", PET_SUCCUBUS )
   {
     action_list_str = "bladedance";
-    owner_coeff.ap_from_sp = 2.3; // FIXME: Retest this in a few builds
+    owner_coeff.ap_from_sp = 2.9;
   }
 
   virtual void init_base()
   {
     warlock_pet_t::init_base();
 
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.436; // FIXME: This seems bugged - tested on beta 2012/07/06
-    off_hand_weapon.type = main_hand_weapon.type;
-    off_hand_weapon.min_dmg = off_hand_weapon.max_dmg = off_hand_weapon.damage = main_hand_weapon.damage;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.825;
+    off_hand_weapon = main_hand_weapon;
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new fellash_t( this );
