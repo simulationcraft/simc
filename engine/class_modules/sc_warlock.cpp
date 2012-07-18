@@ -1017,6 +1017,7 @@ struct succubus_pet_t : public warlock_pet_t
   {
     action_list_str = "lash_of_pain";
     owner_coeff.ap_from_sp = 1.667;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
   }
 
   virtual void init_base()
