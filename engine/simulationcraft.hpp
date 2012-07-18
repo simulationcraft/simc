@@ -4493,6 +4493,13 @@ void print_suite( sim_t* );
 
 namespace wowhead
 {
+enum wowhead_e
+{
+  LIVE,
+  PTR,
+  MOP
+};
+  
 player_t* download_player( sim_t* sim,
                            const std::string& region,
                            const std::string& server,
@@ -4506,14 +4513,14 @@ bool download_slot( item_t&,
                     const std::string& reforge_id,
                     const std::string& rsuffix_id,
                     const std::string gem_ids[ 3 ],
-                    bool ptr=false,
+                    wowhead_e source = LIVE,
                     cache::behavior_e b=cache::items() );
 bool download_item( item_t&, const std::string& item_id,
-                    bool ptr=false, cache::behavior_e b=cache::items() );
+                    wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     bool ptr=false, cache::behavior_e b=cache::items() );
+                     wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
 gem_e parse_gem( item_t& item, const std::string& gem_id,
-                 bool ptr=false, cache::behavior_e b=cache::items() );
+                 wowhead_e source = LIVE, cache::behavior_e b=cache::items() );
 }
 
 // CharDev  =================================================================

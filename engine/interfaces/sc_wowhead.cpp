@@ -5,6 +5,18 @@
 
 #include "simulationcraft.hpp"
 
+// source_str ===============================================================
+
+static std::string source_str( wowhead::wowhead_e source )
+{
+  switch ( source )
+  {
+    case wowhead::PTR:  return "ptr";
+    case wowhead::MOP:  return "mop";
+    default:   return "www";
+  }
+}
+
 // format_server ============================================================
 
 static std::string& format_server( std::string& name )
@@ -74,11 +86,11 @@ static js_node_t* download_profile( sim_t* sim,
 static xml_node_t* download_id( sim_t*             sim,
                                 const std::string& id_str,
                                 cache::behavior_e  caching,
-                                bool               ptr=false )
+                                wowhead::wowhead_e source )
 {
   if ( id_str.empty() || id_str == "0" ) return 0;
 
-  std::string url_www = ( ptr ? "http://ptr.wowhead.com/item=" : "http://www.wowhead.com/item=" )
+  std::string url_www = "http://" + source_str( source ) + ".wowhead.com/item="
                         + id_str + "&xml";
 
   xml_node_t *node = xml::get( sim, url_www, caching, "</json>" );
@@ -866,13 +878,13 @@ static player_t* download_player_profile( sim_t* sim,
 
 gem_e wowhead::parse_gem( item_t&            item,
                           const std::string& gem_id,
-                          bool               ptr,
+                          wowhead_e          source,
                           cache::behavior_e  caching )
 {
   if ( gem_id.empty() || gem_id == "0" )
     return GEM_NONE;
 
-  xml_node_t* node = download_id( item.sim, gem_id, caching, ptr );
+  xml_node_t* node = download_id( item.sim, gem_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )
@@ -920,10 +932,10 @@ gem_e wowhead::parse_gem( item_t&            item,
 bool wowhead::download_glyph( player_t*          player,
                               std::string&       glyph_name,
                               const std::string& glyph_id,
-                              bool               ptr,
+                              wowhead_e          source,
                               cache::behavior_e  caching )
 {
-  xml_node_t* node = download_id( player -> sim, glyph_id, caching, ptr );
+  xml_node_t* node = download_id( player -> sim, glyph_id, caching, source );
   if ( ! node || ! xml::get_value( glyph_name, node, "name/cdata" ) )
   {
     if ( caching != cache::ONLY )
@@ -938,12 +950,12 @@ bool wowhead::download_glyph( player_t*          player,
 
 bool wowhead::download_item( item_t&            item,
                              const std::string& item_id,
-                             bool               ptr,
+                             wowhead_e          source,
                              cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, caching, ptr );
+  xml_node_t* node = download_id( item.sim, item_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )
@@ -1011,12 +1023,12 @@ bool wowhead::download_slot( item_t&            item,
                              const std::string& reforge_id,
                              const std::string& rsuffix_id,
                              const std::string  gem_ids[ 3 ],
-                             bool               ptr,
+                             wowhead_e          source,
                              cache::behavior_e  caching )
 {
   player_t* p = item.player;
 
-  xml_node_t* node = download_id( item.sim, item_id, caching, ptr );
+  xml_node_t* node = download_id( item.sim, item_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )

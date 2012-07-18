@@ -2006,6 +2006,7 @@ struct stormblast_t : public shaman_melee_attack_t
 
     parse_options( NULL, options_str );
 
+    school               = SCHOOL_NATURE;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;

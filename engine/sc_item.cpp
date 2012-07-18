@@ -1394,10 +1394,13 @@ bool item_t::download_slot( item_t& item,
                                                 rsuffix_id, gem_ids );
       else if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cache::ONLY );
+                                          rsuffix_id, gem_ids, wowhead::LIVE, cache::ONLY );
       else if ( src == "ptrhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cache::ONLY );
+                                          rsuffix_id, gem_ids, wowhead::PTR, cache::ONLY );
+      else if ( src == "mophead" )
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, wowhead::MOP, cache::ONLY );
       else if ( src == "mmoc" )
         success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                                rsuffix_id, gem_ids, cache::ONLY );
@@ -1415,10 +1418,13 @@ bool item_t::download_slot( item_t& item,
       const std::string& src = item.sim -> item_db_sources[ i ];
       if ( src == "wowhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                          rsuffix_id, gem_ids, item.player -> dbc.ptr, cb );
+                                          rsuffix_id, gem_ids, wowhead::LIVE, cb );
       else if ( src == "ptrhead" )
         success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
-                                          rsuffix_id, gem_ids, ! item.player -> dbc.ptr, cb );
+                                          rsuffix_id, gem_ids, wowhead::PTR, cb );
+      else if ( src == "mophead" )
+        success = wowhead::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
+                                          rsuffix_id, gem_ids, wowhead::MOP, cb );
       else if ( src == "mmoc" )
         success = mmo_champion::download_slot( item, item_id, enchant_id, addon_id, reforge_id,
                                                rsuffix_id, gem_ids, cb );
@@ -1451,9 +1457,11 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
       if ( source_list[ i ] == "local" )
         success = item_database::download_item( item, item_id );
       else if ( source_list[ i ] == "wowhead" )
-        success = wowhead::download_item( item, item_id, false, cache::ONLY );
+        success = wowhead::download_item( item, item_id, wowhead::LIVE, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        success = wowhead::download_item( item, item_id, true, cache::ONLY );
+        success = wowhead::download_item( item, item_id, wowhead::PTR, cache::ONLY );
+      else if ( source_list[ i ] == "mophead" )
+        success = wowhead::download_item( item, item_id, wowhead::MOP, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
         success = mmo_champion::download_item( item, item_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
@@ -1467,9 +1475,11 @@ bool item_t::download_item( item_t& item, const std::string& item_id )
     for ( unsigned i = 0; ! success && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        success = wowhead::download_item( item, item_id, false );
+        success = wowhead::download_item( item, item_id, wowhead::LIVE );
       else if ( source_list[ i ] == "ptrhead" )
-        success = wowhead::download_item( item, item_id, true );
+        success = wowhead::download_item( item, item_id, wowhead::PTR );
+      else if ( source_list[ i ] == "mophead" )
+        success = wowhead::download_item( item, item_id, wowhead::MOP );
       else if ( source_list[ i ] == "mmoc" )
         success = mmo_champion::download_item( item, item_id );
       else if ( source_list[ i ] == "bcpapi" )
@@ -1494,9 +1504,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
       if ( src == "local" )
         success = item_database::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "wowhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, false, cache::ONLY );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE, cache::ONLY );
       else if ( src == "ptrhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, true, cache::ONLY );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR, cache::ONLY );
+      else if ( src == "mophead" )
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::MOP, cache::ONLY );
       else if ( src == "mmoc" )
         success = mmo_champion::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
       else if ( src == "bcpapi" )
@@ -1511,9 +1523,11 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
     {
       const std::string& src = player -> sim -> item_db_sources[ i ];
       if ( src == "wowhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE );
       else if ( src == "ptrhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, true );
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR );
+      else if ( src == "mophead" )
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::MOP );
       else if ( src == "mmoc" )
         success = mmo_champion::download_glyph( player, glyph_name, glyph_id );
       else if ( src == "bcpapi" )
@@ -1551,9 +1565,11 @@ unsigned item_t::parse_gem( item_t&            item,
       if ( source_list[ i ] == "local" )
         type = item_database::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "wowhead" )
-        type = wowhead::parse_gem( item, gem_id, false, cache::ONLY );
+        type = wowhead::parse_gem( item, gem_id, wowhead::LIVE, cache::ONLY );
       else if ( source_list[ i ] == "ptrhead" )
-        type = wowhead::parse_gem( item, gem_id, true, cache::ONLY );
+        type = wowhead::parse_gem( item, gem_id, wowhead::PTR, cache::ONLY );
+      else if ( source_list[ i ] == "mophead" )
+        type = wowhead::parse_gem( item, gem_id, wowhead::MOP, cache::ONLY );
       else if ( source_list[ i ] == "mmoc" )
         type = mmo_champion::parse_gem( item, gem_id, cache::ONLY );
       else if ( source_list[ i ] == "bcpapi" )
@@ -1567,9 +1583,11 @@ unsigned item_t::parse_gem( item_t&            item,
     for ( unsigned i = 0; type == GEM_NONE && i < source_list.size(); i++ )
     {
       if ( source_list[ i ] == "wowhead" )
-        type = wowhead::parse_gem( item, gem_id );
+        type = wowhead::parse_gem( item, gem_id, wowhead::LIVE );
       else if ( source_list[ i ] == "ptrhead" )
-        type = wowhead::parse_gem( item, gem_id, true );
+        type = wowhead::parse_gem( item, gem_id, wowhead::PTR );
+      else if ( source_list[ i ] == "mophead" )
+        type = wowhead::parse_gem( item, gem_id, wowhead::MOP );
       else if ( source_list[ i ] == "mmoc" )
         type = mmo_champion::parse_gem( item, gem_id );
       else if ( source_list[ i ] == "bcpapi" )
