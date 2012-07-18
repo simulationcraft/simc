@@ -578,6 +578,10 @@ struct eoe_execute_event_t : public event_t
     // EoE proc re-executes the "effect" with the same snapshot stats
     shaman_spell_state_t* ss = static_cast< shaman_spell_state_t* >( spell -> get_state( spell -> execute_state ) );
     ss -> eoe_proc = true;
+
+    if ( sim -> debug )
+      ss -> debug();
+
     ss -> result = spell -> calculate_result( ss -> composite_crit(),
                                               ss -> target -> level );
     if ( spell -> result_is_hit( ss -> result ) )
@@ -2839,6 +2843,67 @@ struct elemental_blast_t : public shaman_spell_t
     buff_rng = player -> get_rng( "elemental_blast_rng" );
   }
 
+  void schedule_travel( action_state_t* s )
+  {
+    // Aaaaaaaaaaaaand tweak the state, so we get a proper execute_state
+    snapshot_state( s, snapshot_flags );
+    if ( sim -> debug )
+      s -> debug();
+    
+    shaman_spell_t::schedule_travel( s );
+  }
+
+  result_e calculate_result( double crit, unsigned target_level )
+  {
+    int delta_level = target_level - player -> level;
+
+    direct_dmg = 0;
+    result_e result = RESULT_NONE;
+
+    if ( ( result == RESULT_NONE ) && may_miss )
+    {
+      if ( rng_result -> roll( miss_chance( composite_hit(), delta_level ) ) )
+        result = RESULT_MISS;
+    }
+
+    if ( result == RESULT_NONE )
+    {
+      result = RESULT_HIT;
+      
+      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, 3 ) );
+      assert( b < 3 );
+      
+      p() -> buff.elemental_blast_crit -> expire();
+      p() -> buff.elemental_blast_haste -> expire();
+      p() -> buff.elemental_blast_mastery -> expire();
+
+      if ( b == 0 )
+        p() -> buff.elemental_blast_crit -> trigger();
+      else if ( b == 1 )
+        p() -> buff.elemental_blast_haste -> trigger();
+      else
+        p() -> buff.elemental_blast_mastery -> trigger();
+
+      crit = composite_crit() + composite_target_crit( target );
+
+      if ( rng_result -> roll( crit_chance( crit, delta_level ) ) )
+        result = RESULT_CRIT;
+    }
+
+    if ( sim -> debug ) sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+
+    return result;
+  }
+
+  double calculate_direct_damage( result_e r, int chain_target, double ap, double sp, double multiplier, player_t* t )
+  {
+    multiplier = composite_da_multiplier() * composite_target_da_multiplier( t );
+    
+    //sim_t::output( sim, "Multiplier %f spellpower %f", multiplier, sp );
+
+    return shaman_spell_t::calculate_direct_damage( r, chain_target, ap, sp, multiplier, t );
+  }
+
   virtual double action_multiplier()
   {
     double m = shaman_spell_t::action_multiplier();
@@ -2847,24 +2912,6 @@ struct elemental_blast_t : public shaman_spell_t
       m += p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    shaman_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, 3 ) );
-      assert( b < 3 );
-
-      if ( b == 0 )
-        p() -> buff.elemental_blast_crit -> trigger();
-      else if ( b == 1 )
-        p() -> buff.elemental_blast_haste -> trigger();
-      else
-        p() -> buff.elemental_blast_mastery -> trigger();
-    }
   }
 };
 
