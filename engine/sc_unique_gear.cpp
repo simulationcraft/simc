@@ -1774,6 +1774,75 @@ static void register_titahk( item_t* item )
   p -> callbacks.register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
+// register_zen_alchemist_stone =============================================
+
+static void register_zen_alchemist_stone( item_t* item )
+{
+  maintenance_check( 450 );
+
+  player_t* p = item -> player;
+
+  item -> unique = true;
+
+  struct zen_alchemist_stone_callback : public stat_proc_callback_t
+  {
+    stat_buff_t* buff_zen_alchemist_stone_str;
+    stat_buff_t* buff_zen_alchemist_stone_agi;
+    stat_buff_t* buff_zen_alchemist_stone_int;
+
+    zen_alchemist_stone_callback( player_t* p ) :
+      stat_proc_callback_t( "zen_alchemist_stone", p, STAT_STRENGTH, 1, 0, 0, timespan_t::zero(), timespan_t::zero(), timespan_t::zero(), false, false ),
+      buff_zen_alchemist_stone_str( 0 ), buff_zen_alchemist_stone_agi( 0 ), buff_zen_alchemist_stone_int( 0 )
+    {
+      const spell_data_t* spell = p -> find_spell( 105574 );
+
+      struct common_buff_creator : public stat_buff_creator_t
+      {
+        common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell ) :
+          stat_buff_creator_t ( p, "zen_alchemist_stone_" + n, spell  )
+        {
+          duration( p -> find_spell( 60229 ) -> duration() );
+          cd( timespan_t::from_seconds( 120 ) );
+          activated( false );
+        }
+      };
+
+      buff_zen_alchemist_stone_str = common_buff_creator( p, "str", spell )
+                                     .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).average( p ) );
+      buff_zen_alchemist_stone_agi = common_buff_creator( p, "agi", spell )
+                                     .add_stat( STAT_AGILITY, spell -> effectN( 1 ).average( p ) );
+      buff_zen_alchemist_stone_int = common_buff_creator( p, "int", spell )
+                                     .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).average( p ) );
+    }
+
+    virtual void trigger( action_t* a, void* call_data )
+    {
+      if ( buff -> cooldown -> remains() > timespan_t::zero() ) return;
+
+      player_t* p = a -> player;
+
+      if ( p -> current.attribute[ ATTR_STRENGTH ] > p -> current.attribute[ ATTR_AGILITY ] )
+      {
+        if ( p -> current.attribute[ ATTR_STRENGTH ] > p -> current.attribute[ ATTR_INTELLECT ] )
+          buff = buff_zen_alchemist_stone_str;
+        else
+          buff = buff_zen_alchemist_stone_int;
+      }
+      else if ( p -> current.attribute[ ATTR_AGILITY ] > p -> current.attribute[ ATTR_INTELLECT ] )
+        buff = buff_zen_alchemist_stone_agi;
+      else
+        buff = buff_zen_alchemist_stone_int;
+
+      stat_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( p );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
+}
+
 // ==========================================================================
 // unique_gear::init
 // ==========================================================================
@@ -1832,6 +1901,7 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "tyrandes_favorite_doll"              ) ) register_tyrandes_favorite_doll            ( &item );
     if ( ! strcmp( item.name(), "windward_heart"                      ) ) register_windward_heart                    ( &item );
     if ( ! strcmp( item.name(), "titahk_the_steps_of_time"            ) ) register_titahk                            ( &item );
+    if ( ! strcmp( item.name(), "zen_alchemist_stone"                 ) ) register_zen_alchemist_stone               ( &item );
   }
 }
 
@@ -2353,6 +2423,9 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   // MoP
   else if ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "carbonic_carbuncle"                  ) e = "OnAttackHit_3386Crit_15%_30Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "windswept_pages"                     ) e = "OnAttackHit_3386Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "searing_words"                       ) e = "OnAttackCrit_3386Agi_45%_25Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
@@ -2475,6 +2548,11 @@ bool unique_gear::get_use_encoding( std::string&       encoding,
 
   // MoP
   else if ( name == "flashfrozen_rosin_globule"    ) e = "4232Int_25Dur_150Cd";
+  else if ( name == "flashing_steel_talisman"      ) e = "4232Int_15Dur_90Cd";
+  else if ( name == "vial_of_ichorous_blood"       ) e = "4241Spi_20Dur_120Cd";
+  else if ( name == "lessons_of_the_darkmaster"    ) e = "4232Str_20Dur_120Cd";
+  else if ( name == "daelos_final_words"           ) e = "6358Str_10Dur_90Cd";
+  else if ( name == "Gerps_perfect_arrow"          ) e = "4232Agi_20Dur_120Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );

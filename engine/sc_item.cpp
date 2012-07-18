@@ -767,7 +767,8 @@ bool item_t::decode_enchant()
        encoded_enchant_str == "windwalk"         ||
        encoded_enchant_str == "spellsurge"       ||
        encoded_enchant_str == "synapse_springs"  ||
-       encoded_enchant_str == "gnomish_xray"      )
+       encoded_enchant_str == "gnomish_xray"     ||
+       encoded_enchant_str == "dancing_steel"     )
   {
     unique_enchant = true;
     return true;
