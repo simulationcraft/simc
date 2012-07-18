@@ -1,14 +1,14 @@
 #!./simc 
 
 warlock="Warlock_Destruction_PreRaid"
-origin=""
+origin="unknown"
 level=90
 race=orc
 spec=destruction
 role=spell
 position=back
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....02
+talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 talent_override=grimoire_of_sacrifice,if=num_targets>2
 glyphs=everlasting_affliction/conflagrate/burning_embers
 actions.precombat=flask,type=warm_sun
