@@ -22,7 +22,7 @@ actions+=/faerie_fire,if=(eclipse_dir=1&eclipse>=19&buff.lunar_empowerment.down)
 actions+=/berserking
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-actions+=/celestial_alignment,if=!buff.solar_eclipse.up&!buff.lunar_eclipse.up&(buff.chosen_of_elune.up|!(eclipse_dir=0))
+actions+=/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)
 actions+=/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)
 actions+=/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking
 actions+=/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking
@@ -39,35 +39,20 @@ actions+=/starsurge,moving=1,if=buff.shooting_stars.react
 actions+=/moonfire,moving=1
 actions+=/sunfire,moving=1
 head=deep_earth_cover,id=78696,gems=burning_shadowspirit_50int_30int,reforge=spi_mastery
-# type=leather,ilevel=410,quality=epic,stats=1700armor_489int_824sta_342haste_315spi
 neck=petrified_fungal_heart,id=78364,reforge=spi_mastery
-# ilevel=410,quality=epic,stats=306int_459sta_204spi_204haste
 shoulders=deep_earth_shoulderwraps,id=78744,gems=50int_50int_20int,enchant=50int_25haste,reforge=spi_haste
-# type=leather,ilevel=410,quality=epic,stats=1570armor_368int_611sta_248spi_256crit
 chest=deep_earth_vestment,id=78662,gems=50int_50int_25int_25haste_30int,enchant=20all,reforge=spi_haste
-# type=leather,ilevel=410,quality=epic,stats=2093armor_489int_824sta_337mastery_320spi
 waist=girdle_of_the_grotesque,id=78420,gems=50int_50int_50int_20int,reforge=spi_haste
-# type=leather,ilevel=410,quality=epic,stats=1177armor_368int_611sta_242spi_261mastery
 legs=deep_earth_leggings,id=78714,gems=50int_50int_50int_30int,enchant=95int_55spi
-# type=leather,ilevel=410,quality=epic,stats=1831armor_489int_824sta_254mastery_381haste
 feet=treads_of_sordid_screams,id=78434,gems=50int_50int_20int,enchant=35mastery,reforge=spi_haste
-# type=leather,ilevel=410,quality=epic,stats=1439armor_368int_611sta_256spi_248crit
 wrists=mycosynth_wristguards,id=78372,gems=50int_50int_10int,enchant=50int,reforge=spi_haste
-# type=leather,ilevel=410,quality=epic,stats=916armor_286int_459sta_203spi_179mastery
 hands=deep_earth_gloves,id=78676,gems=50int_50int_10int,enchant=50haste
-# type=leather,ilevel=410,quality=epic,stats=1308armor_388int_611sta_276haste_245mastery
 finger1=ring_of_the_riven,id=78419,gems=50int_10int
-# ilevel=410,quality=epic,stats=286int_459sta_189mastery_197haste
 finger2=signet_of_suturing,id=78491,gems=50int_10int,reforge=spi_mastery
-# ilevel=410,quality=epic,stats=286int_459sta_169spi_209haste
 trinket1=will_of_unbinding,id=77995
-# ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=insignia_of_the_corrupted_mind,id=77991
-# ilevel=410,quality=epic,stats=517int,equip=ondamage_3278haste_15%_20dur_115cd
 back=woundlicker_cover,id=77096,gems=50int_10int,enchant=lightweave_embroidery_2,reforge=spi_mastery
-# ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent,reforge=hit_mastery
-# ilevel=397,quality=legendary,stats=426int_730sta_314hit_271haste_2786sp,weapon=staff_3.30speed_2344min_3517max
 # Gear Summary
 # gear_strength=20
 # gear_agility=20
