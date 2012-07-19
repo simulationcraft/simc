@@ -32,6 +32,7 @@ struct mage_td_t : public actor_pair_t
 
   struct debuffs_t
   {
+    buff_t* frostbolt;
     buff_t* slow;
   } debuffs;
 
@@ -196,6 +197,7 @@ public:
     const spell_data_t* ignite;
 
     // Frost
+    const spell_data_t* frostbolt;
     const spell_data_t* brain_freeze;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frostburn;
@@ -366,6 +368,28 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
     }
+
+    virtual double action_multiplier()
+    {
+      double am = spell_t::action_multiplier();
+
+      // Remove line when new spell data is in
+      am *= 0.81;
+
+      return am;
+    }
+
+    virtual double composite_target_multiplier( player_t* target )
+    {
+      double am = spell_t::composite_target_multiplier( target );
+
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      am *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
+
+      return am;
+    }
+
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
@@ -1695,6 +1719,35 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td() -> debuffs.frostbolt -> trigger( 1, -1, 1 );
+    }
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    // Remove line when new spell data is in
+    am *= 0.81;
+
+    return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+
+    return tm;
+  }
+
 };
 
 // Frostfire Bolt Spell =====================================================
@@ -1771,6 +1824,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     return c;
   }
+
 };
 
 // Frozen Orb Spell =========================================================
@@ -1881,6 +1935,9 @@ struct ice_lance_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
+    // Remove line when new spell data is in
+    am *= 0.81;
+
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
       am *= 4.0; // Built in bonus against frozen targets
@@ -1894,6 +1951,16 @@ struct ice_lance_t : public mage_spell_t
 
     return am;
   }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+
+    return tm;
+  }
+
 };
 
 // Icy Veins Buff ===========================================================
@@ -2803,6 +2870,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
 
+  debuffs.frostbolt = buff_creator_t( *this, "frostbolt" ).spell( mage -> spec.frostbolt ).duration( timespan_t::from_seconds( 15.0 ) ).max_stack( 3 );
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
 }
 
@@ -2941,6 +3009,7 @@ void mage_t::init_spells()
 
   spec.slow                  = find_class_spell( "Slow" );
 
+  spec.frostbolt             = find_specialization_spell( "Frostbolt" );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
