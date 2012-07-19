@@ -764,6 +764,18 @@ struct earth_elemental_pet_t : public pet_t
       base_execute_time = weapon -> swing_time;
     }
   };
+  
+  struct pulverize_t : public melee_attack_t
+  {
+    pulverize_t( earth_elemental_pet_t* player ) :
+      melee_attack_t( "pulverize", player, player -> find_spell( 118345 ) )
+    {
+      school            = SCHOOL_PHYSICAL;
+      may_crit          = true;
+      special           = true;
+      weapon            = &( player -> main_hand_weapon );
+    }
+  };
 
   earth_elemental_pet_t( sim_t* sim, shaman_t* owner, bool guardian ) :
     pet_t( sim, owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian /*GUARDIAN*/ )
@@ -794,7 +806,7 @@ struct earth_elemental_pet_t : public pet_t
   }
 
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
-  timespan_t available() { return sim -> max_time; }
+  //timespan_t available() { return sim -> max_time; }
 
   virtual void init_base()
   {
@@ -807,7 +819,10 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
 
     if ( o() -> talent.primal_elementalist -> ok() )
+    {
+      action_list_str += "/pulverize";
       owner_coeff.ap_from_sp += 0.5;
+    }
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -815,6 +830,7 @@ struct earth_elemental_pet_t : public pet_t
   {
     if ( name == "travel"      ) return new travel_t( this );
     if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
+    if ( name == "pulverize"   ) return new pulverize_t( this );
 
     return pet_t::create_action( name, options_str );
   }
