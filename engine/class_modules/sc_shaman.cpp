@@ -385,7 +385,7 @@ public:
     if ( attack && attack -> execute_event &&
          attack -> execute_event -> remains() > timespan_t::zero() )
     {
-      timespan_t time_to_hit = attack -> execute_event -> remains();
+      timespan_t time_to_hit = attack -> execute_event -> occurs() - attack -> sim -> current_time;
       time_to_hit *= attack -> swing_haste() / old_swing_haste;
 
       if ( attack -> sim -> debug )
@@ -886,7 +886,10 @@ struct fire_elemental_t : public pet_t
   {
     immolate_t( fire_elemental_t* player, const std::string& options ) :
       fire_elemental_spell_t( "immolate", player, player -> find_spell( 118297 ), options )
-    { }
+    {
+      hasted_ticks  = true;
+      tick_may_crit = true;
+    }
   };
 
   struct fire_melee_t : public melee_attack_t
@@ -1752,9 +1755,11 @@ double shaman_melee_attack_t::cost()
 struct melee_t : public shaman_melee_attack_t
 {
   int sync_weapons;
+  bool first;
 
   melee_t( const std::string& name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw ) :
-    shaman_melee_attack_t( name, player, s ), sync_weapons( sw )
+    shaman_melee_attack_t( name, player, s ), sync_weapons( sw ),
+    first( true )
   {
     may_crit          = true;
     background        = true;
@@ -1767,13 +1772,21 @@ struct melee_t : public shaman_melee_attack_t
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
   }
+  
+  void reset()
+  {
+    shaman_melee_attack_t::reset();
+    
+    first = true;
+  }
 
   virtual timespan_t execute_time()
   {
     timespan_t t = shaman_melee_attack_t::execute_time();
-    if ( ! player -> in_combat )
+    if ( first )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+      first = false;
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.01 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
     }
     return t;
   }
@@ -1888,9 +1901,9 @@ struct lava_lash_t : public shaman_melee_attack_t
   // Lava Lash multiplier calculation from
   // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
   // MoP: Vastly simplified, most bonuses are gone
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double action_da_multiplier()
   {
-    double m = shaman_melee_attack_t::composite_target_multiplier( target );
+    double m = shaman_melee_attack_t::action_da_multiplier();
 
     m *= 1.0 + p() -> buff.searing_flames -> check() * sf_bonus +
          ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
@@ -3966,6 +3979,7 @@ struct haste_buff_t : public buff_t
     buff_t( creator )
   { }
 
+/*
   void execute( int stacks, double value, timespan_t duration )
   {
     int is_up = check();
@@ -3987,7 +4001,7 @@ struct haste_buff_t : public buff_t
       shaman_t::reschedule_auto_attack( player -> off_hand_attack, old_oh_swing_haste );
     }
   }
-
+*/
   void expire()
   {
     int is_up = check();
