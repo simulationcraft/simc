@@ -1043,6 +1043,26 @@ static void trigger_soul_of_the_forest( druid_t* p )
 
 // trigger_eclipse_energy_gain ==============================================
 
+struct delayed_eclipse_fade_event_t : public event_t
+{
+  delayed_eclipse_fade_event_t( player_t* p ) :
+    event_t( p -> sim, p, "delayed_eclipse_fade" )
+  {
+    sim -> add_event( this, timespan_t::from_millis( 100 ) );
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = ( druid_t* ) player;
+    
+    if ( p -> buff.celestial_alignment -> check() )
+      return;
+
+    p -> buff.eclipse_lunar -> expire();
+    p -> buff.eclipse_solar -> expire();
+  }
+};
+
 static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
 {
   if ( gain == 0 )
@@ -1084,7 +1104,8 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   {
     if ( p -> buff.eclipse_solar -> check() )
     {
-      p -> buff.eclipse_solar -> expire();
+      new ( p -> sim ) delayed_eclipse_fade_event_t( p );
+      //p -> buff.eclipse_solar -> expire();
       soul_of_the_forest = true;
     }
     if ( p -> eclipse_bar_value < p -> spec.eclipse -> effectN( 2 ).base_value() )
@@ -1095,7 +1116,8 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
   {
     if ( p -> buff.eclipse_lunar -> check() )
     {
-      p -> buff.eclipse_lunar -> expire();
+      new ( p -> sim ) delayed_eclipse_fade_event_t( p );
+      //p -> buff.eclipse_lunar -> expire();
       soul_of_the_forest = true;
     }
     if ( p -> eclipse_bar_value > p -> spec.eclipse -> effectN( 1 ).base_value() )
@@ -3421,7 +3443,7 @@ struct mirror_images_spell_t : public druid_spell_t
     {
       for ( int i = 0; i < 3; i++ )
       {
-        p() -> pet_mirror_images[ i ] -> summon( player -> find_spell( 110621 ) -> duration() );
+        p() -> pet_mirror_images[ i ] -> summon( data().duration() );
       }
     }
   }
@@ -4375,7 +4397,7 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
     if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
   }
   
-  if ( pet_name == "mirror_image" ) return new symbiosis_mirror_images_t( sim, this );
+  if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_images_t( sim, this );
   
   return 0;
 }
@@ -4387,7 +4409,10 @@ void druid_t::create_pets()
   for ( int i = 0; i < 3; i++ )
   {
     pet_treants[ i ]       = create_pet( "treants" );
-    if ( specialization() == DRUID_BALANCE ) pet_mirror_images[ i ] = create_pet( "mirror_image" );
+    if ( specialization() == DRUID_BALANCE )
+    {
+      pet_mirror_images[ i ] = create_pet( "symbiosis_mirror_image" );
+    }
   }
 }
 
@@ -4893,7 +4918,7 @@ void druid_t::init_actions()
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       // Align the use of Incarnation and Celestial Alignment
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
-      action_list_str += "/celestial_alignment,if=!buff.solar_eclipse.up&!buff.lunar_eclipse.up&(buff.chosen_of_elune.up|!(eclipse_dir=0))";
+      action_list_str += "/celestial_alignment,if=((eclipse_dir=-1&eclipse<=0)|(eclipse_dir=1&eclipse>=0))&(buff.chosen_of_elune.up|!talent.incarnation.enabled)";
       action_list_str += "/moonfire,if=buff.celestial_alignment.up&(!dot.sunfire.ticking|!dot.moonfire.ticking)";
       action_list_str += "/sunfire,if=buff.solar_eclipse.up&!dot.sunfire.ticking";
       action_list_str += "/moonfire,if=buff.lunar_eclipse.up&!dot.moonfire.ticking";
