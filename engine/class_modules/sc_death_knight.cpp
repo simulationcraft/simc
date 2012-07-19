@@ -144,6 +144,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bloodworms;
     buff_t* bone_shield;
@@ -301,6 +302,7 @@ public:
   struct rngs_t
   {
     rng_t* blood_caked_blade;
+    rng_t* blood_tap;
     rng_t* rime;
     rng_t* sudden_doom;
     rng_t* t13_2pc_melee;
@@ -1938,67 +1940,70 @@ struct blood_strike_t : public death_knight_melee_attack_t
 
 struct blood_tap_t : public death_knight_spell_t
 {
+  int consume_charges;
   blood_tap_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "blood_tap", p, p -> find_talent_spell( "Blood Tap" ) )
+    death_knight_spell_t( "blood_tap", p, p -> find_talent_spell( "Blood Tap" ) ),
+    consume_charges( 0 )
   {
     parse_options( NULL, options_str );
 
     harmful   = false;
+    consume_charges = ( int  ) p -> find_spell( 114851 ) -> effectN( 1 ).base_value();
   }
 
   void execute()
   {
-    // Blood tap has some odd behavior.  One of the oddest is that, if
-    // you have a death rune on cooldown and a full blood rune, using
-    // it will take the death rune off cooldown and turn the blood
-    // rune into a death rune!  This allows for a nice sequence for
-    // Unholy Death Knights: "IT PS BS SS tap SS" which replaces a
-    // blood strike with a scourge strike.
+    int depleted_runes[ RUNE_SLOT_MAX ];
+    int num_depleted = 0;
 
-    // Find a non-death blood rune and refresh it.
-    bool rune_was_refreshed = false;
+    // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      dk_rune_t& r = p() -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && ! r.is_ready() )
+      if ( ! p() -> _runes.slot[ i ].is_death() && 
+           ! p() -> _runes.slot[ i ].is_ready() && 
+           ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
       {
-        p() -> gains.blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
-        r.fill_rune();
-        rune_was_refreshed = true;
-        break;
-      }
-    }
-    // Couldn't find a non-death blood rune needing refreshed?
-    // Instead, refresh a death rune that is a blood rune.
-    if ( ! rune_was_refreshed )
-    {
-      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-      {
-        dk_rune_t& r = p() -> _runes.slot[i];
-        if ( r.get_type() == RUNE_TYPE_BLOOD && r.is_death() && ! r.is_ready() )
-        {
-          p() -> gains.blood_tap       -> add( RESOURCE_RUNE, 1 - r.value, r.value );
-          // p() -> gains.blood_tap_blood -> add(1 - r.value, r.value);
-          r.fill_rune();
-          rune_was_refreshed = true;
-          break;
-        }
+        depleted_runes[ num_depleted++ ] = i;
       }
     }
 
-    // Now find a ready blood rune and turn it into a death rune.
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    if ( num_depleted > 0 )
     {
-      dk_rune_t& r = p() -> _runes.slot[i];
-      if ( r.get_type() == RUNE_TYPE_BLOOD && ! r.is_death() && r.is_ready() )
-      {
-        r.type = ( r.type & RUNE_TYPE_MASK ) | RUNE_TYPE_DEATH;
-        break;
-      }
+      int rune_to_regen = depleted_runes[ ( int ) p() -> rng.blood_tap -> range( 0, num_depleted ) ];
+      dk_rune_t* regen_rune = &( p() -> _runes.slot[ rune_to_regen ] );
+      
+      regen_rune -> fill_rune();
+      regen_rune -> type |= RUNE_TYPE_DEATH;
+      
+      p() -> gains.blood_tap -> add( RESOURCE_RUNE, 1, 0 );
+      
+      if ( sim -> log ) sim -> output( "%s regened rune %d", name(), rune_to_regen );
+      
+      p() -> buffs.blood_charge -> decrement( consume_charges );
     }
 
     // Called last so we print the correct runes
     death_knight_spell_t::execute();
+  }
+  
+  bool ready()
+  {
+    if ( p() -> buffs.blood_charge -> check() < consume_charges )
+      return false;
+    
+    dk_rune_t& r = p() -> _runes.slot[ 0 ];
+    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+      return true;
+    
+    r = p() -> _runes.slot[ 2 ];
+    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+      return true;
+
+    r = p() -> _runes.slot[ 4 ];
+    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+      return true;
+
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -2155,13 +2160,19 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> trigger_runic_empowerment();
-    }
-
     if ( ! p() -> buffs.dark_transformation -> check() )
       p() -> buffs.shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
+  }
+  
+  void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+    
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> trigger_runic_empowerment();
+      p() -> buffs.blood_charge -> trigger( 2 );
+    }
   }
 };
 
@@ -2375,7 +2386,10 @@ struct frost_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> trigger_runic_empowerment();
+      p() -> buffs.blood_charge -> trigger( 2 );
+    }
   }
 
   virtual double composite_crit()
@@ -3070,9 +3084,17 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     p() -> buffs.rune_strike -> expire();
-
-    if ( result_is_hit( execute_state -> result ) )
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_melee_attack_t::impact( s );
+    
+    if ( result_is_hit( s -> result ) )
+    {
       p() -> trigger_runic_empowerment();
+      p() -> buffs.blood_charge -> trigger( 2 );
+    }
   }
 
   virtual bool ready()
@@ -3456,10 +3478,11 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.blood_caked_blade          = get_rng( "blood_caked_blade"          );
-  rng.rime                       = get_rng( "rime"                       );
-  rng.sudden_doom                = get_rng( "sudden_doom"                );
-  rng.t13_2pc_melee              = get_rng( "t13_2pc_melee"              );
+  rng.blood_caked_blade = get_rng( "blood_caked_blade" );
+  rng.blood_tap         = get_rng( "blood_tap"         );
+  rng.rime              = get_rng( "rime"              );
+  rng.sudden_doom       = get_rng( "sudden_doom"       );
+  rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
 }
 
 // death_knight_t::init_defense =============================================
@@ -3692,7 +3715,7 @@ void death_knight_t::init_actions()
         action_list_str += "/auto_attack";
         action_list_str += "/pillar_of_frost";
         if ( talent.blood_tap -> ok() )
-          action_list_str += "/blood_tap,if=death.cooldown_remains>2.0";
+          action_list_str += "/blood_tap";
 
         action_list_str += "/raise_dead,if=time>=15";
         // priority:
@@ -3938,6 +3961,8 @@ void death_knight_t::init_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
+  buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
+                              .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) );
