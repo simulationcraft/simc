@@ -1677,6 +1677,12 @@ struct windlash_t : public shaman_melee_attack_t
     {
       if ( sim -> debug ) 
         sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+
+      if ( weapon -> slot == SLOT_OFF_HAND )
+        p() -> proc.swings_clipped_oh -> occur();
+      else
+        p() -> proc.swings_clipped_mh -> occur();
+
       schedule_execute();
     }
     else
