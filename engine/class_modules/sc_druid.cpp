@@ -437,6 +437,7 @@ public:
   virtual timespan_t available();
   virtual double    composite_armor_multiplier();
   virtual double    composite_attack_haste();
+  virtual double    composite_attack_hit();
   virtual double    composite_attack_crit( weapon_t* );
   virtual double    composite_attack_power();
   virtual double    composite_player_multiplier( school_e school, action_t* a = NULL );
@@ -5224,13 +5225,23 @@ double druid_t::composite_player_heal_multiplier( school_e school )
   return m;
 }
 
+// druid_t::composite_attack_hit ============================================
+
+double druid_t::composite_attack_hit()
+{
+  double hit = player_t::composite_attack_hit();
+
+  hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+
+  return hit;
+}
+
 // druid_t::composite_spell_hit =============================================
 
 double druid_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
-  // BoP does not convert base spirit into hit!
   hit += ( spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
 
   return hit;
