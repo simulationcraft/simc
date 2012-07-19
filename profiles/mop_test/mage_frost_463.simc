@@ -8,7 +8,7 @@ role=spell
 spec=frost
 professions=enchanting=600/tailoring=600
 talents=133311
-glyphs=evocation/ice_lance/water_elemental
+glyphs=evocation/ice_lance/icy_veins
 actions=flask,type=warm_sun
 actions+=/food,type=mogu_fish_stew
 actions+=/arcane_brilliance
