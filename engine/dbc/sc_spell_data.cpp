@@ -290,7 +290,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     }
     case DATA_CLASS_SPELL:
     {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class() - 1; cls++ )
+      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
       {
         for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
         {
