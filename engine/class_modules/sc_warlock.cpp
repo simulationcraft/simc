@@ -2097,7 +2097,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 1.5; // tested in beta 2012/06/30
+    tick_power_mod = 0.5; // tested in beta 2012/07/19
   }
 
   virtual double action_multiplier()
