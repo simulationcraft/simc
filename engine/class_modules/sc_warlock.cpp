@@ -183,6 +183,7 @@ public:
     const spell_data_t* soul_shards;
     const spell_data_t* burning_embers;
     const spell_data_t* soul_swap;
+    const spell_data_t* shadow_bolt;
   } glyphs;
 
   struct spells_t
@@ -297,7 +298,7 @@ public:
     switch ( specialization() )
     {
     case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards/soul_swap";
-    case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm";
+    case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm/shadow_bolt";
     case WARLOCK_DESTRUCTION: return "everlasting_affliction/conflagrate/burning_embers";
     default: break;
     }
@@ -1799,11 +1800,40 @@ struct havoc_t : public warlock_spell_t
 
 struct shadow_bolt_t : public warlock_spell_t
 {
+  warlock_spell_t* glyph_copy_1;
+  warlock_spell_t* glyph_copy_2;
+
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
-    warlock_spell_t( p, "Shadow Bolt" )
+    warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
-    direct_power_mod = 1.5; // from tooltip
-    generate_fury = data().effectN( 2 ).base_value();
+    if ( p -> glyphs.shadow_bolt -> ok() )
+    {
+      s_data = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
+      parse_spell_data( data() );
+      direct_power_mod = 0.45; // tested in-game 2012/07/19
+      base_dd_min = data().effectN( 1 ).min( p ) * 0.36;
+      base_dd_max = data().effectN( 1 ).max( p ) * 0.36;
+
+      glyph_copy_1 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 2 ).trigger() );
+      glyph_copy_1 -> background = true;
+      glyph_copy_1 -> generate_fury = glyph_copy_1 -> data().effectN( 2 ).base_value();
+      glyph_copy_1 -> direct_power_mod = direct_power_mod;
+      glyph_copy_1 -> base_dd_min = base_dd_min;
+      glyph_copy_1 -> base_dd_max = base_dd_max;
+      if ( dtr ) glyph_copy_1 -> stats = p -> get_stats( "shadow_bolt_DTR" );
+
+      glyph_copy_2 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 3 ).trigger() );
+      glyph_copy_2 -> background = true;
+      glyph_copy_2 -> direct_power_mod = direct_power_mod;
+      glyph_copy_2 -> base_dd_min = base_dd_min;
+      glyph_copy_2 -> base_dd_max = base_dd_max;
+      if ( dtr ) glyph_copy_2 -> stats = p -> get_stats( "shadow_bolt_DTR" );
+    }
+    else
+    {
+      direct_power_mod = 1.25; // tested in-game 2012/07/19
+      generate_fury = data().effectN( 2 ).base_value();
+    }
 
     if ( ! dtr && player -> has_dtr )
     {
@@ -1839,6 +1869,19 @@ struct shadow_bolt_t : public warlock_spell_t
     {
       trigger_wild_imp( p() );
       p() -> buffs.demonic_calling -> expire();
+    }
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+        p() -> buffs.molten_core -> trigger();
+
+      if ( p() -> glyphs.shadow_bolt -> ok() )
+      {
+        assert( glyph_copy_1 && glyph_copy_2 );
+        glyph_copy_1 -> execute();
+        glyph_copy_2 -> execute();
+      }
     }
   }
 
@@ -4518,6 +4561,7 @@ void warlock_t::init_spells()
   glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
+  glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
 
   spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 

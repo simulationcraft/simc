@@ -9,7 +9,7 @@ role=spell
 position=back
 professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
-glyphs=everlasting_affliction/imp_swarm
+glyphs=everlasting_affliction/imp_swarm/shadow_bolt
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up

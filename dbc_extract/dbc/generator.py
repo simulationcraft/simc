@@ -989,6 +989,7 @@ class SpellDataGenerator(DataGenerator):
             ( 115770, 5 ),       # shivarra fellash
             ( 115625, 5 ),       # wrathguard mortal cleave
             ( 115831, 5 ),       # wrathguard wrathstorm
+            ( 112092, 0 ),       # glyphed shadow bolt
             ( 112866, 0, True ), # fel imp summon
             ( 112867, 0, True ), # voidlord summon
             ( 112868, 0, True ), # shivarra summon
