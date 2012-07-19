@@ -1936,7 +1936,6 @@ struct frozen_orb_t : public mage_spell_t
     check_spec( MAGE_FROST );
     parse_options( NULL, options_str );
 
-    channeled = true;
     hasted_ticks = false;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
