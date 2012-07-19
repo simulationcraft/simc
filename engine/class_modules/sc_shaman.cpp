@@ -166,6 +166,8 @@ public:
     proc_t* static_shock;
     proc_t* swings_clipped_mh;
     proc_t* swings_clipped_oh;
+    proc_t* swings_reset_mh;
+    proc_t* swings_reset_oh;
     proc_t* wasted_ls;
     proc_t* wasted_mw;
     proc_t* windfury;
@@ -1810,6 +1812,12 @@ struct melee_t : public shaman_melee_attack_t
     {
       if ( sim -> debug ) 
         sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+
+      if ( weapon -> slot == SLOT_OFF_HAND )
+        p() -> proc.swings_clipped_oh -> occur();
+      else
+        p() -> proc.swings_clipped_mh -> occur();
+
       schedule_execute();
     }
     else
@@ -2196,6 +2204,7 @@ void shaman_spell_t::execute()
       {
         time_to_next_hit = p() -> main_hand_attack -> execute_time();
         p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        p() -> proc.swings_reset_mh -> occur();
       }
 
       // Offhand
@@ -2203,6 +2212,7 @@ void shaman_spell_t::execute()
       {
         time_to_next_hit = player -> off_hand_attack -> execute_time();
         p() -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        p() -> proc.swings_reset_oh -> occur();
       }
     }
   }
@@ -4467,6 +4477,8 @@ void shaman_t::init_procs()
   proc.static_shock       = get_proc( "static_shock"            );
   proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
   proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
+  proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
+  proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
   proc.rolling_thunder    = get_proc( "rolling_thunder"         );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
