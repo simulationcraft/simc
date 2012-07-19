@@ -137,8 +137,9 @@ public:
   heal_t*   active_living_seed;
 
   // Pets
-  pet_t* pet_treants[ 3 ];
+  pet_t* pet_feral_spirit[ 2 ];
   pet_t* pet_mirror_images[ 3 ];
+  pet_t* pet_treants[ 3 ];
 
   // Auto-attacks
   melee_attack_t* cat_melee_attack;
@@ -806,13 +807,112 @@ struct druid_spell_t : public druid_action_t<spell_t>
 // Pets and Guardians
 // ==========================================================================
 
+// Symbiosis Feral Spirits
+
+struct symbiosis_feral_spirit_t : public pet_t
+{
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( symbiosis_feral_spirit_t* player ) :
+      melee_attack_t( "melee", player, spell_data_t::nil() )
+    {
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      background = true;
+      repeating = true;
+      may_crit = true;
+      school = SCHOOL_PHYSICAL;
+    }
+
+    symbiosis_feral_spirit_t* p() { return static_cast<symbiosis_feral_spirit_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      pet_t* first_pet = p() -> o() -> find_pet( "symbiosis_wolf" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
+    }
+  };
+
+  struct spirit_bite_t : public melee_attack_t
+  {
+    spirit_bite_t( symbiosis_feral_spirit_t* player ) :
+      melee_attack_t( "spirit_bite", player, player -> find_spell( 58859 ) )
+    {
+      may_crit  = true;
+      special   = true;
+      direct_power_mod = data().extra_coeff();
+      cooldown -> duration = timespan_t::from_seconds( 7.0 );
+
+    }
+
+    symbiosis_feral_spirit_t* p() { return static_cast<symbiosis_feral_spirit_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      pet_t* first_pet = p() -> o() -> find_pet( "symbiosis_wolf" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
+    }
+  };
+
+  melee_t* melee;
+
+  symbiosis_feral_spirit_t( sim_t* sim, druid_t* owner ) :
+    pet_t( sim, owner, "symbiosis_wolf" ), melee( 0 )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 555; // MoP level 85 values, approximated
+    main_hand_weapon.max_dmg    = 833;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+
+    owner_coeff.ap_from_ap = 0.31;
+  }
+
+  druid_t* o() { return static_cast<druid_t*>( owner ); }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    melee = new melee_t( this );
+  }
+
+  virtual void init_actions()
+  {
+    action_list_str = "spirit_bite";
+
+    pet_t::init_actions();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "spirit_bite" ) return new spirit_bite_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  {
+    if ( melee && ! melee -> execute_event )
+      melee -> schedule_execute();
+
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+};
+
 // Symbiosis Mirror Images
 
-struct symbiosis_mirror_images_t : public pet_t
+struct symbiosis_mirror_image_t : public pet_t
 {
   struct wrath_t : public spell_t
   {
-    wrath_t( symbiosis_mirror_images_t* player ) :
+    wrath_t( symbiosis_mirror_image_t* player ) :
       spell_t( "wrath", player, player -> find_spell( 110691 ) )
     {
       if ( player -> o() -> pet_mirror_images[ 0 ] )
@@ -822,7 +922,7 @@ struct symbiosis_mirror_images_t : public pet_t
 
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
-  symbiosis_mirror_images_t( sim_t* sim, druid_t* owner ) :
+  symbiosis_mirror_image_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "mirror_image", true /*GUARDIAN*/ )
   {
     owner_coeff.sp_from_sp = 1.00;
@@ -3263,6 +3363,35 @@ struct faerie_fire_t : public druid_spell_t
   }
 };
 
+// Feral Spirit Spell =======================================================
+
+struct feral_spirit_spell_t : public druid_spell_t
+{
+  feral_spirit_spell_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "feral_spirit", player, 
+    ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 110807 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+    harmful   = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> pet_feral_spirit[ 0 ] -> summon( data().duration() );
+    p() -> pet_feral_spirit[ 1 ] -> summon( data().duration() );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != SHAMAN )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Incarnation ==============================================================
 
 struct incarnation_t : public druid_spell_t
@@ -4331,6 +4460,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "death_coil"             ) return new             death_coil_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
+  if ( name == "feral_spirit"           ) return new     feral_spirit_spell_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
@@ -4398,7 +4528,9 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
     if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
   }
   
-  if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_images_t( sim, this );
+  if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_image_t( sim, this );
+  
+  if ( pet_name == "symbiosis_feral_spirit" ) return new symbiosis_feral_spirit_t( sim, this );
   
   return 0;
 }
@@ -4413,6 +4545,14 @@ void druid_t::create_pets()
     if ( specialization() == DRUID_BALANCE )
     {
       pet_mirror_images[ i ] = create_pet( "symbiosis_mirror_image" );
+    }
+  }
+  for ( int i = 0; i < 2; i++ )
+  {
+    pet_treants[ i ]       = create_pet( "treants" );
+    if ( specialization() == DRUID_FERAL )
+    {
+      pet_feral_spirit[ i ] = create_pet( "symbiosis_feral_spirit" );
     }
   }
 }
