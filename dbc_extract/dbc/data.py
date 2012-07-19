@@ -668,7 +668,10 @@ class Spell(DBCRecord):
         f = DBCRecord.field(self, *args)
 
         if 'name' in args:
-            f[args.index('name')] = '%-36s' % ((self.name and '"%s"' or '%s') % self.name)
+            if self.name == 0:
+                f[args.index('name')] = '%-36d' % self.name
+            else:
+                f[args.index('name')] = '%-36s' % ('"%s"' % self.name.replace(r'"', r'\"'))
            
         for field_id in [ 'desc', 'tt', 'rank' ]:
             if field_id in args:

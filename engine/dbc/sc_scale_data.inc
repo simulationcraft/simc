@@ -1,11 +1,11 @@
-// Base scaling data for classes, wow build 15851
+// Base scaling data for classes, wow build 15882
 static double __gt_chance_to_melee_crit_base[] = {
    0.000000000000000,    0.050000000745058,    0.050000000745058,    0.050000000745058,    0.050000000745058, 
    0.050000000745058,    0.050000000745058,    0.050000000745058,    0.050000000745058,    0.050000000745058, 
    0.050000000745058,    0.050000000745058, 
 };
 
-// Base scaling data for classes, wow build 15851
+// Base scaling data for classes, wow build 15882
 static double __gt_chance_to_spell_crit_base[] = {
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000, 
@@ -13,7 +13,7 @@ static double __gt_chance_to_spell_crit_base[] = {
 };
 
 
-// Level scaling data, wow build 15851
+// Level scaling data, wow build 15882
 static double __gt_octhp_per_stamina[90] = {
   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000, 
   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000,   10.000000000000000, 
@@ -37,7 +37,7 @@ static double __gt_octhp_per_stamina[90] = {
 };
 
 
-// Spell scaling multipliers for levels 1 - 90, wow build 15851
+// Spell scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_spell_scaling[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -334,7 +334,7 @@ static double __gt_spell_scaling[][90] = {
 };
 
 
-// Class based scaling multipliers for levels 1 - 90, wow build 15851
+// Class based scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_chance_to_melee_crit[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -589,7 +589,7 @@ static double __gt_chance_to_melee_crit[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 15851
+// Class based scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_chance_to_spell_crit[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -844,7 +844,7 @@ static double __gt_chance_to_spell_crit[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 15851
+// Class based scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_regen_mpper_spt[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1099,7 +1099,7 @@ static double __gt_regen_mpper_spt[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 15851
+// Class based scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_octbase_hpby_class[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1354,7 +1354,7 @@ static double __gt_octbase_hpby_class[][90] = {
   },
 };
 
-// Class based scaling multipliers for levels 1 - 90, wow build 15851
+// Class based scaling multipliers for levels 1 - 90, wow build 15882
 static double __gt_octbase_mpby_class[][90] = {
   {
        0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,    0.000000000000000,
@@ -1610,7 +1610,7 @@ static double __gt_octbase_mpby_class[][90] = {
 };
 
 
-// Combat ratings for levels 1 - 90, wow build 15851 
+// Combat ratings for levels 1 - 90, wow build 15882 
 static double __gt_combat_ratings[][90] = {
   // Dodge rating multipliers
   {
@@ -1908,7 +1908,7 @@ static double __gt_combat_ratings[][90] = {
   },
 };
 
-// Combat Rating scalar multipliers for classes, wow build 15851
+// Combat Rating scalar multipliers for classes, wow build 15882
 static double __gt_octclass_combat_rating_scalar[][12] = {
   // Dodge rating class scalar multipliers
   { 
