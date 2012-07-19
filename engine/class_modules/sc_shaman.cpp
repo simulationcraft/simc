@@ -819,10 +819,7 @@ struct earth_elemental_pet_t : public pet_t
     action_list_str = "travel/auto_attack,moving=0";
 
     if ( o() -> talent.primal_elementalist -> ok() )
-    {
       action_list_str += "/pulverize";
-      owner_coeff.ap_from_sp += 0.5;
-    }
   }
 
   virtual action_t* create_action( const std::string& name,
