@@ -326,6 +326,7 @@ public:
   virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
+  virtual double    composite_attack_hit();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_speed();
   virtual double    composite_spell_haste();
@@ -2799,9 +2800,9 @@ struct lightning_bolt_t : public shaman_spell_t
     return c;
   }
 
-  virtual double action_da_multiplier()
+  virtual double composite_target_multiplier( player_t* target )
   {
-    double m = shaman_spell_t::action_da_multiplier();
+    double m = shaman_spell_t::composite_target_multiplier( target );
 
     if ( td( target ) -> debuffs_unleashed_fury -> up() )
       m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
@@ -4131,7 +4132,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "Magma Totem", this, options_str );
   if ( name == "searing_totem"           ) return new                shaman_totem_t( "Searing Totem", this, options_str );
-  if ( name == "stormlash_totem"         ) return new                shaman_totem_t( "Searing Totem", this, options_str );
+  if ( name == "stormlash_totem"         ) return new                shaman_totem_t( "Stormlash Totem", this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4639,7 +4640,7 @@ void shaman_t::init_actions()
   if ( talent.elemental_mastery -> ok() )
     default_s << "/elemental_mastery";
 
-  //if ( level >= 78 ) default_s << "/stormlash_totem";
+  //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
   if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!active";
   if ( level >= 87 ) default_s << "/ascendance";
 
@@ -4854,6 +4855,18 @@ double shaman_t::composite_spell_hit()
 
   hit += ( spec.elemental_precision -> ok() *
            ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
+
+  return hit;
+}
+
+// shaman_t::composite_attack_hit ============================================
+
+double shaman_t::composite_attack_hit()
+{
+  double hit = player_t::composite_attack_hit();
+
+  hit += ( spec.elemental_precision -> ok() *
+           ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.attack_hit;
 
   return hit;
 }
