@@ -276,7 +276,7 @@ public:
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* enduring_infection;
     const spell_data_t* outbreak;
-    const spell_data_t* shifting_presence;
+    const spell_data_t* shifting_presences;
   } glyph;
 
   // Pets and Guardians
@@ -1854,6 +1854,8 @@ struct blood_plague_t : public death_knight_spell_t
     may_crit         = false;
     hasted_ticks     = false;
     base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent(); 
+    if ( p -> glyph.enduring_infection -> ok() )
+      base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
   
   virtual void impact( action_state_t* s )
@@ -1924,6 +1926,49 @@ struct blood_strike_t : public death_knight_melee_attack_t
     ctm *= 1 + cast_td() -> diseases() * data().effectN( 3 ).base_value() / 1000.0;
 
     return ctm;
+  }
+};
+
+// Soul Reaper ==============================================================
+
+struct soul_reaper_dot_t : public death_knight_melee_attack_t
+{
+  soul_reaper_dot_t( death_knight_t* p ) :
+    death_knight_melee_attack_t( "soul_reaper_dot", p, p -> find_specialization_spell( "Soul Reaper" ) )
+  {
+    special = background = true;
+    may_miss = false;
+    weapon_multiplier = 0;
+    cost_frost = cost_unholy = cost_blood = cost_death = 0;
+    rp_gain = 0;
+    
+    stats = p -> get_stats( "soul_reaper" );
+  }
+};
+
+struct soul_reaper_t : public death_knight_melee_attack_t
+{
+  soul_reaper_dot_t* soul_reaper_dot;
+  
+  soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "soul_reaper", p, p -> find_specialization_spell( "Soul Reaper" ) ),
+    soul_reaper_dot( 0 )
+  {
+    parse_options( NULL, options_str );
+    num_ticks = 0;
+    special   = true;
+
+    weapon = &( p -> main_hand_weapon );
+    
+    soul_reaper_dot = new soul_reaper_dot_t( p );
+  }
+  
+  void impact( action_state_t* s )
+  {
+    death_knight_melee_attack_t::impact( s );
+    
+    if ( s -> target -> health_percentage() <= 35 && result_is_hit( s -> result ) )
+      soul_reaper_dot -> execute();
   }
 };
 
@@ -2289,6 +2334,8 @@ struct frost_fever_t : public death_knight_spell_t
     dot_behavior     = DOT_REFRESH;
     tick_power_mod   = 0.086;
     base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent(); 
+    if ( p -> glyph.enduring_infection -> ok() )
+      base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2755,6 +2802,9 @@ struct outbreak_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     may_crit = false;
+    
+    cooldown -> duration *= 1.0 + p -> glyph.outbreak -> effectN( 1 ).percent();
+    base_costs[ RESOURCE_RUNIC_POWER ] += p -> glyph.outbreak -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
     assert( p -> active_spells.blood_plague );
     assert( p -> active_spells.frost_fever );
@@ -2975,7 +3025,7 @@ struct presence_t : public death_knight_spell_t
   virtual double cost()
   {
     // Presence changes consume all runic power
-    return p() -> resources.current [ RESOURCE_RUNIC_POWER ];
+    return p() -> resources.current [ RESOURCE_RUNIC_POWER ] * ( 1.0 - p() -> glyph.shifting_presences -> effectN( 1 ).percent() );
   }
 
   virtual void execute()
@@ -3236,6 +3286,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // General Actions
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "presence"                 ) return new presence_t                 ( this, options_str );
+  if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -3566,11 +3617,11 @@ void death_knight_t::init_spells()
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
   
   // Glyphs
-  glyph.chains_of_ice             = find_glyph_spell( "Chains of Ice" );
-  glyph.dancing_rune_weapon       = find_glyph_spell( "Dancing Rune Weapon" );
-  glyph.enduring_infection        = find_glyph_spell( "Enduring Infection" );
-  glyph.outbreak                  = find_glyph_spell( "Outbreak" );
-  glyph.shifting_presence         = find_glyph_spell( "Shifting Presence" );
+  glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
+  glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
+  glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
+  glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
+  glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
@@ -3724,7 +3775,8 @@ void death_knight_t::init_actions()
         // OBL
         // FS
         // HB (it turns out when resource starved using a lonely death/frost rune to generate RP/FS/RE is better than waiting for OBL
-
+        if ( level >= 87 )
+          action_list_str += "/soul_reaper";
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=0|dot.blood_plague.remains<=0";
         action_list_str += "/howling_blast,if=dot.frost_fever.remains<=0";
@@ -3768,6 +3820,8 @@ void death_knight_t::init_actions()
         action_list_str += "/unholy_frenzy,if=!buff.bloodlust.react|target.time_to_die<=45";
         if ( level > 81 )
           action_list_str += "/outbreak,if=dot.frost_fever.remains<=2|dot.blood_plague.remains<=2";
+        if ( level >= 87 )
+          action_list_str += "/soul_reaper";
         action_list_str += "/icy_touch,if=dot.frost_fever.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/plague_strike,if=dot.blood_plague.remains<2&cooldown.outbreak.remains>2";
         action_list_str += "/dark_transformation";
