@@ -710,14 +710,14 @@ namespace { // UNNAMED NAMESPACE
 
 struct mage_spell_t : public spell_t
 {
-  bool frozen, may_hot_streak, may_proc_missiles, is_copy, consumes_ice_floes;
+  bool frozen, may_hot_streak, may_proc_missiles, is_copy, consumes_ice_floes, fof_active;
   int dps_rotation;
   int dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
-    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), dps_rotation( 0 ), dpm_rotation( 0 )
+    frozen( false ), may_hot_streak( false ), may_proc_missiles( true ), is_copy( false ), consumes_ice_floes( true ), fof_active( false ), dps_rotation( 0 ), dpm_rotation( 0 )
   {
     may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
     tick_may_crit = true;
@@ -1680,36 +1680,42 @@ struct frost_bomb_t : public mage_spell_t
 
 // Frostbolt Spell ==========================================================
 
+struct mini_frostbolt_t : public mage_spell_t
+{
+  mini_frostbolt_t( mage_t* p ) :
+    // FIXME: This should be spell ID 131079, but is not in our spell data
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) )
+  {
+    background = true;
+    dual = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+    
+    base_execute_time = timespan_t::zero();  
+    base_multiplier *= 0.4;
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+
+    return tm;
+  }
+};
+
 struct frostbolt_t : public mage_spell_t
 {
-  mage_spell_t* glyph_of_icy_veins_copy_1;
-  mage_spell_t* glyph_of_icy_veins_copy_2;
+  mini_frostbolt_t* bolt;
 
-  frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false, bool copy=false ) :
-    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ), glyph_of_icy_veins_copy_1( 0 ), glyph_of_icy_veins_copy_2( 0 )
+  frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
+    bolt( 0 )
   {
     parse_options( NULL, options_str );
-    if ( copy )
-    {
-      is_copy = true;
-    }
-    else
-    {
-      is_copy = false;
-    }
-    if ( !copy && p -> glyphs.icy_veins -> ok() )
-    {
-      glyph_of_icy_veins_copy_1 = new frostbolt_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_1 -> dual = true;
-      glyph_of_icy_veins_copy_1 -> background = true;
-      glyph_of_icy_veins_copy_1 -> is_copy = true;
-      glyph_of_icy_veins_copy_1 -> base_costs[ RESOURCE_MANA ] = 0;
-      glyph_of_icy_veins_copy_2 = new frostbolt_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_2 -> dual = true;
-      glyph_of_icy_veins_copy_2 -> background = true;
-      glyph_of_icy_veins_copy_2 -> is_copy = true;
-      glyph_of_icy_veins_copy_2 -> base_costs[ RESOURCE_MANA ] = 0;
-    }
+
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1717,6 +1723,17 @@ struct frostbolt_t : public mage_spell_t
     {
       dtr_action = new frostbolt_t( p, options_str, true );
       dtr_action -> is_dtr_action = true;
+    }
+
+    if ( p -> glyphs.icy_veins -> ok() )
+    {
+      hasted_ticks = false;
+      base_tick_time = timespan_t::from_seconds( 0.2 );
+      num_ticks      = 2;
+
+      bolt = new mini_frostbolt_t( p );
+      bolt -> stats = stats;
+      add_child( bolt );
     }
   }
 
@@ -1726,20 +1743,21 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( !is_copy ) {
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
-      }
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
       if ( p() -> set_bonus.tier13_2pc_caster() )
       {
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
       }
     }
+  }
+
+  virtual void tick( dot_t* d )
+  {
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
-      if( glyph_of_icy_veins_copy_1 && glyph_of_icy_veins_copy_2 ) {
-        glyph_of_icy_veins_copy_1 -> execute();
-        glyph_of_icy_veins_copy_2 -> execute();
-      }
+      mage_spell_t::tick( d );
+
+      bolt -> execute();
     }
   }
 
@@ -1778,38 +1796,44 @@ struct frostbolt_t : public mage_spell_t
 
 // Frostfire Bolt Spell =====================================================
 
+struct mini_frostfire_bolt_t : public mage_spell_t
+{
+  mini_frostfire_bolt_t( mage_t* p ) :
+    // FIXME: This should be spell ID (undetermined), but is not in our spell data
+    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) )
+  {
+    background = true;
+    dual = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+    
+    base_execute_time = timespan_t::zero();  
+    base_multiplier *= 0.4;
+    if ( p -> set_bonus.pvp_4pc_caster() )
+      base_multiplier *= 1.05;
+  }
+};
+
 struct frostfire_bolt_t : public mage_spell_t
 {
-  mage_spell_t* glyph_of_icy_veins_copy_1;
-  mage_spell_t* glyph_of_icy_veins_copy_2;
+  mini_frostfire_bolt_t* bolt;
 
-  frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false, bool copy=false ) :
-    mage_spell_t( "frostfire_bolt", p, p -> find_class_spell( "Frostfire Bolt" ) )
+  frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
+    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     parse_options( NULL, options_str );
-    if ( copy )
-    {
-      is_copy = true;
-    }
-    else
-    {
-      is_copy = false;
-    }
+
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
-    if ( !copy && p -> glyphs.icy_veins -> ok() )
+    if ( p -> glyphs.icy_veins -> ok() )
     {
-      glyph_of_icy_veins_copy_1 = new frostfire_bolt_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_1 -> dual = true;
-      glyph_of_icy_veins_copy_1 -> background = true;
-      glyph_of_icy_veins_copy_1 -> is_copy = true;
-      glyph_of_icy_veins_copy_1 -> base_costs[ RESOURCE_MANA ] = 0;
-      glyph_of_icy_veins_copy_2 = new frostfire_bolt_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_2 -> dual = true;
-      glyph_of_icy_veins_copy_2 -> background = true;
-      glyph_of_icy_veins_copy_2 -> is_copy = true;
-      glyph_of_icy_veins_copy_2 -> base_costs[ RESOURCE_MANA ] = 0;
+      hasted_ticks = false;
+      base_tick_time = timespan_t::from_seconds( 0.2 );
+      num_ticks      = 2;
+
+      bolt = new mini_frostfire_bolt_t( p );
+      bolt -> stats = stats;
+      add_child( bolt );
     }
 
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -1842,26 +1866,18 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     // Brain Freeze treats the target as frozen
     frozen = p() -> buffs.brain_freeze -> check() > 0;
+    if ( p() -> glyphs.icy_veins -> ok() )
+    {
+      bolt -> frozen = frozen;
+    }
 
     mage_spell_t::execute();
 
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      if( glyph_of_icy_veins_copy_1 && glyph_of_icy_veins_copy_2 ) {
-//        glyph_of_icy_veins_copy_1 -> execute();
-//        glyph_of_icy_veins_copy_2 -> execute();
-      }
-    }
-
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( !is_copy ) {
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
-      }
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
     }
-    if ( !is_copy ) {
-      p() -> buffs.brain_freeze -> expire();
-    }
+    p() -> buffs.brain_freeze -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -1874,6 +1890,16 @@ struct frostfire_bolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
 
       trigger_ignite( this, s );
+    }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    {
+      mage_spell_t::tick( d );
+
+      bolt -> execute();
     }
   }
 
@@ -1928,6 +1954,7 @@ struct frozen_orb_t : public mage_spell_t
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
 
     bolt = new frozen_orb_bolt_t( p );
+    bolt -> stats = stats;
     add_child( bolt );
   }
 
@@ -1973,42 +2000,76 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
-struct ice_lance_t : public mage_spell_t
+struct mini_ice_lance_t : public mage_spell_t
 {
   double fof_multiplier;
-  mage_spell_t* glyph_of_icy_veins_copy_1;
-  mage_spell_t* glyph_of_icy_veins_copy_2;
 
-  ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false, bool copy=false ) :
+  mini_ice_lance_t( mage_t* p ) :
+    // FIXME: This should be spell ID 131080, but is not in our spell data
+    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) ),
+    fof_multiplier( 0 )
+  {
+    background = true;
+    dual = true;
+    base_costs[ RESOURCE_MANA ] = 0;
+    
+    base_multiplier *= 0.4;
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( fof_active )
+    {
+      am *= 4.0; // Built in bonus against frozen targets
+      am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
+    }
+
+    if ( p() -> set_bonus.tier14_2pc_caster() )
+    {
+      am *= 1.05;
+    }
+
+    return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
+
+    return tm;
+  }
+};
+
+struct ice_lance_t : public mage_spell_t
+{
+  mini_ice_lance_t* bolt;
+  double fof_multiplier;
+
+  ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    fof_multiplier( 0 ), glyph_of_icy_veins_copy_1( 0 ), glyph_of_icy_veins_copy_2( 0 )
+    fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
-    if ( copy )
-    {
-      is_copy = true;
-    }
-    else
-    {
-      is_copy = false;
-    }
+
     aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
     base_aoe_multiplier *= 1.0 + p -> glyphs.ice_lance -> effectN( 2 ).percent();
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
-    if ( !copy && p -> glyphs.icy_veins -> ok() )
+    if ( p -> glyphs.icy_veins -> ok() )
     {
-      glyph_of_icy_veins_copy_1 = new ice_lance_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_1 -> dual = true;
-      glyph_of_icy_veins_copy_1 -> background = true;
-      glyph_of_icy_veins_copy_1 -> is_copy = true;
-      glyph_of_icy_veins_copy_1 -> base_costs[ RESOURCE_MANA ] = 0;
-      glyph_of_icy_veins_copy_2 = new ice_lance_t( p, options_str, dtr, true );
-      glyph_of_icy_veins_copy_2 -> dual = true;
-      glyph_of_icy_veins_copy_2 -> background = true;
-      glyph_of_icy_veins_copy_2 -> is_copy = true;
-      glyph_of_icy_veins_copy_2 -> base_costs[ RESOURCE_MANA ] = 0;
+      hasted_ticks = false;
+      base_tick_time = timespan_t::from_seconds( 0.2 );
+      num_ticks      = 2;
+
+      bolt = new mini_ice_lance_t( p );
+      bolt -> fof_multiplier = fof_multiplier;
+      bolt -> stats = stats;
+      add_child( bolt );
     }
 
     if ( ! dtr && player -> has_dtr )
@@ -2022,18 +2083,24 @@ struct ice_lance_t : public mage_spell_t
   {
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
+    if ( p() -> glyphs.icy_veins -> ok() )
+    {
+      bolt -> frozen = frozen;
+      bolt -> fof_active = frozen;
+    }
+
     mage_spell_t::execute();
+
+    p() -> buffs.fingers_of_frost -> decrement();
+  }
+
+  virtual void tick( dot_t* d )
+  {
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
-      if ( glyph_of_icy_veins_copy_1 && glyph_of_icy_veins_copy_2 )
-      {
-        glyph_of_icy_veins_copy_1 -> execute();
-        glyph_of_icy_veins_copy_2 -> execute();
-      }
-    }
-    if ( !is_copy )
-    {
-      p() -> buffs.fingers_of_frost -> decrement();
+      mage_spell_t::tick( d );
+
+      bolt -> execute();
     }
   }
 
