@@ -368,6 +368,7 @@ public:
   virtual void      init_resources( bool force );
   virtual void      init_benefits();
   virtual double    composite_armor_multiplier();
+  virtual double    composite_attack_speed();
   virtual double    composite_attack_haste();
   virtual double    composite_attack_hit();
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -378,7 +379,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
-  virtual void    assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -555,6 +556,8 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
   // linearly scales regen rate -- 100% haste means a rune regens in 5
   // seconds, etc.
   double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
+  if ( p -> buffs.runic_corruption -> up() )
+    runes_per_second *= 2.0;
 
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
@@ -1456,7 +1459,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   }
 
   virtual bool   ready();
-  virtual double swing_haste();
 };
 
 // ==========================================================================
@@ -1566,17 +1568,6 @@ bool death_knight_melee_attack_t::ready()
       return false;
 
   return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-}
-
-// death_knight_melee_attack_t::swing_haste() =====================================
-
-double death_knight_melee_attack_t::swing_haste()
-{
-  double haste = base_t::swing_haste();
-
-  haste *= 1.0 / ( 1.0 + p() -> spec.icy_talons -> effectN( 1 ).percent() );
-
-  return haste;
 }
 
 // ==========================================================================
@@ -1959,8 +1950,7 @@ struct blood_tap_t : public death_knight_spell_t
     // Find fully depleted non-death runes, i.e., both runes are on CD
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      if ( ! p() -> _runes.slot[ i ].is_death() && 
-           ! p() -> _runes.slot[ i ].is_ready() && 
+      if ( ! p() -> _runes.slot[ i ].is_ready() && 
            ! p() -> _runes.slot[ i ].paired_rune -> is_ready() )
       {
         depleted_runes[ num_depleted++ ] = i;
@@ -1992,15 +1982,15 @@ struct blood_tap_t : public death_knight_spell_t
       return false;
     
     dk_rune_t& r = p() -> _runes.slot[ 0 ];
-    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
       return true;
     
     r = p() -> _runes.slot[ 2 ];
-    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
       return true;
 
     r = p() -> _runes.slot[ 4 ];
-    if ( ! r.is_death() && ! r.is_ready() && ! r.paired_rune -> is_ready() )
+    if ( ! r.is_ready() && ! r.paired_rune -> is_ready() )
       return true;
 
     return death_knight_spell_t::ready();
@@ -2172,6 +2162,8 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
+      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 };
@@ -2389,6 +2381,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
+      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 
@@ -2482,7 +2476,7 @@ struct howling_blast_t : public death_knight_spell_t
 
   virtual void consume_resource()
   {
-    if ( p() -> buffs.rime -> up() )
+    if ( p() -> buffs.rime -> check() )
       return;
 
     death_knight_spell_t::consume_resource();
@@ -3094,6 +3088,8 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
+      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+        timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
 
@@ -3985,7 +3981,8 @@ void death_knight_t::init_buffs()
                               .cd( timespan_t::zero() )
                               .chance( 1.0 )
                               .quiet( true );
-  buffs.runic_corruption    = buff_creator_t( this, 51460, "runic_corruption" );
+  buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
+                              .chance( talent.runic_corruption -> proc_chance() );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
@@ -4202,6 +4199,17 @@ double death_knight_t::composite_player_multiplier( school_e school, action_t* a
   return m;
 }
 
+// death_knight_t::composite_attack_speed() ====================
+
+double death_knight_t::composite_attack_speed()
+{
+  double haste = player_t::composite_attack_speed();
+
+  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 1 ).percent() );
+
+  return haste;
+}
+
 // death_knight_t::composite_tank_crit ======================================
 
 double death_knight_t::composite_tank_crit( school_e school )
@@ -4321,9 +4329,15 @@ void death_knight_t::trigger_runic_empowerment()
   int depleted_runes[RUNE_SLOT_MAX];
   int num_depleted=0;
 
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    if ( _runes.slot[i].is_depleted() )
-      depleted_runes[ num_depleted++ ] = i;
+    // Find fully depleted runes, i.e., both runes are on CD
+    for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
+    {
+      if ( ! _runes.slot[ i ].is_ready() && 
+           ! _runes.slot[ i ].paired_rune -> is_ready() )
+      {
+        depleted_runes[ num_depleted++ ] = i;
+      }
+    }
 
   if ( num_depleted > 0 )
   {
