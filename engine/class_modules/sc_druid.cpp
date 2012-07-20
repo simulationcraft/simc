@@ -1735,27 +1735,44 @@ struct ferocious_bite_t : public druid_cat_attack_t
 
 struct frenzied_regeneration_t : public druid_bear_attack_t
 {
+  double maximum_rage_cost;
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_bear_attack_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str )
+    druid_bear_attack_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    maximum_rage_cost( 0.0 )
   {
     harmful = false;
-    base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
+    if ( p -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
+    else
+      base_costs[ RESOURCE_RAGE ] = 0;
+      
+    maximum_rage_cost = data().effectN( 1 ).base_value();
   }
 
+  virtual double cost()
+  {
+    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+                                              maximum_rage_cost );
+    
+    return druid_bear_attack_t::cost();
+  }
   virtual void execute()
   {
     druid_bear_attack_t::execute();
 
+    
     if ( ! p() -> glyph.frenzied_regeneration -> ok() )
     {
-      double health_pct_gain = floor( std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                      static_cast< double >( data().effectN( 1 ).base_value() ) ) /
-                                      data().effectN( 3 ).base_value() );
-      double health_amount = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+      // Heal: ( ( AP / 1000 )^2 - AP / 1000 ) / 10
+      // => AP*AP / 10000000 - AP / 10000
+      double attack_power = composite_attack_power() * composite_attack_power_multiplier();
+      double health_gain = ( attack_power * attack_power / 10000000.0 - attack_power / 10000.0 );
+      double health_pct_gain = resource_consumed / p() -> resources.current[ RESOURCE_RAGE ];
 
       p() -> resource_gain( RESOURCE_HEALTH,
-                            health_pct_gain * health_amount,
-                            p() -> gain.glyph_ferocious_bite );
+                            health_pct_gain * health_gain,
+                            p() -> gain.frenzied_regeneration );
     }
     else
       p() -> buff.frenzied_regeneration -> trigger();
