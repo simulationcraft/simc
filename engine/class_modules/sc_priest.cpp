@@ -448,10 +448,6 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
 
-    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
-    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
-
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     owner_coeff.health = 0.3;
@@ -526,6 +522,11 @@ struct shadowfiend_pet_t : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_SHADOWFIEND, name )
   {
     direct_power_mod = 0.5;
+
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
+    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level );
+
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
   virtual void init_spells()
@@ -546,6 +547,11 @@ struct mindbender_pet_t : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name )
   {
     direct_power_mod = 0.5;
+
+    main_hand_weapon.min_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25; 
+    main_hand_weapon.max_dmg    = owner -> dbc.spell_scaling( owner -> type, owner -> level ) * 0.25;
+
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
   virtual void init_spells()
@@ -1237,7 +1243,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       atonement -> trigger( s -> result_amount, type, s -> result );
   }
 
-  static void trigger_shadowy_apparition( dot_t* d )
+  static void trigger_shadowy_apparition( action_state_t* d )
   {
     priest_t* pr = debug_cast<priest_t*>( d -> action -> player );
 
@@ -1248,7 +1254,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       spell_t* s = pr -> spells.apparitions_free.front();
 
-      s -> target = d -> state -> target;
+      s -> target = d -> target;
 
       pr -> spells.apparitions_free.pop();
 
@@ -1725,15 +1731,6 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     priest_spell_t( n, p, p -> mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
   {
     background       = true;
-    may_crit         = true;
-    callbacks        = false;
-    tick_zero        = true;
-    num_ticks        = 0;
-    hasted_ticks     = false;
-    base_td          = base_dd_min;
-    tick_power_mod   = direct_power_mod;
-    base_dd_min = base_dd_max = 0.0;
-    direct_power_mod = 0.0;
   }
 
   virtual timespan_t execute_time()
@@ -1741,9 +1738,9 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    priest_spell_t::execute();
+    priest_spell_t::impact( s );
 
     p() -> procs.mastery_extra_tick -> occur();
   }
@@ -1898,6 +1895,11 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
   {
     // TO-DO: Confirm this applies
     base_crit   += p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    priest_procced_mastery_spell_t::impact( s );
   }
 };
 
@@ -2103,6 +2105,11 @@ struct mind_sear_mastery_t : public priest_procced_mastery_spell_t
                                     p -> find_class_spell( "Mind Sear" ) -> ok() ? p -> find_spell( 124469 ) : spell_data_t::not_found() )
   {
   }
+
+  virtual void impact( action_state_t* s )
+  {
+    priest_procced_mastery_spell_t::impact( s );
+  }
 };
 
 // Mind Sear Spell ==========================================================
@@ -2301,18 +2308,18 @@ struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
   {
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_da_multiplier()
   {
-    double m = priest_spell_t::action_ta_multiplier();
+    double m = priest_spell_t::action_da_multiplier();
 
     m *= orbs_used;
 
     return m;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void impact( action_state_t* s )
   {
-    priest_procced_mastery_spell_t::tick( d );
+    priest_procced_mastery_spell_t::impact( s );
 
     double a = heal_pct * orbs_used * p() -> resources.max[ RESOURCE_HEALTH ];
 
@@ -2560,6 +2567,24 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
                                     p -> find_class_spell( "Shadow Word: Pain" ) -> ok() ? p -> find_spell( 124464 ) : spell_data_t::not_found() )
   {
   }
+
+  virtual void impact( action_state_t* s )
+  {
+    priest_procced_mastery_spell_t::impact( s );
+
+    if ( ( s -> result == RESULT_CRIT ) && ( p() -> specs.shadowy_apparitions -> ok() ) )
+    {
+      trigger_shadowy_apparition( s );
+    }
+    if ( ( direct_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
+    {
+      if ( p() -> buffs.divine_insight_shadow -> trigger() )
+      {
+        p() -> cooldowns.mind_blast -> reset( true );
+        p() -> procs.divine_insight_shadow -> occur();
+      }
+    }
+  }
 };
 
 // Shadow Word Pain Spell ===================================================
@@ -2595,7 +2620,7 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       if ( d -> state -> result == RESULT_CRIT )
       {
-        trigger_shadowy_apparition( d );
+        trigger_shadowy_apparition( d -> state );
       }
     }
     if ( ( tick_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
@@ -2651,12 +2676,18 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
   {
   }
 
-  virtual void execute()
-  {
-    priest_procced_mastery_spell_t::execute();
 
-    double m = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
-    player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mastery_mana, this );
+  virtual void impact( action_state_t* s )
+  {
+    priest_procced_mastery_spell_t::impact( s );
+
+    double m = player->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
+    player -> resource_gain( RESOURCE_MANA, m, p() -> gains.vampiric_touch_mana, this );
+
+    if ( p() -> buffs.surge_of_darkness -> trigger() )
+    {
+      p() -> procs.surge_of_darkness -> occur();
+    }
   }
 };
 
