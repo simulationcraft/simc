@@ -1958,6 +1958,8 @@ struct bestial_wrath_t : public hunter_spell_t
 
 struct fervor_t : public hunter_spell_t
 {
+  int base_gain;
+
   fervor_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "fervor", player, player -> talents.fervor )
   {
@@ -1966,17 +1968,31 @@ struct fervor_t : public hunter_spell_t
     harmful = false;
 
     trigger_gcd = timespan_t::zero();
+
+    num_ticks = 5;
+    hasted_ticks = false;
+    base_gain = data().effectN( 1 ).base_value();
   }
 
   virtual void execute()
   {
+    p() -> resource_gain( RESOURCE_FOCUS, base_gain, p() -> gains.fervor );
+    
     if ( p() -> active_pet )
-      p() -> active_pet -> resource_gain( RESOURCE_FOCUS, data().effectN( 1 ).base_value(), p() -> active_pet -> gains.fervor );
-
-    p() -> resource_gain( RESOURCE_FOCUS, data().effectN( 1 ).base_value(), p() -> gains.fervor );
+      p() -> active_pet -> resource_gain( RESOURCE_FOCUS, base_gain, p() -> active_pet -> gains.fervor );
 
     hunter_spell_t::execute();
   }
+
+  virtual void tick( dot_t* d )
+  {
+    hunter_spell_t::tick( d );
+
+    p() -> resource_gain( RESOURCE_FOCUS, base_gain / 5, p() -> gains.fervor );
+    
+    if ( p() -> active_pet )
+      p() -> active_pet -> resource_gain( RESOURCE_FOCUS, base_gain / 5, p() -> active_pet -> gains.fervor );
+ }
 };
 
 // Focus Fire ===============================================================
@@ -2541,6 +2557,11 @@ struct pet_blink_strike_t : public hunter_pet_attack_t
   {
     background = true;
     proc = true;
+  }
+  
+  virtual void execute( )
+  {
+    hunter_pet_attack_t::execute( );
   }
 };
 
