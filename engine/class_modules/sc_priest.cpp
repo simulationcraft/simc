@@ -5328,7 +5328,7 @@ std::string priest_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case PRIEST_SHADOW: return "002010";
+  case PRIEST_SHADOW: return "002013";
   default: break;
   }
 
