@@ -326,11 +326,9 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      weapon_multiplier = 1.0;
       background = true;
       repeating  = true;
       trigger_gcd = timespan_t::zero();
-      direct_power_mod = 0.76338;
       owner = p -> o();
     }
 
@@ -349,10 +347,10 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   {
     main_hand_weapon.type = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level ) * 6.34396;
-    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level ) * 6.34396;
+    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level ) * 6.1;
+    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level ) * 6.1;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 6.1;
   }
 
   paladin_t* o()
