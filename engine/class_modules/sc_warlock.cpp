@@ -23,6 +23,7 @@ struct warlock_td_t : public actor_pair_t
   dot_t*  dots_malefic_grasp;
   dot_t*  dots_seed_of_corruption;
   dot_t*  dots_soulburn_seed_of_corruption;
+  dot_t*  dots_haunt;
 
   buff_t* debuffs_haunt;
 
@@ -320,8 +321,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
   dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
+  dots_haunt               = target -> get_dot( "haunt", p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) ).duration( timespan_t::zero() ); // The "dot" will handle expiration
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -338,7 +340,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   glyphs( glyphs_t() ),
   spells( spells_t() ),
   demonic_calling_event( 0 ),
-  initial_burning_embers( 0 ),
+  initial_burning_embers( 1 ),
   initial_demonic_fury( 200 ),
   ember_react( timespan_t::max() ),
   nightfall_chance( 0 )
@@ -1846,7 +1848,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     double m = spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    if ( p() -> glyphs.shadow_bolt -> ok() )
+      m *= 1.0 + 0.69 * p() -> buffs.grimoire_of_sacrifice -> stack(); // The glyphed version gets a 69% bonus to the initial spell and nothing to the two copies
+    else
+      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -1873,7 +1878,8 @@ struct shadow_bolt_t : public warlock_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() )
+      // Only applies molten core if molten core is not already up
+      if ( target -> health_percentage() < p() -> spec.decimation -> effectN( 1 ).base_value() && ! p() -> buffs.molten_core -> check() )
         p() -> buffs.molten_core -> trigger();
 
       if ( p() -> glyphs.shadow_bolt -> ok() )
@@ -2167,15 +2173,21 @@ struct haunt_t : public warlock_spell_t
   haunt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Haunt" )
   {
-    // overriding because effect #4 makes the dbc parsing code think this is a dot
-    num_ticks = 0;
-    base_tick_time = timespan_t::zero();
+    hasted_ticks = false;
+    tick_may_crit = false;
 
     if ( ! dtr && p -> has_dtr )
     {
       dtr_action = new haunt_t( p, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+
+    td( d -> target ) -> debuffs_haunt -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -4794,9 +4806,9 @@ void warlock_t::init_actions()
     case WARLOCK_AFFLICTION:
       add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
-      add_action( "Haunt",                 "if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time" );
+      add_action( "Haunt",                 "if=!in_flight_to_target&remains<tick_time+travel_time+cast_time" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
-      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&soul_shard>1" );
+      add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&remains<tick_time+travel_time+cast_time&soul_shard>1" );
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
@@ -4954,7 +4966,7 @@ bool warlock_t::create_profile( std::string& profile_str, save_e stype, bool sav
 
   if ( stype == SAVE_ALL )
   {
-    if ( initial_burning_embers != 0 ) profile_str += "burning_embers=" + util::to_string( initial_burning_embers ) + "\n";
+    if ( initial_burning_embers != 1 ) profile_str += "burning_embers=" + util::to_string( initial_burning_embers ) + "\n";
     if ( initial_demonic_fury != 200 ) profile_str += "demonic_fury="   + util::to_string( initial_demonic_fury ) + "\n";
   }
 
