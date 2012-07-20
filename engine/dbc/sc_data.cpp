@@ -194,6 +194,8 @@ double spellpower_data_t::cost_divisor() const
   case POWER_RUNIC_POWER:
   case POWER_BURNING_EMBER:
     return 10.0;
+  case POWER_DEMONIC_FURY:
+    return _cost > 0 ? 1.0 : 0.1;  // If we got the cost from _cost_2, it's a percentage of the base DF, which is 1000
   default:
     return 1.0;
   }

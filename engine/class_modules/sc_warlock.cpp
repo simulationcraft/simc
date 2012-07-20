@@ -3792,9 +3792,6 @@ struct summon_main_pet_t : public summon_pet_t
     summon_pet_t( n, p ), instant_cooldown( p -> get_cooldown( "instant_summon_pet" ) )
   {
     instant_cooldown -> duration = timespan_t::from_seconds( 60 );
-
-    // Costs ten times as much fury as the spell data claims
-    base_costs[ RESOURCE_DEMONIC_FURY ] *= 10;
   }
 
   virtual void schedule_execute()
