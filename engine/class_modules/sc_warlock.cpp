@@ -284,7 +284,7 @@ public:
   {
     switch ( specialization() )
     {
-    case WARLOCK_AFFLICTION:  return "000030"; break;
+    case WARLOCK_AFFLICTION:  return "000010"; break;
     case WARLOCK_DEMONOLOGY:  return "300020"; break;
     case WARLOCK_DESTRUCTION: return "000010"; break;
     default: break;
@@ -4794,7 +4794,6 @@ void warlock_t::init_actions()
     case WARLOCK_AFFLICTION:
       add_action( "Soulburn",              "if=buff.dark_soul.up&(buff.dark_soul.remains>=18.5|buff.dark_soul.remains<=1.5)" );
       add_action( "Soul Swap",             "if=buff.soulburn.up" );
-      add_action( "Drain Soul",            "if=soul_shard=0,interrupt_if=soul_shard!=0" );
       add_action( "Haunt",                 "if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time" );
       add_action( "Soul Swap",             "cycle_targets=1,if=num_targets>1&time<10" );
       add_action( "Haunt",                 "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&soul_shard>1" );
@@ -4807,11 +4806,9 @@ void warlock_t::init_actions()
         add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
         add_action( "Unstable Affliction", "cycle_targets=1,if=ticks_remain<add_ticks%2+1&target.time_to_die>=5&miss_react" );
       }
-      action_list_str += "/soulburn,if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&cooldown.instant_summon_pet.remains=0";
-      action_list_str += "/summon_" + pet + ",if=talent.grimoire_of_sacrifice.enabled&target.health.pct<=20&buff.soulburn.up&cooldown.instant_summon_pet.remains=0";
-      add_action( "Drain Soul",            "interrupt=1,chain=1" );
-//      add_action( "Life Tap",              "if=mana.pct<=35" );
-//      add_action( "Malefic Grasp",         "chain=1" );
+      add_action( "Drain Soul",            "interrupt=1,chain=1,if=target.health.pct<=20" );
+      add_action( "Life Tap",              "if=mana.pct<35" );
+      add_action( "Malefic Grasp",         "chain=1" );
       add_action( "Life Tap",              "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
       add_action( "Fel Flame",             "moving=1" );
 

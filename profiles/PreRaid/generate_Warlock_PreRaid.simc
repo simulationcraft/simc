@@ -2,13 +2,14 @@
 
 # Level 90 PreRaid
 
+talent_format=armory
+
 warlock=Warlock_Affliction_PreRaid
 level=90
 race=orc
+spec=affliction
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!....2.
 talent_override=grimoire_of_service,if=num_targets>3
-glyphs=everlasting_affliction/soul_shards/soul_swap
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
@@ -30,9 +31,8 @@ save=Warlock_Affliction_PreRaid.simc
 warlock=Warlock_Demonology_PreRaid
 level=90
 race=orc
+spec=demonology
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#VZ!2...1.
-glyphs=everlasting_affliction/imp_swarm/shadow_bolt
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
@@ -54,10 +54,9 @@ save=Warlock_Demonology_PreRaid.simc
 warlock=Warlock_Destruction_PreRaid
 level=90
 race=orc
+spec=destruction
 professions=tailoring=600/enchanting=600
-talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 talent_override=grimoire_of_sacrifice,if=num_targets>2
-glyphs=everlasting_affliction/conflagrate/burning_embers
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste
 shoulders=forgotten_bloodmage_mantle,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_401crit_471mastery,enchant=200int_100crit,reforge=crit_hit
