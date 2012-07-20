@@ -2468,7 +2468,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   slot_e slot;
-  int quality, ilevel;
+  int quality, ilevel, effective_ilevel;
   bool unique, unique_enchant, unique_addon, is_heroic, is_lfr, is_ptr, is_matching_type, is_reforged;
   stat_e reforged_from;
   stat_e reforged_to;
@@ -2492,6 +2492,7 @@ struct item_t
   std::string option_reforge_str;
   std::string option_random_suffix_str;
   std::string option_ilevel_str;
+  std::string option_effective_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
   std::string options_str;
@@ -2511,6 +2512,7 @@ struct item_t
   std::string armory_armor_type_str;
   std::string armory_reforge_str;
   std::string armory_ilevel_str;
+  std::string armory_effective_ilevel_str;
   std::string armory_quality_str;
   std::string armory_random_suffix_str;
 
@@ -2529,6 +2531,7 @@ struct item_t
   std::string encoded_armor_type_str;
   std::string encoded_reforge_str;
   std::string encoded_ilevel_str;
+  std::string encoded_effective_ilevel_str;
   std::string encoded_quality_str;
   std::string encoded_random_suffix_str;
 
@@ -2591,6 +2594,7 @@ struct item_t
   bool decode_reforge();
   bool decode_random_suffix();
   bool decode_ilevel();
+  bool decode_effective_ilevel();
   bool decode_quality();
 
   static bool download_slot( item_t& item,

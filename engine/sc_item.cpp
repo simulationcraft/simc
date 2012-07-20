@@ -98,7 +98,7 @@ meta_gem_e parse_meta_gem( const std::string& prefix,
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-  sim( p -> sim ), player( p ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), unique( false ), unique_enchant( false ),
+  sim( p -> sim ), player( p ), slot( SLOT_INVALID ), quality( 0 ), ilevel( 0 ), effective_ilevel( 0 ), unique( false ), unique_enchant( false ),
   unique_addon( false ), is_heroic( false ), is_lfr( false ), is_ptr( p -> dbc.ptr ),
   is_matching_type( false ), is_reforged( false ), reforged_from( STAT_NONE ), reforged_to( STAT_NONE ),
   options_str( o )
@@ -204,22 +204,23 @@ bool item_t::parse_options()
 
   option_t options[] =
   {
-    { "id",      OPT_STRING, &option_id_str            },
-    { "stats",   OPT_STRING, &option_stats_str         },
-    { "gems",    OPT_STRING, &option_gems_str          },
-    { "enchant", OPT_STRING, &option_enchant_str       },
-    { "addon",   OPT_STRING, &option_addon_str         },
-    { "equip",   OPT_STRING, &option_equip_str         },
-    { "use",     OPT_STRING, &option_use_str           },
-    { "weapon",  OPT_STRING, &option_weapon_str        },
-    { "heroic",  OPT_STRING, &option_heroic_str        },
-    { "lfr",     OPT_STRING, &option_lfr_str           },
-    { "type",    OPT_STRING, &option_armor_type_str    },
-    { "reforge", OPT_STRING, &option_reforge_str       },
-    { "suffix",  OPT_STRING, &option_random_suffix_str },
-    { "ilevel",  OPT_STRING, &option_ilevel_str        },
-    { "quality", OPT_STRING, &option_quality_str       },
-    { "source",  OPT_STRING, &option_data_source_str   },
+    { "id",      OPT_STRING, &option_id_str               },
+    { "stats",   OPT_STRING, &option_stats_str            },
+    { "gems",    OPT_STRING, &option_gems_str             },
+    { "enchant", OPT_STRING, &option_enchant_str          },
+    { "addon",   OPT_STRING, &option_addon_str            },
+    { "equip",   OPT_STRING, &option_equip_str            },
+    { "use",     OPT_STRING, &option_use_str              },
+    { "weapon",  OPT_STRING, &option_weapon_str           },
+    { "heroic",  OPT_STRING, &option_heroic_str           },
+    { "lfr",     OPT_STRING, &option_lfr_str              },
+    { "type",    OPT_STRING, &option_armor_type_str       },
+    { "reforge", OPT_STRING, &option_reforge_str          },
+    { "suffix",  OPT_STRING, &option_random_suffix_str    },
+    { "ilevel",  OPT_STRING, &option_ilevel_str           },
+    { "eilevel", OPT_STRING, &option_effective_ilevel_str },
+    { "quality", OPT_STRING, &option_quality_str          },
+    { "source",  OPT_STRING, &option_data_source_str      },
     { NULL, OPT_UNKNOWN, NULL }
   };
 
@@ -227,21 +228,22 @@ bool item_t::parse_options()
 
   util::tokenize( option_name_str );
 
-  util::tolower( option_id_str            );
-  util::tolower( option_stats_str         );
-  util::tolower( option_gems_str          );
-  util::tolower( option_enchant_str       );
-  util::tolower( option_addon_str         );
-  util::tolower( option_equip_str         );
-  util::tolower( option_use_str           );
-  util::tolower( option_weapon_str        );
-  util::tolower( option_heroic_str        );
-  util::tolower( option_lfr_str           );
-  util::tolower( option_armor_type_str    );
-  util::tolower( option_reforge_str       );
-  util::tolower( option_random_suffix_str );
-  util::tolower( option_ilevel_str        );
-  util::tolower( option_quality_str       );
+  util::tolower( option_id_str               );
+  util::tolower( option_stats_str            );
+  util::tolower( option_gems_str             );
+  util::tolower( option_enchant_str          );
+  util::tolower( option_addon_str            );
+  util::tolower( option_equip_str            );
+  util::tolower( option_use_str              );
+  util::tolower( option_weapon_str           );
+  util::tolower( option_heroic_str           );
+  util::tolower( option_lfr_str              );
+  util::tolower( option_armor_type_str       );
+  util::tolower( option_reforge_str          );
+  util::tolower( option_random_suffix_str    );
+  util::tolower( option_ilevel_str           );
+  util::tolower( option_effective_ilevel_str );
+  util::tolower( option_quality_str          );
 
   return true;
 }
@@ -282,21 +284,22 @@ void item_t::encode_options()
 
   o = encoded_name_str;
 
-  if ( ! id_str.empty() && id_str[ 0 ] != 0 ) { o += ",id=";               o += id_str;                                           }
-  if ( heroic()                             ) { encode_option( "heroic=",  option_heroic_str,        encoded_heroic_str );        }
-  if ( lfr()                                ) { encode_option( "lfr=",     option_lfr_str,           encoded_lfr_str );           }
-  if ( armor_type()                         ) { encode_option( "type=",    option_armor_type_str,    encoded_armor_type_str );    }
-  if ( ! encoded_ilevel_str.empty()         ) { encode_option( "ilevel=",  option_ilevel_str,        encoded_ilevel_str );        }
-  if ( ! encoded_quality_str.empty()        ) { encode_option( "quality=", option_quality_str,       encoded_quality_str );       }
-  if ( ! encoded_stats_str.empty()          ) { encode_option( "stats=",   option_stats_str,         encoded_stats_str );         }
-  if ( ! encoded_equip_str.empty()          ) { encode_option( "equip=",   option_equip_str,         encoded_equip_str );         }
-  if ( ! encoded_use_str.empty()            ) { encode_option( "use=",     option_use_str,           encoded_use_str );           }
-  if ( ! encoded_weapon_str.empty()         ) { encode_option( "weapon=",  option_weapon_str,        encoded_weapon_str );        }
-  if ( ! encoded_random_suffix_str.empty()  ) { encode_option( "suffix=",  option_random_suffix_str, encoded_random_suffix_str ); }
-  if ( ! encoded_gems_str.empty()           ) { o += ",gems=";             o += encoded_gems_str;                                 }
-  if ( ! encoded_enchant_str.empty()        ) { o += ",enchant=";          o += encoded_enchant_str;                              }
-  if ( ! encoded_addon_str.empty()          ) { o += ",addon=";            o += encoded_addon_str;                                }
-  if ( ! encoded_reforge_str.empty()        ) { o += ",reforge=";          o += encoded_reforge_str;                              }
+  if ( ! id_str.empty() && id_str[ 0 ] != 0 )   { o += ",id=";               o += id_str;                                                 }
+  if ( heroic()                               ) { encode_option( "heroic=",  option_heroic_str,           encoded_heroic_str );           }
+  if ( lfr()                                  ) { encode_option( "lfr=",     option_lfr_str,              encoded_lfr_str );              }
+  if ( armor_type()                           ) { encode_option( "type=",    option_armor_type_str,       encoded_armor_type_str );       }
+  if ( ! encoded_ilevel_str.empty()           ) { encode_option( "ilevel=",  option_ilevel_str,           encoded_ilevel_str );           }
+  if ( ! encoded_effective_ilevel_str.empty() ) { encode_option( "eilevel=", option_effective_ilevel_str, encoded_effective_ilevel_str ); }
+  if ( ! encoded_quality_str.empty()          ) { encode_option( "quality=", option_quality_str,          encoded_quality_str );          }
+  if ( ! encoded_stats_str.empty()            ) { encode_option( "stats=",   option_stats_str,            encoded_stats_str );            }
+  if ( ! encoded_equip_str.empty()            ) { encode_option( "equip=",   option_equip_str,            encoded_equip_str );            }
+  if ( ! encoded_use_str.empty()              ) { encode_option( "use=",     option_use_str,              encoded_use_str );              }
+  if ( ! encoded_weapon_str.empty()           ) { encode_option( "weapon=",  option_weapon_str,           encoded_weapon_str );           }
+  if ( ! encoded_random_suffix_str.empty()    ) { encode_option( "suffix=",  option_random_suffix_str,    encoded_random_suffix_str );    }
+  if ( ! encoded_gems_str.empty()             ) { o += ",gems=";             o += encoded_gems_str;                                       }
+  if ( ! encoded_enchant_str.empty()          ) { o += ",enchant=";          o += encoded_enchant_str;                                    }
+  if ( ! encoded_addon_str.empty()            ) { o += ",addon=";            o += encoded_addon_str;                                      }
+  if ( ! encoded_reforge_str.empty()          ) { o += ",reforge=";          o += encoded_reforge_str;                                    }
 }
 
 // item_t::init =============================================================
@@ -331,20 +334,21 @@ bool item_t::init()
     return true;
   }
 
-  id_str                    = armory_id_str;
+  id_str                       = armory_id_str;
 
-  encoded_stats_str         = armory_stats_str;
-  encoded_reforge_str       = armory_reforge_str;
-  encoded_gems_str          = armory_gems_str;
-  encoded_enchant_str       = armory_enchant_str;
-  encoded_addon_str         = armory_addon_str;
-  encoded_weapon_str        = armory_weapon_str;
-  encoded_heroic_str        = armory_heroic_str;
-  encoded_lfr_str           = armory_lfr_str;
-  encoded_armor_type_str    = armory_armor_type_str;
-  encoded_ilevel_str        = armory_ilevel_str;
-  encoded_quality_str       = armory_quality_str;
-  encoded_random_suffix_str = armory_random_suffix_str;
+  encoded_stats_str            = armory_stats_str;
+  encoded_reforge_str          = armory_reforge_str;
+  encoded_gems_str             = armory_gems_str;
+  encoded_enchant_str          = armory_enchant_str;
+  encoded_addon_str            = armory_addon_str;
+  encoded_weapon_str           = armory_weapon_str;
+  encoded_heroic_str           = armory_heroic_str;
+  encoded_lfr_str              = armory_lfr_str;
+  encoded_armor_type_str       = armory_armor_type_str;
+  encoded_ilevel_str           = armory_ilevel_str;
+  encoded_effective_ilevel_str = armory_effective_ilevel_str;
+  encoded_quality_str          = armory_quality_str;
+  encoded_random_suffix_str    = armory_random_suffix_str;
 
   if ( ! option_id_str.empty() ) id_str = option_id_str;
 
@@ -362,7 +366,11 @@ bool item_t::init()
 
   if ( ! option_ilevel_str.empty() ) encoded_ilevel_str = option_ilevel_str;
 
+  if ( ! option_effective_ilevel_str.empty() ) encoded_effective_ilevel_str = option_effective_ilevel_str;
+
   if ( ! decode_ilevel() ) return false;
+
+  if ( ! decode_effective_ilevel() ) return false;
 
   if ( ! option_quality_str.empty() ) encoded_quality_str = option_quality_str;
 
@@ -474,6 +482,22 @@ bool item_t::decode_ilevel()
 
   return true;
 }
+
+// item_t::decode_effective_ilevel ====================================================
+
+bool item_t::decode_effective_ilevel()
+{
+  if ( encoded_effective_ilevel_str.empty() ) return true;
+
+  long ilvl = strtol( encoded_effective_ilevel_str.c_str(), 0, 10 );
+
+  if ( ilvl < 1 || ilvl == std::numeric_limits<long>::max() ) return false;
+
+  effective_ilevel = ilvl;
+
+  return true;
+}
+
 
 // item_t::decode_quality ===================================================
 

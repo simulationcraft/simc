@@ -6,7 +6,7 @@ professions=tailoring=525/blacksmithing=525
 initial_shadow_orbs=3
 save=priest_shadow_base.simc
 
-priest_shadow_base.simc talent_override=twist_of_fate,if=num_targets>3 name=Priest_Shadow_T13H actions= save=priest_shadow.simc
+priest_shadow_base.simc name=Priest_Shadow_T13H actions= save=priest_shadow.simc
 
 priest_shadow_base.simc talents=001030 name=priest_di_fdcl  actions= save=priest_di_fdcl.simc  glyphs=mind_spike
 priest_shadow_base.simc talents=002030 name=priest_di_mb    actions= save=priest_di_mb.simc

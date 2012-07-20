@@ -318,7 +318,9 @@ public:
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
   double shadowy_recall_chance()
-  { return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery(); }
+  { 
+    return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * composite_mastery(); 
+  }
 
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   virtual void pre_analyze_hook();
@@ -1242,9 +1244,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( ! pr -> specs.shadowy_apparitions -> ok() )
       return;
 
-    if ( ! pr -> rngs.shadowy_apparitions -> roll( pr -> specs.shadowy_apparitions -> effectN( 1 ).percent() ) )
-      return;
-
     if ( ! pr -> spells.apparitions_free.empty() )
     {
       spell_t* s = pr -> spells.apparitions_free.front();
@@ -1763,6 +1762,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 3.5;
+    direct_power_mod  = 0.375;
   }
 
   virtual void impact( action_state_t* s )
@@ -2058,6 +2058,18 @@ struct mind_spike_t : public priest_spell_t
                      name(), player -> resources.current[ current_resource() ] );
 
     stats -> consume_resource( current_resource(), resource_consumed );
+  }
+
+  virtual double composite_da_multiplier()
+  {
+    double d = priest_spell_t::composite_da_multiplier();
+
+    if ( p() -> buffs.consume_surge_of_darkness -> check() )
+    {
+      d *= 1.0 + p() -> talents.from_darkness_comes_light -> effectN( 2 ).percent();
+    }
+
+    return d;
   }
 
   virtual double cost()
@@ -2455,16 +2467,13 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    //tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
-
     parse_effect_data( data().effectN( 1 ) );
 
     base_td = num_ticks = 0;
     base_tick_time = timespan_t::zero();
 
-    // BUG: 15851. FIX-ME.
-    direct_power_mod = 1.333;
-
+    // BUG: 15882: Missing from data files.
+    direct_power_mod = 1.0;
 
     tick_may_crit = true;
 
@@ -2584,7 +2593,10 @@ struct shadow_word_pain_t : public priest_spell_t
 
     if ( ( tick_dmg > 0 ) && ( p() -> specs.shadowy_apparitions -> ok() ) )
     {
-      trigger_shadowy_apparition( d );
+      if ( d -> state -> result == RESULT_CRIT )
+      {
+        trigger_shadowy_apparition( d );
+      }
     }
     if ( ( tick_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
     {
@@ -3071,7 +3083,9 @@ struct cascade_damage_t : public cascade_base_t<priest_spell_t>
 {
   cascade_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "cascade_damage", p, options_str, ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 127628 ) : p -> find_spell( 120785 ) )
-  { }
+  { 
+    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
+  }
 
   virtual void populate_target_list()
   {
@@ -3141,7 +3155,9 @@ struct halo_damage_t : public halo_base_t<priest_spell_t>
 {
   halo_damage_t( priest_t* p, const std::string& options_str ) :
     base_t( "halo_damage", p, options_str )
-  { }
+  {
+    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
+  }
 };
 
 struct halo_heal_t : public halo_base_t<priest_heal_t>
@@ -3268,6 +3284,7 @@ struct divine_star_damage_t : public divine_star_base_t<priest_spell_t>
     const spell_data_t* damage_data =  ( p -> specialization() == PRIEST_SHADOW ) ? p -> find_spell( 122128 ) : p -> find_spell( 110745 );
     parse_effect_data( damage_data -> effectN( 1 ) );
     school       = damage_data -> get_school_type();
+    base_hit += p -> specs.divine_fury -> effectN( 1 ).percent();
   }
 
 };
@@ -4725,7 +4742,7 @@ void priest_t::init_buffs()
   // Shadow
   const spell_data_t* divine_insight_shadow = ( talents.divine_insight -> ok() && ( specialization() == PRIEST_SHADOW ) ) ? talents.divine_insight -> effectN( 2 ).trigger() : spell_data_t::not_found();
   buffs.divine_insight_shadow            = buff_creator_t( this, "divine_insight_shadow", divine_insight_shadow )
-                                           .chance( talents.divine_insight -> proc_chance() );
+                                           .chance( 0.05 /* talents.divine_insight -> proc_chance() */ );
   buffs.shadowform                       = buff_creator_t( this, "shadowform", find_class_spell( "Shadowform" ) );
   buffs.vampiric_embrace                 = buff_creator_t( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) )
                                            .duration( find_class_spell( "Vampiric Embrace" ) -> duration() + glyphs.vampiric_embrace -> effectN( 1 ).time_value() );
@@ -5280,7 +5297,7 @@ std::string priest_t::set_default_talents()
 {
   switch ( specialization() )
   {
-  case PRIEST_SHADOW: return "002030";
+  case PRIEST_SHADOW: return "002010";
   default: break;
   }
 

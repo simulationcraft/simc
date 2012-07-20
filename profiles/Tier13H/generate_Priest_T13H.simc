@@ -5,6 +5,5 @@
 wowhead=34565368
 name=Priest_Shadow_T13H
 professions=tailoring=525/blacksmithing=525
-talent_override=twist_of_fate,if=num_targets>3
 initial_shadow_orbs=3
 save=Priest_Shadow_T13H.simc
