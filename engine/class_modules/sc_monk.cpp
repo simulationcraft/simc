@@ -13,6 +13,11 @@
 //  Add all buffs
 //  Remove overemphasized commenting once done with abilities
 //
+//  Implement Build 15882
+//  http://www.mmo-champion.com/content/2852-Mists-of-Pandaria-Beta-Build-15882
+//
+//  Implement Build 15851
+//  http://www.mmo-champion.com/content/2846-Mists-of-Pandaria-Beta-Build-15851
 
 #include "simulationcraft.hpp"
 
