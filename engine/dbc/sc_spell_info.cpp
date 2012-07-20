@@ -160,7 +160,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 210
   0,                            0,                          0,                      0,                          0,                       // 215
   0,                            0,                          0,                      0,                          0,                       // 220
-  0,                            0,                          0,                      0,                          0,                       // 225
+  0,            "Periodic Dummy",                          0,                      0,                          0,                       // 225
   0,                            0,                          0,                      0,                          0,                       // 230
   0,                            0,                          0,                      0,                          0,                       // 235
   "Modify Expertise%",          0,                          0,                      0,                          0,                       // 240
@@ -265,6 +265,10 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
         s << ": " << util::school_type_string( spell -> get_school_type() );
         if ( e -> period() != timespan_t::zero() )
           s << " every " << e -> period().total_seconds() << " seconds";
+        break;
+      case A_PERIODIC_DUMMY:
+        if ( e -> period() != timespan_t::zero() )
+          s << ": every " << e -> period().total_seconds() << " seconds";
         break;
       case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
