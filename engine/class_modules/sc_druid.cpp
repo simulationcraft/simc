@@ -1767,7 +1767,8 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
       // Heal: ( ( AP / 1000 )^2 - AP / 1000 ) / 10
       // => AP*AP / 10000000 - AP / 10000
       double attack_power = composite_attack_power() * composite_attack_power_multiplier();
-      double health_gain = ( attack_power * attack_power / 10000000.0 - attack_power / 10000.0 );
+      double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 - 
+                             data().effectN( 3 ).base_value() * attack_power / 10000.0 );
       double health_pct_gain = resource_consumed / maximum_rage_cost;
 
       p() -> resource_gain( RESOURCE_HEALTH,
