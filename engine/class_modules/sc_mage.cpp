@@ -369,16 +369,6 @@ struct water_elemental_pet_t : public pet_t
       may_crit = true;
     }
 
-    virtual double action_multiplier()
-    {
-      double am = spell_t::action_multiplier();
-
-      // Remove line when new spell data is in
-      am *= 0.81;
-
-      return am;
-    }
-
     virtual double composite_target_multiplier( player_t* target )
     {
       double am = spell_t::composite_target_multiplier( target );
@@ -1767,9 +1757,6 @@ struct frostbolt_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    // Remove line when new spell data is in
-    am *= 0.81;
-
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
       am *= 0.4;
@@ -2053,9 +2040,6 @@ struct ice_lance_t : public mage_spell_t
   virtual double action_multiplier()
   {
     double am = mage_spell_t::action_multiplier();
-
-    // Remove line when new spell data is in
-    am *= 0.81;
 
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
