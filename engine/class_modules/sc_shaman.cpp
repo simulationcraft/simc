@@ -679,8 +679,8 @@ struct feral_spirit_pet_t : public pet_t
     pet_t( sim, owner, "spirit_wolf" ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 555; // MoP level 85 values, approximated
-    main_hand_weapon.max_dmg    = 833;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
