@@ -55,7 +55,7 @@ struct spellpower_data_t
   unsigned spell_id() const { return _spell_id; }
   unsigned aura_id() const { return _aura_id; }
   power_e type() const { return static_cast< power_e >( _power_e ); }
-  double cost_divisor() const;
+  double cost_divisor( bool percentage ) const;
   double cost() const;
   double cost_per_second() const;
 

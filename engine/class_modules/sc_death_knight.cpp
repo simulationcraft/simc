@@ -2207,7 +2207,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
         timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
@@ -2428,7 +2428,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
         timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }
@@ -3138,7 +3138,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> buffs.runic_corruption -> trigger( 1.0, -1.0, -1.0, 
+      p() -> buffs.runic_corruption -> trigger( 1, -1.0, -1.0, 
         timespan_t::from_seconds( 10.0 * 0.3 * p() -> composite_attack_haste() ) );
     }
   }

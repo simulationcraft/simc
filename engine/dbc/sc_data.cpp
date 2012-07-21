@@ -183,7 +183,7 @@ resource_e spellpower_data_t::resource() const
   return util::translate_power_type( type() );
 }
 
-double spellpower_data_t::cost_divisor() const
+double spellpower_data_t::cost_divisor( bool percentage ) const
 {
   switch ( type() )
   {
@@ -195,7 +195,7 @@ double spellpower_data_t::cost_divisor() const
   case POWER_BURNING_EMBER:
     return 10.0;
   case POWER_DEMONIC_FURY:
-    return _cost > 0 ? 1.0 : 0.1;  // If we got the cost from _cost_2, it's a percentage of the base DF, which is 1000
+    return percentage ? 0.1 : 1.0;  // X% of 1000 ("base" demonic fury) is X divided by 0.1
   default:
     return 1.0;
   }
@@ -210,7 +210,7 @@ double spellpower_data_t::cost() const
   else
     cost = _cost_2;
 
-  return cost / cost_divisor();;
+  return cost / cost_divisor( ! ( _cost > 0 ) );
 }
 
 double spellpower_data_t::cost_per_second() const
@@ -222,7 +222,7 @@ double spellpower_data_t::cost_per_second() const
   else
     cost = _cost_per_second_2;
 
-  return cost / cost_divisor();
+  return cost / cost_divisor( ! ( _cost_per_second > 0 ) );
 }
 
 // ==========================================================================
