@@ -366,6 +366,7 @@ struct water_elemental_pet_t : public pet_t
       // FIXME: This should be spell ID (unknown), but is not in our spell data
       spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
+      may_crit = true;
       background = true;
       dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
@@ -1859,7 +1860,7 @@ struct frostbolt_t : public mage_spell_t
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
   mini_frostfire_bolt_t( mage_t* p ) :
-    // FIXME: This should be spell ID (undetermined), but is not in our spell data
+    // FIXME: This should be spell ID 131081, but is not in our spell data
     mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     background = true;
@@ -1999,6 +2000,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
     mage_spell_t( "frozen_orb_bolt", p, p -> find_class_spell( "Frozen Orb" ) -> ok() ? p -> find_spell( 84721 ) : spell_data_t::not_found() )
   {
     background = true;
+    dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
   }
 };
@@ -2017,9 +2019,11 @@ struct frozen_orb_t : public mage_spell_t
     hasted_ticks = false;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
+    may_miss       = false;
+    may_crit       = false;
 
-    bolt = new frozen_orb_bolt_t( p );
-    add_child( bolt );
+    dynamic_tick_action = true;
+    tick_action = new frozen_orb_bolt_t( p );
   }
 
   virtual void impact( action_state_t* s )
@@ -2033,7 +2037,6 @@ struct frozen_orb_t : public mage_spell_t
   {
     mage_spell_t::tick( d );
 
-    bolt -> execute();
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
@@ -2243,10 +2246,6 @@ struct icy_veins_t : public mage_spell_t
     parse_options( NULL, options_str );
     harmful = false;
 
-    if ( p -> glyphs.icy_veins -> ok() )
-    {
-      cooldown -> duration *= 0.5;
-    }
     if ( player -> set_bonus.tier14_4pc_caster() )
     {
       cooldown -> duration *= 0.55;
