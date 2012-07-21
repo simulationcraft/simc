@@ -156,6 +156,7 @@ public:
     gain_t* fel_flame;
     gain_t* shadowburn;
     gain_t* miss_refund;
+    gain_t* siphon_life;
   } gains;
 
   // Procs
@@ -185,6 +186,7 @@ public:
     const spell_data_t* burning_embers;
     const spell_data_t* soul_swap;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* siphon_life;
   } glyphs;
 
   struct spells_t
@@ -1770,6 +1772,9 @@ struct doom_t : public warlock_spell_t
     warlock_spell_t::tick( d );
 
     if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
+
+    if ( p() -> glyphs.siphon_life -> ok() )
+      p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
   }
 
   virtual bool ready()
@@ -2008,6 +2013,9 @@ struct corruption_t : public warlock_spell_t
         p() -> nightfall_chance = 0;
       }
     }
+
+    if ( p() -> glyphs.siphon_life -> ok() )
+      p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
   }
 
   virtual double action_multiplier()
@@ -4564,6 +4572,7 @@ void warlock_t::init_spells()
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
   glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
+  glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
 
   spells.archimondes_vengeance_dmg = new archimondes_vengeance_dmg_t( this );
 
@@ -4651,8 +4660,9 @@ void warlock_t::init_gains()
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
   gains.fel_flame          = get_gain( "fel_flame"    );
-  gains.shadowburn         = get_gain( "shadowburn" );
-  gains.miss_refund        = get_gain( "miss_refund" );
+  gains.shadowburn         = get_gain( "shadowburn"   );
+  gains.miss_refund        = get_gain( "miss_refund"  );
+  gains.siphon_life        = get_gain( "siphon_life"  );
 }
 
 
