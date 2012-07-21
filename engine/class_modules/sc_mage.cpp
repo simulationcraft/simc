@@ -360,24 +360,74 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
-  struct water_bolt_t : public spell_t
+  struct mini_waterbolt_t : public spell_t
   {
-    water_bolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "water_bolt", p, p -> find_pet_spell( "Waterbolt" ) )
+    mini_waterbolt_t( water_elemental_pet_t* p ) :
+      // FIXME: This should be spell ID (unknown), but is not in our spell data
+      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
-      parse_options( NULL, options_str );
-      may_crit = true;
+      background = true;
+      dual = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+    
+      base_execute_time = timespan_t::zero();  
+      base_multiplier *= 0.4;
     }
 
     virtual double composite_target_multiplier( player_t* target )
     {
-      double am = spell_t::composite_target_multiplier( target );
+      double tm = spell_t::composite_target_multiplier( target );
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
-      am *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
+      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
 
-      return am;
+      return tm;
+    }
+  };
+
+  struct waterbolt_t : public spell_t
+  {
+    mini_waterbolt_t* bolt;
+
+    waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
+      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+    {
+      parse_options( NULL, options_str );
+      may_crit = true;
+
+      if ( p -> o() -> glyphs.icy_veins -> ok() )
+      {
+        hasted_ticks = false;
+        base_tick_time = timespan_t::from_seconds( 0.2 );
+        num_ticks      = 2;
+
+        bolt = new mini_waterbolt_t( p );
+        //bolt -> stats = stats;
+        add_child( bolt );
+      }
+    }
+
+    virtual void tick( dot_t* d )
+    {
+    water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+    if ( p -> o() -> buffs.icy_veins -> up() && p -> o() -> glyphs.icy_veins -> ok() )
+      {
+        spell_t::tick( d );
+
+        bolt -> execute();
+      }
+    }
+
+    virtual double composite_target_multiplier( player_t* target )
+    {
+      double tm = spell_t::composite_target_multiplier( target );
+
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
+
+      return tm;
     }
 
   };
@@ -386,7 +436,7 @@ struct water_elemental_pet_t : public pet_t
     pet_t( sim, owner, "water_elemental" )
   {
     action_list_str  = "freeze,if=owner.buff.fingers_of_frost.stack=0";
-    action_list_str += "/water_bolt";
+    action_list_str += "/waterbolt";
     create_options();
 
     owner_coeff.sp_from_sp = 1.0;
@@ -399,7 +449,7 @@ struct water_elemental_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "freeze"     ) return new     freeze_t( this, options_str );
-    if ( name == "water_bolt" ) return new water_bolt_t( this, options_str );
+    if ( name == "waterbolt" ) return new waterbolt_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1242,7 +1292,12 @@ struct blizzard_shard_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent() );
+      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
+      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      {
+        fof_proc_chance *= 1.2;
+      }
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
     }
   }
 };
@@ -1732,7 +1787,7 @@ struct frostbolt_t : public mage_spell_t
       num_ticks      = 2;
 
       bolt = new mini_frostbolt_t( p );
-      bolt -> stats = stats;
+      //bolt -> stats = stats;
       add_child( bolt );
     }
   }
@@ -1743,7 +1798,12 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
+      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      {
+        fof_proc_chance *= 1.2;
+      }
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
       if ( p() -> set_bonus.tier13_2pc_caster() )
       {
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
@@ -1832,7 +1892,7 @@ struct frostfire_bolt_t : public mage_spell_t
       num_ticks      = 2;
 
       bolt = new mini_frostfire_bolt_t( p );
-      bolt -> stats = stats;
+      //bolt -> stats = stats;
       add_child( bolt );
     }
 
@@ -1875,7 +1935,12 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent() );
+      double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      {
+        fof_proc_chance *= 1.2;
+      }
+      p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
     }
     p() -> buffs.brain_freeze -> expire();
   }
@@ -1954,7 +2019,6 @@ struct frozen_orb_t : public mage_spell_t
     num_ticks      = ( int ) ( data().duration() / base_tick_time );
 
     bolt = new frozen_orb_bolt_t( p );
-    bolt -> stats = stats;
     add_child( bolt );
   }
 
@@ -1970,7 +2034,12 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t::tick( d );
 
     bolt -> execute();
-    p() -> buffs.fingers_of_frost -> trigger( 1, -1, 0.12 );
+    double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    {
+      fof_proc_chance *= 1.2;
+    }
+    p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
   }
 };
 
@@ -2068,7 +2137,7 @@ struct ice_lance_t : public mage_spell_t
 
       bolt = new mini_ice_lance_t( p );
       bolt -> fof_multiplier = fof_multiplier;
-      bolt -> stats = stats;
+      //bolt -> stats = stats;
       add_child( bolt );
     }
 
@@ -2606,7 +2675,14 @@ struct scorch_t : public mage_spell_t
     {
       trigger_ignite( this, s );
       if ( p() -> specialization() == MAGE_FROST )
-        p() -> buffs.fingers_of_frost -> trigger( 1, -1, p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent() );
+      {
+        double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent();
+        if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+        {
+          fof_proc_chance *= 1.2;
+        }
+        p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+      }
     }
   }
 
