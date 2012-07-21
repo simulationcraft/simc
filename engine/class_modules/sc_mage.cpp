@@ -2117,7 +2117,7 @@ struct mini_ice_lance_t : public mage_spell_t
   mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
     // FIXME: This should be spell ID 131080, but is not in our spell data
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) ),
-    second_lance( NULL )
+    second_lance( NULL ),
     fof_multiplier( 0 )
   {
     background = true;
