@@ -323,7 +323,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p )
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
   dots_haunt               = target -> get_dot( "haunt", p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) ).duration( timespan_t::zero() ); // The "dot" will handle expiration
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -2183,20 +2183,13 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    warlock_spell_t::last_tick( d );
-
-    td( d -> target ) -> debuffs_haunt -> expire();
-  }
-
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_haunt -> trigger();
+      td( s -> target ) -> debuffs_haunt -> trigger( 1, -1.0, -1.0, get_dot( s -> target ) -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
