@@ -1813,32 +1813,39 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
   {
+    direct_power_mod = 1.25; // tested in-game 2012/07/19
+
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
+      double pm = direct_power_mod;
+      double mi = base_dd_min;
+      double ma = base_dd_max;
       s_data = p -> find_spell( p -> glyphs.shadow_bolt -> effectN( 1 ).base_value() );
       parse_spell_data( data() );
-      direct_power_mod = 0.45; // tested in-game 2012/07/19
-      base_dd_min = data().effectN( 1 ).min( p ) * 0.36;
-      base_dd_max = data().effectN( 1 ).max( p ) * 0.36;
+      direct_power_mod = pm;
+      base_dd_min = mi;
+      base_dd_max = ma;
+      base_multiplier = 0.36; // FIXME: Retest this, but currently the multiplier is not 1/3 as one might expect
 
       glyph_copy_1 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 2 ).trigger() );
       glyph_copy_1 -> background = true;
       glyph_copy_1 -> generate_fury = glyph_copy_1 -> data().effectN( 2 ).base_value();
-      glyph_copy_1 -> direct_power_mod = direct_power_mod;
-      glyph_copy_1 -> base_dd_min = base_dd_min;
-      glyph_copy_1 -> base_dd_max = base_dd_max;
+      glyph_copy_1 -> direct_power_mod = pm;
+      glyph_copy_1 -> base_dd_min = mi;
+      glyph_copy_1 -> base_dd_max = ma;
+      glyph_copy_1 -> base_multiplier = base_multiplier;
       if ( dtr ) glyph_copy_1 -> stats = p -> get_stats( "shadow_bolt_DTR" );
 
       glyph_copy_2 = new warlock_spell_t( "shadow_bolt", p, data().effectN( 3 ).trigger() );
       glyph_copy_2 -> background = true;
-      glyph_copy_2 -> direct_power_mod = direct_power_mod;
-      glyph_copy_2 -> base_dd_min = base_dd_min;
-      glyph_copy_2 -> base_dd_max = base_dd_max;
+      glyph_copy_2 -> direct_power_mod = pm;
+      glyph_copy_2 -> base_dd_min = mi;
+      glyph_copy_2 -> base_dd_max = ma;
+      glyph_copy_2 -> base_multiplier = base_multiplier;
       if ( dtr ) glyph_copy_2 -> stats = p -> get_stats( "shadow_bolt_DTR" );
     }
     else
     {
-      direct_power_mod = 1.25; // tested in-game 2012/07/19
       generate_fury = data().effectN( 2 ).base_value();
     }
 
@@ -1854,7 +1861,7 @@ struct shadow_bolt_t : public warlock_spell_t
     double m = spell_t::action_multiplier();
 
     if ( p() -> glyphs.shadow_bolt -> ok() )
-      m *= 1.0 + 0.69 * p() -> buffs.grimoire_of_sacrifice -> stack(); // The glyphed version gets a 69% bonus to the initial spell and nothing to the two copies
+      m *= 1.0 + 0.69 * p() -> buffs.grimoire_of_sacrifice -> stack(); // FIXME: Retest this, but currently glyphed version gets a 69% bonus to the initial spell and nothing to the two copies
     else
       m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -2798,11 +2805,6 @@ struct shadowflame_t : public warlock_spell_t
     generate_fury = 2;
   }
 
-  virtual timespan_t travel_time()
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
-
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
@@ -2830,7 +2832,6 @@ struct shadowflame_t : public warlock_spell_t
   }
 };
 
-
 struct hand_of_guldan_dmg_t : public warlock_spell_t
 {
   hand_of_guldan_dmg_t( warlock_t* p ) :
@@ -2841,30 +2842,21 @@ struct hand_of_guldan_dmg_t : public warlock_spell_t
     dual       = true;
     may_miss   = false;
   }
-
-  virtual timespan_t travel_time()
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
 };
-
 
 struct hand_of_guldan_t : public warlock_spell_t
 {
-  shadowflame_t* shadowflame;
-  hand_of_guldan_dmg_t* hog_damage;
-
   hand_of_guldan_t( warlock_t* p, bool dtr = false ) :
     warlock_spell_t( p, "Hand of Gul'dan" )
   {
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2;
 
-    shadowflame = new shadowflame_t( p );
-    hog_damage  = new hand_of_guldan_dmg_t( p );
+    impact_action = new hand_of_guldan_dmg_t( p );
+    impact_action -> execute_action = new shadowflame_t( p );
 
     if ( ! dtr )
-      add_child( shadowflame );
+      add_child( impact_action -> execute_action );
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2877,12 +2869,12 @@ struct hand_of_guldan_t : public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    hog_damage -> stats = stats;
+    impact_action -> stats = stats;
   }
 
   virtual timespan_t travel_time()
   {
-    return timespan_t::zero();
+    return timespan_t::from_seconds( 1.5 );
   }
 
   virtual bool ready()
@@ -2892,17 +2884,6 @@ struct hand_of_guldan_t : public warlock_spell_t
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      shadowflame -> execute();
-      hog_damage  -> execute();
-    }
   }
 };
 
@@ -2916,11 +2897,6 @@ struct chaos_wave_dmg_t : public warlock_spell_t
     background = true;
     dual       = true;
   }
-
-  virtual timespan_t travel_time()
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
 };
 
 
@@ -2933,8 +2909,8 @@ struct chaos_wave_t : public warlock_spell_t
   {
     cooldown = p -> cooldowns.hand_of_guldan;
 
-    cw_damage  = new chaos_wave_dmg_t( p );
-    cw_damage -> stats = stats;
+    impact_action  = new chaos_wave_dmg_t( p );
+    impact_action -> stats = stats;
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2945,7 +2921,7 @@ struct chaos_wave_t : public warlock_spell_t
 
   virtual timespan_t travel_time()
   {
-    return timespan_t::zero();
+    return timespan_t::from_seconds( 1.5 );
   }
 
   virtual bool ready()
@@ -2955,16 +2931,6 @@ struct chaos_wave_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      cw_damage -> execute();
-    }
   }
 };
 
@@ -4862,7 +4828,7 @@ void warlock_t::init_actions()
       if ( glyphs.imp_swarm -> ok() )
         add_action( find_spell( 104316 ) );
 
-      add_action( "Hand of Gul'dan",       "if=!action.shadowflame.in_flight&target.dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
+      add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time" );
       add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.metamorphosis.down|target.health.pct<25)" );
       add_action( spec.touch_of_chaos );
 

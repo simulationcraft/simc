@@ -232,8 +232,10 @@ action_t::action_t( action_e       ty,
   dtr_action                     = 0;
   is_dtr_action                  = false;
   tick_action                    = 0;
+  execute_action                 = 0;
+  impact_action                  = 0;
   dynamic_tick_action            = false;
-  is_tick_action                 = false;
+  is_triggered_action            = false;
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -980,6 +982,12 @@ void action_t::execute()
     pre_execute_state = 0;
   }
 
+  if ( execute_action && result_is_hit( execute_state -> result ) )
+  {
+    execute_action -> pre_execute_state = execute_action -> get_state( execute_state );
+    execute_action -> execute();
+  }
+
   if ( repeating && ! proc ) schedule_execute();
 }
 
@@ -1356,17 +1364,20 @@ void action_t::init()
 
   if ( tick_action )
   {
-    tick_action -> is_tick_action = true;
+    tick_action -> is_triggered_action = true;
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
     tick_action -> stats = stats;
   }
 
+  if ( execute_action ) execute_action -> is_triggered_action = true;
+  if ( impact_action  ) impact_action  -> is_triggered_action = true;
+
   stats -> school      = school;
 
   if ( quiet ) stats -> quiet = true;
 
-  if ( may_crit || tick_may_crit || ( tick_action && tick_action -> may_crit ) )
+  if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( base_td > 0 || num_ticks > 0 )
@@ -1893,6 +1904,27 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> target_crit = composite_target_crit( state -> target );
 }
 
+void action_t::consolidate_snapshot_flags( bool toplevel )
+{
+  if ( tick_action && ( ! toplevel || ! is_triggered_action ) )
+  {
+    tick_action -> consolidate_snapshot_flags( false );
+    snapshot_flags |= tick_action -> snapshot_flags;
+  }
+
+  if ( execute_action && ( ! toplevel || ! is_triggered_action ) )
+  {
+    execute_action -> consolidate_snapshot_flags( false );
+    snapshot_flags |= execute_action -> snapshot_flags;
+  }
+  
+  if ( impact_action && ( ! toplevel || ! is_triggered_action ) )
+  {
+    impact_action -> consolidate_snapshot_flags( false );
+    snapshot_flags |= impact_action -> snapshot_flags;
+  }
+}
+
 event_t* action_t::start_action_execute_event( timespan_t t )
 {
   return new ( sim ) action_execute_event_t( sim, this, t );
@@ -1975,6 +2007,12 @@ void action_t::impact( action_state_t* s )
       if ( sim -> debug )
         sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
                        player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
+    }
+    
+    if ( impact_action )
+    {
+      impact_action -> pre_execute_state = impact_action -> get_state( s );
+      impact_action -> execute();
     }
   }
   else

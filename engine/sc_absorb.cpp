@@ -39,7 +39,7 @@ void absorb_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( ! is_tick_action && result != RESULT_NONE )
+    if ( ! is_triggered_action && result != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.absorb[ result ], this );
     }

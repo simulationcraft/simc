@@ -52,7 +52,7 @@ void heal_t::execute()
 
   if ( callbacks )
   {
-    if ( ! is_tick_action && result != RESULT_NONE )
+    if ( ! is_triggered_action && result != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.heal[ result ], this );
     }

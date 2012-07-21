@@ -1880,6 +1880,9 @@ void player_t::init_actions()
     }
   }
 
+  for ( size_t i = 0; i < action_list.size(); ++i )
+    action_list[ i ] -> consolidate_snapshot_flags();
+
   if ( choose_action_list.empty() ) choose_action_list = "default";
 
   action_priority_list_t* chosen_action_list = find_action_priority_list( choose_action_list );
