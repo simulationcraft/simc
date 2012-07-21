@@ -1925,7 +1925,8 @@ struct frostfire_bolt_t : public mage_spell_t
   mini_frostfire_bolt_t* bolt;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
+    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
+    bolt( NULL )
   {
     parse_options( NULL, options_str );
 
@@ -2116,6 +2117,7 @@ struct mini_ice_lance_t : public mage_spell_t
   mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
     // FIXME: This should be spell ID 131080, but is not in our spell data
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) ),
+    second_lance( NULL )
     fof_multiplier( 0 )
   {
     background = true;
