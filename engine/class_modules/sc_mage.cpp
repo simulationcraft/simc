@@ -371,10 +371,7 @@ struct water_elemental_pet_t : public pet_t
     {
       may_crit = true;
       background = true;
-      dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
-    
-      base_multiplier *= 0.4;
 
       if ( ! bolt_two )
       {
@@ -388,23 +385,13 @@ struct water_elemental_pet_t : public pet_t
 
       if ( second_bolt )
       {
+        second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
         second_bolt -> schedule_execute();
       }
     }
 
     virtual timespan_t execute_time()
     { return timespan_t::from_seconds( 0.2 ); }
-
-    virtual double composite_target_multiplier( player_t* target )
-    {
-      double tm = spell_t::composite_target_multiplier( target );
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.08;
-
-      return tm;
-    }
   };
 
   struct waterbolt_t : public spell_t
@@ -433,6 +420,7 @@ struct water_elemental_pet_t : public pet_t
 
       if ( bolt && p -> o() -> buffs.icy_veins -> up() )
       {
+        bolt -> pre_execute_state = bolt -> get_state( execute_state );
         bolt -> schedule_execute();
       }
     }
@@ -1765,7 +1753,6 @@ struct mini_frostbolt_t : public mage_spell_t
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    base_multiplier *= 0.4;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1778,21 +1765,13 @@ struct mini_frostbolt_t : public mage_spell_t
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
 
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-
-    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
-
-    return tm;
-  }
-
   virtual void execute()
   {
     mage_spell_t::execute();
 
     if ( second_bolt )
     {
+      second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
       second_bolt -> schedule_execute();
     }
   }
@@ -1844,6 +1823,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( bolt && p() -> buffs.icy_veins -> up() )
     {
+      bolt -> pre_execute_state = bolt -> get_state( execute_state );
       bolt -> schedule_execute();
     }
   }
@@ -1862,7 +1842,7 @@ struct frostbolt_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
     {
       am *= 0.4;
     }
@@ -1872,7 +1852,7 @@ struct frostbolt_t : public mage_spell_t
 
   virtual double composite_target_multiplier( player_t* target )
   {
-    double tm = spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( target );
 
     tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
 
@@ -1893,10 +1873,8 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     second_bolt( NULL )
   {
     background = true;
-    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    base_multiplier *= 0.4;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
@@ -1915,6 +1893,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
     if ( second_bolt )
     {
+      second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
       second_bolt -> schedule_execute();
     }
   }
@@ -1969,15 +1948,12 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     // Brain Freeze treats the target as frozen
     frozen = p() -> buffs.brain_freeze -> check() > 0;
-    if ( p() -> glyphs.icy_veins -> ok() )
-    {
-      bolt -> frozen = frozen;
-    }
 
     mage_spell_t::execute();
 
     if ( bolt && p() -> buffs.icy_veins -> up() )
     {
+      bolt -> pre_execute_state = bolt -> get_state( execute_state );
       bolt -> schedule_execute();
     }
 
@@ -2121,11 +2097,8 @@ struct mini_ice_lance_t : public mage_spell_t
     fof_multiplier( 0 )
   {
     background = true;
-    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    base_multiplier *= 0.4;
-
     if ( ! lance_two )
     {
       second_lance = new mini_ice_lance_t( p, true );
@@ -2135,40 +2108,13 @@ struct mini_ice_lance_t : public mage_spell_t
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
 
-  virtual double action_multiplier()
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( fof_active )
-    {
-      am *= 4.0; // Built in bonus against frozen targets
-      am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
-    }
-
-    if ( p() -> set_bonus.tier14_2pc_caster() )
-    {
-      am *= 1.05;
-    }
-
-    return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-
-    tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
-
-    return tm;
-  }
-
-
   virtual void execute()
   {
     mage_spell_t::execute();
 
     if ( second_lance )
     {
+      second_lance -> pre_execute_state = second_lance -> get_state( execute_state );
       second_lance -> schedule_execute();
     }
   }
@@ -2210,16 +2156,12 @@ struct ice_lance_t : public mage_spell_t
   {
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
-    if ( p() -> glyphs.icy_veins -> ok() )
-    {
-      bolt -> frozen = frozen;
-      bolt -> fof_active = frozen;
-    }
 
     mage_spell_t::execute();
 
     if ( bolt && p() -> buffs.icy_veins -> up() )
     {
+      bolt -> pre_execute_state = bolt -> get_state( execute_state );
       bolt -> schedule_execute();
     }
 
