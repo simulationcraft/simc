@@ -2426,6 +2426,8 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "carbonic_carbuncle"                  ) e = "OnAttackHit_3386Crit_15%_30Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "windswept_pages"                     ) e = "OnAttackHit_3386Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
   else if ( name == "searing_words"                       ) e = "OnAttackCrit_3386Agi_45%_25Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_2539Int_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
+  else if ( name == "essence_of_terror"                   ) e = "OnSpellDamage_5079Haste_15%_20Dur_120Cd"; // TO-DO: Confirm ICD - this is just a wild guess
 
   // Stat Procs with Tick Increases
   else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
