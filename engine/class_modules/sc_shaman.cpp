@@ -1124,7 +1124,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
     if ( p -> buff.lightning_shield -> check() == p -> buff.lightning_shield -> max_stack() )
       p -> proc.wasted_ls -> occur();
 
-    int stacks = ( p -> set_bonus.tier14_2pc_caster() ) ? 2 : 1;
+    int stacks = ( p -> set_bonus.tier14_4pc_caster() ) ? 2 : 1;
 
     p -> buff.lightning_shield -> trigger( stacks );
     p -> proc.rolling_thunder  -> occur();
