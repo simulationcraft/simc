@@ -362,18 +362,38 @@ struct water_elemental_pet_t : public pet_t
 
   struct mini_waterbolt_t : public spell_t
   {
-    mini_waterbolt_t( water_elemental_pet_t* p ) :
+    mini_waterbolt_t* second_bolt;
+
+    mini_waterbolt_t( water_elemental_pet_t* p, bool bolt_two = false ) :
       // FIXME: This should be spell ID (unknown), but is not in our spell data
-      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) ),
+      second_bolt( NULL )
     {
       may_crit = true;
       background = true;
       dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
     
-      base_execute_time = timespan_t::zero();  
       base_multiplier *= 0.4;
+
+      if ( ! bolt_two )
+      {
+        second_bolt = new mini_waterbolt_t( p, true );
+      }
     }
+
+    virtual void execute()
+    {
+      spell_t::execute();
+
+      if ( second_bolt )
+      {
+        second_bolt -> schedule_execute();
+      }
+    }
+
+    virtual timespan_t execute_time()
+    { return timespan_t::from_seconds( 0.2 ); }
 
     virtual double composite_target_multiplier( player_t* target )
     {
@@ -392,31 +412,28 @@ struct water_elemental_pet_t : public pet_t
     mini_waterbolt_t* bolt;
 
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) ),
+      bolt( NULL )
     {
       parse_options( NULL, options_str );
       may_crit = true;
 
       if ( p -> o() -> glyphs.icy_veins -> ok() )
       {
-        hasted_ticks = false;
-        base_tick_time = timespan_t::from_seconds( 0.2 );
-        num_ticks      = 2;
-
         bolt = new mini_waterbolt_t( p );
-        //bolt -> stats = stats;
         add_child( bolt );
       }
     }
 
-    virtual void tick( dot_t* d )
+    virtual void execute()
     {
-    water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-    if ( p -> o() -> buffs.icy_veins -> up() && p -> o() -> glyphs.icy_veins -> ok() )
-      {
-        spell_t::tick( d );
+      spell_t::execute();
 
-        bolt -> execute();
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      if ( bolt && p -> o() -> buffs.icy_veins -> up() )
+      {
+        bolt -> schedule_execute();
       }
     }
 
@@ -1738,19 +1755,28 @@ struct frost_bomb_t : public mage_spell_t
 
 struct mini_frostbolt_t : public mage_spell_t
 {
-  mini_frostbolt_t( mage_t* p ) :
+  mini_frostbolt_t* second_bolt;
+
+  mini_frostbolt_t( mage_t* p, bool bolt_two = false ) :
     // FIXME: This should be spell ID 131079, but is not in our spell data
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) )
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) ),
+    second_bolt( NULL )
   {
     background = true;
-    dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    base_execute_time = timespan_t::zero();  
     base_multiplier *= 0.4;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! bolt_two )
+    {
+      second_bolt = new mini_frostbolt_t( p, true );
+    }
   }
+
+  virtual timespan_t execute_time()
+  { return timespan_t::from_seconds( 0.2 ); }
 
   virtual double composite_target_multiplier( player_t* target )
   {
@@ -1759,6 +1785,16 @@ struct mini_frostbolt_t : public mage_spell_t
     tm *= 1.0 + td() -> debuffs.frostbolt -> stack() * 0.08;
 
     return tm;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( second_bolt )
+    {
+      second_bolt -> schedule_execute();
+    }
   }
 };
 
@@ -1783,12 +1819,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
-      hasted_ticks = false;
-      base_tick_time = timespan_t::from_seconds( 0.2 );
-      num_ticks      = 2;
-
       bolt = new mini_frostbolt_t( p );
-      //bolt -> stats = stats;
       add_child( bolt );
     }
   }
@@ -1810,15 +1841,10 @@ struct frostbolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
       }
     }
-  }
 
-  virtual void tick( dot_t* d )
-  {
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    if ( bolt && p() -> buffs.icy_veins -> up() )
     {
-      mage_spell_t::tick( d );
-
-      bolt -> execute();
+      bolt -> schedule_execute();
     }
   }
 
@@ -1859,18 +1885,38 @@ struct frostbolt_t : public mage_spell_t
 
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
-  mini_frostfire_bolt_t( mage_t* p ) :
+  mini_frostfire_bolt_t* second_bolt;
+
+  mini_frostfire_bolt_t( mage_t* p, bool bolt_two = false ) :
     // FIXME: This should be spell ID 131081, but is not in our spell data
-    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) )
+    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) ),
+    second_bolt( NULL )
   {
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
-    base_execute_time = timespan_t::zero();  
     base_multiplier *= 0.4;
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( ! bolt_two )
+    {
+      second_bolt = new mini_frostfire_bolt_t( p, true );
+    }
+  }
+
+  virtual timespan_t execute_time()
+  { return timespan_t::from_seconds( 0.2 ); }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( second_bolt )
+    {
+      second_bolt -> schedule_execute();
+    }
   }
 };
 
@@ -1888,12 +1934,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
-      hasted_ticks = false;
-      base_tick_time = timespan_t::from_seconds( 0.2 );
-      num_ticks      = 2;
-
       bolt = new mini_frostfire_bolt_t( p );
-      //bolt -> stats = stats;
       add_child( bolt );
     }
 
@@ -1934,6 +1975,11 @@ struct frostfire_bolt_t : public mage_spell_t
 
     mage_spell_t::execute();
 
+    if ( bolt && p() -> buffs.icy_veins -> up() )
+    {
+      bolt -> schedule_execute();
+    }
+
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
@@ -1956,16 +2002,6 @@ struct frostfire_bolt_t : public mage_spell_t
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
 
       trigger_ignite( this, s );
-    }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      mage_spell_t::tick( d );
-
-      bolt -> execute();
     }
   }
 
@@ -2074,9 +2110,10 @@ struct ice_floes_t : public mage_spell_t
 
 struct mini_ice_lance_t : public mage_spell_t
 {
+  mini_ice_lance_t* second_lance;
   double fof_multiplier;
 
-  mini_ice_lance_t( mage_t* p ) :
+  mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
     // FIXME: This should be spell ID 131080, but is not in our spell data
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) ),
     fof_multiplier( 0 )
@@ -2086,7 +2123,15 @@ struct mini_ice_lance_t : public mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     
     base_multiplier *= 0.4;
+
+    if ( ! lance_two )
+    {
+      second_lance = new mini_ice_lance_t( p, true );
+    }
   }
+
+  virtual timespan_t execute_time()
+  { return timespan_t::from_seconds( 0.2 ); }
 
   virtual double action_multiplier()
   {
@@ -2114,6 +2159,17 @@ struct mini_ice_lance_t : public mage_spell_t
 
     return tm;
   }
+
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( second_lance )
+    {
+      second_lance -> schedule_execute();
+    }
+  }
 };
 
 struct ice_lance_t : public mage_spell_t
@@ -2123,6 +2179,7 @@ struct ice_lance_t : public mage_spell_t
 
   ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
+    bolt( NULL ),
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
@@ -2134,13 +2191,9 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
-      hasted_ticks = false;
-      base_tick_time = timespan_t::from_seconds( 0.2 );
-      num_ticks      = 2;
 
       bolt = new mini_ice_lance_t( p );
       bolt -> fof_multiplier = fof_multiplier;
-      //bolt -> stats = stats;
       add_child( bolt );
     }
 
@@ -2163,17 +2216,12 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    p() -> buffs.fingers_of_frost -> decrement();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    if ( bolt && p() -> buffs.icy_veins -> up() )
     {
-      mage_spell_t::tick( d );
-
-      bolt -> execute();
+      bolt -> schedule_execute();
     }
+
+    p() -> buffs.fingers_of_frost -> decrement();
   }
 
   virtual double action_multiplier()
