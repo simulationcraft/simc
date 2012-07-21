@@ -2189,7 +2189,7 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs_haunt -> trigger( 1, -1.0, -1.0, get_dot( s -> target ) -> remains() );
+      td( s -> target ) -> debuffs_haunt -> trigger( 1, -1.0, -1.0, td( s -> target ) -> dots_haunt -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
