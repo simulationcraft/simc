@@ -1164,10 +1164,13 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
   {
     parse_options( NULL, options_str );
-    channeled = true;
     may_miss = false;
-    hasted_ticks = false;
     may_proc_missiles = false;
+
+    base_tick_time    = timespan_t::from_seconds( 0.4 );
+    num_ticks         = 5;
+    channeled         = true;
+    hasted_ticks      = false;
 
     tick_action = new arcane_missiles_tick_t( p );
   }
@@ -1365,6 +1368,7 @@ struct cold_snap_t : public mage_spell_t
 
 // Combustion Spell =========================================================
 
+// FIXME: Need to test these mechanics. Should Combustion be double-dipping?
 struct combustion_t : public mage_spell_t
 {
   timespan_t orig_duration;
@@ -1718,8 +1722,8 @@ struct frost_bomb_t : public mage_spell_t
     num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
     hasted_ticks = true; // Haste decreases the 'tick' time to explosion
 
-    explosion_spell     = new frost_bomb_explosion_t( p );
-    add_child( explosion_spell );
+    dynamic_tick_action = true;
+    tick_action = new frost_bomb_explosion_t( p );
 
     original_cooldown = cooldown -> duration;
   }
@@ -1731,11 +1735,11 @@ struct frost_bomb_t : public mage_spell_t
     mage_spell_t::execute();
   }
 
-  virtual void last_tick( dot_t* d )
+  virtual void tick( dot_t* d )
   {
-    mage_spell_t::last_tick( d );
-    explosion_spell -> execute();
+    mage_spell_t::tick( d );
     p() -> buffs.brain_freeze -> trigger();
+    d -> cancel();
   }
 };
 
@@ -2016,6 +2020,18 @@ struct frozen_orb_bolt_t : public mage_spell_t
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
   }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    {
+      fof_proc_chance *= 1.2;
+    }
+    p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
+  }
 };
 
 struct frozen_orb_t : public mage_spell_t
@@ -2044,18 +2060,6 @@ struct frozen_orb_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     p() -> buffs.fingers_of_frost -> trigger( 1, -1, 1 );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    mage_spell_t::tick( d );
-
-    double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      fof_proc_chance *= 1.2;
-    }
-    p() -> buffs.fingers_of_frost -> trigger( 1, -1, fof_proc_chance );
   }
 };
 
@@ -2333,6 +2337,8 @@ struct living_bomb_t : public mage_spell_t
 
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
+    // FIXME: Explosion spell should use dynamic_tick_action
+    //        but regulat ticks should not
     explosion_spell = new living_bomb_explosion_t( p );
     add_child( explosion_spell );
   }
@@ -2492,6 +2498,7 @@ struct molten_armor_t : public mage_spell_t
 struct nether_tempest_t : public mage_spell_t
 {
   // FIXME: Add extra AOE component id = 114954
+  // NOTE: Hits one extra target. Snapshots stats each time it fires.
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest )
   {
@@ -3339,7 +3346,7 @@ void mage_t::init_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.25 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 1.0 / 3.0 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )

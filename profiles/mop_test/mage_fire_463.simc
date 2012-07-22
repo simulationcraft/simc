@@ -42,9 +42,9 @@ actions+=/living_bomb,if=talent.living_bomb.enabled&!ticking
 actions+=/nether_tempest,if=talent.nether_tempest.enabled&!ticking
 actions+=/ice_floes,if=talent.ice_floes.enabled,moving=1
 actions+=/fireball
-actions+=/scorch,if=talent.scorch.enabled
-actions+=/inferno_blast
-actions+=/ice_lance
+actions+=/scorch,if=talent.scorch.enabled,moving=1
+actions+=/inferno_blast,moving=1
+actions+=/ice_lance,moving=1
 head=whitemanes_embroidered_chapeau,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,reforge=haste_hit,gems=burning_primal_80int_160crit_180int
 neck=pendant_of_precise_timing,heroic=1,ilevel=463,quality=rare,stats=501int_752sta_358hit_293crit
 shoulders=shoulders_of_engulfing_winds,heroic=1,type=cloth,ilevel=463,quality=rare,stats=1527armor_668int_1002sta_445crit_445haste,reforge=haste_hit,enchant=200int_100crit
