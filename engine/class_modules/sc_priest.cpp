@@ -4753,9 +4753,9 @@ void priest_t::init_buffs()
   buffs.holy_evangelism                  = buff_creator_t( this, 81661, "holy_evangelism" )
                                            .chance( specs.evangelism -> ok() )
                                            .activated( false );
-  buffs.archangel                   = buff_creator_t( this, "archangel", find_spell( 81700 ) )
-                                      .chance( specs.archangel -> ok() )
-                                      .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
+  buffs.archangel                        = buff_creator_t( this, "archangel", find_spell( 81700 ) )
+                                          .chance( specs.archangel -> ok() )
+                                          .default_value( find_spell( 81700 ) -> effectN( 1 ).percent() );
   buffs.inner_fire                       = buff_creator_t( this, "inner_fire", find_class_spell( "Inner Fire" ) );
   buffs.inner_focus                      = buff_creator_t( this, "inner_focus", find_class_spell( "Inner Focus" ) )
                                            .cd( timespan_t::zero() );
