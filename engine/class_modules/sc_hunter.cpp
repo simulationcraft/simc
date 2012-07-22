@@ -506,11 +506,13 @@ public:
   {
     pet_t::init_buffs();
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
+    buffs.bestial_wrath -> buff_duration += owner -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" );
     buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
 
-    // Use buff to indicate wheter the pet is a stampede summon
-    buffs.stampede          = buff_creator_t( this, "stampede" )
+    // Use buff to indicate whether the pet is a stampede summon
+    buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
                               .activated( true )
                               /*.quiet( true )*/;
   }
@@ -592,7 +594,6 @@ public:
     pet_t::summon( duration );
 
     buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
-
   }
 
   virtual void demise()
@@ -620,7 +621,7 @@ public:
       m *= 1.05;
 
     if( buffs.stampede -> check() )
-      m *= 1.0 + dbc.spell( 130201 )->effectN( 1 ).percent();
+      m *= 1.0 + buffs.stampede -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -817,7 +818,10 @@ void hunter_ranged_attack_t::execute()
 
   if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
   {
-    p() -> buffs.steady_focus -> trigger(1, p() -> buffs.steady_focus -> data().effectN( 1 ).percent() );
+    double haste_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+    haste_buff *= 1 + p() -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 3 ).percent();
+
+    p() -> buffs.steady_focus -> trigger( 1, haste_buff );
     p() -> buffs.pre_steady_focus -> expire();
   }
 
@@ -1076,12 +1080,56 @@ struct arcane_shot_t : public hunter_ranged_attack_t
   }
 };
 
-// Power Shot Attack =======================================================
+// Glaive Toss Attack =======================================================
+
+struct glaive_strike_t : public hunter_ranged_attack_t
+{
+  glaive_strike_t( hunter_t* player ) :
+    hunter_ranged_attack_t( "glaive_strike", player, player -> find_spell( 120761 ) )
+  {
+    proc       = true;
+    background = true;
+    travel_speed = player -> talents.glaive_toss -> effectN( 3 ).trigger() -> _prj_speed;
+
+    direct_power_mod = data().extra_coeff();
+    
+    // This is the strike against the main target
+    base_multiplier *= player -> talents.glaive_toss -> effectN( 1 ).base_value();
+  }
+};
+
+struct glaive_toss_t : public hunter_ranged_attack_t
+{
+  glaive_strike_t* primary_strike;
+
+  glaive_toss_t( hunter_t* player, const std::string& options_str ) :
+    hunter_ranged_attack_t( "glaive_toss", player, player -> talents.glaive_toss )
+  {
+    parse_options( NULL, options_str );
+    may_miss = false;
+
+    primary_strike = new glaive_strike_t( p() );
+    add_child( primary_strike );
+    primary_strike -> stats = stats;
+
+    // FIXME add the AoE elements
+  }
+
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    primary_strike -> execute();
+    primary_strike -> execute();
+  }
+};
+
+// Powershot Attack =======================================================
 
 struct powershot_t : public hunter_ranged_attack_t
 {
   powershot_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "power_shot", player, player -> find_class_spell( "Power Shot" ) )
+    hunter_ranged_attack_t( "powershot", player, player -> find_talent_spell( "Powershot" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1091,13 +1139,20 @@ struct powershot_t : public hunter_ranged_attack_t
   virtual double action_multiplier()
   {
     double am = ab::action_multiplier();
-
-    // from the tooltip
-    am *= 4.0;
-    // The tooltip mentions effect 2, but it's not actually a percent number.
-    // am *= p() -> talents.powershot -> effectN( 2 ).percent();
+    
+    // The tooltip mentions effect 3, but it's not actually a percent number.
+    // am *= 4.0 * p() -> talents.powershot -> effectN( 3 ).percent();
+    am *= 4.0;  // from the tooltip
 
     return am;
+  }
+
+  virtual void schedule_execute()
+  {
+    hunter_ranged_attack_t::schedule_execute();
+
+    // suppresses autoshot
+    p() -> main_hand_attack -> cancel();
   }
 };
 
@@ -1234,15 +1289,13 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
     normalize_weapon_speed = true;
 
-    // FIXME
-    //cooldown -> duration += p() -> glyphs.chimera_shot -> mod_additive_time( P_COOLDOWN );
   }
 
-
-  virtual void execute()
+  virtual double action_multiplier()
   {
-    hunter_ranged_attack_t::execute();
-
+    double am = ab::action_multiplier();
+    am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    return am;
   }
 
   virtual void impact( action_state_t* s )
@@ -1304,14 +1357,13 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
 struct explosive_shot_t : public hunter_ranged_attack_t
 {
-  int lock_and_load;
   int non_consecutive;
 
   double base_td_min; double base_td_max;
 
   explosive_shot_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "explosive_shot", player, player -> find_class_spell( "Explosive Shot" ) ),
-    lock_and_load( 0 ), non_consecutive( 0 ),
+    non_consecutive( 0 ),
     base_td_min( 0 ), base_td_max( 0 )
   {
     option_t options[] =
@@ -1363,6 +1415,13 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     cooldown -> duration = ( p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : data().cooldown() );
 
     hunter_ranged_attack_t::update_ready();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = ab::action_multiplier();
+    am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
+    return am;
   }
 
   virtual void execute()
@@ -2577,6 +2636,13 @@ struct pet_kill_command_t : public hunter_pet_attack_t
 
     base_multiplier *= 1.8; // hardcoded into hunter kill command tooltip
   }
+
+  virtual double action_multiplier()
+  {
+    double am = hunter_pet_attack_t::action_multiplier();
+    am *= 1.0 + o() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    return am;
+  }
 };
 
 // ==========================================================================
@@ -2953,11 +3019,11 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "powershot"             ) return new              powershot_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
+  if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
   if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
-  if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
   if ( name == "aspect_of_the_iron_hawk" ) return new      aspect_of_the_iron_hawk_t( this, options_str );
   if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
@@ -3104,7 +3170,6 @@ void hunter_t::init_spells()
   specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
   specs.trap_mastery         = find_specialization_spell( "Trap Mastery" );
 
-
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
 
@@ -3182,13 +3247,19 @@ void hunter_t::init_buffs()
   player_t::init_buffs();
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" );
+
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" ).chance( specs.the_beast_within -> ok() );
+  buffs.beast_within -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+  
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" );
   buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" ).chance( specs.steady_focus -> ok() );
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" ).chance( find_spell( 56343 ) -> effectN( 1 ).percent() );
+  // FIXME test that this is multiplicative
+  buffs.lock_and_load -> default_chance *= 1 + sets -> set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent();
+
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
 
@@ -3342,12 +3413,17 @@ void hunter_t::init_actions()
 
       action_list_str += init_use_racial_actions();
       action_list_str += "/bestial_wrath,if=focus>60";
+      
+      if ( talents.glaive_toss -> ok() ) 
+        action_list_str += "/glaive_toss";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
       action_list_str += "/kill_shot";
-      //action_list_str += "/stampede";
+      if ( level >= 87 ) 
+        action_list_str += "/stampede";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up&!buff.beast_within.up";
     
       if ( talents.a_murder_of_crows -> ok() ) 
@@ -3372,12 +3448,18 @@ void hunter_t::init_actions()
     // MARKSMANSHIP
     case HUNTER_MARKSMANSHIP:
       action_list_str += init_use_racial_actions();
+      
+      if ( talents.glaive_toss -> ok() ) 
+        action_list_str += "/glaive_toss";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
+      if ( level >= 87 ) 
+        action_list_str += "/stampede";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<3";
@@ -3413,8 +3495,11 @@ void hunter_t::init_actions()
 
       // SURVIVAL
     case HUNTER_SURVIVAL:
+      if ( talents.glaive_toss -> ok() ) 
+        action_list_str += "/glaive_toss";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
       action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
@@ -3429,6 +3514,9 @@ void hunter_t::init_actions()
       if ( talents.thrill_of_the_hunt -> ok() ) 
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
  
+      if ( level >= 87 ) 
+        action_list_str += "/stampede";
+
       action_list_str += "/rapid_fire";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=focus>=67";
@@ -3818,7 +3906,7 @@ int hunter_t::decode_set( item_t& item )
 
   if ( strstr( s, "wyrmstalkers"       ) ) return SET_T13_MELEE;
 
-  if ( strstr( s, "yaungol_slayer"     ) ) return SET_T13_MELEE;
+  if ( strstr( s, "yaungol_slayer"     ) ) return SET_T14_MELEE;
 
   if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
 
