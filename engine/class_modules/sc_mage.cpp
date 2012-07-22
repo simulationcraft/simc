@@ -362,12 +362,9 @@ struct water_elemental_pet_t : public pet_t
 
   struct mini_waterbolt_t : public spell_t
   {
-    mini_waterbolt_t* second_bolt;
-
     mini_waterbolt_t( water_elemental_pet_t* p, bool bolt_two = false ) :
       // FIXME: This should be spell ID (unknown), but is not in our spell data
-      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) ),
-      second_bolt( NULL )
+      spell_t( "mini_waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       may_crit = true;
       background = true;
@@ -375,18 +372,7 @@ struct water_elemental_pet_t : public pet_t
 
       if ( ! bolt_two )
       {
-        second_bolt = new mini_waterbolt_t( p, true );
-      }
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-
-      if ( second_bolt )
-      {
-        second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
-        second_bolt -> schedule_execute();
+        execute_action = new mini_waterbolt_t( p, true );
       }
     }
 
@@ -396,32 +382,16 @@ struct water_elemental_pet_t : public pet_t
 
   struct waterbolt_t : public spell_t
   {
-    mini_waterbolt_t* bolt;
-
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) ),
-      bolt( NULL )
+      spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       parse_options( NULL, options_str );
       may_crit = true;
 
       if ( p -> o() -> glyphs.icy_veins -> ok() )
       {
-        bolt = new mini_waterbolt_t( p );
-        add_child( bolt );
-      }
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      if ( bolt && p -> o() -> buffs.icy_veins -> up() )
-      {
-        bolt -> pre_execute_state = bolt -> get_state( execute_state );
-        bolt -> schedule_execute();
+        execute_action = new mini_waterbolt_t( p );
+        add_child( execute_action );
       }
     }
 
@@ -1747,12 +1717,9 @@ struct frost_bomb_t : public mage_spell_t
 
 struct mini_frostbolt_t : public mage_spell_t
 {
-  mini_frostbolt_t* second_bolt;
-
   mini_frostbolt_t( mage_t* p, bool bolt_two = false ) :
     // FIXME: This should be spell ID 131079, but is not in our spell data
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) ),
-    second_bolt( NULL )
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
@@ -1762,32 +1729,18 @@ struct mini_frostbolt_t : public mage_spell_t
 
     if ( ! bolt_two )
     {
-      second_bolt = new mini_frostbolt_t( p, true );
+      execute_action = new mini_frostbolt_t( p, true );
     }
   }
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    if ( second_bolt )
-    {
-      second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
-      second_bolt -> schedule_execute();
-    }
-  }
 };
 
 struct frostbolt_t : public mage_spell_t
 {
-  mini_frostbolt_t* bolt;
-
   frostbolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
-    bolt( 0 )
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1802,8 +1755,8 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
-      bolt = new mini_frostbolt_t( p );
-      add_child( bolt );
+      execute_action = new mini_frostbolt_t( p );
+      add_child( execute_action );
     }
   }
 
@@ -1823,12 +1776,6 @@ struct frostbolt_t : public mage_spell_t
       {
         p() -> buffs.tier13_2pc -> trigger( 1, -1, 0.5 );
       }
-    }
-
-    if ( bolt && p() -> buffs.icy_veins -> up() )
-    {
-      bolt -> pre_execute_state = bolt -> get_state( execute_state );
-      bolt -> schedule_execute();
     }
   }
 
@@ -1869,12 +1816,9 @@ struct frostbolt_t : public mage_spell_t
 
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
-  mini_frostfire_bolt_t* second_bolt;
-
   mini_frostfire_bolt_t( mage_t* p, bool bolt_two = false ) :
     // FIXME: This should be spell ID 131081, but is not in our spell data
-    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    second_bolt( NULL )
+    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
@@ -1884,32 +1828,18 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
     if ( ! bolt_two )
     {
-      second_bolt = new mini_frostfire_bolt_t( p, true );
+      execute_action = new mini_frostfire_bolt_t( p, true );
     }
   }
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    if ( second_bolt )
-    {
-      second_bolt -> pre_execute_state = second_bolt -> get_state( execute_state );
-      second_bolt -> schedule_execute();
-    }
-  }
 };
 
 struct frostfire_bolt_t : public mage_spell_t
 {
-  mini_frostfire_bolt_t* bolt;
-
   frostfire_bolt_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
-    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    bolt( NULL )
+    mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) )
   {
     parse_options( NULL, options_str );
 
@@ -1918,8 +1848,8 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> glyphs.icy_veins -> ok() )
     {
-      bolt = new mini_frostfire_bolt_t( p );
-      add_child( bolt );
+      execute_action = new mini_frostfire_bolt_t( p );
+      add_child( execute_action );
     }
 
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -1954,12 +1884,6 @@ struct frostfire_bolt_t : public mage_spell_t
     frozen = p() -> buffs.brain_freeze -> check() > 0;
 
     mage_spell_t::execute();
-
-    if ( bolt && p() -> buffs.icy_veins -> up() )
-    {
-      bolt -> pre_execute_state = bolt -> get_state( execute_state );
-      bolt -> schedule_execute();
-    }
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2091,47 +2015,29 @@ struct ice_floes_t : public mage_spell_t
 
 struct mini_ice_lance_t : public mage_spell_t
 {
-  mini_ice_lance_t* second_lance;
-  double fof_multiplier;
-
   mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
     // FIXME: This should be spell ID 131080, but is not in our spell data
-    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) ),
-    second_lance( NULL ),
-    fof_multiplier( 0 )
+    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     
     if ( ! lance_two )
     {
-      second_lance = new mini_ice_lance_t( p, true );
+      execute_action = new mini_ice_lance_t( p, true );
     }
   }
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    if ( second_lance )
-    {
-      second_lance -> pre_execute_state = second_lance -> get_state( execute_state );
-      second_lance -> schedule_execute();
-    }
-  }
 };
 
 struct ice_lance_t : public mage_spell_t
 {
-  mini_ice_lance_t* bolt;
   double fof_multiplier;
 
   ice_lance_t( mage_t* p, const std::string& options_str, bool dtr=false ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    bolt( NULL ),
     fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
@@ -2144,9 +2050,8 @@ struct ice_lance_t : public mage_spell_t
     if ( p -> glyphs.icy_veins -> ok() )
     {
 
-      bolt = new mini_ice_lance_t( p );
-      bolt -> fof_multiplier = fof_multiplier;
-      add_child( bolt );
+      execute_action = new mini_ice_lance_t( p );
+      add_child( execute_action );
     }
 
     if ( ! dtr && player -> has_dtr )
@@ -2162,12 +2067,6 @@ struct ice_lance_t : public mage_spell_t
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
     mage_spell_t::execute();
-
-    if ( bolt && p() -> buffs.icy_veins -> up() )
-    {
-      bolt -> pre_execute_state = bolt -> get_state( execute_state );
-      bolt -> schedule_execute();
-    }
 
     p() -> buffs.fingers_of_frost -> decrement();
   }
