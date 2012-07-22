@@ -2384,6 +2384,20 @@ struct mirror_image_t : public mage_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
+  virtual void init()
+  {
+    mage_spell_t::init();
+
+    for ( int i = 0; i < 3; i++ )
+    {
+      stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "arcane_blast" ) );
+      stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fire_blast" ) );
+      stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "fireball" ) );
+      stats -> add_child( p() -> pets.mirror_images[ i ] -> get_stats( "frostbolt" ) );
+    }
+    
+  }
+
   virtual void execute()
   {
     mage_spell_t::execute();
