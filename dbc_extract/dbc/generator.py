@@ -979,6 +979,7 @@ class SpellDataGenerator(DataGenerator):
           ( 79058, 0 ), # Mage: Mana Gem, Frostfire Orb x2, Arcane Brilliance
           ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
           ( 80354, 0 ),                                           # Temporal Displacement
+          ( 131079, 0 ), ( 131080, 0 ), ( 131081, 0 ),		  # Mini-bolt spells
         ), 
         
         # Warlock:
@@ -1016,8 +1017,8 @@ class SpellDataGenerator(DataGenerator):
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
-          ( 113769, 5 ),       # Wrath
-#          ( 110691, 5 ),      # Another Wrath for Pets???
+          ( 113769, 5 ),       # Wrath for Treants
+          ( 110691, 5 ),       # Wrath for Mirror Images
         ), 
     ]
 
