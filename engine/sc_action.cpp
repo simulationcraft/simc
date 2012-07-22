@@ -1906,22 +1906,14 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
 
 void action_t::consolidate_snapshot_flags( bool toplevel )
 {
-  if ( tick_action && ( ! toplevel || ! is_triggered_action ) )
+  if (  ! toplevel || ! is_triggered_action )
   {
-    tick_action -> consolidate_snapshot_flags( false );
-    snapshot_flags |= tick_action -> snapshot_flags;
-  }
-
-  if ( execute_action && ( ! toplevel || ! is_triggered_action ) )
-  {
-    execute_action -> consolidate_snapshot_flags( false );
-    snapshot_flags |= execute_action -> snapshot_flags;
-  }
-  
-  if ( impact_action && ( ! toplevel || ! is_triggered_action ) )
-  {
-    impact_action -> consolidate_snapshot_flags( false );
-    snapshot_flags |= impact_action -> snapshot_flags;
+    if ( tick_action    ) tick_action    -> consolidate_snapshot_flags( false );
+    if ( execute_action ) execute_action -> consolidate_snapshot_flags( false );
+    if ( impact_action  ) impact_action  -> consolidate_snapshot_flags( false );
+    if ( tick_action    ) snapshot_flags |= tick_action    -> snapshot_flags;
+    if ( execute_action ) snapshot_flags |= execute_action -> snapshot_flags;
+    if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
   }
 }
 
