@@ -1866,9 +1866,12 @@ struct moc_t : public hunter_spell_t
     
   virtual void execute()
   {
-    hunter_spell_t::execute();
+    cooldown -> duration = data().cooldown();
+
     if ( target -> health_percentage() < 20 )
-      cooldown -> reset();
+      cooldown -> duration = timespan_t::from_seconds( 60.0 ); // hardcoded into tooltip
+
+    hunter_spell_t::execute();
   }
 
   virtual void tick( dot_t* d )
