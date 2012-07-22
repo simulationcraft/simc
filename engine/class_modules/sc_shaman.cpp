@@ -4626,29 +4626,32 @@ void shaman_t::init_actions()
     default_s << ( ( level > 85 ) ? "/virmens_bite_potion" : ( level >= 80 ) ? "/tolvir_potion" : "" );
   else
     default_s << ( ( level > 85 ) ? "/jade_serpent_potion" : ( level >= 80 ) ? "/volcanic_potion" : "" );
-  if ( level >= 80 ) default_s << ",if=buff.bloodlust.react|target.time_to_die<=40";
+  if ( level >= 80 ) default_s << ",if=buff.bloodlust.up|target.time_to_die<=40";
 
   // Melee turns on auto attack
   if ( primary_role() == ROLE_ATTACK )
     default_s << "/auto_attack";
 
-  // On use stuff and racial / profession abilities
+  // On use stuff and profession abilities
   default_s << use_items_str;
   default_s << init_use_profession_actions();
-  default_s << init_use_racial_actions();
-
-  if ( talent.elemental_mastery -> ok() )
-    default_s << "/elemental_mastery";
 
   //if ( level >= 78 ) default_s << "/stormlash_totem,if=!active";
   if ( level >= 66 ) default_s << "/fire_elemental_totem,if=!active";
-  if ( level >= 87 ) default_s << "/ascendance";
 
   default_s << "/run_action_list,name=single,if=num_targets=1";
   default_s << "/run_action_list,name=ae,if=num_targets>1";
 
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
+    single_s << init_use_racial_actions();
+
+    if ( talent.elemental_mastery -> ok() )
+      single_s << "/elemental_mastery";
+    
+    if ( level >= 87 )
+      single_s << "/ascendance";
+
     if ( level >= 16 ) single_s << "/searing_totem,if=!totem.fire.active";
     if ( level >= 87 ) single_s << "/stormblast";
     if ( level >= 26 ) single_s << "/stormstrike";
@@ -4687,11 +4690,41 @@ void shaman_t::init_actions()
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
+    if ( race != RACE_TROLL )
+      single_s << init_use_racial_actions();
+    else
+      single_s << "/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up";
+    
+    if ( talent.elemental_mastery -> ok() )
+    {
+      single_s << "/elemental_mastery,if=!buff.bloodlust.up";
+      if ( race == RACE_TROLL )
+        single_s << "&!buff.berserking.up";
+    }
+
+    if ( talent.elemental_blast -> ok() )
+      single_s << "/elemental_blast";
+
+    // Use Ascendance preferably with a haste CD up, but dont overdo the
+    // delaying
+    if ( level >= 87 )
+    {
+      single_s << "/ascendance,if=target.time_to_die<20|buff.bloodlust.up";
+      if ( race == RACE_TROLL )
+        single_s << "|buff.berserking.up";
+      else
+        single_s << "|buff.elemental_mastery.cooldown_remains>15";
+      if ( talent.elemental_mastery -> ok() )
+        single_s << "|buff.elemental_mastery.up";
+    }
+    
     if ( set_bonus.tier13_4pc_heal() && level >= 85 )
       single_s << "/spiritwalkers_grace,if=!buff.bloodlust.react|target.time_to_die<=25";
     if ( ! glyph.unleashed_lightning -> ok() && level >= 81 )
       single_s << "/unleash_elements,moving=1";
-    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)";
+    if ( talent.unleashed_fury -> ok() )
+      single_s << "/unleash_elements,if=!buff.ascendance.up";
+    if ( level >= 12 ) single_s << "/flame_shock,if=!ticking|ticks_remain<2|((buff.bloodlust.up|buff.elemental_mastery.up)&ticks_remain<3)";
     if ( level >= 34 ) single_s << "/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react";
     if ( spec.fulmination -> ok() && level >= 6 )
     {
