@@ -909,7 +909,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 48 abilities
+    // General tree, 47 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -957,7 +957,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          783, // Travel Form (Shapeshift)
        50516, // Typhoon
       102793, // Ursol's Vortex
-      110691, // Wrath
         5176, // Wrath
            0,
     },

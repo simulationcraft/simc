@@ -1013,11 +1013,11 @@ class SpellDataGenerator(DataGenerator):
           ( 106996, 1, True ), # Astral Storm
           ( 112071, 1, True ), # Celestial Alignment
 	  ( 110621, 0, True ), # Symbiosis spells
-          ( 110691, 0, True ),
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
           ( 113769, 5 ),       # Wrath
+#          ( 110691, 5 ),      # Another Wrath for Pets???
         ), 
     ]
 
