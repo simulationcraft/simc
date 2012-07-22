@@ -754,7 +754,8 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
   if ( ! a -> p() -> active_pet )
     return;
 
-  a -> p() -> active_pet -> resource_gain( RESOURCE_FOCUS, a -> p() -> specs.go_for_the_throat -> effectN( 1 ).base_value(), a -> p() -> active_pet -> gains.go_for_the_throat );
+  int gain = a -> p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+  a -> p() -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, a -> p() -> active_pet -> gains.go_for_the_throat );
 }
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t >
 {
