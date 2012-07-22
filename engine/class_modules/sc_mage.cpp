@@ -3279,7 +3279,7 @@ void mage_t::init_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 1.0 / 3.0 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
   buffs.arcane_power         = new arcane_power_buff_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
