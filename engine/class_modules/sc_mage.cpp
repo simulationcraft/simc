@@ -378,6 +378,16 @@ struct water_elemental_pet_t : public pet_t
 
     virtual timespan_t execute_time()
     { return timespan_t::from_seconds( 0.2 ); }
+
+    virtual void schedule_execute()
+    {
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+      if ( ! p -> o() -> buffs.icy_veins -> up() )
+        return;
+
+      spell_t::schedule_execute();
+    }
   };
 
   struct waterbolt_t : public spell_t
@@ -1735,6 +1745,14 @@ struct mini_frostbolt_t : public mage_spell_t
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
+
+  virtual void schedule_execute()
+  {
+    if ( ! p() -> buffs.icy_veins -> up() )
+      return;
+
+    spell_t::schedule_execute();
+  }
 };
 
 struct frostbolt_t : public mage_spell_t
@@ -1834,6 +1852,14 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
+
+  virtual void schedule_execute()
+  {
+    if ( ! p() -> buffs.icy_veins -> up() )
+      return;
+
+    spell_t::schedule_execute();
+  }
 };
 
 struct frostfire_bolt_t : public mage_spell_t
@@ -2030,6 +2056,14 @@ struct mini_ice_lance_t : public mage_spell_t
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.2 ); }
+
+  virtual void schedule_execute()
+  {
+    if ( ! p() -> buffs.icy_veins -> up() )
+      return;
+
+    spell_t::schedule_execute();
+  }
 };
 
 struct ice_lance_t : public mage_spell_t
