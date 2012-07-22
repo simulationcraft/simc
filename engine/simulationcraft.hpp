@@ -3869,7 +3869,7 @@ struct action_t : public noncopyable
   action_t* tick_action;
   action_t* execute_action;
   action_t* impact_action;
-  bool dynamic_tick_action, is_triggered_action;
+  bool dynamic_tick_action;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
