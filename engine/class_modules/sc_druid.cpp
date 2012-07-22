@@ -3918,7 +3918,6 @@ struct starfall_star_t : public druid_spell_t
     druid_spell_t( "starfall_star", player, player -> dbc.spell( spell_id ) )
   {
     background  = true;
-    dual        = true;
     direct_tick = true;
     aoe         = 1;
 
@@ -3955,32 +3954,15 @@ struct starfall_t : public druid_spell_t
     {
       background = true;
     }
-    starfall_star = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
-  }
-
-  virtual void init()
-  {
-    druid_spell_t::init();
-    starfall_star -> stats = stats;
+    dynamic_tick_action = true;
+    tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
+    //starfall_star = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
   }
 
   virtual void execute()
   {
     druid_spell_t::execute();
     p() -> buff.starfall -> trigger();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
-    starfall_star -> execute();
-
-    // If there is at least one additional target around Starfall will
-    // launch 2 Stars per tick, (10*2 = 20 max stars)
-    /*target_t* t = target -> cast_target();
-    if ( t -> adds_nearby > 0 )
-      starfall_star -> execute();*/
-    stats -> add_tick( d -> time_to_tick );
   }
 };
 
