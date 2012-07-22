@@ -477,80 +477,72 @@ struct water_elemental_pet_t : public pet_t
 
 struct mirror_image_pet_t : public pet_t
 {
-
-  struct arcane_blast_t : public spell_t
+  struct mirror_image_spell_t : public spell_t
   {
-    arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
-      spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
+    mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p, const spell_data_t* s ):
+      spell_t( n, p, s )
     {
-      parse_options( NULL, options_str );
       may_crit = true;
 
       if ( p -> o() -> pets.mirror_images[ 0 ] )
       {
-        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "arcane_blast" );
+        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( n );
       }
-    }
-
-    virtual void execute()
-    {
-      spell_t::execute();
-
-      p() -> arcane_charge -> trigger();
-    }
-
-    virtual double action_multiplier()
-    {
-      double am = spell_t::action_multiplier();
-
-      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
-
-      return am;
     }
 
     mirror_image_pet_t* p() const
     { return static_cast<mirror_image_pet_t*>( player ); }
   };
 
-  struct fire_blast_t : public spell_t
+  struct arcane_blast_t : public mirror_image_spell_t
+  {
+    arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
+      mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
+    {
+      parse_options( NULL, options_str );
+    }
+
+    virtual void execute()
+    {
+      mirror_image_spell_t::execute();
+
+      p() -> arcane_charge -> trigger();
+    }
+
+    virtual double action_multiplier()
+    {
+      double am = mirror_image_spell_t::action_multiplier();
+
+      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+      return am;
+    }
+  };
+
+  struct fire_blast_t : public mirror_image_spell_t
   {
     fire_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
-      spell_t( "fire_blast", p, p -> find_pet_spell( "Fire Blast" ) )
+      mirror_image_spell_t( "fire_blast", p, p -> find_pet_spell( "Fire Blast" ) )
     {
       parse_options( NULL, options_str );
-      may_crit = true;
-      if ( p -> o() -> pets.mirror_images[ 0 ] )
-      {
-        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fire_blast" );
-      }
     }
   };
 
-  struct fireball_t : public spell_t
+  struct fireball_t : public mirror_image_spell_t
   {
     fireball_t( mirror_image_pet_t* p, const std::string& options_str ):
-      spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
+      mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
     {
       parse_options( NULL, options_str );
-      may_crit = true;
-      if ( p -> o() -> pets.mirror_images[ 0 ] )
-      {
-        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "fireball" );
-      }
     }
   };
 
-  struct frostbolt_t : public spell_t
+  struct frostbolt_t : public mirror_image_spell_t
   {
     frostbolt_t( mirror_image_pet_t* p, const std::string& options_str ):
-      spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
+      mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
     {
       parse_options( NULL, options_str );
-      may_crit = true;
-      if ( p -> o() -> pets.mirror_images[ 0 ] )
-      {
-        stats = p -> o() -> pets.mirror_images[ 0 ] -> get_stats( "frostbolt" );
-      }
     }
   };
 
