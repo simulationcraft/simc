@@ -109,7 +109,7 @@ void spell_base_t::execute()
 
   if ( callbacks )
   {
-    if ( ! is_triggered_action && ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.spell[ result ], this );
     }

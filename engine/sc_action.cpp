@@ -236,7 +236,6 @@ action_t::action_t( action_e       ty,
   execute_action                 = 0;
   impact_action                  = 0;
   dynamic_tick_action            = false;
-  is_triggered_action            = false;
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -1365,14 +1364,10 @@ void action_t::init()
 
   if ( tick_action )
   {
-    tick_action -> is_triggered_action = true;
     tick_action -> direct_tick = true;
     tick_action -> dual = true;
     tick_action -> stats = stats;
   }
-
-  if ( execute_action ) execute_action -> is_triggered_action = true;
-  if ( impact_action  ) impact_action  -> is_triggered_action = true;
 
   stats -> school      = school;
 
@@ -1905,17 +1900,14 @@ void action_t::snapshot_state( action_state_t* state, uint32_t flags )
     state -> target_crit = composite_target_crit( state -> target );
 }
 
-void action_t::consolidate_snapshot_flags( bool toplevel )
+void action_t::consolidate_snapshot_flags()
 {
-  if (  ! toplevel || ! is_triggered_action )
-  {
-    if ( tick_action    ) tick_action    -> consolidate_snapshot_flags( false );
-    if ( execute_action ) execute_action -> consolidate_snapshot_flags( false );
-    if ( impact_action  ) impact_action  -> consolidate_snapshot_flags( false );
-    if ( tick_action    ) snapshot_flags |= tick_action    -> snapshot_flags;
-    if ( execute_action ) snapshot_flags |= execute_action -> snapshot_flags;
-    if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
-  }
+  if ( tick_action    ) tick_action    -> consolidate_snapshot_flags();
+  if ( execute_action ) execute_action -> consolidate_snapshot_flags();
+  if ( impact_action  ) impact_action  -> consolidate_snapshot_flags();
+  if ( tick_action    ) snapshot_flags |= tick_action    -> snapshot_flags;
+  if ( execute_action ) snapshot_flags |= execute_action -> snapshot_flags;
+  if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t )

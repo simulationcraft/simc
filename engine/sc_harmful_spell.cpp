@@ -66,10 +66,10 @@ void spell_t::execute()
   {
     result_e r = execute_state ? execute_state -> result : result;
 
-    if ( ! is_triggered_action && r != RESULT_NONE  )
+    if ( r != RESULT_NONE  )
     {
       action_callback_t::trigger( player -> callbacks.harmful_spell[ r ], this );
-      if ( execute_state && execute_state -> result_amount > 0 )
+      if ( execute_state && execute_state -> result_amount > 0 && ! direct_tick_callbacks )
       {
         action_callback_t::trigger( player -> callbacks.direct_harmful_spell[ r ], this );
       }

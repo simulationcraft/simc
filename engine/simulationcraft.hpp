@@ -3971,7 +3971,7 @@ struct action_t : public noncopyable
   virtual void impact( action_state_t* );
 
   virtual void   snapshot_state( action_state_t*, uint32_t );
-  virtual void consolidate_snapshot_flags( bool toplevel = true );
+  virtual void consolidate_snapshot_flags();
 
   virtual double action_multiplier() { return base_multiplier; }
   virtual double action_da_multiplier() { return base_dd_multiplier; }
