@@ -89,8 +89,9 @@ struct action_execute_event_t : public event_t
     action -> execute_event = 0;
     action -> execute();
 
-    if ( ! action -> background &&
-         ! player -> channeling )
+    if ( action -> background ) return;
+
+    if ( ! player -> channeling )
     {
       if ( player -> readying ) fprintf( sim -> output_file, "Danger Will Robinson!  Danger!  action %s\n", action -> name() );
 
@@ -985,7 +986,7 @@ void action_t::execute()
   if ( execute_action && result_is_hit( execute_state -> result ) )
   {
     execute_action -> pre_execute_state = execute_action -> get_state( execute_state );
-    execute_action -> execute();
+    execute_action -> schedule_execute();
   }
 
   if ( repeating && ! proc ) schedule_execute();
@@ -1003,7 +1004,7 @@ void action_t::tick( dot_t* d )
     snapshot_state( tick_action -> pre_execute_state, ( dynamic_tick_action ) ? snapshot_flags : update_flags );
     tick_action -> pre_execute_state -> da_multiplier = tick_action -> pre_execute_state -> ta_multiplier;
     tick_action -> pre_execute_state -> target_da_multiplier = tick_action -> pre_execute_state -> target_ta_multiplier;
-    tick_action -> execute();
+    tick_action -> schedule_execute();
   }
   else
   {
@@ -2004,7 +2005,7 @@ void action_t::impact( action_state_t* s )
     if ( impact_action )
     {
       impact_action -> pre_execute_state = impact_action -> get_state( s );
-      impact_action -> execute();
+      impact_action -> schedule_execute();
     }
   }
   else
