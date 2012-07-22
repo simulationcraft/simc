@@ -51,6 +51,9 @@ public:
   // Secondary pets
   std::queue<pet_t*> moc_free;
   std::list<pet_t*>  moc_active;
+  
+  // need an extra beast for readiness
+  pet_t*  pet_dire_beasts[ 2 ];
 
   // Buffs
   struct buffs_t
@@ -92,6 +95,7 @@ public:
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
     gain_t* cobra_shot;
+    gain_t* dire_beast;
     gain_t* viper_venom;
   } gains;
 
@@ -1326,8 +1330,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     direct_power_mod = 0.017; // hardcoded into tooltip
 
-
-    focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
+    focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
     // Needs testing
     if ( p() -> set_bonus.tier13_2pc_melee() )
@@ -1731,6 +1734,7 @@ struct wild_quiver_shot_t : public ranged_t
 };
 
 } // end attacks
+
 // ==========================================================================
 // Hunter Spells
 // ==========================================================================
@@ -1785,15 +1789,15 @@ struct moc_crow_t : public pet_t
     }
   };
 
-  hunter_t* o() const
-  { return static_cast< hunter_t* >( owner ); }
-
   moc_crow_t( hunter_t* owner ) :
     pet_t( owner -> sim, owner, "moc_crow", true /*GUARDIAN*/ )
   {
     // FIX ME
     owner_coeff.ap_from_ap = 1.00;
   }
+
+  hunter_t* o() const
+  { return static_cast< hunter_t* >( owner ); }
 
   virtual void init_base()
   {
@@ -1839,7 +1843,7 @@ struct moc_crow_t : public pet_t
 struct moc_t : public hunter_spell_t
 {
   moc_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", player, player -> find_talent_spell( "A Murder of Crows" ) )
+    hunter_spell_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
   {
     parse_options( NULL, options_str );
 
@@ -1902,6 +1906,119 @@ struct moc_t : public hunter_spell_t
       p() -> sim -> errorf( "Player %s ran out of crows.\n", p() -> name() );
       assert( false ); // Will only get here if there are no available crows
     }
+  }
+};
+
+// Dire Beast ==============================================================
+
+struct dire_critter_t : public pet_t
+{
+  struct melee_t : public melee_attack_t
+  {
+    int focus_gain;
+
+    melee_t( dire_critter_t* player ) :
+      melee_attack_t( "dire_beast_melee", player )
+    {
+      if ( player -> o() -> pet_dire_beasts[ 0 ] )
+        stats = player -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
+
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      base_dd_min = base_dd_max = 1;
+      school = SCHOOL_PHYSICAL;
+
+      trigger_gcd = timespan_t::zero();
+      // numbers from Rivkah: http://elitistjerks.com/f74/t126894-mists_pandaria_all_specs/p3/#post2160612
+      direct_power_mod = 0.5715;
+
+      background = true;
+      repeating  = true;
+      special    = false;
+      may_glance = true;
+      may_crit   = true;
+
+      focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
+    }
+      
+    dire_critter_t* p() const
+    { return static_cast<dire_critter_t*>( player ); }
+      
+    virtual void impact( action_state_t* s )
+    {
+      melee_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+        p() -> o() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> o() -> gains.dire_beast );
+    }
+  };
+
+  dire_critter_t( hunter_t* owner ) :
+    pet_t( owner -> sim, owner, "dire_beast", true /*GUARDIAN*/ )
+  {
+    // FIX ME
+    owner_coeff.ap_from_ap = 1.00;
+  }
+
+  hunter_t* o() const
+  { return static_cast< hunter_t* >( owner ); }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    // FIXME numbers are from treant. correct them.
+    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_MANA   ] = 0;
+
+    stamina_per_owner = 0;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = 1246.5;
+    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
+
+    main_hand_attack = new melee_t( this );
+  }
+
+  virtual void summon( timespan_t duration=timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+
+    // attack immediately on summons
+    main_hand_attack -> execute();
+  }
+};
+
+struct dire_beast_t : public hunter_spell_t
+{
+  dire_beast_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
+  {
+    parse_options( NULL, options_str );
+
+    hasted_ticks = false;
+    may_crit = false;
+    may_miss = false;
+  }
+
+  virtual void init()
+  {
+    hunter_spell_t::init();
+
+    stats -> add_child( p() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" ) );
+  }
+    
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+    
+    pet_t* beast = p() -> pet_dire_beasts[ 0 ];
+    if ( ! beast -> current.sleeping )
+      beast = p() -> pet_dire_beasts[ 1 ];
+
+    beast -> summon( data().duration() );
   }
 };
 
@@ -3023,13 +3140,13 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "powershot"             ) return new              powershot_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
+  if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
   if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
   if ( name == "aspect_of_the_iron_hawk" ) return new      aspect_of_the_iron_hawk_t( this, options_str );
   if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
-  if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "wyvern_sting"          ) return new           wyvern_sting_t( this, options_str );
 #endif
@@ -3075,6 +3192,9 @@ void hunter_t::create_pets()
   // There are two extra in case theey make teh rate of summons dependent on haste
   static const int crow_limit = 18;
   create_moc_pets( this, crow_limit );
+
+  pet_dire_beasts[0] = new dire_critter_t( this );
+  pet_dire_beasts[1] = new dire_critter_t( this );
 }
 
 // hunter_t::init_spells ====================================================
@@ -3301,7 +3421,8 @@ void hunter_t::init_gains()
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
-  gains.viper_venom          = get_gain( "viper_venom"           );
+  gains.dire_beast           = get_gain( "dire_beast"           );
+  gains.viper_venom          = get_gain( "viper_venom"          );
 }
 
 // hunter_t::init_position ==================================================
@@ -3419,6 +3540,8 @@ void hunter_t::init_actions()
       
       if ( talents.glaive_toss -> ok() ) 
         action_list_str += "/glaive_toss";
+      if ( talents.dire_beast -> ok() ) 
+        action_list_str += "/dire_beast";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
 
@@ -3461,6 +3584,8 @@ void hunter_t::init_actions()
       action_list_str += "/steady_shot,if=target.adds>5";
       action_list_str += "/serpent_sting,if=!ticking&target.health.pct<=90";
       action_list_str += "/chimera_shot,if=target.health.pct<=90";
+      if ( talents.dire_beast -> ok() ) 
+        action_list_str += "/dire_beast";
       if ( level >= 87 ) 
         action_list_str += "/stampede";
       action_list_str += "/rapid_fire,if=!buff.bloodlust.up|target.time_to_die<=30";
@@ -3517,6 +3642,8 @@ void hunter_t::init_actions()
       if ( talents.thrill_of_the_hunt -> ok() ) 
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
  
+      if ( talents.dire_beast -> ok() ) 
+        action_list_str += "/dire_beast";
       if ( level >= 87 ) 
         action_list_str += "/stampede";
 
