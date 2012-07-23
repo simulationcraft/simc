@@ -565,7 +565,7 @@ public:
   virtual double composite_attack_power_multiplier()
   {
     double mult = pet_t::composite_attack_power_multiplier();
-    if ( buffs.rabid -> up() )
+    if ( buffs.rabid -> check() )
       mult *= 1.0 + buffs.rabid -> data().effectN( 1 ).percent();
     // TODO pet charge should show up here.
     return mult;
@@ -1206,6 +1206,49 @@ struct black_arrow_t : public hunter_ranged_attack_t
   }
 };
 
+// Barrage =================================================================
+
+struct barrage_t : public hunter_ranged_attack_t
+{
+  struct barrage_damage_t : public hunter_ranged_attack_t
+  {
+    barrage_damage_t( hunter_t* player ) :
+      hunter_ranged_attack_t( "barrage", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+    {
+      aoe         = -1;
+      background  = true;
+      weapon = &( player -> main_hand_weapon );
+      travel_speed = 0.0;
+
+      // FIXME still needs to AoE component
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      hunter_ranged_attack_t::impact( s );
+    }
+  };
+
+  barrage_t( hunter_t* player, const std::string& options_str ) :
+    hunter_ranged_attack_t( "barrage", player, player -> talents.barrage )
+  {
+    parse_options( NULL, options_str );
+
+    may_block  = false;
+
+    tick_zero = true;
+
+    // FIXME still needs to AoE component
+    dynamic_tick_action = true;
+    tick_action = new barrage_damage_t( player );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    hunter_ranged_attack_t::tick( d );
+  }
+};
+
 // Explosive Trap ===========================================================
 
 struct explosive_trap_effect_t : public hunter_ranged_attack_t
@@ -1610,6 +1653,14 @@ struct multi_shot_t : public hunter_ranged_attack_t
       cost *= 1 + p() -> buffs.bombardment -> data().effectN( 1 ).percent();
 
     return cost;
+  }
+  
+  virtual double action_multiplier()
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+    if ( p() -> buffs.bombardment -> check() )
+      am *= 1 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
+    return am;
   }
 
   virtual void execute()
@@ -3142,13 +3193,13 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
+  if ( name == "barrage"               ) return new                barrage_t( this, options_str );
 
 #if 0
   if ( name == "trap_launcher"         ) return new          trap_launcher_t( this, options_str );
   if ( name == "binding_shot"          ) return new           binding_shot_t( this, options_str );
   if ( name == "aspect_of_the_iron_hawk" ) return new      aspect_of_the_iron_hawk_t( this, options_str );
   if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
-  if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "wyvern_sting"          ) return new           wyvern_sting_t( this, options_str );
 #endif
   return player_t::create_action( name, options_str );
@@ -3545,6 +3596,8 @@ void hunter_t::init_actions()
         action_list_str += "/dire_beast";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+      if ( talents.barrage -> ok() ) 
+        action_list_str += "/barrage";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/cobra_shot,if=target.adds>5";
@@ -3580,6 +3633,8 @@ void hunter_t::init_actions()
         action_list_str += "/glaive_toss";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+      if ( talents.barrage -> ok() ) 
+        action_list_str += "/barrage";
 
       action_list_str += "/multi_shot,if=target.adds>5";
       action_list_str += "/steady_shot,if=target.adds>5";
@@ -3628,6 +3683,8 @@ void hunter_t::init_actions()
         action_list_str += "/glaive_toss";
       if ( talents.blink_strike -> ok() ) 
         action_list_str += "/blink_strike";
+      if ( talents.barrage -> ok() ) 
+        action_list_str += "/barrage";
 
       action_list_str += "/multi_shot,if=target.adds>2";
       action_list_str += "/cobra_shot,if=target.adds>2";
