@@ -544,9 +544,7 @@ public:
       action_list_str += "/snapshot_stats";
 
       if ( specs.rabid -> ok() )
-      {
         action_list_str += "/rabid";
-      }
 
       const char* special = unique_special();
       if ( special )
@@ -1206,49 +1204,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
   }
 };
 
-// Barrage =================================================================
-
-struct barrage_t : public hunter_ranged_attack_t
-{
-  struct barrage_damage_t : public hunter_ranged_attack_t
-  {
-    barrage_damage_t( hunter_t* player ) :
-      hunter_ranged_attack_t( "barrage", player, player -> talents.barrage -> effectN( 2 ).trigger() )
-    {
-      aoe         = -1;
-      background  = true;
-      weapon = &( player -> main_hand_weapon );
-      travel_speed = 0.0;
-
-      // FIXME still needs to AoE component
-    }
-
-    virtual void impact( action_state_t* s )
-    {
-      hunter_ranged_attack_t::impact( s );
-    }
-  };
-
-  barrage_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "barrage", player, player -> talents.barrage )
-  {
-    parse_options( NULL, options_str );
-
-    may_block  = false;
-
-    tick_zero = true;
-
-    // FIXME still needs to AoE component
-    dynamic_tick_action = true;
-    tick_action = new barrage_damage_t( player );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::tick( d );
-  }
-};
-
 // Explosive Trap ===========================================================
 
 struct explosive_trap_effect_t : public hunter_ranged_attack_t
@@ -1808,6 +1763,50 @@ public:
 
     // Hunter gcd unaffected by haste
     return trigger_gcd;
+  }
+};
+
+// Barrage =================================================================
+
+// This is a spell because that's the only way to support "channeled" effects
+struct barrage_t : public hunter_spell_t
+{
+  struct barrage_damage_t : public hunter_ranged_attack_t 
+  {
+    barrage_damage_t( hunter_t* player ) :
+      hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+    {
+      aoe         = -1;
+      background  = true; 
+      weapon = &( player -> main_hand_weapon );
+
+      // FIXME still needs to AoE component
+    }
+  }; 
+
+  barrage_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "barrage", player, player -> talents.barrage )
+  {
+    parse_options( NULL, options_str );
+
+    may_block  = false;
+    travel_speed = 0.0;
+    
+    channeled    = true;
+    tick_zero = true;
+    hasted_ticks = false;
+
+    // FIXME still needs to AoE component
+    dynamic_tick_action = true;
+    tick_action = new barrage_damage_t( player );
+  }
+
+  virtual void schedule_execute()
+  {
+    hunter_spell_t::schedule_execute();
+
+    // suppresses autoshot
+    p() -> main_hand_attack -> cancel();
   }
 };
 
