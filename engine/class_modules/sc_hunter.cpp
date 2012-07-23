@@ -1211,7 +1211,7 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
   explosive_trap_effect_t( hunter_t* player )
     : hunter_ranged_attack_t( "explosive_trap", player, player -> find_spell( 13812 ) )
   {
-//    aoe = -1;
+    aoe = -1;
     background = true;
     tick_power_mod = data().extra_coeff();
 
@@ -1776,7 +1776,6 @@ struct barrage_t : public hunter_spell_t
     barrage_damage_t( hunter_t* player ) :
       hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
     {
-      aoe         = -1;
       background  = true; 
       weapon = &( player -> main_hand_weapon );
 
@@ -2974,9 +2973,9 @@ struct demoralizing_screech_t : public hunter_pet_spell_t
   demoralizing_screech_t( hunter_pet_t* player, const std::string& options_str ) :
     hunter_pet_spell_t( "demoralizing_screech", player, player -> find_spell( 24423 ) )
   {
-
     parse_options( 0, options_str );
 
+    aoe         = -1;
     auto_cast = true;
     background = ( sim -> overrides.weakened_blows != 0 );
   }
