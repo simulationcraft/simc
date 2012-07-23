@@ -3406,6 +3406,16 @@ struct totem_pulse_action_t : public spell_t
     callbacks = false;
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
+
+  double composite_da_multiplier()
+  {
+    double m = totem_pulse_action_t::composite_da_multiplier();
+    
+    if ( totem -> o() -> buff.elemental_focus -> up() )
+      m *= 1.0 + totem -> o() -> buff.elemental_focus -> data().effectN( 2 ).percent();
+  
+    return m;
+  }
 };
 
 struct totem_pulse_event_t : public event_t
