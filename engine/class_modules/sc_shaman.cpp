@@ -671,6 +671,16 @@ struct feral_spirit_pet_t : public pet_t
       if ( first_pet != player )
         stats = first_pet -> find_stats( name() );
     }
+
+    virtual double composite_da_multiplier()
+    {
+      double m = melee_attack_t::composite_da_multiplier();
+
+      if ( p() -> o() -> specialization() == SHAMAN_ENHANCEMENT )
+        m *= 1.0 + p() -> o() -> composite_mastery() * p() -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+
+      return m;
+    }
   };
 
   melee_t* melee;
