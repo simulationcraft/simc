@@ -119,8 +119,8 @@ double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, pl
   case BASE_STAT_MELEE_CRIT_PER_AGI: res = dbc.melee_crit_scaling( class_type, level ); break;
   case BASE_STAT_SPELL_CRIT_PER_INT: res = dbc.spell_crit_scaling( class_type, level ); break;
   case BASE_STAT_DODGE_PER_AGI:      res = dbc.dodge_scaling( class_type, level ); break;
-  case BASE_STAT_MELEE_CRIT:         res = dbc.melee_crit_base( class_type ); break;
-  case BASE_STAT_SPELL_CRIT:         res = dbc.spell_crit_base( class_type ); break;
+  case BASE_STAT_MELEE_CRIT:         res = dbc.melee_crit_base( class_type, level ); break;
+  case BASE_STAT_SPELL_CRIT:         res = dbc.spell_crit_base( class_type, level ); break;
   case BASE_STAT_MP5:                res = dbc.regen_base( class_type, level ); break;
   case BASE_STAT_SPI_REGEN:          res = dbc.regen_spirit( class_type, level ); break;
   default: break;

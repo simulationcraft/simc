@@ -197,40 +197,40 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
   return false;
 }
 
-double dbc_t::melee_crit_base( player_e t ) const
+double dbc_t::melee_crit_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ]
-             : __gt_chance_to_melee_crit_base[ class_id ];
+  return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ][ level - 1 ]
+             : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #else
-  return __gt_chance_to_melee_crit_base[ class_id ];
+  return __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #endif
 }
 
-double dbc_t::melee_crit_base( pet_e t ) const
+double dbc_t::melee_crit_base( pet_e t, unsigned level ) const
 {
-  return melee_crit_base( util::pet_class_type( t ) );
+  return melee_crit_base( util::pet_class_type( t ), level );
 }
 
-double dbc_t::spell_crit_base( player_e t ) const
+double dbc_t::spell_crit_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() );
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ]
-             : __gt_chance_to_spell_crit_base[ class_id ];
+  return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ][ level - 1 ]
+             : __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
 #else
-  return __gt_chance_to_spell_crit_base[ class_id ];
+  return __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
 #endif
 }
 
-double dbc_t::spell_crit_base( pet_e t ) const
+double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
 {
-  return spell_crit_base( util::pet_class_type( t ) );
+  return spell_crit_base( util::pet_class_type( t ), level );
 }
 
 double dbc_t::dodge_base( player_e t ) const

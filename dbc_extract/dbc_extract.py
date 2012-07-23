@@ -247,10 +247,10 @@ elif options.type == 'view':
         record.parse()
         print record
 elif options.type == 'scale':
-    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
-    if not g.initialize():
-        sys.exit(1)
-    print g.generate()
+#    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
+#    if not g.initialize():
+#        sys.exit(1)
+#    print g.generate()
 
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
@@ -262,7 +262,7 @@ elif options.type == 'scale':
         sys.exit(1)
     print g.generate()
     
-    tables = [ 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
+    tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
     g = dbc.generator.ClassScalingDataGenerator(options, tables )
     if not g.initialize():
         sys.exit(1)

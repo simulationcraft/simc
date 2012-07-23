@@ -440,10 +440,10 @@ public:
   static std::size_t        n_items( bool ptr = false );
 
   // Game data table access
-  double melee_crit_base( player_e t ) const;
-  double melee_crit_base( pet_e t ) const;
-  double spell_crit_base( player_e t ) const;
-  double spell_crit_base( pet_e t ) const;
+  double melee_crit_base( player_e t, unsigned level ) const;
+  double melee_crit_base( pet_e t, unsigned level ) const;
+  double spell_crit_base( player_e t, unsigned level ) const;
+  double spell_crit_base( pet_e t, unsigned level ) const;
   double dodge_base( player_e t ) const;
   double dodge_base( pet_e t ) const;
   double regen_base( player_e t, unsigned level ) const;
