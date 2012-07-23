@@ -1491,7 +1491,7 @@ struct lightning_charge_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuffs_stormstrike -> up() )
     {
       c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
@@ -2354,7 +2354,7 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuffs_stormstrike -> up() )
     {
       c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
@@ -2791,7 +2791,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double c = spell_t::composite_target_crit( target );
 
-    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuffs_stormstrike -> up() )
     {
       c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
@@ -3136,7 +3136,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( data().school_mask() & SCHOOL_MASK_NATURE && td( target ) -> debuffs_stormstrike -> up() )
+    if ( td( target ) -> debuffs_stormstrike -> up() )
     {
       c += td( target ) -> debuffs_stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
@@ -3409,7 +3409,7 @@ struct totem_pulse_action_t : public spell_t
 
   double composite_da_multiplier()
   {
-    double m = totem_pulse_action_t::composite_da_multiplier();
+    double m = spell_t::composite_da_multiplier();
     
     if ( totem -> o() -> buff.elemental_focus -> up() )
       m *= 1.0 + totem -> o() -> buff.elemental_focus -> data().effectN( 2 ).percent();
