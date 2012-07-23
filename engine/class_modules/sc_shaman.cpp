@@ -1350,14 +1350,24 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-
-    direct_power_mod  += player -> spec.shamanism -> effectN( 1 ).percent();
+    base_multiplier     += player -> glyph.telluric_currents -> effectN( 1 ).percent() +
+                           player -> spec.shamanism -> effectN( 1 ).percent();
 
     if ( ! dtr && player -> has_dtr )
     {
       dtr_action = new lightning_bolt_overload_t( player, true );
       dtr_action -> is_dtr_action = true;
     }
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = shaman_spell_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs_unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuffs_unleashed_fury -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   void impact( action_state_t* state )
@@ -1653,6 +1663,13 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
     may_dodge            = false;
     may_parry            = false;
     weapon               = w;
+  }
+  
+  void impact( action_state_t* s )
+  {
+    shaman_melee_attack_t::impact( s );
+
+    trigger_static_shock( this );
   }
 };
 
@@ -2021,9 +2038,6 @@ struct stormstrike_t : public shaman_melee_attack_t
 
       stormstrike_mh -> execute();
       if ( stormstrike_oh ) stormstrike_oh -> execute();
-
-      bool shock = trigger_static_shock( this );
-      if ( !shock && stormstrike_oh ) trigger_static_shock( this );
     }
   }
 
