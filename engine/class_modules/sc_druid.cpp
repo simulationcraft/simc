@@ -1575,15 +1575,6 @@ struct cat_melee_t : public druid_cat_attack_t
   }
 };
 
-// Claw =====================================================================
-
-struct claw_t : public druid_cat_attack_t
-{
-  claw_t( druid_t* player, const std::string& options_str ) :
-    druid_cat_attack_t( player, player -> find_class_spell( "Claw" ), options_str )
-  { }
-};
-
 // Death Coil ===============================================================
 
 struct death_coil_t : public druid_cat_attack_t
@@ -4455,7 +4446,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
-  if ( name == "claw"                   ) return new                   claw_t( this, options_str );
   if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
   if ( name == "death_coil"             ) return new             death_coil_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
