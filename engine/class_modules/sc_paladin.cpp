@@ -1406,26 +1406,20 @@ struct seal_of_command_proc_t : public paladin_melee_attack_t
 
 // judgment ================================================================
 
-struct judgment_t : public paladin_melee_attack_t
+struct judgment_t : public paladin_spell_t
 {
   player_t* old_target;
   double cooldown_mult;
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), false ), old_target( 0 ),
+    : paladin_spell_t( "judgment", p, p -> find_spell( "Judgment" ) ), old_target( 0 ),
     cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
 
-    use_spell_haste = p -> passives.sanctity_of_battle -> ok();
-
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
-    may_glance                   = false;
-    may_block                    = false;
-    may_parry                    = false;
-    may_dodge                    = false;
 
     if ( p -> set_bonus.pvp_4pc_melee() )
       cooldown -> duration -= timespan_t::from_seconds( 1.0 );
@@ -1438,13 +1432,13 @@ struct judgment_t : public paladin_melee_attack_t
 
   virtual void reset()
   {
-    paladin_melee_attack_t::reset();
+    paladin_spell_t::reset();
     old_target = 0;
   }
 
   virtual void execute()
   {
-    paladin_melee_attack_t::execute();
+    paladin_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1463,7 +1457,7 @@ struct judgment_t : public paladin_melee_attack_t
 
   virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::impact( s );
+    paladin_spell_t::impact( s );
 
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
@@ -1471,7 +1465,7 @@ struct judgment_t : public paladin_melee_attack_t
 
   virtual double action_multiplier()
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double am = paladin_spell_t::action_multiplier();
 
     if ( target != old_target && p() -> buffs.double_jeopardy -> check() )
     {
@@ -1491,7 +1485,7 @@ struct judgment_t : public paladin_melee_attack_t
       cooldown -> duration *= cooldown_mult; 
     }
 
-    paladin_melee_attack_t::update_ready();
+    paladin_spell_t::update_ready();
 
     cooldown -> duration = save_cooldown;
   }
@@ -1499,7 +1493,7 @@ struct judgment_t : public paladin_melee_attack_t
   virtual bool ready()
   {
     if ( p() -> active_seal == SEAL_NONE ) return false;
-    return paladin_melee_attack_t::ready();
+    return paladin_spell_t::ready();
   }
 };
 
