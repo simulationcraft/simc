@@ -46,6 +46,7 @@ public:
   std::vector<hunter_pet_t*> hunter_main_pets;
   aspect_type   active_aspect;
   action_t*     active_piercing_shots;
+  action_t*     active_explosive_ticks;
   action_t*     active_vishanka;
 
   // Secondary pets
@@ -181,7 +182,7 @@ public:
     // // const spell_data_t* wild quiver;
     //
     // // Survival
-    // const spell_data_t* explosive_shot;
+    const spell_data_t* explosive_shot;
     // const spell_data_t* lock_and_load;
     const spell_data_t* improved_serpent_sting;
     // const spell_data_t* black_arrow;
@@ -266,6 +267,7 @@ public:
     active_pet             = 0;
     active_aspect          = ASPECT_NONE;
     active_piercing_shots  = 0;
+    active_explosive_ticks = 0;
     active_vishanka        = 0;
 
     merge_piercing_shots = 0;
@@ -755,6 +757,9 @@ void trigger_go_for_the_throat( hunter_ranged_attack_t* a )
   int gain = a -> p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
   a -> p() -> active_pet -> resource_gain( RESOURCE_FOCUS, gain, a -> p() -> active_pet -> gains.go_for_the_throat );
 }
+
+// trigger_piercing_shots ===================================================
+
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t >
 {
   piercing_shots_t( hunter_t* p ) :
@@ -762,8 +767,6 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t, hunter_t 
   { }
 
 };
-
-// trigger_piercing_shots ===================================================
 
 // Hunter Piercing Shots template specialization
 template <class HUNTER_ACTION>
@@ -777,6 +780,8 @@ void trigger_piercing_shots( HUNTER_ACTION* s, player_t* t, double dmg )
     t, // target
     p -> specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
 }
+
+// trigger_vishanka =========================================================
 
 struct vishanka_t : public hunter_ranged_attack_t
 {
@@ -792,7 +797,6 @@ struct vishanka_t : public hunter_ranged_attack_t
     may_miss    = false;
   }
 };
-// trigger_vishanka =========================================================
 
 static void trigger_vishanka( hunter_ranged_attack_t* a )
 {
@@ -1357,44 +1361,48 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
 // Explosive Shot ===========================================================
 
-struct explosive_shot_t : public hunter_ranged_attack_t
+struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunter_t >
 {
-  int non_consecutive;
-
-  double base_td_min; double base_td_max;
-
-  explosive_shot_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "explosive_shot", player, player -> find_class_spell( "Explosive Shot" ) ),
-    non_consecutive( 0 ),
-    base_td_min( 0 ), base_td_max( 0 )
+  explosive_shot_tick_t( hunter_t* p ) :
+    base_t( "explosive_shot_tick", p, p -> specs.explosive_shot)
   {
-    option_t options[] =
-    {
-      { "non_consecutive", OPT_BOOL, &non_consecutive },
-      { NULL, OPT_UNKNOWN, NULL}
-    };
-
-    parse_options( options, options_str );
-
-    may_block = false;
-    may_crit  = false;
-
-    tick_power_mod = 0.273; // hardcoded into tooltip
-    tick_zero = true;
-
-    base_td_min = player -> dbc.effect_min( data().effectN( 1 ).id(), player -> level );
-    base_td_max = player -> dbc.effect_max( data().effectN( 1 ).id(), player -> level );
-    if ( sim -> debug ) sim -> output( "Player %s setting Explosive Shot base_td_min=%.2f base_td_max=%.2f", p() -> name(), base_td_min, base_td_max );
+    ab:tick_may_crit = true;
   }
 
+  void init()
+  {
+    ab::init();
+
+    ab::snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+  }
+};
+ 
+struct explosive_shot_t : public hunter_ranged_attack_t
+{
+  explosive_shot_t( hunter_t* player, const std::string& options_str ) :
+    hunter_ranged_attack_t( "explosive_shot", player, player -> specs.explosive_shot )
+  {
+    parse_options( NULL, options_str );
+    may_block = false;
+    may_crit  = false;
+    tick_may_crit = true;
+ 
+    tick_power_mod = 0.311;
+    // if the inital impact is not part of the rolling dot, then add the following and adjust the dmg contribution to only 2 ticks
+    num_ticks = 0;
+    tick_zero = true;
+
+    player -> active_explosive_ticks -> stats = stats;
+  }
+ 
   virtual double cost()
   {
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
-
+ 
     return hunter_ranged_attack_t::cost();
   }
-
+ 
   virtual bool ready()
   {
     if ( cooldown -> remains() == timespan_t::zero() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
@@ -1402,37 +1410,44 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       if ( sim -> log ) sim -> output( "Player %s was focus starved when Explosive Shot was ready.", p() -> name() );
       p() -> procs.explosive_shot_focus_starved -> occur();
     }
-
-    if ( non_consecutive && p() -> last_foreground_action )
-    {
-      if ( p() -> last_foreground_action -> name_str == "explosive_shot" )
-        return false;
-    }
-
+ 
     return hunter_ranged_attack_t::ready();
   }
-
+ 
   virtual void update_ready()
   {
     cooldown -> duration = ( p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : data().cooldown() );
-
+ 
     hunter_ranged_attack_t::update_ready();
   }
-
+ 
   virtual double action_multiplier()
   {
     double am = ab::action_multiplier();
     am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
     return am;
   }
-
+ 
   virtual void execute()
   {
-    base_td = sim -> averaged_range( base_td_min, base_td_max );
     hunter_ranged_attack_t::execute();
-
+ 
     p() -> buffs.lock_and_load -> up();
     p() -> buffs.lock_and_load -> decrement();
+  }
+ 
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      double damage = calculate_tick_damage( RESULT_HIT, s -> composite_power(), s -> composite_ta_multiplier(), s -> target );
+      ignite::trigger_pct_based(
+        p() -> active_explosive_ticks, // ignite spell
+        s -> target,                   // target
+        damage * 2 );  // 2 ticks left of the dot.
+    }
   }
 };
 
@@ -3336,15 +3351,19 @@ void hunter_t::init_spells()
   specs.invigoration         = find_specialization_spell( "Invigoration" );
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.improved_serpent_sting = find_specialization_spell( "Improved Serpent Sting" );
+  specs.explosive_shot       = find_specialization_spell( "Explosive Shot" );
   specs.viper_venom          = find_specialization_spell( "Viper Venom" );
   specs.bombardment          = find_specialization_spell( "Bombardment" );
   specs.rapid_recuperation   = find_specialization_spell( "Rapid Recuperation" );
   specs.master_marksman      = find_specialization_spell( "Master Marksman" );
   specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
   specs.trap_mastery         = find_specialization_spell( "Trap Mastery" );
-
+  
   if ( specs.piercing_shots -> ok() )
     active_piercing_shots = new piercing_shots_t( this );
+
+  if ( specs.explosive_shot -> ok() )
+    active_explosive_ticks = new explosive_shot_tick_t( this );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
