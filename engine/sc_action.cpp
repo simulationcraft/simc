@@ -1376,6 +1376,15 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
+  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_SP;
+
+  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+    snapshot_flags |= STATE_AP;
+
+  if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
+    snapshot_flags |= STATE_HASTE;
+
   if ( pre_combat || action_list == "precombat" )
   {
     if ( harmful )

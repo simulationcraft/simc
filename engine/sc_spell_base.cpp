@@ -128,17 +128,3 @@ void spell_base_t::schedule_execute()
   if ( ! background && time_to_execute > timespan_t::zero() )
     player -> debuffs.casting -> trigger();
 }
-
-void spell_base_t::init()
-{
-  action_t::init();
-
-  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
-    snapshot_flags |= STATE_SP;
-
-  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
-    snapshot_flags |= STATE_AP;
-
-  if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
-    snapshot_flags |= STATE_HASTE;
-}

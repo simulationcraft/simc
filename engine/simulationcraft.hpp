@@ -4134,7 +4134,6 @@ struct spell_base_t : public action_t
   virtual result_e   calculate_result( double, unsigned );
   virtual void   execute();
   virtual void   schedule_execute();
-  virtual void   init();
 
   /* New stuffs */
   virtual double composite_crit()
