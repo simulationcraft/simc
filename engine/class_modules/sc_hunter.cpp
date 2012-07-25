@@ -514,7 +514,7 @@ public:
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" );
     buffs.bestial_wrath -> buff_duration += owner -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
     
-    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" );
+    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" ).chance( cast_owner() -> specs.frenzy -> effectN( 2 ).percent() );
     buffs.rabid             = buff_creator_t( this, 53401, "rabid" );
 
     // Use buff to indicate whether the pet is a stampede summon
