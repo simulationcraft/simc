@@ -197,3 +197,8 @@ action_state_t* heal_t::get_state( const action_state_t* state )
 
   return s;
 }
+
+bool heal_t::is_valid_target( player_t* t )
+{
+  return ( ! t -> current.sleeping && ! t -> is_enemy() );
+}

@@ -89,3 +89,8 @@ action_state_t* absorb_t::get_state( const action_state_t* state )
 
   return s;
 }
+
+bool absorb_t::is_valid_target( player_t* t )
+{
+  return ( ! t -> current.sleeping && ! t -> is_enemy() );
+}

@@ -821,9 +821,7 @@ void action_t::consume_resource()
 
 bool action_t::is_valid_target( player_t* t )
 {
-  return ( ! t -> current.sleeping &&
-           ( ( type == ACTION_HEAL && ! t -> is_enemy() )
-             || ( type != ACTION_HEAL && t -> is_enemy() ) ) );
+  return ( ! t -> current.sleeping && t -> is_enemy() );
 }
 
 // action_t::available_targets ==============================================

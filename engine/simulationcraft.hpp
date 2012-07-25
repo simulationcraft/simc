@@ -3799,7 +3799,7 @@ struct action_t : public noncopyable
 {
   const spell_data_t* s_data;
   sim_t* sim;
-  action_e type;
+  const action_e type;
   std::string name_str;
   player_t* player;
   player_t* target;
@@ -4188,6 +4188,7 @@ struct heal_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
+  virtual bool is_valid_target( player_t* );
 };
 
 // Absorb ===================================================================
@@ -4215,6 +4216,7 @@ struct absorb_t : public spell_base_t
   { return new heal_state_t( this, target ); }
 
   virtual action_state_t* get_state( const action_state_t* = 0 );
+  virtual bool is_valid_target( player_t* );
 };
 
 // Sequence =================================================================
