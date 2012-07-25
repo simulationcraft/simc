@@ -138,6 +138,7 @@ public:
   struct
   {
     cooldown_t* earth_elemental;
+    cooldown_t* echo_of_the_elements;
     cooldown_t* fire_elemental;
     cooldown_t* lava_burst;
     cooldown_t* shock;
@@ -295,6 +296,7 @@ public:
 
     // Cooldowns
     cooldown.earth_elemental      = get_cooldown( "earth_elemental_totem" );
+    cooldown.echo_of_the_elements = get_cooldown( "echo_of_the_elements"  );
     cooldown.fire_elemental       = get_cooldown( "fire_elemental_totem"  );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.shock                = get_cooldown( "shock"                 );
@@ -2209,10 +2211,12 @@ void shaman_spell_t::execute()
 
   if ( may_proc_eoe && harmful && ! proc && is_direct_damage() && ! is_dtr_action &&
        p() -> talent.echo_of_the_elements -> ok() &&
-       p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) )
+       p() -> rng.echo_of_the_elements -> roll( p() -> eoe_proc_chance ) &&
+       p() -> cooldown.echo_of_the_elements -> remains() == timespan_t::zero() )
   {
     if ( sim -> debug ) sim -> output( "Echo of the Elements procs for %s", name() );
     new ( sim ) eoe_execute_event_t( this );
+    p() -> cooldown.echo_of_the_elements -> start( timespan_t::from_seconds( 0.1 ) );
   }
 
   // Shamans have specialized swing timer reset system, where every cast time spell
@@ -3429,6 +3433,27 @@ struct totem_pulse_action_t : public spell_t
     may_crit = harmful = background = true;
     callbacks = false;
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+  }
+
+  void init()
+  {
+    spell_t::init();
+
+    // Hacky, but constructor wont work.
+    if ( totem -> o() -> meta_gem == META_AGILE_SHADOWSPIRIT         ||
+         totem -> o() -> meta_gem == META_AGILE_PRIMAL               ||
+         totem -> o() -> meta_gem == META_BURNING_SHADOWSPIRIT       ||
+         totem -> o() -> meta_gem == META_BURNING_PRIMAL             ||
+         totem -> o() -> meta_gem == META_CHAOTIC_SKYFIRE            ||
+         totem -> o() -> meta_gem == META_CHAOTIC_SKYFLARE           ||
+         totem -> o() -> meta_gem == META_CHAOTIC_SHADOWSPIRIT       ||
+         totem -> o() -> meta_gem == META_RELENTLESS_EARTHSIEGE      ||
+         totem -> o() -> meta_gem == META_RELENTLESS_EARTHSTORM      ||
+         totem -> o() -> meta_gem == META_REVERBERATING_SHADOWSPIRIT ||
+         totem -> o() -> meta_gem == META_REVERBERATING_PRIMAL )
+    {
+      crit_multiplier *= 1.03;
+    }
   }
 
   double composite_da_multiplier()
