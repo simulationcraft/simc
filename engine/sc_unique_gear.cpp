@@ -500,7 +500,7 @@ static void register_touch_of_the_grave( player_t* p )
 
       if ( result_is_hit( s -> result ) )
       {
-        player -> resource_gain( RESOURCE_HEALTH, direct_dmg, player -> gains.touch_of_the_grave );
+        player -> resource_gain( RESOURCE_HEALTH, s -> result_amount, player -> gains.touch_of_the_grave );
       }
     }
   };
@@ -918,8 +918,10 @@ static void register_dragonwrath_tarecgosas_rest( item_t* item )
     {
       if ( ! a -> may_trigger_dtr ) return;
 
-      discharge_action -> base_dd_min = a -> tick_dmg;
-      discharge_action -> base_dd_max = a -> tick_dmg;
+      action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+
+      discharge_action -> base_dd_min = s -> result_amount;
+      discharge_action -> base_dd_max = s -> result_amount;
       discharge_action -> update_flags = discharge_action -> snapshot_flags = 0;
 
       discharge_proc_callback_t::trigger( a, call_data );

@@ -197,8 +197,6 @@ action_t::action_t( action_e       ty,
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   base_ta_adder                  = 0.0;
-  direct_dmg                     = 0.0;
-  tick_dmg                       = 0.0;
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
@@ -1065,12 +1063,10 @@ void action_t::assess_damage( dmg_e    type,
 
     if ( direct_tick_callbacks )
     {
-      tick_dmg = s -> result_amount;
       action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
     }
     else
     {
-      direct_dmg = s -> result_amount;
       if ( callbacks ) action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
     }
   }
@@ -1086,8 +1082,6 @@ void action_t::assess_damage( dmg_e    type,
                      util::school_type_string( school ),
                      util::result_type_string( result ) );
     }
-
-    tick_dmg = s -> result_amount;
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }

@@ -2928,7 +2928,6 @@ struct elemental_blast_t : public shaman_spell_t
   {
     int delta_level = target_level - player -> level;
 
-    direct_dmg = 0;
     result_e result = RESULT_NONE;
 
     if ( ( result == RESULT_NONE ) && may_miss )

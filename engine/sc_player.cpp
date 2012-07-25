@@ -484,7 +484,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
       if ( dot -> ticking )
       {
-        new_total_ignite_dmg += action -> tick_dmg * dot -> ticks();
+        new_total_ignite_dmg += dot -> state -> result_amount * dot -> ticks();
       }
 
 

@@ -63,16 +63,29 @@ void absorb_t::impact( action_state_t* s )
 // absorb_t::assess_damage ==================================================
 
 void absorb_t::assess_damage( dmg_e    heal_type,
-                              action_state_t* s)
+                              action_state_t* state )
 {
-  direct_dmg = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
+  heal_state_t* s = debug_cast<heal_state_t*>( state );
+
+  s -> total_result_amount = s -> result_amount;
+  s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
   if ( sim -> log )
     sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
-                   s -> target -> name(), direct_dmg, s -> result_amount,
+                   s -> target -> name(), s -> result_amount, s -> total_result_amount,
                    util::result_type_string( result ) );
 
-  stats -> add_result( direct_dmg, s -> result_amount, heal_type, s -> result );
+  stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result );
 }
 
+
+action_state_t* absorb_t::get_state( const action_state_t* state )
+{
+  action_state_t* s = spell_base_t::get_state( state );
+  heal_state_t* hs = debug_cast< heal_state_t* >( s );
+
+  hs -> total_result_amount = 0.0;
+
+  return s;
+}

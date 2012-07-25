@@ -2576,7 +2576,7 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
     {
       trigger_shadowy_apparition( s );
     }
-    if ( ( direct_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
+    if ( ( s -> result_amount > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
     {
       if ( p() -> buffs.divine_insight_shadow -> trigger() )
       {
@@ -2616,14 +2616,14 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( ( tick_dmg > 0 ) && ( p() -> specs.shadowy_apparitions -> ok() ) )
+    if ( ( d -> state -> result_amount > 0 ) && ( p() -> specs.shadowy_apparitions -> ok() ) )
     {
       if ( d -> state -> result == RESULT_CRIT )
       {
         trigger_shadowy_apparition( d -> state );
       }
     }
-    if ( ( tick_dmg > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
+    if ( ( d -> state -> result_amount > 0 ) && ( p() -> talents.divine_insight -> ok() ) )
     {
       if ( p() -> buffs.divine_insight_shadow -> trigger() )
       {

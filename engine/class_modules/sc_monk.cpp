@@ -549,7 +549,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::assess_damage( type, s );
 
 
-    trigger_blackout_kick_dot( this, s -> target, direct_dmg * data().effectN( 2 ).percent( ) );
+    trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
   }
 
   virtual double cost()

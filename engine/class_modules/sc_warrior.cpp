@@ -1185,9 +1185,11 @@ struct bloodthirst_buff_callback_t : public action_callback_t
     bloodthirst_heal = new bloodthirst_heal_t( p );
   }
 
-  virtual void trigger( action_t* a , void* /* call_data */ )
+  virtual void trigger( action_t* a , void* call_data )
   {
-    if ( buff -> check() && a -> weapon && a -> direct_dmg > 0 )
+    action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+
+    if ( buff -> check() && a -> weapon && s -> result_amount > 0 )
     {
       bloodthirst_heal -> base_dd_min = bloodthirst_heal -> base_dd_max = bloodthirst_heal -> data().effectN( 2 ).base_value() / 100000.0 * a -> player -> resources.max[ RESOURCE_HEALTH ];
       bloodthirst_heal -> execute();

@@ -3832,7 +3832,6 @@ struct action_t : public noncopyable
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
-  double direct_dmg, tick_dmg;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
@@ -4212,6 +4211,11 @@ struct absorb_t : public spell_base_t
     return action_multiplier() * action_ta_multiplier() *
         player -> composite_player_absorb_multiplier( school );
   }
+
+  virtual action_state_t* new_state()
+  { return new heal_state_t( this, target ); }
+
+  virtual action_state_t* get_state( const action_state_t* = 0 );
 };
 
 // Sequence =================================================================

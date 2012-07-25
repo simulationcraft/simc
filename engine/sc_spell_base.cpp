@@ -69,7 +69,6 @@ result_e spell_base_t::calculate_result( double crit, unsigned target_level )
 {
   int delta_level = target_level - player -> level;
 
-  direct_dmg = 0;
   result_e result = RESULT_NONE;
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;

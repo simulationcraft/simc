@@ -194,7 +194,6 @@ int attack_t::build_table( std::array<double,RESULT_MAX>& chances,
 
 result_e attack_t::calculate_result( double crit, unsigned target_level )
 {
-  direct_dmg = 0;
   result_e result = RESULT_NONE;
 
   if ( ! harmful || ! may_hit ) return RESULT_NONE;

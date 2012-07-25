@@ -447,6 +447,8 @@ struct paladin_heal_t : public paladin_action_t<heal_t>
 
     return am;
   }
+
+  virtual void impact( action_state_t* );
 };
 
 // ==========================================================================
@@ -616,7 +618,7 @@ struct beacon_of_light_heal_t : public heal_t
     target = p -> beacon_target;
   }
 };
-static void trigger_beacon_of_light( paladin_heal_t* h )
+static void trigger_beacon_of_light( paladin_heal_t* h, action_state_t* s )
 {
   paladin_t* p = h -> p();
 
@@ -634,8 +636,8 @@ static void trigger_beacon_of_light( paladin_heal_t* h )
   p -> active_beacon_of_light -> target = p -> beacon_target;
 
 
-  p -> active_beacon_of_light -> base_dd_min = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
-  p -> active_beacon_of_light -> base_dd_max = h -> direct_dmg * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+  p -> active_beacon_of_light -> base_dd_min = s -> result_amount * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+  p -> active_beacon_of_light -> base_dd_max = s -> result_amount * p -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
 
   // Holy light heals for 100% instead of 50%
   if ( h -> data().id() == p -> spells.holy_light -> id() )
@@ -649,13 +651,13 @@ static void trigger_beacon_of_light( paladin_heal_t* h )
 
 // trigger_hand_of_light ====================================================
 
-static void trigger_hand_of_light( paladin_melee_attack_t* a )
+static void trigger_hand_of_light( paladin_melee_attack_t* a, action_state_t* s )
 {
   paladin_t* p = a -> p();
 
   if ( p -> passives.hand_of_light -> ok() )
   {
-    p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = a -> direct_dmg;
+    p -> active_hand_of_light_proc -> base_dd_max = p -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
     p -> active_hand_of_light_proc -> execute();
   }
 }
@@ -671,9 +673,9 @@ struct illuminated_healing_t : public absorb_t
 };
 // trigger_illuminated_healing ==============================================
 
-static void trigger_illuminated_healing( paladin_heal_t* h )
+static void trigger_illuminated_healing( paladin_heal_t* h, action_state_t* s )
 {
-  if ( h -> direct_dmg <= 0 )
+  if ( s -> result_amount <= 0 )
     return;
 
   if ( h -> proc )
@@ -691,7 +693,7 @@ static void trigger_illuminated_healing( paladin_heal_t* h )
 
   double bubble_value = p -> passives.illuminated_healing -> effectN( 2 ).base_value() / 10000.0
                         * p -> composite_mastery()
-                        * h -> direct_dmg;
+                        * s -> result_amount;
 
   p -> active_illuminated_healing -> base_dd_min = p -> active_illuminated_healing -> base_dd_max = bubble_value;
   p -> active_illuminated_healing -> execute();
@@ -923,11 +925,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
+    paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike );
@@ -936,7 +938,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
-      trigger_hand_of_light( this );
+      trigger_hand_of_light( this, s );
     }
   }
 };
@@ -964,12 +966,13 @@ struct divine_storm_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_hand_of_light( this );
+      trigger_hand_of_light( this, s );
       if ( p() -> glyphs.divine_storm -> ok() )
       {
         p() -> resource_gain( RESOURCE_HEALTH, heal_percentage * p() -> resources.max[ RESOURCE_HEALTH ], p() -> gains.glyph_divine_storm, this );
@@ -1035,10 +1038,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     proc = new hammer_of_the_righteous_aoe_t( p );
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
     {
       proc -> execute();
 
@@ -1049,7 +1053,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
-      trigger_hand_of_light( this );
+      trigger_hand_of_light( this, s );
 
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
@@ -1088,11 +1092,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
+    paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       if ( p() -> passives.sword_of_light -> ok() )
       {
@@ -1103,7 +1107,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
         }
       }
-      trigger_hand_of_light( this );
+      trigger_hand_of_light( this, s );
     }
   }
 
@@ -1572,12 +1576,13 @@ struct templars_verdict_t : public paladin_melee_attack_t
     trigger_seal      = true;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
-    if ( result_is_hit( execute_state -> result ) )
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
     {
-      trigger_hand_of_light( this );
+      trigger_hand_of_light( this, s );
     }
   }
 
@@ -1972,11 +1977,6 @@ void paladin_heal_t::execute()
 
   base_t::execute();
 
-  if ( target != p() -> beacon_target )
-    trigger_beacon_of_light( this );
-
-  trigger_illuminated_healing( this );
-
   if ( p() -> talents.divine_purpose -> ok() )
   {
     if ( c > 0.0 )
@@ -1989,6 +1989,16 @@ void paladin_heal_t::execute()
       p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
     }
   }
+}
+
+void paladin_heal_t::impact( action_state_t* s )
+{
+  base_t::impact( s );
+
+  trigger_illuminated_healing( this, s );
+
+  if ( s -> target != p() -> beacon_target )
+    trigger_beacon_of_light( this, s );
 }
 
 // Beacon of Light ==========================================================
