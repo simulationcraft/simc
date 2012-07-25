@@ -1366,14 +1366,14 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t, hunt
   explosive_shot_tick_t( hunter_t* p ) :
     base_t( "explosive_shot_tick", p, p -> specs.explosive_shot)
   {
-    ab:tick_may_crit = true;
+    tick_may_crit = true;
   }
 
   void init()
   {
-    ab::init();
+    base_t::init();
 
-    ab::snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
   }
 };
  
