@@ -134,7 +134,7 @@ public:
     //   const spell_data_t* diffuse_magic;
 
     //   const spell_data_t* rushing_jade_wind;
-    const spell_data_t* invoke_xuen;
+    const spell_data_t* invoke_xuen_the_white_tiger;
     //   const spell_data_t* chi_torpedo;
   } talent;
 
@@ -1095,7 +1095,7 @@ struct enveloping_mist_t : public monk_heal_t
 struct xuen_spell_t : public monk_spell_t
 {
   xuen_spell_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "invoke_xuen", player, player -> talent.invoke_xuen ) //123904
+    monk_spell_t( "invoke_xuen_the_white_tiger", player, player -> talent.invoke_xuen_the_white_tiger ) //123904
   {
     parse_options( NULL, options_str );
 
@@ -1319,7 +1319,7 @@ void monk_t::init_spells()
   //TALENTS
   talent.ascension = find_talent_spell( "Ascension" );
   talent.zen_sphere = find_talent_spell( "Zen Sphere" );
-  talent.invoke_xuen =  find_talent_spell( "Invoke Xuen, the White Tiger" ); //find_spell( 123904 );
+  talent.invoke_xuen_the_white_tiger =  find_talent_spell( "Invoke Xuen, the White Tiger" ); //find_spell( 123904 );
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
@@ -1478,11 +1478,11 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/rising_sun_kick";
-      if ( talent.zen_sphere -> ok() )
-        action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
+   //   if ( talent.zen_sphere -> ok() )
+   //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
       action_list_str += "/fists_of_fury";
-      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      action_list_str += "/zen_sphere";
+      action_list_str += "/invoke_xuen,if=talent.invoke_xuen_the_white_tiger.enabled";
+      action_list_str += "/zen_sphere,if=talent.zen_sphere.enabled";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
       action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
       action_list_str += "/blackout_kick,if=debuff.tiger_power.stack=3";
