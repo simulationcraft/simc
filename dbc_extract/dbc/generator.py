@@ -931,6 +931,7 @@ class SpellDataGenerator(DataGenerator):
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
          52586,  68043,  68044,     # Gurthalak, Voice of the Deeps - LFR, N, H
          109959, 109955, 109939,    # Rogue Legendary buffs for P1, 2, 3
+         84745,  84746,             # Shallow Insight, Moderate Insight
         ),
         
         # Warrior:
