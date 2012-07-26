@@ -13,6 +13,8 @@
 //  Add all buffs
 //  Remove overemphasized commenting once done with abilities
 //
+//  Fix Xuen Pet scaling (not updated yet)
+//
 //  Implement Build 15882
 //  http://www.mmo-champion.com/content/2852-Mists-of-Pandaria-Beta-Build-15882
 //
@@ -57,7 +59,8 @@ struct monk_td_t : public actor_pair_t
 struct monk_t : public player_t
 {
 public:
-
+  // Pets
+   pet_t* pet_xuen;
   monk_stance_e active_stance;
   action_t* active_blackout_kick_dot;
   double track_chi_consumption;
@@ -131,7 +134,7 @@ public:
     //   const spell_data_t* diffuse_magic;
 
     //   const spell_data_t* rushing_jade_wind;
-    //   const spell_data_t* invoke_zuen;
+    const spell_data_t* invoke_xuen;
     //   const spell_data_t* chi_torpedo;
   } talent;
 
@@ -191,6 +194,8 @@ public:
   // Character Definition
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_player_multiplier( school_e school, action_t* a );
+  virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
+  virtual void      create_pets();
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
@@ -993,7 +998,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 //====Zen Sphere=============== TODO: Add healing Component
 //=============================
 
-struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero applies
+struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tick zero applies
 {
   struct zen_sphere_damage_t : public monk_spell_t
   {
@@ -1001,7 +1006,7 @@ struct zen_sphere_t : public monk_heal_t // find out if direct tick or tick zero
       monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
     {
       background  = true;
-      base_attack_power_multiplier = 1;
+      base_attack_power_multiplier = .7185; // TODO: LOOKS VALID. DOUBLE CHECK
       direct_power_mod = data().extra_coeff();
       dual = true;
     }
@@ -1085,6 +1090,26 @@ struct enveloping_mist_t : public monk_heal_t
   }
 };
 
+// Invoke Xuen, The White Tiger
+
+struct xuen_spell_t : public monk_spell_t
+{
+  xuen_spell_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "invoke_xuen", player, player -> talent.invoke_xuen ) //123904
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> pet_xuen -> summon( data().duration() );
+
+  }
+};
 } // END spells NAMESPACE
 
 namespace statues {
@@ -1112,6 +1137,114 @@ struct jade_serpent_statue_t : public statue_t
   }
 };
 } // NAMESPACE STATUES
+
+struct xuen_pet_t : public pet_t
+{
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( xuen_pet_t* player ) :
+      melee_attack_t( "melee", player, spell_data_t::nil() )
+    {
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      background = true;
+      repeating = true;
+      may_crit = true;
+      school      = SCHOOL_PHYSICAL;
+    }
+
+    xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      pet_t* first_pet = p() -> o() -> find_pet( "xuen_the_white_tiger" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
+    }
+
+    virtual void impact( action_state_t* state )
+    {
+      melee_attack_t::impact( state );
+
+
+
+
+    }
+  };
+
+  struct crackling_tiger_lightning_t : public melee_attack_t
+  {
+    crackling_tiger_lightning_t( xuen_pet_t* player ) :
+      melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
+    {
+      may_crit  = true;
+      special   = true;
+      aoe = 3;
+      direct_power_mod = data().extra_coeff();
+      cooldown -> duration = timespan_t::from_seconds( 7.0 );
+
+    }
+
+    xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      pet_t* first_pet = p() -> o() -> find_pet( "xuen_the_white_tiger" );
+      if ( first_pet != player )
+        stats = first_pet -> find_stats( name() );
+    }
+
+  };
+
+  melee_t* melee;
+
+  xuen_pet_t( sim_t* sim, monk_t* owner ) :
+    pet_t( sim, owner, "xuen_the_white_tiger" ), melee( 0 )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+
+    owner_coeff.ap_from_ap = 0.31; //verify
+  }
+
+  monk_t* o() { return static_cast<monk_t*>( owner ); }
+
+  virtual void init_base()
+  {
+    pet_t::init_base();
+
+    melee = new melee_t( this );
+  }
+
+  virtual void init_actions()
+  {
+    action_list_str = "crackling_tiger_lightning";
+
+    pet_t::init_actions();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "crackling_tiger_lightning" ) return new crackling_tiger_lightning_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  {
+    if ( melee && ! melee -> execute_event )
+      melee -> schedule_execute();
+
+    pet_t::schedule_ready( delta_time, waiting );
+  }
+};
 
 // ==========================================================================
 // Monk Character Definition
@@ -1148,8 +1281,34 @@ action_t* monk_t::create_action( const std::string& name,
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
 
+  // Monk Spell
+  if ( name == "invoke_xuen") return new          xuen_spell_t( this, options_str );
+
   return player_t::create_action( name, options_str );
 }
+
+// monk_t::create_pet =====================================================
+
+pet_t* monk_t::create_pet( const std::string& pet_name,
+                             const std::string& /* pet_type */ )
+{
+  pet_t* p = find_pet( pet_name );
+
+  if ( p ) return p;
+
+  if ( pet_name == "xuen_the_white_tiger"             ) return new xuen_pet_t( sim, this );
+
+  return 0;
+}
+
+// monk_t::create_pets ====================================================
+
+void monk_t::create_pets()
+{
+  pet_xuen    = create_pet( "xuen_the_white_tiger"             );
+
+}
+
 
 // monk_t::init_spells ======================================================
 
@@ -1160,6 +1319,7 @@ void monk_t::init_spells()
   //TALENTS
   talent.ascension = find_talent_spell( "Ascension" );
   talent.zen_sphere = find_talent_spell( "Zen Sphere" );
+  talent.invoke_xuen =  find_talent_spell( "Invoke Xuen, the White Tiger" ); //find_spell( 123904 );
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
@@ -1321,6 +1481,7 @@ void monk_t::init_actions()
       if ( talent.zen_sphere -> ok() )
         action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF
       action_list_str += "/fists_of_fury";
+      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
       action_list_str += "/zen_sphere";
       action_list_str += "/blackout_kick,if=buff.combo_breaker_bok.remains";
       action_list_str += "/tiger_palm,if=buff.combo_breaker_tp.remains";
