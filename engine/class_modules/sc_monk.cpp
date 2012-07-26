@@ -1168,26 +1168,26 @@ struct xuen_pet_t : public pet_t
     {
       melee_attack_t::impact( state );
 
-
-
-
     }
   };
 
-  struct crackling_tiger_lightning_t : public melee_attack_t
+  struct crackling_tiger_lightning_t : public melee_attack_t //make this a ticking dot
   {
     crackling_tiger_lightning_t( xuen_pet_t* player ) :
       melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
       may_crit  = true;
       special   = true;
+      background  = true;
       aoe = 3;
       direct_power_mod = data().extra_coeff();
-      cooldown -> duration = timespan_t::from_seconds( 7.0 );
+      cooldown -> duration = timespan_t::from_seconds( 6.0 );
 
     }
 
     xuen_pet_t* p() { return static_cast<xuen_pet_t*>( player ); }
+
+// Not sure if this is needed vvv
 
     void init()
     {
