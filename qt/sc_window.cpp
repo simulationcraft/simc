@@ -56,6 +56,7 @@ static OptionEntry* getItemSourceOptions()
     { "Mmo-champion.com",    "mmoc",    "Remote Mmo-champion.com item data source" },
     { "Blizzard Armory",     "armory",  "Remote item database from Blizzard (DEPRECATED, SHOULD NOT BE USED)" },
     { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+    { "Wowhead.com (MoP)",   "mophead", "Remote Wowhead.com Mists of Pandaria item data source" },
     { NULL, NULL, NULL }
   };
 
