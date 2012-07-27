@@ -1761,9 +1761,10 @@ struct frenzied_regeneration_t : public druid_bear_attack_t
       double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 - 
                              data().effectN( 3 ).base_value() * attack_power / 10000.0 );
       double health_pct_gain = resource_consumed / maximum_rage_cost;
-
+      double actual_gain = std::max( health_pct_gain * health_gain,
+                                     p() -> composite_attribute( ATTR_STAMINA ) * 2.5 );
       p() -> resource_gain( RESOURCE_HEALTH,
-                            health_pct_gain * health_gain,
+                            actual_gain,
                             p() -> gain.frenzied_regeneration );
     }
     else
@@ -3837,14 +3838,11 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
     {
-      if ( p() -> spec.eclipse -> ok() )
+      if ( td( s -> target ) -> dots_moonfire -> ticking )
       {
-        if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
-        {
-          td( s -> target ) -> dots_moonfire -> refresh_duration( STATE_HASTE );
-        }
+        td( s -> target ) -> dots_moonfire -> extend_duration_seconds( timespan_t::from_seconds( 2.0 ), STATE_HASTE );
       }
     }
   }
@@ -3882,15 +3880,7 @@ struct starfire_t : public druid_spell_t
 
           if ( ! p() -> buff.eclipse_lunar -> check() )
           {
-            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
-            {
-              // You can't get into eclipse with euphoria, so the last two
-              // spells are always normal gain
-              if ( p() -> eclipse_bar_value < 60 )
-              {
-                gain *= 2;
-              }
-            }
+            gain *= 2;
           }
           trigger_eclipse_energy_gain( this, gain );
         }
@@ -3993,17 +3983,14 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
     {
-      if ( p() -> spec.eclipse -> ok() )
-      {
-        if ( p() -> buff.eclipse_lunar -> check() && td( s -> target ) -> dots_moonfire -> ticking )
-          td( s -> target ) -> dots_moonfire -> refresh_duration( STATE_HASTE );
+      if ( td( s -> target ) -> dots_moonfire -> ticking )
+        td( s -> target ) -> dots_moonfire -> extend_duration_seconds( timespan_t::from_seconds( 2.0 ), STATE_HASTE );
 
-        if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
-          td( s -> target ) -> dots_sunfire -> refresh_duration( STATE_HASTE );
+      if ( td( s -> target ) -> dots_sunfire -> ticking )
+        td( s -> target ) -> dots_sunfire -> extend_duration_seconds( timespan_t::from_seconds( 2.0 ), STATE_HASTE );
 
-      }
     }
   }
 
@@ -4022,16 +4009,7 @@ struct starsurge_t : public druid_spell_t
 
         if ( ! p() -> buff.eclipse_lunar -> check() && ! p() -> buff.eclipse_solar -> check() )
         {
-          if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
-          {
-            // You can't get into eclipse with euphoria, so the last two
-            // spells are always normal gain
-            if ( ( p() -> eclipse_bar_direction < 0 && p() -> eclipse_bar_value > -60 )
-              || ( p() -> eclipse_bar_direction >= 0 && p() -> eclipse_bar_value < 60 ) )
-            {
-              gain *= 2;
-            }
-          }
+          gain *= 2;
         }
         trigger_eclipse_energy_gain( this, gain );
       }
@@ -4369,14 +4347,11 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
     {
-      if ( p() -> spec.eclipse -> ok() )
+      if ( td( s -> target ) -> dots_sunfire -> ticking )
       {
-        if ( p() -> buff.eclipse_solar -> check() && td( s -> target ) -> dots_sunfire -> ticking )
-        {
-          td( s -> target ) -> dots_sunfire -> refresh_duration( STATE_HASTE );
-        }
+        td( s -> target ) -> dots_sunfire -> extend_duration_seconds( timespan_t::from_seconds( 2.0 ), STATE_HASTE );
       }
     }
   }
@@ -4414,15 +4389,7 @@ struct wrath_t : public druid_spell_t
 
           if ( ! p() -> buff.eclipse_solar -> check() )
           {
-            if ( p() -> rng.euphoria -> roll( p() -> spec.euphoria -> effectN( 1 ).percent() ) )
-            {
-              // You can't get into eclipse with euphoria, so the last two
-              // spells are always normal gain
-              if ( p() -> eclipse_bar_value > -70 )
-              {
-                gain *= 2;
-              }
-            }
+            gain *= 2;
           }
           trigger_eclipse_energy_gain( this, -gain );
         }
