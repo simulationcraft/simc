@@ -3867,7 +3867,7 @@ struct starfire_t : public druid_spell_t
     p() -> buff.lunar_empowerment -> decrement();
 
     // Cast starfire, but solar eclipse was up?
-    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
+    if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
       p() -> proc.wrong_eclipse_starfire -> occur();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4376,7 +4376,7 @@ struct wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> decrement();
 
     // Cast wrath, but lunar eclipse was up?
-    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
+    if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
       p() -> proc.wrong_eclipse_wrath -> occur();
 
     if ( result_is_hit( execute_state -> result ) )
