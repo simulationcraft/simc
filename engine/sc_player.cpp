@@ -6283,6 +6283,8 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 {
   unsigned spell_id = dbc.talent_ability_id( type, n.c_str() );
 
+  if ( ! spell_id && token == "" ) spell_id = dbc.get_token_id( n );
+
   if ( ! spell_id || ! dbc.spell( spell_id ) )
   {
     return ( spell_data_t::not_found() );

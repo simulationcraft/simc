@@ -46,6 +46,16 @@ public:
     return ( *it ).second;
   }
 
+  const unsigned int get_id( const std::string& token )
+  {
+    auto_lock_t lock( mutex );
+
+    for ( token_map_t::iterator it = map.begin(); it != map.end(); ++it )
+      if ( ( *it ).second == token ) return ( *it ).first;
+
+    return 0;
+  }
+
   bool add( unsigned int id_spell, const std::string& token_name )
   {
     auto_lock_t lock( mutex );
@@ -2123,3 +2133,7 @@ bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr
   return false;
 }
 
+const unsigned int dbc_t::get_token_id( const std::string& token )
+{
+  return tokens.get_id( token );
+}

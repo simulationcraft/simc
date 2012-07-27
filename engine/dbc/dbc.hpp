@@ -565,6 +565,7 @@ public:
 
   static const std::string& get_token( unsigned int id_spell );
   static bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr = false );
+  static const unsigned int dbc_t::get_token_id( const std::string& token );
 };
 
 
