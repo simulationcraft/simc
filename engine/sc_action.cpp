@@ -1078,7 +1078,7 @@ void action_t::assess_damage( dmg_e    type,
                      dot -> current_tick, dot -> num_ticks,
                      s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
-                     util::result_type_string( result ) );
+                     util::result_type_string( dot -> state -> result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
