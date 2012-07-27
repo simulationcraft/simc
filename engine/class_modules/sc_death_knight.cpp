@@ -110,6 +110,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_blood_plague;
   dot_t* dots_death_and_decay;
   dot_t* dots_frost_fever;
+  dot_t* dots_soul_reaper;
   
   debuff_t* debuffs_frost_vulnerability;
 
@@ -127,6 +128,7 @@ struct death_knight_td_t : public actor_pair_t
     dots_blood_plague    = target -> get_dot( "blood_plague",    death_knight );
     dots_death_and_decay = target -> get_dot( "death_and_decay", death_knight );
     dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
+    dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
     
     debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   }
@@ -223,6 +225,7 @@ public:
     const spell_data_t* scent_of_blood;
     const spell_data_t* improved_blood_presence;
     const spell_data_t* blood_parasite;
+    const spell_data_t* scarlet_fever;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -558,6 +561,8 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity )
   double runes_per_second = 1.0 / 10.0 / p -> composite_attack_haste();
   if ( p -> buffs.runic_corruption -> up() )
     runes_per_second *= 2.0;
+
+  runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
 
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
@@ -1013,12 +1018,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.4;
   }
 
-  virtual double energy_regen_per_second()
-  {
-    // Doesn't benefit from haste
-    return base_energy_regen_per_second;
-  }
-
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1118,33 +1117,24 @@ struct gargoyle_pet_t : public death_knight_pet_t
       trigger_gcd = timespan_t::from_seconds( 1.5 );
       may_crit    = true;
       min_gcd     = timespan_t::from_seconds( 1.5 ); // issue961
-      base_spell_power_multiplier  = 0;
-      base_attack_power_multiplier = 1;
+      
+      // FIXME: Check after 15882 if it's updated in DBC, the base value 
+      // for gargoyle strike is correct.
+      direct_power_mod = 0.826;
     }
   };
 
-  double snapshot_haste, snapshot_spell_crit, snapshot_power;
-
   gargoyle_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "gargoyle", true ),
-    snapshot_haste( 1 ), snapshot_spell_crit( 0 ), snapshot_power( 0 )
-  {
-  }
+    death_knight_pet_t( sim, owner, "gargoyle", true )
+  { }
 
   virtual void init_base()
   {
-    // FIX ME!
-    base.attribute[ ATTR_STRENGTH  ] = 0;
-    base.attribute[ ATTR_AGILITY   ] = 0;
-    base.attribute[ ATTR_STAMINA   ] = 0;
-    base.attribute[ ATTR_INTELLECT ] = 0;
-    base.attribute[ ATTR_SPIRIT    ] = 0;
-
-    action_list_str = "/snapshot_stats/gargoyle_strike";
+    action_list_str = "gargoyle_strike";
+    
+    // As per Blizzard
+    owner_coeff.sp_from_ap = 0.7;
   }
-  virtual double composite_spell_haste()  { return snapshot_haste; }
-  virtual double composite_attack_power() { return snapshot_power; }
-  virtual double composite_spell_crit()   { return snapshot_spell_crit; }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -1153,17 +1143,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     return pet_t::create_action( name, options_str );
   }
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
-  {
-    pet_t::summon( duration );
-    // Haste etc. are taken at the time of summoning
-    snapshot_haste      = o() -> composite_attack_speed();
-    snapshot_power      = o() -> composite_attack_power() * o() -> composite_attack_power_multiplier();
-    snapshot_spell_crit = o() -> composite_spell_crit();
-
-  }
-
+/*
   virtual void arise()
   {
     if ( sim -> log )
@@ -1182,7 +1162,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     arise_time = sim -> current_time;
 
     schedule_ready( timespan_t::from_seconds( 3.0 ), true ); // Gargoyle pet is idle for the first 3 seconds.
-  }
+  }*/
 };
 
 // ==========================================================================
@@ -1300,12 +1280,6 @@ struct ghoul_pet_t : public death_knight_pet_t
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
     owner_coeff.ap_from_ap = 1.6;
-  }
-
-  virtual double energy_regen_per_second()
-  {
-    // Doesn't benefit from haste
-    return base_energy_regen_per_second;
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
@@ -1477,9 +1451,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   void _init_dk_spell()
   {
     may_crit = true;
-    // DKs have 2.09x spell crits with meta gem so they must use the "hybrid" formula of adjusting the crit-bonus multiplier
-    // (As opposed to the native 1.33 crit multiplier used by Mages and Warlocks.)
-    crit_bonus_multiplier = 2.0;
 
     base_spell_power_multiplier = 0;
     base_attack_power_multiplier = 1;
@@ -1651,13 +1622,11 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      death_knight_td_t* td = cast_td( s -> target );
-
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && sim -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
+        int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
         // FIXME: Mists of Pandaria Sudden Doom PPM?
         if ( p() -> spec.sudden_doom -> ok() && 
@@ -1676,19 +1645,21 @@ struct melee_t : public death_knight_melee_attack_t
                p() -> buffs.sudden_doom -> decrement( 1 );
            }
          }
+
+         if ( p() -> buffs.scent_of_blood -> trigger() )
+         {
+           p() -> resource_gain( RESOURCE_RUNIC_POWER, 
+                                 p() -> buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), 
+                                 p() -> gains.scent_of_blood );
+         }
       }
-      
+
       // Killing Machine, presume rank 3 PPM (5)
       p() -> buffs.killing_machine -> trigger( 1, -1, weapon -> proc_chance_on_swing( 5 ) );
 
+      death_knight_td_t* td = cast_td( s -> target );
       if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
         p() -> buffs.crimson_scourge -> trigger();
-
-      if ( p() -> buffs.scent_of_blood -> up() )
-      {
-        p() -> resource_gain( RESOURCE_RUNIC_POWER, 10, p() -> gains.scent_of_blood );
-        p() -> buffs.scent_of_blood -> decrement();
-      }
     }
   }
 };
@@ -1827,6 +1798,20 @@ struct blood_boil_t : public death_knight_spell_t
     return m;
   }
   
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+    
+    if ( p() -> spec.scarlet_fever -> ok() )
+    {
+      if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
+        cast_td( s -> target ) -> dots_blood_plague -> refresh_duration();
+      
+      if ( cast_td( s -> target ) -> dots_frost_fever -> ticking )
+        cast_td( s -> target ) -> dots_frost_fever -> refresh_duration();
+    }
+  }
+  
   virtual bool ready()
   {
     if ( ! spell_t::ready() )
@@ -1862,7 +1847,7 @@ struct blood_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( ! sim -> overrides.weakened_blows && player -> specialization() == DEATH_KNIGHT_BLOOD &&
+    if ( ! sim -> overrides.weakened_blows && p() -> spec.scarlet_fever -> ok() &&
          result_is_hit( s -> result ) )
       s -> target -> debuffs.weakened_blows -> trigger();
 
@@ -2238,7 +2223,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
-    if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
+    if ( p -> spec.blood_rites -> ok() )
       convert_runes = 1.0;
 
     weapon = &( p -> main_hand_weapon );
@@ -3170,18 +3155,9 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       special = proc = background = true;
       weapon            = &( player -> main_hand_weapon );
       weapon_multiplier = 0;
-      disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
-    }
-
-    virtual double composite_target_multiplier( player_t* t )
-    {
-      // Shadow portion doesn't double dips in debuffs, other than EP/E&M/CoE below
-      double ctm = cast_td( t ) -> diseases() * disease_coeff;
-
-      if ( t -> debuffs.magic_vulnerability -> check() )
-        ctm *= 1.0 + t -> debuffs.magic_vulnerability -> value();
-
-      return ctm;
+      // FIXME: Coefficient is actually 25%, fix later if/when the tooltip is
+      // updated to correct value.
+      disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent() + 0.07;
     }
   };
 
@@ -3202,9 +3178,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) && cast_td( s -> target ) -> diseases() > 0 )
     {
-      double damage = calculate_direct_damage( s -> result, 0, s -> attack_power, s -> spell_power, s -> composite_da_multiplier(), s -> target );
-
-      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = damage;
+      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = s -> result_amount;
       scourge_strike_shadow -> execute();
     }
   }
@@ -3551,6 +3525,7 @@ void death_knight_t::init_base()
   initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
   base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  base.dodge = spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 
   initial.attack_power_per_strength = 2.0;
 
@@ -3583,6 +3558,7 @@ void death_knight_t::init_spells()
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
   spec.improved_blood_presence    = find_specialization_spell( "Improved Blood Presence" );
   spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
+  spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -4037,11 +4013,12 @@ void death_knight_t::init_buffs()
                               .quiet( true );
   buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
                               .chance( talent.runic_corruption -> proc_chance() );
+  buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() )
+                              .chance( spec.scent_of_blood -> proc_chance() );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.sudden_doom -> ok() );
-  buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() );
   buffs.shadow_infusion     = buff_creator_t( this, "shadow_infusion", spec.shadow_infusion -> effectN( 1 ).trigger() );
   buffs.tier13_4pc_melee    = stat_buff_creator_t( this, "tier13_4pc_melee" )
                               .spell( find_spell( 105647 ) );

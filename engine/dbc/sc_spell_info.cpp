@@ -196,7 +196,7 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
   s << "[";
 
   if ( spell -> scaling_class() != 0 )
-    s << "Scaling Spell, ";
+    s << "Scaling Spell (" << spell -> scaling_class() << "), ";
 
   if ( spell -> _gcd == 0 && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
     s << "Off GCD, ";
