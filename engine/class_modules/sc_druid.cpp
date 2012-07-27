@@ -151,7 +151,6 @@ public:
   struct buffs_t
   {
     // DONE
-    buff_t* astral_empowerment;
     buff_t* berserk;
     buff_t* cat_form;
     buff_t* celestial_alignment;
@@ -162,7 +161,6 @@ public:
     buff_t* frenzied_regeneration;
     buff_t* king_of_the_jungle;
     buff_t* lacerate;
-    buff_t* lunar_empowerment;
     buff_t* lunar_shower;
     buff_t* moonkin_form;
     buff_t* natures_grace;
@@ -170,7 +168,6 @@ public:
     buff_t* omen_of_clarity;
     buff_t* savage_roar;
     buff_t* shooting_stars;
-    buff_t* solar_empowerment;
     buff_t* soul_of_the_forest;
     buff_t* starfall;
     buff_t* stealthed;
@@ -1171,14 +1168,6 @@ static void trigger_eclipse_energy_gain( druid_spell_t* s, int gain )
 
   druid_t* p = s -> p();
   
-  if ( p -> buff.astral_empowerment -> up() && ! s -> channeled )
-  {
-    // W/SS/SF always use a charge, it's possible to waste them if you have
-    // the wrong eclipse up or under CA!
-    gain = (int) ( gain * ( 1 + p -> buff.astral_empowerment -> data().effectN( 1 ).percent() ) );
-    p -> buff.astral_empowerment -> decrement();
-  }
-
   if ( p -> buff.celestial_alignment -> check() )
     return;
 
@@ -3327,12 +3316,6 @@ struct faerie_fire_t : public druid_spell_t
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
 
-    if ( p() -> specialization() == DRUID_BALANCE )
-    {
-      p() -> buff.astral_empowerment -> trigger( 3 );
-      p() -> buff.lunar_empowerment -> trigger( 3 );
-      p() -> buff.solar_empowerment -> trigger( 3 );
-    }
   }
 
   virtual bool ready()
@@ -3851,9 +3834,6 @@ struct starfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
 
-    if ( p() -> buff.lunar_empowerment -> up() )
-      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
-
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -3863,8 +3843,6 @@ struct starfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    p() -> buff.lunar_empowerment -> decrement();
 
     // Cast starfire, but solar eclipse was up?
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
@@ -4360,9 +4338,6 @@ struct wrath_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
 
-    if ( p() -> buff.solar_empowerment -> up() )
-      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent();
-
     if (  p() -> set_bonus.tier13_2pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -4372,8 +4347,6 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    p() -> buff.solar_empowerment -> decrement();
 
     // Cast wrath, but lunar eclipse was up?
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() && ! is_dtr_action )
@@ -4731,13 +4704,6 @@ void druid_t::init_buffs()
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
-  buff.astral_empowerment    = buff_creator_t( this, "astral_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 3 ).trigger() )
-                               .max_stack( 3 );
-  buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 1 ).trigger() )
-                               .max_stack( 3 );
-  buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_specialization_spell( "Fae Empowerment" ) -> effectN( 2 ).trigger() )
-                               .max_stack( 3 );
-
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() );
@@ -5011,7 +4977,6 @@ void druid_t::init_actions()
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
       action_list_str += "/treants,if=talent.force_of_nature.enabled";
-      action_list_str += "/faerie_fire,if=(eclipse_dir=1&eclipse>=19&buff.lunar_empowerment.down)|(eclipse_dir=-1&eclipse<=-40&buff.solar_empowerment.down)";
       action_list_str += init_use_racial_actions();
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       // Align the use of Incarnation and Celestial Alignment
