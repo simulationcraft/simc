@@ -117,9 +117,9 @@ public:
     //   const spell_data_t* tigers_lust;
     //   const spell_data_t* momentum;
 
-    //   const spell_data_t* chi_wave;
+    const spell_data_t* chi_wave;
     const spell_data_t* zen_sphere;
-    //   const spell_data_t* chi_burst;
+    const spell_data_t* chi_burst;
 
     //   const spell_data_t* power_strikes;
     const spell_data_t* ascension;
@@ -133,7 +133,7 @@ public:
     //   const spell_data_t* dampen_harm;
     //   const spell_data_t* diffuse_magic;
 
-    //   const spell_data_t* rushing_jade_wind;
+    const spell_data_t* rushing_jade_wind;
     const spell_data_t* invoke_xuen;
     //   const spell_data_t* chi_torpedo;
   } talent;
@@ -510,6 +510,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
   }
 };
+
 
 //=============================
 //====Blackout Kick============
@@ -1070,6 +1071,79 @@ struct zen_sphere_detonate_t : public monk_spell_t
   }
 };
 
+//-----
+//--Chi wave
+//-----
+/*
+ * TODO: FOR REALISTIC BOUNCING, IT WILL BOUNCE ENEMY -> MONK -> ENEMY -> MONK -> ENEMY (verify it does not bounce first on monk)
+ * So only 3 ticks will occur in a single target simming scenario. Alternate scenarios need to be determined.
+ * TODO: Need to add decrementing buff to handle bouncing mechanic. .561 coeff
+ * verify damage
+*/
+struct chi_wave_t : public monk_spell_t
+{
+
+  chi_wave_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
+  {
+    parse_options( NULL, options_str );
+    base_dd_min = player -> find_spell( 115108 ) -> effectN( 1 ).min( player );
+    base_dd_max = player -> find_spell( 115108 ) -> effectN( 1 ).max( player );
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+  }
+
+};
+
+// Chi Burst
+// TODO: Verify damage & see if background is necessarys
+struct chi_burst_t : public monk_spell_t
+{
+
+  chi_burst_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "chi_burst", player, player -> talent.chi_burst )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
+    base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
+    base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+  }
+
+};
+
+// Rushing Jade Wind
+// TODO: Add spinning crane kick debuff - find out if its personal or on target
+struct rushing_jade_wind_t : public monk_spell_t
+{
+
+  rushing_jade_wind_t( monk_t* player, const std::string& options_str  ) :
+    monk_spell_t( "rushing_jade_wind", player, player -> talent.rushing_jade_wind )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+    direct_power_mod = data().extra_coeff();
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+  }
+
+};
+
 // Enveloping Mist
 
 struct enveloping_mist_t : public monk_heal_t
@@ -1277,6 +1351,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "tigereye_brew_use"   ) return new   tigereye_brew_use_t( this, options_str );
   if ( name == "energizing_brew"     ) return new     energizing_brew_t( this, options_str );
   if ( name == "zen_sphere"          ) return new          zen_sphere_t( this, options_str );
+  if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
+  if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
+  if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
@@ -1317,9 +1394,12 @@ void monk_t::init_spells()
   player_t::init_spells();
 
   //TALENTS
-  talent.ascension = find_talent_spell( "Ascension" );
-  talent.zen_sphere = find_talent_spell( "Zen Sphere" );
-  talent.invoke_xuen =  find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" ); //find_spell( 123904 );
+  talent.ascension            = find_talent_spell( "Ascension" );
+  talent.zen_sphere           = find_talent_spell( "Zen Sphere" );
+  talent.invoke_xuen          = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" ); //find_spell( 123904 );
+  talent.chi_wave             = find_talent_spell( "Chi Wave" );
+  talent.chi_burst            = find_talent_spell( "Chi Burst" );
+  talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind", "rushing_jade_wind" );
 
   //PASSIVE/SPECIALIZATION
   spec.way_of_the_monk        = find_spell( 108977 );
@@ -1478,6 +1558,9 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/rising_sun_kick";
+   //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+      action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+   //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
    //   if ( talent.zen_sphere -> ok() )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
       action_list_str += "/fists_of_fury";
