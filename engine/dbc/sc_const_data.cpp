@@ -46,7 +46,7 @@ public:
     return ( *it ).second;
   }
 
-  const unsigned int get_id( const std::string& token )
+  unsigned int get_id( const std::string& token )
   {
     auto_lock_t lock( mutex );
 
@@ -2133,7 +2133,7 @@ bool dbc_t::add_token( unsigned int id_spell, const std::string& token, bool ptr
   return false;
 }
 
-const unsigned int dbc_t::get_token_id( const std::string& token )
+unsigned int dbc_t::get_token_id( const std::string& token )
 {
   return tokens.get_id( token );
 }
