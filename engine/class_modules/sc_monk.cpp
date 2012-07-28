@@ -94,6 +94,7 @@ public:
     gain_t* combo_breaker_savings;
     gain_t* energizing_brew;
     gain_t* avoided_chi;
+    gain_t* chi_brew;
   } gain;
   // Stances
 
@@ -124,7 +125,7 @@ public:
 
     //   const spell_data_t* power_strikes;
     const spell_data_t* ascension;
-    //   const spell_data_t* chi_brew;
+    const spell_data_t* chi_brew;
 
     //   const spell_data_t* deadly_reach;
     //   const spell_data_t* charging_ox_wave;
@@ -987,6 +988,25 @@ struct energizing_brew_t : public monk_spell_t
   }
 };
 
+struct chi_brew_t : public monk_spell_t
+{
+  chi_brew_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "chi_brew", player, player -> talent.chi_brew )
+  {
+    parse_options( NULL, options_str );
+
+    harmful           = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+    double chi_gain = data().effectN( 1 ).base_value();
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi_brew );
+  }
+};
+
+
 struct monk_heal_t : public monk_action_t<heal_t>
 {
   monk_heal_t( const std::string& n, monk_t* player,
@@ -1405,6 +1425,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
   if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
   if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
+  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
 
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
@@ -1450,6 +1471,7 @@ void monk_t::init_spells()
   talent.invoke_xuen          = find_talent_spell( "Invoke Xuen, the White Tiger", "invoke_xuen" ); //find_spell( 123904 );
   talent.chi_wave             = find_talent_spell( "Chi Wave" );
   talent.chi_burst            = find_talent_spell( "Chi Burst" );
+  talent.chi_brew             = find_talent_spell( "Chi Brew" );
   talent.rushing_jade_wind    = find_talent_spell( "Rushing Jade Wind", "rushing_jade_wind" );
 
   //PASSIVE/SPECIALIZATION
@@ -1541,6 +1563,7 @@ void monk_t::init_gains()
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings" );
   gain.energizing_brew       = get_gain( "energizing_brew" );
   gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
+  gain.chi_brew              = get_gain( "chi_from_chi_brew");
 }
 
 // monk_t::init_procs =======================================================
@@ -1606,6 +1629,7 @@ void monk_t::init_actions()
 
 
       action_list_str += "/auto_attack";
+      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
