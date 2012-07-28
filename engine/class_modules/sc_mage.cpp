@@ -3014,7 +3014,7 @@ struct incanters_ward_buff_t : public absorb_buff_t
   {
     max_absorb = player -> dbc.effect_average( data().effectN( 1 ).id(), player -> level );
     // coeff hardcoded into tooltip
-    max_absorb += 1.320 * p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
+    max_absorb += p() -> composite_spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
 
     return absorb_buff_t::trigger( stacks, max_absorb, chance, duration );
   }
