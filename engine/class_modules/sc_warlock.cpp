@@ -4772,7 +4772,7 @@ void warlock_t::init_actions()
 
     case WARLOCK_DEMONOLOGY:
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<tick_time|(remains<=60&buff.dark_soul.up&buff.metamorphosis.up))&target.time_to_die>=30&miss_react" );
+      add_action( spec.doom,               "cycle_targets=1,if=(!ticking|remains<tick_time|(remains<=45&buff.dark_soul.up&buff.metamorphosis.up))&target.time_to_die>=30&miss_react" );
       add_action( "Metamorphosis",         "if=buff.dark_soul.up|dot.corruption.remains<5|demonic_fury>=900|demonic_fury>=target.time_to_die*30" );
 
       if ( find_class_spell( "Metamorphosis" ) -> ok() )
