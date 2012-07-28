@@ -82,6 +82,7 @@ public:
     buff_t* combo_breaker_bok;
     buff_t* tiger_stance;
     buff_t* serpent_stance;
+    buff_t* chi_sphere;
     // buff_t* power_strikes;
 
     //Debuffs
@@ -448,6 +449,7 @@ struct chi_sphere_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
     player -> resource_gain( RESOURCE_CHI, chi_sphere, p() -> gain.chi );
+    p() -> buff.chi_sphere -> expire();
   }
 
 };
@@ -505,6 +507,8 @@ struct jab_t : public monk_melee_attack_t
         {
           if ( sim -> log )
                 sim -> output( "Chi sphere created" );
+          p() -> buff.chi_sphere -> trigger();
+
           chi_sphere += 1.0;
         }
     }
@@ -1564,7 +1568,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-  base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 8.0; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -1600,8 +1604,9 @@ void monk_t::init_buffs()
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew"     ).spell( find_spell( 115288 ) );
-  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify it works
+  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //ver
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
+  buff.chi_sphere        = buff_creator_t( this, "chi_sphere" );
 }
 
 // monk_t::init_gains =======================================================
@@ -1680,8 +1685,7 @@ void monk_t::init_actions()
 
 
       action_list_str += "/auto_attack";
-      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
-      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=40&chi=0";
+   //   action_list_str += "/chi_sphere,if=talent.power_strikes.enabled";
       action_list_str += "/chi_brew,if=talent.chi_brew.enabled&energy<=60&chi<2";
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
