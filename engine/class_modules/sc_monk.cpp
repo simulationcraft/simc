@@ -175,6 +175,7 @@ public:
    struct cooldowns_t
    {
      cooldown_t* power_strikes;
+     cooldown_t* fists_of_fury;
    } cooldowns;
 
   // Options
@@ -745,6 +746,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
       oh = &( player -> off_hand_weapon ) ;
       base_multiplier = 5; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
+
+      cooldown = p -> cooldowns.fists_of_fury;
+      cooldown -> duration += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
     }
   };
   fists_of_fury_tick_t* fists_of_fury_tick;
@@ -1560,7 +1564,7 @@ void monk_t::init_base()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   base_chi_regen_per_second = 0; //
-  base_energy_regen_per_second = 8.0; // TODO: add increased energy regen for brewmaster.
+  base_energy_regen_per_second = 10.0; // TODO: add increased energy regen for brewmaster.
 
   base.attack_power = level * 2.0;
   initial.attack_power_per_strength = 1.0;
@@ -1596,6 +1600,7 @@ void monk_t::init_buffs()
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew"     ).spell( find_spell( 115288 ) );
+  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify it works
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere"          ).spell( find_spell( 124081 ) );
 }
 
