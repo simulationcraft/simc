@@ -112,10 +112,10 @@ public:
     const spell_data_t* dark_soul;
     const spell_data_t* nethermancy;
     const spell_data_t* fel_armor;
+    const spell_data_t* pandemic;
 
     // Affliction
     const spell_data_t* nightfall;
-    const spell_data_t* malefic_grasp;
 
     // Demonology
     const spell_data_t* decimation;
@@ -181,7 +181,6 @@ public:
     const spell_data_t* demon_training;
     const spell_data_t* life_tap;
     const spell_data_t* imp_swarm;
-    const spell_data_t* everlasting_affliction;
     const spell_data_t* soul_shards;
     const spell_data_t* burning_embers;
     const spell_data_t* soul_swap;
@@ -299,9 +298,9 @@ public:
   {
     switch ( specialization() )
     {
-    case WARLOCK_AFFLICTION:  return "everlasting_affliction/soul_shards/soul_swap";
-    case WARLOCK_DEMONOLOGY:  return "everlasting_affliction/imp_swarm/shadow_bolt";
-    case WARLOCK_DESTRUCTION: return "everlasting_affliction/conflagrate/burning_embers";
+    case WARLOCK_AFFLICTION:  return "soul_shards/soul_swap";
+    case WARLOCK_DEMONOLOGY:  return "imp_swarm/shadow_bolt";
+    case WARLOCK_DESTRUCTION: return "conflagrate/burning_embers";
     default: break;
     }
 
@@ -1343,14 +1342,12 @@ private:
     generate_fury = 0;
     cost_event = 0;
     havoc_override = false;
-    extra_tick_override = false;
-    extra_tick_event.init( name_str + "_extra_tick_event", player );
   }
 
 public:
   double generate_fury;
   gain_t* gain;
-  bool havoc_override, extra_tick_override;
+  bool havoc_override;
 
   struct cost_event_t : event_t
   {
@@ -1372,37 +1369,6 @@ public:
   };
 
   cost_event_t* cost_event;
-
-  struct extra_tick_event_t : event_t
-  {
-    warlock_spell_t* spell;
-    player_t* target;
-
-    extra_tick_event_t( player_t* p, warlock_spell_t* s, player_t* t, timespan_t delay ) :
-      event_t( p -> sim, p, "extra_tick_event" ), spell( s ), target( t )
-    {
-      sim -> add_event( this, delay );
-    }
-
-    virtual void execute()
-    {
-      warlock_td_t* td = spell -> td( target );
-      if ( td -> dots_malefic_grasp -> ticking || ( td -> dots_drain_soul -> ticking && td -> ds_started_below_20 ) )
-      {
-        dot_t* dot = spell -> get_dot( target );
-        assert( dot -> ticking && dot -> tick_event );
-        spell -> extra_tick_override = true;
-        timespan_t saved_tick_time = dot -> time_to_tick;
-        dot -> time_to_tick = timespan_t::zero();
-        spell -> tick( dot );
-        dot -> time_to_tick = saved_tick_time;
-        spell -> extra_tick_override = false;
-      }
-      spell -> extra_tick_event[ target ] = 0;
-    }
-  };
-
-  target_specific_t<extra_tick_event_t> extra_tick_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ) :
     spell_t( n, p, p -> find_class_spell( n ) )
@@ -1432,7 +1398,6 @@ public:
     spell_t::reset();
 
     havoc_override = false;
-    extra_tick_override = false;
     event_t::cancel( cost_event );
   }
 
@@ -1491,42 +1456,13 @@ public:
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
 
     trigger_seed_of_corruption( td( d -> state -> target ), p(), d -> state -> result_amount );
-
-    if ( ! extra_tick_override && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION && d -> ticking && d -> current_tick < d -> num_ticks )
-    {
-      // Note that this will assert if this is ever used with a tick_zero dot - but there are no tick_zero dots in affliction, so we're good
-      assert( ! extra_tick_event[ d -> state -> target ] );
-      extra_tick_event[ d -> state -> target ] = new ( sim ) extra_tick_event_t( player, this, d -> state -> target, tick_time( d -> state -> haste ) / 2 );
-    }
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    if ( ! channeled && p() -> specialization() == WARLOCK_AFFLICTION )
-      event_t::cancel( extra_tick_event[ d -> state -> target ] );
-
-    spell_t::last_tick( d );
   }
 
   virtual void impact( action_state_t* s )
   {
-    dot_t* dot;
-    bool start_extra_ticks = false;
-    if ( num_ticks > 0 && ! channeled && p() -> specialization() == WARLOCK_AFFLICTION )
-    {
-      dot = get_dot( s -> target );
-      if ( ! dot -> ticking ) start_extra_ticks = true;
-    }
-
     spell_t::impact( s );
 
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
-
-    if ( start_extra_ticks && result_is_hit( s -> result ) )
-    {
-      assert( dot -> tick_event );
-      extra_tick_event[ s -> target ] = new ( sim ) extra_tick_event_t( player, this, s -> target, ( dot -> tick_event -> time - sim -> current_time ) / 2 );
-    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1636,6 +1572,19 @@ public:
     }
   }
 
+  void trigger_extra_tick( dot_t* dot, double multiplier )
+  {
+    if ( dot -> ticking )
+    {
+      dot -> state -> ta_multiplier *= multiplier;
+      timespan_t saved_tick_time = dot -> time_to_tick;
+      dot -> time_to_tick = timespan_t::zero();
+      dot -> action -> tick( dot );
+      dot -> time_to_tick = saved_tick_time;
+      dot -> state -> ta_multiplier /= multiplier;
+    }
+  }
+
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
     if ( ! p -> rngs.ember_gain -> roll( chance ) ) return;
@@ -1724,8 +1673,8 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    tick_power_mod = 0.035; // from tooltip
-    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
+    tick_power_mod = 0.026; // from tooltip
+    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual void last_tick( dot_t* d )
@@ -1763,7 +1712,7 @@ struct doom_t : public warlock_spell_t
   {
     may_crit = false;
     tick_power_mod = 1.0; // from tooltip, also tested on beta 2012/04/28
-    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
+    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual void tick( dot_t* d )
@@ -1994,9 +1943,9 @@ struct corruption_t : public warlock_spell_t
     warlock_spell_t( p, "Corruption" ), soc_triggered( soc )
   {
     may_crit = false;
-    tick_power_mod = 0.3; // tested on beta 2012/04/28
-    generate_fury = 6;
-    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
+    tick_power_mod = 0.2; // from tooltip
+    generate_fury = 4;
+    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   };
 
   virtual timespan_t travel_time()
@@ -2012,7 +1961,7 @@ struct corruption_t : public warlock_spell_t
 
     if ( p() -> spec.nightfall -> ok() )
     {
-      p() -> nightfall_chance += 0.02;
+      p() -> nightfall_chance += 0.01; // FIXME: Assumption that reduction in tooltip from 10% to 5% means reduction in mechanic from 2% per tick to 1% per tick - needs testing/verification
       if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
@@ -2117,7 +2066,7 @@ struct drain_soul_t : public warlock_spell_t
     channeled    = true;
     hasted_ticks = true; // informative
     may_crit     = false;
-    tick_power_mod = 0.5; // tested in beta 2012/07/19
+    tick_power_mod = 0.375; // from tooltip
   }
 
   virtual double action_multiplier()
@@ -2140,6 +2089,13 @@ struct drain_soul_t : public warlock_spell_t
     generate_shard = ! generate_shard;
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
+
+    if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
+    {
+      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 6 ).percent() );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 6 ).percent() );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 6 ).percent() );
+    }
 
     consume_tick_resource( d );
   }
@@ -2167,8 +2123,8 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    tick_power_mod = 0.4; // tested on beta 2012/06/05
-    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
+    tick_power_mod = 0.2; // from tooltip
+    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual double action_multiplier()
@@ -2219,7 +2175,7 @@ struct immolate_t : public warlock_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
 
     tick_power_mod = direct_power_mod; // No tick power mod in dbc for some reason
-    if ( p -> glyphs.everlasting_affliction -> ok() ) dot_behavior = DOT_EXTEND;
+    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
 
     if ( ! dtr && p -> has_dtr )
     {
@@ -2455,6 +2411,12 @@ struct soul_fire_t : public warlock_spell_t
   virtual void execute()
   {
     warlock_spell_t::execute();
+
+    if ( p() -> buffs.demonic_calling -> up() )
+    {
+      trigger_wild_imp( p() );
+      p() -> buffs.demonic_calling -> expire();
+    }
 
     if ( p() -> buffs.molten_core -> check() )
       p() -> buffs.molten_core -> decrement();
@@ -3118,6 +3080,10 @@ struct malefic_grasp_t : public warlock_spell_t
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               data().effectN( 6 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          data().effectN( 6 ).percent() );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, data().effectN( 6 ).percent() );
+
     consume_tick_resource( d );
   }
 };
@@ -3196,7 +3162,7 @@ struct imp_swarm_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     event_t::cancel( p() -> demonic_calling_event );
-    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
+    p() -> demonic_calling_event = new ( sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration + timespan_t::from_seconds( 4.0 ), true ); // FIXME: Is this really what the tooltip means?
 
     int imp_count = data().effectN( 1 ).base_value();
     int j = 0;
@@ -4486,6 +4452,7 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.fel_armor   = find_spell( 104938 );
+  spec.pandemic    = find_spell( 131973 );
 
   spec.dark_soul = find_specialization_spell( "Dark Soul: Instability", "dark_soul" );
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge", "dark_soul" );
@@ -4493,7 +4460,6 @@ void warlock_t::init_spells()
 
   // Affliction
   spec.nightfall     = find_specialization_spell( "Nightfall" );
-  spec.malefic_grasp = find_specialization_spell( "Malefic Grasp" );
 
   // Demonology
   spec.decimation      = find_specialization_spell( "Decimation" );
@@ -4532,7 +4498,6 @@ void warlock_t::init_spells()
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
   glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
-  glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
   glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
   glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
@@ -4765,7 +4730,7 @@ void warlock_t::init_actions()
       add_action( "Agony",                 "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
       add_action( "Corruption",            "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
       add_action( "Unstable Affliction",   "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
-      if ( glyphs.everlasting_affliction -> ok() )
+      if ( spec.pandemic -> ok() )
       {
         add_action( "Agony",               "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=8&miss_react" );
         add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=6&miss_react" );
@@ -4790,7 +4755,7 @@ void warlock_t::init_actions()
       add_action( "Shadowburn",            "if=ember_react" );
       add_action( "Chaos Bolt",            "if=ember_react&buff.backdraft.stack<3" );
       add_action( "Conflagrate",           "if=buff.backdraft.down" );
-      if ( glyphs.everlasting_affliction -> ok() )
+      if ( spec.pandemic -> ok() )
         add_action( "Immolate",            "cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react" );
       else
         add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );

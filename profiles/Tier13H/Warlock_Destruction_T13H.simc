@@ -10,7 +10,7 @@ position=back
 professions=tailoring=525/blacksmithing=525
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Vb!....0.
 talent_override=grimoire_of_sacrifice,if=num_targets>2
-glyphs=everlasting_affliction/conflagrate/burning_embers
+glyphs=conflagrate/burning_embers
 actions.precombat=flask,type=draconic_mind
 actions.precombat+=/food,type=seafood_magnifique_feast
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
@@ -30,7 +30,7 @@ actions+=/havoc,target=2,if=num_targets>1
 actions+=/shadowburn,if=ember_react
 actions+=/chaos_bolt,if=ember_react&buff.backdraft.stack<3
 actions+=/conflagrate,if=buff.backdraft.down
-actions+=/immolate,cycle_targets=1,if=ticks_remain<add_ticks%2&target.time_to_die>=5&miss_react
+actions+=/immolate,cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
 actions+=/incinerate
 actions.aoe=summon_doomguard,if=num_targets<7
 actions.aoe+=/summon_infernal,if=num_targets>=7

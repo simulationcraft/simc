@@ -10,7 +10,7 @@ position=back
 professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#Va!....0.
 talent_override=grimoire_of_service,if=num_targets>3
-glyphs=everlasting_affliction/soul_shards/soul_swap
+glyphs=soul_shards/soul_swap
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
