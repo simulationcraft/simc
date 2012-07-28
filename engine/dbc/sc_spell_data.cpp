@@ -1298,6 +1298,8 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
       data_type = DATA_GLYPH_SPELL;
     else if ( util::str_compare_ci( splits[ 0 ], "set_bonus" ) )
       data_type = DATA_SET_BONUS_SPELL;
+    else
+      return 0;
 
     if ( util::str_compare_ci( splits[ 1 ], "effect" ) && data_type == DATA_EFFECT )
       return 0;
