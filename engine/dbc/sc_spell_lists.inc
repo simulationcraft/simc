@@ -1,7 +1,7 @@
 #define CLASS_ABILITY_SIZE (51)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
-// Class based active abilities, wow build 15882
+// Class based active abilities, wow build 15913
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -632,7 +632,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 27 abilities
+    // General tree, 28 abilities
     {
       108978, // Alter Time
       120145, // Ancient Teleport: Dalaran
@@ -654,6 +654,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        44614, // Frostfire Bolt
        45438, // Ice Block
        30455, // Ice Lance
+      131784, // Illusion
           66, // Invisibility
         6117, // Mage Armor
       125430, // Mage Bomb
@@ -791,7 +792,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 29 abilities
+    // Pet tree, 28 abilities
     {
        89766, // Axe Toss (Special Ability)
       115748, // Bladedance (Basic Attack)
@@ -812,7 +813,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Special Ability)
        54049, // Shadow Bite (Basic Attack)
-       17767, // Shadow Bulwark (Special Ability)
       115232, // Shadow Shield (Special Ability)
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
@@ -827,7 +827,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 26 abilities
+    // General tree, 27 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -848,6 +848,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
       103985, // Stance of the Fierce Tiger (Stance)
+      125170, // Stoneskin
       100787, // Tiger Palm
       115080, // Touch of Death
       101643, // Transcendence
@@ -971,7 +972,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48505, // Starfall
         2912, // Starfire
        78674, // Starsurge
-       93402, // Sunfire (Balance)
+       93402, // Sunfire
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
            0,
@@ -993,11 +994,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102795, // Bear Hug
       106952, // Berserk
         5229, // Enrage
+        6785, // Ravage
         2782, // Remove Corruption
         1079, // Rip
        62606, // Savage Defense
       106839, // Skull Bash
-       61336, // Survival Instincts
            0,
     },
     // Restoration tree, 9 abilities
@@ -1024,12 +1025,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (24)
 
-// Talent tree specialization abilities, wow build 15882
+// Talent tree specialization abilities, wow build 15913
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
     // Specialization abilities for Ferocity
     {
+       20782, // Combat Experience
        61684, // Dash
        55709, // Heart of the Phoenix
        53401, // Rabid
@@ -1040,6 +1042,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        53482, // Blood of the Rhino
        61685, // Charge
+       20782, // Combat Experience
        61688, // Great Stamina
        53478, // Last Stand
        63900, // Thunderstomp
@@ -1049,6 +1052,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        19596, // Boar's Speed
        53490, // Bullheaded
+       20782, // Combat Experience
        53497, // Cornered
        61684, // Dash
        53480, // Roar of Sacrifice
@@ -1708,7 +1712,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        84738, // Celestial Focus
        79577, // Eclipse
        81062, // Euphoria
-      129631, // Fae Empowerment
       108299, // Killer Instinct
        86104, // Leather Specialization
        33605, // Lunar Shower
@@ -1722,6 +1725,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        48505, // Starfall
         2912, // Starfire
        78674, // Starsurge
+       93402, // Sunfire
        88747, // Wild Mushroom
        88751, // Wild Mushroom: Detonate
            0,
@@ -1760,6 +1764,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86096, // Leather Specialization
        77494, // Mastery: Nature's Guardian
        33873, // Nurturing Instinct
+        6785, // Ravage
         2782, // Remove Corruption
         1079, // Rip
        62606, // Savage Defense
@@ -1800,7 +1805,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 15882
+// Class mastery abilities, wow build 15913
 static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2026,7 +2031,7 @@ static unsigned __class_mastery_ability_data[][MAX_SPECS_PER_CLASS][CLASS_MASTER
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 15882
+// Racial abilities, wow build 15913
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2738,7 +2743,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 15882
+// Glyph spells for classes, wow build 15913
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2874,7 +2879,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56845, // Glyph of Freezing Trap
        56847, // Glyph of Ice Trap
       119407, // Glyph of Icy Solace
-       53243, // Glyph of Marked for Death
+      132106, // Glyph of Marked for Death
        63068, // Glyph of Master's Call
        19573, // Glyph of Mend Pet
        56833, // Glyph of Mending
@@ -3141,11 +3146,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        57925, // Glyph of Arcane Language
       126748, // Glyph of Conjure Familiar
        56382, // Glyph of Crittermorph
+       63092, // Glyph of Illusion
        56363, // Glyph of Loose Mana
        63093, // Glyph of Mirror Image
        56384, // Glyph of Momentum
        89749, // Glyph of Rapid Teleportation
-       63092, // Glyph of Ritual of Refreshment [NYI]
        58136, // Glyph of the Bear Cub
        57927, // Glyph of the Monkey
        52648, // Glyph of the Penguin
@@ -3233,8 +3238,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       120477, // Glyph of Zen Meditation
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (11 spells)
     {
+      132005, // Glyph of Blackout Kick
       125931, // Glyph of Crackling Tiger Lightning
       125872, // Glyph of Fighting Pose
       123403, // Glyph of Flying Serpent Kick
@@ -3289,13 +3295,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       116209, // Glyph of the Moonbeast
            0,
     },
-    // Minor Glyphs (9 spells)
+    // Minor Glyphs (10 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
       114295, // Glyph of Grace
       114301, // Glyph of Stars
       107059, // Glyph of the Chameleon
+      131113, // Glyph of the Cheetah
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
       114338, // Glyph of the Stag
@@ -3313,7 +3320,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 15882
+// Tier item set bonuses for class, wow build 15913
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {

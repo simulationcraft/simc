@@ -1,6 +1,6 @@
 #define TALENT_SIZE (221)
 
-// 221 talents, wow build 15882
+// 221 talents, wow build 15913
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Culling the Herd"                  ,  2106, 0x00, 0x0000, 0x01,     0,   0,   2,   61680,         0,  0 },
@@ -76,7 +76,7 @@ static struct talent_data_t __talent_data[] = {
   { "Holy Prism"                        , 17605, 0x00, 0x0002, 0x00,     0,   0,   5,  114165,         0,  0 },
   { "Light's Hammer"                    , 17607, 0x00, 0x0002, 0x00,     0,   1,   5,  114158,         0,  0 },
   { "Execution Sentence"                , 17609, 0x00, 0x0002, 0x00,     0,   2,   5,  114157,         0,  0 },
-  { "Feline Swiftness"                  , 18569, 0x00, 0x0400, 0x00,     0,   0,   0,   24866,         0,  0 },
+  { "Feline Swiftness"                  , 18569, 0x00, 0x0400, 0x00,     0,   0,   0,  131768,         0,  0 },
   { "Displacer Beast"                   , 18570, 0x00, 0x0400, 0x00,     0,   1,   0,  102280,         0,  0 },
   { "Wild Charge"                       , 18571, 0x00, 0x0400, 0x00,     0,   2,   0,  102401,         0,  0 },
   { "Nature's Swiftness"                , 18572, 0x00, 0x0400, 0x00,     0,   0,   1,   17116,         0,  0 },
@@ -127,7 +127,7 @@ static struct talent_data_t __talent_data[] = {
   { "Preparation"                       , 19242, 0x00, 0x0008, 0x00,     0,   0,   3,   14185,         0,  0 },
   { "Shadowstep"                        , 19243, 0x00, 0x0008, 0x00,     0,   1,   3,   36554,         0,  0 },
   { "Burst of Speed"                    , 19244, 0x00, 0x0008, 0x00,     0,   2,   3,  108212,         0,  0 },
-  { "Deadly Brew"                       , 19245, 0x00, 0x0008, 0x00,     0,   0,   4,   51626,         0,  0 },
+  { "Prey on the Weak"                  , 19245, 0x00, 0x0008, 0x00,     0,   0,   4,  131511,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Paralytic Poison"                  , 19246, 0x00, 0x0008, 0x00,     0,   1,   4,  108215,         0,  0 },
   { "Dirty Tricks"                      , 19247, 0x00, 0x0008, 0x00,     0,   2,   4,  108216,         0,  0 },
