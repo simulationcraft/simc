@@ -182,14 +182,6 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\engine\sc_generic.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_timespan.hpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\utf8\checked.h"
 			>
 		</File>
@@ -295,6 +287,14 @@
 		</File>
 		<File
 			RelativePath=".\engine\sc_gear_stats.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_generic.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_generic.hpp"
 			>
 		</File>
 		<File
@@ -518,6 +518,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\engine\sc_timespan.hpp"
+			>
+		</File>
+		<File
+			RelativePath=".\engine\sc_timespan.hpp"
+			>
+		</File>
+		<File
 			RelativePath=".\engine\sc_unique_gear.cpp"
 			>
 		</File>
@@ -559,14 +567,6 @@
 		</File>
 		<File
 			RelativePath=".\engine\utf8.h"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_generic.hpp"
-			>
-		</File>
-		<File
-			RelativePath=".\engine\sc_timespan.hpp"
 			>
 		</File>
 	</Files>

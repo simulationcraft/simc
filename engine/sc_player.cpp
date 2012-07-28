@@ -525,7 +525,7 @@ player_t::player_t( sim_t*             s,
   // (static) attributes
   race( r ),
   role( ROLE_HYBRID ),
-  level( is_enemy() ? 88 : 85 ),
+  level( is_enemy() ? 93 : 90 ),
   party( 0 ), member( 0 ),
   ready_type( READY_POLL ),
   _spec( SPEC_NONE ),
