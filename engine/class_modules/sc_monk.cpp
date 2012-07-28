@@ -1110,17 +1110,62 @@ struct chi_burst_t : public monk_spell_t
     parse_options( NULL, options_str );
     aoe = -1;
     base_attack_power_multiplier = 1.0;
-    direct_power_mod = 1.0; // player -> find_spell( 130651 ) -> extra_coeff(); // this may actually be 1 as well
+    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
 
   }
 
+  virtual void schedule_execute()
+  {
+    if ( sim -> log )
+    {
+      sim -> output( "%s schedules execute for %s", player -> name(), name() );
+    }
+
+    time_to_execute = execute_time();
+
+    execute_event = start_action_execute_event( time_to_execute );
+
+    if ( ! background )
+    {
+      player -> executing = this;
+      player -> gcd_ready = sim -> current_time + gcd();
+      if ( player -> action_queued && sim -> strict_gcd_queue )
+      {
+        player -> gcd_ready -= sim -> queue_gcd_reduction;
+      }
+/*
+      if ( special && time_to_execute > timespan_t::zero() && ! proc )
+      {
+        // While an ability is casting, the auto_attack is paused
+        // So we simply reschedule the auto_attack by the ability's casttime
+        timespan_t time_to_next_hit;
+        // Mainhand
+        if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+        {
+          time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
+          time_to_next_hit -= sim -> current_time;
+          time_to_next_hit += time_to_execute;
+          player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        }
+        // Offhand
+        if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
+        {
+          time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
+          time_to_next_hit -= sim -> current_time;
+          time_to_next_hit += time_to_execute;
+          player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        }
+      }*/
+    }
+  }
   virtual void execute()
   {
     monk_spell_t::execute();
 
   }
+
 
 };
 
