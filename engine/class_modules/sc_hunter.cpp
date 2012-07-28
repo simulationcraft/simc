@@ -675,6 +675,16 @@ struct hunter_action_t : public Base
 
   // thrill_of_the_hunt support ===============================================
 
+  double thrill_discount(double cost) 
+  {
+    double result = cost;
+
+    if ( p() -> buffs.thrill_of_the_hunt -> check() )
+      result += p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value();
+
+    return result;
+  }
+
   void consume_thrill_of_the_hunt()
   {
     if ( p() -> buffs.thrill_of_the_hunt -> up() )
@@ -929,16 +939,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
       // Don't know why these values aren't 0 in the database.
       base_execute_time = timespan_t::zero();
-
-      // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-      // Testing confirms that the weapon multiplier also affects the RAP coeff
-      // and the base damage of the shot. Probably a bug on Blizzard's end.
-      direct_power_mod  = 0.724; // hardcoded into tooltip
-      direct_power_mod *= weapon_multiplier;
-
-      base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
-      base_dd_max *= weapon_multiplier;
-
+      
       normalize_weapon_speed = true;
     }
 
@@ -981,16 +982,8 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     normalize_weapon_speed = true;
-    base_dd_min *= weapon_multiplier; // Aimed Shot's weapon multiplier applies to the base damage as well
-    base_dd_max *= weapon_multiplier;
 
     casted = 0;
-
-    // Hotfix on Feb 18th, 2011: http://blue.mmo-champion.com/topic/157148/patch-406-hotfixes-february-18
-    // Testing confirms that the weapon multiplier also affects the RAP coeff
-    // and the base damage of the shot. Probably a bug on Blizzard's end.
-    direct_power_mod  = 0.724; // hardcoded into tooltip
-    direct_power_mod *= weapon_multiplier;
 
     as_mm = new aimed_shot_mm_t( p );
     as_mm -> background = true;
@@ -1056,16 +1049,11 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_class_spell( "Arcane Shot" ) )
   {
     parse_options( NULL, options_str );
-
-    direct_power_mod = 0.0483; // hardcoded into tooltip
   }
     
   virtual double cost()
   {
-    if ( p() -> buffs.thrill_of_the_hunt -> check() )
-      return 0;
-
-    return ab::cost();
+    return thrill_discount( ab::cost() );
   }
   
   virtual void execute()
@@ -1169,7 +1157,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 {
   black_arrow_t( hunter_t* player, const std::string& options_str ) :
     hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
-  {
+  { 
     parse_options( NULL, options_str );
 
     may_block  = false;
@@ -1181,7 +1169,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
 
-    base_dd_min=base_dd_max=0;
     tick_power_mod = data().extra_coeff();
   }
 
@@ -1331,8 +1318,6 @@ struct cobra_shot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.017; // hardcoded into tooltip
-
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
     // Needs testing
@@ -1387,8 +1372,9 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     may_crit  = false;
     tick_may_crit = true;
  
-    tick_power_mod = 0.311;
-    // if the inital impact is not part of the rolling dot, then add the following and adjust the dmg contribution to only 2 ticks
+    tick_power_mod = player -> specs.explosive_shot -> effectN( 3 ).base_value() / 1000.0;
+
+    // the inital impact is not part of the rolling dot
     num_ticks = 0;
     tick_zero = true;
 
@@ -1615,12 +1601,12 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
   virtual double cost()
   {    
-    if ( p() -> buffs.thrill_of_the_hunt -> check() )
-      return 0;
-
     double cost = hunter_ranged_attack_t::cost();
+    
+    cost = thrill_discount( cost );
+
     if ( p() -> buffs.bombardment -> check() )
-      cost *= 1 + p() -> buffs.bombardment -> data().effectN( 1 ).percent();
+      cost += 1 + p() -> buffs.bombardment -> data().effectN( 1 ).base_value();
 
     return cost;
   }
