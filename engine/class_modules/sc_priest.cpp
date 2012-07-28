@@ -2365,12 +2365,12 @@ struct devouring_plague_t : public priest_spell_t
       proc_spell( 0 ),
       special_tick_dmg( 0 )
     {
+      parse_effect_data( data().effectN( 5 ) );
 
-      tick_power_mod = direct_power_mod; // hardcoded into tooltip in MoP build 15752
+      tick_power_mod = direct_power_mod;
 
       base_dd_min = base_dd_max = direct_power_mod = 0.0;
 
-      tick_may_crit = true;
       background = true;
 
       if ( p -> mastery_spells.shadowy_recall -> ok() )
@@ -2474,15 +2474,10 @@ struct devouring_plague_t : public priest_spell_t
   {
     parse_options( NULL, options_str );
 
-    parse_effect_data( data().effectN( 1 ) );
+    parse_effect_data( data().effectN( 4 ) );
 
     base_td = num_ticks = 0;
     base_tick_time = timespan_t::zero();
-
-    // BUG: 15882: Missing from data files.
-    direct_power_mod = 1.0;
-
-    tick_may_crit = true;
 
     if ( ! dtr && player -> has_dtr )
     {
