@@ -1734,8 +1734,7 @@ struct frost_bomb_t : public mage_spell_t
 struct mini_frostbolt_t : public mage_spell_t
 {
   mini_frostbolt_t( mage_t* p, bool bolt_two = false ) :
-    // FIXME: This should be spell ID 131079, but is not in our spell data
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 116 ) )
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
@@ -1841,8 +1840,7 @@ struct frostbolt_t : public mage_spell_t
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
   mini_frostfire_bolt_t( mage_t* p, bool bolt_two = false ) :
-    // FIXME: This should be spell ID 131081, but is not in our spell data
-    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 44614 ) )
+    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
@@ -2048,8 +2046,7 @@ struct ice_floes_t : public mage_spell_t
 struct mini_ice_lance_t : public mage_spell_t
 {
   mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
-    // FIXME: This should be spell ID 131080, but is not in our spell data
-    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) )
+    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
   {
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
@@ -2565,9 +2562,6 @@ struct pyroblast_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
     
-    // Remove when new spell data is available
-    am *= 0.8;
-
     if ( p() -> buffs.pyroblast -> up() )
     {
       am *= 1.25;
