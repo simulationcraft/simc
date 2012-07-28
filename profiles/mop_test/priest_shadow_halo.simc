@@ -58,7 +58,7 @@ trinket1=will_of_unbinding,id=77995
 # ilevel=416,quality=epic,equip=onharmfulspellcast_99int_100%_10dur_10stack
 trinket2=cunning_of_the_cruel,id=78000
 # ilevel=410,quality=epic,stats=517int,equip=onspelldamage_3978.8+35.3shadow_45%_9cd_aoe
-back=woundlicker_cover,id=77096,gems=50int_10int,enchant=lightweave_embroidery_2
+back=woundlicker_cover,id=77096,gems=50int_10int,enchant=lightweave_embroidery_3
 # ilevel=397,quality=epic,stats=769armor_251int_406sta_184spi_148haste
 main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,enchant=power_torrent
 # ilevel=397,quality=legendary,stats=271haste_314hit_426int_2786sp_730sta,weapon=staff_3.30speed_869min_1305max
@@ -77,6 +77,6 @@ main_hand=dragonwrath_tarecgosas_rest,id=71086,gems=50int_50int_50int_30int,ench
 # meta_gem=burning_shadowspirit
 # tier13_2pc_caster=1
 # tier13_4pc_caster=1
-# back=woundlicker_cover,enchant=lightweave_embroidery_2
+# back=woundlicker_cover,enchant=lightweave_embroidery_3
 # main_hand=dragonwrath_tarecgosas_rest,weapon=staff_3.30speed_869min_1305max,enchant=power_torrent
 initial_shadow_orbs=3
