@@ -2274,7 +2274,7 @@ struct shadow_word_death_t : public priest_spell_t
     {
       if ( s -> target -> health_percentage() >= 20.0 )
         s -> result_amount /= 4.0;
-      else
+      else if ( ! p() -> buffs.shadow_word_death_reset_cooldown -> check() )
         generate_shadow_orb( this, p() -> gains.shadow_orb_swd );
     }
 
@@ -5114,19 +5114,6 @@ void priest_t::init_values()
                                               specs.meditation_holy -> effectN( 1 ).percent();
 
   initial.mp5_from_spirit_multiplier = constants.meditation_value;
-
-  // Shadow
-  if ( set_bonus.pvp_2pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 70;
-
-  if ( set_bonus.pvp_4pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 90;
-
-  if ( set_bonus.pvp_2pc_heal() )
-    initial.attribute[ ATTR_INTELLECT ] += 70;
-
-  if ( set_bonus.pvp_4pc_heal() )
-    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // priest_t::reset ==========================================================

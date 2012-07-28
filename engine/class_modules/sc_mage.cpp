@@ -268,7 +268,6 @@ public:
   virtual void      init_spells();
   virtual void      init_base();
   virtual void      init_scaling();
-  virtual void      init_values();
   virtual void      init_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -3279,19 +3278,6 @@ void mage_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_SPIRIT ] = false;
-}
-
-// mage_t::init_values ======================================================
-
-void mage_t::init_values()
-{
-  player_t::init_values();
-
-  if ( set_bonus.pvp_2pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 70;
-
-  if ( set_bonus.pvp_4pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 // mage_t::init_buffs =======================================================

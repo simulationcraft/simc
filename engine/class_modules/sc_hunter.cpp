@@ -3468,12 +3468,6 @@ void hunter_t::init_values()
 {
   player_t::init_values();
 
-  if ( set_bonus.pvp_2pc_melee() )
-    initial.attribute[ ATTR_AGILITY ]   += 70;
-
-  if ( set_bonus.pvp_4pc_melee() )
-    initial.attribute[ ATTR_AGILITY ]   += 90;
-
   cooldowns.viper_venom -> duration = timespan_t::from_seconds( 3.0 ); // hardcoded into tooltip
 }
 

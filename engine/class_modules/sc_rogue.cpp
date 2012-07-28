@@ -369,7 +369,6 @@ public:
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_actions();
-  virtual void      init_values();
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
@@ -3027,19 +3026,6 @@ void rogue_t::init_buffs()
                             .add_stat( STAT_AGILITY, find_spell( 109939 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
                             .chance( fof_p3 );
   buffs.fof_fod           = new fof_fod_buff_t( this );
-}
-
-// rogue_t::init_values =====================================================
-
-void rogue_t::init_values()
-{
-  player_t::init_values();
-
-  if ( set_bonus.pvp_2pc_melee() )
-    initial.attribute[ ATTR_AGILITY ]   += 70;
-
-  if ( set_bonus.pvp_4pc_melee() )
-    initial.attribute[ ATTR_AGILITY ]   += 90;
 }
 
 // trigger_honor_among_thieves ==============================================

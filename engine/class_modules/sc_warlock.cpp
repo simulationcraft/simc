@@ -243,7 +243,6 @@ public:
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
-  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
@@ -4598,18 +4597,6 @@ void warlock_t::init_buffs()
   buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
-}
-
-
-void warlock_t::init_values()
-{
-  player_t::init_values();
-
-  if ( set_bonus.pvp_2pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 70;
-
-  if ( set_bonus.pvp_4pc_caster() )
-    initial.attribute[ ATTR_INTELLECT ] += 90;
 }
 
 

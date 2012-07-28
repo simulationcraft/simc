@@ -235,7 +235,6 @@ public:
   virtual void      init_scaling();
   virtual void      init_buffs();
   virtual void      init_spells();
-  virtual void      init_values();
   virtual void      init_actions();
   virtual void      init_items();
   virtual void      reset();
@@ -2960,25 +2959,6 @@ void paladin_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-}
-
-// paladin_t::init_values ===================================================
-
-void paladin_t::init_values()
-{
-  player_t::init_values();
-
-  if ( set_bonus.pvp_2pc_heal() )
-    initial.attribute[ ATTR_INTELLECT ] += 70;
-
-  if ( set_bonus.pvp_4pc_heal() )
-    initial.attribute[ ATTR_INTELLECT ] += 90;
-
-  if ( set_bonus.pvp_2pc_melee() )
-    initial.attribute[ ATTR_STRENGTH ] += 70;
-
-  if ( set_bonus.pvp_4pc_melee() )
-    initial.attribute[ ATTR_STRENGTH ] += 90;
 }
 
 void paladin_t::init_items()

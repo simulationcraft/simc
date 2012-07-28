@@ -365,7 +365,6 @@ public:
   virtual void      init_base();
   virtual void      init_scaling();
   virtual void      init_buffs();
-  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
@@ -4045,19 +4044,6 @@ void death_knight_t::init_buffs()
     }
   };
   buffs.bloodworms = new bloodworms_buff_t( this );
-}
-
-// death_knight_t::init_values ====================================================
-
-void death_knight_t::init_values()
-{
-  player_t::init_values();
-
-  if ( set_bonus.pvp_2pc_melee() )
-    initial.attribute[ ATTR_STRENGTH ]   += 70;
-
-  if ( set_bonus.pvp_4pc_melee() )
-    initial.attribute[ ATTR_STRENGTH ]   += 90;
 }
 
 // death_knight_t::init_gains ===============================================
