@@ -454,8 +454,11 @@ struct rogue_attack_state_t : public action_state_t
 
 struct rogue_melee_attack_t : public melee_attack_t
 {
-  double      base_direct_damage;
+  double      base_direct_damage_min;
+  double      base_direct_damage_max;
+  double      base_tick_damage_avg;
   double      base_direct_power_mod;
+  double      base_tick_power_mod;
   bool        requires_stealth_;
   position_e  requires_position_;
   bool        requires_combo_points;
@@ -463,7 +466,6 @@ struct rogue_melee_attack_t : public melee_attack_t
   double      base_da_bonus;
   double      base_ta_bonus;
   weapon_e    requires_weapon;
-  bool        affected_by_killing_spree;
 
   // we now track how much combo points we spent on an action
   int              combo_points_spent;
@@ -472,12 +474,13 @@ struct rogue_melee_attack_t : public melee_attack_t
                         const spell_data_t* s = spell_data_t::nil(),
                         const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
-    base_direct_damage( 0 ), base_direct_power_mod( 0 ),
+    base_direct_damage_min( 0 ), base_direct_damage_max( 0 ), 
+    base_tick_damage_avg( 0 ),
+    base_direct_power_mod( 0 ), base_tick_power_mod( 0 ),
     requires_stealth_( false ), requires_position_( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_da_bonus( 0.0 ), base_ta_bonus( 0.0 ),
     requires_weapon( WEAPON_NONE ),
-    affected_by_killing_spree( true ),
     combo_points_spent( 0 )
   {
     parse_options( 0, options );
@@ -487,26 +490,27 @@ struct rogue_melee_attack_t : public melee_attack_t
     special                   = true;
     tick_may_crit             = true;
     hasted_ticks              = false;
+  }
+  
+  void parse_effect_data( const spelleffect_data_t& effect )
+  {
+    melee_attack_t::parse_effect_data( effect );
 
-    for ( size_t i = 1; i <= data()._effects -> size(); i++ )
+    switch ( effect.type() )
     {
-      switch ( data().effectN( i ).type() )
-      {
       case E_ADD_COMBO_POINTS:
-        adds_combo_points = data().effectN( i ).base_value();
+        adds_combo_points = effect.base_value();
         break;
       default:
         break;
-      }
-
-      if ( data().effectN( i ).type() == E_APPLY_AURA &&
-           data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-        base_ta_bonus = data().effectN( i ).bonus( p );
-      else if ( data().effectN( i ).type() == E_SCHOOL_DAMAGE )
-        base_da_bonus = data().effectN( i ).bonus( p );
     }
+
+    if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
+      base_ta_bonus = effect.bonus( player );
+    else if ( effect.type() == E_SCHOOL_DAMAGE )
+      base_da_bonus = effect.bonus( player );
   }
-  
+
   action_state_t* new_state()
   { return new rogue_attack_state_t( this, target ); }
 
@@ -566,11 +570,15 @@ struct rogue_melee_attack_t : public melee_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_DAGGER && p() -> off_hand_weapon.type == WEAPON_DAGGER )
       m *= 1.0 + p() -> spec.assassins_resolve -> effectN( 2 ).percent();
 
-    // Killing Spree (combat) - affects all direct damage (but you cannot use specials while it is up)
-    // affects deadly poison ticks
-    // Exception: DOESN'T affect rupture/garrote ticks
-    if ( affected_by_killing_spree )
-      m *= 1.0 + p() -> buffs.killing_spree -> value();
+    return m;
+  }
+  
+  virtual double composite_ta_multiplier()
+  {
+    double m = melee_attack_t::composite_ta_multiplier();
+
+    if ( p() -> main_hand_weapon.type == WEAPON_DAGGER && p() -> off_hand_weapon.type == WEAPON_DAGGER )
+      m *= 1.0 + p() -> spec.assassins_resolve -> effectN( 2 ).percent();
 
     return m;
   }
@@ -589,16 +597,6 @@ struct rogue_melee_attack_t : public melee_attack_t
     if ( p() -> spec.sanguinary_vein -> ok() && 
          ( td -> dots_garrote -> ticking || td -> dots_rupture -> ticking ) )
          m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
-
-    return m;
-  }
-  
-  virtual double composite_ta_multiplier()
-  {
-    double m = melee_attack_t::composite_ta_multiplier();
-
-    if ( p() -> main_hand_weapon.type == WEAPON_DAGGER && p() -> off_hand_weapon.type == WEAPON_DAGGER )
-      m *= 1.0 + p() -> spec.assassins_resolve -> effectN( 2 ).percent();
 
     return m;
   }
@@ -693,14 +691,21 @@ static void break_stealth( rogue_t* p )
 
 // trigger_combat_potency ===================================================
 
-static void trigger_combat_potency( rogue_melee_attack_t* a )
+static void trigger_combat_potency( rogue_melee_attack_t* a, bool main_gauche )
 {
   rogue_t* p = a -> cast();
 
   if ( ! p -> spec.combat_potency -> ok() )
     return;
+  
+  if ( ! a -> weapon )
+    return;
+  
+  double chance = 0.2;
+  if ( ! main_gauche )
+    chance *= a -> weapon -> swing_time.total_seconds() / 1.4;
 
-  if ( p -> rng.combat_potency -> roll( p -> spec.combat_potency -> proc_chance() ) )
+  if ( p -> rng.combat_potency -> roll( chance ) )
   {
     // energy gain value is in the proc trigger spell
     p -> resource_gain( RESOURCE_ENERGY,
@@ -809,7 +814,7 @@ static void trigger_main_gauche( rogue_melee_attack_t* a )
       rogue_melee_attack_t::impact( state );
       
       if ( result_is_hit( state -> result ) )
-        trigger_combat_potency( this );
+        trigger_combat_potency( this, true );
     }
   };
 
@@ -831,7 +836,10 @@ static void trigger_main_gauche( rogue_melee_attack_t* a )
   if ( p -> rng.main_gauche -> roll( chance ) )
   {
     if ( ! p -> active_main_gauche )
+    {
       p -> active_main_gauche = new main_gauche_t( p );
+      p -> active_main_gauche -> init();
+    }
 
     p -> active_main_gauche -> execute();
     p -> procs.main_gauche  -> occur();
@@ -978,7 +986,7 @@ void rogue_melee_attack_t::consume_resource()
         td -> combo_points -> add( 5, "legendary_daggers" );
     }
   }
-  else
+  else if ( resource_consumed > 0 )
     trigger_energy_refund( this );
 }
 
@@ -992,11 +1000,23 @@ void rogue_melee_attack_t::execute()
   if ( harmful )
     break_stealth( p );
 
-  if ( requires_combo_points && base_direct_power_mod > 0 )
-    direct_power_mod = base_direct_power_mod * td -> combo_points -> count;
-  
-  if ( requires_combo_points && base_dd_min > 0 )
-    base_dd_min      = base_dd_max = base_direct_damage * td -> combo_points -> count;
+  if ( requires_combo_points )
+  {
+    if ( base_direct_power_mod > 0 )
+      direct_power_mod = base_direct_power_mod * td -> combo_points -> count;
+
+    if ( base_direct_damage_min > 0 && base_direct_damage_max > 0 )
+    {
+      base_dd_min = base_direct_damage_min + base_da_bonus * td -> combo_points -> count;
+      base_dd_max = base_direct_damage_max + base_da_bonus * td -> combo_points -> count;
+    }
+
+    if ( base_tick_power_mod > 0 )
+      tick_power_mod = base_tick_power_mod * td -> combo_points -> count;
+
+    if ( base_tick_damage_avg > 0 )
+      base_td     = base_tick_damage_avg + base_ta_bonus * td -> combo_points -> count;
+  }
 
   melee_attack_t::execute();
 
@@ -1137,7 +1157,7 @@ struct melee_t : public rogue_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       if ( weapon -> slot == SLOT_OFF_HAND )
-        trigger_combat_potency( this );
+        trigger_combat_potency( this, false );
 
       rogue_t* p = cast();
 
@@ -1353,7 +1373,8 @@ struct envenom_t : public rogue_melee_attack_t
   {
     requires_combo_points = true;
     // FIXME: Envenom tooltip in 15882 is off, this should be more accurate
-    base_direct_damage    = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
+    base_direct_damage_min = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
+    base_direct_damage_max = p -> dbc.spell_scaling( p -> type, p -> level ) * 0.213323765;
     base_direct_power_mod = 0.112;
     num_ticks             = 0;
   }
@@ -1401,38 +1422,19 @@ struct envenom_t : public rogue_melee_attack_t
 
 struct eviscerate_t : public rogue_melee_attack_t
 {
-  double combo_point_dmg_min[ COMBO_POINTS_MAX ];
-  double combo_point_dmg_max[ COMBO_POINTS_MAX ];
-
   eviscerate_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "eviscerate", p, p -> find_class_spell( "Eviscerate" ), options_str )
   {
-    // to trigger poisons
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
-
     requires_combo_points = true;
 
-    double min_     = data().effectN( 1 ).min( p );
-    double max_     = data().effectN( 1 ).max( p );
-    double cp_bonus = data().effectN( 1 ).bonus( p );
-
-    for ( int i = 0; i < COMBO_POINTS_MAX; i++ )
-    {
-      combo_point_dmg_min[ i ] = min_ + cp_bonus * ( i + 1 );
-      combo_point_dmg_max[ i ] = max_ + cp_bonus * ( i + 1 );
-    }
+    base_direct_damage_min = data().effectN( 1 ).min( p );
+    base_direct_damage_max = data().effectN( 1 ).max( p );
+    base_da_bonus          = data().effectN( 1 ).bonus( p );
+    base_direct_power_mod  = 0.16;
   }
 
   virtual void execute()
   {
-    rogue_td_t* td = cast_td();
-
-    base_dd_min = td -> combo_points -> rank( combo_point_dmg_min );
-    base_dd_max = td -> combo_points -> rank( combo_point_dmg_max );
-
-    direct_power_mod = 0.16 * td -> combo_points -> count;
-
     rogue_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -1443,11 +1445,14 @@ struct eviscerate_t : public rogue_melee_attack_t
   {
     rogue_melee_attack_t::impact( state );
     
-    double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-    sld *= 1.0 + p() -> mastery.executioner -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+    if ( p() -> spec.cut_to_the_chase -> ok() )
+    {
+      double sld = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
+      sld *= 1.0 + p() -> mastery.executioner -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
 
-    p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
-      p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
+      p() -> buffs.slice_and_dice -> trigger( 1, sld, -1.0, 
+        p() -> buffs.slice_and_dice -> data().duration() * ( COMBO_POINTS_MAX + 1 ) );
+    }
   }
 };
 
@@ -1496,8 +1501,6 @@ struct garrote_t : public rogue_melee_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "garrote", p, p -> find_class_spell( "Garrote" ), options_str )
   {
-    affected_by_killing_spree = false;
-
     // to trigger poisons
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1607,10 +1610,10 @@ struct killing_spree_tick_t : public rogue_melee_attack_t
   killing_spree_tick_t( rogue_t* p, const char* name ) :
     rogue_melee_attack_t( name, p, spell_data_t::nil() )
   {
+    school      = SCHOOL_PHYSICAL;
     background  = true;
     may_crit    = true;
     direct_tick = true;
-    normalize_weapon_speed = true;
   }
 };
 
@@ -1623,9 +1626,10 @@ struct killing_spree_t : public rogue_melee_attack_t
     rogue_melee_attack_t( "killing_spree", p, p -> find_class_spell( "Killing Spree" ), options_str ),
     attack_mh( 0 ), attack_oh( 0 )
   {
-    num_ticks = 7;
+    num_ticks = 6;
     may_crit  = false;
     channeled = true;
+    tick_zero = true;
 
     attack_mh = new killing_spree_tick_t( p, "killing_spree_mh" );
     attack_mh -> weapon = &( player -> main_hand_weapon );
@@ -1637,6 +1641,13 @@ struct killing_spree_t : public rogue_melee_attack_t
       attack_oh -> weapon = &( player -> off_hand_weapon );
       add_child( attack_oh );
     }
+  }
+  
+  virtual void execute()
+  {
+    rogue_melee_attack_t::execute();
+
+    p() -> buffs.killing_spree -> trigger();
   }
 
   virtual void tick( dot_t* d )
@@ -1757,6 +1768,7 @@ struct revealing_strike_t : public rogue_melee_attack_t
   revealing_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "revealing_strike", p, p -> find_class_spell( "Revealing Strike" ), options_str )
   {
+    num_ticks = 0;
     // Legendary buff increases RS damage
     if ( p -> fof_p1 || p -> fof_p2 || p -> fof_p3 )
       base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
@@ -1786,8 +1798,6 @@ struct rupture_t : public rogue_melee_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str )
   {
-    affected_by_killing_spree = false;
-
     combo_point_tick_power_mod[ 0 ] = 0.025;
     combo_point_tick_power_mod[ 1 ] = 0.04;
     combo_point_tick_power_mod[ 2 ] = 0.05;
@@ -1798,7 +1808,8 @@ struct rupture_t : public rogue_melee_attack_t
     requires_combo_points      = true;
     tick_may_crit              = true;
     dot_behavior               = DOT_REFRESH;
-    combo_point_base_td        = data().effectN( 1 ).average( p );
+    base_tick_damage_avg       = data().effectN( 1 ).average( p );
+    base_ta_bonus              = data().effectN( 1 ).bonus( p );
     base_multiplier           += p -> spec.sanguinary_vein -> effectN( 1 ).percent();
   }
   
@@ -1806,7 +1817,6 @@ struct rupture_t : public rogue_melee_attack_t
   {
     rogue_td_t* td = cast_td();
 
-    base_td = ( combo_point_base_td + base_ta_bonus * td -> combo_points -> count );
     tick_power_mod = combo_point_tick_power_mod[ td -> combo_points -> count - 1 ];
     num_ticks = 2 + td -> combo_points -> count * 2; 
 
@@ -2035,6 +2045,8 @@ struct tricks_of_the_trade_t : public rogue_melee_attack_t
   tricks_of_the_trade_t( rogue_t* p, const std::string& options_str ) :
     rogue_melee_attack_t( "tricks_of_the_trade", p, p -> find_class_spell( "Tricks of the Trade" ), options_str )
   {
+    may_miss = may_crit = harmful = false;
+
     if ( ! p -> tricks_of_the_trade_target_str.empty() )
     {
       target_str = p -> tricks_of_the_trade_target_str;
@@ -2369,14 +2381,15 @@ struct bandits_guile_t : public buff_t
             .quiet( true )
             .max_stack( 12 )
             .duration( p -> find_spell( 84745 ) -> duration() )
-            .chance( p -> find_specialization_spell( "Bandit's Guile" ) -> proc_chance() ) )
+            .chance( p -> find_specialization_spell( "Bandit's Guile" ) -> proc_chance() /* 0 */ ) )
   { }
 
   void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() )
   {
     rogue_t* p = debug_cast< rogue_t* >( player );
 
-    buff_t::execute( stacks, value, duration );
+    if ( current_stack < max_stack() )
+      buff_t::execute( stacks, value, duration );
 
     if ( current_stack == 4 )
       p -> buffs.shallow_insight -> trigger();
@@ -2393,6 +2406,17 @@ struct bandits_guile_t : public buff_t
       p -> buffs.moderate_insight -> expire();
       p -> buffs.deep_insight -> trigger();
     }
+  }
+  
+  void expire()
+  {
+    rogue_t* p = debug_cast< rogue_t* >( player );
+
+    buff_t::expire();
+    
+    p -> buffs.shallow_insight -> expire();
+    p -> buffs.moderate_insight -> expire();
+    p -> buffs.deep_insight -> expire();
   }
 };
 
@@ -2493,6 +2517,8 @@ double rogue_t::composite_player_multiplier( school_e school, action_t* a )
 
   m *= 1.0 + buffs.deep_insight -> value();
 
+  m *= 1.0 + buffs.killing_spree -> value();
+
   return m;
 }
 
@@ -2580,19 +2606,19 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       // TODO: Add Blade Flurry
-      action_list_str += "/slice_and_dice,if=buffs.slice_and_dice.down";
-      action_list_str += "/slice_and_dice,if=buffs.slice_and_dice.remains<2";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
+      action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<2";
       
-      action_list_str += "/killing_spree,if=energy<35&buffs.slice_and_dice.remains>4&buffs.adrenaline_rush.down";
+      action_list_str += "/killing_spree,if=energy<35&buff.slice_and_dice.remains>4&buff.adrenaline_rush.down";
 
       action_list_str += "/adrenaline_rush,if=energy<35";
 
-      action_list_str += "/eviscerate,if=combo_points=5&buffs.bandits_guile.stack>=12";
+      action_list_str += "/eviscerate,if=combo_points=5&buff.deep_insight.up";
 
       action_list_str += "/rupture,if=!ticking&combo_points=5&target.time_to_die>10";
       action_list_str += "/eviscerate,if=combo_points=5";
 
-      action_list_str += "/revealing_strike,if=combo_points=4&buffs.revealing_strike.down";
+      action_list_str += "/revealing_strike,if=combo_points=4&target.debuff.revealing_strike.down";
 
       action_list_str += "/sinister_strike,if=combo_points<5";
     }
@@ -2770,7 +2796,7 @@ void rogue_t::init_base()
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] = 100 + spec.assassins_resolve -> effectN( 1 ).base_value();
 
-  base_energy_regen_per_second = 10 + spec.vitality -> effectN( 1 ).base_value();
+  base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
@@ -2938,6 +2964,7 @@ void rogue_t::init_rng()
 {
   player_t::init_rng();
 
+  rng.combat_potency        = get_rng( "combat_potency"        );
   rng.deadly_poison         = get_rng( "deadly_poison"         );
   rng.honor_among_thieves   = get_rng( "honor_among_thieves"   );
   rng.main_gauche           = get_rng( "main_gauche"           );
@@ -2995,13 +3022,16 @@ void rogue_t::init_buffs()
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
   buffs.killing_spree       = buff_creator_t( this, "killing_spree", find_spell( 61851 ) )
                               .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
-                              .duration( spec.killing_spree -> duration() )
+                              .duration( find_spell( 61851 ) -> duration() )
                               .chance( spec.killing_spree -> ok() );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc");
-  buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) );
-  buffs.moderate_insight   = buff_creator_t( this, "moderate_insight", find_spell( 84746 ) );
-  buffs.deep_insight       = buff_creator_t( this, "deep_insight", find_spell( 84747 ) );
+  buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
+                             .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() );
+  buffs.moderate_insight   = buff_creator_t( this, "moderate_insight", find_spell( 84746 ) )
+                             .default_value( find_spell( 84746 ) -> effectN( 1 ).percent() );
+  buffs.deep_insight       = buff_creator_t( this, "deep_insight", find_spell( 84747 ) )
+                             .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.stealthed          = buff_creator_t( this, "stealthed" );
@@ -3197,7 +3227,7 @@ void rogue_t::regen( timespan_t periodicity )
     }
   }
   
-  if ( buffs.slice_and_dice -> up() )
+  if ( buffs.slice_and_dice -> up() && spec.energetic_recovery -> ok() )
   {
     double rps = spec.energetic_recovery -> effectN( 1 ).base_value() /
                  buffs.slice_and_dice -> data().effectN( 2 ).period().total_seconds();
