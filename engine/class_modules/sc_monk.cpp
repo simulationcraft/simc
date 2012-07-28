@@ -1162,23 +1162,6 @@ struct chi_wave_t : public monk_spell_t
   }
 
 };
-struct chi_brew_t : public monk_spell_t
-{
-
-  chi_brew_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "chi_brew", player, player -> talent.chi_brew )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    monk_spell_t::execute();
-    player -> resource_gain( RESOURCE_CHI, 4.0, p() -> gain.chi );
-  }
-
-};
 
 // Chi Burst
 // TODO: Verify damage & see if background is necessarys
