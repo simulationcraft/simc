@@ -1007,7 +1007,7 @@ struct zen_sphere_t : public monk_heal_t // TODO: find out if direct tick or tic
       monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
     {
       background  = true;
-      base_attack_power_multiplier = .7185; // TODO: LOOKS VALID. DOUBLE CHECK
+      base_attack_power_multiplier = 1.0;  // .7185; TODO: supposed to be .7185, but 1 gives correct number on live.
       direct_power_mod = data().extra_coeff();
       dual = true;
     }
@@ -1075,7 +1075,7 @@ struct zen_sphere_detonate_t : public monk_spell_t
 //--Chi wave
 //-----
 /*
- * TODO: FOR REALISTIC BOUNCING, IT WILL BOUNCE ENEMY -> MONK -> ENEMY -> MONK -> ENEMY (verify it does not bounce first on monk)
+ * TODO: FOR REALISTIC BOUNCING, IT WILL BOUNCE ENEMY -> MONK -> ENEMY -> MONK -> ENEMY but on dummies it hits enemy then monk and stops.
  * So only 3 ticks will occur in a single target simming scenario. Alternate scenarios need to be determined.
  * TODO: Need to add decrementing buff to handle bouncing mechanic. .561 coeff
  * verify damage
@@ -1109,10 +1109,11 @@ struct chi_burst_t : public monk_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    direct_power_mod = player -> find_spell( 130651 ) -> extra_coeff();
+    base_attack_power_multiplier = 1.0;
+    direct_power_mod = 1.0; // player -> find_spell( 130651 ) -> extra_coeff(); // this may actually be 1 as well
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
-    background = true;
+
   }
 
   virtual void execute()
@@ -1558,8 +1559,8 @@ void monk_t::init_actions()
       action_list_str += "/energizing_brew,if=energy<=40";
       action_list_str += "/tigereye_brew_use,if=buff.tigereye_brew.react=10";
       action_list_str += "/rising_sun_kick";
-   //   action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-      action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+      action_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+   //n   action_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
    //   action_list_str += "/chi_wave,if=talent.chi_wave.enabled";
    //   if ( talent.zen_sphere -> ok() )
    //     action_list_str += "/zen_sphere,if=!buff.zen_sphere.up";//this can potentionally be used in line with CD's+FoF - Not likely anymore. Will have to sim AOE
