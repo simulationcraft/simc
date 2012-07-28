@@ -228,7 +228,9 @@ struct rogue_t : public player_t
 
   struct glyphs_t
   {
+    const spell_data_t* adrenaline_rush;
     const spell_data_t* kick;
+    const spell_data_t* vendetta;
   } glyph;
 
   // Procs
@@ -599,7 +601,7 @@ struct rogue_melee_attack_t : public melee_attack_t
   {
     return requires_position_;
   }
-
+  
   action_state_t* get_state( const action_state_t* s )
   {
     action_state_t* s_ = melee_attack_t::get_state( s );
@@ -1489,6 +1491,16 @@ struct eviscerate_t : public rogue_melee_attack_t
     base_direct_power_mod  = 0.16;
   }
 
+  timespan_t gcd()
+  {
+    timespan_t t = rogue_melee_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    
+    return t;
+  }
+
   virtual void execute()
   {
     rogue_melee_attack_t::execute();
@@ -1847,6 +1859,16 @@ struct revealing_strike_t : public rogue_melee_attack_t
       base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
   }
 
+  timespan_t gcd()
+  {
+    timespan_t t = rogue_melee_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    
+    return t;
+  }
+
   virtual void impact( action_state_t* state )
   {
     rogue_melee_attack_t::impact( state );
@@ -1886,6 +1908,16 @@ struct rupture_t : public rogue_melee_attack_t
     base_multiplier           += p -> spec.sanguinary_vein -> effectN( 1 ).percent();
   }
   
+  timespan_t gcd()
+  {
+    timespan_t t = rogue_melee_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    
+    return t;
+  }
+
   virtual void execute()
   {
     rogue_td_t* td = cast_td();
@@ -1956,6 +1988,16 @@ struct sinister_strike_t : public rogue_melee_attack_t
       base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
   }
 
+  timespan_t gcd()
+  {
+    timespan_t t = rogue_melee_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    
+    return t;
+  }
+
   virtual void impact( action_state_t* state )
   {
     rogue_melee_attack_t::impact( state );
@@ -1984,6 +2026,16 @@ struct slice_and_dice_t : public rogue_melee_attack_t
     requires_combo_points = true;
     harmful               = false;
     num_ticks             = 0;
+  }
+
+  timespan_t gcd()
+  {
+    timespan_t t = rogue_melee_attack_t::gcd();
+
+    if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    
+    return t;
   }
 
   virtual void execute()
@@ -2535,8 +2587,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
   debuffs_vendetta =           buff_creator_t( *this, "vendetta", vd )
-                               .duration ( vd -> duration() + source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() )
-                               .default_value( vd -> effectN( 1 ).percent() );
+                               .duration ( vd -> duration() + 
+                                           source -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
+                                           source -> glyph.vendetta -> effectN( 2 ).time_value() )
+                               .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
 
 
   const spell_data_t* rs = source -> find_specialization_spell( "Revealing Strike" );
@@ -2653,8 +2707,10 @@ void rogue_t::init_actions()
     action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
     action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
 
-    if ( spec.master_of_subtlety -> ok() )
-      action_list_str += "/stealth";
+    if ( talent.preparation -> ok() )
+      action_list_str += "/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60";
+
+    action_list_str += "/stealth";
 
     action_list_str += "/auto_attack";
 
@@ -2667,6 +2723,9 @@ void rogue_t::init_actions()
       action_list_str += init_use_profession_actions();
 
       action_list_str += init_use_racial_actions();
+      
+      action_list_str += "/vanish,if=time>10&!dot.garrote.ticking";
+      action_list_str += "/garrote,if=!dot.garrote.ticking";
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
@@ -2692,6 +2751,9 @@ void rogue_t::init_actions()
       action_list_str += init_use_profession_actions();
 
       action_list_str += init_use_racial_actions();
+
+      action_list_str += "/vanish,if=time>10&!dot.garrote.ticking";
+      action_list_str += "/garrote,if=!dot.garrote.ticking";
 
       /* Putting this here for now but there is likely a better place to put it */
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
@@ -2766,7 +2828,7 @@ void rogue_t::init_actions()
       action_list_str += init_use_racial_actions( ",if=buff.shadow_dance.up" );
 
       action_list_str += "/pool_energy,for_next=1";
-      action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&cooldown.shadowstep.remains<=0&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
+      action_list_str += "/vanish,if=time>10&energy>60&combo_points<=1&!buff.shadow_dance.up&!buff.master_of_subtlety.up&!target.debuff.find_weakness.up";
 
       //action_list_str += "/shadowstep,if=buff.stealthed.up|buff.shadow_dance.up";
 
@@ -2774,13 +2836,9 @@ void rogue_t::init_actions()
 
       action_list_str += "/ambush,if=combo_points<=4";
 
-      //action_list_str += "/preparation,if=cooldown.vanish.remains>60";
-
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.remains<3&combo_points=5";
 
       action_list_str += "/rupture,if=combo_points=5&!ticking";
-
-      //action_list_str += "/recuperate,if=combo_points=5&remains<3";
 
       action_list_str += "/eviscerate,if=combo_points=5&dot.rupture.remains>1";
 
@@ -2998,7 +3056,9 @@ void rogue_t::init_spells()
   spell.bandits_guile_value = find_spell( 84747 );
   
   // Glyphs
+  glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
+  glyph.vendetta            = find_glyph_spell( "Glyph of Vendetta" );
 
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
