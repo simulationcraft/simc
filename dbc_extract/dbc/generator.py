@@ -982,6 +982,7 @@ class SpellDataGenerator(DataGenerator):
           ( 88084, 5 ), ( 59637, 5 ), ( 88082, 5 ), ( 59638, 5 ), # Mirror Image spells.
           ( 80354, 0 ),                                           # Temporal Displacement
           ( 131079, 0 ), ( 131080, 0 ), ( 131081, 0 ),		  # Mini-bolt spells
+          ( 131581, 5 ),					  # Waterbolt
         ), 
         
         # Warlock:
