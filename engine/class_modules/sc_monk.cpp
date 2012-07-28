@@ -1485,12 +1485,8 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_wave"            ) return new            chi_wave_t( this, options_str );
   if ( name == "chi_burst"           ) return new           chi_burst_t( this, options_str );
   if ( name == "rushing_jade_wind"   ) return new   rushing_jade_wind_t( this, options_str );
-<<<<<<< .mine
   if ( name == "chi_sphere"          ) return new          chi_sphere_t( this, options_str );
   if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
-=======
-  if ( name == "chi_brew"            ) return new            chi_brew_t( this, options_str );
->>>>>>> .r13146
 
   // Heals
   if ( name == "enveloping_mist"     ) return new     enveloping_mist_t( this, options_str );
