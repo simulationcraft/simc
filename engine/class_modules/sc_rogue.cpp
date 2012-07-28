@@ -32,14 +32,20 @@ struct combo_points_t
 
   proc_t* proc;
   proc_t* wasted;
+  proc_t* proc_anticipation;
+  proc_t* wasted_anticipation;
 
   int count;
+  int anticipation_charges;
 
   combo_points_t( player_t* source, player_t* target ) :
-    source( source ), target( target ), proc( 0 ), wasted( 0 ), count( 0 )
+    source( source ), target( target ), proc( 0 ), wasted( 0 ), 
+    count( 0 ), anticipation_charges( 0 )
   {
     proc   = target -> get_proc( "combo_points" );
     wasted = target -> get_proc( "combo_points_wasted" );
+    proc_anticipation = target -> get_proc( "anticipation_charges" );
+    wasted_anticipation = target -> get_proc( "anticipation_charges_wasted" );
   }
 
   void add( int num, const char* action = 0 );
@@ -213,7 +219,14 @@ struct rogue_t : public player_t
   // Talents
   struct talents_t
   {
-  } talents;
+    const spell_data_t* nightstalker;
+    const spell_data_t* subterfuge;
+    const spell_data_t* shadow_focus;
+
+    const spell_data_t* preparation;
+    
+    const spell_data_t* anticipation;
+  } talent;
 
   // Masteries
   struct masteries_t
@@ -270,6 +283,7 @@ public:
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     event_premeditation( 0 ),
+    active_lethal_poison( 0 ),
     active_main_gauche( 0 ), active_venomous_wound( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -365,6 +379,8 @@ void combo_points_t::add( int num, const char* action )
 {
   int actual_num = clamp( num, 0, COMBO_POINTS_MAX - count );
   int overflow   = num - actual_num;
+  int anticipation_num = 0;
+  int anticipation_overflow = 0;
   
   // Premeditation cancel on any added combo points, even if they are
   // already full
@@ -383,18 +399,51 @@ void combo_points_t::add( int num, const char* action )
   // count wasted combo points
   if ( overflow > 0 )
   {
-    for ( int i = 0; i < overflow; i++ )
-      wasted -> occur();
+    // Anticipation
+    if ( p -> talent.anticipation -> ok() )
+    {
+      anticipation_num = clamp( overflow, 0, COMBO_POINTS_MAX - anticipation_charges );
+      anticipation_overflow = overflow - anticipation_num;
+
+      for ( int i = 0; i < overflow; i++ )
+        proc_anticipation -> occur();
+
+      if ( anticipation_num > 0 )
+        anticipation_charges += anticipation_num;
+
+      if ( anticipation_overflow > 0 )
+      {
+        for ( int i = 0; i < anticipation_overflow; i++ )
+          wasted_anticipation -> occur();
+      }
+    }
+    else
+    {
+      for ( int i = 0; i < overflow; i++ )
+        wasted -> occur();
+    }
   }
 
   if ( source -> sim -> log )
   {
     if ( action )
-      source -> sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
-                     target -> name(), actual_num, num, action, count );
+    {
+      if ( actual_num > 0 )
+        source -> sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
+                      target -> name(), actual_num, num, action, count );
+      else if ( anticipation_num > 0 )
+        source -> sim -> output( "%s gains %d (%d) anticipation_charges from %s (%d)",
+                      target -> name(), anticipation_num, overflow, action, anticipation_charges );
+    }
     else
-      source -> sim -> output( "%s gains %d (%d) combo_points (%d)",
+    {
+      if ( actual_num > 0 )
+        source -> sim -> output( "%s gains %d (%d) combo_points (%d)",
                      target -> name(), actual_num, num, count );
+      else if ( anticipation_num > 0 )
+        source -> sim -> output( "%s gains %d (%d) anticipation_charges (%d)",
+                     target -> name(), anticipation_num, overflow, anticipation_charges );
+    }
   }
 }
 
@@ -416,6 +465,14 @@ void combo_points_t::clear( const char* action )
     event_t::cancel( p -> event_premeditation );
 
   count = 0;
+
+  if ( anticipation_charges > 0 )
+  {
+    if ( source -> sim -> log )
+      source -> sim -> output( "%s replenishes %d combo_points through anticipation", source -> name(), anticipation_charges );
+    count = anticipation_charges;
+    anticipation_charges = 0;
+  }
 }
 
 namespace { // UNNAMED NAMESPACE
@@ -606,10 +663,20 @@ struct rogue_melee_attack_t : public melee_attack_t
       m *= 1.0 + td -> debuffs_revealing_strike -> value();
 
     m *= 1.0 + td -> debuffs_vendetta -> value();
-    
+
     if ( p() -> spec.sanguinary_vein -> ok() && 
          ( td -> dots_garrote -> ticking || td -> dots_rupture -> ticking ) )
       m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
+
+    return m;
+  }
+  
+  virtual double action_multiplier()
+  {
+    double m = melee_attack_t::action_multiplier();
+
+    if ( p() -> talent.nightstalker -> ok() && p() -> buffs.stealthed -> check() )
+      m += p() -> talent.nightstalker -> effectN( 2 ).percent();
 
     return m;
   }
@@ -776,9 +843,6 @@ void trigger_seal_fate( rogue_melee_attack_t* a )
   if ( ! p -> spec.seal_fate -> ok() )
     return;
 
-  if ( ! a -> adds_combo_points )
-    return;
-
   if ( a -> aoe != 0 )
     return;
 
@@ -926,7 +990,7 @@ void rogue_melee_attack_t::impact( action_state_t* state )
     if ( weapon && p() -> active_lethal_poison )
       p() -> active_lethal_poison -> execute();
 
-    if ( state -> result == RESULT_CRIT )
+    if ( adds_combo_points && state -> result == RESULT_CRIT )
       trigger_seal_fate( this );
   }
 }
@@ -951,13 +1015,15 @@ double rogue_melee_attack_t::cost()
 {
   double c = melee_attack_t::cost();
 
-  rogue_t* p = cast();
-
   if ( c <= 0 )
     return 0;
 
-  if ( p -> set_bonus.tier13_2pc_melee() && p -> buffs.tier13_2pc -> up() )
-    c *= 1.0 + p -> spell.tier13_2pc -> effectN( 1 ).percent();
+  if ( p() -> talent.shadow_focus -> ok() &&
+    ( p() -> buffs.stealthed -> check() || p() -> buffs.vanish -> check() ) )
+    return 0;
+
+  if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
+    c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
   return c;
 }
@@ -995,11 +1061,7 @@ void rogue_melee_attack_t::consume_resource()
 
 void rogue_melee_attack_t::execute()
 {
-  rogue_t* p = cast();
   rogue_td_t* td = cast_td();
-
-  if ( harmful )
-    break_stealth( p );
 
   if ( requires_combo_points )
   {
@@ -1020,6 +1082,30 @@ void rogue_melee_attack_t::execute()
   }
 
   melee_attack_t::execute();
+
+  if ( harmful )
+  {
+    if ( ! p() -> talent.subterfuge -> ok() )
+      break_stealth( p() );
+    else
+    {
+      struct subterfuge_event_t : public event_t
+      {
+        subterfuge_event_t( rogue_t* p ) : 
+          event_t( p -> sim, p, "subterfuge" )
+        {
+          sim -> add_event( this, p -> find_spell( 115192 ) -> duration() );
+        }
+
+        void execute()
+        {
+          break_stealth( debug_cast< rogue_t* >( player ) );
+        }
+      };
+
+      new ( sim ) subterfuge_event_t( p() );
+    }
+  }
 
   if ( result_is_hit( execute_state -> result ) )
   {
@@ -1337,7 +1423,7 @@ struct dispatch_t : public rogue_melee_attack_t
 
   bool ready()
   {
-    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() > 0.35 )
+    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() > 35 )
       return false;
 
     return rogue_melee_attack_t::ready();
@@ -1622,6 +1708,14 @@ struct mutilate_strike_t : public rogue_melee_attack_t
   {
     background  = true;
     may_miss = may_dodge = may_parry = false;
+  }
+  
+  void impact( action_state_t* state )
+  {
+    rogue_melee_attack_t::impact( state );
+
+    if ( state -> result == RESULT_CRIT )
+      trigger_seal_fate( this );
   }
 };
 
@@ -2009,11 +2103,11 @@ struct preparation_t : public rogue_melee_attack_t
   std::vector<cooldown_t*> cooldown_list;
 
   preparation_t( rogue_t* p, const std::string& options_str ) :
-    rogue_melee_attack_t( "preparation", p, p -> find_class_spell( "Preparation" ), options_str )
+    rogue_melee_attack_t( "preparation", p, p -> find_talent_spell( "Preparation" ), options_str )
   {
-    harmful = false;
+    harmful = may_miss = may_crit = false;
 
-    cooldown_list.push_back( p -> get_cooldown( "vanish"     ) );
+    cooldown_list.push_back( p -> get_cooldown( "vanish" ) );
   }
 
   virtual void execute()
@@ -2326,6 +2420,9 @@ struct apply_poison_t : public action_t
   virtual void execute()
   {
     executed = true;
+
+    if ( sim -> log )
+      sim -> output( "%s performs %s", player -> name(), name() );
   }
 
   virtual bool ready()
@@ -2528,7 +2625,7 @@ double rogue_t::composite_player_multiplier( school_e school, action_t* a )
 
   if ( buffs.master_of_subtlety -> check() ||
        ( spec.master_of_subtlety -> ok() && ( buffs.stealthed -> check() || buffs.vanish -> check() ) ) )
-    m *= 1.0 + buffs.master_of_subtlety -> value();
+    m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent();
 
   m *= 1.0 + buffs.shallow_insight -> value();
 
@@ -2577,7 +2674,8 @@ void rogue_t::init_actions()
     precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
 
     // Potion use
-    precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+    action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
 
     if ( spec.master_of_subtlety -> ok() )
       action_list_str += "/stealth";
@@ -2598,8 +2696,6 @@ void rogue_t::init_actions()
       action_list_str += "/tricks_of_the_trade,if=set_bonus.tier13_2pc_melee";
 
       action_list_str += "/slice_and_dice,if=buff.slice_and_dice.down";
-      action_list_str += "/pool_energy,if=energy<60&buff.slice_and_dice.remains<5";
-      action_list_str += "/slice_and_dice,if=combo_points>=3&buff.slice_and_dice.remains<2";
 
       action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&time<6";
       action_list_str += "/vendetta";
@@ -2607,9 +2703,9 @@ void rogue_t::init_actions()
       action_list_str += "/rupture,if=(!ticking|ticks_remain<2)&buff.slice_and_dice.remains>6";
 
       action_list_str += "/envenom,if=combo_points>=4&buff.envenom.down";
-      action_list_str += "/envenom,if=combo_points>=4&energy>90";
+      action_list_str += "/envenom,if=combo_points>=4";
       action_list_str += "/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3";
-      action_list_str += "/dispatch,if=combo_points<5&(target.health.pct<35|buff.blindside.up)";
+      action_list_str += "/dispatch,if=combo_points<5";
       action_list_str += "/mutilate,if=position_front&combo_points<5&target.health.pct<35";
       action_list_str += "/mutilate,if=combo_points<4&target.health.pct>=35";
     }
@@ -2927,6 +3023,12 @@ void rogue_t::init_spells()
   
   // Glyphs
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
+
+  talent.nightstalker       = find_talent_spell( "Nightstalker" );
+  talent.subterfuge         = find_talent_spell( "Subterfuge" );
+  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
+  talent.preparation        = find_talent_spell( "Preparation" );
+  talent.anticipation       = find_talent_spell( "Anticipation" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
